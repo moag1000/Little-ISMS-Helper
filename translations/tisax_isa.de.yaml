@@ -101,6 +101,7 @@ tisax:
       proceed: 'Weiter zur Vorschau'
       no_workbook: 'Kein Workbook in der Sitzung gefunden. Bitte laden Sie es erneut hoch.'
       legacy_five_partial: 'ISA %version%-Workbook erkannt: Teilimport mit %count% Controls. ISA 5.x ist eine Teilmenge von ISA 6 — passende Controls werden übernommen, die nur in ISA 6 enthaltenen Controls (u. a. erweitertes Datenschutz-Modul) bleiben unbewertet.'
+      version_ambiguous: 'Katalog-Version des Workbooks nicht eindeutig erkennbar — der Import laeuft gegen VDA-ISA %version%. Bitte pruefen Sie nach dem Import, ob die Controls zur erwarteten ISA-Version gehoeren.'
       workbook_size_hint: 'ein vollständiges ISA-6-Workbook hat ca. 80 Anforderungen'
       legend_desc: 'Grün = alles ok, weiter. Gelb = Hinweis (z. B. ältere Version), Sie dürfen trotzdem weiter. Rot = Stopp, bitte eine ISA-6-Datei laden.'
       col_label:

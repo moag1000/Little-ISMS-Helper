@@ -54,11 +54,12 @@ final class VdaIsaImporterTest extends TestCase
         // constructor only.
         $catalogueProvider = $this->createMock(\App\Service\Tisax\TisaxCatalogueProvider::class);
 
+        // Catalogue fixture paths come from the provider now, so the importer no
+        // longer takes a project dir of its own.
         $this->importer = new VdaIsaImporter(
             $this->entityManager,
             $this->frameworkRepo,
             $this->requirementRepo,
-            $this->projectDir,
             $catalogueProvider,
         );
     }

@@ -8,6 +8,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
+use App\Service\Tisax\TisaxCatalogueProvider;
 use App\Service\Library\BsiKompendiumImporter;
 use App\Service\Library\LibraryRoundtripService;
 use App\Service\Library\VdaIsaImporter;
@@ -76,7 +77,8 @@ class LibraryImporterController extends AbstractController
      * Run a library import (BSI or TISAX).
      *
      * POST ?type=bsi   — imports bsi-it-grundschutz-2024.yaml
-     * POST ?type=tisax — imports vda-isa-tisax-v6.yaml
+     * POST ?type=tisax     — imports vda-isa-tisax-v6.yaml
+     * POST ?type=tisax2027 — imports vda-isa-tisax-2027.yaml
      *
      * Global op: writes global ComplianceFramework rows shared across all
      * tenants. Restricted to ROLE_SUPER_ADMIN per spec §3.1.
@@ -94,7 +96,10 @@ class LibraryImporterController extends AbstractController
         $stats = [];
         $frameworkCode = '';
 
-        if ($type === 'tisax') {
+        if ($type === 'tisax2027') {
+            $stats = $this->vdaImporter->importDefault(TisaxCatalogueProvider::VERSION_ISA2027);
+            $frameworkCode = 'TISAX-2027';
+        } elseif ($type === 'tisax') {
             $stats = $this->vdaImporter->importDefault();
             $frameworkCode = TisaxRequirementMapper::FRAMEWORK_CODE; // 'TISAX' (canonical)
         } else {
@@ -209,7 +214,13 @@ class LibraryImporterController extends AbstractController
         foreach (glob($dir . '/*.yaml') as $path) {
             $filename = basename($path, '.yaml');
 
-            if (str_contains($filename, 'tisax') || str_contains($filename, 'vda')) {
+            if (str_contains($filename, '2027')) {
+                // ISA 2027 is a separate, concurrently certifiable catalogue —
+                // it must not be labelled or imported as the ISA 6 library.
+                $type = 'tisax2027';
+                $label = 'TISAX VDA ISA 2027';
+                $code = 'TISAX-2027';
+            } elseif (str_contains($filename, 'tisax') || str_contains($filename, 'vda')) {
                 $type = 'tisax';
                 $label = 'TISAX VDA ISA v6.0';
                 $code = TisaxRequirementMapper::FRAMEWORK_CODE; // 'TISAX' (canonical)

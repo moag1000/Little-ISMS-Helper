@@ -18,6 +18,7 @@ use App\Service\Tisax\TisaxEvidenceLinker;
 use App\Service\Tisax\TisaxImportSupportService;
 use App\Service\Tisax\RequirementLevelMetadataLoader;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
+use App\Service\Tisax\TisaxCatalogueProvider;
 use App\Service\Tisax\VdaIsaWorkbookParser;
 use App\Service\Tisax\VdaIsaWorkbookValidator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -64,6 +65,9 @@ final class TisaxImportWizardController extends AbstractController
     /** Session key for the organisation name read from the workbook cover sheet */
     private const SESSION_WORKBOOK_COMPANY = 'tisax_import.workbook_company';
 
+    /** Catalogue version detected from the uploaded workbook ('6' | '2027'). */
+    private const SESSION_CATALOGUE_VERSION = 'tisax_import.catalogue_version';
+
     /** Temp upload subdirectory */
     private const UPLOAD_SUBDIR = 'tisax_workbooks';
 
@@ -84,9 +88,22 @@ final class TisaxImportWizardController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly \App\Service\Tisax\TisaxCatalogueVersionDetector $versionDetector,
         private readonly string $uploadDir,
         private readonly ?RequirementLevelMetadataLoader $metadataLoader = null,
     ) {}
+
+    /**
+     * Catalogue version for the workbook currently in the wizard session.
+     * Falls back to ISA 6 when the session lost the value (expired session,
+     * or a user jumping straight to a later step).
+     */
+    private function catalogueVersion(Request $request): string
+    {
+        $version = $request->getSession()->get(self::SESSION_CATALOGUE_VERSION);
+
+        return TisaxCatalogueProvider::normaliseVersion(is_string($version) ? $version : null);
+    }
 
     // ──────────────────────────────────────────────────────────────────────────
     // Step 0 — Legal disclaimer
@@ -249,6 +266,20 @@ final class TisaxImportWizardController extends AbstractController
         $request->getSession()->set(self::SESSION_VALIDATION, $validation);
         $request->getSession()->set(self::SESSION_WORKBOOK_COMPANY, $parsed->workbookCompany);
 
+        // Route the upload to the catalogue it actually belongs to. ISA 6 and
+        // ISA 2027 are both certifiable, and the mapper creates rows it cannot
+        // find — importing a 2027 workbook against ISA 6 would silently graft
+        // the 2027-only controls onto the older standard.
+        $detected = $this->versionDetector->detect($parsed);
+        $request->getSession()->set(self::SESSION_CATALOGUE_VERSION, $detected['version']);
+        if (!$detected['confident']) {
+            $this->addFlash('warning', $this->translator->trans(
+                'tisax.import.validate.version_ambiguous',
+                ['%version%' => $detected['version']],
+                'tisax_isa',
+            ));
+        }
+
         if ($request->isMethod('POST') && $validation['ok']) {
             if (!$this->isCsrfTokenValid('tisax_proceed', $request->request->get('_token'))) {
                 throw $this->createAccessDeniedException('CSRF token invalid.');
@@ -284,7 +315,7 @@ final class TisaxImportWizardController extends AbstractController
         }
 
         $tenant    = $this->tenantContext->getCurrentTenant();
-        $framework = $this->mapper->findOrCreateFramework();
+        $framework = $this->mapper->findOrCreateFramework($this->catalogueVersion($request));
         $delta     = $this->mapper->computeDelta($controls, $framework, $tenant);
 
         if ($request->isMethod('POST')) {
@@ -330,7 +361,7 @@ final class TisaxImportWizardController extends AbstractController
         }
 
         $tenant    = $this->tenantContext->getCurrentTenant();
-        $framework = $this->mapper->findOrCreateFramework();
+        $framework = $this->mapper->findOrCreateFramework($this->catalogueVersion($request));
 
         $workbookCompany = $request->getSession()->get(self::SESSION_WORKBOOK_COMPANY);
         $workbookCompany = is_string($workbookCompany) ? $workbookCompany : null;

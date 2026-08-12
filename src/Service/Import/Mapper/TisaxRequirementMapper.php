@@ -78,13 +78,18 @@ final class TisaxRequirementMapper
      *     correctly without a full data migration having been run yet.
      *  3. If neither exists, create a new framework with the canonical code.
      */
-    public function findOrCreateFramework(): ComplianceFramework
-    {
+    public function findOrCreateFramework(
+        string $version = \App\Service\Tisax\TisaxCatalogueProvider::VERSION_ISA6,
+    ): ComplianceFramework {
         // Single source of truth: the catalogue provider owns the framework row +
         // metadata (from the YAML). The BYO import never defines its own
         // name/version — that previously caused the metadata to flip depending on
         // whether an upload or the loader created the framework first.
-        return $this->catalogueProvider->upsertFramework();
+        //
+        // The version selects the catalogue: ISA 6 and ISA 2027 are separate
+        // frameworks, and mapRows() creates rows it cannot find, so passing the
+        // wrong one would append foreign controls to the other standard.
+        return $this->catalogueProvider->upsertFramework($version);
     }
 
     /**
