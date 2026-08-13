@@ -128,7 +128,8 @@
 - Financial entities may notify about threats not yet materialised
 
 **Article 23: Details of Reports**
-- Content specified in ITS (2024/1502)
+- Content and deadlines: CDR (EU) 2025/301 (RTS) — forms and templates: CIR (EU) 2025/302 (ITS).
+  (2024/1502 is the RTS on designating critical ICT third-party providers, not a reporting standard.)
 - Use of standardised templates
 
 ### Chapter IV: Digital Operational Resilience Testing (Articles 24-27)
@@ -348,7 +349,7 @@ Must include:
 - [ ] Incident classification criteria defined
 - [ ] 4-hour initial notification capability
 - [ ] Incident register established
-- [ ] Reporting templates implemented (ITS 2024/1502)
+- [ ] Reporting templates implemented (CIR (EU) 2025/302, Annexes I–IV)
 
 **Phase 4: Testing (Articles 24-27)**
 - [ ] Annual testing program defined
@@ -357,7 +358,7 @@ Must include:
 - [ ] Scenario-based testing included
 
 **Phase 5: Third-Party Risk (Articles 28-30)**
-- [ ] Register of information created (ITS 2024/1689)
+- [ ] Register of information created (CIR (EU) 2024/2956)
 - [ ] Due diligence process for new providers
 - [ ] Existing contracts reviewed for DORA clauses
 - [ ] Exit strategies documented
