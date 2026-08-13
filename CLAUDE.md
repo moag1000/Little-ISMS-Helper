@@ -249,7 +249,10 @@ sections (`overview`, `recovery`, `team`, `communication`, `resources`,
 `details`, `contact`). Section labels resolve to `form.section.<key>` in
 the `messages` domain. Fields not covered by any section leak into a
 deprecation-flagged "Sonstiges" bucket in dev — `scripts/quality/check_form_sections.py`
-CI-gates parity between builder and section-map. The convention exists
+(CI Gate 59) checks both directions: parity between builder and section-map for
+FormTypes that implement the interface, and that every FormType with more than
+six fields implements it at all. Existing offenders are listed in
+`scripts/quality/baselines/form_sections.txt`; new ones fail CI. The convention exists
 because the previous catch-all silently buried ISO 22301 Cl. 8.2.2 RTO/RPO
 fields and BC-Exercise result-fields among unrelated data.
 

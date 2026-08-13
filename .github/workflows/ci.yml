@@ -522,6 +522,13 @@ jobs:
         # Registry<->match parity, framework-code collisions, competitor names in
         # catalog/mapping sources. See docs/COMPLIANCE_CATALOG_ARCHITECTURE.md.
         run: python3 scripts/quality/check_compliance_catalog.py --baseline scripts/quality/baselines/compliance_catalog.txt --quiet
+      - name: "Gate 59: FormType SectionPolicy"
+        # Builder<->getSectionMap() parity AND coverage: a FormType with more than
+        # six fields must implement SectionMapInterface. CLAUDE.md described this
+        # script as CI-gated, but nothing ran it — 30 large FormTypes (IncidentType
+        # at 45 fields) had no section map and their fields fall into the catch-all
+        # bucket. Existing offenders are baselined; new ones fail.
+        run: python3 scripts/quality/check_form_sections.py --baseline scripts/quality/baselines/form_sections.txt
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

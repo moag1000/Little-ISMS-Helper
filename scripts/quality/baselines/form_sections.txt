@@ -1,0 +1,32 @@
+# check_form_sections.py baseline — FormTypes owing a SectionMapInterface
+# Format: <relative-path>:<field-count-at-baseline-time>
+src/Form/Admin/SupplierCriticalityLevelType.php:7
+src/Form/Admin/TenantComplianceSettingsType.php:21
+src/Form/Admin/TenantPolicyStyleType.php:12
+src/Form/Admin/TenantReportStyleType.php:12
+src/Form/Admin/WorkflowStepOverlayType.php:9
+src/Form/AssetQuickType.php:7
+src/Form/BCExerciseType.php:33
+src/Form/Bsi2004ExerciseLogType.php:11
+src/Form/BusinessContinuityPlanType.php:33
+src/Form/ComplianceFrameworkType.php:9
+src/Form/ComplianceMappingType.php:8
+src/Form/ComplianceRequirementType.php:8
+src/Form/ConsentType.php:11
+src/Form/CustomReportType.php:9
+src/Form/DataSubjectRequestType.php:21
+src/Form/DatabaseConfigurationType.php:8
+src/Form/EmailConfigurationType.php:8
+src/Form/IdentityProviderType.php:23
+src/Form/IncidentType.php:45
+src/Form/InternalAuditType.php:19
+src/Form/MfaTokenType.php:7
+src/Form/RiskAppetiteType.php:7
+src/Form/RiskQuickType.php:7
+src/Form/RoadmapGroupType.php:8
+src/Form/ScheduledReportType.php:10
+src/Form/Step/Sso/SsoDiscoveryStepType.php:10
+src/Form/TenantType.php:19
+src/Form/UserType.php:15
+src/Form/WorkflowInstanceType.php:8
+src/Form/WorkflowStepType.php:7

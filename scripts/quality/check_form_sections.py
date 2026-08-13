@@ -11,7 +11,14 @@ validate that:
      →  no leaks into the catch-all "Sonstiges" bucket.
   3. No field appears in multiple sections at once.
 
-Exits 1 on mismatch.
+Additionally, every FormType with more than SECTION_MAP_FIELD_THRESHOLD builder
+fields MUST implement the interface at all (CLAUDE.md: "anything with >6 fields").
+Without that second check the gate reported "35/35 pass" while 30 large FormTypes
+— IncidentType with 41 fields among them — carried no section map, which is the
+exact situation that once buried the ISO 22301 RTO/RPO fields in the catch-all
+bucket.
+
+Exits 1 on mismatch or on a new FormType owing a section map.
 
 Mode:
   - default                 → strict: any mismatch is an error
@@ -59,6 +66,27 @@ SECTION_ENTRY_PATTERN = re.compile(
     re.DOTALL,
 )
 FIELD_LITERAL_PATTERN = re.compile(r"['\"]([A-Za-z_][A-Za-z0-9_]*)['\"]")
+
+
+SECTION_MAP_FIELD_THRESHOLD = 6
+
+
+def count_builder_fields(text: str) -> int:
+    """Number of distinct ->add('field', ...) calls in a FormType."""
+    fields = set(BUILDER_ADD_PATTERN.findall(text))
+    for picker_block in OWNER_PICKER_PATTERN.finditer(text):
+        fields.update(OWNER_PICKER_FIELD_PATTERN.findall(picker_block.group(1)))
+    return len(fields)
+
+
+def load_baseline(path: Path | None) -> set[str]:
+    if path is None or not path.exists():
+        return set()
+    return {
+        line.split(":", 1)[0].strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith("#")
+    }
 
 
 def find_form_types() -> list[Path]:
@@ -141,15 +169,24 @@ def main() -> int:
         action="store_true",
         help="report mismatches but exit 0",
     )
+    parser.add_argument("--baseline", type=Path, default=None)
+    parser.add_argument("--write-baseline", type=Path, default=None)
     args = parser.parse_args()
 
     total = 0
     ok = 0
     failures: list[tuple[Path, list[str]]] = []
 
+    baseline = load_baseline(args.baseline)
+    missing_map: list[tuple[str, int]] = []
+
     for path in find_form_types():
+        rel_path = str(path.relative_to(ROOT))
         result = parse_form_type(path)
         if result is None:
+            field_count = count_builder_fields(path.read_text(encoding="utf-8"))
+            if field_count > SECTION_MAP_FIELD_THRESHOLD:
+                missing_map.append((rel_path, field_count))
             continue
         builder_fields, section_map = result
         total += 1
@@ -159,9 +196,34 @@ def main() -> int:
         else:
             ok += 1
 
+    if args.write_baseline:
+        args.write_baseline.write_text(
+            "# check_form_sections.py baseline — FormTypes owing a SectionMapInterface\n"
+            "# Format: <relative-path>:<field-count-at-baseline-time>\n"
+            + "".join(f"{rel}:{count}\n" for rel, count in sorted(missing_map)),
+            encoding="utf-8",
+        )
+        print(f"check_form_sections: baseline written ({len(missing_map)} entries)")
+        return 0
+
+    new_missing = [(rel, c) for rel, c in missing_map if rel not in baseline]
+
     print(
         f"check_form_sections: {ok}/{total} FormTypes implementing SectionMapInterface pass"
+        f" — {len(missing_map)} owe one ({len(new_missing)} new)"
     )
+    if new_missing:
+        print("")
+        for rel, count in sorted(new_missing, key=lambda x: -x[1]):
+            print(f"FAIL {rel}: {count} fields but no SectionMapInterface")
+        print("")
+        print(
+            "Fix: implement App\\Form\\SectionMapInterface and declare getSectionMap(),"
+            " or keep the form under "
+            f"{SECTION_MAP_FIELD_THRESHOLD} fields."
+        )
+        if not args.warn_only:
+            return 1
     if failures:
         print("")
         for path, errors in failures:
