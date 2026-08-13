@@ -21,13 +21,43 @@ use PHPUnit\Framework\TestCase;
  */
 final class TenantScopedModuleActivationTest extends TestCase
 {
+    /**
+     * config/active_modules.yaml is gitignored, so its contents differ per
+     * machine. The tests build their own project dir with a known instance
+     * default instead of reading whatever the checkout happens to carry.
+     */
+    private string $projectDir;
+
+    protected function setUp(): void
+    {
+        $this->projectDir = sys_get_temp_dir() . '/module_scope_' . uniqid();
+        mkdir($this->projectDir . '/config', 0777, true);
+        copy(
+            \dirname(__DIR__, 2) . '/config/modules.yaml',
+            $this->projectDir . '/config/modules.yaml',
+        );
+        file_put_contents(
+            $this->projectDir . '/config/active_modules.yaml',
+            "active_modules:\n    - privacy\n    - assets\n",
+        );
+    }
+
+    protected function tearDown(): void
+    {
+        foreach (['/config/modules.yaml', '/config/active_modules.yaml'] as $file) {
+            @unlink($this->projectDir . $file);
+        }
+        @rmdir($this->projectDir . '/config');
+        @rmdir($this->projectDir);
+    }
+
     private function service(?Tenant $tenant, ?EntityManagerInterface $em = null): ModuleConfigurationService
     {
         $context = $this->createMock(TenantContext::class);
         $context->method('getCurrentTenant')->willReturn($tenant);
 
         return new ModuleConfigurationService(
-            \dirname(__DIR__, 2),
+            $this->projectDir,
             $context,
             $em ?? $this->createMock(EntityManagerInterface::class),
         );
@@ -39,11 +69,13 @@ final class TenantScopedModuleActivationTest extends TestCase
         $service = $this->service(new Tenant());
 
         self::assertFalse($service->hasTenantOverride());
-        self::assertSame(
-            $service->getInstanceDefaultModules(),
-            array_values(array_intersect($service->getActiveModules(), $service->getInstanceDefaultModules())),
-            'a tenant without its own set must see the instance default',
-        );
+        self::assertSame(['privacy', 'assets'], $service->getInstanceDefaultModules());
+        foreach ($service->getInstanceDefaultModules() as $module) {
+            self::assertTrue(
+                $service->isModuleActive($module),
+                sprintf('inheriting tenant must see instance module "%s"', $module),
+            );
+        }
     }
 
     #[Test]
@@ -54,20 +86,11 @@ final class TenantScopedModuleActivationTest extends TestCase
 
         self::assertTrue($service->hasTenantOverride());
         self::assertTrue($service->isModuleActive('privacy'));
-
-        // Something the instance default carries, this tenant did not pick, and
-        // that is not a required module (those stay active for everyone).
-        $notPicked = array_values(array_diff(
-            $service->getInstanceDefaultModules(),
-            ['privacy'],
-            array_keys($service->getRequiredModules()),
-        ));
-        if ($notPicked !== []) {
-            self::assertFalse(
-                $service->isModuleActive($notPicked[0]),
-                'instance default must not leak into a tenant with its own selection',
-            );
-        }
+        // 'assets' is in the instance default but not in this tenant's selection.
+        self::assertFalse(
+            $service->isModuleActive('assets'),
+            'instance default must not leak into a tenant with its own selection',
+        );
     }
 
     #[Test]
@@ -90,7 +113,7 @@ final class TenantScopedModuleActivationTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->expects(self::once())->method('flush');
 
-        $yaml = \dirname(__DIR__, 2) . '/config/active_modules.yaml';
+        $yaml = $this->projectDir . '/config/active_modules.yaml';
         $before = file_exists($yaml) ? file_get_contents($yaml) : null;
 
         $this->service($tenant, $em)->saveActiveModules(['privacy', 'assets']);
