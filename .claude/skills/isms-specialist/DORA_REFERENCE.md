@@ -177,7 +177,10 @@ Must include:
 - Service level requirements
 - Audit rights for authorities
 - Termination and exit strategies
-- **Detailed in**: Commission Delegated Regulation (EU) 2024/1932 (Subcontracting)
+- **Detailed in**: Commission Delegated Regulation (EU) **2025/532** (RTS on subcontracting ICT services
+  supporting critical or important functions, Art. 30(5) DORA) — adopted 24 Mar 2025, published in the
+  Official Journal 2 Jul 2025, in force 22 Jul 2025. It replaces the earlier draft that the Commission
+  sent back to the ESAs; there is no act 2024/1932.
 
 **Section II: Oversight Framework (Articles 31-44)**
 
@@ -393,5 +396,12 @@ Must include:
 - **March 27, 2025**: EU Commission infringement procedures against 13 Member States
 - **January 17, 2025**: DORA application date - full enforcement begins
 - **December 2, 2024**: ITS 2024/2956 on register templates published
-- **July 2024**: Final batch of RTS/ITS published
+- **July 2024**: First batch of RTS/ITS published
+- **2025**: Second wave of Level-2 acts — CDR 2025/295 + 2025/420 (oversight conditions / JET composition,
+  Art. 41), CDR 2025/301 + CIR 2025/302 (incident reporting content and templates, Art. 20),
+  CDR 2025/532 (subcontracting, Art. 30(5)), CDR 2025/1190 (threat-led penetration testing, Art. 26(11))
+
+**Level-2 acts carried in the application catalogue** (13 acts, 150 requirements — see
+`src/Service/Compliance/DoraRtsItsCatalogueLoader.php`): 2024/1502, 2024/1505, 2024/1772, 2024/1773,
+2024/1774, 2024/2955, 2024/2956, 2025/295, 2025/301, 2025/302, 2025/420, 2025/532, 2025/1190.
 - **December 14, 2022**: DORA adopted
