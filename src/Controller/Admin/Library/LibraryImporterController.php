@@ -46,6 +46,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[Route('/admin/library', name: 'admin_library_')]
 class LibraryImporterController extends AbstractController
 {
+    /** Carries the import result across the POST → redirect boundary. */
+    private const SESSION_IMPORT_RESULT = 'admin_library.import_result';
+
     public function __construct(
         private readonly BsiKompendiumImporter $bsiImporter,
         private readonly VdaIsaImporter $vdaImporter,
@@ -61,15 +64,20 @@ class LibraryImporterController extends AbstractController
      * Overview: list available library YAMLs with last-import status.
      */
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $availableLibraries = $this->discoverAvailableLibraries();
         $importedFrameworks = $this->frameworkRepository->findBy([], ['code' => 'ASC']);
+
+        $session = $request->getSession();
+        $importResult = $session->get(self::SESSION_IMPORT_RESULT);
+        $session->remove(self::SESSION_IMPORT_RESULT);
 
         return $this->render('admin/library/index.html.twig', [
             'available_libraries' => $availableLibraries,
             'imported_frameworks' => $importedFrameworks,
             'tisax_skeleton_only' => $this->vdaImporter->isSkeletonOnly(),
+            'import_result' => is_array($importResult) ? $importResult : null,
         ]);
     }
 
@@ -123,13 +131,17 @@ class LibraryImporterController extends AbstractController
             AuditLogger::ACTION_LIBRARY_FRAMEWORK_IMPORTED,
         );
 
-        $hasErrors = !empty($stats['errors']);
-
-        return $this->render('admin/library/_import_result.html.twig', [
+        // POST → Redirect: Turbo rejects a rendered response to a form submit
+        // ("Form responses must redirect to another location"), so the result
+        // panel was never shown — the import ran but the page stayed silent.
+        // Stats travel through the session and are rendered once on the index.
+        $request->getSession()->set(self::SESSION_IMPORT_RESULT, [
             'stats' => $stats,
             'type' => $type,
-            'has_errors' => $hasErrors,
+            'has_errors' => !empty($stats['errors']),
         ]);
+
+        return $this->redirectToRoute('admin_library_index');
     }
 
     /**

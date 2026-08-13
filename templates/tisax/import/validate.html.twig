@@ -39,10 +39,12 @@
                     <dl class="row mb-0">
                         <dt class="col-sm-4">{{ 'tisax.import.validate.sheet'|trans({}, 'tisax_isa') }}</dt>
                         <dd class="col-sm-8">{{ sheetName }}</dd>
+                        <dt class="col-sm-4">{{ 'tisax.import.validate.detected_catalogue'|trans({}, 'tisax_isa') }}</dt>
+                        <dd class="col-sm-8">{{ catalogueName }}</dd>
                         <dt class="col-sm-4">{{ 'tisax.import.validate.control_count'|trans({}, 'tisax_isa') }}</dt>
                         <dd class="col-sm-8">
                             {{ controlCount }}
-                            <span class="text-muted small">({{ 'tisax.import.validate.workbook_size_hint'|trans({}, 'tisax_isa') }})</span>
+                            <span class="text-muted small">({{ 'tisax.import.validate.workbook_size_hint'|trans({ '%catalogue%': catalogueName, '%count%': catalogueSize }, 'tisax_isa') }})</span>
                         </dd>
                         <dt class="col-sm-4">{{ 'tisax.import.validate.detected_columns'|trans({}, 'tisax_isa') }}</dt>
                         <dd class="col-sm-8">

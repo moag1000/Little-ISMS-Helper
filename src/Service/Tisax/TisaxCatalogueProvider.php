@@ -242,6 +242,16 @@ class TisaxCatalogueProvider
     }
 
     /**
+     * Number of controls the given catalogue version ships (80 for ISA 6,
+     * 78 for ISA 2027). Used to tell the user what a complete workbook of
+     * their version looks like instead of quoting the ISA 6 size for both.
+     */
+    public function catalogueSize(string $version = self::VERSION_ISA6): int
+    {
+        return count($this->yaml($version)['requirements'] ?? []);
+    }
+
+    /**
      * Absolute path of the catalogue fixture for a version — the single place
      * that knows where a VDA-ISA catalogue lives.
      */

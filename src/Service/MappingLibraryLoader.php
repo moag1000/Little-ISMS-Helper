@@ -193,15 +193,21 @@ final class MappingLibraryLoader
             if (isset($entry['audit_evidence_hint'])) {
                 $mapping->setAuditEvidenceHint($entry['audit_evidence_hint']);
             }
-            // Übersetze relationship → mappingPercentage (für Legacy-Code)
-            if ($mapping->getMappingPercentage() === 0 && isset($entry['relationship'])) {
-                $mapping->setMappingPercentage(match ($entry['relationship']) {
+            // Übersetze relationship → mappingPercentage (für Legacy-Code).
+            //
+            // Der Aufruf MUSS auch ohne `relationship` erfolgen: setMappingPercentage()
+            // leitet den NOT-NULL-Spaltenwert mapping_type ab. Ohne ihn schlägt der
+            // gesamte Import einer Library mit "Column 'mapping_type' cannot be null"
+            // fehl — das traf jede Fixture, die nur source/target ohne relationship
+            // führt (z. B. tisax_to_iso27001-2022, tisax_to_nis2).
+            if ($mapping->getMappingPercentage() === 0) {
+                $mapping->setMappingPercentage(match ($entry['relationship'] ?? null) {
                     'equivalent' => 100,
                     'subset' => 70,         // source ist Teil von target → bei subset abgedeckt teilweise
                     'superset' => 120,
                     'partial_overlap' => 50,
                     'related' => 30,
-                    default => 0,
+                    default => 0,           // unbekannt/fehlend → 0 % ⇒ mapping_type 'weak'
                 });
             }
 

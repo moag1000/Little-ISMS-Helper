@@ -89,6 +89,7 @@ final class TisaxImportWizardController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly \App\Service\Tisax\TisaxCatalogueVersionDetector $versionDetector,
+        private readonly TisaxCatalogueProvider $catalogueProvider,
         private readonly string $uploadDir,
         private readonly ?RequirementLevelMetadataLoader $metadataLoader = null,
     ) {}
@@ -293,6 +294,10 @@ final class TisaxImportWizardController extends AbstractController
             'sheetName'   => $parsed->sheetName,
             'columnMap'   => $parsed->detectedColumnMap,
             'workbookVersion' => $parsed->workbookVersion,
+            // Which catalogue this upload will be written to — without it the
+            // routing decision stays invisible until the commit step.
+            'catalogueName'   => $this->catalogueProvider->getMetadata($detected['version'])['name'],
+            'catalogueSize'   => $this->catalogueProvider->catalogueSize($detected['version']),
             'isPartialFive'   => $isPartialFive,
             'stepIndex'   => 2,
             'canProceed'  => $validation['ok'],
