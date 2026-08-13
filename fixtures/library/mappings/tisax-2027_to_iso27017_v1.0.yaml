@@ -1,0 +1,58 @@
+# -----------------------------------------------------------------
+# AUTHORITATIVE MAPPING -- extracted from the VDA-ISA 2027 workbook's
+# "Reference to other standards" column (the official ENX reference).
+# Control numbers + anchors only; the ENX-licensed requirement text is
+# NOT redistributed (it arrives via the user's BYO workbook upload).
+# Sibling of the ISA 6 mapping of the same target; both stay live because
+# ISA 6 and ISA 2027 are certifiable in parallel.
+# -----------------------------------------------------------------
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'tisax-2027_to_iso27017_v1.0'
+  source_framework: 'TISAX-2027'
+  target_framework: 'ISO27017'
+  version: 1
+  effective_from: '2026-01-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'VDA ISA 2027 workbook -- "Reference to other standards" column (authoritative ENX source)'
+    primary_source_url: 'https://enx.com/en-US/TISAX/'
+    confidence: 'authoritative_enx_source'
+    publisher: 'Little ISMS Helper Maintainers'
+    extracted: '2026-08-13'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Anchors read from the ISA 2027 workbook reference column and resolved
+      against the ISO/IEC 27017 requirement ids used in this application.
+      References that do not resolve to a shipped requirement id are listed
+      under unresolved_references instead of being emitted as mappings.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'published', date: '2026-08-13', actor: 'maintainer' }
+
+  stats:
+    isa2027_controls_mapped: 3
+    total_pairs: 3
+
+mappings:
+  - source: '1.3.3'
+    target: '14.1.1'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Anchor published in the VDA-ISA 2027 reference column (authoritative).'
+  - source: '5.3.3'
+    target: 'CLD.8.1.5'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Anchor published in the VDA-ISA 2027 reference column (authoritative).'
+  - source: '6.1.3'
+    target: 'CLD.6.3.1'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Anchor published in the VDA-ISA 2027 reference column (authoritative).'
