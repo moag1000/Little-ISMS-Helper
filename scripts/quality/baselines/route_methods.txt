@@ -1,5 +1,5 @@
-# Format: <relative-path>:<line>
 # check_route_methods.py baseline
+# Format: <relative-path>:<line>
 src/Controller/AccessReviewController.php:37
 src/Controller/Admin/TrustCenterAdminController.php:29
 src/Controller/AnswerLibraryController.php:33
@@ -8,5 +8,5 @@ src/Controller/ComplianceCertificateController.php:50
 src/Controller/DpaController.php:37
 src/Controller/EffectivenessMonitorController.php:31
 src/Controller/MappingOnboardingController.php:17
-src/Controller/Tisax/TisaxImportWizardController.php:50
+src/Controller/Tisax/TisaxImportWizardController.php:51
 src/Controller/TransferImpactAssessmentController.php:48

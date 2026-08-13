@@ -304,6 +304,40 @@ class ProfileController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * Dismiss an onboarding banner ({@see _components/_fa_onboarding_banner.html.twig}).
+     *
+     * The macro has always posted here, but the route did not exist — every page
+     * embedding the banner died with "Unable to generate a URL for the named route
+     * app_preferences_dismiss" while rendering.
+     *
+     * `permanent=1` is remembered on the user, `permanent=0` ("Später") only for
+     * the current session so the banner returns on the next login.
+     */
+    #[Route('/preferences/dismiss/{key}', name: 'app_preferences_dismiss', methods: ['POST'], requirements: ['key' => '[a-z0-9_]+'])]
+    public function dismissBanner(string $key, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$this->isCsrfTokenValid('dismiss_' . $key, $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token');
+        }
+
+        if ($request->request->getBoolean('permanent')) {
+            $state = $user->getMappingOnboardingState();
+            $state['dismissed_banners'][$key] = (new \DateTimeImmutable())->format(DATE_ATOM);
+            $user->setMappingOnboardingState($state);
+            $entityManager->flush();
+        } else {
+            $request->getSession()->set('onboarding_banner_dismissed_' . $key, true);
+        }
+
+        // Turbo rejects a rendered response to a form submit — always redirect.
+        $referer = $request->headers->get('referer');
+
+        return $this->redirect($referer ?: $this->generateUrl('app_dashboard', ['_locale' => $request->getLocale()]));
+    }
+
     #[IsGranted('PERSONA_COMPLIANCE')]
     #[Route('/preferences/persona-switch', name: 'app_preferences_persona_switch', methods: ['POST'])]
     public function personaSwitch(Request $request): JsonResponse

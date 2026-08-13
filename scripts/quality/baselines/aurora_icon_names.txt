@@ -3,4 +3,3 @@
 templates/_components/_fa_persona_cockpit_card.html.twig:32:persona-
 templates/tisax/import/assess.html.twig:145:folder
 templates/tisax/import/assess.html.twig:295:arrow-right
-templates/tisax/import/validate.html.twig:53:info-circle

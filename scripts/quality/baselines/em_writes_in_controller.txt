@@ -341,6 +341,7 @@ src/Controller/ProfileController.php:106
 src/Controller/ProfileController.php:174
 src/Controller/ProfileController.php:197
 src/Controller/ProfileController.php:303
+src/Controller/ProfileController.php:330
 src/Controller/ProfileMfaController.php:245
 src/Controller/ProfileMfaController.php:246
 src/Controller/PrototypeProtectionAssessmentController.php:80
@@ -451,7 +452,7 @@ src/Controller/ThreatIntelligenceController.php:231
 src/Controller/ThreatIntelligenceController.php:232
 src/Controller/ThreatIntelligenceController.php:287
 src/Controller/ThreatIntelligenceController.php:295
-src/Controller/Tisax/TisaxImportWizardController.php:371
+src/Controller/Tisax/TisaxImportWizardController.php:407
 src/Controller/TrainingController.php:116
 src/Controller/TrainingController.php:117
 src/Controller/TrainingController.php:191

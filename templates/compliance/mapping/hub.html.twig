@@ -5,7 +5,12 @@
 
 {% block body %}
   {% from '_components/_fa_onboarding_banner.html.twig' import fa_onboarding_banner %}
-  {% if is_granted('ROLE_MANAGER') and (app.user.mappingOnboardingState.step is not defined or app.user.mappingOnboardingState.step < 4) %}
+  {# "Ausblenden" persists on the user, "Später" only for this session — both are
+     written by app_preferences_dismiss and have to be honoured here, otherwise the
+     banner reappears on the next render and the buttons look broken. #}
+  {% set bannerDismissed = app.user.mappingOnboardingState.dismissed_banners.mapping_onboarding_banner is defined
+      or app.session.get('onboarding_banner_dismissed_mapping_onboarding_banner') %}
+  {% if is_granted('ROLE_MANAGER') and not bannerDismissed and (app.user.mappingOnboardingState.step is not defined or app.user.mappingOnboardingState.step < 4) %}
     {{ fa_onboarding_banner({
       mood: 'happy',
       title: 'onboarding.mapping.banner.title'|trans({}, 'compliance'),

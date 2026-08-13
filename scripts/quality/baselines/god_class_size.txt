@@ -32,8 +32,8 @@ src/Controller/QuickFixController.php:LOC=722 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
 src/Controller/DataBreachController.php:LOC=673 deps=0
 src/Controller/TrainingController.php:LOC=672 deps=0
+src/Controller/Tisax/TisaxImportWizardController.php:LOC=640 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=22
-src/Controller/Tisax/TisaxImportWizardController.php:LOC=604 deps=0
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=17
 src/Service/DataIntegrityService.php:LOC=438 deps=34
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=18
