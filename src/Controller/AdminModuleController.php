@@ -33,7 +33,8 @@ class AdminModuleController extends AbstractController
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly DataImportService $dataImportService,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly \App\Service\TenantContext $tenantContext
     ) {
     }
 
@@ -61,6 +62,10 @@ class AdminModuleController extends AbstractController
         return $this->render('admin/modules/index.html.twig', [
             'all_modules' => $allModules,
             'active_modules' => $activeModules,
+            // Modules are tenant-scoped — say whose selection is being edited and
+            // whether it still follows the instance default.
+            'module_scope_tenant' => $this->tenantContext->getCurrentTenant()?->getName(),
+            'module_scope_inherited' => !$this->moduleConfigurationService->hasTenantOverride(),
             'statistics' => $statistics,
             'dependency_graph' => $dependencyGraph,
         ]);
