@@ -78,7 +78,7 @@ final class Version20260618100000_TisaxRequirementSource extends AbstractMigrati
                 INDEX idx_tlc_user   (user_id),
                 INDEX idx_tlc_confirmed_at (confirmed_at),
                 CONSTRAINT fk_tlc_tenant FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE,
-                CONSTRAINT fk_tlc_user   FOREIGN KEY (user_id)   REFERENCES user   (id) ON DELETE CASCADE
+                CONSTRAINT fk_tlc_user   FOREIGN KEY (user_id)   REFERENCES users   (id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
         );
     }

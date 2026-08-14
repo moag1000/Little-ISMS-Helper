@@ -74,7 +74,7 @@ final class Version20260706100000_answer_library extends AbstractMigration
         $this->addSql(<<<'SQL'
             ALTER TABLE answer_library_entry
                 ADD CONSTRAINT FK_ale_created_by FOREIGN KEY (created_by_id)
-                REFERENCES `user` (id) ON DELETE SET NULL
+                REFERENCES users (id) ON DELETE SET NULL
         SQL);
     }
 

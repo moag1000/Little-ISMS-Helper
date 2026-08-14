@@ -88,19 +88,19 @@ final class Version20260705100000_TransferImpactAssessment extends AbstractMigra
         $this->addSql(<<<'SQL'
             ALTER TABLE transfer_impact_assessment
                 ADD CONSTRAINT FK_tia_assessed_by FOREIGN KEY (assessed_by_id)
-                REFERENCES `user` (id) ON DELETE SET NULL
+                REFERENCES users (id) ON DELETE SET NULL
         SQL);
 
         $this->addSql(<<<'SQL'
             ALTER TABLE transfer_impact_assessment
                 ADD CONSTRAINT FK_tia_created_by FOREIGN KEY (created_by_id)
-                REFERENCES `user` (id) ON DELETE SET NULL
+                REFERENCES users (id) ON DELETE SET NULL
         SQL);
 
         $this->addSql(<<<'SQL'
             ALTER TABLE transfer_impact_assessment
                 ADD CONSTRAINT FK_tia_updated_by FOREIGN KEY (updated_by_id)
-                REFERENCES `user` (id) ON DELETE SET NULL
+                REFERENCES users (id) ON DELETE SET NULL
         SQL);
     }
 
