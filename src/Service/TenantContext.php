@@ -67,6 +67,7 @@ class TenantContext
     {
         $this->currentTenant = $tenant;
         $this->initialized = true;
+        $this->syncDoctrineFilter();
     }
 
     /**
@@ -77,6 +78,33 @@ class TenantContext
     {
         $this->currentTenant = $id !== null ? $this->tenantRepository->find($id) : null;
         $this->initialized = true;
+        $this->syncDoctrineFilter();
+    }
+
+    /**
+     * Push the active tenant into the Doctrine tenant_filter parameter.
+     *
+     * Outside of an HTTP request (cron, Messenger workers, async admin jobs)
+     * TenantFilterSubscriber never runs, so the filter parameter stays unset
+     * and TenantFilter no-ops — every repository call would then read across
+     * ALL tenants. Scheduled reports hit exactly that path. Setting the tenant
+     * must therefore also arm the filter, not just remember the entity.
+     *
+     * The 'null' sentinel mirrors TenantFilterSubscriber: no tenant means
+     * unscoped (instance-admin), not "hide everything".
+     */
+    private function syncDoctrineFilter(): void
+    {
+        $filters = $this->entityManager->getFilters();
+
+        if (!$filters->isEnabled('tenant_filter')) {
+            return;
+        }
+
+        $filters->getFilter('tenant_filter')->setParameter(
+            'tenant_id',
+            $this->currentTenant !== null ? (string) $this->currentTenant->getId() : 'null',
+        );
     }
 
     /**
