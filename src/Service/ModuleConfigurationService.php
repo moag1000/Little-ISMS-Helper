@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Service\TenantContext;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -35,7 +37,11 @@ class ModuleConfigurationService
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir
+        private readonly string $projectDir,
+        // Optional so the service stays constructible without a container
+        // (unit tests, CLI bootstrapping before a tenant exists).
+        private readonly ?TenantContext $tenantContext = null,
+        private readonly ?EntityManagerInterface $entityManager = null,
     ) {
         $this->configFile = $this->projectDir . '/config/modules.yaml';
         $this->loadConfiguration();
@@ -173,6 +179,17 @@ class ModuleConfigurationService
      */
     public function saveActiveModules(array $modules): void
     {
+        // With a tenant in context the selection belongs to that tenant only —
+        // writing the shared YAML would switch modules for every other tenant
+        // on the instance.
+        $tenant = $this->tenantContext?->getCurrentTenant();
+        if ($tenant !== null && $this->entityManager !== null) {
+            $tenant->setActiveModules(array_values($modules));
+            $this->entityManager->flush();
+
+            return;
+        }
+
         $configPath = $this->projectDir . '/config/active_modules.yaml';
 
         $data = [
@@ -192,16 +209,44 @@ class ModuleConfigurationService
     public function getActiveModules(): array
     {
         $required = array_keys($this->getRequiredModules());
-        $configPath = $this->projectDir . '/config/active_modules.yaml';
 
+        // Tenant-scoped activation wins. A tenant that never chose its own set
+        // keeps inheriting the instance default, so existing installations are
+        // unaffected until someone edits modules for that tenant.
+        $tenantModules = $this->tenantContext?->getCurrentTenant()?->getActiveModules();
+        if ($tenantModules !== null) {
+            return array_values(array_unique(array_merge($required, $tenantModules)));
+        }
+
+        return array_values(array_unique(array_merge($required, $this->getInstanceDefaultModules())));
+    }
+
+    /**
+     * Instance-wide default from config/active_modules.yaml — the fallback for
+     * tenants without their own selection, and the value the setup wizard writes
+     * before any tenant exists.
+     *
+     * @return list<string>
+     */
+    public function getInstanceDefaultModules(): array
+    {
+        $configPath = $this->projectDir . '/config/active_modules.yaml';
         if (!file_exists($configPath)) {
-            return $required;
+            return [];
         }
 
         $config = Yaml::parseFile($configPath);
-        $active = $config['active_modules'] ?? [];
 
-        return array_values(array_unique(array_merge($required, $active)));
+        return array_values($config['active_modules'] ?? []);
+    }
+
+    /**
+     * True when the current tenant has its own module selection rather than
+     * inheriting the instance default.
+     */
+    public function hasTenantOverride(): bool
+    {
+        return $this->tenantContext?->getCurrentTenant()?->getActiveModules() !== null;
     }
 
     /**

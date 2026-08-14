@@ -57,7 +57,7 @@ final class Version20260704100000_WizardManualConfirmation extends AbstractMigra
         $this->addSql(<<<'SQL'
             ALTER TABLE wizard_manual_confirmation
                 ADD CONSTRAINT FK_wizard_manual_confirmed_by FOREIGN KEY (confirmed_by_id)
-                REFERENCES `user` (id) ON DELETE SET NULL
+                REFERENCES users (id) ON DELETE SET NULL
         SQL);
     }
 

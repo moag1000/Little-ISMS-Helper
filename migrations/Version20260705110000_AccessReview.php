@@ -72,7 +72,7 @@ final class Version20260705110000_AccessReview extends AbstractMigration
         $this->addSql(<<<'SQL'
             ALTER TABLE access_review_campaign
                 ADD CONSTRAINT FK_arc_created_by FOREIGN KEY (created_by_id)
-                REFERENCES `user` (id) ON DELETE SET NULL
+                REFERENCES users (id) ON DELETE SET NULL
         SQL);
 
         // ── Per-user/role decision row ────────────────────────────────────────
@@ -113,13 +113,13 @@ final class Version20260705110000_AccessReview extends AbstractMigration
         $this->addSql(<<<'SQL'
             ALTER TABLE access_review_item
                 ADD CONSTRAINT FK_ari_subject_user FOREIGN KEY (subject_user_id)
-                REFERENCES `user` (id) ON DELETE CASCADE
+                REFERENCES users (id) ON DELETE CASCADE
         SQL);
 
         $this->addSql(<<<'SQL'
             ALTER TABLE access_review_item
                 ADD CONSTRAINT FK_ari_decided_by FOREIGN KEY (decided_by_id)
-                REFERENCES `user` (id) ON DELETE SET NULL
+                REFERENCES users (id) ON DELETE SET NULL
         SQL);
     }
 

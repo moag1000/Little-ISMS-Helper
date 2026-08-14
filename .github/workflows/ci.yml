@@ -23,6 +23,70 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  fresh-install-migrations:
+    name: Fresh-install migrations
+    runs-on: ubuntu-latest
+    # The test job builds its schema from entity metadata and marks every
+    # migration as executed, so nothing there ever runs the chain. Docker
+    # deployments do (docker/scripts/init-mysql.sh), which is how the chain
+    # silently broke: on an empty database it stopped after 146 of 219
+    # migrations. This job is the only place that proves a fresh install works.
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_DATABASE: isms_fresh
+          MARIADB_USER: isms_user
+          MARIADB_PASSWORD: isms_password
+          MARIADB_ROOT_PASSWORD: root_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, pdo, pdo_mysql, gd, zip, opcache, mbstring, xml
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Migrate an empty database
+        env:
+          DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms_fresh?serverVersion=mariadb-11.0.0&charset=utf8mb4
+          APP_ENV: prod
+          APP_SECRET: ci_secret_for_fresh_install
+        run: |
+          mysql -h 127.0.0.1 -u root -proot_password -e "DROP DATABASE IF EXISTS isms_fresh; CREATE DATABASE isms_fresh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+          mysql -h 127.0.0.1 -u root -proot_password -e "GRANT ALL PRIVILEGES ON isms_fresh.* TO 'isms_user'@'%'; FLUSH PRIVILEGES;"
+          php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+
+      - name: Chain must be complete afterwards
+        env:
+          DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms_fresh?serverVersion=mariadb-11.0.0&charset=utf8mb4
+          APP_ENV: prod
+          APP_SECRET: ci_secret_for_fresh_install
+        run: |
+          applied=$(mysql -h 127.0.0.1 -u root -proot_password -N -e "SELECT COUNT(*) FROM isms_fresh.doctrine_migration_versions;")
+          onDisk=$(find migrations -name 'Version*.php' | wc -l | tr -d ' ')
+          echo "applied=$applied on-disk=$onDisk"
+          if [ "$applied" != "$onDisk" ]; then
+            echo "::error::only $applied of $onDisk migrations applied — the fresh-install chain is broken again"
+            exit 1
+          fi
+          php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration | tee /tmp/second-run.txt
+          grep -q "Already at the latest version" /tmp/second-run.txt
+
   tests:
     name: Tests (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
@@ -522,6 +586,13 @@ jobs:
         # Registry<->match parity, framework-code collisions, competitor names in
         # catalog/mapping sources. See docs/COMPLIANCE_CATALOG_ARCHITECTURE.md.
         run: python3 scripts/quality/check_compliance_catalog.py --baseline scripts/quality/baselines/compliance_catalog.txt --quiet
+      - name: "Gate 59: FormType SectionPolicy"
+        # Builder<->getSectionMap() parity AND coverage: a FormType with more than
+        # six fields must implement SectionMapInterface. CLAUDE.md described this
+        # script as CI-gated, but nothing ran it — 30 large FormTypes (IncidentType
+        # at 45 fields) had no section map and their fields fall into the catch-all
+        # bucket. Existing offenders are baselined; new ones fail.
+        run: python3 scripts/quality/check_form_sections.py --baseline scripts/quality/baselines/form_sections.txt
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

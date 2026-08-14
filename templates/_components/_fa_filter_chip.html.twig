@@ -79,14 +79,19 @@
             {% set isActive = (idx == activeIndex) %}
             {% set chipClass = 'fa-filter-chip' ~ (isActive ? ' fa-filter-chip--active' : '') %}
 
+            {# Per-item attrs pass-through (data-* / Stimulus wiring), same
+               convention as _fa_action_bar — without it a chip group cannot be
+               hooked up to any filter behaviour. #}
+            {% set itemAttrs %}{% for k, v in item.attrs|default({}) %} {{ k }}="{{ v }}"{% endfor %}{% endset %}
+
             {% if item.href is defined and item.href %}
                 <a href="{{ item.href }}" class="{{ chipClass }}"
-                   {% if isActive %}aria-current="true"{% endif %}>
+                   {% if isActive %}aria-current="true"{% endif %}{{ itemAttrs|raw }}>
                     {{ item.label }}
                 </a>
             {% else %}
                 <button type="button" class="{{ chipClass }}"
-                        {% if isActive %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>
+                        {% if isActive %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}{{ itemAttrs|raw }}>
                     {{ item.label }}
                 </button>
             {% endif %}

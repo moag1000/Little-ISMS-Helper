@@ -9,9 +9,9 @@ use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
+use App\Service\Tisax\TisaxCatalogueProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Imports VDA ISA TISAX YAML fixtures into the DB.
@@ -28,22 +28,20 @@ final class VdaIsaImporter
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
-        #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir,
-        private readonly \App\Service\Tisax\TisaxCatalogueProvider $catalogueProvider,
+        private readonly TisaxCatalogueProvider $catalogueProvider,
     ) {
     }
 
     /**
-     * Import from the default TISAX v6 fixture path.
+     * Import the catalogue fixture for the given VDA-ISA version
+     * (ISA 6 by default; ISA 2027 is a separate, parallel catalogue).
      *
      * @return array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, skeleton_only: bool, errors: list<string>}
      */
-    public function importDefault(): array
-    {
-        $path = $this->projectDir . '/fixtures/library/frameworks/vda-isa-tisax-v6.yaml';
-
-        return $this->importYaml($path);
+    public function importDefault(
+        string $version = TisaxCatalogueProvider::VERSION_ISA6,
+    ): array {
+        return $this->importYaml($this->catalogueProvider->fixturePath($version));
     }
 
     /**
@@ -85,9 +83,20 @@ final class VdaIsaImporter
         // isSkeletonOnly()=true continues to advertise in the UI.
         $code = (string) ($meta['code'] ?? '');
         $code = TisaxRequirementMapper::LEGACY_CODE_ALIASES[$code] ?? $code;
-        if ($code === TisaxRequirementMapper::FRAMEWORK_CODE) {
+
+        // Both VDA-ISA catalogues are owned by the provider. Resolve which one
+        // this fixture is: without this, the ISA 2027 fixture would fall through
+        // to the requiresUpload skeleton branch below and create a framework row
+        // with none of its 78 control numbers seeded.
+        $catalogueVersion = match ($code) {
+            TisaxRequirementMapper::FRAMEWORK_CODE => TisaxCatalogueProvider::VERSION_ISA6,
+            'TISAX-2027'                           => TisaxCatalogueProvider::VERSION_ISA2027,
+            default                                => null,
+        };
+
+        if ($catalogueVersion !== null) {
             $existing = $this->frameworkRepository->findOneBy(['code' => $code]);
-            $r = $this->catalogueProvider->loadCatalogue(true);
+            $r = $this->catalogueProvider->loadCatalogue(true, $catalogueVersion);
             $stats['frameworks_' . ($existing === null ? 'created' : 'updated')]++;
             $stats['requirements_created'] = $r['created'];
             $stats['requirements_updated'] = $r['updated'];
@@ -140,9 +149,10 @@ final class VdaIsaImporter
      * (requiresUpload=true). In this case the BYO-Import wizard must be used
      * to populate the framework with ENX-licensed content.
      */
-    public function isSkeletonOnly(): bool
-    {
-        $path = $this->projectDir . '/fixtures/library/frameworks/vda-isa-tisax-v6.yaml';
+    public function isSkeletonOnly(
+        string $version = TisaxCatalogueProvider::VERSION_ISA6,
+    ): bool {
+        $path = $this->catalogueProvider->fixturePath($version);
         if (!file_exists($path)) {
             return false;
         }

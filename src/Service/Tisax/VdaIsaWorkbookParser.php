@@ -391,7 +391,9 @@ final class VdaIsaWorkbookParser
                         continue;
                     }
                     // "Version: 6.0.2 | 2024-04-04" / "Version: 5.1 | 04/27/2022"
-                    if (preg_match('/version[:\s]+(\d+\.\d+(?:\.\d+)?)/i', $text, $m) === 1) {
+                    // ISA 2027 dropped the dotted scheme: "Version: 2027 | 2026-07-01",
+                    // so the minor part must be optional or the version reads as null.
+                    if (preg_match('/version[:\s]+(\d+(?:\.\d+){0,2})/i', $text, $m) === 1) {
                         return $m[1];
                     }
                 }
@@ -481,10 +483,14 @@ final class VdaIsaWorkbookParser
                         if (!str_contains($text, $label)) {
                             continue;
                         }
-                        // Found a label cell — take first non-empty cell to its right.
+                        // Found a label cell — take first usable cell to its right.
+                        // Purely numeric cells are skipped: an organisation name is
+                        // never a bare number, and the blank ISA 2027 cover carries
+                        // a literal 0 next to the label, which otherwise surfaced as
+                        // the company and tripped the organisation-mismatch warning.
                         for ($j = $colIdx + 1; $j < count($cells); $j++) {
                             $value = trim((string) ($cells[$j] ?? ''));
-                            if ($value !== '') {
+                            if ($value !== '' && !is_numeric($value)) {
                                 return $value;
                             }
                         }

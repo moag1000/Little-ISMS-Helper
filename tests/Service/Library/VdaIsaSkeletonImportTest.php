@@ -40,11 +40,16 @@ final class VdaIsaSkeletonImportTest extends TestCase
 
     private function makeImporter(string $dir): VdaIsaImporter
     {
+        // The provider owns catalogue fixture paths (it serves both the ISA 6
+        // and the ISA 2027 catalogue), so the temp fixture is announced through
+        // it rather than through a project dir on the importer.
+        $this->catalogueProvider->method('fixturePath')
+            ->willReturn($dir . '/fixtures/library/frameworks/vda-isa-tisax-v6.yaml');
+
         return new VdaIsaImporter(
             $this->entityManager,
             $this->frameworkRepository,
             $this->requirementRepository,
-            $dir,
             $this->catalogueProvider,
         );
     }

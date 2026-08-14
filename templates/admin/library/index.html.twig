@@ -43,7 +43,7 @@
                                     <div class="d-flex align-items-center mb-2">
                                         <i class="fa-icon fa-icon--nav-file-earmark-text me-2" aria-hidden="true"></i>
                                         <strong>{{ lib.label }}</strong>
-                                        {% if lib.type == 'tisax' and tisax_skeleton_only %}
+                                        {% if lib.type starts with 'tisax' and tisax_skeleton_only %}
                                             <span class="badge bg-warning text-dark ms-2">
                                                 {{ 'library.status_badge.skeleton_only'|trans({}, 'library') }}
                                             </span>
@@ -53,17 +53,21 @@
                                         {{ 'library.action.file'|trans({}, 'library') }}:
                                         <code>{{ lib.filename }}.yaml</code>
                                     </p>
-                                    {% if lib.type == 'tisax' and tisax_skeleton_only %}
+                                    {% if lib.type starts with 'tisax' and tisax_skeleton_only %}
                                         <p class="text-muted small mb-2">
                                             <i class="fa-icon fa-icon--nav-shield-lock me-1" aria-hidden="true"></i>
                                             {{ 'library.tisax.skeleton_hint'|trans({}, 'library') }}
                                         </p>
                                         <a href="{{ path('app_tisax_import_disclaimer', { _locale: app.request.locale }) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
+                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary mb-2">
                                             <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                                             {{ 'library.action.open_byo_wizard'|trans({}, 'library') }}
                                         </a>
-                                    {% elseif is_granted('ROLE_SUPER_ADMIN') %}
+                                    {% endif %}
+                                    {# Seeding the control-number baseline stays available for skeleton
+                                       catalogues too — it is what the load command does, and hiding it
+                                       would leave the VDA-ISA catalogues CLI-only. #}
+                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
                                         <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
                                             <input type="hidden" name="_token" value="{{ csrf_token('admin_library_import_' ~ lib.type) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
@@ -85,6 +89,15 @@
             {% endif %}
         </div>
     </section>
+
+    {# Result of the last import — set by the POST action, shown once after the redirect #}
+    {% if import_result %}
+        {% include 'admin/library/_import_result.html.twig' with {
+            stats: import_result.stats,
+            type: import_result.type,
+            has_errors: import_result.has_errors,
+        } only %}
+    {% endif %}
 
     {# Imported Frameworks #}
     <section class="fa-section">

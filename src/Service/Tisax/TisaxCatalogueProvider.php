@@ -40,8 +40,24 @@ class TisaxCatalogueProvider
         'data_protection'      => 'Data Protection',
     ];
 
-    /** @var array<string, mixed>|null lazily-parsed YAML cache */
-    private ?array $yaml = null;
+    /** VDA-ISA 6.x catalogue — the long-standing default. */
+    public const VERSION_ISA6 = '6';
+
+    /** VDA-ISA 2027 catalogue — certifiable in parallel with ISA 6. */
+    public const VERSION_ISA2027 = '2027';
+
+    /**
+     * Catalogue fixture per version. Both versions stay live: ENX certifies
+     * against ISA 6 and ISA 2027 at the same time, so they are separate
+     * frameworks rather than one superseding the other.
+     */
+    private const FIXTURES = [
+        self::VERSION_ISA6     => 'fixtures/library/frameworks/vda-isa-tisax-v6.yaml',
+        self::VERSION_ISA2027  => 'fixtures/library/frameworks/vda-isa-tisax-2027.yaml',
+    ];
+
+    /** @var array<string, array<string, mixed>> lazily-parsed YAML cache, keyed by version */
+    private array $yaml = [];
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -56,9 +72,9 @@ class TisaxCatalogueProvider
      *
      * @return array{code:string, name:string, version:string, description:string, body:string}
      */
-    public function getMetadata(): array
+    public function getMetadata(string $version = self::VERSION_ISA6): array
     {
-        $meta = $this->yaml()['metadata'] ?? [];
+        $meta = $this->yaml($version)['metadata'] ?? [];
         return [
             'code'        => (string) ($meta['code'] ?? TisaxRequirementMapper::FRAMEWORK_CODE),
             'name'        => (string) ($meta['name'] ?? 'TISAX (VDA-ISA 6.0)'),
@@ -73,12 +89,15 @@ class TisaxCatalogueProvider
      * Idempotent. Resolves the legacy 'TISAX-VDA-ISA-6' alias to canonical.
      * Does NOT seed requirements — use loadCatalogue() for that.
      */
-    public function upsertFramework(): ComplianceFramework
+    public function upsertFramework(string $version = self::VERSION_ISA6): ComplianceFramework
     {
-        $meta = $this->getMetadata();
+        $version = self::normaliseVersion($version);
+        $meta = $this->getMetadata($version);
 
         $framework = $this->frameworkRepository->findOneBy(['code' => $meta['code']]);
-        if ($framework === null) {
+        // Legacy aliases only ever referred to the ISA 6 catalogue — never
+        // resolve an ISA 2027 lookup onto the old ISA 6 framework row.
+        if ($framework === null && $version === self::VERSION_ISA6) {
             foreach (array_keys(TisaxRequirementMapper::LEGACY_CODE_ALIASES) as $legacyCode) {
                 $framework = $this->frameworkRepository->findOneBy(['code' => $legacyCode]);
                 if ($framework !== null) {
@@ -99,7 +118,10 @@ class TisaxCatalogueProvider
             ->setApplicableIndustry('automotive')
             ->setRegulatoryBody($meta['body'])
             ->setMandatory(false)
-            ->setScopeDescription('VDA-ISA 6.0 — Information Security, Prototype Protection, Data Protection')
+            ->setScopeDescription(sprintf(
+                'VDA-ISA %s — Information Security, Prototype Protection, Data Protection',
+                $meta['version'],
+            ))
             ->setActive(true);
 
         if ($isNew) {
@@ -118,10 +140,11 @@ class TisaxCatalogueProvider
      *
      * @return array{framework: ComplianceFramework, created:int, updated:int, skipped:int, total:int}
      */
-    public function loadCatalogue(bool $update = false): array
+    public function loadCatalogue(bool $update = false, string $version = self::VERSION_ISA6): array
     {
-        $framework = $this->upsertFramework();
-        $requirements = $this->yaml()['requirements'] ?? [];
+        $version = self::normaliseVersion($version);
+        $framework = $this->upsertFramework($version);
+        $requirements = $this->yaml($version)['requirements'] ?? [];
 
         $created = 0;
         $updated = 0;
@@ -191,13 +214,61 @@ class TisaxCatalogueProvider
         ];
     }
 
-    /** @return array<string, mixed> */
-    private function yaml(): array
+    /**
+     * Catalogue versions this provider can serve, newest first.
+     *
+     * @return list<string>
+     */
+    public static function availableVersions(): array
     {
-        if ($this->yaml === null) {
-            $path = $this->projectDir . '/fixtures/library/frameworks/vda-isa-tisax-v6.yaml';
-            $this->yaml = is_file($path) ? (Yaml::parseFile($path) ?: []) : [];
+        return [self::VERSION_ISA2027, self::VERSION_ISA6];
+    }
+
+    /**
+     * Normalise a caller-supplied version to a known catalogue version.
+     * Accepts '6', '6.0', '6.0.3', '2027' — anything else falls back to ISA 6
+     * so an unexpected value can never silently address the wrong catalogue.
+     */
+    public static function normaliseVersion(?string $version): string
+    {
+        if ($version === null || $version === '') {
+            return self::VERSION_ISA6;
         }
-        return $this->yaml;
+        if (str_starts_with($version, self::VERSION_ISA2027)) {
+            return self::VERSION_ISA2027;
+        }
+
+        return self::VERSION_ISA6;
+    }
+
+    /**
+     * Number of controls the given catalogue version ships (80 for ISA 6,
+     * 78 for ISA 2027). Used to tell the user what a complete workbook of
+     * their version looks like instead of quoting the ISA 6 size for both.
+     */
+    public function catalogueSize(string $version = self::VERSION_ISA6): int
+    {
+        return count($this->yaml($version)['requirements'] ?? []);
+    }
+
+    /**
+     * Absolute path of the catalogue fixture for a version — the single place
+     * that knows where a VDA-ISA catalogue lives.
+     */
+    public function fixturePath(string $version = self::VERSION_ISA6): string
+    {
+        return $this->projectDir . '/' . self::FIXTURES[self::normaliseVersion($version)];
+    }
+
+    /** @return array<string, mixed> */
+    private function yaml(string $version = self::VERSION_ISA6): array
+    {
+        $version = self::normaliseVersion($version);
+        if (!isset($this->yaml[$version])) {
+            $path = $this->projectDir . '/' . self::FIXTURES[$version];
+            $this->yaml[$version] = is_file($path) ? (Yaml::parseFile($path) ?: []) : [];
+        }
+
+        return $this->yaml[$version];
     }
 }

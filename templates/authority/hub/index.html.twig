@@ -55,17 +55,20 @@
 
         {# ── Country filter chips ──────────────────────────────────────────────── #}
         <div class="mb-4">
-            {{ _fa_filter_chip.render({
-                id: 'country-filter',
-                label: 'eu_authorities.hub.filter.country'|trans,
-                chips: [
-                    { label: 'Alle', value: '', active: true },
-                    { label: 'DE',   value: 'DE' },
-                    { label: 'EU',   value: 'EU' },
-                    { label: 'AT',   value: 'AT' },
-                    { label: 'CH',   value: 'CH' }
-                ]
-            }) }}
+            {# render() takes (label, props) — passing a map as the label printed an
+               array and killed the page. The chip set is a group(), and each chip
+               carries the data-attributes the filter script below looks for. #}
+            {{ _fa_filter_chip.group(
+                [
+                    { label: 'Alle', attrs: { 'data-country-filter-chip': '', 'data-value': '' } },
+                    { label: 'DE',   attrs: { 'data-country-filter-chip': '', 'data-value': 'DE' } },
+                    { label: 'EU',   attrs: { 'data-country-filter-chip': '', 'data-value': 'EU' } },
+                    { label: 'AT',   attrs: { 'data-country-filter-chip': '', 'data-value': 'AT' } },
+                    { label: 'CH',   attrs: { 'data-country-filter-chip': '', 'data-value': 'CH' } }
+                ],
+                0,
+                { ariaLabel: 'eu_authorities.hub.filter.country'|trans }
+            ) }}
         </div>
 
         {# ── Obligation cards grid ─────────────────────────────────────────────── #}
@@ -144,8 +147,13 @@ document.addEventListener('turbo:load', function () {
     chips.forEach(function (chip) {
         chip.addEventListener('click', function () {
             const country = chip.dataset.value;
-            chips.forEach(function (c) { c.classList.remove('active'); });
-            chip.classList.add('active');
+            // Aurora chip state class — plain 'active' has no styling in the DS.
+            chips.forEach(function (c) {
+                c.classList.remove('fa-filter-chip--active');
+                c.setAttribute('aria-pressed', 'false');
+            });
+            chip.classList.add('fa-filter-chip--active');
+            chip.setAttribute('aria-pressed', 'true');
 
             cards.forEach(function (card) {
                 if (!country || card.dataset.country === country) {

@@ -800,6 +800,8 @@ admin:
             last_counts: '%orphans% orphans, %duplicates% duplicate groups, %broken% broken references — health score %health%'
             never_run: 'Has never run. The banner will show a summary after the first run.'
     modules:
+        scope_hint: 'This module selection applies to the organization "%tenant%" only. Other organizations are unaffected.'
+        scope_inherited: 'still follows the instance default'
         title: Title
         dependency_graph: 'Dependency Graph'
         stats:

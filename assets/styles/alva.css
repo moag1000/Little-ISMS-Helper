@@ -1,5 +1,7 @@
 /*
- * FairyAurora v3.0 — Alva Character CSS (9 Moods, Animations, Decorations)
+ * FairyAurora v4 — Alva Character CSS (9 Moods, Animations, Decorations)
+ * Figur v2 (Design-System 2026-07): irisierende Flügel, Diadem, sichtbare
+ * Arme mit gehaltenem Stab, Kontakt-Glow, Feenstaub.
  *
  * Geladen durch assets/styles.css. Nutzt ausschließlich CSS-Custom-Properties
  * aus fairy-aurora.css (keine Hex-Farben, außer zwei Confetti/Blush-Pink).
@@ -17,8 +19,46 @@
     display: inline-block;
     position: relative;
     line-height: 0;
+
+    /* Pro-Mood-Geometrie — im React-Original (FairyCharacter.jsx v2) aus dem
+       mood-Prop gerechnet. Hier als Custom-Property, damit der Dock-Controller
+       den Mood weiterhin per Klassentausch wechseln kann.
+         --alva-arm-rot / --alva-arm-scale  → Handposition (Drehung + Stauchung
+                                              des Arms um die Schulter 56.6/55.6)
+         --alva-wand-rot                    → Stab-Pose um die Hand
+         --alva-dust                        → Anzahl sichtbarer Feenstaub-Partikel
+         --alva-mood-color                  → Mood-Tint (Glow, Scanline, Staub) */
+    --alva-mood-color: var(--fairy-aura);
+    --alva-arm-rot: 0deg;
+    --alva-arm-scale: 1;
+    --alva-wand-rot: -12deg;
 }
 .fa-alva svg { width: 100%; height: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Pro-Mood-Geometrie + Mood-Tint
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva--thinking    { --alva-mood-color: var(--primary);           --alva-arm-rot: -2.43deg; --alva-arm-scale: 1.041; --alva-wand-rot: -4deg; }
+.fa-alva--working     { --alva-mood-color: var(--accent);            --alva-arm-rot: -1.95deg; --alva-arm-scale: 1.016; --alva-wand-rot: -6deg; }
+.fa-alva--focused     { --alva-mood-color: var(--primary);           --alva-arm-rot: 2.64deg;  --alva-arm-scale: 0.960; --alva-wand-rot: -20deg; }
+.fa-alva--scanning    { --alva-mood-color: var(--info);              --alva-arm-rot: 2.64deg;  --alva-arm-scale: 0.960; --alva-wand-rot: -24deg; }
+.fa-alva--happy       { --alva-mood-color: var(--accent);            --alva-arm-rot: 7.76deg;  --alva-arm-scale: 0.911; --alva-wand-rot: -30deg; }
+.fa-alva--warning     { --alva-mood-color: var(--warning);           --alva-arm-rot: 8.59deg;  --alva-arm-scale: 0.888; --alva-wand-rot: -34deg; }
+.fa-alva--celebrating { --alva-mood-color: var(--alva-celebrating);  --alva-arm-rot: 16.63deg; --alva-arm-scale: 0.805; --alva-wand-rot: -48deg; }
+.fa-alva--sleeping    { --alva-mood-color: var(--fairy-aura); }
+
+.fa-alva__armwand {
+    transform: rotate(var(--alva-arm-rot)) scale(var(--alva-arm-scale));
+}
+.fa-alva__wand {
+    transform: rotate(var(--alva-wand-rot));
+}
+
+/* Schlafend: Stab abgelegt, Arm ruht am Körper */
+.fa-alva__arm-rest { display: none; }
+.fa-alva--sleeping .fa-alva__armwand { display: none; }
+.fa-alva--sleeping .fa-alva__arm-rest { display: block; }
 
 /* ═══════════════════════════════════════════════════════════════════
    Face-Visibility (9 Moods) — alle rendern, CSS zeigt eine
@@ -54,8 +94,39 @@
 .fa-alva__scan { display: none; }
 .fa-alva--scanning .fa-alva__scan { display: block; animation: fa-alva-scan 1.8s linear infinite; }
 
-/* Wand bei sleeping versteckt */
-.fa-alva--sleeping .fa-alva__wand { display: none; }
+/* ═══════════════════════════════════════════════════════════════════
+   Compact (< 48px) — Silhouette statt Feindetail
+   Sub-Pixel-Konturen (0.35–0.6) verschmieren bei form-hint/alert-inline-
+   Größen zu Grau. Das Macro setzt .fa-alva--compact ab size < 48.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva--compact .fa-alva__veins,
+.fa-alva--compact .fa-alva__rim,
+.fa-alva--compact .fa-alva__strand,
+.fa-alva--compact .fa-alva__detail,
+.fa-alva--compact .fa-alva__shimmer,
+.fa-alva--compact .fa-alva__dust,
+.fa-alva--compact .fa-alva__wand-spark,
+.fa-alva--compact .fa-alva__contact,
+.fa-alva--compact .fa-alva__wingtip { display: none; }
+
+/* Die tragenden Linien dicker, damit sie bei 24–30px noch lesen */
+.fa-alva--compact .fa-alva__face path,
+.fa-alva--compact .fa-alva__face line { stroke-width: 1.4; }
+.fa-alva--compact .fa-alva__gem { opacity: 0.5; }
+
+/* Feenstaub — Anzahl pro Mood (die 10 Partikel sind immer im Markup) */
+.fa-alva__dust-particle { animation: fa-alva-dust 3.2s ease-in-out infinite; }
+
+.fa-alva--warning     .fa-alva__dust-particle              { display: none; }
+.fa-alva--sleeping    .fa-alva__dust-particle:nth-child(n+3)  { display: none; }
+.fa-alva--thinking    .fa-alva__dust-particle:nth-child(n+4)  { display: none; }
+.fa-alva--focused     .fa-alva__dust-particle:nth-child(n+4)  { display: none; }
+.fa-alva--scanning    .fa-alva__dust-particle:nth-child(n+5)  { display: none; }
+.fa-alva--idle        .fa-alva__dust-particle:nth-child(n+6)  { display: none; }
+.fa-alva--working     .fa-alva__dust-particle:nth-child(n+6)  { display: none; }
+.fa-alva--happy       .fa-alva__dust-particle:nth-child(n+9)  { display: none; }
+/* celebrating zeigt alle zehn */
 
 /* ═══════════════════════════════════════════════════════════════════
    Aura-Color-Tokens per Mood (radialGradient <stop>-class-basiert)
@@ -73,8 +144,9 @@
 .fa-alva--focused    .fa-alva__aura-mid   { stop-color: var(--primary);  stop-opacity: 0.195; }
 .fa-alva--focused    .fa-alva__aura-outer { stop-color: var(--primary);  stop-opacity: 0; }
 
-.fa-alva--scanning   .fa-alva__aura-inner { stop-color: var(--fairy-aura); stop-opacity: 0.7; }
-.fa-alva--scanning   .fa-alva__aura-mid   { stop-color: var(--fairy-aura); stop-opacity: 0.21; }
+.fa-alva--scanning   .fa-alva__aura-inner { stop-color: var(--info); stop-opacity: 0.7; }
+.fa-alva--scanning   .fa-alva__aura-mid   { stop-color: var(--info); stop-opacity: 0.21; }
+.fa-alva--scanning   .fa-alva__aura-outer { stop-color: var(--info); stop-opacity: 0; }
 
 .fa-alva--warning    .fa-alva__aura-inner { stop-color: var(--warning);  stop-opacity: 0.75; }
 .fa-alva--warning    .fa-alva__aura-mid   { stop-color: var(--warning);  stop-opacity: 0.225; }
@@ -162,10 +234,49 @@
    Wand-Halo-Pulse
    ═══════════════════════════════════════════════════════════════════ */
 
-.fa-alva--celebrating .fa-alva__wand-halo { animation: fa-alva-wand-pop   0.5s ease-in-out infinite; }
-.fa-alva--warning     .fa-alva__wand-halo { animation: fa-alva-wand-alert 0.6s ease-in-out infinite; }
+.fa-alva__wand-halo { animation: fa-alva-wand-idle 3.2s ease-in-out infinite; }
+.fa-alva--celebrating .fa-alva__wand-halo { animation: fa-alva-wand-pop   0.6s  ease-in-out infinite; }
+.fa-alva--warning     .fa-alva__wand-halo { animation: fa-alva-wand-alert 0.72s ease-in-out infinite; }
+@keyframes fa-alva-wand-idle  { 0%,100% { transform: scale(1); opacity: 0.24; } 50% { transform: scale(1.25); opacity: 0.4; } }
 @keyframes fa-alva-wand-pop   { 0%,100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(2);   opacity: 0.6; } }
 @keyframes fa-alva-wand-alert { 0%,100% { transform: scale(1); opacity: 0.3; }  50% { transform: scale(1.4); opacity: 0.7; } }
+
+/* Funkenschweif unterhalb der Stabspitze */
+.fa-alva__wand-spark     { animation: fa-alva-dust 2.4s ease-in-out infinite; }
+.fa-alva__wand-spark--2  { animation-delay: 0.5s; }
+.fa-alva__wand-spark--3  { animation-delay: 1s; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Figur-v2-Details: Kontakt-Glow, Shimmer, Flügelspitzen, Diadem, Augen
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva__contact { transform-origin: 60px 103px; animation: fa-alva-shadow 3.6s ease-in-out infinite; }
+
+.fa-alva__shimmer { animation: fa-alva-shimmer 4.4s ease-in-out infinite; }
+.fa-alva--sleeping .fa-alva__shimmer { animation: none; }
+
+.fa-alva__wingtip     { animation: fa-alva-tip 2.6s ease-in-out infinite; }
+.fa-alva__wingtip--r  { animation-delay: 0.4s; }
+
+.fa-alva__gem { animation: fa-alva-gem 2.8s ease-in-out infinite; }
+
+/* Blinzeln — nur die Moods mit offenen Iris-Augen tragen .fa-alva__eye */
+.fa-alva__eye      { animation: fa-alva-eyeblink 7.2s infinite; }
+.fa-alva__eye--r   { animation-duration: 7.6s; }
+
+.fa-alva__scan-ring     { animation: fa-alva-gem 1.6s ease-in-out infinite; }
+.fa-alva__scan-ring--r  { animation-delay: 0.3s; }
+
+@keyframes fa-alva-shadow   { 0%,100% { transform: scaleX(1); opacity: 0.2; } 50% { transform: scaleX(0.88); opacity: 0.13; } }
+@keyframes fa-alva-shimmer  { 0% { transform: translateX(0); } 55%,100% { transform: translateX(190px); } }
+@keyframes fa-alva-tip      { 0%,100% { opacity: 0.4; r: 1; }   50% { opacity: 1; r: 1.5; } }
+@keyframes fa-alva-gem      { 0%,100% { transform: scale(1); opacity: 0.28; } 50% { transform: scale(1.5); opacity: 0.55; } }
+@keyframes fa-alva-eyeblink { 0%,92%,100% { transform: scaleY(1); } 95% { transform: scaleY(0.12); } }
+@keyframes fa-alva-dust {
+    0%   { opacity: 0; transform: translateY(3px) scale(0.6); }
+    45%  { opacity: 0.9; transform: translateY(-2px) scale(1); }
+    100% { opacity: 0; transform: translateY(-7px) scale(0.5); }
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    Scan-Line (scanning mood)

@@ -83,6 +83,16 @@ class Tenant
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $settings = null;
 
+    /**
+     * Per-tenant module activation. NULL means "inherit the instance default"
+     * from config/active_modules.yaml, which is what every tenant did before
+     * modules became tenant-scoped.
+     *
+     * @var list<string>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Active module keys for this tenant; NULL = inherit instance default'])]
+    private ?array $activeModules = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logoPath = null;
 
@@ -979,4 +989,22 @@ class Tenant
 
     public function getApiRateLimitPerMinute(): ?int { return $this->apiRateLimitPerMinute; }
     public function setApiRateLimitPerMinute(?int $limit): static { $this->apiRateLimitPerMinute = $limit; return $this; }
+
+    /**
+     * @return list<string>|null NULL = inherit the instance default
+     */
+    public function getActiveModules(): ?array
+    {
+        return $this->activeModules;
+    }
+
+    /**
+     * @param list<string>|null $activeModules NULL restores inheritance of the instance default
+     */
+    public function setActiveModules(?array $activeModules): static
+    {
+        $this->activeModules = $activeModules === null ? null : array_values(array_unique($activeModules));
+
+        return $this;
+    }
 }

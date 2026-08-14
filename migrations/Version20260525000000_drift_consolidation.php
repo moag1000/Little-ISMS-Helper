@@ -59,6 +59,74 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
     }
 
     /**
+     * All foreign keys pointing AT the given table, with everything needed to
+     * re-create them. MySQL refuses to CHANGE a referenced column while any of
+     * them exist (error 1833).
+     *
+     * @return list<array{name: string, table: string, column: string, ref_column: string, on_delete: string, is_nullable: string}>
+     */
+    private function incomingForeignKeys(string $referencedTable): array
+    {
+        /** @var list<array{name: string, table: string, column: string, ref_column: string, on_delete: string, is_nullable: string}> $rows */
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT k.CONSTRAINT_NAME AS name, k.TABLE_NAME AS `table`, k.COLUMN_NAME AS `column`,
+                    k.REFERENCED_COLUMN_NAME AS ref_column, r.DELETE_RULE AS on_delete,
+                    c.IS_NULLABLE AS is_nullable
+               FROM information_schema.KEY_COLUMN_USAGE k
+               JOIN information_schema.REFERENTIAL_CONSTRAINTS r
+                 ON r.CONSTRAINT_NAME = k.CONSTRAINT_NAME
+                AND r.CONSTRAINT_SCHEMA = k.TABLE_SCHEMA
+               JOIN information_schema.COLUMNS c
+                 ON c.TABLE_SCHEMA = k.TABLE_SCHEMA AND c.TABLE_NAME = k.TABLE_NAME
+                AND c.COLUMN_NAME = k.COLUMN_NAME
+              WHERE k.TABLE_SCHEMA = DATABASE()
+                AND k.REFERENCED_TABLE_NAME = ?",
+            [$referencedTable]
+        );
+
+        return $rows;
+    }
+
+    /**
+     * True when the index is the only one supporting a foreign key column on
+     * that table. MySQL refuses to drop such an index ("error 1553"), so the
+     * stale-index cleanup below has to leave it in place — a redundant index is
+     * harmless, an aborted migration chain is not.
+     */
+    private function indexRequiredByForeignKey(string $table, string $indexName): bool
+    {
+        $fkColumns = $this->connection->fetchFirstColumn(
+            "SELECT DISTINCT COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?
+                AND REFERENCED_TABLE_NAME IS NOT NULL",
+            [$table]
+        );
+        if ($fkColumns === []) {
+            return false;
+        }
+
+        $firstColumn = $this->connection->fetchOne(
+            "SELECT COLUMN_NAME FROM information_schema.STATISTICS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?
+                AND SEQ_IN_INDEX = 1",
+            [$table, $indexName]
+        );
+        if ($firstColumn === false || !in_array($firstColumn, $fkColumns, true)) {
+            return false;
+        }
+
+        // Another index leading with the same column can take over.
+        $alternatives = (int) $this->connection->fetchOne(
+            "SELECT COUNT(*) FROM information_schema.STATISTICS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND SEQ_IN_INDEX = 1
+                AND COLUMN_NAME = ? AND INDEX_NAME <> ?",
+            [$table, $firstColumn, $indexName]
+        );
+
+        return $alternatives === 0;
+    }
+
+    /**
      * Check if an index exists directly via information_schema.
      */
     private function indexExists(string $table, string $indexName): bool
@@ -115,6 +183,25 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
             if ($this->fkExists('document_version', 'fk_docver_replaced_by')) {
                 $this->addSql('ALTER TABLE document_version DROP FOREIGN KEY `fk_docver_replaced_by`');
             }
+            // Every INCOMING foreign key to document_version blocks the id CHANGE
+            // below with MySQL error 1833, not just the self-reference. On a fresh
+            // database that is document.current_version_id and
+            // evidence_reverification_task.document_version_id — enumerate them
+            // instead of naming them, so a future referencing table cannot break
+            // the chain again. document is re-added by section 5 under its
+            // Doctrine name; the rest are restored here verbatim.
+            $incoming = $this->incomingForeignKeys('document_version');
+            foreach ($incoming as $fk) {
+                // The self-reference is dropped by the branch above already.
+                if ($fk['name'] === 'fk_docver_replaced_by') {
+                    continue;
+                }
+                $this->addSql(sprintf(
+                    'ALTER TABLE %s DROP FOREIGN KEY `%s`',
+                    $fk['table'],
+                    $fk['name']
+                ));
+            }
             $this->addSql('ALTER TABLE document_version CHANGE id id INT AUTO_INCREMENT NOT NULL, CHANGE version_number version_number INT UNSIGNED NOT NULL, CHANGE file_size file_size INT UNSIGNED NOT NULL, CHANGE uploaded_at uploaded_at DATETIME NOT NULL, CHANGE published_at published_at DATETIME DEFAULT NULL, CHANGE retention_until retention_until DATETIME DEFAULT NULL, CHANGE replaced_by_id replaced_by_id INT DEFAULT NULL');
             if ($this->indexExists('document_version', 'fk_docver_uploaded_by')) {
                 $this->addSql('ALTER TABLE document_version RENAME INDEX fk_docver_uploaded_by TO IDX_1B73751FA2B28FE8');
@@ -124,6 +211,32 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
             }
             // Re-add self-FK with Doctrine name
             $this->addSql('ALTER TABLE document_version ADD CONSTRAINT FK_1B73751F9AC69B54 FOREIGN KEY IF NOT EXISTS (replaced_by_id) REFERENCES document_version (id) ON DELETE SET NULL');
+
+            // Restore the other incoming constraints exactly as they were.
+            // 'document' and the self-reference are handled by their own sections.
+            foreach ($incoming as $fk) {
+                if (in_array($fk['table'], ['document', 'document_version'], true)) {
+                    continue;
+                }
+                // The CHANGE above turned document_version.id from INT UNSIGNED
+                // into a plain signed INT. A referencing column that is still
+                // UNSIGNED makes the FK "incorrectly formed" (errno 150), so it
+                // has to follow the referenced type.
+                $this->addSql(sprintf(
+                    'ALTER TABLE %s MODIFY %s INT %s',
+                    $fk['table'],
+                    $fk['column'],
+                    $fk['is_nullable'] === 'YES' ? 'DEFAULT NULL' : 'NOT NULL'
+                ));
+                $this->addSql(sprintf(
+                    'ALTER TABLE %s ADD CONSTRAINT `%s` FOREIGN KEY IF NOT EXISTS (%s) REFERENCES document_version (%s) ON DELETE %s',
+                    $fk['table'],
+                    $fk['name'],
+                    $fk['column'],
+                    $fk['ref_column'],
+                    $fk['on_delete']
+                ));
+            }
         }
 
         // =========================================================
@@ -131,9 +244,8 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
         //    Requires document_version.id to be plain INT (done in section 4)
         // =========================================================
         if ($schema->hasTable('document')) {
-            if ($this->fkExists('document', 'fk_doc_current_version')) {
-                $this->addSql('ALTER TABLE document DROP FOREIGN KEY `fk_doc_current_version`');
-            }
+            // The incoming-FK sweep in section 4 already dropped this constraint —
+            // dropping it again here would abort with "check that it exists".
             $this->addSql('ALTER TABLE document CHANGE current_version_id current_version_id INT DEFAULT NULL');
             if ($this->indexExists('document', 'fk_doc_current_version')) {
                 $this->addSql('ALTER TABLE document RENAME INDEX fk_doc_current_version TO IDX_D8698A769407EE77');
@@ -144,33 +256,40 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
         // =========================================================
         // 6. DROP stale indexes — compliance_mapping
         // =========================================================
-        if ($this->indexExists('compliance_mapping', 'idx_cm_source')) {
+        if ($this->indexExists('compliance_mapping', 'idx_cm_source')
+                && !$this->indexRequiredByForeignKey('compliance_mapping', 'idx_cm_source')) {
             $this->addSql('DROP INDEX idx_cm_source ON compliance_mapping');
         }
-        if ($this->indexExists('compliance_mapping', 'idx_cm_valid')) {
+        if ($this->indexExists('compliance_mapping', 'idx_cm_valid')
+                && !$this->indexRequiredByForeignKey('compliance_mapping', 'idx_cm_valid')) {
             $this->addSql('DROP INDEX idx_cm_valid ON compliance_mapping');
         }
 
         // =========================================================
         // 7. DROP stale indexes — internal_audit
         // =========================================================
-        if ($this->indexExists('internal_audit', 'idx_audit_parent')) {
+        if ($this->indexExists('internal_audit', 'idx_audit_parent')
+                && !$this->indexRequiredByForeignKey('internal_audit', 'idx_audit_parent')) {
             $this->addSql('DROP INDEX idx_audit_parent ON internal_audit');
         }
-        if ($this->indexExists('internal_audit', 'idx_internal_audit_lead_auditor_user')) {
+        if ($this->indexExists('internal_audit', 'idx_internal_audit_lead_auditor_user')
+                && !$this->indexRequiredByForeignKey('internal_audit', 'idx_internal_audit_lead_auditor_user')) {
             $this->addSql('DROP INDEX idx_internal_audit_lead_auditor_user ON internal_audit');
         }
-        if ($this->indexExists('internal_audit', 'idx_internal_audit_lead_auditor_person')) {
+        if ($this->indexExists('internal_audit', 'idx_internal_audit_lead_auditor_person')
+                && !$this->indexRequiredByForeignKey('internal_audit', 'idx_internal_audit_lead_auditor_person')) {
             $this->addSql('DROP INDEX idx_internal_audit_lead_auditor_person ON internal_audit');
         }
 
         // =========================================================
         // 8. bc_exercise — drop stale indexes + rename remaining
         // =========================================================
-        if ($this->indexExists('bc_exercise', 'idx_bc_exercise_leader_user')) {
+        if ($this->indexExists('bc_exercise', 'idx_bc_exercise_leader_user')
+                && !$this->indexRequiredByForeignKey('bc_exercise', 'idx_bc_exercise_leader_user')) {
             $this->addSql('DROP INDEX idx_bc_exercise_leader_user ON bc_exercise');
         }
-        if ($this->indexExists('bc_exercise', 'idx_bc_exercise_leader_person')) {
+        if ($this->indexExists('bc_exercise', 'idx_bc_exercise_leader_person')
+                && !$this->indexRequiredByForeignKey('bc_exercise', 'idx_bc_exercise_leader_person')) {
             $this->addSql('DROP INDEX idx_bc_exercise_leader_person ON bc_exercise');
         }
         if ($this->indexExists('bc_exercise', 'idx_bc_exercise_facilitator_user')) {
@@ -311,10 +430,12 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
         // =========================================================
         if ($schema->hasTable('supplier')) {
             $this->addSql('ALTER TABLE supplier CHANGE is_dora_relevant is_dora_relevant TINYINT NOT NULL');
-            if ($this->indexExists('supplier', 'idx_supplier_ict_criticality')) {
+            if ($this->indexExists('supplier', 'idx_supplier_ict_criticality')
+                    && !$this->indexRequiredByForeignKey('supplier', 'idx_supplier_ict_criticality')) {
                 $this->addSql('DROP INDEX idx_supplier_ict_criticality ON supplier');
             }
-            if ($this->indexExists('supplier', 'idx_supplier_gdpr_processor_status')) {
+            if ($this->indexExists('supplier', 'idx_supplier_gdpr_processor_status')
+                    && !$this->indexRequiredByForeignKey('supplier', 'idx_supplier_gdpr_processor_status')) {
                 $this->addSql('DROP INDEX idx_supplier_gdpr_processor_status ON supplier');
             }
         }
@@ -339,7 +460,8 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
         // =========================================================
         // 21. workflow_instances — DROP stale index
         // =========================================================
-        if ($this->indexExists('workflow_instances', 'idx_workflow_instances_witness_user')) {
+        if ($this->indexExists('workflow_instances', 'idx_workflow_instances_witness_user')
+                && !$this->indexRequiredByForeignKey('workflow_instances', 'idx_workflow_instances_witness_user')) {
             $this->addSql('DROP INDEX idx_workflow_instances_witness_user ON workflow_instances');
         }
 

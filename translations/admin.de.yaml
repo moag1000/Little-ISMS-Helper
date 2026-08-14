@@ -816,6 +816,8 @@ admin:
             last_counts: '%orphans% Orphans, %duplicates% Duplikat-Gruppen, %broken% defekte Referenzen — Health-Score %health%'
             never_run: 'Noch nie ausgeführt. Der Banner zeigt nach dem ersten Lauf eine Zusammenfassung.'
     modules:
+        scope_hint: 'Diese Modul-Auswahl gilt nur für die Organisation „%tenant%". Andere Organisationen sind nicht betroffen.'
+        scope_inherited: 'folgt noch der Instanz-Voreinstellung'
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph
         stats:

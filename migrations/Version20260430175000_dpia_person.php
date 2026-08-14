@@ -44,32 +44,32 @@ final class Version20260430175000_dpia_person extends AbstractMigration
     public function up(Schema $schema): void
     {
         // DPO Person slot
-        $this->addSql('ALTER TABLE data_protection_impact_assessment ADD data_protection_officer_person_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE data_protection_impact_assessment ADD COLUMN IF NOT EXISTS data_protection_officer_person_id INT DEFAULT NULL');
         $this->addSql(
             'ALTER TABLE data_protection_impact_assessment ADD CONSTRAINT fk_dpia_dpo_person '
-            . 'FOREIGN KEY (data_protection_officer_person_id) REFERENCES person (id) ON DELETE SET NULL'
+            . 'FOREIGN KEY IF NOT EXISTS (data_protection_officer_person_id) REFERENCES person (id) ON DELETE SET NULL'
         );
-        $this->addSql('CREATE INDEX idx_dpia_dpo_person ON data_protection_impact_assessment (data_protection_officer_person_id)');
+        $this->addSql('CREATE INDEX IF NOT EXISTS idx_dpia_dpo_person ON data_protection_impact_assessment (data_protection_officer_person_id)');
 
         // Conductor Person slot
-        $this->addSql('ALTER TABLE data_protection_impact_assessment ADD conductor_person_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE data_protection_impact_assessment ADD COLUMN IF NOT EXISTS conductor_person_id INT DEFAULT NULL');
         $this->addSql(
             'ALTER TABLE data_protection_impact_assessment ADD CONSTRAINT fk_dpia_conductor_person '
-            . 'FOREIGN KEY (conductor_person_id) REFERENCES person (id) ON DELETE SET NULL'
+            . 'FOREIGN KEY IF NOT EXISTS (conductor_person_id) REFERENCES person (id) ON DELETE SET NULL'
         );
-        $this->addSql('CREATE INDEX idx_dpia_conductor_person ON data_protection_impact_assessment (conductor_person_id)');
+        $this->addSql('CREATE INDEX IF NOT EXISTS idx_dpia_conductor_person ON data_protection_impact_assessment (conductor_person_id)');
 
         // Approver Person slot
-        $this->addSql('ALTER TABLE data_protection_impact_assessment ADD approver_person_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE data_protection_impact_assessment ADD COLUMN IF NOT EXISTS approver_person_id INT DEFAULT NULL');
         $this->addSql(
             'ALTER TABLE data_protection_impact_assessment ADD CONSTRAINT fk_dpia_approver_person '
-            . 'FOREIGN KEY (approver_person_id) REFERENCES person (id) ON DELETE SET NULL'
+            . 'FOREIGN KEY IF NOT EXISTS (approver_person_id) REFERENCES person (id) ON DELETE SET NULL'
         );
-        $this->addSql('CREATE INDEX idx_dpia_approver_person ON data_protection_impact_assessment (approver_person_id)');
+        $this->addSql('CREATE INDEX IF NOT EXISTS idx_dpia_approver_person ON data_protection_impact_assessment (approver_person_id)');
 
         // DPO deputies join table
         $this->addSql(
-            'CREATE TABLE dpia_dpo_deputy ('
+            'CREATE TABLE IF NOT EXISTS dpia_dpo_deputy ('
             . '  dpia_id INT NOT NULL, '
             . '  person_id INT NOT NULL, '
             . '  INDEX idx_dpia_dpo_dep_dpia (dpia_id), '
@@ -82,7 +82,7 @@ final class Version20260430175000_dpia_person extends AbstractMigration
 
         // Conductor deputies join table
         $this->addSql(
-            'CREATE TABLE dpia_conductor_deputy ('
+            'CREATE TABLE IF NOT EXISTS dpia_conductor_deputy ('
             . '  dpia_id INT NOT NULL, '
             . '  person_id INT NOT NULL, '
             . '  INDEX idx_dpia_cond_dep_dpia (dpia_id), '
@@ -95,7 +95,7 @@ final class Version20260430175000_dpia_person extends AbstractMigration
 
         // Approver deputies join table
         $this->addSql(
-            'CREATE TABLE dpia_approver_deputy ('
+            'CREATE TABLE IF NOT EXISTS dpia_approver_deputy ('
             . '  dpia_id INT NOT NULL, '
             . '  person_id INT NOT NULL, '
             . '  INDEX idx_dpia_appr_dep_dpia (dpia_id), '

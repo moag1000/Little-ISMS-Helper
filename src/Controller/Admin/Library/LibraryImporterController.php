@@ -8,6 +8,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
+use App\Service\Tisax\TisaxCatalogueProvider;
 use App\Service\Library\BsiKompendiumImporter;
 use App\Service\Library\LibraryRoundtripService;
 use App\Service\Library\VdaIsaImporter;
@@ -45,6 +46,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[Route('/admin/library', name: 'admin_library_')]
 class LibraryImporterController extends AbstractController
 {
+    /** Carries the import result across the POST → redirect boundary. */
+    private const SESSION_IMPORT_RESULT = 'admin_library.import_result';
+
     public function __construct(
         private readonly BsiKompendiumImporter $bsiImporter,
         private readonly VdaIsaImporter $vdaImporter,
@@ -60,15 +64,20 @@ class LibraryImporterController extends AbstractController
      * Overview: list available library YAMLs with last-import status.
      */
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $availableLibraries = $this->discoverAvailableLibraries();
         $importedFrameworks = $this->frameworkRepository->findBy([], ['code' => 'ASC']);
+
+        $session = $request->getSession();
+        $importResult = $session->get(self::SESSION_IMPORT_RESULT);
+        $session->remove(self::SESSION_IMPORT_RESULT);
 
         return $this->render('admin/library/index.html.twig', [
             'available_libraries' => $availableLibraries,
             'imported_frameworks' => $importedFrameworks,
             'tisax_skeleton_only' => $this->vdaImporter->isSkeletonOnly(),
+            'import_result' => is_array($importResult) ? $importResult : null,
         ]);
     }
 
@@ -76,7 +85,8 @@ class LibraryImporterController extends AbstractController
      * Run a library import (BSI or TISAX).
      *
      * POST ?type=bsi   — imports bsi-it-grundschutz-2024.yaml
-     * POST ?type=tisax — imports vda-isa-tisax-v6.yaml
+     * POST ?type=tisax     — imports vda-isa-tisax-v6.yaml
+     * POST ?type=tisax2027 — imports vda-isa-tisax-2027.yaml
      *
      * Global op: writes global ComplianceFramework rows shared across all
      * tenants. Restricted to ROLE_SUPER_ADMIN per spec §3.1.
@@ -94,7 +104,10 @@ class LibraryImporterController extends AbstractController
         $stats = [];
         $frameworkCode = '';
 
-        if ($type === 'tisax') {
+        if ($type === 'tisax2027') {
+            $stats = $this->vdaImporter->importDefault(TisaxCatalogueProvider::VERSION_ISA2027);
+            $frameworkCode = 'TISAX-2027';
+        } elseif ($type === 'tisax') {
             $stats = $this->vdaImporter->importDefault();
             $frameworkCode = TisaxRequirementMapper::FRAMEWORK_CODE; // 'TISAX' (canonical)
         } else {
@@ -118,13 +131,17 @@ class LibraryImporterController extends AbstractController
             AuditLogger::ACTION_LIBRARY_FRAMEWORK_IMPORTED,
         );
 
-        $hasErrors = !empty($stats['errors']);
-
-        return $this->render('admin/library/_import_result.html.twig', [
+        // POST → Redirect: Turbo rejects a rendered response to a form submit
+        // ("Form responses must redirect to another location"), so the result
+        // panel was never shown — the import ran but the page stayed silent.
+        // Stats travel through the session and are rendered once on the index.
+        $request->getSession()->set(self::SESSION_IMPORT_RESULT, [
             'stats' => $stats,
             'type' => $type,
-            'has_errors' => $hasErrors,
+            'has_errors' => !empty($stats['errors']),
         ]);
+
+        return $this->redirectToRoute('admin_library_index');
     }
 
     /**
@@ -209,7 +226,13 @@ class LibraryImporterController extends AbstractController
         foreach (glob($dir . '/*.yaml') as $path) {
             $filename = basename($path, '.yaml');
 
-            if (str_contains($filename, 'tisax') || str_contains($filename, 'vda')) {
+            if (str_contains($filename, '2027')) {
+                // ISA 2027 is a separate, concurrently certifiable catalogue —
+                // it must not be labelled or imported as the ISA 6 library.
+                $type = 'tisax2027';
+                $label = 'TISAX VDA ISA 2027';
+                $code = 'TISAX-2027';
+            } elseif (str_contains($filename, 'tisax') || str_contains($filename, 'vda')) {
                 $type = 'tisax';
                 $label = 'TISAX VDA ISA v6.0';
                 $code = TisaxRequirementMapper::FRAMEWORK_CODE; // 'TISAX' (canonical)

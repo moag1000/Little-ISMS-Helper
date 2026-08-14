@@ -268,7 +268,9 @@
     --alva-aura:    var(--fairy-aura);
     --alva-celebrating: #ec4899;  /* Pink — Milestone/Confetti-Mood */
     --alva-fg:      #f4f7ff;  /* fast-weiß für Body/Kopf */
+    --alva-fg-sh:   #dfe6f6;  /* Schattenseite des Körpers — gibt Volumen */
     --alva-ink:     #1e1b4b;  /* Aurora-dark-navy für Face-Features */
+    --alva-rim:     #ffffff;  /* Rim-Light-Kante links + Flügel-Anschnitt */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -371,6 +373,13 @@ html[data-theme="dark"] {
     --fairy-primary: #38bdf8;
     --fairy-accent:  #a78bfa;
     --fairy-aura:    #6366f1;
+
+    /* Alva bleibt auch dunkel in der hellen Familie — nur die Abstufung
+       wird kühler und das Rim-Light wechselt von Weiß auf Cyan. */
+    --alva-fg:      #e2e8f0;
+    --alva-fg-sh:   #b9c4dc;
+    --alva-ink:     #0a0e1a;
+    --alva-rim:     #7dd3fc;
 
     --aurora-gradient:
         radial-gradient(at 20% 30%, rgba(56, 189, 248, 0.10) 0%, transparent 50%),

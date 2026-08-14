@@ -41,6 +41,16 @@
         ]
     }) }}
 
+    {% if module_scope_tenant %}
+        <p class="text-muted small mb-3">
+            <i class="fa-icon fa-icon--nav-building me-1" aria-hidden="true"></i>
+            {{ 'admin.modules.scope_hint'|trans({ '%tenant%': module_scope_tenant }, 'admin') }}
+            {% if module_scope_inherited %}
+                <span class="badge bg-secondary ms-1">{{ 'admin.modules.scope_inherited'|trans({}, 'admin') }}</span>
+            {% endif %}
+        </p>
+    {% endif %}
+
     {% set _global_hints = alva_hints('admin_modules') %}
     {% if _global_hints|length > 0 %}
         {% for _h in _global_hints %}

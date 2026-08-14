@@ -14,23 +14,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Loads the canonical VDA-ISA 6.0 control-number catalogue (80 controls, numbers
- * only) as the shared TISAX catalogue baseline.
+ * Loads the VDA-ISA 2027 control-number catalogue (78 controls, numbers only).
  *
- * VDA-ISA 2027 has its own loader ({@see LoadTisax2027RequirementsCommand}):
- * FrameworkLoaderRegistry resolves one loader per framework code, and the two
- * catalogues are separate frameworks because both are currently certifiable.
+ * Separate from {@see LoadTisaxRequirementsCommand} on purpose: FrameworkLoaderRegistry
+ * resolves exactly one loader per framework code, and ISA 2027 is its own framework
+ * ('TISAX-2027') because ENX certifies against ISA 6 and ISA 2027 in parallel. A single
+ * loader with a version switch would seed two different frameworks under one code and
+ * stay invisible to the registry — the generic framework-loading paths would never find
+ * the 2027 catalogue.
  *
- * Thin wrapper around {@see TisaxCatalogueProvider} — the ONE place that owns the
- * TISAX framework row + catalogue. This command, the BYO import mapper and the
- * admin library importer all delegate to that provider, so there is exactly one
- * importer and one metadata source (the YAML).
+ * Both commands are thin wrappers around {@see TisaxCatalogueProvider}, which owns the
+ * framework row, the metadata and the catalogue fixtures.
  */
 #[AsCommand(
-    name: 'app:load-tisax-requirements',
-    description: 'Load the canonical VDA-ISA 6.0 control-number catalogue (80 controls, numbers only)'
+    name: 'app:load-tisax-2027-requirements',
+    description: 'Load the VDA-ISA 2027 control-number catalogue (78 controls, numbers only)'
 )]
-class LoadTisaxRequirementsCommand extends Command implements FrameworkLoaderInterface
+class LoadTisax2027RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly TisaxCatalogueProvider $catalogue)
     {
@@ -39,19 +39,21 @@ class LoadTisaxRequirementsCommand extends Command implements FrameworkLoaderInt
 
     public function getFrameworkCode(): string
     {
-        return 'TISAX';
+        return 'TISAX-2027';
     }
 
     public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
     {
-        $r = $this->catalogue->loadCatalogue($update, TisaxCatalogueProvider::VERSION_ISA6);
+        $r = $this->catalogue->loadCatalogue($update, TisaxCatalogueProvider::VERSION_ISA2027);
         $io?->success(sprintf(
-            'TISAX ISA 6.0 catalogue (numbers only): %d created, %d updated, %d skipped (of %d).',
+            'TISAX ISA 2027 catalogue (numbers only): %d created, %d updated, %d skipped (of %d).',
             $r['created'],
             $r['updated'],
             $r['skipped'],
             $r['total'],
         ));
+        $io?->note('Requirement text arrives via the BYO workbook upload (ENX-licensed).');
+
         return Command::SUCCESS;
     }
 
