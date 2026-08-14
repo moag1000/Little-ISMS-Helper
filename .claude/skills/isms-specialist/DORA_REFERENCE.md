@@ -10,7 +10,7 @@
 - **Entry into Force**: January 16, 2023
 - **Application Date**: ✅ **January 17, 2025** (fully applicable)
 - **Official Text**: https://eur-lex.europa.eu/eli/reg/2022/2554/oj
-- **Current Status (November 2025)**: Fully enforced, active supervision ongoing
+- **Current Status (August 2026)**: Fully enforced. ESA oversight of critical ICT third-party providers became operational in 2026 — Joint Examination Teams (ESA staff + national authorities), on-site inspections, annual risk analyses. Operational responsibility stays with the outsourcing institution.
 
 ## Scope of Application
 
@@ -188,7 +188,7 @@ Must include:
 **Article 31: Designation of Critical ICT Third-Party Providers**
 - ESAs jointly designate CTPPs
 - Criteria: systemic importance, substitutability, number of financial entities served
-- **Current Status (November 2025)**: 19 CTPPs designated on November 18, 2025
+- **Current Status (August 2026)**: 19 CTPPs designated on 18 November 2025; oversight operational since 2026
 
 **Article 32: Structure of Oversight Framework**
 - Lead Overseer appointed by ESAs
@@ -224,7 +224,7 @@ Must include:
 - Appointed by ESAs for each CTPP
 - Coordination of oversight activities
 
-## Enforcement Status (November 2025)
+## Enforcement Status (August 2026)
 
 ### Active Enforcement
 - ✅ DORA fully applicable since **January 17, 2025**

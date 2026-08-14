@@ -17,7 +17,11 @@
 
 ### NIS2UmsuCG (NIS2-Umsetzungs- und Cybersicherheitsstärkungsgesetz)
 
-- **Status (November 2025)**: ✅ **Adopted by Bundestag on November 13, 2025**
+- **Status (August 2026)**: ✅ **In force since 6 December 2025.** BSI
+  registration portal live since 6 January 2026; the registration deadline was
+  6 March 2026, and the BSI grace period **expired on 31 July 2026** — late
+  registration is now subject to fines. Scope grew from ~4,500 to ~29,500
+  entities.
 - **Cabinet Adoption**: July 30, 2025
 - **First Reading**: Autumn 2025
 - **Bundestag Adoption**: November 13, 2025
@@ -397,7 +401,10 @@ All essential and important entities must implement appropriate and proportionat
 ## Sector-Specific Requirements
 
 ### Banking (BaFin Supervision)
-- NIS2 + BAIT + MaRisk + DORA
+- NIS2 + DORA + MaRisk (Rundschreiben 06/2026)
+- BAIT only for institutions still outside DORA scope (repealed 31 Dec 2026);
+  VAIT / KAIT / ZAIT were repealed on 16 Jan 2025
+- DORA takes precedence as *lex specialis* for financial entities' ICT risk
 - Integrated approach required
 - BaFin as sectoral authority
 
