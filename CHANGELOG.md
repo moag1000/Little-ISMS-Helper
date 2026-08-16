@@ -3,6 +3,25 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.14.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.13.0...v3.14.0) (2026-08-16)
+
+
+### Added
+
+* **design-system,tisax:** Alva v2, VDA-ISA 2027 catalogue, tenant-scoped modules ([#1021](https://github.com/moag1000/Little-ISMS-Helper/issues/1021)) ([450406f](https://github.com/moag1000/Little-ISMS-Helper/commit/450406ff8de1ad81666a52c74112c006bdcdad1d))
+
+
+### Fixed
+
+* **tenant,audit:** scope worker jobs, audit raw SQL, gate inert fixture keys ([#1026](https://github.com/moag1000/Little-ISMS-Helper/issues/1026)) ([7885fe9](https://github.com/moag1000/Little-ISMS-Helper/commit/7885fe951b1abc98beb8f6b28841aa678cd4934b))
+* **tenant:** scope background reports to the active tenant ([#1023](https://github.com/moag1000/Little-ISMS-Helper/issues/1023)) ([8e5cfae](https://github.com/moag1000/Little-ISMS-Helper/commit/8e5cfae1f27f9425b4f8f0cc2f92b4c3bca28fa9))
+
+
+### Documentation
+
+* **skill:** correct repealed BaFin circulars and stale regulatory status ([#1025](https://github.com/moag1000/Little-ISMS-Helper/issues/1025)) ([ded04ce](https://github.com/moag1000/Little-ISMS-Helper/commit/ded04ce2ae11cc127b0acec89190dfc0784e4bd2))
+* **skill:** teach the ISMS specialist TISAX / VDA-ISA 2027 ([#1024](https://github.com/moag1000/Little-ISMS-Helper/issues/1024)) ([6fc0261](https://github.com/moag1000/Little-ISMS-Helper/commit/6fc0261b6bcc2978641ed1a876ecffb9836d8b72))
+
 ## [3.13.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.12.0...v3.13.0) (2026-06-21)
 
 
