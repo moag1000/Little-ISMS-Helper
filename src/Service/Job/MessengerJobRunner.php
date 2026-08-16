@@ -6,6 +6,7 @@ namespace App\Service\Job;
 
 use App\Job\AsyncJobInterface;
 use App\Message\Job\ExecuteJobMessage;
+use App\Service\TenantContext;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -33,6 +34,7 @@ class MessengerJobRunner
     public function __construct(
         private readonly MessageBusInterface $messageBus,
         private readonly JobStatusService $jobStatusService,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -69,10 +71,13 @@ class MessengerJobRunner
         // without changing call-sites.
         unset($session);
 
+        // Capture the tenant NOW, while the HTTP request context still exists.
+        // The worker has no request, so it cannot resolve this itself.
         $this->messageBus->dispatch(new ExecuteJobMessage(
             jobClass: $jobClass,
             args: $args,
             jobId: $jobId,
+            tenantId: $this->tenantContext->getCurrentTenantId(),
         ));
 
         return $response;

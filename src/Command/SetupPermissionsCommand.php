@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Repository\PermissionRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
+use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +25,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 )]
 class SetupPermissionsCommand
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository, private readonly RoleRepository $roleRepository, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository, private readonly RoleRepository $roleRepository, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher, private readonly AuditLogger $auditLogger)
     {
     }
 
@@ -95,13 +96,37 @@ class SetupPermissionsCommand
 
     private function resetPermissions(): void
     {
+        $conn = $this->entityManager->getConnection();
+
+        // Capture the pre-state so the audit entry says what was actually
+        // dropped — raw DELETEs on the junction tables bypass the Doctrine
+        // lifecycle and would otherwise leave no trace at all.
+        $userRoles = (int) $conn->fetchOne('SELECT COUNT(*) FROM user_roles');
+        $rolePermissions = (int) $conn->fetchOne('SELECT COUNT(*) FROM role_permissions');
+
         // Delete all user_roles and role_permissions first (junction tables)
-        $this->entityManager->getConnection()->executeStatement('DELETE FROM user_roles');
-        $this->entityManager->getConnection()->executeStatement('DELETE FROM role_permissions');
+        $conn->executeStatement('DELETE FROM user_roles');
+        $conn->executeStatement('DELETE FROM role_permissions');
 
         // Delete all permissions and roles
-        $this->entityManager->createQuery('DELETE FROM App\Entity\Permission')->execute();
-        $this->entityManager->createQuery('DELETE FROM App\Entity\Role')->execute();
+        $permissions = $this->entityManager->createQuery('DELETE FROM App\Entity\Permission')->execute();
+        $roles = $this->entityManager->createQuery('DELETE FROM App\Entity\Role')->execute();
+
+        // Wiping the whole RBAC graph is a security-relevant administrative
+        // act and must be reconstructable (ISO 27001 Cl. 7.5.3, A.5.15/A.5.18).
+        $this->auditLogger->logBulk(
+            'rbac.reset',
+            'Role',
+            [
+                'user_role_assignments_deleted' => $userRoles,
+                'role_permission_links_deleted' => $rolePermissions,
+                'permissions_deleted' => (int) $permissions,
+                'roles_deleted' => (int) $roles,
+                'command' => 'app:setup-permissions --reset',
+            ],
+            [],
+            'RBAC reset: all roles, permissions and assignments deleted before re-seeding',
+        );
     }
 
     private function createPermissions(SymfonyStyle $symfonyStyle): void

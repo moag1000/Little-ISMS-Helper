@@ -7,7 +7,9 @@ namespace App\MessageHandler\Job;
 use App\Job\AsyncJobInterface;
 use App\Job\JobContext;
 use App\Message\Job\ExecuteJobMessage;
+use App\Exception\Tenant\TenantNotFoundException;
 use App\Service\Job\JobStatusService;
+use App\Service\TenantContext;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -29,6 +31,7 @@ final class ExecuteJobHandler
 {
     public function __construct(
         private readonly JobStatusService $jobStatusService,
+        private readonly TenantContext $tenantContext,
         #[AutowireLocator('app.async_job')]
         private readonly ContainerInterface $jobs,
     ) {
@@ -43,9 +46,31 @@ final class ExecuteJobHandler
             return;
         }
 
+        // Restore the dispatching tenant before touching any repository.
+        // TenantFilterSubscriber only fires on kernel.request, so in the worker
+        // the Doctrine tenant_filter is unarmed and every findAll() would read
+        // across all tenants. TenantContext::setCurrentTenantById() arms it.
+        // ?? keeps messages queued before this field existed deserialisable.
+        $tenantId = $message->tenantId ?? null;
+        $this->tenantContext->setCurrentTenantById($tenantId);
+
         $this->jobStatusService->markRunning($id);
 
         try {
+            // A tenant was named but could not be resolved (deleted between
+            // dispatch and consumption, or a stale queue entry). Refusing here
+            // is deliberate: setCurrentTenantById() falls back to the unscoped
+            // 'null' sentinel, so continuing would run the job across ALL
+            // tenants instead of the one it was dispatched for.
+            if ($tenantId !== null && $this->tenantContext->getCurrentTenantId() !== $tenantId) {
+                throw new TenantNotFoundException($tenantId, sprintf(
+                    'Refusing to run job %s: tenant %d could not be resolved, '
+                    . 'running it would silently escape tenant scoping.',
+                    $message->jobClass,
+                    $tenantId,
+                ));
+            }
+
             $job = $this->resolveJob($message->jobClass);
             $ctx = new JobContext($id, $this->jobStatusService, $message->args);
             $job->run($ctx);

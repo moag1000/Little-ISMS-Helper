@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\AuditLogger;
 use App\Service\Tisax\TisaxCatalogueProvider;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,6 +59,7 @@ final class TisaxRebuildCatalogueCommand extends Command
     public function __construct(
         private readonly Connection $conn,
         private readonly TisaxCatalogueProvider $catalogue,
+        private readonly AuditLogger $auditLogger,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -137,6 +139,26 @@ final class TisaxRebuildCatalogueCommand extends Command
                 $this->conn->executeStatement("DELETE FROM compliance_requirement WHERE framework_id = ?", [self::FW_LEGACY]);
                 $this->conn->executeStatement("DELETE FROM compliance_framework WHERE id = ?", [self::FW_LEGACY]);
                 $io->text(sprintf('Deleted legacy framework %d (%d rows, 0 fulfilments, 0 mappings).', self::FW_LEGACY, $legacyReqs));
+
+                // Raw DDL/DML bypasses the Doctrine lifecycle, so the audit
+                // entry has to be written explicitly (ISO 27001 Cl. 7.5.3).
+                $this->auditLogger->logBulk(
+                    'tisax.rebuild.legacy_framework_drop',
+                    'ComplianceFramework',
+                    [
+                        'framework_id' => self::FW_LEGACY,
+                        'requirement_rows_deleted' => $legacyReqs,
+                        'snapshot' => $snapshotPath,
+                        'command' => 'app:tisax:rebuild-catalogue',
+                    ],
+                    [[
+                        'entity_id' => self::FW_LEGACY,
+                        'action' => 'delete',
+                        'old_values' => ['requirement_count' => $legacyReqs],
+                        'new_values' => null,
+                    ]],
+                    sprintf('TISAX rebuild: dropped retired legacy framework %d', self::FW_LEGACY),
+                );
             } elseif ($legacyReqs > 0) {
                 $io->warning(sprintf('Legacy FW %d NOT deleted — it still has %d fulfilments / %d mapping refs.', self::FW_LEGACY, $legacyFul, $legacyMaps));
             }
@@ -199,6 +221,31 @@ final class TisaxRebuildCatalogueCommand extends Command
         );
         $delRows = $this->conn->executeStatement(
             "DELETE FROM compliance_requirement WHERE id IN ($in)"
+        );
+
+        // compliance_requirement_fulfillment holds TENANT data — deleting it
+        // through raw SQL skips the Doctrine lifecycle, so the audit trail has
+        // to be written by hand (ISO 27001 Cl. 7.5.3).
+        $this->auditLogger->logBulk(
+            'tisax.rebuild.legacy_pollution_purge',
+            'ComplianceRequirement',
+            [
+                'framework_id' => self::FW,
+                'requirement_rows_deleted' => $delRows,
+                'mapping_rows_deleted' => $delMaps,
+                'fulfillment_rows_deleted' => $delFul,
+                'command' => 'app:tisax:rebuild-catalogue --purge-legacy',
+            ],
+            array_map(
+                static fn (int $id): array => [
+                    'entity_id' => $id,
+                    'action' => 'delete',
+                    'old_values' => ['framework_id' => self::FW, 'shared_row' => true],
+                    'new_values' => null,
+                ],
+                $pollution,
+            ),
+            sprintf('TISAX rebuild Phase B: purged %d legacy shared rows', $delRows),
         );
 
         $mapsAfter = (int) $this->conn->fetchOne(
