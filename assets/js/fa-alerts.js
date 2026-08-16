@@ -20,6 +20,17 @@
  *       icon       — Bootstrap-Icons name (without bi- prefix);
  *                    defaults: warn -> exclamation-triangle-fill,
  *                    danger -> shield-x
+ *
+ *   window.faPrompt(message, options?) -> Promise<string|null>
+ *     Aurora replacement for native prompt(). Resolves to the trimmed input
+ *     value, or null on cancel / backdrop / Escape. Options:
+ *       title        — bold headline, optional
+ *       placeholder  — input placeholder
+ *       value        — prefilled value
+ *       confirmLabel — primary button label (default 'Übernehmen')
+ *       cancelLabel  — secondary button label (default 'Abbrechen')
+ *       maxlength    — input maxlength attribute
+ *       required     — when true, the confirm button stays disabled while empty
  */
 
 (function () {
@@ -223,6 +234,127 @@
             backdrop.addEventListener('click', (event) => {
                 if (event.target === backdrop) {
                     close(false);
+                }
+            });
+            document.addEventListener('keydown', onKey);
+        });
+    };
+
+    /**
+     * Aurora prompt. Native prompt() is banned as UX (it is unstyled, blocks
+     * the main thread and cannot be themed); this mirrors faConfirm's shell
+     * and adds a single text input.
+     */
+    window.faPrompt = function (message, options) {
+        const opts = options || {};
+
+        return new Promise((resolve) => {
+            const backdrop = document.createElement('div');
+            backdrop.className = 'fa-confirm-backdrop';
+            backdrop.style.cssText = [
+                'position:fixed',
+                'inset:0',
+                'z-index:1090',
+                'background:rgba(15,23,42,.55)',
+                'backdrop-filter:blur(4px)',
+                'display:flex',
+                'align-items:center',
+                'justify-content:center',
+                'padding:24px',
+                'animation:faConfirmFadeIn .15s ease-out',
+            ].join(';');
+
+            const dialog = document.createElement('div');
+            dialog.className = 'fa-confirm';
+            dialog.setAttribute('data-tone', 'warn');
+            dialog.setAttribute('role', 'dialog');
+            dialog.setAttribute('aria-modal', 'true');
+            dialog.setAttribute('aria-labelledby', 'fa-prompt-title');
+            dialog.style.cssText = [
+                'max-width:520px',
+                'width:100%',
+                'animation:faConfirmZoomIn .18s ease-out',
+            ].join(';');
+
+            dialog.innerHTML = `
+                <header class="fa-confirm__header">
+                    <span class="fa-confirm__icon"><i class="bi bi-pencil-square" aria-hidden="true"></i></span>
+                    <div>
+                        ${opts.title ? `<div class="fa-confirm__title" id="fa-prompt-title">${escapeHtml(opts.title)}</div>` : ''}
+                        <div class="fa-confirm__message"${opts.title ? '' : ' id="fa-prompt-title"'}>${escapeHtml(message)}</div>
+                    </div>
+                </header>
+                <div class="fa-confirm__body">
+                    <input type="text" class="fa-cyber-field__input" data-fa-prompt-input
+                           value="${escapeHtml(opts.value || '')}"
+                           placeholder="${escapeHtml(opts.placeholder || '')}"
+                           ${opts.maxlength ? `maxlength="${parseInt(opts.maxlength, 10)}"` : ''}
+                           aria-label="${escapeHtml(opts.title || message)}"
+                           style="width:100%">
+                </div>
+                <footer class="fa-confirm__footer">
+                    <button type="button" class="fa-cyber-btn" data-fa-prompt-cancel>${escapeHtml(opts.cancelLabel || 'Abbrechen')}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-fa-prompt-ok>${escapeHtml(opts.confirmLabel || 'Übernehmen')}</button>
+                </footer>
+            `;
+
+            injectConfirmKeyframes();
+
+            backdrop.appendChild(dialog);
+            document.body.appendChild(backdrop);
+
+            const previousOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+
+            const input = dialog.querySelector('[data-fa-prompt-input]');
+            const okBtn = dialog.querySelector('[data-fa-prompt-ok]');
+            const cancelBtn = dialog.querySelector('[data-fa-prompt-cancel]');
+            const previousFocus = document.activeElement;
+
+            function syncDisabled() {
+                if (opts.required) {
+                    okBtn.disabled = input.value.trim() === '';
+                }
+            }
+            syncDisabled();
+            input.addEventListener('input', syncDisabled);
+
+            input.focus();
+            input.select();
+
+            function close(value) {
+                document.body.style.overflow = previousOverflow;
+                document.removeEventListener('keydown', onKey);
+                backdrop.remove();
+                if (previousFocus instanceof HTMLElement) {
+                    previousFocus.focus();
+                }
+                resolve(value);
+            }
+
+            function submit() {
+                const value = input.value.trim();
+                if (opts.required && value === '') {
+                    return;
+                }
+                close(value === '' ? null : value);
+            }
+
+            function onKey(event) {
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    close(null);
+                } else if (event.key === 'Enter' && document.activeElement !== cancelBtn) {
+                    event.preventDefault();
+                    submit();
+                }
+            }
+
+            okBtn.addEventListener('click', submit);
+            cancelBtn.addEventListener('click', () => close(null));
+            backdrop.addEventListener('click', (event) => {
+                if (event.target === backdrop) {
+                    close(null);
                 }
             });
             document.addEventListener('keydown', onKey);

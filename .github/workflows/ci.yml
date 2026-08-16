@@ -593,6 +593,12 @@ jobs:
         # at 45 fields) had no section map and their fields fall into the catch-all
         # bucket. Existing offenders are baselined; new ones fail.
         run: python3 scripts/quality/check_form_sections.py --baseline scripts/quality/baselines/form_sections.txt
+      - name: "Gate 60: fixture keys no loader reads"
+        # Catches the `targets:` class of defect: 736 mapping pairs once shipped
+        # under a plural key the importer never read — valid YAML, green tests,
+        # invisible at runtime. Descriptive keys (license_note, changelog, …) are
+        # baselined; a NEW inert key is far more likely dead payload than docs.
+        run: python3 scripts/quality/check_fixture_unread_keys.py --baseline scripts/quality/baselines/fixture_unread_keys.txt
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

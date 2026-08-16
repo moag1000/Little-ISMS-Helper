@@ -284,6 +284,33 @@ QuickFix/DataRepair-Controller, Merge-Migrationen `Version20260507212829`,
 
 **Begleitdokument:** `docs/COMPLIANCE_CATALOG_WIRING_AUDIT.md` (Loader-Detailtabelle)
 
+### 7.1 Fixture-Schluessel: gelesen vs. deskriptiv
+
+Nicht jeder Schluessel in `fixtures/library/**` ist Nutzdaten. Der Importer
+liest pro Mapping-Eintrag genau: `source`, `target`/`targets`, `relationship`,
+`confidence`, `rationale`, `gap_warning`, `audit_evidence_hint`,
+`primary_source`, `provenance`, `methodology`, `lifecycle`, `state`.
+
+Alles andere ist **inert** — es landet nie in der Datenbank. Zwei Sorten:
+
+* **deskriptiv und gewollt** — `publisher`, `license_note`, `changelog`,
+  `secondary_sources`, `extraction_note`. Redaktionelle Herkunftsangaben fuer
+  Menschen, kein Laufzeit-Effekt beabsichtigt.
+* **`cross_refs`** (2097 Eintraege in 55 Dateien) — verwandte Requirement-IDs
+  als „siehe auch". Sie sind bewusst **kein** Mapping-Paar: die IDs zeigen
+  ueberwiegend auf das QUELL-Framework (z. B. C5 `OPS-01` → `MA-01`, `OPS-02`),
+  ein Import wuerde also Quelle→Quelle-Kanten erzeugen. Validiert werden sie
+  bisher nur punktuell von `DoraRtsItsIso27001MappingCodesAlignmentTest`;
+  931 der 2097 loesen im selben File auf keine bekannte ID auf — offener
+  Redaktions-Restposten, kein Wiring-Defekt.
+
+**Gate 60** (`scripts/quality/check_fixture_unread_keys.py`) vergleicht laufend
+„Schluessel, die wir ausliefern" gegen „Schluessel, die Code liest". Bekannte
+deskriptive Keys sind in `scripts/quality/baselines/fixture_unread_keys.txt`
+baselined; ein NEUER ungelesener Schluessel bricht die CI. Grund: genau so ist
+der `targets:`-Defekt entstanden — 736 Mapping-Paare unter einem Plural-Key,
+den der Importer nie gelesen hat. Valides YAML, gruene Tests, zur Laufzeit tot.
+
 ---
 
 ## 8. Offene Verifikationspunkte (vor Umbau prüfen)

@@ -347,7 +347,12 @@ export default class extends Controller {
             return;
         }
 
-        const tag = prompt(this.tagPromptValue);
+        // Native prompt() is banned as UX — use the Aurora dialog. Fall back
+        // to the native one only if fa-alerts has not mounted yet.
+        const tag = typeof window.faPrompt === 'function'
+            ? await window.faPrompt(this.tagPromptValue, { required: true, maxlength: 64 })
+            : prompt(this.tagPromptValue);
+
         if (!tag) {
             return;
         }
