@@ -31,6 +31,15 @@ services:
         tags:
             - phpstan.rules.rule
 
+    # Prevents unscoped findAll() on tenant-owned entities in Command/Job/
+    # MessageHandler. TenantFilterSubscriber only arms the Doctrine
+    # tenant_filter on kernel.request, so outside HTTP those reads span ALL
+    # tenants (shipped twice: #1023 scheduled reports, #1026 export jobs).
+    -
+        class: App\Tests\PHPStan\Rule\NoUnscopedTenantQueryInBackgroundRule
+        tags:
+            - phpstan.rules.rule
+
     # Y.4 — Prevents `new App\Entity\Workflow()` / `new App\Entity\WorkflowStep()`
     # in src/ code outside Repository and Command namespaces.
     -

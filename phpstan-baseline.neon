@@ -4619,3 +4619,64 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Controller/RoadmapController.php
+
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\Consent outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Command/ConsentWithdrawalSyncCommand.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\User outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Command/LoadConnectedDemoDataCommand.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\Control outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Command/MarkEssentialControlsCommand.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\BCExercise outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Command/MigrateFreetextOwnersCommand.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\InternalAudit outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Command/MigrateFreetextOwnersCommand.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\Training outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Command/MigrateFreetextOwnersCommand.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\TisaxCrosswalkEntry outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Command/TisaxConsolidateCommand.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\Asset outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Job/ExportAnalyticsJob.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\Control outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Job/ExportAnalyticsJob.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\Risk outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Job/ExportAnalyticsJob.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\Risk outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Job/ExportRisksJob.php
+		-
+			message: '#^Unscoped findAll\(\) on tenant\-owned entity App\\Entity\\User outside an HTTP request\. The Doctrine tenant_filter is only armed on kernel\.request, so this reads across ALL tenants\. Pass the tenant into the query, or set it via TenantContext \(which arms the filter\)\.$#'
+			identifier: tenant.unscopedBackgroundQuery
+			count: 1
+			path: /private/tmp/lih-guard/src/Job/ExportUsersJob.php
