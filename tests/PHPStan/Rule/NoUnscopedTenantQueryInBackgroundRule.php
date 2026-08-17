@@ -47,7 +47,18 @@ use PHPStan\Rules\RuleErrorBuilder;
  */
 final class NoUnscopedTenantQueryInBackgroundRule implements Rule
 {
-    /** Repository reads that return every row unless the filter is armed. */
+    /**
+     * Deliberately only findAll().
+     *
+     * Extending this to findBy()/findOneBy() was measured and rejected: it adds
+     * seven findings, none of which is a leak. They are either instance-wide by
+     * design (BackfillPolicyBody, MrisSeedClassification, ProcessTimedWorkflows)
+     * or already scoped by explicit ids or a relation —
+     * findBy(['id' => $approverUserIds]), findBy(['training' => $training]).
+     * Whether such ids were themselves obtained tenant-safely is a data-flow
+     * property this rule cannot decide, so flagging them would trade real
+     * signal for noise and train people to baseline reflexively.
+     */
     private const UNSCOPED_METHODS = ['findAll'];
 
     /** Code paths that run without an HTTP request. */
