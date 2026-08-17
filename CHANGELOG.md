@@ -3,6 +3,13 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.15.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.14.0...v3.15.0) (2026-08-17)
+
+
+### Added
+
+* **phpstan,test:** tenant-scope guard + pin the core relation chain ([#1027](https://github.com/moag1000/Little-ISMS-Helper/issues/1027)) ([59809c9](https://github.com/moag1000/Little-ISMS-Helper/commit/59809c9800dc1c61873591a52de3ae0fd890d21c))
+
 ## [3.14.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.13.0...v3.14.0) (2026-08-16)
 
 
