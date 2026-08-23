@@ -299,10 +299,27 @@ Alles andere ist **inert** — es landet nie in der Datenbank. Zwei Sorten:
 * **`cross_refs`** (2097 Eintraege in 55 Dateien) — verwandte Requirement-IDs
   als „siehe auch". Sie sind bewusst **kein** Mapping-Paar: die IDs zeigen
   ueberwiegend auf das QUELL-Framework (z. B. C5 `OPS-01` → `MA-01`, `OPS-02`),
-  ein Import wuerde also Quelle→Quelle-Kanten erzeugen. Validiert werden sie
-  bisher nur punktuell von `DoraRtsItsIso27001MappingCodesAlignmentTest`;
-  931 der 2097 loesen im selben File auf keine bekannte ID auf — offener
-  Redaktions-Restposten, kein Wiring-Defekt.
+  ein Import wuerde also Quelle→Quelle-Kanten erzeugen.
+
+  **Stand 2026-08-23 geprueft:** 1963 der 2097 (93 %) loesen gegen den
+  korpusweiten Bestand bekannter IDs ihres Quell- oder Ziel-Frameworks auf.
+  Die verbleibenden 134 sind **gueltige Rechtszitate auf Stellen, die diese
+  Bibliothek nur noch nicht mappt** — fachlich geprueft: DORA Art. 4/19/25/26/
+  29/30 und DSGVO Art. 6/7/14/16/18/21/34/39 existieren, ebenso BAIT-Kapitel
+  2/9/10.1/10.4 und NIS2UmsuCG §§ 30-33. Genau dafuer ist ein „siehe auch"-
+  Zeiger da. Eine fruehere Notiz sprach von 931 offenen Eintraegen; diese Zahl
+  war ein schwacher Proxy (Abgleich nur gegen IDs derselben Datei) und ist
+  hiermit korrigiert.
+
+  Bekannte Notations-Uneinheitlichkeit, bewusst NICHT vereinheitlicht:
+  NIS2UmsuCG fuehrt `§30` ohne, KRITIS `§ 30` mit Leerzeichen. In den
+  KRITIS↔NIS2UmsuCG-Mappings laesst sich aus der Schreibweise allein nicht
+  ableiten, welches Gesetz gemeint ist — eine pauschale Normalisierung wuerde
+  Zitate still zwischen zwei Gesetzen umdeuten.
+
+  Gepinnt durch `tests/Service/Library/MappingCrossRefIntegrityTest.php`:
+  jeder cross_ref muss aufloesen oder in der dort gepflegten, fachlich
+  gepruften Liste stehen. Ein NEUER unaufloesbarer Eintrag failt.
 
 **Gate 60** (`scripts/quality/check_fixture_unread_keys.py`) vergleicht laufend
 „Schluessel, die wir ausliefern" gegen „Schluessel, die Code liest". Bekannte
