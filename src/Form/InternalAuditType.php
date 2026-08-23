@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class InternalAuditType extends AbstractType
+final class InternalAuditType extends AbstractType implements SectionMapInterface
 {
     public function __construct(
         private readonly TenantContext $tenantContext,
@@ -308,5 +308,19 @@ final class InternalAuditType extends AbstractType
         $context->buildViolation('audit.error.lead_auditor_required')
             ->atPath('leadAuditorUser')
             ->addViolation();
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'         => ['title', 'status'],
+            'scope_definition' => ['scope', 'scopeType', 'scopedAssets', 'objectives', 'scopedFramework', 'additionalScopedFrameworks', 'auditedSubsidiaries'],
+            'schedule'         => ['plannedDate', 'actualDate'],
+            'team'             => ['leadAuditorUser', 'leadAuditorPerson', 'leadAuditor', 'auditTeamMembers', 'auditTeam'],
+            'results'          => ['findings', 'recommendations', 'conclusion'],
+        ];
     }
 }

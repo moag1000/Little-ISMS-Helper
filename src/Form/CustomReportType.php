@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class CustomReportType extends AbstractType
+final class CustomReportType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -141,5 +141,18 @@ final class CustomReportType extends AbstractType
                 ->atPath('owner')
                 ->addViolation();
         }
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => ['name', 'description', 'category'],
+            'layout'   => ['layout'],
+            'owner'    => ['owner', 'ownerPerson', 'ownerDeputyPersons'],
+            'defaults' => ['isShared', 'isTemplate'],
+        ];
     }
 }

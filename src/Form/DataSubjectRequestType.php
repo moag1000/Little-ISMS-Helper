@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * Form type for Data Subject Request (GDPR Art. 15-22)
  */
-final class DataSubjectRequestType extends AbstractType
+final class DataSubjectRequestType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -270,5 +270,21 @@ final class DataSubjectRequestType extends AbstractType
                 ->atPath('assignedTo')
                 ->addViolation();
         }
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'       => ['requestType', 'receivedAt', 'description'],
+            'data_subject'   => ['dataSubjectName', 'dataSubjectEmail', 'dataSubjectIdentifier'],
+            'identity'       => ['identityVerified', 'identityVerificationMethod'],
+            'responsibility' => ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dpoPerson'],
+            'relations'      => ['processingActivity'],
+            'handling'       => ['responseAt', 'extendedDeadlineAt', 'extensionReason', 'extensionNotifiedAt', 'responseMethod'],
+            'results'        => ['responseDocument', 'rejectionReason', 'notes'],
+        ];
     }
 }

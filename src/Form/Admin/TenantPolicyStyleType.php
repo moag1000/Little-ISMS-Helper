@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Admin;
 
+use App\Form\SectionMapInterface;
 use App\Entity\TenantBranding;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -32,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 // SectionMap replaced by fa-tabs in edit.html.twig (live-preview compat).
 // Fields are grouped into General/Branding/Layout/Content/Advanced tabs.
 // Preview panel is a sibling col alongside the fa-tabs container.
-final class TenantPolicyStyleType extends AbstractType
+final class TenantPolicyStyleType extends AbstractType implements SectionMapInterface
 {
     public function __construct(
         private readonly Security $security,
@@ -170,5 +171,19 @@ final class TenantPolicyStyleType extends AbstractType
             'translation_domain' => 'admin',
             'attr' => ['data-controller' => 'policy-style-preview'],
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'typography' => ['policyDocFontFamily'],
+            'layout'     => ['policyDocCoverPattern', 'policyDocCoverLogoSize', 'policyDocPageMargin'],
+            'branding'   => ['policyDocWatermarkEnabled', 'policyDocWatermarkOpacity'],
+            'content'    => ['policyDocSignatureLines', 'policyDocShowToc', 'policyDocShowHistory', 'policyDocShowAnnexARefs', 'policyDocFooterText'],
+            'advanced'   => ['policyDocCustomCss'],
+        ];
     }
 }

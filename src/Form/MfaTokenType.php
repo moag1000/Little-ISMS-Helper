@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class MfaTokenType extends AbstractType
+final class MfaTokenType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -95,5 +95,17 @@ final class MfaTokenType extends AbstractType
             'data_class' => MfaToken::class,
             'translation_domain' => 'mfa',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'  => ['user', 'tokenType'],
+            'details'   => ['deviceName', 'phoneNumber'],
+            'lifecycle' => ['isActive', 'isPrimary', 'expiresAt'],
+        ];
     }
 }

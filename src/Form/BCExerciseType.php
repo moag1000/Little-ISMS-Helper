@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 // their own 'sections' data directly to _auto_form, overriding any SectionMap.
 // The templates also use a custom form_theme (bc_exercise/_bc_exercise_form_theme.html.twig)
 // which overrides successCriteria/evidenceArtifacts field rendering.
-final class BCExerciseType extends AbstractType
+final class BCExerciseType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -326,5 +326,22 @@ final class BCExerciseType extends AbstractType
                 ->atPath('facilitatorUser')
                 ->addViolation();
         }
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'        => ['name', 'exerciseType', 'description', 'status'],
+            'exercise_scope'  => ['scope', 'objectives', 'scenario'],
+            'schedule'        => ['exerciseDate', 'durationHours'],
+            'team'            => ['participantPersons', 'participants', 'facilitatorUser', 'facilitatorPerson', 'facilitator', 'exerciseLeaderUser', 'exerciseLeaderPerson', 'observerPersons', 'observers'],
+            'results'         => ['results', 'successCriteria', 'successRating', 'actualRtoAchieved', 'actualRpoAchieved', 'whatWentWell', 'areasForImprovement'],
+            'lessons_learned' => ['findings', 'actionItems', 'lessonsLearned', 'planUpdatesRequired'],
+            'references'      => ['testedPlans', 'evidenceArtifacts'],
+            'review'          => ['reportCompleted', 'reportDate'],
+        ];
     }
 }

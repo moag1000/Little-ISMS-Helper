@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 // SectionMap not applicable — template uses col-lg-8/4 layout with a
 // compliance-info sidebar. The sidebar is the dominant UX pattern here;
 // swapping to outline-rail would lose the persistent sidebar panel.
-final class ConsentType extends AbstractType
+final class ConsentType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -197,5 +197,18 @@ final class ConsentType extends AbstractType
             'data_class' => Consent::class,
             'translation_domain' => 'consent',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'data_subject' => ['dataSubjectIdentifier', 'identifierType'],
+            'purposes'     => ['processingActivity', 'purposes'],
+            'handling'     => ['grantedAt', 'consentMethod', 'consentChannel', 'expiresAt'],
+            'references'   => ['consentText', 'proofDocument', 'notes'],
+        ];
     }
 }

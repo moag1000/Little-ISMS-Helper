@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class WorkflowInstanceType extends AbstractType
+final class WorkflowInstanceType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -113,5 +113,19 @@ final class WorkflowInstanceType extends AbstractType
             'data_class' => WorkflowInstance::class,
             'translation_domain' => 'workflows',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'       => ['workflow', 'status'],
+            'relations'      => ['entityType', 'entityId'],
+            'responsibility' => ['initiatedBy', 'currentStep'],
+            'schedule'       => ['dueDate'],
+            'details'        => ['comments'],
+        ];
     }
 }

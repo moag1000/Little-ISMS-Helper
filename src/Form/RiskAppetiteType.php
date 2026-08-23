@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class RiskAppetiteType extends AbstractType
+final class RiskAppetiteType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -115,5 +115,18 @@ final class RiskAppetiteType extends AbstractType
             'data_class' => RiskAppetite::class,
             'translation_domain' => 'risk_appetite',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'         => ['category', 'description'],
+            'acceptance'       => ['maxAcceptableRisk', 'reviewBufferMultiplier'],
+            'approval'         => ['approvedBy', 'approvedAt'],
+            'lifecycle_status' => ['isActive'],
+        ];
     }
 }

@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class RoadmapGroupType extends AbstractType
+final class RoadmapGroupType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -74,5 +74,18 @@ final class RoadmapGroupType extends AbstractType
             'data_class'         => RoadmapGroup::class,
             'translation_domain' => 'planning',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'         => ['name', 'ismsDomain'],
+            'layout'           => ['sortOrder', 'colorToken', 'icon'],
+            'defaults'         => ['defaultTeam', 'defaultVisibility'],
+            'lifecycle_status' => ['isActive'],
+        ];
     }
 }

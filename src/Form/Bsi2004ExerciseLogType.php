@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * (improvementActionsCollection needs CollectionType prototype JS + manual row
  * rendering; _auto_form does not support CollectionType prototypes).
  */
-final class Bsi2004ExerciseLogType extends AbstractType
+final class Bsi2004ExerciseLogType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -148,5 +148,19 @@ final class Bsi2004ExerciseLogType extends AbstractType
             'data_class'         => Bsi2004ExerciseLog::class,
             'translation_domain' => 'bsi_200_4_exercise',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'        => ['exerciseType', 'bsi2004Template'],
+            'exercise_scope'  => ['scenarioSummary', 'objectivesText', 'participantsText'],
+            'action_plan'     => ['actionsBefore', 'actionsDuring', 'actionsAfter'],
+            'lessons_learned' => ['lessonsLearned', 'improvementActionsCollection'],
+            'results'         => ['overallRating'],
+        ];
     }
 }

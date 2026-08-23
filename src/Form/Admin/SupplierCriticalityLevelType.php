@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Admin;
 
+use App\Form\SectionMapInterface;
 use App\Entity\SupplierCriticalityLevel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -17,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Admin form for creating/editing SupplierCriticalityLevel records.
  */
-final class SupplierCriticalityLevelType extends AbstractType
+final class SupplierCriticalityLevelType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -104,5 +105,17 @@ final class SupplierCriticalityLevelType extends AbstractType
             'is_edit' => false,
         ]);
         $resolver->setAllowedTypes('is_edit', 'bool');
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => ['code', 'labelDe', 'labelEn'],
+            'layout'   => ['sortOrder', 'color'],
+            'defaults' => ['isDefault', 'isActive'],
+        ];
     }
 }

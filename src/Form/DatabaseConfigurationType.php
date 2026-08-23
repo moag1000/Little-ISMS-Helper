@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Form for database configuration during setup wizard.
  */
-final class DatabaseConfigurationType extends AbstractType
+final class DatabaseConfigurationType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -341,5 +341,17 @@ final class DatabaseConfigurationType extends AbstractType
         // Return null - let user specify if needed
         // We don't check file_exists to avoid open_basedir warnings
         return null;
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => ['type', 'name'],
+            'details'  => ['host', 'port', 'unixSocket', 'serverVersion'],
+            'identity' => ['user', 'password'],
+        ];
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Admin;
 
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -28,7 +29,7 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
  *
  * NULL means "use YAML baseline" — controller omits the row from lifecycle_config.
  */
-final class WorkflowStepOverlayType extends AbstractType
+final class WorkflowStepOverlayType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -112,5 +113,18 @@ final class WorkflowStepOverlayType extends AbstractType
         $resolver->setDefaults([
             'translation_domain' => 'admin',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'responsibility' => ['approverRole', 'approverUsers'],
+            'schedule'       => ['daysToComplete'],
+            'approval'       => ['reasonRequired', 'reasonRequiredOverride', 'fourEyes', 'fourEyesOverride'],
+            'advanced'       => ['autoProgressConditions', 'module'],
+        ];
     }
 }

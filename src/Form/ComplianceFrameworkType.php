@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ComplianceFrameworkType extends AbstractType
+final class ComplianceFrameworkType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -137,5 +137,17 @@ final class ComplianceFrameworkType extends AbstractType
             'data_class' => ComplianceFramework::class,
             'translation_domain' => 'compliance',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'         => ['code', 'name', 'description', 'version'],
+            'applicability'    => ['applicableIndustry', 'regulatoryBody', 'mandatory', 'scopeDescription'],
+            'lifecycle_status' => ['active'],
+        ];
     }
 }

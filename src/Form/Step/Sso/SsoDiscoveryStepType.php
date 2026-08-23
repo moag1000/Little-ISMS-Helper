@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Step\Sso;
 
+use App\Form\SectionMapInterface;
 use App\Entity\IdentityProvider;
 use App\Entity\Tenant;
 use App\Repository\TenantRepository;
@@ -21,7 +22,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 /**
  * Step 2 of the SSO wizard: discovery URL, credentials, basic config.
  */
-final class SsoDiscoveryStepType extends AbstractType
+final class SsoDiscoveryStepType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -106,5 +107,18 @@ final class SsoDiscoveryStepType extends AbstractType
             'translation_domain' => 'sso',
             'allow_global' => false,
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'       => ['name', 'slug', 'tenant'],
+            'identity'       => ['clientId', 'clientSecretPlain', 'discoveryUrl'],
+            'registration'   => ['defaultFallbackRole', 'jitProvisioning', 'autoApprove'],
+            'access_control' => ['mfaInheritance'],
+        ];
     }
 }

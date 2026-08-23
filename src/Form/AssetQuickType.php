@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class AssetQuickType extends AbstractType
+final class AssetQuickType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -120,5 +120,17 @@ final class AssetQuickType extends AbstractType
                 ->atPath('ownerUser')
                 ->addViolation();
         }
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'                => ['name', 'assetType'],
+            'owner'                   => ['ownerUser', 'ownerPerson'],
+            'protection_requirements' => ['confidentialityValue', 'integrityValue', 'availabilityValue'],
+        ];
     }
 }
