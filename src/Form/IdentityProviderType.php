@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * Caller decides whether the global `tenant=null` choice is allowed.
  * `clientSecret` is plaintext on the form; the controller encrypts it.
  */
-final class IdentityProviderType extends AbstractType
+final class IdentityProviderType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -179,5 +179,20 @@ final class IdentityProviderType extends AbstractType
             'attribute_map_json' => '',
             'domain_bindings_initial' => [],
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'     => ['slug', 'name', 'type', 'enabled', 'tenant'],
+            'identity'     => ['clientId', 'clientSecretPlain'],
+            'details'      => ['discoveryUrl', 'issuer', 'authorizationEndpoint', 'tokenEndpoint', 'userinfoEndpoint', 'jwksUri', 'scopesCsv'],
+            'branding'     => ['buttonLabel', 'buttonIcon', 'buttonColor'],
+            'registration' => ['domainBindingsCsv', 'domainBindingMode', 'jitProvisioning', 'autoApprove', 'defaultRole'],
+            'advanced'     => ['attributeMapJson'],
+        ];
     }
 }

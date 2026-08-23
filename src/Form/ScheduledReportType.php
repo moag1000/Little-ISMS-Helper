@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ScheduledReportType extends AbstractType
+final class ScheduledReportType extends AbstractType implements SectionMapInterface
 {
     public function __construct(
         private readonly RecipientFilter $recipientFilter,
@@ -180,5 +180,18 @@ final class ScheduledReportType extends AbstractType
             'data_class' => ScheduledReport::class,
             'translation_domain' => 'scheduled_reports',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'   => ['name', 'description', 'reportType'],
+            'schedule'   => ['schedule', 'preferredTime', 'dayOfWeek', 'dayOfMonth'],
+            'recipients' => ['recipientsText'],
+            'defaults'   => ['format', 'locale'],
+        ];
     }
 }

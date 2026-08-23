@@ -32,7 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Form for creating and editing User entities with role management.
  * Supports both Symfony security roles and custom Role entities.
  */
-final class UserType extends AbstractType
+final class UserType extends AbstractType implements SectionMapInterface
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
@@ -302,5 +302,21 @@ final class UserType extends AbstractType
             return $this->passwordPolicyResolver->resolveFor($tenant);
         }
         return 8;
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'         => ['firstName', 'lastName', 'email'],
+            'organisation'     => ['department', 'jobTitle', 'tenant'],
+            'contact'          => ['phoneNumber'],
+            'branding'         => ['avatarFile'],
+            'access_control'   => ['plainPassword', 'roles', 'customRoles'],
+            'lifecycle_status' => ['isActive', 'isVerified'],
+            'details'          => ['competencies', 'previousQmsBackground'],
+        ];
     }
 }

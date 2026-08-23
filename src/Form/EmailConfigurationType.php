@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * Optional step - users can skip and configure later.
  */
-final class EmailConfigurationType extends AbstractType
+final class EmailConfigurationType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -109,5 +109,18 @@ final class EmailConfigurationType extends AbstractType
             'csrf_token_id' => 'email_config',
             'translation_domain' => 'setup',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => ['transport'],
+            'details'  => ['host', 'port', 'encryption'],
+            'identity' => ['username', 'password'],
+            'defaults' => ['from_address', 'from_name'],
+        ];
     }
 }

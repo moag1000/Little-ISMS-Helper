@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class WorkflowStepType extends AbstractType
+final class WorkflowStepType extends AbstractType implements SectionMapInterface
 {
     public function __construct(private readonly UserRepository $userRepository)
     {
@@ -139,5 +139,18 @@ final class WorkflowStepType extends AbstractType
         }
 
         return $choices;
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'       => ['name', 'description', 'stepType'],
+            'responsibility' => ['approverRole', 'approverUsers'],
+            'schedule'       => ['daysToComplete'],
+            'requirements'   => ['isRequired'],
+        ];
     }
 }

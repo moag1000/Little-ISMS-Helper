@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 // their own 'sections' data directly to _auto_form, overriding any SectionMap.
 // The templates also use a custom form_theme (_bc_plan_form_theme.html.twig)
 // which overrides responseTeamMembers/requiredResources/escalationLevels rendering.
-final class BusinessContinuityPlanType extends AbstractType
+final class BusinessContinuityPlanType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
 
@@ -352,4 +352,22 @@ final class BusinessContinuityPlanType extends AbstractType
         }
     }
 
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'      => ['name', 'businessProcess', 'description', 'status', 'version'],
+            'owner'          => ['planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons', 'planOwner'],
+            'activation'    => ['activationCriteria', 'escalationLevels'],
+            'team'          => ['bcTeam', 'rolesAndResponsibilities', 'responseTeamMembers', 'crisisTeams'],
+            'recovery'      => ['recoveryProcedures', 'rto', 'rpo', 'criticalAssets', 'backupProcedures', 'restoreProcedures'],
+            'communication' => ['communicationPlan', 'internalCommunication', 'externalCommunication'],
+            'resources'     => ['alternativeSite', 'alternativeSiteAddress', 'alternativeSiteCapacity', 'requiredResources'],
+            'testing'       => ['lastTested', 'nextTestDate'],
+            'review'        => ['lastReviewDate', 'nextReviewDate', 'reviewNotes'],
+        ];
+    }
 }

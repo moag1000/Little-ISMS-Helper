@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class TenantType extends AbstractType
+final class TenantType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -277,5 +277,20 @@ final class TenantType extends AbstractType
             'data_class' => Tenant::class,
             'translation_domain' => 'tenant',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'     => ['name', 'code', 'description', 'isActive'],
+            'branding'     => ['logoFile'],
+            'organisation' => ['legalName', 'legalForm', 'leiCode', 'reportingCurrency', 'naceCode'],
+            'relations'    => ['parent', 'isCorporateParent', 'corporateNotes'],
+            'registration' => ['nis2Classification', 'nis2Sector', 'nis2ContactPoint', 'nis2RegisteredAt'],
+            'advanced'     => ['azureTenantId', 'settings'],
+        ];
     }
 }

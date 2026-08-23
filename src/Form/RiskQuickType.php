@@ -16,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class RiskQuickType extends AbstractType
+final class RiskQuickType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -84,5 +84,18 @@ final class RiskQuickType extends AbstractType
             'data_class' => Risk::class,
             'translation_domain' => 'risk',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'        => ['title', 'category', 'description'],
+            'risk_assessment' => ['probability', 'impact'],
+            'relations'       => ['asset'],
+            'owner'           => ['riskOwner'],
+        ];
     }
 }

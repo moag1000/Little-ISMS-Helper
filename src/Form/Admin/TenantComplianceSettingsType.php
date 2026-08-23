@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Admin;
 
+use App\Form\SectionMapInterface;
 use App\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 // SectionMap replaced by fa-tabs in edit.html.twig (JSON-config fields + sidebar preserved).
 // Tabs: Defaults/Frameworks/Modules/Contact/Advanced(JSON).
 // Global-settings sidebar is a sibling col-lg-4 alongside the form col-lg-8.
-final class TenantComplianceSettingsType extends AbstractType
+final class TenantComplianceSettingsType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -238,5 +239,20 @@ final class TenantComplianceSettingsType extends AbstractType
             'data_class' => Tenant::class,
             'translation_domain' => 'admin',
         ]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'defaults'              => ['locale', 'timezone', 'financialYearStartMonth', 'tlpDefault'],
+            'address'               => ['addressStreet', 'addressPostalCode', 'addressCity', 'addressCountry'],
+            'privacy'               => ['dpoContactName', 'dpoContactEmail', 'dpoAppointmentDate', 'dpoIsExternal', 'dpoAuthorityNotifiedAt', 'dpoDeputyName', 'representativeName', 'representativeContact'],
+            'risk_assessment'       => ['riskMethodology', 'riskMatrixSize', 'wizardMaturityTarget'],
+            'entity_classification' => ['doraEntityCategory'],
+            'advanced'              => ['apiRateLimitPerMinute'],
+        ];
     }
 }

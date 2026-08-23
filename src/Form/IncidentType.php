@@ -35,7 +35,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class IncidentType extends AbstractType
+final class IncidentType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
     use OwnerPickerFormTrait;
@@ -521,5 +521,24 @@ final class IncidentType extends AbstractType
                 ->atPath('reportedByUser')
                 ->addViolation();
         }
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'          => ['title', 'description', 'category', 'severity', 'status', 'detectedAt', 'occurredAt', 'closedAt'],
+            'responsibility'    => ['responsiblePerson', 'reportedByUser', 'reportedByPerson', 'reportedByDeputyPersons', 'reportedBy', 'visibleToHolding'],
+            'affected_assets'   => ['affectedSystems', 'affectedAssets', 'criticalServicesAffected'],
+            'classification'    => ['incidentClassification', 'nis2Category', 'ictIncidentClassification'],
+            'impact_assessment' => ['crossBorderImpact', 'affectedUsersCount', 'estimatedFinancialImpact', 'economicImpact', 'reputationalImpact', 'clientsAffected', 'clientsAffectedFinancialVolume', 'replicationOfImpact', 'recurringIncident'],
+            'privacy'           => ['dataBreachOccurred', 'dataLossOccurred', 'dataLeakageOccurred'],
+            'notification'      => ['nationalAuthorityNotified', 'authorityReferenceNumber', 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt', 'initialReportSubmittedAt', 'intermediateReportSubmittedAt'],
+            'corrective_action' => ['containmentActions', 'correctiveActions', 'dataRecoveryStrategy'],
+            'root_cause'        => ['rootCause', 'evidencePreserved'],
+            'lessons_learned'   => ['lessonsLearned'],
+        ];
     }
 }
