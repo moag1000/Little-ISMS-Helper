@@ -120,7 +120,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             // via the BIA-completeness lifecycle transition (see workflow).
             ->add('rto', IntegerType::class, [
                 'label' => 'business_process.field.rto',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.rto',
@@ -132,7 +132,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             ])
             ->add('rpo', IntegerType::class, [
                 'label' => 'business_process.field.rpo',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.rpo',
@@ -144,7 +144,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             ])
             ->add('mtpd', IntegerType::class, [
                 'label' => 'business_process.field.mtpd',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.mtpd',

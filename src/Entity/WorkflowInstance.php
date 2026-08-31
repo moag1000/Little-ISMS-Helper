@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Enum\WorkflowInstanceStatus;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'workflow_instances')]
@@ -26,9 +27,11 @@ class WorkflowInstance
     private ?Workflow $workflow = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $entityType = null; // e.g., 'App\Entity\Risk'
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotNull]
     private ?int $entityId = null;
 
     #[ORM\Column(length: 50)]

@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use App\Repository\MfaTokenRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * MFA Token Entity for NIS2 Compliance (Art. 21.2.j — MFA + secured communications)
@@ -44,6 +45,7 @@ class MfaToken
      * - backup: Backup codes
      */
     #[ORM\Column(length: 20)]
+    #[Assert\NotBlank]
     private ?string $tokenType = null;
 
     /**

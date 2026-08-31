@@ -34,6 +34,7 @@ class CrisisTeam
      * Team name/identifier
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $teamName = null;
 
     /**

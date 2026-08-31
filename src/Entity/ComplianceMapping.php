@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Represents cross-framework mappings between compliance requirements
@@ -43,6 +44,7 @@ class ComplianceMapping
     private int $mappingPercentage = 0;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
     private ?string $mappingType = null; // weak, partial, full, exceeds
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
