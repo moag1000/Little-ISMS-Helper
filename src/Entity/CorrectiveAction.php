@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // Junior-ISB-Audit C4-02 — Control linkage is intentionally multi-valued
 // (ISO 27001 Cl. 10.1; A.8.15 + A.8.16 findings frequently touch >1 control).
@@ -101,9 +102,11 @@ class CorrectiveAction
     private string $sourceType = self::SOURCE_TYPE_AUDIT_FINDING;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

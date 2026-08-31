@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 #[ORM\Index(name: 'idx_document_tenant', columns: ['tenant_id'])]
@@ -43,6 +44,7 @@ class Document
     private ?string $filePath = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

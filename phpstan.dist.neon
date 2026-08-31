@@ -31,6 +31,15 @@ services:
         tags:
             - phpstan.rules.rule
 
+    # Type-aware replacement for the textual check_enum_to_json_unwrap.py:
+    # a backed enum in a JSON payload makes json_encode() return false, so the
+    # endpoint answers 500. The old gate matched getStatus() by name and every
+    # one of its five baseline entries was a false positive (all return string).
+    -
+        class: App\Tests\PHPStan\Rule\NoEnumInJsonResponseRule
+        tags:
+            - phpstan.rules.rule
+
     # Prevents unscoped findAll() on tenant-owned entities in Command/Job/
     # MessageHandler. TenantFilterSubscriber only arms the Doctrine
     # tenant_filter on kernel.request, so outside HTTP those reads span ALL

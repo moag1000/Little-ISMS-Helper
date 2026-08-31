@@ -26,6 +26,7 @@ class BusinessProcess
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -35,16 +36,20 @@ class BusinessProcess
     private ?string $processOwner = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
     private ?string $criticality = null; // critical, high, medium, low
 
     // Business Impact Analysis (BIA) Daten
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotNull]
     private ?int $rto = null; // Recovery Time Objective in Stunden
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotNull]
     private ?int $rpo = null; // Recovery Point Objective in Stunden
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotNull]
     private ?int $mtpd = null; // Maximum Tolerable Period of Disruption in Stunden
 
     // Finanzielle Auswirkungen

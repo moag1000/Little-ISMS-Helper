@@ -19,6 +19,7 @@ use App\State\TenantAwareStateProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ISMSContextRepository::class)]
 #[ApiResource(
@@ -44,6 +45,7 @@ class ISMSContext
 
     #[ORM\Column(length: 255)]
     #[Groups(['isms_context:read', 'isms_context:write'])]
+    #[Assert\NotBlank]
     private ?string $organizationName = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

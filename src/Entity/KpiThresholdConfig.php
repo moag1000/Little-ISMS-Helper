@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Per-tenant override for KPI status thresholds.
@@ -33,12 +34,15 @@ class KpiThresholdConfig
     private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $kpiKey = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotNull]
     private ?int $goodThreshold = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotNull]
     private ?int $warningThreshold = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

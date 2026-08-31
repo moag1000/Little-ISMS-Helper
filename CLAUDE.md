@@ -38,6 +38,16 @@ php bin/console doctrine:migrations:migrate --no-interaction
 php bin/console doctrine:migrations:diff  # after entity changes
 
 # Testing
+# ONE-TIME local setup — without it ~99 controller tests fail misleadingly:
+#   1. .env.test.local with real DB credentials (.env.local is ignored in test env)
+#      and a database whose name carries the _test suffix phpunit appends.
+#   2. cp config/active_modules.yaml.dist config/active_modules.yaml
+#      active_modules.yaml is gitignored and typically holds a small local set.
+#      With modules missing, ModuleConfigurationService gates the page and the
+#      controller redirects to /dashboard — the test then reports a bare
+#      "Response is successful" failure that looks like a code defect but is not.
+#      CI does this copy explicitly; see .github/workflows/ci.yml.
+#   3. config/setup_complete.lock must exist, or the setup wizard intercepts.
 php bin/phpunit
 php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 

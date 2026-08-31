@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Entity\Tenant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @deprecated since 2026-06 — use config/workflows/regulatory/*.yaml step metadata instead.
@@ -36,6 +37,7 @@ class WorkflowStep
     private ?Workflow $workflow = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
