@@ -3,6 +3,13 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.15.1](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.0...v3.15.1) (2026-08-31)
+
+
+### Fixed
+
+* **validation,tests:** NOT NULL constraints, and why 99 local tests "failed" ([#1032](https://github.com/moag1000/Little-ISMS-Helper/issues/1032)) ([6400ac4](https://github.com/moag1000/Little-ISMS-Helper/commit/6400ac43ca12d0b4ffce362bb4875fa7181427d6))
+
 ## [3.15.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.14.0...v3.15.0) (2026-08-23)
 
 
