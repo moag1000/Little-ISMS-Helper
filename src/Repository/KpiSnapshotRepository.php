@@ -95,9 +95,29 @@ class KpiSnapshotRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * First instant of the oldest month in an N-calendar-month window.
+     *
+     * Anchoring on the month rather than on today matters: "-6 months" from
+     * 2026-08-31 is 2026-02-31, which PHP normalises to 2026-03-03 — so a
+     * snapshot dated 2026-03-01 fell outside the window and the trend silently
+     * returned five months instead of six. The bug only surfaced on the 29th
+     * to 31st of a month following a shorter one, which is why it sat unnoticed
+     * until a CI run happened to land on 31 August.
+     */
+    public static function windowStart(int $months, ?DateTimeImmutable $now = null): DateTimeImmutable
+    {
+        $now ??= new DateTimeImmutable();
+
+        return $now
+            ->modify('first day of this month')
+            ->modify('-' . max(0, $months - 1) . ' months')
+            ->setTime(0, 0);
+    }
+
     public function findMonthlySnapshots(Tenant $tenant, int $months = 12): array
     {
-        $since = new DateTimeImmutable("-{$months} months");
+        $since = self::windowStart($months);
 
         // Get the last snapshot per month using a subquery approach
         $allSnapshots = $this->createQueryBuilder('s')
