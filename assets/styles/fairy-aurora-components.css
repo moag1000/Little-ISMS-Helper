@@ -2337,6 +2337,14 @@ h1, h2, h3, h4, h5, h6 {
 h1 { letter-spacing: -0.5px; }
 h2 { letter-spacing: -0.3px; }
 
+/* Kanon H1 (Review 2026-09) — Display-Font für Titel und Kennzahlen */
+h1, h2, .h1, .h2,
+.fa-page-header__title, .fa-hero__title, .fa-kpi-card__value, .fa-feature-card__value, .kpi-card-value,
+.fa-form-layout__title, .fa-tutorial-checkpoint__title, .fa-brand-name {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+}
+
 p {
     color: var(--fg);
     line-height: 1.55;
@@ -3735,7 +3743,7 @@ html[data-theme="dark"] .fa-page-header__badge {
 .fa-page-header__badge i { font-size: 12px; }
 
 .fa-page-header__title {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: clamp(20px, 2.5vw, 28px);
     font-weight: 700;
     color: var(--fg);
@@ -3932,7 +3940,7 @@ html[data-theme="dark"] .fa-page-header__badge {
 }
 
 .fa-feature-card__value {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: 32px;
     font-weight: 700;
     color: var(--fg);
@@ -4021,7 +4029,7 @@ html[data-theme="dark"] .fa-hero {
 }
 
 .fa-hero__title {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: clamp(22px, 3vw, 32px);
     font-weight: 700;
     color: var(--fg);

@@ -36,11 +36,13 @@ dann wie oben den Snapshot erneuern. Danach den Baseline-Eintrag löschen.
 
 ## Bekannte Abweichungen
 
-Die Baseline `scripts/quality/baselines/design_tokens_sync.txt` listet die beim
-ersten Abgleich gefundenen Abweichungen (71). Die Entscheidung, welche Seite
-jeweils gilt, ist dokumentiert unter
-https://claude.ai/artifact/WurNH6u4qFLFVfuyryxCKh. Jeder erledigte Punkt
-entfernt seine Zeilen aus der Baseline.
+Die Baseline `scripts/quality/baselines/design_tokens_sync.txt` listet die
+offenen Abweichungen. Entschieden ist alles (2026-10-09, „alles wie empfohlen“,
+https://claude.ai/artifact/WurNH6u4qFLFVfuyryxCKh): Gestaltung (Kanon H1/H5,
+D07, Personas, `--fg-1`) kam aus dem Artefakt ins Repo. Die verbleibenden
+Einträge (z-index, helle Schatten, BCM-Persona, ungenutzte Typo-/Legacy-Tokens,
+`--spacing-3xl`) behält das Repo; sie werden im Artefakt nachgezogen. Danach
+Snapshot erneuern und die Zeilen aus der Baseline löschen.
 
 Nicht vom Gate erfasst: Tokens, die nur das Repo kennt (u. a. Severity-Farben,
 Status-Tints, `--target-*`, `--z-overlay`, Bootstrap-Brücke `--bs-*`). Sie
