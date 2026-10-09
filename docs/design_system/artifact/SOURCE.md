@@ -5,7 +5,7 @@ Design-System-Artefakt gepflegt:
 
 - **Artefakt:** https://claude.ai/artifact/D2J6dQUWYUBjq3q7MMeA3D (privat)
 - **Ursprung:** Claude-Design-Projekt `b635a91d-510c-4461-8c7d-53183b236bd1`
-- **Snapshot-Stand:** Artefakt-Version `1791578758-4a78` (2026-10-09)
+- **Snapshot-Stand:** Artefakt-Version `1791580445-691a` (2026-10-09)
 
 Der Artefakt-Link ist privat, CI kann ihn nicht abrufen. Darum liegt hier ein
 Snapshot seiner Token-Schicht. Er ist die Referenz, gegen die
@@ -36,14 +36,12 @@ dann wie oben den Snapshot erneuern. Danach den Baseline-Eintrag löschen.
 
 ## Bekannte Abweichungen
 
-Die Baseline `scripts/quality/baselines/design_tokens_sync.txt` listet die
-offenen Abweichungen. Entschieden ist alles (2026-10-09, „alles wie empfohlen“,
-https://claude.ai/artifact/WurNH6u4qFLFVfuyryxCKh): Gestaltung (Kanon H1/H5,
-D07, Personas, `--fg-1`) kam aus dem Artefakt ins Repo. Die verbleibenden
-Einträge (z-index, helle Schatten, BCM-Persona, ungenutzte Typo-/Legacy-Tokens,
-`--spacing-3xl`) behält das Repo; sie werden im Artefakt nachgezogen. Danach
-Snapshot erneuern und die Zeilen aus der Baseline löschen.
+Keine. Alle 71 Abweichungen des ersten Abgleichs sind entschieden (2026-10-09,
+„alles wie empfohlen“, https://claude.ai/artifact/WurNH6u4qFLFVfuyryxCKh) und
+auf beiden Seiten umgesetzt; die Baseline ist leer. Gestaltung (Kanon H1/H5,
+D07, Personas) kam aus dem Artefakt, Technik (z-index-Stack, Schatten) aus dem
+Repo; ungenutzte Typo- und Legacy-Tokens sind aus dem Artefakt entfernt.
 
 Nicht vom Gate erfasst: Tokens, die nur das Repo kennt (u. a. Severity-Farben,
-Status-Tints, `--target-*`, `--z-overlay`, Bootstrap-Brücke `--bs-*`). Sie
-fehlen im Artefakt und werden dort ergänzt.
+Status-Tints, Timing `--t-*`, `--target-*`, Bootstrap-Brücke `--bs-*`). Das Gate
+prüft nur die Richtung Artefakt → Repo.
