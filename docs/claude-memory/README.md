@@ -117,6 +117,9 @@ there because the original index never listed it.
 - [project_policy_wizard_section_extensions](project_policy_wizard_section_extensions.md): topic policies with per-standard section extensions
 - [project_datenschutz_audit_2026_06_04](project_datenschutz_audit_2026_06_04.md): a data-protection review of the tool's own features and the enforcement gates added
 - [project_ebios_rm_spec](project_ebios_rm_spec.md): EBIOS RM design decisions (reuse-first, creates normal `Risk` rows)
+- `project_isa2027_workbook.md` — VDA ISA 2027 (78 Controls) analysiert — Lizenz ist CC BY-ND 4.0 + §9 (Volltext wäre shippable!), Importer frisst es, aber es fehlt eine Katalog-Versionsachse
+- `project_mris_v18_tisax_isa2027.md` — MRIS ist auf v1.8 + eigenen TISAX-ISA-2027-Track gewachsen; Lizenz wechselte auf CC BY-NC 4.0 (offene Entscheidung), App steht auf v1.5
+- `project_dach_eu_mapping_program.md` — DACH+EU Cross-Framework-Mapping-Leadership-Programm — reusable WS-5b-Pipeline auf alle ~70 Mappings. Spec 2026-06-12. P1 (NIS2↔BSI) gemerged
 
 ### Feature modules and roadmap state
 
@@ -125,3 +128,14 @@ there because the original index never listed it.
 - [project_sprint_roadmap_state](project_sprint_roadmap_state.md): roadmap state as of 2026-05-15
 - [project_improvement_plans_open](project_improvement_plans_open.md): persona-driven improvement plans, all high-priority items done
 - [project_persona_skills](project_persona_skills.md): persona skills under `.claude/skills/persona-*` for role-based tool feedback
+- `project_backlog_2026_05_25.md` — Restposten-Backlog. Stand 2026-05-27: alle A-Items + B2/B3 done. Nur B1 (Term-Konsolidierung) + B4 (NC-Entity-Split) als UX-Decisions offen. Strategische C-Phasen weiter Backlog.
+- `project_consultant_assessment_apr2026.md` — Aktuelle Markt-Einschätzung des Tools nach Abschluss aller Audit-Fixes, SMB-Features, Onboarding-System, Evidence + Cert-Bundle
+
+### Agent working conventions
+
+Generic conventions for AI coding agents working in this repository (parallel agents, worktrees, merge cadence). Not project-specific; kept because they are reusable.
+
+- `feedback_always_subagent_driven.md` — Implementierungspläne IMMER subagenten-getrieben ausführen (superpowers:subagent-driven-development), nicht inline.
+- `feedback_auto_merge_on_green.md` — User permits auto-squash-merge of own PRs as soon as CI/CD turns fully green. No confirmation prompt needed.
+- `feedback_concurrent_agent_worktree.md` — Bei parallelem Agent im selben Repo (Branch-Switch unter dir) — eigene Commits via dediziertem git worktree isolieren, nie auf fremdem Branch committen.
+- `feedback_no_touching_wip.md` — Bei dirty working tree mit WIP-Files anderer Agents nicht parken/verschieben/stashen — eigene Tests in Isolation prüfen oder ohne fremde Files arbeiten.
