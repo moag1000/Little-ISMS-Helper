@@ -70,7 +70,9 @@ final class BcmRecoveryPlansPresentCheck implements PolicyWizardCheckInterface
         $crownJewelCount = (int) $this->assetRepository->createQueryBuilder('a')
             ->select('COUNT(a.id)')
             ->where('a.tenant = :tenant')
-            ->andWhere('GREATEST(COALESCE(a.confidentialityValue, 0), COALESCE(a.integrityValue, 0), COALESCE(a.availabilityValue, 0)) >= :threshold')
+            // max(C, I, A) >= threshold, written as OR because DQL has no GREATEST().
+            ->andWhere('a.confidentialityValue >= :threshold OR a.integrityValue >= :threshold'
+                . ' OR a.availabilityValue >= :threshold')
             ->setParameter('tenant', $tenant)
             ->setParameter('threshold', self::CROWN_JEWEL_CIA_THRESHOLD)
             ->getQuery()
