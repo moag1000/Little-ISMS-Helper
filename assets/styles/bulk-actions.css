@@ -46,8 +46,8 @@
     gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
     border-radius: var(--r-pill);
-    background: linear-gradient(90deg, var(--primary-strong), var(--accent-strong));
-    box-shadow: 0 8px 32px var(--primary-glow);
+    background: var(--primary);
+    box-shadow: var(--shadow-md);
     color: var(--on-primary);
     border: 1px solid rgb(255 255 255 / 0.2);
     transition: opacity var(--t-base) var(--ease-out),
@@ -544,10 +544,10 @@ html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
 
 /* Brand variant — Primary→Accent gradient for hero lists */
 .fa-bulk-bar--brand {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent, var(--primary-strong, var(--primary))) 100%);
+    background: var(--primary);
     border: 0;
     color: var(--on-primary);
-    box-shadow: 0 18px 40px -10px color-mix(in oklab, var(--primary) 50%, transparent), 0 4px 12px -4px rgb(0 0 0 / 0.18);
+    box-shadow: var(--shadow-md), 0 4px 12px -4px rgb(0 0 0 / 0.18);
 }
 
 .fa-bulk-bar--brand .fa-bulk-bar__count    { background: rgb(255 255 255 / 0.18); color: var(--on-primary); }

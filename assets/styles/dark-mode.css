@@ -76,7 +76,7 @@ html[data-bs-theme="dark"] .alert h6 {
    Stat Card Icon — Dark gradient + glow
    =============================== */
 [data-theme="dark"] .stat-card-icon {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    background: var(--primary);
 }
 
 /* ===============================
@@ -117,37 +117,37 @@ html[data-bs-theme="dark"] .alert h6 {
    =============================== */
 [data-theme="dark"] .card-header.bg-primary,
 [data-bs-theme="dark"] .card-header.bg-primary {
-    background: linear-gradient(135deg, var(--primary-strong), var(--primary-hover)) !important;
+    background: var(--primary-strong) !important;
     color: var(--on-primary) !important;
 }
 
 [data-theme="dark"] .card-header.bg-success,
 [data-bs-theme="dark"] .card-header.bg-success {
-    background: linear-gradient(135deg, var(--success-strong), var(--success)) !important;
+    background: var(--success-strong) !important;
     color: var(--on-success) !important;
 }
 
 [data-theme="dark"] .card-header.bg-warning,
 [data-bs-theme="dark"] .card-header.bg-warning {
-    background: linear-gradient(135deg, var(--warning-strong), var(--warning)) !important;
+    background: var(--warning-strong) !important;
     color: var(--on-warning) !important;
 }
 
 [data-theme="dark"] .card-header.bg-danger,
 [data-bs-theme="dark"] .card-header.bg-danger {
-    background: linear-gradient(135deg, var(--danger-strong), var(--danger)) !important;
+    background: var(--danger-strong) !important;
     color: var(--on-danger) !important;
 }
 
 [data-theme="dark"] .card-header.bg-info,
 [data-bs-theme="dark"] .card-header.bg-info {
-    background: linear-gradient(135deg, var(--primary-hover), var(--primary)) !important;
+    background: var(--primary-hover) !important;
     color: var(--on-primary) !important;
 }
 
 [data-theme="dark"] .card-header.bg-secondary,
 [data-bs-theme="dark"] .card-header.bg-secondary {
-    background: linear-gradient(135deg, var(--fg-2), var(--fg-3)) !important;
+    background: var(--fg-2) !important;
     color: var(--surface) !important;
 }
 
@@ -191,8 +191,8 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-bs-theme="dark"] [class^="bi-"],
 [data-bs-theme="dark"] [class*=" bi-"] {
     color: inherit;
-    text-shadow: 0 0 8px currentColor;
-    filter: drop-shadow(0 0 1px rgb(255, 255, 255, 0.3));
+    text-shadow: none;
+    filter: none;
 }
 
 [data-theme="dark"] .bi::before,
@@ -209,14 +209,14 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-bs-theme="dark"] .btn .bi,
 [data-bs-theme="dark"] .btn .bi::before {
     color: inherit !important;
-    text-shadow: 0 0 6px currentColor;
+    text-shadow: none;
     filter: none;
 }
 
 [data-theme="dark"] .bi:not(.btn .bi, .nav-link .bi, .dropdown-item .bi),
 [data-bs-theme="dark"] .bi:not(.btn .bi, .nav-link .bi, .dropdown-item .bi) {
     color: var(--fg);
-    text-shadow: 0 0 10px currentColor;
+    text-shadow: none;
 }
 
 [data-theme="dark"] .card-header .bi,
@@ -224,45 +224,45 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-bs-theme="dark"] .card-header .bi,
 [data-bs-theme="dark"] .card-header i.bi {
     color: var(--primary) !important;
-    text-shadow: 0 0 8px var(--primary), 0 0 16px rgb(var(--primary-rgb), 0.5);
-    filter: drop-shadow(0 0 2px var(--primary));
+    text-shadow: none;
+    filter: none;
 }
 
 /* Icon glow for text-* utility classes */
 [data-theme="dark"] .text-primary .bi,
 [data-bs-theme="dark"] .text-primary .bi {
     color: var(--primary) !important;
-    text-shadow: 0 0 8px var(--primary), 0 0 16px rgb(var(--primary-rgb), 0.4);
+    text-shadow: none;
 }
 
 [data-theme="dark"] .text-success .bi,
 [data-bs-theme="dark"] .text-success .bi {
     color: var(--success) !important;
-    text-shadow: 0 0 8px var(--success), 0 0 16px rgb(var(--success-rgb), 0.4);
+    text-shadow: none;
 }
 
 [data-theme="dark"] .text-danger .bi,
 [data-bs-theme="dark"] .text-danger .bi {
     color: var(--danger) !important;
-    text-shadow: 0 0 8px var(--danger), 0 0 16px rgb(var(--danger-rgb), 0.4);
+    text-shadow: none;
 }
 
 [data-theme="dark"] .text-warning .bi,
 [data-bs-theme="dark"] .text-warning .bi {
     color: var(--warning) !important;
-    text-shadow: 0 0 8px var(--warning), 0 0 16px rgb(var(--warning-rgb), 0.4);
+    text-shadow: none;
 }
 
 [data-theme="dark"] .text-info .bi,
 [data-bs-theme="dark"] .text-info .bi {
     color: var(--primary) !important;
-    text-shadow: 0 0 8px var(--primary), 0 0 16px rgb(var(--primary-rgb), 0.4);
+    text-shadow: none;
 }
 
 [data-theme="dark"] .text-muted .bi,
 [data-bs-theme="dark"] .text-muted .bi {
     color: var(--fg-3) !important;
-    text-shadow: 0 0 4px rgb(var(--sev-neutral-rgb), 0.4);
+    text-shadow: none;
 }
 
 /* Special glow classes */
@@ -304,7 +304,7 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-bs-theme="dark"] .bi.fs-6,
 [data-bs-theme="dark"] small .bi,
 [data-bs-theme="dark"] .btn-sm .bi {
-    text-shadow: 0 0 4px currentColor;
+    text-shadow: none;
     filter: none;
 }
 
@@ -313,7 +313,7 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-theme="dark"] .table .bi,
 [data-bs-theme="dark"] table .bi,
 [data-bs-theme="dark"] .table .bi {
-    text-shadow: 0 0 3px currentColor;
+    text-shadow: none;
     filter: none;
 }
 

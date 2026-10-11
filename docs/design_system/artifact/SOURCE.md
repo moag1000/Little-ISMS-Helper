@@ -55,9 +55,18 @@ kein Glow in Ruhe) wurde einmalig per 3-Wege-Merge aus dem Artefakt nach
 `admin-panel.css` und `fairy-aurora-responsive.css` übernommen. Bewusst nicht
 übernommen: im Repo ungenutzte Blöcke (Tutorial, `fa-audit-timeline`,
 Legacy-`fa-maturity-heat`), der `fa-form-modal`-Block (`in-page-forms.css` ist
-dort maßgeblich), der umgebaute Command-Palette (`.fa-cmdp`, bräuchte neues
-Markup) und die Icon-Liste (das Repo hat mehr Icons als das Artefakt).
+dort maßgeblich) und die Icon-Liste (das Repo hat mehr Icons als das Artefakt).
+Die Command-Palette kommt aus dem Artefakt und stylt `.fa-cmdp*` und das
+bestehende `.command-palette-*`-Markup gemeinsam.
 
 Die Bootstrap-Brücken (`.btn`, `.alert`) sehen seitdem aus wie die
 Aurora-Komponenten (`.fa-cyber-btn`, `.fa-alert`), ohne dass Templates
-umgeschrieben werden mussten.
+umgeschrieben werden mussten. Tabellen-Köpfe, Badges, Sidebar-Aktiv-Zustand,
+Sprachumschalter, Toasts und Hinweisboxen folgen ebenfalls dem Kanon.
+
+Danach wurde das restliche App-CSS gegen den Kanon gekehrt: keine Glows in
+Ruhe (nur noch Fokus/Aktiv/✦ im Dark Mode, neutrale `--shadow-md` für
+schwebende Flächen wie Drawer und Pager), keine Verläufe als Füllung von
+Buttons, Balken und Badges, Meldungen und Hinweisboxen als Tönungsrahmen
+statt Links-Streifen. Ausnahme bleibt `.card.border-left-*` als bewusster
+Status-Streifen an Karten. Stylelint läuft fehlerfrei.

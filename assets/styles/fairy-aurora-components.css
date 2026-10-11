@@ -723,7 +723,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     width: 6px; height: 6px;
     border-radius: 50%;
     background: currentColor;
-    box-shadow: 0 0 4px currentColor;
+    box-shadow: none;
     flex-shrink: 0;
 }
 .fa-status-pill > .bi { font-size: 1em; }
@@ -1748,7 +1748,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     width: 5px; height: 5px;
     border-radius: 50%;
     background: var(--success);
-    box-shadow: 0 0 6px var(--success-glow);
+    box-shadow: none;
 }
 .fa-setup-right__body { flex: 1; display: flex; flex-direction: column; }
 .fa-setup-right__content { flex: 1; }
@@ -4010,13 +4010,11 @@ html[data-theme="dark"] .fa-page-header__badge {
         radial-gradient(circle at 92% 60%, color-mix(in oklab, var(--accent-tint) calc(var(--pattern-opacity-hero) * 1000%), transparent) 0%, transparent 55%),
         var(--surface);
     border: 1px solid var(--border);
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
-                0 8px 32px color-mix(in oklab, var(--primary) 8%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent), var(--shadow-md);
 }
 
 html[data-theme="dark"] .fa-hero {
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
-                0 8px 40px color-mix(in oklab, var(--primary) 12%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent), var(--shadow-md);
 }
 
 .fa-hero__alva {
@@ -6581,9 +6579,7 @@ tr.fa-table__row[data-row-clickable="true"] { cursor: pointer; }
         var(--surface);
     border-left: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
     box-shadow:
-        -1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset,
-        -28px 0 64px -16px color-mix(in oklab, var(--primary-glow) 70%, transparent),
-        -8px 0 24px -4px rgb(0 0 0 / 0.18);
+        -1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset, var(--shadow-md), -8px 0 24px -4px rgb(0 0 0 / 0.18);
     transform: translateX(102%);
     transition: transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1);
     z-index: var(--z-modal, 1070);
@@ -6634,9 +6630,7 @@ html[data-theme="dark"] .fa-drawer {
     border-left: 0;
     border-right: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
     box-shadow:
-        1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset,
-        28px 0 64px -16px color-mix(in oklab, var(--primary-glow) 70%, transparent),
-        8px 0 24px -4px rgb(0 0 0 / 0.18);
+        1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset, var(--shadow-md), 8px 0 24px -4px rgb(0 0 0 / 0.18);
     transform: translateX(-102%);
 }
 
@@ -6931,12 +6925,12 @@ html[data-theme="dark"] .fa-menu__item-shortcut { background: var(--surface-3); 
     background: color-mix(in oklab, var(--surface) 70%, var(--primary-tint));
     border: 1px solid color-mix(in oklab, var(--primary) 14%, var(--border));
     border-radius: var(--r-pill);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), 0 4px 12px -4px color-mix(in oklab, var(--primary-glow) 50%, transparent);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), var(--shadow-md);
 }
 
 html[data-theme="dark"] .fa-pager {
     background: color-mix(in oklab, var(--surface-2) 80%, var(--primary-tint));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 4px 12px -4px color-mix(in oklab, var(--primary-glow) 60%, transparent);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04), var(--shadow-md);
 }
 
 .fa-pager__btn {
@@ -7016,7 +7010,7 @@ html[data-theme="dark"] .fa-pager {
         var(--surface);
     border: 1px solid color-mix(in oklab, var(--primary) 12%, var(--border));
     border-radius: var(--r-lg);
-    box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--primary-glow) 40%, transparent);
+    box-shadow: var(--shadow-md);
     flex-wrap: wrap;
     position: relative;
     overflow: hidden; /* Kanon H4 */
@@ -10016,7 +10010,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 }
 .h-status::before {
     content: ""; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--success); box-shadow: 0 0 8px var(--success);
+    background: var(--success); box-shadow: none;
     animation: h-status-pulse 2s ease-in-out infinite;
     flex-shrink: 0;
 }
@@ -10148,7 +10142,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     display: none; align-items: center; justify-content: center;
     padding: 0 6px;
     flex-shrink: 0;
-    box-shadow: 0 0 8px color-mix(in oklab, var(--primary) 30%, transparent);
+    box-shadow: none;
 }
 /* Phase 4.4: live-badge is-visible state */
 .sb-prominent__badge.is-visible { display: inline-flex; }
@@ -10156,7 +10150,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     background: color-mix(in oklab, var(--danger) 22%, transparent);
     color: var(--danger);
     border-color: color-mix(in oklab, var(--danger) 50%, transparent);
-    box-shadow: 0 0 10px color-mix(in oklab, var(--danger) 35%, transparent);
+    box-shadow: none;
     animation: sb-badge-pulse 1.8s ease-in-out infinite;
 }
 
