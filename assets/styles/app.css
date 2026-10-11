@@ -709,7 +709,7 @@ body {
     align-items: center;
     gap: 0.375rem;
     padding: 0.5rem 1rem;
-    background: var(--brand-gradient);
+    background: var(--primary-strong); /* Kanon H4 */
     color: var(--on-primary);
     border: none;
     border-radius: var(--r-pill);
@@ -2587,7 +2587,7 @@ textarea.form-control {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--brand-gradient);
+    background: var(--primary-strong); /* Kanon H4 */
     color: var(--on-primary);
     display: flex;
     align-items: center;

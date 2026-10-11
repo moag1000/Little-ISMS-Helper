@@ -46,36 +46,15 @@
 }
 
 /* ===============================
-   Alerts — Dark Mode text color exceptions
-   In dark mode alerts need lighter text colors for readability
-   (Aurora surface/fg alone isn't enough on the glow backgrounds).
+   Alerts — Dark Mode text colour
+   Like .fa-alert: body text stays --fg on the tinted background; only
+   warning keeps its amber text (same as .fa-alert--warning).
    =============================== */
-html[data-theme="dark"] .alert-info,
-html[data-bs-theme="dark"] .alert-info,
-[data-theme="dark"] .alert.alert-info,
-[data-bs-theme="dark"] .alert.alert-info {
-    color: var(--primary) !important; /* light cyan text on dark */
-}
-
 html[data-theme="dark"] .alert-warning,
 html[data-bs-theme="dark"] .alert-warning,
 [data-theme="dark"] .alert.alert-warning,
 [data-bs-theme="dark"] .alert.alert-warning {
     color: var(--warning-text) !important; /* light amber text on dark */
-}
-
-html[data-theme="dark"] .alert-danger,
-html[data-bs-theme="dark"] .alert-danger,
-[data-theme="dark"] .alert.alert-danger,
-[data-bs-theme="dark"] .alert.alert-danger {
-    color: var(--danger) !important; /* light red text on dark */
-}
-
-html[data-theme="dark"] .alert-success,
-html[data-bs-theme="dark"] .alert-success,
-[data-theme="dark"] .alert.alert-success,
-[data-bs-theme="dark"] .alert.alert-success {
-    color: var(--success) !important; /* light green text on dark */
 }
 
 html[data-theme="dark"] .alert h1,

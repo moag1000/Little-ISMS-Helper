@@ -45,3 +45,19 @@ Repo; ungenutzte Typo- und Legacy-Tokens sind aus dem Artefakt entfernt.
 Nicht vom Gate erfasst: Tokens, die nur das Repo kennt (u. a. Severity-Farben,
 Status-Tints, Timing `--t-*`, `--target-*`, Bootstrap-Brücke `--bs-*`). Das Gate
 prüft nur die Richtung Artefakt → Repo.
+
+## Komponenten-Ebene (2026-10-11)
+
+Das Gate prüft nur Tokens. Die Komponenten-CSS (Kanon 2026-09 H1–H5:
+Notch nur am Primary-CTA, Meldung = Tönungsrahmen, Violett nur für ✦/Alva,
+kein Glow in Ruhe) wurde einmalig per 3-Wege-Merge aus dem Artefakt nach
+`assets/styles/fairy-aurora-components.css`, `premium.css`, `app.css`,
+`admin-panel.css` und `fairy-aurora-responsive.css` übernommen. Bewusst nicht
+übernommen: im Repo ungenutzte Blöcke (Tutorial, `fa-audit-timeline`,
+Legacy-`fa-maturity-heat`), der `fa-form-modal`-Block (`in-page-forms.css` ist
+dort maßgeblich), der umgebaute Command-Palette (`.fa-cmdp`, bräuchte neues
+Markup) und die Icon-Liste (das Repo hat mehr Icons als das Artefakt).
+
+Die Bootstrap-Brücken (`.btn`, `.alert`) sehen seitdem aus wie die
+Aurora-Komponenten (`.fa-cyber-btn`, `.fa-alert`), ohne dass Templates
+umgeschrieben werden mussten.

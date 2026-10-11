@@ -323,7 +323,7 @@ html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255
     position: absolute;
     left: 20px; bottom: -1px;
     width: 60px; height: 2px;
-    background: var(--brand-gradient-line);
+    background: var(--primary); /* Kanon H4 */
     border-radius: var(--r-xs);
 }
 .ds-admin-page-mock__eyebrow {
