@@ -15,13 +15,13 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'calendar-check', label: 'nav.planning'|trans({}, 'nav') },
+    badge: { icon: 'nav-calendar-check', label: 'nav.planning'|trans({}, 'nav') },
     title: 'planning.admin.title'|trans({}, 'planning'),
     subtitle: 'planning.admin.subtitle'|trans({}, 'planning'),
     actions: [
-        { label: 'planning.sources.title'|trans({}, 'planning'), variant: 'ghost', icon: 'arrow-left-right', href: path('app_planning_sources_index') },
-        { label: 'planning.report.title'|trans({}, 'planning'), variant: 'ghost', icon: 'bar-chart-line', href: path('app_planning_roadmap_report') },
-        { label: 'planning.settings.title'|trans({}, 'planning'), variant: 'ghost', icon: 'wrench', href: path('app_planning_settings') },
+        { label: 'planning.sources.title'|trans({}, 'planning'), variant: 'ghost', icon: 'nav-change', href: path('app_planning_sources_index') },
+        { label: 'planning.report.title'|trans({}, 'planning'), variant: 'ghost', icon: 'nav-bar-chart', href: path('app_planning_roadmap_report') },
+        { label: 'planning.settings.title'|trans({}, 'planning'), variant: 'ghost', icon: 'nav-wrench', href: path('app_planning_settings') },
         { label: 'planning.task.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_task_new') }
     ]
 }) }}

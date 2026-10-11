@@ -10628,6 +10628,14 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
  * ------------------------------------------------------------------------- */
 .fa-notch { clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); border-radius: 0; }
 .fa-notch--sm { clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px); border-radius: 0; }
+/* Icons on filled buttons take the button's text colour; a semantic icon
+   modifier (fa-icon--status-info, --success, …) would otherwise be invisible. */
+.fa-cyber-btn--primary .fa-icon,
+.fa-cyber-btn--success .fa-icon,
+.fa-cyber-btn--warning .fa-icon,
+.btn-primary .fa-icon,
+.btn-success .fa-icon,
+.btn-warning .fa-icon { color: inherit; }
 .fa-tabs__nav-item.is-active,
 .fa-tabs__nav-item.has-error.is-active { border-bottom-color: transparent; position: relative; }
 .fa-tabs__nav-item.is-active::after {

@@ -19,7 +19,7 @@
         title: certificate.certNumber ?? certificate.frameworkCode,
         subtitle: certificate.certBody,
         actions: [
-            { label: 'compliance.certificate.actions.preview'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-eye', href: path('app_compliance_certificate_preview', {_locale: app.request.locale, id: certificate.id}) }
+            { label: 'compliance.certificate.actions.preview'|trans({}, 'compliance'), variant: 'ghost', icon: 'ui-eye', href: path('app_compliance_certificate_preview', {_locale: app.request.locale, id: certificate.id}) }
         ]
     }) }}
 

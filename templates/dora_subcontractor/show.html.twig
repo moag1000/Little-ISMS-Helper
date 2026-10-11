@@ -16,7 +16,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'diagram-3', label: ('dora_subcontractor.tier_label'|trans({'%tier%': subcontractor.tier}, 'dora')) },
+        badge: { icon: 'nav-flow', label: ('dora_subcontractor.tier_label'|trans({'%tier%': subcontractor.tier}, 'dora')) },
         title: subcontractor.name,
         subtitle: subcontractor.parentSupplier ? subcontractor.parentSupplier.name : '',
         actions: [

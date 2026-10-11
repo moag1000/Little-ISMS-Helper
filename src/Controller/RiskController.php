@@ -1043,13 +1043,13 @@ class RiskController extends AbstractController
 
         return $this->checkBulkDependencies($risks, 'getTitle', [
             fn (Risk $risk): ?array => count($this->riskTreatmentPlanRepository->findByRisk($risk)) > 0
-                ? ['message' => sprintf('%d Behandlungsplan/-pläne verknüpft', count($this->riskTreatmentPlanRepository->findByRisk($risk))), 'icon' => 'file-earmark-check']
+                ? ['message' => sprintf('%d Behandlungsplan/-pläne verknüpft', count($this->riskTreatmentPlanRepository->findByRisk($risk))), 'icon' => 'nav-file-check']
                 : null,
             fn (Risk $risk): ?array => ($c = $risk->getIncidents()->count()) > 0
                 ? ['message' => sprintf('%d Vorfall/Vorfälle verknüpft', $c), 'icon' => 'exclamation-triangle']
                 : null,
             fn (Risk $risk): ?array => ($c = $risk->getControls()->count()) > 0
-                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'check-circle']
+                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'control']
                 : null,
         ]);
     }
