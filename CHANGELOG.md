@@ -3,6 +3,13 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.15.2](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.1...v3.15.2) (2026-10-11)
+
+
+### Fixed
+
+* **deps:** refresh dependencies on Symfony 7.4 LTS, fix API asset crash ([#1037](https://github.com/moag1000/Little-ISMS-Helper/issues/1037)) ([1c22a2b](https://github.com/moag1000/Little-ISMS-Helper/commit/1c22a2b1b25d0b30110ce8c2df320383b13cfe3c))
+
 ## [3.15.1](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.0...v3.15.1) (2026-08-31)
 
 
