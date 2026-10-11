@@ -277,10 +277,10 @@ class RestoreService
             'options' => $options,
         ]);
 
-        try {
-            $connection      = $this->entityManager->getConnection();
-            $disableFKChecks = false;
+        $connection      = $this->entityManager->getConnection();
+        $disableFKChecks = false;
 
+        try {
             try {
                 $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
                 $disableFKChecks = true;
