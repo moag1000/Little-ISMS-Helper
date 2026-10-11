@@ -80,8 +80,10 @@ class AssetNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function getSupportedTypes(?string $format): array
     {
+        // Not cacheable: supportsNormalization() depends on the context flag,
+        // a cached "true" would make the normalizer call itself forever.
         return [
-            Asset::class => true,
+            Asset::class => false,
         ];
     }
 
