@@ -3411,13 +3411,14 @@ html[data-theme="dark"] .toast {
     --bs-table-border-color: var(--border);
     --bs-table-striped-bg:  var(--surface-2);
     --bs-table-striped-color: var(--fg);
-    --bs-table-hover-bg:    var(--surface-3);
+    --bs-table-hover-bg:    var(--surface-2);
     --bs-table-hover-color: var(--fg);
     --bs-table-active-bg:   var(--surface-3);
     --bs-table-active-color: var(--fg);
 
     color: var(--fg);
     border-color: var(--border);
+    font-size: 13px; /* = .fa-table */
 }
 
 /* Thead — no Bootstrap token exists, so explicit rule with
@@ -3428,9 +3429,10 @@ html[data-theme="dark"] .toast {
 }
 .table.table > thead > tr > th {
     background-color: var(--surface-2);
-    color: var(--fg);
-    border-bottom: 2px solid var(--border);
+    color: var(--fg-2);
+    border-bottom: 1px solid var(--border);
     font-weight: 600;
+    font-size: 12px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -4719,7 +4721,7 @@ button.fa-filter-chip.fa-filter-chip--active {
     /* Slightly larger than the previous 10px hardcode — prior value clamped vertical box too far. */
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em; /* = .fa-status-pill */
     text-transform: uppercase;
     line-height: 1.25;
 }
@@ -4730,17 +4732,17 @@ button.fa-filter-chip.fa-filter-chip--active {
     border: 1px solid var(--primary);
 }
 .badge.bg-success {
-    background-color: color-mix(in oklab, var(--success) 12%, var(--surface)) !important;
+    background-color: var(--success-glow) !important;
     color: var(--success-strong) !important;
     border: 1px solid var(--success);
 }
 .badge.bg-warning {
-    background-color: color-mix(in oklab, var(--warning) 12%, var(--surface)) !important;
+    background-color: var(--warning-glow) !important;
     color: var(--warning-strong) !important;
     border: 1px solid var(--warning);
 }
 .badge.bg-danger {
-    background-color: color-mix(in oklab, var(--danger) 12%, var(--surface)) !important;
+    background-color: var(--danger-glow) !important;
     color: var(--danger-strong) !important;
     border: 1px solid var(--danger);
 }
@@ -4759,11 +4761,11 @@ button.fa-filter-chip.fa-filter-chip--active {
 .badge.bg-primary-subtle,
 .badge.text-bg-primary   { background-color: var(--primary-tint) !important; color: var(--primary-strong) !important; }
 .badge.bg-success-subtle,
-.badge.text-bg-success   { background-color: color-mix(in oklab, var(--success) 12%, var(--surface)) !important; color: var(--success-strong) !important; }
+.badge.text-bg-success   { background-color: var(--success-glow) !important; color: var(--success-strong) !important; }
 .badge.bg-warning-subtle,
-.badge.text-bg-warning   { background-color: color-mix(in oklab, var(--warning) 12%, var(--surface)) !important; color: var(--warning-strong) !important; }
+.badge.text-bg-warning   { background-color: var(--warning-glow) !important; color: var(--warning-strong) !important; }
 .badge.bg-danger-subtle,
-.badge.text-bg-danger    { background-color: color-mix(in oklab, var(--danger) 12%, var(--surface)) !important; color: var(--danger-strong) !important; }
+.badge.text-bg-danger    { background-color: var(--danger-glow) !important; color: var(--danger-strong) !important; }
 
 
 /* ==========================================================================
