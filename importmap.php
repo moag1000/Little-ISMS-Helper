@@ -26,16 +26,16 @@ return [
         'version' => '2.11.8',
     ],
     'tom-select' => [
-        'version' => '2.6.0',
+        'version' => '2.6.2',
     ],
     '@orchidjs/sifter' => [
         'version' => '1.1.0',
     ],
     '@orchidjs/unicode-variants' => [
-        'version' => '1.1.2',
+        'version' => '1.2.2',
     ],
     'tom-select/dist/css/tom-select.default.min.css' => [
-        'version' => '2.6.0',
+        'version' => '2.6.2',
         'type' => 'css',
     ],
     'bootstrap' => [

@@ -4680,3 +4680,50 @@ parameters:
 			identifier: tenant.unscopedBackgroundQuery
 			count: 1
 			path: src/Job/ExportUsersJob.php
+		-
+			message: '#^Call to function str_starts_with\(\) with string and ''/'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/Controller/DocumentController.php
+
+		-
+			message: '#^Variable \$items in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: src/Service/AccessReviewCampaignService.php
+
+		-
+			message: '#^Call to function is_writable\(\) with non\-falsy\-string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 3
+			path: src/Service/HealthAutoFixService.php
+
+		-
+			message: '#^Call to function is_writable\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 3
+			path: src/Service/HealthAutoFixService.php
+
+		-
+			message: '#^Variable \$sheetName on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: src/Service/Import/SpreadsheetParser.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between null and null will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Service/Restore/RestoreEntityWriter.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 1
+			path: src/Service/RiskForecastService.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between list\{0\: ''1\.2\.4''\|''8\.3\.1''\|''8\.3\.2''\|''8\.4\.1''\|''8\.4\.2''\|''8\.4\.3''\|''8\.5\.1''\|''8\.5\.2'', 1\?\: ''8\.3\.1''\|''8\.3\.2''\|''8\.4\.1''\|''8\.4\.2''\|''8\.4\.3''\|''8\.5\.1''\|''8\.5\.2'', 2\?\: ''8\.3\.2''\|''8\.4\.1''\|''8\.4\.2''\|''8\.4\.3''\|''8\.5\.1''\|''8\.5\.2'', 3\?\: ''8\.4\.1''\|''8\.4\.2''\|''8\.4\.3''\|''8\.5\.1''\|''8\.5\.2'', 4\?\: ''8\.4\.2''\|''8\.4\.3''\|''8\.5\.1''\|''8\.5\.2'', 5\?\: ''8\.4\.3''\|''8\.5\.1''\|''8\.5\.2'', 6\?\: ''8\.5\.1''\|''8\.5\.2'', 7\?\: ''8\.5\.2''\} and array\{\} will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Service/Tisax/TisaxCatalogueVersionDetector.php

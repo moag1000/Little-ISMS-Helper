@@ -13,7 +13,7 @@ import { chromium } from 'playwright';
 import { readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import yaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, '..', '..');
@@ -36,7 +36,7 @@ const args = Object.fromEntries(
 );
 
 function loadConfig() {
-    return yaml.load(readFileSync(CONFIG_PATH, 'utf8'));
+    return yamlLoad(readFileSync(CONFIG_PATH, 'utf8'));
 }
 
 function ensureDir(path) {

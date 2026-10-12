@@ -26,10 +26,10 @@ final class VdaIsaUploadType extends AbstractType
             'label'       => 'tisax.import.upload.field_label',
             'required'    => true,
             'constraints' => [
-                new NotNull(['message' => 'tisax.import.upload.required']),
-                new File([
-                    'maxSize'          => '10M',
-                    'mimeTypes'        => [
+                new NotNull(message: 'tisax.import.upload.required'),
+                new File(
+                    maxSize: '10M',
+                    mimeTypes: [
                         // Standard XLSX (Office 2007+ Open XML)
                         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                         // Legacy XLS (Office 97-2003 binary)
@@ -40,9 +40,9 @@ final class VdaIsaUploadType extends AbstractType
                         'application/x-zip-compressed',
                         'application/octet-stream',
                     ],
-                    'mimeTypesMessage' => 'tisax.import.upload.xlsx_only',
-                    'maxSizeMessage'   => 'tisax.import.upload.too_large',
-                ]),
+                    mimeTypesMessage: 'tisax.import.upload.xlsx_only',
+                    maxSizeMessage: 'tisax.import.upload.too_large',
+                ),
             ],
             'attr' => [
                 'accept'       => '.xlsx',
