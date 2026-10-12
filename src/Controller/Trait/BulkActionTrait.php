@@ -63,7 +63,7 @@ trait BulkActionTrait
                 if ($check !== null && isset($check['message']) && $check['message'] !== '') {
                     $deps[] = [
                         'message' => $label . ': ' . $check['message'],
-                        'icon' => $check['icon'] ?? 'link-45deg',
+                        'icon' => $check['icon'] ?? 'ui-link',
                     ];
                 }
             }

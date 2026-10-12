@@ -168,6 +168,7 @@ incident:
     initial_report_submitted_at: Erstmeldung eingereicht (DORA 4h)
     intermediate_report_submitted_at: Zwischenmeldung eingereicht (DORA 72h)
     data_recovery_strategy: Datenwiederherstellungsstrategie (BCM Art. 11)
+    linked_risks: 'Verknüpfte Risiken'
   nis2_compliance:
     title: NIS2 Compliance-Status
     not_applicable: Nicht NIS2-relevant

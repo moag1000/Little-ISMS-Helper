@@ -90,3 +90,21 @@ objective:
     label:
         current: Current
         target: Target
+    category:
+        availability: 'Availability'
+        confidentiality: 'Confidentiality'
+        integrity: 'Integrity'
+        compliance: 'Compliance'
+        risk_management: 'Risk Management'
+        incident_response: 'Incident Response'
+        awareness: 'Awareness & Training'
+        continual_improvement: 'Continual Improvement'
+    unit:
+        percent: 'Percent (%)'
+        days: 'Days'
+        hours: 'Hours'
+        count: 'Count'
+        incidents: 'Incidents'
+        employees: 'Employees'
+        euro: 'Euro (€)'
+        points: 'Points'

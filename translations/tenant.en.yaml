@@ -227,19 +227,19 @@ corporate:
     inheritance:
         inherited_from: 'Inherited From'
         title: Title
-        propagate: Propagate
+        propagate: 'Propagate to subsidiaries'
         no_context: 'No Context'
         organization: Organization
         own_context: 'Own Context'
-        load_error: 'Load Error'
-        confirm_propagate: 'Confirm Propagate'
-        propagate_error: 'Propagate Error'
-        isms_context_inherited: 'Isms Context Inherited'
+        load_error: 'Error loading inheritance information'
+        confirm_propagate: 'Do you really want to propagate this context to all subsidiaries?'
+        propagate_error: 'Error propagating the context'
+        isms_context_inherited: 'ISMS context is inherited from the parent company'
         from: From
         edit_at_parent: 'Edit At Parent'
-        cannot_edit_inherited: 'Cannot Edit Inherited'
+        cannot_edit_inherited: 'Inherited entries cannot be edited directly'
         view_only_title: 'View Only Title'
-        risk_inherited_message: 'Risk Inherited Message'
+        risk_inherited_message: 'This risk was inherited from the parent company and cannot be changed here'
     inherited: Inherited
     field:
         actions: Actions
@@ -281,12 +281,12 @@ corporate:
         update_governance: 'Update Governance'
         remove_parent: 'Remove Parent'
         view_structure: 'View Structure'
-    title: Title
+    title: 'Group Structure'
     subtitle: Subtitle
     single_tenant:
         title: Title
-        message: Message
-        hint: Hint
+        message: 'This installation is configured for a single organisation'
+        hint: 'Multi-organisation features are disabled'
     section:
         groups: Groups
         standalone: Standalone

@@ -142,6 +142,7 @@ bc_plans:
     rto: 'ISO 22301 Cl. 8.4.2 — maximal akzeptable Wiederherstellungszeit nach Ausfall, in Stunden. Beispiele: kritisch=1, hoch=4, mittel=24, niedrig=72.'
     rpo: 'ISO 22301 Cl. 8.4.2 — maximal tolerierbarer Datenverlust, gemessen in Stunden zwischen letztem konsistentem Backup und Eintritt der Störung.'
     critical_assets: 'Assets, die für die Wiederherstellung dieses Geschäftsprozesses essentiell sind. Mehrfachauswahl möglich.'
+    roles_and_responsibilities: 'Rollen und Verantwortlichkeiten der Teammitglieder in einer BC-Situation'
   placeholder:
     plan_owner_user: -- Verantwortliche Person --
     plan_owner_person: -- Person aus Stammdaten --

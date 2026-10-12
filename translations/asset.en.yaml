@@ -168,6 +168,8 @@ asset:
     availability: Availability
     name: Name
     classification: Classification
+    status_generic: 'Status'
+    risk_level: 'Risk level'
   classification:
     public: Public
     internal: Internal

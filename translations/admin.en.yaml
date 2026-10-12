@@ -228,7 +228,7 @@ admin:
             empty: 'No recent activity.'
             view_all: 'View all'
     licensing:
-        attributions_provided: 'Attributions Provided'
+        attributions_provided: 'Provide attributions in the application (done ✓)'
         warning:
             report_not_found: 'License report not found. Please generate it using the button below.'
         success:
@@ -816,7 +816,7 @@ admin:
         dependencies: Dependencies
         required_by: 'Required By'
         details: Details
-        confirm_deactivate: 'Confirm Deactivate'
+        confirm_deactivate: 'Do you really want to deactivate this module?'
         deactivate: Deactivate
         required: Required
         no_active: 'No Active'

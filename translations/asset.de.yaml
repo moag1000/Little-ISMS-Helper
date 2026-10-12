@@ -170,6 +170,7 @@ asset:
     availability: Verfügbarkeit
     name: Name
     classification: Klassifizierung
+    monetary_value: 'Monetärer Wert'
   classification:
     public: Öffentlich
     internal: Intern

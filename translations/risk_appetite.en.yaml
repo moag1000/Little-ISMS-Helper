@@ -72,9 +72,9 @@ risk_appetite:
     and_more_risks: 'And %count% more …'
     delete:
         warning: 'This action cannot be undone. Please confirm deletion.'
-        confirm: Confirm
+        confirm: 'Do you really want to delete this entry?'
     no_appetites: 'No risk appetite defined yet.'
     exceeding:
         title: Title
-        description: Description
+        description: 'Risks that exceed the defined risk appetite'
     and_more: 'And More'

@@ -353,6 +353,7 @@ common:
         owner_user: 'System-User mit Login als Verantwortliche Person.'
         owner_person: 'Person ohne Login als Verantwortliche (Reihenfolge: User > Person).'
         owner_deputies: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
+    deselect_all: 'Alle abwählen'
 person:
     title: Person
     titles:
@@ -2425,3 +2426,6 @@ owner_picker:
 'common.update': 'Aktualisieren'
 'common.source': 'Quelle'
 'common.target': 'Ziel'
+framework: 'Framework'
+requirement: 'Anforderung'
+bia: 'Business-Impact-Analyse'

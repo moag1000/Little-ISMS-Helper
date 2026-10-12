@@ -138,6 +138,10 @@ role:
         system_badge: 'System'
     templates:
         title: Title
-        description: Description
+        description: 'Predefined role templates for typical ISMS functions'
         intro: 'Pick a predefined role template and optionally adjust the name. The template already bundles a sensible set of permissions for the typical use case.'
         custom_name: 'Custom Name'
+    field:
+        system_role: 'System Role'
+    help:
+        system_role: 'System role with predefined permissions'

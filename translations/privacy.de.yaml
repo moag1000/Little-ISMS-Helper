@@ -285,6 +285,10 @@ privacy:
             reportable_medium: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Folgenabschätzung beginnen und mögliche Benachrichtigung betroffener Personen vorbereiten.'
             reportable_high: 'DRINGEND: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen prüfen (Art. 34). Sofortiges Handeln erforderlich.'
             reportable_very_high: 'KRITISCH: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen unverzüglich (Art. 34). Sofortige Eskalation erforderlich.'
+        calculating: 'Wird berechnet …'
+        yes_reportable: 'JA – meldepflichtig an die Aufsichtsbehörde'
+        no_not_reportable: 'NEIN – nicht meldepflichtig'
+        step_of: 'von'
     error:
         dpo_required_user_or_person: 'Datenschutzbeauftragter: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
         assessor_required_user_or_person: 'Gutachter: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
@@ -344,6 +348,9 @@ processing_activity:
         vvt_short: 'VVT'
         new: 'Neue Verarbeitungstätigkeit'
         edit: 'Bearbeiten'
+    tab:
+        tia: 'Transfer Impact Assessment (TIA)'
+        tia_tooltip: 'Transfer Impact Assessment für Drittlandübermittlungen (Art. 44 ff. DSGVO)'
     button:
         dashboard: 'Dashboard'
         export_pdf: 'PDF exportieren'
@@ -567,6 +574,11 @@ processing_activity:
         start_date: 'Beginn der Verarbeitung'
         end_date: 'Ende der Verarbeitung'
         next_review_date: 'Nächstes Überprüfungsdatum'
+        contact_person_person: 'Ansprechperson (Personenstammdaten)'
+        contact_deputies: 'Vertretungen der Ansprechperson'
+        data_protection_officer_person: 'DSB (Personenstammdaten)'
+        data_protection_officer_deputies: 'Vertretungen des DSB'
+        processors: 'Auftragsverarbeiter'
     help:
         status_readonly: 'Status wird über den Lebenszyklus gesteuert (Entwurf → in Prüfung → freigegeben → veröffentlicht → archiviert), nicht direkt im Formular.'
         name: 'Name/Bezeichnung der Verarbeitungstätigkeit (z.B. "Kundenverwaltung", "Lohnbuchhaltung")'
@@ -742,6 +754,16 @@ processing_activity:
     view_all_activities: 'Alle Verarbeitungstätigkeiten anzeigen'
     confirm_delete: 'Möchten Sie diese Verarbeitungstätigkeit wirklich löschen?'
     dashboard:
+        statistics: 'Statistik'
+        special_processing: 'Besondere Verarbeitungen'
+        special_categories: 'Besondere Kategorien (Art. 9)'
+        third_country_transfers: 'Drittlandübermittlungen'
+        title: 'VVT-Dashboard'
+        subtitle: 'Art. 30 DSGVO – Compliance-Übersicht'
+        breadcrumb_gdpr: 'DSGVO'
+        action:
+            view_all: 'Alle Tätigkeiten anzeigen'
+            new: 'Neue Tätigkeit'
         incomplete_activities: 'Unvollständige Aktivitäten (%count%)'
         overall_score: 'VVT Compliance Score (gesamt)'
         activities_complete: '%complete% von %total% Verarbeitungstätigkeiten vollständig'

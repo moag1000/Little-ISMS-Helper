@@ -330,8 +330,6 @@ corporate:
             error: Fehler
         confirm:
             delete: Löschen
-    title.edit: 'Organisation bearbeiten'
-    title.create: 'Neuer Organisation'
     email:
         title: 'E-Mail-Branding'
         subtitle: 'Absender, Logo und Footer für E-Mails pro Organisation. Leere Felder erben vom Holding-Parent, dann SystemSettings, dann Default.'

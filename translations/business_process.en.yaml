@@ -28,30 +28,30 @@ business_process:
     basic_info: Basic Information
     recovery_objectives: Recovery Objectives
     financial_impact: Financial Impact
-    impact_assessment: Impact Assessment
-    dependencies: Dependencies
+    impact_assessment: 'Business Impact Analysis (BIA)'
+    dependencies: 'Dependencies and Interfaces'
     recovery: Recovery
-    supporting_resources: Supporting Resources
+    supporting_resources: 'Supporting Resources and Assets'
   field:
     name: Name
     process_owner: Process Owner
     description: Description
-    criticality: Criticality
+    criticality: 'Criticality (low, medium, high, critical)'
     rto: RTO - Recovery Time (in hours)
     rpo: RPO - Data Loss Tolerance (in hours)
     mtpd: MTPD - Max. Disruption Period (in hours)
     financial_impact_per_hour: Financial Impact Per Hour
     financial_impact_per_day: Financial Impact Per Day
-    reputational_impact: Reputational Impact
+    reputational_impact: 'Impact on reputation and brand'
     regulatory_impact: Regulatory Impact
-    operational_impact: Operational Impact
+    operational_impact: 'Operational impact on business activities'
     upstream_processes: Upstream processes
     downstream_processes: Downstream processes
-    dependencies_upstream: Dependencies Upstream
-    dependencies_downstream: Dependencies Downstream
-    recovery_strategy: Recovery Strategy
-    supporting_assets: Supporting Assets
-    identified_risks: Identified Risks
+    dependencies_upstream: 'Upstream dependencies (what does this process need?)'
+    dependencies_downstream: 'Downstream dependencies (who depends on this process?)'
+    recovery_strategy: 'Recovery strategy (ISO 22301:2019 Clause 8.4)'
+    supporting_assets: 'Supporting assets and resources'
+    identified_risks: 'Identified risks for this process'
     process_owner_legacy: Process Owner (free text, legacy)
     process_owner_person: 'Process Owner (Person from master data)'
     process_owner_deputies: 'Deputies (Persons)'

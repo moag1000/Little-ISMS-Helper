@@ -129,7 +129,7 @@ supplier:
         contract_end_date: 'Contract End Date'
         security_requirements: 'Security Requirements'
         contact: Contact
-        risk_level: 'Risk Level'
+        risk_level: 'Risk level (ISO 27001 Annex A 5.19: Supplier relationships)'
         nace_code: 'NACE Code (Rev.2)'
         country_of_head_office: 'Country of Head Office (ISO-3166)'
         third_country_transfer: 'Third-country transfer (Art. 44ff GDPR)'

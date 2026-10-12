@@ -130,26 +130,27 @@ risk:
       organizational: organizational
       financial: financial
       physical: physical
+      organisational: 'organizational'
   label:
-    title: Title
+    title: 'Risk Title'
     inherent_risk: Inherent Risk
   field:
-    title: Title
-    score: Score
+    title: 'Risk Name'
+    score: 'Risk Score'
     level: Risk Level
     treatment_strategy: Treatment Strategy
     status: Status
-    asset: Asset
-    description: Description
+    asset: 'Affected Asset'
+    description: 'Risk Description'
     threat: Threat
     threat_intelligence: Linked threat intelligence
     vulnerability: Vulnerability
     linked_vulnerability: Linked vulnerability (CVE)
     involves_personal_data: Involves Personal Data
     involves_special_category_data: Involves Special Category Data
-    legal_basis: Legal Basis
+    legal_basis: 'Legal Basis (GDPR)'
     processing_scale: Processing Scale
-    requires_dpia: Requires DPIA
+    requires_dpia: 'Requires Data Protection Impact Assessment (DPIA)'
     data_subject_impact: Data Subject Impact
     probability: Probability
     impact: Impact
@@ -158,16 +159,16 @@ risk:
     risk_owner: Risk Owner
     risk_owner_person: Risk Owner (Person from master data)
     risk_owner_deputies: Deputies (Persons)
-    treatment_description: Treatment Description
+    treatment_description: 'Description of Treatment Measures'
     acceptance_approved_by: Acceptance Approved By
     acceptance_approved_at: Acceptance Approved At
-    acceptance_justification: Acceptance Justification
+    acceptance_justification: 'Risk Acceptance Justification'
     acceptance_expiry_date: Acceptance Valid Until
-    created: Created
+    created: 'Created On'
     last_review: Last Review
     next_review: Next Review
     review_date: Review Date
-    inherent_risk: Inherent Risk
+    inherent_risk: 'Inherent Risk (before controls)'
     residual_risk: Residual Risk
     risk_reduction: Risk Reduction
     linked_controls: Linked Controls
@@ -184,21 +185,21 @@ risk:
     decision_approved_by_user: 'Decision Approved By'
     decision_approval_date: 'Approval Date'
   confirm:
-    delete: Delete
-  edit: Edit
-  update: Update
-  delete_warning: Delete Warning
+    delete: 'Really delete this risk?'
+  edit: 'Edit Risk'
+  update: 'Update Risk'
+  delete_warning: 'WARNING: Deleting this risk cannot be undone.'
   action:
     quick_new: Quick entry
   quick_form:
     title: Quick risk entry
     subtitle: 7 fields -- for a quick start
     switch_to_full: Switch to full form
-  new: New
-  create: Create
+  new: 'New Risk'
+  create: 'Create Risk'
   guidance:
     scale: Rating Scale
-    description: Description
+    description: 'Assessment guidance for risk analysis according to ISO 27005'
     probability:
       very_unlikely: Very Unlikely (1)
       very_unlikely_desc: Occurs at most once in 10 years
@@ -230,24 +231,24 @@ risk:
     assessment: Risk Assessment
     basic_info: Basic Information
     gdpr_assessment: GDPR Assessment
-    inherent_risk: Inherent Risk
+    inherent_risk: 'Inherent Risk (Gross Risk)'
     inherent_risk_intro: 'Inherent risk = assessment BEFORE controls are applied. Assign probability (1-5) and impact (1-5). The mini-heatmap below shows the band (Low/Medium/High/Critical) your score falls into in real time (ISO 27005 Cl. 8.4).'
-    residual_risk: Residual Risk
+    residual_risk: 'Residual Risk (Net Risk)'
     residual_risk_intro: 'Residual risk = assessment AFTER controls are implemented. If your treatment strategy is not yet in place, these fields can stay empty — fill them in later (ISO 27005 Cl. 8.5).'
-    treatment: Treatment
-    acceptance: Acceptance
+    treatment: 'Risk Treatment'
+    acceptance: 'Risk Acceptance'
     # Junior-ISB-Audit-2026-05-22 K-06: Decision-Trail section groups the 5
     # previously hidden audit fields (likelihood/impact justification,
     # decision rationale, approver, approval date). ISO 27001 Cl. 6.1.3.e + 8.3.
     decision_trail: 'Decision Audit Trail'
     details: Details
-    description: Description
+    description: 'Risk Description'
     treatment_strategy: Treatment Strategy
     risk_owner: Risk Owner
     mitigating_controls: Mitigating Controls
     realization_history: Realization History
     risk_subject: Risk Subject
-    history: History
+    history: 'Change History'
     ict_dependencies: ICT Asset Dependencies
     ict_dependencies_help: 'Which IT systems/services are directly or indirectly affected by this risk (DORA Art. 8 + ISO 27001 A.5.9).'
     treatment_plans: Treatment Plans
@@ -375,19 +376,19 @@ risk:
       damage, threat to life and safety<br><em>Basis: GDPR Art. 83, EDPB Guidelines
       on DPIA</em>'
   delete:
-    confirm_message: Confirm Message
-  not_reviewed: Not Reviewed
+    confirm_message: 'Do you really want to permanently delete this risk?'
+  not_reviewed: 'Not reviewed yet'
   assessment:
-    inherent_risk: Inherent Risk
+    inherent_risk: 'Inherent Risk (Gross)'
     probability: Probability
     impact: Impact
-    level: Level
-    score: Score
-    residual_risk: Residual Risk
-  incidents: Incidents
+    level: 'Risk Level'
+    score: 'Risk Score'
+    residual_risk: 'Residual Risk (Net)'
+  incidents: 'Linked Incidents'
   realization:
-    warning: Warning
-    review_suggestion: Review Suggestion
+    warning: 'WARNING: This risk has already materialised!'
+    review_suggestion: 'Review the risk assessment and treatment measures in light of the incidents that occurred'
   subject:
     person:
       label: Person
@@ -410,13 +411,13 @@ risk:
       probability: 'Probability'
       impact: 'Impact'
   matrix:
-    title: Title
+    title: 'Risk Matrix'
     back_to_risks: Back To Risks
-    header: Header
-    description: Description
-    impact: Impact
-    probability: Probability
-    legend_title: Legend Title
+    header: 'Risk Matrix Overview (ISO 27005)'
+    description: 'Visualisation of all risks by likelihood and impact'
+    impact: 'Impact →'
+    probability: 'Likelihood ↑'
+    legend_title: 'Risk Levels'
     level:
       critical: Critical
       high: High
@@ -438,13 +439,13 @@ risk:
       4: 'Major'
       5: 'Catastrophic'
   acceptance:
-    title: Title
-    request: Request
-    justification_label: Justification Label
-    justification_help: Justification Help
+    title: 'Request Risk Acceptance'
+    request: 'Risk Acceptance Request'
+    justification_label: 'Justification for risk acceptance'
+    justification_help: 'Explain why the residual risk should be accepted (e.g. cost-benefit ratio, technical feasibility)'
     submit_request: Submit Request
     required_approval_level: Required Approval Level
-    approval_threshold_info: Approval Threshold Info
+    approval_threshold_info: 'Risks with a score of %threshold% or higher require management approval'
     approval_levels:
       automatic: Automatic Approval
       manager: Manager Approval Required

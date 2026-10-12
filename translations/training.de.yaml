@@ -137,6 +137,15 @@ training:
     data_protection: Datenschutz
     cyber_security: Cyber Security
     other: Sonstiges
+  types:
+    security_awareness: Security Awareness
+    technical: Technisches Training
+    compliance: Compliance Training
+    emergency_drill: Notfallübung
+    phishing_simulation: Phishing-Simulation
+    data_protection: Datenschutz
+    cyber_security: Cyber Security
+    other: Sonstiges
   delivery_methods:
     in_person: Präsenz
     online_live: Online (Live)
