@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
-import yaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 import { loginAs } from '../fixtures/auth';
 import { findRawKeys } from '../fixtures/i18n';
 
@@ -84,7 +84,7 @@ function loadConfig(): { routes: RouteEntry[]; persona: PersonaSpec; globalDeny:
         );
     }
     const routesPayload = JSON.parse(readFileSync(ROUTES_JSON, 'utf8')) as RoutesPayload;
-    const personasPayload = yaml.load(readFileSync(PERSONA_YAML, 'utf8')) as PersonasPayload;
+    const personasPayload = yamlLoad(readFileSync(PERSONA_YAML, 'utf8')) as PersonasPayload;
 
     const persona = personasPayload.personas[DEFAULT_PERSONA];
     if (!persona) {
