@@ -55,6 +55,10 @@ group_report:
         n_a_help: 'Keine anwendbaren Anforderungen in dieser Organisation.'
         col:
             tenant: 'Organisation'
+        glossary:
+            applicable: 'Anzahl Anforderungen, die für den Tenant gelten (nach Scope-Filter)'
+            fulfilled: 'Anzahl Anforderungen mit Status "fulfilled" oder "compliant"'
+            percentage: 'fulfilled / applicable * 100, gerundet'
     soa:
         title: 'Konzern-SoA-Matrix'
         subtitle: 'Annex-A-Controls × Organisationen — %controls% Controls über %tenants% Organisationen.'

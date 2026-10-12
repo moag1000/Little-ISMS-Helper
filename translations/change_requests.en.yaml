@@ -101,6 +101,7 @@ change_request:
         clause_reference: 'Optional ISO 27001 / DORA / NIS2 clause tag for §6.3 planned changes or §8.1 operational control differentiation'
         related_finding: 'ISO 27001 Cl. 10.1 — lineage to the audit finding that triggered this change request (optional but recommended for the audit trail).'
         related_corrective_action: 'ISO 27001 Cl. 10.1 — lineage to the corrective action that uses this change request as its implementation vehicle (optional).'
+        status_readonly: 'Status is driven by the lifecycle workflow (Draft → Submitted → Under review → Approved → Scheduled → Implemented → Verified → Closed). Direct editing is disabled; use the status actions on the detail page.'
     edit: Edit
     confirm:
         delete: Delete

@@ -121,6 +121,8 @@ user:
         last_login: 'Letzte Anmeldung'
         competencies: 'Kompetenzen (§7.2)'
         previous_qms_background: 'Vorherige QM-System-Erfahrung'
+        avatar_help: 'Optional: JPG, PNG, GIF oder WebP. Ein quadratisches Bild wird am besten dargestellt.'
+        tenant_help: 'Organisation (Mandant), der der Benutzer zugeordnet ist. Bestimmt, welche Daten er sehen und bearbeiten darf.'
     placeholder:
         tenant: '-- Organisation auswählen --'
         competencies_json: '[{"name":"ISO 27001 Grundlagen","category":"compliance","level":3,"certifiedBy":null,"certifiedAt":null,"expiresAt":null}]'

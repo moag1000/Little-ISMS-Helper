@@ -88,6 +88,9 @@ training:
     trainer_person: '-- Person aus Stammdaten --'
     program_type: '-- Programm-Typ wählen --'
     recurrence_months: 'z.B. 12 für jährlich'
+    owner_legacy: 'Name (veraltet, nur für Altdaten)'
+    target_audience: 'z. B. Alle Mitarbeitenden, IT-Administration, Führungskräfte'
+    participants: 'Ein Name pro Zeile (veraltet, nur für Altdaten)'
   help:
     status_readonly: 'Status wird vom Lifecycle-Workflow gesteuert (planned → scheduled → in_progress → completed/cancelled). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite.'
     duration: Dauer in Minuten (15-480)
@@ -107,6 +110,8 @@ training:
     trainer_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Training.'
     program_type: 'Programm-Klassifikation gemäß ISO 27001 §7.3 Bewusstsein – für Reporting und Auswertung.'
     recurrence_months: 'ISO 27001 A.6.3 empfiehlt jährliche Awareness-Schulungen. Bei gesetzter Kadenz versendet der ISMS-Helper automatisch Reminder über den Cron `app:training-send-reminders`. Leer lassen für einmalige Schulungen.'
+    owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
+    target_audience: 'Zielgruppe der Schulung als Freitext. ISO 27001 Kap. 7.2/7.3 verlangt rollenbezogene Kompetenz und Sensibilisierung.'
   program_type:
     awareness: Allgemeine Awareness
     role_specific: Rollenspezifisch

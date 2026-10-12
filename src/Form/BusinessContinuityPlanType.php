@@ -273,22 +273,20 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
         // Legacy free-text `planOwner` is preserved as read-only Migration-Hint
         // (rendered only when populated — see _fa_owner_picker macro).
         $this->addOwnerPicker($builder, [
-            'field_prefix'       => 'planOwner',
+            'translation_prefix' => 'bc_plans',
             'user_field'         => 'planOwnerUser',
             'person_field'       => 'planOwnerPerson',
             'deputies_field'     => 'planOwnerDeputyPersons',
             'legacy_field'       => 'planOwner',
-            'label_user'         => 'bc_plans.field.plan_owner',
-            'label_person'       => 'bc_plans.field.plan_owner_person',
-            'label_deputies'     => 'bc_plans.field.plan_owner_deputies',
-            'label_legacy'       => 'bc_plans.field.plan_owner_legacy',
-            'placeholder_user'   => 'bc_plans.placeholder.plan_owner_user',
-            'placeholder_person' => 'bc_plans.placeholder.plan_owner_person',
-            'help_user'          => 'bc_plans.help.plan_owner_user',
-            'help_person'        => 'bc_plans.help.plan_owner_person',
-            'help_deputies'      => 'bc_plans.help.plan_owner_deputies',
-            'with_deputies'      => true,
-            'with_legacy'        => true,
+            'user_label'         => 'bc_plans.field.plan_owner',
+            'person_label'       => 'bc_plans.field.plan_owner_person',
+            'deputies_label'     => 'bc_plans.field.plan_owner_deputies',
+            'legacy_label'       => 'bc_plans.field.plan_owner_legacy',
+            'user_placeholder'   => 'bc_plans.placeholder.plan_owner_user',
+            'person_placeholder' => 'bc_plans.placeholder.plan_owner_person',
+            'user_help'          => 'bc_plans.help.plan_owner_user',
+            'person_help'        => 'bc_plans.help.plan_owner_person',
+            'deputies_help'      => 'bc_plans.help.plan_owner_deputies',
         ]);
 
         // JsonArrayTransformer now applied automatically by JsonStructuredType.

@@ -327,6 +327,7 @@ common:
         explain_breach_reopened: ''
         owner_user: '-- Select user --'
         owner_person: '-- Select person --'
+        owner_legacy: 'Name (legacy, migrated data only)'
     reset_all_filters: ''
     time_savings: ''
     consistency: ''
@@ -343,10 +344,12 @@ common:
         owner_user: 'Owner (System User)'
         owner_person: 'Owner (Person)'
         owner_deputies: Deputies
+        owner_legacy: 'Owner (free text, legacy)'
     help:
         owner_user: 'System user with login as the responsible owner.'
         owner_person: 'Person without login as owner (priority: User > Person).'
         owner_deputies: 'Additional persons sharing ownership or deputising.'
+        owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
     deselect_all: 'Deselect all'
 framework: Framework
 requirement: Requirement
@@ -1243,6 +1246,24 @@ form:
         warning:
             unmapped_title: 'Notice (dev only):'
             unmapped_body: 'The following fields are not covered by any section and fall through to the catch-all bucket: %fields%. Update the SectionPolicy on the FormType class.'
+        effort: 'Effort'
+        evidence: 'Evidence'
+        lead: 'Lead'
+        meta: 'Metadata'
+        validity: 'Validity'
+        visibility: 'Visibility'
+        assessment: 'Assessment'
+        basic_info: 'Basic information'
+        conclusion: 'Conclusion'
+        dates: 'Dates'
+        decision_trail: 'Decision trail'
+        identification: 'Identification'
+        nc_capa: 'Nonconformity & CAPA'
+        risk: 'Risk'
+        risk_quant: 'Quantitative risk assessment'
+        security: 'Security'
+        status: 'Status'
+        transfer: 'Transfer'
 corporate:
     title: 'Corporate Structure'
     subtitle: 'Management of parent companies and subsidiaries'
@@ -1668,6 +1689,18 @@ admin:
         format_help: 'Choose the export format'
         format_selection: 'Format Selection'
         submit: 'Export'
+    health_fix:
+        fix_cache_permissions: 'System health: cache permissions fixed'
+        fix_log_permissions: 'System health: log permissions fixed'
+        clear_cache: 'System health: cache cleared'
+        clean_old_logs: 'System health: old log files cleaned up'
+        rotate_logs: 'System health: log files rotated'
+        optimize_disk_space: 'System health: disk space optimized'
+        fix_var_permissions: 'System health: var/ permissions fixed'
+        fix_uploads_permissions: 'System health: upload permissions fixed'
+        fix_session_permissions: 'System health: session permissions fixed'
+        clear_old_uploads: 'System health: old uploads cleaned up'
+        run_composer_install: 'System health: Composer install executed'
 business_process:
     success:
         created: ''

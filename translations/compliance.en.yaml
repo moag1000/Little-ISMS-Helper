@@ -1111,6 +1111,14 @@ compliance:
             fallback_used: 'Framework-wide fallback coverage was used because no rule matched.'
             deleted: 'Certificate deleted.'
             draft_confirmed: 'Extracted fields confirmed — review the coverage below.'
+    transitive_overview:
+        empty:
+            title: 'No framework mappings yet'
+            text: 'The cross-framework mappings between your compliance frameworks have not been created yet.'
+            text_detail: 'These mappings show how requirements of different frameworks relate to each other.'
+            how_to_title: 'How to create mappings:'
+            how_to_text: 'Mappings must be created manually or loaded via a data import script.'
+            how_to_contact: 'Contact your administrator for more information.'
 compliance_mapping:
     mapping_type:
         weak: 'Weak (0-49%)'
@@ -1121,6 +1129,27 @@ compliance_mapping:
         low: Low
         medium: Medium
         high: High
+    field:
+        source_requirement: 'Source requirement'
+        target_requirement: 'Target requirement'
+        mapping_percentage: 'Coverage (%)'
+        mapping_type: 'Mapping type'
+        mapping_rationale: 'Rationale'
+        bidirectional: 'Bidirectional'
+        confidence: 'Confidence'
+        verified_by: 'Verified by'
+    placeholder:
+        mapping_rationale: 'Why does the source requirement (partially) cover the target requirement? Name overlaps and gaps.'
+        verified_by: 'Name or role of the reviewer'
+    help:
+        source_requirement: 'Requirement whose fulfilment is reused as evidence (e.g. an ISO 27001 control).'
+        target_requirement: 'Requirement of another framework that is fully or partially covered by the source requirement.'
+        mapping_percentage: 'How far the source requirement covers the target requirement: 0–49% weak, 50–99% partial, 100% full, 101–150% exceeds.'
+        mapping_type: 'Qualitative classification of the coverage; should match the percentage.'
+        mapping_rationale: 'Technical justification for auditors — shown in gap analyses and reports.'
+        bidirectional: 'Enable if the coverage applies in both directions (the target also covers the source).'
+        confidence: 'How certain is the content match? Low-confidence mappings should be reviewed before use.'
+        verified_by: 'Person who reviewed and approved the mapping.'
 compliance_requirement:
     field:
         framework: Framework
@@ -1269,6 +1298,31 @@ compliance_framework:
             defined: 'Defined'
             quantitatively_managed: 'Quant. Managed'
             optimizing: 'Optimizing'
+    field:
+        code: 'Code'
+        name: 'Name'
+        description: 'Description'
+        version: 'Version'
+        industry: 'Industry'
+        regulatory_body: 'Issuing / regulatory body'
+        mandatory: 'Mandatory'
+        scope: 'Scope'
+        active: 'Active'
+    placeholder:
+        code: 'e.g. ISO-27001, NIS2, DORA'
+        name: 'e.g. ISO/IEC 27001:2022 Information security management systems'
+        description: 'Short description of the framework''s purpose and content'
+        version: 'e.g. 2022'
+        select_industry: '-- Select industry --'
+        regulatory_body: 'e.g. ISO/IEC, BSI, European Commission, BaFin'
+        scope_description: 'Which organizations, areas or systems does the framework apply to?'
+    help:
+        code: 'Unique short identifier of the framework (e.g. ISO-27001, NIS2, DORA). Used in mappings, imports and reports and should not be changed once created.'
+        version: 'Edition or version of the standard or law (e.g. 2022, 6.0, 2.0). For a new edition, create a separate framework and transfer via migration.'
+        applicable_industry: 'Industry the framework primarily applies to. Use "All Sectors" for cross-sector standards such as ISO 27001.'
+        regulatory_body: 'Organization that issues the standard or supervises compliance.'
+        mandatory: 'Enable if compliance is required by law, regulation or contract.'
+        active: 'Only active frameworks appear in compliance dashboards, gap analyses and reports.'
 
 admin:
     compliance:
@@ -1296,6 +1350,10 @@ admin:
                 iso27018: 'Public-cloud providers processing personally identifiable information (PII) on behalf of customers who must evidence privacy controls.'
                 eu_cra: 'Manufacturers, importers or distributors of products with digital elements (hardware/software) with EU market access.'
                 pci_dss: 'Organizations that store, process or transmit cardholder data (merchants, acquirers, payment providers).'
+                mris: 'Organizations with an existing ISO 27001 ISMS that want to harden specifically against AI-driven attacks; prerequisite for some industry baselines (e.g. automotive-tisax-al3).'
+                nisg_at: 'Essential or important entity in one of the 18 NIS2 sectors established in Austria (NISG 2026, in force from 30 Sep 2026).'
+                revdsg_ch: 'Private persons or federal bodies processing personal data in Switzerland, or whose processing has effects in Switzerland (nFADP, SR 235.1).'
+                ikt_minstd_ch: 'Operators of critical infrastructure in Switzerland; recommended by the FONES / NCSC for all other organizations to strengthen ICT resilience.'
 
 fulfillment:
     field:

@@ -108,14 +108,14 @@
                 { label: 'TenantContext', detail: 'getAccessibleTenants() — full subtree of root tenant' },
             ],
             glossary: [
-                { term: 'Applicable',  definition: 'Anzahl Anforderungen, die für den Tenant gelten (nach Scope-Filter)' },
-                { term: 'Fulfilled',   definition: 'Anzahl Anforderungen mit Status "fulfilled" oder "compliant"' },
-                { term: 'Percentage',  definition: 'fulfilled / applicable * 100, gerundet' },
+                { term: 'Applicable',  definition: 'group_report.kpi.glossary.applicable'|trans({}, 'group_report') },
+                { term: 'Fulfilled',   definition: 'group_report.kpi.glossary.fulfilled'|trans({}, 'group_report') },
+                { term: 'Percentage',  definition: 'group_report.kpi.glossary.percentage'|trans({}, 'group_report') },
             ],
         },
         distribution: [
-            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
-            { role: 'Group-CISO',      name: '—' },
+            { role: 'role.konzern_auditor'|trans({}, 'role_management'), name: 'Group Audit Committee' },
+            { role: 'role.group_ciso'|trans({}, 'role_management'), name: '—' },
         ],
     }) }}
 </div>

@@ -143,10 +143,13 @@ bc_plans:
     rpo: 'ISO 22301 Cl. 8.4.2 — maximal tolerierbarer Datenverlust, gemessen in Stunden zwischen letztem konsistentem Backup und Eintritt der Störung.'
     critical_assets: 'Assets, die für die Wiederherstellung dieses Geschäftsprozesses essentiell sind. Mehrfachauswahl möglich.'
     roles_and_responsibilities: 'Rollen und Verantwortlichkeiten der Teammitglieder in einer BC-Situation'
+    owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
+    status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Entwurf → In Prüfung → Aktiv → Archiviert; 4-Augen-Prinzip bei Aktivierung). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
   placeholder:
     plan_owner_user: -- Verantwortliche Person --
     plan_owner_person: -- Person aus Stammdaten --
     response_team_members: '[{"role":"incident_commander","userId":null,"name":"Max Mustermann","contact":"+49 123 456789","responsibilities":"Gesamtverantwortung"}]'
+    owner_legacy: 'Name (veraltet, nur für Altdaten)'
   tooltip:
     activation_criteria: 'Vordefinierte Bedingungen, bei deren Eintreten der Plan aktiviert wird (z. B. Serverausfall > 4h, Gebäudeevakuierung). Messbare Schwellenwerte erleichtern die Entscheidung im Krisenfall.'
     recovery_procedures: 'Schritt-für-Schritt-Anleitung zur Wiederherstellung des Geschäftsbetriebs. Jeder Schritt sollte Verantwortliche, Zeitvorgaben und Prüfkriterien enthalten (ISO 22301 Kl. 8.4).'

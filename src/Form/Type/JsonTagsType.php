@@ -74,14 +74,22 @@ final class JsonTagsType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $existing = $view->vars['attr'] ?? [];
-        $view->vars['attr'] = array_merge([
+        $defaults = [
             'data-controller'                   => 'tom-select',
             'data-tom-select-create-value'      => 'true',
             'data-tom-select-remove-button-value' => 'true',
             'data-tom-select-delimiter-value'   => ',',
-            'data-tom-select-placeholder-value' => (string) ($options['placeholder'] ?? ''),
             'autocomplete'                      => 'off',
             'data-1p-ignore'                    => 'true',
-        ], $existing);
+        ];
+        // The placeholder option is a translation key. Pass it as the native
+        // `placeholder` attribute so the form theme translates it with the
+        // form's translation_domain; the tom-select controller falls back to
+        // that attribute when data-tom-select-placeholder-value is not set.
+        $placeholder = $options['placeholder'] ?? null;
+        if ($placeholder !== null && $placeholder !== '') {
+            $defaults['placeholder'] = $placeholder;
+        }
+        $view->vars['attr'] = array_merge($defaults, $existing);
     }
 }

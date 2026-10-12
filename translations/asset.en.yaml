@@ -85,6 +85,7 @@ asset:
     depends_on: Dependencies (upstream)
     processing_activities: Linked processing activities (RoPA)
     is_dora_relevant: 'DORA-relevant (Art. 28 ICT-Asset)'
+    tisax_information_classification: 'TISAX information classification'
   help:
     name: Unique name of the asset
     type: Category of the asset (hardware, software, data, etc.)
@@ -120,6 +121,7 @@ asset:
     is_dora_relevant: 'This asset qualifies as an ICT asset under DORA Art. 28 and will
       be included in the Register of Information (RoI) XBRL export. Only flagged assets
       appear in the RoI export.'
+    tisax_information_classification: 'Protection need per VDA ISA 6.0 (ch. 1.3). Complements the general data classification; use "Prototype" for prototype and vehicle data subject to prototype protection requirements.'
   protection:
     recommended: Recommended
     overall_level: Overall Protection Level
@@ -255,6 +257,7 @@ asset:
     handling_instructions: Special handling instructions...
     owner_user: -- Select owner --
     owner_person: -- Select Person from master data --
+    tisax_information_classification: '-- Select classification --'
   type:
     information: 'Information'
     software: 'Software (application, library, OS)'
@@ -405,6 +408,12 @@ asset:
         injection, data leak, hallucination, privilege escalation).'
       extension_allowlist: 'List of approved plugins / extensions / MCP servers.
         Prevents supply-chain attacks via compromised marketplaces.'
+  tisax_classification:
+    public: 'Public'
+    internal: 'Internal'
+    confidential: 'Confidential'
+    strictly_confidential: 'Strictly confidential'
+    prototype: 'Prototype (prototype protection)'
 iso_9001_bridge:
   asset: 'In ISO 9001 assets are part of resource management (Clause 7.1). ISO 27001 A.5.9/A.5.10 extend this to information assets and owners; ISO 22301 §8.1 requires resource lists for BCM baseline supply.'
 

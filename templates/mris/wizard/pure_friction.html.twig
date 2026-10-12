@@ -1,15 +1,16 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'mris' %}
 
-{% block title %}MRIS-Wizard — Reine Reibung{% endblock %}
+{% block title %}{{ 'mris.wizard.pure_friction.page_title'|trans({}, 'mris') }}{% endblock %}
 
 {% block body %}
 <div class="container">
 
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">MRIS-KPIs</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Wizard: Reine Reibung</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'nav.dashboard'|trans({}, 'nav') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">{{ 'mris.wizard.common.breadcrumb_kpis'|trans({}, 'mris') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'mris.wizard.pure_friction.breadcrumb'|trans({}, 'mris') }}</li>
         </ol>
     </nav>
 
@@ -17,10 +18,10 @@
         <div>
             <h1>
                 <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                {{ routine.title|default('5-Schritt-Entscheidungsroutine — Reine Reibung') }}
+                {{ routine.title|default('mris.wizard.pure_friction.title'|trans({}, 'mris')) }}
             </h1>
             <p class="text-muted small mb-0">
-                {{ routine.intro|default('Audit-taugliche Routine fuer Annex-A-Controls, die als „Reine Reibung" markiert sind.') }}
+                {{ routine.intro|default('mris.wizard.pure_friction.intro'|trans({}, 'mris')) }}
             </p>
         </div>
     </div>
@@ -28,11 +29,8 @@
     {% if fallback_used %}
         <div class="fa-alert fa-alert--info small">
             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
-            <strong>Hinweis:</strong>
-            Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter
-            <code>blocker_solutions:</code> pflegen, damit dieser Inhalt
-            zentral aus YAML geladen wird. Aktuell wird der eingebettete
-            Default angezeigt.
+            <strong>{{ 'mris.wizard.common.note_label'|trans({}, 'mris') }}</strong>
+            {{ 'mris.wizard.common.fallback_notice'|trans({}, 'mris')|raw }}
         </div>
     {% endif %}
 
@@ -54,7 +52,7 @@
                                 {% if step.evidence is defined and step.evidence %}
                                     <p class="small text-muted mb-0">
                                         <i class="fa-icon fa-icon--attachment" aria-hidden="true"></i>
-                                        <strong>Audit-Evidenz:</strong> {{ step.evidence }}
+                                        <strong>{{ 'mris.wizard.pure_friction.evidence_label'|trans({}, 'mris') }}</strong> {{ step.evidence }}
                                     </p>
                                 {% endif %}
                             </div>
@@ -71,7 +69,7 @@
                 <div class="card-header">
                     <h2 class="h6 mb-0">
                         <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
-                        Beispiel
+                        {{ 'mris.wizard.common.example'|trans({}, 'mris') }}
                     </h2>
                 </div>
             {% endblock %}
@@ -87,7 +85,7 @@
                 <div class="card-header">
                     <h2 class="h6 mb-0">
                         <i class="fa-icon fa-icon--ui-star" aria-hidden="true"></i>
-                        Norm-Verweise
+                        {{ 'mris.wizard.common.norm_refs'|trans({}, 'mris') }}
                     </h2>
                 </div>
             {% endblock %}
@@ -102,7 +100,7 @@
     {% endif %}
 
     <footer class="text-center text-muted small mt-4 pt-3 border-top">
-        Quelle: Peddi (2026) MRIS v1.5.
+        {{ 'mris.wizard.common.source'|trans({}, 'mris') }}
         <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">{{ 'mris.license.cc_by_40'|trans({}, 'mris') }}</a>.
     </footer>
 

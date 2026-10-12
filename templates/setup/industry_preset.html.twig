@@ -74,9 +74,9 @@
                     <div class="fa-toggle-card__body">
                         <div class="fa-toggle-card__title">
                             <i class="fa-icon fa-icon--nav-building-shield text-{{ preset.variant }}" aria-hidden="true"></i>
-                            {{ preset.name }}
+                            {% set _preset_name_key = 'industry_preset.catalog.' ~ preset.id ~ '.name' -%}{%- set _preset_name = _preset_name_key|trans({}, 'admin') -%}{{ _preset_name != _preset_name_key ? _preset_name : preset.name }}
                         </div>
-                        <div class="fa-toggle-card__sub">{{ preset.description }}</div>
+                        <div class="fa-toggle-card__sub">{% set _preset_desc_key = 'industry_preset.catalog.' ~ preset.id ~ '.description' -%}{%- set _preset_desc = _preset_desc_key|trans({}, 'admin') -%}{{ (_preset_desc != _preset_desc_key ? _preset_desc : preset.description) }}</div>
                         <div class="mt-2 d-flex flex-wrap gap-2 align-items-center">
                             {{ pill.render('setup.preset.stats.modules'|trans({'%count%': preset.modules_count}, 'setup'), 'neutral', {size: 'sm', icon: 'nav-grid'}) }}
                             {{ pill.render('setup.preset.stats.frameworks'|trans({'%count%': preset.frameworks_count}, 'setup'), 'neutral', {size: 'sm', icon: 'shield-check'}) }}

@@ -142,7 +142,7 @@ final class TisaxImportWizardController extends AbstractController
             // Store confirmation ID in session so upload step can verify
             $request->getSession()->set('tisax_import.confirmation_id', $confirmation->getId());
 
-            $this->addFlash('success', 'tisax.import.disclaimer.confirmed');
+            $this->addFlash('success', $this->translator->trans('tisax.import.disclaimer.confirmed', [], 'tisax_isa'));
 
             return $this->redirectToRoute('app_tisax_import_upload', [
                 '_locale' => $request->getLocale(),
@@ -171,7 +171,11 @@ final class TisaxImportWizardController extends AbstractController
         }
         // Guard: must have a valid disclaimer confirmation
         if (!$this->hasValidConfirmation($request)) {
-            $this->addFlash('warning', 'tisax.import.upload.disclaimer_required');
+            $this->addFlash('warning', $this->translator->trans(
+                'tisax.import.upload.disclaimer_required',
+                [],
+                'tisax_isa',
+            ));
             return $this->redirectToRoute('app_tisax_import_disclaimer', ['_locale' => $request->getLocale()]);
         }
 
@@ -186,7 +190,11 @@ final class TisaxImportWizardController extends AbstractController
             try {
                 $this->uploadSecurity->validateUpload($file);
             } catch (\Exception $e) {
-                $this->addFlash('danger', 'tisax.import.upload.security_rejected');
+                $this->addFlash('danger', $this->translator->trans(
+                    'tisax.import.upload.security_rejected',
+                    [],
+                    'tisax_isa',
+                ));
                 $status = ($form->isSubmitted() && !$form->isValid())
                     ? Response::HTTP_UNPROCESSABLE_ENTITY
                     : Response::HTTP_OK;
@@ -235,7 +243,7 @@ final class TisaxImportWizardController extends AbstractController
         }
         $workbookPath = $request->getSession()->get(self::SESSION_WORKBOOK_PATH);
         if ($workbookPath === null || !file_exists($workbookPath)) {
-            $this->addFlash('warning', 'tisax.import.validate.no_workbook');
+            $this->addFlash('warning', $this->translator->trans('tisax.import.validate.no_workbook', [], 'tisax_isa'));
             return $this->redirectToRoute('app_tisax_import_upload', ['_locale' => $request->getLocale()]);
         }
 
@@ -375,7 +383,7 @@ final class TisaxImportWizardController extends AbstractController
         if ($request->isMethod('POST')) {
             // CSRF protection
             if (!$this->isCsrfTokenValid('tisax_commit', $request->request->get('_token'))) {
-                $this->addFlash('danger', 'common.csrf_invalid');
+                $this->addFlash('danger', $this->translator->trans('common.csrf_invalid', [], 'messages'));
                 return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
             }
 
@@ -383,7 +391,11 @@ final class TisaxImportWizardController extends AbstractController
             // different organisation than the current tenant, the user MUST tick
             // the confirmation checkbox before the import is allowed to proceed.
             if ($companyMismatch && !$request->request->getBoolean('company_confirm')) {
-                $this->addFlash('warning', 'tisax.import.commit.company_confirm_required');
+                $this->addFlash('warning', $this->translator->trans(
+                    'tisax.import.commit.company_confirm_required',
+                    [],
+                    'tisax_isa',
+                ));
                 return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
             }
 
@@ -436,7 +448,7 @@ final class TisaxImportWizardController extends AbstractController
             $request->getSession()->remove(self::SESSION_PARSED_CONTROLS);
             $request->getSession()->remove(self::SESSION_VALIDATION);
 
-            $this->addFlash('success', 'tisax.import.commit.success');
+            $this->addFlash('success', $this->translator->trans('tisax.import.commit.success', [], 'tisax_isa'));
 
             return $this->redirectToRoute('app_tisax_import_assess', [
                 '_locale'     => $request->getLocale(),
@@ -481,7 +493,7 @@ final class TisaxImportWizardController extends AbstractController
 
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('tisax_assess', $request->request->get('_token'))) {
-                $this->addFlash('danger', 'common.csrf_invalid');
+                $this->addFlash('danger', $this->translator->trans('common.csrf_invalid', [], 'messages'));
                 return $this->redirectToRoute('app_tisax_import_assess', [
                     '_locale'     => $request->getLocale(),
                     'frameworkId' => $frameworkId,
@@ -503,7 +515,7 @@ final class TisaxImportWizardController extends AbstractController
             $this->maturityService->bulkSetReifegrad($levelMap, $user, $tenant);
             $this->maturityService->bulkSetDataProtectionCompliance($dpRaw, $user, $tenant);
 
-            $this->addFlash('success', 'tisax.import.assess.saved');
+            $this->addFlash('success', $this->translator->trans('tisax.import.assess.saved', [], 'tisax_isa'));
 
             return $this->redirectToRoute('app_tisax_import_assess', [
                 '_locale'     => $request->getLocale(),

@@ -323,6 +323,11 @@ evidence_reverification:
         notes_label: 'Notes'
         completed_at: 'Completed at'
         skip_reason: 'Skip reason'
+    filter:
+        open: 'Open'
+        mine: 'Assigned to me'
+        overdue: 'Overdue'
+        all: 'All'
 iso_9001_bridge:
     policy: 'Identical to ISO 9001 Clause 7.5 "Control of documented information" — policies, procedures and records are versioned and released under the same control scheme.'
     procedure: 'In ISO 9001 this is a "documented procedure" (7.5.1) — process description with roles, inputs/outputs and measurement criteria.'

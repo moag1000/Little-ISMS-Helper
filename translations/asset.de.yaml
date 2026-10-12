@@ -85,6 +85,7 @@ asset:
     depends_on: Abhängigkeiten (Upstream)
     processing_activities: Verknüpfte Verarbeitungstätigkeiten (VVT)
     is_dora_relevant: 'DORA-relevant (Art. 28 IKT-Asset)'
+    tisax_information_classification: 'TISAX-Informationsklassifizierung'
   help:
     name: Eindeutiger Name des Assets
     type: Kategorie des Assets (Hardware, Software, Daten, etc.)
@@ -120,6 +121,7 @@ asset:
     is_dora_relevant: 'Dieses Asset gilt als IKT-Asset gemäß DORA Art. 28 und wird im
       Informationsregister (Register of Information / RoI) im XBRL-Export berücksichtigt.
       Nur markierte Assets erscheinen im RoI-Export.'
+    tisax_information_classification: 'Schutzbedarf nach VDA ISA 6.0 (Kap. 1.3). Ergänzt die allgemeine Datenklassifizierung; „Prototyp" für Prototypen- und Fahrzeugdaten mit Prototypenschutz-Anforderungen.'
   protection:
     recommended: Empfohlen
     overall_level: Gesamtschutzbedarf
@@ -256,6 +258,7 @@ asset:
     handling_instructions: Besondere Handhabungshinweise...
     owner_user: -- Verantwortliche Person --
     owner_person: -- Person aus Stammdaten --
+    tisax_information_classification: '-- Klassifizierung wählen --'
   type:
     information: 'Information'
     software: 'Software (Anwendung, Bibliothek, OS)'
@@ -407,6 +410,12 @@ asset:
         Datenleck, Halluzination, Privilege-Escalation).'
       extension_allowlist: 'Liste freigegebener Plugins / Extensions / MCP-Server. Verhindert
         Supply-Chain-Angriffe über kompromittierte Marketplaces.'
+  tisax_classification:
+    public: 'Öffentlich'
+    internal: 'Intern'
+    confidential: 'Vertraulich'
+    strictly_confidential: 'Streng vertraulich'
+    prototype: 'Prototyp (Prototypenschutz)'
 iso_9001_bridge:
   asset: 'In ISO 9001 sind Assets Bestandteil der Ressourcenverwaltung (Klausel 7.1). ISO 27001 A.5.9/A.5.10 erweitern um Informationswerte und Verantwortliche; ISO 22301 §8.1 verlangt Ressourcenlisten für die BCM-Grundversorgung.'
 

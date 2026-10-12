@@ -333,6 +333,7 @@ common:
         explain_breach_reopened: 'Begründen Sie, warum die Datenschutzverletzung wiedereröffnet werden muss'
         owner_user: '-- User wählen --'
         owner_person: '-- Person wählen --'
+        owner_legacy: 'Name (veraltet, nur für Altdaten)'
     reset_all_filters: 'Alle Filter zurücksetzen'
     time_savings: Zeitersparnis
     consistency: Konsistenz
@@ -349,10 +350,12 @@ common:
         owner_user: 'Verantwortlich (System-User)'
         owner_person: 'Verantwortlich (Person)'
         owner_deputies: Stellvertreter
+        owner_legacy: 'Verantwortlich (Freitext, veraltet)'
     help:
         owner_user: 'System-User mit Login als Verantwortliche Person.'
         owner_person: 'Person ohne Login als Verantwortliche (Reihenfolge: User > Person).'
         owner_deputies: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
+        owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
     deselect_all: 'Alle abwählen'
 person:
     title: Person
@@ -1233,6 +1236,24 @@ form:
         warning:
             unmapped_title: 'Hinweis (nur dev):'
             unmapped_body: 'Folgende Felder sind in keiner Section abgebildet und landen im Auffangbecken: %fields%. SectionPolicy in der FormType-Klasse aktualisieren.'
+        effort: 'Aufwand'
+        evidence: 'Nachweis'
+        lead: 'Leitung'
+        meta: 'Metadaten'
+        validity: 'Gültigkeit'
+        visibility: 'Sichtbarkeit'
+        assessment: 'Bewertung'
+        basic_info: 'Grunddaten'
+        conclusion: 'Ergebnis'
+        dates: 'Zeitraum'
+        decision_trail: 'Entscheidungsnachweis'
+        identification: 'Identifikation'
+        nc_capa: 'Nichtkonformität & Korrekturmaßnahmen'
+        risk: 'Risiko'
+        risk_quant: 'Quantitative Risikobewertung'
+        security: 'Sicherheit'
+        status: 'Status'
+        transfer: 'Übermittlung'
 corporate:
     title: Konzernstruktur
     subtitle: 'Verwaltung von Muttergesellschaften und Tochtergesellschaften'
@@ -1790,6 +1811,18 @@ admin:
         format_help: 'Wählen Sie das Exportformat'
         format_selection: 'Formatauswahl'
         submit: 'Exportieren'
+    health_fix:
+        fix_cache_permissions: 'Systemzustand: Cache-Berechtigungen repariert'
+        fix_log_permissions: 'Systemzustand: Log-Berechtigungen repariert'
+        clear_cache: 'Systemzustand: Cache geleert'
+        clean_old_logs: 'Systemzustand: alte Log-Dateien bereinigt'
+        rotate_logs: 'Systemzustand: Log-Dateien rotiert'
+        optimize_disk_space: 'Systemzustand: Speicherplatz optimiert'
+        fix_var_permissions: 'Systemzustand: Berechtigungen für var/ repariert'
+        fix_uploads_permissions: 'Systemzustand: Upload-Berechtigungen repariert'
+        fix_session_permissions: 'Systemzustand: Session-Berechtigungen repariert'
+        clear_old_uploads: 'Systemzustand: alte Uploads bereinigt'
+        run_composer_install: 'Systemzustand: Composer-Installation ausgeführt'
 business_process:
     index:
         table:
