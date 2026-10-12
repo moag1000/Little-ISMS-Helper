@@ -2,6 +2,7 @@
 {% trans_default_domain 'planning' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'planning.action_item.title.list'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
 
@@ -45,6 +46,7 @@
     </div>
 </div>
 
+{% if items is not empty %}
 {% embed '_components/_fa_table.html.twig' with { id: 'action-item-list', striped: false } %}
     {% block table_head %}
         <tr>
@@ -148,15 +150,18 @@
                 </div>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="7" class="fa-table__empty text-center">
-                {{ 'planning.action_item.message.no_items'|trans({}, 'planning') }}
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'sleeping',
+        title: 'planning.action_item.message.no_items'|trans({}, 'planning'),
+        actions: [
+            { label: 'planning.action_item.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_action_item_new') }
+        ]
+    }) }}
+{% endif %}
 
 </main>
 {% endblock %}

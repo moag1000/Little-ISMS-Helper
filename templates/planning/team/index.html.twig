@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'planning' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'planning.team.title.list'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
 
@@ -23,6 +24,7 @@
 
 <main class="fa-aurora-surface">
 
+{% if teams is not empty %}
 {% embed '_components/_table.html.twig' with {
     'wrapperClass': 'table-container'
 } %}
@@ -82,15 +84,18 @@
                 </div>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="6" class="text-center-p-xl-muted">
-                {{ 'planning.team.message.no_teams'|trans({}, 'planning') }}
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'sleeping',
+        title: 'planning.team.message.no_teams'|trans({}, 'planning'),
+        actions: [
+            { label: 'planning.team.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_team_new') }
+        ]
+    }) }}
+{% endif %}
 
 </main>
 {% endblock %}

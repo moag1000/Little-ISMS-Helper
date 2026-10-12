@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'supplier.ict_library.title'|trans({}, 'suppliers') }}{% endblock %}
 
@@ -16,7 +17,10 @@
     }) }}
 
     {% if entries|length == 0 %}
-        <div class="alert alert-info">{{ 'supplier.ict_library.empty'|trans({}, 'suppliers') }}</div>
+        {{ _fa_empty_state.render({
+            mood: 'sleeping',
+            title: 'supplier.ict_library.empty'|trans({}, 'suppliers')
+        }) }}
     {% else %}
     <div class="fa-table-wrap mb-3">
     <table class="fa-table fa-table--hover">

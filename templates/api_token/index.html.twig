@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'api_token' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'api_token.title'|trans({}, 'api_token') }}{% endblock %}
 
@@ -43,6 +44,7 @@
     </div>
 
     {# List #}
+    {% if tokens is not empty %}
     <div class="fa-table-wrap mb-3">
     <table class="fa-table fa-table--hover">
         <thead class="fa-table__head">
@@ -76,11 +78,15 @@
                         {% endif %}
                     </td>
                 </tr>
-            {% else %}
-                <tr class="fa-table__row"><td colspan="5" class="fa-table__cell fa-table__empty">{{ 'api_token.empty'|trans({}, 'api_token') }}</td></tr>
             {% endfor %}
         </tbody>
     </table>
     </div>
+    {% else %}
+        {{ _fa_empty_state.render({
+            mood: 'sleeping',
+            title: 'api_token.empty'|trans({}, 'api_token')
+        }) }}
+    {% endif %}
 </div>
 {% endblock %}

@@ -112,6 +112,8 @@
         </div>
     {% endblock %}
     {% block card_body %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% if documentsByType is not empty %}
 {% embed '_components/_table.html.twig' with {
     'noMargin': true,
     'responsive': true
@@ -170,15 +172,18 @@
                 </a>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'document.message.no_documents_for_type'|trans({}, 'document') }}
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'sleeping',
+        title: 'document.message.no_documents_for_type'|trans({}, 'document'),
+        actions: [
+            { label: 'document.action.create'|trans({}, 'document'), variant: 'primary', icon: 'plus', href: path('app_document_new') }
+        ]
+    }) }}
+{% endif %}
     {% endblock %}
 {% endembed %}
 
