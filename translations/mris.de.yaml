@@ -21,12 +21,26 @@ mris:
             point_reason: 'eine <strong>Begründung</strong> warum dieser Reifegrad relevant ist (Regulatorik, Risikolage, typische Bedrohungen),'
             point_preserve: '<strong>bestehende Reifegrad-Bewertungen bleiben unangetastet</strong> (<code>maturity_current</code>-Werte werden nicht überschrieben).'
             example: '<strong>Beispiel:</strong> <code>healthcare-provider</code> setzt Phishing-resistente MFA (MHC-03) auf <code>managed</code> wegen der Ransomware-Welle 2024/25, aber Multi-Tenancy (MHC-07) nur auf <code>defined</code> weil intern. Nach Anwendung siehst du im SoA + Reifegrad-Report die Lücke zwischen Ist (deine Bewertung) und Soll (Baseline-Ziel) als priorisierte Maßnahmen-Liste.'
+        title: 'MRIS-Branchen-Baselines'
+        intro: 'Vorkonfigurierte Soll-Stufen pro MHC, abgestimmt auf Branchen wie KRITIS / NIS2-Essential, Finance / DORA, Automotive / TISAX und SaaS / CRA. Anwenden setzt nur das Soll (<code>maturity_target</code>) — bestehende Self-Assessments (Ist) bleiben unangetastet.'
+        no_tenant: 'Keine Organisation zugewiesen — Baselines benötigen einen Organisationskontext zum Anwenden.'
+        empty: 'Keine Baselines verfügbar. Erwartet werden YAML-Dateien unter <code>fixtures/mris/baselines/</code>.'
+        file_label: 'Datei:'
+        dry_run: 'Vorschau (Dry-Run)'
+        apply: 'Anwenden'
+        confirm_apply: 'Baseline ''%baseline%'' wirklich auf Organisation ''%tenant%'' anwenden? Bestehende Soll-Stufen werden überschrieben.'
+        tenant_required: 'Organisationskontext erforderlich.'
+        manager_required: 'Anwenden erfordert Rolle Manager (ROLE_MANAGER).'
+        cli_hint: 'Konsolen-Pendant für Automatisierung:'
+        source_files: 'Die Baseline-Quelldateien liegen unter <code>fixtures/mris/baselines/*.yaml</code>.'
     page:
         kpi_title: 'Mythos-relevante Kennzahlen'
         kpi_intro: |
             Acht KPIs aus MRIS v1.5 Kap. 10.6. Drei werden automatisch aus
             Bestandsdaten berechnet, fünf erfordern manuelle Pflege je Organisation.
         source: 'Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.'
+        kpi_breadcrumb: 'MRIS-KPIs'
+        note_label: 'Hinweis:'
     badge:
         auto: auto
         manual: manuell
@@ -37,6 +51,7 @@ mris:
             Die fünf manuell zu pflegenden KPIs (SBOM-Coverage, KEV-Patch-Latency,
             CCM-Coverage, Krypto-Inventar-Abdeckung, TLPT-Findings-Closure) erfordern
             externe Datenquellen. Manuelle Eingabefelder folgen weiter unten.
+        manual_note_pending: 'Die fünf manuell zu pflegenden KPIs (SBOM-Coverage, KEV-Patch-Latency, CCM-Coverage, Krypto-Inventar-Abdeckung, TLPT-Findings-Closure) erfordern derzeit externe Datenquellen. Manuelle Eingabefelder folgen in einer späteren Version.'
     manual_form:
         title: 'Manuelle KPI-Werte'
         save: 'Werte speichern'
@@ -52,6 +67,29 @@ mris:
             open: 'Öffnen'
             warning_missing: 'Hochrisiko-AI ohne DPIA — gem. DSGVO Art. 35 + AI Act Art. 9 erforderlich.'
             create_button: 'DPIA anlegen'
+        index:
+            title: 'AI-Agent-Inventar'
+            intro: 'Asset-Subtyp <code>ai_agent</code>. Erfüllt gleichzeitig <strong>EU AI Act Art. 6/9-16</strong>, <strong>ISO 42001 Annex A</strong>, <strong>MRIS MHC-13</strong> und <strong>ISO 27001 A.5.16/A.8.27</strong>.'
+            source: 'MRIS-Quelle: Peddi, R. (2026). MRIS v1.5. CC BY 4.0.'
+            stat_total: 'AI-Agents gesamt'
+            stat_high_risk: 'Hochrisiko (AI Act Art. 6)'
+            stat_unclassified: 'Nicht klassifiziert'
+            stat_completeness: 'Ø Doku-Vollständigkeit'
+            high_risk_incomplete: '<strong>%count% Hochrisiko-Agent(en) mit unvollständiger Dokumentation.</strong><br>EU AI Act Art. 11 verlangt für High-Risk-Systeme vollständige technische Dokumentation. Vor erster Nutzung ergänzen.'
+            empty: 'Noch keine AI-Agents im Inventar. Lege ein Asset mit <code>assetType=ai_agent</code> an (z. B. GitHub Copilot, Cursor, Claude Code, eigener MCP-Server).'
+            col:
+                name: 'Name'
+                provider: 'Anbieter'
+                model: 'Modell'
+                classification: 'Risikoklasse'
+                completeness: 'Doku-Vollständigkeit'
+            class:
+                prohibited: 'Verboten'
+                high_risk: 'Hochrisiko'
+                limited_risk: 'Begrenzt'
+                minimal_risk: 'Minimal'
+                unclassified: 'Nicht klassifiziert'
+            required_fields: '<strong>Pflichtfelder pro AI-Agent (9):</strong> Risikoklassifikation (AI Act Art. 6), Zweckbestimmung (Art. 11), Datengovernance (Art. 10), Human Oversight (Art. 14), Anbieter (Art. 16), Modell-Version (ISO 42001), Capability-Scope (MHC-13), Bedrohungsmodell (Art. 9 + MHC-13), Extension-Allowlist (MHC-13).'
     audit_report:
         flash:
             no_tenant: 'Kein Organisation zugewiesen — MRIS-Audit-Report benötigt einen Organisationskontext.'
@@ -140,3 +178,252 @@ mris:
             reibung: 'Reine Reibung (R)'
             nicht_betroffen: 'Nicht betroffen (N)'
             unklassifiziert: 'Nicht klassifiziert'
+    wizard:
+        common:
+            note_label: 'Hinweis:'
+            fallback_notice: 'Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter <code>blocker_solutions:</code> pflegen, damit dieser Inhalt zentral aus YAML geladen wird. Aktuell wird der eingebettete Standardinhalt angezeigt.'
+            norm_refs: 'Norm-Verweise'
+            example: 'Beispiel'
+            source: 'Quelle: Peddi (2026) MRIS v1.5.'
+            breadcrumb_kpis: 'MRIS-KPIs'
+        pure_friction:
+            page_title: 'MRIS-Wizard — Reine Reibung'
+            breadcrumb: 'Wizard: Reine Reibung'
+            title: '5-Schritt-Entscheidungsroutine — Reine Reibung'
+            intro: 'Wenn ein Annex-A-Control im Audit als „Reine Reibung" markiert ist, darfst du es nicht stillschweigend streichen. Folge dieser Routine, um eine audit-taugliche Entscheidung zu dokumentieren.'
+            evidence_label: 'Audit-Evidenz:'
+            step_1:
+                title: 'Bedrohungslage prüfen'
+                detail: 'Welcher reale Angriffsvektor wird durch das Control adressiert? Suche Belege in CISA KEV, BSI-Lagebericht, MITRE ATT&CK oder eigenem Incident-Backlog. Wenn nichts gefunden wird, liegt der Verdacht auf „Mythos-Control" nahe.'
+                evidence: 'Verlinkte Bedrohungs-Quelle (CISA-KEV-ID, BSI-Dokument-ID, ATT&CK-Tactic-ID).'
+            step_2:
+                title: 'Wirkung messen'
+                detail: 'Welche KPI weist die Schutzwirkung nach? Coverage, Erkennungsrate, MTTC, KEV-Patch-Latency. Liefert das Control keine messbare Zahl, ist es ein Kandidat für Compliance-Theater.'
+                evidence: 'KPI-Snapshot oder Begründung „nicht messbar".'
+            step_3:
+                title: 'Risk-Owner-Freigabe einholen'
+                detail: 'Lege dem fachlichen Risk-Owner (Geschäftsbereich) drei Optionen vor: (a) anpassen, (b) durch ein wirksameres Control ersetzen, (c) streichen. Der Junior-ISB entscheidet nicht allein — Vier-Augen-Prinzip.'
+                evidence: 'Schriftliche Freigabe (E-Mail / Workflow-Schritt) mit gewählter Option.'
+            step_4:
+                title: 'SoA-Begründung dokumentieren'
+                detail: 'Im Statement of Applicability die Änderung begründen: Quelle (z. B. NIST SP 800-63B §5.1.1.2), Risk-Owner-Freigabe, Datum, neuer Status. Bei „Streichung" zusätzlich Annex-A-Querverweis.'
+                evidence: 'SoA-Eintrag mit Begründungstext und Audit-Trail.'
+            step_5:
+                title: 'Restrisiko + Review-Termin'
+                detail: 'Lege ein Restrisiko an (auch wenn klein) und setze einen jährlichen Review-Termin. Bedrohungslagen ändern sich — was heute Reibung ist, kann morgen wieder relevant werden.'
+                evidence: 'Risiko-Eintrag + Kalendereintrag für das jährliche Review.'
+            example: '90-Tage-Passwortwechsel: NIST SP 800-63B (2017) widerlegt die Wirksamkeit, Helpdesk-Tickets steigen, Schutzwirkung null. Der Risk-Owner wählt Option (c) Streichung. Die SoA-Begründung verweist auf NIST + Risk-Owner-Freigabe vom 2026-04-26.'
+            norm_ref_1: 'ISO/IEC 27001:2022 Kap. 6.1.3 d) — SoA-Begründung'
+            norm_ref_2: 'NIST SP 800-63B §5.1.1.2 — Memorized Secret Verifiers'
+            norm_ref_3: 'MRIS v1.5 Kap. 6 — Reine Reibung'
+        maturity:
+            page_title: 'MRIS-Wizard — Reifegrad-Evidence pro MHC'
+            breadcrumb: 'Wizard: Reifegrad-Evidence'
+            title: 'Reifegrad-Evidence pro MHC'
+            intro: 'Pro MHC drei Reifegrade — für jeden Reifegrad eine Liste audit-tauglicher Belege. Initial = „erste Schritte dokumentiert", Defined = „org-weit verbindlich", Managed = „gemessen, gesteuert, KPI". Klick auf ein MHC, um die Belegliste zu sehen.'
+            legend_initial: 'erste Schritte dokumentiert'
+            legend_defined: 'org-weit verbindlich'
+            legend_managed: 'gemessen, gesteuert, KPI'
+            no_evidence: '— keine Belege gepflegt —'
+            mhc_01:
+                name: 'Identität & MFA'
+                initial_1: 'MFA-Pilot dokumentiert (Konfig-Screenshot, Testerliste).'
+                initial_2: 'IdP-Inventar als Tabelle (manuell gepflegt).'
+                defined_1: 'Org-Policy „MFA verpflichtend für alle User", freigegeben durch die Geschäftsleitung.'
+                defined_2: 'Coverage-Bericht je Quartal, Abweichungen mit Risikoakzeptanz.'
+                managed_1: 'KPI: phishing-resistente MFA-Coverage > 95 % (FIDO2/WebAuthn).'
+                managed_2: 'Automatischer IdP-Drift-Alert + monatliches Review im Management-Report.'
+            mhc_02:
+                name: 'Endpoint'
+                initial_1: 'EDR auf > 50 % der Server-Endpoints, Wartungsplan vorhanden.'
+                initial_2: 'Aktuelle Hardening-Baseline (CIS / BSI SiSyPHuS) als Dokument.'
+                defined_1: 'Org-weit verbindliche EDR-Policy, alle Server + 80 % der Clients.'
+                defined_2: 'Quartalsweiser Compliance-Scan gegen die Baseline mit Abweichungs-Tracking.'
+                managed_1: 'KPI: EDR-Coverage > 98 %, MTTD < 24 h.'
+                managed_2: 'Automatische Asset-Discovery + Drift-Reporting an das SIEM.'
+            mhc_03:
+                name: 'Privileged Access'
+                initial_1: 'Liste privilegierter Accounts (Admin / Service) gepflegt.'
+                initial_2: 'Manuelle PIM-Reviews mit Vier-Augen-Prinzip dokumentiert.'
+                defined_1: 'PAM-Lösung im Einsatz, alle Tier-0-Zugänge über Vault.'
+                defined_2: 'Just-in-Time-Access-Policy und quartalsweise Rezertifizierung.'
+                managed_1: 'KPI: Anteil dauerhafter Privilegien < 5 %, Session-Recording aktiv.'
+                managed_2: 'Automatisierte Anomalie-Erkennung auf privilegierten Sessions.'
+            mhc_04:
+                name: 'Patching'
+                initial_1: 'Patch-Backlog-Liste (manuell), Schwellwert „kritisch / hoch".'
+                initial_2: 'Monatliches Patch-Fenster mit Change-Ticket.'
+                defined_1: 'SLA: KEV-Patches < 14 Tage, Critical < 30 Tage, schriftlich freigegeben.'
+                defined_2: 'Patch-Compliance-Report je Asset-Klasse, Eskalation bei Verstoß.'
+                managed_1: 'KPI: Median der KEV-Patch-Latency < 7 Tage, automatisches Tracking.'
+                managed_2: 'Schwachstellen-Scanner + automatische Ticket-Erstellung + Asset-Verknüpfung.'
+            mhc_05:
+                name: 'Backup & Recovery'
+                initial_1: 'Backup-Plan dokumentiert, mindestens ein Restore-Test im letzten Jahr.'
+                initial_2: '3-2-1-Regel als Soll, Abweichungen begründet.'
+                defined_1: 'Org-weite Backup-Policy mit RPO/RTO je Asset-Klasse.'
+                defined_2: 'Halbjährlicher Restore-Test pro kritischem System, Protokoll.'
+                managed_1: 'KPI: Restore-Test-Erfolgsquote > 95 %, Immutable-Backup-Coverage > 80 %.'
+                managed_2: 'Automatisierte Restore-Tests + Auswertung im Management-Review.'
+            mhc_06:
+                name: 'Logging & Detection'
+                initial_1: 'Zentrale Log-Sammlung für Server + IdP, Aufbewahrung 90 Tage.'
+                initial_2: 'Erste Detection-Use-Cases (Failed-Logon, Admin-Anomalie).'
+                defined_1: 'SIEM-Use-Cases gegen MITRE ATT&CK gemappt, dokumentiert.'
+                defined_2: 'Tier-1-Triage-SOP, Eskalationswege zum Incident-Team.'
+                managed_1: 'KPI: MTTD < 1 h, Use-Case-Coverage > 70 % der Taktiken.'
+                managed_2: 'Threat-Hunting-Backlog + Continuous Validation (Atomic Red Team).'
+            mhc_07:
+                name: 'E-Mail & Phishing'
+                initial_1: 'SPF + DKIM + DMARC mit p=none aktiv, Reports gesammelt.'
+                initial_2: 'Phishing-Postfach / Melde-Button im Mail-Client verfügbar.'
+                defined_1: 'DMARC p=quarantine oder reject org-weit, regelmäßige Reports.'
+                defined_2: 'Phishing-Awareness-Trainings 2×/Jahr, Reporting der Klickraten.'
+                managed_1: 'KPI: Phishing-Klickrate < 5 %, Melderate > 25 %.'
+                managed_2: 'Automatische URL-Detonation + Coaching im Kontext nach einem Klick.'
+            mhc_08:
+                name: 'Netzwerksegmentierung'
+                initial_1: 'Netzplan vorhanden, mindestens DMZ und interne Zone getrennt.'
+                initial_2: 'Firewall-Regeln dokumentiert, manuelles Review jährlich.'
+                defined_1: 'Zonenmodell org-weit (Mgmt, OT, Office, DMZ), Default-Deny.'
+                defined_2: 'Mikrosegmentierung in kritischen Bereichen, dokumentiert.'
+                managed_1: 'KPI: East-West-Traffic-Sichtbarkeit > 80 %, Lateral-Movement-Tests bestanden.'
+                managed_2: 'Automatisches Policy-Drift-Reporting + Topologie-Inventar.'
+            mhc_09:
+                name: 'Cloud Hardening'
+                initial_1: 'CSPM-Tool aktiv, monatlicher Findings-Bericht.'
+                initial_2: 'IAM-Baseline (Root-Account-Schutz, MFA für Admins) dokumentiert.'
+                defined_1: 'Landing Zone mit Guardrails (SCP / Azure Policy), org-weit verbindlich.'
+                defined_2: 'CCM-Mapping zur Cloud Controls Matrix v4.x je Provider.'
+                managed_1: 'KPI: CCM-Coverage > 90 %, MTTR kritischer Fehlkonfigurationen < 24 h.'
+                managed_2: 'Automatisches Drift-Reporting + Continuous-Compliance-Scan.'
+            mhc_10:
+                name: 'Supply Chain'
+                initial_1: 'Lieferantenliste mit Risikoklasse (manuell).'
+                initial_2: 'AVV / DPA für kritische Anbieter abgelegt.'
+                defined_1: 'SBOM-Pflicht für eigene Software, Lieferanten-Audit-Programm.'
+                defined_2: 'TPRM-Workflow mit jährlichem Re-Assessment für Tier-1-Lieferanten.'
+                managed_1: 'KPI: SBOM-Coverage > 90 %, Supplier-Risk-Score im KPI-Dashboard.'
+                managed_2: 'Automatische Schwachstellen-Korrelation SBOM × KEV + DORA-Register-Sync.'
+            mhc_11:
+                name: 'Awareness & Training'
+                initial_1: 'Onboarding-Schulung mit Security-Modul, Teilnehmerliste.'
+                initial_2: 'Jährliche Awareness-Mail mit Klick-Tracking.'
+                defined_1: 'Rollenbasierte Trainings (Dev, Admin, User, Mgmt), Quiz-Pflicht.'
+                defined_2: 'Phishing-Simulationen 4×/Jahr, Auswertung im Management-Report.'
+                managed_1: 'KPI: Training-Completion > 95 %, Phishing-Resistance-Score gemessen.'
+                managed_2: 'Adaptive Lernpfade + Just-in-Time-Coaching nach Incidents.'
+            mhc_12:
+                name: 'Incident Response'
+                initial_1: 'IR-Plan dokumentiert, Eskalationswege definiert.'
+                initial_2: 'Letzter Tabletop-Test im laufenden Jahr.'
+                defined_1: 'Playbooks für die Top-5-Szenarien (Ransomware, BEC, Datenleck, DDoS, Insider).'
+                defined_2: 'Halbjährlicher Live-Drill + Post-Mortem-Pflicht mit Lessons Learned.'
+                managed_1: 'KPI: MTTR-Median < SLA, Lessons Learned zu > 80 % im Backlog umgesetzt.'
+                managed_2: 'TLPT (DORA Art. 26) bestanden + Retainer-Vertrag mit DFIR-Anbieter.'
+            mhc_13:
+                name: 'AI- / Agent-Governance'
+                initial_1: 'AI-Agent-Inventar mit Capability-Scope gepflegt.'
+                initial_2: 'Erste Bedrohungsmodelle für 2–3 Top-Agents dokumentiert.'
+                defined_1: 'AI-Use-Policy + Extension-Allowlist org-weit verbindlich.'
+                defined_2: 'Pflicht-Bedrohungsmodell + Dokumentation je Agent vor Go-Live.'
+                managed_1: 'KPI: Doku-Vollständigkeit > 90 %, Risikoklasse je Agent reviewed.'
+                managed_2: 'EU-AI-Act-Klassifikation + ISO-42001-Konformität dokumentiert.'
+        ai_risk:
+            page_title: 'MRIS-Wizard — AI-Risikoklasse'
+            breadcrumb: 'Wizard: AI-Risikoklasse'
+            title: '12-Tools-Entscheidungsmatrix — AI-Risikoklasse'
+            intro: 'Klassifiziere KI-Tools nach EU AI Act in vier Klassen: minimal, begrenzt, hoch, verboten. Die Matrix listet 12 Praxis-Tools mit empfohlener Klasse, AI-Act-Verweis und Begründung. Für eigene Tools nutze den 4-Schritt-Entscheidungsablauf darunter.'
+            flow_heading: '4-Schritt-Entscheidungsablauf'
+            tools_heading: '12 typische Tools'
+            col:
+                tool: 'Tool'
+                class: 'Empfohlene Klasse'
+                reference: 'AI-Act-Verweis'
+                rationale: 'Begründung'
+            class:
+                minimal: 'Minimal'
+                limited: 'Begrenzt'
+                high: 'Hochrisiko'
+                prohibited: 'Verboten'
+            flow_1:
+                title: 'Verbotene Praktik (Art. 5)?'
+                detail: 'Social Scoring, biometrische Echtzeit-Identifikation im öffentlichen Raum, manipulative unterschwellige Techniken — wenn ja: verboten, sofort stoppen.'
+            flow_2:
+                title: 'Hochrisiko-Anwendungsfall (Anhang III)?'
+                detail: 'KRITIS-Steuerung, Bildung/Prüfung, Beschäftigung/HR, kritische Dienstleistungen, Strafverfolgung, Migration/Asyl, Justiz, Wahlen — wenn ja: Hochrisiko, volle Konformitätsbewertung (Art. 6, 8–15).'
+            flow_3:
+                title: 'Transparenzpflicht (Art. 50)?'
+                detail: 'Chatbots, Emotionserkennung, biometrische Kategorisierung, Deepfakes, KI-generierte Inhalte — wenn ja: begrenztes Risiko, Kennzeichnungspflicht.'
+            flow_4:
+                title: 'Sonst: minimales Risiko'
+                detail: 'Spamfilter, Game-AI, Recommender ohne Profiling — keine speziellen AI-Act-Pflichten, aber MRIS MHC-13 (AI-Governance) und ISO 42001 weiter einhalten.'
+            tool_01:
+                tool: 'GitHub Copilot'
+                ai_act_ref: 'Kein Anhang III; GPAI Art. 51–55 (Anbieter)'
+                rationale: 'Code-Vorschläge im Entwickler-Workflow — kein Hochrisiko-Anwendungsfall. Anbieterpflichten liegen beim Modellanbieter, nutzerseitig MHC-13 + Coding-Policy.'
+            tool_02:
+                tool: 'Cursor IDE'
+                ai_act_ref: 'Kein Anhang III; GPAI-Klausel beim Modellanbieter'
+                rationale: 'KI-IDE auf GPAI-Basis — wie Copilot. Achtung: Risiko der Code-Exfiltration, Extension-Allowlist + Telemetrie-Prüfung in MHC-13 dokumentieren.'
+            tool_03:
+                tool: 'Claude Code (Anthropic)'
+                ai_act_ref: 'Kein Anhang III; GPAI Art. 51–55 (Anbieter)'
+                rationale: 'Agentischer Coding-Assistent — Standard-Tooling. MHC-13 verlangt Capability-Scope (Schreibrechte, Dateizugriff) und Audit-Trail.'
+            tool_04:
+                tool: 'ChatGPT Enterprise'
+                ai_act_ref: 'Kein Anhang III; Art. 50, falls extern als Chatbot'
+                rationale: 'Allgemeiner Office-Assistent. Hochrisiko nur bei spezifischem Anhang-III-Einsatz (HR-Screening, Bildung). DPA + AVV beachten.'
+            tool_05:
+                tool: 'KI-gestützter Recruiter / CV-Screener'
+                ai_act_ref: 'Anhang III Nr. 4 — Beschäftigung'
+                rationale: 'Vorauswahl von Bewerbern oder Personalentscheidungen — explizit als Hochrisiko gelistet. Volle Konformitätsbewertung, DSFA, Bias-Audit.'
+            tool_06:
+                tool: 'Robo-Advisor (Finanzberatung)'
+                ai_act_ref: 'Anhang III Nr. 5 b) — Kreditwürdigkeitsprüfung'
+                rationale: 'Wenn eine Bonitäts-/Scoring-Funktion enthalten ist: Hochrisiko. Reine Portfolio-Optimierung ohne Score: minimal. Zusätzlich DORA + MaRisk.'
+            tool_07:
+                tool: 'Predictive Policing'
+                ai_act_ref: 'Anhang III Nr. 6 — Strafverfolgung'
+                rationale: 'Risikoeinschätzung von Personen oder Gebieten zur Strafverfolgung — Hochrisiko. Profiling natürlicher Personen kann nach Art. 5 sogar verboten sein.'
+            tool_08:
+                tool: 'KI für medizinische Bilddiagnostik'
+                ai_act_ref: 'Art. 6 Abs. 1 + MDR (Medizinprodukt)'
+                rationale: 'Sicherheitsbauteil eines Medizinprodukts nach MDR — Hochrisiko gemäß Art. 6 Abs. 1. Konformitätsbewertung integriert in das MDR-Verfahren.'
+            tool_09:
+                tool: 'Fraud Detection (Banking)'
+                ai_act_ref: 'Anhang III Nr. 5 b) — Kreditwürdigkeit / Finanzen'
+                rationale: 'Bei Auswirkungen auf Kundenbonität oder Kontosperrung: Hochrisiko. Reine Backend-Anomalie-Erkennung ohne Kundenwirkung: minimal. Zusätzlich BaFin + DORA.'
+            tool_10:
+                tool: 'Marketing-Recommender (E-Commerce)'
+                ai_act_ref: 'Kein Anhang III; DSGVO Art. 22 bei Profiling'
+                rationale: 'Produktvorschläge ohne automatisierte Einzelfallentscheidung — minimal. Bei automatisierten Preis- oder Kreditentscheidungen wird daraus Hochrisiko.'
+            tool_11:
+                tool: 'Smart-Home-Sprachassistent'
+                ai_act_ref: 'Art. 50 — Transparenzpflicht (Chatbot)'
+                rationale: 'Chatbot-ähnliche Interaktion — Nutzer müssen erkennen, dass sie mit einer KI sprechen. Keine Hochrisiko-Funktion, aber Kennzeichnungspflicht.'
+            tool_12:
+                tool: 'KRITIS-Steuerung (SCADA + KI)'
+                ai_act_ref: 'Anhang III Nr. 2 — Kritische Infrastruktur'
+                rationale: 'KI als Sicherheitsbauteil kritischer digitaler oder physischer Infrastruktur — Hochrisiko. NIS2 + MRIS MHC-13 + ISO 42001 verpflichtend.'
+            norm_ref_1: 'EU AI Act (VO 2024/1689) Art. 5, 6, 50 + Anhang III'
+            norm_ref_2: 'ISO/IEC 42001:2023 — AI-Managementsystem'
+            norm_ref_3: 'MRIS v1.5 MHC-13 — AI-/Agent-Governance'
+            norm_ref_4: 'ENISA Multilayer Framework for Good Cybersecurity Practices for AI (2023)'
+    glossar:
+        title: 'MRIS-Glossar'
+        intro: 'Begriffe der Mythos-resistenten Informationssicherheit mit Definition, Brücke zur ISO 9001 und Norm-Verweis. Geeignet als Nachschlagewerk für Junior-ISB und ehemalige QMB.'
+        source: 'Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.'
+        empty_title: 'Keine Glossar-Einträge gefunden'
+        empty_text: 'Die Datei <code>fixtures/mris/help-texts.yaml</code> enthält derzeit keine Glossar-Einträge.'
+        search_label: 'Suche (Begriff, Definition, Quelle)'
+        search_placeholder: 'z. B. Standfest, FIDO2, ISO …'
+        entry_count: '%count% Einträge'
+        reset: 'Zurücksetzen'
+        col:
+            term: 'Begriff'
+            definition: 'Definition'
+            analogy: '9001-Analogie'
+            source: 'Quelle'
+        no_results: 'Keine Treffer für die aktuelle Suche.'
+        footer_source: 'Quelle: Peddi, R. (2026). MRIS v1.5. Lizenz'

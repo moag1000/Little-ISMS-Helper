@@ -81,6 +81,7 @@ vulnerability:
         remediation_deadline: 'Deadline for remediating the vulnerability'
         exploit_availability: 'Availability of exploit code'
         actively_exploited: 'Is the vulnerability being actively exploited in the wild?'
+        status_readonly: 'Status is driven by the lifecycle workflow (Open → In triage → In remediation → Patched / Mitigated / Accepted → Closed). Direct editing is disabled; use the status actions on the detail page.'
     source:
         nist: 'NIST NVD'
         mitre: 'MITRE CVE'

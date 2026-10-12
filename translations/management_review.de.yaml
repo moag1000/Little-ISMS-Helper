@@ -179,6 +179,7 @@ management_review:
         policy_review_outcome: 'Ergebnis der Überprüfung der Informationssicherheitsrichtlinie gemäß §5.2.'
         framework_compliance_status: 'JSON-Snapshot des aktuellen Compliance-Status über alle relevanten Frameworks (DORA, NIS2, ISO 27001, BaFin-Anforderungen). Nur sichtbar wenn Compliance-Modul aktiv.'
         action_items_with_deadlines: 'Strukturierte Maßnahmen mit Verantwortlichen und Fristen. JSON-Format: [{action, owner, deadline (ISO-Datum), status: open|in_progress|done}]'
+        status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Geplant → Abgeschlossen / Nachverfolgung erforderlich). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
     auto_collect:

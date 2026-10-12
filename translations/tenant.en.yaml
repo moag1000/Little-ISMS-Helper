@@ -209,9 +209,16 @@ tenant:
             from_address: 'Sender Email Address'
             logo_url: 'Logo URL (HTTPS)'
             support_address: 'Support Email Address'
+            footer_text: 'Footer Text'
         logo_url:
             https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
         saved: 'Email branding saved.'
+        help:
+            from_name: 'Appears in the "From" field. Example: ACME Inc. Compliance.'
+            from_address: 'Sender address. Must be authorized in the mail server (SPF/DKIM).'
+            logo_url: 'Full HTTPS URL to the logo (shown at the top of HTML emails).'
+            footer_text: 'Legal notes / signature below email. Max 2000 characters, plain text.'
+            support_address: 'Reply-to / support contact — may differ from sender.'
 corporate:
     view:
         own_only: 'Own Only'
@@ -341,14 +348,7 @@ corporate:
             from_name: 'Sender Name'
             from_address: 'Sender Email Address'
             logo_url: 'Logo URL (HTTPS)'
-            footer_text: 'Footer Text'
             support_address: 'Support Email Address'
-        help:
-            from_name: 'Appears in the "From" field. Example: ACME Inc. Compliance.'
-            from_address: 'Sender address. Must be authorized in the mail server (SPF/DKIM).'
-            logo_url: 'Full HTTPS URL to the logo (shown at the top of HTML emails).'
-            footer_text: 'Legal notes / signature below email. Max 2000 characters, plain text.'
-            support_address: 'Reply-to / support contact — may differ from sender.'
         hint:
             fallback: 'Empty field → parent organization → SystemSettings (category=email) → hardcoded default.'
         logo_url:

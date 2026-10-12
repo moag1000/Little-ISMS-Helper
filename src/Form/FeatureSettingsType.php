@@ -21,29 +21,29 @@ final class FeatureSettingsType extends AbstractType
     {
         $builder
             ->add('enable_dark_mode', CheckboxType::class, [
-                'label' => 'admin.settings.features.enable_dark_mode',
+                'label' => 'admin.settings.features.dark_mode',
                 'required' => false,
-                'help' => 'admin.settings.features.enable_dark_mode_help',
+                'help' => 'admin.settings.features.dark_mode_help',
             ])
             ->add('enable_global_search', CheckboxType::class, [
-                'label' => 'admin.settings.features.enable_global_search',
+                'label' => 'admin.settings.features.global_search',
                 'required' => false,
-                'help' => 'admin.settings.features.enable_global_search_help',
+                'help' => 'admin.settings.features.global_search_help',
             ])
             ->add('enable_quick_view', CheckboxType::class, [
-                'label' => 'admin.settings.features.enable_quick_view',
+                'label' => 'admin.settings.features.quick_view',
                 'required' => false,
-                'help' => 'admin.settings.features.enable_quick_view_help',
+                'help' => 'admin.settings.features.quick_view_help',
             ])
             ->add('enable_notifications', CheckboxType::class, [
-                'label' => 'admin.settings.features.enable_notifications',
+                'label' => 'admin.settings.features.notifications',
                 'required' => false,
-                'help' => 'admin.settings.features.enable_notifications_help',
+                'help' => 'admin.settings.features.notifications_help',
             ])
             ->add('enable_audit_log', CheckboxType::class, [
-                'label' => 'admin.settings.features.enable_audit_log',
+                'label' => 'admin.settings.features.audit_log',
                 'required' => false,
-                'help' => 'admin.settings.features.enable_audit_log_help',
+                'help' => 'admin.settings.features.audit_log_help',
             ])
         ;
     }

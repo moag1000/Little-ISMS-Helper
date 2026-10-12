@@ -92,6 +92,7 @@ business_process:
     process_owner_deputies: 'Additional Persons with deputy or shared responsibility. Multi-select.'
     empty_link: /en/help/glossary#glossary-bia
     a5_30_ict: 'ISO 27001 A.5.30 — ICT Readiness for Business Continuity. Bridge to BC planning (ISO 22301): ICT services must be able to technically meet the RTO/RPO targets defined in the BIA.'
+    owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
   tooltip:
     criticality: <strong>Business Criticality (ISO 22301)</strong><br><table class="table
       table-sm table-borderless mb-0 mt-1"><tr><td><strong>Low</strong></td><td>Outage
@@ -118,6 +119,7 @@ business_process:
     process_owner_user: -- Select process owner --
     process_owner_person: '-- Select Person from master data --'
     impact_unset: '— not rated yet —'
+    owner_legacy: 'Name (legacy, migrated data only)'
   empty:
     title: No business processes yet
     description: Create your first business process to start with the business impact

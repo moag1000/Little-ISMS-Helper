@@ -303,6 +303,8 @@ incident:
     replication_of_impact: 'Was a service replica or failover activated to limit impact?'
     initial_report_submitted_at: 'DORA 4-hour initial report (≠ NIS2 24h!): timestamp of submission to the competent authority (Art. 19(4)(a)).'
     data_recovery_strategy: 'Strategy for restoring data and services; cross-reference to the BCM continuity plan (DORA Art. 11(2)).'
+    owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
+    initial_report_submitted_at_dora: 'Time the initial notification was submitted to the competent authority. DORA Art. 19 with RTS: no later than 4 hours after classification as major and 24 hours after becoming aware.'
   category:
     data_breach: Data Breach
     security_incident: Security Incident

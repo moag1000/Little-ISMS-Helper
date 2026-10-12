@@ -102,6 +102,7 @@ audit:
         documentation: 'Documentation'
         team_size: 'Team size'
         result: 'Result'
+        additional_scoped_frameworks: 'Additional scoped frameworks'
     new: New
     corporate_audit_note_title: 'Corporate Audit Note Title'
     corporate_audit_note: 'Corporate Audit Note'
@@ -175,6 +176,9 @@ audit:
         evidence_collected: 'List of evidence collected during the audit'
         summary: 'Short summary of the audit'
         notes: 'Additional notes and comments'
+        status_readonly: 'Status is driven by the lifecycle workflow (Planned → In progress → Reported → Approved → Closed). Direct editing is disabled; use the status actions on the detail page.'
+        additional_scoped_frameworks: 'Multi-select — e.g. 27001 + NIS2 + DORA in one audit pass. Findings are mapped transitively to all covered frameworks.'
+        scoped_assets: 'Assets subject to the audit (only for scope type "Asset"). ISO 19011 Cl. 5.5.2 requires the audited objects to be listed.'
     scope: Scope
     cross_framework_coverage:
         title: 'Cross-Framework Coverage'

@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'mris' %}
 
-{% block title %}MRIS-Glossar{% endblock %}
+{% block title %}{{ 'mris.glossar.title'|trans({}, 'mris') }}{% endblock %}
 
 {% block body %}
 <div class="container">
 
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Dashboard', url: path('app_dashboard') },
-            { label: 'MRIS-Glossar' }
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
+            { label: 'mris.glossar.title'|trans({}, 'mris') }
         ]
     } only %}
 
@@ -16,14 +17,11 @@
         <div>
             <h1>
                 <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i>
-                MRIS-Glossar
+                {{ 'mris.glossar.title'|trans({}, 'mris') }}
             </h1>
             <p class="text-muted small mb-0">
-                Begriffe der Mythos-resistenten Informationssicherheit mit
-                Definition, Brücke zur ISO 9001 und Norm-Verweis. Geeignet als
-                Nachschlagewerk für Junior-ISB und ehemalige QMB.<br>
-                <em>Quelle: Peddi, R. (2026). MRIS — Mythos-resistente
-                Informationssicherheit, v1.5. Lizenz: CC BY 4.0.</em>
+                {{ 'mris.glossar.intro'|trans({}, 'mris') }}<br>
+                <em>{{ 'mris.glossar.source'|trans({}, 'mris') }}</em>
             </p>
         </div>
     </div>
@@ -33,10 +31,9 @@
         {% embed '_components/_card.html.twig' with { 'class': 'text-center' } %}
             {% block card_body %}
                 <i class="fa-icon display-4 text-muted fa-icon--nav-journal" aria-hidden="true"></i>
-                <h2 class="h5 mt-3">Keine Glossar-Einträge gefunden</h2>
+                <h2 class="h5 mt-3">{{ 'mris.glossar.empty_title'|trans({}, 'mris') }}</h2>
                 <p class="text-muted small mb-0">
-                    Die Datei <code>fixtures/mris/help-texts.yaml</code> enthält
-                    derzeit keine Glossar-Einträge.
+                    {{ 'mris.glossar.empty_text'|trans({}, 'mris')|raw }}
                 </p>
             {% endblock %}
         {% endembed %}
@@ -48,24 +45,24 @@
                         <div class="col-md-8">
                             <label for="mris-glossar-search" class="form-label small mb-1">
                                 <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
-                                Suche (Begriff, Definition, Quelle)
+                                {{ 'mris.glossar.search_label'|trans({}, 'mris') }}
                             </label>
                             <input type="search"
                                    id="mris-glossar-search"
                                    class="form-control fa-cyber-input__field"
-                                   placeholder="z. B. Standfest, FIDO2, ISO …"
+                                   placeholder="{{ 'mris.glossar.search_placeholder'|trans({}, 'mris') }}"
                                    data-filter-target="searchInput"
                                    data-action="input->filter#filterRows">
                         </div>
                         <div class="col-md-4 text-md-end">
                             <span class="text-muted small">
-                                {{ entries|length }} Einträge
+                                {{ 'mris.glossar.entry_count'|trans({'%count%': entries|length}, 'mris') }}
                             </span>
                             <button type="button"
                                     class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost ms-2"
                                     data-action="filter#reset">
                                 <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                                Zurücksetzen
+                                {{ 'mris.glossar.reset'|trans({}, 'mris') }}
                             </button>
                         </div>
                     </div>
@@ -74,16 +71,16 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col" class="fa-table__th" style="width: 18%;">
-                                    Begriff <small class="text-muted fw-normal">/ Term</small>
+                                    {{ 'mris.glossar.col.term'|trans({}, 'mris') }}
                                 </th>
                                 <th scope="col" class="fa-table__th" style="width: 38%;">
-                                    Definition
+                                    {{ 'mris.glossar.col.definition'|trans({}, 'mris') }}
                                 </th>
                                 <th scope="col" class="fa-table__th" style="width: 26%;">
-                                    9001-Analogie
+                                    {{ 'mris.glossar.col.analogy'|trans({}, 'mris') }}
                                 </th>
                                 <th scope="col" class="fa-table__th" style="width: 18%;">
-                                    Quelle <small class="text-muted fw-normal">/ Source</small>
+                                    {{ 'mris.glossar.col.source'|trans({}, 'mris') }}
                                 </th>
                             </tr>
                         {% endblock %}
@@ -120,7 +117,7 @@
                             <tr class="fa-table__row" data-filter-target="noResults" style="display: none;">
                                 <td colspan="4" class="fa-table__empty">
                                     <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
-                                    Keine Treffer für die aktuelle Suche.
+                                    {{ 'mris.glossar.no_results'|trans({}, 'mris') }}
                                 </td>
                             </tr>
                         {% endblock %}
@@ -131,7 +128,7 @@
     {% endif %}
 
     <footer class="text-center text-muted small mt-4 pt-3 border-top">
-        Quelle / Source: Peddi, R. (2026). MRIS v1.5. Lizenz
+        {{ 'mris.glossar.footer_source'|trans({}, 'mris') }}
         <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">{{ 'mris.license.cc_by_40'|trans({}, 'mris') }}</a>.
     </footer>
 
