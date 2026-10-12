@@ -29,7 +29,7 @@
             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
             {{ 'mris.baselines.explainer.summary'|trans({}, 'mris') }}
         </summary>
-        <div class="fa-alert fa-alert--info small mt-2 mb-0">
+        <div class="fa-alert fa-alert--info mt-2 mb-0">
             <p class="mb-2">{{ 'mris.baselines.explainer.intro'|trans({}, 'mris')|raw }}</p>
             <ul class="mb-2 ps-3">
                 <li>{{ 'mris.baselines.explainer.point_target'|trans({}, 'mris')|raw }}</li>
@@ -41,14 +41,14 @@
     </details>
 
     {% if tenant is null %}
-        <div class="fa-alert fa-alert--warning small">
+        <div class="fa-alert fa-alert--warning">
             <strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></strong>
             {{ 'mris.baselines.no_tenant'|trans({}, 'mris') }}
         </div>
     {% endif %}
 
     {% if baselines|length == 0 %}
-        <div class="fa-alert fa-alert--info small">
+        <div class="fa-alert fa-alert--info">
             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
             {{ 'mris.baselines.empty'|trans({}, 'mris')|raw }}
         </div>
@@ -100,7 +100,7 @@
         </div>
     {% endif %}
 
-    <div class="fa-alert fa-alert--info mt-4 small">
+    <div class="fa-alert fa-alert--info mt-4">
         <strong><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i></strong>
         {{ 'mris.baselines.cli_hint'|trans({}, 'mris') }}
         <code>php bin/console app:mris:apply-baseline --tenant=&lt;ID&gt; --baseline=&lt;ID&gt; [--dry-run]</code>.
