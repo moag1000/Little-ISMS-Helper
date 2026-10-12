@@ -707,11 +707,12 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-maturity-heat-map` | Inline maturity score widget (0–5 dot row with heat-level BEM modifier). | `_fa_maturity_heat_map.html.twig` |
 
 Import pattern for macros: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
+Gate 62 (`check_aurora_legacy_markup.py`) ratchets Bootstrap markup that has an Aurora replacement: counts per template may only go down.
 For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...], variant: 'neutral' } %}` (it is a plain include, not a macro). `variant: 'brand'` for hero lists (risk, document). The canonical CSS class set is `.fa-bulk-bar*` (BEM); the old `.bulk-action-bar*` is a deprecated shim.
 Legacy `.kpi-card` / `variant:'kpi'` still works for backward-compat but emits
 a dev-env console deprecation warning.
 
-Stylelint (`npm run stylelint`) bans raw hex in 14 color-valued properties
+Stylelint (`npm run stylelint`, CI job "JS Unit Tests") bans raw hex in 14 color-valued properties
 app-wide; use Aurora tokens only. Allow-list: `fairy-aurora.css` (SoT),
 `alva.css` (SVG brand fills), vendor bootstrap*.css.
 
