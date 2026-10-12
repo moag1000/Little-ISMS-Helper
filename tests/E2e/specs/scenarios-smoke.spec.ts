@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { readdirSync, readFileSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomBytes } from 'node:crypto';
-import yaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 import { loginAs } from '../fixtures/auth';
 
 /**
@@ -80,7 +80,7 @@ function loadScenarios(): Scenario[] {
         .filter((f) => f.endsWith('.yaml') && !f.startsWith('_'));
     const scenarios: Scenario[] = [];
     for (const f of files) {
-        const payload = yaml.load(readFileSync(resolve(SCENARIOS_DIR, f), 'utf8')) as ScenarioFile;
+        const payload = yamlLoad(readFileSync(resolve(SCENARIOS_DIR, f), 'utf8')) as ScenarioFile;
         for (const s of payload.scenarios ?? []) {
             scenarios.push(s);
         }
