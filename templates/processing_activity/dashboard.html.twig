@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'processing_activity.dashboard.title'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
@@ -10,15 +11,15 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'processing_activity.dashboard.title'|trans({}, 'privacy'),
         subtitle: 'processing_activity.dashboard.subtitle'|trans({}, 'privacy'),
-        icon: 'nav-dashboard',
+        badge: { icon: 'nav-dashboard', label: '' },
         actions: [
-            { label: 'processing_activity.dashboard.action.view_all'|trans({}, 'privacy'), url: path('app_processing_activity_index'), variant: 'primary', icon: 'ui-list' },
-            { label: 'processing_activity.dashboard.action.new'|trans({}, 'privacy'), url: path('app_processing_activity_new'), variant: 'success', icon: 'plus' }
+            { label: 'processing_activity.dashboard.action.view_all'|trans({}, 'privacy'), href: path('app_processing_activity_index'), variant: 'primary', icon: 'ui-list', attrs: { 'data-turbo-action': 'advance' } },
+            { label: 'processing_activity.dashboard.action.new'|trans({}, 'privacy'), href: path('app_processing_activity_new'), variant: 'success', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } }
         ]
-    } %}
+    }) }}
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}

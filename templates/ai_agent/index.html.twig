@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}AI-Agent-Inventar{% endblock %}
 
 {% block body %}
@@ -11,11 +12,12 @@
         </ol>
     </nav>
 
-    <div class="page-header mb-4">
-        <h1>
-            <i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i>
-            AI-Agent-Inventar
-        </h1>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-robot', label: '' },
+        title: 'ai_act.page.title'|trans({}, 'ai_act')
+    }) }}
+
+    <div class="mb-4">
         <p class="text-muted small mb-0">
             Asset-Subtyp <code>ai_agent</code>. Erfüllt gleichzeitig
             <strong>EU AI Act Art. 6/9-16</strong>, <strong>ISO 42001 Annex A</strong>,

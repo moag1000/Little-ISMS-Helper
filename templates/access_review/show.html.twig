@@ -121,12 +121,12 @@
                 {% if items|length == 0 %}
                     <p class="text-muted m-3">{{ 'access_review.empty_items'|trans({}, 'access_review') }}</p>
                 {% else %}
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm mb-0 fa-table{% if campaign.isOpen %} table-bulk-selectable{% endif %}">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact{% if campaign.isOpen %} table-bulk-selectable{% endif %}">
+                            <thead class="fa-table__head">
                                 <tr>
                                     {% if campaign.isOpen %}
-                                    <th scope="col" class="bulk-select-column">
+                                    <th scope="col" class="fa-table__th bulk-select-column fa-table__th--checkbox">
                                         <input type="checkbox"
                                                class="form-check-input"
                                                data-action="bulk-actions#selectAll"
@@ -134,20 +134,20 @@
                                                aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
                                     </th>
                                     {% endif %}
-                                    <th scope="col">{{ 'access_review.field.subject_user'|trans({}, 'access_review') }}</th>
-                                    <th scope="col">{{ 'access_review.field.reviewed_role'|trans({}, 'access_review') }}</th>
-                                    <th scope="col">{{ 'access_review.field.decision'|trans({}, 'access_review') }}</th>
-                                    <th scope="col">{{ 'access_review.field.decided_by'|trans({}, 'access_review') }}</th>
+                                    <th class="fa-table__th" scope="col">{{ 'access_review.field.subject_user'|trans({}, 'access_review') }}</th>
+                                    <th class="fa-table__th" scope="col">{{ 'access_review.field.reviewed_role'|trans({}, 'access_review') }}</th>
+                                    <th class="fa-table__th" scope="col">{{ 'access_review.field.decision'|trans({}, 'access_review') }}</th>
+                                    <th class="fa-table__th" scope="col">{{ 'access_review.field.decided_by'|trans({}, 'access_review') }}</th>
                                     {% if campaign.isOpen %}
-                                    <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                    <th class="fa-table__th fa-table__th--actions" scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                     {% endif %}
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                                 {% for item in items %}
-                                <tr id="item-{{ item.id }}">
+                                <tr class="fa-table__row" id="item-{{ item.id }}">
                                     {% if campaign.isOpen %}
-                                    <td class="bulk-select-column">
+                                    <td class="fa-table__cell bulk-select-column fa-table__cell--checkbox">
                                         <input type="checkbox"
                                                class="form-check-input"
                                                data-bulk-actions-target="item"
@@ -156,7 +156,7 @@
                                                aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ item.subjectUser ? item.subjectUser.email : item.id }}">
                                     </td>
                                     {% endif %}
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if item.subjectUser %}
                                             <span title="{{ item.subjectUser.email }}">
                                                 {{ item.subjectUser.fullName ?? item.subjectUser.email }}
@@ -165,10 +165,10 @@
                                             <span class="text-muted">–</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         <code class="text-body-secondary">{{ item.reviewedRole }}</code>
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if item.decision == 'pending' %}
                                             <span class="badge bg-warning text-dark">
                                                 {{ 'access_review.decision.pending'|trans({}, 'access_review') }}
@@ -192,7 +192,7 @@
                                             </span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if item.decidedBy %}
                                             {{ item.decidedBy.fullName ?? item.decidedBy.email }}
                                             <br><small class="text-muted">{{ item.decidedAt|date('Y-m-d H:i') }}</small>
@@ -201,7 +201,7 @@
                                         {% endif %}
                                     </td>
                                     {% if campaign.isOpen %}
-                                    <td>
+                                    <td class="fa-table__cell fa-table__cell--actions">
                                         {# Inline decide form — approve + revoke + escalate buttons #}
                                         <div class="d-flex gap-1">
                                             <form method="post"

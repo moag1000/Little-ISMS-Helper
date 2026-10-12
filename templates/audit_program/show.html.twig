@@ -61,26 +61,28 @@
                     {% if program.internalAudits is empty %}
                         <div class="p-4 text-center text-muted small">{{ 'audit_program.show.no_audits'|trans }}</div>
                     {% else %}
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light">
+                        <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact">
+                            <thead class="fa-table__head">
                                 <tr>
-                                    <th>{{ 'audits.field.audit_number'|trans({}, 'audits') }}</th>
-                                    <th>{{ 'audits.field.title'|trans({}, 'audits') }}</th>
-                                    <th>{{ 'audits.field.planned_date'|trans({}, 'audits') }}</th>
-                                    <th>{{ 'audits.field.status'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.audit_number'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.title'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.planned_date'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.status'|trans({}, 'audits') }}</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                                 {% for audit in program.internalAudits %}
-                                <tr>
-                                    <td><a href="{{ path('app_audit_show', {_locale: app.request.locale, id: audit.id}) }}">{{ audit.auditNumber }}</a></td>
-                                    <td>{{ audit.title }}</td>
-                                    <td>{{ audit.plannedDate|date('d.m.Y') }}</td>
-                                    <td><span class="badge bg-secondary">{{ audit.status }}</span></td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell"><a href="{{ path('app_audit_show', {_locale: app.request.locale, id: audit.id}) }}">{{ audit.auditNumber }}</a></td>
+                                    <td class="fa-table__cell">{{ audit.title }}</td>
+                                    <td class="fa-table__cell">{{ audit.plannedDate|date('d.m.Y') }}</td>
+                                    <td class="fa-table__cell"><span class="badge bg-secondary">{{ audit.status }}</span></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        </div>
                     {% endif %}
                 </div>
             </div>

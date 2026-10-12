@@ -69,9 +69,14 @@
                     </div>
                 </div>
 
-                <div class="progress progress-bar-bg">
-                    <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%; height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--color-success), var(--color-info)); transition: width 0.3s;"></div>
-                </div>
+                {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                {{ _fa_progress.render({
+                    value: relationship.coveragePercentage,
+                    tone: 'success',
+                    label: relationship.sourceFramework.code ~ ' → ' ~ relationship.targetFramework.code,
+                    size: 'sm',
+                    class: 'progress-bar-bg',
+                }) }}
             {% endblock %}
         {% endembed %}
         {% endfor %}

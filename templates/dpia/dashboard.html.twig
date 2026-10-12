@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'dpia.dashboard.title'|trans({}, 'privacy') }}{% endblock %}
 
@@ -14,15 +15,15 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'dpia.dashboard.title'|trans({}, 'privacy'),
         subtitle: 'dpia.dashboard.subtitle'|trans({}, 'privacy'),
-        icon: 'nav-dashboard',
+        badge: { icon: 'nav-dashboard', label: '' },
         actions: [
-            { label: 'dpia.dashboard.view_all'|trans({}, 'privacy'), url: path('app_dpia_index'), variant: 'primary', icon: 'ui-list' },
-            { label: 'dpia.dashboard.new'|trans({}, 'privacy'), url: path('app_dpia_new'), variant: 'success', icon: 'plus' }
+            { label: 'dpia.dashboard.view_all'|trans({}, 'privacy'), href: path('app_dpia_index'), variant: 'primary', icon: 'ui-list', attrs: { 'data-turbo-action': 'advance' } },
+            { label: 'dpia.dashboard.new'|trans({}, 'privacy'), href: path('app_dpia_new'), variant: 'success', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } }
         ]
-    } %}
+    }) }}
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}

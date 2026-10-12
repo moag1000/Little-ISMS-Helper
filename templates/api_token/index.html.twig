@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'api_token' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'api_token.title'|trans({}, 'api_token') }}{% endblock %}
 
@@ -9,8 +10,10 @@
         breadcrumbs: [{ label: 'api_token.title'|trans({}, 'api_token') }]
     } %}
 
-    <h1 class="h3 mb-1">{{ 'api_token.title'|trans({}, 'api_token') }}</h1>
-    <p class="text-body-secondary mb-4">{{ 'api_token.intro'|trans({}, 'api_token') }}</p>
+    {{ _fa_page_header.render({
+        title: 'api_token.title'|trans({}, 'api_token'),
+        subtitle: 'api_token.intro'|trans({}, 'api_token')
+    }) }}
 
     {% if new_token %}
         <div class="alert alert-success">
@@ -40,30 +43,31 @@
     </div>
 
     {# List #}
-    <table class="table">
-        <thead>
+    <div class="fa-table-wrap mb-3">
+    <table class="fa-table fa-table--hover">
+        <thead class="fa-table__head">
             <tr>
-                <th scope="col">{{ 'api_token.field.label'|trans({}, 'api_token') }}</th>
-                <th scope="col">{{ 'api_token.field.created'|trans({}, 'api_token') }}</th>
-                <th scope="col">{{ 'api_token.field.expires'|trans({}, 'api_token') }}</th>
-                <th scope="col">{{ 'api_token.field.status'|trans({}, 'api_token') }}</th>
-                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'api_token.field.label'|trans({}, 'api_token') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'api_token.field.created'|trans({}, 'api_token') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'api_token.field.expires'|trans({}, 'api_token') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'api_token.field.status'|trans({}, 'api_token') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="fa-table__body">
             {% for token in tokens %}
-                <tr>
-                    <td>{{ token.label }}</td>
-                    <td>{{ token.createdAt|date('Y-m-d') }}</td>
-                    <td>{{ token.expiresAt ? token.expiresAt|date('Y-m-d') : '—' }}</td>
-                    <td>
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">{{ token.label }}</td>
+                    <td class="fa-table__cell">{{ token.createdAt|date('Y-m-d') }}</td>
+                    <td class="fa-table__cell">{{ token.expiresAt ? token.expiresAt|date('Y-m-d') : '—' }}</td>
+                    <td class="fa-table__cell">
                         {% if token.revoked %}
                             <span class="badge bg-secondary">{{ 'api_token.status.revoked'|trans({}, 'api_token') }}</span>
                         {% else %}
                             <span class="badge bg-success">{{ 'api_token.status.active'|trans({}, 'api_token') }}</span>
                         {% endif %}
                     </td>
-                    <td class="text-end">
+                    <td class="fa-table__cell fa-table__cell--actions">
                         {% if not token.revoked %}
                         <form method="post" action="{{ path('app_api_tokens_revoke', {id: token.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('api_token_revoke') }}">
@@ -73,9 +77,10 @@
                     </td>
                 </tr>
             {% else %}
-                <tr><td colspan="5" class="text-body-secondary">{{ 'api_token.empty'|trans({}, 'api_token') }}</td></tr>
+                <tr class="fa-table__row"><td colspan="5" class="fa-table__cell fa-table__empty">{{ 'api_token.empty'|trans({}, 'api_token') }}</td></tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 {% endblock %}

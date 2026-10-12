@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'supplier.ict_library.title'|trans({}, 'suppliers') }}{% endblock %}
 
@@ -9,32 +10,35 @@
         breadcrumbs: [{ label: 'supplier.ict_library.title'|trans({}, 'suppliers') }]
     } %}
 
-    <h1 class="h3 mb-1">{{ 'supplier.ict_library.title'|trans({}, 'suppliers') }}</h1>
-    <p class="text-body-secondary mb-4">{{ 'supplier.ict_library.intro'|trans({}, 'suppliers') }}</p>
+    {{ _fa_page_header.render({
+        title: 'supplier.ict_library.title'|trans({}, 'suppliers'),
+        subtitle: 'supplier.ict_library.intro'|trans({}, 'suppliers')
+    }) }}
 
     {% if entries|length == 0 %}
         <div class="alert alert-info">{{ 'supplier.ict_library.empty'|trans({}, 'suppliers') }}</div>
     {% else %}
-    <table class="table">
-        <thead>
+    <div class="fa-table-wrap mb-3">
+    <table class="fa-table fa-table--hover">
+        <thead class="fa-table__head">
             <tr>
-                <th scope="col">{{ 'supplier.ict_library.field.name'|trans({}, 'suppliers') }}</th>
-                <th scope="col">{{ 'supplier.ict_library.field.category'|trans({}, 'suppliers') }}</th>
-                <th scope="col">{{ 'supplier.ict_library.field.country'|trans({}, 'suppliers') }}</th>
-                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'supplier.ict_library.field.name'|trans({}, 'suppliers') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'supplier.ict_library.field.category'|trans({}, 'suppliers') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'supplier.ict_library.field.country'|trans({}, 'suppliers') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="fa-table__body">
             {% for entry in entries %}
-                <tr>
-                    <td>
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">
                         <strong>{{ entry.name }}</strong>
                         {% if entry.eeaHosted %}<span class="badge bg-success">EEA</span>{% endif %}
                         <div class="text-body-secondary small">{{ entry.serviceType }}</div>
                     </td>
-                    <td>{{ ('supplier.ict_library.category.' ~ entry.category)|trans({}, 'suppliers') }}</td>
-                    <td>{{ entry.headquartersCountry ?? '—' }}</td>
-                    <td class="text-end">
+                    <td class="fa-table__cell">{{ ('supplier.ict_library.category.' ~ entry.category)|trans({}, 'suppliers') }}</td>
+                    <td class="fa-table__cell">{{ entry.headquartersCountry ?? '—' }}</td>
+                    <td class="fa-table__cell fa-table__cell--actions">
                         <form method="post" action="{{ path('ict_provider_library_apply', {id: entry.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('ict_provider_library_apply') }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
@@ -46,6 +50,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
     {% endif %}
 </div>
 {% endblock %}

@@ -36,44 +36,44 @@
         <input type="hidden" name="_token" value="{{ csrf_token('roadmap_save') }}">
         <input type="hidden" name="weeks" value="{{ weeks }}">
 
-        <div class="table-responsive">
-            <table class="table fa-table table-sm align-middle text-center" style="min-width: max-content">
-                <thead>
+        <div class="fa-table-wrap">
+            <table class="fa-table fa-table--hover fa-table--compact text-center" style="min-width: max-content">
+                <thead class="fa-table__head">
                     <tr>
-                        <th scope="col" class="text-start" style="position:sticky;left:0;background:var(--surface)">{{ 'planning.roadmap.col.task'|trans({}, 'planning') }}</th>
+                        <th scope="col" class="fa-table__th text-start" style="position:sticky;left:0;background:var(--surface)">{{ 'planning.roadmap.col.task'|trans({}, 'planning') }}</th>
                         {% for w in window %}
-                            <th scope="col" title="{{ w.year }}">{{ w.label }}</th>
+                            <th class="fa-table__th fa-table__th--center" scope="col" title="{{ w.year }}">{{ w.label }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="fa-table__body">
                     {# Capacity (read-only) #}
-                    <tr class="table-light">
-                        <th scope="row" class="text-start" style="position:sticky;left:0;background:var(--surface-2)">{{ 'planning.roadmap.row.capacity'|trans({}, 'planning') }}</th>
+                    <tr class="fa-table__row">
+                        <th scope="row" class="fa-table__cell text-start" style="position:sticky;left:0;background:var(--surface-2)">{{ 'planning.roadmap.row.capacity'|trans({}, 'planning') }}</th>
                         {% for w in window %}
                             {% set key = w.year ~ '-' ~ w.week %}
-                            <td class="text-muted">{{ capacityPerWeek[key] ?? 0 }}</td>
+                            <td class="fa-table__cell text-muted">{{ capacityPerWeek[key] ?? 0 }}</td>
                         {% endfor %}
                     </tr>
                     {# Planned total (read-only) with over/under colouring #}
-                    <tr>
-                        <th scope="row" class="text-start" style="position:sticky;left:0;background:var(--surface-2)">{{ 'planning.roadmap.row.planned'|trans({}, 'planning') }}</th>
+                    <tr class="fa-table__row">
+                        <th scope="row" class="fa-table__cell text-start" style="position:sticky;left:0;background:var(--surface-2)">{{ 'planning.roadmap.row.planned'|trans({}, 'planning') }}</th>
                         {% for w in window %}
                             {% set key = w.year ~ '-' ~ w.week %}
                             {% set planned = plannedPerWeek[key] ?? 0 %}
                             {% set cap = capacityPerWeek[key] ?? 0 %}
                             {% set threshold = cap * (overbookingPct / 100) %}
-                            <td class="{{ planned > threshold ? 'text-danger fw-bold' : (planned > 0 ? 'text-success' : 'text-muted') }}">{{ planned }}</td>
+                            <td class="fa-table__cell {{ planned > threshold ? 'text-danger fw-bold' : (planned > 0 ? 'text-success' : 'text-muted') }}">{{ planned }}</td>
                         {% endfor %}
                     </tr>
                     {# One row per task #}
                     {% for task in tasks %}
-                        <tr>
-                            <th scope="row" class="text-start fw-normal" style="position:sticky;left:0;background:var(--surface)">{{ task.name }}</th>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell text-start fw-normal" style="position:sticky;left:0;background:var(--surface)">{{ task.name }}</th>
                             {% for w in window %}
                                 {% set key = w.year ~ '-' ~ w.week %}
                                 {% set val = allocations[task.id ~ '-' ~ key] ?? '' %}
-                                <td>
+                                <td class="fa-table__cell">
                                     {% if mode == 'plan' %}
                                         <input type="number" step="0.5" min="0"
                                                class="form-control form-control-sm text-center"
