@@ -316,13 +316,13 @@ class AssetController extends AbstractController
 
         return $this->checkBulkDependencies($assets, 'getName', [
             fn (Asset $asset): ?array => ($c = $asset->getRisks()->count()) > 0
-                ? ['message' => sprintf('%d Risk(s) verknüpft', $c), 'icon' => 'shield-exclamation']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.risks', ['%count%' => $c], 'bulk_delete'), 'icon' => 'shield-exclamation']
                 : null,
             fn (Asset $asset): ?array => ($c = $asset->getIncidents()->count()) > 0
-                ? ['message' => sprintf('%d Vorfall/Vorfälle verknüpft', $c), 'icon' => 'exclamation-triangle']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.incidents', ['%count%' => $c], 'bulk_delete'), 'icon' => 'exclamation-triangle']
                 : null,
             fn (Asset $asset): ?array => ($c = $asset->getProtectingControls()->count()) > 0
-                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'control']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.controls', ['%count%' => $c], 'bulk_delete'), 'icon' => 'control']
                 : null,
         ]);
     }

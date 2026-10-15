@@ -1111,6 +1111,14 @@ compliance:
             fallback_used: 'Es wurde die Framework-weite Fallback-Abdeckung verwendet, da keine Regel griff.'
             deleted: 'Zertifikat gelöscht.'
             draft_confirmed: 'Extrahierte Felder bestätigt — prüfen Sie die Abdeckung unten.'
+    transitive_overview:
+        empty:
+            title: 'Noch keine Framework-Mappings vorhanden'
+            text: 'Die Cross-Framework-Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.'
+            text_detail: 'Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.'
+            how_to_title: 'So erstellen Sie Mappings:'
+            how_to_text: 'Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.'
+            how_to_contact: 'Kontaktieren Sie Ihren Administrator für weitere Informationen.'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'
@@ -1121,6 +1129,27 @@ compliance_mapping:
         low: Niedrig
         medium: Mittel
         high: Hoch
+    field:
+        source_requirement: 'Quell-Anforderung'
+        target_requirement: 'Ziel-Anforderung'
+        mapping_percentage: 'Abdeckungsgrad (%)'
+        mapping_type: 'Mapping-Typ'
+        mapping_rationale: 'Begründung'
+        bidirectional: 'Bidirektional'
+        confidence: 'Konfidenz'
+        verified_by: 'Verifiziert von'
+    placeholder:
+        mapping_rationale: 'Warum deckt die Quell-Anforderung die Ziel-Anforderung (teilweise) ab? Gemeinsamkeiten und Lücken benennen.'
+        verified_by: 'Name oder Rolle der prüfenden Person'
+    help:
+        source_requirement: 'Anforderung, deren Erfüllung als Nachweis wiederverwendet wird (z. B. ein ISO-27001-Control).'
+        target_requirement: 'Anforderung eines anderen Frameworks, die durch die Quell-Anforderung ganz oder teilweise abgedeckt wird.'
+        mapping_percentage: 'Wie weit die Quell-Anforderung die Ziel-Anforderung abdeckt: 0–49 % schwach, 50–99 % teilweise, 100 % vollständig, 101–150 % übererfüllt.'
+        mapping_type: 'Qualitative Einordnung des Abdeckungsgrads; sollte zum Prozentwert passen.'
+        mapping_rationale: 'Fachliche Begründung für Auditoren — wird in Gap-Analysen und Berichten angezeigt.'
+        bidirectional: 'Aktivieren, wenn die Abdeckung in beide Richtungen gilt (Ziel deckt auch Quelle ab).'
+        confidence: 'Wie sicher ist die inhaltliche Zuordnung? Niedrige Konfidenz sollte vor der Verwendung fachlich geprüft werden.'
+        verified_by: 'Person, die das Mapping fachlich geprüft und freigegeben hat.'
 compliance_requirement:
     field:
         framework: Framework
@@ -1272,6 +1301,31 @@ compliance_framework:
             defined: 'Defined'
             quantitatively_managed: 'Quant. Managed'
             optimizing: 'Optimizing'
+    field:
+        code: 'Code'
+        name: 'Name'
+        description: 'Beschreibung'
+        version: 'Version'
+        industry: 'Branche'
+        regulatory_body: 'Herausgeber / Aufsichtsbehörde'
+        mandatory: 'Verpflichtend'
+        scope: 'Geltungsbereich'
+        active: 'Aktiv'
+    placeholder:
+        code: 'z. B. ISO-27001, NIS2, DORA'
+        name: 'z. B. ISO/IEC 27001:2022 Informationssicherheits-Managementsysteme'
+        description: 'Kurze Beschreibung von Zweck und Inhalt des Frameworks'
+        version: 'z. B. 2022'
+        select_industry: '-- Branche wählen --'
+        regulatory_body: 'z. B. ISO/IEC, BSI, EU-Kommission, BaFin'
+        scope_description: 'Für welche Organisationen, Bereiche oder Systeme gilt das Framework?'
+    help:
+        code: 'Eindeutige Kurzkennung des Frameworks (z. B. ISO-27001, NIS2, DORA). Wird in Mappings, Importen und Berichten verwendet und sollte nach dem Anlegen nicht mehr geändert werden.'
+        version: 'Ausgabe oder Version des Standards bzw. Gesetzes (z. B. 2022, 6.0, 2.0). Bei einer neuen Ausgabe ein eigenes Framework anlegen und per Migration überführen.'
+        applicable_industry: 'Branche, für die das Framework primär gilt. „Alle Branchen" für sektorübergreifende Standards wie ISO 27001.'
+        regulatory_body: 'Organisation, die den Standard herausgibt oder die Einhaltung beaufsichtigt.'
+        mandatory: 'Aktivieren, wenn die Einhaltung gesetzlich, regulatorisch oder vertraglich verpflichtend ist.'
+        active: 'Nur aktive Frameworks erscheinen in Compliance-Dashboards, Gap-Analysen und Berichten.'
 
 admin:
     compliance:
@@ -1299,6 +1353,10 @@ admin:
                 iso27018: 'Public-Cloud-Anbieter, die personenbezogene Daten (PII) im Auftrag verarbeiten und Datenschutz-Controls nachweisen müssen.'
                 eu_cra: 'Hersteller, Importeure oder Händler von Produkten mit digitalen Elementen (Hardware/Software) mit EU-Marktzugang.'
                 pci_dss: 'Organisationen, die Karteninhaberdaten speichern, verarbeiten oder übertragen (Händler, Acquirer, Payment-Provider).'
+                mris: 'Organisationen mit bestehendem ISO-27001-ISMS, die sich gezielt gegen KI-gestützte Angriffe härten wollen; Voraussetzung für einige Branchen-Baselines (z. B. automotive-tisax-al3).'
+                nisg_at: 'Wesentliche oder wichtige Einrichtung in einem der 18 NIS-2-Sektoren mit Niederlassung in Österreich (NISG 2026, in Kraft ab 30.09.2026).'
+                revdsg_ch: 'Private Personen oder Bundesorgane, die Personendaten in der Schweiz bearbeiten oder deren Bearbeitung sich in der Schweiz auswirkt (nDSG, SR 235.1).'
+                ikt_minstd_ch: 'Betreiber kritischer Infrastrukturen in der Schweiz; für alle anderen Organisationen als Empfehlung des BWL / NCSC zur Stärkung der IKT-Resilienz.'
 
 fulfillment:
     field:

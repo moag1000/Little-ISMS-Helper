@@ -75,6 +75,7 @@ management_review:
         in_progress: 'In Progress'
         completed: Completed
         cancelled: Cancelled
+        follow_up_required: 'Follow-up Required'
     changes_relevant_to_isms: 'Changes relevant to the ISMS'
     feedback_from_interested_parties: 'Feedback from interested parties'
     audit_results: 'Audit results'
@@ -178,6 +179,7 @@ management_review:
         policy_review_outcome: 'Outcome of the information-security policy review according to §5.2.'
         framework_compliance_status: 'JSON snapshot of current compliance status across all relevant frameworks (DORA, NIS2, ISO 27001, BaFin). Only visible when compliance module is active.'
         action_items_with_deadlines: 'Structured action items with owners and deadlines. JSON format: [{action, owner, deadline (ISO date), status: open|in_progress|done}]'
+        status_readonly: 'Status is driven by the lifecycle workflow (Planned → Completed / Follow-up required). Direct editing is disabled; use the status actions on the detail page.'
     error:
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
     auto_collect:

@@ -22,6 +22,10 @@ import { Controller } from '@hotwired/stimulus';
  * });
  */
 export default class extends Controller {
+    static values = {
+        dependencyErrorText: { type: String, default: 'Error loading dependencies' },
+    };
+
     static targets = [
         'modal',
         'message',
@@ -117,7 +121,7 @@ export default class extends Controller {
                 // Silently skip dep-check on 404 (endpoint not implemented);
                 // surface only real server errors (5xx, parse errors etc).
                 if (!String(error.message).startsWith('HTTP 404')) {
-                    this.showError('Fehler beim Laden der Abhängigkeiten: ' + error.message);
+                    this.showError(this.dependencyErrorTextValue + ': ' + error.message);
                 }
             }
         }

@@ -108,7 +108,7 @@
             ? '<span class="badge badge-warning">' ~ ('management_reports.cert_readiness.status.partial'|trans({}, 'management_reports')) ~ '</span>'
             : '<span class="badge badge-danger">' ~ ('management_reports.cert_readiness.status.not_started'|trans({}, 'management_reports')) ~ '</span>') %}
     {% set _clause_rows = _clause_rows|merge([[
-        clause.name|trans({}, 'compliance'),
+        clause.name|trans({}, 'wizard'),
         clause.score ~ '%',
         _status_badge,
         clause.gaps|length,

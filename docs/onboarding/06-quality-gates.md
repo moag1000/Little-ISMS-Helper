@@ -105,7 +105,7 @@ done
 
 | Script | What it checks | Baseline |
 |---|---|---|
-| `check_missing_translations.py` | Keys used in templates missing from translation files | _(direct fail)_ |
+| `check_missing_translations.py` | DE/EN key parity in every domain (both directions) and leftover `__key` extract stubs | _(direct fail)_ |
 | `check_missing_translations.sh` | Shell-based translation key scan | _(direct fail)_ |
 | `check_translation_issues.py` | Hardcoded text, missing domain params, untranslated attributes | _(report only)_ |
 | `check_translation_dynamic_keys.py` | Dynamic translation keys (not statically analysable) | `translation_dynamic_keys.*` |

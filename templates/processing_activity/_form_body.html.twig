@@ -3,7 +3,7 @@
    and passes title / submit_label / actions. #}
 {% trans_default_domain 'privacy' %}
 {% set modal = modal|default(false) %}
-{% set title = title|default(pa is defined and pa and pa.name ? pa.name : ('processing_activity.new'|trans({}, 'privacy'))) %}
+{% set title = title|default(pa is defined and pa and pa.name ? pa.name : ('processing_activity.page.new_title'|trans({}, 'privacy'))) %}
 {% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
 
 {% set form_sections = {

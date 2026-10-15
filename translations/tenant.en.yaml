@@ -209,9 +209,16 @@ tenant:
             from_address: 'Sender Email Address'
             logo_url: 'Logo URL (HTTPS)'
             support_address: 'Support Email Address'
+            footer_text: 'Footer Text'
         logo_url:
             https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
         saved: 'Email branding saved.'
+        help:
+            from_name: 'Appears in the "From" field. Example: ACME Inc. Compliance.'
+            from_address: 'Sender address. Must be authorized in the mail server (SPF/DKIM).'
+            logo_url: 'Full HTTPS URL to the logo (shown at the top of HTML emails).'
+            footer_text: 'Legal notes / signature below email. Max 2000 characters, plain text.'
+            support_address: 'Reply-to / support contact — may differ from sender.'
 corporate:
     view:
         own_only: 'Own Only'
@@ -227,19 +234,19 @@ corporate:
     inheritance:
         inherited_from: 'Inherited From'
         title: Title
-        propagate: Propagate
+        propagate: 'Propagate to subsidiaries'
         no_context: 'No Context'
         organization: Organization
         own_context: 'Own Context'
-        load_error: 'Load Error'
-        confirm_propagate: 'Confirm Propagate'
-        propagate_error: 'Propagate Error'
-        isms_context_inherited: 'Isms Context Inherited'
+        load_error: 'Error loading inheritance information'
+        confirm_propagate: 'Do you really want to propagate this context to all subsidiaries?'
+        propagate_error: 'Error propagating the context'
+        isms_context_inherited: 'ISMS context is inherited from the parent company'
         from: From
         edit_at_parent: 'Edit At Parent'
-        cannot_edit_inherited: 'Cannot Edit Inherited'
+        cannot_edit_inherited: 'Inherited entries cannot be edited directly'
         view_only_title: 'View Only Title'
-        risk_inherited_message: 'Risk Inherited Message'
+        risk_inherited_message: 'This risk was inherited from the parent company and cannot be changed here'
     inherited: Inherited
     field:
         actions: Actions
@@ -281,12 +288,12 @@ corporate:
         update_governance: 'Update Governance'
         remove_parent: 'Remove Parent'
         view_structure: 'View Structure'
-    title: Title
+    title: 'Group Structure'
     subtitle: Subtitle
     single_tenant:
         title: Title
-        message: Message
-        hint: Hint
+        message: 'This installation is configured for a single organisation'
+        hint: 'Multi-organisation features are disabled'
     section:
         groups: Groups
         standalone: Standalone
@@ -341,14 +348,7 @@ corporate:
             from_name: 'Sender Name'
             from_address: 'Sender Email Address'
             logo_url: 'Logo URL (HTTPS)'
-            footer_text: 'Footer Text'
             support_address: 'Support Email Address'
-        help:
-            from_name: 'Appears in the "From" field. Example: ACME Inc. Compliance.'
-            from_address: 'Sender address. Must be authorized in the mail server (SPF/DKIM).'
-            logo_url: 'Full HTTPS URL to the logo (shown at the top of HTML emails).'
-            footer_text: 'Legal notes / signature below email. Max 2000 characters, plain text.'
-            support_address: 'Reply-to / support contact — may differ from sender.'
         hint:
             fallback: 'Empty field → parent organization → SystemSettings (category=email) → hardcoded default.'
         logo_url:

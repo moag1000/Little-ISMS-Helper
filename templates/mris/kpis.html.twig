@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'mris' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}MRIS-KPIs{% endblock %}
+{% block title %}{{ 'mris.page.kpi_breadcrumb'|trans({}, 'mris') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">MRIS-KPIs</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'nav.dashboard'|trans({}, 'nav') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'mris.page.kpi_breadcrumb'|trans({}, 'mris') }}</li>
         </ol>
     </nav>
 
@@ -16,12 +17,11 @@
         <div>
             <h1>
                 <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
-                Mythos-relevante Kennzahlen
+                {{ 'mris.page.kpi_title'|trans({}, 'mris') }}
             </h1>
             <p class="text-muted small mb-0">
-                Acht KPIs aus MRIS v1.5 Kap. 10.6. Drei werden automatisch aus Bestandsdaten
-                berechnet, fünf erfordern manuelle Pflege je Organisation.<br>
-                <em>Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.</em>
+                {{ 'mris.page.kpi_intro'|trans({}, 'mris') }}<br>
+                <em>{{ 'mris.page.source'|trans({}, 'mris') }}</em>
             </p>
         </div>
     </div>
@@ -34,9 +34,9 @@
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <code class="small text-muted">{{ kpi.mhc }}</code>
                             {% if kpi.computable %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'auto' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'mris.badge.auto'|trans({}, 'mris') } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'manuell' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'mris.badge.manual'|trans({}, 'mris') } %}
                             {% endif %}
                         </div>
                         <h2 class="h6 mb-2">{{ kpi.name }}</h2>
@@ -46,7 +46,7 @@
                                 <small class="fs-6 text-muted">{{ kpi.unit }}</small>
                             </p>
                         {% else %}
-                            <p class="text-muted fst-italic mb-1">— keine Daten —</p>
+                            <p class="text-muted fst-italic mb-1">{{ 'mris.state.no_data'|trans({}, 'mris') }}</p>
                         {% endif %}
                         <p class="small text-muted mb-0">{{ kpi.source }}</p>
                     {% endblock %}
@@ -57,10 +57,8 @@
 
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-4 small' } } %}
         {% block alert_body %}
-        <strong>Hinweis:</strong>
-        Die fünf manuell zu pflegenden KPIs (SBOM-Coverage, KEV-Patch-Latency, CCM-Coverage,
-        Krypto-Inventar-Abdeckung, TLPT-Findings-Closure) erfordern derzeit externe Datenquellen.
-        Manuelle Eingabefelder folgen in einer späteren Version.
+        <strong>{{ 'mris.page.note_label'|trans({}, 'mris') }}</strong>
+        {{ 'mris.kpi_help.manual_note_pending'|trans({}, 'mris') }}
         {% endblock %}
     {% endembed %}
 </div>

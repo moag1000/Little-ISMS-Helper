@@ -118,6 +118,7 @@ bc_exercises:
         bc_plans_tested: 'BC-Pläne, die in dieser Übung getestet wurden (ISO 22301 §8.6 a). Mehrfachauswahl möglich.'
         evidence_artifacts_json: 'JSON-Array mit Audit-Nachweisen: [{"type":"photo|log|report|screenshot","reference":"Dateiname/URL","description":"Beschreibung"}].'
         evidence_artifacts: 'Audit-Nachweise nach ISO 22301 §8.6 — eine Zeile pro Artefakt (Typ, Name, URL/Referenz, Erfassungszeit).'
+        status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Geplant → In Durchführung → Abgeschlossen / Abgesagt). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     evidence:
         field:
             type: 'Typ'
