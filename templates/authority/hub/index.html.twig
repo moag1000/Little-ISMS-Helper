@@ -4,6 +4,7 @@
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'eu_authorities.hub.page.title'|trans }}{% endblock %}
 
@@ -125,9 +126,10 @@
             </div>
             {% else %}
             <div class="col-12">
-                <div class="alert alert-info" role="alert">
-                    {{ 'eu_authorities.hub.empty.no_obligations'|trans }}
-                </div>
+                {{ _fa_empty_state.render({
+                    mood: 'sleeping',
+                    title: 'eu_authorities.hub.empty.no_obligations'|trans({}, 'eu_authorities')
+                }) }}
             </div>
             {% endfor %}
         </div>

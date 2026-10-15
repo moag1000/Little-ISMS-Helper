@@ -2,6 +2,7 @@
 {% trans_default_domain 'audit_log' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block admin_title %}{{ 'entity_history.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
@@ -56,7 +57,10 @@
     </div>
 </div>
 {% else %}
-{{ _fa_alert.render({ variant: 'info', class: 'mt-4', body: 'entity_history.no_entries'|trans({}, 'messages') }) }}
+{{ _fa_empty_state.render({
+    mood: 'sleeping',
+    title: 'entity_history.no_entries'|trans({}, 'messages')
+}) }}
 {% endif %}
 
 {% endblock %}

@@ -240,6 +240,11 @@ jobs:
       - name: Run Stimulus controller unit tests
         run: npm run test:js
 
+      # Stylelint enforces the Aurora token policy (no raw hex in colour
+      # properties outside the design-system source files).
+      - name: Stylelint (Aurora tokens)
+        run: npm run stylelint
+
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
@@ -311,14 +316,11 @@ jobs:
       - name: "Gate 1: Twig macro import-order"
         run: python3 scripts/quality/check_twig_macro_imports.py
 
-      # Gate 2 — Embed-block trans_default_domain (WARN-ONLY for now)
-      #   Detects {% embed %} blocks using |trans without their own
-      #   {% trans_default_domain %} directive. 44 pre-existing violations
-      #   in templates/ being resolved separately; becomes blocking once
-      #   legacy violations are cleared.
+      # Gate 2 — Embed-block trans_default_domain (BLOCKING since the legacy
+      #   violations were cleared). Detects {% embed %} blocks using |trans
+      #   without their own {% trans_default_domain %} directive.
       - name: "Gate 2: Embed-block trans_default_domain"
         run: python3 scripts/quality/check_twig_embed_domain.py
-        continue-on-error: true
 
       # Gate 3 — MariaDB-11 reserved-words in migrations (BLOCKING)
       #   Detects unquoted ROW_NUMBER/RANK/WINDOW/OVER/etc. as column names.
@@ -333,12 +335,10 @@ jobs:
       - name: "Gate 4: DDL-migrations isTransactional()=false"
         run: bash scripts/quality/check_migration_transactional.sh
 
-      # Gate 5 — Aurora v4 anti-patterns on cards (WARN-ONLY for now)
+      # Gate 5 — Aurora v4 anti-patterns on cards (BLOCKING)
       #   Detects Bootstrap bg-*/text-white on .card/.card-header.
-      #   8 pre-existing violations in templates/ being resolved separately.
       - name: "Gate 5: Aurora anti-patterns on cards"
         run: python3 scripts/quality/check_aurora_anti_patterns.py
-        continue-on-error: true
 
       # Gate 6 — Missing translation keys (BLOCKING, all domains, DE<->EN both ways)
       #   Pure-Python YAML-diff between <domain>.de.yaml and <domain>.en.yaml.
@@ -596,6 +596,11 @@ jobs:
         # between that snapshot and assets/styles/ fails unless baselined — so a
         # design change has to land on both sides. See docs/design_system/artifact/SOURCE.md.
         run: python3 scripts/quality/check_design_tokens_sync.py --baseline scripts/quality/baselines/design_tokens_sync.txt
+      - name: "Gate 62: Aurora legacy-markup ratchet"
+        # Bootstrap tables, progress bars, badges, alerts, buttons, modals and the
+        # deprecated page header have Aurora components. Existing uses are counted
+        # per file in the baseline and may only shrink; new code uses the components.
+        run: python3 scripts/quality/check_aurora_legacy_markup.py --baseline scripts/quality/baselines/aurora_legacy_markup.txt
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

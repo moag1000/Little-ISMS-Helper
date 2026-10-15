@@ -45,28 +45,30 @@
         {% if teams is empty %}
             <p class="text-muted">{{ 'planning.team.message.no_teams'|trans({}, 'planning') }}</p>
         {% else %}
-        <table class="table fa-table align-middle">
-            <thead><tr>
-                <th scope="col">{{ 'planning.team.col.name'|trans({}, 'planning') }}</th>
-                <th scope="col">{{ 'planning.team.col.type'|trans({}, 'planning') }}</th>
-                <th scope="col">{{ 'planning.team.col.member_count'|trans({}, 'planning') }}</th>
-                <th scope="col">{{ 'planning.team.col.lead'|trans({}, 'planning') }}</th>
-                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+        <div class="fa-table-wrap">
+        <table class="fa-table fa-table--hover">
+            <thead class="fa-table__head"><tr>
+                <th class="fa-table__th" scope="col">{{ 'planning.team.col.name'|trans({}, 'planning') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'planning.team.col.type'|trans({}, 'planning') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'planning.team.col.member_count'|trans({}, 'planning') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'planning.team.col.lead'|trans({}, 'planning') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr></thead>
-            <tbody>
+            <tbody class="fa-table__body">
             {% for team in teams %}
-                <tr>
-                    <td>{{ team.name }}</td>
-                    <td>{% if team.type %}{{ ('planning.team.type.' ~ team.type)|trans({}, 'planning') }}{% else %}—{% endif %}</td>
-                    <td>{{ team.memberCount }}</td>
-                    <td>{{ team.teamLead ? team.teamLead.fullName : (team.teamLeadPerson ? team.teamLeadPerson.fullName : '—') }}</td>
-                    <td class="text-end">
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">{{ team.name }}</td>
+                    <td class="fa-table__cell">{% if team.type %}{{ ('planning.team.type.' ~ team.type)|trans({}, 'planning') }}{% else %}—{% endif %}</td>
+                    <td class="fa-table__cell">{{ team.memberCount }}</td>
+                    <td class="fa-table__cell">{{ team.teamLead ? team.teamLead.fullName : (team.teamLeadPerson ? team.teamLeadPerson.fullName : '—') }}</td>
+                    <td class="fa-table__cell fa-table__cell--actions">
                         <a class="btn btn-sm btn-link" href="{{ path('app_planning_team_edit', { id: team.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+        </div>
         {% endif %}
     </section>
 
@@ -79,28 +81,30 @@
         {% if tasks is empty %}
             <p class="text-muted">{{ 'planning.task.message.no_tasks'|trans({}, 'planning') }}</p>
         {% else %}
-        <table class="table fa-table align-middle">
-            <thead><tr>
-                <th scope="col">{{ 'planning.task.col.name'|trans({}, 'planning') }}</th>
-                <th scope="col">{{ 'planning.task.col.group'|trans({}, 'planning') }}</th>
-                <th scope="col">{{ 'planning.task.col.default_pt_per_week'|trans({}, 'planning') }}</th>
-                <th scope="col">{{ 'planning.task.col.visibility'|trans({}, 'planning') }}</th>
-                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+        <div class="fa-table-wrap">
+        <table class="fa-table fa-table--hover">
+            <thead class="fa-table__head"><tr>
+                <th class="fa-table__th" scope="col">{{ 'planning.task.col.name'|trans({}, 'planning') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'planning.task.col.group'|trans({}, 'planning') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'planning.task.col.default_pt_per_week'|trans({}, 'planning') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'planning.task.col.visibility'|trans({}, 'planning') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr></thead>
-            <tbody>
+            <tbody class="fa-table__body">
             {% for task in tasks %}
-                <tr>
-                    <td>{{ task.name }}{% if task.isReactiveReservation %} <span class="badge bg-info-subtle text-info-emphasis">{{ 'planning.task.badge.reactive'|trans({}, 'planning') }}</span>{% endif %}</td>
-                    <td>{{ task.group ? task.group.name : '—' }}</td>
-                    <td>{{ task.defaultPtPerWeek ?? '—' }}</td>
-                    <td>{{ ('planning.visibility.' ~ task.visibility)|trans({}, 'planning') }}</td>
-                    <td class="text-end">
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">{{ task.name }}{% if task.isReactiveReservation %} <span class="badge bg-info-subtle text-info-emphasis">{{ 'planning.task.badge.reactive'|trans({}, 'planning') }}</span>{% endif %}</td>
+                    <td class="fa-table__cell">{{ task.group ? task.group.name : '—' }}</td>
+                    <td class="fa-table__cell">{{ task.defaultPtPerWeek ?? '—' }}</td>
+                    <td class="fa-table__cell">{{ ('planning.visibility.' ~ task.visibility)|trans({}, 'planning') }}</td>
+                    <td class="fa-table__cell fa-table__cell--actions">
                         <a class="btn btn-sm btn-link" href="{{ path('app_planning_task_edit', { id: task.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+        </div>
         {% endif %}
     </section>
 
@@ -110,24 +114,26 @@
         {% if persons is empty %}
             <p class="text-muted">{{ 'planning.person.message.no_persons'|trans({}, 'planning') }}</p>
         {% else %}
-        <table class="table fa-table align-middle">
-            <thead><tr>
-                <th scope="col">{{ 'planning.person.col.name'|trans({}, 'planning') }}</th>
-                <th scope="col">{{ 'planning.person.col.availability'|trans({}, 'planning') }}</th>
-                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+        <div class="fa-table-wrap">
+        <table class="fa-table fa-table--hover">
+            <thead class="fa-table__head"><tr>
+                <th class="fa-table__th" scope="col">{{ 'planning.person.col.name'|trans({}, 'planning') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'planning.person.col.availability'|trans({}, 'planning') }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr></thead>
-            <tbody>
+            <tbody class="fa-table__body">
             {% for person in persons %}
-                <tr>
-                    <td>{{ person.fullName }}</td>
-                    <td>{{ (person.ismsAvailabilityPct * 100)|round }}%</td>
-                    <td class="text-end">
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">{{ person.fullName }}</td>
+                    <td class="fa-table__cell">{{ (person.ismsAvailabilityPct * 100)|round }}%</td>
+                    <td class="fa-table__cell fa-table__cell--actions">
                         <a class="btn btn-sm btn-link" href="{{ path('app_planning_person_edit', { id: person.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+        </div>
         {% endif %}
     </section>
 
@@ -138,18 +144,18 @@
         {% if tasks is empty or teams is empty %}
             <p class="text-muted">{{ 'planning.matrix.empty'|trans({}, 'planning') }}</p>
         {% else %}
-        <div class="table-responsive">
-        <table class="table fa-table align-middle">
-            <thead><tr>
-                <th scope="col">{{ 'planning.task.col.name'|trans({}, 'planning') }}</th>
-                {% for team in teams %}<th scope="col" class="text-center">{{ team.name }}</th>{% endfor %}
+        <div class="fa-table-wrap">
+        <table class="fa-table fa-table--hover">
+            <thead class="fa-table__head"><tr>
+                <th class="fa-table__th" scope="col">{{ 'planning.task.col.name'|trans({}, 'planning') }}</th>
+                {% for team in teams %}<th scope="col" class="fa-table__th fa-table__th--center">{{ team.name }}</th>{% endfor %}
             </tr></thead>
-            <tbody>
+            <tbody class="fa-table__body">
             {% for task in tasks %}
-                <tr>
-                    <th scope="row" class="fw-normal">{{ task.name }}</th>
+                <tr class="fa-table__row">
+                    <th scope="row" class="fa-table__cell fw-normal">{{ task.name }}</th>
                     {% for team in teams %}
-                        <td class="text-center">
+                        <td class="fa-table__cell fa-table__cell--center">
                             {% if matrix[task.id].all or matrix[task.id].teams[team.id] is defined %}
                                 <i class="fa-icon fa-icon--check-circle-fill text-success" title="{{ 'planning.matrix.visible'|trans({}, 'planning') }}"></i>
                             {% else %}

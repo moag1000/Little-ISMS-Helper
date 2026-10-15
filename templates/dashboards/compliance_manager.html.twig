@@ -96,10 +96,11 @@
                 {% block table_body %}
                     {% trans_default_domain 'dashboards' %}
                     {% import '_components/_status_pill.html.twig' as pill %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for fw in dashboard.frameworks %}
                         {% set coverage = fw.compliance|default(0) %}
                         {% set tone = coverage >= 80 ? 'success' : (coverage >= 60 ? 'warning' : 'danger') %}
-                        {# V3 W3-Aurora: Aurora-Tone-Tokens via inline style — bypass Bootstrap bg-* fallback. #}
+                        {# Coverage bar uses the canonical _fa_progress macro (tone drives the bar colour). #}
                         <tr class="fa-table__row">
                             <td class="fa-table__cell">
                                 {# V4-EF-5: Framework name links to drill-down #}
@@ -111,9 +112,13 @@
                             </td>
                             <td class="fa-table__cell fa-table__cell--num">{{ coverage }}%</td>
                             <td class="fa-table__cell" style="min-width: 180px;">
-                                <div class="progress" role="progressbar" aria-valuenow="{{ coverage }}" aria-valuemin="0" aria-valuemax="100" style="height: 12px; background-color: var(--surface-2);">
-                                    <div class="progress-bar" style="width: {{ coverage }}%; background-color: var(--{{ tone }}); color: var(--on-{{ tone }});"></div>
-                                </div>
+                                {{ _fa_progress.render({
+                                    value: coverage,
+                                    tone: tone,
+                                    label: fw.name|default(fw.code|default('')),
+                                    size: 'sm',
+                                    class: 'progress-h-10',
+                                }) }}
                             </td>
                             <td class="fa-table__cell">
                                 {{ pill.render(coverage >= 80 ? 'compliance_manager.status.ok'|trans : (coverage >= 60 ? 'compliance_manager.status.at_risk'|trans : 'compliance_manager.status.gap'|trans), tone, {size: 'sm'}) }}

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'mris' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'mris.ai_agent.index.title'|trans({}, 'mris') }}{% endblock %}
 
 {% block body %}
@@ -12,11 +13,12 @@
         </ol>
     </nav>
 
-    <div class="page-header mb-4">
-        <h1>
-            <i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i>
-            {{ 'mris.ai_agent.index.title'|trans({}, 'mris') }}
-        </h1>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-robot', label: '' },
+        title: 'mris.ai_agent.index.title'|trans({}, 'mris')
+    }) }}
+
+    <div class="mb-4">
         <p class="text-muted small mb-0">
             {{ 'mris.ai_agent.index.intro'|trans({}, 'mris')|raw }}<br>
             <em>{{ 'mris.ai_agent.index.source'|trans({}, 'mris') }}</em>

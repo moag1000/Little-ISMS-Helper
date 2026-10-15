@@ -173,8 +173,8 @@ html[data-theme="dark"] .mega-menu-panel {
     transform: translateY(-1px);
 }
 html[data-theme="dark"] .fa-card--premium {
-    box-shadow: 0 0 0 1px var(--primary-glow),
-                0 8px 24px rgb(0, 0, 0, 0.3); /* design-spec: premium card dark-mode deep shadow */
+    box-shadow: 0 0 0 1px var(--border-strong),
+                0 8px 24px rgb(0, 0, 0, 0.3); /* design-spec: premium card dark-mode deep shadow; Kanon H5: no glow at rest */
 }
 
 .fa-brand-text { display: flex; flex-direction: column; min-width: 0; }
@@ -10582,7 +10582,7 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
 .fa-condition-chip__remove:hover { color: var(--danger); }
 .fa-condition-builder__add {
     display: inline-flex; align-items: center; gap: 6px;
-    border: 1px dashed var(--border-strong, var(--border));
+    border: 1px dashed var(--border-strong);
     background: none; cursor: pointer;
     border-radius: var(--r-pill); padding: 5px 13px;
     font: 600 12px var(--font-sans); color: var(--fg-3);

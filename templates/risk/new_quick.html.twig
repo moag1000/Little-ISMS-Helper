@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'risk.quick_form.title'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
 
@@ -13,14 +14,14 @@
 } %}
 
 {# Page Header #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
     title: 'risk.quick_form.title'|trans({}, 'risk'),
     subtitle: 'risk.quick_form.subtitle'|trans({}, 'risk'),
-    icon: 'ui-lightbulb',
+    badge: { icon: 'ui-lightbulb', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_index'), variant: 'secondary', icon: 'util-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_index'), variant: 'secondary', icon: 'util-arrow-left', attrs: { 'data-turbo-action': 'advance' } }
     ]
-} %}
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}

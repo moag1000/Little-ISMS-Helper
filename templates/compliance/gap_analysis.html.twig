@@ -2,6 +2,7 @@
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% block title %}{{ 'compliance.title.gap_analysis'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
@@ -93,6 +94,7 @@
 </div>
 
 {# Gaps Table #}
+{% if gaps is not empty %}
 {% embed '_components/_table.html.twig' with {
     'class': 'table-container',
     'noMargin': true,
@@ -143,15 +145,14 @@
                 </a>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="6" class="text-center p-4 text-muted">
-                <div class="fs-2 mb-2"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
-                <p><strong>{{ 'compliance.message.no_gaps'|trans({}, 'compliance') }}</strong></p>
-                <p class="mt-1">{{ 'compliance.message.no_gaps_desc'|trans({}, 'compliance') }}</p>
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'happy',
+        title: 'compliance.message.no_gaps'|trans({}, 'compliance'),
+        text: 'compliance.message.no_gaps_desc'|trans({}, 'compliance')
+    }) }}
+{% endif %}
 {% endblock %}

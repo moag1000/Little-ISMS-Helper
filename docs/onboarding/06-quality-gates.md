@@ -93,6 +93,7 @@ done
 | `check_aurora_utility_misuse.py` | Aurora utility class misuse patterns | `aurora_utility_misuse.txt` |
 | `check_aurora_v4.sh` | Aurora v4 macro usage convention checks | _(direct fail)_ |
 | `check_aurora_icon_names.py` | Icon names not in the approved Aurora icon set | `aurora_icon_names.txt` |
+| `check_aurora_legacy_markup.py` | Ratchet: Bootstrap tables, progress bars, legacy page headers, `data-bs-toggle="modal"`, `badge bg-*`, `alert alert-*`, `btn btn-*` where an Aurora component exists (Gate 62, counts per file may only go down) | `aurora_legacy_markup.txt` |
 | `check_aurora_icons_only.py` | Raw Font Awesome class usage outside approved patterns | _(direct fail)_ |
 | `check_macro_arg_arity.py` | Macro call sites passing wrong number of arguments | `macro_arg_arity.txt` |
 | `check_double_locale_prefix.py` | Routes with double locale prefix (`/{_locale}/{_locale}/`) | _(direct fail)_ |

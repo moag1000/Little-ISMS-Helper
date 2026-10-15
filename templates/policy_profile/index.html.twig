@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance_policy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block body %}
 <div class="container py-4">
-    <h1 class="h3 mb-1">{{ 'compliance_policy.policy_profile.page.title'|trans({}, 'compliance_policy') }}</h1>
-    <p class="text-muted">{{ 'compliance_policy.policy_profile.page.lead'|trans({}, 'compliance_policy') }}</p>
+    {{ _fa_page_header.render({
+        title: 'compliance_policy.policy_profile.page.title'|trans({}, 'compliance_policy'),
+        subtitle: 'compliance_policy.policy_profile.page.lead'|trans({}, 'compliance_policy')
+    }) }}
 
     <div class="card mb-4">
         <div class="card-body">
@@ -38,17 +41,18 @@
 
     <form method="post" action="{{ path('app_policy_profile_save', {_locale: app.request.locale}) }}">
         <input type="hidden" name="_token" value="{{ csrf_token('policy_profile_save') }}">
-        <table class="table align-middle">
-            <thead><tr>
-                <th>{{ 'compliance_policy.policy_profile.th.parameter'|trans({}, 'compliance_policy') }}</th>
-                <th style="width: 30%">{{ 'compliance_policy.policy_profile.th.value'|trans({}, 'compliance_policy') }}</th>
-                <th>{{ 'compliance_policy.policy_profile.th.iso_clause'|trans({}, 'compliance_policy') }}</th>
+        <div class="fa-table-wrap mb-3">
+        <table class="fa-table fa-table--hover">
+            <thead class="fa-table__head"><tr>
+                <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.parameter'|trans({}, 'compliance_policy') }}</th>
+                <th scope="col" class="fa-table__th" style="width: 30%">{{ 'compliance_policy.policy_profile.th.value'|trans({}, 'compliance_policy') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.iso_clause'|trans({}, 'compliance_policy') }}</th>
             </tr></thead>
-            <tbody>
+            <tbody class="fa-table__body">
                 {% for key, def in definitions %}
-                    <tr>
-                        <td>{{ def.labels.de ?? key }}<br><small class="text-muted">{{ key }}</small></td>
-                        <td>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ def.labels.de ?? key }}<br><small class="text-muted">{{ key }}</small></td>
+                        <td class="fa-table__cell">
                             {% if def.type == 'enum' %}
                                 <select name="param[{{ key }}]" class="form-select form-select-sm">
                                     {% for opt in def.allowed %}<option value="{{ opt }}"{{ resolved[key] == opt ? ' selected' : '' }}>{{ opt }}</option>{% endfor %}
@@ -57,11 +61,12 @@
                                 <input type="{{ def.type == 'int' ? 'number' : 'text' }}" name="param[{{ key }}]" value="{{ resolved[key] }}" class="form-control form-control-sm">
                             {% endif %}
                         </td>
-                        <td><small class="text-muted">{{ def.isoClauses|join(', ') }}</small></td>
+                        <td class="fa-table__cell"><small class="text-muted">{{ def.isoClauses|join(', ') }}</small></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        </div>
         <button class="btn btn-success">{{ 'compliance_policy.policy_profile.page.save_params'|trans({}, 'compliance_policy') }}</button>
         <a href="{{ path('app_policy_profile_register', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">{{ 'compliance_policy.policy_profile.page.view_register'|trans({}, 'compliance_policy') }}</a>
     </form>
