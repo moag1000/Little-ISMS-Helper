@@ -229,6 +229,7 @@ risk.matrix.impact_label	1
 risk.matrix.likelihood	1
 risk.matrix.probability_label	1
 risk.modern.status	1
+risk.subject	1
 risk.treatment	1
 risk_treatment_plan.priority	4
 risk_treatment_plan.status	5

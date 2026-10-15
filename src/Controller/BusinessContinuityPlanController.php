@@ -234,7 +234,7 @@ class BusinessContinuityPlanController extends AbstractController
             fn (\App\Entity\BusinessContinuityPlan $plan): ?array => ($c = (int) $em->createQuery(
                 'SELECT COUNT(e.id) FROM App\Entity\BCExercise e JOIN e.testedPlans p WHERE p.id = :id'
             )->setParameter('id', $plan->getId())->getSingleScalarResult()) > 0
-                ? ['message' => sprintf('%d Übung(en) verknüpft', $c), 'icon' => 'clipboard-check']
+                ? ['message' => sprintf('%d Übung(en) verknüpft', $c), 'icon' => 'nav-clipboard-check']
                 : null,
         ]);
     }

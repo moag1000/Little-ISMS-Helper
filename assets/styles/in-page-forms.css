@@ -13,12 +13,12 @@
 .fa-row-link:hover,
 .fa-row-link:focus-visible {
     text-decoration: underline;
-    color: var(--primary-strong, var(--primary, #3a5bd0));
+    color: var(--primary-strong);
 }
 
 /* Whole-row affordance: subtle hover so users discover rows are interactive. */
 tbody tr:has(.fa-row-link):hover {
-    background: var(--surface-2, rgba(120, 160, 255, 0.06));
+    background: var(--surface-2, rgb(120, 160, 255, 0.06));
 }
 
 /* The drawer content is wrapped in a <turbo-frame> between the flex-column
@@ -54,7 +54,7 @@ tbody tr:has(.fa-row-link):hover {
     display: none;
     place-items: center;
     padding: var(--spacing-lg, 24px);
-    background: var(--overlay-bg, rgba(15, 23, 42, 0.55));
+    background: var(--overlay-bg, rgb(15, 23, 42, 0.55));
 }
 .fa-form-modal.is-open {
     display: grid;
@@ -66,14 +66,16 @@ tbody tr:has(.fa-row-link):hover {
     flex-direction: column;
     overflow: hidden;
     border-radius: var(--r-2xl, 18px);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
-    background: var(--surface, #141c2e);
+    box-shadow: 0 24px 70px rgb(0, 0, 0, 0.35);
+    background: var(--surface);
 }
+
 @media (prefers-reduced-motion: no-preference) {
     .fa-form-modal.is-open .fa-form-modal__dialog {
         animation: fa-form-modal-in var(--t-base, 220ms) var(--ease-out, ease);
     }
 }
+
 @keyframes fa-form-modal-in {
     from { opacity: 0; transform: translateY(12px) scale(0.99); }
     to   { opacity: 1; transform: none; }

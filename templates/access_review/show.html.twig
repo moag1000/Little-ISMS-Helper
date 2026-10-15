@@ -23,7 +23,7 @@
         is_granted('ROLE_AUDITOR') ? {
             label: 'access_review.export.button'|trans({}, 'access_review'),
             variant: 'ghost',
-            icon: 'ui-download',
+            icon: 'nav-download',
             href: path('app_access_review_export', {_locale: app.request.locale, id: campaign.id}),
             attrs: {
                 title: 'access_review.export.tooltip'|trans({}, 'access_review'),
@@ -31,7 +31,7 @@
             }
         } : null,
         campaign.isOpen ? {
-            label: 'access_review.close_campaign'|trans({}, 'access_review'), variant: 'danger', icon: 'lock',
+            label: 'access_review.close_campaign'|trans({}, 'access_review'), variant: 'danger', icon: 'ui-lock',
             tag: 'button',
             attrs: { 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'close-modal' }
         } : null

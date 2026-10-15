@@ -591,6 +591,12 @@ jobs:
         # invisible at runtime. Descriptive keys (license_note, changelog, …) are
         # baselined; a NEW inert key is far more likely dead payload than docs.
         run: python3 scripts/quality/check_fixture_unread_keys.py --baseline scripts/quality/baselines/fixture_unread_keys.txt
+      - name: "Gate 61: CSS tokens in sync with design-system artifact"
+        # The design system lives as a claude.ai Design System artifact; its token
+        # layer is snapshotted in docs/design_system/artifact/. A token that differs
+        # between that snapshot and assets/styles/ fails unless baselined — so a
+        # design change has to land on both sides. See docs/design_system/artifact/SOURCE.md.
+        run: python3 scripts/quality/check_design_tokens_sync.py --baseline scripts/quality/baselines/design_tokens_sync.txt
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

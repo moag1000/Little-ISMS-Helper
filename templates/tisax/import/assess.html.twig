@@ -18,7 +18,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'status-gauge', label: 'TISAX' },
+        badge: { icon: 'nav-speedometer', label: 'TISAX' },
         title: 'tisax.import.assess.title'|trans({}, 'tisax_isa'),
         subtitle: 'tisax.import.assess.subtitle'|trans({}, 'tisax_isa'),
         actions: [
@@ -26,7 +26,7 @@
                 label: 'tisax.import.assess.export_enx'|trans({}, 'tisax_isa'),
                 href: path('app_tisax_import_export_enx', { _locale: app.request.locale, frameworkId: framework.id }),
                 variant: 'outline-secondary',
-                icon: 'ui-download'
+                icon: 'nav-download'
             }
         ]
     }) }}
@@ -48,7 +48,7 @@
                     label: 'tisax.import.assess.avg_reifegrad'|trans({}, 'tisax_isa'),
                     value: aggregate.average ~ ' / 5',
                     variant: 'primary',
-                    icon: 'status-gauge'
+                    icon: 'nav-speedometer'
                 }) }}
             </div>
             <div class="col-md-3">
@@ -142,7 +142,7 @@
                             {% if req.category != prevCat %}
                                 <tr class="table-active">
                                     <th colspan="6" class="py-2">
-                                        <i class="fa-icon fa-icon--folder me-1"></i>
+                                        <i class="fa-icon fa-icon--ui-files me-1"></i>
                                         {{ dimLabels[req.category]|default(req.category|replace({'_': ' '})|capitalize) }}
                                         {% if isDataProtection %}<span class="text-muted fw-normal small ms-2">— {{ 'tisax.import.assess.dp_note'|trans({}, 'tisax_isa') }}</span>{% endif %}
                                     </th>
@@ -292,7 +292,7 @@
                     <span class="text-muted">{{ 'tisax.import.assess.success_desc'|trans({}, 'tisax_isa') }}</span>
                 </div>
                 <a href="{{ path('app_compliance_framework_show', { id: framework.id }) }}" class="btn btn-success">
-                    <i class="fa-icon fa-icon--arrow-right me-1"></i> {{ 'tisax.import.assess.view_overview'|trans({}, 'tisax_isa') }}
+                    <i class="fa-icon fa-icon--util-arrow-right me-1"></i> {{ 'tisax.import.assess.view_overview'|trans({}, 'tisax_isa') }}
                 </a>
             </div>
         </div>

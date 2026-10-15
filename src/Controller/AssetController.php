@@ -322,7 +322,7 @@ class AssetController extends AbstractController
                 ? ['message' => sprintf('%d Vorfall/Vorfälle verknüpft', $c), 'icon' => 'exclamation-triangle']
                 : null,
             fn (Asset $asset): ?array => ($c = $asset->getProtectingControls()->count()) > 0
-                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'check-circle']
+                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'control']
                 : null,
         ]);
     }

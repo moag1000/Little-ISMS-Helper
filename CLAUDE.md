@@ -635,6 +635,27 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
    alert-*`, spacing/flex) still work. Full anti-pattern list in
    `templates/_components/_CARD_GUIDE.md` §"Anti-Patterns".
 
+## Design System Source (claude.ai artifact)
+
+The design system (FairyAurora v4) is maintained as a claude.ai Design System
+artifact: https://claude.ai/artifact/D2J6dQUWYUBjq3q7MMeA3D (private; read it
+with the Artifact tool, not WebFetch). It is the reference for **design**
+decisions (palette, type, glow/shadow rules, component look). The repo stays
+the reference for **technical** tokens (z-index stack, Bootstrap bridge
+`--bs-*`, print, touch targets).
+
+- Token snapshot: `docs/design_system/artifact/` (tokens.css +
+  fairy-aurora.css) — a copy, never hand-edit. `SOURCE.md` there documents
+  the sync in both directions.
+- CI-Gate 61 `scripts/quality/check_design_tokens_sync.py` fails when a token in
+  `assets/styles/` differs from the snapshot and is not in
+  `scripts/quality/baselines/design_tokens_sync.txt`.
+- Changing a token: change it in the artifact and in `assets/styles/` together,
+  refresh the snapshot, and drop the baseline line if one existed.
+- "Design System ins Repo synchronisieren" = read the two files from the
+  artifact, replace the snapshot, run the gate, align or baseline each new
+  deviation, open a PR.
+
 ## Aurora v4 Components (prefer these for new UI)
 
 Macro library under `templates/_components/_fa_*.html.twig`. Live preview +

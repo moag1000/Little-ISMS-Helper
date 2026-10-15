@@ -555,12 +555,12 @@ class ProcessingActivityController extends AbstractController
         $em = $this->entityManager;
         return $this->checkBulkDependencies($activities, 'getName', [
             fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = $pa->getConsents()->count()) > 0
-                ? ['message' => sprintf('%d Einwilligung(en) verknüpft', $c), 'icon' => 'person-check']
+                ? ['message' => sprintf('%d Einwilligung(en) verknüpft', $c), 'icon' => 'ui-person']
                 : null,
             fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = (int) $em->createQuery(
                 'SELECT COUNT(db.id) FROM App\Entity\DataBreach db WHERE db.processingActivity = :pa'
             )->setParameter('pa', $pa)->getSingleScalarResult()) > 0
-                ? ['message' => sprintf('%d Datenpanne(n) verknüpft', $c), 'icon' => 'shield-x']
+                ? ['message' => sprintf('%d Datenpanne(n) verknüpft', $c), 'icon' => 'breach']
                 : null,
             fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = (int) $em->createQuery(
                 'SELECT COUNT(d.id) FROM App\Entity\DataProtectionImpactAssessment d WHERE d.processingActivity = :pa'

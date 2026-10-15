@@ -31,9 +31,9 @@
     {% set _completed = programs|filter(p => p.status == 'completed')|length %}
     <div class="row g-3 mb-4">
         <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-clipboard-check', label: 'audit_program.kpi.total'|trans, value: _total, tone: 'neutral' }) }}</div>
-        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-circle-fill', label: 'audit_program.kpi.active'|trans, value: _active, tone: 'primary' }) }}</div>
-        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-pencil-square', label: 'audit_program.kpi.planning'|trans, value: _planning, tone: 'neutral' }) }}</div>
-        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-check-circle', label: 'audit_program.kpi.completed'|trans, value: _completed, tone: 'success' }) }}</div>
+        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'ui-circle', label: 'audit_program.kpi.active'|trans, value: _active, tone: 'primary' }) }}</div>
+        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-edit', label: 'audit_program.kpi.planning'|trans, value: _planning, tone: 'neutral' }) }}</div>
+        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'status-ok', label: 'audit_program.kpi.completed'|trans, value: _completed, tone: 'success' }) }}</div>
     </div>
 
     {% if programs is empty %}

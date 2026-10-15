@@ -21,7 +21,7 @@
     background: var(--surface);
     color: var(--fg);
     border-radius: var(--r-lg);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--primary-tint); /* design-spec: toast composite with tint glow */
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15); /* design-spec: toast composite with tint glow */
     padding: 16px;
     display: flex;
     align-items: flex-start;
@@ -57,10 +57,9 @@
 
 /* Toast Types - Better contrast for readability */
 .toast-success {
-    border-color: var(--success);
+    border: 1px solid color-mix(in oklab, var(--success) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
     background: var(--surface);
-    border-left: 4px solid var(--success);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--success-tint); /* design-spec: toast composite with tint glow */
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15);
 }
 
 .toast-success .toast-icon {
@@ -68,10 +67,9 @@
 }
 
 .toast-error {
-    border-color: var(--danger);
+    border: 1px solid color-mix(in oklab, var(--danger) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
     background: var(--surface);
-    border-left: 4px solid var(--danger);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--danger-tint); /* design-spec: toast composite with tint glow */
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15);
 }
 
 .toast-error .toast-icon {
@@ -79,10 +77,9 @@
 }
 
 .toast-warning {
-    border-color: var(--warning);
+    border: 1px solid color-mix(in oklab, var(--warning) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
     background: var(--surface);
-    border-left: 4px solid var(--warning);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--warning-tint); /* design-spec: toast composite with tint glow */
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15);
 }
 
 .toast-warning .toast-icon {
@@ -90,10 +87,9 @@
 }
 
 .toast-info {
-    border-color: var(--primary);
+    border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
     background: var(--surface);
-    border-left: 4px solid var(--primary);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--primary-tint); /* design-spec: toast composite with tint glow */
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15);
 }
 
 .toast-info .toast-icon {

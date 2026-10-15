@@ -30,33 +30,34 @@
     border-radius: var(--r-sm);
 }
 
+/* Kanon 2026-09 H2 · Brand-Mark = Notch-Schild (Schutz in Schichten), flach.
+   Tile (Default): Schild in --on-primary auf --primary-strong · App-Icon, Login, Favicon.
+   --mono: kein Tile, Schild in Primary · Header/Sidebar auf Surface.
+   Das Markup <span class="fa-brand-mark"><span class="fa-brand-sparkle">✦</span></span>
+   bleibt gültig — die Glyphe wird per Mask gezeichnet, der Text nicht mehr gerendert.
+   ✦ ist damit exklusiv das semantische Automatik-Signal (D02). */
 .fa-brand-mark {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: var(--r-md);
-    background: var(--brand-gradient);
-    box-shadow: 0 0 12px var(--primary-glow),
-                inset 0 0 0 1px rgb(255, 255, 255, 0.2);
+    background: var(--primary-strong);
     flex-shrink: 0;
-    animation: fa-brand-breathe 3s ease-in-out infinite;
     position: relative;
 }
-/* Dark-Mode: extra heller Außen-Ring, damit das Logo sich vom dunklen
-   Seiten-Hintergrund-Gradient (surface→bg) klar absetzt. */
-html[data-theme="dark"] .fa-brand-mark {
-    box-shadow: 0 0 12px var(--primary-glow),
-                inset 0 0 0 1px rgb(255, 255, 255, 0.3),
-                0 0 0 1px rgb(var(--primary-rgb), 0.35);
-}
+.fa-brand-mark--mono { background: transparent; }
 
 .fa-brand-sparkle {
-    color: var(--on-primary);
-    font-size: 0.55em;
-    line-height: 1;
-    font-weight: 700;
-    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.25); /* design-spec: brand sparkle text lift on colored bg */
+    display: block;
+    width: 58%;
+    height: 64%;
+    font-size: 0;
+    color: transparent;
+    overflow: hidden;
+    background-color: var(--on-primary);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 44'%3E%3Cpath fill-rule='evenodd' d='M6 4H26L34 12V22C34 30.5 28 37 20 41C12 37 6 30.5 6 22Z M11.3 11H23.7L28.7 16V22.2C28.7 27.5 25 31.5 20 34C15 31.5 11.3 27.5 11.3 22.2Z M14.1 14.7H22.5L25.9 18.1V22.3C25.9 25.9 23.4 28.6 20 30.3C16.6 28.6 14.1 25.9 14.1 22.3Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
+.fa-brand-mark--mono .fa-brand-sparkle { background-color: var(--primary-strong); }
 
 /* ═══════════════════════════════════════════════════════════════════
    App-Wide Tech-Backdrop — subtle Circuit-Optics on <body>
@@ -154,9 +155,7 @@ html[data-theme="dark"] .mega-menu-panel {
     background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 0 0 1px var(--primary-glow),
-                0 8px 24px rgb(0, 0, 0, 0.06); /* design-spec: premium card dark-mode composite with glow */
-
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 18%, var(--border)), 0 8px 24px rgb(0, 0, 0, 0.06); /* Kanon H5 */
     overflow: hidden;
     transition: box-shadow var(--t-fast) var(--ease-out),
                 transform var(--t-fast) var(--ease-out);
@@ -166,7 +165,7 @@ html[data-theme="dark"] .mega-menu-panel {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: var(--brand-gradient);
+    background: var(--primary); /* Kanon H4: flach statt Verlauf */
 }
 .fa-card--premium:hover {
     box-shadow: 0 0 0 1px var(--primary),
@@ -180,7 +179,7 @@ html[data-theme="dark"] .fa-card--premium {
 
 .fa-brand-text { display: flex; flex-direction: column; min-width: 0; }
 .fa-brand-name {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-weight: 600;
     letter-spacing: -0.2px;
     color: var(--fg);
@@ -197,7 +196,7 @@ html[data-theme="dark"] .fa-card--premium {
 
 @keyframes fa-brand-breathe {
     0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.02); box-shadow: 0 0 16px var(--primary-glow); }
+    50%      { transform: scale(1.02); } /* Kanon H2/H5: Mark leuchtet nie */
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -275,7 +274,6 @@ html[data-theme="dark"] .fa-card--premium {
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-weight: 600;
-    box-shadow: 0 0 12px var(--primary-glow);
     clip-path: polygon(
         8px 0, 100% 0,
         100% calc(100% - 8px), calc(100% - 8px) 100%,
@@ -309,7 +307,6 @@ html[data-theme="dark"] .fa-card--premium {
     background: var(--accent-tint);
     color: var(--accent);
     border-color: var(--accent);
-    box-shadow: 0 0 12px var(--accent-glow);
 }
 .fa-cyber-btn--accent:hover:not(.is-disabled) {
     background: var(--accent-strong);
@@ -348,7 +345,6 @@ html[data-theme="dark"] .fa-card--premium {
     background: var(--success-strong);
     color: var(--on-success);
     border-color: var(--success-strong);
-    box-shadow: 0 0 12px var(--success-glow);
 }
 .fa-cyber-btn--success:hover:not(.is-disabled) {
     background: var(--success);
@@ -366,7 +362,6 @@ html[data-theme="dark"] .fa-card--premium {
     background: var(--warning-strong);
     color: var(--on-warning);
     border-color: var(--warning-strong);
-    box-shadow: 0 0 12px var(--warning-glow);
 }
 .fa-cyber-btn--warning:hover:not(.is-disabled) {
     background: var(--warning);
@@ -672,7 +667,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     background: var(--primary);
     border: 2px solid var(--surface);
     border-radius: var(--r-pill);
-    box-shadow: 0 0 8px var(--primary-glow);
+    box-shadow: 0 0 0 3px var(--primary-tint); /* Kanon H5 */
     cursor: grab;
 }
 .fa-cyber-input__field--range::-moz-range-thumb {
@@ -680,7 +675,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     background: var(--primary);
     border: 2px solid var(--surface);
     border-radius: var(--r-pill);
-    box-shadow: 0 0 8px var(--primary-glow);
+    box-shadow: 0 0 0 3px var(--primary-tint); /* Kanon H5 */
     cursor: grab;
 }
 
@@ -728,7 +723,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     width: 6px; height: 6px;
     border-radius: 50%;
     background: currentColor;
-    box-shadow: 0 0 4px currentColor;
+    box-shadow: none;
     flex-shrink: 0;
 }
 .fa-status-pill > .bi { font-size: 1em; }
@@ -777,13 +772,13 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 /* Entity-Type-Tones (folgen Aurora-Semantik) */
 .fa-entity-badge--finding       { background: var(--warning-glow); color: var(--warning-text); border-color: var(--warning); }
 .fa-entity-badge--nonconformity { background: var(--danger-glow);  color: var(--danger);       border-color: var(--danger); }
-.fa-entity-badge--risk          { background: var(--accent-tint);  color: var(--accent);       border-color: var(--accent); }
+.fa-entity-badge--risk          { background: var(--warning-glow); color: var(--warning-text); border-color: var(--warning); } /* Kanon H4: Risiko = Warning-Familie · Violett nur ✦/Alva */
 .fa-entity-badge--control       { background: var(--primary-tint); color: var(--primary);      border-color: var(--primary); }
 .fa-entity-badge--evidence      { background: var(--success-glow); color: var(--success);      border-color: var(--success); }
 .fa-entity-badge--policy        { background: var(--surface-2);    color: var(--fg);           border-color: var(--border-strong); }
 .fa-entity-badge--asset         { background: var(--primary-tint); color: var(--primary);      border-color: var(--primary); }
 .fa-entity-badge--incident      { background: var(--danger-glow);  color: var(--danger);       border-color: var(--danger); }
-.fa-entity-badge--audit         { background: var(--accent-tint);  color: var(--accent);       border-color: var(--accent); }
+.fa-entity-badge--audit         { background: var(--surface-2);    color: var(--fg);           border-color: var(--border-strong); } /* Kanon H4: Audit = Governance-neutral (wie Policy) */
 .fa-entity-badge--training      { background: var(--success-glow); color: var(--success);      border-color: var(--success); }
 
 
@@ -825,11 +820,11 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 /* Linke Akzent-Leiste optional (für Entity-Type) */
 .fa-entity-card--finding       { border-left: 3px solid var(--warning); }
 .fa-entity-card--nonconformity { border-left: 3px solid var(--danger); }
-.fa-entity-card--risk          { border-left: 3px solid var(--accent); }
+.fa-entity-card--risk          { border-left: 3px solid var(--warning); }
 .fa-entity-card--control       { border-left: 3px solid var(--primary); }
 .fa-entity-card--evidence      { border-left: 3px solid var(--success); }
 .fa-entity-card--incident      { border-left: 3px solid var(--danger); }
-.fa-entity-card--audit         { border-left: 3px solid var(--accent); }
+.fa-entity-card--audit         { border-left: 3px solid var(--border-strong); }
 
 .fa-entity-card__icon {
     width: 44px;
@@ -851,11 +846,11 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 /* Icon-Color-Variants — kann zusätzlich gesetzt werden */
 .fa-entity-card--finding       .fa-entity-card__icon .fa-icon { background-color: var(--warning); }
 .fa-entity-card--nonconformity .fa-entity-card__icon .fa-icon { background-color: var(--danger); }
-.fa-entity-card--risk          .fa-entity-card__icon .fa-icon { background-color: var(--accent); }
+.fa-entity-card--risk          .fa-entity-card__icon .fa-icon { background-color: var(--warning); }
 .fa-entity-card--control       .fa-entity-card__icon .fa-icon { background-color: var(--primary); }
 .fa-entity-card--evidence      .fa-entity-card__icon .fa-icon { background-color: var(--success); }
 .fa-entity-card--incident      .fa-entity-card__icon .fa-icon { background-color: var(--danger); }
-.fa-entity-card--audit         .fa-entity-card__icon .fa-icon { background-color: var(--accent); }
+.fa-entity-card--audit         .fa-entity-card__icon .fa-icon { background-color: var(--fg-2); }
 
 .fa-entity-card__body {
     min-width: 0;
@@ -997,12 +992,12 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: var(--brand-gradient);
+    background: var(--primary); /* Kanon H4: flach statt Verlauf */
 }
 
 .fa-kpi-card--emphasis {
     background: linear-gradient(145deg, var(--surface), var(--surface-2));
-    box-shadow: 0 0 0 1px var(--primary-glow), 0 4px 18px var(--primary-glow);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 30%, var(--border)), var(--shadow-sm); /* Kanon H5 */
     border-color: transparent;
 }
 
@@ -1123,8 +1118,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     gap: 12px;
     padding: 14px 16px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--primary);
+    border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
     border-radius: var(--r-md);
     position: relative;
     animation: fa-alert-enter var(--t-slow) var(--ease-out);
@@ -1166,16 +1160,16 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-alert__close:hover { color: var(--fg); }
 
 /* Tone-Variants */
-.fa-alert--primary { border-left-color: var(--primary); }
+.fa-alert--primary { border-color: color-mix(in oklab, var(--primary) 35%, var(--border)); }
 .fa-alert--primary .fa-alert__icon { color: var(--primary); }
-.fa-alert--info    { border-left-color: var(--primary); background: var(--primary-tint); }
+.fa-alert--info    { border-color: color-mix(in oklab, var(--primary) 35%, var(--border)); background: var(--primary-tint); }
 .fa-alert--info    .fa-alert__icon { color: var(--primary); }
-.fa-alert--success { border-left-color: var(--success); background: var(--success-glow); }
+.fa-alert--success { border-color: color-mix(in oklab, var(--success) 35%, var(--border)); background: var(--success-glow); }
 .fa-alert--success .fa-alert__icon { color: var(--success); }
-.fa-alert--warning { border-left-color: var(--warning); background: var(--warning-glow); }
+.fa-alert--warning { border-color: color-mix(in oklab, var(--warning) 35%, var(--border)); background: var(--warning-glow); }
 .fa-alert--warning .fa-alert__icon { color: var(--warning); }
 .fa-alert--warning .fa-alert__message { color: var(--warning-text); }
-.fa-alert--danger  { border-left-color: var(--danger); background: var(--danger-glow); }
+.fa-alert--danger  { border-color: color-mix(in oklab, var(--danger) 35%, var(--border)); background: var(--danger-glow); }
 .fa-alert--danger  .fa-alert__icon { color: var(--danger); }
 
 /* Modifier variants used by _components/_alert.html.twig macro:
@@ -1317,7 +1311,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 }
 .fa-step-header__dot { margin: 0 4px; color: var(--primary); }
 .fa-step-header__title {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: 24px;
     font-weight: 600;
     letter-spacing: -0.5px;
@@ -1460,9 +1454,9 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--primary-strong);
     padding: 1px 4px;
-    background: var(--accent-tint);
+    background: var(--primary-tint);
     border-radius: var(--r-sm);
 }
 .fa-toggle-card__sub {
@@ -1572,9 +1566,9 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-typewriter__text { white-space: pre-wrap; }
 .fa-typewriter__caret {
     display: inline-block;
-    color: var(--accent);
+    color: var(--primary);
     animation: fa-typewriter-caret 0.8s step-end infinite;
-    margin-left: 1px;
+    margin-left: 1px; /* Kanon H4 */
 }
 
 @keyframes fa-typewriter-caret { 50% { opacity: 0; } }
@@ -1754,7 +1748,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     width: 5px; height: 5px;
     border-radius: 50%;
     background: var(--success);
-    box-shadow: 0 0 6px var(--success-glow);
+    box-shadow: none;
 }
 .fa-setup-right__body { flex: 1; display: flex; flex-direction: column; }
 .fa-setup-right__content { flex: 1; }
@@ -2327,7 +2321,7 @@ small.mono {
    ═══════════════════════════════════════════════════════════════════ */
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-sans);
+    font-family: var(--font-sans); /* Kanon H1: h1/h2 werden unten auf --font-display gesetzt */
     font-weight: 600;
     color: var(--fg);
     letter-spacing: -0.2px;
@@ -2336,6 +2330,14 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 { letter-spacing: -0.5px; }
 h2 { letter-spacing: -0.3px; }
+
+/* Kanon H1 (Review 2026-09) — Display-Font für Titel und Kennzahlen */
+h1, h2, .h1, .h2,
+.fa-page-header__title, .fa-hero__title, .fa-kpi-card__value, .fa-feature-card__value, .kpi-card-value,
+.fa-form-layout__title, .fa-tutorial-checkpoint__title, .fa-brand-name {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+}
 
 p {
     color: var(--fg);
@@ -2376,7 +2378,7 @@ code:not([class]) {
     font-family: var(--font-mono);
     font-size: 0.875em;
     background: var(--surface-2);
-    color: var(--accent);
+    color: var(--primary-strong); /* Kanon H4 */
     padding: 1px 5px;
     border-radius: var(--r-sm);
 }
@@ -2403,6 +2405,7 @@ code:not([class]) {
     min-height: 100%;
 }
 
+/* Kanon H4 (moderat): nur Hero/Login-Hintergrund + Aurora-Ambient — nie als Fill auf Mark, Balken, Button, Avatar */
 .fa-brand-gradient {
     background: var(--brand-gradient);
     color: var(--on-primary);
@@ -2499,7 +2502,7 @@ html[data-theme="dark"] .keyboard-key {
 .card.border-warning:hover { border-left-color: var(--warning); }
 .card.border-danger:hover  { border-left-color: var(--danger); }
 .card.border-info:hover    { border-left-color: var(--primary); }
-.card.border-accent:hover  { border-left-color: var(--accent); }
+.card.border-accent:hover  { border-color: color-mix(in oklab, var(--accent) 50%, var(--border)); }
 
 /* Header/Footer: bg + color come from --bs-card-cap-* via Bootstrap's own
    rules. We only declare layout (radius, padding, typography) here. */
@@ -2733,18 +2736,24 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
     color: var(--on-primary);
 }
 
-.card.border-primary,  .card.border-left-primary  { border-left: 4px solid var(--primary); }
-.card.border-success,  .card.border-left-success  { border-left: 4px solid var(--success); }
-.card.border-warning,  .card.border-left-warning  { border-left: 4px solid var(--warning); }
-.card.border-danger,   .card.border-left-danger   { border-left: 4px solid var(--danger); }
-.card.border-info,     .card.border-left-info     { border-left: 4px solid var(--primary); }
-.card.border-accent,   .card.border-left-accent   { border-left: 4px solid var(--accent); }
+.card.border-primary { border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--border)); } /* Kanon: Rahmen */
+.card.border-left-primary { border-left: 4px solid var(--primary); }
+.card.border-success { border: 1px solid color-mix(in oklab, var(--success) 35%, var(--border)); } /* Kanon: Rahmen */
+.card.border-left-success { border-left: 4px solid var(--success); }
+.card.border-warning { border: 1px solid color-mix(in oklab, var(--warning) 35%, var(--border)); } /* Kanon: Rahmen */
+.card.border-left-warning { border-left: 4px solid var(--warning); }
+.card.border-danger { border: 1px solid color-mix(in oklab, var(--danger) 35%, var(--border)); } /* Kanon: Rahmen */
+.card.border-left-danger { border-left: 4px solid var(--danger); }
+.card.border-info { border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--border)); } /* Kanon: Rahmen */
+.card.border-left-info { border-left: 4px solid var(--primary); }
+.card.border-accent { border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border)); } /* Kanon: Rahmen */
+.card.border-left-accent { border-left: 4px solid var(--accent); }
 
 /* (0,2,0) — same specificity as .card > .card-header; wins by source order
    (these rules come after, so they override the base .card > .card-header above) */
 .card-header.bg-primary,
 .card > .card-header.bg-primary {
-    background: var(--brand-gradient);
+    background: var(--primary-strong); /* Kanon H4 */
     color: var(--on-primary);
     border-bottom: none;
     border-top-left-radius: calc(var(--r-lg) - 1px);
@@ -3402,13 +3411,14 @@ html[data-theme="dark"] .toast {
     --bs-table-border-color: var(--border);
     --bs-table-striped-bg:  var(--surface-2);
     --bs-table-striped-color: var(--fg);
-    --bs-table-hover-bg:    var(--surface-3);
+    --bs-table-hover-bg:    var(--surface-2);
     --bs-table-hover-color: var(--fg);
     --bs-table-active-bg:   var(--surface-3);
     --bs-table-active-color: var(--fg);
 
     color: var(--fg);
     border-color: var(--border);
+    font-size: 13px; /* = .fa-table */
 }
 
 /* Thead — no Bootstrap token exists, so explicit rule with
@@ -3419,9 +3429,10 @@ html[data-theme="dark"] .toast {
 }
 .table.table > thead > tr > th {
     background-color: var(--surface-2);
-    color: var(--fg);
-    border-bottom: 2px solid var(--border);
+    color: var(--fg-2);
+    border-bottom: 1px solid var(--border);
     font-weight: 600;
+    font-size: 12px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -3696,7 +3707,7 @@ html[data-theme="dark"] .wizard-busy-overlay {
     right: 0;
     bottom: 0;
     height: 2px;
-    background: var(--brand-gradient-line);
+    background: var(--primary); /* Kanon H4: flache Linie statt Aurora-Verlauf */
     pointer-events: none;
     z-index: -1; /* local stacking-context */
 }
@@ -3714,28 +3725,29 @@ html[data-theme="dark"] .wizard-busy-overlay {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 3px 10px;
-    border-radius: var(--r-pill);
-    background: var(--brand-gradient-soft);
-    border: 1px solid var(--primary-tint);
+    padding: 4px 11px;
+    border-radius: 0;
+    clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px); /* Kanon H3: Notch = Identität */
+    background: var(--primary-strong);
+    border: none;
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--primary);
+    color: var(--on-primary);
     align-self: flex-start;
 }
 
 html[data-theme="dark"] .fa-page-header__badge {
-    border-color: var(--primary);
-    color: var(--primary);
+    background: var(--primary);
+    color: var(--on-primary);
 }
 
 .fa-page-header__badge i { font-size: 12px; }
 
 .fa-page-header__title {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: clamp(20px, 2.5vw, 28px);
     font-weight: 700;
     color: var(--fg);
@@ -3932,7 +3944,7 @@ html[data-theme="dark"] .fa-page-header__badge {
 }
 
 .fa-feature-card__value {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: 32px;
     font-weight: 700;
     color: var(--fg);
@@ -3998,13 +4010,11 @@ html[data-theme="dark"] .fa-page-header__badge {
         radial-gradient(circle at 92% 60%, color-mix(in oklab, var(--accent-tint) calc(var(--pattern-opacity-hero) * 1000%), transparent) 0%, transparent 55%),
         var(--surface);
     border: 1px solid var(--border);
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
-                0 8px 32px color-mix(in oklab, var(--primary) 8%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent), var(--shadow-md);
 }
 
 html[data-theme="dark"] .fa-hero {
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
-                0 8px 40px color-mix(in oklab, var(--primary) 12%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent), var(--shadow-md);
 }
 
 .fa-hero__alva {
@@ -4021,7 +4031,7 @@ html[data-theme="dark"] .fa-hero {
 }
 
 .fa-hero__title {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: clamp(22px, 3vw, 32px);
     font-weight: 700;
     color: var(--fg);
@@ -4312,12 +4322,15 @@ button.fa-filter-chip.fa-filter-chip--active {
    rules — wins by load order (Aurora loads later in styles.css chain).
    ========================================================================== */
 
-/* Base .btn — core typography + transitions from fa-cyber-btn */
+/* Base .btn — core typography + transitions from fa-cyber-btn.
+   Sans like .fa-cyber-btn; mono/uppercase is reserved for the primary CTA. */
 .btn {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    border: 1px solid transparent;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    letter-spacing: normal;
+    /* Keep Bootstrap's per-variant border colour — a plain "transparent"
+       here erased the frame of .btn-secondary / .btn-outline-* / .btn-danger. */
+    border: var(--bs-btn-border-width, 1px) solid var(--bs-btn-border-color, transparent);
     transition: transform var(--t-fast) var(--ease-out),
                 background-color var(--t-fast) var(--ease-out),
                 border-color var(--t-fast) var(--ease-out),
@@ -4329,9 +4342,8 @@ button.fa-filter-chip.fa-filter-chip--active {
    Applies Aurora sizing and radius to every .btn element without touching markup. */
 .btn.btn {
     border-radius: var(--r-md);
-    padding: 10px 18px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    padding: 9px 16px;
+    font-size: 13px;
     line-height: 1;
 }
 
@@ -4395,9 +4407,28 @@ button.fa-filter-chip.fa-filter-chip--active {
     --bs-btn-active-color:        var(--on-primary);
     --bs-btn-active-border-color: var(--primary-hover);
 
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    box-shadow: 0 0 12px var(--primary-glow);
 }
+/* Kanon H3 — Notch = Primary-CTA (same chamfer as .fa-cyber-btn--primary).
+   Grouped buttons keep Bootstrap's joined edges, so they stay rectangular. */
+.btn.btn-primary {
+    clip-path: polygon(
+        8px 0, 100% 0,
+        100% calc(100% - 8px), calc(100% - 8px) 100%,
+        0 100%, 0 8px
+    );
+}
+.btn.btn-primary.btn-sm {
+    clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+.btn-group > .btn.btn-primary,
+.input-group > .btn.btn-primary { clip-path: none; }
+/* A clip-path would cut off the 3px focus outline (WCAG 2.4.7) */
+.btn.btn-primary:focus-visible,
+.fa-cyber-btn--primary:focus-visible { clip-path: none; }
 .btn.btn-primary:hover:not(:disabled, .disabled) {
     transform: translateY(-1px);
     box-shadow: 0 0 20px var(--primary-glow);
@@ -4414,9 +4445,6 @@ button.fa-filter-chip.fa-filter-chip--active {
     --bs-btn-hover-bg:            var(--success);
     --bs-btn-hover-color:         var(--on-success);
     --bs-btn-hover-border-color:  var(--success);
-
-    text-transform: uppercase;
-    box-shadow: 0 0 12px var(--success-glow);
 }
 .btn.btn-success:hover:not(:disabled, .disabled) {
     transform: translateY(-1px);
@@ -4430,9 +4458,6 @@ button.fa-filter-chip.fa-filter-chip--active {
     --bs-btn-hover-bg:            var(--warning);
     --bs-btn-hover-color:         var(--on-warning);
     --bs-btn-hover-border-color:  var(--warning);
-
-    text-transform: uppercase;
-    box-shadow: 0 0 12px var(--warning-glow);
 }
 .btn.btn-warning:hover:not(:disabled, .disabled) {
     transform: translateY(-1px);
@@ -4440,15 +4465,16 @@ button.fa-filter-chip.fa-filter-chip--active {
 }
 
 .btn.btn-danger {
-    --bs-btn-bg:                  var(--danger-strong);
-    --bs-btn-color:               var(--on-danger);
-    --bs-btn-border-color:        var(--danger-strong);
-    --bs-btn-hover-bg:            var(--danger);
+    /* = .fa-cyber-btn--danger: outline at rest, fills on hover */
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--danger);
+    --bs-btn-border-color:        var(--danger);
+    --bs-btn-hover-bg:            var(--danger-strong);
     --bs-btn-hover-color:         var(--on-danger);
-    --bs-btn-hover-border-color:  var(--danger);
-
-    text-transform: uppercase;
-    box-shadow: 0 0 12px var(--danger-glow);
+    --bs-btn-hover-border-color:  var(--danger-strong);
+    --bs-btn-active-bg:           var(--danger-strong);
+    --bs-btn-active-color:        var(--on-danger);
+    --bs-btn-active-border-color: var(--danger-strong);
 }
 .btn.btn-danger:hover:not(:disabled, .disabled) {
     transform: translateY(-1px);
@@ -4462,9 +4488,6 @@ button.fa-filter-chip.fa-filter-chip--active {
     --bs-btn-hover-bg:            var(--primary-hover);
     --bs-btn-hover-color:         var(--on-primary);
     --bs-btn-hover-border-color:  var(--primary-hover);
-
-    text-transform: uppercase;
-    box-shadow: 0 0 12px var(--primary-glow);
 }
 .btn.btn-info:hover:not(:disabled, .disabled) {
     transform: translateY(-1px);
@@ -4626,45 +4649,41 @@ button.fa-filter-chip.fa-filter-chip--active {
    ========================================================================== */
 
 /* Token-only base: Bootstrap reads --bs-alert-bg/-color/-border-color
-   internally; we still need to drive the 3px left-border-color (no
-   token for it) via border-left-color: var(--bs-alert-border-color). */
+   internally. Same look as .fa-alert (Kanon "Meldung = Tönungsrahmen"):
+   1px tone-tinted frame all round, tinted background, body text in --fg. */
 .alert {
     --bs-alert-bg:           var(--surface);
     --bs-alert-color:        var(--fg);
-    --bs-alert-border-color: var(--border);
+    --bs-alert-border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
 
-    border-left-width: 3px;
-    border-left-color: var(--bs-alert-border-color);
     border-radius: var(--r-md);
-    padding: 12px 16px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 .alert.alert-info,
 .alert.alert-primary {
     --bs-alert-bg:           var(--primary-tint);
-    --bs-alert-color:        var(--primary-strong);
-    --bs-alert-border-color: var(--primary);
+    --bs-alert-border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
 }
 .alert.alert-success {
-    --bs-alert-bg:           color-mix(in oklab, var(--success) 8%, var(--surface));
-    --bs-alert-color:        var(--success-strong);
-    --bs-alert-border-color: var(--success);
+    --bs-alert-bg:           var(--success-glow);
+    --bs-alert-border-color: color-mix(in oklab, var(--success) 35%, var(--border));
 }
 .alert.alert-warning {
-    --bs-alert-bg:           color-mix(in oklab, var(--warning) 8%, var(--surface));
-    --bs-alert-color:        var(--warning-strong);
-    --bs-alert-border-color: var(--warning);
+    --bs-alert-bg:           var(--warning-glow);
+    --bs-alert-color:        var(--warning-text);
+    --bs-alert-border-color: color-mix(in oklab, var(--warning) 35%, var(--border));
 }
 .alert.alert-danger {
-    --bs-alert-bg:           color-mix(in oklab, var(--danger) 8%, var(--surface));
-    --bs-alert-color:        var(--danger-strong);
-    --bs-alert-border-color: var(--danger);
+    --bs-alert-bg:           var(--danger-glow);
+    --bs-alert-border-color: color-mix(in oklab, var(--danger) 35%, var(--border));
 }
 .alert.alert-secondary,
 .alert.alert-light,
 .alert.alert-dark {
     --bs-alert-bg:           var(--surface-2);
-    --bs-alert-color:        var(--fg);
     --bs-alert-border-color: var(--border-strong);
 }
 .alert a,
@@ -4676,10 +4695,10 @@ button.fa-filter-chip.fa-filter-chip--active {
 
 /* -subtle Bootstrap variants (lighter tone) — same mapping */
 .alert.alert-info-subtle,
-.alert.alert-primary-subtle { background-color: var(--primary-tint); color: var(--primary-strong); }
-.alert.alert-success-subtle { background-color: color-mix(in oklab, var(--success) 8%, var(--surface)); color: var(--success-strong); }
-.alert.alert-warning-subtle { background-color: color-mix(in oklab, var(--warning) 8%, var(--surface)); color: var(--warning-strong); }
-.alert.alert-danger-subtle  { background-color: color-mix(in oklab, var(--danger) 8%, var(--surface)); color: var(--danger-strong); }
+.alert.alert-primary-subtle { background-color: var(--primary-tint); color: var(--fg); }
+.alert.alert-success-subtle { background-color: var(--success-glow); color: var(--fg); }
+.alert.alert-warning-subtle { background-color: var(--warning-glow); color: var(--warning-text); }
+.alert.alert-danger-subtle  { background-color: var(--danger-glow); color: var(--fg); }
 
 
 /* ==========================================================================
@@ -4700,7 +4719,7 @@ button.fa-filter-chip.fa-filter-chip--active {
     /* Slightly larger than the previous 10px hardcode — prior value clamped vertical box too far. */
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em; /* = .fa-status-pill */
     text-transform: uppercase;
     line-height: 1.25;
 }
@@ -4711,17 +4730,17 @@ button.fa-filter-chip.fa-filter-chip--active {
     border: 1px solid var(--primary);
 }
 .badge.bg-success {
-    background-color: color-mix(in oklab, var(--success) 12%, var(--surface)) !important;
+    background-color: var(--success-glow) !important;
     color: var(--success-strong) !important;
     border: 1px solid var(--success);
 }
 .badge.bg-warning {
-    background-color: color-mix(in oklab, var(--warning) 12%, var(--surface)) !important;
+    background-color: var(--warning-glow) !important;
     color: var(--warning-strong) !important;
     border: 1px solid var(--warning);
 }
 .badge.bg-danger {
-    background-color: color-mix(in oklab, var(--danger) 12%, var(--surface)) !important;
+    background-color: var(--danger-glow) !important;
     color: var(--danger-strong) !important;
     border: 1px solid var(--danger);
 }
@@ -4740,11 +4759,11 @@ button.fa-filter-chip.fa-filter-chip--active {
 .badge.bg-primary-subtle,
 .badge.text-bg-primary   { background-color: var(--primary-tint) !important; color: var(--primary-strong) !important; }
 .badge.bg-success-subtle,
-.badge.text-bg-success   { background-color: color-mix(in oklab, var(--success) 12%, var(--surface)) !important; color: var(--success-strong) !important; }
+.badge.text-bg-success   { background-color: var(--success-glow) !important; color: var(--success-strong) !important; }
 .badge.bg-warning-subtle,
-.badge.text-bg-warning   { background-color: color-mix(in oklab, var(--warning) 12%, var(--surface)) !important; color: var(--warning-strong) !important; }
+.badge.text-bg-warning   { background-color: var(--warning-glow) !important; color: var(--warning-strong) !important; }
 .badge.bg-danger-subtle,
-.badge.text-bg-danger    { background-color: color-mix(in oklab, var(--danger) 12%, var(--surface)) !important; color: var(--danger-strong) !important; }
+.badge.text-bg-danger    { background-color: var(--danger-glow) !important; color: var(--danger-strong) !important; }
 
 
 /* ==========================================================================
@@ -5893,8 +5912,7 @@ html[data-theme="dark"] .framework-card {
     gap: var(--space-3);
     padding: var(--space-3) var(--space-5) var(--space-3) var(--space-3);
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--primary);
+    border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
     border-radius: var(--r-md);
     box-shadow: var(--shadow-md);
     overflow: hidden;
@@ -5991,20 +6009,152 @@ html[data-theme="dark"] .framework-card {
 }
 
 /* Tones */
-.fa-toast--info    { border-left-color: var(--primary); }
+.fa-toast--info    { border-color: color-mix(in oklab, var(--primary) 35%, var(--border)); }
 .fa-toast--info    .fa-toast__icon,
 .fa-toast--info    .fa-toast__progress { color: var(--primary); background: var(--primary); }
-.fa-toast--success { border-left-color: var(--success); background: var(--surface); }
+.fa-toast--success { border-color: color-mix(in oklab, var(--success) 35%, var(--border)); background: var(--surface); }
 .fa-toast--success .fa-toast__icon,
 .fa-toast--success .fa-toast__progress { color: var(--success); background: var(--success); }
-.fa-toast--warning { border-left-color: var(--warning); }
+.fa-toast--warning { border-color: color-mix(in oklab, var(--warning) 35%, var(--border)); }
 .fa-toast--warning .fa-toast__icon,
 .fa-toast--warning .fa-toast__progress { color: var(--warning); background: var(--warning); }
-.fa-toast--danger  { border-left-color: var(--danger); }
+.fa-toast--danger  { border-color: color-mix(in oklab, var(--danger) 35%, var(--border)); }
 .fa-toast--danger  .fa-toast__icon,
 .fa-toast--danger  .fa-toast__progress { color: var(--danger); background: var(--danger); }
 
+/* Magic-Ton — ✦-Signal: von Alva/der Automatik erzeugte Rückmeldungen
+   (Auto-Folgetermine, übernommene Vorschläge). Accent = „die Fee hat das gemacht".
+   Der ✦-Marker sitzt als Pseudo-Element oben rechts, dezent leuchtend. */
+.fa-toast--magic   { border-color: color-mix(in oklab, var(--accent) 35%, var(--border)); }
+.fa-toast--magic   .fa-toast__icon,
+.fa-toast--magic   .fa-toast__progress { color: var(--accent); background: var(--accent); }
+.fa-toast--magic::after {
+    content: "\2726";
+    position: absolute;
+    top: 7px;
+    right: 26px;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--accent);
+    text-shadow: 0 0 8px color-mix(in oklab, var(--accent) 45%, transparent);
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .fa-toast--magic::after { animation: fairy-sparkle 2.4s ease-in-out infinite; }
+}
+
 .fa-toast--persistent .fa-toast__progress { display: none; }
+
+
+/* ---------------------------------------------------------------------------
+ * fa-savebar — floating "unsaved changes" save bar
+ *
+ * A deliberate, PERSISTENT save affordance for dirty / staged edits (inline-
+ * edited tables, multi-cell planners, bulk forms). Unlike a toast it does NOT
+ * auto-dismiss — it stays until the user explicitly saves or discards. Use a
+ * toast only for the transient confirmation AFTER the save.
+ *
+ * Two tones:
+ *   (default)            primary — ordinary unsaved edits
+ *   .fa-savebar--warning amber   — sensitive / past / hard-to-undo edits
+ *
+ * Centered at the bottom of the viewport, slides up, respects reduced-motion.
+ * Driven by fa_savebar JS (preview/_fa-savebar.js) or any host controller.
+ *
+ * Markup:
+ *   <div class="fa-savebar" role="status">
+ *     <span class="fa-savebar__icon"><i class="fa-icon fa-icon--ui-save"></i></span>
+ *     <div class="fa-savebar__text">
+ *       <div class="fa-savebar__title">Ungespeicherte Änderungen</div>
+ *       <div class="fa-savebar__detail"><b>3</b> Maßnahmen geändert</div>
+ *     </div>
+ *     <div class="fa-savebar__divider"></div>
+ *     <div class="fa-savebar__actions">
+ *       <button class="fa-savebar__btn fa-savebar__btn--discard">Verwerfen</button>
+ *       <button class="fa-savebar__btn fa-savebar__btn--save">Speichern</button>
+ *     </div>
+ *   </div>
+ * ------------------------------------------------------------------------- */
+.fa-savebar {
+    position: fixed;
+    left: 50%;
+    bottom: var(--spacing-lg);
+    transform: translateX(-50%);
+    z-index: var(--z-fixed, 500);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    max-width: min(560px, calc(100vw - 2 * var(--spacing-lg)));
+    padding: 11px 12px 11px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    box-shadow: 0 14px 34px rgb(0, 0, 0, 0.20), 0 0 0 1px var(--border);
+    font-family: var(--font-sans);
+    animation: fa-savebar-in var(--t-base) var(--ease-out);
+}
+.fa-savebar.is-leaving { animation: fa-savebar-out var(--t-base) var(--ease-in-out) forwards; }
+
+@keyframes fa-savebar-in  { from { opacity: 0; transform: translate(-50%, 18px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+@keyframes fa-savebar-out { to   { opacity: 0; transform: translate(-50%, 18px); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-savebar, .fa-savebar.is-leaving { animation: none; }
+}
+
+.fa-savebar__icon {
+    width: 34px; height: 34px; flex-shrink: 0;
+    display: grid; place-items: center;
+    border-radius: var(--r-md);
+    background: var(--primary-tint);
+    color: var(--primary-strong);
+    font-size: 17px;
+}
+.fa-savebar[hidden] { display: none; }
+.fa-savebar__text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.fa-savebar__title { font-size: 13px; font-weight: 600; color: var(--fg); line-height: 1.25; white-space: nowrap; }
+.fa-savebar__detail { font-size: 12px; color: var(--fg-2); line-height: 1.35; }
+.fa-savebar__detail b { color: var(--primary-strong); font-family: var(--font-mono); font-weight: 600; }
+.fa-savebar__divider { width: 1px; align-self: stretch; margin: 3px 2px; background: var(--border); }
+.fa-savebar__actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.fa-savebar__btn {
+    font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+    border-radius: var(--r-md); padding: 8px 15px; cursor: pointer;
+    border: 1px solid transparent; white-space: nowrap;
+    transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast),
+                box-shadow var(--t-fast), transform var(--t-fast);
+}
+.fa-savebar__btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.fa-savebar__btn--discard { background: transparent; color: var(--fg-2); border-color: var(--border-strong); }
+.fa-savebar__btn--discard:hover { background: var(--surface-2); color: var(--fg); }
+.fa-savebar__btn--save {
+    background: var(--primary-strong); color: var(--on-primary);
+    font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .05em; font-weight: 600;
+    border-radius: 0;
+    clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+}
+.fa-savebar__btn--save:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 0 20px var(--primary-glow); }
+
+/* warning tone — sensitive / past / hard-to-undo edits */
+.fa-savebar--warning {
+    border: 1px solid color-mix(in oklab, var(--warning) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
+    box-shadow: 0 14px 34px rgb(0, 0, 0, 0.20), 0 0 0 1px color-mix(in oklab, var(--warning) 35%, var(--border));
+}
+.fa-savebar--warning .fa-savebar__icon { background: var(--warning-glow); color: var(--warning-text); }
+.fa-savebar--warning .fa-savebar__detail b { color: var(--warning-text); }
+.fa-savebar--warning .fa-savebar__btn--save { background: var(--warning-strong); color: var(--on-warning); }
+.fa-savebar--warning .fa-savebar__btn--save:hover { background: var(--warning-text); }
+
+@media (max-width: 639.98px) {
+    .fa-savebar { left: var(--spacing-md); right: var(--spacing-md); transform: none; max-width: none; flex-wrap: wrap; }
+    .fa-savebar.is-leaving { animation: none; }
+
+    @keyframes fa-savebar-in  { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+}
+
+
 
 
 /* ---------------------------------------------------------------------------
@@ -6405,7 +6555,7 @@ tr.fa-table__row[data-row-clickable="true"] { cursor: pointer; }
     inset: 0;
     background:
         radial-gradient(circle at 70% 30%, color-mix(in oklab, var(--primary-glow) 30%, transparent) 0%, transparent 60%),
-        radial-gradient(circle at 25% 80%, color-mix(in oklab, var(--accent-glow) 24%, transparent) 0%, transparent 55%),
+        radial-gradient(circle at 25% 80%, color-mix(in oklab, var(--primary-glow) 24%, transparent) 0%, transparent 55%), /* Kanon H4 */
         rgb(15 18 28 / 0.42);
     backdrop-filter: blur(6px) saturate(110%);
     opacity: 0;
@@ -6425,13 +6575,11 @@ tr.fa-table__row[data-row-clickable="true"] { cursor: pointer; }
     max-width: 92vw;
     background:
         radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--primary-tint) 55%, transparent) 0%, transparent 45%),
-        radial-gradient(circle at 0% 100%, color-mix(in oklab, var(--accent-tint) 45%, transparent) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, color-mix(in oklab, var(--primary-tint) 45%, transparent) 0%, transparent 50%), /* Kanon H4 */
         var(--surface);
     border-left: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
     box-shadow:
-        -1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset,
-        -28px 0 64px -16px color-mix(in oklab, var(--primary-glow) 70%, transparent),
-        -8px 0 24px -4px rgb(0 0 0 / 0.18);
+        -1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset, var(--shadow-md), -8px 0 24px -4px rgb(0 0 0 / 0.18);
     transform: translateX(102%);
     transition: transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1);
     z-index: var(--z-modal, 1070);
@@ -6444,7 +6592,7 @@ tr.fa-table__row[data-row-clickable="true"] { cursor: pointer; }
 html[data-theme="dark"] .fa-drawer {
     background:
         radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--primary-tint) 40%, transparent) 0%, transparent 45%),
-        radial-gradient(circle at 0% 100%, color-mix(in oklab, var(--accent-tint) 30%, transparent) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, color-mix(in oklab, var(--primary-tint) 30%, transparent) 0%, transparent 50%), /* Kanon H4 */
         var(--surface-2);
 }
 
@@ -6458,7 +6606,7 @@ html[data-theme="dark"] .fa-drawer {
     bottom: 0;
     left: 0;
     width: 3px;
-    background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 50%, var(--primary) 100%);
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary) 50%, var(--primary) 100%); /* Kanon H4 */
     opacity: 0.9;
     z-index: 2;
 }
@@ -6482,9 +6630,7 @@ html[data-theme="dark"] .fa-drawer {
     border-left: 0;
     border-right: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
     box-shadow:
-        1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset,
-        28px 0 64px -16px color-mix(in oklab, var(--primary-glow) 70%, transparent),
-        8px 0 24px -4px rgb(0 0 0 / 0.18);
+        1px 0 0 color-mix(in oklab, var(--primary) 14%, transparent) inset, var(--shadow-md), 8px 0 24px -4px rgb(0 0 0 / 0.18);
     transform: translateX(-102%);
 }
 
@@ -6508,7 +6654,7 @@ html[data-theme="dark"] .fa-drawer {
     height: 38px;
     border-radius: 10px;
     background:
-        radial-gradient(circle at 30% 25%, color-mix(in oklab, var(--accent) 24%, transparent) 0%, transparent 65%),
+        radial-gradient(circle at 30% 25%, color-mix(in oklab, var(--primary) 24%, transparent) 0%, transparent 65%), /* Kanon H4 */
         color-mix(in oklab, var(--primary-tint) 90%, var(--surface));
     border: 1px solid color-mix(in oklab, var(--primary) 36%, transparent);
     color: var(--primary);
@@ -6516,7 +6662,6 @@ html[data-theme="dark"] .fa-drawer {
     align-items: center;
     justify-content: center;
     font-size: 17px;
-    box-shadow: 0 0 14px color-mix(in oklab, var(--primary-glow) 80%, transparent);
     flex-shrink: 0;
 }
 
@@ -6536,7 +6681,7 @@ html[data-theme="dark"] .fa-drawer {
     border: 1px solid color-mix(in oklab, var(--primary) 25%, transparent);
 }
 
-.fa-drawer__eyebrow::before { content: "✦"; font-size: 9px; color: var(--accent); }
+.fa-drawer__eyebrow::before { content: "✦"; font-size: 9px; color: var(--primary); } /* Kanon H4 */
 
 .fa-drawer__title {
     font: 700 17px var(--font-sans);
@@ -6582,7 +6727,7 @@ html[data-theme="dark"] .fa-drawer {
     z-index: 1;
     padding: 14px 22px;
     border-top: 1px solid color-mix(in oklab, var(--primary) 10%, var(--border));
-    background: linear-gradient(0deg, color-mix(in oklab, var(--accent-tint) 30%, transparent) 0%, transparent 100%);
+    background: linear-gradient(0deg, color-mix(in oklab, var(--primary-tint) 30%, transparent) 0%, transparent 100%); /* Kanon H4 */
     display: flex;
     gap: 10px;
     justify-content: flex-end;
@@ -6630,7 +6775,7 @@ html[data-theme="dark"] .fa-drawer {
     margin: 0;
     padding: 14px 16px;
     background: var(--surface-2);
-    border-left: 3px solid color-mix(in oklab, var(--accent) 60%, transparent);
+    border: 1px solid color-mix(in oklab, color-mix(in oklab, var(--primary) 60%, transparent) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */ /* Kanon H4 */
     border-radius: 0 var(--r-md) var(--r-md) 0;
 }
 
@@ -6780,12 +6925,12 @@ html[data-theme="dark"] .fa-menu__item-shortcut { background: var(--surface-3); 
     background: color-mix(in oklab, var(--surface) 70%, var(--primary-tint));
     border: 1px solid color-mix(in oklab, var(--primary) 14%, var(--border));
     border-radius: var(--r-pill);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), 0 4px 12px -4px color-mix(in oklab, var(--primary-glow) 50%, transparent);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), var(--shadow-md);
 }
 
 html[data-theme="dark"] .fa-pager {
     background: color-mix(in oklab, var(--surface-2) 80%, var(--primary-tint));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 4px 12px -4px color-mix(in oklab, var(--primary-glow) 60%, transparent);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04), var(--shadow-md);
 }
 
 .fa-pager__btn {
@@ -6813,7 +6958,7 @@ html[data-theme="dark"] .fa-pager {
 }
 
 .fa-pager__btn.is-active {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    background: var(--primary-strong); /* Kanon H4: flach statt Verlauf */
     color: var(--on-primary);
     border-color: color-mix(in oklab, var(--primary) 60%, transparent);
     box-shadow:
@@ -6829,8 +6974,8 @@ html[data-theme="dark"] .fa-pager {
     top: -4px;
     right: -4px;
     font-size: 8px;
-    color: var(--accent);
-    text-shadow: 0 0 6px var(--accent-glow);
+    color: var(--primary); /* Kanon H4 */
+    text-shadow: 0 0 6px var(--primary-glow); /* Kanon H4 */
     animation: fa-pager-spark 1.8s ease-in-out infinite;
 }
 
@@ -6861,14 +7006,14 @@ html[data-theme="dark"] .fa-pager {
     padding: 14px 18px;
     background:
         radial-gradient(circle at 0% 50%, color-mix(in oklab, var(--primary-tint) 45%, transparent) 0%, transparent 35%),
-        radial-gradient(circle at 100% 50%, color-mix(in oklab, var(--accent-tint) 35%, transparent) 0%, transparent 35%),
+        radial-gradient(circle at 100% 50%, color-mix(in oklab, var(--primary-tint) 35%, transparent) 0%, transparent 35%),
         var(--surface);
     border: 1px solid color-mix(in oklab, var(--primary) 12%, var(--border));
     border-radius: var(--r-lg);
-    box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--primary-glow) 40%, transparent);
+    box-shadow: var(--shadow-md);
     flex-wrap: wrap;
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* Kanon H4 */
 }
 
 .fa-pager-bar::before {
@@ -6878,8 +7023,8 @@ html[data-theme="dark"] .fa-pager {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--primary) 30%, var(--accent) 70%, transparent 100%);
-    opacity: 0.65;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 30%, var(--primary) 70%, transparent 100%);
+    opacity: 0.65; /* Kanon H4 */
 }
 
 html[data-theme="dark"] .fa-pager-bar {
@@ -6903,7 +7048,6 @@ html[data-theme="dark"] .fa-pager-bar {
     height: 6px;
     border-radius: 50%;
     background: var(--primary);
-    box-shadow: 0 0 8px var(--primary-glow);
 }
 
 .fa-pager-bar__info strong {
@@ -6930,7 +7074,6 @@ html[data-theme="dark"] .fa-pager-bar {
     padding: 4px 10px;
     font: 700 12px var(--font-mono);
     color: var(--primary);
-    box-shadow: 0 0 10px color-mix(in oklab, var(--primary-glow) 40%, transparent);
     cursor: pointer;
 }
 
@@ -7289,8 +7432,8 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
 }
 
 .fa-subcontractor-chain__node[data-depth="1"] { margin-left: 28px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--accent, var(--primary)); }
-.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--warning, var(--accent, var(--primary))); }
+.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--primary); }
+.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--primary-strong); }
 
 .fa-subcontractor-chain__critical {
     display: inline-flex;
@@ -7929,8 +8072,8 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-subcontractor-chain__node[data-depth="1"] { margin-left: 28px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--accent, var(--primary)); }
-.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--warning, var(--accent, var(--primary))); }
+.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--primary); }
+.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--primary-strong); }
 
 .fa-subcontractor-chain__critical {
     display: inline-flex;
@@ -8123,12 +8266,12 @@ a.fa-matrix-table__cell:focus-visible {
     width: 8px; height: 8px;
     border-radius: 999px;
     background: var(--primary);
-    box-shadow: 0 0 6px var(--primary);
+    
 }
-.fa-audit-row__sev--info     { background: var(--sev-info-color); box-shadow: 0 0 6px rgb(var(--sev-info-rgb) / 0.6); }
-.fa-audit-row__sev--warning  { background: var(--sev-warning-color); box-shadow: 0 0 6px rgb(var(--sev-warning-rgb) / 0.6); }
-.fa-audit-row__sev--critical { background: var(--sev-critical-color); box-shadow: 0 0 8px rgb(var(--sev-critical-rgb) / 0.7); }
-.fa-audit-row__sev--danger   { background: var(--sev-danger-color); box-shadow: 0 0 8px rgb(var(--sev-danger-rgb) / 0.7); }
+.fa-audit-row__sev--info     { background: var(--sev-info-color);  }
+.fa-audit-row__sev--warning  { background: var(--sev-warning-color);  }
+.fa-audit-row__sev--critical { background: var(--sev-critical-color);  }
+.fa-audit-row__sev--danger   { background: var(--sev-danger-color);  }
 
 .fa-audit-row__actor {
     font-weight: 600;
@@ -8198,10 +8341,10 @@ a.fa-matrix-table__cell:focus-visible {
     border-bottom: 1px solid var(--border);
     background: linear-gradient(
         180deg,
-        color-mix(in oklab, var(--accent) 5%, transparent) 0%,
+        color-mix(in oklab, var(--primary) 5%, transparent) 0%,
         transparent 100%
     ), var(--surface);
-    position: relative;
+    position: relative; /* Kanon H4 */
 }
 
 .fa-form-layout__header::after {
@@ -8211,8 +8354,8 @@ a.fa-matrix-table__cell:focus-visible {
     right: 24px;
     bottom: -1px;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--accent), transparent);
-    border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary), transparent);
+    border-radius: 2px; /* Kanon H4 */
 }
 
 .fa-form-layout__eyebrow {
@@ -8222,12 +8365,12 @@ a.fa-matrix-table__cell:focus-visible {
     font: 600 10px var(--font-mono);
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent-strong);
-    margin-bottom: 4px;
+    color: var(--primary-strong);
+    margin-bottom: 4px; /* Kanon H4 */
 }
 
 .fa-form-layout__title {
-    font: 700 18px/1.2 var(--font-sans);
+    font: 700 18px/1.2 var(--font-display); /* Kanon H1 */
     letter-spacing: -0.01em;
     margin: 0;
 }
@@ -8265,10 +8408,9 @@ a.fa-matrix-table__cell:focus-visible {
 
 .fa-form-layout__progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    box-shadow: 0 0 12px var(--accent-glow);
+    background: var(--primary);
     border-radius: 999px;
-    transition: width 300ms var(--ease-out);
+    transition: width 300ms var(--ease-out); /* Kanon H4 */
 }
 
 .fa-form-layout__draft-state {
@@ -8331,7 +8473,7 @@ a.fa-matrix-table__cell:focus-visible {
 .fa-form-layout__outline-item--active {
     background: var(--surface);
     color: var(--fg);
-    box-shadow: inset 3px 0 0 var(--accent);
+    box-shadow: inset 3px 0 0 var(--primary); /* Kanon H4 */
 }
 
 .fa-form-layout__outline-state {
@@ -8354,10 +8496,10 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-form-layout__outline-item--current .fa-form-layout__outline-state {
-    background: var(--accent);
-    border-color: var(--accent);
+    background: var(--primary);
+    border-color: var(--primary);
     color: var(--on-accent);
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent); /* Kanon H4 */
 }
 
 .fa-form-layout__outline-item--error .fa-form-layout__outline-state {
@@ -8403,9 +8545,9 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-form-section--current {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent),
-        0 6px 24px color-mix(in oklab, var(--accent) 18%, transparent);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary),
+        0 6px 24px color-mix(in oklab, var(--primary) 18%, transparent); /* Kanon H4 */
 }
 
 .fa-form-section--error {
@@ -8449,9 +8591,9 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-form-section--current .fa-form-section__num {
-    background: var(--accent);
+    background: var(--primary);
     color: var(--on-accent);
-    border-color: var(--accent);
+    border-color: var(--primary); /* Kanon H4 */
 }
 
 .fa-form-section--error .fa-form-section__num {
@@ -8590,11 +8732,11 @@ a.fa-matrix-table__cell:focus-visible {
     border-bottom: none;
     background: linear-gradient(
         180deg,
-        color-mix(in oklab, var(--accent) 8%, transparent) 0%,
+        color-mix(in oklab, var(--primary) 8%, transparent) 0%,
         transparent 100%
     ),
     var(--surface);
-    position: relative;
+    position: relative; /* Kanon H4 */
 }
 
 .fa-modal__wizard-header::after {
@@ -8604,8 +8746,8 @@ a.fa-matrix-table__cell:focus-visible {
     right: 24px;
     bottom: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--accent), transparent);
-    border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--primary), transparent);
+    border-radius: 2px; /* Kanon H4 */
 }
 
 .fa-modal__wizard-header-top {
@@ -8620,12 +8762,12 @@ a.fa-matrix-table__cell:focus-visible {
     width: 36px;
     height: 36px;
     border-radius: var(--r-md);
-    background: var(--accent-tint);
-    color: var(--accent);
+    background: var(--primary-tint);
+    color: var(--primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 17px;
+    font-size: 17px; /* Kanon H4 */
 }
 
 .fa-modal__wizard-heading {
@@ -8715,8 +8857,8 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-modal__wizard-pip--current .fa-modal__wizard-pip-bar {
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    box-shadow: 0 0 10px var(--accent-glow);
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow); /* Kanon H4 */
 }
 
 .fa-modal__wizard-pip--done .fa-modal__wizard-pip-bar {
@@ -8741,7 +8883,7 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-modal__wizard-pip--current .fa-modal__wizard-pip-label {
-    color: var(--accent-strong);
+    color: var(--primary-strong); /* Kanon H4 */
 }
 
 .fa-modal__wizard-pip--done .fa-modal__wizard-pip-label {
@@ -8759,7 +8901,7 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-modal__wizard-pip--current .fa-modal__wizard-pip-num {
-    color: var(--accent-strong);
+    color: var(--primary-strong); /* Kanon H4 */
 }
 
 .fa-modal__wizard-pip--done .fa-modal__wizard-pip-num {
@@ -8812,8 +8954,8 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-modal__wizard-step-title .fa-icon {
-    color: var(--accent);
-    font-size: 16px;
+    color: var(--primary);
+    font-size: 16px; /* Kanon H4 */
 }
 
 /* ── Validation banner: shown when step has required empty fields ─────────── */
@@ -8826,7 +8968,7 @@ a.fa-matrix-table__cell:focus-visible {
     margin-top: 14px;
     background: color-mix(in oklab, var(--danger) 8%, var(--surface));
     border: 1px solid color-mix(in oklab, var(--danger) 28%, transparent);
-    border-left: 3px solid var(--danger);
+    border: 1px solid color-mix(in oklab, var(--danger) 35%, var(--border)); /* Kanon: Meldung = Tönungsrahmen */
     border-radius: var(--r-md);
     font: 500 12.5px/1.45 var(--font-sans);
     color: var(--fg);
@@ -9740,9 +9882,9 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     transform: translate(-50%, -50%) rotate(45deg);
     width: 0.875rem;
     height: 0.875rem;
-    background: var(--accent);
+    background: var(--primary);
     border: 2px solid var(--surface);
-    z-index: 3;
+    z-index: 3; /* Kanon H4 */
 }
 
 @media (max-width: 767.98px) {
@@ -9795,9 +9937,8 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 }
 .app__brand-mark {
     width: 36px; height: 36px; border-radius: 9px;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
+    background: var(--primary-strong); /* Kanon H4/H5: flach, kein Glow */
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 16px color-mix(in oklab, var(--accent) 40%, transparent);
     flex-shrink: 0;
 }
 .app__brand-name { font: 700 14px var(--font-sans); color: var(--fg); line-height: 1.2; }
@@ -9869,7 +10010,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 }
 .h-status::before {
     content: ""; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--success); box-shadow: 0 0 8px var(--success);
+    background: var(--success); box-shadow: none;
     animation: h-status-pulse 2s ease-in-out infinite;
     flex-shrink: 0;
 }
@@ -9889,8 +10030,8 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
 }
 .h-lang button.is-active {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: var(--on-primary); box-shadow: 0 0 8px var(--primary-glow);
+    background: var(--primary-strong); /* Kanon H4/H5 */
+    color: var(--on-primary);
 }
 .h-lang button:focus-visible {
     outline: 2px solid var(--primary);
@@ -9900,13 +10041,11 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 /* ── App-Header: Avatar ──────────────────────────────────── */
 .h-avatar {
     width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg,
-        color-mix(in oklab, var(--accent) 60%, transparent),
-        color-mix(in oklab, var(--primary) 60%, transparent));
+    background: var(--primary-tint);
     color: var(--on-primary);
     display: flex; align-items: center; justify-content: center;
     font: 700 12px var(--font-mono);
-    border: 1.5px solid color-mix(in oklab, var(--accent) 40%, transparent);
+    border: 1.5px solid color-mix(in oklab, var(--primary) 35%, var(--border));
     cursor: pointer;
     flex-shrink: 0;
 }
@@ -9948,7 +10087,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     background:
         linear-gradient(135deg,
             color-mix(in oklab, var(--primary) 12%, transparent),
-            color-mix(in oklab, var(--accent) 8%, transparent)),
+            color-mix(in oklab, var(--primary) 8%, transparent)),
         var(--surface-2);
     border: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
     border-radius: var(--r-md);
@@ -9958,18 +10097,17 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     cursor: pointer;
     transition: border-color 0.16s var(--ease-out),
                 box-shadow 0.16s var(--ease-out),
-                transform 0.12s var(--ease-out);
+                transform 0.12s var(--ease-out); /* Kanon H4 */
 }
 .sb-prominent__item::before {
     content: ""; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px; background: linear-gradient(180deg, var(--primary), var(--accent));
-    box-shadow: 0 0 12px var(--accent-glow);
+    width: 3px; background: var(--primary);
 }
 .sb-prominent__item:hover {
     border-color: var(--primary);
     box-shadow: 0 4px 16px color-mix(in oklab, var(--primary) 25%, transparent),
-                0 0 24px color-mix(in oklab, var(--accent) 18%, transparent);
-    transform: translateX(2px);
+                0 0 24px color-mix(in oklab, var(--primary) 18%, transparent);
+    transform: translateX(2px); /* Kanon H4 */
 }
 .sb-prominent__icon {
     width: 36px; height: 36px;
@@ -9981,9 +10119,9 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     border: 1px solid color-mix(in oklab, var(--primary) 30%, transparent);
 }
 .sb-prominent__item:nth-child(2) .sb-prominent__icon {
-    background: color-mix(in oklab, var(--accent) 18%, transparent);
-    color: var(--accent);
-    border-color: color-mix(in oklab, var(--accent) 30%, transparent);
+    background: color-mix(in oklab, var(--primary) 18%, transparent);
+    color: var(--primary);
+    border-color: color-mix(in oklab, var(--primary) 30%, transparent); /* Kanon H4 */
 }
 .sb-prominent__body { display: flex; flex-direction: column; gap: 0; min-width: 0; }
 .sb-prominent__label {
@@ -10004,7 +10142,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     display: none; align-items: center; justify-content: center;
     padding: 0 6px;
     flex-shrink: 0;
-    box-shadow: 0 0 8px color-mix(in oklab, var(--primary) 30%, transparent);
+    box-shadow: none;
 }
 /* Phase 4.4: live-badge is-visible state */
 .sb-prominent__badge.is-visible { display: inline-flex; }
@@ -10012,7 +10150,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     background: color-mix(in oklab, var(--danger) 22%, transparent);
     color: var(--danger);
     border-color: color-mix(in oklab, var(--danger) 50%, transparent);
-    box-shadow: 0 0 10px color-mix(in oklab, var(--danger) 35%, transparent);
+    box-shadow: none;
     animation: sb-badge-pulse 1.8s ease-in-out infinite;
 }
 
@@ -10109,9 +10247,8 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 }
 .sb-density__opt:hover { color: var(--fg); }
 .sb-density__opt.is-active {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
+    background: var(--primary-strong); /* Kanon H4/H5 */
     color: var(--on-primary);
-    box-shadow: 0 0 12px var(--primary-glow);
 }
 .sb-density__opt:focus-visible {
     outline: 2px solid var(--primary);
@@ -10193,8 +10330,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 .flyout.is-open { opacity: 1; transform: translateX(0); pointer-events: auto; }
 .flyout::before {
     content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-    background: linear-gradient(180deg, var(--accent), transparent 60%);
-    box-shadow: 0 0 12px var(--accent-glow);
+    background: linear-gradient(180deg, var(--primary), transparent 60%);
 }
 
 .flyout__close {
@@ -10215,13 +10351,13 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 .flyout__head::after {
     content: ""; position: absolute; left: 0; bottom: 0;
     width: 72px; height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 2px; box-shadow: 0 0 10px var(--accent-glow);
+    background: var(--primary);
+    border-radius: 2px; /* Kanon H4/H5 */
 }
 .flyout__eye {
     display: inline-flex; align-items: center; gap: 6px;
     font: 600 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 5px;
+    color: var(--primary); margin-bottom: 5px; /* Kanon H4 */
 }
 .flyout__title { font: 700 20px var(--font-sans); margin: 0; letter-spacing: -0.01em; }
 .flyout__sub   { font: 400 12.5px var(--font-sans); color: var(--fg-2); margin: 4px 0 0; }
@@ -10255,7 +10391,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 }
 .fly-section__more {
     margin-left: auto;
-    font: 600 10px var(--font-mono); color: var(--accent); text-decoration: none;
+    font: 600 10px var(--font-mono); color: var(--primary); text-decoration: none; /* Kanon H4 */
 }
 
 /* ── Fly-item row ────────────────────────────────────────── */
@@ -10325,9 +10461,9 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
     display: inline-flex; align-items: center; gap: 8px;
     font: 500 11.5px var(--font-sans); color: var(--fg-2);
     padding: 6px 12px;
-    background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 10%, transparent), transparent);
-    border-left: 2px solid var(--accent);
-    border-radius: var(--r-sm);
+    background: linear-gradient(90deg, color-mix(in oklab, var(--primary) 10%, transparent), transparent);
+    border-left: 2px solid var(--primary);
+    border-radius: var(--r-sm); /* Kanon H4 */
 }
 .flyout__view-all {
     font: 600 11px var(--font-mono); color: var(--primary);
@@ -10349,4 +10485,248 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
     .app__brand,
     .app__sidebar { display: none; }
     .flyout { left: 0; width: 100vw; }
+}
+
+
+/* ---------------------------------------------------------------------------
+ * fa-diff-row — Old → New Wert-Diff
+ * Bulk-Import Delta-Mode + OSCAL-Conflict-Cards (App-Macro: _fa_diff_row).
+ * Markup: .fa-diff-list > .fa-diff-row[--changed|--added|--removed]
+ * ------------------------------------------------------------------------- */
+.fa-diff-list { display: grid; gap: 8px; }
+.fa-diff-row {
+    display: grid; grid-template-columns: minmax(130px, 190px) 1fr 26px 1fr;
+    align-items: center; gap: 10px;
+    padding: 9px 14px;
+    border: 1px solid var(--border); border-radius: var(--r-md);
+    background: var(--surface); font-family: var(--font-sans);
+}
+.fa-diff-row__field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fa-diff-row__label { font: 600 12px var(--font-sans); color: var(--fg); }
+.fa-diff-row__badge {
+    align-self: flex-start;
+    font: 600 9.5px var(--font-mono); text-transform: uppercase; letter-spacing: .07em;
+    border-radius: var(--r-pill); padding: 2px 8px;
+}
+.fa-diff-row--changed .fa-diff-row__badge { background: var(--primary-tint); color: var(--primary-strong); }
+.fa-diff-row--added   .fa-diff-row__badge { background: color-mix(in oklab, var(--success) 12%, var(--surface)); color: var(--success); }
+.fa-diff-row--removed .fa-diff-row__badge { background: color-mix(in oklab, var(--danger) 10%, var(--surface)); color: var(--danger); }
+.fa-diff-row__old, .fa-diff-row__new {
+    font: 500 12.5px var(--font-mono);
+    padding: 5px 10px; border-radius: var(--r-sm);
+    overflow-wrap: anywhere; min-width: 0;
+}
+.fa-diff-row__old {
+    background: color-mix(in oklab, var(--danger) 7%, var(--surface-2));
+    color: var(--fg-2);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in oklab, var(--danger) 55%, transparent);
+}
+.fa-diff-row__new {
+    background: color-mix(in oklab, var(--success) 9%, var(--surface-2));
+    color: var(--fg); font-weight: 600;
+}
+.fa-diff-row__none { /* leere Seite bei --added/--removed */
+    background: var(--surface-2); color: var(--fg-3);
+    text-decoration: none; font-style: italic; font-weight: 400;
+}
+.fa-diff-row__arrow { text-align: center; color: var(--fg-3); font-size: 13px; }
+
+@media (max-width: 640px) {
+    .fa-diff-row { grid-template-columns: 1fr; }
+    .fa-diff-row__arrow { text-align: left; }
+}
+
+/* ---------------------------------------------------------------------------
+ * fa-condition-builder — Visueller Regel-Builder (WHEN/AND/OR/THEN-Chips)
+ * Notification-Rules statt rohem JSON (App-Macro: _fa_condition_builder).
+ * Markup: .fa-condition-builder > __row > __keyword + .fa-condition-chip(+) + __add
+ * ------------------------------------------------------------------------- */
+.fa-condition-builder {
+    display: grid; gap: 10px;
+    border: 1px solid var(--border); border-radius: var(--r-lg);
+    background: var(--surface); padding: 14px 16px;
+    font-family: var(--font-sans);
+}
+.fa-condition-builder__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.fa-condition-builder__keyword {
+    font: 700 10.5px var(--font-mono); letter-spacing: .09em; text-transform: uppercase;
+    border-radius: var(--r-sm); padding: 5px 10px; min-width: 54px; text-align: center;
+}
+.fa-condition-builder__keyword--when,
+.fa-condition-builder__keyword--then {
+    background: var(--primary-strong); /* Kanon H4: Struktur-Keywords ohne Violett */
+    color: var(--on-primary);
+    border: 1px solid var(--primary-strong);
+}
+.fa-condition-builder__keyword--and,
+.fa-condition-builder__keyword--or {
+    background: var(--primary-tint); color: var(--primary-strong);
+    border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--surface));
+}
+.fa-condition-chip {
+    display: inline-flex; align-items: stretch;
+    border: 1px solid var(--border); border-radius: var(--r-pill);
+    overflow: hidden; background: var(--surface);
+    font: 500 12px var(--font-sans);
+}
+.fa-condition-chip__part { padding: 5px 11px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.fa-condition-chip__part--field { background: var(--surface-2); font-weight: 600; color: var(--fg); }
+.fa-condition-chip__part--op    { font-family: var(--font-mono); color: var(--primary-strong); background: var(--primary-tint); }
+.fa-condition-chip__part--value { color: var(--fg); }
+.fa-condition-chip__remove {
+    border: none; background: none; cursor: pointer;
+    padding: 0 9px 0 2px; color: var(--fg-3); font-size: 11px;
+    display: inline-flex; align-items: center;
+}
+.fa-condition-chip__remove:hover { color: var(--danger); }
+.fa-condition-builder__add {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px dashed var(--border-strong, var(--border));
+    background: none; cursor: pointer;
+    border-radius: var(--r-pill); padding: 5px 13px;
+    font: 600 12px var(--font-sans); color: var(--fg-3);
+}
+.fa-condition-builder__add:hover { border-color: var(--primary); color: var(--primary-strong); }
+/* Gruppierung (Klammern) — eingerückte Sub-Zeilen mit Akzent-Schiene */
+.fa-condition-builder__group {
+    display: grid; gap: 8px;
+    margin-left: 62px; padding-left: 12px;
+    border-left: 2px solid color-mix(in oklab, var(--primary) 35%, var(--surface));
+}
+
+
+/* --- Focus-States (WCAG 2.4.7 / 2.4.11) für Tutorial + Condition-Builder ---
+   Kanon: 2–3px solid var(--primary), outline-offset 2px. */
+.fa-tutorial-opt:focus-visible,
+.fa-tutorial-pop__skip:focus-visible,
+.fa-tutorial-rail__close:focus-visible,
+.fa-condition-builder__add:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+}
+.fa-condition-chip__remove:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: -1px;
+    border-radius: var(--r-sm);
+}
+/* Touch-Ziele: Icon-Buttons auf 44px Mindestfläche (WCAG 2.5.8) */
+@media (hover: none) and (pointer: coarse) {
+    .fa-tutorial-rail__close,
+    .fa-condition-chip__remove { min-width: 44px; min-height: 44px; }
+}
+
+
+
+/* ---------------------------------------------------------------------------
+ * Kanon 2026-09 · Stimmigkeits-Regeln (Design-Review September 2026)
+ * H3 Geometrie — Notch = Commit-Signatur an genau vier Stellen:
+ *   Primary-CTA (fa-cyber-btn), Page-Header-Badge, aktiver Tab-Marker, Brand-Mark.
+ *   Alles Informative (Status-Badges, Filter-Chips, Tags) bleibt Pill.
+ * H1 Typografie — Display-Schrift auch für Kennzahlen (Tabular-Ziffern).
+ * ------------------------------------------------------------------------- */
+.fa-notch { clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); border-radius: 0; }
+.fa-notch--sm { clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px); border-radius: 0; }
+/* Icons on filled buttons take the button's text colour; a semantic icon
+   modifier (fa-icon--status-info, --success, …) would otherwise be invisible. */
+.fa-cyber-btn--primary .fa-icon,
+.fa-cyber-btn--success .fa-icon,
+.fa-cyber-btn--warning .fa-icon,
+.btn-primary .fa-icon,
+.btn-success .fa-icon,
+.btn-warning .fa-icon { color: inherit; }
+.fa-tabs__nav-item.is-active,
+.fa-tabs__nav-item.has-error.is-active { border-bottom-color: transparent; position: relative; }
+.fa-tabs__nav-item.is-active::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px;
+    background: var(--primary);
+    clip-path: polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%);
+}
+.fa-tabs__nav-item.has-error.is-active::after { background: var(--danger); }
+.kpi-card-value, .fa-stat-card__value, .stat-card__value, .fa-feature-card__number, .fa-reuse-roi-counter__value {
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* ── Viewport-Audit 2026-09: Mobile-Härtung (375 px) ─────────────────────
+   Grid-Root ohne explizite Spur wächst auf Inhaltsbreite (nowrap-Outline) —
+   minmax(0,1fr) hält die Form in der Spalte; Header stapelt. */
+.fa-form-layout { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.fa-form-layout__body { grid-template-columns: 240px minmax(0, 1fr); }
+.fa-form-layout__sections { min-width: 0; }
+
+@media (max-width: 768px) {
+    .fa-form-layout__body { grid-template-columns: minmax(0, 1fr); }
+    .fa-form-layout__outline { min-width: 0; }
+}
+
+@media (max-width: 640px) {
+    .fa-form-layout__header { grid-template-columns: minmax(0, 1fr); padding: 16px 16px 12px; }
+    .fa-form-layout__header::after { left: 16px; right: 16px; }
+    .fa-form-layout__progress { align-self: stretch; }
+    .fa-form-layout__progress-bar { width: 100%; }
+    .fa-form-layout__footer { flex-direction: column; align-items: stretch; gap: 10px; }
+    .fa-form-layout__footer-actions { flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
+    .fa-audit-row { grid-template-columns: 14px minmax(0, 1fr) auto; row-gap: 4px; }
+    .fa-audit-row > :first-child { grid-column: 1 / -1; }
+    .fa-audit-row__hash { grid-column: 2 / -1; overflow-wrap: anywhere; }
+}
+
+
+/* ── Kanon H5 · Light-Mode ohne farbigen Glow ────────────────────────────
+   Zustands-Glows (Hover/Aktiv) bleiben dem Dark-Mode vorbehalten. Im Light
+   wird daraus ein neutraler Lift (Buttons) bzw. ein 1px-Ring (aktive Zustände).
+   Fokus-Ringe sind ausgenommen — sie sind Bedienbarkeit, kein Dekor. */
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--primary:hover:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--primary:active:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--accent:hover:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--danger:hover:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--success:hover:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--success:active:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--warning:hover:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-cyber-btn--warning:active:not(.is-disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .btn.btn-primary:hover:not(:disabled, .disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .btn.btn-primary:active:not(:disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .btn.btn-success:hover:not(:disabled, .disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .btn.btn-warning:hover:not(:disabled, .disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .btn.btn-danger:hover:not(:disabled, .disabled),
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-savebar__btn--save:hover,
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-savebar--warning .fa-savebar__btn--save:hover,
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-pager__btn:hover {
+    box-shadow: 0 4px 12px rgb(15, 23, 42, 0.12);
+}
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-toggle-card.is-on,
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-setup-phase__bar.is-active,
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-pager__btn.is-active,
+:root:not([data-theme="dark"], [data-theme="system"]) .fa-modal__wizard-pip--current .fa-modal__wizard-pip-bar {
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+@media (prefers-color-scheme: light) {
+    html[data-theme="system"] .fa-cyber-btn--primary:hover:not(.is-disabled),
+    html[data-theme="system"] .fa-cyber-btn--primary:active:not(.is-disabled),
+    html[data-theme="system"] .fa-cyber-btn--accent:hover:not(.is-disabled),
+    html[data-theme="system"] .fa-cyber-btn--danger:hover:not(.is-disabled),
+    html[data-theme="system"] .fa-cyber-btn--success:hover:not(.is-disabled),
+    html[data-theme="system"] .fa-cyber-btn--success:active:not(.is-disabled),
+    html[data-theme="system"] .fa-cyber-btn--warning:hover:not(.is-disabled),
+    html[data-theme="system"] .fa-cyber-btn--warning:active:not(.is-disabled),
+    html[data-theme="system"] .btn.btn-primary:hover:not(:disabled, .disabled),
+    html[data-theme="system"] .btn.btn-primary:active:not(:disabled),
+    html[data-theme="system"] .btn.btn-success:hover:not(:disabled, .disabled),
+    html[data-theme="system"] .btn.btn-warning:hover:not(:disabled, .disabled),
+    html[data-theme="system"] .btn.btn-danger:hover:not(:disabled, .disabled),
+    html[data-theme="system"] .fa-savebar__btn--save:hover,
+    html[data-theme="system"] .fa-savebar--warning .fa-savebar__btn--save:hover,
+    html[data-theme="system"] .fa-pager__btn:hover {
+        box-shadow: 0 4px 12px rgb(15, 23, 42, 0.12);
+    }
+    html[data-theme="system"] .fa-toggle-card.is-on,
+    html[data-theme="system"] .fa-setup-phase__bar.is-active,
+    html[data-theme="system"] .fa-pager__btn.is-active,
+    html[data-theme="system"] .fa-modal__wizard-pip--current .fa-modal__wizard-pip-bar {
+        box-shadow: 0 0 0 1px var(--primary);
+    }
 }

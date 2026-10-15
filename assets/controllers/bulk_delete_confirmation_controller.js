@@ -170,7 +170,7 @@ export default class extends Controller {
             li.className = 'd-flex align-items-center gap-2 mb-1';
 
             const icon = document.createElement('i');
-            icon.className = `bi bi-${dep.icon || 'link-45deg'} text-warning`;
+            icon.className = `fa-icon fa-icon--${dep.icon || 'ui-link'} fa-icon--warning`;
             icon.setAttribute('aria-hidden', 'true');
 
             const text = document.createElement('span');
