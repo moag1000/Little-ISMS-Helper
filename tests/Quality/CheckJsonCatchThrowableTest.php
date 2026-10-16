@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Smoke test for scripts/quality/check_json_catch_throwable.py (CI Gate 63).
+ * Smoke test for scripts/quality/check_json_catch_throwable.py (CI Gate 64).
  */
 final class CheckJsonCatchThrowableTest extends TestCase
 {

@@ -509,7 +509,7 @@ Compliance audit trail: [`docs/FORM_AUDIT_2026-05.md`](docs/FORM_AUDIT_2026-05.m
 - Type hints and return types required
 - Commit format: `feat(scope): message` / `fix(scope): message`
 - JSON/AJAX controller actions catch `\Throwable`, never bare `\Exception` — otherwise an
-  `\Error` escapes as an HTML 500 the fetch() caller cannot parse (CI Gate 63,
+  `\Error` escapes as an HTML 500 the fetch() caller cannot parse (CI Gate 64,
   `scripts/quality/check_json_catch_throwable.py`)
 
 ## Release-Workflow (since 2026-04-30)
