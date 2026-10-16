@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Service\AuditLogger;
+use App\Service\BulkDeleteService;
 use App\Controller\IncidentController;
 use App\Entity\Incident;
 use App\Entity\Tenant;
@@ -621,10 +623,10 @@ class IncidentControllerTest extends TestCase
         $this->entityManager->expects($this->exactly(2))->method('remove');
         $this->entityManager->expects($this->once())->method('flush');
 
-        $request = $this->createRequestWithSession([], [], json_encode(['ids' => [1, 2]]));
+        $request = $this->createRequestWithSession([], [], json_encode(['ids' => [1, 2], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $this->controller->bulkDelete($request);
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
@@ -639,10 +641,10 @@ class IncidentControllerTest extends TestCase
     #[Test]
     public function testBulkDeleteWithEmptyIds(): void
     {
-        $request = new Request([], [], [], [], [], [], json_encode(['ids' => []]));
+        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $this->controller->bulkDelete($request);
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
@@ -667,10 +669,10 @@ class IncidentControllerTest extends TestCase
 
         $this->entityManager->expects($this->never())->method('remove');
 
-        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1]]));
+        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $this->controller->bulkDelete($request);
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
@@ -991,5 +993,16 @@ class IncidentControllerTest extends TestCase
         $incident->method('getDetectedAt')->willReturn(new DateTimeImmutable());
         $incident->method('requiresNis2Reporting')->willReturn($severity === 'critical');
         return $incident;
+    }
+
+    private function createBulkDeleteService(): BulkDeleteService
+    {
+        $auditLogger = $this->createStub(AuditLogger::class);
+        $auditLogger->method('logBulk')->willReturn('batch');
+
+        $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
+        $authorizationChecker->method('isGranted')->willReturn(true);
+
+        return new BulkDeleteService($this->entityManager, $auditLogger, $authorizationChecker, $this->translator);
     }
 }

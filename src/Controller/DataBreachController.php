@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\CurrentUserTrait;
@@ -567,47 +568,24 @@ class DataBreachController extends AbstractController
 
     #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if ($this->checkModuleActive('privacy') instanceof Response) {
             return $this->json(['error' => 'Privacy module not active'], 403);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $breach = $this->dataBreachService->findById((int) $id);
-                if (!$breach) {
-                    $errors[] = "DataBreach ID $id not found";
-                    continue;
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'DataBreach',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->dataBreachService->findById($id),
+            deleter: function (object $breach): void {
+                if ($breach instanceof DataBreach) {
+                    $this->dataBreachService->delete($breach);
                 }
-                if ($tenant && $breach->getTenant() !== $tenant) {
-                    $errors[] = "DataBreach ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->dataBreachService->delete($breach);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting DataBreach ID $id: " . $e->getMessage();
-            }
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted data breaches deleted successfully",
-        ]);
+            },
+        );
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
@@ -241,30 +242,19 @@ class BusinessContinuityPlanController extends AbstractController
 
     #[Route('/business-continuity-plan/bulk-delete', name: 'app_bc_plan_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if ($this->checkModuleActive('bcm') instanceof Response) {
             return $this->json(['error' => 'BCM module not active'], 403);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $result = $this->businessContinuityPlanService->bulkDelete($ids, $tenant?->getId());
-        $deleted = $result['deleted'];
-        $errors  = $result['errors'];
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted BC plans deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'BusinessContinuityPlan',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->businessContinuityPlanRepository->find($id),
+        );
     }
 
     /**

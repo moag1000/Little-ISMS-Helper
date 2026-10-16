@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
@@ -232,51 +233,19 @@ class BCExerciseController extends AbstractController
 
     #[Route('/bc-exercise/bulk-delete', name: 'app_bc_exercise_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if ($this->checkModuleActive('bcm') instanceof Response) {
             return $this->json(['error' => 'BCM module not active'], 403);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $exercise = $this->bcExerciseRepository->find($id);
-                if (!$exercise) {
-                    $errors[] = "BCExercise ID $id not found";
-                    continue;
-                }
-                if ($tenant && $exercise->getTenant() !== $tenant) {
-                    $errors[] = "BCExercise ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($exercise);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting BCExercise ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted BC exercises deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'BCExercise',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->bcExerciseRepository->find($id),
+        );
     }
 
     /**

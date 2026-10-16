@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use RuntimeException;
 use DateTime;
 use Exception;
@@ -575,49 +576,24 @@ class ProcessingActivityController extends AbstractController
      */
     #[Route('/processing-activity/bulk-delete', name: 'app_processing_activity_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
+        if ($this->checkModuleActive('privacy') instanceof Response) {
+            return $this->json(['error' => 'Privacy module not active'], 403);
         }
 
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $pa = $this->entityManager->getRepository(ProcessingActivity::class)->find($id);
-
-                if (!$pa instanceof ProcessingActivity) {
-                    $errors[] = "Processing Activity ID $id not found";
-                    continue;
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'ProcessingActivity',
+            $this->security?->getUser(),
+            fn (int $id): ?object => $this->processingActivityRepository?->find($id),
+            deleter: function (object $pa): void {
+                if ($pa instanceof ProcessingActivity) {
+                    $this->processingActivityService->delete($pa);
                 }
-
-                $this->processingActivityService->delete($pa);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors,
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted processing activities deleted successfully",
-        ]);
+            },
+        );
     }
 
     /**
@@ -824,7 +800,8 @@ class ProcessingActivityController extends AbstractController
         }
 
         $data      = json_decode($request->getContent(), true);
-        if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
+        $data      = is_array($data) ? $data : [];
+        if (!$this->isBulkCsrfTokenValid($request, $data)) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);
         }
         $ids       = $data['ids'] ?? [];
@@ -835,37 +812,37 @@ class ProcessingActivityController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $allowedStatuses = ['draft', 'in_review', 'approved', 'published', 'archived'];
-        if (!in_array($newStatus, $allowedStatuses, true)) {
+        // Map target-status to transition name (processing_activity_lifecycle).
+        // `published` is context-sensitive: `restore` from `archived`, else `publish`.
+        $statusToTransition = [
+            'in_review' => 'submit_for_review',
+            'approved'  => 'approve',
+            'draft'     => 'request_changes',
+            'archived'  => 'archive',
+            'published' => static fn (object $pa): string =>
+                ($pa instanceof ProcessingActivity && $pa->getStatus() === 'archived') ? 'restore' : 'publish',
+        ];
+        if (!isset($statusToTransition[$newStatus])) {
             return $this->json(['error' => 'Invalid target status'], 400);
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
 
         $activities = [];
+        $rejected = [];
         foreach ($ids as $rawId) {
-            $activity = $this->processingActivityRepository?->find((int) $rawId);
+            $id = (int) $rawId;
+            $activity = $this->processingActivityRepository?->find($id);
             if ($activity === null) {
+                $rejected[] = ['id' => $id, 'reason' => 'not_found'];
                 continue;
             }
-            if ($tenant !== null && $activity->getTenant() !== $tenant) {
+            if ($tenant === null || $activity->getTenant()?->getId() !== $tenant->getId()) {
+                $rejected[] = ['id' => $id, 'reason' => 'tenant_mismatch'];
                 continue;
             }
             $activities[] = $activity;
         }
-
-        if ($activities === []) {
-            return $this->json(['ok' => true, 'changed' => 0, 'rejected' => []]);
-        }
-
-        // Map target-status to transition name (processing_activity_lifecycle).
-        $statusToTransition = [
-            'in_review' => 'submit_for_review',
-            'approved'  => 'approve',
-            'draft'     => 'request_changes',
-            'archived'  => 'archive',
-            'published' => 'publish',
-        ];
 
         /** @var User|null $user */
         $user = $this->security?->getUser();
@@ -881,8 +858,9 @@ class ProcessingActivityController extends AbstractController
             'ProcessingActivity',
             $this->lifecycleService,
             $this->auditLogger,
+            $rejected,
         );
 
-        return $this->json($result);
+        return $this->json($result, $result['ok'] ? 200 : 400);
     }
 }

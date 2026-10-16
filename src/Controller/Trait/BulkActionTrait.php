@@ -7,21 +7,119 @@ namespace App\Controller\Trait;
 use App\Entity\User;
 use App\Lifecycle\LifecycleService;
 use App\Service\AuditLogger;
+use App\Service\BulkDeleteService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Shared bulk-action helpers for controllers.
  *
  * Callers pass pre-tenant-scoped entity collections and field extractors.
- * CSRF + RBAC + module-gates are enforced by the individual route methods
- * before calling these helpers (ISO 27001 Cl. 7.5.3 note below).
+ * RBAC + module-gates are enforced by the individual route methods.
+ * CSRF: handleBulkDelete() validates the token itself; the other helpers
+ * expect the route method to call isBulkCsrfTokenValid() first.
  *
  * Audit-logging (ISO 27001 Cl. 7.5.3) is performed inside each helper
  * so no call-site can forget it.
  */
 trait BulkActionTrait
 {
+    /**
+     * CSRF token id shared by every bulk-action POST of the list views.
+     * `_bulk_action_bar.html.twig` renders it; bulk_actions_controller.js
+     * sends it as body `_token` (and as `X-CSRF-Token` header).
+     */
+    protected const string BULK_ACTION_CSRF_ID = 'bulk_action';
+
+    /**
+     * Validate the bulk-action CSRF token of a JSON (or form) request.
+     *
+     * @param array<mixed> $data Decoded JSON body.
+     */
+    protected function isBulkCsrfTokenValid(Request $request, array $data): bool
+    {
+        $token = $data['_token'] ?? $request->headers->get('X-CSRF-Token') ?? $request->request->get('_token');
+
+        return is_string($token) && $token !== '' && $this->isCsrfTokenValid(self::BULK_ACTION_CSRF_ID, $token);
+    }
+
+    /**
+     * Canonical bulk-delete endpoint body (CSRF + id sanitising + tenant /
+     * voter / guard checks + one flush + AuditLogger::logBulk()).
+     *
+     * Route methods keep their own #[IsGranted] role and module gate, then
+     * delegate here. See BulkDeleteService for the per-entity rules.
+     *
+     * @param callable(int): ?object           $finder
+     * @param (callable(object): void)|null    $deleter
+     * @param (callable(object): ?string)|null $guard
+     * @param (callable(object): void)|null    $afterFlush
+     */
+    protected function handleBulkDelete(
+        Request $request,
+        BulkDeleteService $bulkDeleteService,
+        string $entityType,
+        ?UserInterface $user,
+        callable $finder,
+        ?callable $deleter = null,
+        ?callable $guard = null,
+        ?string $voterAttribute = null,
+        ?callable $afterFlush = null,
+    ): JsonResponse {
+        try {
+            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            $data = null;
+        }
+        $data = is_array($data) ? $data : [];
+
+        if (!$this->isBulkCsrfTokenValid($request, $data)) {
+            return new JsonResponse(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
+        $ids = [];
+        foreach ((array) ($data['ids'] ?? []) as $rawId) {
+            if (is_int($rawId) || (is_string($rawId) && ctype_digit($rawId))) {
+                $id = (int) $rawId;
+                if ($id > 0) {
+                    $ids[$id] = $id;
+                }
+            }
+        }
+        if ($ids === []) {
+            return new JsonResponse(['success' => false, 'error' => 'No items selected'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+
+        try {
+            $result = $bulkDeleteService->delete(
+                $entityType,
+                array_values($ids),
+                $tenant,
+                $finder,
+                $deleter,
+                $guard,
+                $voterAttribute,
+                $afterFlush,
+            );
+        } catch (\Throwable $e) {
+            return new JsonResponse(
+                ['success' => false, 'deleted' => 0, 'errors' => [$e->getMessage()]],
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        $status = $result['deleted'] === 0 && $result['errors'] !== []
+            ? Response::HTTP_BAD_REQUEST
+            : Response::HTTP_OK;
+
+        return new JsonResponse($result, $status);
+    }
+
     /**
      * Generic dependency-check helper for bulk-delete-check endpoints.
      *
@@ -201,16 +299,24 @@ trait BulkActionTrait
      * Apply bulk status-change via LifecycleService::transition() and return
      * a result array suitable for a JSON response.
      *
-     * @param iterable<object>      $entities           Pre-tenant-scoped entities.
-     * @param string                $workflowName       Symfony Workflow name.
-     * @param array<string, string> $statusToTransition Map of newStatus → transitionName.
-     * @param string                $newStatus          Target status posted by the UI.
-     * @param string|null           $reason             Optional reason from the UI.
-     * @param User|null             $user               Authenticated user.
-     * @param string                $entityType         Short entity class name for audit-log.
-     * @param LifecycleService|null $lifecycleService
-     * @param AuditLogger|null      $auditLogger
-     * @return array{ok: bool, changed?: int, rejected?: list<array{id: mixed, reason: string}>, error?: string}
+     * Only targets listed in $statusToTransition are accepted; an unknown
+     * target returns ['ok' => false, 'error' => 'invalid_status'] and never
+     * reaches the workflow (the posted value is not a transition name).
+     * A map value may be a Closure resolving the transition per entity
+     * (e.g. `published` = `restore` from `archived`, else `publish`).
+     *
+     * @param iterable<object>                                   $entities           Pre-tenant-scoped entities.
+     * @param string                                             $workflowName       Symfony Workflow name.
+     * @param array<string, string|\Closure(object): string>     $statusToTransition Map of newStatus → transition.
+     * @param string                                             $newStatus          Target status posted by the UI.
+     * @param string|null                                        $reason             Optional reason from the UI.
+     * @param User|null                                          $user               Authenticated user.
+     * @param string                                             $entityType         Short entity class name for audit-log.
+     * @param LifecycleService|null                              $lifecycleService
+     * @param AuditLogger|null                                   $auditLogger
+     * @param list<array{id: mixed, reason: string}>             $preRejected        Ids the caller already rejected
+     *                                                                               (not found / other tenant).
+     * @return array{ok: bool, changed?: int, rejected?: list<array{id: mixed, reason: string}>, error?: string, batch_id?: ?string}
      */
     protected function applyBulkStatusChange(
         iterable $entities,
@@ -222,26 +328,31 @@ trait BulkActionTrait
         string $entityType,
         ?LifecycleService $lifecycleService = null,
         ?AuditLogger $auditLogger = null,
+        array $preRejected = [],
     ): array {
+        if (!isset($statusToTransition[$newStatus])) {
+            return ['ok' => false, 'error' => 'invalid_status'];
+        }
         if ($lifecycleService === null) {
             return ['ok' => false, 'error' => 'lifecycle_service_unavailable'];
         }
+        $mapping = $statusToTransition[$newStatus];
 
         $changed = 0;
-        $rejected = [];
+        $rejected = $preRejected;
         $perEntityData = [];
 
         foreach ($entities as $entity) {
             $id = method_exists($entity, 'getId') ? $entity->getId() : null;
-            $transitionName = $statusToTransition[$newStatus] ?? $newStatus;
 
             try {
+                $transitionName = $mapping instanceof \Closure ? $mapping($entity) : $mapping;
                 $lifecycleService->transition(
                     $entity,
                     $workflowName,
                     $transitionName,
                     $user,
-                    $reason !== '' ? $reason : null,
+                    $reason !== null && $reason !== '' ? $reason : null,
                 );
                 $changed++;
                 $perEntityData[] = [
@@ -255,11 +366,12 @@ trait BulkActionTrait
         }
 
         // Audit-log (ISO 27001 Cl. 7.5.3).
+        $batchId = null;
         if ($auditLogger !== null && $changed > 0) {
-            $auditLogger->logBulk(
+            $batchId = $auditLogger->logBulk(
                 eventType: 'bulk_status_change',
                 entityType: $entityType,
-                batchData: ['new_status' => $newStatus, 'count' => $changed],
+                batchData: ['new_status' => $newStatus, 'count' => $changed, 'rejected' => count($rejected)],
                 perEntityData: $perEntityData,
                 description: sprintf(
                     'Bulk status change of %d %s records to \'%s\'',
@@ -270,6 +382,6 @@ trait BulkActionTrait
             );
         }
 
-        return ['ok' => true, 'changed' => $changed, 'rejected' => $rejected];
+        return ['ok' => true, 'changed' => $changed, 'rejected' => $rejected, 'batch_id' => $batchId];
     }
 }

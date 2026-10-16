@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\BulkActionTrait;
+use App\Service\BulkDeleteService;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
@@ -27,6 +29,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ManagementReviewController extends AbstractController
 {
+    use BulkActionTrait;
+
     use InPageFormTrait;
 
     public function __construct(
@@ -241,46 +245,14 @@ class ManagementReviewController extends AbstractController
 
     #[Route('/management-review/bulk-delete', name: 'app_management_review_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $review = $this->managementReviewRepository->find($id);
-                if (!$review) {
-                    $errors[] = "ManagementReview ID $id not found";
-                    continue;
-                }
-                if ($tenant && $review->getTenant() !== $tenant) {
-                    $errors[] = "ManagementReview ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($review);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting ManagementReview ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted management reviews deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'ManagementReview',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->managementReviewRepository->find($id),
+        );
     }
 }

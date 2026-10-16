@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\CurrentUserTrait;
@@ -734,47 +735,24 @@ class DPIAController extends AbstractController
 
     #[Route('/dpia/bulk-delete', name: 'app_dpia_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if ($this->checkModuleActive('privacy') instanceof Response) {
             return $this->json(['error' => 'Privacy module not active'], 403);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $dpia = $this->dpiaRepository?->find($id);
-                if (!$dpia) {
-                    $errors[] = "DPIA ID $id not found";
-                    continue;
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'DataProtectionImpactAssessment',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->dpiaRepository?->find($id),
+            deleter: function (object $dpia): void {
+                if ($dpia instanceof DataProtectionImpactAssessment) {
+                    $this->dataProtectionImpactAssessmentService->delete($dpia);
                 }
-                if ($tenant && $dpia->getTenant() !== $tenant) {
-                    $errors[] = "DPIA ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->dataProtectionImpactAssessmentService->delete($dpia);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting DPIA ID $id: " . $e->getMessage();
-            }
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted DPIAs deleted successfully",
-        ]);
+            },
+        );
     }
 
     /**
