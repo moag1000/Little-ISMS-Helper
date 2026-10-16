@@ -1,10 +1,11 @@
 # check_currentuser_test_args.py baseline
 # Format: <relative-path>:<line>
 tests/Controller/ComplianceControllerTest.php:174
-tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:129
-tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:159
-tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:191
-tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:214
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:138
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:168
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:193
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:225
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:248
 tests/Controller/DocumentControllerTest.php:359
 tests/Controller/DocumentControllerTest.php:430
 tests/Controller/DocumentControllerTest.php:488

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Throwable;
 
 class SecurityReportController extends AbstractController
 {
@@ -86,7 +87,7 @@ class SecurityReportController extends AbstractController
                 'message' => 'Security report generation failed',
                 'error' => $result['error_output'] ?: $result['output'],
             ], 500);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error generating security reports: ' . $e->getMessage(),

@@ -8,15 +8,19 @@ use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\AuditProgram;
+use App\Entity\User;
 use App\Form\AuditProgramType;
+use App\Lifecycle\Exception\ReasonRequiredException;
+use App\Lifecycle\InvalidTransitionException;
+use App\Lifecycle\LifecycleService;
 use App\Repository\AuditProgramRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -46,6 +50,7 @@ class AuditProgramController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly LifecycleService $lifecycleService,
     ) {}
 
     protected function getFlashDomain(): string
@@ -219,24 +224,52 @@ class AuditProgramController extends AbstractController
 
     #[Route('/{id}/archive', name: 'archive', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_MANAGER')]
-    #[IsCsrfTokenValid('archive-audit-program-{id}')]
+    // Symfony does not interpolate "{id}" in a plain token id — the
+    // expression builds the same id the template signs.
+    #[IsCsrfTokenValid(new Expression('"archive-audit-program-" ~ args["auditProgram"].getId()'))]
     public function archive(Request $request, AuditProgram $auditProgram): Response
     {
         if ($redirect = $this->checkModuleActive('audits')) {
             return $redirect;
         }
 
-        $auditProgram->setStatus('archived');
-        $auditProgram->setArchivedAt(new DateTimeImmutable());
-        $auditProgram->setUpdatedAt(new DateTimeImmutable());
-        $this->entityManager->flush();
+        // Status change goes through audit_program_lifecycle (audit-log row,
+        // tenant guard, per-tenant role/reason overrides) — never setStatus().
+        if (!$this->isGranted('lifecycle.audit_program_lifecycle.archive', $auditProgram)) {
+            throw $this->createAccessDeniedException();
+        }
 
-        $this->auditLogger->logUpdate(
-            'AuditProgram',
-            $auditProgram->getId(),
-            ['status' => 'active'],
-            ['status' => 'archived'],
-        );
+        $reason = trim((string) $request->request->get('reason', ''));
+        $user = $this->getUser();
+        $now = new DateTimeImmutable();
+        $auditProgram->setArchivedAt($now);
+        $auditProgram->setUpdatedAt($now);
+
+        try {
+            $this->lifecycleService->transition(
+                $auditProgram,
+                'audit_program_lifecycle',
+                'archive',
+                $user instanceof User ? $user : null,
+                $reason !== '' ? $reason : null,
+            );
+        } catch (ReasonRequiredException) {
+            $this->entityManager->refresh($auditProgram);
+            $this->flashError('audit_program.error.archive_reason_required');
+
+            return $this->redirectToRoute('app_audit_program_show', [
+                '_locale' => $request->getLocale(),
+                'id'      => $auditProgram->getId(),
+            ]);
+        } catch (InvalidTransitionException) {
+            $this->entityManager->refresh($auditProgram);
+            $this->flashError('audit_program.error.archive_not_allowed');
+
+            return $this->redirectToRoute('app_audit_program_show', [
+                '_locale' => $request->getLocale(),
+                'id'      => $auditProgram->getId(),
+            ]);
+        }
 
         $this->flashSuccess('audit_program.success.archived');
 

@@ -113,7 +113,7 @@
             <th>{{ 'management_review.field.tenant'|trans({}, 'management_review') }}</th>
             <td>{{ review.tenant ? review.tenant.name : '—' }}</td>
         </tr>
-        {% if review.tenant is not null %}
+        {% if review.tenant is not null and is_module_active('nis2_dora') %}
         <tr>
             <th>{{ 'management_review.field.dora_obligation'|trans({}, 'management_review') }}</th>
             <td>

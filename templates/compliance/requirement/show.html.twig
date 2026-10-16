@@ -91,7 +91,7 @@
             {% endembed %}
 
             {# MRIS — Reifegrad-Tracking pro MHC (nur für MRIS-v1.5 Framework) #}
-            {% if is_mris and mris %}
+            {% if is_mris and mris and is_module_active('mris') %}
                 <div data-tour="mris-maturity-table">
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                     {% block card_header %}

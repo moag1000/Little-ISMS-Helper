@@ -1,0 +1,35 @@
+# Transfer Impact Assessment (GDPR Art. 46 / Schrems II, EDPB Rec. 01/2020).
+#
+#   draft ─ assess ─▶ assessed ─ reopen ─▶ draft
+#
+# `assess` finalises the assessment (assessedAt/assessedBy stamped by the
+# controller). `reopen` sends it back for re-assessment when the legal
+# situation in the destination country changes; the reason is mandatory so
+# the audit trail shows why a finalised assessment was reopened.
+framework:
+    workflows:
+        transfer_impact_assessment_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\TransferImpactAssessment
+            initial_marking: draft
+            places:
+                - draft
+                - assessed
+            transitions:
+                assess:
+                    from: draft
+                    to: assessed
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: privacy
+                reopen:
+                    from: assessed
+                    to: draft
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_MANAGER]
+                        reason_required: true
+                        module: privacy

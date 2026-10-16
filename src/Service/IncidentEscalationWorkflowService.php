@@ -119,7 +119,7 @@ class IncidentEscalationWorkflowService
 
         // Calculate 72h deadline
         $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
-        $deadline = $detectedAt->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
+        $deadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
 
         // Calculate time remaining
         $now = new DateTimeImmutable();
@@ -619,7 +619,7 @@ class IncidentEscalationWorkflowService
         $gdprDeadline = null;
         if ($isDataBreach) {
             $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
-            $gdprDeadline = $detectedAt->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
+            $gdprDeadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
         }
 
         // Approval requirements

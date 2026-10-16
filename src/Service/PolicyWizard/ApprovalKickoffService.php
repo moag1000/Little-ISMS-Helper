@@ -12,7 +12,7 @@ use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
-use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\EntityTagRepository;
 use App\Repository\UserRepository;
 use App\Repository\WorkflowRepository;
@@ -60,6 +60,7 @@ use Throwable;
 final class ApprovalKickoffService
 {
     private const string AUDIT_TAG = 'policy-approval';
+    private const string WORKFLOW_INSTANCE_LIFECYCLE = 'workflow_instance_lifecycle';
     private const string TENANT_SETTING_DUAL_SIGNOFF = 'bulk_approval_dual_signoff';
 
     /**
@@ -74,6 +75,7 @@ final class ApprovalKickoffService
         private readonly EntityManagerInterface $entityManager,
         private readonly WorkflowRepository $workflowRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly LifecycleTransitionInterface $lifecycle,
         private readonly ?TenantSettingResolver $tenantSettingResolver = null,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?EntityTagRepository $entityTagRepository = null,
@@ -122,7 +124,9 @@ final class ApprovalKickoffService
         $instance->setEntityId((int) $document->getId());
         $instance->setInitiatedBy($initiator);
         $instance->setStartedAt(new DateTimeImmutable());
-        $instance->setStatus(WorkflowInstanceStatus::InProgress);
+        // Status stays at the workflow_instance_lifecycle initial marking
+        // (`pending`, entity default); the `start` transition below moves it
+        // to `in_progress` once the row has an id.
         $instance->setTenant($document->getTenant());
 
         // §9.1: instance enters at `prepared` (auto), then immediately
@@ -186,6 +190,15 @@ final class ApprovalKickoffService
 
         $this->entityManager->persist($instance);
         $this->entityManager->flush();
+
+        // pending → in_progress through the state machine (audit row,
+        // tenant guard). LifecycleService flushes.
+        $this->lifecycle->transition(
+            $instance,
+            self::WORKFLOW_INSTANCE_LIFECYCLE,
+            'start',
+            $initiator,
+        );
 
         $this->auditLogger->logCustom(
             action: 'policy_approval_kickoff',

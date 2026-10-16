@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * Unit tests for {@see PolicySectionApprovalService::assertApproverRoleMatch()}
@@ -60,6 +61,7 @@ final class PolicySectionApprovalServiceRoleMatchTest extends TestCase
             entityManager: $this->em,
             sectionRepository: $this->sectionRepo,
             auditLogger: $this->auditLogger,
+            lifecycle: new YamlWorkflowLifecycle(),
             topicApproverRoleResolver: $this->resolver,
         );
     }
@@ -203,6 +205,7 @@ final class PolicySectionApprovalServiceRoleMatchTest extends TestCase
             entityManager: $this->em,
             sectionRepository: $this->sectionRepo,
             auditLogger: $this->auditLogger,
+            lifecycle: new YamlWorkflowLifecycle(),
         );
 
         $section = $this->makeSectionWithTopic('cryptography');

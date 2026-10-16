@@ -63,6 +63,8 @@ audit_program:
     error:
         not_found: 'Audit-Programm nicht gefunden.'
         save_failed: 'Fehler beim Speichern des Audit-Programms.'
+        archive_reason_required: 'Bitte geben Sie eine Begründung für die Archivierung an.'
+        archive_not_allowed: 'Das Audit-Programm kann im aktuellen Status nicht archiviert werden.'
     validation:
         name_required: 'Bitte geben Sie einen Programmnamen an.'
         name_max_length: 'Der Programmname darf maximal 255 Zeichen lang sein.'
@@ -88,3 +90,4 @@ audit_program:
         danger_zone: 'Gefahrenbereich'
         delete_confirm: 'Dieses Audit-Programm unwiderruflich löschen?'
         archive_confirm: 'Audit-Programm archivieren?'
+        archive_reason: 'Begründung der Archivierung'

@@ -14,6 +14,7 @@ use App\Enum\GovernanceModel;
 use App\Form\TenantType;
 use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
+use App\Service\TenantStatusService;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\CorporateStructureService;
@@ -30,6 +31,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class TenantManagementController extends AbstractController
 {
@@ -47,6 +50,8 @@ class TenantManagementController extends AbstractController
         private readonly ISMSContextService $ismsContextService,
         private readonly ISMSContextRepository $ismsContextRepository,
         private readonly \App\Service\AssetSubTypeSeeder $assetSubTypeSeeder,
+        private readonly TenantStatusService $tenantStatusService,
+        private readonly TranslatorInterface $translator,
         private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
@@ -98,7 +103,7 @@ class TenantManagementController extends AbstractController
         // operational from day one. Bypass the workflow on create because
         // the marking-store is not yet wired for an unpersisted entity;
         // setStatus() mirrors into isActive so legacy readers stay correct.
-        $tenant->setStatus(Tenant::STATUS_ACTIVE);
+        $tenant->setStatus(Tenant::STATUS_ACTIVE); // @phpstan-ignore lifecycle.directSetStatus (initial state on an unpersisted Tenant; equals tenant_lifecycle `activate` draft→active, which has no four-eyes/reason; creation is audit-logged as tenant_created)
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
 
@@ -184,8 +189,7 @@ class TenantManagementController extends AbstractController
 
         foreach ($allTenants as $tenant) {
             if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
-                $tree = $this->corporateStructureService->getStructureTree($tenant);
-                $corporateGroups[] = $tree;
+                $corporateGroups[] = $this->corporateStructureService->getStructureTree($tenant);
             }
         }
 
@@ -231,6 +235,8 @@ class TenantManagementController extends AbstractController
             'inactiveUsers' => $users->count() - $activeUsers,
             'recentActivity' => $recentActivity,
             'defaultGovernance' => $defaultGovernance,
+            'statusTransition' => $this->tenantStatusService->nextTransition($tenant),
+            'fourEyesApprovers' => $this->tenantStatusService->fourEyesApprovers($this->getUser() instanceof User ? $this->getUser() : null),
         ]);
     }
     #[Route('/admin/tenants/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
@@ -336,51 +342,27 @@ class TenantManagementController extends AbstractController
             'isEdit' => true,
         ], new Response(status: $status));
     }
+    /** Suspend / reactivate / activate via tenant_lifecycle (TenantStatusService). */
     #[Route('/admin/tenants/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function toggle(Tenant $tenant, Request $request): Response
     {
-        if (!$this->isCsrfTokenValid('toggle_tenant_' . $tenant->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'common.csrf_error');
-            return $this->redirectToRoute('tenant_management_index');
-        }
+        $transition = $this->tenantStatusService->nextTransition($tenant);
+        $result = match (true) {
+            !$this->isCsrfTokenValid('toggle_tenant_' . $tenant->getId(), $request->request->get('_token'))
+                => ['ok' => false, 'message' => 'tenant.flash.csrf_error'],
+            $transition !== null && !$this->isGranted('lifecycle.' . TenantStatusService::WORKFLOW . '.' . $transition, $tenant)
+                => ['ok' => false, 'message' => 'tenant.flash.transition_forbidden'],
+            default => $this->tenantStatusService->toggle(
+                $tenant,
+                $this->getUser() instanceof User ? $this->getUser() : null,
+                (string) $request->request->get('reason', ''),
+                (int) $request->request->get('four_eyes_approver_id', 0),
+            ),
+        };
+        $this->addFlash($result['ok'] ? 'success' : 'danger', $this->translator->trans($result['message'], [], 'tenant'));
 
-        try {
-            $previousStatus = $tenant->isActive();
-            $tenant->setIsActive(!$previousStatus);
-            $this->entityManager->flush();
-
-            $this->logger->info('Tenant status toggled', [
-                'tenant_id' => $tenant->getId(),
-                'tenant_code' => $tenant->getCode(),
-                'previous_status' => $previousStatus,
-                'new_status' => $tenant->isActive(),
-                'user' => $this->getUser()?->getUserIdentifier(),
-            ]);
-
-            // Audit log
-            $this->auditLogger->logCustom(
-                'tenant_status_toggled',
-                'Tenant',
-                $tenant->getId(),
-                ['is_active' => $previousStatus],
-                ['is_active' => $tenant->isActive()],
-                sprintf('Tenant "%s" %s', $tenant->getName(), $tenant->isActive() ? 'activated' : 'deactivated')
-            );
-
-            $message = $tenant->isActive() ? 'tenant.flash.activated' : 'tenant.flash.deactivated';
-            $this->addFlash('success', $message);
-        } catch (Exception $e) {
-            $this->logger->error('Failed to toggle tenant status', [
-                'tenant_id' => $tenant->getId(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            $this->addFlash('danger', 'tenant.flash.error');
-        }
-
-        return $this->redirectToRoute('tenant_management_index');
+        return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
     }
     #[Route('/admin/tenants/{id}/delete', name: 'tenant_management_delete', methods: ['POST'])]
     #[IsGranted('TENANT_DELETE')]
@@ -842,7 +824,7 @@ class TenantManagementController extends AbstractController
                 'editUrl' => $this->generateUrl('app_context_edit'),
             ]);
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to get ISMS context for tenant', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),

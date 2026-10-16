@@ -20,6 +20,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * W6-A — DPO Veto sub-workflow service tests.
@@ -59,6 +60,7 @@ class PolicySectionApprovalServiceVetoTest extends TestCase
             $this->em,
             $this->sectionRepo,
             $this->auditLogger,
+            new YamlWorkflowLifecycle(),
             $this->userRepo,
             new NullLogger(),
         );
@@ -258,6 +260,7 @@ class PolicySectionApprovalServiceVetoTest extends TestCase
             $em,
             $sectionRepo,
             $auditLogger,
+            new YamlWorkflowLifecycle(),
             // userRepository intentionally omitted (defaults to null)
         );
 

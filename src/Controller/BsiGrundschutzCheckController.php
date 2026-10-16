@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Service\BsiGrundschutzCheckService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Absicherungsstufe filter (basis | standard | kern | all).
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('bsi_grundschutz')]
 class BsiGrundschutzCheckController extends AbstractController
 {
     public function __construct(

@@ -221,7 +221,9 @@
                                     <td class="fa-table__cell fa-table__cell--num"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.trainings.total }}</span></td>
                                 {% endif %}
                                 <td class="fa-table__cell fa-table__cell--actions">
+                                    {% if is_module_active('training') %}
                                     <a href="{{ path('app_training_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endblock %}

@@ -86,15 +86,11 @@ initial_controls:
 initial_documents:
   - title: 'Informationssicherheits-Leitlinie'
     type: policy
-    status: draft
   - title: 'BCM-Strategie'
     type: policy
-    status: draft
   - title: 'Datenschutzerklärung'
     type: policy
-    status: draft
   - title: 'NIS2-Meldekonzept'
     type: procedure
-    status: draft
 
 target_alva_journey: getting_started

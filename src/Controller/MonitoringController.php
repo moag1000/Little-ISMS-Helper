@@ -317,7 +317,7 @@ class MonitoringController extends AbstractController
                 'status' => 'healthy',
                 'timestamp' => time(),
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->json([
                 'status' => 'error',
                 'error' => $e->getMessage(),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\BulkActionTrait;
 use App\Service\BulkDeleteService;
 use App\Controller\Trait\InPageFormTrait;
@@ -31,6 +32,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/corrective-action', name: 'app_corrective_action_')]
+#[RequiresModule('corrective_actions')]
 class CorrectiveActionController extends AbstractController
 {
     use BulkActionTrait;

@@ -141,6 +141,7 @@ journey.phase	1
 journey.status	1
 kpi_threshold.key	1
 lifecycle	2
+lifecycle.tenant_lifecycle	2
 location.security	3
 location.type	3
 management_reports.category	1
@@ -258,6 +259,7 @@ supplier.lksg_risk	1
 supplier.questionnaire.status	1
 tags.type	1
 template	2
+tenant.action	1
 threat_intelligence.tlp	1
 tia.mechanism	4
 tia.risk	4

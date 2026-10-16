@@ -12,6 +12,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -49,6 +50,7 @@ class ComplianceManagerDashboardController extends AbstractController
         private readonly ComplianceRequirementRepository $requirementRepo,
         private readonly RoleDashboardService $roleDashboardService,
         private readonly TisaxMaturityAssessmentService $tisaxAssessment,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -92,16 +94,7 @@ class ComplianceManagerDashboardController extends AbstractController
         $upcomingAudits = [];
         if ($tenant) {
             $cutoff = new DateTimeImmutable('+90 days');
-            $audits = method_exists($this->auditRepo, 'findUpcoming')
-                ? $this->auditRepo->findUpcoming($tenant, $cutoff)
-                : $this->auditRepo->findBy(['tenant' => $tenant], ['plannedDate' => 'ASC'], 10);
-            foreach ($audits as $audit) {
-                if (method_exists($audit, 'getPlannedDate') && $audit->getPlannedDate() instanceof \DateTimeInterface
-                    && $audit->getPlannedDate() > new DateTimeImmutable()
-                    && $audit->getPlannedDate() <= $cutoff) {
-                    $upcomingAudits[] = $audit;
-                }
-            }
+            $upcomingAudits = $this->auditRepo->findUpcoming($tenant, $cutoff);
         }
 
         // Documents pending approval
@@ -127,8 +120,7 @@ class ComplianceManagerDashboardController extends AbstractController
         // TISAX full per-tier aggregate (IS + PP + DP) for compliance overview
         $tisaxAggregate = null;
         if ($tenant !== null) {
-            $settings = $tenant->getSettings() ?? [];
-            if ($settings['modules']['tisax'] ?? true) {
+            if ($this->moduleConfiguration->isModuleActive('tisax')) {
                 foreach ($this->frameworkRepo->findActiveFrameworks() as $fw) {
                     if ((string) $fw->getCode() === 'TISAX') {
                         $agg = $this->tisaxAssessment->computeAggregate($fw, $tenant);

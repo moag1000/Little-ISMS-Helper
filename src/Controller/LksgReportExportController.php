@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Service\AuditLogger;
 use App\Service\Export\LksgAnnualReportExporter;
 use App\Service\TenantContext;
@@ -20,6 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Optional ?min_risk=low|medium|high|critical narrows to suppliers at or
  * above the chosen severity. Guarded by ROLE_MANAGER and audit-logged.
  */
+#[RequiresModule('lksg')]
 class LksgReportExportController extends AbstractController
 {
     public function __construct(

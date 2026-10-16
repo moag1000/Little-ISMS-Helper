@@ -185,7 +185,7 @@ final class ISMSContextService
     public function scheduleNextReview(ISMSContext $ismsContext, ?DateTime $baseDate = null): void
     {
         $baseDate ??= $ismsContext->getLastReviewDate() ?? new DateTime();
-        $nextReview = (clone $baseDate)->modify('+1 year');
+        $nextReview = DateTime::createFromInterface($baseDate)->modify('+1 year');
 
         $ismsContext->setNextReviewDate($nextReview);
     }

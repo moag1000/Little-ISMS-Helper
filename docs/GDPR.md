@@ -142,8 +142,13 @@ php bin/console app:generate-regulatory-workflows --workflow=data-breach
 | 5. Benachrichtigung Betroffene | DPO | Art. 34 Abs. 1 — nur bei hohem Risiko |
 | 6. Abschluss + Dokumentation | CISO | Alle Pflichtfelder abgeschlossen |
 
-**72-h-Frist-Monitoring:** `IncidentSlaConfig` haelt die GDPR-72h-SLA. Der Cron-Job
-`app:process-timed-workflows` prueft timed workflows inkl. Fristablauf.
+**72-h-Frist-Monitoring:** Beim Anlegen einer Datenpanne startet
+`SlaDeadlineMonitorSpawner` (Doctrine-Listener) einen `SlaDeadlineMonitor` mit der
+GDPR-72h-Frist; ebenso NIS2 24h/72h fuer meldepflichtige Incidents
+(`notificationRequired` oder NIS2-Kategorie) und 30 Tage nach ISO 27001 Kap. 10.1
+fuer Haupt-/Nebenabweichungen aus Audits. Der Cron-Job `app:process-timed-workflows`
+tickt den `SlaDeadlineWatcher`: Erinnerungen an den Checkpoints, verpasste Fristen
+werden als `missed` markiert und kritisch gemeldet.
 
 ### 5.3 BSI-MUS Export (Art. 33 DSGVO / Art. 23 NIS2-Cross-Reporting)
 

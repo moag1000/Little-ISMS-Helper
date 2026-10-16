@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 /**
  * User-facing MFA self-service controller
@@ -139,7 +140,7 @@ class ProfileMfaController extends AbstractController
                 'message' => $this->translator->trans('mfa.error.invalid_code', [], 'mfa'),
             ], Response::HTTP_BAD_REQUEST);
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->logger->error('MFA verification failed', [
                 'error' => $e->getMessage(),
                 'token_id' => $mfaToken->getId(),

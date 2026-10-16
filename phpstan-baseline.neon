@@ -1,10 +1,5 @@
 parameters:
 	ignoreErrors:
-		-
-			message: '#^Method App\\AlvaHint\\AlvaHintService\:\:getDismissedTokens\(\) should return array\<string, true\> but returns array\<string, int\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/AlvaHint/AlvaHintService.php
 
 		-
 			message: '#^Property App\\AlvaHint\\AlvaHintService\:\:\$dismissedTokensCache \(array\<string, true\>\|null\) does not accept array\<string, int\>\.$#'
@@ -120,11 +115,6 @@ parameters:
 			count: 1
 			path: src/Command/CapturePortfolioSnapshotCommand.php
 
-		-
-			message: '#^Method Doctrine\\Persistence\\ObjectManager\:\:clear\(\) invoked with 1 parameter, 0 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Command/CapturePortfolioSnapshotCommand.php
 
 		-
 			message: '#^Instanceof between App\\Entity\\Tenant and App\\Entity\\Tenant will always evaluate to true\.$#'
@@ -222,11 +212,6 @@ parameters:
 			count: 1
 			path: src/Command/AuditCatalogMappingsCommand.php
 
-		-
-			message: '#^Method App\\Service\\DashboardStatisticsService\:\:getManagementKPIs\(\) invoked with 1 parameter, 0 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Command/KpiSnapshotCommand.php
 
 		-
 			message: '#^Offset ''AL3'' on array\{AL1\: 1, AL2\: 2, AL3\: 3\} on left side of \?\? always exists and is not nullable\.$#'
@@ -456,11 +441,6 @@ parameters:
 			count: 1
 			path: src/Command/MrisVersionMigrationCommand.php
 
-		-
-			message: '#^Parameter \#2 \$diff of method App\\Command\\MrisVersionMigrationCommand\:\:applyDiff\(\) expects array\{added\: list\<string\>, removed\: list\<string\>, renamed\: list\<string\>, maturity_changed\: list\<string\>, to\: array\<string, array\<string, mixed\>\>, from\: array\<string, array\<string, mixed\>\>\}, array\{added\: list\<string\>, removed\: list\<string\>, renamed\: list\<string\>, maturity_changed\: list\<string\>\} given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/MrisVersionMigrationCommand.php
 
 		-
 			message: '#^Instanceof between DateTime and DateTime will always evaluate to true\.$#'
@@ -714,11 +694,6 @@ parameters:
 			count: 1
 			path: src/Controller/Admin/LifecycleOverridesController.php
 
-		-
-			message: '#^Parameter \#2 \$entityId of method App\\Service\\AuditLogger\:\:logUpdate\(\) expects int\|null, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/Admin/LifecycleOverridesController.php
 
 		-
 			message: '#^Method App\\Controller\\Admin\\MappingQualityController\:\:computeStats\(\) should return array\{total\: int, avg_mqs\: float, by_state\: array\<string, int\>, low_score\: int\} but returns array\{total\: int, avg_mqs\: float, by_state\: array\<int\>, low_score_published\: int\}\.$#'
@@ -726,17 +701,7 @@ parameters:
 			count: 1
 			path: src/Controller/Admin/MappingQualityController.php
 
-		-
-			message: '#^Call to private method log\(\) of class App\\Service\\AuditLogger\.$#'
-			identifier: method.private
-			count: 4
-			path: src/Controller/Admin/Notification/NotificationChannelController.php
 
-		-
-			message: '#^Call to private method log\(\) of class App\\Service\\AuditLogger\.$#'
-			identifier: method.private
-			count: 4
-			path: src/Controller/Admin/Notification/NotificationRuleController.php
 
 		-
 			message: '#^Property App\\Controller\\Admin\\SsoWizardController\:\:\$repo is never read, only written\.$#'
@@ -756,11 +721,6 @@ parameters:
 			count: 1
 			path: src/Controller/Admin/SystemSettings/DataRetentionController.php
 
-		-
-			message: '#^Parameter \#1 \$policies of method App\\Entity\\Tenant\:\:setDataRetentionPolicies\(\) expects array\<string, array\{years\: int, basis\?\: string\}\>\|null, array\{asset\: array\{retention_days\: int\<30, max\>, auto_delete\: bool\}, risk\: array\{retention_days\: int\<30, max\>, auto_delete\: bool\}, incident\: array\{retention_days\: int\<30, max\>, auto_delete\: bool\}, document\: array\{retention_days\: int\<30, max\>, auto_delete\: bool\}, processing_activity\: array\{retention_days\: int\<30, max\>, auto_delete\: bool\}, audit_finding\: array\{retention_days\: int\<30, max\>, auto_delete\: bool\}, workflow_instance\: array\{retention_days\: int\<30, max\>, auto_delete\: bool\}\} given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Admin/SystemSettings/DataRetentionController.php
 
 		-
 			message: '#^Offset ''digest_enabled'' on array\{\}\|array\{email\?\: bool, slack\?\: bool, teams\?\: bool\} on left side of \?\? does not exist\.$#'
@@ -780,11 +740,6 @@ parameters:
 			count: 1
 			path: src/Controller/Admin/SystemSettings/NotificationPreferencesController.php
 
-		-
-			message: '#^Parameter \#2 \$entityId of method App\\Service\\AuditLogger\:\:logUpdate\(\) expects int\|null, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/Admin/WorkflowOverlayController.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -792,11 +747,6 @@ parameters:
 			count: 2
 			path: src/Controller/AdminBackupController.php
 
-		-
-			message: '#^Call to protected method getEntityManager\(\) of class Doctrine\\Bundle\\DoctrineBundle\\Repository\\ServiceEntityRepository\<App\\Entity\\ComplianceFramework\>\.$#'
-			identifier: method.protected
-			count: 1
-			path: src/Controller/AdminComplianceController.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -839,12 +789,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Controller/Api/QuickCreateController.php
-
-		-
-			message: '#^Property App\\Controller\\Api\\WorkflowStepApiController\:\:\$workflowRepository is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: src/Controller/Api/WorkflowStepApiController.php
 
 		-
 			message: '#^Property App\\Controller\\Audit\\AuditWorkbookController\:\:\$em is never read, only written\.$#'
@@ -930,11 +874,6 @@ parameters:
 			count: 3
 			path: src/Controller/ComplianceExportController.php
 
-		-
-			message: '#^Call to protected method getEntityManager\(\) of class Doctrine\\Bundle\\DoctrineBundle\\Repository\\ServiceEntityRepository\<App\\Entity\\ComplianceFramework\>\.$#'
-			identifier: method.protected
-			count: 2
-			path: src/Controller/ComplianceMappingAdminController.php
 
 		-
 			message: '#^Instanceof between App\\Entity\\ComplianceRequirement and App\\Entity\\ComplianceRequirement will always evaluate to true\.$#'
@@ -1002,11 +941,6 @@ parameters:
 			count: 1
 			path: src/Controller/Dashboard/ComplianceManagerDashboardController.php
 
-		-
-			message: '#^Method App\\Repository\\InternalAuditRepository\:\:findUpcoming\(\) invoked with 2 parameters, 0 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Controller/Dashboard/ComplianceManagerDashboardController.php
 
 		-
 			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
@@ -1266,11 +1200,6 @@ parameters:
 			count: 1
 			path: src/Controller/MappingQualityController.php
 
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\HttpFoundation\\Session\\SessionInterface\:\:getFlashBag\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/MfaLoginController.php
 
 		-
 			message: '#^Offset ''pending_migrations'' on array\{mapping_in_sync\: bool, database_in_sync\: bool, mapping_errors\: array\<string, list\<string\>\>, pending_sql\: list\<string\>, pending_migrations\: list\<string\>, overall_status\: ''error''\|''healthy''\|''warning''\} on left side of \?\? always exists and is not nullable\.$#'
@@ -1506,11 +1435,6 @@ parameters:
 			count: 1
 			path: src/Controller/QuickFixController.php
 
-		-
-			message: '#^Parameter \#1 \$sameSite of method Symfony\\Component\\HttpFoundation\\Cookie\:\:withSameSite\(\) expects ''''\|''lax''\|''none''\|''strict''\|null, ''Lax'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/QuickFixController.php
 
 		-
 			message: '#^Right side of && is always true\.$#'
@@ -1590,11 +1514,6 @@ parameters:
 			count: 1
 			path: src/Controller/Security/ReauthController.php
 
-		-
-			message: '#^Method KnpU\\OAuth2ClientBundle\\Client\\OAuth2ClientInterface\:\:redirect\(\) invoked with 1 parameter, 2 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Controller/SecurityController.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
@@ -1650,17 +1569,7 @@ parameters:
 			count: 1
 			path: src/Controller/Tisax/TisaxImportWizardController.php
 
-		-
-			message: '#^Parameter \#1 \$levelMap of method App\\Service\\Tisax\\TisaxMaturityAssessmentService\:\:bulkSetReifegrad\(\) expects array\<int, int\>, array\<string, int\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Tisax/TisaxImportWizardController.php
 
-		-
-			message: '#^Parameter \#1 \$valueMap of method App\\Service\\Tisax\\TisaxMaturityAssessmentService\:\:bulkSetDataProtectionCompliance\(\) expects array\<int, string\>, array\<string, string\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Tisax/TisaxImportWizardController.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between non\-empty\-string and null will always evaluate to true\.$#'
@@ -1938,11 +1847,6 @@ parameters:
 			count: 1
 			path: src/EventSubscriber/SecurityEventSubscriber.php
 
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\HttpFoundation\\Session\\SessionInterface\:\:getFlashBag\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/EventSubscriber/TenantNotFoundSubscriber.php
 
 		-
 			message: '#^Method App\\Form\\AssetType\:\:getSecurityForOwnerPicker\(\) never returns null so it can be removed from the return type\.$#'
@@ -2340,11 +2244,6 @@ parameters:
 			count: 1
 			path: src/MessageHandler/Schedule/GenerateComplianceReportHandler.php
 
-		-
-			message: '#^Parameter \#3 \$types of method Doctrine\\DBAL\\Connection\:\:executeStatement\(\) expects array\<int\<0, max\>\|string, Doctrine\\DBAL\\ArrayParameterType\|Doctrine\\DBAL\\ParameterType\|Doctrine\\DBAL\\Types\\Type\|string\>, array\{tenant\: 0\|1, hintKey\: 2\} given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Repository/AlvaHintRenderCountRepository.php
 
 		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getEmail'' will always evaluate to true\.$#'
@@ -2358,11 +2257,6 @@ parameters:
 			count: 2
 			path: src/Repository/ComplianceMappingRepository.php
 
-		-
-			message: '#^Method App\\Repository\\ComplianceMappingRepository\:\:analyzeGapRootCauses\(\) should return array\{root_causes\: array, category_patterns\: array, recommendations\: array, dependency_blockers\: array\} but returns array\{root_causes\: array\{missing_control\: list\<array\{id\: mixed, title\: mixed, category\: mixed, priority\: mixed, fulfillment\: mixed\}\>, missing_evidence\: list\<array\{id\: mixed, title\: mixed, category\: mixed, priority\: mixed, fulfillment\: mixed\}\>, incomplete_implementation\: list\<array\{id\: mixed, title\: mixed, category\: mixed, priority\: mixed, fulfillment\: mixed\}\>, not_started\: list\<array\{id\: mixed, title\: mixed, category\: mixed, priority\: mixed, fulfillment\: mixed\}\>, low_priority\: list\<array\{id\: mixed, title\: mixed, category\: mixed, priority\: mixed, fulfillment\: mixed\}\>\}, category_patterns\: array\<array\{count\: int\<1, max\>, avg_fulfillment\: float, total_fulfillment\: \(float\|int\), dominant_root_cause\: ''incomplete…''\|''missing_control''\|''missing_evidence'', gap_ids\: non\-empty\-list\}\>, recommendations\: array, summary\: array\{not_started_count\: int\<0, max\>, missing_control_count\: int\<0, max\>, incomplete_implementation_count\: int\<0, max\>, missing_evidence_count\: int\<0, max\>, low_priority_count\: int\<0, max\>, total_categories_affected\: int\<0, max\>\}\}\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Repository/ComplianceMappingRepository.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between float and 0 will always evaluate to false\.$#'
@@ -2382,11 +2276,6 @@ parameters:
 			count: 1
 			path: src/Repository/IncidentRepository.php
 
-		-
-			message: '#^Call to an undefined method DateTimeInterface\:\:modify\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Repository/RiskRepository.php
 
 		-
 			message: '#^Offset ''critical''\|''high''\|''low''\|''medium'' on array\{critical\: 4, high\: 3, medium\: 2, low\: 1\} on left side of \?\? always exists and is not nullable\.$#'
@@ -2394,17 +2283,7 @@ parameters:
 			count: 2
 			path: src/Repository/SupplierRepository.php
 
-		-
-			message: '#^Call to protected method getEntityManager\(\) of class Doctrine\\Bundle\\DoctrineBundle\\Repository\\ServiceEntityRepository\<App\\Entity\\ScheduledTask\>\.$#'
-			identifier: method.protected
-			count: 1
-			path: src/Schedule.php
 
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\HttpFoundation\\Session\\SessionInterface\:\:getFlashBag\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Security/GenericOidcAuthenticator.php
 
 		-
 			message: '#^Method App\\Security\\GenericOidcAuthenticator\:\:onAuthenticationFailure\(\) never returns null so it can be removed from the return type\.$#'
@@ -2712,11 +2591,6 @@ parameters:
 			count: 1
 			path: src/Service/ComplianceAnalyticsService.php
 
-		-
-			message: '#^Method Doctrine\\Persistence\\ObjectManager\:\:clear\(\) invoked with 1 parameter, 0 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Service/ComplianceLoaderFixerService.php
 
 		-
 			message: '#^Trying to invoke App\\Command\\LoadIso27005RequirementsCommand but it''s not a callable\.$#'
@@ -2808,11 +2682,6 @@ parameters:
 			count: 1
 			path: src/Service/ControlEffectivenessService.php
 
-		-
-			message: '#^Method App\\Service\\CrossFrameworkLookupService\:\:findEquivalents\(\) should return list\<array\{requirement\: App\\Entity\\ComplianceRequirement, mapping\: App\\Entity\\ComplianceMapping, direction\: string, via\: list\<string\>, depth\: int\}\> but returns list\<array\{mapping\: App\\Entity\\ComplianceMapping, direction\: string, via\: list\<string\>, depth\: int\}\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/CrossFrameworkLookupService.php
 
 		-
 			message: '#^Parameter &\$visited by\-ref type of method App\\Service\\CrossFrameworkLookupService\:\:walkTransitive\(\) expects array\<int, true\>, non\-empty\-array\<''''\|int, true\> given\.$#'
@@ -3270,11 +3139,6 @@ parameters:
 			count: 3
 			path: src/Service/HealthAutoFixService.php
 
-		-
-			message: '#^Call to an undefined method DateTimeInterface\:\:modify\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/ISMSContextService.php
 
 		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getTenant'' will always evaluate to true\.$#'
@@ -3288,11 +3152,6 @@ parameters:
 			count: 1
 			path: src/Service/ISMSContextService.php
 
-		-
-			message: '#^Method Doctrine\\Persistence\\ObjectManager\:\:clear\(\) invoked with 1 parameter, 0 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Service/Import/BsiKompendiumXmlImporter.php
 
 		-
 			message: '#^Instanceof between App\\Entity\\ComplianceMapping and App\\Entity\\ComplianceMapping will always evaluate to true\.$#'
@@ -3360,11 +3219,6 @@ parameters:
 			count: 1
 			path: src/Service/Import/SpreadsheetParser.php
 
-		-
-			message: '#^Call to an undefined method DateTimeInterface\:\:modify\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Service/IncidentEscalationWorkflowService.php
 
 		-
 			message: '#^Property App\\Service\\IncidentRiskFeedbackService\:\:\$riskRepository is never read, only written\.$#'
@@ -3378,11 +3232,6 @@ parameters:
 			count: 1
 			path: src/Service/IndustryBaselineApplier.php
 
-		-
-			message: '#^Parameter \#1 \$summary of method App\\Entity\\AppliedBaseline\:\:setCreatedSummary\(\) expects array\<string, int\>, array\<string, int\<0, max\>\|list\<string\>\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/IndustryBaselineApplier.php
 
 		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''getAuditTeam'' will always evaluate to true\.$#'
@@ -4302,11 +4151,6 @@ parameters:
 			count: 1
 			path: src/Service/Restore/RestoreEntityWriter.php
 
-		-
-			message: '#^Parameter \#1 \$generatorType of method Doctrine\\ORM\\Mapping\\ClassMetadata\<object\>\:\:setIdGeneratorType\(\) expects 1\|2\|4\|5\|7, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Restore/RestoreEntityWriter.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
@@ -4392,11 +4236,6 @@ parameters:
 			count: 2
 			path: src/Service/RiskAggregationService.php
 
-		-
-			message: '#^Method App\\Service\\RiskAppetitePrioritizationService\:\:analyzeRiskAppetite\(\) should return array\{appetite\: App\\Entity\\RiskAppetite\|null, within_appetite\: bool, priority\: string, exceedance\: int, percentage\: float, requires_action\: bool, recommendation\: string\} but returns array\{appetite\: null, within_appetite\: null, priority\: string, exceedance\: 0, percentage\: 0\.0, requires_action\: bool, recommendation\: ''No risk appetite…''\}\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/RiskAppetitePrioritizationService.php
 
 		-
 			message: '#^Property App\\Service\\RiskForecastService\:\:\$tenantContext is never read, only written\.$#'
@@ -4458,17 +4297,7 @@ parameters:
 			count: 1
 			path: src/Service/ScheduledReportService.php
 
-		-
-			message: '#^Method App\\Service\\SchemaHealthService\:\:applyUpdate\(\) should return array\{success\: bool, executed_sql\: list\<string\>, sql_hash\: string\|null, error\: string\|null, blocked\: string\|null, dropped_fks\: list\<array\{table\: string, fk\: string, sql_that_triggered\: string\}\>\} but returns array\{success\: false, executed_sql\: array\{\}, sql_hash\: null, error\: null, blocked\: ''pending_migrations''\}\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/SchemaHealthService.php
 
-		-
-			message: '#^Method App\\Service\\SchemaHealthService\:\:applyUpdate\(\) should return array\{success\: bool, executed_sql\: list\<string\>, sql_hash\: string\|null, error\: string\|null, blocked\: string\|null, dropped_fks\: list\<array\{table\: string, fk\: string, sql_that_triggered\: string\}\>\} but returns array\{success\: true, executed_sql\: array\{\}, sql_hash\: null, error\: null, blocked\: null\}\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/SchemaHealthService.php
 
 		-
 			message: '#^Parameter \#1 \$array \(list\<string\>\) of array_values is already a list, call has no effect\.$#'
@@ -4524,11 +4353,6 @@ parameters:
 			count: 1
 			path: src/Service/Soa/SoaSnapshotService.php
 
-		-
-			message: '#^Parameter \#1 \$token of method League\\OAuth2\\Client\\Provider\\AbstractProvider\:\:getResourceOwner\(\) expects League\\OAuth2\\Client\\Token\\AccessToken, League\\OAuth2\\Client\\Token\\AccessTokenInterface given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Sso/OidcAuthenticationFlow.php
 
 		-
 			message: '#^Property App\\Service\\Sso\\OidcDiscoveryService\:\:\$logger is never read, only written\.$#'
@@ -4590,11 +4414,6 @@ parameters:
 			count: 1
 			path: src/Template/SystemTemplateRegistry.php
 
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\HttpFoundation\\Session\\SessionInterface\:\:getFlashBag\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Twig/AlvaMoodExtension.php
 
 		-
 			message: '#^Call to function method_exists\(\) with Symfony\\Component\\Workflow\\WorkflowInterface and ''getDefinition'' will always evaluate to true\.$#'
@@ -4608,11 +4427,6 @@ parameters:
 			count: 1
 			path: src/Workflow/Loader/RegulatoryWorkflowLoader.php
 
-		-
-			message: '#^Call to an undefined method App\\Entity\\Tenant\:\:getBsiAssuranceLevel\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/Bsi/IsoToBsiGapService.php
 
 		-
 			message: '#^Property App\\Controller\\RoadmapController\:\:\$moduleService is never read, only written\.$#'

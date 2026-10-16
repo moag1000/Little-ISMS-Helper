@@ -63,6 +63,16 @@ framework:
                         reason_required: true
                 # X.6: restore archived policy doc back to approved state (not published).
                 # Used by PolicyDiffController::restorePrevious when supersession is undone.
+                # Scope removal (e.g. the organisation is no longer a GDPR
+                # subject): the document leaves the register from any live
+                # place and stays as historical evidence. Used by
+                # GdprToggleOffCleanupService.
+                archive_out_of_scope:
+                    from: [draft, in_review, approved, published]
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
                 restore_to_approved:
                     from: archived
                     to: approved

@@ -35,7 +35,9 @@
 
     {# GDPR Breach Wizard helper modal — placed inside the frame so it remains
        accessible when the form is rendered in the fa-form-modal drawer. #}
+    {% if is_module_active('privacy') %}
     {% include 'incident/_gdpr_breach_wizard_modal.html.twig' with {
         assessmentUrl: path('app_incident_gdpr_wizard_result')
     } %}
+    {% endif %}
 </turbo-frame>

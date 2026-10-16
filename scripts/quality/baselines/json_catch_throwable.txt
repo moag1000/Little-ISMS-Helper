@@ -1,0 +1,40 @@
+# check_json_catch_throwable.py baseline
+# Format: <relative-path>:<method>
+
+# Excluded from the catch-Throwable sweep: these endpoints are being reworked
+# separately (MappingQuality, WorkflowStepApi, AdminBackup restore/validate).
+src/Controller/AdminBackupController.php:deleteBackup
+src/Controller/AdminBackupController.php:previewRestore
+src/Controller/AdminBackupController.php:validateBackup
+src/Controller/Api/WorkflowStepApiController.php:addStep
+src/Controller/Api/WorkflowStepApiController.php:applyTemplate
+src/Controller/Api/WorkflowStepApiController.php:deleteStep
+src/Controller/Api/WorkflowStepApiController.php:duplicateStep
+src/Controller/Api/WorkflowStepApiController.php:reorderSteps
+src/Controller/Api/WorkflowStepApiController.php:updateStep
+src/Controller/MappingQualityController.php:analyze
+src/Controller/MappingQualityController.php:batchAnalyze
+src/Controller/MappingQualityController.php:stats
+src/Controller/MappingQualityController.php:updateGap
+src/Controller/MappingQualityController.php:updateReview
+
+# bulkDelete endpoints are reworked together with the bulk-audit fixes
+# (AuditLogger::logBulk); drop each line when its endpoint is converted.
+src/Controller/AssetController.php:bulkDelete
+src/Controller/AuditController.php:bulkDelete
+src/Controller/AuditFindingController.php:bulkDelete
+src/Controller/BCExerciseController.php:bulkDelete
+src/Controller/ChangeRequestController.php:bulkDelete
+src/Controller/DPIAController.php:bulkDelete
+src/Controller/DataBreachController.php:bulkDelete
+src/Controller/DataSubjectRequestController.php:bulkDelete
+src/Controller/DocumentController.php:bulkDelete
+src/Controller/ISMSObjectiveController.php:bulkDelete
+src/Controller/IncidentController.php:bulkDelete
+src/Controller/ManagementReviewController.php:bulkDelete
+src/Controller/PatchController.php:bulkDelete
+src/Controller/ProcessingActivityController.php:bulkDelete
+src/Controller/RiskController.php:bulkDelete
+src/Controller/SupplierController.php:bulkDelete
+src/Controller/ThreatIntelligenceController.php:bulkDelete
+src/Controller/TrainingController.php:bulkDelete

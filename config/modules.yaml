@@ -1,3 +1,7 @@
+# Module definitions. Route/controller gating is declared on the controllers
+# themselves via #[App\Attribute\RequiresModule('<key>')] (enforced by
+# App\EventListener\RequiresModuleListener, checked by CI gate
+# scripts/quality/check_module_gating.py) — not here. See docs/MODULE_GATING_GUIDE.md.
 modules:
   core:
     name: 'Core ISMS'
@@ -7,8 +11,6 @@ modules:
     entities:
       - ISMSContext
       - ISMSObjective
-    routes:
-      - /context
     dependencies: []
 
   assets:
@@ -18,8 +20,6 @@ modules:
     icon: 'database'
     entities:
       - Asset
-    routes:
-      - /asset
     dependencies: []
 
   risks:
@@ -29,8 +29,6 @@ modules:
     icon: 'exclamation-triangle'
     entities:
       - Risk
-    routes:
-      - /risk
     dependencies:
       - assets
 
@@ -41,8 +39,6 @@ modules:
     icon: 'list-check'
     entities:
       - Control
-    routes:
-      - /soa
     dependencies: []
 
   incidents:
@@ -52,8 +48,6 @@ modules:
     icon: 'bell'
     entities:
       - Incident
-    routes:
-      - /incident
     dependencies:
       - controls
 
@@ -65,8 +59,6 @@ modules:
     entities:
       - InternalAudit
       - AuditChecklist
-    routes:
-      - /audit
     dependencies:
       - controls
 
@@ -77,8 +69,6 @@ modules:
     icon: 'graduation-cap'
     entities:
       - Training
-    routes:
-      - /training
     dependencies: []
 
   access_review:
@@ -89,8 +79,6 @@ modules:
     entities:
       - AccessReviewCampaign
       - AccessReviewItem
-    routes:
-      - /access-review
     dependencies:
       - authentication
       - audit_logging
@@ -102,8 +90,6 @@ modules:
     icon: 'users'
     entities:
       - ManagementReview
-    routes:
-      - /review
     dependencies:
       - audits
 
@@ -114,8 +100,6 @@ modules:
     icon: 'rotate'
     entities:
       - BusinessProcess
-    routes:
-      - /bcm
     dependencies:
       - assets
 
@@ -128,8 +112,6 @@ modules:
       - ComplianceFramework
       - ComplianceRequirement
       - ComplianceMapping
-    routes:
-      - /compliance
     dependencies:
       - controls
 
@@ -142,10 +124,6 @@ modules:
       - User
       - Role
       - Permission
-    routes:
-      - /security/login
-      - /admin/users
-      - /admin/roles
     dependencies: []
 
   audit_logging:
@@ -155,8 +133,6 @@ modules:
     icon: 'file-lines'
     entities:
       - AuditLog
-    routes:
-      - /audit-log
     dependencies:
       - authentication
 
@@ -175,12 +151,6 @@ modules:
       - DataBreach
       - DataSubjectRequest
       - DataProtectionImpactAssessment
-    routes:
-      - /consent
-      - /processing-activity
-      - /data-breach
-      - /data-subject-request
-      - /dpia
     dependencies:
       - assets
 
@@ -193,7 +163,6 @@ modules:
       - Incident
       - Risk
       - Supplier
-    routes: []
     dependencies:
       - incidents
       - risks
@@ -206,8 +175,6 @@ modules:
     icon: 'cpu'
     entities:
       - Asset
-    routes:
-      - app_ai_agents_index
     dependencies:
       - assets
 
@@ -219,7 +186,6 @@ modules:
     entities:
       - Control
       - Asset
-    routes: []
     dependencies:
       - controls
       - assets
@@ -232,9 +198,6 @@ modules:
     entities:
       - Vulnerability
       - ThreatIntelligence
-    routes:
-      - /vulnerability
-      - /threat-intelligence
     dependencies:
       - risks
 
@@ -246,7 +209,6 @@ modules:
     entities:
       - Supplier
       - Risk
-    routes: []
     dependencies:
       - risks
       - compliance
@@ -258,7 +220,6 @@ modules:
     icon: 'people-arrows'
     entities:
       - Supplier
-    routes: []
     dependencies:
       - suppliers
 
@@ -269,8 +230,6 @@ modules:
     icon: 'car-front'
     entities:
       - PrototypeProtectionAssessment
-    routes:
-      - /prototype-protection
     dependencies:
       - controls
 
@@ -286,7 +245,6 @@ modules:
     icon: 'currency-euro'
     entities:
       - Risk
-    routes: []
     dependencies:
       - risks
 
@@ -300,10 +258,6 @@ modules:
       - NotificationChannel
       - NotificationDelivery
       - SlaDeadlineMonitor
-    routes:
-      - admin_notification_rule_index
-      - admin_notification_channel_index
-      - notification_center_index
     dependencies:
       - core
 
@@ -315,8 +269,6 @@ modules:
     entities:
       - AuthorityTemplate
       - Nis2RegistrationProfile
-    routes:
-      - authority_hub_index
     dependencies:
       - compliance
 
@@ -327,8 +279,6 @@ modules:
     icon: 'journal-text'
     entities:
       - AnswerLibraryEntry
-    routes:
-      - app_answer_library_index
     dependencies:
       - core
 
@@ -352,9 +302,6 @@ modules:
       - DocumentControlLink
       - PolicyTemplate
       - PolicyAcknowledgement
-    routes:
-      - /document
-      - /policy
     dependencies:
       - core
     wizard_consumers:
@@ -375,8 +322,6 @@ modules:
     entities:
       - Supplier
       - SupplierCriticalityLevel
-    routes:
-      - /supplier
     dependencies:
       - risks
       - assets
@@ -391,8 +336,6 @@ modules:
     icon: 'geo-alt'
     entities:
       - Location
-    routes:
-      - /location
     dependencies:
       - assets
 
@@ -403,8 +346,6 @@ modules:
     icon: 'person-badge'
     entities:
       - Person
-    routes:
-      - /person
     dependencies:
       - core
     wizard_consumers:
@@ -418,8 +359,6 @@ modules:
     icon: 'people'
     entities:
       - InterestedParty
-    routes:
-      - /interested-party
     dependencies:
       - core
 
@@ -430,8 +369,6 @@ modules:
     icon: 'bullseye'
     entities:
       - ISMSObjective
-    routes:
-      - /objective
     dependencies:
       - core
 
@@ -442,8 +379,6 @@ modules:
     icon: 'arrow-left-right'
     entities:
       - ChangeRequest
-    routes:
-      - /change-request
     dependencies:
       - controls
 
@@ -454,8 +389,6 @@ modules:
     icon: 'bandaid'
     entities:
       - Patch
-    routes:
-      - /patch
     dependencies:
       - vulnerability_intel
 
@@ -466,8 +399,6 @@ modules:
     icon: 'wrench'
     entities:
       - CorrectiveAction
-    routes:
-      - /corrective-action
     dependencies:
       - audits
 
@@ -485,8 +416,6 @@ modules:
       - Workflow
       - WorkflowInstance
       - WorkflowStep
-    routes:
-      - /workflow
     dependencies:
       - core
 
@@ -498,8 +427,6 @@ modules:
     entities:
       - RiskAppetite
       - RiskApprovalConfig
-    routes:
-      - /risk-appetite
     dependencies:
       - risks
 
@@ -510,8 +437,6 @@ modules:
     icon: 'journal-check'
     entities:
       - RiskTreatmentPlan
-    routes:
-      - /risk-treatment-plan
     dependencies:
       - risks
       - controls
@@ -524,8 +449,6 @@ modules:
     entities:
       - KpiSnapshot
       - KpiThresholdConfig
-    routes:
-      - /analytics
     dependencies:
       - core
 
@@ -536,9 +459,6 @@ modules:
     icon: 'layout-text-sidebar'
     entities:
       - CustomReport
-    routes:
-      - /report-builder
-      - /reports
     dependencies:
       - core
 
@@ -550,8 +470,6 @@ modules:
     entities:
       - ScheduledReport
       - ScheduledTask
-    routes:
-      - /reports/scheduled
     dependencies:
       - report_builder
 
@@ -562,9 +480,6 @@ modules:
     icon: 'collection'
     entities:
       - PortfolioSnapshot
-    routes:
-      - /reports/management/portfolio
-      - /group-report
     dependencies:
       - core
 
@@ -574,8 +489,6 @@ modules:
     required: false
     icon: 'shield-shaded'
     entities: []
-    routes:
-      - /soa
     dependencies:
       - core
       - controls
@@ -586,7 +499,6 @@ modules:
     required: false
     icon: 'shield-lock'
     entities: []
-    routes: []
     dependencies:
       - controls
       - compliance
@@ -603,8 +515,6 @@ modules:
       - ActionItem
       - ActionItemReference
       - UnavailabilityCalendar
-    routes:
-      - /planning
     dependencies:
       - core
 
@@ -614,7 +524,6 @@ modules:
     required: false
     icon: 'file-earmark-text'
     entities: []
-    routes: []
     dependencies:
       - compliance
 

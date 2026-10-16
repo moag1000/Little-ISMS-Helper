@@ -57,7 +57,7 @@ final class SetupTenantBootstrapper
                 // operational `active` place; the default initial-marking
                 // `draft` would otherwise block login flows for the wizard
                 // user moments later.
-                $tenant->setStatus(Tenant::STATUS_ACTIVE);
+                $tenant->setStatus(Tenant::STATUS_ACTIVE); // @phpstan-ignore lifecycle.directSetStatus (initial state on the unpersisted first Tenant; equals tenant_lifecycle `activate` draft→active, which has no four-eyes/reason; no tenant context exists yet during setup)
                 $this->entityManager->persist($tenant);
             } else {
                 $orgName = $session->get('setup_organisation_name');

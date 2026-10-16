@@ -440,7 +440,8 @@
             </section>
         </div>
 
-        {# Supplier Criticality Levels #}
+        {# Supplier Criticality Levels — suppliers module only #}
+        {% if is_module_active('suppliers') %}
         <div class="col-md-6 col-lg-4">
             <section class="fa-section h-100">
                 <div class="fa-section__body">
@@ -463,6 +464,7 @@
                 </div>
             </section>
         </div>
+        {% endif %}
 
         {# Tags #}
         <div class="col-md-6 col-lg-4">

@@ -201,9 +201,9 @@ class IndustryPresetController extends AbstractController
             if (method_exists($doc, 'setDocumentType')) {
                 $doc->setDocumentType((string) ($ddef['type'] ?? 'policy'));
             }
-            if (method_exists($doc, 'setStatus')) {
-                $doc->setStatus((string) ($ddef['status'] ?? 'draft')); // @phpstan-ignore lifecycle.directSetStatus (industry preset setup — initial state outside lifecycle flow)
-            }
+            // No status from preset data: a new document always starts at the
+            // document_lifecycle initial marking (`draft`, entity default) and
+            // moves on only through LifecycleService transitions.
             $this->entityManager->persist($doc);
             $documentsCreated++;
         }

@@ -551,18 +551,17 @@ class DocumentController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        // Map target-status values (posted by the UI) to workflow transition names
-        // defined in config/workflows/document.yaml. `published` is context-sensitive:
-        // `restore` when coming from `archived`, else `publish` (from `approved`).
-        $statusToTransition = [
-            'in_review' => 'submit_for_review',
-            'approved'  => 'approve',
-            'draft'     => 'request_changes',
-            'archived'  => 'archive',
-            'published' => static fn (object $document): string =>
-                ($document instanceof Document && (string) $document->getStatus() === 'archived') ? 'restore' : 'publish',
+        // 5-transition bulk matrix by current status → target → transition name
+        // (config/workflows/document.yaml). `published` is context-sensitive:
+        // `restore` when coming from `archived`, `publish` from `approved`.
+        $statusMatrix = [
+            'draft'     => ['in_review' => 'submit_for_review'],
+            'in_review' => ['approved' => 'approve', 'draft' => 'request_changes'],
+            'approved'  => ['published' => 'publish'],
+            'published' => ['archived' => 'archive'],
+            'archived'  => ['published' => 'restore'],
         ];
-        if (!isset($statusToTransition[$newStatus])) {
+        if (!in_array($newStatus, self::bulkStatusTargets($statusMatrix), true)) {
             return $this->json(['error' => 'Invalid target status'], 400);
         }
 
@@ -590,7 +589,7 @@ class DocumentController extends AbstractController
         $result = $this->applyBulkStatusChange(
             $documents,
             'document_lifecycle',
-            $statusToTransition,
+            $statusMatrix,
             $newStatus,
             $reason,
             $user instanceof User ? $user : null,

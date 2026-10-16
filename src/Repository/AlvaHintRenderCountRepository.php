@@ -8,6 +8,7 @@ use App\Entity\AlvaHintRenderCount;
 use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,8 +39,10 @@ class AlvaHintRenderCountRepository extends ServiceEntityRepository
             'tenant' => $tenant?->getId(),
             'hintKey' => $hintKey,
         ], [
-            'tenant' => $tenant !== null ? \PDO::PARAM_INT : \PDO::PARAM_NULL,
-            'hintKey' => \PDO::PARAM_STR,
+            // DBAL 4 only accepts ParameterType cases here — the old
+            // \PDO::PARAM_* ints raised a TypeError on every hint render.
+            'tenant' => $tenant !== null ? ParameterType::INTEGER : ParameterType::NULL,
+            'hintKey' => ParameterType::STRING,
         ]);
     }
 

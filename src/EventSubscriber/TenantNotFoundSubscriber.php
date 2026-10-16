@@ -8,9 +8,11 @@ use App\Entity\Tenant;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -22,7 +24,8 @@ final class TenantNotFoundSubscriber
 {
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly RequestStack $requestStack
+        private readonly RequestStack $requestStack,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -60,10 +63,12 @@ final class TenantNotFoundSubscriber
 
         // Add flash message
         $session = $this->requestStack->getSession();
-        $session->getFlashBag()->add(
-            'danger',
-            'Der angeforderte Mandant wurde nicht gefunden. Möglicherweise wurde er gelöscht.'
-        );
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add(
+                'danger',
+                $this->translator->trans('tenant.flash.not_found', [], 'tenant'),
+            );
+        }
 
         // Redirect to appropriate page (only for detail/edit pages with {id} parameter)
         if (str_contains($path, '/admin/tenants/') && $request->attributes->has('id')) {

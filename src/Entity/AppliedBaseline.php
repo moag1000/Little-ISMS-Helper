@@ -48,7 +48,7 @@ class AppliedBaseline
 
     /**
      * What was actually created (for audit transparency).
-     * @var array<string,int>
+     * @var array<string, int|list<string>>
      */
     #[ORM\Column(type: Types::JSON)]
     private array $createdSummary = [];
@@ -112,13 +112,13 @@ class AppliedBaseline
         return $this->appliedAt;
     }
 
-    /** @return array<string,int> */
+    /** @return array<string, int|list<string>> */
     public function getCreatedSummary(): array
     {
         return $this->createdSummary;
     }
 
-    /** @param array<string,int> $summary */
+    /** @param array<string, int|list<string>> $summary */
     public function setCreatedSummary(array $summary): static
     {
         $this->createdSummary = $summary;

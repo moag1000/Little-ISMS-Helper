@@ -2,13 +2,13 @@
 # Format: <relative-path>:<line>
 src/Controller/AuditFreezeController.php:177
 src/Controller/AuditFreezeController.php:183
-src/Controller/ManagementReportController.php:966
+src/Controller/ManagementReportController.php:922
 src/Entity/AccessReviewCampaign.php:149
 src/Entity/AccessReviewCampaign.php:178
 src/Entity/AccessReviewItem.php:171
 src/Entity/ComplianceRequirement.php:609
 src/Repository/ComplianceMappingRepository.php:64
-src/Service/AccessReviewCampaignService.php:167
+src/Service/AccessReviewCampaignService.php:169
 src/Service/Audit/Generator/AccessReviewWorkbookGenerator.php:61
 src/Service/Compliance/FrameworkLoaderRegistry.php:49
 src/Service/ComplianceLoaderFixerService.php:115

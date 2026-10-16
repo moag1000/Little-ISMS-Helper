@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 /**
  * Admin wrapper for License Management.
@@ -185,7 +186,7 @@ class AdminLicensingController extends AbstractController
                 'message' => 'License report generation failed',
                 'error' => $result['error_output'] ?: $result['output'],
             ], 500);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error generating license report: ' . $e->getMessage(),

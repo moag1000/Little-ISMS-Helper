@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Service\BulkDeleteService;
 use RuntimeException;
 use DateTime;
 use Exception;
 use App\Controller\Trait\InPageFormTrait;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\ProcessingActivity;
 use App\Entity\Supplier;
@@ -19,7 +19,6 @@ use App\Form\ProcessingActivityType;
 use App\Lifecycle\LifecycleService;
 use App\Repository\ProcessingActivityRepository;
 use App\Service\AuditLogger;
-use App\Service\ModuleConfigurationService;
 use App\Service\PreFiller\AvvPickerPreFiller;
 use App\Service\ProcessingActivityService;
 use App\Service\PdfExportService;
@@ -41,9 +40,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
 
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('privacy')]
 class ProcessingActivityController extends AbstractController
 {
-    use ModuleGatedControllerTrait;
     use BulkActionTrait;
     use InPageFormTrait;
 
@@ -53,7 +52,6 @@ class ProcessingActivityController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
-        private readonly ModuleConfigurationService $moduleService,
         private readonly ?AvvPickerPreFiller $avvPickerPreFiller = null,
         private readonly ?ProcessingActivityRepository $processingActivityRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
@@ -68,8 +66,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity', name: 'app_processing_activity_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // Get filter parameters
         $filter = $request->query->get('filter', 'all');
 
@@ -101,8 +97,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/new', name: 'app_processing_activity_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $processingActivity = new ProcessingActivity();
         $processingActivity->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -143,8 +137,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/edit', name: 'app_processing_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $form = $this->createForm(ProcessingActivityType::class, $processingActivity);
         $form->handleRequest($request);
 
@@ -183,8 +175,6 @@ class ProcessingActivityController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if ($this->isCsrfTokenValid('delete' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->delete($processingActivity);
 
@@ -200,8 +190,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/activate', name: 'app_processing_activity_activate', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function activate(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('activate' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', $this->translator->trans('processing_activity.error.invalid_csrf', [], 'privacy'));
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
@@ -223,8 +211,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/archive', name: 'app_processing_activity_archive', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function archive(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if ($this->isCsrfTokenValid('archive' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->archive($processingActivity);
 
@@ -240,8 +226,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/mark-for-review', name: 'app_processing_activity_mark_for_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function markForReview(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if ($this->isCsrfTokenValid('review' . $processingActivity->getId(), $request->request->get('_token'))) {
             $reviewDateStr = $request->request->get('review_date');
             $reviewDate = $reviewDateStr ? new DateTime($reviewDateStr) : null;
@@ -260,8 +244,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/complete-review', name: 'app_processing_activity_complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function completeReview(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if ($this->isCsrfTokenValid('complete-review' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->completeReview($processingActivity);
 
@@ -277,8 +259,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/clone', name: 'app_processing_activity_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function clone(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('clone' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', $this->translator->trans('processing_activity.error.invalid_csrf', [], 'privacy'));
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
@@ -297,8 +277,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/dashboard', name: 'app_processing_activity_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $statistics = $this->processingActivityService->getDashboardStatistics();
         $complianceScore = $this->processingActivityService->calculateComplianceScore();
 
@@ -321,8 +299,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/export/pdf', name: 'app_processing_activity_export_pdf', methods: ['GET'])]
     public function exportPdf(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $exportData = $this->processingActivityService->generateVVTExport();
 
         // Close session to prevent blocking
@@ -363,8 +339,6 @@ class ProcessingActivityController extends AbstractController
         \App\Service\Job\JobStatusService $jobStatusService,
         \App\Service\Job\JobDispatcher $jobDispatcher,
     ): Response {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $jobId = $jobStatusService->create('processing_activity.vvt_export', [
             '_label' => $this->translator->trans('processing_activity.export.progress_title', [], 'privacy'),
             '_subtitle' => $this->translator->trans('processing_activity.export.progress_subtitle', [], 'privacy'),
@@ -400,8 +374,6 @@ class ProcessingActivityController extends AbstractController
         \App\Service\Job\JobStatusService $jobStatusService,
         KernelInterface $kernel,
     ): Response {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
             throw $this->createNotFoundException('Invalid export ID.');
         }
@@ -443,8 +415,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/export/csv', name: 'app_processing_activity_export_csv', methods: ['GET'])]
     public function exportCsv(): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $exportData = $this->processingActivityService->generateVVTExport();
 
         $csv = [];
@@ -514,8 +484,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/search', name: 'app_processing_activity_search', methods: ['GET'])]
     public function search(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $query = $request->query->get('q', '');
 
         if (strlen($query) < 2) {
@@ -579,10 +547,6 @@ class ProcessingActivityController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        if ($this->checkModuleActive('privacy') instanceof Response) {
-            return $this->json(['error' => 'Privacy module not active'], 403);
-        }
-
         return $this->handleBulkDelete(
             $request,
             $bulkDeleteService,
@@ -603,8 +567,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}', name: 'app_processing_activity_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // In-modal → condensed read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('processing_activity/_detail_modal.html.twig', [
@@ -632,8 +594,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/compliance-report', name: 'app_processing_activity_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function complianceReport(ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $report = $this->processingActivityService->generateComplianceReport($processingActivity);
 
         return $this->json($report);
@@ -645,8 +605,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/validate', name: 'app_processing_activity_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function validate(ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $errors = $this->processingActivityService->validate($processingActivity);
         $isCompliant = $errors === [];
 
@@ -668,10 +626,6 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/avv-picker', name: 'app_processing_activity_avv_picker', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function avvPicker(Request $request, ProcessingActivity $processingActivity): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) {
-            return $redirect;
-        }
-
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null || $processingActivity->getTenant() !== $tenant) {
             throw $this->createNotFoundException();
@@ -724,10 +678,6 @@ class ProcessingActivityController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) {
-            return $redirect;
-        }
-
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);
@@ -796,10 +746,6 @@ class ProcessingActivityController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkStatusChange(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) {
-            return $redirect;
-        }
-
         $data      = json_decode($request->getContent(), true);
         $data      = is_array($data) ? $data : [];
         if (!$this->isBulkCsrfTokenValid($request, $data)) {
@@ -813,17 +759,16 @@ class ProcessingActivityController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        // Map target-status to transition name (processing_activity_lifecycle).
-        // `published` is context-sensitive: `restore` from `archived`, else `publish`.
-        $statusToTransition = [
-            'in_review' => 'submit_for_review',
-            'approved'  => 'approve',
-            'draft'     => 'request_changes',
-            'archived'  => 'archive',
-            'published' => static fn (object $pa): string =>
-                ($pa instanceof ProcessingActivity && $pa->getStatus() === 'archived') ? 'restore' : 'publish',
+        // 5-transition bulk matrix by current status (processing_activity_lifecycle);
+        // archived→published is `restore`. Unknown targets never reach the workflow.
+        $statusMatrix = [
+            'draft'     => ['in_review' => 'submit_for_review'],
+            'in_review' => ['approved' => 'approve', 'draft' => 'request_changes'],
+            'approved'  => ['published' => 'publish'],
+            'published' => ['archived' => 'archive'],
+            'archived'  => ['published' => 'restore'],
         ];
-        if (!isset($statusToTransition[$newStatus])) {
+        if (!in_array($newStatus, self::bulkStatusTargets($statusMatrix), true)) {
             return $this->json(['error' => 'Invalid target status'], 400);
         }
 
@@ -852,7 +797,7 @@ class ProcessingActivityController extends AbstractController
         $result = $this->applyBulkStatusChange(
             $activities,
             'processing_activity_lifecycle',
-            $statusToTransition,
+            $statusMatrix,
             $newStatus,
             $reason,
             $lifecycleUser,

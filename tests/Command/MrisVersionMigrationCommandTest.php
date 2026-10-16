@@ -134,6 +134,18 @@ final class MrisVersionMigrationCommandTest extends TestCase
         self::assertContains('MHC-14', $persistedIds);
         self::assertContains('MHC-15', $persistedIds);
 
+        // Regression: applyDiff() used to receive the diff without the
+        // indexed target requirements, so ADDs got the id as title and no
+        // description, and renames kept the old title.
+        $byId = [];
+        foreach ($persisted as $req) {
+            $byId[$req->getRequirementId()] = $req;
+        }
+        self::assertSame('Title 14', $byId['MHC-14']->getTitle());
+        self::assertSame('desc 14', $byId['MHC-14']->getDescription());
+        self::assertSame('New Title 01', $this->requirementsByMhc['MHC-01']->getTitle());
+        self::assertSame('desc 01 updated', $this->requirementsByMhc['MHC-01']->getDescription());
+
         // Audit-Logs: ADD (2) + UPDATE rename (1) + DEPRECATE (1) = 4. Maturity-Reset
         // wird vom MrisMaturityService selbst geloggt (nicht über logCustom hier).
         $migrationLogs = array_filter($auditCalls, fn(array $c) => $c['action'] === 'MrisVersionMigration');

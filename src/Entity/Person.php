@@ -107,6 +107,7 @@ class Person
     #[Groups(['person:read', 'person:write'])]
     private ?DateTimeInterface $accessValidUntil = null;
 
+    /** @var Collection<int, PhysicalAccessLog> */
     #[ORM\OneToMany(targetEntity: PhysicalAccessLog::class, mappedBy: 'person')]
     private Collection $accessLogs;
 

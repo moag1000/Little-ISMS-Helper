@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Service\BulkDeleteService;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
@@ -28,6 +29,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[RequiresModule('bcm')]
 class BCExerciseController extends AbstractController
 {
     use ModuleGatedControllerTrait;

@@ -299,29 +299,34 @@ trait BulkActionTrait
      * Apply bulk status-change via LifecycleService::transition() and return
      * a result array suitable for a JSON response.
      *
-     * Only targets listed in $statusToTransition are accepted; an unknown
-     * target returns ['ok' => false, 'error' => 'invalid_status'] and never
-     * reaches the workflow (the posted value is not a transition name).
-     * A map value may be a Closure resolving the transition per entity
-     * (e.g. `published` = `restore` from `archived`, else `publish`).
+     * Only moves listed in $statusMatrix (currentStatus → [targetStatus →
+     * transitionName], the CLAUDE.md 5-transition matrix) are applied. The
+     * transition depends on where the entity is now: `published` is `publish`
+     * from approved but `restore` from archived. A target that appears in no
+     * row of the matrix returns ['ok' => false, 'error' => 'invalid_status']
+     * and never reaches the workflow (the posted value is not a transition
+     * name). Per entity, a move outside the matrix is rejected with
+     * `transition_not_allowed` and the lifecycle voter must grant the
+     * transition (`forbidden` otherwise).
      *
-     * @param iterable<object>                                   $entities           Pre-tenant-scoped entities.
-     * @param string                                             $workflowName       Symfony Workflow name.
-     * @param array<string, string|\Closure(object): string>     $statusToTransition Map of newStatus → transition.
-     * @param string                                             $newStatus          Target status posted by the UI.
-     * @param string|null                                        $reason             Optional reason from the UI.
-     * @param User|null                                          $user               Authenticated user.
-     * @param string                                             $entityType         Short entity class name for audit-log.
-     * @param LifecycleService|null                              $lifecycleService
-     * @param AuditLogger|null                                   $auditLogger
-     * @param list<array{id: mixed, reason: string}>             $preRejected        Ids the caller already rejected
-     *                                                                               (not found / other tenant).
+     * @param iterable<object>                       $entities     Pre-tenant-scoped entities.
+     * @param string                                 $workflowName Symfony Workflow name.
+     * @param array<string, array<string, string>>   $statusMatrix Allowed moves as
+     *                                                             currentStatus → [targetStatus → transitionName].
+     * @param string                                 $newStatus    Target status posted by the UI.
+     * @param string|null                            $reason       Optional reason from the UI.
+     * @param User|null                              $user         Authenticated user.
+     * @param string                                 $entityType   Short entity class name for audit-log.
+     * @param LifecycleService|null                  $lifecycleService
+     * @param AuditLogger|null                       $auditLogger
+     * @param list<array{id: mixed, reason: string}> $preRejected  Ids the caller already rejected
+     *                                                             (not found / other tenant).
      * @return array{ok: bool, changed?: int, rejected?: list<array{id: mixed, reason: string}>, error?: string, batch_id?: ?string}
      */
     protected function applyBulkStatusChange(
         iterable $entities,
         string $workflowName,
-        array $statusToTransition,
+        array $statusMatrix,
         string $newStatus,
         ?string $reason,
         ?User $user,
@@ -330,13 +335,12 @@ trait BulkActionTrait
         ?AuditLogger $auditLogger = null,
         array $preRejected = [],
     ): array {
-        if (!isset($statusToTransition[$newStatus])) {
+        if (!in_array($newStatus, self::bulkStatusTargets($statusMatrix), true)) {
             return ['ok' => false, 'error' => 'invalid_status'];
         }
         if ($lifecycleService === null) {
             return ['ok' => false, 'error' => 'lifecycle_service_unavailable'];
         }
-        $mapping = $statusToTransition[$newStatus];
 
         $changed = 0;
         $rejected = $preRejected;
@@ -344,9 +348,21 @@ trait BulkActionTrait
 
         foreach ($entities as $entity) {
             $id = method_exists($entity, 'getId') ? $entity->getId() : null;
+            $currentStatus = method_exists($entity, 'getStatus') ? (string) $entity->getStatus() : '';
+            // The transition depends on where the entity is now: `published`
+            // means `publish` from approved but `restore` from archived.
+            $transitionName = $statusMatrix[$currentStatus][$newStatus] ?? null;
+            if ($transitionName === null) {
+                $rejected[] = ['id' => $id, 'reason' => 'transition_not_allowed'];
+                continue;
+            }
+            // Per-transition roles (YAML + tenant overrides) still apply.
+            if (!$this->isGranted(sprintf('lifecycle.%s.%s', $workflowName, $transitionName), $entity)) {
+                $rejected[] = ['id' => $id, 'reason' => 'forbidden'];
+                continue;
+            }
 
             try {
-                $transitionName = $mapping instanceof \Closure ? $mapping($entity) : $mapping;
                 $lifecycleService->transition(
                     $entity,
                     $workflowName,
@@ -383,5 +399,16 @@ trait BulkActionTrait
         }
 
         return ['ok' => true, 'changed' => $changed, 'rejected' => $rejected, 'batch_id' => $batchId];
+    }
+
+    /**
+     * Every target status reachable through the bulk matrix.
+     *
+     * @param array<string, array<string, string>> $statusMatrix
+     * @return list<string>
+     */
+    protected static function bulkStatusTargets(array $statusMatrix): array
+    {
+        return array_values(array_unique(array_merge(...array_values(array_map('array_keys', $statusMatrix)))));
     }
 }

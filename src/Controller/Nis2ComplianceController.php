@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use DateTime;
 use App\Entity\Incident;
 use App\Repository\ComplianceFrameworkRepository;
@@ -35,6 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * NIS2 is only mandatory for essential/important entities as defined in the directive.
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('nis2_dora')]
 class Nis2ComplianceController extends AbstractController
 {
     use ModuleGatedControllerTrait;

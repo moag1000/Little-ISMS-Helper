@@ -17,6 +17,7 @@ use App\Exception\InvalidArgument\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * Unit tests for PolicySectionApprovalService — Phase 4-C / W3-C.
@@ -33,6 +34,7 @@ class PolicySectionApprovalServiceTest extends TestCase
     private DocumentSectionRepository $sectionRepo;
     private AuditLogger $auditLogger;
     private PolicySectionApprovalService $service;
+    private YamlWorkflowLifecycle $lifecycle;
 
     protected function setUp(): void
     {
@@ -50,6 +52,7 @@ class PolicySectionApprovalServiceTest extends TestCase
             $this->em,
             $this->sectionRepo,
             $this->auditLogger,
+            $this->lifecycle = new YamlWorkflowLifecycle(),
         );
     }
 
@@ -86,10 +89,12 @@ class PolicySectionApprovalServiceTest extends TestCase
 
         $this->auditLogger->expects(self::once())->method('logCustom');
         $this->em->expects(self::atLeastOnce())->method('persist')->with($section);
-        $this->em->expects(self::atLeastOnce())->method('flush');
         $this->sectionRepo->method('allSectionsApproved')->willReturn(false);
 
         $this->service->approve($section, $approver);
+
+        self::assertSame(['approve'], $this->lifecycle->appliedTransitions());
+        self::assertSame('document_section_lifecycle', $this->lifecycle->applied[0]['workflow']);
 
         self::assertSame(DocumentSection::STATUS_APPROVED, $section->getStatus());
         self::assertSame($approver, $section->getApprovedByUser());
@@ -140,9 +145,11 @@ class PolicySectionApprovalServiceTest extends TestCase
         // audit-log event (notify-target trail). Two logCustom calls total.
         $this->auditLogger->expects(self::atLeastOnce())->method('logCustom');
         $this->em->expects(self::atLeastOnce())->method('persist')->with($section);
-        $this->em->expects(self::atLeastOnce())->method('flush');
 
         $this->service->reject($section, $approver, 'Privacy impact under-assessed: missing data-subject category.');
+
+        self::assertSame(['reject'], $this->lifecycle->appliedTransitions());
+        self::assertNotEmpty($this->lifecycle->applied[0]['reason']);
 
         self::assertSame(DocumentSection::STATUS_REJECTED, $section->getStatus());
         self::assertSame($approver, $section->getRejectedByUser());
@@ -162,5 +169,61 @@ class PolicySectionApprovalServiceTest extends TestCase
         $this->service->reject($section, $approver, "   Reason A   \n");
 
         self::assertSame('Reason A', $section->getRejectionReason());
+    }
+
+    #[Test]
+    public function lastSectionApprovalReleasesHostWorkflowThroughLifecycleWithFourEyes(): void
+    {
+        $initiator = $this->makeUser(3);
+        $approver = $this->makeUser(7);
+
+        $step = $this->createMock(\App\Entity\WorkflowStep::class);
+        $step->method('getName')->willReturn('top_mgmt_signoff');
+        $host = new \App\Entity\WorkflowInstance();
+        $host->setStatus('in_progress');
+        $host->setCurrentStep($step);
+        $host->setInitiatedBy($initiator);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $hostRepo = $this->createMock(EntityRepository::class);
+        $hostRepo->method('findOneBy')->willReturn($host);
+        $em->method('getRepository')->willReturn($hostRepo);
+        $sectionRepo = $this->createMock(DocumentSectionRepository::class);
+        $sectionRepo->method('allSectionsApproved')->willReturn(true);
+        $lifecycle = new YamlWorkflowLifecycle();
+
+        $service = new PolicySectionApprovalService($em, $sectionRepo, $this->auditLogger, $lifecycle);
+        $service->approve($this->makeSection(), $approver);
+
+        self::assertSame('approved', $host->getStatus());
+        self::assertSame(['approve', 'approve'], $lifecycle->appliedTransitions());
+        $hostTransition = $lifecycle->applied[1];
+        self::assertSame('workflow_instance_lifecycle', $hostTransition['workflow']);
+        self::assertSame($initiator, $hostTransition['user']);
+        self::assertSame($approver, $hostTransition['approver']);
+    }
+
+    #[Test]
+    public function hostWorkflowThatIsNotRunningIsNotTouched(): void
+    {
+        $step = $this->createMock(\App\Entity\WorkflowStep::class);
+        $step->method('getName')->willReturn('top_mgmt_signoff');
+        $host = new \App\Entity\WorkflowInstance();
+        $host->setStatus('cancelled');
+        $host->setCurrentStep($step);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $hostRepo = $this->createMock(EntityRepository::class);
+        $hostRepo->method('findOneBy')->willReturn($host);
+        $em->method('getRepository')->willReturn($hostRepo);
+        $sectionRepo = $this->createMock(DocumentSectionRepository::class);
+        $sectionRepo->method('allSectionsApproved')->willReturn(true);
+        $lifecycle = new YamlWorkflowLifecycle();
+
+        $service = new PolicySectionApprovalService($em, $sectionRepo, $this->auditLogger, $lifecycle);
+        $service->approve($this->makeSection(), $this->makeUser());
+
+        self::assertSame('cancelled', $host->getStatus());
+        self::assertSame(['approve'], $lifecycle->appliedTransitions());
     }
 }

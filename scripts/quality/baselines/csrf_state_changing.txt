@@ -8,5 +8,3 @@ src/Controller/ReportBuilderController.php::share
 src/Controller/ReportBuilderController.php::saveAsTemplate
 src/Controller/ReportBuilderController.php::delete
 src/Controller/ShareController.php::handleShare
-# Fixed on the lifecycle branch (AuditProgram archive moves to LifecycleService); drop when merged.
-src/Controller/AuditProgramController.php::archive#literal-id

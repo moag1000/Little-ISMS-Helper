@@ -1085,7 +1085,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      * This enables targeted remediation strategies.
      *
      * @param array $gaps Array of gap requirements (unfulfilled requirements)
-     * @return array{root_causes: array, category_patterns: array, recommendations: array, dependency_blockers: array} Root cause analysis
+     * @return array{root_causes: array, category_patterns: array, recommendations: array, summary: array<string, int>} Root cause analysis
      */
     public function analyzeGapRootCauses(array $gaps): array
     {
@@ -1100,7 +1100,9 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         $categoryPatterns = [];
 
         foreach ($gaps as $gap) {
-            $fulfillment = $gap->getFulfillmentPercentage() ?? 0;
+            // getFulfillmentPercentage() returns a float — the strict `=== 0`
+            // below used to miss 0.0, so untouched gaps landed in no bucket.
+            $fulfillment = (float) $gap->getFulfillmentPercentage();
             $priority = $gap->getPriority() ?? 'medium';
             $category = $gap->getCategory() ?? 'Uncategorized';
 
@@ -1126,18 +1128,16 @@ class ComplianceMappingRepository extends ServiceEntityRepository
                 'fulfillment' => $fulfillment,
             ];
 
-            // Classify root cause based on fulfillment level
-            if ($fulfillment === 0) {
-                $rootCauses['not_started'][] = $gapInfo;
-            } elseif ($fulfillment > 0 && $fulfillment < 30) {
-                // Very low fulfillment suggests missing control
-                $rootCauses['missing_control'][] = $gapInfo;
-            } elseif ($fulfillment >= 30 && $fulfillment < 80) {
-                // Medium fulfillment suggests incomplete implementation
-                $rootCauses['incomplete_implementation'][] = $gapInfo;
-            } elseif ($fulfillment >= 80 && $fulfillment < 100) {
-                // High fulfillment but not complete suggests missing evidence
-                $rootCauses['missing_evidence'][] = $gapInfo;
+            // Classify root cause based on fulfillment level (100 % = no gap bucket)
+            $bucket = match (true) {
+                $fulfillment <= 0.0 => 'not_started',
+                $fulfillment < 30 => 'missing_control',            // very low: control missing
+                $fulfillment < 80 => 'incomplete_implementation',  // medium: partially implemented
+                $fulfillment < 100 => 'missing_evidence',          // high but incomplete: evidence missing
+                default => null,
+            };
+            if ($bucket !== null) {
+                $rootCauses[$bucket][] = $gapInfo;
             }
 
             // Check for low-priority deprioritization
@@ -1150,18 +1150,17 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         foreach ($categoryPatterns as &$categoryPattern) {
             $categoryPattern['avg_fulfillment'] = (int) $categoryPattern['count'] > 0
                 ? round((float) $categoryPattern['total_fulfillment'] / (int) $categoryPattern['count'], 1)
-                : 0;
+                : 0.0;
 
-            // Determine dominant root cause for category
-            if ($categoryPattern['avg_fulfillment'] === 0) {
-                $categoryPattern['dominant_root_cause'] = 'not_started';
-            } elseif ($categoryPattern['avg_fulfillment'] < 30) {
-                $categoryPattern['dominant_root_cause'] = 'missing_control';
-            } elseif ($categoryPattern['avg_fulfillment'] < 80) {
-                $categoryPattern['dominant_root_cause'] = 'incomplete_implementation';
-            } else {
-                $categoryPattern['dominant_root_cause'] = 'missing_evidence';
-            }
+            // Determine dominant root cause for category. round() yields a
+            // float, so compare against 0.0 — the former `=== 0` never matched
+            // and fully untouched categories were reported as missing_control.
+            $categoryPattern['dominant_root_cause'] = match (true) {
+                $categoryPattern['avg_fulfillment'] === 0.0 => 'not_started',
+                $categoryPattern['avg_fulfillment'] < 30 => 'missing_control',
+                $categoryPattern['avg_fulfillment'] < 80 => 'incomplete_implementation',
+                default => 'missing_evidence',
+            };
 
             unset($categoryPattern['total_fulfillment']); // Remove helper field
         }
