@@ -105,6 +105,39 @@ The physical-lifecycle has 7 places and 9 transitions. Disposal requires 4-eyes 
 
 Identical stage names to Document, but only visible / accessible when the `privacy` module is active for your tenant. The audit trail for ProcessingActivity transitions feeds directly into your GDPR Article 30 Register of Processing Activities evidence package.
 
+### Audit programme
+`planning` → `active` → `completed` → `archived`
+
+Archiving an audit programme requires a reason (entered on the programme page) and is recorded in the Status-History.
+
+### Policy section (generated policies)
+`draft` / `dpo_sign_off` → `approved`, or → `rejected` → `draft`
+
+Privacy and joint sections of a generated policy need their own sign-off (DPO or CISO) before the host document's approval workflow is released (GDPR Art. 38(3)). These transitions are only available on the section approval page, not through the generic Aktionen dropdown, because the self-approval ban and the approver-role check live there.
+
+### Transfer Impact Assessment (GDPR module required)
+`draft` → `assessed`, reopen → `draft`
+
+Reopening an assessed TIA requires DPO or Manager and a reason.
+
+### Threat-Led Penetration Test (DORA module required)
+`planned` → `scoping` → `red_team` → `reporting` → `closed`
+
+Closing and cancelling a TLPT require a reason.
+
+### Supplier questionnaire
+`draft` → `sent` → `completed` → `reviewed`
+
+"Completed" is set only when the supplier submits the questionnaire through the public link.
+
+### Access review campaign
+`open` → `closed`
+
+### Compliance mapping (global catalogue data)
+`draft` → `review` → `approved` → `published` → `deprecated`, restore → `published`
+
+Mappings are shared by all organisations. Managers may submit a draft for review or send it back; approving, publishing, deprecating and restoring need ROLE_ADMIN. Organisation overrides do not apply to mappings.
+
 ---
 
 ## Admin overrides (ROLE_ADMIN only)
@@ -126,7 +159,7 @@ Overrides are **tenant-scoped** — they affect only your tenant and are invisib
 
 On list pages (e.g. the Documents list), selecting multiple rows via the checkboxes reveals the **bulk action bar** at the bottom of the screen. The "Status ändern" option in that bar applies the same transition to all selected entities in a single operation.
 
-The same role checks, 4-eyes requirements, reason prompts, and module gates apply to bulk transitions as to single-entity transitions. If any of the selected entities cannot receive the transition (wrong current status, role denied, version conflict), those are reported individually in the result summary — the others succeed.
+The same role checks, 4-eyes requirements, reason prompts, and module gates apply to bulk transitions as to single-entity transitions. Bulk status changes follow the canonical matrix only (`draft→in_review`, `in_review→approved`, `in_review→draft`, `approved→published`, `published→archived`, `archived→published`); any other target is rejected per entity as "transition not allowed". If any of the selected entities cannot receive the transition (wrong current status, role denied, version conflict), those are reported individually in the result summary — the others succeed.
 
 Bulk transitions are recorded as a **batch** in the audit log: one batch entry with a shared `batch_id` (UUID v4), plus one individual entry per entity. The batch entry counts as a single compliance record; the per-entity entries provide the granular trail.
 
