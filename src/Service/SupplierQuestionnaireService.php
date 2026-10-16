@@ -7,6 +7,8 @@ namespace App\Service;
 use App\Entity\Supplier;
 use App\Entity\SupplierQuestionnaire;
 use App\Entity\Tenant;
+use App\Entity\User;
+use App\Lifecycle\LifecycleTransitionInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -17,9 +19,12 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 final class SupplierQuestionnaireService
 {
+    private const string WORKFLOW = 'supplier_questionnaire_lifecycle';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
+        private readonly LifecycleTransitionInterface $lifecycle,
     ) {
     }
 
@@ -29,7 +34,13 @@ final class SupplierQuestionnaireService
      *
      * @param list<array{id: string, text: string}> $questions
      */
-    public function createAndSend(Tenant $tenant, Supplier $supplier, string $title, array $questions): SupplierQuestionnaire
+    public function createAndSend(
+        Tenant $tenant,
+        Supplier $supplier,
+        string $title,
+        array $questions,
+        ?User $sender = null,
+    ): SupplierQuestionnaire
     {
         $q = new SupplierQuestionnaire();
         $q->setTenant($tenant);
@@ -37,11 +48,13 @@ final class SupplierQuestionnaireService
         $q->setTitle($title !== '' ? $title : 'Security questionnaire');
         $q->setQuestions($questions);
         $q->setPublicToken(bin2hex(random_bytes(32)));
-        $q->setStatus(SupplierQuestionnaire::STATUS_SENT);
-        $q->setSentAt(new DateTimeImmutable());
 
+        // Persisted at the initial marking (`draft`), then moved by the
+        // `send` transition — LifecycleService flushes.
         $this->entityManager->persist($q);
         $this->entityManager->flush();
+        $q->setSentAt(new DateTimeImmutable());
+        $this->lifecycle->transition($q, self::WORKFLOW, 'send', $sender);
 
         $this->auditLogger->logCustom(
             action: 'supplier_questionnaire.sent',
@@ -75,9 +88,10 @@ final class SupplierQuestionnaireService
         }
 
         $questionnaire->setAnswers($clean);
-        $questionnaire->setStatus(SupplierQuestionnaire::STATUS_COMPLETED);
         $questionnaire->setCompletedAt(new DateTimeImmutable());
-        $this->entityManager->flush();
+        // sent → completed. The caller (public, token-gated controller) has
+        // set the questionnaire's tenant as current tenant for the guard.
+        $this->lifecycle->transition($questionnaire, self::WORKFLOW, 'complete');
 
         $this->auditLogger->logCustom(
             action: 'supplier_questionnaire.completed',

@@ -126,6 +126,8 @@
                     {% if program.status != 'archived' and is_granted('ROLE_MANAGER') %}
                     <form method="post" action="{{ path('app_audit_program_archive', {_locale: app.request.locale, id: program.id}) }}" class="mb-2">
                         <input type="hidden" name="_token" value="{{ csrf_token('archive-audit-program-' ~ program.id) }}">
+                        <label for="audit-program-archive-reason" class="form-label small">{{ 'audit_program.show.archive_reason'|trans }}</label>
+                        <textarea id="audit-program-archive-reason" name="reason" class="form-control form-control-sm mb-2" rows="2" required maxlength="1000"></textarea>
                         <button type="submit" class="btn btn-sm btn-outline-warning w-100" onclick="return confirm('{{ 'audit_program.show.archive_confirm'|trans }}')">{{ 'audit_program.action.archive'|trans }}</button>
                     </form>
                     {% endif %}

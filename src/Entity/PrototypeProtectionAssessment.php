@@ -181,6 +181,7 @@ class PrototypeProtectionAssessment
     private ?string $eventsNotes = null;
 
     /** Shared Evidence documents (Clause 7.5 / TISAX proof). */
+    /** @var Collection<int, Document> */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'prototype_protection_evidence')]
     private Collection $evidenceDocuments;

@@ -23,50 +23,50 @@ framework:
                     to: analyzing
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
-                        module: threat
+                        module: vulnerability_intel
                 mark_mitigated:
                     from: analyzing
                     to: mitigated
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
-                        module: threat
+                        module: vulnerability_intel
                 start_monitoring_from_analyzing:
                     from: analyzing
                     to: monitoring
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
-                        module: threat
+                        module: vulnerability_intel
                 start_monitoring_from_mitigated:
                     from: mitigated
                     to: monitoring
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
-                        module: threat
+                        module: vulnerability_intel
                 close_from_analyzing:
                     from: analyzing
                     to: closed
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
                         reason_required: true
-                        module: threat
+                        module: vulnerability_intel
                 close_from_mitigated:
                     from: mitigated
                     to: closed
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
                         reason_required: true
-                        module: threat
+                        module: vulnerability_intel
                 close_from_monitoring:
                     from: monitoring
                     to: closed
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
                         reason_required: true
-                        module: threat
+                        module: vulnerability_intel
                 reopen:
                     from: closed
                     to: analyzing
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
                         reason_required: true
-                        module: threat
+                        module: vulnerability_intel

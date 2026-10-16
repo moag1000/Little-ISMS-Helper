@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * W6 Gap-E — DPO Charter excluded from bulk-approval (code-level guard).
@@ -39,6 +40,7 @@ final class ApprovalKickoffServiceDpoCharterExclusionTest extends TestCase
             $em,
             $workflowRepo,
             $auditLogger,
+            new YamlWorkflowLifecycle(),
         );
     }
 

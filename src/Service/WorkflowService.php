@@ -148,7 +148,7 @@ class WorkflowService
         $workflowInstance->setWorkflow($workflow);
         $workflowInstance->setEntityType($entityType);
         $workflowInstance->setEntityId($entityId);
-        $workflowInstance->setStatus(WorkflowInstanceStatus::Pending); // @lifecycle-initial-state — seeds SM
+        // Status stays at the entity default `pending` (initial marking).
         $workflowInstance->setInitiatedBy($this->security->getUser());
 
         $this->entityManager->persist($workflowInstance);
@@ -238,7 +238,7 @@ class WorkflowService
         // Move to next step or complete workflow
         // NOTE: on the final step, moveToNextStep calls lifecycleService->transition('approve')
         // which includes a flush. For intermediate steps, flush below handles persistence.
-        $nextStep = $this->moveToNextStep($workflowInstance);
+        $nextStep = $this->moveToNextStep($workflowInstance, $user, $comments);
 
         // Handle next step (notification or approval notification)
         if ($nextStep instanceof WorkflowStep) {
@@ -329,7 +329,11 @@ class WorkflowService
      * @return WorkflowStep|null The next step, or null if workflow is complete
      * @throws DateMalformedStringException
      */
-    public function moveToNextStep(WorkflowInstance $workflowInstance): ?WorkflowStep
+    public function moveToNextStep(
+        WorkflowInstance $workflowInstance,
+        ?User $approver = null,
+        ?string $reason = null,
+    ): ?WorkflowStep
     {
         $workflow = $workflowInstance->getWorkflow();
         $currentStep = $workflowInstance->getCurrentStep();
@@ -356,11 +360,18 @@ class WorkflowService
         $workflowInstance->setCompletedAt(new DateTimeImmutable());
         $workflowInstance->setCurrentStep(null);
 
-        // LifecycleTransitionInterface::transition calls flush internally
+        // LifecycleTransitionInterface::transition calls flush internally.
+        // `approve` is four-eyes in workflow_instance_lifecycle: the
+        // initiator requested the approval, the approver of the final step
+        // grants it (FourEyesValidator rejects initiator == approver unless
+        // the tenant has a single eligible approver and a reason is given).
         $this->lifecycleService->transition(
             $workflowInstance,
             self::WORKFLOW_NAME,
             'approve',
+            $workflowInstance->getInitiatedBy(),
+            $reason,
+            $approver,
         );
 
         return null;

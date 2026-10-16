@@ -33,8 +33,6 @@ tenant:
         logo_help: 'Organization logo (max. 2MB, JPG/PNG/GIF/WebP)'
         azure_tenant_id: 'Azure Tenant ID'
         azure_tenant_id_help: 'Azure AD Tenant ID (UUID format) for SSO integration'
-        is_active: Active
-        is_active_help: 'Only active organizations can sign in'
         settings: 'Settings (JSON)'
         settings_help: 'Organization-specific settings in JSON format'
         users: Users
@@ -74,7 +72,8 @@ tenant:
         edit: Edit
         delete: Delete
         activate: Activate
-        deactivate: Deactivate
+        suspend: Suspend
+        reactivate: Reactivate
     section:
         information: 'Organization Information'
         users: Users
@@ -109,12 +108,25 @@ tenant:
         updated: 'Organization updated successfully'
         deleted: 'Organization deleted successfully'
         activated: 'Organization activated successfully'
-        deactivated: 'Organization deactivated successfully'
+        suspended: 'Organization suspended'
+        reactivated: 'Organization reactivated'
+        reason_required: 'A reason is required for this status change.'
+        four_eyes_required: 'Four-eyes principle: select a second super admin as approver. If the organization has no second super admin, the reason must document the offline counter-signature.'
+        transition_not_allowed: 'This status change is not possible in the current status of the organization.'
+        csrf_error: 'Invalid security token. Please reload the page and try again.'
+        transition_forbidden: 'Only super admins may change the organization status.'
         error: 'Error saving organization'
         not_found: 'The requested organization was not found. It may have been deleted.'
         has_users: 'Organization cannot be deleted as it still has assigned users'
         organisation_context_updated: 'Organization profile successfully updated'
         organisation_context_error: 'Error updating organization profile'
+    lifecycle:
+        title: 'Organization status'
+        reason: Reason
+        reason_help: 'Stored permanently in the audit log (ISO 27001 Cl. 7.5.3).'
+        approver: 'Second approver (four-eyes principle)'
+        approver_none: 'No second super admin available'
+        approver_help: 'Suspending and reactivating require a second super admin. If there is none, document the offline counter-signature in the reason.'
     confirm:
         delete: 'Are you sure you want to delete this organization? This action cannot be undone.'
         toggle: 'Do you really want to change the status of this organization?'

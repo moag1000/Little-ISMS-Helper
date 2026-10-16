@@ -392,6 +392,7 @@
     - Overdue-Benachrichtigungen
   - [x] Approval-Mechanismus ✅
   - [x] Audit-Trail ✅
+- **Hinweis (Oktober 2026)**: Builder-UI, Step-Schreib-API und `WorkflowStepType` wurden nach der YAML-Vereinheitlichung (Y.4) entfernt; die Schreib-Endpunkte antworten mit 410 Gone. Anpassungen pro Organisation laufen ueber den Overlay-Editor unter `/admin/workflows`.
 - **Neue Dateien** (November 2025):
   - `src/Controller/Api/WorkflowStepApiController.php` - REST API (390 Zeilen)
   - `src/Form/WorkflowStepType.php` - Form Type (146 Zeilen)

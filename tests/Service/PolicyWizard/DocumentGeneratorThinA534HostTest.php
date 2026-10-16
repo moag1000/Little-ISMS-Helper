@@ -18,6 +18,7 @@ use App\Repository\PolicyTemplateRepository;
 use App\Repository\TagRepository;
 use App\Service\PolicyWizard\DocumentGenerator;
 use App\Service\PolicyWizard\GdprSectionCatalogue;
+use App\Service\PolicyWizard\GdprSectionInjector;
 use App\Service\PolicyWizard\VariableCollector;
 use App\Service\PolicyWizard\WizardStepKeys;
 use Doctrine\ORM\EntityManagerInterface;
@@ -171,7 +172,7 @@ final class DocumentGeneratorThinA534HostTest extends TestCase
             new \Psr\Log\NullLogger(),
             null,
             null,
-            new GdprSectionCatalogue(),
+            new GdprSectionInjector($em, $tagRepo, new GdprSectionCatalogue(), $sectionRepo),
         );
     }
 

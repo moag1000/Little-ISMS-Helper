@@ -33,8 +33,6 @@ tenant:
         logo_help: 'Organisations-Logo (max. 2MB, JPG/PNG/GIF/WebP)'
         azure_tenant_id: Azure Tenant ID
         azure_tenant_id_help: 'Azure AD Tenant ID (UUID-Format) für SSO-Integration'
-        is_active: Aktiv
-        is_active_help: 'Nur aktive Organisationen können sich anmelden'
         settings: 'Einstellungen (JSON)'
         settings_help: 'Organisationsspezifische Einstellungen im JSON-Format'
         users: Benutzer
@@ -74,7 +72,8 @@ tenant:
         edit: Bearbeiten
         delete: Löschen
         activate: Aktivieren
-        deactivate: Deaktivieren
+        suspend: Sperren
+        reactivate: Reaktivieren
     section:
         information: Organisations-Informationen
         users: Benutzer
@@ -109,12 +108,25 @@ tenant:
         updated: 'Organisation erfolgreich aktualisiert'
         deleted: 'Organisation erfolgreich gelöscht'
         activated: 'Organisation erfolgreich aktiviert'
-        deactivated: 'Organisation erfolgreich deaktiviert'
+        suspended: 'Organisation gesperrt'
+        reactivated: 'Organisation reaktiviert'
+        reason_required: 'Für diese Statusänderung ist eine Begründung erforderlich.'
+        four_eyes_required: 'Vier-Augen-Prinzip: Bitte einen zweiten Super-Admin als Freigebenden auswählen. Ohne zweiten Super-Admin in der Organisation muss die Begründung die Offline-Gegenzeichnung dokumentieren.'
+        transition_not_allowed: 'Diese Statusänderung ist im aktuellen Status der Organisation nicht möglich.'
+        csrf_error: 'Sicherheitstoken ungültig. Bitte die Seite neu laden und erneut versuchen.'
+        transition_forbidden: 'Diese Statusänderung ist nur für Super-Admins erlaubt.'
         error: 'Fehler beim Speichern der Organisation'
         not_found: 'Die angeforderte Organisation wurde nicht gefunden. Möglicherweise wurde sie gelöscht.'
         has_users: 'Organisation kann nicht gelöscht werden, da sie noch Benutzer hat'
         organisation_context_updated: 'Organisationsprofil erfolgreich aktualisiert'
         organisation_context_error: 'Fehler beim Aktualisieren des Organisationsprofils'
+    lifecycle:
+        title: 'Status der Organisation'
+        reason: Begründung
+        reason_help: 'Wird dauerhaft im Audit-Log gespeichert (ISO 27001 Kap. 7.5.3).'
+        approver: 'Zweiter Freigebender (Vier-Augen-Prinzip)'
+        approver_none: 'Kein zweiter Super-Admin verfügbar'
+        approver_help: 'Sperren und Reaktivieren erfordern einen zweiten Super-Admin. Ist keiner vorhanden, die Offline-Gegenzeichnung in der Begründung dokumentieren.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diese Organisation löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
         toggle: 'Möchten Sie den Status dieser Organisation wirklich ändern?'

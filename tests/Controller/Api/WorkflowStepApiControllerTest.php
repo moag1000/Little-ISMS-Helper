@@ -4,483 +4,113 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Api;
 
-use App\Entity\User;
+use App\Controller\Api\WorkflowStepApiController;
 use App\Entity\Workflow;
 use App\Entity\WorkflowStep;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use App\Controller\Api\WorkflowStepApiController;
-use App\Repository\WorkflowRepository;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
-#[AllowMockObjectsWithoutExpectations]
-class WorkflowStepApiControllerTest extends TestCase
+/**
+ * The legacy workflow-step API is read-only since Y.4: listing still works
+ * for historical display, every former write endpoint answers 410 Gone and
+ * points at the YAML overlay editor. The controller must not even be able to
+ * write (no EntityManager dependency).
+ */
+final class WorkflowStepApiControllerTest extends TestCase
 {
-    private MockObject $entityManager;
-    private MockObject $workflowRepository;
-    private MockObject $csrfTokenManager;
-    private MockObject $container;
     private WorkflowStepApiController $controller;
 
     protected function setUp(): void
     {
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->workflowRepository = $this->createMock(WorkflowRepository::class);
-        $this->csrfTokenManager = $this->createMock(CsrfTokenManagerInterface::class);
-        $this->container = $this->createMock(ContainerInterface::class);
-
-        // Configure container to return itself for 'service_container'
-        $this->container->method('has')->willReturn(false);
-        $this->container->method('get')->willReturnCallback(function ($id) {
-            if ($id === 'serializer') {
-                return null;
-            }
-            return null;
-        });
-
-        $this->controller = new WorkflowStepApiController(
-            $this->entityManager,
-            $this->workflowRepository,
-            $this->csrfTokenManager
+        $router = $this->createStub(RouterInterface::class);
+        $router->method('generate')->willReturnCallback(
+            static fn (string $name, array $params, int $type): string => $name === 'admin_workflow_overlay_index'
+                && $type === UrlGeneratorInterface::ABSOLUTE_PATH ? '/en/admin/workflows' : '/unexpected/' . $name,
         );
-        $this->controller->setContainer($this->container);
+
+        $container = new Container();
+        $container->set('router', $router);
+
+        $this->controller = new WorkflowStepApiController();
+        $this->controller->setContainer($container);
     }
 
     #[Test]
-    public function testListStepsReturnsEmptyArray(): void
+    public function listStepsSerializesStepsReadOnly(): void
     {
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getSteps')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([]));
-
-        $response = $this->controller->listSteps($workflow);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $data = json_decode($response->getContent(), true);
-        $this->assertTrue($data['success']);
-        $this->assertIsArray($data['steps']);
-        $this->assertEmpty($data['steps']);
-    }
-
-    #[Test]
-    public function testListStepsReturnsSteps(): void
-    {
-        $step = $this->createConfiguredMock(WorkflowStep::class, [
-            'getId' => 1,
-            'getName' => 'Test Step',
-            'getDescription' => 'Test Description',
-            'getStepOrder' => 1,
-            'getStepType' => 'approval',
-            'getApproverRole' => 'ROLE_MANAGER',
-            'getApproverUsers' => [1, 2],
-            'isRequired' => true,
-            'getDaysToComplete' => 5
-        ]);
-
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getSteps')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$step]));
-
-        $response = $this->controller->listSteps($workflow);
-        $data = json_decode($response->getContent(), true);
-
-        $this->assertTrue($data['success']);
-        $this->assertCount(1, $data['steps']);
-        $this->assertEquals('Test Step', $data['steps'][0]['name']);
-        $this->assertEquals('approval', $data['steps'][0]['stepType']);
-        $this->assertEquals([1, 2], $data['steps'][0]['approverUsers']);
-    }
-
-    #[Test]
-    public function testAddStepRejectsMissingCsrfToken(): void
-    {
-        $request = new Request();
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(false);
-
-        $response = $this->controller->addStep($request, $workflow);
-
-        $this->assertEquals(403, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-        $this->assertStringContainsString('CSRF', $data['error']);
-    }
-
-    #[Test]
-    public function testAddStepRejectsInvalidJson(): void
-    {
-        $request = new Request([], [], [], [], [], [], 'invalid json {');
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->addStep($request, $workflow);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-    }
-
-    #[Test]
-    public function testAddStepRejectsEmptyBody(): void
-    {
-        $request = new Request([], [], [], [], [], [], '{}');
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->addStep($request, $workflow);
-
-        $this->assertEquals(400, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testAddStepValidationErrorsForEmptyName(): void
-    {
-        // Test with empty name - should get validation error, not exception
-        $request = new Request([], [], [], [], [], [], json_encode([
-            'name' => 'Valid Name',
-            'stepType' => 'approval'
-        ]));
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getSteps')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([]));
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        // Mock entity manager to track operations
-        $this->entityManager->expects($this->once())->method('beginTransaction');
-        $this->entityManager->expects($this->once())->method('persist');
-        $this->entityManager->expects($this->once())->method('flush');
-        $this->entityManager->expects($this->once())->method('commit');
-
-        $response = $this->controller->addStep($request, $workflow);
-
-        // With valid data, it should succeed
-        $this->assertEquals(201, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertTrue($data['success']);
-    }
-
-    #[Test]
-    public function testUpdateStepRejectsMissingCsrfToken(): void
-    {
-        $request = new Request();
-        $step = $this->createMock(WorkflowStep::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(false);
-
-        $response = $this->controller->updateStep($request, $step);
-
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testDeleteStepRejectsMissingCsrfToken(): void
-    {
-        $request = new Request();
-        $step = $this->createMock(WorkflowStep::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(false);
-
-        $response = $this->controller->deleteStep($request, $step);
-
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testDeleteStepHandlesNullWorkflow(): void
-    {
-        $request = new Request();
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $step = $this->createMock(WorkflowStep::class);
-        $step->method('getWorkflow')->willReturn(null);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->deleteStep($request, $step);
-
-        $this->assertEquals(404, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-        $this->assertStringContainsString('not found', $data['error']);
-    }
-
-    #[Test]
-    public function testReorderStepsRejectsMissingCsrfToken(): void
-    {
-        $request = new Request();
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(false);
-
-        $response = $this->controller->reorderSteps($request, $workflow);
-
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testReorderStepsRejectsMissingStepIds(): void
-    {
-        $request = new Request([], [], [], [], [], [], json_encode(['invalid' => 'data']));
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->reorderSteps($request, $workflow);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertStringContainsString('stepIds', $data['error']);
-    }
-
-    #[Test]
-    public function testReorderStepsValidatesStepIds(): void
-    {
-        $request = new Request([], [], [], [], [], [], json_encode(['stepIds' => [999]]));
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getSteps')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([]));
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->reorderSteps($request, $workflow);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertStringContainsString('Invalid step ID', $data['error']);
-    }
-
-    #[Test]
-    public function testDuplicateStepRejectsMissingCsrfToken(): void
-    {
-        $request = new Request();
-        $step = $this->createMock(WorkflowStep::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(false);
-
-        $response = $this->controller->duplicateStep($request, $step);
-
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testDuplicateStepHandlesNullWorkflow(): void
-    {
-        $request = new Request();
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $step = $this->createMock(WorkflowStep::class);
-        $step->method('getWorkflow')->willReturn(null);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->duplicateStep($request, $step);
-
-        $this->assertEquals(404, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testApplyTemplateRejectsMissingCsrfToken(): void
-    {
-        $request = new Request();
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(false);
-
-        $response = $this->controller->applyTemplate($request, $workflow);
-
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testApplyTemplateRejectsMissingTemplateKey(): void
-    {
-        $request = new Request([], [], [], [], [], [], json_encode(['invalid' => 'data']));
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->applyTemplate($request, $workflow);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertStringContainsString('templateKey', $data['error']);
-    }
-
-    #[Test]
-    public function testApplyTemplateRejectsInvalidTemplateKey(): void
-    {
-        $request = new Request([], [], [], [], [], [], json_encode(['templateKey' => 'nonexistent']));
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $response = $this->controller->applyTemplate($request, $workflow);
-
-        $this->assertEquals(404, $response->getStatusCode());
-    }
-
-    #[Test]
-    public function testGetTemplatesReturnsAllTemplates(): void
-    {
-        $response = $this->controller->getTemplates();
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-
-        $this->assertTrue($data['success']);
-        $this->assertArrayHasKey('templates', $data);
-        $this->assertArrayHasKey('risk_assessment', $data['templates']);
-        $this->assertArrayHasKey('control_implementation', $data['templates']);
-        $this->assertArrayHasKey('incident_response', $data['templates']);
-        $this->assertArrayHasKey('document_review', $data['templates']);
-        $this->assertArrayHasKey('change_request', $data['templates']);
-    }
-
-    #[Test]
-    public function testGetTemplatesHasCorrectStructure(): void
-    {
-        $response = $this->controller->getTemplates();
-        $data = json_decode($response->getContent(), true);
-
-        $template = $data['templates']['risk_assessment'];
-
-        $this->assertArrayHasKey('name', $template);
-        $this->assertArrayHasKey('description', $template);
-        $this->assertArrayHasKey('entityType', $template);
-        $this->assertArrayHasKey('steps', $template);
-        $this->assertIsArray($template['steps']);
-        $this->assertNotEmpty($template['steps']);
-
-        $step = $template['steps'][0];
-        $this->assertArrayHasKey('name', $step);
-        $this->assertArrayHasKey('stepType', $step);
-        $this->assertArrayHasKey('approverRole', $step);
-        $this->assertArrayHasKey('daysToComplete', $step);
-    }
-
-    #[Test]
-    public function testSerializeStepHandlesNullApproverUsers(): void
-    {
-        $step = $this->createConfiguredMock(WorkflowStep::class, [
-            'getId' => 1,
-            'getName' => 'Test',
+        $step = $this->createConfiguredStub(WorkflowStep::class, [
+            'getId' => 7,
+            'getName' => 'Initial Assessment',
             'getDescription' => null,
             'getStepOrder' => 1,
             'getStepType' => 'approval',
-            'getApproverRole' => null,
+            'getApproverRole' => 'ROLE_DPO',
             'getApproverUsers' => null,
             'isRequired' => true,
-            'getDaysToComplete' => null
+            'getDaysToComplete' => 3,
         ]);
+        $workflow = $this->createStub(Workflow::class);
+        $workflow->method('getSteps')->willReturn(new ArrayCollection([$step]));
 
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getSteps')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$step]));
+        $data = json_decode((string) $this->controller->listSteps($workflow)->getContent(), true);
 
-        $response = $this->controller->listSteps($workflow);
-        $data = json_decode($response->getContent(), true);
-
-        // Should return empty array instead of null
-        $this->assertIsArray($data['steps'][0]['approverUsers']);
-        $this->assertEmpty($data['steps'][0]['approverUsers']);
+        self::assertTrue($data['success']);
+        self::assertTrue($data['read_only']);
+        self::assertSame('Initial Assessment', $data['steps'][0]['name']);
+        self::assertSame([], $data['steps'][0]['approverUsers']);
+        self::assertSame(3, $data['steps'][0]['daysToComplete']);
     }
 
     #[Test]
-    public function testAddStepWithValidData(): void
+    public function writeEndpointsAnswerGoneWithOverlayPointer(): void
     {
-        $request = new Request([], [], [], [], [], [], json_encode([
-            'name' => 'New Step',
-            'stepType' => 'notification',
-            'description' => 'Test description',
-            'approverRole' => 'ROLE_ADMIN',
-            'daysToComplete' => 7,
-            'isRequired' => true
-        ]));
-        $request->headers->set('X-CSRF-Token', 'valid_token');
+        $response = $this->controller->gone();
 
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getSteps')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([]));
+        self::assertSame(Response::HTTP_GONE, $response->getStatusCode());
+        $data = json_decode((string) $response->getContent(), true);
+        self::assertFalse($data['success']);
+        self::assertSame('gone', $data['error']);
+        self::assertStringContainsString('config/workflows/regulatory', $data['message']);
+        self::assertSame('/en/admin/workflows', $data['overlay_url']);
+    }
 
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
+    /** @return iterable<string, array{string, list<string>}> */
+    public static function formerWriteRoutes(): iterable
+    {
+        yield 'add' => ['api_workflow_steps_add', ['POST']];
+        yield 'update' => ['api_workflow_step_update', ['PUT', 'PATCH']];
+        yield 'delete' => ['api_workflow_step_delete', ['DELETE']];
+        yield 'reorder' => ['api_workflow_steps_reorder', ['POST']];
+        yield 'duplicate' => ['api_workflow_step_duplicate', ['POST']];
+        yield 'apply template' => ['api_workflow_apply_template', ['POST']];
+        yield 'template catalogue' => ['api_workflow_templates', ['GET']];
+    }
 
-        $this->entityManager->expects($this->once())->method('beginTransaction');
-        $this->entityManager->expects($this->once())->method('persist');
-        $this->entityManager->expects($this->once())->method('flush');
-        $this->entityManager->expects($this->once())->method('commit');
+    /** @param list<string> $methods */
+    #[Test]
+    #[DataProvider('formerWriteRoutes')]
+    public function formerWriteRouteIsBoundToGone(string $routeName, array $methods): void
+    {
+        $routes = [];
+        foreach ((new \ReflectionMethod(WorkflowStepApiController::class, 'gone'))->getAttributes(Route::class) as $attr) {
+            $route = $attr->newInstance();
+            $routes[$route->name] = $route->methods;
+        }
 
-        $response = $this->controller->addStep($request, $workflow);
-
-        $this->assertEquals(201, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertTrue($data['success']);
-        $this->assertArrayHasKey('step', $data);
+        self::assertArrayHasKey($routeName, $routes);
+        self::assertSame($methods, $routes[$routeName]);
     }
 
     #[Test]
-    public function testReorderStepsWithValidData(): void
+    public function controllerHasNoWriteDependencies(): void
     {
-        $step1 = $this->createConfiguredMock(WorkflowStep::class, [
-            'getId' => 1,
-            'getName' => 'Step 1',
-            'getDescription' => null,
-            'getStepOrder' => 1,
-            'getStepType' => 'approval',
-            'getApproverRole' => null,
-            'getApproverUsers' => null,
-            'isRequired' => true,
-            'getDaysToComplete' => null
-        ]);
-        $step1->expects($this->once())->method('setStepOrder')->with(2);
-
-        $step2 = $this->createConfiguredMock(WorkflowStep::class, [
-            'getId' => 2,
-            'getName' => 'Step 2',
-            'getDescription' => null,
-            'getStepOrder' => 2,
-            'getStepType' => 'notification',
-            'getApproverRole' => null,
-            'getApproverUsers' => null,
-            'isRequired' => false,
-            'getDaysToComplete' => null
-        ]);
-        $step2->expects($this->once())->method('setStepOrder')->with(1);
-
-        $request = new Request([], [], [], [], [], [], json_encode(['stepIds' => [2, 1]]));
-        $request->headers->set('X-CSRF-Token', 'valid_token');
-
-        $workflow = $this->createMock(Workflow::class);
-        $workflow->method('getSteps')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$step1, $step2]));
-
-        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
-
-        $this->entityManager->expects($this->once())->method('beginTransaction');
-        $this->entityManager->expects($this->once())->method('flush');
-        $this->entityManager->expects($this->once())->method('commit');
-
-        $response = $this->controller->reorderSteps($request, $workflow);
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertTrue($data['success']);
+        self::assertNull((new \ReflectionClass(WorkflowStepApiController::class))->getConstructor());
     }
 }

@@ -62,6 +62,17 @@ This creates a ratchet: the god-class can only stay the same size or shrink, nev
 a deliberate and visible decision. Growth is still possible when genuinely necessary (e.g., a
 compliance regulation adds new obligations) but it is not silent.
 
+> **Amendment 2026-10 — enforced ratchet.** The commit-message convention above did not hold:
+> between 2026-05-17 and 2026-10 the baseline was bumped a dozen times (RiskController
+> 1304→1661, DocumentGenerator 1869→1994, SearchService added at 1050 and bumped to 1416),
+> and entities/repositories/commands were not measured at all. `check_god_class_size.py`
+> (Gate 25) now measures every file under `src/` with a per-kind threshold, fails stale
+> entries (`--strict-shrink`) and rejects any raised or added baseline entry against the PR
+> base (`--ratchet-ref`). Growth beyond a baseline therefore requires extracting code, or a
+> reviewed change of the thresholds / data-catalogue list in the script itself. The three
+> offenders were reduced back below their 2026-05-17 size (RiskRegisterExporter,
+> NavigationSearch, GdprSectionInjector). Operating guide: `scripts/README.md` (Gate 25).
+
 ### Split decision criteria
 
 When to split a class vs accept-and-ratchet:
@@ -108,9 +119,9 @@ Each phase is a standalone PR, reviewable independently. Target: complete by v4.
 
 ### Negative
 
-- **Ratchet can be gamed:** A contributor can set `BASELINE=2000` in a single commit and the
-  check passes. The commit message format convention and PR review process are the only guards
-  against this.
+- **Ratchet can be gamed:** ~~A contributor can set `BASELINE=2000` in a single commit and the
+  check passes.~~ Closed by the 2026-10 amendment — the gate compares the baseline with the PR
+  base and rejects any raised entry; only a reviewed threshold change in the script can loosen it.
 - **LOC is an imperfect metric:** A 1863-LOC file with clear separation and good test coverage
   is better than a 400-LOC file with tangled logic and no tests. LOC is a proxy for complexity,
   not complexity itself. But it is the simplest automatable metric.
