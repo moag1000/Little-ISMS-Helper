@@ -35,6 +35,7 @@ use App\Service\AuditLogger;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -51,6 +52,7 @@ class IncidentController extends AbstractController
     use BulkActionTrait;
     use CurrentUserTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
@@ -710,47 +712,6 @@ class IncidentController extends AbstractController
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Content-Length' => (string) strlen($pdf),
         ]);
-    }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
     // CRITICAL-05: BCM Integration Actions
     /**

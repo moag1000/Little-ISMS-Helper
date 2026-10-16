@@ -474,18 +474,15 @@ class AnalyticsController extends AbstractController
                 return $occuredAt >= $monthStart && $occuredAt <= $monthEnd;
             });
 
-            // Count by severity
-            $low = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Low));
-            $medium = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Medium));
-            $high = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::High));
-            $critical = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Critical));
+            $countBySeverity = static fn(IncidentSeverity $severity): int => count(array_filter($monthIncidents,
+                static fn(Incident $incident): bool => $incident->getSeverity() === $severity));
 
             $trend[] = [
                 'month' => $date->format('M Y'),
-                'low' => $low,
-                'medium' => $medium,
-                'high' => $high,
-                'critical' => $critical,
+                'low' => $countBySeverity(IncidentSeverity::Low),
+                'medium' => $countBySeverity(IncidentSeverity::Medium),
+                'high' => $countBySeverity(IncidentSeverity::High),
+                'critical' => $countBySeverity(IncidentSeverity::Critical),
                 'total' => count($monthIncidents)
             ];
         }

@@ -10,7 +10,6 @@ use App\Entity\Tenant;
 use App\Enum\DocumentStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
-use App\Enum\RiskStatus;
 use App\Enum\RiskTreatmentPlanStatus;
 use App\Enum\TrainingStatus;
 use App\Repository\AssetRepository;

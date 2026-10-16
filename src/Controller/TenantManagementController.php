@@ -189,8 +189,7 @@ class TenantManagementController extends AbstractController
 
         foreach ($allTenants as $tenant) {
             if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
-                $tree = $this->corporateStructureService->getStructureTree($tenant);
-                $corporateGroups[] = $tree;
+                $corporateGroups[] = $this->corporateStructureService->getStructureTree($tenant);
             }
         }
 

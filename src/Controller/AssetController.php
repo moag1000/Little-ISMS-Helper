@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Attribute\RequiresModule;
 use Exception;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Asset;
 use App\Enum\AssetStatus;
@@ -46,6 +47,7 @@ class AssetController extends AbstractController
     use LocalizedFlashTrait;
     use BulkActionTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly AssetRepository $assetRepository,
@@ -644,47 +646,6 @@ class AssetController extends AbstractController
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
         ]);
-    }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
 
     /**

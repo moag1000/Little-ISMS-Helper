@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Tisax;
 
-use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Attribute\RequiresModule;
 use App\Form\Tisax\TisaxLegalConfirmationType;
 use App\Form\Tisax\VdaIsaUploadType;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
-use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use App\Service\Tisax\EnxScheduleExporter;
 use App\Service\Tisax\TisaxConfirmationService;
@@ -49,10 +48,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 #[IsGranted('ROLE_MANAGER')]
 #[Route('/tisax-import', name: 'app_tisax_import_')]
+#[RequiresModule('tisax')]
 final class TisaxImportWizardController extends AbstractController
 {
-    use ModuleGatedControllerTrait;
-
     /** Session key for the parsed workbook temp-file path */
     private const SESSION_WORKBOOK_PATH = 'tisax_import.workbook_path';
 
@@ -85,7 +83,6 @@ final class TisaxImportWizardController extends AbstractController
         private readonly TisaxConfirmationService $confirmationService,
         private readonly TisaxEvidenceLinker $evidenceLinker,
         private readonly \App\Service\Tisax\TisaxFulfillmentSync $fulfillmentSync,
-        private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly \App\Service\Tisax\TisaxCatalogueVersionDetector $versionDetector,
@@ -113,9 +110,6 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/disclaimer', name: 'disclaimer', methods: ['GET', 'POST'])]
     public function disclaimer(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('tisax')) {
-            return $redirect;
-        }
         // On fresh entry (GET), wipe any prior import-session state so a
         // second import starts clean — prevents stale workbook/parsed-controls
         // from leaking into the new run.
@@ -166,9 +160,6 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/upload', name: 'upload', methods: ['GET', 'POST'])]
     public function upload(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('tisax')) {
-            return $redirect;
-        }
         // Guard: must have a valid disclaimer confirmation
         if (!$this->hasValidConfirmation($request)) {
             $this->addFlash('warning', 'tisax.import.upload.disclaimer_required');
@@ -230,9 +221,6 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/validate', name: 'validate', methods: ['GET', 'POST'])]
     public function validate(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('tisax')) {
-            return $redirect;
-        }
         $workbookPath = $request->getSession()->get(self::SESSION_WORKBOOK_PATH);
         if ($workbookPath === null || !file_exists($workbookPath)) {
             $this->addFlash('warning', 'tisax.import.validate.no_workbook');
@@ -311,9 +299,6 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/preview', name: 'preview', methods: ['GET', 'POST'])]
     public function preview(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('tisax')) {
-            return $redirect;
-        }
         $controls = $this->getSessionControls($request);
         if ($controls === null) {
             return $this->redirectToRoute('app_tisax_import_validate', ['_locale' => $request->getLocale()]);
@@ -357,9 +342,6 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/commit', name: 'commit', methods: ['GET', 'POST'])]
     public function commit(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('tisax')) {
-            return $redirect;
-        }
         $controls = $this->getSessionControls($request);
         if ($controls === null) {
             return $this->redirectToRoute('app_tisax_import_validate', ['_locale' => $request->getLocale()]);
@@ -466,9 +448,6 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/assess/{frameworkId}', name: 'assess', methods: ['GET', 'POST'], requirements: ['frameworkId' => '\d+'])]
     public function assess(Request $request, int $frameworkId): Response
     {
-        if ($redirect = $this->checkModuleActive('tisax')) {
-            return $redirect;
-        }
         $tenant    = $this->tenantContext->getCurrentTenant();
         $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)->find($frameworkId);
 
@@ -572,9 +551,6 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/assess/{frameworkId}/export-enx', name: 'export_enx', methods: ['GET'], requirements: ['frameworkId' => '\d+'])]
     public function exportEnx(int $frameworkId): Response
     {
-        if ($redirect = $this->checkModuleActive('tisax')) {
-            return $redirect;
-        }
         $tenant    = $this->tenantContext->getCurrentTenant();
         $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)->find($frameworkId);
 
