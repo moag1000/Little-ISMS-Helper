@@ -167,6 +167,27 @@ final class ReportBuilderAccessTest extends WebTestCase
         self::assertNull($repository->find($id));
     }
 
+    #[Test]
+    public function createFromTemplateIsAPostWithToken(): void
+    {
+        $this->client->loginUser($this->owner);
+        $repository = $this->em->getRepository(CustomReport::class);
+        $before = count($repository->findBy(['tenantId' => $this->template->getTenantId()]));
+
+        $this->client->request('GET', '/en/report-builder/from-template/executive_summary');
+        self::assertResponseStatusCodeSame(405, 'a GET (link, prefetch, img tag) must not create a report');
+        $this->client->request('POST', '/en/report-builder/from-template/executive_summary');
+        $this->em->clear();
+        self::assertCount($before, $repository->findBy(['tenantId' => $this->template->getTenantId()]));
+
+        $this->client->request('POST', '/en/report-builder/from-template/executive_summary', [
+            '_token' => $this->seedCsrf('report_from_template'),
+        ]);
+        self::assertResponseRedirects();
+        $this->em->clear();
+        self::assertCount($before + 1, $repository->findBy(['tenantId' => $this->template->getTenantId()]));
+    }
+
     private function seedCsrf(string $tokenId): string
     {
         $this->client->request('GET', '/en/report-builder');

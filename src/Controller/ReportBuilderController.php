@@ -179,10 +179,14 @@ class ReportBuilderController extends AbstractController
     /**
      * Create report from template
      */
-    #[Route('/from-template/{templateKey}', name: 'report_builder_from_template', methods: ['GET'])]
-    public function createFromTemplate(string $templateKey): Response
+    #[Route('/from-template/{templateKey}', name: 'report_builder_from_template', methods: ['POST'])]
+    public function createFromTemplate(string $templateKey, Request $request): Response
     {
         if ($r = $this->gate()) return $r;
+        if (!$this->isCsrfTokenValid('report_from_template', (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('report_builder_index');
+        }
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
 
