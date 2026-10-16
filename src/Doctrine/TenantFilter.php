@@ -29,6 +29,16 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
  */
 class TenantFilter extends SQLFilter
 {
+    /** tenant_id value: no scoping (instance operator, anonymous request, CLI/jobs). */
+    public const string UNSCOPED = 'null';
+
+    /**
+     * tenant_id value for an account without an organisation that is not an
+     * instance operator: it sees no organisation's rows, only rows that
+     * belong to none (tenant IS NULL).
+     */
+    public const string NO_ORGANISATION = 'none';
+
     /**
      * Add tenant filter condition to SQL query
      *
@@ -66,7 +76,7 @@ class TenantFilter extends SQLFilter
         // `tenant_id = 'null'` which never matches integer columns and
         // silently hides every row from authenticated-but-no-tenant users.
         $rawValue = trim($tenantId, "'\"");
-        if ($rawValue === 'null' || $rawValue === '') {
+        if ($rawValue === self::UNSCOPED || $rawValue === '') {
             return '';
         }
 
@@ -77,6 +87,10 @@ class TenantFilter extends SQLFilter
         $fieldName = is_array($mapping) ? $mapping['fieldName'] : $mapping->fieldName;
 
         $column = sprintf('%s.%s', $targetTableAlias, $fieldName . '_id');
+
+        if ($rawValue === self::NO_ORGANISATION) {
+            return sprintf('%s IS NULL', $column);
+        }
 
         if ($targetEntity->getReflectionClass()->implementsInterface(SharedTenantRowsInterface::class)) {
             // Own rows plus instance-wide shared rows (tenant = NULL).

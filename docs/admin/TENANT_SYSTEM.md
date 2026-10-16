@@ -249,6 +249,14 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
    - Doctrine Filter ensures data separation
    - Users can only access their tenant's data
    - Cross-tenant queries blocked by default
+   - Accounts without an organisation: a `ROLE_SUPER_ADMIN` stays instance-wide;
+     any other account sees no organisation's data (`TenantFilter::NO_ORGANISATION`,
+     only rows with no tenant) and gets no default organisation context.
+     Anonymous requests (login, setup wizard, public share links) and CLI/jobs
+     are not affected. On a single-organisation installation accounts created
+     without one (setup-wizard admin, global SSO provider, `app:setup-permissions`)
+     join the sole organisation automatically; with several organisations an
+     operator assigns them.
 
 2. **Admin Access:**
    - Only ROLE_ADMIN can manage tenants, and only within their own organisation tree

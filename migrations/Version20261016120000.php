@@ -15,12 +15,19 @@ use Doctrine\Migrations\AbstractMigration;
  * requirement's text) were listed and editable for every organisation. The
  * owner is derived from the mapping: upload tenant of the source or target
  * requirement; NULL keeps gaps of global catalogue mappings shared.
+ *
+ * Accounts without an organisation: the tenant filter used to show such an
+ * account every organisation's data; it now shows none unless the account is
+ * a SUPER_ADMIN. On a single-organisation installation the accounts created
+ * without one (setup-wizard admin, global SSO provider, CLI) are assigned to
+ * the sole organisation so they keep working. With several organisations an
+ * operator assigns them (Tenant management, Data repair). Not reverted by down().
  */
 final class Version20261016120000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add mapping_gap_item.tenant_id (owner derived from the mapping, NULL = shared)';
+        return 'Add mapping_gap_item.tenant_id; assign accounts without an organisation to the sole organisation';
     }
 
     public function up(Schema $schema): void
@@ -34,6 +41,12 @@ final class Version20261016120000 extends AbstractMigration
             . ' JOIN compliance_requirement sr ON sr.id = m.source_requirement_id'
             . ' JOIN compliance_requirement tr ON tr.id = m.target_requirement_id'
             . ' SET g.tenant_id = COALESCE(sr.upload_tenant_id, tr.upload_tenant_id)'
+        );
+        $this->addSql(
+            'UPDATE users u'
+            . ' JOIN (SELECT MIN(id) AS id FROM tenant HAVING COUNT(*) = 1) sole'
+            . ' SET u.tenant_id = sole.id'
+            . " WHERE u.tenant_id IS NULL AND u.roles NOT LIKE '%ROLE_SUPER_ADMIN%'"
         );
     }
 
