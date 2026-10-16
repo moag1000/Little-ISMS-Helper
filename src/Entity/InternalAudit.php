@@ -449,9 +449,6 @@ public function __construct()
             $all[(int) $this->scopedFramework->id] = $this->scopedFramework;
         }
         foreach ($this->additionalScopedFrameworks as $fw) {
-            if (!$fw instanceof ComplianceFramework) {
-                continue;
-            }
             $all[(int) $fw->id] = $fw;
         }
         return array_values($all);
