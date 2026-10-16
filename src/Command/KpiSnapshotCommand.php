@@ -12,6 +12,7 @@ use App\Repository\SystemSettingsRepository;
 use App\Repository\TenantRepository;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\DashboardStatisticsService;
+use App\Service\ModuleConfigurationService;
 use App\Service\MrisKpiService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -70,6 +71,7 @@ class KpiSnapshotCommand
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
         private readonly ?TenantContext $tenantContext = null,
+        private readonly ?ModuleConfigurationService $moduleConfiguration = null,
     ) {
     }
 
@@ -290,7 +292,7 @@ class KpiSnapshotCommand
         }
 
         // TISAX per-tier KPIs (skipped when service not wired or module inactive)
-        $tisaxEnabled = $settings['modules']['tisax'] ?? true;
+        $tisaxEnabled = $this->moduleConfiguration?->isModuleActiveForTenant('tisax', $tenant) === true;
         if ($tisaxEnabled && $this->tisaxAssessment !== null && $this->frameworkRepository !== null) {
             try {
                 $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);

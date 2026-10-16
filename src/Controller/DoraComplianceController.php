@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Enum\BCExerciseStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
@@ -47,6 +48,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * DORA is mandatory for financial entities (banks, insurance, investment firms, etc.)
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('nis2_dora')]
 class DoraComplianceController extends AbstractController
 {
     public function __construct(

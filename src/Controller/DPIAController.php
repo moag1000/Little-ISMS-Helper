@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\CurrentUserTrait;
@@ -39,6 +40,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('privacy')]
 class DPIAController extends AbstractController
 {
     use CurrentUserTrait;

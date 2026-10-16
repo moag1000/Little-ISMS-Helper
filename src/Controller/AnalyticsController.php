@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Enum\IncidentSeverity;
 use DateTime;
 use App\Entity\Risk;
@@ -41,6 +42,7 @@ use App\Util\CsvSanitizer;
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/analytics')]
+#[RequiresModule('analytics')]
 class AnalyticsController extends AbstractController
 {
     public function __construct(

@@ -26,8 +26,12 @@
     {% if canEdit is defined and canEdit %}
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_asset_edit', {id: asset.id}) }]) %}
     {% endif %}
+    {% if is_module_active('bcm') %}
+        {% set _show_actions = _show_actions|merge([
+            { label: 'asset.action.bcm_insights'|trans({}, 'asset'), variant: 'ghost', href: path('app_asset_bcm_insights', {id: asset.id}) }
+        ]) %}
+    {% endif %}
     {% set _show_actions = _show_actions|merge([
-        { label: 'asset.action.bcm_insights'|trans({}, 'asset'), variant: 'ghost', href: path('app_asset_bcm_insights', {id: asset.id}) },
         { label: 'asset.action.qr_label'|trans({}, 'asset'), variant: 'ghost', icon: 'ui-key', href: path('app_asset_qr_label', {id: asset.id}), attrs: { 'data-turbo': 'false', title: 'asset.action.print_qr_label'|trans({}, 'asset') } },
         { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_asset_index') }
     ]) %}

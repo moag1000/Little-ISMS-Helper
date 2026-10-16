@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use DateTime;
 use DateTimeImmutable;
 use App\Controller\Trait\PdfLocaleTrait;
@@ -223,6 +224,7 @@ class ManagementReportController extends AbstractController
     // ===================== BCM REPORTS =====================
 
     #[Route('/bcm', name: 'app_management_reports_bcm', methods: ['GET'])]
+    #[RequiresModule('bcm')]
     public function bcm(): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -235,6 +237,7 @@ class ManagementReportController extends AbstractController
     }
 
     #[Route('/bcm/pdf', name: 'app_management_reports_bcm_pdf', methods: ['GET'])]
+    #[RequiresModule('bcm')]
     public function bcmPdf(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -400,6 +403,7 @@ class ManagementReportController extends AbstractController
     // ===================== GDPR / DATA BREACH REPORTS =====================
 
     #[Route('/gdpr', name: 'app_management_reports_gdpr', methods: ['GET'])]
+    #[RequiresModule('privacy')]
     public function gdpr(): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -410,6 +414,7 @@ class ManagementReportController extends AbstractController
     }
 
     #[Route('/gdpr/pdf', name: 'app_management_reports_gdpr_pdf', methods: ['GET'])]
+    #[RequiresModule('privacy')]
     public function gdprPdf(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -646,6 +651,7 @@ class ManagementReportController extends AbstractController
     // ===================== BCM EXCEL EXPORT =====================
 
     #[Route('/bcm/excel', name: 'app_management_reports_bcm_excel', methods: ['GET'])]
+    #[RequiresModule('bcm')]
     public function bcmExcel(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -806,6 +812,7 @@ class ManagementReportController extends AbstractController
     // ===================== GDPR EXCEL EXPORT =====================
 
     #[Route('/gdpr/excel', name: 'app_management_reports_gdpr_excel', methods: ['GET'])]
+    #[RequiresModule('privacy')]
     public function gdprExcel(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();

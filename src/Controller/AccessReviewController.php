@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\AccessReviewCampaign;
@@ -36,6 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 #[Route('/access-review', name: 'app_access_review_')]
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('access_review')]
 class AccessReviewController extends AbstractController
 {
     use CurrentUserTrait;

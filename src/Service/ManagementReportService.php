@@ -68,6 +68,7 @@ final class ManagementReportService
         private readonly AuditLogger $auditLogger,
         private readonly ?TisaxMaturityAssessmentService $tisaxAssessment = null,
         private readonly ?TenantContext $tenantContext = null,
+        private readonly ?ModuleConfigurationService $moduleConfiguration = null,
     ) {
     }
 
@@ -830,9 +831,7 @@ final class ManagementReportService
         if ($this->tisaxAssessment !== null && $this->tenantContext !== null) {
             $tenant = $this->tenantContext->getCurrentTenant();
             if ($tenant !== null) {
-                $settings     = $tenant->getSettings() ?? [];
-                $tisaxEnabled = $settings['modules']['tisax'] ?? true;
-                if ($tisaxEnabled) {
+                if ($this->moduleConfiguration?->isModuleActiveForTenant('tisax', $tenant) === true) {
                     $framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'TISAX']);
                     if ($framework !== null) {
                         $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);

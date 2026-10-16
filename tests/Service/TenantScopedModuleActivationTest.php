@@ -53,13 +53,13 @@ final class TenantScopedModuleActivationTest extends TestCase
 
     private function service(?Tenant $tenant, ?EntityManagerInterface $em = null): ModuleConfigurationService
     {
-        $context = $this->createMock(TenantContext::class);
+        $context = $this->createStub(TenantContext::class);
         $context->method('getCurrentTenant')->willReturn($tenant);
 
         return new ModuleConfigurationService(
             $this->projectDir,
             $context,
-            $em ?? $this->createMock(EntityManagerInterface::class),
+            $em ?? $this->createStub(EntityManagerInterface::class),
         );
     }
 
@@ -124,5 +124,25 @@ final class TenantScopedModuleActivationTest extends TestCase
             file_exists($yaml) ? file_get_contents($yaml) : null,
             'the shared instance config must not be touched when a tenant saves',
         );
+    }
+
+    #[Test]
+    public function explicitTenantCheckIgnoresTheRequestTenant(): void
+    {
+        // CLI / per-tenant loops have no request tenant; the explicit-tenant
+        // check must resolve against the tenant it is given.
+        $service = $this->service(null);
+
+        $withOwnSelection = (new Tenant())->setActiveModules(['tisax']);
+        self::assertTrue($service->isModuleActiveForTenant('tisax', $withOwnSelection));
+        self::assertFalse($service->isModuleActiveForTenant('privacy', $withOwnSelection));
+
+        $inheriting = new Tenant();
+        self::assertTrue($service->isModuleActiveForTenant('privacy', $inheriting));
+        self::assertFalse($service->isModuleActiveForTenant('tisax', $inheriting));
+
+        foreach (array_keys($service->getRequiredModules()) as $required) {
+            self::assertTrue($service->isModuleActiveForTenant((string) $required, $withOwnSelection));
+        }
     }
 }

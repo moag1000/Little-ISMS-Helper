@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\IncidentSeverity;
@@ -323,6 +324,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('privacy')]
     public function gdprWizardResult(Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -653,6 +655,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('nis2_dora')]
     public function downloadNis2Report(Request $request, Incident $incident): Response
     {
         // Check if NIS2 framework exists and is active
@@ -755,6 +758,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/bcm-impact', name: 'app_incident_bcm_impact', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpact(Incident $incident): Response
     {
         $analysis = $this->incidentBCMImpactService->analyzeBusinessImpact($incident);
@@ -769,6 +773,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpactApi(Incident $incident, Request $request): Response
     {
         $downtimeHours = $request->query->get('downtime_hours');
@@ -785,6 +790,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function autoDetectProcesses(Incident $incident): Response
     {
         $detectedProcesses = $this->incidentBCMImpactService->identifyAffectedProcesses($incident);
@@ -862,6 +868,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/bcm-impact/report', name: 'app_incident_bcm_impact_report', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpactReport(Incident $incident): Response
     {
         $reportData = $this->incidentBCMImpactService->generateImpactReport($incident);

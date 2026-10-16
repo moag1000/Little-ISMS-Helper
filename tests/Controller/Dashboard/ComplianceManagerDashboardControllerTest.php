@@ -12,6 +12,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -47,6 +48,9 @@ class ComplianceManagerDashboardControllerTest extends TestCase
     private MockObject $roleDashboardService;
     private TisaxMaturityAssessmentService $tisaxAssessment;
     private MockObject $container;
+    private MockObject $moduleConfiguration;
+    /** @var list<string> */
+    private array $activeModules = ['privacy', 'compliance', 'tisax'];
     private MockObject $twig;
     private ComplianceManagerDashboardController $controller;
     private ?array $renderedDashboard = null;
@@ -65,6 +69,10 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $this->tisaxAssessment = new TisaxMaturityAssessmentService($em);
         $this->container = $this->createMock(ContainerInterface::class);
+        $this->moduleConfiguration = $this->createMock(ModuleConfigurationService::class);
+        $this->moduleConfiguration->method('isModuleActive')->willReturnCallback(
+            fn (string $key): bool => in_array($key, $this->activeModules, true),
+        );
         $this->twig = $this->createMock(Environment::class);
 
         $self = $this;
@@ -95,6 +103,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
             $this->requirementRepo,
             $this->roleDashboardService,
             $this->tisaxAssessment,
+            $this->moduleConfiguration,
         );
         $this->controller->setContainer($this->container);
     }

@@ -161,10 +161,14 @@
                         </td>
                         <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.competence.to'|trans({}, 'help') }}</td>
                         <td class="fa-table__cell">
+                            {% if is_module_active('training') %}
                             <a href="{{ path('app_training_index') }}" class="text-decoration-none">
                                 <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.map.competence.module'|trans({}, 'help') }}
                             </a>
+                            {% else %}
+                                {{ 'help.iso9001_bridge.map.competence.module'|trans({}, 'help') }}
+                            {% endif %}
                         </td>
                         <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.6.3</span></td>
                     </tr>

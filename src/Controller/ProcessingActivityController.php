@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use RuntimeException;
 use DateTime;
 use Exception;
@@ -40,6 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
 
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('privacy')]
 class ProcessingActivityController extends AbstractController
 {
     use ModuleGatedControllerTrait;

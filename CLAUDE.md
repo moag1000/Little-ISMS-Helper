@@ -481,10 +481,14 @@ class MyType extends AbstractType {
 }
 ```
 
-**Quick pattern (Controller):**
+**Quick pattern (Controller):** — preferred: attribute on class or action,
+enforced centrally by `RequiresModuleListener` (HTML → dashboard redirect + flash,
+JSON → 403). CI gate `check_module_gating.py` flags framework routes without a gate.
 ```php
-use App\Controller\Trait\ModuleGatedControllerTrait;
-// ...
+use App\Attribute\RequiresModule;
+#[RequiresModule('privacy')]
+final class MyGdprController extends AbstractController { /* ... */ }
+// legacy, still valid inside an action:
 if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 ```
 

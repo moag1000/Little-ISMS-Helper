@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Repository\IctProviderLibraryRepository;
 use App\Service\IctProviderLibraryService;
 use App\Service\TenantContext;
@@ -19,6 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * a pre-filled (DORA-relevant) Supplier for review.
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('nis2_dora')]
 final class IctProviderLibraryController extends AbstractController
 {
     public function __construct(

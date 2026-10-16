@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Service\AuditLogger;
 use App\Service\Export\DoraRegisterOfInformationExporter;
 use App\Service\TenantContext;
@@ -28,6 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Tracks MINOR-6 in docs/DATA_REUSE_PLAN_REVIEW_ISB.md.
  */
+#[RequiresModule('nis2_dora')]
 class DoraRegisterExportController extends AbstractController
 {
     public function __construct(

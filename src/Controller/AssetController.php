@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use Exception;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
@@ -611,6 +612,7 @@ class AssetController extends AbstractController
     }
     #[Route('/asset/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmInsights(int $id): Response
     {
         $user = $this->security->getUser();

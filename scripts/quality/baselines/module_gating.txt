@@ -1,3 +1,22 @@
 # check_module_gating.py baseline — generated snapshot.
-# Format: <relative-path>:<line>:<field-name>
-# Remove an entry once the FormType is gated properly.
+# Format: <relative-path>:<line>:<field-name>   (FormType pass)
+#         <relative-path>:<method>:route        (controller pass)
+# Remove an entry once the FormType / controller is gated properly.
+# ReportBuilderController: owned by a parallel change set; gate with
+# #[RequiresModule('report_builder')] on the class and drop these lines.
+src/Controller/ReportBuilderController.php:index:route
+src/Controller/ReportBuilderController.php:new:route
+src/Controller/ReportBuilderController.php:createFromTemplate:route
+src/Controller/ReportBuilderController.php:clone:route
+src/Controller/ReportBuilderController.php:edit:route
+src/Controller/ReportBuilderController.php:save:route
+src/Controller/ReportBuilderController.php:preview:route
+src/Controller/ReportBuilderController.php:exportPdf:route
+src/Controller/ReportBuilderController.php:getWidgetData:route
+src/Controller/ReportBuilderController.php:getWidgetLibrary:route
+src/Controller/ReportBuilderController.php:toggleFavorite:route
+src/Controller/ReportBuilderController.php:share:route
+src/Controller/ReportBuilderController.php:saveAsTemplate:route
+src/Controller/ReportBuilderController.php:settingsEdit:route
+src/Controller/ReportBuilderController.php:delete:route
+src/Controller/ReportBuilderController.php:getUsers:route

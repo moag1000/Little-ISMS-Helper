@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use Exception;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
@@ -33,6 +34,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[RequiresModule('training')]
 class TrainingController extends AbstractController
 {
     use BulkActionTrait;

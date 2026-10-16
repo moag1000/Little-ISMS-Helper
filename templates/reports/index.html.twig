@@ -97,7 +97,8 @@
             ) }}
         </div>
 
-        {# Training Log #}
+        {# Training Log — training module only #}
+        {% if is_module_active('training') %}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
                 'reports.card.training.title'|trans({}, 'reports'),
@@ -115,6 +116,7 @@
                 path('app_reports_trainings_excel')
             ) }}
         </div>
+        {% endif %}
 
         {# Management Reports #}
         <div class="col-md-6 col-lg-4 mb-4">

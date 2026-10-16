@@ -95,6 +95,8 @@
         {% include 'incident/_escalation_preview_panel.html.twig' %}
     </div>
 </div>
+{# GDPR Art. 33 breach wizard — privacy module only #}
+{% if is_module_active('privacy') %}
 <div class="mt-2 mb-3">
     <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="gdpr-wizard-trigger-btn">
         <i class="fa-icon fa-icon--breach" aria-hidden="true"></i>
@@ -102,6 +104,7 @@
     </button>
     <small class="d-block mt-1 text-muted">{{ 'data_breach.wizard.trigger_hint'|trans({}, 'privacy') }}</small>
 </div>
+{% endif %}
 {% endset %}
 
 {% include '_components/_auto_form.html.twig' with {
