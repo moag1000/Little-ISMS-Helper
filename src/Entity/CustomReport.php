@@ -563,10 +563,20 @@ class CustomReport
     }
 
     /**
-     * Check if user can access this report
+     * Check if user can access this report: the owner, a user it is shared
+     * with, or anyone for a shared template — always only within the
+     * report's own organisation.
+     *
+     * @param int|null $tenantId organisation the user is acting in (tenant
+     *                           context); defaults to the user's own one
      */
-    public function canAccess(User $user): bool
+    public function canAccess(User $user, ?int $tenantId = null): bool
     {
+        $tenantId ??= $user->getTenant()?->getId();
+        if ($this->tenantId === null || $this->tenantId !== $tenantId) {
+            return false;
+        }
+
         // Owner always has access
         if ($this->owner && $this->owner->getId() === $user->getId()) {
             return true;
