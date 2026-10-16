@@ -780,7 +780,6 @@ jobs:
             echo "=== APP DATABASE_URL FROM ENV ==="
             docker compose exec -T app sh -c 'echo "DATABASE_URL=$DATABASE_URL"; echo "EMBEDDED_DB=$EMBEDDED_DB"' || true
             echo "=== TRY HEALTH MANUALLY ==="
-            docker compose exec -T app curl -i http://localhost/de/health 2>&1 || true
             docker compose exec -T app curl -i http://localhost/health 2>&1 || true
             exit 1
           }
