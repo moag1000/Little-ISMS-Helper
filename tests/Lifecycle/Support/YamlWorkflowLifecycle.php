@@ -50,7 +50,7 @@ final class YamlWorkflowLifecycle implements LifecycleTransitionInterface
         }
 
         try {
-            $workflow['machine']->apply($entity, $transitionName);
+            $workflow['machine']->apply($entity, $transitionName, ['reason' => $reason]);
         } catch (WorkflowLogicException $e) {
             throw new InvalidTransitionException(
                 message: $e->getMessage(),

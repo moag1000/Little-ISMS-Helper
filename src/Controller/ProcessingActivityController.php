@@ -858,9 +858,7 @@ class ProcessingActivityController extends AbstractController
             return $this->json(['ok' => true, 'changed' => 0, 'rejected' => []]);
         }
 
-        // Bulk moves allowed by the 5-transition matrix, keyed by current
-        // status (processing_activity_lifecycle). `published` is `publish`
-        // from approved and `restore` from archived.
+        // 5-transition bulk matrix by current status; archived→published is `restore`.
         $statusMatrix = [
             'draft'     => ['in_review' => 'submit_for_review'],
             'in_review' => ['approved' => 'approve', 'draft' => 'request_changes'],
