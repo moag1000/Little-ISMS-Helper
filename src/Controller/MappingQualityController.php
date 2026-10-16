@@ -8,6 +8,7 @@ use App\Controller\Trait\LocalizedFlashTrait;
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
 use App\Entity\ComplianceMapping;
+use App\Entity\MappingGapItem;
 use App\Enum\MappingGapItemStatus;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\MappingGapItemRepository;
@@ -239,30 +240,8 @@ class MappingQualityController extends AbstractController
             // Run quality analysis
             $analysisResults = $this->mappingQualityAnalysisService->analyzeMappingQuality($mapping);
 
-            // Apply results
-            $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
-            $mapping->setTextualSimilarity($analysisResults['textual_similarity']);
-            $mapping->setKeywordOverlap($analysisResults['keyword_overlap']);
-            $mapping->setStructuralSimilarity($analysisResults['structural_similarity']);
-            $mapping->setAnalysisConfidence($analysisResults['analysis_confidence']);
-            $mapping->setQualityScore($analysisResults['quality_score']);
-            $mapping->setAnalysisAlgorithmVersion($analysisResults['algorithm_version']);
-            $mapping->setRequiresReview($analysisResults['requires_review']);
-
-            // Remove old gap items
-            foreach ($mapping->getGapItems() as $oldGap) {
-                $this->entityManager->remove($oldGap);
-            }
-            $this->entityManager->flush();
-
-            // Generate new gap items
-            $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
-
-            foreach ($gapItems as $gapItem) {
-                $mapping->addGapItem($gapItem);
-                $this->entityManager->persist($gapItem);
-            }
-
+            // Apply results and replace the gap items
+            $gapItems = $this->applyAnalysis($mapping, $analysisResults, replaceGaps: true);
             $this->entityManager->flush();
 
             return $this->json([
@@ -472,32 +451,8 @@ class MappingQualityController extends AbstractController
                     // Analyze quality
                     $analysisResults = $this->mappingQualityAnalysisService->analyzeMappingQuality($mapping);
 
-                    // Apply results
-                    $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
-                    $mapping->setTextualSimilarity($analysisResults['textual_similarity']);
-                    $mapping->setKeywordOverlap($analysisResults['keyword_overlap']);
-                    $mapping->setStructuralSimilarity($analysisResults['structural_similarity']);
-                    $mapping->setAnalysisConfidence($analysisResults['analysis_confidence']);
-                    $mapping->setQualityScore($analysisResults['quality_score']);
-                    $mapping->setAnalysisAlgorithmVersion($analysisResults['algorithm_version']);
-                    $mapping->setRequiresReview($analysisResults['requires_review']);
-
-                    // Remove old gaps if reanalyzing
-                    if ($reanalyze) {
-                        foreach ($mapping->getGapItems() as $oldGap) {
-                            $this->entityManager->remove($oldGap);
-                        }
-                        $this->entityManager->flush();
-                    }
-
-                    // Analyze gaps
-                    $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
-
-                    foreach ($gapItems as $gapItem) {
-                        $mapping->addGapItem($gapItem);
-                        $this->entityManager->persist($gapItem);
-                    }
-
+                    // Apply results and analyze gaps (old gaps only replaced when reanalyzing)
+                    $gapItems = $this->applyAnalysis($mapping, $analysisResults, replaceGaps: $reanalyze);
                     $this->entityManager->persist($mapping);
                     $analyzed++;
 
@@ -607,5 +562,39 @@ class MappingQualityController extends AbstractController
             'high_priority_gaps_count' => count($highPriorityGaps),
             'export_date' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
+    }
+
+    /**
+     * Writes a quality-analysis result onto the mapping and adds fresh gap items (persisted,
+     * not flushed); with $replaceGaps the existing gap items are removed and flushed first.
+     *
+     * @param array<string, mixed> $analysisResults MappingQualityAnalysisService::analyzeMappingQuality() output
+     * @return array<int, MappingGapItem>
+     */
+    private function applyAnalysis(ComplianceMapping $mapping, array $analysisResults, bool $replaceGaps): array
+    {
+        $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
+        $mapping->setTextualSimilarity($analysisResults['textual_similarity']);
+        $mapping->setKeywordOverlap($analysisResults['keyword_overlap']);
+        $mapping->setStructuralSimilarity($analysisResults['structural_similarity']);
+        $mapping->setAnalysisConfidence($analysisResults['analysis_confidence']);
+        $mapping->setQualityScore($analysisResults['quality_score']);
+        $mapping->setAnalysisAlgorithmVersion($analysisResults['algorithm_version']);
+        $mapping->setRequiresReview($analysisResults['requires_review']);
+
+        if ($replaceGaps) {
+            foreach ($mapping->getGapItems() as $oldGap) {
+                $this->entityManager->remove($oldGap);
+            }
+            $this->entityManager->flush();
+        }
+
+        $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
+        foreach ($gapItems as $gapItem) {
+            $mapping->addGapItem($gapItem);
+            $this->entityManager->persist($gapItem);
+        }
+
+        return $gapItems;
     }
 }

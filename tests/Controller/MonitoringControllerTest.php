@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Controller\MonitoringController;
+use App\Controller\MonitoringAutoFixController;
 use App\Entity\Tenant;
 use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use App\Entity\User;
@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * Functional tests for MonitoringController
+ * Functional tests for MonitoringController and MonitoringAutoFixController
  *
  * Tests system monitoring including:
  * - Health checks (HTML and JSON)
@@ -376,7 +376,7 @@ class MonitoringControllerTest extends WebTestCase
     public function testFixCacheExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->postAutofix('/en/admin/monitoring/health/fix/cache', $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID));
+        $this->postAutofix('/en/admin/monitoring/health/fix/cache', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -385,7 +385,7 @@ class MonitoringControllerTest extends WebTestCase
     public function testFixLogsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->postAutofix('/en/admin/monitoring/health/fix/logs', $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID));
+        $this->postAutofix('/en/admin/monitoring/health/fix/logs', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -394,7 +394,7 @@ class MonitoringControllerTest extends WebTestCase
     public function testClearCacheExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->postAutofix('/en/admin/monitoring/health/fix/clear-cache', $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID));
+        $this->postAutofix('/en/admin/monitoring/health/fix/clear-cache', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -403,7 +403,7 @@ class MonitoringControllerTest extends WebTestCase
     public function testRotateLogsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->postAutofix('/en/admin/monitoring/health/fix/rotate-logs', $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID));
+        $this->postAutofix('/en/admin/monitoring/health/fix/rotate-logs', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -412,7 +412,7 @@ class MonitoringControllerTest extends WebTestCase
     public function testOptimizeDiskExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->postAutofix('/en/admin/monitoring/health/fix/optimize-disk', $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID));
+        $this->postAutofix('/en/admin/monitoring/health/fix/optimize-disk', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -421,7 +421,7 @@ class MonitoringControllerTest extends WebTestCase
     public function testFixVarPermissionsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->postAutofix('/en/admin/monitoring/health/fix/var-permissions', $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID));
+        $this->postAutofix('/en/admin/monitoring/health/fix/var-permissions', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -430,7 +430,7 @@ class MonitoringControllerTest extends WebTestCase
     public function testFixSessionPermissionsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->postAutofix('/en/admin/monitoring/health/fix/session-permissions', $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID));
+        $this->postAutofix('/en/admin/monitoring/health/fix/session-permissions', $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID));
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -460,7 +460,7 @@ class MonitoringControllerTest extends WebTestCase
     public function autofixRejectsWrongCsrfToken(string $url): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->seedSessionCsrfToken($this->client, MonitoringController::AUTOFIX_CSRF_ID);
+        $this->seedSessionCsrfToken($this->client, MonitoringAutoFixController::AUTOFIX_CSRF_ID);
         $this->postAutofix($url, 'forged-token');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
