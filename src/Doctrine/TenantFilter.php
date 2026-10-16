@@ -16,6 +16,8 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
  * Automatically filters all queries to only return entities
  * that belong to the current tenant. Entities must have a
  * 'tenant' property with a ManyToOne relation to Tenant entity.
+ * Entities implementing {@see SharedTenantRowsInterface} additionally
+ * expose their tenant-less (instance-wide shared) rows.
  *
  * Usage in config/packages/doctrine.yaml:
  * doctrine:
@@ -74,6 +76,13 @@ class TenantFilter extends SQLFilter
         $mapping = $targetEntity->getAssociationMapping('tenant');
         $fieldName = is_array($mapping) ? $mapping['fieldName'] : $mapping->fieldName;
 
-        return sprintf('%s.%s = %s', $targetTableAlias, $fieldName . '_id', $tenantId);
+        $column = sprintf('%s.%s', $targetTableAlias, $fieldName . '_id');
+
+        if ($targetEntity->getReflectionClass()->implementsInterface(SharedTenantRowsInterface::class)) {
+            // Own rows plus instance-wide shared rows (tenant = NULL).
+            return sprintf('(%1$s = %2$s OR %1$s IS NULL)', $column, $tenantId);
+        }
+
+        return sprintf('%s = %s', $column, $tenantId);
     }
 }
