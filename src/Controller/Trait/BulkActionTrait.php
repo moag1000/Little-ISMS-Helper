@@ -168,7 +168,7 @@ trait BulkActionTrait
         }
 
         foreach ($entities as $entity) {
-            if (method_exists($this, 'isGranted') && !$this->isGranted('edit', $entity)) {
+            if (!$this->isGranted('edit', $entity)) {
                 $rejected[] = [
                     'id' => method_exists($entity, 'getId') ? $entity->getId() : null,
                     'reason' => 'access_denied',
