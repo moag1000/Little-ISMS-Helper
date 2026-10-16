@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * WS-6 Budget Simulator Controller
@@ -33,7 +34,7 @@ export default class extends Controller {
 
     static values = {
         total: { type: Number, default: 0 },
-        labelFormat: { type: String, default: '{budget} of {total} person-days · covers {covered} of {count} requirements' },
+        labelFormat: { type: String, default: '' }, // empty → faT('budget_simulator.label')
     };
 
     connect() {
@@ -78,11 +79,11 @@ export default class extends Controller {
         // Sync ARIA + visible label
         this.sliderTarget.setAttribute('aria-valuenow', String(budget));
 
-        const label = this.labelFormatValue
-            .replace('{budget}', this.formatNumber(budget))
-            .replace('{total}', this.formatNumber(this.totalValue))
-            .replace('{covered}', String(covered))
-            .replace('{count}', String(this.orderedRows.length));
+        const label = (this.labelFormatValue || faT('budget_simulator.label'))
+            .replace('%budget%', this.formatNumber(budget))
+            .replace('%total%', this.formatNumber(this.totalValue))
+            .replace('%covered%', String(covered))
+            .replace('%count%', String(this.orderedRows.length));
 
         this.sliderTarget.setAttribute('aria-valuetext', label);
 

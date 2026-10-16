@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * FairyAurora — Lifecycle Transition Dropdown Controller (lifecycle X.3)
@@ -13,6 +14,9 @@ import { Controller } from '@hotwired/stimulus';
  *   csrf          CSRF token string (lifecycle_transition intention)
  *   reason-label  Prompt text for reason_required transitions
  *   workflow      Workflow name (informational)
+ *   no-transitions-text / load-error-text / conflict-text
+ *                 Translated UI strings (see _lifecycle_actions.html.twig);
+ *                 generic texts (loading, network error) come from faT().
  */
 export default class extends Controller {
     static targets = ['trigger', 'menu'];
@@ -22,6 +26,9 @@ export default class extends Controller {
         csrf:          String,
         reasonLabel:   String,
         workflow:      String,
+        noTransitionsText: String,
+        loadErrorText:     String,
+        conflictText:      String,
     };
 
     connect() {
@@ -60,13 +67,13 @@ export default class extends Controller {
             });
             const data = await res.json();
             if (!res.ok) {
-                this._renderError(data.message ?? 'Error loading transitions.');
+                this._renderError(data.message ?? (this.loadErrorTextValue || faT('error_status', { '%status%': res.status })));
                 return;
             }
             this._lockVersion = data.lock_version ?? null;
             this._renderMenu(data.allowed_transitions ?? []);
         } catch (err) {
-            this._renderError(err.message ?? 'Network error.');
+            this._renderError(faT('network_error'));
         }
     }
 
@@ -120,12 +127,15 @@ export default class extends Controller {
         let reason = null;
 
         if (needsReason) {
-            reason = window.prompt(this.reasonLabelValue);
+            reason = typeof window.faPrompt === 'function'
+                ? await window.faPrompt(this.reasonLabelValue, { required: true, maxlength: 1000 })
+                : window.prompt(this.reasonLabelValue); // fallback: helper not mounted yet
             if (reason === null || reason.trim() === '') {
                 // User cancelled or empty — abort silently
                 this._close();
                 return;
             }
+            reason = reason.trim();
         }
 
         this._close();
@@ -150,18 +160,18 @@ export default class extends Controller {
             const data = await res.json();
 
             if (res.status === 409) {
-                this.#notify(data.message ?? 'Conflict — please reload.', 'warning');
+                this.#notify(data.message ?? (this.conflictTextValue || faT('error_status', { '%status%': 409 })), 'warning');
                 window.location.reload();
                 return;
             }
             if (!res.ok) {
-                this.#notify(data.message ?? `Error (${res.status})`, 'danger');
+                this.#notify(data.message ?? faT('error_status', { '%status%': res.status }), 'danger');
                 return;
             }
             // Success — reload to reflect new status
             window.location.reload();
         } catch (err) {
-            this.#notify(err.message ?? 'Network error.', 'danger');
+            this.#notify(faT('network_error'), 'danger');
         }
     }
 
@@ -196,11 +206,10 @@ export default class extends Controller {
     }
 
     _t(key) {
-        const map = {
-            loading: 'Loading…',
-            no_transitions: 'No transitions available.',
-        };
-        return map[key] ?? key;
+        if (key === 'no_transitions') {
+            return this.noTransitionsTextValue || key;
+        }
+        return faT(key);
     }
 
     _esc(str) {

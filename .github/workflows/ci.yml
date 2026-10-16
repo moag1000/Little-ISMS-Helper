@@ -601,6 +601,12 @@ jobs:
         # deprecated page header have Aurora components. Existing uses are counted
         # per file in the baseline and may only shrink; new code uses the components.
         run: python3 scripts/quality/check_aurora_legacy_markup.py --baseline scripts/quality/baselines/aurora_legacy_markup.txt
+      - name: "Gate 67: no unguarded native browser dialogs"
+        # alert()/confirm()/prompt() are banned as UX — use window.faToast /
+        # faConfirm / faPrompt (templates: ui-actions#confirm / #promptSubmit).
+        # A native call passes only as a fallback guarded by a
+        # `typeof window.fa*` check. No baseline: the codebase is clean.
+        run: python3 scripts/quality/check_native_dialogs.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

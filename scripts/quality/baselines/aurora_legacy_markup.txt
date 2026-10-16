@@ -31,9 +31,8 @@ templates/admin/lifecycle_overrides/index.html.twig:bs_badge:1
 templates/admin/lifecycle_overrides/show.html.twig:bs_badge:1
 templates/admin/mapping_quality/coverage.html.twig:bs_progress:3
 templates/admin/modules/index.html.twig:bs_badge:1
-templates/admin/notification/channel/edit.html.twig:bs_alert:3
+templates/admin/notification/channel/edit.html.twig:bs_alert:2
 templates/admin/notification/channel/index.html.twig:bs_badge:1
-templates/admin/notification/channel/new.html.twig:bs_alert:1
 templates/admin/notification/rule/_evaluation_log.html.twig:bs_badge:1
 templates/admin/notification/rule/index.html.twig:bs_badge:2
 templates/admin/notification/rule/show.html.twig:bs_badge:2
@@ -96,7 +95,6 @@ templates/dashboards/compliance_manager.html.twig:bs_badge:2
 templates/dashboards/dpo.html.twig:bs_badge:2
 templates/dashboards/isb.html.twig:bs_badge:2
 templates/dashboards/isb.html.twig:bs_btn:2
-templates/data_management/backup.html.twig:raw_table:1
 templates/data_reuse_hub/index.html.twig:bs_alert:1
 templates/data_reuse_hub/index.html.twig:bs_btn:1
 templates/data_subject_request/show.html.twig:bs_alert:1

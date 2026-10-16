@@ -33,6 +33,7 @@ audit_finding.severity	4
 audit_finding.status	5
 audit_finding.type	3
 audit_freeze.purpose	3
+audit_log.action_code	1
 audit_program.frequency	3
 audit_program.status	3
 authority	1
@@ -273,6 +274,9 @@ training.status	4
 training.type	4
 training_participation.status	1
 type	3
+ui.component.coverage_matrix.dimension	1
+ui.component.density_toggle	1
+ui.condition_builder.keyword	2
 user.profile.alva.position	1
 user.profile.alva.size	1
 vulnerability.severity	3

@@ -85,7 +85,10 @@
                     {% endif %}
                 </dl>
 
-                <form method="post" action="{{ path('app_dora_subcontractor_delete', {id: subcontractor.id}) }}" class="mt-4" onsubmit="return confirm('{{ 'common.confirm_delete'|trans({}, 'messages')|e('js') }}');">
+                <form method="post" action="{{ path('app_dora_subcontractor_delete', {id: subcontractor.id}) }}" class="mt-4" data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'common.confirm_delete'|trans({}, 'messages') }}"
+                      data-ui-actions-tone-param="danger">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subcontractor.id) }}">
                     <button type="submit" class="btn btn-danger btn-sm">
                         <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>

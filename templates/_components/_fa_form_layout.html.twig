@@ -75,7 +75,7 @@
                 <div class="fa-form-layout__progress">
                     <div class="fa-form-layout__progress-text"
                          data-{{ controller }}-target="progressText">
-                        <strong>{{ progress.done }}</strong> von <strong>{{ progress.total }}</strong> Abschnitten · {{ progressPercent }}%
+                        {{ 'ui.js.form_layout.progress'|trans({'%done%': progress.done, '%total%': progress.total, '%percent%': progressPercent}, 'ui') }}
                     </div>
                     <div class="fa-form-layout__progress-bar">
                         <div class="fa-form-layout__progress-fill"
@@ -85,8 +85,8 @@
                     {% if draftSavedAt %}
                         <div class="fa-form-layout__draft-state"
                              data-{{ controller }}-target="draftState">
-                            <i class="fa-icon fa-icon--check-circle-fill"></i>
-                            Entwurf gespeichert
+                            <i class="fa-icon fa-icon--check-circle-fill" aria-hidden="true"></i>
+                            {{ 'ui.js.form_layout.draft_saved'|trans({}, 'ui') }}
                         </div>
                     {% endif %}
                 </div>
@@ -163,11 +163,11 @@
                                       data-section-meta="{{ section.id }}"
                                       {% if sectionStatus == 'error' %}style="color: var(--danger);"{% endif %}>
                                     {%- if sectionStatus == 'done' -%}
-                                        {{ sectionFields }} Felder · alle ausgefüllt
+                                        {{ 'ui.js.form_layout.section_complete'|trans({'%total%': sectionFields}, 'ui') }}
                                     {%- elseif sectionStatus == 'error' and section.errorHint is defined and section.errorHint -%}
                                         {{ section.errorHint }}
                                     {%- else -%}
-                                        {{ sectionFields }} Felder · {{ sectionFilled }} ausgefüllt · {{ sectionPending }} ausstehend
+                                        {{ 'ui.js.form_layout.section_progress'|trans({'%total%': sectionFields, '%filled%': sectionFilled, '%pending%': sectionPending}, 'ui') }}
                                     {%- endif -%}
                                 </span>
                             </div>

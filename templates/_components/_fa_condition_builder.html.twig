@@ -1,118 +1,124 @@
 {#
  # FairyAurora v4.0 — fa-condition-builder macro
  #
- # Visual rule-builder for Notification-Rules (F3) and similar condition-
- # driven configuration. Replaces raw JSON editing with chip-row UI:
+ # Visual rule-builder for condition lists (Notification-Rules). Renders a
+ # Symfony CollectionType of condition rows as a WHEN / AND / OR chip row, so
+ # nobody edits JSON. The form stays the source of truth: every chip holds the
+ # real form widgets (CSRF, validation, error display keep working) and new rows
+ # are cloned from the collection prototype.
  #
- #   [field-dropdown] [operator] [value]  [×]  [+ Bedingung]
+ #   [WHEN] [field] [op] [value] [x]
+ #   [AND ] [field] [op] [value] [x]
+ #   [+ Add condition]
  #
- # Macros:
- #   1. render(fields, operators, conditions, props) — full builder
- #   2. chip(field, operator, value, props) — single condition chip (rarely standalone)
- #
- # Usage:
+ # Usage (NotificationRuleType: conditionRows = CollectionType of ConditionRowType,
+ # conditionLogic = 'and'|'or' choice):
  #   {% import '_components/_fa_condition_builder.html.twig' as _fa_condition_builder %}
+ #   {{ _fa_condition_builder.render(form.conditionRows, {
+ #       logic: form.conditionLogic,
+ #       suggestions: field_suggestions,
+ #   }) }}
  #
- #   {{ _fa_condition_builder.render(
- #       fields = [
- #           { key: 'severity', label: 'Schweregrad', type: 'enum', options: ['low', 'medium', 'high', 'critical'] },
- #           { key: 'category', label: 'Kategorie', type: 'string' },
- #           { key: 'count', label: 'Betroffene', type: 'number' }
- #       ],
- #       operators = [
- #           { key: 'eq', label: '=', appliesTo: ['enum', 'string', 'number'] },
- #           { key: 'gte', label: '≥', appliesTo: ['number'] },
- #           { key: 'contains', label: 'enthält', appliesTo: ['string'] }
- #       ],
- #       conditions = [
- #           { field: 'severity', operator: 'eq', value: 'high' }
- #       ],
- #       { name: 'rule_conditions', ariaLabel: 'Notification-Bedingungen' }
- #   ) }}
+ # Parameters:
+ #   collection         - CollectionType FormView; entries need `field`, `op`, `value` children
+ #                        and allow_add + prototype enabled
+ #   props.logic        - optional choice FormView ('and' | 'or') that switches the AND/OR keyword
+ #   props.suggestions  - optional list of field keys for the <datalist> the field inputs point at
+ #   props.datalistId   - id of that datalist (default 'fa-condition-fields', matches ConditionRowType)
+ #   props.class        - extra CSS classes
  #
- # Stimulus-controller `condition-builder` is responsible for:
- #   - add/remove chip
- #   - aria-live announcement on change
- #   - serialization to hidden input as JSON
- #   - validation (operator must apply to field-type)
+ # Stimulus controller `condition-builder` (assets/controllers/condition_builder_controller.js):
+ # add (clone prototype with the next index), remove, relabel AND/OR on logic change,
+ # aria-live announcement.
  #
- # Parameters (render):
- #   fields      - array of {key, label, type, options?} (required)
- #   operators   - array of {key, label, appliesTo[]} (required)
- #   conditions  - array of {field, operator, value} initial state (default [])
- #   props.name        - hidden-input name for form submission (default 'conditions')
- #   props.ariaLabel   - aria-label for the live-region (default 'Bedingungen')
- #   props.class       - extra CSS classes (optional)
- #
- # A11y:
- #   - <div role="region" aria-live="polite"> announces add/remove
- #   - each chip has aria-label "Bedingung: {field} {operator} {value}, Entfernen-Button verfügbar"
- #   - keyboard: Tab between chips, Enter on remove-button removes chip
+ # A11y: role="group" with a label, every control has a (visually hidden) label,
+ # remove buttons are labelled, add/remove is announced in a polite live region.
  #}
 
-{% macro render(fields, operators, conditions = [], props = {}) %}
-    {% set name = props.name|default('conditions') %}
-    {% set wrapperClass = 'fa-condition-builder' ~ (props.class is defined ? ' ' ~ props.class : '') %}
+{% macro render(collection, props = {}) %}
+    {% set logic = props.logic|default(null) %}
+    {% set joiner = logic is not null and logic.vars.value == 'or' ? 'or' : 'and' %}
+    {% set datalistId = props.datalistId|default('fa-condition-fields') %}
+    {% set suggestions = props.suggestions|default([]) %}
+    {% set nextIndex = collection.children|length > 0 ? max(collection.children|keys) + 1 : 0 %}
 
-    <div class="{{ wrapperClass }}"
+    <div class="fa-condition-builder{{ props.class is defined ? ' ' ~ props.class : '' }}"
          data-controller="condition-builder"
-         data-condition-builder-fields-value="{{ fields|json_encode|e('html_attr') }}"
-         data-condition-builder-operators-value="{{ operators|json_encode|e('html_attr') }}"
-         data-condition-builder-name-value="{{ name }}">
-        <div class="fa-condition-builder__chips"
-             role="region"
-             aria-live="polite"
-             aria-label="{{ props.ariaLabel|default('Bedingungen') }}"
-             data-condition-builder-target="chips">
-            {% for cond in conditions %}
-                {{ _self.chip(cond.field, cond.operator, cond.value, { fields: fields, operators: operators }) }}
+         data-condition-builder-index-value="{{ nextIndex }}"
+         data-condition-builder-prototype-name-value="{{ collection.vars.prototype.vars.name }}"
+         data-condition-builder-when-label-value="{{ 'ui.condition_builder.keyword.when'|trans({}, 'ui') }}"
+         data-condition-builder-and-label-value="{{ 'ui.condition_builder.keyword.and'|trans({}, 'ui') }}"
+         data-condition-builder-or-label-value="{{ 'ui.condition_builder.keyword.or'|trans({}, 'ui') }}"
+         data-condition-builder-added-label-value="{{ 'ui.condition_builder.added'|trans({}, 'ui') }}"
+         data-condition-builder-removed-label-value="{{ 'ui.condition_builder.removed'|trans({}, 'ui') }}">
+        {% if logic is not null %}
+            <div class="fa-condition-builder__logic">
+                {{ form_label(logic, null, { label_attr: { class: 'fa-condition-builder__logic-label' } }) }}
+                {{ form_widget(logic, { attr: {
+                    class: 'fa-condition-builder__logic-select',
+                    'data-condition-builder-target': 'logic',
+                    'data-action': 'change->condition-builder#relabel'
+                } }) }}
+            </div>
+        {% endif %}
+
+        <div class="fa-condition-builder__rows"
+             role="group"
+             aria-label="{{ 'ui.condition_builder.region_label'|trans({}, 'ui') }}"
+             data-condition-builder-target="rows">
+            {% for row in collection %}
+                {{ _self.row(row, loop.first ? 'when' : joiner) }}
             {% endfor %}
         </div>
 
-        <button type="button"
-                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-condition-builder__add"
-                data-action="click->condition-builder#add"
-                aria-label="Bedingung hinzufügen">
-            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-            Bedingung hinzufügen
-        </button>
+        <p class="fa-condition-builder__empty" data-condition-builder-target="empty"{% if collection.children|length > 0 %} hidden{% endif %}>
+            {{ 'ui.condition_builder.empty'|trans({}, 'ui') }}
+        </p>
 
-        <input type="hidden"
-               name="{{ name }}"
-               value="{{ conditions|json_encode|e('html_attr') }}"
-               data-condition-builder-target="hiddenInput">
+        <template data-condition-builder-target="template">
+            {{- _self.row(collection.vars.prototype, joiner) -}}
+        </template>
+
+        <div class="fa-condition-builder__row">
+            <button type="button"
+                    class="fa-condition-builder__add"
+                    data-action="click->condition-builder#add">
+                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                {{ 'ui.condition_builder.add'|trans({}, 'ui') }}
+            </button>
+        </div>
+
+        {% if suggestions|length > 0 %}
+            <datalist id="{{ datalistId }}">
+                {% for key in suggestions %}<option value="{{ key }}"></option>{% endfor %}
+            </datalist>
+        {% endif %}
+
+        <div class="visually-hidden" aria-live="polite" data-condition-builder-target="status"></div>
+        {{ form_errors(collection) }}
+        {% do collection.setRendered() %}
     </div>
 {% endmacro %}
 
-{% macro chip(fieldKey, operatorKey, value, props = {}) %}
-    {% set fields = props.fields|default([]) %}
-    {% set operators = props.operators|default([]) %}
-    {% set fieldDef = null %}
-    {% for f in fields %}
-        {% if f.key == fieldKey %}
-            {% set fieldDef = f %}
-        {% endif %}
-    {% endfor %}
-    {% set operatorDef = null %}
-    {% for op in operators %}
-        {% if op.key == operatorKey %}
-            {% set operatorDef = op %}
-        {% endif %}
-    {% endfor %}
-
-    <span class="fa-condition-chip"
-          data-condition-builder-target="chip"
-          data-field="{{ fieldKey }}"
-          data-operator="{{ operatorKey }}"
-          aria-label="Bedingung: {{ fieldDef.label|default(fieldKey) }} {{ operatorDef.label|default(operatorKey) }} {{ value }}, Entfernen verfügbar">
-        <span class="fa-condition-chip__field">{{ fieldDef.label|default(fieldKey) }}</span>
-        <span class="fa-condition-chip__operator">{{ operatorDef.label|default(operatorKey) }}</span>
-        <span class="fa-condition-chip__value">{{ value is iterable ? value|join(', ') : value }}</span>
-        <button type="button"
-                class="fa-condition-chip__remove"
-                data-action="click->condition-builder#remove"
-                aria-label="Bedingung entfernen">
-            <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
-        </button>
-    </span>
+{# One condition row: keyword + chip with the field / op / value widgets. #}
+{% macro row(row, keyword) %}
+    <div class="fa-condition-builder__row" data-condition-builder-target="row">
+        <span class="fa-condition-builder__keyword fa-condition-builder__keyword--{{ keyword }}"
+              data-condition-builder-target="keyword">{{ ('ui.condition_builder.keyword.' ~ keyword)|trans({}, 'ui') }}</span>
+        <span class="fa-condition-chip fa-condition-chip--edit">
+            {% for part in ['field', 'op', 'value'] %}
+                <span class="fa-condition-chip__part fa-condition-chip__part--{{ part }}">
+                    {{ form_label(row[part], null, { label_attr: { class: 'visually-hidden' } }) }}
+                    {{ form_widget(row[part]) }}
+                </span>
+            {% endfor %}
+            <button type="button"
+                    class="fa-condition-chip__remove"
+                    data-action="click->condition-builder#remove"
+                    aria-label="{{ 'ui.condition_builder.remove'|trans({}, 'ui') }}">
+                <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
+            </button>
+        </span>
+        {% for part in ['field', 'op', 'value'] %}{{ form_errors(row[part]) }}{% endfor %}
+    </div>
 {% endmacro %}

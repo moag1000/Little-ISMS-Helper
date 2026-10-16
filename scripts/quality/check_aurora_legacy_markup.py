@@ -56,7 +56,6 @@ SKIP_FILES = {
     "_components/_badge.html.twig",
     "_components/_fa_table.html.twig",
     "_components/_fa_progress.html.twig",
-    "_components/_table.html.twig",
 }
 
 RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)

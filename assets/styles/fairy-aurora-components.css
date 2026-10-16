@@ -2358,10 +2358,9 @@ strong, b {
     color: var(--fg);
 }
 
-/* Bootstrap .lead — Hero-Paragraph */
+/* Bootstrap .lead — Hero-Paragraph (colour: see the Aurora-contrast block) */
 .lead {
     font-size: 1.125rem;
-    color: var(--fg-2);
     line-height: 1.6;
 }
 
@@ -2846,34 +2845,12 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
 }
 .form-check-label { color: var(--fg); }
 
-.form-switch .form-check-input {
-    background-color: var(--surface-2);
-    border-color: var(--border-strong);
-}
-.form-switch .form-check-input:checked {
-    background-color: var(--primary);
-    border-color: var(--primary);
-}
-
 /* .required Pflichtfeld-Marker (Form-Field-Component + inline) */
 .required,
 label .required,
 .form-label .required { color: var(--danger); margin-left: 2px; font-weight: 600; }
 
 /* Bootstrap Floating Labels (form-floating) — Aurora-Kontraste */
-.form-floating > label {
-    color: var(--fg-3);
-    font-weight: 500;
-    padding: 1rem 0.75rem;
-}
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label,
-.form-floating > .form-select ~ label {
-    color: var(--primary);
-    opacity: 0.85;
-}
-.form-floating > .form-control,
-.form-floating > .form-select { background-color: var(--surface); }
 .form-floating > .form-control:focus,
 .form-floating > .form-control:not(:placeholder-shown) { background-color: var(--surface); }
 
@@ -2955,18 +2932,9 @@ small.text-muted,
 .bg-info    *:not(.btn, a.btn, .badge)    { color: inherit; }
 
 /* Bootstrap-border-* Utilities (1px Akzent-Borders, z.B. alert.border-success) */
-.border-primary { border-color: var(--primary) !important; }
-.border-success { border-color: var(--success) !important; }
-.border-warning { border-color: var(--warning) !important; }
-.border-danger  { border-color: var(--danger)  !important; }
-.border-info    { border-color: var(--primary) !important; }
 .border-secondary { border-color: var(--border-strong) !important; }
 
 /* btn-close (Alert-Dismiss × + Modal-Close) — Aurora-Kontrast + Dark-Mode */
-.btn-close {
-    opacity: 0.65;
-    transition: opacity 0.15s ease;
-}
 .btn-close:hover,
 .btn-close:focus-visible { opacity: 1; }
 [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
@@ -3532,12 +3500,6 @@ html[data-theme="dark"] .progress {
    Bootstrap rendert .btn-close als SVG-data-url; wir nutzen filter.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Light-Mode: dunkles X auf hellem Surface */
-.btn-close {
-    filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(600%) hue-rotate(220deg);
-    opacity: 0.7;
-}
-.btn-close:hover { opacity: 1; }
 /* Dark-Mode: helles X auf dunklem Surface */
 html[data-theme="dark"] .btn-close {
     filter: brightness(0) saturate(100%) invert(90%);
@@ -4152,10 +4114,17 @@ button.fa-filter-chip.fa-filter-chip--active {
     box-shadow: 0 0 0 3px var(--primary-glow);
     outline: none;
 }
-.form-floating > label { color: var(--fg-3); }
+.form-floating > label {
+    color: var(--fg-3);
+    font-weight: 500;
+    padding: 1rem 0.75rem;
+}
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
-.form-floating > .form-select ~ label { color: var(--primary); }
+.form-floating > .form-select ~ label {
+    color: var(--primary);
+    opacity: 0.85;
+}
 .form-control:not(.fa-cyber-input .form-control):hover,
 .form-select:not(.fa-cyber-input .form-select):hover {
     border-color: var(--border-strong);
@@ -4411,10 +4380,8 @@ button.fa-filter-chip.fa-filter-chip--active {
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-}
-/* Kanon H3 — Notch = Primary-CTA (same chamfer as .fa-cyber-btn--primary).
-   Grouped buttons keep Bootstrap's joined edges, so they stay rectangular. */
-.btn.btn-primary {
+    /* Kanon H3 — Notch = Primary-CTA (same chamfer as .fa-cyber-btn--primary).
+       Grouped buttons keep Bootstrap's joined edges, so they stay rectangular. */
     clip-path: polygon(
         8px 0, 100% 0,
         100% calc(100% - 8px), calc(100% - 8px) 100%,
@@ -4632,6 +4599,8 @@ button.fa-filter-chip.fa-filter-chip--active {
 
 /* btn-close (Bootstrap's X-icon close button for modals/alerts) */
 .btn-close {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(600%) hue-rotate(220deg);
+    transition: opacity 0.15s ease;
     background-color: transparent;
     color: var(--fg-3);
     opacity: 0.7;
@@ -5247,6 +5216,7 @@ html[data-theme="dark"] .framework-card {
     transition: transform var(--t-fast, 0.15s) var(--ease-out, ease-out),
                 box-shadow var(--t-fast, 0.15s) var(--ease-out, ease-out);
     border: 1px solid transparent;
+    position: relative;
 }
 .isms-risk-cell[data-level="1"] { background: var(--cell-1); color: var(--cell-fg-1); }
 .isms-risk-cell[data-level="2"] { background: var(--cell-2); color: var(--cell-fg-2); }
@@ -5669,9 +5639,6 @@ html[data-theme="dark"] .framework-card {
 .isms-risk-dot:hover {
     transform: scale(1.4);
     z-index: 2;
-}
-.isms-risk-cell {
-    position: relative;
 }
 
 /* ── ISMS Risk-Score-Card (Inherent / Residual mini-display) ──────── */
@@ -6325,7 +6292,8 @@ html[data-theme="dark"] .framework-card {
     z-index: 1;
     background: var(--surface-2);
 }
-.fa-table__th {
+.fa-table__th,
+.fa-table--plain > thead > tr > th {
     text-align: left;
     font-weight: 600;
     font-size: 12px;
@@ -6376,16 +6344,20 @@ html[data-theme="dark"] .framework-card {
 .fa-table__th--sort-asc::after  { opacity: 1; transform: rotate(180deg); border-top-color: var(--primary); }
 .fa-table__th--sort-desc::after { opacity: 1; border-top-color: var(--primary); }
 
-.fa-table__row {
+.fa-table__row,
+.fa-table--plain > tbody > tr {
     transition: background var(--t-fast) var(--ease-out);
 }
-.fa-table__row + .fa-table__row .fa-table__cell {
+.fa-table__row + .fa-table__row .fa-table__cell,
+.fa-table--plain > tbody > tr + tr > * {
     border-top: 1px solid var(--border);
 }
-.fa-table--striped .fa-table__row:nth-child(even) {
+.fa-table--striped .fa-table__row:nth-child(even),
+.fa-table--striped.fa-table--plain > tbody > tr:nth-child(even) {
     background: color-mix(in srgb, var(--surface-2) 50%, var(--surface));
 }
 .fa-table--hover .fa-table__row:hover,
+.fa-table--hover.fa-table--plain > tbody > tr:hover,
 .fa-table__row:hover { background: var(--surface-2); }
 .fa-table__row--selected,
 .fa-table__row--selected:hover {
@@ -6397,13 +6369,29 @@ html[data-theme="dark"] .framework-card {
    that the whole row is the show-shortcut, not just the eye-icon button. */
 tr.fa-table__row[data-row-clickable="true"] { cursor: pointer; }
 
-.fa-table__cell {
+.fa-table__cell,
+.fa-table--plain > tbody > tr > td,
+.fa-table--plain > tbody > tr > th {
     padding: var(--space-3) var(--space-4);
     vertical-align: middle;
     line-height: 1.5;
 }
 .fa-table--compact .fa-table__cell,
-.fa-table--compact .fa-table__th { padding: var(--space-2) var(--space-3); }
+.fa-table--compact .fa-table__th,
+.fa-table--compact.fa-table--plain > * > tr > * { padding: var(--space-2) var(--space-3); }
+
+/* Row tones (replace Bootstrap table-danger / table-warning / table-secondary).
+   `.fa-table tr` keeps them above the global dark-mode `tbody tr` rule. */
+.fa-table tr.fa-table__row--danger { background: var(--danger-tint); }
+.fa-table tr.fa-table__row--warning { background: var(--warning-tint); }
+.fa-table tr.fa-table__row--muted { color: var(--fg-3); background: var(--surface-2); }
+
+/* Cell borders: --bordered draws the full grid, --borderless removes rules. */
+.fa-table--bordered th,
+.fa-table--bordered td { border: 1px solid var(--border); }
+.fa-table--borderless th,
+.fa-table--borderless td,
+.fa-table--borderless.fa-table--plain > tbody > tr + tr > * { border: 0; }
 
 .fa-table__cell--checkbox,
 .fa-table__th--checkbox {
@@ -7180,149 +7168,68 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
 
 .fa-cheatsheet__row span:first-child { color: var(--fg-2); }
 
-/* ─── fa-json-builder family (P-9 visual macros) ──────────────────────────
-   Shared shell for:
-     .fa-team-role-builder, .fa-resource-list, .fa-escalation-chain,
-     .fa-success-criteria, .fa-subcontractor-chain
-   Each is a card-like container with hidden raw-JSON textarea + visual editor.
-*/
-.fa-json-builder {
+/* ─── fa-json-builder — generic schema-driven builder (JsonBuilderType) ───
+   One card per entry; fields in a responsive grid; each input sits in a
+   regular .fa-cyber-input__frame so it looks like every other form field. */
+.fa-cyber-input--builder > .fa-json-builder { margin-top: 4px; }
+
+.fa-json-builder__items {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
 }
 
-.fa-json-builder__hidden {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-}
-
-.fa-json-builder__table-wrap {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.fa-json-builder__table th,
-.fa-json-builder__table td {
-    vertical-align: middle;
-    padding: 6px 8px;
-}
-
-.fa-json-builder__empty {
+.fa-json-builder__item {
+    position: relative;
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 10px;
-    color: var(--fg-3);
-    font: 500 13px var(--font-sans);
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px;
     background: var(--surface-2);
-    border: 1px dashed var(--border);
+    border: 1px solid var(--border);
     border-radius: var(--r-sm);
 }
 
-.fa-json-builder__toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    justify-content: space-between;
+.fa-json-builder--object .fa-json-builder__item {
+    padding: 0;
+    background: transparent;
+    border: none;
 }
 
-.fa-json-builder__raw {
+.fa-json-builder__grid {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px 12px;
+}
+
+.fa-json-builder__field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 10px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-}
-
-.fa-json-builder__raw textarea {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    min-height: 120px;
-}
-
-.fa-json-builder__raw-toggle[aria-pressed="true"] {
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-.fa-json-builder__row td:last-child { text-align: end; }
-
-/* ─── fa-resource-list — Tab-Layout for personnel/equipment/supplies ─── */
-.fa-resource-list__tabs {
-    display: flex;
     gap: 4px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 8px;
+    min-width: 0;
 }
 
-.fa-resource-list__tab {
-    background: transparent;
-    border: 1px solid transparent;
-    border-bottom: none;
-    padding: 6px 14px;
-    font: 500 12px var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--fg-3);
-    cursor: pointer;
-    border-radius: var(--r-sm) var(--r-sm) 0 0;
-    transition: color var(--t-fast) var(--ease-out),
-                border-color var(--t-fast) var(--ease-out),
-                background var(--t-fast) var(--ease-out);
-}
+.fa-json-builder__field--wide { grid-column: 1 / -1; }
 
-.fa-resource-list__tab:hover {
-    color: var(--fg);
-    background: var(--surface-2);
-}
+.fa-json-builder__field--bool { justify-content: flex-end; }
 
-.fa-resource-list__tab[aria-selected="true"] {
-    color: var(--primary);
-    border-color: var(--border);
-    border-bottom-color: var(--surface);
-    background: var(--surface);
-    margin-bottom: -1px;
-}
+.fa-json-builder__remove { flex: 0 0 auto; }
 
-.fa-resource-list__count {
-    margin-left: 6px;
-    padding: 1px 6px;
-    background: var(--surface-2);
-    border-radius: var(--r-pill);
-    font-size: 10px;
-    color: var(--fg-2);
-}
-
-.fa-resource-list__panel { display: none; }
-.fa-resource-list__panel.is-active { display: flex; flex-direction: column; gap: 8px; }
-
-.fa-resource-list__chips {
+.fa-json-builder__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    min-height: 32px;
-    padding: 6px;
-    background: var(--surface-2);
-    border: 1px dashed var(--border);
-    border-radius: var(--r-sm);
+    align-items: center;
+    padding: 4px 6px;
 }
 
-.fa-resource-list__chip {
+.fa-json-builder__tag {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 8px 4px 10px;
+    padding: 2px 6px 2px 10px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-pill);
@@ -7330,132 +7237,56 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
     color: var(--fg);
 }
 
-.fa-resource-list__chip-remove {
+.fa-json-builder__tag-remove {
+    display: inline-flex;
+    padding: 0;
     background: transparent;
     border: none;
-    padding: 0;
     color: var(--fg-3);
     cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
 }
 
-.fa-resource-list__chip-remove:hover { color: var(--danger); }
+.fa-json-builder__tag-remove:hover,
+.fa-json-builder__tag-remove:focus-visible { color: var(--danger); }
 
-.fa-resource-list__add {
-    display: flex;
-    gap: 6px;
-    align-items: center;
+.fa-json-builder__tag-input {
+    flex: 1 1 140px;
+    min-width: 120px;
+    padding: 6px 4px;
 }
 
-.fa-resource-list__add input {
-    flex: 1 1 auto;
+@media (max-width: 575.98px) {
+    .fa-json-builder__item { flex-direction: column; }
+    .fa-json-builder__remove { align-self: flex-end; }
 }
 
-/* ─── fa-escalation-chain — horizontal stepper-like rows ─── */
-.fa-escalation-chain__rows {
+/* fa-json-view — read-only rendering of a JSON value on show pages. */
+.fa-json-view { margin: 0; }
+.fa-json-view__list {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
-
-.fa-escalation-chain__row {
-    display: grid;
-    grid-template-columns: 56px 1fr 1fr 120px 40px;
-    gap: 8px;
-    align-items: center;
-    padding: 8px;
+.fa-json-view__item {
+    padding: 8px 10px;
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--r-sm);
 }
-
-.fa-escalation-chain__level {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: var(--primary-tint, var(--surface));
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    border-radius: var(--r-pill);
-    font: 700 14px var(--font-mono);
-}
-
-@media (max-width: 768px) {
-    .fa-escalation-chain__row {
-        grid-template-columns: 56px 1fr 40px;
-        grid-template-rows: auto auto;
-    }
-    .fa-escalation-chain__row > :nth-child(3),
-    .fa-escalation-chain__row > :nth-child(4) {
-        grid-column: 1 / -1;
-    }
-}
-
-/* ─── fa-success-criteria — table with prefill banner ─── */
-.fa-success-criteria__prefill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: var(--accent-tint, var(--surface-2));
-    border: 1px solid var(--accent, var(--border));
-    border-radius: var(--r-sm);
-    color: var(--accent, var(--fg-2));
-    font-size: 12px;
-}
-
-.fa-success-criteria__met-cell { text-align: center; }
-
-.fa-success-criteria__met-yes { color: var(--success); }
-.fa-success-criteria__met-no { color: var(--danger); }
-.fa-success-criteria__met-unknown { color: var(--fg-3); }
-
-/* ─── fa-subcontractor-chain — indented tree builder ─── */
-.fa-subcontractor-chain__tree {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.fa-subcontractor-chain__node {
+.fa-json-view__dl {
     display: grid;
-    grid-template-columns: 1fr 80px 1fr 32px 40px 40px;
-    gap: 6px;
-    align-items: center;
-    padding: 8px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
+    grid-template-columns: minmax(120px, max-content) 1fr;
+    gap: 4px 12px;
+    margin: 0;
 }
-
-.fa-subcontractor-chain__node[data-depth="1"] { margin-left: 28px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--primary-strong); }
-
-.fa-subcontractor-chain__critical {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
+.fa-json-view__dl > dt {
+    color: var(--fg-3);
+    font: 500 12px var(--font-sans);
 }
-
-.fa-subcontractor-chain__actions {
-    display: flex;
-    gap: 4px;
-}
-
-@media (max-width: 900px) {
-    .fa-subcontractor-chain__node {
-        grid-template-columns: 1fr 80px 32px 40px 40px;
-    }
-    .fa-subcontractor-chain__node > :nth-child(3) {
-        grid-column: 1 / -1;
-    }
-}
+.fa-json-view__dl > dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 
 /* ==========================================================================
    Aurora v4 — fa-matrix-table (Risk Heatmap)
@@ -8331,6 +8162,11 @@ a.fa-matrix-table__cell:focus-visible {
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
+    /* Viewport-Audit 2026-09 (375 px): without an explicit track the grid root
+       grows to its content width (nowrap outline); minmax(0,1fr) keeps the
+       form inside its column. */
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
 }
 
 .fa-form-layout__header {
@@ -8423,7 +8259,7 @@ a.fa-matrix-table__cell:focus-visible {
 
 .fa-form-layout__body {
     display: grid;
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 240px minmax(0, 1fr);
     min-height: 0;
 }
 
@@ -8531,6 +8367,7 @@ a.fa-matrix-table__cell:focus-visible {
     padding: 18px 24px 24px;
     overflow-y: auto;
     max-height: 600px;
+    min-width: 0;
 }
 
 /* ── Section cards ────────────────────────────────────────────────────────── */
@@ -8676,7 +8513,7 @@ a.fa-matrix-table__cell:focus-visible {
 
 @media (max-width: 768px) {
     .fa-form-layout__body {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .fa-form-layout__outline {
@@ -8687,6 +8524,7 @@ a.fa-matrix-table__cell:focus-visible {
         overflow-x: auto;
         padding: 10px 12px;
         gap: 6px;
+        min-width: 0;
     }
 
     .fa-form-layout__outline-list {
@@ -10594,6 +10432,35 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
     margin-left: 62px; padding-left: 12px;
     border-left: 2px solid color-mix(in oklab, var(--primary) 35%, var(--surface));
 }
+/* Form-bound builder: rows container, logic select, empty hint, editable chips.
+   The chip parts hold the real form widgets — strip their frame so the chip
+   itself is the control (0,3,0 beats the .form-control.form-control bridge). */
+.fa-condition-builder__rows { display: grid; gap: 8px; }
+.fa-condition-builder__rows:empty { display: none; }
+.fa-condition-builder__logic { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.fa-condition-builder__logic-label { font: 600 12px var(--font-sans); color: var(--fg-2); margin: 0; }
+.fa-condition-builder__logic .fa-condition-builder__logic-select { width: auto; min-width: 16rem; }
+.fa-condition-builder__empty { margin: 0; font-size: 12px; color: var(--fg-3); }
+.fa-condition-builder--readonly { padding: 10px 12px; }
+.fa-condition-chip--edit .fa-condition-chip__part { padding: 2px 6px; }
+.fa-condition-chip--edit .fa-condition-chip__part > .fa-condition-chip__control {
+    width: auto;
+    min-width: 9ch;
+    min-height: 0;
+    padding: 3px 4px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background-color: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+}
+.fa-condition-chip--edit .fa-condition-chip__part > select.fa-condition-chip__control { padding-right: 1.75rem; }
+.fa-condition-chip--edit .fa-condition-chip__part > .fa-condition-chip__control:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 0;
+}
+.fa-condition-builder__row > .fa-cyber-input__errors { flex-basis: 100%; margin: 0 0 0 62px; }
 
 
 /* --- Focus-States (WCAG 2.4.7 / 2.4.11) für Tutorial + Condition-Builder ---
@@ -10647,19 +10514,6 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
 .kpi-card-value, .fa-stat-card__value, .stat-card__value, .fa-feature-card__number, .fa-reuse-roi-counter__value {
     font-family: var(--font-display);
     font-variant-numeric: tabular-nums;
-}
-
-
-/* ── Viewport-Audit 2026-09: Mobile-Härtung (375 px) ─────────────────────
-   Grid-Root ohne explizite Spur wächst auf Inhaltsbreite (nowrap-Outline) —
-   minmax(0,1fr) hält die Form in der Spalte; Header stapelt. */
-.fa-form-layout { grid-template-columns: minmax(0, 1fr); min-width: 0; }
-.fa-form-layout__body { grid-template-columns: 240px minmax(0, 1fr); }
-.fa-form-layout__sections { min-width: 0; }
-
-@media (max-width: 768px) {
-    .fa-form-layout__body { grid-template-columns: minmax(0, 1fr); }
-    .fa-form-layout__outline { min-width: 0; }
 }
 
 @media (max-width: 640px) {

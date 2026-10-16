@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Analytics Controller - Main Analytics Dashboard
@@ -22,7 +23,7 @@ export default class extends Controller {
         this.dispatch('period-changed', { detail: { period } });
 
         // Optionally show toast
-        this.showToast(`Loading data for last ${period} months...`);
+        this.showToast(faT('analytics.loading_period', { '%months%': period }));
     }
 
     printDashboard() {

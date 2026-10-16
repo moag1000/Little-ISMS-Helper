@@ -553,7 +553,6 @@ gstool_import:
         file_type_error: 'Please upload an XML file.'
 
 # Form / Assert\Range / Assert\Regex / file-upload validator messages
-'admin.workflows.validation.conditions_invalid_json': 'Auto-progress conditions must be valid JSON.'
 'import.error.must_equal_commit': 'Please type COMMIT to confirm the import.'
 'import.upload.invalid_mime_type': 'Invalid file type. Please upload an XLSX, CSV, or JSON file.'
 'import.upload.file_too_large': 'File too large. Maximum size is {{ limit }} {{ suffix }}.'
@@ -828,3 +827,7 @@ gstool_import:
 'requirement.validation.category_max_length': 'The category cannot be longer than {{ limit }} characters.'
 'requirement.validation.priority_required': 'Priority is required.'
 'requirement.validation.requirement_type_required': 'Requirement type is required.'
+'json_builder.invalid_structure': 'The entries do not have the expected structure.'
+'json_builder.required': 'Entry %row%: "%field%" is required.'
+'json_builder.invalid_value': 'Entry %row%: "%field%" contains an invalid value.'
+'json_builder.empty_key': 'Entry %row%: the key must not be empty.'

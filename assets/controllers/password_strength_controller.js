@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Password Strength Indicator Controller
@@ -99,12 +100,12 @@ export default class extends Controller {
      */
     getStrengthLevel(score) {
         const levels = {
-            0: { label: 'Sehr schwach', color: 'danger', width: 20 },
-            1: { label: 'Sehr schwach', color: 'danger', width: 20 },
-            2: { label: 'Schwach', color: 'warning', width: 40 },
-            3: { label: 'Mittel', color: 'info', width: 60 },
-            4: { label: 'Stark', color: 'success', width: 80 },
-            5: { label: 'Sehr stark', color: 'success', width: 100 }
+            0: { label: faT('password_strength.very_weak'), color: 'danger', width: 20 },
+            1: { label: faT('password_strength.very_weak'), color: 'danger', width: 20 },
+            2: { label: faT('password_strength.weak'), color: 'warning', width: 40 },
+            3: { label: faT('password_strength.medium'), color: 'info', width: 60 },
+            4: { label: faT('password_strength.strong'), color: 'success', width: 80 },
+            5: { label: faT('password_strength.very_strong'), color: 'success', width: 100 }
         };
 
         return levels[score] || levels[0];
@@ -117,30 +118,30 @@ export default class extends Controller {
         const suggestions = [];
 
         if (!checks.length) {
-            suggestions.push('Mindestens 8 Zeichen');
+            suggestions.push(faT('password_strength.min_length'));
         }
         if (!checks.uppercase) {
-            suggestions.push('Großbuchstaben (A-Z)');
+            suggestions.push(faT('password_strength.uppercase'));
         }
         if (!checks.lowercase) {
-            suggestions.push('Kleinbuchstaben (a-z)');
+            suggestions.push(faT('password_strength.lowercase'));
         }
         if (!checks.numbers) {
-            suggestions.push('Zahlen (0-9)');
+            suggestions.push(faT('password_strength.numbers'));
         }
         if (!checks.special) {
-            suggestions.push('Sonderzeichen (!@#$%^&*)');
+            suggestions.push(faT('password_strength.special'));
         }
 
         // Warn about common patterns
         if (/^[0-9]+$/.test(password)) {
-            suggestions.push('Vermeiden Sie reine Zahlenkombinationen');
+            suggestions.push(faT('password_strength.avoid_digits_only'));
         }
         if (/(.)\1{2,}/.test(password)) {
-            suggestions.push('Vermeiden Sie sich wiederholende Zeichen');
+            suggestions.push(faT('password_strength.avoid_repeats'));
         }
         if (/^(password|12345|qwerty)/i.test(password)) {
-            suggestions.push('Vermeiden Sie häufige Passwörter');
+            suggestions.push(faT('password_strength.avoid_common'));
         }
 
         return suggestions;
@@ -161,16 +162,19 @@ export default class extends Controller {
         this.barTarget.setAttribute('aria-valuemin', '0');
         this.barTarget.setAttribute('aria-valuemax', '100');
 
-        // Update feedback text
-        let feedbackHtml = `<strong class="text-${level.color}">${level.label}</strong>`;
-
+        // Update feedback text (built as DOM — labels are plain text)
+        const strong = document.createElement('strong');
+        strong.className = `text-${level.color}`;
+        strong.textContent = level.label;
+        const detail = document.createElement('small');
         if (suggestions.length > 0) {
-            feedbackHtml += '<br><small class="text-muted">Fehlend: ' + suggestions.join(', ') + '</small>';
+            detail.className = 'text-muted';
+            detail.textContent = faT('password_strength.missing', { '%items%': suggestions.join(', ') });
         } else {
-            feedbackHtml += '<br><small class="text-success">✓ Alle Kriterien erfüllt</small>';
+            detail.className = 'text-success';
+            detail.textContent = faT('password_strength.all_met');
         }
-
-        this.feedbackTarget.innerHTML = feedbackHtml;
+        this.feedbackTarget.replaceChildren(strong, document.createElement('br'), detail);
 
         // Announce to screen readers (debounced)
         this.announceStrength(level.label);
@@ -196,7 +200,7 @@ export default class extends Controller {
                 document.body.appendChild(liveRegion);
             }
 
-            liveRegion.textContent = `Passwortstärke: ${label}`;
+            liveRegion.textContent = faT('password_strength.announce', { '%label%': label });
 
             // Clear after announcement
             setTimeout(() => {

@@ -82,7 +82,7 @@
     {% block table_body %}
         {% for instance in overdue_workflows %}
         {% set daysOverdue = instance.dueDate ? (('now'|date('U') - instance.dueDate.timestamp) / 86400)|round : 0 %}
-        <tr class="{% if daysOverdue > 7 %}table-danger{% else %}table-warning{% endif %}">
+        <tr class="{% if daysOverdue > 7 %}fa-table__row--danger{% else %}fa-table__row--warning{% endif %}">
             <td>
                 <strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong>
                 {% if daysOverdue > 7 %}

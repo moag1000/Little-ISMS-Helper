@@ -60,7 +60,9 @@
                                             </button>
                                             <button type="submit"
                                                     class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
-                                                    data-confirm="{{ 'framework_baseline.confirm.apply'|trans({'%name%': baseline.name, '%tenant%': tenant.name}, 'framework_baseline') }}">
+                                                    data-controller="ui-actions"
+                                data-action="click->ui-actions#confirm"
+                                data-ui-actions-message-param="{{ 'framework_baseline.confirm.apply'|trans({'%name%': baseline.name, '%tenant%': tenant.name}, 'framework_baseline') }}">
                                                 <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                                 {{ 'framework_baseline.action.apply'|trans }}
                                             </button>

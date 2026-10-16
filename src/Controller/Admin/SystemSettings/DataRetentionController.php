@@ -37,8 +37,8 @@ class DataRetentionController extends AbstractController
         'workflow_instance'  => 1825,  // 5 years
     ];
 
-    /** Default retention days per entity type. */
-    private const DEFAULTS = [
+    /** Default retention days per entity type (keys = the categories RetentionEnforcementService knows). */
+    public const DEFAULTS = [
         'asset'              => 365,
         'risk'               => 730,
         'incident'           => 1825,

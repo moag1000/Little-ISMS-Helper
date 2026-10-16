@@ -79,7 +79,9 @@
                                     </button>
                                     <button type="submit"
                                             class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
-                                            data-confirm="{{ 'mris.baselines.confirm_apply'|trans({'%baseline%': baseline.name, '%tenant%': tenant.name}, 'mris') }}">
+                                            data-controller="ui-actions"
+                                data-action="click->ui-actions#confirm"
+                                data-ui-actions-message-param="{{ 'mris.baselines.confirm_apply'|trans({'%baseline%': baseline.name, '%tenant%': tenant.name}, 'mris') }}">
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'mris.baselines.apply'|trans({}, 'mris') }}
                                     </button>

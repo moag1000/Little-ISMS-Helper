@@ -102,7 +102,10 @@
                                         <form method="post"
                                               action="{{ path('admin_notification_channel_delete', { id: channel.id }) }}"
                                               class="d-inline"
-                                              onsubmit="return confirm('{{ 'notification.channel.confirm.delete'|trans|e('js') }}')">
+                                              data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'notification.channel.confirm.delete'|trans({}, 'notification') }}"
+                      data-ui-actions-tone-param="danger">
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('notification_channel_delete_' ~ channel.id) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"

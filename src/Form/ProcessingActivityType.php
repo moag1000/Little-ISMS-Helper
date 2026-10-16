@@ -12,7 +12,7 @@ use App\Entity\Supplier;
 use App\Repository\DepartmentRepository;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
-use App\Form\Type\JsonStructuredType;
+use App\Form\Type\JsonBuilderType;
 use App\Repository\SupplierRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -292,11 +292,19 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
-            ->add('retentionPerCategory', JsonStructuredType::class, [
+            // Shape: {dataCategory: "period"} — one row per category.
+            ->add('retentionPerCategory', JsonBuilderType::class, [
                 'label' => 'processing_activity.form.retention_per_category',
                 'help' => 'processing_activity.help.retention_per_category',
                 'required' => false,
-                'attr' => ['rows' => 4],
+                'shape' => 'map',
+                'scalar_value' => true,
+                'key_label' => 'processing_activity.json_builder.retention.category',
+                'add_label' => 'processing_activity.json_builder.retention.add',
+                'fields' => [
+                    ['key' => 'period', 'type' => 'text', 'label' => 'processing_activity.json_builder.retention.period', 'required' => true,
+                        'placeholder' => 'processing_activity.json_builder.retention.period_placeholder'],
+                ],
             ])
 
             // ============================================================================
@@ -456,15 +464,22 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             // structured JSON list is the canonical shape — not an M2M to Tenant.
             // Art. 26(1) requires the arrangement (responsibilities split), Art. 26(2)
             // requires the essence to be made available to data subjects.
-            ->add('jointControllerDetails', JsonStructuredType::class, [
+            // Shape: [{name, contact, responsibilities, arrangement_reference}].
+            ->add('jointControllerDetails', JsonBuilderType::class, [
                 'label' => 'processing_activity.form.joint_controller_details',
                 'help' => 'processing_activity.help.joint_controller_details_json',
                 'required' => false,
                 'attr' => [
-                    'rows' => 6,
                     'data-depends-on' => 'processing_activity_isJointController',
                     'data-depends-on-value' => '1',
-                    'placeholder' => 'processing_activity.placeholder.joint_controller_details',
+                ],
+                'shape' => 'list',
+                'add_label' => 'processing_activity.json_builder.joint_controller.add',
+                'fields' => [
+                    ['key' => 'name', 'type' => 'text', 'label' => 'processing_activity.json_builder.joint_controller.name', 'required' => true],
+                    ['key' => 'contact', 'type' => 'text', 'label' => 'processing_activity.json_builder.joint_controller.contact'],
+                    ['key' => 'arrangement_reference', 'type' => 'text', 'label' => 'processing_activity.json_builder.joint_controller.arrangement_reference'],
+                    ['key' => 'responsibilities', 'type' => 'textarea', 'label' => 'processing_activity.json_builder.joint_controller.responsibilities'],
                 ],
             ])
             // GDPR Art. 30(2) — processor-role record (N-7)

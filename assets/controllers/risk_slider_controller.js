@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Risk Slider Controller
@@ -40,32 +41,32 @@ export default class extends Controller {
         impact: { type: Number, default: 1 }
     };
 
-    // Risk level labels (ISO 27005 aligned)
+    // Risk level labels (ISO 27005 aligned) — translated via faT()
     probabilityLabels = {
-        1: { en: 'Rare', de: 'Selten' },
-        2: { en: 'Unlikely', de: 'Unwahrscheinlich' },
-        3: { en: 'Possible', de: 'Möglich' },
-        4: { en: 'Likely', de: 'Wahrscheinlich' },
-        5: { en: 'Almost Certain', de: 'Fast sicher' }
+        1: () => faT('risk_slider.probability.1'),
+        2: () => faT('risk_slider.probability.2'),
+        3: () => faT('risk_slider.probability.3'),
+        4: () => faT('risk_slider.probability.4'),
+        5: () => faT('risk_slider.probability.5'),
     };
 
     impactLabels = {
-        1: { en: 'Negligible', de: 'Vernachlässigbar' },
-        2: { en: 'Minor', de: 'Gering' },
-        3: { en: 'Moderate', de: 'Moderat' },
-        4: { en: 'Major', de: 'Erheblich' },
-        5: { en: 'Severe', de: 'Schwerwiegend' }
+        1: () => faT('risk_slider.impact.1'),
+        2: () => faT('risk_slider.impact.2'),
+        3: () => faT('risk_slider.impact.3'),
+        4: () => faT('risk_slider.impact.4'),
+        5: () => faT('risk_slider.impact.5'),
     };
 
+    // Aurora severity tokens (no raw colours)
     riskLevelConfig = {
-        low: { color: '#28a745', bgColor: '#d4edda', label: { en: 'Low Risk', de: 'Niedriges Risiko' }, max: 4 },
-        medium: { color: '#ffc107', bgColor: '#fff3cd', label: { en: 'Medium Risk', de: 'Mittleres Risiko' }, max: 9 },
-        high: { color: '#fd7e14', bgColor: '#ffe5d0', label: { en: 'High Risk', de: 'Hohes Risiko' }, max: 14 },
-        critical: { color: '#dc3545', bgColor: '#f8d7da', label: { en: 'Critical Risk', de: 'Kritisches Risiko' }, max: 25 }
+        low: { color: 'var(--success)', bgColor: 'var(--success-tint)', label: () => faT('risk_slider.level.low'), max: 4 },
+        medium: { color: 'var(--warning-text)', bgColor: 'var(--warning-tint)', label: () => faT('risk_slider.level.medium'), max: 9 },
+        high: { color: 'var(--sev-critical-color)', bgColor: 'rgb(var(--sev-critical-rgb) / 0.16)', label: () => faT('risk_slider.level.high'), max: 14 },
+        critical: { color: 'var(--danger)', bgColor: 'var(--danger-tint)', label: () => faT('risk_slider.level.critical'), max: 25 }
     };
 
     connect() {
-        this.locale = document.documentElement.lang || 'en';
         this.calculate();
     }
 
@@ -94,7 +95,7 @@ export default class extends Controller {
         }
         if (this.hasProbabilityLabelTarget) {
             const label = this.probabilityLabels[probability];
-            this.probabilityLabelTarget.textContent = label ? label[this.locale] || label.en : '';
+            this.probabilityLabelTarget.textContent = label ? label() : '';
         }
 
         // Update impact display
@@ -103,7 +104,7 @@ export default class extends Controller {
         }
         if (this.hasImpactLabelTarget) {
             const label = this.impactLabels[impact];
-            this.impactLabelTarget.textContent = label ? label[this.locale] || label.en : '';
+            this.impactLabelTarget.textContent = label ? label() : '';
         }
 
         // Update score display
@@ -115,7 +116,7 @@ export default class extends Controller {
 
         // Update level display
         if (this.hasLevelTarget) {
-            this.levelTarget.textContent = level.label[this.locale] || level.label.en;
+            this.levelTarget.textContent = level.label();
             this.levelTarget.style.backgroundColor = level.bgColor;
             this.levelTarget.style.color = level.color;
             this.levelTarget.style.padding = '4px 12px';
@@ -177,7 +178,7 @@ export default class extends Controller {
 
                 const cell = this.createCell(score.toString(), 'cell', level.bgColor);
                 if (isSelected) {
-                    cell.style.border = '3px solid #000';
+                    cell.style.border = '3px solid var(--fg)';
                     cell.style.fontWeight = 'bold';
                 }
                 cell.style.cursor = 'pointer';
@@ -191,19 +192,19 @@ export default class extends Controller {
 
         // Labels
         const probabilityLabel = document.createElement('div');
-        probabilityLabel.textContent = this.locale === 'de' ? 'Wahrscheinlichkeit ↑' : 'Probability ↑';
+        probabilityLabel.textContent = faT('risk_slider.axis_probability');
         probabilityLabel.style.gridColumn = '1';
         probabilityLabel.style.writingMode = 'vertical-rl';
         probabilityLabel.style.textAlign = 'center';
         probabilityLabel.style.fontSize = '0.65rem';
-        probabilityLabel.style.color = '#6c757d';
+        probabilityLabel.style.color = 'var(--fg-3)';
 
         const impactLabel = document.createElement('div');
-        impactLabel.textContent = this.locale === 'de' ? 'Auswirkung →' : 'Impact →';
+        impactLabel.textContent = faT('risk_slider.axis_impact');
         impactLabel.style.gridColumn = '2 / -1';
         impactLabel.style.textAlign = 'center';
         impactLabel.style.fontSize = '0.65rem';
-        impactLabel.style.color = '#6c757d';
+        impactLabel.style.color = 'var(--fg-3)';
         impactLabel.style.marginTop = '4px';
 
         matrix.appendChild(impactLabel);
@@ -217,7 +218,7 @@ export default class extends Controller {
         cell.style.borderRadius = '2px';
 
         if (type === 'header' || type === 'row-label') {
-            cell.style.backgroundColor = '#f8f9fa';
+            cell.style.backgroundColor = 'var(--surface-2)';
             cell.style.fontWeight = '500';
         } else if (type === 'header-corner') {
             cell.style.backgroundColor = 'transparent';

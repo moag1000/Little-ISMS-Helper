@@ -63,7 +63,7 @@
     {% block table_body %}
         {% for instance in active_workflows %}
         {% set isOverdue = instance.dueDate and instance.dueDate < date() and instance.status not in ['approved', 'rejected', 'cancelled'] %}
-        <tr{% if isOverdue %} class="table-danger"{% endif %}>
+        <tr{% if isOverdue %} class="fa-table__row--danger"{% endif %}>
             <td>
                 <strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong>
                 {% if isOverdue %}

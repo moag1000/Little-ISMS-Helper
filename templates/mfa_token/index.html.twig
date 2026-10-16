@@ -113,7 +113,7 @@
                         {% endblock %}
                         {% block table_body %}
                             {% for token in user_data.tokens %}
-                                <tr class="{{ token.isActive ? '' : 'table-secondary' }}">
+                                <tr class="{{ token.isActive ? '' : 'fa-table__row--muted' }}">
                                     <td>
                                         {% if token.isActive %}
                                             {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', title: 'mfa_token.status.active'|trans({}, 'mfa') } %}

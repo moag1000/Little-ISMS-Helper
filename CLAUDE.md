@@ -331,6 +331,16 @@ Benefits:
 - Clearer organization and maintenance
 - Reduced merge conflicts
 
+JavaScript texts:
+- Never hard-code UI text in `assets/**/*.js`. Add it to `translations/ui.{de,en}.yaml`
+  under `ui.js.<controller>.<key>` and read it with `faT('<controller>.<key>', {'%x%': v})`
+  (`assets/js/fa-i18n.js`). Every `ui.js.*` message is shipped automatically as
+  `window.translations.ui` by `_components/_js_translations.html.twig`
+  (`App\Twig\JsTranslationsExtension`); `tests/Twig/JsTranslationsExtensionTest.php`
+  fails when a `faT()` key is missing in DE or EN.
+- Template-specific texts may still travel as `data-<controller>-<name>-value`;
+  the controller then falls back to `faT()`.
+
 Translation Quality:
 - Use `scripts/quality/check_translation_issues.py` to find:
   - Hardcoded text that should be translated
@@ -673,7 +683,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-entity-badge` | ISMS-entity marker (10 types: finding/nonconformity/risk/control/evidence/policy/asset/incident/audit/training) | `_fa_entity_badge.html.twig` |
 | `fa-stepper` | Multi-step wizard chrome (Preset → Discovery → Test for SSO; Upload → Map → Preview → Commit for Bulk-Import) | `_fa_stepper.html.twig` |
 | `fa-diff-row` | Old → New value diff visualization for Bulk-Import Delta-Mode + OSCAL-Conflict-Cards | `_fa_diff_row.html.twig` |
-| `fa-condition-builder` | Visual rule-builder (chip-row WHEN/CONDITIONS) for Notification-Rules — replaces raw JSON editing | `_fa_condition_builder.html.twig` |
+| `fa-condition-builder` | Visual rule-builder (WHEN / AND / OR chip rows) for Notification-Rules — replaces raw JSON editing. Form-bound: `render(form.conditionRows, { logic: form.conditionLogic, suggestions: [...] })` renders a CollectionType of `ConditionRowType` (`field`/`op`/`value`, the evaluator format) with the real widgets; Stimulus `condition-builder` clones the prototype | `_fa_condition_builder.html.twig` |
 | `fa-table` | Aurora-styled data table (replaces raw `<table class="table">`) — 80+ adopted in v3.5 | `_fa_table.html.twig` |
 | `fa-matrix-table` | Multi-axis grid for risk-heatmaps (`mode: 'severity'`, default — ISO-27005 score-based) and compliance-heatmaps (`mode: 'rag'`, framework × cluster). Supports `caption`, `colspan` via grid template, `<th scope="col"/"row">` semantics, optional severity/RAG legend, optional per-cell `href` links, per-cell `severity` override. | `_fa_matrix_table.html.twig` |
 | `fa-settings-table` | Tabular form-grid for `/admin/settings/*` (label / control / status three-col layout). 8 row-kinds: `text/email/number/select/chips/toggle/textarea/widget`. `widget` passes through pre-rendered HTML (e.g. `form_widget()` output) so Symfony FormType controls keep CSRF/validation. Optional `headers: [{label, ...}]` switches to multi-column data-table mode with per-row `trailing` cell — used by Bulk-Import column-mapping wizard. | `_fa_settings_table.html.twig` |
@@ -686,6 +696,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-tabs` | Tab-group for settings-style forms with 3-6 equal groups (TenantType, UserType, Branding-Config). NOT for regulatory forms (use fa-form-layout) or linear flows (use fa-modal--wizard) | `_fa_tabs.html.twig` |
 | `fa-modal` (confirm + settings + wizard) | Canonical unified modal library. 3 modes: `confirm` (destructive/approval, 4 tones), `settings` (preferences/toggles), `wizard` (multi-step). Stimulus shell controller `fa-modal` + dispatcher `fa-modal-dispatcher`. Sub-controllers `fa-confirm` (type-to-confirm + cooldown) compose alongside via `data-controller="fa-modal fa-confirm"`. Open from JS via `document.dispatchEvent(new CustomEvent('fa-modal:request-open', { detail: { id: 'modal-id' } }))` — drop-in replacement for `new bootstrap.Modal()`. **Sweep status (2026-05-22):** 73+ modals across 49 templates migrated (PRs #547/#551/#555/#558 + Wave 4). Out-of-spec intentional exceptions: `_command_palette.html.twig` (⌘P power-user pattern), `_quick_view_modal.html.twig` (info popover), `_gdpr_breach_wizard_modal.html.twig` (uses `fa-prefs-modal` shell — kept for layout-stability, harmonization deferred). | `_fa_modal.html.twig` |
 | `fa-modal--wizard` | High-stakes linear flow modal with step-pips + validation gates (Tenant-Setup, GDPR-Breach-Initial, Compliance-Wizard) — accessible via `_fa_modal.wizard()` delegate or direct `_fa_modal_wizard.render()` | `_fa_modal_wizard.html.twig` |
+| `fa-json-builder` | Structured editor for JSON entity columns (list / map / object of typed fields). Use via `JsonBuilderType` (`shape`, `fields`, `hidden_keys`) — never a raw JSON textarea; `JsonShape` re-validates server-side, Gate 34 enforces. Read-only counterpart `_fa_json_view.html.twig` | `_fa_json_builder.html.twig` |
 | `fa-cyber-field` | Hand-rolled Aurora-Frame inputs (text/textarea/select) | `_fa_cyber_field.html.twig` |
 | `fa-drawer` | Slide-in side-sheet (right default, `--left`, `--sm`, `--lg`). Use `.fa-drawer-backdrop` + `.is-open`. CSS only — no macro yet. | CSS: `fairy-aurora-components.css` |
 | `fa-menu` | Dropdown / overflow-action menu (`fa-menu-anchor` + `.fa-menu.is-open`). Supports groups, icons, shortcuts, danger items, dividers. CSS only. | CSS: `fairy-aurora-components.css` |
