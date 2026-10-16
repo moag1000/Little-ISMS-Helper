@@ -13,11 +13,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
 class DashboardLayoutController extends AbstractController
 {
+    /** CSRF id for layout writes; dashboard_customizer_controller.js sends it as X-CSRF-Token. */
+    public const string CSRF_ID = 'dashboard_layout';
+
     public function __construct(
         private readonly DashboardLayoutRepository $dashboardLayoutRepository,
         private readonly TenantContext $tenantContext
@@ -49,6 +53,7 @@ class DashboardLayoutController extends AbstractController
      * Save dashboard layout configuration
      */
     #[Route('/dashboard-layout/config', name: 'app_dashboard_layout_save', methods: ['POST'])]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function saveLayout(Request $request): JsonResponse
     {
         $user = $this->getUser();
@@ -80,6 +85,7 @@ class DashboardLayoutController extends AbstractController
      * Reset dashboard to defaults
      */
     #[Route('/dashboard-layout/reset', name: 'app_dashboard_layout_reset', methods: ['POST'])]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function resetLayout(): JsonResponse
     {
         $user = $this->getUser();
@@ -102,6 +108,7 @@ class DashboardLayoutController extends AbstractController
      * Update single widget configuration
      */
     #[Route('/dashboard-layout/widget/{widgetId}', name: 'app_dashboard_widget_update', methods: ['PATCH'])]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function updateWidget(string $widgetId, Request $request): JsonResponse
     {
         $user = $this->getUser();

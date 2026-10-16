@@ -91,18 +91,13 @@ initial_controls:
 initial_documents:
   - title: 'Informationssicherheits-Leitlinie Klinik'
     type: policy
-    status: draft
   - title: 'Patientendaten-Schutz-Konzept'
     type: policy
-    status: draft
   - title: 'DORA-ICT-Risikomanagement-Framework'
     type: policy
-    status: draft
   - title: 'BCM-Plan: Notfall-OP-Bereitschaft'
     type: bc_plan
-    status: draft
   - title: 'MedTech-Vulnerability-Management'
     type: procedure
-    status: draft
 
 target_alva_journey: getting_started

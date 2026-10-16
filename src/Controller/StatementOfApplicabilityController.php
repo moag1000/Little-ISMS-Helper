@@ -21,7 +21,6 @@ use App\Service\MappingSuggestionService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
-use App\Service\WorkflowAutoProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -42,7 +41,6 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly SoAReportService $soaReportService,
         private readonly Security $security,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly TagFilterService $tagFilterService,
         private readonly MappingSuggestionService $mappingSuggestionService,
         private readonly ComplianceRequirementRepository $requirementRepository,
@@ -464,13 +462,9 @@ class StatementOfApplicabilityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $control->setUpdatedAt(new DateTimeImmutable());
 
+            // Auto-progression runs on flush via the FieldCompletionAutoTransition
+            // Doctrine listener; no explicit call is needed here.
             $this->entityManager->flush();
-
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($control, $currentUser);
-            }
 
             $this->addFlash('success', $this->translator->trans('control.success.updated', [], 'control'));
 

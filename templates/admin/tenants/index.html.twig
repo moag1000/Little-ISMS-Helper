@@ -179,18 +179,12 @@
                                             <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
                                         </a>
                                         {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                        <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
-                                              data-controller="ui-actions"
-                                              data-action="submit->ui-actions#confirm"
-                                              data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('toggle_tenant_' ~ tenant.id) }}">
-                                            <button type="submit"
-                                                    class="fa-cyber-btn fa-cyber-btn--{{ tenant.isActive ? 'warning' : 'ghost' }} fa-cyber-btn--sm"
-                                                    title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}"
-                                                    aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                                <i class="fa-icon {% if tenant.isActive %}fa-icon--status-pending{% else %}fa-icon--status-ok{% endif %}" aria-hidden="true"></i>
-                                            </button>
-                                        </form>
+                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}#tenant-status"
+                                           class="fa-cyber-btn fa-cyber-btn--{{ tenant.isActive ? 'warning' : 'ghost' }} fa-cyber-btn--sm"
+                                           title="{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}"
+                                           aria-label="{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}">
+                                            <i class="fa-icon {% if tenant.isActive %}fa-icon--status-pending{% else %}fa-icon--status-ok{% endif %}" aria-hidden="true"></i>
+                                        </a>
                                         {% endif %}
                                     </div>
                                 </td>

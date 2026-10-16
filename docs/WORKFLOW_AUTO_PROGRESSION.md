@@ -30,7 +30,9 @@ The Workflow Auto-Progression System enables **event-driven workflows** where wo
    - Rules are configured in `config/workflows/regulatory/*.yaml` step metadata
 
 2. ~~**WorkflowAutoProgressionService**~~ (`src/Service/WorkflowAutoProgressionService.php`) — **@deprecated since Y.1**
-   - Kept as a bridge facade for backward compatibility
+   - Kept as a bridge facade for backward compatibility; no production code
+     calls it any more (the last callers, `StatementOfApplicabilityController`
+     and `app:process-timed-workflows`, were removed in 2026-10)
    - Do NOT inject in new code — use `FieldCompletionAutoTransition` via Symfony event system instead
    - Will be removed in a future major release
 
@@ -427,11 +429,23 @@ Workflows can auto-progress after a time delay:
 {
   "autoProgressConditions": {
     "type": "time_based",
-    "delay": "24 hours",
-    "condition": "status = 'pending'"  // Optional
+    "delay": "24 hours"
   }
 }
 ```
+
+**Rules**:
+- The delay counts from the moment the step became active (approval of the
+  previous step, or the workflow start for the first step).
+- The step is approved through `WorkflowService` with the workflow initiator
+  as acting user; the approval history records `auto_approved` with
+  `trigger: time_based`.
+- A time-based step that is the **last** step of its workflow is never
+  approved automatically: the final approval of a workflow instance is
+  four-eyes (`workflow_instance_lifecycle` `approve`) and needs a human
+  approver.
+- There is no extra field condition; use `field_completion` steps for
+  data-dependent progression.
 
 **Setup**:
 
@@ -451,36 +465,14 @@ php bin/console app:process-timed-workflows --dry-run
 - `X hours` (e.g., "24 hours")
 - `X days` (e.g., "7 days")
 
-**Use Cases**:
-
-**Waiting Period**:
-```json
-{
-  "type": "time_based",
-  "delay": "72 hours",
-  "condition": "objectionReceived = false"
-}
-```
-*Auto-progress after 72h if no objection received*
-
-**Escalation Timeout**:
-```json
-{
-  "type": "time_based",
-  "delay": "48 hours",
-  "condition": "status = 'pending_review'"
-}
-```
-*Auto-escalate if no review after 48h*
-
-**Cooling Period**:
+**Use Case — Cooling Period**:
 ```json
 {
   "type": "time_based",
   "delay": "7 days"
 }
 ```
-*Mandatory 7-day waiting period (unconditional)*
+*Mandatory 7-day waiting period before the next step opens*
 
 ## Auto-Reaction Listeners (v3.5)
 

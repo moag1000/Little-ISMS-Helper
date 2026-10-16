@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Service\MrisBaselineService;
 use App\Service\TenantContext;
 use DomainException;
@@ -27,6 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Informationssicherheit, v1.5. Lizenz: CC BY 4.0.
  */
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('mris')]
 final class MrisBaselineUiController extends AbstractController
 {
     public function __construct(

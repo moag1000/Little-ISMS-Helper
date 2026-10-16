@@ -12,6 +12,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -47,6 +48,9 @@ class ComplianceManagerDashboardControllerTest extends TestCase
     private MockObject $roleDashboardService;
     private TisaxMaturityAssessmentService $tisaxAssessment;
     private MockObject $container;
+    private MockObject $moduleConfiguration;
+    /** @var list<string> */
+    private array $activeModules = ['privacy', 'compliance', 'tisax'];
     private MockObject $twig;
     private ComplianceManagerDashboardController $controller;
     private ?array $renderedDashboard = null;
@@ -65,6 +69,10 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $this->tisaxAssessment = new TisaxMaturityAssessmentService($em);
         $this->container = $this->createMock(ContainerInterface::class);
+        $this->moduleConfiguration = $this->createMock(ModuleConfigurationService::class);
+        $this->moduleConfiguration->method('isModuleActive')->willReturnCallback(
+            fn (string $key): bool => in_array($key, $this->activeModules, true),
+        );
         $this->twig = $this->createMock(Environment::class);
 
         $self = $this;
@@ -95,6 +103,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
             $this->requirementRepo,
             $this->roleDashboardService,
             $this->tisaxAssessment,
+            $this->moduleConfiguration,
         );
         $this->controller->setContainer($this->container);
     }
@@ -134,6 +143,31 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         // Field-naming bugfix: template reads `compliance`, service exports `compliance_percentage`
         $this->assertSame(75.5, $this->renderedDashboard['frameworks'][0]['compliance']);
         $this->assertSame(40.0, $this->renderedDashboard['frameworks'][1]['compliance']);
+    }
+
+    #[Test]
+    public function upcomingAuditsAreQueriedForTheTenantWithin90Days(): void
+    {
+        // Regression: findUpcoming() took no arguments, so tenant and horizon
+        // were silently dropped and every planned audit came back.
+        $tenant = $this->createMock(Tenant::class);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->analytics->method('getFrameworkComparison')->willReturn(['frameworks' => [], 'summary' => []]);
+        $this->findingRepo->method('findOpenByTenant')->willReturn([]);
+        $this->stubDocumentRepo();
+
+        $audit = $this->createStub(\App\Entity\InternalAudit::class);
+        $this->auditRepo->expects($this->once())
+            ->method('findUpcoming')
+            ->with(
+                $this->identicalTo($tenant),
+                $this->callback(static fn (\DateTimeInterface $until): bool => abs($until->getTimestamp() - strtotime('+90 days')) < 60),
+            )
+            ->willReturn([$audit]);
+
+        $this->controller->index();
+
+        $this->assertSame([$audit], $this->renderedDashboard['upcoming_audits']);
     }
 
     #[Test]

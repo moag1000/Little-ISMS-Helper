@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use DateTimeImmutable;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
@@ -193,6 +194,7 @@ class ChangeRequestController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * ChangeRequests have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/change-request/bulk-delete-check', name: 'app_change_request_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -208,51 +210,19 @@ class ChangeRequestController extends AbstractController
 
     #[Route('/change-request/bulk-delete', name: 'app_change_request_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if (!$this->moduleService->isModuleActive('change_requests')) {
             return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $changeRequest = $this->changeRequestRepository->find($id);
-                if (!$changeRequest) {
-                    $errors[] = "ChangeRequest ID $id not found";
-                    continue;
-                }
-                if ($tenant && $changeRequest->getTenant() !== $tenant) {
-                    $errors[] = "ChangeRequest ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($changeRequest);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting ChangeRequest ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted change requests deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'ChangeRequest',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->changeRequestRepository->find($id),
+        );
     }
 
     /**

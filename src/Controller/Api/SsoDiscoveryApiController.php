@@ -35,6 +35,7 @@ final class SsoDiscoveryApiController extends AbstractController
      * Returns: { "ok": true, "issuer": "...", "endpoints": {...} }
      *       or { "ok": false, "error": "..." }
      */
+    // @csrf-exempt: read-only, fetches and validates an OIDC discovery document, persists nothing
     #[Route('/validate-discovery', name: 'validate_discovery', methods: ['POST'])]
     public function validateDiscovery(Request $request): JsonResponse
     {

@@ -176,48 +176,6 @@ workflow:
         user: User
         action: Action
         details: Details
-    builder:
-        title: 'Workflow Builder'
-        breadcrumb: Builder
-        heading: 'Build Your Workflow'
-        steps: 'Workflow Steps'
-        drag_help: 'Drag steps to reorder'
-        add_step: 'Add Step'
-        new_step: 'New Step'
-        templates: 'Workflow Templates'
-        templates_help: 'Start with a pre-built template'
-        info: Information
-        help: 'Builder Help'
-        help_drag: 'Click and drag steps to change the workflow order'
-        help_edit: 'Click the edit icon to modify step details'
-        help_duplicate: 'Duplicate a step to reuse configuration'
-        help_delete: 'Delete steps that are no longer needed'
-        help_template: 'Choose a template to quickly set up common workflow patterns'
-        action:
-            edit: Edit
-            duplicate: Duplicate
-            delete: Delete
-    step.name: 'Step Name'
-    step.type: 'Step Type'
-    step.type.approval: 'Approval Step'
-    step.type.notification: 'Notification Step'
-    step.type.auto_action: 'Automated Action'
-    step.description: Description
-    step.approver_role: 'Approver Role'
-    step.days_to_complete: 'Days to Complete'
-    step.days_help: 'Number of days allocated for completing this step'
-    step.is_required: Required
-    template:
-        risk_assessment: 'Risk Assessment Workflow'
-        risk_assessment_desc: 'Multi-step workflow for identifying, assessing, and treating information security risks'
-        control_implementation: 'Control Implementation Workflow'
-        control_implementation_desc: 'Structured process for implementing and verifying ISO 27001 security controls'
-        incident_response: 'Incident Response Workflow'
-        incident_response_desc: 'Standardized workflow for detecting, responding to, and resolving security incidents'
-        document_review: 'Document Review Workflow'
-        document_review_desc: 'Approval process for reviewing and approving ISMS documentation'
-        change_request: 'Change Request Workflow'
-        change_request_desc: 'Approval workflow for evaluating and implementing system or process changes'
     widget:
         title: 'Pending Approvals'
         no_pending: 'No pending approvals'

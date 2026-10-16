@@ -247,6 +247,37 @@ class PrivacyModuleBulkActionTest extends WebTestCase
         $this->assertArrayHasKey('ok', $body);
     }
 
+    #[Test]
+    public function processingActivityBulkPublishFromArchivedUsesRestore(): void
+    {
+        // `published` is `publish` from approved but `restore` from archived;
+        // mapping it to `publish` alone rejected every restore.
+        $this->pa->setStatus('archived');
+        $this->em->flush();
+
+        $this->client->loginUser($this->managerRole);
+        $this->client->request('POST', '/en/processing-activity/bulk-status-change', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['ids' => [$this->pa->getId()], 'newStatus' => 'published', 'reason' => 'Processing resumed', '_token' => $this->getBulkCsrfToken()]));
+        $this->assertResponseIsSuccessful();
+        $body = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertSame(1, $body['changed'], json_encode($body['rejected'] ?? []));
+        $this->em->clear();
+        $this->assertSame('published', $this->em->find(ProcessingActivity::class, $this->pa->getId())->getStatus());
+    }
+
+    #[Test]
+    public function processingActivityBulkStatusRejectsMovesOutsideTheMatrix(): void
+    {
+        // draft → published skips review/approval; not allowed in bulk.
+        $this->client->loginUser($this->managerRole);
+        $this->client->request('POST', '/en/processing-activity/bulk-status-change', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['ids' => [$this->pa->getId()], 'newStatus' => 'published', '_token' => $this->getBulkCsrfToken()]));
+        $this->assertResponseIsSuccessful();
+        $body = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertSame(0, $body['changed']);
+        $this->assertSame('transition_not_allowed', $body['rejected'][0]['reason']);
+    }
+
     // ── CSRF enforcement (audit C-1 / OWASP A01) ────────────────────────────
 
     #[Test]

@@ -9,6 +9,7 @@ use App\Entity\SupplierQuestionnaire;
 use App\Entity\Tenant;
 use App\Service\AuditLogger;
 use App\Service\SupplierQuestionnaireService;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -20,11 +21,14 @@ use PHPUnit\Framework\TestCase;
 #[AllowMockObjectsWithoutExpectations]
 final class SupplierQuestionnaireServiceTest extends TestCase
 {
+    private YamlWorkflowLifecycle $lifecycle;
+
     private function service(): SupplierQuestionnaireService
     {
         return new SupplierQuestionnaireService(
             $this->createMock(EntityManagerInterface::class),
             $this->createMock(AuditLogger::class),
+            $this->lifecycle = new YamlWorkflowLifecycle(),
         );
     }
 
@@ -42,6 +46,7 @@ final class SupplierQuestionnaireServiceTest extends TestCase
         self::assertSame(64, strlen($q->getPublicToken())); // 32 bytes hex
         self::assertNotNull($q->getSentAt());
         self::assertSame('DORA due diligence', $q->getTitle());
+        self::assertSame(['send'], $this->lifecycle->appliedTransitions());
     }
 
     #[Test]
@@ -58,6 +63,7 @@ final class SupplierQuestionnaireServiceTest extends TestCase
         self::assertSame(['iso27001' => 'Yes, scope X', 'bcm' => 'Tested annually'], $q->getAnswers());
         self::assertArrayNotHasKey('bogus', $q->getAnswers(), 'unknown question ids must be dropped');
         self::assertNotNull($q->getCompletedAt());
+        self::assertSame(['complete'], $this->lifecycle->appliedTransitions());
     }
 
     #[Test]

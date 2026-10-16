@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Entity\WizardRun;
 use App\Entity\WorkflowInstance;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DocumentSectionRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
@@ -44,6 +45,8 @@ use Throwable;
 final class PolicySectionApprovalService
 {
     private const string AUDIT_TAG = 'policy-section-approval';
+    private const string SECTION_LIFECYCLE = 'document_section_lifecycle';
+    private const string WORKFLOW_INSTANCE_LIFECYCLE = 'workflow_instance_lifecycle';
 
     /**
      * W6-A §0.A.7 — tenant-setting key holding the org-level GDPR-scope
@@ -59,6 +62,7 @@ final class PolicySectionApprovalService
         private readonly EntityManagerInterface $entityManager,
         private readonly DocumentSectionRepository $sectionRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly LifecycleTransitionInterface $lifecycle,
         private readonly ?UserRepository $userRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?GenerationApprovalElapsedGuard $elapsedGuard = null,
@@ -227,7 +231,6 @@ final class PolicySectionApprovalService
         }
 
         $previousStatus = $section->getStatus();
-        $section->setStatus(DocumentSection::STATUS_APPROVED);
         $section->setApprovedAt(new DateTimeImmutable());
         $section->setApprovedByUser($approver);
         // Clear any prior rejection metadata so the audit trail reads
@@ -243,7 +246,8 @@ final class PolicySectionApprovalService
         $this->lockSectionForCisoEdits($section);
 
         $this->entityManager->persist($section);
-        $this->entityManager->flush();
+        // draft|dpo_sign_off → approved; LifecycleService flushes.
+        $this->lifecycle->transition($section, self::SECTION_LIFECYCLE, 'approve', $approver);
 
         $this->auditLogger->logCustom(
             action: 'section_approved',
@@ -265,7 +269,7 @@ final class PolicySectionApprovalService
             ),
         );
 
-        $this->maybeAdvanceHostWorkflow($section);
+        $this->maybeAdvanceHostWorkflow($section, $approver);
     }
 
     /**
@@ -286,7 +290,6 @@ final class PolicySectionApprovalService
         $this->assertNotSelfApproval($section, $approver);
 
         $previousStatus = $section->getStatus();
-        $section->setStatus(DocumentSection::STATUS_REJECTED);
         $section->setRejectedAt(new DateTimeImmutable());
         $section->setRejectedByUser($approver);
         $section->setRejectionReason($reason);
@@ -299,7 +302,7 @@ final class PolicySectionApprovalService
         $section->setEditLocked(false);
 
         $this->entityManager->persist($section);
-        $this->entityManager->flush();
+        $this->lifecycle->transition($section, self::SECTION_LIFECYCLE, 'reject', $approver, $reason);
 
         $this->auditLogger->logCustom(
             action: 'section_rejected',
@@ -418,7 +421,7 @@ final class PolicySectionApprovalService
      * exists (test fixtures, ad-hoc renders), we silently skip — the
      * approval still persisted and the audit-log entry was written.
      */
-    private function maybeAdvanceHostWorkflow(DocumentSection $section): void
+    private function maybeAdvanceHostWorkflow(DocumentSection $section, User $finalApprover): void
     {
         $document = $section->getDocument();
         if (!$document instanceof Document) {
@@ -454,8 +457,13 @@ final class PolicySectionApprovalService
             return;
         }
 
+        if ($hostInstance->getStatus() !== WorkflowInstanceStatus::InProgress->value) {
+            // Only a running approval can be released; pending, approved,
+            // rejected or cancelled instances are left untouched.
+            return;
+        }
+
         $previousStatus = $hostInstance->getStatus();
-        $hostInstance->setStatus(WorkflowInstanceStatus::Approved);
         $hostInstance->setCompletedAt(new DateTimeImmutable());
         $hostInstance->addApprovalHistoryEntry([
             'event'      => 'privacy_section_gate_released',
@@ -464,7 +472,18 @@ final class PolicySectionApprovalService
             'tag'        => self::AUDIT_TAG,
         ]);
         $this->entityManager->persist($hostInstance);
-        $this->entityManager->flush();
+
+        // in_progress → approved through workflow_instance_lifecycle. The
+        // transition is four-eyes: the initiator requested the approval,
+        // the user who signed off the last gated section grants it.
+        $this->lifecycle->transition(
+            $hostInstance,
+            self::WORKFLOW_INSTANCE_LIFECYCLE,
+            'approve',
+            $hostInstance->getInitiatedBy(),
+            'All gated policy sections approved',
+            $finalApprover,
+        );
 
         $this->auditLogger->logCustom(
             action: 'host_workflow_advanced',
@@ -559,13 +578,12 @@ final class PolicySectionApprovalService
     public function reopenForDpoEdit(DocumentSection $section, User $editor): void
     {
         $previousStatus = $section->getStatus();
-        $section->setStatus(DocumentSection::STATUS_DPO_SIGN_OFF);
         $section->setEditLocked(false);
         $section->setApprovedAt(null);
         $section->setApprovedByUser(null);
         $section->setAuthoredByUser($editor);
         $this->entityManager->persist($section);
-        $this->entityManager->flush();
+        $this->lifecycle->transition($section, self::SECTION_LIFECYCLE, 'reopen_for_dpo_edit', $editor);
 
         $this->auditLogger->logCustom(
             action: 'section_reopened_by_dpo',

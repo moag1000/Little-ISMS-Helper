@@ -30,6 +30,7 @@ class ModuleManagementController extends AbstractController
     /**
      * Activate Module - Redirect to Admin
      */
+    // @csrf-exempt: redirect-only alias, the admin target route enforces CSRF
     #[Route('/modules/{moduleKey}/activate', name: 'module_management_activate', methods: ['POST'])]
     public function activate(string $moduleKey): Response
     {
@@ -39,6 +40,7 @@ class ModuleManagementController extends AbstractController
     /**
      * Deactivate Module - Redirect to Admin
      */
+    // @csrf-exempt: redirect-only alias, the admin target route enforces CSRF
     #[Route('/modules/{moduleKey}/deactivate', name: 'module_management_deactivate', methods: ['POST'])]
     public function deactivate(string $moduleKey): Response
     {
@@ -57,6 +59,7 @@ class ModuleManagementController extends AbstractController
     /**
      * Import Module Data - Redirect to Admin
      */
+    // @csrf-exempt: redirect-only alias, the admin target route enforces CSRF
     #[Route('/modules/{moduleKey}/import-data', name: 'module_management_import_data', methods: ['POST'])]
     public function importData(string $moduleKey): Response
     {

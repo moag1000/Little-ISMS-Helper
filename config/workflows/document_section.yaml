@@ -1,0 +1,54 @@
+# DocumentSection sign-off lifecycle (Policy-Wizard W6-A, GDPR Art. 38(3)).
+#
+# A privacy / joint section of a generated policy needs its own sign-off
+# (DPO or CISO, depending on approval_role) before the host document's
+# approval workflow may be released.
+#
+#   draft ─────────┐
+#                  ├─ approve ─▶ approved ─ reopen_for_dpo_edit ─▶ dpo_sign_off
+#   dpo_sign_off ──┘                │
+#        │                          │
+#        └──────── reject ──────────┴──▶ rejected ─ rework ─▶ draft
+#
+# Roles are intentionally EMPTY: the generic /lifecycle/{type}/{id}/transition
+# endpoint (LifecycleVoter) must not move sections, because only
+# PolicySectionApprovalService enforces the Art. 38(3) self-approval ban,
+# the topic approver-role check and the generation-to-approval
+# minimum-elapsed guard before it calls LifecycleService.
+framework:
+    workflows:
+        document_section_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\DocumentSection
+            initial_marking: draft
+            places:
+                - draft
+                - dpo_sign_off
+                - approved
+                - rejected
+            transitions:
+                approve:
+                    from: [draft, dpo_sign_off]
+                    to: approved
+                    metadata:
+                        roles: []
+                reject:
+                    from: [draft, dpo_sign_off, approved]
+                    to: rejected
+                    metadata:
+                        roles: []
+                        reason_required: true
+                reopen_for_dpo_edit:
+                    from: [draft, approved, rejected]
+                    to: dpo_sign_off
+                    metadata:
+                        roles: []
+                rework:
+                    from: rejected
+                    to: draft
+                    metadata:
+                        roles: []

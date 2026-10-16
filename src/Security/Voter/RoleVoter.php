@@ -47,8 +47,12 @@ final class RoleVoter extends Voter
             return false;
         }
 
-        // CREATE needs no subject; the other actions need a Role.
-        return $attribute === self::CREATE || $subject instanceof Role;
+        // CREATE needs no subject; VIEW is a pure permission check, so the role
+        // list / compare pages vote without one (#[IsGranted(RoleVoter::VIEW)]);
+        // the other actions need a Role.
+        return $attribute === self::CREATE
+            || ($attribute === self::VIEW && $subject === null)
+            || $subject instanceof Role;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool

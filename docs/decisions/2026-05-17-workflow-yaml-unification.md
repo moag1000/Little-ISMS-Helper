@@ -69,6 +69,7 @@ As of Sprint Y.4 there is no UI path to create or edit DB-backed workflow defini
 |---|---|---|
 | **D-1: Entities annotated** | 2026-06 (this sprint) | `@deprecated` PHPDoc on `Workflow` + `WorkflowStep`; PHPStan rule active |
 | **D-2: New/Edit UI removed** | 2026-06 (this sprint) | `newDefinition` + `editDefinition` routes removed from `WorkflowController` |
+| **D-2b: Step builder API retired** | 2026-10 | `WorkflowStepApiController` is read-only (list); its write routes answer 410 Gone with a pointer to `/admin/workflows`. Orphan builder templates, `workflow_builder_controller.js` and `WorkflowStepType` removed; the PHPStan rule no longer exempts `App\Controller\Api\` |
 | **D-3: Command deprecation** | 2026-09 | Remove `SeedIncidentWorkflowsCommand`, `SeedPolicyApprovalWorkflowCommand` from CI bootstrap; add deprecation warning to `GenerateRegulatoryWorkflowsCommand` |
 | **D-4: Schema removal** | 2027-06 (earliest) | Drop `workflows` + `workflow_steps` tables ONLY after verifying zero active FK references from `workflow_instances`. Requires explicit release decision and migration. |
 

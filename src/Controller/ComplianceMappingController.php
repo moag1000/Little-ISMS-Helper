@@ -7,7 +7,9 @@ namespace App\Controller;
 use DateTimeImmutable;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
+use App\Entity\User;
 use App\Form\ComplianceMappingType;
+use App\Lifecycle\LifecycleService;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -21,17 +23,36 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Workflow\Registry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
 class ComplianceMappingController extends AbstractController
 {
+    private const string LIFECYCLE = 'compliance_mapping_lifecycle';
+
+    /**
+     * Bulk moves allowed by the 5-transition matrix:
+     * current state → [target state → transition].
+     *
+     * @var array<string, array<string, string>>
+     */
+    private const array BULK_STATUS_MATRIX = [
+        'draft'      => ['review' => 'submit_for_review'],
+        'review'     => ['approved' => 'approve', 'draft' => 'request_changes'],
+        'approved'   => ['published' => 'publish'],
+        'published'  => ['deprecated' => 'deprecate'],
+        'deprecated' => ['published' => 'restore'],
+    ];
+
     public function __construct(
         private readonly ComplianceMappingRepository $complianceMappingRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly ComplianceMappingService $complianceMappingService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
+        private readonly LifecycleService $lifecycleService,
+        private readonly Registry $workflowRegistry,
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?TranslatorInterface $translator = null,
         private readonly ?AuditLogger $auditLogger = null,
@@ -220,7 +241,8 @@ class ComplianceMappingController extends AbstractController
     }
 
     #[Route('/compliance/mapping/new', name: 'app_compliance_mapping_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    // Global catalogue data: same level as ComplianceMappingAdminController.
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         $complianceMapping = new ComplianceMapping();
@@ -271,7 +293,8 @@ class ComplianceMappingController extends AbstractController
     }
 
     #[Route('/compliance/mapping/{id}/edit', name: 'app_compliance_mapping_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    // Global catalogue data: same level as ComplianceMappingAdminController.
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, ComplianceMapping $complianceMapping): Response
     {
         $form = $this->createForm(ComplianceMappingType::class, $complianceMapping);
@@ -316,14 +339,19 @@ class ComplianceMappingController extends AbstractController
      * Bulk lifecycle-state change for selected mapping IDs.
      *
      * Accepts a JSON body: { "ids": [1,2,3], "newStatus": "approved", "_token": "..." }
-     * Returns JSON: { "ok": true, "changed": N, "rejected": [...] }
+     * Returns JSON: { "ok": true, "changed": N, "rejected": [{id, reason}] }
      *
-     * Valid target states (ComplianceMapping lifecycle): draft, review, approved, published, deprecated.
-     * ISO 27001 Cl. 7.5.3 — audit log written via AuditLogger::logBulk (1 batch + N per-entity entries).
-     * Mappings are NOT tenant-scoped; ROLE_USER may flag for review; ROLE_MANAGER may approve/publish/deprecate.
+     * Every move goes through compliance_mapping_lifecycle and only along the
+     * 5-transition matrix (BULK_STATUS_MATRIX); any other current→target pair
+     * is rejected as `transition_not_allowed`. Mappings are global (shared by
+     * all tenants), so the roles come from the static workflow YAML — never
+     * from per-tenant lifecycle overrides: ROLE_MANAGER for draft/review,
+     * ROLE_ADMIN for approved/published/deprecated.
+     * ISO 27001 Cl. 7.5.3 — audit log via AuditLogger::logBulk (1 batch + N per-entity entries)
+     * plus the lifecycle status_change row per mapping.
      */
     #[Route('/compliance/mapping/bulk-status-change', name: 'app_compliance_mapping_bulk_status_change', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_MANAGER')]
     public function bulkStatusChange(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -339,18 +367,13 @@ class ComplianceMappingController extends AbstractController
             return $this->json(['error' => $this->translator?->trans('compliance.mapping.bulk.no_ids', [], 'compliance') ?? 'No items selected'], 400);
         }
 
-        /** @var list<string> $allowedStatuses */
-        $allowedStatuses = ['draft', 'review', 'approved', 'published', 'deprecated'];
-        if (!in_array($newStatus, $allowedStatuses, true)) {
+        $targets = array_merge(...array_values(array_map('array_keys', self::BULK_STATUS_MATRIX)));
+        if (!in_array($newStatus, $targets, true)) {
             return $this->json(['error' => $this->translator?->trans('compliance.mapping.bulk.invalid_status', [], 'compliance') ?? 'Invalid target status'], 400);
         }
 
-        // ROLE_MANAGER required for operational-state transitions (approve/publish/deprecate)
-        $operationalTransitions = ['approved', 'published', 'deprecated'];
-        if (in_array($newStatus, $operationalTransitions, true) && !$this->isGranted('ROLE_MANAGER')) {
-            return $this->json(['error' => 'Insufficient permissions for this lifecycle transition'], 403);
-        }
-
+        $user = $this->getUser();
+        $lifecycleUser = $user instanceof User ? $user : null;
         $changed = 0;
         $rejected = [];
         $perEntityData = [];
@@ -365,11 +388,18 @@ class ComplianceMappingController extends AbstractController
             }
 
             $oldState = $mapping->getLifecycleState();
+            $transition = self::BULK_STATUS_MATRIX[$oldState][$newStatus] ?? null;
+            if ($transition === null) {
+                $rejected[] = ['id' => $id, 'reason' => 'transition_not_allowed'];
+                continue;
+            }
+            if (!$this->mayApplyGlobalTransition($mapping, $transition)) {
+                $rejected[] = ['id' => $id, 'reason' => 'forbidden'];
+                continue;
+            }
+
             $oldReviewStatus = $mapping->getReviewStatus();
-
-            $mapping->setLifecycleState($newStatus);
             $mapping->setUpdatedAt(new DateTimeImmutable());
-
             // Mirror reviewStatus for interoperability with the existing review-queue feature
             if ($newStatus === 'approved') {
                 $mapping->setReviewStatus('approved');
@@ -379,29 +409,34 @@ class ComplianceMappingController extends AbstractController
                 $mapping->setReviewStatus('unreviewed');
             }
 
+            try {
+                // Flushes the transition together with the mirrored fields.
+                $this->lifecycleService->transition($mapping, self::LIFECYCLE, $transition, $lifecycleUser);
+            } catch (\Throwable $e) {
+                $this->entityManager->refresh($mapping);
+                $rejected[] = ['id' => $id, 'reason' => substr($e->getMessage(), 0, 200)];
+                continue;
+            }
+
             $perEntityData[] = [
                 'entity_id' => $id,
                 'action'    => 'update',
                 'old_values' => ['lifecycleState' => $oldState, 'reviewStatus' => $oldReviewStatus],
-                'new_values' => ['lifecycleState' => $newStatus, 'reviewStatus' => $mapping->getReviewStatus()],
+                'new_values' => ['lifecycleState' => $newStatus, 'reviewStatus' => $mapping->getReviewStatus(), 'transition' => $transition],
             ];
 
             $changed++;
         }
 
-        if ($changed > 0) {
-            $this->entityManager->flush();
-
+        if ($changed > 0 && $this->auditLogger !== null) {
             // ISO 27001 Cl. 7.5.3 — 1 batch entry + N per-entity entries
-            if ($this->auditLogger !== null) {
-                $this->auditLogger->logBulk(
-                    'bulk_lifecycle_change',
-                    'ComplianceMapping',
-                    ['target_state' => $newStatus, 'requested_count' => count($ids), 'changed_count' => $changed],
-                    $perEntityData,
-                    sprintf('Bulk lifecycle change to "%s" for %d ComplianceMapping(s)', $newStatus, $changed),
-                );
-            }
+            $this->auditLogger->logBulk(
+                'bulk_lifecycle_change',
+                'ComplianceMapping',
+                ['target_state' => $newStatus, 'requested_count' => count($ids), 'changed_count' => $changed],
+                $perEntityData,
+                sprintf('Bulk lifecycle change to "%s" for %d ComplianceMapping(s)', $newStatus, $changed),
+            );
         }
 
         return $this->json([
@@ -409,6 +444,31 @@ class ComplianceMappingController extends AbstractController
             'changed'  => $changed,
             'rejected' => $rejected,
         ]);
+    }
+
+    /**
+     * Role check against the static YAML metadata of the transition. Per-tenant
+     * lifecycle overrides must not widen who may change catalogue data that
+     * every tenant shares.
+     */
+    private function mayApplyGlobalTransition(ComplianceMapping $mapping, string $transitionName): bool
+    {
+        $workflow = $this->workflowRegistry->get($mapping, self::LIFECYCLE);
+        foreach ($workflow->getDefinition()->getTransitions() as $transition) {
+            if ($transition->getName() !== $transitionName) {
+                continue;
+            }
+            $roles = $workflow->getMetadataStore()->getTransitionMetadata($transition)['roles'] ?? [];
+            foreach ($roles as $role) {
+                if ($this->isGranted($role)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return false;
     }
 
     #[Route('/compliance/mapping/{id}/analyze', name: 'app_compliance_mapping_analyze', requirements: ['id' => '\d+'], methods: ['POST'])]

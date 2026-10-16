@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Dashboard;
 
+use App\Attribute\RequiresModule;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -32,6 +34,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards/bcm', name: 'app_dashboard_bcm')]
 #[IsGranted(TenantScopedAdminVoter::PERSONA_BCM)]
+#[RequiresModule('bcm')]
 final class BcmOfficerDashboardController extends AbstractController
 {
     public function __construct(
@@ -39,6 +42,7 @@ final class BcmOfficerDashboardController extends AbstractController
         private readonly RoleDashboardService $roleDashboardService,
         private readonly TisaxMaturityAssessmentService $tisaxAssessment,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -54,8 +58,7 @@ final class BcmOfficerDashboardController extends AbstractController
 
         // TISAX IS-tier aggregate — BCM uses IS-tier as control-effectiveness proxy
         $tisaxAggregate = null;
-        $settings = $tenant->getSettings() ?? [];
-        if ($settings['modules']['tisax'] ?? true) {
+        if ($this->moduleConfiguration->isModuleActive('tisax')) {
             $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
             if ($framework !== null) {
                 $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);

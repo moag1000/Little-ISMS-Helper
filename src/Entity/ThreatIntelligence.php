@@ -85,6 +85,7 @@ class ThreatIntelligence
     private ?array $affectedSystems = null;
 
     // New relationship for data reuse
+    /** @var Collection<int, Asset> */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'threat_intelligence_affected_assets')]
     #[Groups(['threat:read', 'threat:write'])]

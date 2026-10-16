@@ -163,6 +163,32 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Tenant::class,
             'workflow' => 'tenant_lifecycle',
         ],
+        // Lifecycle completion — staged-status entities that still set their
+        // status directly. Policy section sign-off (GDPR Art. 38(3)).
+        'document-section' => [
+            'class' => \App\Entity\DocumentSection::class,
+            'workflow' => 'document_section_lifecycle',
+        ],
+        // GDPR Art. 46 / Schrems II transfer impact assessment.
+        'transfer-impact-assessment' => [
+            'class' => \App\Entity\TransferImpactAssessment::class,
+            'workflow' => 'transfer_impact_assessment_lifecycle',
+        ],
+        // DORA Art. 26 threat-led penetration test.
+        'threat-led-penetration-test' => [
+            'class' => \App\Entity\ThreatLedPenetrationTest::class,
+            'workflow' => 'threat_led_penetration_test_lifecycle',
+        ],
+        // Outbound supplier security questionnaire (ISO 27001 A.5.19-A.5.22).
+        'supplier-questionnaire' => [
+            'class' => \App\Entity\SupplierQuestionnaire::class,
+            'workflow' => 'supplier_questionnaire_lifecycle',
+        ],
+        // Access review campaign (ISO 27001 A.5.18).
+        'access-review-campaign' => [
+            'class' => \App\Entity\AccessReviewCampaign::class,
+            'workflow' => 'access_review_campaign_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */
@@ -175,5 +201,17 @@ final class EntityTypeRegistry
     public function knownSlugs(): array
     {
         return array_keys(self::MAP);
+    }
+
+    /**
+     * Every entity class whose status is owned by a lifecycle workflow.
+     * Single source of truth for tooling such as the PHPStan rule
+     * NoDirectSetStatusRule, which must not keep its own copy.
+     *
+     * @return list<class-string>
+     */
+    public static function managedEntityClasses(): array
+    {
+        return array_values(array_unique(array_column(self::MAP, 'class')));
     }
 }

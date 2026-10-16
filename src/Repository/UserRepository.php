@@ -127,9 +127,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * Find active users carrying the given role string within a tenant.
      *
-     * This is the ONLY role-based user lookup: recipients and approvers are
-     * always resolved inside the tenant that owns the record being notified
-     * about. The former unscoped `findByRole()` selected users across every
+     * This is the ONLY role-based lookup for an organisation's users
+     * (instance operators aside, see findActiveInstanceOperators()):
+     * recipients and approvers are always resolved inside the tenant that
+     * owns the record being notified about. The former unscoped `findByRole()` selected users across every
      * organisation and leaked tenant data into other organisations' inboxes,
      * so it was removed.
      *
@@ -168,6 +169,31 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         /** @var list<User> $rows */
         $rows = $qb->getQuery()->getResult();
+        return $rows;
+    }
+
+    /**
+     * Active instance operators (ROLE_SUPER_ADMIN). Operators administer the
+     * whole instance, so this pool is deliberately not tenant-scoped. Use it
+     * only for operator-only actions (second approver of an organisation
+     * suspend / reactivate, TenantStatusService) — never as a recipient or
+     * approver pool for an organisation's records; that is findByRoleInTenant().
+     *
+     * @return list<User>
+     */
+    public function findActiveInstanceOperators(): array
+    {
+        /** @var list<User> $rows */
+        $rows = $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('role', '%"ROLE_SUPER_ADMIN"%')
+            ->setParameter('active', true)
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
+
         return $rows;
     }
 

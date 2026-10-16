@@ -11,6 +11,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\DocumentSectionRepository;
 use App\Service\AuditLogger;
 use App\Service\PolicyWizard\GdprToggleOffCleanupService;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -39,6 +40,7 @@ final class GdprToggleOffCleanupServiceTest extends TestCase
     private DocumentRepository&MockObject $documentRepo;
     private DocumentSectionRepository&MockObject $sectionRepo;
     private AuditLogger&MockObject $auditLogger;
+    private YamlWorkflowLifecycle $lifecycle;
 
     protected function setUp(): void
     {
@@ -46,6 +48,7 @@ final class GdprToggleOffCleanupServiceTest extends TestCase
         $this->documentRepo = $this->createMock(DocumentRepository::class);
         $this->sectionRepo = $this->createMock(DocumentSectionRepository::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
+        $this->lifecycle = new YamlWorkflowLifecycle();
     }
 
     private function makeService(): GdprToggleOffCleanupService
@@ -55,6 +58,7 @@ final class GdprToggleOffCleanupServiceTest extends TestCase
             $this->documentRepo,
             $this->sectionRepo,
             $this->auditLogger,
+            $this->lifecycle,
         );
     }
 
@@ -125,6 +129,27 @@ final class GdprToggleOffCleanupServiceTest extends TestCase
         self::assertTrue($doc1->isArchived(), 'doc1 must be archived');
         self::assertSame('archived', $doc1->getStatus());
         self::assertTrue($doc2->isArchived());
+    }
+
+    #[Test]
+    public function draftDocumentsAreArchivedThroughTheLifecycleWithReason(): void
+    {
+        $tenant = $this->makeTenant();
+        $draft = $this->makeDocument(111, 'draft', false);
+        $deleted = $this->makeDocument(112, 'deleted', false);
+
+        $this->documentRepo->method('createQueryBuilder')
+            ->willReturn($this->stubQueryBuilder([$draft, $deleted]));
+        $this->sectionRepo->method('createQueryBuilder')
+            ->willReturn($this->stubQueryBuilder([]));
+
+        $report = $this->makeService()->cleanupAfterGdprToggleOff($tenant);
+
+        self::assertSame('archived', $draft->getStatus());
+        self::assertSame([111], $report['archived_documents']);
+        self::assertSame('deleted', $deleted->getStatus(), 'soft-deleted rows are left alone');
+        self::assertSame(['archive_out_of_scope'], $this->lifecycle->appliedTransitions());
+        self::assertNotSame('', (string) $this->lifecycle->applied[0]['reason']);
     }
 
     #[Test]

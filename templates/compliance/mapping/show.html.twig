@@ -28,10 +28,11 @@
         badge: { icon: 'util-arrow-left', label: 'compliance.mapping.title'|trans({}, 'compliance') },
         title: mapping.sourceRequirement.requirementId ~ ' → ' ~ mapping.targetRequirement.requirementId,
         subtitle: 'Compliance Mapping',
-        actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_compliance_mapping_edit', {id: mapping.id}) },
+        actions: (is_granted('ROLE_MANAGER') ? [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_compliance_mapping_edit', {id: mapping.id}) }
+        ] : [])|merge([
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_mapping_index') }
-        ]
+        ])
     }) }}
 
     <div class="row">

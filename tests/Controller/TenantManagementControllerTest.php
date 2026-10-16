@@ -393,13 +393,15 @@ class TenantManagementControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testToggleChangesStatus(): void
+    public function testToggleWithoutCsrfTokenKeepsStatus(): void
     {
         $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/toggle');
 
-        $this->assertResponseRedirects('/en/admin/tenants');
+        $this->assertResponseRedirects('/en/admin/tenants/' . $this->targetTenant->getId());
+        $this->entityManager->clear();
+        $this->assertTrue($this->entityManager->find(Tenant::class, $this->targetTenant->getId())->isActive());
     }
 
     // ========== DELETE ACTION TESTS ==========

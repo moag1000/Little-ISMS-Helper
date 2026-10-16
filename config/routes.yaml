@@ -1,112 +1,7 @@
-# Security routes WITHOUT locale prefix (for cleaner URLs and better access control)
-security_routes:
-    resource:
-        path: ../src/Controller/SecurityController.php
-        namespace: App\Controller
-    type: attribute
-
-# Quick-Fix fallback routes WITHOUT locale prefix — must remain reachable when
-# the schema-error that brought the user here also broke the locale resolver.
-app_quick_fix_index:
-    path: /quick-fix
-    controller: App\Controller\QuickFixController::index
-    methods: [GET]
-
-app_quick_fix_apply:
-    path: /quick-fix/apply
-    controller: App\Controller\QuickFixController::apply
-    methods: [POST]
-
-app_quick_fix_reconcile:
-    path: /quick-fix/reconcile
-    controller: App\Controller\QuickFixController::reconcile
-    methods: [POST]
-
-app_quick_fix_repair_orphans:
-    path: /quick-fix/repair/orphans
-    controller: App\Controller\QuickFixController::repairOrphans
-    methods: [POST]
-
-app_quick_fix_repair_mismatches:
-    path: /quick-fix/repair/tenant-mismatches
-    controller: App\Controller\QuickFixController::repairTenantMismatches
-    methods: [POST]
-
-app_quick_fix_repair_duplicates:
-    path: /quick-fix/repair/duplicates/{entityType}
-    controller: App\Controller\QuickFixController::repairDuplicates
-    methods: [POST]
-
-app_quick_fix_repair_all:
-    path: /quick-fix/repair/all
-    controller: App\Controller\QuickFixController::repairAll
-    methods: [POST]
-
-app_quick_fix_force_mark_executed:
-    path: /quick-fix/force-mark-executed
-    controller: App\Controller\QuickFixController::forceMarkExecuted
-    methods: [POST]
-
-app_quick_fix_mark_all_phantom_diff:
-    path: /quick-fix/mark-all-phantom-diff
-    controller: App\Controller\QuickFixController::markAllPhantomDiff
-    methods: [POST]
-
-app_quick_fix_force_schema_update:
-    path: /quick-fix/force-schema-update
-    controller: App\Controller\QuickFixController::forceSchemaUpdate
-    methods: [POST]
-
-# Public job-status polling endpoint for QuickFix async jobs.
-# Mirrors /admin/jobs/{id}/status but is gated by QuickFixGuard (no auth)
-# so the emergency-recovery UI can poll progress while the app boot is
-# still degraded (which is the entire reason QuickFix exists).
-app_quick_fix_job_status:
-    path: /quick-fix/jobs/{id}/status
-    controller: App\Controller\QuickFixJobStatusController::status
-    methods: [GET]
-
-# Shared progress page for QuickFix async jobs (PRG-after-POST landing).
-# Sibling to admin_job_progress_page but un-authenticated (QuickFixGuard).
-# Every QuickFix POST dispatcher redirects here with a 303 so Turbo can
-# follow the redirect instead of erroring on a 200+HTML response to a form.
-app_quick_fix_job_progress:
-    path: /quick-fix/jobs/{id}/progress
-    controller: App\Controller\QuickFixJobStatusController::progressPage
-    methods: [GET]
-
-# Root redirect - smart locale detection (without locale)
-app_home:
-    path: /
-    controller: App\Controller\HomeController::index
-
-# Dashboard route WITH locale prefix
-app_dashboard:
-    path: /{_locale}/dashboard
-    controller: App\Controller\HomeController::dashboard
-    requirements:
-        _locale: de|en
-    defaults:
-        _locale: de
-
-# ISMS Journey progress widget dismiss/restore (HomeController)
-app_dashboard_dismiss_journey:
-    path: /{_locale}/dashboard/dismiss-journey
-    controller: App\Controller\HomeController::dismissJourney
-    methods: [POST]
-    requirements:
-        _locale: de|en
-    defaults:
-        _locale: de
-
-app_dashboard_restore_journey:
-    path: /{_locale}/dashboard/restore-journey
-    controller: App\Controller\HomeController::restoreJourney
-    methods: [GET]
-    requirements:
-        _locale: de|en
-    defaults:
-        _locale: de
+# Note: SecurityController is NOT excluded below, so login/logout/OAuth/SAML
+# routes are served with the locale prefix (/{_locale}/login, /{_locale}/saml/acs).
+# IdP registrations (SAML ACS, OAuth redirect URIs) rely on these URLs — do not
+# move them without updating every identity-provider configuration.
 
 # App routes WITH locale prefix
 app_routes:
@@ -120,17 +15,43 @@ app_routes:
     defaults:
         _locale: de
     exclude:
-        - '../src/Controller/SecurityController.php'
         - '../src/Controller/HomeController.php'
         - '../src/Controller/QuickFixController.php'
         - '../src/Controller/QuickFixJobStatusController.php'
         - '../src/Controller/SsoController.php'
         - '../src/Controller/LifecycleController.php'
         - '../src/Controller/GlossaryApiController.php'
+        - '../src/Controller/HealthController.php'
         - '../src/Controller/ReadinessController.php'
         - '../src/Controller/MetricsController.php'
         - '../src/Controller/PublicPostureController.php'
         - '../src/Controller/PublicSupplierQuestionnaireController.php'
+
+# NOTE on ordering: the `exclude` list of app_routes is not honoured by the
+# path+namespace (PSR-4 directory) loader, so every controller is also loaded
+# with the /{_locale} prefix. The single-file imports below are declared AFTER
+# app_routes so their un-prefixed registration replaces that duplicate by route
+# name (same mechanism as sso_routes further down). Keep them after app_routes.
+
+# Quick-Fix fallback routes WITHOUT locale prefix — must remain reachable when
+# the schema-error that brought the user here also broke the locale resolver.
+# QuickFixJobStatusController: public job-status polling + PRG progress page for
+# QuickFix async jobs, gated by QuickFixGuard (no auth) so the emergency-recovery
+# UI works while the app boot is still degraded. Routes are #[Route] attributes;
+# both controllers are listed in app_routes' exclude.
+quick_fix_routes:
+    resource: ../src/Controller/QuickFixController.php
+    type: attribute
+
+quick_fix_job_status_routes:
+    resource: ../src/Controller/QuickFixJobStatusController.php
+    type: attribute
+
+# Root redirect (smart locale detection, no prefix) + dashboard routes that carry
+# their own /{_locale} segment in the #[Route] attributes of HomeController.
+home_routes:
+    resource: ../src/Controller/HomeController.php
+    type: attribute
 
 # Glossary API WITHOUT locale prefix — the fa-glossary-tooltip component fetches
 # /api/glossary/{acronym} directly; UI locale is passed as ?locale.
@@ -160,6 +81,10 @@ sso_routes:
 # intentionally omitted: these are machine-to-machine endpoints, not user-facing.
 infra_probe_routes:
     resource: ../src/Controller/ReadinessController.php
+    type: attribute
+
+infra_health_routes:
+    resource: ../src/Controller/HealthController.php
     type: attribute
 
 infra_metrics_routes:

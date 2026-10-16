@@ -156,6 +156,8 @@ class ChangeRequest
 
     /**
      * Affected assets
+     *
+     * @var Collection<int, Asset>
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'change_request_asset')]
@@ -164,6 +166,8 @@ class ChangeRequest
 
     /**
      * Affected controls
+     *
+     * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'change_request_control')]
@@ -172,6 +176,8 @@ class ChangeRequest
 
     /**
      * Affected business processes
+     *
+     * @var Collection<int, BusinessProcess>
      */
     #[ORM\ManyToMany(targetEntity: BusinessProcess::class)]
     #[ORM\JoinTable(name: 'change_request_business_process')]
@@ -180,6 +186,8 @@ class ChangeRequest
 
     /**
      * Associated risks (new or updated)
+     *
+     * @var Collection<int, Risk>
      */
     #[ORM\ManyToMany(targetEntity: Risk::class)]
     #[ORM\JoinTable(name: 'change_request_risk')]
@@ -306,6 +314,8 @@ class ChangeRequest
 
     /**
      * Documents
+     *
+     * @var Collection<int, Document>
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'change_request_document')]

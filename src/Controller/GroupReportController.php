@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
@@ -39,6 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/group-report', name: 'app_group_report_')]
 #[IsGranted('ROLE_GROUP_CISO')]
+#[RequiresModule('portfolio_reports')]
 final class GroupReportController extends AbstractController
 {
     public function __construct(
@@ -56,6 +58,7 @@ final class GroupReportController extends AbstractController
     }
 
     #[Route('/nis2-registration', name: 'nis2_registration', methods: ['GET'])]
+    #[RequiresModule('nis2_dora')]
     public function nis2Registration(): Response
     {
         $root = $this->tenantContext->getCurrentTenant();

@@ -37,6 +37,14 @@ imports:
     - { resource: '../workflows/role.yaml' }
     # Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper)
     - { resource: '../workflows/tenant.yaml' }
+    # Lifecycle completion — staged-status entities that still bypassed the facade
+    - { resource: '../workflows/document_section.yaml' }
+    - { resource: '../workflows/transfer_impact_assessment.yaml' }
+    - { resource: '../workflows/threat_led_penetration_test.yaml' }
+    - { resource: '../workflows/supplier_questionnaire.yaml' }
+    - { resource: '../workflows/access_review_campaign.yaml' }
+    # Global catalogue data (no tenant) — roles enforced from YAML in ComplianceMappingController
+    - { resource: '../workflows/compliance_mapping.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }

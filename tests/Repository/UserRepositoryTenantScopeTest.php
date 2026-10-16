@@ -83,6 +83,27 @@ final class UserRepositoryTenantScopeTest extends KernelTestCase
         self::assertSame([], $this->repository->findByIdsInTenant([$userA->getId()], null));
     }
 
+    #[Test]
+    public function findActiveInstanceOperatorsReturnsOnlyActiveSuperAdmins(): void
+    {
+        $tenantA = $this->tenant('f');
+        $tenantB = $this->tenant('g');
+        $operatorA = $this->user($tenantA, 'ROLE_SUPER_ADMIN');
+        $operatorB = $this->user($tenantB, 'ROLE_SUPER_ADMIN');
+        $inactiveOperator = $this->user($tenantA, 'ROLE_SUPER_ADMIN');
+        $inactiveOperator->setIsActive(false);
+        $orgAdmin = $this->user($tenantA, 'ROLE_ADMIN');
+        $this->em->flush();
+
+        $result = $this->repository->findActiveInstanceOperators();
+
+        // Operators are instance-wide, so both organisations' operators qualify.
+        self::assertContains($operatorA, $result);
+        self::assertContains($operatorB, $result);
+        self::assertNotContains($inactiveOperator, $result);
+        self::assertNotContains($orgAdmin, $result);
+    }
+
     private function tenant(string $suffix): Tenant
     {
         $tenant = new Tenant();

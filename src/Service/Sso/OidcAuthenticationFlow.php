@@ -22,6 +22,7 @@ use Jose\Component\Signature\Algorithm\RS512;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -252,7 +253,9 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
             $claims = $this->verifyIdToken($provider, $values['id_token']);
         }
 
-        if ($provider->getUserinfoEndpoint() !== null) {
+        // getResourceOwner() is typed to the concrete AccessToken; the
+        // interface returned by getAccessToken() is narrowed here.
+        if ($provider->getUserinfoEndpoint() !== null && $token instanceof AccessToken) {
             try {
                 $owner = $client->getResourceOwner($token);
                 $claims = array_merge($claims, $owner->toArray());

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Enum\IncidentSeverity;
 use DateTime;
 use App\Entity\Risk;
@@ -42,6 +43,7 @@ use App\Util\CsvSanitizer;
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/analytics')]
+#[RequiresModule('analytics')]
 class AnalyticsController extends AbstractController
 {
     public function __construct(
@@ -462,18 +464,15 @@ class AnalyticsController extends AbstractController
                 return $occuredAt >= $monthStart && $occuredAt <= $monthEnd;
             });
 
-            // Count by severity
-            $low = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Low));
-            $medium = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Medium));
-            $high = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::High));
-            $critical = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Critical));
+            $countBySeverity = static fn(IncidentSeverity $severity): int => count(array_filter($monthIncidents,
+                static fn(Incident $incident): bool => $incident->getSeverity() === $severity));
 
             $trend[] = [
                 'month' => $date->format('M Y'),
-                'low' => $low,
-                'medium' => $medium,
-                'high' => $high,
-                'critical' => $critical,
+                'low' => $countBySeverity(IncidentSeverity::Low),
+                'medium' => $countBySeverity(IncidentSeverity::Medium),
+                'high' => $countBySeverity(IncidentSeverity::High),
+                'critical' => $countBySeverity(IncidentSeverity::Critical),
                 'total' => count($monthIncidents)
             ];
         }

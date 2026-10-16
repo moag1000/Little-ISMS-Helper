@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Person;
@@ -252,6 +253,7 @@ class ComplianceRequirementController extends AbstractController
      */
     #[Route('/compliance/requirement/{id}/mris-maturity', name: 'app_compliance_requirement_mris_maturity', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
+    #[RequiresModule('mris')]
     public function setMrisMaturity(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
         if (!$this->isCsrfTokenValid('mris_maturity_' . $complianceRequirement->getId(), (string) $request->request->get('_token'))) {

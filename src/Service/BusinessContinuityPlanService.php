@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\BusinessContinuityPlan;
-use App\Repository\BusinessContinuityPlanRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -19,7 +18,6 @@ final class BusinessContinuityPlanService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly BusinessContinuityPlanRepository $repository,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
@@ -64,42 +62,5 @@ final class BusinessContinuityPlanService
     {
         $this->entityManager->remove($plan);
         $this->entityManager->flush();
-    }
-
-    /**
-     * Bulk-delete BC-Plans belonging to the current tenant.
-     *
-     * @param int[]    $ids
-     * @param int|null $currentTenantId  Pass null to skip tenant check (ADMIN bypass).
-     * @return array{deleted: int, errors: string[]}
-     */
-    public function bulkDelete(array $ids, ?int $currentTenantId): array
-    {
-        $deleted = 0;
-        $errors  = [];
-
-        foreach ($ids as $id) {
-            try {
-                $plan = $this->repository->find($id);
-                if ($plan === null) {
-                    $errors[] = "BC Plan ID $id not found";
-                    continue;
-                }
-                if ($currentTenantId !== null && $plan->getTenant()?->getId() !== $currentTenantId) {
-                    $errors[] = "BC Plan ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($plan);
-                $deleted++;
-            } catch (\Exception $e) {
-                $errors[] = "Error deleting BC Plan ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return ['deleted' => $deleted, 'errors' => $errors];
     }
 }

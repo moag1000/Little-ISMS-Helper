@@ -469,6 +469,7 @@ final class AdminHubCatalog
                         'description' => 'admin.hub.module.gstool_import.desc',
                         'route' => 'admin_gstool_import_index',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                        'requiredModule' => 'bsi_grundschutz',
                     ],
                     // scope: own-tenant sample-data seeding
                     [
@@ -715,6 +716,7 @@ final class AdminHubCatalog
                         'description' => 'admin.hub.module.supplier_criticality.desc',
                         'route' => 'app_admin_supplier_criticality_index',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                        'requiredModule' => 'suppliers',
                     ],
                     // scope: GLOBAL — instance-wide tour content authoring (SUPER only)
                     [

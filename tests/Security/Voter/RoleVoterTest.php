@@ -103,6 +103,19 @@ class RoleVoterTest extends TestCase
     }
 
     #[Test]
+    public function viewWithoutSubjectIsDecidedByThePermission(): void
+    {
+        // #[IsGranted(RoleVoter::VIEW)] on the role list / compare pages votes
+        // without a subject; the voter must not abstain there.
+        $allowed = $this->createToken($this->createUser(['ROLE_USER'], true, ['role.view']));
+        $denied = $this->createToken($this->createUser(['ROLE_USER'], true, []));
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($allowed, null, [RoleVoter::VIEW]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($denied, null, [RoleVoter::VIEW]));
+        $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $this->voter->vote($allowed, null, [RoleVoter::EDIT]));
+    }
+
+    #[Test]
     public function testUserWithoutPermissionCannotViewRole(): void
     {
         $user = $this->createUser(['ROLE_USER'], true, []);

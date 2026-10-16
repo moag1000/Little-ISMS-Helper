@@ -278,11 +278,14 @@ export default class extends Controller {
         button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> ...';
 
         try {
+            // Optional CSRF token: data-ui-actions-csrf-param="{{ csrf_token('…') }}".
+            const csrfToken = event.params.csrf;
             const response = await fetch(url, {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
                 }
             });
 

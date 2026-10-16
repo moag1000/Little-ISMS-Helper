@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Service\BulkDeleteService;
 use Exception;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Asset;
 use App\Enum\AssetStatus;
@@ -45,6 +48,7 @@ class AssetController extends AbstractController
     use LocalizedFlashTrait;
     use BulkActionTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly AssetRepository $assetRepository,
@@ -300,6 +304,7 @@ class AssetController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if an Asset has associated Risks or Incidents that reference it.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/asset/bulk-delete-check', name: 'app_asset_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -329,74 +334,16 @@ class AssetController extends AbstractController
 
     #[Route('/asset/bulk-delete', name: 'app_asset_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        if (!$this->isCsrfTokenValid('bulk_delete', $data['_token'] ?? '')) {
-            return $this->json(['error' => 'Invalid CSRF token'], 403);
-        }
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $asset = $this->assetRepository->find($id);
-
-                if (!$asset) {
-                    $errors[] = "Asset ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's assets
-                if ($asset->getTenant() !== $tenant) {
-                    $errors[] = "Asset ID $id does not belong to your organization";
-                    continue;
-                }
-
-                // Check for dependencies (optional warning, but still allow delete)
-                $risks = $asset->getRisks();
-                if ($risks->count() > 0) {
-                    // Log dependency info but continue
-                }
-
-                $this->entityManager->remove($asset);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting asset ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        $message = $deleted > 0
-            ? $this->translator->trans('asset.bulk_delete.success', ['count' => $deleted], 'assets')
-            : $this->translator->trans('asset.bulk_delete.no_items', [], 'assets');
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors,
-                'message' => $message
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => $message
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Asset',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->assetRepository->find($id),
+            voterAttribute: 'delete',
+        );
     }
     #[Route('/asset/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -611,6 +558,7 @@ class AssetController extends AbstractController
     }
     #[Route('/asset/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmInsights(int $id): Response
     {
         $user = $this->security->getUser();
@@ -642,47 +590,6 @@ class AssetController extends AbstractController
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
         ]);
-    }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
 
     /**

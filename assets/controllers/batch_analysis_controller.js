@@ -24,6 +24,7 @@ export default class extends Controller {
     static values = {
         url: String,
         statsUrl: String,
+        csrfToken: { type: String, default: '' },
         batchSize: { type: Number, default: 5 },
         running: { type: Boolean, default: false },
         cancelled: { type: Boolean, default: false },
@@ -154,7 +155,8 @@ export default class extends Controller {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': this.csrfTokenValue
                     },
                     body: JSON.stringify({
                         limit: batchSize,

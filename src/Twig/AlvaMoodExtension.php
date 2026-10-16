@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Twig;
 
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
@@ -47,10 +49,10 @@ final class AlvaMoodExtension extends AbstractExtension implements GlobalsInterf
         $session = $this->getSession();
 
         if ($session !== null) {
-            $flashBag = $session->getFlashBag();
-            if ($flashBag->has('alva_mood')) {
+            $flashBag = $session instanceof FlashBagAwareSessionInterface ? $session->getFlashBag() : null;
+            if ($flashBag !== null && $flashBag->has('alva_mood')) {
                 $flashes = $flashBag->get('alva_mood');
-                $candidate = is_array($flashes) ? (string) ($flashes[0] ?? '') : (string) $flashes;
+                $candidate = (string) ($flashes[0] ?? '');
                 if (in_array($candidate, self::VALID_MOODS, true)) {
                     return $candidate;
                 }
@@ -69,7 +71,7 @@ final class AlvaMoodExtension extends AbstractExtension implements GlobalsInterf
         return 'idle';
     }
 
-    private function getSession(): ?\Symfony\Component\HttpFoundation\Session\SessionInterface
+    private function getSession(): ?SessionInterface
     {
         $request = $this->requestStack->getCurrentRequest();
         if ($request === null || !$request->hasSession()) {

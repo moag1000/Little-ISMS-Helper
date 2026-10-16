@@ -168,16 +168,15 @@ class QuickFixControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testRepairOrphansWithInvalidCsrfReturns419OrRedirect(): void
+    public function testRepairOrphansWithInvalidCsrfIsForbidden(): void
     {
         $this->client->loginUser($this->testUser);
         $this->client->request('POST', '/quick-fix/repair/orphans', [
             '_token' => 'invalid-token',
         ]);
 
-        // Symfony IsCsrfTokenValid attribute returns 419 or redirect on invalid token
-        $statusCode = $this->client->getResponse()->getStatusCode();
-        $this->assertContains($statusCode, [Response::HTTP_FOUND, 419]);
+        // A failed #[IsCsrfTokenValid] is a 403 (ReauthEntryPoint), not a login redirect.
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // =========================================================================
@@ -263,15 +262,14 @@ class QuickFixControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testRepairAllWithInvalidCsrfReturnsErrorStatus(): void
+    public function testRepairAllWithInvalidCsrfIsForbidden(): void
     {
         $this->client->loginUser($this->testUser);
         $this->client->request('POST', '/quick-fix/repair/all', [
             '_token' => 'bad-token',
         ]);
 
-        $statusCode = $this->client->getResponse()->getStatusCode();
-        $this->assertContains($statusCode, [Response::HTTP_FOUND, 419]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // =========================================================================

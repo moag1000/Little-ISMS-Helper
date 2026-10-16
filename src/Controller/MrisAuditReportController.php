@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\PdfLocaleTrait;
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
@@ -38,6 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Bewertung. Audit-relevant sind die Einzeldimensionen.
  */
 #[IsGranted('ROLE_AUDITOR')]
+#[RequiresModule('mris')]
 final class MrisAuditReportController extends AbstractController
 {
     use PdfLocaleTrait;

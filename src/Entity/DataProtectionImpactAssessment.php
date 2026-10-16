@@ -234,6 +234,8 @@ class DataProtectionImpactAssessment
 
     /**
      * Safeguards, security measures, and mechanisms (ISO 27001 controls)
+     *
+     * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'dpia_control')]

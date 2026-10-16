@@ -10,6 +10,7 @@ use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\Attributes\Test;
@@ -26,6 +27,8 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class SupplierControllerTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
@@ -460,7 +463,7 @@ class SupplierControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/supplier/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->testSupplier->getId()]]));
+        ], json_encode(['ids' => [$this->testSupplier->getId()], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -487,7 +490,7 @@ class SupplierControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/supplier/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseIsSuccessful();
 
@@ -503,7 +506,7 @@ class SupplierControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/supplier/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => []]));
+        ], json_encode(['ids' => [], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -540,7 +543,7 @@ class SupplierControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/supplier/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseIsSuccessful();
 
@@ -550,9 +553,11 @@ class SupplierControllerTest extends WebTestCase
         $this->assertArrayHasKey('errors', $response);
 
         // Clean up
-        $this->entityManager->remove($otherSupplier);
-        $this->entityManager->remove($otherTenant);
-        $this->entityManager->flush();
+        // Raw SQL: the CSRF warm-up request rebooted the kernel (EM cleared) and
+        // the tenant filter hides the foreign row from find().
+        $conn = $this->entityManager->getConnection();
+        $conn->executeStatement('DELETE FROM supplier WHERE id = ?', [$otherSupplier->getId()]);
+        $conn->executeStatement('DELETE FROM tenant WHERE id = ?', [$otherTenant->getId()]);
     }
 
     #[Test]
@@ -564,7 +569,7 @@ class SupplierControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/supplier/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals(0, $response['deleted']);
@@ -604,8 +609,13 @@ class SupplierControllerTest extends WebTestCase
         // User should only see suppliers from their own tenant
 
         // Clean up
-        $this->entityManager->remove($otherSupplier);
-        $this->entityManager->remove($otherTenant);
+        // Re-fetch: the CSRF warm-up request rebooted the kernel (EM cleared).
+        foreach ([[Supplier::class, $otherSupplier->getId()], [Tenant::class, $otherTenant->getId()]] as [$class, $id]) {
+            $managed = $this->entityManager->find($class, $id);
+            if ($managed !== null) {
+                $this->entityManager->remove($managed);
+            }
+        }
         $this->entityManager->flush();
     }
 

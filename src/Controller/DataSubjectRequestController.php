@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Service\BulkDeleteService;
 use RuntimeException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
@@ -32,6 +34,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/data-subject-request', name: 'app_data_subject_request_')]
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('privacy')]
 class DataSubjectRequestController extends AbstractController
 {
     use \App\Controller\Trait\LocalizedFlashTrait;
@@ -370,6 +373,7 @@ class DataSubjectRequestController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * DataSubjectRequests are terminal — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/bulk-delete-check', name: 'bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -381,47 +385,24 @@ class DataSubjectRequestController extends AbstractController
 
     #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if ($this->checkModuleActive('privacy') instanceof Response) {
             return $this->json(['error' => 'Privacy module not active'], 403);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $dsr = $this->dataSubjectRequestService->findById((int) $id);
-                if (!$dsr) {
-                    $errors[] = "DataSubjectRequest ID $id not found";
-                    continue;
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'DataSubjectRequest',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->dataSubjectRequestService->findById($id),
+            deleter: function (object $dsr): void {
+                if ($dsr instanceof DataSubjectRequest) {
+                    $this->dataSubjectRequestService->delete($dsr);
                 }
-                if ($tenant && $dsr->getTenant() !== $tenant) {
-                    $errors[] = "DataSubjectRequest ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->dataSubjectRequestService->delete($dsr);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting DataSubjectRequest ID $id: " . $e->getMessage();
-            }
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted data subject requests deleted successfully",
-        ]);
+            },
+        );
     }
 
     /**

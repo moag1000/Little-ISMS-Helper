@@ -12,12 +12,15 @@ use App\Repository\RiskRepository;
 use App\Service\RiskService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\Attributes\Test;
 
 class RiskControllerTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
@@ -804,7 +807,7 @@ class RiskControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/risk/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->testRisk->getId()]]));
+        ], json_encode(['ids' => [$this->testRisk->getId()], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -846,7 +849,7 @@ class RiskControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/risk/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseIsSuccessful();
 
@@ -876,7 +879,7 @@ class RiskControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/risk/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => []]));
+        ], json_encode(['ids' => [], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 

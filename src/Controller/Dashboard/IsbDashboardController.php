@@ -6,6 +6,7 @@ namespace App\Controller\Dashboard;
 
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -37,6 +38,7 @@ final class IsbDashboardController extends AbstractController
         private readonly RoleDashboardService $roleDashboardService,
         private readonly TisaxMaturityAssessmentService $tisaxAssessment,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -52,8 +54,7 @@ final class IsbDashboardController extends AbstractController
 
         // TISAX IS-tier aggregate — ISB scope covers information_security chapters only
         $tisaxAggregate = null;
-        $settings = $tenant->getSettings() ?? [];
-        if ($settings['modules']['tisax'] ?? true) {
+        if ($this->moduleConfiguration->isModuleActive('tisax')) {
             $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
             if ($framework !== null) {
                 $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);

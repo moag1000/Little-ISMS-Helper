@@ -480,7 +480,8 @@
                 </div>
             {% endif %}
 
-            {# CRITICAL-05: BCM Impact Analysis #}
+            {# CRITICAL-05: BCM Impact Analysis — ISO 22301, bcm module only #}
+            {% if is_module_active('bcm') %}
             <div class="detail-section">
                 <h3 class="h5"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'incident.section.bcm_impact'|trans({}, 'incident') }}</h3>
 
@@ -568,6 +569,7 @@
                     </form>
                 {% endif %}
             </div>
+            {% endif %}
 
             {# Data Reuse: Realized Risks #}
             {% if incident.realizedRisks is defined and incident.realizedRisks|length > 0 %}

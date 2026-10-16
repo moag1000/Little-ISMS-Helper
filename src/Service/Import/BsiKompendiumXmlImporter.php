@@ -208,7 +208,9 @@ final class BsiKompendiumXmlImporter
 
             if ($persist && $result['created'] % 100 === 0) {
                 $this->entityManager->flush();
-                $this->entityManager->clear(ComplianceRequirement::class);
+                // ORM 3: clear() detaches the whole identity map (the old
+                // class argument was ignored); the framework is reloaded below.
+                $this->entityManager->clear();
                 // Framework neu laden nach clear()
                 $framework = $this->frameworkRepository->findOneBy(['code' => self::SOURCE_FRAMEWORK_CODE]);
                 if (!$framework instanceof ComplianceFramework) {
