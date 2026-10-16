@@ -841,24 +841,9 @@ final class PolicySectionApprovalService
         if ($this->userRepository === null) {
             return false;
         }
-        $candidates = $this->userRepository->findByRole('ROLE_DPO');
-        foreach ($candidates as $user) {
-            if (!$user instanceof User) {
-                continue;
-            }
-            // A user "belongs" to the tenant when the User entity carries
-            // the same Tenant reference. Custom-role-only DPOs are also
-            // covered because findByRole() inspects the JSON `roles` field.
-            if (method_exists($user, 'getTenant') && $user->getTenant() === $tenant) {
-                return true;
-            }
-            // Fall through: when the User entity does not expose getTenant
-            // (older fixtures), assume the role match is enough.
-            if (!method_exists($user, 'getTenant')) {
-                return true;
-            }
-        }
-        return false;
+        // Tenant-scoped lookup: a DPO appointed in another organisation does
+        // not count for this tenant.
+        return $this->userRepository->findByRoleInTenant('ROLE_DPO', $tenant) !== [];
     }
 
     /**

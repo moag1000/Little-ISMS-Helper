@@ -472,7 +472,7 @@ HELP
 
         // BACKLOG: Send escalation notification to users with $escalationRole.
         // Requires injecting EmailNotificationService into this command and querying
-        // UserRepository::findByRole($escalationRole) to resolve recipients.
+        // UserRepository::findByRoleInTenant($escalationRole, $workflowInstance->getTenant()).
         // EmailNotificationService::sendGenericNotification() is the target method.
         // Not implemented here to avoid constructor changes without full test coverage.
 

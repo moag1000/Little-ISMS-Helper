@@ -284,7 +284,7 @@ class IncidentController extends AbstractController
 
             // Send notification for high/critical severity incidents
             if (in_array($incident->getSeverity(), [IncidentSeverity::High, IncidentSeverity::Critical])) {
-                $admins = $this->userRepository->findByRole('ROLE_ADMIN');
+                $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $incident->getTenant());
                 $this->emailNotificationService->sendIncidentNotification($incident, $admins);
             }
 
@@ -501,7 +501,7 @@ class IncidentController extends AbstractController
 
             // Send notification if status changed
             if ($originalStatus !== $incident->getStatus()) {
-                $admins = $this->userRepository->findByRole('ROLE_ADMIN');
+                $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $incident->getTenant());
                 $changeDescription = "Status changed from {$originalStatus?->value} to {$incident->getStatus()?->value}";
                 $this->emailNotificationService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
             }

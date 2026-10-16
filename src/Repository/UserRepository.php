@@ -125,27 +125,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Find users by role
-     */
-    public function findByRole(string $role): array
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.roles LIKE :role')
-            ->setParameter('role', '%"' . $role . '"%')
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Find active users carrying the given role string within a tenant.
      *
-     * Used by Policy-Wizard step partials (DPO-picker, BCM-Officer-picker,
-     * approver-picker) so the dropdowns are scoped to the run's tenant.
+     * This is the ONLY role-based user lookup: recipients and approvers are
+     * always resolved inside the tenant that owns the record being notified
+     * about. The former unscoped `findByRole()` selected users across every
+     * organisation and leaked tenant data into other organisations' inboxes,
+     * so it was removed.
+     *
+     * A null / unresolvable tenant yields an empty list instead of "all
+     * tenants": a record without an owning tenant has no legitimate
+     * recipient pool, and falling back to a global query would recreate the
+     * cross-tenant leak.
      *
      * @param string                          $role   Symfony role string (e.g. 'ROLE_DPO')
-     * @param \App\Entity\Tenant|int|null     $tenant Tenant entity, id or null for global
+     * @param \App\Entity\Tenant|int|null     $tenant Tenant entity or id; null → []
      *
      * @return list<User>
      */
@@ -158,21 +152,52 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             $tenantId = $tenant;
         }
 
+        if ($tenantId === null) {
+            return [];
+        }
+
         $qb = $this->createQueryBuilder('u')
             ->andWhere('u.roles LIKE :role')
             ->andWhere('u.isActive = :active')
             ->setParameter('role', '%"' . $role . '"%')
             ->setParameter('active', true)
             ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC');
-
-        if ($tenantId !== null) {
-            $qb->andWhere('u.tenant = :tenantId')
-               ->setParameter('tenantId', $tenantId);
-        }
+            ->addOrderBy('u.firstName', 'ASC')
+            ->andWhere('u.tenant = :tenantId')
+            ->setParameter('tenantId', $tenantId);
 
         /** @var list<User> $rows */
         $rows = $qb->getQuery()->getResult();
+        return $rows;
+    }
+
+    /**
+     * Resolve explicitly configured approver/recipient user ids, restricted
+     * to one tenant. Workflow steps store plain user ids; without the tenant
+     * restriction an id pointing at another organisation's user would make
+     * that user a recipient of this organisation's data.
+     *
+     * @param array<int|string> $ids
+     * @param \App\Entity\Tenant|int|null $tenant Tenant entity or id; null → []
+     *
+     * @return list<User>
+     */
+    public function findByIdsInTenant(array $ids, mixed $tenant): array
+    {
+        $tenantId = $tenant instanceof \App\Entity\Tenant ? $tenant->getId() : (is_int($tenant) ? $tenant : null);
+        $ids = array_values(array_filter(array_map('intval', $ids), static fn(int $id): bool => $id > 0));
+        if ($tenantId === null || $ids === []) {
+            return [];
+        }
+
+        /** @var list<User> $rows */
+        $rows = $this->createQueryBuilder('u')
+            ->andWhere('u.id IN (:ids)')
+            ->andWhere('u.tenant = :tenantId')
+            ->setParameter('ids', $ids)
+            ->setParameter('tenantId', $tenantId)
+            ->getQuery()
+            ->getResult();
         return $rows;
     }
 

@@ -279,7 +279,7 @@ class PolicySectionApprovalServiceVetoTest extends TestCase
         $tenant->method('getSettings')->willReturn(['org' => ['is_gdpr_subject' => false]]);
 
         // No users carrying ROLE_DPO at all.
-        $this->userRepo->method('findByRole')->willReturn([]);
+        $this->userRepo->method('findByRoleInTenant')->willReturn([]);
 
         $this->auditLogger->expects(self::once())->method('logCustom');
 
@@ -301,7 +301,7 @@ class PolicySectionApprovalServiceVetoTest extends TestCase
         $tenant = $this->createMock(Tenant::class);
         $tenant->method('getId')->willReturn(92);
         $tenant->method('getSettings')->willReturn(['org' => ['is_gdpr_subject' => true]]);
-        $this->userRepo->method('findByRole')->willReturn([]);
+        $this->userRepo->method('findByRoleInTenant')->willReturn([]);
 
         $this->auditLogger->expects(self::never())->method('logCustom');
 
