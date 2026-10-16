@@ -392,35 +392,22 @@ class UserManagementController extends AbstractController
     #[IsCsrfTokenValid('user_management_export_dispatch')]
     public function exportDispatch(
         Request $request,
-        \App\Service\Job\JobStatusService $jobStatusService,
-        \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\AsyncJobDispatcher $asyncJobDispatcher,
         \App\Service\Job\JobTenantScope $jobTenantScope,
         TranslatorInterface $translator,
     ): Response {
-        $jobArgs = $jobTenantScope->argsForCurrentUser(); // captured now: the job has no request
-
-        $jobId = $jobStatusService->create('user_management.export', [
-            '_label' => $translator->trans('user.export.progress_title', [], 'user'),
-            '_subtitle' => $translator->trans('user.export.progress_subtitle', [], 'user'),
-            '_download_label' => $translator->trans('user.export.download_button', [], 'user'),
-        ]);
-        $jobStatusService->updatePayload($jobId, [
-            '_download_url' => $this->generateUrl('user_management_export_download', ['id' => $jobId]),
-        ]);
-
-        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
-            'id'     => $jobId,
-            'return' => $this->generateUrl('user_management_index'),
-        ], Response::HTTP_SEE_OTHER);
-
-        // Dispatch through the configured runner (in_request by default —
-        // runs in this request, no worker needed; messenger mode queues it).
-        return $jobDispatcher->dispatch(
-            \App\Job\ExportUsersJob::class,
-            $jobArgs,
-            $jobId,
-            $progressResponse,
-            $request->getSession(),
+        return $asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: \App\Job\ExportUsersJob::class,
+            jobArgs: $jobTenantScope->argsForCurrentUser(),
+            jobName: 'user_management.export',
+            payload: [
+                '_label' => $translator->trans('user.export.progress_title', [], 'user'),
+                '_subtitle' => $translator->trans('user.export.progress_subtitle', [], 'user'),
+                '_download_label' => $translator->trans('user.export.download_button', [], 'user'),
+            ],
+            returnUrl: $this->generateUrl('user_management_index'),
+            downloadRoute: 'user_management_export_download',
         );
     }
 

@@ -119,6 +119,7 @@ The detach helper is shared with the setup-wizard via
        jobName: 'admin.my_job',
        payload: ['_label' => '…', '_subtitle' => '…'],
        returnUrl: $this->generateUrl('admin_my_index'),
+       downloadRoute: 'admin_my_download', // exports: stores `_download_url` with the job id
    );
    ```
    For the rare case where you need direct template rendering (non-Turbo /

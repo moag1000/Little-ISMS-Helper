@@ -87,6 +87,11 @@ final readonly class AsyncJobDispatcher
      * @param array<string,mixed>             $payload Stored on status record
      * @param string                          $returnUrl URL the progress
      *     page's "Back" button returns to (typically the index route).
+     * @param string|null                     $downloadRoute Route of the
+     *     result download; stored as `_download_url` with the freshly-minted
+     *     job id (+ `$downloadRouteParams`) so export endpoints need no
+     *     payload patching of their own.
+     * @param array<string,mixed>             $downloadRouteParams
      */
     public function dispatchWithProgress(
         Request $request,
@@ -95,8 +100,15 @@ final readonly class AsyncJobDispatcher
         string $jobName,
         array $payload = [],
         string $returnUrl = '',
+        ?string $downloadRoute = null,
+        array $downloadRouteParams = [],
     ): Response {
         $jobId = $this->jobStatusService->create($jobName, $payload);
+        if ($downloadRoute !== null) {
+            $this->jobStatusService->updatePayload($jobId, [
+                '_download_url' => $this->urlGenerator->generate($downloadRoute, ['id' => $jobId] + $downloadRouteParams),
+            ]);
+        }
 
         $params = ['id' => $jobId];
         if ($returnUrl !== '') {

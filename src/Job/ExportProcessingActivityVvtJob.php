@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Job;
 
+use App\Exception\Tenant\TenantNotFoundException;
+use App\Service\Job\JobTenantScope;
 use App\Service\ProcessingActivityService;
 use Symfony\Component\HttpKernel\KernelInterface;
 use App\Util\CsvSanitizer;
@@ -27,13 +29,17 @@ final class ExportProcessingActivityVvtJob implements AsyncJobInterface
     public function __construct(
         private readonly ProcessingActivityService $processingActivityService,
         private readonly KernelInterface $kernel,
+        private readonly JobTenantScope $tenantScope,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
         $ctx->message('Loading VVT dataset…');
-        $exportData = $this->processingActivityService->generateVVTExport();
+        // The VVT is per organisation (GDPR Art. 30) — no instance-wide variant.
+        $tenant = $this->tenantScope->resolve($ctx)
+            ?? throw new TenantNotFoundException(null, 'The VVT export needs an organisation scope.');
+        $exportData = $this->processingActivityService->generateVVTExport($tenant);
         /** @var list<array<string, mixed>> $activities */
         $activities = $exportData['processing_activities'] ?? [];
         $total = count($activities);

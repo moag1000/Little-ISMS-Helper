@@ -124,6 +124,26 @@ final class ExportJobsTenantScopeTest extends KernelTestCase
         self::assertStringNotContainsString('# MfaToken', $csv);
     }
 
+    #[Test]
+    public function exportVvtJobOnlyWritesActivitiesOfTheDispatchingTenant(): void
+    {
+        [$tenantA, $tenantB] = $this->twoTenants();
+        foreach ([[$tenantA, 'OwnActivity'], [$tenantB, 'ForeignActivity']] as [$tenant, $name]) {
+            $activity = new \App\Entity\ProcessingActivity();
+            $activity->setName($name . '_' . uniqid());
+            $activity->setLegalBasis('consent');
+            $activity->setStatus(\App\Enum\ProcessingActivityStatus::Published);
+            $activity->setTenant($tenant);
+            $this->em->persist($activity);
+        }
+        $this->em->flush();
+
+        $csv = $this->runJob(\App\Job\ExportProcessingActivityVvtJob::class, [JobTenantScope::ARG_TENANT_ID => $tenantA->getId()]);
+
+        self::assertStringContainsString('OwnActivity', $csv);
+        self::assertStringNotContainsString('ForeignActivity', $csv);
+    }
+
     /**
      * @param class-string<AsyncJobInterface> $jobClass
      * @param array<string, mixed>           $args
@@ -147,6 +167,8 @@ final class ExportJobsTenantScopeTest extends KernelTestCase
         yield 'risks, unknown tenant' => [ExportRisksJob::class, [JobTenantScope::ARG_TENANT_ID => 999999999]];
         yield 'data, no scope' => [ExportDataJob::class, ['entities' => [User::class], 'format' => 'csv']];
         yield 'users, allTenants not strictly true' => [ExportUsersJob::class, [JobTenantScope::ARG_ALL_TENANTS => '1']];
+        yield 'vvt, no scope' => [\App\Job\ExportProcessingActivityVvtJob::class, []];
+        yield 'vvt, instance-wide (VVT is per organisation)' => [\App\Job\ExportProcessingActivityVvtJob::class, [JobTenantScope::ARG_ALL_TENANTS => true]];
     }
 
     /**

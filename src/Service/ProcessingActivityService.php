@@ -7,6 +7,7 @@ namespace App\Service;
 use DateTime;
 use DateTimeInterface;
 use App\Entity\ProcessingActivity;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\ProcessingActivityStatus;
 use App\Lifecycle\LifecycleTransitionInterface;
@@ -307,9 +308,10 @@ final class ProcessingActivityService
      *
      * Returns array suitable for PDF/CSV export per Art. 30 requirements
      */
-    public function generateVVTExport(): array
+    public function generateVVTExport(?Tenant $tenant = null): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        // Async jobs pass their tenant explicitly; TenantContext is request-bound.
+        $tenant ??= $this->tenantContext->getCurrentTenant();
         $processingActivities = $this->processingActivityRepository->findActiveByTenant($tenant);
 
         $export = [

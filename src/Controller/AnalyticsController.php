@@ -269,8 +269,7 @@ class AnalyticsController extends AbstractController
     public function exportDataDispatch(
         Request $request,
         string $type,
-        \App\Service\Job\JobStatusService $jobStatusService,
-        \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\AsyncJobDispatcher $asyncJobDispatcher,
         \App\Service\Job\JobTenantScope $jobTenantScope,
         TranslatorInterface $translator,
     ): Response {
@@ -278,33 +277,20 @@ class AnalyticsController extends AbstractController
             throw $this->createNotFoundException(sprintf('Unsupported analytics export type "%s".', $type));
         }
 
-        $jobArgs = ['type' => $type] + $jobTenantScope->argsForCurrentUser(); // captured now: the job has no request
-
-        $jobId = $jobStatusService->create('analytics.export', [
-            'type' => $type,
-            '_label' => $translator->trans('analytics.export.progress_title', [], 'analytics'),
-            '_subtitle' => $translator->trans('analytics.export.progress_subtitle', [], 'analytics'),
-            '_download_label' => $translator->trans('analytics.export.download_button', [], 'analytics'),
-        ]);
-        // Patch the download URL once the UUID is known (chicken-and-egg
-        // with JobStatusService::create — UUID is minted inside the method).
-        $jobStatusService->updatePayload($jobId, [
-            '_download_url' => $this->generateUrl('app_analytics_export_download', ['id' => $jobId, 'type' => $type]),
-        ]);
-
-        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
-            'id'     => $jobId,
-            'return' => $this->generateUrl('app_analytics_dashboard'),
-        ], Response::HTTP_SEE_OTHER);
-
-        // Dispatch through the configured runner (in_request by default —
-        // runs in this request, no worker needed; messenger mode queues it).
-        return $jobDispatcher->dispatch(
-            \App\Job\ExportAnalyticsJob::class,
-            $jobArgs,
-            $jobId,
-            $progressResponse,
-            $request->getSession(),
+        return $asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: \App\Job\ExportAnalyticsJob::class,
+            jobArgs: ['type' => $type] + $jobTenantScope->argsForCurrentUser(),
+            jobName: 'analytics.export',
+            payload: [
+                'type' => $type,
+                '_label' => $translator->trans('analytics.export.progress_title', [], 'analytics'),
+                '_subtitle' => $translator->trans('analytics.export.progress_subtitle', [], 'analytics'),
+                '_download_label' => $translator->trans('analytics.export.download_button', [], 'analytics'),
+            ],
+            returnUrl: $this->generateUrl('app_analytics_dashboard'),
+            downloadRoute: 'app_analytics_export_download',
+            downloadRouteParams: ['type' => $type],
         );
     }
 
