@@ -101,7 +101,7 @@ class ThreatIntelligence
     #[ORM\Column(length: 50)]
     #[Groups(['threat:read', 'threat:write'])]
     #[Assert\Choice(choices: ['new', 'analyzing', 'mitigated', 'monitoring', 'closed'])]
-    private ?string $status = 'new';
+    private string $status = 'new';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -356,7 +356,7 @@ class ThreatIntelligence
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?ThreatIntelligenceStatus
     {
-        return $this->status === null ? null : ThreatIntelligenceStatus::tryFrom($this->status);
+        return ThreatIntelligenceStatus::tryFrom($this->status);
     }
 
     public function getDetectionDate(): ?DateTimeInterface

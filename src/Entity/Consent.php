@@ -91,6 +91,7 @@ class Consent
      * Example: ProcessingActivity = "Newsletter", purposes = ['marketing', 'profiling']
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    // @phpstan-ignore property.unusedType (nullable column: Doctrine hydrates NULL from existing rows)
     private ?array $purposes = [];
 
     // ═══════════════════════════════════════════════════════════
@@ -149,6 +150,7 @@ class Consent
      * Example: {"ip": "192.168.1.1", "user_agent": "...", "form_version": "1.2"}
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    // @phpstan-ignore property.unusedType (nullable column: Doctrine hydrates NULL from existing rows)
     private ?array $proofMetadata = [];
 
     // ═══════════════════════════════════════════════════════════
@@ -177,7 +179,7 @@ class Consent
         choices: ['active', 'revoked', 'expired', 'pending_verification', 'rejected'],
         message: 'consent.validation.status_invalid'
     )]
-    private ?string $status = 'pending_verification';
+    private string $status = 'pending_verification';
 
     #[ORM\Version]
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
@@ -461,7 +463,7 @@ class Consent
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?ConsentStatus
     {
-        return $this->status === null ? null : ConsentStatus::from($this->status);
+        return ConsentStatus::from($this->status);
     }
 
     public function getLockVersion(): int

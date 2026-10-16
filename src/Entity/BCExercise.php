@@ -229,7 +229,7 @@ class BCExercise
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['planned', 'in_progress', 'completed', 'cancelled'])]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
-    private ?string $status = 'planned';
+    private string $status = 'planned';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -680,7 +680,7 @@ class BCExercise
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?BCExerciseStatus
     {
-        return $this->status !== null ? BCExerciseStatus::tryFrom($this->status) : null;
+        return BCExerciseStatus::tryFrom($this->status);
     }
 
     public function getResults(): ?string

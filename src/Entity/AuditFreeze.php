@@ -185,7 +185,7 @@ class AuditFreeze
     }
 
     /**
-     * @param list<string> $frameworkCodes
+     * @param array<array-key, mixed> $frameworkCodes non-string, empty and duplicate entries are dropped
      */
     public function setFrameworkCodes(array $frameworkCodes): static
     {

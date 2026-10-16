@@ -51,8 +51,6 @@ use Symfony\Component\Workflow\Registry;
  *
  * Rules that reference workflows not yet registered are silently skipped.
  * Auto-transitions fire best-effort: any exception is swallowed.
- *
- * @implements FieldCompletionAutoTransitionInterface
  */
 #[AsDoctrineListener(event: Events::postUpdate)]
 final class FieldCompletionAutoTransition implements FieldCompletionAutoTransitionInterface
@@ -184,7 +182,10 @@ final class FieldCompletionAutoTransition implements FieldCompletionAutoTransiti
      *   - value_from:  read expected value from another property on the entity
      *                  (takes precedence over `value` when both present)
      *
-     * @param array{field: string, comparison: string, value?: mixed, value_from?: string} $condition
+     * Keys are optional in the type because the tree comes from YAML config;
+     * a leaf missing `field` or `comparison` is malformed and evaluates false.
+     *
+     * @param array{field?: string, comparison?: string, value?: mixed, value_from?: string} $condition
      */
     private function evaluateSingleCondition(object $entity, array $condition): bool
     {

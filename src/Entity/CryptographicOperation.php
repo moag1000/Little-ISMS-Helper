@@ -85,7 +85,7 @@ class CryptographicOperation
     #[ORM\Column(length: 50)]
     #[Groups(['crypto:read', 'crypto:write'])]
     #[Assert\Choice(choices: ['success', 'failure', 'pending'])]
-    private ?string $status = 'success';
+    private string $status = 'success';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['crypto:read', 'crypto:write'])]
@@ -225,7 +225,7 @@ class CryptographicOperation
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?CryptographicOperationStatus
     {
-        return $this->status === null ? null : CryptographicOperationStatus::tryFrom($this->status);
+        return CryptographicOperationStatus::tryFrom($this->status);
     }
 
     public function getErrorMessage(): ?string

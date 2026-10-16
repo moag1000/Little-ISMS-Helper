@@ -248,7 +248,7 @@ class InternalAudit
         choices: ['planned', 'conducted', 'reported', 'approved', 'rejected', 'closed', 'cancelled', 'in_progress', 'completed', 'postponed'],
         message: 'internal_audit.validation.status_invalid'
     )]
-    private ?string $status = 'planned';
+    private string $status = 'planned';
 
     #[ORM\Version]
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
@@ -696,7 +696,7 @@ public function __construct()
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?InternalAuditStatus
     {
-        return $this->status !== null ? InternalAuditStatus::tryFrom($this->status) : null;
+        return InternalAuditStatus::tryFrom($this->status);
     }
 
     public function getLockVersion(): int
@@ -1046,7 +1046,7 @@ public function __construct()
      */
     public function getStatusTone(): string
     {
-        return self::LIFECYCLE_STAGES[$this->status ?? 'planned']['tone'] ?? 'neutral';
+        return self::LIFECYCLE_STAGES[$this->status]['tone'] ?? 'neutral';
     }
 
     /**
@@ -1056,7 +1056,7 @@ public function __construct()
      */
     public function canTransitionTo(string $target): bool
     {
-        $current = $this->status ?? 'planned';
+        $current = $this->status;
         if (!isset(self::LIFECYCLE_STAGES[$current])) {
             return false;
         }
@@ -1072,7 +1072,7 @@ public function __construct()
      */
     public function getAllowedTransitions(): array
     {
-        $current = $this->status ?? 'planned';
+        $current = $this->status;
 
         return self::LIFECYCLE_STAGES[$current]['transitions'] ?? [];
     }

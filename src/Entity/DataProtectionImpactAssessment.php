@@ -946,7 +946,7 @@ class DataProtectionImpactAssessment
         $assessed = 0;
         foreach (self::SDM_PROTECTION_GOALS as $goal) {
             $entry = $assessment[$goal] ?? null;
-            $level = is_array($entry) ? ($entry['risk_level'] ?? null) : null;
+            $level = $entry['risk_level'] ?? null;
             if (is_string($level) && in_array($level, $valid, true)) {
                 $assessed++;
             }
@@ -965,7 +965,7 @@ class DataProtectionImpactAssessment
         $assessment = $this->sdmAssessment ?? [];
         $max = null;
         foreach ($assessment as $entry) {
-            $level = is_array($entry) ? ($entry['risk_level'] ?? null) : null;
+            $level = $entry['risk_level'] ?? null;
             if (!is_string($level) || !isset($order[$level])) {
                 continue;
             }

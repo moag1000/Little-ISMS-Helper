@@ -135,7 +135,7 @@ class Supplier
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['active', 'inactive', 'evaluation', 'terminated'])]
     #[Groups(['supplier:read', 'supplier:write'])]
-    private ?string $status = 'evaluation';
+    private string $status = 'evaluation';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -393,7 +393,7 @@ class Supplier
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?SupplierStatus
     {
-        return $this->status === null ? null : SupplierStatus::tryFrom($this->status);
+        return SupplierStatus::tryFrom($this->status);
     }
 
     /**

@@ -149,7 +149,7 @@ class Training
         choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],
         message: 'training.validation.status_invalid'
     )]
-    private ?string $status = 'planned';
+    private string $status = 'planned';
 
     /**
      * Optimistic-locking version field for Symfony Workflow / LifecycleService.
@@ -314,7 +314,9 @@ public function __construct()
     public function getParticipations(): Collection
     {
         // Doctrine bypasses __construct() on hydration; lazy-init keeps
-        // reflection-based readers (AuditLogger, serializer) safe.
+        // reflection-based readers (AuditLogger, serializer) safe. PHPStan only
+        // sees the constructor initialising the property, hence the ignore.
+        // @phpstan-ignore nullCoalesce.initializedProperty (uninitialised when __construct() is bypassed)
         return $this->participations ??= new ArrayCollection();
     }
 
@@ -498,7 +500,7 @@ public function __construct()
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?TrainingStatus
     {
-        return $this->status === null ? null : TrainingStatus::tryFrom($this->status);
+        return TrainingStatus::tryFrom($this->status);
     }
 
     public function getDeliveryMethod(): ?string
@@ -581,7 +583,7 @@ public function __construct()
             return null;
         }
         foreach ($this->materialFiles as $idx => $entry) {
-            if (($entry['filename'] ?? null) === $filename) {
+            if ($entry['filename'] === $filename) {
                 $removed = $entry;
                 unset($this->materialFiles[$idx]);
                 $this->materialFiles = $this->materialFiles === [] ? null : array_values($this->materialFiles);

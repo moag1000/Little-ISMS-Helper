@@ -80,7 +80,7 @@ class RiskTreatmentPlan
         choices: ['planned', 'in_progress', 'completed', 'cancelled', 'on_hold'],
         message: 'risk_treatment_plan.validation.status_invalid'
     )]
-    private ?string $status = 'planned';
+    private string $status = 'planned';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -272,7 +272,7 @@ class RiskTreatmentPlan
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?RiskTreatmentPlanStatus
     {
-        return $this->status !== null ? RiskTreatmentPlanStatus::tryFrom($this->status) : null;
+        return RiskTreatmentPlanStatus::tryFrom($this->status);
     }
 
     public function getPriority(): ?string
