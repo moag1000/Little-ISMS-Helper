@@ -42,9 +42,9 @@
             {% endif %}
             {% if config.templateCount is defined %}
                 <span class="fa-industry-chip__desc">
-                    {%- if config.templateCount.controls is defined %}~{{ config.templateCount.controls }} Controls{% endif %}
-                    {%- if config.templateCount.risks is defined %} · {{ config.templateCount.risks }} Risiken{% endif %}
-                    {%- if config.templateCount.suppliers is defined %} · {{ config.templateCount.suppliers }} Lieferanten{% endif %}
+                    {%- if config.templateCount.controls is defined %}{{ 'ui.component.industry_chip.controls'|trans({'%count%': config.templateCount.controls}, 'ui') }}{% endif %}
+                    {%- if config.templateCount.risks is defined %} · {{ 'ui.component.industry_chip.risks'|trans({'%count%': config.templateCount.risks}, 'ui') }}{% endif %}
+                    {%- if config.templateCount.suppliers is defined %} · {{ 'ui.component.industry_chip.suppliers'|trans({'%count%': config.templateCount.suppliers}, 'ui') }}{% endif %}
                 </span>
             {% endif %}
         </span>

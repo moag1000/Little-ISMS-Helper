@@ -274,6 +274,8 @@ training.status	4
 training.type	4
 training_participation.status	1
 type	3
+ui.component.coverage_matrix.dimension	1
+ui.component.density_toggle	1
 ui.condition_builder.keyword	2
 user.profile.alva.position	1
 user.profile.alva.size	1

@@ -523,3 +523,89 @@ ui:
         tag_placeholder: 'Type and press Enter'
         tag_remove: 'Remove'
         duplicate_key: 'This key is already in use.'
+    # Aurora _fa_* macro texts (templates/_components)
+    component:
+        close: 'Close'
+        cancel: 'Cancel'
+        confirm: 'Confirm'
+        save: 'Save'
+        back: 'Back'
+        next: 'Next'
+        filter: 'Filter'
+        change: 'Change'
+        wizard: 'Wizard'
+        module: 'Module'
+        errors_count: '%count% errors'
+        step: 'Step %n%: %label%'
+        step_completed: 'Step %n%: %label% – completed'
+        api_key:
+            reveal: 'Reveal token'
+            revoke: 'Revoke'
+        modal:
+            type_to_confirm: 'Type <code>%phrase%</code> to confirm'
+        wizard_modal:
+            close: 'Close wizard'
+            steps: 'Wizard steps'
+            back_to_step: 'Back to step %n%: %label%'
+            back_aria: 'Back to the previous step'
+            next_aria: 'On to the next step'
+            validation: 'Please fill in all required fields before you continue.'
+            step_word: 'Step'
+            of: 'of'
+        coverage_matrix:
+            title: 'Framework coverage matrix'
+            snapshot: 'As of: %date%'
+            framework: 'Framework'
+            dimension:
+                implemented: 'Implemented'
+                effective: 'Effective'
+                maturity: 'Maturity'
+                gaps: 'Gaps'
+                recert: 'Re-cert'
+                trend: 'Trend'
+            cell: '%framework% · %dimension% · level %level% of 4'
+            empty: 'No frameworks active – activate them in the compliance area.'
+        density_toggle:
+            legend: 'Choose menu density'
+            basic: 'Basic'
+            standard: 'Standard'
+            expert: 'Expert'
+            basic_hint: '5–7 items · acronyms explained'
+            standard_hint: '10–12 items · balanced'
+            expert_hint: 'All items · maturity scores'
+            locked_by: 'Locked by: %name%'
+        glossary:
+            definition: 'Definition: %text%'
+            open: 'Open in glossary →'
+        maturity:
+            score: '%score% of 5 reached'
+            trend: 'trend %trend% vs. previous month'
+        mega_menu:
+            view_all: 'View all →'
+            view_all_count: 'View all %count% →'
+        onboarding:
+            hide: 'Hide'
+            later: 'Later'
+        persona_cockpit:
+            open: 'Open %label% cockpit'
+            cta: 'Open cockpit →'
+        reuse_roi:
+            cta: 'More in the reuse cockpit →'
+        audit_timeline:
+            label: 'Audit programme timeline'
+            audit_type: 'Audit type'
+        matrix_legend:
+            rag: 'RAG legend'
+            severity: 'Severity legend'
+            green: 'Green (≥80%)'
+            amber: 'Amber (40–79%)'
+            red: 'Red (<40%)'
+            low: 'Low (≤3)'
+            moderate: 'Moderate (≤6)'
+            medium: 'Medium (≤9)'
+            high: 'High (≤16)'
+            critical: 'Critical (>16)'
+        industry_chip:
+            controls: '~%count% controls'
+            risks: '%count% risks'
+            suppliers: '%count% suppliers'

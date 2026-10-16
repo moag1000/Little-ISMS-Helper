@@ -523,3 +523,89 @@ ui:
         tag_placeholder: 'Eingeben und mit Enter übernehmen'
         tag_remove: 'Entfernen'
         duplicate_key: 'Dieser Schlüssel ist bereits vergeben.'
+    # Aurora _fa_* macro texts (templates/_components)
+    component:
+        close: 'Schließen'
+        cancel: 'Abbrechen'
+        confirm: 'Bestätigen'
+        save: 'Speichern'
+        back: 'Zurück'
+        next: 'Weiter'
+        filter: 'Filter'
+        change: 'Änderung'
+        wizard: 'Assistent'
+        module: 'Modul'
+        errors_count: '%count% Fehler'
+        step: 'Schritt %n%: %label%'
+        step_completed: 'Schritt %n%: %label% – abgeschlossen'
+        api_key:
+            reveal: 'Token anzeigen'
+            revoke: 'Widerrufen'
+        modal:
+            type_to_confirm: 'Tippe <code>%phrase%</code> zum Bestätigen'
+        wizard_modal:
+            close: 'Assistent schließen'
+            steps: 'Assistent-Schritte'
+            back_to_step: 'Zurück zu Schritt %n%: %label%'
+            back_aria: 'Zurück zum vorherigen Schritt'
+            next_aria: 'Weiter zum nächsten Schritt'
+            validation: 'Bitte alle Pflichtfelder ausfüllen, bevor Sie fortfahren.'
+            step_word: 'Schritt'
+            of: 'von'
+        coverage_matrix:
+            title: 'Framework-Abdeckungsmatrix'
+            snapshot: 'Stand: %date%'
+            framework: 'Framework'
+            dimension:
+                implemented: 'Implementiert'
+                effective: 'Wirksam'
+                maturity: 'Reifegrad'
+                gaps: 'Lücken'
+                recert: 'Re-Zertifizierung'
+                trend: 'Trend'
+            cell: '%framework% · %dimension% · Stufe %level% von 4'
+            empty: 'Keine Frameworks aktiv – im Compliance-Bereich aktivieren.'
+        density_toggle:
+            legend: 'Menü-Dichte wählen'
+            basic: 'Basis'
+            standard: 'Standard'
+            expert: 'Experte'
+            basic_hint: '5–7 Einträge · Akronyme erklärt'
+            standard_hint: '10–12 Einträge · ausgewogen'
+            expert_hint: 'Alle Einträge · Reifegrad-Scores'
+            locked_by: 'Gesperrt durch: %name%'
+        glossary:
+            definition: 'Definition: %text%'
+            open: 'Im Glossar öffnen →'
+        maturity:
+            score: '%score% von 5 erreicht'
+            trend: 'Trend %trend% zum Vormonat'
+        mega_menu:
+            view_all: 'Alle anzeigen →'
+            view_all_count: 'Alle %count% anzeigen →'
+        onboarding:
+            hide: 'Ausblenden'
+            later: 'Später'
+        persona_cockpit:
+            open: '%label% – Cockpit öffnen'
+            cta: 'Zum Cockpit →'
+        reuse_roi:
+            cta: 'Mehr im Reuse-Cockpit →'
+        audit_timeline:
+            label: 'Audit-Programm-Zeitleiste'
+            audit_type: 'Audittyp'
+        matrix_legend:
+            rag: 'RAG-Legende'
+            severity: 'Schweregrad-Legende'
+            green: 'Grün (≥80 %)'
+            amber: 'Gelb (40–79 %)'
+            red: 'Rot (<40 %)'
+            low: 'Niedrig (≤3)'
+            moderate: 'Moderat (≤6)'
+            medium: 'Mittel (≤9)'
+            high: 'Hoch (≤16)'
+            critical: 'Kritisch (>16)'
+        industry_chip:
+            controls: '~%count% Controls'
+            risks: '%count% Risiken'
+            suppliers: '%count% Lieferanten'

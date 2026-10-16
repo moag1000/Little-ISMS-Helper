@@ -27,7 +27,7 @@
         <abbr title="{{ config.fullText }}{% if config.normRef is defined and config.normRef %} ({{ config.normRef }}){% endif %}">{{ config.acronym }}</abbr><sup class="fa-glossary-tooltip__indicator"
              tabindex="0"
              role="button"
-             aria-label="Definition: {{ config.fullText }}"
+             aria-label="{{ 'ui.component.glossary.definition'|trans({'%text%': config.fullText}, 'ui') }}"
              data-glossary-tooltip-target="indicator">?</sup>
         <span class="fa-glossary-tooltip__popover"
               role="tooltip"
@@ -42,7 +42,7 @@
                 <p class="fa-glossary-tooltip__def" data-glossary-tooltip-target="def">…</p>
             {% endif %}
             {% if config.glossaryHref is defined and config.glossaryHref %}
-                <a href="{{ config.glossaryHref }}" class="fa-glossary-tooltip__link">Im Glossar öffnen →</a>
+                <a href="{{ config.glossaryHref }}" class="fa-glossary-tooltip__link">{{ 'ui.component.glossary.open'|trans({}, 'ui') }}</a>
             {% endif %}
         </span>
     </span>
