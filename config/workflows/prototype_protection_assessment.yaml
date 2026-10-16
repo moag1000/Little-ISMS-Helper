@@ -22,37 +22,37 @@ framework:
                     to: in_review
                     metadata:
                         roles: [ROLE_MANAGER]
-                        module: prototype_protection
+                        module: tisax
                 approve:
                     from: in_review
                     to: approved
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
                         four_eyes: true
-                        module: prototype_protection
+                        module: tisax
                 reject:
                     from: in_review
                     to: rejected
                     metadata:
                         roles: [ROLE_CISO, ROLE_MANAGER]
                         reason_required: true
-                        module: prototype_protection
+                        module: tisax
                 expire:
                     from: approved
                     to: expired
                     metadata:
                         roles: [ROLE_MANAGER]
                         reason_required: true
-                        module: prototype_protection
+                        module: tisax
                 rework:
                     from: rejected
                     to: draft
                     metadata:
                         roles: [ROLE_MANAGER]
-                        module: prototype_protection
+                        module: tisax
                 renew:
                     from: expired
                     to: draft
                     metadata:
                         roles: [ROLE_MANAGER]
-                        module: prototype_protection
+                        module: tisax

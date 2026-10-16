@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Form\Admin;
 
 use App\Form\SectionMapInterface;
+use App\Service\ModuleConfigurationService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -31,6 +33,10 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
  */
 final class WorkflowStepOverlayType extends AbstractType implements SectionMapInterface
 {
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -97,13 +103,14 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
                 'mapped' => false,
                 'attr' => ['class' => 'workflow-overlay-toggle'],
             ])
-            ->add('module', TextType::class, [
+            ->add('module', ChoiceType::class, [
                 'label' => 'admin.workflows.form.module',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'privacy',
-                    'autocomplete' => 'off',
-                ],
+                // Only keys from config/modules.yaml are selectable: an unknown key
+                // would make ModuleGateGuard block the transition permanently.
+                'choices' => $this->moduleChoices(),
+                'choice_translation_domain' => false,
+                'placeholder' => '—',
                 'help' => 'admin.workflows.form.module_help',
             ]);
     }
@@ -126,5 +133,19 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
             'approval'       => ['reasonRequired', 'reasonRequiredOverride', 'fourEyes', 'fourEyesOverride'],
             'advanced'       => ['autoProgressConditions', 'module'],
         ];
+    }
+
+    /**
+     * @return array<string, string> label => module key
+     */
+    private function moduleChoices(): array
+    {
+        $choices = [];
+        foreach ($this->moduleConfiguration->getAllModules() as $key => $module) {
+            $name = is_array($module) && isset($module['name']) ? (string) $module['name'] : (string) $key;
+            $choices[sprintf('%s (%s)', $name, $key)] = (string) $key;
+        }
+
+        return $choices;
     }
 }
