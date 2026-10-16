@@ -12,6 +12,7 @@ use App\Repository\AnswerLibraryEntryRepository;
 use App\Service\AnswerLibraryService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -196,7 +197,7 @@ class AnswerLibraryController extends AbstractController
      * POST-only to prevent accidental GET-triggered reuse via browser prefetch.
      */
     #[Route('/{id}/use', name: 'use', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsCsrfTokenValid('answer_library_use_{id}')]
+    #[IsCsrfTokenValid(new Expression('"answer_library_use_" ~ args["entry"].getId()'))]
     public function use(Request $request, AnswerLibraryEntry $entry): Response
     {
         if ($redirect = $this->checkModuleActive('answer_library')) {
@@ -224,9 +225,9 @@ class AnswerLibraryController extends AbstractController
     // Delete
     // ─────────────────────────────────────────────────────────────────────────
 
-    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST', 'DELETE'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_MANAGER')]
-    #[IsCsrfTokenValid('delete_{id}')]
+    #[IsCsrfTokenValid(new Expression('"answer_library_delete_" ~ args["entry"].getId()'))]
     public function delete(Request $request, AnswerLibraryEntry $entry): Response
     {
         if ($redirect = $this->checkModuleActive('answer_library')) {

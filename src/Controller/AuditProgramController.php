@@ -15,6 +15,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -248,7 +249,7 @@ class AuditProgramController extends AbstractController
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    #[IsCsrfTokenValid('delete-audit-program-{id}')]
+    #[IsCsrfTokenValid(new Expression('"delete-audit-program-" ~ args["auditProgram"].getId()'))]
     public function delete(Request $request, AuditProgram $auditProgram): Response
     {
         if ($redirect = $this->checkModuleActive('audits')) {
@@ -256,11 +257,12 @@ class AuditProgramController extends AbstractController
         }
 
         $name = $auditProgram->getName();
+        $id = $auditProgram->getId();
 
         $this->entityManager->remove($auditProgram);
         $this->entityManager->flush();
 
-        $this->auditLogger->logDelete('AuditProgram', null, ['name' => $name]);
+        $this->auditLogger->logDelete('AuditProgram', $id, ['name' => $name]);
         $this->flashSuccess('audit_program.success.deleted');
 
         return $this->redirectToRoute('app_audit_program_index', ['_locale' => $request->getLocale()]);
