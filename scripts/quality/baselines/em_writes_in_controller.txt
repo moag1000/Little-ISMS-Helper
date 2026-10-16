@@ -50,7 +50,7 @@ src/Controller/Admin/Notification/NotificationRuleController.php:164
 src/Controller/Admin/Notification/NotificationRuleController.php:206
 src/Controller/Admin/Notification/NotificationRuleController.php:238
 src/Controller/Admin/Notification/NotificationRuleController.php:239
-src/Controller/Admin/Notification/NotificationTemplateController.php:90
+src/Controller/Admin/Notification/NotificationTemplateController.php:92
 src/Controller/Admin/RiskApprovalConfigController.php:86
 src/Controller/Admin/RiskApprovalConfigController.php:87
 src/Controller/Admin/SampleDataController.php:198
