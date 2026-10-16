@@ -155,6 +155,7 @@ ui:
         confirm: 'Bestätigen'
         cancel: 'Abbrechen'
         apply: 'Übernehmen'
+        choose: '– bitte wählen –'
         close: 'Schließen'
         are_you_sure: 'Sind Sie sicher?'
         discard_changes: 'Ungespeicherte Änderungen verwerfen?'
@@ -212,7 +213,12 @@ ui:
         budget_simulator:
             label: '%budget% von %total% Personentagen · deckt %covered% von %count% Anforderungen ab'
         bulk_actions:
-            assign_not_available: 'Zuweisen über die Massenaktion ist noch nicht verfügbar – bitte die Zeilenaktion verwenden.'
+            assign_error: 'Zuweisen fehlgeschlagen'
+            assign_inactive: 'Die gewählte Person ist nicht aktiv.'
+            assign_no_assignees: 'Keine aktiven Benutzer im Mandanten zum Zuweisen gefunden.'
+            assign_partial: '%changed% zugewiesen, %rejected% ohne Berechtigung übersprungen'
+            assign_prompt: 'Zuständige Person für %count% Einträge:'
+            assign_success: '%count% Einträge zugewiesen'
             confirm_delete: 'Möchten Sie %count% %entity% wirklich löschen?'
             delete_error: 'Löschen fehlgeschlagen'
             delete_success: '%count% %entity% gelöscht.'

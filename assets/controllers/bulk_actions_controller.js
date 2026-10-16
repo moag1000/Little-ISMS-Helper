@@ -113,6 +113,9 @@ export default class extends Controller {
             if (!this.csrfTokenValue && bar.dataset.bulkActionsCsrfToken) {
                 this._csrfToken = bar.dataset.bulkActionsCsrfToken;
             }
+            // Assignee list for the bulk "assign" action (set only when the
+            // bar offers it): GET → { assignees: [{ id, label }] }.
+            this._assigneesUrl = bar.dataset.bulkActionsAssigneesUrl || '';
         }
         this.updateActionBar();
     }
@@ -526,24 +529,70 @@ export default class extends Controller {
     }
 
     /**
-     * Bulk assign — wires to entity-specific /bulk-assign endpoints (Asset, Risk,
-     * Training). A full assignee-picker UI is not yet implemented, so this method
-     * shows a non-blocking toast informing the user that the action is not yet
-     * available via the bulk bar. The button renders conditionally in
-     * _bulk_action_bar.html.twig when 'assign' is in the actions array, so it
-     * would be a dead click without this guard.
-     *
-     * Decision: prefer graceful no-op over removing 'assign' from 3 callers
-     * (asset/index, risk/index, training/index) because the backend endpoint
-     * exists and a picker modal can be wired here in a follow-up sprint without
-     * touching templates.
+     * Bulk assign — sets the responsible person (Risk: riskOwner, Asset:
+     * ownerUser, Training: trainerUser) of every selected row via the
+     * entity's POST {endpoint}/bulk-assign (CSRF, tenant + `edit` voter
+     * checks and AuditLogger::logBulk server-side). The assignee is picked in
+     * an Aurora select dialog fed by GET /bulk/assignees.
      */
-    bulkAssign(event) {
-        event.preventDefault();
-        this.showToast(
-            faT('bulk_actions.assign_not_available'),
-            'warning'
-        );
+    async bulkAssign(event) {
+        event?.preventDefault?.();
+
+        const ids = this.selectedIds();
+        if (ids.length === 0 || !this._assigneesUrl) {
+            return;
+        }
+
+        try {
+            const listResponse = await fetch(this._assigneesUrl, {
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            });
+            if (!listResponse.ok) {
+                throw new Error(faT('error_status', { '%status%': listResponse.status }));
+            }
+            const { assignees = [] } = await listResponse.json();
+            if (assignees.length === 0) {
+                this.showToast(faT('bulk_actions.assign_no_assignees'), 'warning');
+                return;
+            }
+
+            const choices = assignees.map((a) => ({ value: a.id, label: a.label }));
+            const message = faT('bulk_actions.assign_prompt', { '%count%': ids.length });
+            const assigneeId = typeof window.faPrompt === 'function'
+                ? await window.faPrompt(message, { choices, required: true })
+                : null;
+            if (!assigneeId) {
+                return;
+            }
+
+            const response = await fetch(this.endpointValue + '/bulk-assign', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ ids, assignee_id: Number(assigneeId), _token: this._getCsrfToken() }),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload.ok === false) {
+                const reason = payload.error === 'assignee_inactive'
+                    ? faT('bulk_actions.assign_inactive')
+                    : (response.status === 403 ? faT('forbidden') : faT('bulk_actions.assign_error'));
+                this.showToast(reason, 'error');
+                return;
+            }
+
+            const changed = payload.changed ?? 0;
+            const rejected = (payload.rejected ?? []).length;
+            if (rejected > 0) {
+                this.showToast(faT('bulk_actions.assign_partial', { '%changed%': changed, '%rejected%': rejected }), 'warning');
+            } else {
+                this.showToast(faT('bulk_actions.assign_success', { '%count%': changed }), 'success');
+            }
+            setTimeout(() => window.location.reload(), 800);
+        } catch (error) {
+            this.showToast(faT('bulk_actions.assign_error'), 'error');
+        }
     }
 
     /**

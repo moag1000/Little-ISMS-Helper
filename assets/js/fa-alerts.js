@@ -33,6 +33,9 @@
  *       required     — when true, the confirm button stays disabled while empty
  *       allowEmpty   — when true, an empty answer resolves to '' (null still
  *                      means cancel); default: empty resolves to null
+ *       choices      — [{ value, label }] renders a select instead of the text
+ *                      input (with an empty "choose" option first); resolves
+ *                      to the chosen value
  */
 
 import { faT } from './fa-i18n.js';
@@ -289,12 +292,19 @@ import { faT } from './fa-i18n.js';
                     </div>
                 </header>
                 <div class="fa-confirm__body">
+                    ${Array.isArray(opts.choices) ? `
+                    <select class="fa-cyber-field__input" data-fa-prompt-input
+                            aria-label="${escapeHtml(opts.title || message)}"
+                            style="width:100%">
+                        <option value="">${escapeHtml(opts.placeholder || faT('choose'))}</option>
+                        ${opts.choices.map((c) => `<option value="${escapeHtml(String(c.value))}"${String(c.value) === String(opts.value ?? '') ? ' selected' : ''}>${escapeHtml(String(c.label))}</option>`).join('')}
+                    </select>` : `
                     <input type="text" class="fa-cyber-field__input" data-fa-prompt-input
                            value="${escapeHtml(opts.value || '')}"
                            placeholder="${escapeHtml(opts.placeholder || '')}"
                            ${opts.maxlength ? `maxlength="${parseInt(opts.maxlength, 10)}"` : ''}
                            aria-label="${escapeHtml(opts.title || message)}"
-                           style="width:100%">
+                           style="width:100%">`}
                 </div>
                 <footer class="fa-confirm__footer">
                     <button type="button" class="fa-cyber-btn" data-fa-prompt-cancel>${escapeHtml(opts.cancelLabel || faT('cancel'))}</button>
@@ -322,9 +332,12 @@ import { faT } from './fa-i18n.js';
             }
             syncDisabled();
             input.addEventListener('input', syncDisabled);
+            input.addEventListener('change', syncDisabled);
 
             input.focus();
-            input.select();
+            if (typeof input.select === 'function' && input.tagName !== 'SELECT') {
+                input.select();
+            }
 
             function close(value) {
                 document.body.style.overflow = previousOverflow;

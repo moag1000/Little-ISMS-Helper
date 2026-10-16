@@ -155,6 +155,7 @@ ui:
         confirm: 'Confirm'
         cancel: 'Cancel'
         apply: 'Apply'
+        choose: '– please choose –'
         close: 'Close'
         are_you_sure: 'Are you sure?'
         discard_changes: 'Discard unsaved changes?'
@@ -212,7 +213,12 @@ ui:
         budget_simulator:
             label: '%budget% of %total% person-days · covers %covered% of %count% requirements'
         bulk_actions:
-            assign_not_available: 'Assigning via the bulk bar is not available yet — use the row action instead.'
+            assign_error: 'Assigning failed'
+            assign_inactive: 'The selected person is not active.'
+            assign_no_assignees: 'No active users in this tenant to assign.'
+            assign_partial: '%changed% assigned, %rejected% skipped (no permission)'
+            assign_prompt: 'Responsible person for %count% entries:'
+            assign_success: '%count% entries assigned'
             confirm_delete: 'Do you really want to delete %count% %entity%?'
             delete_error: 'Deleting failed'
             delete_success: '%count% %entity% deleted.'
