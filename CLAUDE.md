@@ -152,6 +152,15 @@ need (tenantId, userId, …) through `$args` at dispatch time — see
 `ExportRisksJob` as the reference pattern. The shared EntityManager
 keeps working after detach.
 
+**Tenant scope + ownership (security):** jobs that read tenant data take the
+scope from `JobTenantScope::argsForCurrentUser()` at dispatch and call
+`JobTenantScope::resolve($ctx)` in `run()`, passing the tenant into every
+query — never rely on the Doctrine tenant filter (unarmed outside
+kernel.request) and never fall back to `findAll()`. `JobStatusService::create()`
+records the dispatching user + tenant; every download / status endpoint for a
+job id carries `#[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]` (owner or
+SUPER_ADMIN only).
+
 ### Advanced — Messenger worker (opt-in, for dedicated infra)
 
 Set `APP_ASYNC_JOB_RUNNER=messenger` to route `ExecuteJobMessage` through

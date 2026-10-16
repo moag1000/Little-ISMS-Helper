@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Service\Job\JobStatusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,13 +29,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * shared progress page can render every async-job dispatch without a
  * controller-specific template.
  *
- * Authorisation model: ROLE_USER is sufficient because job IDs are
- * UUID v4 (unguessable, 122 bits of entropy) and the dispatching
- * controller has already enforced its own RBAC at POST time. The status
- * payload contains nothing more sensitive than the dispatcher already
- * gave the user access to — surfacing it back on the progress page
- * adds no privilege. Non-admin async dispatchers (e.g. risk export
- * under ROLE_USER) need this so the PRG redirect doesn't 403.
+ * Authorisation model: class-level ROLE_USER plus
+ * {@see AsyncJobVoter} per job — only the user who dispatched the job (inside
+ * the tenant it was dispatched in) or a SUPER_ADMIN may read its status or
+ * progress page. The UUID is not an authorisation token: status payloads and
+ * download links of one user's export must not be readable by anybody who
+ * gets hold of the id. Non-admin async dispatchers (e.g. risk export under
+ * ROLE_USER) still work because the owner check is role-independent.
  */
 #[IsGranted('ROLE_USER')]
 class JobStatusController extends AbstractController
@@ -62,6 +63,7 @@ class JobStatusController extends AbstractController
      * }
      */
     #[Route('/admin/jobs/{id}/status', name: 'admin_job_status', methods: ['GET'])]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function status(string $id): JsonResponse
     {
         // Basic UUID v4 validation to prevent path-traversal / directory read
@@ -94,6 +96,7 @@ class JobStatusController extends AbstractController
      * button takes the user back to where they started.
      */
     #[Route('/admin/jobs/{id}/progress', name: 'admin_job_progress_page', methods: ['GET'])]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function progressPage(string $id, Request $request): Response
     {
         if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {

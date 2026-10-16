@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Enum\IncidentSeverity;
 use DateTime;
 use App\Entity\Risk;
@@ -317,6 +318,7 @@ class AnalyticsController extends AbstractController
      */
     #[Route('/export/{type}/download/{id}', name: 'app_analytics_export_download', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $type,
         string $id,

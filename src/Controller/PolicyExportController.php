@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Entity\Document;
 use App\Entity\User;
 use App\Repository\DocumentRepository;
@@ -236,6 +237,7 @@ final class PolicyExportController extends AbstractController
      */
     #[Route('/tenant/zip/download/{id}', name: 'tenant_zip_download', methods: ['GET'])]
     #[IsGranted(PolicyWizardVoter::EXPORT)]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportTenantZipDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,

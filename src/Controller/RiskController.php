@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Entity\User;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
@@ -461,6 +462,7 @@ class RiskController extends AbstractController
      */
     #[Route('/risk/export/download/{id}', name: 'app_risk_export_download', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Controller\Trait\LocalizedFlashTrait;
 use Exception;
 use InvalidArgumentException;
@@ -195,6 +196,7 @@ class AdminBackupController extends AbstractController
      */
     #[Route('/admin/data/backup/progress/{id}', name: 'data_backup_progress', methods: ['GET'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function backupProgress(string $id): Response
     {
         return $this->render('data_management/backup_progress.html.twig', [

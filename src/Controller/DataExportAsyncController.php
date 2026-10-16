@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Job\ExportDataJob;
 use App\Service\DataExport\EntityDataExporter;
 use App\Service\Job\JobDispatcher;
@@ -137,6 +138,7 @@ final class DataExportAsyncController extends AbstractController
      * canonical path without trusting any user input beyond the UUID v4 shape.
      */
     #[Route('/admin/exports/{id}/download', name: 'data_export_download', methods: ['GET'])]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function download(string $id): Response
     {
         if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {

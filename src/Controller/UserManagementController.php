@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use DateTimeImmutable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
@@ -436,6 +437,7 @@ class UserManagementController extends AbstractController
      */
     #[Route('/admin/users/export/download/{id}', name: 'user_management_export_download', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,

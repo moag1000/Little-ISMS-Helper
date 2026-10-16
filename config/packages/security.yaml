@@ -175,6 +175,12 @@ security:
         # but if accidentally created, this ensures they remain public to prevent redirect loops
         - { path: '^/(de|en)/(login|logout)$', roles: PUBLIC_ACCESS }
 
+        # Async-job status polling + shared progress page are also used by
+        # non-admin dispatchers (risk / processing-activity / analytics exports).
+        # Safe for ROLE_USER: AsyncJobVoter only admits the job's owner or a
+        # SUPER_ADMIN, so the job id is no longer an access token.
+        - { path: '^/(de|en)/admin/jobs/[0-9a-f-]{36}/(status|progress)$', roles: ROLE_USER }
+
         # Admin routes (with locale prefix) - specific locale pattern for better security
         - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }
 
