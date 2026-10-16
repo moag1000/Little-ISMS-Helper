@@ -357,7 +357,8 @@
                             {% if tenant.settings %}
                                 <hr>
                                 <h3 class="mb-2 h6">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h3>
-                                <pre class="bg-body-secondary p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
+                                {% import '_components/_fa_json_view.html.twig' as _fa_json_view %}
+                                {{ _fa_json_view.render(tenant.settings) }}
                             {% endif %}
                         </div>
                     </section>

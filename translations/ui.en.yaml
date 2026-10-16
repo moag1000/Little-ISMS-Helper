@@ -166,3 +166,14 @@ ui:
         error_status: 'Error (%status%)'
         loading: 'Loading …'
         required_fields_missing: '%count% required field(s) still missing – please fill in the highlighted fields.'
+    # Generic JSON builder (templates/_components/_fa_json_builder.html.twig)
+    json_builder:
+        add: 'Add entry'
+        remove: 'Remove entry'
+        empty: 'No entries yet.'
+        entry: 'Entry %index%'
+        key: 'Key'
+        choose: '– please choose –'
+        tag_placeholder: 'Type and press Enter'
+        tag_remove: 'Remove'
+        duplicate_key: 'This key is already in use.'

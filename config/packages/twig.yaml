@@ -8,6 +8,8 @@ twig:
     form_themes:
         - 'form/fa_cyber_input.html.twig'
         - 'form/control_framework_references.html.twig'
+        # JsonBuilderType → generic Aurora JSON builder (never a raw JSON textarea).
+        - 'form/json_builder.html.twig'
 
     # Security: Auto-escaping is enabled by default in Symfony to prevent XSS attacks
 

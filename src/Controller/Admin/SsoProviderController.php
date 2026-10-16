@@ -198,7 +198,7 @@ final class SsoProviderController extends AbstractController
         $form = $this->createForm(IdentityProviderType::class, $provider, [
             'allow_global' => $allowGlobal,
             'scopes_initial' => $provider->getScopes(),
-            'attribute_map_json' => json_encode($provider->getAttributeMap(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '',
+            'attribute_map_initial' => $provider->getAttributeMap(),
             'domain_bindings_initial' => $provider->getDomainBindings(),
         ]);
         $form->handleRequest($request);
@@ -211,21 +211,11 @@ final class SsoProviderController extends AbstractController
             }
             $provider->setScopes($scopes);
 
-            $attrJson = (string) $form->get('attributeMapJson')->getData();
-            if ($attrJson !== '') {
-                try {
-                    $decoded = json_decode($attrJson, true, flags: JSON_THROW_ON_ERROR);
-                    if (is_array($decoded)) {
-                        $provider->setAttributeMap($decoded);
-                    }
-                } catch (\JsonException) {
-                    $form->get('attributeMapJson')->addError(new \Symfony\Component\Form\FormError('Invalid JSON.'));
-                    return $this->render('admin/sso/form.html.twig', [
-                        'form' => $form->createView(),
-                        'provider' => $provider,
-                        'is_new' => $isNew,
-                    ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
-                }
+            // Structured claim builder (JsonBuilderType) — decoded and
+            // shape-validated; an empty builder keeps the current mapping.
+            $attributeMap = $form->get('attributeMapJson')->getData();
+            if (is_array($attributeMap) && $attributeMap !== []) {
+                $provider->setAttributeMap($attributeMap);
             }
 
             $bindingsCsv = (string) $form->get('domainBindingsCsv')->getData();

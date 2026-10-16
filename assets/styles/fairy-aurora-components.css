@@ -7258,6 +7258,126 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
 
 .fa-json-builder__row td:last-child { text-align: end; }
 
+/* ─── fa-json-builder — generic schema-driven builder (JsonBuilderType) ───
+   One card per entry; fields in a responsive grid; each input sits in a
+   regular .fa-cyber-input__frame so it looks like every other form field. */
+.fa-cyber-input--builder > .fa-json-builder { margin-top: 4px; }
+
+.fa-json-builder__items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fa-json-builder__item {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+}
+
+.fa-json-builder--object .fa-json-builder__item {
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.fa-json-builder__grid {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px 12px;
+}
+
+.fa-json-builder__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.fa-json-builder__field--wide { grid-column: 1 / -1; }
+
+.fa-json-builder__field--bool { justify-content: flex-end; }
+
+.fa-json-builder__remove { flex: 0 0 auto; }
+
+.fa-json-builder__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 6px;
+}
+
+.fa-json-builder__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 6px 2px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font: 500 12px var(--font-sans);
+    color: var(--fg);
+}
+
+.fa-json-builder__tag-remove {
+    display: inline-flex;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--fg-3);
+    cursor: pointer;
+}
+
+.fa-json-builder__tag-remove:hover,
+.fa-json-builder__tag-remove:focus-visible { color: var(--danger); }
+
+.fa-json-builder__tag-input {
+    flex: 1 1 140px;
+    min-width: 120px;
+    padding: 6px 4px;
+}
+
+@media (max-width: 575.98px) {
+    .fa-json-builder__item { flex-direction: column; }
+    .fa-json-builder__remove { align-self: flex-end; }
+}
+
+/* fa-json-view — read-only rendering of a JSON value on show pages. */
+.fa-json-view { margin: 0; }
+.fa-json-view__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.fa-json-view__item {
+    padding: 8px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+}
+.fa-json-view__dl {
+    display: grid;
+    grid-template-columns: minmax(120px, max-content) 1fr;
+    gap: 4px 12px;
+    margin: 0;
+}
+.fa-json-view__dl > dt {
+    color: var(--fg-3);
+    font: 500 12px var(--font-sans);
+}
+.fa-json-view__dl > dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+
 /* ─── fa-resource-list — Tab-Layout for personnel/equipment/supplies ─── */
 .fa-resource-list__tabs {
     display: flex;

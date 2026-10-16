@@ -35,8 +35,8 @@ tenant:
         azure_tenant_id_help: 'Azure AD Tenant ID (UUID format) for SSO integration'
         is_active: Active
         is_active_help: 'Only active organizations can sign in'
-        settings: 'Settings (JSON)'
-        settings_help: 'Organization-specific settings in JSON format'
+        settings: 'Settings'
+        settings_help: 'Internal organisation settings (read-only).'
         users: Users
         status: Status
         created: Created
@@ -53,7 +53,6 @@ tenant:
         name: 'e.g. ACME Corporation'
         description: 'Organization description...'
         azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-        settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
         # Bucket-6a (DORA RoI Sprint 9)
         lei_code: '529900T8BM49AURSDO55'
     validation:
@@ -180,7 +179,7 @@ tenant:
         azure_title: 'Azure Integration'
         azure_text: 'If you use Azure AD SSO, you can store the Azure Tenant ID here for organization-specific authentication.'
         settings_title: Settings
-        settings_text: 'Organization-specific settings in JSON format can contain individual configurations such as branding, features, or limits.'
+        settings_text: 'Internal settings such as the organisation profile and MRIS KPIs. They are maintained in their dedicated dialogs.'
         name: Name
         description: Description
         logo: Logo
@@ -191,7 +190,11 @@ tenant:
         # Bucket-6a (DORA RoI Sprint 9)
         lei_code_format: 'Format: 18-character prefix [A-Z0-9] + 2 checksum digits (e.g. 529900T8BM49AURSDO55).'
     settings:
-        example_title: 'Example JSON Structure'
+        mris_kpis_enabled: 'Show MRIS myth KPIs'
+        mris_kpis_enabled_help: 'Disable when the organisation does not benefit from MRIS (e.g. not a DORA or NIS2 addressee).'
+        stored_title: 'Stored settings'
+        stored_help: 'Read-only – each area is maintained in its own dialog (organisation profile, MRIS KPIs, TISAX).'
+        edit_organisation_context: 'Edit organisation profile'
     title.edit: Edit
     title.create: Create
     name: Name

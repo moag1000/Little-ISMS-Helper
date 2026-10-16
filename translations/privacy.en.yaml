@@ -587,7 +587,7 @@ processing_activity:
         retention_reason: 'Justification for the retention duration (e.g. statutory period, contract). For the structured value see "Retention Period (days)". (Art. 30(1)(f) GDPR)'
         retention_period_days: 'Numeric retention duration in days (canonical, for automated deletion). For the justification see "Retention Justification".'
         retention_legal_basis: 'Legal basis for retention period (e.g., HGB §257, Tax Code)'
-        retention_per_category: 'Optional: JSON map data-category → period, when categories have different statutory periods (e.g. {"applicant_data":"6 months","payroll":"10 years"}).'
+        retention_per_category: 'Optional: period per data category when categories have different statutory periods (e.g. applicant data 6 months, payroll 10 years).'
         technical_organizational_measures: 'Technical and organizational measures — qualitative description (Art. 32 GDPR). For structured evidence see "Implemented Controls". At least ONE evidence form is required.'
         implemented_controls: 'Select ISO 27001 controls protecting this activity (structured evidence). For the qualitative description see the TOMs field.'
         assets: 'Assets (servers, databases, applications) used by this processing activity.
@@ -609,7 +609,7 @@ processing_activity:
         is_joint_controller: 'Is this a joint controller arrangement (Art. 26)?'
         is_processor: 'Does the organisation process here on behalf of another controller (Art. 30(2))?'
         processor_client_controller: 'Identity (and DPO where relevant) of the controller(s) on whose behalf processing is carried out (Art. 30(2)(a)).'
-        joint_controller_details_json: 'List the joint controllers as a JSON array with fields: name, contact, responsibilities (split of duties per Art. 26(1)), arrangement_reference (link to the agreement). The essence must be made available to data subjects (Art. 26(2)).'
+        joint_controller_details_json: 'Joint controllers with contact, split of duties per Art. 26(1) and a reference to the arrangement. The essence must be made available to data subjects (Art. 26(2)).'
         is_high_risk: 'Is this considered high-risk processing?'
         dpia_completed: 'Has a Data Protection Impact Assessment (DPIA) been conducted?'
         dpia_date: 'Date of DPIA completion'
@@ -624,15 +624,6 @@ processing_activity:
     placeholder:
         contact_person_person: 'Select person from master data...'
         data_protection_officer_person: 'Select person from master data...'
-        joint_controller_details: |-
-            [
-              {
-                "name": "Partner Organisation Ltd.",
-                "contact": "privacy@partner.example",
-                "responsibilities": "Handling of data-subject requests under Art. 15-22",
-                "arrangement_reference": "Agreement of 2026-01-15"
-              }
-            ]
     # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
     # Legacy `active` key kept as fallback label for any historical row not yet migrated.
     status:
@@ -794,6 +785,18 @@ processing_activity:
         third_parties: 'From third parties'
         public_sources: 'Public sources'
         other: 'Other sources'
+    json_builder:
+        retention:
+            add: 'Add category'
+            category: 'Data category'
+            period: 'Retention period'
+            period_placeholder: 'e.g. 6 months'
+        joint_controller:
+            add: 'Add joint controller'
+            name: 'Organisation'
+            contact: 'Contact'
+            responsibilities: 'Split of duties (Art. 26(1))'
+            arrangement_reference: 'Arrangement (reference)'
 data_breach:
     dashboard:
         title: 'Data Breach Dashboard'

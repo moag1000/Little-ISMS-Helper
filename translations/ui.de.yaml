@@ -166,3 +166,14 @@ ui:
         error_status: 'Fehler (%status%)'
         loading: 'Wird geladen …'
         required_fields_missing: '%count% Pflichtfeld(er) fehlen noch – bitte die markierten Felder ausfüllen.'
+    # Generic JSON builder (templates/_components/_fa_json_builder.html.twig)
+    json_builder:
+        add: 'Eintrag hinzufügen'
+        remove: 'Eintrag entfernen'
+        empty: 'Noch keine Einträge.'
+        entry: 'Eintrag %index%'
+        key: 'Schlüssel'
+        choose: '– bitte wählen –'
+        tag_placeholder: 'Eingeben und mit Enter übernehmen'
+        tag_remove: 'Entfernen'
+        duplicate_key: 'Dieser Schlüssel ist bereits vergeben.'
