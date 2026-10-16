@@ -577,13 +577,13 @@ class AssetController extends AbstractController
         $filters = $this->entityManager->getFilters();
         $tenantFilterEnabled = $filters->isEnabled('tenant_filter');
         if ($tenantFilterEnabled) {
-            $filters->disable('tenant_filter');
+            $filters->suspend('tenant_filter');
         }
         try {
             $asset = $this->assetRepository->find($id);
         } finally {
             if ($tenantFilterEnabled) {
-                $filters->enable('tenant_filter');
+                $filters->restore('tenant_filter');
             }
         }
 

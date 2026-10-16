@@ -130,7 +130,7 @@ final class EntityCountAggregator
         $filters = $this->entityManager->getFilters();
         $filterWasEnabled = $filters->isEnabled('tenant_filter');
         if ($filterWasEnabled) {
-            $filters->disable('tenant_filter');
+            $filters->suspend('tenant_filter');
         }
         try {
             $totalEntities = count($this->assetRepository->findAll()) +
@@ -140,7 +140,7 @@ final class EntityCountAggregator
                             count($this->documentRepository->findAll());
         } finally {
             if ($filterWasEnabled) {
-                $filters->enable('tenant_filter');
+                $filters->restore('tenant_filter');
             }
         }
 

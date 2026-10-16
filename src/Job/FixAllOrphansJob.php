@@ -73,7 +73,7 @@ final class FixAllOrphansJob implements AsyncJobInterface
         $filters = $this->entityManager->getFilters();
         $wasEnabled = $filters->isEnabled('tenant_filter');
         if ($wasEnabled) {
-            $filters->disable('tenant_filter');
+            $filters->suspend('tenant_filter');
         }
 
         $totalFixed = 0;
@@ -145,7 +145,7 @@ final class FixAllOrphansJob implements AsyncJobInterface
             }
         } finally {
             if ($wasEnabled && $this->entityManager->isOpen()) {
-                $this->entityManager->getFilters()->enable('tenant_filter');
+                $this->entityManager->getFilters()->restore('tenant_filter');
             }
         }
 
