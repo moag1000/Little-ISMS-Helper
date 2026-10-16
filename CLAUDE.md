@@ -559,12 +559,12 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       List-view bulk actions use the shared `bulk_action` token
       (`BulkActionTrait::isBulkCsrfTokenValid()`); bulk deletes go through
       `BulkActionTrait::handleBulkDelete()` + `BulkDeleteService` (CSRF, tenant,
-      voter, one `logBulk()` batch). CI Gate 63
+      voter, one `logBulk()` batch). CI Gate 65
       (`scripts/quality/check_csrf_state_changing.py`) fails on unprotected
       POST/PUT/PATCH/DELETE actions; genuinely non-state-changing ones carry
       `// @csrf-exempt: <reason>`. Per-entity ids need an Expression —
       `new Expression('"x_delete_" ~ args["entity"].getId()')`; a literal
-      `'x_delete_{id}'` is never interpolated and always fails (Gate 63 flags
+      `'x_delete_{id}'` is never interpolated and always fails (Gate 65 flags
       it as `#literal-id`). A failed attribute check answers 403
       (`ReauthEntryPoint`), not a redirect to /login.
 - [ ] Input sanitized via `InputValidationService`

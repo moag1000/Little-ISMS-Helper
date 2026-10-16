@@ -591,7 +591,7 @@ jobs:
         # invisible at runtime. Descriptive keys (license_note, changelog, …) are
         # baselined; a NEW inert key is far more likely dead payload than docs.
         run: python3 scripts/quality/check_fixture_unread_keys.py --baseline scripts/quality/baselines/fixture_unread_keys.txt
-      - name: "Gate 63: state-changing actions need CSRF"
+      - name: "Gate 65: state-changing actions need CSRF"
         # Every POST/PUT/PATCH/DELETE action needs #[IsCsrfTokenValid], an inline
         # isCsrfTokenValid(), a BulkActionTrait helper or a Symfony form — or a
         # reviewed `// @csrf-exempt: <reason>` marker. Baseline = files of
