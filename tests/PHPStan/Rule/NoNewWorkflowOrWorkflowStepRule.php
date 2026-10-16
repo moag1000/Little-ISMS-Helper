@@ -45,14 +45,13 @@ class NoNewWorkflowOrWorkflowStepRule implements Rule
      *
      * - Repository: read-only ORM layer, allowed to persist/hydrate existing rows
      * - Command: migration/verification commands (MigrateLegacyWorkflowsCommand, GenerateRegulatoryWorkflowsCommand)
-     * - Controller\Api\WorkflowStepApiController: already @deprecated since Y.3 —
-     *   kept for one-release backward compat; returns 410 Gone on write methods.
-     *   Exempted here to avoid flagging deprecated-for-deprecated code.
+     *
+     * No controller is exempt: WorkflowStepApiController is read-only and its
+     * former write endpoints answer 410 Gone.
      */
     private const EXEMPT_NAMESPACE_PREFIXES = [
         'App\\Repository\\',
         'App\\Command\\',
-        'App\\Controller\\Api\\',  // WorkflowStepApiController deprecated — see Y.3
     ];
 
     public function getNodeType(): string
