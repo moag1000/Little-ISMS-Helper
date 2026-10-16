@@ -59,8 +59,9 @@ final class RoleVoter extends Voter
             return false;
         }
 
-        // For CREATE we don't need a subject
-        if ($attribute === self::CREATE) {
+        // CREATE never needs a subject; VIEW is a pure permission check, so the
+        // role list / compare pages vote without one (#[IsGranted(RoleVoter::VIEW)]).
+        if ($attribute === self::CREATE || ($attribute === self::VIEW && $subject === null)) {
             return true;
         }
 

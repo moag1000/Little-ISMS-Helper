@@ -18,7 +18,7 @@ src/Service/ManagementReportService.php:LOC=1164 deps=20
 src/Service/ComplianceWizard/CoverageCheckService.php:LOC=1077 deps=24
 src/Controller/UserManagementController.php:LOC=1025 deps=0
 src/Controller/IncidentController.php:LOC=1003 deps=0
-src/Controller/TenantManagementController.php:LOC=935 deps=0
+src/Controller/TenantManagementController.php:LOC=936 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
 src/Controller/ProcessingActivityController.php:LOC=890 deps=0
 src/Controller/AssetController.php:LOC=858 deps=0
