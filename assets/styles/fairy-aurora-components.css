@@ -6325,7 +6325,8 @@ html[data-theme="dark"] .framework-card {
     z-index: 1;
     background: var(--surface-2);
 }
-.fa-table__th {
+.fa-table__th,
+.fa-table--plain > thead > tr > th {
     text-align: left;
     font-weight: 600;
     font-size: 12px;
@@ -6376,16 +6377,20 @@ html[data-theme="dark"] .framework-card {
 .fa-table__th--sort-asc::after  { opacity: 1; transform: rotate(180deg); border-top-color: var(--primary); }
 .fa-table__th--sort-desc::after { opacity: 1; border-top-color: var(--primary); }
 
-.fa-table__row {
+.fa-table__row,
+.fa-table--plain > tbody > tr {
     transition: background var(--t-fast) var(--ease-out);
 }
-.fa-table__row + .fa-table__row .fa-table__cell {
+.fa-table__row + .fa-table__row .fa-table__cell,
+.fa-table--plain > tbody > tr + tr > * {
     border-top: 1px solid var(--border);
 }
-.fa-table--striped .fa-table__row:nth-child(even) {
+.fa-table--striped .fa-table__row:nth-child(even),
+.fa-table--striped.fa-table--plain > tbody > tr:nth-child(even) {
     background: color-mix(in srgb, var(--surface-2) 50%, var(--surface));
 }
 .fa-table--hover .fa-table__row:hover,
+.fa-table--hover.fa-table--plain > tbody > tr:hover,
 .fa-table__row:hover { background: var(--surface-2); }
 .fa-table__row--selected,
 .fa-table__row--selected:hover {
@@ -6397,13 +6402,29 @@ html[data-theme="dark"] .framework-card {
    that the whole row is the show-shortcut, not just the eye-icon button. */
 tr.fa-table__row[data-row-clickable="true"] { cursor: pointer; }
 
-.fa-table__cell {
+.fa-table__cell,
+.fa-table--plain > tbody > tr > td,
+.fa-table--plain > tbody > tr > th {
     padding: var(--space-3) var(--space-4);
     vertical-align: middle;
     line-height: 1.5;
 }
 .fa-table--compact .fa-table__cell,
-.fa-table--compact .fa-table__th { padding: var(--space-2) var(--space-3); }
+.fa-table--compact .fa-table__th,
+.fa-table--compact.fa-table--plain > * > tr > * { padding: var(--space-2) var(--space-3); }
+
+/* Row tones (replace Bootstrap table-danger / table-warning / table-secondary).
+   `.fa-table tr` keeps them above the global dark-mode `tbody tr` rule. */
+.fa-table tr.fa-table__row--danger { background: var(--danger-tint); }
+.fa-table tr.fa-table__row--warning { background: var(--warning-tint); }
+.fa-table tr.fa-table__row--muted { color: var(--fg-3); background: var(--surface-2); }
+
+/* Cell borders: --bordered draws the full grid, --borderless removes rules. */
+.fa-table--bordered th,
+.fa-table--bordered td { border: 1px solid var(--border); }
+.fa-table--borderless th,
+.fa-table--borderless td,
+.fa-table--borderless.fa-table--plain > tbody > tr + tr > * { border: 0; }
 
 .fa-table__cell--checkbox,
 .fa-table__th--checkbox {
