@@ -613,7 +613,7 @@ class RestoreEntityWriter
      * Returns [$originalIdGenerator, $originalGeneratorType] so the caller can
      * restore them after the loop. Both values are null when no swap was performed.
      *
-     * @return array{0: AbstractIdGenerator|null, 1: int|null}
+     * @return array{0: AbstractIdGenerator|null, 1: ClassMetadata::GENERATOR_TYPE_*|null}
      */
     private function applyIdGeneratorSwap(
         ClassMetadata $meta,

@@ -146,6 +146,31 @@ class ComplianceManagerDashboardControllerTest extends TestCase
     }
 
     #[Test]
+    public function upcomingAuditsAreQueriedForTheTenantWithin90Days(): void
+    {
+        // Regression: findUpcoming() took no arguments, so tenant and horizon
+        // were silently dropped and every planned audit came back.
+        $tenant = $this->createMock(Tenant::class);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->analytics->method('getFrameworkComparison')->willReturn(['frameworks' => [], 'summary' => []]);
+        $this->findingRepo->method('findOpenByTenant')->willReturn([]);
+        $this->stubDocumentRepo();
+
+        $audit = $this->createStub(\App\Entity\InternalAudit::class);
+        $this->auditRepo->expects($this->once())
+            ->method('findUpcoming')
+            ->with(
+                $this->identicalTo($tenant),
+                $this->callback(static fn (\DateTimeInterface $until): bool => abs($until->getTimestamp() - strtotime('+90 days')) < 60),
+            )
+            ->willReturn([$audit]);
+
+        $this->controller->index();
+
+        $this->assertSame([$audit], $this->renderedDashboard['upcoming_audits']);
+    }
+
+    #[Test]
     public function dashboardSortsTop3LowestCoverageCorrectly(): void
     {
         $tenant = $this->createMock(Tenant::class);

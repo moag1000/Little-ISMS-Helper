@@ -214,6 +214,10 @@ class KpiSnapshotCommand
      */
     private function extractFlatKpiData(Tenant $tenant): array
     {
+        // CLI has no request/user: pin the tenant context first so services
+        // that resolve the tenant from it (module set, framework comparison)
+        // compute this tenant's values, not the global ones.
+        $this->tenantContext?->setCurrentTenant($tenant);
         $kpis = $this->dashboardStatisticsService->getManagementKPIs($tenant);
 
         $data = [];
@@ -227,7 +231,6 @@ class KpiSnapshotCommand
         // compliance trend. getFrameworkComparison() reads the tenant from the
         // context, so set it explicitly for this batch (CLI has no request).
         if ($this->complianceAnalyticsService !== null && $this->tenantContext !== null) {
-            $this->tenantContext->setCurrentTenant($tenant);
             $avg = $this->complianceAnalyticsService->getFrameworkComparison()['summary']['average_compliance'] ?? null;
             if (is_numeric($avg)) {
                 $data['average_compliance'] = $avg;

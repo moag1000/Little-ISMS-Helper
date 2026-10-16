@@ -548,12 +548,13 @@ class DashboardStatisticsService
      * Returns KPIs only for active modules, suitable for management reports.
      * Each KPI includes value, status (good/warning/danger), and trend data.
      *
+     * @param Tenant|null $tenant Explicit tenant for callers without a logged-in
+     *                           user (KPI snapshot cron); defaults to the user's tenant.
      * @return array Module-aware KPIs grouped by category
      */
-    public function getManagementKPIs(): array
+    public function getManagementKPIs(?Tenant $tenant = null): array
     {
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
+        $tenant ??= $this->security->getUser()?->getTenant();
         $cacheKey = 'management_kpis_' . ($tenant?->getId() ?? 'global');
 
         if ($this->cache !== null) {

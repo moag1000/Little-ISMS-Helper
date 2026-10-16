@@ -108,9 +108,7 @@ class SecurityController extends AbstractController
     {
         return $clientRegistry
             ->getClient('azure')
-            ->redirect([
-                'openid', 'email', 'profile'
-            ]);
+            ->redirect(['openid', 'email', 'profile'], []);
     }
 
     /**

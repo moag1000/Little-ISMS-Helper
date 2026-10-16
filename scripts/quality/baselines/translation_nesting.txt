@@ -337,8 +337,8 @@ translations/suppliers.de.yaml:450:iso_9001_bridge
 translations/suppliers.en.yaml:1:supplier
 translations/suppliers.en.yaml:372:corporate
 translations/suppliers.en.yaml:449:iso_9001_bridge
-translations/tenant.de.yaml:215:corporate
-translations/tenant.en.yaml:215:corporate
+translations/tenant.de.yaml:216:corporate
+translations/tenant.en.yaml:216:corporate
 translations/threat.de.yaml:125:field
 translations/threat.de.yaml:145:placeholder
 translations/threat.de.yaml:153:help

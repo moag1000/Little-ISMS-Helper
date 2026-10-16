@@ -24,7 +24,7 @@ use App\Repository\ComplianceMappingRepository;
  */
 final class CrossFrameworkLookupService
 {
-    /** @var array<string, list<array{mapping: ComplianceMapping, direction: string, via: list<string>, depth: int}>> */
+    /** @var array<string, list<array{requirement: ComplianceRequirement, mapping: ComplianceMapping, direction: string, via: list<string>, depth: int}>> */
     private array $cache = [];
 
     public function __construct(

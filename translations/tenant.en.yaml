@@ -111,6 +111,7 @@ tenant:
         activated: 'Organization activated successfully'
         deactivated: 'Organization deactivated successfully'
         error: 'Error saving organization'
+        not_found: 'The requested organization was not found. It may have been deleted.'
         has_users: 'Organization cannot be deleted as it still has assigned users'
         organisation_context_updated: 'Organization profile successfully updated'
         organisation_context_error: 'Error updating organization profile'

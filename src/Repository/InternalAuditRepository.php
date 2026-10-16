@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use DateTime;
+use DateTimeInterface;
 use App\Entity\Tenant;
 use App\Entity\InternalAudit;
 use App\Enum\InternalAuditStatus;
@@ -32,20 +33,28 @@ class InternalAuditRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find upcoming planned audits (planned status with future dates).
+     * Find upcoming planned audits (planned status with future dates),
+     * optionally restricted to one tenant and/or a planning horizon.
      *
      * @return InternalAudit[] Array of InternalAudit entities sorted by planned date
      */
-    public function findUpcoming(): array
+    public function findUpcoming(?Tenant $tenant = null, ?DateTimeInterface $until = null): array
     {
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->where('a.status = :status')
             ->andWhere('a.plannedDate >= :today')
             ->setParameter('status', InternalAuditStatus::Planned->value)
             ->setParameter('today', new DateTime())
-            ->orderBy('a.plannedDate', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('a.plannedDate', 'ASC');
+
+        if ($tenant instanceof Tenant) {
+            $qb->andWhere('a.tenant = :tenant')->setParameter('tenant', $tenant);
+        }
+        if ($until instanceof DateTimeInterface) {
+            $qb->andWhere('a.plannedDate <= :until')->setParameter('until', $until);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

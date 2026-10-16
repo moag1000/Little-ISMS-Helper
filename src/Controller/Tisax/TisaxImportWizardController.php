@@ -491,14 +491,23 @@ final class TisaxImportWizardController extends AbstractController
             // IS / PP tier: Reifegrad 0-5 integers. Skip empty strings — the
             // "Bitte wählen" placeholder option submits '' for untouched rows,
             // and we MUST NOT overwrite those as 0 (incomplete) silently.
-            /** @var array<string, string> $reifegradRaw */
-            $reifegradRaw = (array) $request->request->all('reifegrad');
-            $reifegradRaw = array_filter($reifegradRaw, static fn ($v): bool => $v !== '' && $v !== null);
-            $levelMap     = array_map('intval', $reifegradRaw);
+            // Field names are reifegrad[<requirementId>] / dp[<requirementId>];
+            // PHP already turns the numeric keys into ints. Non-numeric keys
+            // (tampered input) are dropped so the services only see PKs.
+            $levelMap = [];
+            foreach ($request->request->all('reifegrad') as $requirementId => $value) {
+                if (is_int($requirementId) && is_scalar($value) && $value !== '') {
+                    $levelMap[$requirementId] = (int) $value;
+                }
+            }
 
             // DP tier: tristate string values (not_applicable | compliant | non_compliant)
-            /** @var array<string, string> $dpRaw */
-            $dpRaw = (array) $request->request->all('dp');
+            $dpRaw = [];
+            foreach ($request->request->all('dp') as $requirementId => $value) {
+                if (is_int($requirementId) && is_string($value)) {
+                    $dpRaw[$requirementId] = $value;
+                }
+            }
 
             $this->maturityService->bulkSetReifegrad($levelMap, $user, $tenant);
             $this->maturityService->bulkSetDataProtectionCompliance($dpRaw, $user, $tenant);

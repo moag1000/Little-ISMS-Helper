@@ -94,16 +94,7 @@ class ComplianceManagerDashboardController extends AbstractController
         $upcomingAudits = [];
         if ($tenant) {
             $cutoff = new DateTimeImmutable('+90 days');
-            $audits = method_exists($this->auditRepo, 'findUpcoming')
-                ? $this->auditRepo->findUpcoming($tenant, $cutoff)
-                : $this->auditRepo->findBy(['tenant' => $tenant], ['plannedDate' => 'ASC'], 10);
-            foreach ($audits as $audit) {
-                if (method_exists($audit, 'getPlannedDate') && $audit->getPlannedDate() instanceof \DateTimeInterface
-                    && $audit->getPlannedDate() > new DateTimeImmutable()
-                    && $audit->getPlannedDate() <= $cutoff) {
-                    $upcomingAudits[] = $audit;
-                }
-            }
+            $upcomingAudits = $this->auditRepo->findUpcoming($tenant, $cutoff);
         }
 
         // Documents pending approval

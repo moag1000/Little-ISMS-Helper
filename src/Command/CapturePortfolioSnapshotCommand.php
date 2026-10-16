@@ -98,6 +98,8 @@ class CapturePortfolioSnapshotCommand
             }
 
             $tenantRows = 0;
+            /** @var list<PortfolioSnapshot> $tenantSnapshots */
+            $tenantSnapshots = [];
             try {
                 foreach ($frameworks as $framework) {
                     foreach (PortfolioReportService::CATEGORIES as $category) {
@@ -122,13 +124,21 @@ class CapturePortfolioSnapshotCommand
                         $snapshot->setGapCount($agg['gaps']);
 
                         $this->entityManager->persist($snapshot);
+                        $tenantSnapshots[] = $snapshot;
                         $tenantRows++;
                     }
                 }
 
                 if (!$dryRun) {
                     $this->entityManager->flush();
-                    $this->entityManager->clear(PortfolioSnapshot::class);
+                    // Detach only this tenant's snapshots to keep memory flat.
+                    // ORM 3 clear() takes no class argument — it detached the
+                    // whole identity map, so every following tenant (and the
+                    // frameworks) became detached and their snapshots failed
+                    // with "new entity found through relationship".
+                    foreach ($tenantSnapshots as $persistedSnapshot) {
+                        $this->entityManager->detach($persistedSnapshot);
+                    }
                 }
 
                 $symfonyStyle->writeln(sprintf(

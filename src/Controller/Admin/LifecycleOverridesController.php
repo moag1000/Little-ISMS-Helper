@@ -220,12 +220,12 @@ final class LifecycleOverridesController extends AbstractController
         $deleted = $this->overrideRepo->deleteForTransition($tenant, $workflowName, $transitionName);
 
         if ($deleted > 0) {
-            $this->auditLogger->logUpdate(
+            // logDelete, not logUpdate: logUpdate only records keys present in
+            // the new values, so an "everything removed" update logged nothing.
+            $this->auditLogger->logDelete(
                 'LifecycleConfig',
                 null, // composite key (workflow/transition) lives in the description; entityId is ?int
-
-                ['deleted_count' => $deleted],
-                [],
+                ['workflow' => $workflowName, 'transition' => $transitionName, 'deleted_count' => $deleted],
                 sprintf('Lifecycle-Overrides für %s / %s auf YAML-Baseline zurückgesetzt.', $workflowName, $transitionName),
             );
         }
