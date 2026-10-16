@@ -14,8 +14,8 @@
  *     Shows a modal confirm dialog. Resolves to true when the user
  *     confirms, false on cancel / backdrop / Escape. Options:
  *       title      — bold headline, optional
- *       confirmLabel — primary button label (default 'Bestätigen')
- *       cancelLabel  — secondary button label (default 'Abbrechen')
+ *       confirmLabel — primary button label (default faT('confirm'))
+ *       cancelLabel  — secondary button label (default faT('cancel'))
  *       tone       — 'warn' | 'danger' (default 'warn')
  *       icon       — Bootstrap-Icons name (without bi- prefix);
  *                    defaults: warn -> exclamation-triangle-fill,
@@ -27,11 +27,15 @@
  *       title        — bold headline, optional
  *       placeholder  — input placeholder
  *       value        — prefilled value
- *       confirmLabel — primary button label (default 'Übernehmen')
- *       cancelLabel  — secondary button label (default 'Abbrechen')
+ *       confirmLabel — primary button label (default faT('apply'))
+ *       cancelLabel  — secondary button label (default faT('cancel'))
  *       maxlength    — input maxlength attribute
  *       required     — when true, the confirm button stays disabled while empty
+ *       allowEmpty   — when true, an empty answer resolves to '' (null still
+ *                      means cancel); default: empty resolves to null
  */
+
+import { faT } from './fa-i18n.js';
 
 (function () {
     'use strict';
@@ -108,7 +112,7 @@
         const close = document.createElement('button');
         close.type = 'button';
         close.className = 'fa-alert__close';
-        close.setAttribute('aria-label', 'Close');
+        close.setAttribute('aria-label', faT('close'));
         close.innerHTML = '<i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>';
         close.addEventListener('click', () => removeToast(toast));
         toast.appendChild(close);
@@ -191,8 +195,8 @@
                     </div>
                 </header>
                 <footer class="fa-confirm__footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-fa-confirm-cancel>${escapeHtml(opts.cancelLabel || 'Abbrechen')}</button>
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--${tone === 'warn' ? 'warning' : 'danger'}" data-fa-confirm-ok>${escapeHtml(opts.confirmLabel || 'Bestätigen')}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-fa-confirm-cancel>${escapeHtml(opts.cancelLabel || faT('cancel'))}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--${tone === 'warn' ? 'warning' : 'danger'}" data-fa-confirm-ok>${escapeHtml(opts.confirmLabel || faT('confirm'))}</button>
                 </footer>
             `;
 
@@ -293,8 +297,8 @@
                            style="width:100%">
                 </div>
                 <footer class="fa-confirm__footer">
-                    <button type="button" class="fa-cyber-btn" data-fa-prompt-cancel>${escapeHtml(opts.cancelLabel || 'Abbrechen')}</button>
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-fa-prompt-ok>${escapeHtml(opts.confirmLabel || 'Übernehmen')}</button>
+                    <button type="button" class="fa-cyber-btn" data-fa-prompt-cancel>${escapeHtml(opts.cancelLabel || faT('cancel'))}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-fa-prompt-ok>${escapeHtml(opts.confirmLabel || faT('apply'))}</button>
                 </footer>
             `;
 
@@ -337,7 +341,9 @@
                 if (opts.required && value === '') {
                     return;
                 }
-                close(value === '' ? null : value);
+                // null is reserved for "cancelled" when allowEmpty is set, so a
+                // caller can tell an intentionally empty answer from a cancel.
+                close(value === '' && !opts.allowEmpty ? null : value);
             }
 
             function onKey(event) {

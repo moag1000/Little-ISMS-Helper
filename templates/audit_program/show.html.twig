@@ -128,12 +128,12 @@
                     {% if program.status != 'archived' and is_granted('ROLE_MANAGER') %}
                     <form method="post" action="{{ path('app_audit_program_archive', {_locale: app.request.locale, id: program.id}) }}" class="mb-2">
                         <input type="hidden" name="_token" value="{{ csrf_token('archive-audit-program-' ~ program.id) }}">
-                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" onclick="return confirm('{{ 'audit_program.show.archive_confirm'|trans }}')">{{ 'audit_program.action.archive'|trans }}</button>
+                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.archive_confirm'|trans({}, 'audit_program') }}">{{ 'audit_program.action.archive'|trans }}</button>
                     </form>
                     {% endif %}
                     <form method="post" action="{{ path('app_audit_program_delete', {_locale: app.request.locale, id: program.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete-audit-program-' ~ program.id) }}">
-                        <button type="submit" class="btn btn-sm btn-danger w-100" onclick="return confirm('{{ 'audit_program.show.delete_confirm'|trans }}')">{{ 'audit_program.action.delete'|trans }}</button>
+                        <button type="submit" class="btn btn-sm btn-danger w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.delete_confirm'|trans({}, 'audit_program') }}" data-ui-actions-tone-param="danger">{{ 'audit_program.action.delete'|trans }}</button>
                     </form>
                 </div>
             </div>

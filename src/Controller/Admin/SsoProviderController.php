@@ -180,9 +180,10 @@ final class SsoProviderController extends AbstractController
         try {
             $this->discovery->applyDiscoveryToProvider($provider);
             $this->em->flush();
-            $this->addFlash('success', sprintf(
-                'Discovery OK for "%s". Endpoints synced.',
-                $provider->getName()
+            $this->addFlash('success', $this->translator->trans(
+                'admin.sso_provider.success.discovery_ok',
+                ['%name%' => $provider->getName()],
+                'admin'
             ));
         } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('admin.sso_provider.error.discovery_failed', ['%message%' => $e->getMessage()], 'admin'));
@@ -247,7 +248,11 @@ final class SsoProviderController extends AbstractController
                     'tenant_id' => $provider->getTenant()?->getId(),
                 ]
             );
-            $this->addFlash('success', $isNew ? 'SSO provider created.' : 'SSO provider updated.');
+            $this->addFlash('success', $this->translator->trans(
+                $isNew ? 'admin.sso_provider.success.created' : 'admin.sso_provider.success.updated',
+                [],
+                'admin'
+            ));
 
             return $this->redirectToRoute('admin_sso_edit', ['id' => $provider->getId()]);
         }
@@ -404,7 +409,11 @@ final class SsoProviderController extends AbstractController
             'email' => $approval->getEmail(),
             'user_id' => $user->getId(),
         ]);
-        $this->addFlash('success', sprintf('Approved: %s', $approval->getEmail()));
+        $this->addFlash('success', $this->translator->trans(
+            'admin.sso_provider.success.approval_approved',
+            ['%email%' => $approval->getEmail()],
+            'admin'
+        ));
 
         return $this->redirectToRoute('admin_sso_approvals');
     }
@@ -430,7 +439,11 @@ final class SsoProviderController extends AbstractController
         $this->audit->logCustom('sso.approval.reject', 'SsoUserApproval', $approval->getId(), null, [
             'email' => $approval->getEmail(),
         ]);
-        $this->addFlash('success', sprintf('Rejected: %s', $approval->getEmail()));
+        $this->addFlash('success', $this->translator->trans(
+            'admin.sso_provider.success.approval_rejected',
+            ['%email%' => $approval->getEmail()],
+            'admin'
+        ));
 
         return $this->redirectToRoute('admin_sso_approvals');
     }

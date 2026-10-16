@@ -149,3 +149,20 @@ ui:
         reset_aria_label: 'Alle aktiven Filter entfernen'
         active_filters: 'Aktive Filter'
         shareable_hint: 'Diese URL enthält die aktuellen Filter und kann geteilt oder als Lesezeichen gespeichert werden.'
+    # Generic strings for JavaScript helpers (assets/js/fa-i18n.js), rendered
+    # once per page into <script id="fa-i18n"> by base.html.twig.
+    js:
+        confirm: 'Bestätigen'
+        cancel: 'Abbrechen'
+        apply: 'Übernehmen'
+        close: 'Schließen'
+        are_you_sure: 'Sind Sie sicher?'
+        discard_changes: 'Ungespeicherte Änderungen verwerfen?'
+        copied: 'In die Zwischenablage kopiert'
+        copy_failed: 'Kopieren fehlgeschlagen'
+        success: 'Erledigt'
+        unknown_error: 'Unbekannter Fehler'
+        network_error: 'Netzwerkfehler'
+        error_status: 'Fehler (%status%)'
+        loading: 'Wird geladen …'
+        required_fields_missing: '%count% Pflichtfeld(er) fehlen noch – bitte die markierten Felder ausfüllen.'

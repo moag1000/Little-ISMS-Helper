@@ -66,7 +66,10 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('delete'~group.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--danger"
                                 aria-label="{{ 'planning.common.delete'|trans({}, 'planning') }} {{ group.name }}"
-                                onclick="return confirm('{{ 'planning.common.confirm_delete'|trans({}, 'planning')|e('js') }}')">
+                                data-controller="ui-actions"
+                                data-action="click->ui-actions#confirm"
+                                data-ui-actions-message-param="{{ 'planning.common.confirm_delete'|trans({}, 'planning') }}"
+                                data-ui-actions-tone-param="danger">
                             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                         </button>
                     </form>

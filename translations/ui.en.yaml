@@ -149,3 +149,20 @@ ui:
         reset_aria_label: 'Clear all active filters'
         active_filters: 'Active filters'
         shareable_hint: 'This URL contains the current filters and can be shared or bookmarked.'
+    # Generic strings for JavaScript helpers (assets/js/fa-i18n.js), rendered
+    # once per page into <script id="fa-i18n"> by base.html.twig.
+    js:
+        confirm: 'Confirm'
+        cancel: 'Cancel'
+        apply: 'Apply'
+        close: 'Close'
+        are_you_sure: 'Are you sure?'
+        discard_changes: 'Discard unsaved changes?'
+        copied: 'Copied to clipboard'
+        copy_failed: 'Copy failed'
+        success: 'Done'
+        unknown_error: 'Unknown error'
+        network_error: 'Network error'
+        error_status: 'Error (%status%)'
+        loading: 'Loading …'
+        required_fields_missing: '%count% required field(s) still missing – please fill in the highlighted fields.'

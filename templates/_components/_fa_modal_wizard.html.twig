@@ -85,7 +85,8 @@
          data-controller="{{ controller }}"
          data-{{ controller }}-current-step-value="{{ initialStep }}"
          data-{{ controller }}-total-steps-value="{{ totalSteps }}"
-         data-{{ controller }}-has-changes-value="false">
+         data-{{ controller }}-has-changes-value="false"
+         data-{{ controller }}-discard-message-value="{{ config.discardMessage ?? ('ui.js.discard_changes'|trans({}, 'ui')) }}">
 
         {# ── Wizard Header ──────────────────────────────────────────────── #}
         <header class="fa-modal__wizard-header">

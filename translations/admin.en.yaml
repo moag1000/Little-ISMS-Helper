@@ -19,6 +19,11 @@ admin:
         success:
             deleted: 'SSO provider deleted.'
             role_mappings_saved: 'Role mappings saved.'
+            created: 'SSO provider created.'
+            updated: 'SSO provider updated.'
+            discovery_ok: 'Discovery OK for "%name%" – endpoints synced.'
+            approval_approved: 'Approved: %email%'
+            approval_rejected: 'Rejected: %email%'
         error:
             discovery_failed: 'Discovery failed: %message%'
     title: Administration

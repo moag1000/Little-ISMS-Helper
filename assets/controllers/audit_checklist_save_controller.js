@@ -91,9 +91,14 @@ export default class extends Controller {
         const detail = { message, variant, tone: variant, type: variant };
         window.dispatchEvent(new CustomEvent('fa-toast:show', { detail }));
         document.dispatchEvent(new CustomEvent('toast:show', { detail }));
-        // Fallback: simple alert if no toast handler is mounted.
+        // No toast stack mounted (e.g. a page without base.html.twig): use the
+        // global Aurora toast helper; native alert only if even that is missing.
         if (!document.querySelector('.fa-toast-stack') && !document.querySelector('.toast-container')) {
-            alert(message);
+            if (typeof window.faToast === 'function') {
+                window.faToast(message, variant);
+            } else {
+                window.alert(message);
+            }
         }
     }
 }

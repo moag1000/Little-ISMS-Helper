@@ -19,6 +19,11 @@ admin:
         success:
             deleted: 'SSO-Provider wurde gelöscht.'
             role_mappings_saved: 'Rollen-Mappings gespeichert.'
+            created: 'SSO-Provider angelegt.'
+            updated: 'SSO-Provider aktualisiert.'
+            discovery_ok: 'Discovery für „%name%“ erfolgreich – Endpunkte synchronisiert.'
+            approval_approved: 'Freigegeben: %email%'
+            approval_rejected: 'Abgelehnt: %email%'
         error:
             discovery_failed: 'Discovery fehlgeschlagen: %message%'
     title: Administration

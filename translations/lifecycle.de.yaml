@@ -236,6 +236,10 @@ lifecycle:
 
     confirm:
         reason_required: 'Bitte Begründung angeben'
+    dropdown:
+        no_transitions: 'Keine Statuswechsel verfügbar.'
+        load_error: 'Statuswechsel konnten nicht geladen werden.'
+        conflict: 'Der Datensatz wurde zwischenzeitlich geändert – die Seite wird neu geladen.'
 
     field:
         status: Status
