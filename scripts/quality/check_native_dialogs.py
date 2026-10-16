@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-check_native_dialogs.py — Gate 63.
+check_native_dialogs.py — Gate 67.
 
 Native browser dialogs (`alert()`, `confirm()`, `prompt()`) are banned as UX:
 they are unstyled, block the main thread, ignore the Aurora theme and cannot
