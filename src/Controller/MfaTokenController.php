@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\MfaToken;
 use App\Entity\User;
@@ -21,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 /**
  * Admin UI for MFA-Token management (TOTP / WebAuthn / Backup codes).
@@ -154,7 +154,7 @@ class MfaTokenController extends AbstractController
                 'message' => 'Invalid verification code',
             ], Response::HTTP_BAD_REQUEST);
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('MFA verification failed', [
                 'error' => $e->getMessage(),
                 'token_id' => $mfaToken->getId(),

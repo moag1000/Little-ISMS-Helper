@@ -30,6 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Throwable;
 
 class TenantManagementController extends AbstractController
 {
@@ -842,7 +843,7 @@ class TenantManagementController extends AbstractController
                 'editUrl' => $this->generateUrl('app_context_edit'),
             ]);
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to get ISMS context for tenant', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),

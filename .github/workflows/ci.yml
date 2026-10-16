@@ -591,6 +591,11 @@ jobs:
         # invisible at runtime. Descriptive keys (license_note, changelog, …) are
         # baselined; a NEW inert key is far more likely dead payload than docs.
         run: python3 scripts/quality/check_fixture_unread_keys.py --baseline scripts/quality/baselines/fixture_unread_keys.txt
+      - name: "Gate 63: JSON actions catch Throwable"
+        # `catch (\Exception)` in a JSON/AJAX action lets every \Error (TypeError,
+        # ArgumentCountError, ...) escape as an HTML 500 page the fetch() caller
+        # cannot parse. Keys are path:method, so line shifts do not churn it.
+        run: python3 scripts/quality/check_json_catch_throwable.py --baseline scripts/quality/baselines/json_catch_throwable.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
