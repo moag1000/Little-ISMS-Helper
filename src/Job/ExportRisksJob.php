@@ -7,9 +7,8 @@ namespace App\Job;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Repository\RiskRepository;
-use App\Repository\TenantRepository;
-use App\Repository\UserRepository;
 use App\Risk\RiskMatrixThresholds;
+use App\Service\Job\JobTenantScope;
 use App\Service\RiskService;
 use Symfony\Component\HttpKernel\KernelInterface;
 use App\Util\CsvSanitizer;
@@ -23,13 +22,12 @@ use App\Util\CsvSanitizer;
  * (German headers, semicolon delimiter, BOM for Excel UTF-8 support).
  *
  * Args:
- *   tenantId    (?int)    Scope filter — null means "all risks" (kept for
- *                         consistency with the sync export; in practice
- *                         the dispatcher should always pass the calling
- *                         user's tenant ID).
- *   userId      (?int)    Caller — used to re-derive the tenant when
- *                         tenantId is null (the original sync code path
- *                         relied on $security->getUser()).
+ *   tenantId / allTenants  Tenant scope captured by
+ *                         {@see JobTenantScope::argsForCurrentUser()}. A job
+ *                         without scope (or with an unknown tenant) fails —
+ *                         it never falls back to exporting every tenant's
+ *                         risks. allTenants is only set for a SUPER_ADMIN
+ *                         without an organisation (mirrors the sync export).
  *   level       (?string) RiskMatrixThresholds classification filter.
  *   status      (?string) Status enum value filter.
  *   treatment   (?string) TreatmentStrategy enum value filter.
@@ -43,36 +41,27 @@ final class ExportRisksJob implements AsyncJobInterface
     public function __construct(
         private readonly RiskRepository $riskRepository,
         private readonly RiskService $riskService,
-        private readonly TenantRepository $tenantRepository,
-        private readonly UserRepository $userRepository,
+        private readonly JobTenantScope $tenantScope,
         private readonly KernelInterface $kernel,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
-        $tenantId = $ctx->arg('tenantId');
-        $userId = $ctx->arg('userId');
+        $tenant = $this->tenantScope->resolve($ctx);
         $level = $ctx->arg('level');
         $statusFilter = $ctx->arg('status');
         $treatment = $ctx->arg('treatment');
         $owner = $ctx->arg('owner');
 
-        $tenant = null;
-        if ($tenantId !== null) {
-            $tenant = $this->tenantRepository->find((int) $tenantId);
-        } elseif ($userId !== null) {
-            $user = $this->userRepository->find((int) $userId);
-            $tenant = $user?->getTenant();
-        }
-
         $ctx->message($tenant !== null
             ? sprintf('Loading risks for tenant "%s"…', $tenant->getName())
-            : 'Loading risks (no tenant scope)…');
+            : 'Loading risks of all tenants (instance-wide SUPER_ADMIN export)…');
 
+        // null tenant = explicit instance-wide export (SUPER_ADMIN without tenant only)
         $risks = $tenant !== null
             ? $this->riskService->getRisksForTenant($tenant)
-            : $this->riskRepository->findAll();
+            : $this->riskRepository->findBy([]);
 
         if (is_string($level) && $level !== '') {
             $risks = array_filter(

@@ -12,19 +12,18 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * TENANT-ISOLATION NOTE
  * ─────────────────────
- * MappingGapItem has no direct tenant_id column. Tenant scoping is inherited
- * via the chain:  gap_item → mapping → sourceRequirement.uploadTenant /
- * targetRequirement.uploadTenant.
+ * MappingGapItem carries a nullable `tenant` derived from its mapping
+ * (MappingGapItem::setMapping() → ComplianceMapping::getOwnerTenant()):
+ *  - NULL   → gap of a mapping between global catalogue requirements, shared;
+ *  - tenant → gap of a mapping involving that organisation's uploaded
+ *             requirement, visible to that organisation only.
  *
- * Methods that DO NOT join through to the tenant FK (findHighPriorityGaps,
- * getGapStatisticsByType, getGapStatisticsByPriority, calculateTotalRemediationEffort,
- * findLowConfidenceGaps, findAll) are cross-tenant by design and may ONLY be called
- * from admin / quality-dashboard / CLI contexts.
- *
- * For tenant-scoped gap lookups always start from a known ComplianceMapping that
- * itself was retrieved via ComplianceMappingRepository::findAllForTenant(), then
- * call findByMapping() per mapping. Do NOT call findHighPriorityGaps() or
- * similar aggregate methods from tenant-facing controllers.
+ * The entity implements SharedTenantRowsInterface, so inside an HTTP request
+ * the Doctrine TenantFilter restricts every query of this repository (DQL,
+ * find(), lazy collections) to `tenant = current OR tenant IS NULL`. The
+ * aggregate methods below are therefore safe from tenant-facing controllers.
+ * Outside a request (CLI, async jobs) the filter is unarmed and they span all
+ * organisations — scope explicitly there if the result leaves the process.
  *
  * @extends ServiceEntityRepository<MappingGapItem>
  *
@@ -60,11 +59,9 @@ class MappingGapItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find critical/high priority gaps — CROSS-TENANT, admin/quality use only.
+     * Find critical/high priority gaps
      *
-     * Returns gaps across ALL tenants without filtering. Call only from
-     * admin dashboards (MappingQualityController) or CLI commands.
-     * Do NOT call from tenant-facing controllers.
+     * Scoped by the tenant filter, see class docblock.
      *
      * @return MappingGapItem[]
      */
@@ -82,8 +79,7 @@ class MappingGapItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get gap statistics by type — CROSS-TENANT, admin/quality use only.
-     * See class docblock for tenant-isolation guidance.
+     * Get gap statistics by type
      */
     public function getGapStatisticsByType(): array
     {
@@ -98,8 +94,7 @@ class MappingGapItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get gap statistics by priority — CROSS-TENANT, admin/quality use only.
-     * See class docblock for tenant-isolation guidance.
+     * Get gap statistics by priority
      */
     public function getGapStatisticsByPriority(): array
     {
@@ -115,8 +110,7 @@ class MappingGapItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find gaps with low confidence that need manual review — CROSS-TENANT, admin/quality use only.
-     * See class docblock for tenant-isolation guidance.
+     * Find gaps with low confidence that need manual review
      *
      * @return MappingGapItem[]
      */
@@ -133,8 +127,7 @@ class MappingGapItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Calculate total effort required to close all gaps — CROSS-TENANT, admin/quality use only.
-     * See class docblock for tenant-isolation guidance.
+     * Calculate total effort required to close all gaps
      *
      * @return array{total_gaps: int, total_effort: int, by_priority: array}
      */

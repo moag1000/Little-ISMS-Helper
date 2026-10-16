@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Public-fallback Quick-Fix UI: lets self-hosted operators apply pending
@@ -36,6 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class QuickFixController extends AbstractController
 {
+    #[Route('/quick-fix', name: 'app_quick_fix_index', methods: ['GET'])]
     public function index(
         Request $request,
         QuickFixGuard $guard,
@@ -231,13 +233,14 @@ class QuickFixController extends AbstractController
                     ->withValue($cookieToSet)
                     ->withHttpOnly(true)
                     ->withSecure($request->isSecure())
-                    ->withSameSite('Lax'),
+                    ->withSameSite(\Symfony\Component\HttpFoundation\Cookie::SAMESITE_LAX),
             );
         }
 
         return $response;
     }
 
+    #[Route('/quick-fix/apply', name: 'app_quick_fix_apply', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_apply')]
     public function apply(
         Request $request,
@@ -271,6 +274,7 @@ class QuickFixController extends AbstractController
         );
     }
 
+    #[Route('/quick-fix/reconcile', name: 'app_quick_fix_reconcile', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_reconcile')]
     public function reconcile(
         Request $request,
@@ -332,6 +336,7 @@ class QuickFixController extends AbstractController
      * - CSRF token 'quick_fix_force_mark_executed'
      * - Mandatory confirm_already_exists checkbox
      */
+    #[Route('/quick-fix/force-mark-executed', name: 'app_quick_fix_force_mark_executed', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_force_mark_executed')]
     public function forceMarkExecuted(
         Request $request,
@@ -393,6 +398,7 @@ class QuickFixController extends AbstractController
      * - CSRF token 'quick_fix_mark_all_phantom_diff'
      * - Mandatory confirm_all_already_exist checkbox
      */
+    #[Route('/quick-fix/mark-all-phantom-diff', name: 'app_quick_fix_mark_all_phantom_diff', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_mark_all_phantom_diff')]
     public function markAllPhantomDiff(
         Request $request,
@@ -482,6 +488,7 @@ class QuickFixController extends AbstractController
      * Assigns all orphaned entities (tenant IS NULL) to the first available
      * tenant. Idempotent — re-running when 0 orphans is a no-op.
      */
+    #[Route('/quick-fix/repair/orphans', name: 'app_quick_fix_repair_orphans', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_repair_orphans')]
     public function repairOrphans(
         Request $request,
@@ -513,6 +520,7 @@ class QuickFixController extends AbstractController
      * Fixes tenant mismatches (child entity tenant != parent entity tenant).
      * Each fix is audit-logged. Idempotent.
      */
+    #[Route('/quick-fix/repair/tenant-mismatches', name: 'app_quick_fix_repair_mismatches', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_repair_mismatches')]
     public function repairTenantMismatches(
         Request $request,
@@ -545,6 +553,7 @@ class QuickFixController extends AbstractController
      * Keeps the entity with the lowest ID; deletes newer duplicates.
      * Idempotent — zero duplicates means no DB changes.
      */
+    #[Route('/quick-fix/repair/duplicates/{entityType}', name: 'app_quick_fix_repair_duplicates', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_repair_duplicates')]
     public function repairDuplicates(
         Request $request,
@@ -584,6 +593,7 @@ class QuickFixController extends AbstractController
      * Orphan-assign → mismatch-fix → duplicate-merge for all types.
      * Each step is audit-logged individually. Idempotent.
      */
+    #[Route('/quick-fix/repair/all', name: 'app_quick_fix_repair_all', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_repair_all')]
     public function repairAll(
         Request $request,
@@ -626,6 +636,7 @@ class QuickFixController extends AbstractController
      * - CSRF token 'quick_fix_force_schema_update'
      * - Mandatory confirm_force_schema checkbox
      */
+    #[Route('/quick-fix/force-schema-update', name: 'app_quick_fix_force_schema_update', methods: ['POST'])]
     #[IsCsrfTokenValid('quick_fix_force_schema_update')]
     public function forceSchemaUpdate(
         Request $request,

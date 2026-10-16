@@ -67,6 +67,7 @@ final class ReauthController extends AbstractController
      * Body: { "password": "...", "return_to": "/de/..." }
      * Expects JSON response.
      */
+    // @csrf-exempt: gated by the user's own password
     #[Route('/password', name: 'password', methods: ['POST'])]
     public function password(Request $request): Response
     {

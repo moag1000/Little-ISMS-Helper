@@ -68,6 +68,49 @@ class ReportBuilderController extends AbstractController
     }
 
     /**
+     * Reports are scoped by their int tenantId (not covered by the Doctrine
+     * tenant filter). A report of another organisation is treated as not
+     * existing — same pattern as ScheduledReportController::checkAccess().
+     */
+    private function assertSameTenant(CustomReport $report): void
+    {
+        $tenantId = $this->tenantContext->getCurrentTenantId();
+        if ($tenantId === null || $report->getTenantId() !== $tenantId) {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    /** Read access: own organisation + (owner, shared with the user, or shared template). */
+    private function assertCanRead(CustomReport $report, User $user): void
+    {
+        $this->assertSameTenant($report);
+        if (!$report->canAccess($user, $this->tenantContext->getCurrentTenantId())) {
+            throw $this->createAccessDeniedException();
+        }
+    }
+
+    private function isOwner(CustomReport $report, User $user): bool
+    {
+        return $report->getOwner()?->getId() === $user->getId();
+    }
+
+    /**
+     * Per-report CSRF token for the designer's AJAX calls; also accepted as
+     * `_token` form field. Token id: `report_builder_<id>`.
+     */
+    private function hasValidReportToken(CustomReport $report, Request $request): bool
+    {
+        $token = $request->headers->get('X-CSRF-Token') ?? $request->request->get('_token');
+
+        return $this->isCsrfTokenValid('report_builder_' . $report->getId(), is_string($token) ? $token : null);
+    }
+
+    private function csrfErrorJson(): JsonResponse
+    {
+        return new JsonResponse(['error' => 'invalid_csrf_token'], 403);
+    }
+
+    /**
      * Report Builder Index - List user's reports
      */
     #[Route('', name: 'report_builder_index', methods: ['GET'])]
@@ -136,10 +179,14 @@ class ReportBuilderController extends AbstractController
     /**
      * Create report from template
      */
-    #[Route('/from-template/{templateKey}', name: 'report_builder_from_template', methods: ['GET'])]
-    public function createFromTemplate(string $templateKey): Response
+    #[Route('/from-template/{templateKey}', name: 'report_builder_from_template', methods: ['POST'])]
+    public function createFromTemplate(string $templateKey, Request $request): Response
     {
         if ($r = $this->gate()) return $r;
+        if (!$this->isCsrfTokenValid('report_from_template', (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('report_builder_index');
+        }
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
 
@@ -162,13 +209,16 @@ class ReportBuilderController extends AbstractController
      * Clone an existing report
      */
     #[Route('/{id}/clone', name: 'report_builder_clone', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function clone(CustomReport $report): Response
+    public function clone(CustomReport $report, Request $request): Response
     {
         if ($r = $this->gate()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
+        $this->assertCanRead($report, $user);
 
-        if (!$report->canAccess($user)) {
-            throw $this->createAccessDeniedException();
+        if (!$this->isCsrfTokenValid('clone' . $report->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('report_builder_index');
         }
 
         $clone = $report->cloneAsNew($user);
@@ -187,11 +237,9 @@ class ReportBuilderController extends AbstractController
     public function edit(CustomReport $report): Response
     {
         if ($r = $this->gate()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
-
-        if (!$report->canAccess($user) && $report->getOwner() !== $user) {
-            throw $this->createAccessDeniedException();
-        }
+        $this->assertCanRead($report, $user);
 
         $widgetLibrary = $this->reportBuilderService->getWidgetLibrary();
 
@@ -210,10 +258,15 @@ class ReportBuilderController extends AbstractController
     public function save(CustomReport $report, Request $request): JsonResponse
     {
         if ($r = $this->gateJson()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
+        $this->assertSameTenant($report);
 
-        if ($report->getOwner() !== $user) {
+        if (!$this->isOwner($report, $user)) {
             return new JsonResponse(['error' => 'Access denied'], 403);
+        }
+        if (!$this->hasValidReportToken($report, $request)) {
+            return $this->csrfErrorJson();
         }
 
         $data = json_decode($request->getContent(), true);
@@ -257,11 +310,9 @@ class ReportBuilderController extends AbstractController
     public function preview(CustomReport $report): Response
     {
         if ($r = $this->gate()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
-
-        if (!$report->canAccess($user) && $report->getOwner() !== $user) {
-            throw $this->createAccessDeniedException();
-        }
+        $this->assertCanRead($report, $user);
 
         $renderError = null;
         try {
@@ -287,11 +338,9 @@ class ReportBuilderController extends AbstractController
     public function exportPdf(CustomReport $report): Response
     {
         if ($r = $this->gate()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
-
-        if (!$report->canAccess($user) && $report->getOwner() !== $user) {
-            throw $this->createAccessDeniedException();
-        }
+        $this->assertCanRead($report, $user);
 
         $reportData = $this->reportBuilderService->generateReportData($report);
         $report->incrementUsageCount();
@@ -355,13 +404,18 @@ class ReportBuilderController extends AbstractController
      * Toggle favorite status
      */
     #[Route('/{id}/favorite', name: 'report_builder_toggle_favorite', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function toggleFavorite(CustomReport $report): JsonResponse
+    public function toggleFavorite(CustomReport $report, Request $request): JsonResponse
     {
         if ($r = $this->gateJson()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
+        $this->assertSameTenant($report);
 
-        if ($report->getOwner() !== $user) {
+        if (!$this->isOwner($report, $user)) {
             return new JsonResponse(['error' => 'Access denied'], 403);
+        }
+        if (!$this->hasValidReportToken($report, $request)) {
+            return $this->csrfErrorJson();
         }
 
         $report->setIsFavorite(!$report->isFavorite());
@@ -380,17 +434,28 @@ class ReportBuilderController extends AbstractController
     public function share(CustomReport $report, Request $request): JsonResponse
     {
         if ($r = $this->gateJson()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
+        $this->assertSameTenant($report);
 
-        if ($report->getOwner() !== $user) {
+        if (!$this->isOwner($report, $user)) {
             return new JsonResponse(['error' => 'Access denied'], 403);
+        }
+        if (!$this->hasValidReportToken($report, $request)) {
+            return $this->csrfErrorJson();
         }
 
         $data = json_decode($request->getContent(), true);
-        $userIds = $data['user_ids'] ?? [];
+        $requestedIds = is_array($data['user_ids'] ?? null) ? $data['user_ids'] : [];
+
+        // Only colleagues of the report's organisation can be share targets.
+        $userIds = array_map(
+            static fn(User $colleague): int => (int) $colleague->getId(),
+            $this->userRepository->findByIdsInTenant($requestedIds, $this->tenantContext->getCurrentTenant()),
+        );
 
         $report->setSharedWith($userIds);
-        $report->setIsShared(!empty($userIds));
+        $report->setIsShared($userIds !== []);
         $this->entityManager->flush();
 
         return new JsonResponse([
@@ -407,10 +472,15 @@ class ReportBuilderController extends AbstractController
     public function saveAsTemplate(CustomReport $report, Request $request): JsonResponse
     {
         if ($r = $this->gateJson()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
+        $this->assertSameTenant($report);
 
-        if ($report->getOwner() !== $user) {
+        if (!$this->isOwner($report, $user)) {
             return new JsonResponse(['error' => 'Access denied'], 403);
+        }
+        if (!$this->hasValidReportToken($report, $request)) {
+            return $this->csrfErrorJson();
         }
 
         $data = json_decode($request->getContent(), true);
@@ -442,7 +512,8 @@ class ReportBuilderController extends AbstractController
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
-        if ($report->getOwner() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+        $this->assertSameTenant($report);
+        if (!$this->isOwner($report, $currentUser) && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
         }
 
@@ -471,13 +542,19 @@ class ReportBuilderController extends AbstractController
      * Delete report
      */
     #[Route('/{id}/delete', name: 'report_builder_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function delete(CustomReport $report): Response
+    public function delete(CustomReport $report, Request $request): Response
     {
         if ($r = $this->gate()) return $r;
+        /** @var User $user */
         $user = $this->getUser();
+        $this->assertSameTenant($report);
 
-        if ($report->getOwner() !== $user) {
+        if (!$this->isOwner($report, $user)) {
             throw $this->createAccessDeniedException();
+        }
+        if (!$this->isCsrfTokenValid('delete' . $report->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('report_builder_edit', ['id' => $report->getId()]);
         }
 
         $this->entityManager->remove($report);
@@ -495,10 +572,11 @@ class ReportBuilderController extends AbstractController
     public function getUsers(): JsonResponse
     {
         if ($r = $this->gateJson()) return $r;
-        $tenantId = $this->tenantContext->getCurrentTenantId();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        /** @var User $currentUser */
         $currentUser = $this->getUser();
 
-        $users = $this->userRepository->findBy(['tenantId' => $tenantId]);
+        $users = $tenant !== null ? $this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true]) : [];
 
         $result = [];
         foreach ($users as $user) {

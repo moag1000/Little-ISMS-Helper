@@ -34,6 +34,7 @@ class ManagementReview
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?DateTimeInterface $reviewDate = null;
 
+    /** @var Collection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $participants;
 

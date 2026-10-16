@@ -19,9 +19,10 @@
         actions: [
             { label: 'compliance.mapping.hub.title'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_mapping_hub') },
             { label: 'compliance.mapping.seeds.title'|trans({}, 'compliance')|split('—')|first|trim, variant: 'ghost', icon: 'threat', href: path('app_compliance_mapping_seeds_index') },
-            { label: 'compliance.mapping.wizard.title'|trans({}, 'compliance'), variant: 'primary', icon: 'nav-magic', href: path('app_compliance_mapping_wizard') },
+            { label: 'compliance.mapping.wizard.title'|trans({}, 'compliance'), variant: 'primary', icon: 'nav-magic', href: path('app_compliance_mapping_wizard') }
+        ]|merge(is_granted('ROLE_MANAGER') ? [
             { label: 'compliance.mapping.create_link'|trans({}, 'compliance'), variant: 'ghost', icon: 'ui-plus', href: path('app_compliance_mapping_new') }
-        ]
+        ] : [])
     }) }}
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
@@ -255,10 +256,12 @@
                                        class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                     </a>
+                                    {% if is_granted('ROLE_MANAGER') %}
                                     <a href="{{ path('app_compliance_mapping_edit', {id: mapping.id}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                     </a>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>
@@ -312,10 +315,14 @@
                 {% endblock %}
             {% endembed %}
 
-            {# Bulk Action Bar — wired to bulk-actions controller on the card wrapper #}
+            {# Bulk Action Bar — wired to bulk-actions controller on the card wrapper.
+               Mappings are global catalogue data: lifecycle changes need ROLE_MANAGER
+               (draft/review) or ROLE_ADMIN (approve/publish/deprecate). #}
+            {% if is_granted('ROLE_MANAGER') %}
             {% include '_components/_bulk_action_bar.html.twig' with {
-                actions: ['approve', 'status_change']
+                actions: is_granted('ROLE_ADMIN') ? ['approve', 'status_change'] : ['status_change']
             } %}
+            {% endif %}
             {# Override status_change dropdown labels with mapping lifecycle states #}
             <template id="mapping-bulk-status-labels" data-draft="{{ 'compliance.mapping.bulk.status_change.target.draft'|trans({}, 'compliance') }}" data-review="{{ 'compliance.mapping.bulk.status_change.target.review'|trans({}, 'compliance') }}" data-approved="{{ 'compliance.mapping.bulk.status_change.target.approved'|trans({}, 'compliance') }}" data-published="{{ 'compliance.mapping.bulk.status_change.target.published'|trans({}, 'compliance') }}" data-deprecated="{{ 'compliance.mapping.bulk.status_change.target.deprecated'|trans({}, 'compliance') }}"></template>
             {% endif %}

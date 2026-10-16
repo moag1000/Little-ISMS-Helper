@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\Tenant;
+use App\Form\TenantType;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -33,6 +34,8 @@ class TenantManagementControllerTest extends WebTestCase
     private ?User $testUser = null;
     private ?User $adminUser = null;
     private ?User $superAdminUser = null;
+    /** @var list<User> */
+    private array $extraUsers = [];
 
     protected function setUp(): void
     {
@@ -45,6 +48,14 @@ class TenantManagementControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        foreach ($this->extraUsers as $extraUser) {
+            $managed = $this->entityManager->find(User::class, $extraUser->getId());
+            if ($managed !== null) {
+                $this->entityManager->remove($managed);
+            }
+        }
+        $this->entityManager->flush();
+
         // Clean up target tenant first
         if ($this->targetTenant) {
             try {
@@ -236,7 +247,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testShowDisplaysTenantForAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId());
 
@@ -291,7 +302,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testNewDisplaysFormForAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $crawler = $this->client->request('GET', '/en/admin/tenants/new');
 
@@ -302,7 +313,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testNewCreatesTenantWithValidData(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $crawler = $this->client->request('GET', '/en/admin/tenants/new');
         $form = $crawler->filter('form[name="tenant"]')->form([
@@ -328,7 +339,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testEditDisplaysFormForAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $crawler = $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId() . '/edit');
 
@@ -339,7 +350,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testEditUpdatesTenantWithValidData(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $crawler = $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId() . '/edit');
         $form = $crawler->filter('form[name="tenant"]')->form();
@@ -383,13 +394,15 @@ class TenantManagementControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testToggleChangesStatus(): void
+    public function testToggleWithoutCsrfTokenKeepsStatus(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/toggle');
 
-        $this->assertResponseRedirects('/en/admin/tenants');
+        $this->assertResponseRedirects('/en/admin/tenants/' . $this->targetTenant->getId());
+        $this->entityManager->clear();
+        $this->assertTrue($this->entityManager->find(Tenant::class, $this->targetTenant->getId())->isActive());
     }
 
     // ========== DELETE ACTION TESTS ==========
@@ -495,7 +508,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testSetParentAssignsParentTenant(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/set-parent', [
             'parent_id' => $this->testTenant->getId(),
@@ -508,7 +521,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testSetParentRemovesParent(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/set-parent', [
             'parent_id' => '',
@@ -520,7 +533,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testSetParentRejectsInvalidGovernanceModel(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/set-parent', [
             'parent_id' => $this->testTenant->getId(),
@@ -543,7 +556,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testUpdateGovernanceRejectsInvalidModel(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/update-governance', [
             'governance_model' => 'invalid',
@@ -555,7 +568,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testUpdateGovernanceAcceptsValidModels(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         foreach (['hierarchical', 'shared', 'independent'] as $model) {
             $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/update-governance', [
@@ -579,7 +592,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testOrganisationContextDisplaysFormForAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $crawler = $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId() . '/organisation-context');
 
@@ -592,7 +605,7 @@ class TenantManagementControllerTest extends WebTestCase
     #[Test]
     public function testShowHandlesTenantWithNoUsers(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId());
 
@@ -619,5 +632,166 @@ class TenantManagementControllerTest extends WebTestCase
         $this->client->request('GET', '/en/admin/tenants?filter=all');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    // ========== ORGANISATION SCOPE (per-organisation admin vs. instance operator) ==========
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function organisationScopedRequests(): iterable
+    {
+        yield 'show' => ['GET', ''];
+        yield 'edit' => ['GET', '/edit'];
+        yield 'edit submit' => ['POST', '/edit'];
+        yield 'organisation context' => ['GET', '/organisation-context'];
+        yield 'remove user' => ['POST', '/remove-user/1'];
+        yield 'update governance' => ['POST', '/update-governance'];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('organisationScopedRequests')]
+    public function adminCannotActOnAnotherOrganisation(string $method, string $suffix): void
+    {
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request($method, '/en/admin/tenants/' . $this->targetTenant->getId() . $suffix);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function adminCannotReadAnotherOrganisationsIsmsContext(): void
+    {
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request('GET', '/en/admin/tenants/api/tenants/' . $this->targetTenant->getId() . '/isms-context');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function operatorOnlyRequests(): iterable
+    {
+        yield 'create' => ['GET', '/new'];
+        yield 'toggle' => ['POST', '/{own}/toggle'];
+        yield 'delete' => ['POST', '/{own}/delete'];
+        yield 'set parent' => ['POST', '/{own}/set-parent'];
+        yield 'add user' => ['POST', '/{own}/add-user'];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('operatorOnlyRequests')]
+    public function operatorActionsAreDeniedToAnOrganisationAdmin(string $method, string $path): void
+    {
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request($method, '/en/admin/tenants' . str_replace('{own}', (string) $this->testTenant->getId(), $path));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function adminCannotPullAUserOfAnotherOrganisationIntoTheirOwn(): void
+    {
+        $foreignUser = $this->extraUser($this->targetTenant, 'ROLE_USER');
+        $this->loginAsUser($this->adminUser);
+        $this->client->request('GET', '/en/admin/tenants/' . $this->testTenant->getId());
+        $session = $this->client->getRequest()->getSession();
+        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/add_user_' . $this->testTenant->getId(), $token);
+        $session->save();
+
+        $this->client->request('POST', '/en/admin/tenants/' . $this->testTenant->getId() . '/add-user', [
+            '_token' => $token,
+            'user_email' => $foreignUser->getEmail(),
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->entityManager->clear();
+        self::assertSame(
+            $this->targetTenant->getId(),
+            $this->entityManager->find(User::class, $foreignUser->getId())?->getTenant()?->getId(),
+        );
+    }
+
+    #[Test]
+    public function indexAndCorporateStructureListOnlyTheOwnOrganisation(): void
+    {
+        $this->loginAsUser($this->adminUser);
+
+        foreach (['/en/admin/tenants', '/en/admin/tenants/corporate-structure'] as $url) {
+            $this->client->request('GET', $url);
+            $this->assertResponseIsSuccessful();
+            $content = (string) $this->client->getResponse()->getContent();
+            self::assertStringContainsString((string) $this->testTenant->getCode(), $content, $url);
+            self::assertStringNotContainsString((string) $this->targetTenant->getCode(), $content, $url);
+        }
+    }
+
+    #[Test]
+    public function organisationAdminEditsOwnOrganisationButNotItsOperatorFields(): void
+    {
+        $originalCode = $this->testTenant->getCode();
+        $this->loginAsUser($this->adminUser);
+
+        $crawler = $this->client->request('GET', '/en/admin/tenants/' . $this->testTenant->getId() . '/edit');
+        $this->assertResponseIsSuccessful();
+        foreach (TenantType::OPERATOR_FIELDS as $field) {
+            self::assertCount(1, $crawler->filter('[name="tenant[' . $field . ']"][disabled]'), $field . ' must be read-only');
+        }
+
+        $form = $crawler->filter('form[name="tenant"]')->form();
+        $values = $form->getPhpValues();
+        $values['tenant']['name'] = 'Renamed by organisation admin';
+        $values['tenant']['code'] = 'hijacked_code';
+        $values['tenant']['parent'] = (string) $this->targetTenant->getId();
+        $this->client->request('POST', $form->getUri(), $values);
+
+        $this->assertResponseRedirects();
+        $this->entityManager->clear();
+        $reloaded = $this->entityManager->find(Tenant::class, $this->testTenant->getId());
+        self::assertInstanceOf(Tenant::class, $reloaded);
+        self::assertSame('Renamed by organisation admin', $reloaded->getName());
+        self::assertSame($originalCode, $reloaded->getCode());
+        self::assertNull($reloaded->getParent());
+    }
+
+    #[Test]
+    public function governanceOfASubsidiaryIsTheParentOrganisationsDecision(): void
+    {
+        $this->targetTenant->setParent($this->testTenant);
+        $this->entityManager->flush();
+        $subsidiaryAdmin = $this->extraUser($this->targetTenant, 'ROLE_ADMIN');
+        $url = '/en/admin/tenants/' . $this->targetTenant->getId() . '/update-governance';
+
+        $this->loginAsUser($subsidiaryAdmin);
+        $this->client->request('POST', $url, ['governance_model' => 'independent']);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->loginAsUser($this->adminUser);
+        $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId());
+        $this->assertResponseIsSuccessful('the parent organisation\'s admin administers the subsidiary');
+        $this->client->request('POST', $url, ['governance_model' => 'independent']);
+        $this->assertResponseRedirects();
+    }
+
+    private function extraUser(Tenant $tenant, string $role): User
+    {
+        $user = new User();
+        $user->setEmail('tm_extra_' . uniqid() . '@example.com');
+        $user->setFirstName('Extra');
+        $user->setLastName('User');
+        $user->setRoles([$role]);
+        $user->setPassword('hashed_password');
+        $user->setTenant($tenant);
+        $user->setIsActive(true);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        $this->extraUsers[] = $user;
+
+        return $user;
     }
 }

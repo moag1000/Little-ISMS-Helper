@@ -151,6 +151,8 @@ class InternalAudit
      * pass; a single `scoped_framework_id` cannot express that. This M:M
      * is additive: the primary framework stays in `complianceFramework`
      * for backward compatibility, further frameworks land here.
+     *
+     * @var Collection<int, ComplianceFramework>
      */
     #[ORM\ManyToMany(targetEntity: ComplianceFramework::class)]
     #[ORM\JoinTable(name: 'internal_audit_additional_framework')]

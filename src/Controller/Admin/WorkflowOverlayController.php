@@ -252,7 +252,7 @@ final class WorkflowOverlayController extends AbstractController
 
             $this->auditLogger->logUpdate(
                 'WorkflowStepOverlay',
-                sprintf('%s/step/%d', $name, $stepIndex),
+                null, // composite key (workflow/step) lives in the description; entityId is ?int
                 $oldValues,
                 $newValues,
                 sprintf('Workflow-Step-Override für %s / Step %d gespeichert.', $name, $stepIndex),
@@ -296,11 +296,12 @@ final class WorkflowOverlayController extends AbstractController
         $deleted = $this->overrideRepo->deleteStepOverrides($tenant, $name, $stepIndex);
 
         if ($deleted > 0) {
-            $this->auditLogger->logUpdate(
+            // logDelete, not logUpdate: logUpdate only records keys present in
+            // the new values, so an "everything removed" update logged nothing.
+            $this->auditLogger->logDelete(
                 'WorkflowStepOverlay',
-                sprintf('%s/step/%d', $name, $stepIndex),
-                ['deleted_count' => $deleted],
-                [],
+                null, // composite key (workflow/step) lives in the description; entityId is ?int
+                ['workflow' => $name, 'step' => $stepIndex, 'deleted_count' => $deleted],
                 sprintf('Workflow-Step-Overrides für %s / Step %d auf YAML-Baseline zurückgesetzt.', $name, $stepIndex),
             );
         }

@@ -53,20 +53,53 @@
                 {% endif %}
             </div>
         </div>
-        <div class="btn-group" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-            <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
+        {# Activating, deleting and assigning users across organisations are instance-operator tasks #}
+        {% if is_granted('ROLE_SUPER_ADMIN') and statusTransition and is_granted('lifecycle.tenant_lifecycle.' ~ statusTransition, tenant) %}
+            <a href="#tenant-status" class="fa-cyber-btn fa-cyber-btn--{{ statusTransition == 'suspend' ? 'warning' : 'primary' }}">
+                <i class="fa-icon fa-icon--{{ statusTransition == 'suspend' ? 'pause' : 'play' }}" aria-hidden="true"></i>
+                {{ ('tenant.action.' ~ statusTransition)|trans({}, 'tenant') }}
+            </a>
+        {% endif %}
+    </div>
+
+    {% if is_granted('ROLE_SUPER_ADMIN') and statusTransition and is_granted('lifecycle.tenant_lifecycle.' ~ statusTransition, tenant) %}
+    <section class="card mb-4" id="tenant-status" aria-labelledby="tenant-status-title">
+        <div class="card-header">
+            <h2 class="h6 mb-0" id="tenant-status-title">{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}"
                   data-controller="ui-actions"
                   data-action="submit->ui-actions#confirm"
                   data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle_tenant_' ~ tenant.id) }}">
-                <button type="submit"
-                        class="fa-cyber-btn fa-cyber-btn--{% if tenant.isActive %}warning{% else %}primary{% endif %}">
-                    <i class="fa-icon fa-icon--{% if tenant.isActive %}pause{% else %}play{% endif %}" aria-hidden="true"></i>
-                    {{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}
+                {% if statusTransition != 'activate' %}
+                    <div class="mb-3">
+                        <label for="tenant-status-reason" class="form-label">{{ 'tenant.lifecycle.reason'|trans({}, 'tenant') }}</label>
+                        <textarea id="tenant-status-reason" name="reason" class="form-control fa-cyber-input__field" rows="2" required maxlength="1000"
+                                  aria-describedby="tenant-status-reason-help"></textarea>
+                        <small id="tenant-status-reason-help" class="form-text text-muted">{{ 'tenant.lifecycle.reason_help'|trans({}, 'tenant') }}</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tenant-status-approver" class="form-label">{{ 'tenant.lifecycle.approver'|trans({}, 'tenant') }}</label>
+                        <select id="tenant-status-approver" name="four_eyes_approver_id" class="form-select fa-cyber-input__field"
+                                aria-describedby="tenant-status-approver-help">
+                            <option value="">{{ 'tenant.lifecycle.approver_none'|trans({}, 'tenant') }}</option>
+                            {% for approver in fourEyesApprovers %}
+                                <option value="{{ approver.id }}">{{ approver.fullName }} ({{ approver.email }})</option>
+                            {% endfor %}
+                        </select>
+                        <small id="tenant-status-approver-help" class="form-text text-muted">{{ 'tenant.lifecycle.approver_help'|trans({}, 'tenant') }}</small>
+                    </div>
+                {% endif %}
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ statusTransition == 'suspend' ? 'warning' : 'primary' }}">
+                    <i class="fa-icon fa-icon--{{ statusTransition == 'suspend' ? 'pause' : 'play' }}" aria-hidden="true"></i>
+                    {{ ('tenant.action.' ~ statusTransition)|trans({}, 'tenant') }}
                 </button>
             </form>
         </div>
-    </div>
+    </section>
+    {% endif %}
 
     {# Statistics Cards #}
     <div class="row g-3 mb-4">
@@ -444,7 +477,7 @@
     {# End Tab Content #}
 
     {# Danger Zone - Outside tabs, always visible #}
-    {% if userCount == 0 %}
+    {% if userCount == 0 and is_granted('ROLE_SUPER_ADMIN') %}
         <section class="fa-section mt-4">
             <div class="fa-section__header">
                 <h2 class="fa-section__title">
@@ -482,6 +515,7 @@
                     </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
                 <div class="fa-modal__body">
                     {# Add User Section #}
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
                     <div class="mb-4">
                         <h3 class="border-bottom pb-2 mb-3 h6">
                             <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
@@ -503,6 +537,7 @@
                             </small>
                         </form>
                     </div>
+                    {% endif %}
 
                     {# Current Users List #}
                     <div>

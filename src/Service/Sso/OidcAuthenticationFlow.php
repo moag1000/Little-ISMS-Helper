@@ -22,6 +22,7 @@ use Jose\Component\Signature\Algorithm\RS512;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -43,6 +44,7 @@ final class OidcAuthenticationFlow
         private readonly LoggerInterface $logger,
         private readonly ClaimToRoleResolver $roleResolver,
         private readonly SsoEventLogger $eventLogger,
+        private readonly ?\App\Repository\TenantRepository $tenantRepository = null,
     ) {
     }
 
@@ -251,7 +253,9 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
             $claims = $this->verifyIdToken($provider, $values['id_token']);
         }
 
-        if ($provider->getUserinfoEndpoint() !== null) {
+        // getResourceOwner() is typed to the concrete AccessToken; the
+        // interface returned by getAccessToken() is narrowed here.
+        if ($provider->getUserinfoEndpoint() !== null && $token instanceof AccessToken) {
             try {
                 $owner = $client->getResourceOwner($token);
                 $claims = array_merge($claims, $owner->toArray());
@@ -375,8 +379,11 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
         $user->setIsActive(true);
         $user->setRoles([$provider->getDefaultRole() ?: 'ROLE_USER']);
         $user->setCreatedAt(new DateTimeImmutable());
-        if ($provider->getTenant() !== null) {
-            $user->setTenant($provider->getTenant());
+        // A global provider has no organisation: on a single-organisation installation
+        // the account belongs to the sole one (otherwise it sees no organisation's data).
+        $tenant = $provider->getTenant() ?? $this->tenantRepository?->findSoleTenant();
+        if ($tenant !== null) {
+            $user->setTenant($tenant);
         }
         $this->updateProfile($user, $provider, $claims);
         // Claim→role mapping overrides the default role when a mapping rule fires.

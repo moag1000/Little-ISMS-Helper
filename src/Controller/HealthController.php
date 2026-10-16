@@ -11,8 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
  * Public liveness probe — always returns 200 "OK".
  *
  * Intentionally minimal: no DB-call, no DI beyond framework defaults, no
- * locale-routing. Used by Docker HEALTHCHECK and orchestrators (k8s, Compose
- * --wait) to verify nginx + php-fpm + Symfony front-controller are reachable.
+ * locale-routing — served at the fixed path /health (excluded from the
+ * /{_locale} prefix in config/routes.yaml, like /readyz). Used by Docker
+ * HEALTHCHECK and orchestrators (k8s, Compose --wait) to verify nginx +
+ * php-fpm + Symfony front-controller are reachable.
  *
  * Deeper health (DB, migrations, schema-drift) is exposed under
  * /admin/monitoring/health which is auth-gated.

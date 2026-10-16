@@ -453,4 +453,24 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertSame(1, $result['dpia_completed']);
         $this->assertSame(90.0, $result['average_completeness']); // (100 + 80) / 2
     }
+
+    #[Test]
+    public function vvtExportIsDeniedWithoutAnOrganisation(): void
+    {
+        $tenantContext = $this->createMock(TenantContext::class);
+        $tenantContext->method('getCurrentTenant')->willReturn(null);
+        $repository = $this->createMock(ProcessingActivityRepository::class);
+        $repository->expects($this->never())->method('findActiveByTenant');
+        $service = new ProcessingActivityService(
+            $repository,
+            $this->createStub(EntityManagerInterface::class),
+            $tenantContext,
+            $this->createStub(Security::class),
+            $this->createStub(AuditLogger::class),
+            $this->createStub(LifecycleTransitionInterface::class),
+        );
+
+        $this->expectException(\Symfony\Component\Security\Core\Exception\AccessDeniedException::class);
+        $service->generateVVTExport();
+    }
 }

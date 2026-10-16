@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use App\Entity\MfaToken;
 use App\Repository\MfaTokenRepository;
 use App\Service\AuditLogger;
@@ -18,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 /**
  * User-facing MFA self-service controller
@@ -99,6 +99,7 @@ class ProfileMfaController extends AbstractController
         ]);
     }
 
+    // @csrf-exempt: gated by a TOTP code only the device holder knows
     #[Route('/profile/mfa/{id}/verify', name: 'app_profile_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function verify(MfaToken $mfaToken, Request $request): JsonResponse
     {
@@ -139,7 +140,7 @@ class ProfileMfaController extends AbstractController
                 'message' => $this->translator->trans('mfa.error.invalid_code', [], 'mfa'),
             ], Response::HTTP_BAD_REQUEST);
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('MFA verification failed', [
                 'error' => $e->getMessage(),
                 'token_id' => $mfaToken->getId(),

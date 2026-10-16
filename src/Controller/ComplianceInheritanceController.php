@@ -21,6 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 // Class gate is ROLE_USER (read-only access to the queue + pending-count) so the
@@ -96,6 +98,7 @@ final class ComplianceInheritanceController extends AbstractController
     #[Route('/activate/{frameworkCode}', name: 'activate', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     #[IsGranted(ComplianceInheritanceVoter::CREATE_SUGGESTIONS)]
+    #[IsCsrfTokenValid(new Expression('"inherit-" ~ args["frameworkCode"]'))]
     public function activate(string $frameworkCode): Response
     {
 
@@ -123,6 +126,7 @@ final class ComplianceInheritanceController extends AbstractController
     #[Route('/bulk-confirm/{frameworkCode}', name: 'bulk_confirm', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     #[IsGranted(ComplianceInheritanceVoter::CONFIRM)]
+    #[IsCsrfTokenValid(new Expression('"inheritance_bulk_confirm_" ~ args["frameworkCode"]'))]
     public function bulkConfirm(string $frameworkCode, Request $request): Response
     {
 

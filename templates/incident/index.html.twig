@@ -234,6 +234,7 @@
         <div class="col-md-4">
             <label for="filter-flags" class="form-label">{{ 'common.filter'|trans({}, 'messages') }}</label>
             <div class="d-flex gap-3 pt-1">
+                {% if is_module_active('privacy') %}
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="data_breach_only" value="1" id="filter-data-breach"
                            {{ app.request.query.get('data_breach_only') == '1' ? 'checked' : '' }}>
@@ -241,11 +242,14 @@
                         {{ 'incident.field.data_breach_occurred'|trans({}, 'incident') }}
                     </label>
                 </div>
+                {% endif %}
+                {% if is_module_active('nis2_dora') %}
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="nis2_only" value="1" id="filter-nis2"
                            {{ app.request.query.get('nis2_only') == '1' ? 'checked' : '' }}>
                     <label class="form-check-label" for="filter-nis2">NIS2</label>
                 </div>
+                {% endif %}
             </div>
         </div>
     {% endblock %}

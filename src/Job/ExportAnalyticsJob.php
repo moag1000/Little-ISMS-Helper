@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\RiskRepository;
+use App\Service\Job\JobTenantScope;
 use Symfony\Component\HttpKernel\KernelInterface;
 use App\Util\CsvSanitizer;
 
@@ -23,17 +25,21 @@ use App\Util\CsvSanitizer;
  * Args:
  *   type ('risks'|'assets'|'compliance') Dataset slice. Validated by both
  *                                        dispatcher and job. Default 'risks'.
+ *   + the tenant scope from {@see JobTenantScope::argsForCurrentUser()}.
+ *     Every query is scoped to that tenant explicitly (the Doctrine tenant
+ *     filter is unarmed outside the HTTP request); a job without scope fails.
  *
  * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportAnalyticsJob implements AsyncJobInterface
 {
-    private const ALLOWED_TYPES = ['risks', 'assets', 'compliance'];
+    public const array ALLOWED_TYPES = ['risks', 'assets', 'compliance'];
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
         private readonly AssetRepository $assetRepository,
         private readonly ControlRepository $controlRepository,
+        private readonly JobTenantScope $tenantScope,
         private readonly KernelInterface $kernel,
     ) {
     }
@@ -46,12 +52,10 @@ final class ExportAnalyticsJob implements AsyncJobInterface
             throw new \RuntimeException(sprintf('Unsupported analytics export type "%s".', $type));
         }
 
+        $tenant = $this->tenantScope->resolve($ctx);
+
         $ctx->message(sprintf('Loading %s dataset…', $type));
-        $rows = match ($type) {
-            'risks' => $this->buildRiskRows(),
-            'assets' => $this->buildAssetRows(),
-            'compliance' => $this->buildComplianceRows(),
-        };
+        $rows = $this->rows($type, $tenant);
 
         $total = max(count($rows) - 1, 0); // exclude header for progress display
         $ctx->progress(0, max($total, 1), sprintf('Writing %d row(s) to CSV…', $total));
@@ -87,11 +91,29 @@ final class ExportAnalyticsJob implements AsyncJobInterface
     }
 
     /**
+     * CSV rows (header first) of one export type, scoped to $tenant — shared
+     * with the synchronous export so both apply the same organisation scope.
+     *
+     * @param value-of<self::ALLOWED_TYPES> $type
+     * @param Tenant|null $tenant null ONLY for the instance-wide SUPER_ADMIN export
+     *
      * @return list<list<mixed>>
      */
-    private function buildRiskRows(): array
+    public function rows(string $type, ?Tenant $tenant): array
     {
-        $risks = $this->riskRepository->findAll();
+        return match ($type) {
+            'risks' => $this->buildRiskRows($tenant),
+            'assets' => $this->buildAssetRows($tenant),
+            'compliance' => $this->buildComplianceRows($tenant),
+        };
+    }
+
+    /**
+     * @return list<list<mixed>>
+     */
+    private function buildRiskRows(?Tenant $tenant): array
+    {
+        $risks = $this->riskRepository->findBy($this->criteria($tenant));
         $data = [
             ['ID', 'Title', 'Probability', 'Impact', 'Risk Level', 'Status', 'Created At'],
         ];
@@ -113,9 +135,9 @@ final class ExportAnalyticsJob implements AsyncJobInterface
     /**
      * @return list<list<mixed>>
      */
-    private function buildAssetRows(): array
+    private function buildAssetRows(?Tenant $tenant): array
     {
-        $assets = $this->assetRepository->findAll();
+        $assets = $this->assetRepository->findBy($this->criteria($tenant));
         $data = [
             ['ID', 'Name', 'Type', 'Criticality', 'Owner', 'Created At'],
         ];
@@ -135,9 +157,9 @@ final class ExportAnalyticsJob implements AsyncJobInterface
     /**
      * @return list<list<mixed>>
      */
-    private function buildComplianceRows(): array
+    private function buildComplianceRows(?Tenant $tenant): array
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->controlRepository->findBy($this->criteria($tenant));
         $data = [
             ['Control ID', 'Name', 'Status', 'Implementation Date'],
         ];
@@ -150,6 +172,17 @@ final class ExportAnalyticsJob implements AsyncJobInterface
             ];
         }
         return $data;
+    }
+
+    /**
+     * Query criteria for the resolved scope. An empty criteria array (all
+     * rows) only happens for the explicit instance-wide SUPER_ADMIN export.
+     *
+     * @return array<string, Tenant>
+     */
+    private function criteria(?Tenant $tenant): array
+    {
+        return $tenant !== null ? ['tenant' => $tenant] : [];
     }
 
     private function ensureExportDir(string $dir): void

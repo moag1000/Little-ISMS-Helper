@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Person;
 use App\Entity\User;
@@ -19,6 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[RequiresModule('persons')]
 class PersonController extends AbstractController
 {
     public function __construct(

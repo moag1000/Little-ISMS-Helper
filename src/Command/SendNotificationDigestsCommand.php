@@ -144,12 +144,15 @@ final class SendNotificationDigestsCommand
                 $this->mailer->send($email);
 
                 $responsePayload = ['recipients' => $recipients, 'digest_count' => count($deliveries)];
-                $sentAt          = new DateTimeImmutable();
 
+                // Channel-dispatch API of NotificationDelivery (same as
+                // EmailChannel / markFailed above): pending_digest → sent is
+                // the `digest_dispatch` step of notification_delivery_lifecycle.
+                // The mail is already out at this point, so a guard that could
+                // veto the transition (no tenant context in cron) would only
+                // cause a resend tomorrow.
                 foreach ($deliveries as $delivery) {
-                    $delivery->setStatus(NotificationDelivery::STATUS_SENT);
-                    $delivery->setDeliveredAt($sentAt);
-                    $delivery->setResponsePayload($responsePayload);
+                    $delivery->markSent($responsePayload);
                 }
 
                 $this->entityManager->flush();

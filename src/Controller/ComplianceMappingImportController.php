@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\FileUploadSecurityService;
 use App\Service\Import\CrossFrameworkMappingImporter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -31,6 +32,7 @@ class ComplianceMappingImportController extends AbstractController
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly CrossFrameworkMappingImporter $importer,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
     ) {
     }
 
@@ -101,6 +103,12 @@ class ComplianceMappingImportController extends AbstractController
         }
         if ($file->getSize() !== null && $file->getSize() > self::MAX_CSV_BYTES) {
             $error = 'compliance.mapping.import.error.file_too_large';
+            return null;
+        }
+        if (strtolower($file->getClientOriginalExtension()) !== 'csv'
+            || !$this->fileUploadSecurityService->validateUpload($file, FileUploadSecurityService::PROFILE_TABULAR_IMPORT)['valid']
+        ) {
+            $error = 'compliance.mapping.import.error.file_type';
             return null;
         }
 

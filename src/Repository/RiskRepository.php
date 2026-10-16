@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Tenant;
 use App\Entity\Risk;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -249,7 +250,7 @@ class RiskRepository extends ServiceEntityRepository
         ?DateTimeInterface $asOf = null,
     ): array {
         $asOf ??= new DateTime('today');
-        $deadline = (clone $asOf)->modify(sprintf('+%d days', max(0, $withinDays)));
+        $deadline = DateTimeImmutable::createFromInterface($asOf)->modify(sprintf('+%d days', max(0, $withinDays)));
 
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
@@ -341,13 +342,13 @@ class RiskRepository extends ServiceEntityRepository
         $filters = $em->getFilters();
         $wasEnabled = $filters->isEnabled('tenant_filter');
         if ($wasEnabled) {
-            $filters->disable('tenant_filter');
+            $filters->suspend('tenant_filter');
         }
         try {
             return $fn();
         } finally {
             if ($wasEnabled) {
-                $filters->enable('tenant_filter');
+                $filters->restore('tenant_filter');
             }
         }
     }

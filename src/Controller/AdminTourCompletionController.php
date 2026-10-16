@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\GuidedTourService;
+use App\Service\Job\JobTenantScope;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,11 @@ use App\Util\CsvSanitizer;
  *
  * ISO 27001 A.6.3 Awareness-Training Audit-Nachweis: welche User haben
  * welche Tour durchlaufen? Plus Bulk-Reset-Action für Admins.
+ *
+ * Tenant scope: ROLE_ADMIN is a per-organisation admin, so list, CSV export
+ * and reset only cover users of the admin's own organisation. Only a
+ * SUPER_ADMIN without an organisation sees every tenant's users (same rule
+ * as the user export, {@see JobTenantScope}).
  */
 #[IsGranted('ROLE_ADMIN')]
 class AdminTourCompletionController extends AbstractController
@@ -31,7 +37,21 @@ class AdminTourCompletionController extends AbstractController
         private readonly GuidedTourService $tourService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
+        private readonly JobTenantScope $tenantScope,
     ) {
+    }
+
+    /**
+     * @return list<User>
+     */
+    private function visibleUsers(): array
+    {
+        $scope = $this->tenantScope->currentUserScope();
+
+        /** @var list<User> $users */
+        $users = $this->userRepository->findBy($scope !== null ? ['tenant' => $scope] : [], ['email' => 'ASC']);
+
+        return $users;
     }
 
     #[Route('/admin/tours/completion', name: 'admin_tour_completion_index', methods: ['GET'])]
@@ -41,7 +61,7 @@ class AdminTourCompletionController extends AbstractController
         $onlyIncomplete = $request->query->getBoolean('only_incomplete');
         $search = trim((string) $request->query->get('q', ''));
 
-        $users = $this->userRepository->findBy([], ['email' => 'ASC']);
+        $users = $this->visibleUsers();
         $tours = GuidedTourService::ALL_TOURS;
 
         $rows = [];
@@ -92,7 +112,7 @@ class AdminTourCompletionController extends AbstractController
     #[Route('/admin/tours/completion/export.csv', name: 'admin_tour_completion_export', methods: ['GET'])]
     public function export(): StreamedResponse
     {
-        $users = $this->userRepository->findBy([], ['email' => 'ASC']);
+        $users = $this->visibleUsers();
         $tours = GuidedTourService::ALL_TOURS;
 
         $response = new StreamedResponse(function () use ($users, $tours): void {
@@ -132,7 +152,9 @@ class AdminTourCompletionController extends AbstractController
         }
 
         $user = $this->userRepository->find($id);
-        if (!$user instanceof User) {
+        $scope = $this->tenantScope->currentUserScope();
+        // Users of other organisations are treated as non-existent.
+        if (!$user instanceof User || ($scope !== null && $user->getTenant()?->getId() !== $scope->getId())) {
             throw $this->createNotFoundException();
         }
 

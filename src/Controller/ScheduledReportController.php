@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ScheduledReport;
 use App\Form\ScheduledReportType;
@@ -25,6 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/reports/scheduled')]
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('scheduled_reports')]
 class ScheduledReportController extends AbstractController
 {
     use InPageFormTrait;

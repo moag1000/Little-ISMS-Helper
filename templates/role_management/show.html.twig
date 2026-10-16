@@ -15,10 +15,11 @@
     {{ _fa_page_header.render({
         badge: { icon: 'nav-shield-lock', label: role.systemRole ? 'role_management.badge.system'|trans({}, 'role_management') : 'role_management.badge.custom'|trans({}, 'role_management') },
         title: role.name,
-        actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('role_management_edit', {id: role.id}) },
+        actions: (is_granted('role.edit', role) ? [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('role_management_edit', {id: role.id}) }
+        ] : [])|merge([
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_index') }
-        ]
+        ])
     }) }}
 
     {# Stats #}
@@ -112,13 +113,15 @@
 
     {# Action Buttons #}
     <div class="d-flex gap-2 mt-4">
+        {% if is_granted('role.edit', role) %}
         <a href="{{ path('role_management_edit', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
+        {% endif %}
         <a href="{{ path('role_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
-        {% if not role.systemRole %}
+        {% if is_granted('role.delete', role) %}
             <form method="post" action="{{ path('role_management_delete', {id: role.id}) }}" class="d-inline"
                   data-controller="ui-actions"
                   data-action="submit->ui-actions#confirm"

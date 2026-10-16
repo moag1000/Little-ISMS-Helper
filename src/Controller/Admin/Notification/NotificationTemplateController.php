@@ -13,6 +13,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\Notification\TemplateInstantiator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -69,7 +70,8 @@ class NotificationTemplateController extends AbstractController
     }
 
     #[Route('/{id}/apply', name: 'apply', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsCsrfTokenValid('notification_template_apply_{id}')]
+    // The token id must be an Expression: a literal '{id}' is not interpolated.
+    #[IsCsrfTokenValid(new Expression('"notification_template_apply_" ~ args["template"].getId()'))]
     public function apply(
         NotificationTemplate $template,
         Request $request,

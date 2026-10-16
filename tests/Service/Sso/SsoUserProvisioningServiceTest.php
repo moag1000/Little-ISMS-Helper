@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Service\Sso;
 
 use App\Entity\IdentityProvider;
+use App\Entity\Tenant;
 use App\Entity\User;
+use App\Repository\TenantRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Sso\ClaimToRoleResolver;
@@ -195,5 +197,30 @@ final class SsoUserProvisioningServiceTest extends TestCase
         $user = $this->makeService()->provision($this->provider, $claims);
 
         self::assertContains('ROLE_AUDITOR', $user->getRoles());
+    }
+
+    #[Test]
+    public function globalProviderAssignsTheSoleOrganisationOfTheInstallation(): void
+    {
+        $this->userRepo->method('findOneBy')->willReturn(null);
+        $sole = new Tenant();
+        $tenants = $this->createStub(TenantRepository::class);
+        $tenants->method('findSoleTenant')->willReturn($sole);
+        $svc = new SsoUserProvisioningService(
+            $this->userRepo,
+            $this->em,
+            $this->audit,
+            new NullLogger(),
+            $this->resolver,
+            $this->ssoLogger,
+            $this->fteRecorder,
+            $tenants,
+        );
+
+        $claims = ['sub' => 'sole-sub', 'email' => 'sole@acme.com', 'given_name' => 'Sole', 'family_name' => 'User'];
+        $user = $svc->provision($this->provider, $claims);
+
+        self::assertNull($this->provider->getTenant(), 'precondition: a global provider');
+        self::assertSame($sole, $user->getTenant());
     }
 }

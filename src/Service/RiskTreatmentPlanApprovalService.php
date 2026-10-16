@@ -195,17 +195,16 @@ class RiskTreatmentPlanApprovalService
 
         // Send to specific users if assigned
         if ($assignedUsers && is_array($assignedUsers)) {
-            foreach ($assignedUsers as $userId) {
-                $user = $this->userRepository->find($userId);
-                if ($user) {
-                    $this->sendNotificationToUser($riskTreatmentPlan, $user, $approvalLevel);
-                }
+            // Restricted to the plan's organisation: step user ids are plain
+            // integers and must never reach another tenant's users.
+            foreach ($this->userRepository->findByIdsInTenant($assignedUsers, $riskTreatmentPlan->getTenant()) as $user) {
+                $this->sendNotificationToUser($riskTreatmentPlan, $user, $approvalLevel);
             }
         }
 
         // Send to all users with assigned role
         if ($assignedRole) {
-            $roleUsers = $this->userRepository->findByRole($assignedRole);
+            $roleUsers = $this->userRepository->findByRoleInTenant($assignedRole, $riskTreatmentPlan->getTenant());
             foreach ($roleUsers as $roleUser) {
                 $this->sendNotificationToUser($riskTreatmentPlan, $roleUser, $approvalLevel);
             }

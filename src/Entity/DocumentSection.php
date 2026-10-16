@@ -94,6 +94,14 @@ class DocumentSection
     private string $status = self::STATUS_DRAFT;
 
     /**
+     * Optimistic lock for the lifecycle (LifecycleController answers a
+     * stale lock_version with HTTP 409).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: Types::INTEGER, options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Substituted body of this section. Captured at the moment the
      * section is approved so subsequent template edits don't silently
      * mutate published evidence.
@@ -371,5 +379,10 @@ class DocumentSection
     public function isRejected(): bool
     {
         return $this->status === self::STATUS_REJECTED;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

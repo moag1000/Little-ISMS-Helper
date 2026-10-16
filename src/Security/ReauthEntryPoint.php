@@ -7,8 +7,10 @@ namespace App\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
 /**
@@ -21,6 +23,12 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
  *
  * For unauthenticated users (no token), falls back to the default
  * FormLoginAuthenticator behavior: redirect to login_path.
+ *
+ * A failed #[IsCsrfTokenValid] check raises InvalidCsrfTokenException, which
+ * Symfony classifies as an AuthenticationException and routes here. That is
+ * not a login problem (the user is authenticated; the request is forged or
+ * stale), so it becomes a plain 403 instead of a redirect to /login. Fetch
+ * callers then get a 403 they can report, not the login page as HTML.
  */
 final class ReauthEntryPoint implements AuthenticationEntryPointInterface
 {
@@ -33,6 +41,10 @@ final class ReauthEntryPoint implements AuthenticationEntryPointInterface
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
+        if ($authException instanceof InvalidCsrfTokenException) {
+            throw new AccessDeniedHttpException('Invalid CSRF token.', $authException);
+        }
+
         $challenge = $this->responder->tryRespond($request);
         if ($challenge !== null) {
             return $challenge;

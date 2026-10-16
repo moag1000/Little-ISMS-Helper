@@ -236,22 +236,35 @@ export default class extends Controller {
         }
 
         try {
+            const csrfToken = this._getCsrfToken();
             const response = await fetch(this.endpointValue + '/bulk-delete', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
                 },
-                body: JSON.stringify({ ids })
+                body: JSON.stringify({ ids, _token: csrfToken })
             });
 
+            const result = await response.json().catch(() => ({}));
             if (!response.ok) {
-                throw new Error('Bulk delete failed');
+                const reason = (result.errors && result.errors[0]) || result.error || `HTTP ${response.status}`;
+                throw new Error(reason);
+            }
+
+            // Partial success (some ids rejected server-side): report and
+            // reload so the list shows exactly what is left.
+            if (Array.isArray(result.errors) && result.errors.length > 0) {
+                this.showToast(this.deleteErrorValue + result.errors.join('; '), 'warning');
+                this.hideActionBar();
+                setTimeout(() => window.location.reload(), 1500);
+                return;
             }
 
             // Show success toast
             const successMsg = this.deleteSuccessValue
-                .replace('%count%', ids.length)
+                .replace('%count%', result.deleted ?? ids.length)
                 .replace('%entity%', entityLabel);
             this.showToast(successMsg, 'success');
 

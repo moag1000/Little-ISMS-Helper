@@ -1946,6 +1946,7 @@ share:
         note_saved: 'Notiz erfolgreich gespeichert.'
     warning:
         unknown_action: 'Unbekannte Aktion.'
+        file_rejected: 'Die Datei "%name%" wurde abgelehnt (Dateityp oder -größe nicht erlaubt).'
     title: 'Inhalt teilen'
     content_preview: 'Geteilter Inhalt'
     select_action: 'Was möchten Sie tun?'

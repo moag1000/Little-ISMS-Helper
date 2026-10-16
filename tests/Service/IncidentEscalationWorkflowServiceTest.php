@@ -76,7 +76,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $incidentManager = $this->createUser(10, 'manager@example.com', 'Incident', 'Manager');
 
         // Mock user repository to return incident manager
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturn([$incidentManager]);
 
         // Low severity should NOT start a workflow (only notification)
@@ -117,7 +117,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $incidentManager = $this->createUser(10, 'manager@example.com', 'Incident', 'Manager');
         $workflowInstance = $this->createWorkflowInstance('in_progress');
 
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturn([$incidentManager]);
 
         // Medium severity should start workflow
@@ -148,7 +148,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $workflowInstance = $this->createWorkflowInstance('in_progress');
 
         // Mock user repository for both roles
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($incidentManager, $ciso) {
                 return match ($role) {
                     'ROLE_INCIDENT_MANAGER' => [$incidentManager],
@@ -187,7 +187,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $workflowInstance = $this->createWorkflowInstance('in_progress');
 
         // Mock user repository for multiple roles
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($incidentManager, $ciso, $manager1, $manager2) {
                 return match ($role) {
                     'ROLE_INCIDENT_MANAGER' => [$incidentManager],
@@ -224,7 +224,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $workflowInstance = $this->createWorkflowInstance('in_progress');
 
         // Mock user repository for data breach roles
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($dpo, $ciso, $ceo) {
                 return match ($role) {
                     'ROLE_DPO' => [$dpo],
@@ -260,6 +260,23 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
     }
 
     #[Test]
+    public function testEscalationRecipientsAreResolvedInsideTheIncidentTenant(): void
+    {
+        $incident = $this->createIncident(8, 'INC-008', 'critical', false);
+        $incidentTenant = $incident->getTenant();
+        $this->workflowService->method('startWorkflow')->willReturn($this->createWorkflowInstance('in_progress'));
+
+        // Every role lookup must be scoped to the incident's own tenant —
+        // an unscoped lookup would mail incident details to other organisations.
+        $this->userRepository->expects($this->atLeastOnce())
+            ->method('findByRoleInTenant')
+            ->with($this->isString(), $this->identicalTo($incidentTenant))
+            ->willReturn([]);
+
+        $this->service->autoEscalate($incident);
+    }
+
+    #[Test]
     public function testGdprDeadlineCalculation(): void
     {
         // Create incident with detectedAt set to current time
@@ -268,7 +285,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $incident->method('getDetectedAt')->willReturn($now);
 
         $dpo = $this->createUser(40, 'dpo@example.com', 'Data', 'Protection Officer');
-        $this->userRepository->method('findByRole')->willReturn([$dpo]);
+        $this->userRepository->method('findByRoleInTenant')->willReturn([$dpo]);
         $this->workflowService->method('startWorkflow')->willReturn($this->createWorkflowInstance('in_progress'));
 
         $result = $this->service->autoEscalate($incident);
@@ -299,7 +316,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $incidentManager = $this->createUser(10, 'manager@example.com', 'Incident', 'Manager');
         $workflowInstance = $this->createWorkflowInstance('in_progress');
 
-        $this->userRepository->method('findByRole')->willReturn([$incidentManager]);
+        $this->userRepository->method('findByRoleInTenant')->willReturn([$incidentManager]);
 
         // First call should create workflow
         $this->workflowService->expects($this->atLeastOnce())
@@ -322,7 +339,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $incident = $this->createIncident(8, 'INC-008', 'critical', true);
 
         // No DPO exists in system - should handle gracefully
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturn([]); // No users found for any role
 
         $this->workflowService->method('startWorkflow')
@@ -347,7 +364,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         // Same user has multiple roles (ROLE_INCIDENT_MANAGER + ROLE_CISO + ROLE_MANAGER)
         $multiRoleUser = $this->createUser(60, 'multi@example.com', 'Multi', 'Role');
 
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($multiRoleUser) {
                 // Return same user for all roles
                 return [$multiRoleUser];
@@ -376,7 +393,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $incident = $this->createIncident(10, 'INC-010', 'low', false);
         $incidentManager = $this->createUser(10, 'manager@example.com', 'Incident', 'Manager');
 
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($incidentManager) {
                 return match ($role) {
                     'ROLE_INCIDENT_MANAGER' => [$incidentManager],

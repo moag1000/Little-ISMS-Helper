@@ -1887,6 +1887,7 @@ share:
         note_saved: 'Note saved successfully.'
     warning:
         unknown_action: 'Unknown action.'
+        file_rejected: 'The file "%name%" was rejected (file type or size not allowed).'
     title: 'Share Content'
     content_preview: 'Shared Content'
     select_action: 'What would you like to do?'

@@ -98,6 +98,26 @@ final class WorkflowServiceLifecycleTest extends TestCase
     }
 
     #[Test]
+    public function finalApprovalPassesInitiatorAndApproverForFourEyes(): void
+    {
+        $step = $this->buildStep(1, 'Final Review', 5);
+        $workflow = $this->buildWorkflow('Test', 'Risk', [$step]);
+        $instance = $this->buildRealInstance('in_progress', $step, $workflow);
+        $initiator = $this->buildUser(1, 'Ina', 'Initiator');
+        $approver = $this->buildUser(2, 'Al', 'Approver');
+        $instance->setInitiatedBy($initiator);
+
+        // workflow_instance_lifecycle.approve is four_eyes: FourEyesValidator
+        // needs the initiator as `user` and the final approver as
+        // `four_eyes_approver`, otherwise the transition always throws.
+        $this->lifecycleService->expects($this->once())
+            ->method('transition')
+            ->with($instance, 'workflow_instance_lifecycle', 'approve', $initiator, 'looks good', $approver);
+
+        $this->service->moveToNextStep($instance, $approver, 'looks good');
+    }
+
+    #[Test]
     public function moveToNextStepOnIntermediateStepDoesNotTransition(): void
     {
         $step1 = $this->buildStep(1, 'Step 1', 3);
@@ -222,7 +242,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $qb->method('expr')->willReturn(new \Doctrine\ORM\Query\Expr());
         $this->entityManager->method('createQueryBuilder')->willReturn($qb);
 
-        $this->userRepository->method('findByRole')->willReturn([]);
+        $this->userRepository->method('findByRoleInTenant')->willReturn([]);
 
         $this->lifecycleService->expects($this->once())
             ->method('transition')

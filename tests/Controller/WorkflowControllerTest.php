@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -27,6 +28,8 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class WorkflowControllerTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
@@ -637,11 +640,26 @@ class WorkflowControllerTest extends WebTestCase
     public function testStartWorkflowForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
+        $token = $this->seedSessionCsrfToken($this->client, 'workflow_start_Risk_999');
 
-        $this->client->request('POST', '/en/workflow/start/Risk/999?workflow=test');
+        $this->client->request('POST', '/en/workflow/start/Risk/999?workflow=test', ['_token' => $token]);
 
         // Should redirect (either to new instance or with error)
         $this->assertResponseRedirects();
+    }
+
+    #[Test]
+    public function testStartWorkflowRejectsMissingOrWrongCsrfToken(): void
+    {
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request('POST', '/en/workflow/start/Risk/999?workflow=test');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        // Token for another entity must not be accepted.
+        $token = $this->seedSessionCsrfToken($this->client, 'workflow_start_Risk_1');
+        $this->client->request('POST', '/en/workflow/start/Risk/999?workflow=test', ['_token' => $token]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // ========== BUILDER TESTS ==========

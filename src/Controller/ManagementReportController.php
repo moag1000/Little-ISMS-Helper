@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use DateTime;
 use DateTimeImmutable;
 use App\Controller\Trait\PdfLocaleTrait;
@@ -109,10 +110,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="executive_summary_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'executive_summary_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== RISK MANAGEMENT REPORTS =====================
@@ -150,10 +148,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="risk_management_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'risk_management_report_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     #[Route('/risk/excel', name: 'app_management_reports_risk_excel', methods: ['GET'])]
@@ -214,15 +209,13 @@ class ManagementReportController extends AbstractController
         $spreadsheet->setActiveSheetIndex(0);
         $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, Response::HTTP_OK, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="risk_management_report_' . date('Y-m-d') . '.xlsx"',
-        ]);
+        return $this->excelDownload($excel, 'risk_management_report_' . date('Y-m-d') . '.xlsx');
     }
 
     // ===================== BCM REPORTS =====================
 
     #[Route('/bcm', name: 'app_management_reports_bcm', methods: ['GET'])]
+    #[RequiresModule('bcm')]
     public function bcm(): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -235,6 +228,7 @@ class ManagementReportController extends AbstractController
     }
 
     #[Route('/bcm/pdf', name: 'app_management_reports_bcm_pdf', methods: ['GET'])]
+    #[RequiresModule('bcm')]
     public function bcmPdf(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -253,10 +247,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="bcm_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'bcm_report_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== COMPLIANCE REPORTS =====================
@@ -290,10 +281,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="compliance_status_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'compliance_status_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== AUDIT REPORTS =====================
@@ -325,10 +313,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="audit_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'audit_report_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== ASSET REPORTS =====================
@@ -360,10 +345,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="asset_inventory_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'asset_inventory_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     #[Route('/assets/excel', name: 'app_management_reports_assets_excel', methods: ['GET'])]
@@ -391,15 +373,13 @@ class ManagementReportController extends AbstractController
         $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Asset Inventory');
         $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, Response::HTTP_OK, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="asset_inventory_' . date('Y-m-d') . '.xlsx"',
-        ]);
+        return $this->excelDownload($excel, 'asset_inventory_' . date('Y-m-d') . '.xlsx');
     }
 
     // ===================== GDPR / DATA BREACH REPORTS =====================
 
     #[Route('/gdpr', name: 'app_management_reports_gdpr', methods: ['GET'])]
+    #[RequiresModule('privacy')]
     public function gdpr(): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -410,6 +390,7 @@ class ManagementReportController extends AbstractController
     }
 
     #[Route('/gdpr/pdf', name: 'app_management_reports_gdpr_pdf', methods: ['GET'])]
+    #[RequiresModule('privacy')]
     public function gdprPdf(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -426,10 +407,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="data_breach_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'data_breach_report_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== BOARD ONE-PAGER =====================
@@ -494,10 +472,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="board-one-pager_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'board-one-pager_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== CERTIFICATION READINESS =====================
@@ -531,10 +506,7 @@ class ManagementReportController extends AbstractController
             )
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="certification_readiness_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'certification_readiness_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     /**
@@ -646,6 +618,7 @@ class ManagementReportController extends AbstractController
     // ===================== BCM EXCEL EXPORT =====================
 
     #[Route('/bcm/excel', name: 'app_management_reports_bcm_excel', methods: ['GET'])]
+    #[RequiresModule('bcm')]
     public function bcmExcel(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -713,10 +686,7 @@ class ManagementReportController extends AbstractController
         $spreadsheet->setActiveSheetIndex(0);
         $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, Response::HTTP_OK, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="bcm_report_' . date('Y-m-d') . '.xlsx"',
-        ]);
+        return $this->excelDownload($excel, 'bcm_report_' . date('Y-m-d') . '.xlsx');
     }
 
     // ===================== COMPLIANCE EXCEL EXPORT =====================
@@ -764,10 +734,7 @@ class ManagementReportController extends AbstractController
         $spreadsheet->setActiveSheetIndex(0);
         $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, Response::HTTP_OK, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="compliance_status_' . date('Y-m-d') . '.xlsx"',
-        ]);
+        return $this->excelDownload($excel, 'compliance_status_' . date('Y-m-d') . '.xlsx');
     }
 
     // ===================== AUDIT EXCEL EXPORT =====================
@@ -797,15 +764,13 @@ class ManagementReportController extends AbstractController
         $spreadsheet->setActiveSheetIndex(0);
         $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, Response::HTTP_OK, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="audit_report_' . date('Y-m-d') . '.xlsx"',
-        ]);
+        return $this->excelDownload($excel, 'audit_report_' . date('Y-m-d') . '.xlsx');
     }
 
     // ===================== GDPR EXCEL EXPORT =====================
 
     #[Route('/gdpr/excel', name: 'app_management_reports_gdpr_excel', methods: ['GET'])]
+    #[RequiresModule('privacy')]
     public function gdprExcel(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -852,10 +817,7 @@ class ManagementReportController extends AbstractController
         $spreadsheet->setActiveSheetIndex(0);
         $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, Response::HTTP_OK, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="data_breach_report_' . date('Y-m-d') . '.xlsx"',
-        ]);
+        return $this->excelDownload($excel, 'data_breach_report_' . date('Y-m-d') . '.xlsx');
     }
 
     // ===================== MANAGEMENT REVIEW OUTPUT (ISO 27001 Clause 9.3) =====================
@@ -895,10 +857,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="management_review_output_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'management_review_output_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== QUARTERLY TREND COMPARISON =====================
@@ -944,10 +903,7 @@ class ManagementReportController extends AbstractController
             ])
         );
 
-        return new Response($pdf, Response::HTTP_OK, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="quarterly_trend_' . $locale . '_' . date('Y-m-d') . '.pdf"',
-        ]);
+        return $this->pdfDownload($pdf, 'quarterly_trend_' . $locale . '_' . date('Y-m-d') . '.pdf');
     }
 
     // ===================== EVIDENCE PACKAGE (ZIP) =====================
@@ -986,6 +942,22 @@ class ManagementReportController extends AbstractController
     }
 
     // ===================== HELPER METHODS =====================
+    private function pdfDownload(string $pdf, string $filename): Response
+    {
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    private function excelDownload(string $excel, string $filename): Response
+    {
+        return new Response($excel, Response::HTTP_OK, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
 
     /**
      * Parse date range from request query parameters

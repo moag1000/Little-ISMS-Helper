@@ -261,6 +261,7 @@ admin:
         about_note: '<strong>Hinweis:</strong> Der Export großer Datensätze kann einige Zeit dauern.'
         configure_title: 'Export konfigurieren'
         format_help: 'JSON-Format behält Datentypen bei und wird für Re-Import empfohlen. CSV ist besser für Tabellenkalkulationsprogramme geeignet.'
+        scope_note: 'Exportiert werden nur Daten Ihrer eigenen Organisation. Anmeldedaten, MFA-Geheimnisse, Tokens und Sitzungsdaten sind nie enthalten.'
         select_entities: 'Entitäten zum Export auswählen:'
         select_all: 'Alle auswählen'
         deselect_all: 'Alle abwählen'

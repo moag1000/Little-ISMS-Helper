@@ -19,9 +19,10 @@
     title: 'role_management.title.list'|trans({}, 'role_management'),
     subtitle: 'role_management.description.overview'|trans({}, 'role_management'),
     actions: [
-        { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_compare') },
+        { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_compare') }
+    ]|merge(is_granted('role.create') ? [
         { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus', href: path('role_management_new') }
-    ]
+    ] : [])
 }) }}
 
 <main class="fa-aurora-surface">
@@ -93,9 +94,11 @@
                             <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 👁 {{ 'common.view'|trans({}, 'messages') }}
                             </a>
+                            {% if is_granted('role.edit', role) %}
                             <a href="{{ path('role_management_edit', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                             </a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

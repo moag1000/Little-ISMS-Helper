@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\BulkActionTrait;
+use App\Service\BulkDeleteService;
 use App\Entity\AuditFinding;
 use App\Entity\InternalAudit;
 use App\Entity\Tenant;
@@ -35,6 +37,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/audit-finding', name: 'app_audit_finding_')]
 class AuditFindingController extends AbstractController
 {
+    use BulkActionTrait;
+
     use InPageFormTrait;
     public function __construct(
         private readonly AuditFindingRepository $repository,
@@ -453,6 +457,7 @@ class AuditFindingController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * AuditFindings have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/bulk-delete-check', name: 'bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -464,46 +469,14 @@ class AuditFindingController extends AbstractController
 
     #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $finding = $this->repository->find($id);
-                if (!$finding) {
-                    $errors[] = "AuditFinding ID $id not found";
-                    continue;
-                }
-                if ($tenant && $finding->getTenant() !== $tenant) {
-                    $errors[] = "AuditFinding ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($finding);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting AuditFinding ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted audit findings deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'AuditFinding',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->repository->find($id),
+        );
     }
 }

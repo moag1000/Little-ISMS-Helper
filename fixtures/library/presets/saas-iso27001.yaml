@@ -90,18 +90,13 @@ initial_controls:
 initial_documents:
   - title: 'Information Security Policy'
     type: policy
-    status: draft
   - title: 'Acceptable Use Policy'
     type: policy
-    status: draft
   - title: 'Cloud Security Standard'
     type: policy
-    status: draft
   - title: 'Secure SDLC Procedure'
     type: procedure
-    status: draft
   - title: 'Incident Response Runbook'
     type: procedure
-    status: draft
 
 target_alva_journey: getting_started

@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -24,6 +25,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/api/push')]
 class PushSubscriptionController extends AbstractController
 {
+    /** CSRF id for subscribe / unsubscribe / test (X-CSRF-Token header; token served by vapid-public-key). */
+    public const string CSRF_ID = 'push_subscription';
+
     public function __construct(
         private readonly WebPushService $webPushService,
         private readonly TenantContext $tenantContext,
@@ -47,6 +51,8 @@ class PushSubscriptionController extends AbstractController
 
         return $this->json([
             'publicKey' => $publicKey,
+            // Session CSRF token for the write calls below (send as X-CSRF-Token).
+            'csrfToken' => $this->container->get('security.csrf.token_manager')->getToken(self::CSRF_ID)->getValue(),
         ]);
     }
 
@@ -55,6 +61,7 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/subscribe', name: 'api_push_subscribe', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function subscribe(
         Request $request,
         #[CurrentUser] User $user,
@@ -103,7 +110,7 @@ class PushSubscriptionController extends AbstractController
                 'subscription_id' => $subscription->getId(),
                 'device' => $subscription->getDeviceName(),
             ], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'error' => 'Failed to create subscription',
                 'message' => $e->getMessage(),
@@ -116,7 +123,8 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/unsubscribe', name: 'api_push_unsubscribe', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
-    public function unsubscribe(Request $request): JsonResponse
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
+    public function unsubscribe(Request $request, #[CurrentUser] User $user): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $endpoint = $data['endpoint'] ?? null;
@@ -127,7 +135,7 @@ class PushSubscriptionController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $success = $this->webPushService->unsubscribe($endpoint);
+        $success = $this->webPushService->unsubscribe($endpoint, $user);
 
         return $this->json([
             'success' => $success,
@@ -139,6 +147,7 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/test', name: 'api_push_test', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function testPush(
         #[CurrentUser] User $user,
     ): JsonResponse {

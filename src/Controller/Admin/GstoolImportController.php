@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\RequiresModule;
 use App\Form\Admin\GstoolImportUploadType;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\FileUploadSecurityService;
@@ -43,6 +44,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
     path: '/admin/import/gstool',
     name: 'admin_gstool_import_',
 )]
+#[RequiresModule('bsi_grundschutz')]
 final class GstoolImportController extends AbstractController
 {
     public function __construct(

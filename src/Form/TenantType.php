@@ -20,6 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class TenantType extends AbstractType implements SectionMapInterface
 {
+    /** Fields only an instance operator (SUPER_ADMIN) may change — see the operator_fields option. */
+    public const array OPERATOR_FIELDS = ['code', 'parent', 'isCorporateParent', 'azureTenantId', 'settings'];
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -100,11 +103,8 @@ final class TenantType extends AbstractType implements SectionMapInterface
                     new Assert\Uuid(message: 'tenant.validation.azure_tenant_id_format'),
                 ],
             ])
-            ->add('isActive', CheckboxType::class, [
-                'label' => 'tenant.field.is_active',
-                'help' => 'tenant.field.is_active_help',
-                'required' => false,
-            ])
+            // No isActive checkbox: active/suspended is the tenant_lifecycle
+            // status and changes only through suspend/reactivate (four-eyes).
             // Corporate Structure Fields
             ->add('parent', EntityType::class, [
                 'class' => Tenant::class,
@@ -269,6 +269,16 @@ final class TenantType extends AbstractType implements SectionMapInterface
                 ],
             ])
         ;
+
+        // Identity, corporate structure, SSO binding and raw settings are
+        // instance-operator decisions (activation is the operator-only lifecycle
+        // toggle, not a form field): an organisation's own admin sees them
+        // read-only, and a disabled field ignores whatever is submitted for it.
+        if (!$options['operator_fields']) {
+            foreach (self::OPERATOR_FIELDS as $field) {
+                $builder->get($field)->setDisabled(true);
+            }
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -276,7 +286,9 @@ final class TenantType extends AbstractType implements SectionMapInterface
         $resolver->setDefaults([
             'data_class' => Tenant::class,
             'translation_domain' => 'tenant',
+            'operator_fields' => true,
         ]);
+        $resolver->setAllowedTypes('operator_fields', 'bool');
     }
 
     /**
@@ -285,7 +297,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
     public static function getSectionMap(): array
     {
         return [
-            'overview'     => ['name', 'code', 'description', 'isActive'],
+            'overview'     => ['name', 'code', 'description'],
             'branding'     => ['logoFile'],
             'organisation' => ['legalName', 'legalForm', 'leiCode', 'reportingCurrency', 'naceCode'],
             'relations'    => ['parent', 'isCorporateParent', 'corporateNotes'],

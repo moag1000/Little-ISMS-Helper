@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\RequiresModule;
 use App\Entity\SupplierCriticalityLevel;
 use App\Entity\Tenant;
 use App\Form\Admin\SupplierCriticalityLevelType;
@@ -28,6 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/supplier-criticality')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+#[RequiresModule('suppliers')]
 class SupplierCriticalityController extends AbstractController
 {
     public function __construct(

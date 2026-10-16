@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Tenant;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -255,6 +256,21 @@ class ModuleConfigurationService
     public function isModuleActive(string $moduleKey): bool
     {
         return in_array($moduleKey, $this->getActiveModules());
+    }
+
+    /**
+     * Module check for an explicit tenant — for code that runs outside the
+     * request's tenant context (console commands, jobs, per-tenant loops).
+     * Same resolution as getActiveModules(): required modules are always on,
+     * a tenant without its own selection inherits the instance default.
+     */
+    public function isModuleActiveForTenant(string $moduleKey, Tenant $tenant): bool
+    {
+        if (array_key_exists($moduleKey, $this->getRequiredModules())) {
+            return true;
+        }
+
+        return in_array($moduleKey, $tenant->getActiveModules() ?? $this->getInstanceDefaultModules(), true);
     }
 
     /**

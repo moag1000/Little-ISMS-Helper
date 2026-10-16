@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Doctrine\SharedTenantRowsInterface;
 use App\Enum\MappingGapItemStatus;
 use App\Repository\MappingGapItemRepository;
 use Doctrine\DBAL\Types\Types;
@@ -14,9 +15,16 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Represents a specific gap in a compliance mapping
  * Describes what is missing to achieve full compliance
+ *
+ * Tenant: derived from the mapping ({@see ComplianceMapping::getOwnerTenant()}).
+ * Gaps of mappings between global catalogue requirements are shared
+ * (tenant = NULL); gaps of a mapping that involves an organisation's uploaded
+ * requirement belong to that organisation and are hidden from all others by
+ * the tenant filter ({@see SharedTenantRowsInterface}).
  */
 #[ORM\Entity(repositoryClass: MappingGapItemRepository::class)]
-class MappingGapItem
+#[ORM\Index(name: 'idx_mapping_gap_item_tenant', columns: ['tenant_id'])]
+class MappingGapItem implements SharedTenantRowsInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,6 +34,14 @@ class MappingGapItem
     #[ORM\ManyToOne(targetEntity: ComplianceMapping::class, inversedBy: 'gapItems')]
     #[ORM\JoinColumn(name: 'mapping_id', nullable: false, onDelete: 'CASCADE')]
     private ?ComplianceMapping $mapping = null;
+
+    /**
+     * Owning organisation, or NULL for a gap of a global catalogue mapping.
+     * Always derived from the mapping in {@see self::setMapping()}.
+     */
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(name: 'tenant_id', nullable: true, onDelete: 'CASCADE')]
+    private ?Tenant $tenant = null;
 
     /**
      * Type of gap identified
@@ -160,7 +176,13 @@ class MappingGapItem
     public function setMapping(?ComplianceMapping $complianceMapping): static
     {
         $this->mapping = $complianceMapping;
+        $this->tenant = $complianceMapping?->getOwnerTenant();
         return $this;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
     }
 
     public function getGapType(): ?string

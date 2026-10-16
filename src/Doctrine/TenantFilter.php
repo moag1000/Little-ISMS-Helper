@@ -16,6 +16,8 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
  * Automatically filters all queries to only return entities
  * that belong to the current tenant. Entities must have a
  * 'tenant' property with a ManyToOne relation to Tenant entity.
+ * Entities implementing {@see SharedTenantRowsInterface} additionally
+ * expose their tenant-less (instance-wide shared) rows.
  *
  * Usage in config/packages/doctrine.yaml:
  * doctrine:
@@ -27,6 +29,16 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
  */
 class TenantFilter extends SQLFilter
 {
+    /** tenant_id value: no scoping (instance operator, anonymous request, CLI/jobs). */
+    public const string UNSCOPED = 'null';
+
+    /**
+     * tenant_id value for an account without an organisation that is not an
+     * instance operator: it sees no organisation's rows, only rows that
+     * belong to none (tenant IS NULL).
+     */
+    public const string NO_ORGANISATION = 'none';
+
     /**
      * Add tenant filter condition to SQL query
      *
@@ -64,7 +76,7 @@ class TenantFilter extends SQLFilter
         // `tenant_id = 'null'` which never matches integer columns and
         // silently hides every row from authenticated-but-no-tenant users.
         $rawValue = trim($tenantId, "'\"");
-        if ($rawValue === 'null' || $rawValue === '') {
+        if ($rawValue === self::UNSCOPED || $rawValue === '') {
             return '';
         }
 
@@ -74,6 +86,17 @@ class TenantFilter extends SQLFilter
         $mapping = $targetEntity->getAssociationMapping('tenant');
         $fieldName = is_array($mapping) ? $mapping['fieldName'] : $mapping->fieldName;
 
-        return sprintf('%s.%s = %s', $targetTableAlias, $fieldName . '_id', $tenantId);
+        $column = sprintf('%s.%s', $targetTableAlias, $fieldName . '_id');
+
+        if ($rawValue === self::NO_ORGANISATION) {
+            return sprintf('%s IS NULL', $column);
+        }
+
+        if ($targetEntity->getReflectionClass()->implementsInterface(SharedTenantRowsInterface::class)) {
+            // Own rows plus instance-wide shared rows (tenant = NULL).
+            return sprintf('(%1$s = %2$s OR %1$s IS NULL)', $column, $tenantId);
+        }
+
+        return sprintf('%s = %s', $column, $tenantId);
     }
 }

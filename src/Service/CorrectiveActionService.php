@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\CorrectiveAction;
-use App\Repository\CorrectiveActionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -20,7 +19,6 @@ final class CorrectiveActionService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
-        private readonly CorrectiveActionRepository $repository,
     ) {}
 
     /**
@@ -73,42 +71,5 @@ final class CorrectiveActionService
         );
         $this->entityManager->remove($action);
         $this->entityManager->flush();
-    }
-
-    /**
-     * Bulk-delete CorrectiveActions belonging to the current tenant.
-     *
-     * @param int[]    $ids
-     * @param int|null $currentTenantId  Pass null to skip tenant check (ADMIN bypass).
-     * @return array{deleted: int, errors: string[]}
-     */
-    public function bulkDelete(array $ids, ?int $currentTenantId): array
-    {
-        $deleted = 0;
-        $errors  = [];
-
-        foreach ($ids as $id) {
-            try {
-                $action = $this->repository->find($id);
-                if ($action === null) {
-                    $errors[] = "CorrectiveAction ID $id not found";
-                    continue;
-                }
-                if ($currentTenantId !== null && $action->getTenant()?->getId() !== $currentTenantId) {
-                    $errors[] = "CorrectiveAction ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($action);
-                $deleted++;
-            } catch (\Exception $e) {
-                $errors[] = "Error deleting CorrectiveAction ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return ['deleted' => $deleted, 'errors' => $errors];
     }
 }

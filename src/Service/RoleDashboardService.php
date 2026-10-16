@@ -49,6 +49,7 @@ class RoleDashboardService
         private readonly ?InternalAuditRepository $auditRepository = null,
         private readonly ?TisaxMaturityAssessmentService $tisaxAssessment = null,
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
+        private readonly ?ModuleConfigurationService $moduleConfiguration = null,
     ) {
     }
 
@@ -134,9 +135,7 @@ class RoleDashboardService
         if ($tenant === null || $this->tisaxAssessment === null || $this->frameworkRepository === null) {
             return null;
         }
-        $settings = $tenant->getSettings() ?? [];
-        $tisaxEnabled = $settings['modules']['tisax'] ?? true;
-        if (!$tisaxEnabled) {
+        if ($this->moduleConfiguration?->isModuleActiveForTenant('tisax', $tenant) !== true) {
             return null;
         }
         $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);

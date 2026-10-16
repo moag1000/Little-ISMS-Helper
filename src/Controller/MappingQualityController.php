@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\LocalizedFlashTrait;
-use Exception;
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
 use App\Entity\ComplianceMapping;
+use App\Entity\MappingGapItem;
+use App\Enum\MappingGapItemStatus;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\MappingGapItemRepository;
 use App\Service\MappingQualityAnalysisService;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -26,6 +28,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class MappingQualityController extends AbstractController
 {
     use LocalizedFlashTrait;
+
+    /** CSRF id for every state-changing JSON action (sent as X-CSRF-Token header). */
+    public const string CSRF_ID = 'mapping_quality';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -78,7 +83,7 @@ class MappingQualityController extends AbstractController
                 'gap_stats' => $gapStats,
                 'framework_comparison' => $frameworkComparison,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.dashboard_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_compliance_index');
         }
@@ -100,7 +105,7 @@ class MappingQualityController extends AbstractController
                 'low_confidence_mappings' => $lowConfidenceMappings,
                 'discrepancies' => $discrepancies,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.review_queue_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
@@ -134,6 +139,8 @@ class MappingQualityController extends AbstractController
      * Update mapping review status and percentage
      */
     #[Route('/compliance/mapping-quality/review/{id}/update', name: 'app_mapping_quality_review_update', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function updateReview(int $id, Request $request): JsonResponse
     {
         try {
@@ -207,7 +214,7 @@ class MappingQualityController extends AbstractController
                     'reviewed_by' => $mapping->getReviewedBy(),
                 ],
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -219,6 +226,8 @@ class MappingQualityController extends AbstractController
      * Re-analyze a specific mapping
      */
     #[Route('/compliance/mapping-quality/analyze/{id}', name: 'app_mapping_quality_analyze', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function analyze(int $id): JsonResponse
     {
         $mapping = $this->complianceMappingRepository->find($id);
@@ -231,30 +240,8 @@ class MappingQualityController extends AbstractController
             // Run quality analysis
             $analysisResults = $this->mappingQualityAnalysisService->analyzeMappingQuality($mapping);
 
-            // Apply results
-            $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
-            $mapping->setTextualSimilarity($analysisResults['textual_similarity']);
-            $mapping->setKeywordOverlap($analysisResults['keyword_overlap']);
-            $mapping->setStructuralSimilarity($analysisResults['structural_similarity']);
-            $mapping->setAnalysisConfidence($analysisResults['analysis_confidence']);
-            $mapping->setQualityScore($analysisResults['quality_score']);
-            $mapping->setAnalysisAlgorithmVersion($analysisResults['algorithm_version']);
-            $mapping->setRequiresReview($analysisResults['requires_review']);
-
-            // Remove old gap items
-            foreach ($mapping->getGapItems() as $oldGap) {
-                $this->entityManager->remove($oldGap);
-            }
-            $this->entityManager->flush();
-
-            // Generate new gap items
-            $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
-
-            foreach ($gapItems as $gapItem) {
-                $mapping->addGapItem($gapItem);
-                $this->entityManager->persist($gapItem);
-            }
-
+            // Apply results and replace the gap items
+            $gapItems = $this->applyAnalysis($mapping, $analysisResults, replaceGaps: true);
             $this->entityManager->flush();
 
             return $this->json([
@@ -268,7 +255,7 @@ class MappingQualityController extends AbstractController
                 ],
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -296,7 +283,7 @@ class MappingQualityController extends AbstractController
                 'gap_stats_by_priority' => $gapStatsByPriority,
                 'remediation_effort' => $remediationEffort,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.gap_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
@@ -306,6 +293,8 @@ class MappingQualityController extends AbstractController
      * Update gap item status
      */
     #[Route('/compliance/mapping-quality/gap/{id}/update', name: 'app_mapping_quality_gap_update', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function updateGap(int $id, Request $request): JsonResponse
     {
         try {
@@ -327,14 +316,13 @@ class MappingQualityController extends AbstractController
 
             // Validate and update status
             if (isset($data['status'])) {
-                $validStatuses = ['identified', 'planned', 'in_progress', 'resolved', 'wont_fix'];
-                if (!in_array($data['status'], $validStatuses)) {
-                    return $this->json([
-                        'success' => false,
-                        'error' => 'Invalid status. Must be one of: ' . implode(', ', $validStatuses)
-                    ], 400);
+                $target = is_string($data['status']) ? MappingGapItemStatus::tryFrom($data['status']) : null;
+                $current = $gap->getStatusEnum() ?? MappingGapItemStatus::Identified;
+                $error = $current->transitionError($target);
+                if ($error !== null || $target === null) {
+                    return $this->json(['success' => false, 'error' => $error], 400);
                 }
-                $gap->setStatus($data['status']);
+                $gap->setStatus($target);
             }
 
             // Validate and update priority
@@ -374,7 +362,7 @@ class MappingQualityController extends AbstractController
                     'estimated_effort' => $gap->getEstimatedEffort(),
                 ],
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -386,6 +374,8 @@ class MappingQualityController extends AbstractController
      * Batch analyze mappings (for UI-based analysis in chunks)
      */
     #[Route('/compliance/mapping-quality/batch-analyze', name: 'app_mapping_quality_batch_analyze', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function batchAnalyze(Request $request): JsonResponse
     {
         try {
@@ -461,32 +451,8 @@ class MappingQualityController extends AbstractController
                     // Analyze quality
                     $analysisResults = $this->mappingQualityAnalysisService->analyzeMappingQuality($mapping);
 
-                    // Apply results
-                    $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
-                    $mapping->setTextualSimilarity($analysisResults['textual_similarity']);
-                    $mapping->setKeywordOverlap($analysisResults['keyword_overlap']);
-                    $mapping->setStructuralSimilarity($analysisResults['structural_similarity']);
-                    $mapping->setAnalysisConfidence($analysisResults['analysis_confidence']);
-                    $mapping->setQualityScore($analysisResults['quality_score']);
-                    $mapping->setAnalysisAlgorithmVersion($analysisResults['algorithm_version']);
-                    $mapping->setRequiresReview($analysisResults['requires_review']);
-
-                    // Remove old gaps if reanalyzing
-                    if ($reanalyze) {
-                        foreach ($mapping->getGapItems() as $oldGap) {
-                            $this->entityManager->remove($oldGap);
-                        }
-                        $this->entityManager->flush();
-                    }
-
-                    // Analyze gaps
-                    $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
-
-                    foreach ($gapItems as $gapItem) {
-                        $mapping->addGapItem($gapItem);
-                        $this->entityManager->persist($gapItem);
-                    }
-
+                    // Apply results and analyze gaps (old gaps only replaced when reanalyzing)
+                    $gapItems = $this->applyAnalysis($mapping, $analysisResults, replaceGaps: $reanalyze);
                     $this->entityManager->persist($mapping);
                     $analyzed++;
 
@@ -498,7 +464,7 @@ class MappingQualityController extends AbstractController
                         'gaps_found' => count($gapItems),
                     ];
 
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $errors++;
                     $results[] = [
                         'id' => $mappingId,
@@ -531,7 +497,7 @@ class MappingQualityController extends AbstractController
                 'results' => $results,
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -571,7 +537,7 @@ class MappingQualityController extends AbstractController
                 'percentage' => $total > 0 ? round(($analyzed / $total) * 100, 1) : 0,
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => $e->getMessage()
@@ -596,5 +562,39 @@ class MappingQualityController extends AbstractController
             'high_priority_gaps_count' => count($highPriorityGaps),
             'export_date' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
+    }
+
+    /**
+     * Writes a quality-analysis result onto the mapping and adds fresh gap items (persisted,
+     * not flushed); with $replaceGaps the existing gap items are removed and flushed first.
+     *
+     * @param array<string, mixed> $analysisResults MappingQualityAnalysisService::analyzeMappingQuality() output
+     * @return array<int, MappingGapItem>
+     */
+    private function applyAnalysis(ComplianceMapping $mapping, array $analysisResults, bool $replaceGaps): array
+    {
+        $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
+        $mapping->setTextualSimilarity($analysisResults['textual_similarity']);
+        $mapping->setKeywordOverlap($analysisResults['keyword_overlap']);
+        $mapping->setStructuralSimilarity($analysisResults['structural_similarity']);
+        $mapping->setAnalysisConfidence($analysisResults['analysis_confidence']);
+        $mapping->setQualityScore($analysisResults['quality_score']);
+        $mapping->setAnalysisAlgorithmVersion($analysisResults['algorithm_version']);
+        $mapping->setRequiresReview($analysisResults['requires_review']);
+
+        if ($replaceGaps) {
+            foreach ($mapping->getGapItems() as $oldGap) {
+                $this->entityManager->remove($oldGap);
+            }
+            $this->entityManager->flush();
+        }
+
+        $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
+        foreach ($gapItems as $gapItem) {
+            $mapping->addGapItem($gapItem);
+            $this->entityManager->persist($gapItem);
+        }
+
+        return $gapItems;
     }
 }

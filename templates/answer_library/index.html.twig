@@ -197,9 +197,8 @@
                                       action="{{ path('app_answer_library_delete', {id: entry.id, _locale: app.request.locale}) }}"
                                       data-controller="fa-confirm"
                                       data-fa-confirm-message-value="{{ 'answer_library.confirm.delete'|trans({}, 'answer_library') }}">
-                                    <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="_token"
-                                           value="{{ csrf_token('delete_' ~ entry.id) }}">
+                                           value="{{ csrf_token('answer_library_delete_' ~ entry.id) }}">
                                     <button type="submit"
                                             class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                                             title="{{ 'common.delete'|trans({}, 'messages') }}"

@@ -7,6 +7,7 @@ namespace App\Service\Setup;
 use App\Entity\ISMSContext;
 use App\Entity\Tenant;
 use App\Repository\TenantRepository;
+use App\Repository\UserRepository;
 use App\Service\AssetSubTypeSeeder;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +36,7 @@ final class SetupTenantBootstrapper
         private readonly EntityManagerInterface $entityManager,
         private readonly AssetSubTypeSeeder $assetSubTypeSeeder,
         private readonly LoggerInterface $logger,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -57,7 +59,7 @@ final class SetupTenantBootstrapper
                 // operational `active` place; the default initial-marking
                 // `draft` would otherwise block login flows for the wizard
                 // user moments later.
-                $tenant->setStatus(Tenant::STATUS_ACTIVE);
+                $tenant->setStatus(Tenant::STATUS_ACTIVE); // @phpstan-ignore lifecycle.directSetStatus (initial state on the unpersisted first Tenant; equals tenant_lifecycle `activate` draft→active, which has no four-eyes/reason; no tenant context exists yet during setup)
                 $this->entityManager->persist($tenant);
             } else {
                 $orgName = $session->get('setup_organisation_name');
@@ -86,6 +88,7 @@ final class SetupTenantBootstrapper
             }
 
             $this->entityManager->flush();
+            $this->assignAccountsWithoutOrganisation();
 
             // Seed "Kontext der Organisation" (ISO 27001 Clause 4) from wizard.
             $this->seedISMSContextFromWizard($tenant, $session);
@@ -106,6 +109,26 @@ final class SetupTenantBootstrapper
                 'line' => $e->getLine(),
             ]);
         }
+    }
+
+    /**
+     * The wizard creates its admin before the organisation exists. On a
+     * single-organisation installation every account without an organisation
+     * (except an instance operator) becomes a member, because the tenant
+     * filter shows an account without an organisation no organisation's data.
+     */
+    public function assignAccountsWithoutOrganisation(): void
+    {
+        $tenant = $this->tenantRepository->findSoleTenant();
+        if (!$tenant instanceof Tenant) {
+            return;
+        }
+        foreach ($this->userRepository->findOrphan() as $user) {
+            if (!in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)) {
+                $user->setTenant($tenant);
+            }
+        }
+        $this->entityManager->flush();
     }
 
     /**

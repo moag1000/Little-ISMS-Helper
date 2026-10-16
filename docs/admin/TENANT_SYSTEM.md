@@ -101,7 +101,15 @@ $filter->setParameter('tenant_id', $tenantId);
 
 Navigate to: `/admin/tenants`
 
-**Required Role:** `ROLE_ADMIN`
+**Required Role:** `ROLE_ADMIN` (the `TENANT_*` permissions), scoped to the organisation:
+
+| Action | Organisation admin (`ROLE_ADMIN`) | Instance operator (`ROLE_SUPER_ADMIN`) |
+|---|---|---|
+| List, corporate structure | Own organisation and its subsidiaries | All organisations |
+| Show, edit, organisation context, ISMS context, remove user | Own organisation and its subsidiaries | All organisations |
+| Edit code, active flag, parent, corporate-parent flag, Azure tenant ID, raw settings | Read-only | Yes |
+| Governance model of a subsidiary | Admin of the parent organisation | Yes |
+| Create, activate/deactivate, delete, set parent, add (move) a user | No | Yes |
 
 ### Features
 
@@ -241,9 +249,19 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
    - Doctrine Filter ensures data separation
    - Users can only access their tenant's data
    - Cross-tenant queries blocked by default
+   - Accounts without an organisation: a `ROLE_SUPER_ADMIN` stays instance-wide;
+     any other account sees no organisation's data (`TenantFilter::NO_ORGANISATION`,
+     only rows with no tenant) and gets no default organisation context.
+     Anonymous requests (login, setup wizard, public share links) and CLI/jobs
+     are not affected. On a single-organisation installation accounts created
+     without one (setup-wizard admin, global SSO provider, `app:setup-permissions`)
+     join the sole organisation automatically; with several organisations an
+     operator assigns them.
 
 2. **Admin Access:**
-   - Only ROLE_ADMIN can manage tenants
+   - Only ROLE_ADMIN can manage tenants, and only within their own organisation tree
+     (`TenantScopedAdminVoter::ADMIN_OWN_TENANT`); instance-wide operations need
+     ROLE_SUPER_ADMIN (`ADMIN_GLOBAL_OP`) — see the table under *Admin Portal Access*
    - Super admins can disable filter for cross-tenant operations
    - Audit log tracks all tenant changes
 

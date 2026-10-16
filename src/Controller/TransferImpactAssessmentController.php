@@ -13,6 +13,7 @@ use App\Entity\Risk;
 use App\Entity\TransferImpactAssessment;
 use App\Enum\RiskStatus;
 use App\Form\TransferImpactAssessmentType;
+use App\Lifecycle\LifecycleService;
 use App\Repository\TransferImpactAssessmentRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
@@ -69,6 +70,7 @@ class TransferImpactAssessmentController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TransferImpactAssessmentRepository $tiaRepository,
+        private readonly LifecycleService $lifecycleService,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
@@ -343,13 +345,17 @@ class TransferImpactAssessmentController extends AbstractController
             return $this->redirectToRoute('app_tia_show', ['paId' => $paId, 'id' => $id]);
         }
 
+        // Per-tenant role overrides of the transition apply here too.
+        if (!$this->isGranted('lifecycle.transfer_impact_assessment_lifecycle.assess', $tia)) {
+            throw $this->createAccessDeniedException();
+        }
+
         if ($tia->getStatus() !== 'draft') {
             $this->flashWarning('tia.warning.already_assessed');
             return $this->redirectToRoute('app_tia_show', ['paId' => $paId, 'id' => $id]);
         }
 
         $currentUser = $this->currentUser();
-        $tia->setStatus('assessed');
         $tia->setAssessedAt(new DateTime());
         $tia->setAssessedBy($currentUser);
 
@@ -377,7 +383,10 @@ class TransferImpactAssessmentController extends AbstractController
             $this->entityManager->persist($risk);
         }
 
-        $this->entityManager->flush();
+        // draft → assessed through transfer_impact_assessment_lifecycle
+        // (status_change audit row, tenant + module guard). Flushes the
+        // assessment stamps and the optional Risk in the same unit of work.
+        $this->lifecycleService->transition($tia, 'transfer_impact_assessment_lifecycle', 'assess', $currentUser);
 
         $this->auditLogger?->logCustom(
             'tia.assessed',

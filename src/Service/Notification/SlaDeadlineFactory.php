@@ -16,8 +16,8 @@ use Doctrine\ORM\EntityManagerInterface;
  * SLA Deadline Factory — Sprint 7A F3 Wave 2
  *
  * Constructs and persists SlaDeadlineMonitor instances for well-known
- * regulatory deadlines. Callers (WorkflowAutoProgressionService, controllers)
- * use these factory methods instead of assembling monitors manually to ensure
+ * regulatory deadlines. The caller (App\EventListener\SlaDeadlineMonitorSpawner)
+ * uses these factory methods instead of assembling monitors manually to ensure
  * consistent checkpoint arrays and deadline calculations.
  *
  * Compliance references:

@@ -31,18 +31,16 @@ final class OrphanFinderTest extends TestCase
     }
 
     #[Test]
-    public function find_all_orphaned_entities_disables_and_re_enables_tenant_filter(): void
+    public function find_all_orphaned_entities_suspends_and_restores_tenant_filter(): void
     {
-        // Use a stub that returns correct types: disable() returns SQLFilter,
-        // enable() returns FilterCollection — track calls via side-effects.
         $sqlFilter = $this->createMock(\Doctrine\ORM\Query\Filter\SQLFilter::class);
 
         $filters = $this->getMockBuilder(\Doctrine\ORM\Query\FilterCollection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $filters->method('isEnabled')->with('tenant_filter')->willReturn(true);
-        $filters->method('disable')->willReturn($sqlFilter);
-        $filters->method('enable')->willReturn($sqlFilter);
+        $filters->expects(self::once())->method('suspend')->with('tenant_filter')->willReturn($sqlFilter);
+        $filters->expects(self::once())->method('restore')->with('tenant_filter')->willReturn($sqlFilter);
 
         $this->entityManager->method('getFilters')->willReturn($filters);
 
@@ -50,7 +48,7 @@ final class OrphanFinderTest extends TestCase
         $metadataFactory->method('getAllMetadata')->willReturn([]);
         $this->entityManager->method('getMetadataFactory')->willReturn($metadataFactory);
 
-        // Verify no exception — the filter protocol (disable → re-enable) runs cleanly
+        // suspend/restore keeps the armed filter and its tenant_id parameter
         $result = $this->finder->findAllOrphanedEntities();
         self::assertSame([], $result);
     }

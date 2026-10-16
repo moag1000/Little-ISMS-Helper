@@ -125,13 +125,13 @@ class DataRepairController extends AbstractController
         $filters = $this->entityManager->getFilters();
         $wasEnabled = $filters->isEnabled('tenant_filter');
         if ($wasEnabled) {
-            $filters->disable('tenant_filter');
+            $filters->suspend('tenant_filter');
         }
         try {
             return $fn();
         } finally {
             if ($wasEnabled) {
-                $filters->enable('tenant_filter');
+                $filters->restore('tenant_filter');
             }
         }
     }
