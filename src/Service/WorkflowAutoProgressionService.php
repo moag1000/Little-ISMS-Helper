@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\AuditFinding;
-use App\Entity\DataBreach;
-use App\Entity\Incident;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
@@ -14,7 +11,6 @@ use App\Entity\RiskAppetite;
 use App\Enum\WorkflowInstanceStatus;
 use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
-use App\Service\Notification\SlaDeadlineFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Exception;
@@ -63,7 +59,6 @@ class WorkflowAutoProgressionService
         private readonly LoggerInterface $logger,
         private readonly RiskAppetiteRepository $riskAppetiteRepository,
         private readonly FieldCompletionAutoTransitionInterface $fieldCompletionAutoTransition,
-        private readonly ?SlaDeadlineFactory $slaDeadlineFactory = null,
     ) {}
 
     /**
@@ -138,7 +133,6 @@ class WorkflowAutoProgressionService
 
         $this->autoApproveStep($workflowInstance, $currentStep, $user, $entity);
 
-        $this->maybeSpawnSlaMonitor($entity, $currentStep);
 
         $this->logger->info('[WAPS legacy] Workflow auto-progressed via step metadata', [
             'workflow_instance_id' => $workflowInstance->getId(),
@@ -465,49 +459,6 @@ class WorkflowAutoProgressionService
         } catch (Exception $e) {
             $this->logger->error('[WAPS legacy] Error in incident→risk feedback', [
                 'error' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    private function maybeSpawnSlaMonitor(object $entity, WorkflowStep $step): void
-    {
-        if ($this->slaDeadlineFactory === null) {
-            return;
-        }
-
-        $metadata = $step->getMetadata();
-        if (!isset($metadata['slaDeadline'])) {
-            return;
-        }
-
-        try {
-            $entityType = $this->getEntityShortName($entity);
-
-            match ($entityType) {
-                'DataBreach'   => $entity instanceof DataBreach
-                    ? $this->slaDeadlineFactory->createForDataBreach($entity)
-                    : null,
-                'Incident'     => $entity instanceof Incident
-                    ? $this->slaDeadlineFactory->createForIncident(
-                        $entity,
-                        $entity->getSeverity()?->value ?? 'low',
-                    )
-                    : null,
-                'AuditFinding' => $entity instanceof AuditFinding
-                    ? $this->slaDeadlineFactory->createForCorrectiveAction($entity)
-                    : null,
-                default        => null,
-            };
-
-            $this->logger->info('[WAPS legacy] SLA deadline monitor spawned on workflow step transition', [
-                'entity_type' => $entityType,
-                'step'        => $step->getName(),
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error('[WAPS legacy] Failed to spawn SLA deadline monitor', [
-                'error'       => $e->getMessage(),
-                'entity_type' => $this->getEntityShortName($entity),
-                'step'        => $step->getName(),
             ]);
         }
     }
