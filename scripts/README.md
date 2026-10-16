@@ -297,6 +297,44 @@ python3 scripts/quality/check_freetext_legacy.py --baseline scripts/quality/base
 
 ---
 
+### quality/check_god_class_size.py (Gate 25 — God-Class-Ratchet)
+
+**Zweck:** Jede Datei unter `src/` gegen einen LOC-Schwellwert ihrer Art
+(Controller 600, Service 1500 LOC / 15 Konstruktor-Deps, Entity 1000,
+Repository 600, Command 800, Rest 800, explizit gelistete Daten-Kataloge 2000 —
+Liste `DATA_CATALOGUE_FILES` im Skript). Dateien darüber stehen in
+`scripts/quality/baselines/god_class_size.txt`.
+
+**Die Baseline ist eine Einbahnstraße:**
+- neue Datei über Schwellwert → FAIL
+- gelistete Datei wächst über ihren Eintrag (LOC, bei Services auch Deps) → FAIL
+- `--strict-shrink`: Datei ist geschrumpft, Eintrag aber nicht gesenkt → FAIL
+  (der Gewinn wird festgeschrieben, statt später wieder verbraucht zu werden)
+- `--ratchet-ref <ref>`: Die Baseline selbst darf gegenüber `<ref>` (CI: PR-Basis)
+  nicht wachsen — angehobene oder neue Einträge → FAIL. "Baseline hochsetzen"
+  ist damit kein Weg mehr am Gate vorbei. Eine umbenannte Datei darf den Eintrag
+  einer im selben Change verschwundenen Datei übernehmen, wenn sie nicht größer ist.
+
+**Wenn das Gate fehlschlägt:**
+```bash
+# NEW / GREW: Code in kohäsive Services/Traits auslagern, bis die Datei wieder
+# innerhalb ihres Eintrags bzw. Schwellwerts liegt.
+
+# stale (Datei geschrumpft): Baseline senken
+python3 scripts/quality/check_god_class_size.py --write-baseline scripts/quality/baselines/god_class_size.txt
+
+# lokal wie CI prüfen
+python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt \
+    --ratchet-ref origin/main --strict-shrink
+```
+
+Schwellwerte oder die Daten-Katalog-Liste ändern ist eine bewusste,
+reviewpflichtige Änderung am Skript (ADR-0012), kein Baseline-Bump.
+
+**CI-Integration:** Gate 25 im `code-quality`-Job.
+
+---
+
 ### quality/check_translation_issues.py
 
 **Zweck:** Umfassender Translation Quality Checker für Twig-Templates

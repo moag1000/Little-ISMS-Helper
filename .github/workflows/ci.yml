@@ -439,8 +439,14 @@ jobs:
         run: python3 scripts/quality/check_translation_dynamic_keys.py --quiet
       - name: "Gate 24: AuditLog must set tenant"
         run: python3 scripts/quality/check_audit_log_tenant.py --baseline scripts/quality/baselines/audit_log_tenant.txt --quiet
-      - name: "Gate 25: God-class size (soft-fail via baseline)"
-        run: python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --quiet
+      - name: "Gate 25: God-class size ratchet (baseline may only shrink)"
+        # Every src/ file vs. a per-kind LOC threshold. Baselined files may not
+        # grow (--baseline), stale entries must be lowered (--strict-shrink) and
+        # the baseline itself may not grow against the PR base (--ratchet-ref),
+        # so "bump the baseline" no longer gets past the gate. See scripts/README.md.
+        run: |
+          git fetch --no-tags --depth=1 origin "${GITHUB_BASE_REF:-main}"
+          python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --ratchet-ref FETCH_HEAD --strict-shrink --quiet
       - name: "Gate 26: Translation top-level keys match domain"
         run: python3 scripts/quality/check_translation_nesting.py --baseline scripts/quality/baselines/translation_nesting.txt --quiet
       - name: "Gate 27: No EntityManager writes in controllers"
