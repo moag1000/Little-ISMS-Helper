@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Security\Voter\AsyncJobVoter;
 use App\Enum\IncidentSeverity;
 use DateTime;
 use App\Entity\Risk;
@@ -279,8 +278,7 @@ class AnalyticsController extends AbstractController
             throw $this->createNotFoundException(sprintf('Unsupported analytics export type "%s".', $type));
         }
 
-        // Capture the tenant scope while the request still exists.
-        $jobArgs = ['type' => $type] + $jobTenantScope->argsForCurrentUser();
+        $jobArgs = ['type' => $type] + $jobTenantScope->argsForCurrentUser(); // captured now: the job has no request
 
         $jobId = $jobStatusService->create('analytics.export', [
             'type' => $type,
@@ -318,7 +316,7 @@ class AnalyticsController extends AbstractController
      */
     #[Route('/export/{type}/download/{id}', name: 'app_analytics_export_download', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
-    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
+    #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $type,
         string $id,

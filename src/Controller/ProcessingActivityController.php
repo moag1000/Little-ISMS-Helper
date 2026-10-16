@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Security\Voter\AsyncJobVoter;
 use RuntimeException;
 use DateTime;
 use Exception;
@@ -395,7 +394,7 @@ class ProcessingActivityController extends AbstractController
      * and removes it from disk afterwards.
      */
     #[Route('/processing-activity/export/csv/download/{id}', name: 'app_processing_activity_export_csv_download', methods: ['GET'])]
-    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
+    #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportCsvDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,

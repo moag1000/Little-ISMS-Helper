@@ -226,6 +226,7 @@ class FileUploadSecurityService
             ];
         }
 
+        // @intentional-assertion: unknown profile constant is a programming error
         return self::PROFILES[$profile] ?? throw new \InvalidArgumentException(sprintf('Unknown upload profile "%s".', $profile));
     }
 

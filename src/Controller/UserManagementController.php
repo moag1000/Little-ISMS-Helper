@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Security\Voter\AsyncJobVoter;
 use DateTimeImmutable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
@@ -318,18 +317,15 @@ class UserManagementController extends AbstractController
     public function export(
         UserRepository $userRepository
     ): StreamedResponse {
-        // Scope export to current user's tenant (audit M-7: cross-tenant leak via findAll()).
-        // Only a SUPER_ADMIN without an organisation gets the instance-wide list;
-        // any other account without a tenant gets an empty export.
+        // Own organisation only (audit M-7); instance-wide solely for a SUPER_ADMIN
+        // without an organisation, empty for any other account without one.
         $currentUser = $this->getUser();
         $tenant = ($currentUser instanceof User) ? $currentUser->getTenant() : null;
-        if ($tenant !== null) {
-            $users = $userRepository->findBy(['tenant' => $tenant]);
-        } elseif ($this->isGranted('ROLE_SUPER_ADMIN')) {
-            $users = $userRepository->findAll();
-        } else {
-            $users = [];
-        }
+        $users = match (true) {
+            $tenant !== null => $userRepository->findBy(['tenant' => $tenant]),
+            $this->isGranted('ROLE_SUPER_ADMIN') => $userRepository->findAll(),
+            default => [],
+        };
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');
@@ -401,9 +397,7 @@ class UserManagementController extends AbstractController
         \App\Service\Job\JobTenantScope $jobTenantScope,
         TranslatorInterface $translator,
     ): Response {
-        // Capture the tenant scope while the request still exists — the job
-        // scopes its query explicitly and fails without a scope.
-        $jobArgs = $jobTenantScope->argsForCurrentUser();
+        $jobArgs = $jobTenantScope->argsForCurrentUser(); // captured now: the job has no request
 
         $jobId = $jobStatusService->create('user_management.export', [
             '_label' => $translator->trans('user.export.progress_title', [], 'user'),
@@ -437,7 +431,7 @@ class UserManagementController extends AbstractController
      */
     #[Route('/admin/users/export/download/{id}', name: 'user_management_export_download', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
-    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
+    #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,

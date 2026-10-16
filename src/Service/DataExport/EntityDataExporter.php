@@ -196,6 +196,7 @@ final readonly class EntityDataExporter
                 'association' => $qb->andWhere('e.tenant = :tenant')->setParameter('tenant', $scope),
                 'column' => $qb->andWhere('e.tenantId = :tenantId')->setParameter('tenantId', $scope->getId()),
                 // isExportableMeta() already rejected unscopable classes.
+                // @intentional-assertion: unreachable — guarded by isExportableMeta()
                 default => throw new \LogicException(sprintf('%s cannot be tenant-scoped.', $meta->getName())),
             };
         }
