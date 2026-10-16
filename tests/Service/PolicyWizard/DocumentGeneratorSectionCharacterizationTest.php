@@ -20,6 +20,7 @@ use App\Repository\TagRepository;
 use App\Service\PolicyWizard\DocumentGenerator;
 use App\Service\PolicyWizard\DoraExtensionCatalogue;
 use App\Service\PolicyWizard\GdprSectionCatalogue;
+use App\Service\PolicyWizard\GdprSectionInjector;
 use App\Service\PolicyWizard\VariableCollector;
 use App\Service\PolicyWizard\WizardStepKeys;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +44,7 @@ use Throwable;
  *
  * Both assertions together guarantee that the registry-driven generic loop
  * produces the same artefacts as the two hard-coded private methods
- * (`appendGdprSectionsIfApplicable`, `appendDoraExtensionIfApplicable`)
+ * (`GdprSectionInjector::inject`, `appendDoraExtensionIfApplicable`)
  * that it replaces.
  */
 #[AllowMockObjectsWithoutExpectations]
@@ -190,7 +191,7 @@ final class DocumentGeneratorSectionCharacterizationTest extends TestCase
             new NullLogger(),
             $withDora ? new DoraExtensionCatalogue() : null,
             null,
-            $withGdpr ? new GdprSectionCatalogue() : null,
+            $withGdpr ? new GdprSectionInjector($em, $tagRepo, new GdprSectionCatalogue(), $sectionRepo) : null,
         );
     }
 
@@ -327,7 +328,7 @@ final class DocumentGeneratorSectionCharacterizationTest extends TestCase
      * one DocumentSection with key 'gdpr_breach_72h' and approval_role='dpo'
      * MUST be created.
      *
-     * This pins the current DocumentGenerator.appendGdprSectionsIfApplicable path.
+     * This pins the current GdprSectionInjector::inject path (called by DocumentGenerator).
      */
     #[Test]
     public function gdprSectionRowsCreatedForMatchingIsoTopic(): void
@@ -409,7 +410,7 @@ final class DocumentGeneratorSectionCharacterizationTest extends TestCase
 
     /**
      * When GDPR scope is absent, no GDPR sections must be created.
-     * Pins the guard `isGdprScopeActive()`.
+     * Pins the guard `GdprSectionInjector::isGdprScopeActive()`.
      */
     #[Test]
     public function noGdprSectionsWhenGdprScopeAbsent(): void
