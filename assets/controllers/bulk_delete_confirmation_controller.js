@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Bulk Delete Confirmation Controller
@@ -23,7 +24,7 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static values = {
-        dependencyErrorText: { type: String, default: 'Error loading dependencies' },
+        dependencyErrorText: { type: String, default: '' }, // empty → faT('bulk_delete.dependency_error')
     };
 
     static targets = [
@@ -121,7 +122,7 @@ export default class extends Controller {
                 // Silently skip dep-check on 404 (endpoint not implemented);
                 // surface only real server errors (5xx, parse errors etc).
                 if (!String(error.message).startsWith('HTTP 404')) {
-                    this.showError(this.dependencyErrorTextValue + ': ' + error.message);
+                    this.showError(`${this.dependencyErrorTextValue || faT('bulk_delete.dependency_error')}: ${error.message}`);
                 }
             }
         }
@@ -252,8 +253,7 @@ export default class extends Controller {
     }
 
     getDefaultMessage(count, entityLabel) {
-        const label = entityLabel.toLowerCase();
-        return `Möchten Sie wirklich ${count} ${label} löschen?`;
+        return faT('bulk_actions.confirm_delete', { '%count%': count, '%entity%': entityLabel });
     }
 
     // Keyboard accessibility

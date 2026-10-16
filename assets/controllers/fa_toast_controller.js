@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * fa-toast — Aurora Toast Notification Stack-Manager (V3 W3-UX-Toast)
@@ -187,7 +188,7 @@ export default class extends Controller {
         toast.innerHTML = `
             <i class="fa-toast__icon fa-icon fa-icon--${icon}" aria-hidden="true"></i>
             <div class="fa-toast__body">${title}${msg}${actions}</div>
-            <button type="button" class="fa-toast__close" aria-label="Close" data-action="click->fa-toast#dismiss">&times;</button>
+            <button type="button" class="fa-toast__close" aria-label="${faT('close')}" data-action="click->fa-toast#dismiss">&times;</button>
             ${opts.persistent ? '' : '<span class="fa-toast__progress" aria-hidden="true"></span>'}
         `;
         return toast;

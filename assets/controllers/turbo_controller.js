@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Turbo Controller
@@ -91,7 +92,10 @@ export default class extends Controller {
             // Disable submit button and show loading state
             submitter.disabled = true;
             submitter.dataset.originalText = submitter.innerHTML;
-            submitter.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Wird gespeichert...';
+            const spinner = document.createElement('span');
+            spinner.className = 'spinner-border spinner-border-sm me-2';
+            spinner.setAttribute('aria-hidden', 'true');
+            submitter.replaceChildren(spinner, faT('saving'));
         }
 
         // Alva: signal thinking while Turbo form is in flight

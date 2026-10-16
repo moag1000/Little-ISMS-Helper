@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * notification-condition-builder — add/remove chip rows in ConditionBuilderType.
@@ -43,7 +44,7 @@ export default class extends Controller {
         const removeBtn = document.createElement('button');
         removeBtn.type      = 'button';
         removeBtn.className = 'btn btn-sm btn-outline-danger mt-1';
-        removeBtn.setAttribute('aria-label', 'Remove condition');
+        removeBtn.setAttribute('aria-label', faT('notification_condition_builder.remove'));
         removeBtn.innerHTML = '<i class="fa-icon fa-icon--trash" aria-hidden="true"></i>';
         removeBtn.addEventListener('click', () => wrapper.remove());
         wrapper.appendChild(removeBtn);
@@ -65,7 +66,7 @@ export default class extends Controller {
                 const removeBtn = document.createElement('button');
                 removeBtn.type      = 'button';
                 removeBtn.className = 'btn btn-sm btn-outline-danger mt-1';
-                removeBtn.setAttribute('aria-label', 'Remove condition');
+                removeBtn.setAttribute('aria-label', faT('notification_condition_builder.remove'));
                 removeBtn.innerHTML = '<i class="fa-icon fa-icon--trash" aria-hidden="true"></i>';
                 removeBtn.addEventListener('click', () => entry.remove());
                 entry.appendChild(removeBtn);

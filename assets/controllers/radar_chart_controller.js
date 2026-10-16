@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 import { readTokens, applyAuroraDefaults } from '../chart-theme.js';
 
 /**
@@ -64,8 +65,8 @@ export default class extends Controller {
 
             if (!response.ok) {
                 const msg = response.status === 403
-                    ? 'Keine Berechtigung'
-                    : `Fehler ${response.status}`;
+                    ? faT('forbidden')
+                    : faT('error_status', { '%status%': response.status });
                 window.faToast(msg, 'danger');
                 this.showError();
                 return;
@@ -237,7 +238,7 @@ export default class extends Controller {
             this.canvasTarget.parentElement.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                    Failed to load compliance radar data. Please try again.
+                    ${faT('radar_chart.load_error')}
                 </div>
             `;
         }

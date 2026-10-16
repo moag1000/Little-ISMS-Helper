@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Notifications Controller - Notification Center
@@ -22,13 +23,24 @@ export default class extends Controller {
         storageKey: { type: String, default: 'notifications' },
         maxNotifications: { type: Number, default: 50 },
         // Translation strings
-        deleteTitle: { type: String, default: 'Delete' },
-        viewDetails: { type: String, default: 'View details' },
-        emptyTitle: { type: String, default: 'No notifications' },
-        emptyMessage: { type: String, default: 'You have read all notifications' }
+        deleteTitle: { type: String, default: '' },
+        viewDetails: { type: String, default: '' },
+        emptyTitle: { type: String, default: '' },
+        emptyMessage: { type: String, default: '' }
     };
 
     previouslyFocusedElement = null;
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            deleteTitle: () => faT('notifications.delete'),
+            viewDetails: () => faT('notifications.view_details'),
+            emptyTitle: () => faT('notifications.empty_title'),
+            emptyMessage: () => faT('notifications.empty_message'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         // Load notifications from localStorage
@@ -245,7 +257,7 @@ export default class extends Controller {
     }
 
     async clearAll() {
-        if (await window.faConfirm(window.translations?.notifications?.confirm_clear_all || 'Do you really want to delete all notifications?', { tone: 'danger' })) {
+        if (await window.faConfirm(faT('notifications.confirm_clear_all'), { tone: 'danger' })) {
             this.notifications = [];
             this.saveNotifications();
             this.render();
@@ -283,12 +295,12 @@ export default class extends Controller {
                         <span class="notification-time">${timeAgo}</span>
                     </div>
                     <div class="notification-message">${notification.message}</div>
-                    ${notification.link ? `<a href="${notification.link}" class="notification-link">${this.viewDetailsValue}</a>` : ''}
+                    ${notification.link ? `<a href="${notification.link}" class="notification-link">${this.label('viewDetails')}</a>` : ''}
                 </div>
                 <button class="notification-delete"
                         data-action="click->notifications#deleteNotification:stop"
                         data-notifications-id-param="${notification.id}"
-                        title="${this.deleteTitleValue}">
+                        title="${this.label('deleteTitle')}">
                     <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                 </button>
             </div>
@@ -299,8 +311,8 @@ export default class extends Controller {
         this.listTarget.innerHTML = `
             <div class="notification-empty">
                 <i class="fa-icon fa-icon--bell" style="font-size: 3rem; color: #ccc;" aria-hidden="true"></i>
-                <p class="mt-3 mb-0">${this.emptyTitleValue}</p>
-                <p class="text-muted small">${this.emptyMessageValue}</p>
+                <p class="mt-3 mb-0">${this.label('emptyTitle')}</p>
+                <p class="text-muted small">${this.label('emptyMessage')}</p>
             </div>
         `;
     }
@@ -342,12 +354,12 @@ export default class extends Controller {
     getTimeAgo(timestamp) {
         const seconds = Math.floor((Date.now() - timestamp) / 1000);
 
-        if (seconds < 60) return 'Gerade eben';
-        if (seconds < 3600) return `vor ${Math.floor(seconds / 60)} Min.`;
-        if (seconds < 86400) return `vor ${Math.floor(seconds / 3600)} Std.`;
-        if (seconds < 604800) return `vor ${Math.floor(seconds / 86400)} Tag(en)`;
+        if (seconds < 60) return faT('notifications.just_now');
+        if (seconds < 3600) return faT('notifications.minutes_ago', { '%n%': Math.floor(seconds / 60) });
+        if (seconds < 86400) return faT('notifications.hours_ago', { '%n%': Math.floor(seconds / 3600) });
+        if (seconds < 604800) return faT('notifications.days_ago', { '%n%': Math.floor(seconds / 86400) });
 
-        return new Date(timestamp).toLocaleDateString('de-DE');
+        return new Date(timestamp).toLocaleDateString(document.documentElement.lang || undefined);
     }
 
     // Utility method to trigger notifications from other controllers

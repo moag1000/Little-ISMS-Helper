@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Bulk Actions Controller — canonical Aurora bulk-action-bar (per
@@ -59,18 +60,18 @@ export default class extends Controller {
     static values = {
         endpoint: String,
         csrfToken: { type: String, default: '' },
-        // Translation strings
-        entityLabel: { type: String, default: 'items' },
-        deleteSuccess: { type: String, default: '%count% %entity% successfully deleted' },
-        deleteError: { type: String, default: 'Error deleting: ' },
-        exportSuccess: { type: String, default: 'Export successful' },
-        exportError: { type: String, default: 'Error exporting' },
-        tagPrompt: { type: String, default: 'Add tag:' },
-        tagSuccess: { type: String, default: 'Tag added' },
-        tagError: { type: String, default: 'Error adding tag' },
-        statusChangeSuccess: { type: String, default: '%count% documents updated' },
-        statusChangePartial: { type: String, default: '%changed% updated, %rejected% rejected' },
-        statusChangeError: { type: String, default: 'Update failed' },
+        // Labels (translated in the template; empty → faT('bulk_actions.*'))
+        entityLabel: { type: String, default: '' },
+        deleteSuccess: { type: String, default: '' },
+        deleteError: { type: String, default: '' },
+        exportSuccess: { type: String, default: '' },
+        exportError: { type: String, default: '' },
+        tagPrompt: { type: String, default: '' },
+        tagSuccess: { type: String, default: '' },
+        tagError: { type: String, default: '' },
+        statusChangeSuccess: { type: String, default: '' },
+        statusChangePartial: { type: String, default: '' },
+        statusChangeError: { type: String, default: '' },
         // Applicability change (SoA)
         applicabilityUrl: { type: String, default: '' },
         applicabilityCsrfToken: { type: String, default: '' },
@@ -80,6 +81,23 @@ export default class extends Controller {
         tagRemoveUrl: { type: String, default: '' },
         exportUrl: { type: String, default: '' }
     };
+
+    label(name) {
+        const fallback = {
+            entityLabel: () => faT('bulk_actions.items'),
+            deleteSuccess: () => faT('bulk_actions.delete_success'),
+            deleteError: () => faT('bulk_actions.delete_error'),
+            exportSuccess: () => faT('bulk_actions.export_success'),
+            exportError: () => faT('bulk_actions.export_error'),
+            tagPrompt: () => faT('bulk_actions.tag_prompt'),
+            tagSuccess: () => faT('bulk_actions.tag_success'),
+            tagError: () => faT('bulk_actions.tag_error'),
+            statusChangeSuccess: () => faT('bulk_actions.status_change_success'),
+            statusChangePartial: () => faT('bulk_actions.status_change_partial'),
+            statusChangeError: () => faT('bulk_actions.status_change_error'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         // No teleport — the bar stays inside the controller's DOM scope so
@@ -205,13 +223,13 @@ export default class extends Controller {
         }
 
         // Get entity label from value
-        const entityLabel = this.entityLabelValue;
+        const entityLabel = this.label('entityLabel');
 
         // Get confirmation modal controller
         const confirmModal = document.getElementById('bulkDeleteModal');
         if (!confirmModal) {
             // Fallback to simple confirm if modal not available
-            const confirmText = window.translations?.bulk_delete?.confirm_count || 'Do you really want to delete %count% %entity%?';
+            const confirmText = faT('bulk_actions.confirm_delete');
             const confirmed = await window.faConfirm(confirmText.replace('%count%', ids.length).replace('%entity%', entityLabel), { tone: 'danger' });
             if (!confirmed) {
                 return;
@@ -246,11 +264,11 @@ export default class extends Controller {
             });
 
             if (!response.ok) {
-                throw new Error('Bulk delete failed');
+                throw new Error(faT('error_status', { '%status%': response.status }));
             }
 
             // Show success toast
-            const successMsg = this.deleteSuccessValue
+            const successMsg = this.label('deleteSuccess')
                 .replace('%count%', ids.length)
                 .replace('%entity%', entityLabel);
             this.showToast(successMsg, 'success');
@@ -279,7 +297,7 @@ export default class extends Controller {
             }
 
         } catch (error) {
-            this.showToast(this.deleteErrorValue + error.message, 'error');
+            this.showToast(`${this.label('deleteError')}: ${error.message}`, 'error');
         }
     }
 
@@ -303,7 +321,7 @@ export default class extends Controller {
             });
 
             if (!response.ok) {
-                throw new Error('Bulk export failed');
+                throw new Error(faT('error_status', { '%status%': response.status }));
             }
 
             const blob = await response.blob();
@@ -331,10 +349,10 @@ export default class extends Controller {
             window.URL.revokeObjectURL(url);
             a.remove();
 
-            this.showToast(this.exportSuccessValue, 'success');
+            this.showToast(this.label('exportSuccess'), 'success');
 
         } catch (error) {
-            this.showToast(this.exportErrorValue, 'error');
+            this.showToast(this.label('exportError'), 'error');
         }
     }
 
@@ -350,8 +368,8 @@ export default class extends Controller {
         // Native prompt() is banned as UX — use the Aurora dialog. Fall back
         // to the native one only if fa-alerts has not mounted yet.
         const tag = typeof window.faPrompt === 'function'
-            ? await window.faPrompt(this.tagPromptValue, { required: true, maxlength: 64 })
-            : prompt(this.tagPromptValue);
+            ? await window.faPrompt(this.label('tagPrompt'), { required: true, maxlength: 64 })
+            : prompt(this.label('tagPrompt'));
 
         if (!tag) {
             return;
@@ -368,16 +386,16 @@ export default class extends Controller {
             });
 
             if (!response.ok) {
-                throw new Error('Bulk tag failed');
+                throw new Error(faT('error_status', { '%status%': response.status }));
             }
 
-            this.showToast(this.tagSuccessValue, 'success');
+            this.showToast(this.label('tagSuccess'), 'success');
 
             // Optionally reload the page
             setTimeout(() => window.location.reload(), 1000);
 
         } catch (error) {
-            this.showToast(this.tagErrorValue, 'error');
+            this.showToast(this.label('tagError'), 'error');
         }
     }
 
@@ -396,7 +414,7 @@ export default class extends Controller {
 
         const newStatus = event.currentTarget.dataset.targetStatus;
         if (!newStatus) {
-            this.showToast(this.statusChangeErrorValue, 'error');
+            this.showToast(this.label('statusChangeError'), 'error');
             return;
         }
 
@@ -413,7 +431,7 @@ export default class extends Controller {
             const payload = await response.json();
 
             if (!response.ok && !payload.ok) {
-                throw new Error(payload.error || this.statusChangeErrorValue);
+                throw new Error(payload.error || this.label('statusChangeError'));
             }
 
             const changed = payload.changed ?? 0;
@@ -421,12 +439,12 @@ export default class extends Controller {
 
             if (rejected.length > 0) {
                 // Partial success — surface non-blocking notice
-                const msg = this.statusChangePartialValue
+                const msg = this.label('statusChangePartial')
                     .replace('%changed%', changed)
                     .replace('%rejected%', rejected.length);
                 this.showToast(msg, 'warning');
             } else {
-                const msg = this.statusChangeSuccessValue.replace('%count%', changed);
+                const msg = this.label('statusChangeSuccess').replace('%count%', changed);
                 this.showToast(msg, 'success');
             }
 
@@ -434,7 +452,7 @@ export default class extends Controller {
             setTimeout(() => window.location.reload(), 800);
 
         } catch (error) {
-            this.showToast(this.statusChangeErrorValue + ': ' + error.message, 'error');
+            this.showToast(this.label('statusChangeError') + ': ' + error.message, 'error');
         }
     }
 
@@ -523,7 +541,7 @@ export default class extends Controller {
     bulkAssign(event) {
         event.preventDefault();
         this.showToast(
-            window.translations?.bulk_actions?.assign_not_available ?? 'Assign via bulk-bar not yet available — use the row action instead.',
+            faT('bulk_actions.assign_not_available'),
             'warning'
         );
     }
@@ -584,7 +602,7 @@ export default class extends Controller {
             : [];
 
         if (tagIds.length === 0) {
-            this.showToast(this.tagErrorValue + ': no tags selected', 'warning');
+            this.showToast(faT('bulk_actions.no_tags_selected'), 'warning');
             return;
         }
 
@@ -597,7 +615,7 @@ export default class extends Controller {
         }
 
         if (!url) {
-            this.showToast(this.tagErrorValue, 'error');
+            this.showToast(this.label('tagError'), 'error');
             return;
         }
 
@@ -618,12 +636,12 @@ export default class extends Controller {
                 throw new Error(`HTTP ${response.status}`);
             }
 
-            this.showToast(this.tagSuccessValue, 'success');
+            this.showToast(this.label('tagSuccess'), 'success');
             this.closeTagPicker();
             setTimeout(() => window.location.reload(), 800);
 
         } catch (error) {
-            this.showToast(this.tagErrorValue + ': ' + error.message, 'error');
+            this.showToast(this.label('tagError') + ': ' + error.message, 'error');
         }
     }
 

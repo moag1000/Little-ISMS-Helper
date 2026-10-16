@@ -514,66 +514,7 @@
         </div>
     {% endif %}
 
-    {# Global translations for JavaScript (window.translations).
-       JSON-encoded so a quote or </script> in a translation can never break
-       out of the string. `ui` holds the generic strings behind faT()
-       (assets/js/fa-i18n.js): dialog buttons, network errors, fallbacks. #}
-    {% set _js_translations = {
-        ui: {
-            confirm: 'ui.js.confirm'|trans({}, 'ui'),
-            cancel: 'ui.js.cancel'|trans({}, 'ui'),
-            apply: 'ui.js.apply'|trans({}, 'ui'),
-            close: 'ui.js.close'|trans({}, 'ui'),
-            are_you_sure: 'ui.js.are_you_sure'|trans({}, 'ui'),
-            discard_changes: 'ui.js.discard_changes'|trans({}, 'ui'),
-            copied: 'ui.js.copied'|trans({}, 'ui'),
-            copy_failed: 'ui.js.copy_failed'|trans({}, 'ui'),
-            success: 'ui.js.success'|trans({}, 'ui'),
-            unknown_error: 'ui.js.unknown_error'|trans({}, 'ui'),
-            network_error: 'ui.js.network_error'|trans({}, 'ui'),
-            error_status: 'ui.js.error_status'|trans({}, 'ui'),
-            loading: 'ui.js.loading'|trans({}, 'ui'),
-            required_fields_missing: 'ui.js.required_fields_missing'|trans({'%count%': '%count%'}, 'ui')
-        },
-        dashboard: {
-            settings_imported: 'dashboard.success.settings_imported'|trans({}, 'dashboard'),
-            import_failed: 'dashboard.error.import_failed'|trans({}, 'dashboard')
-        },
-        preferences: {
-            imported: 'preferences.success.imported'|trans({}, 'messages'),
-            import_failed: 'preferences.error.import_failed'|trans({}, 'messages')
-        },
-        bulk_delete: {
-            confirm_count: 'bulk_delete.confirm_count'|trans({}, 'bulk_delete'),
-            success: 'bulk_delete.success'|trans({}, 'bulk_delete'),
-            error: 'bulk_delete.error'|trans({}, 'bulk_delete')
-        },
-        common: {
-            yes: 'common.yes'|trans({}, 'messages'),
-            no: 'common.no'|trans({}, 'messages'),
-            cancel: 'common.cancel'|trans({}, 'messages'),
-            confirm: 'common.confirm'|trans({}, 'messages'),
-            save: 'common.save'|trans({}, 'messages'),
-            delete: 'common.delete'|trans({}, 'messages'),
-            export: 'common.export'|trans({}, 'messages'),
-            loading: 'common.loading'|trans({}, 'messages'),
-            error: 'common.error'|trans({}, 'messages'),
-            success: 'common.success'|trans({}, 'messages')
-        },
-        security: {
-            reauth: {
-                error: {
-                    password_required: 'reauth.error.password_required'|trans({}, 'security'),
-                    invalid_password: 'reauth.error.invalid_password'|trans({}, 'security'),
-                    generic: 'reauth.error.generic'|trans({}, 'security'),
-                    network: 'reauth.error.network'|trans({}, 'security')
-                }
-            }
-        }
-    } %}
-    <script>
-        window.translations = {{ _js_translations|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }};
-    </script>
+    {% include '_components/_js_translations.html.twig' %}
 
     {% block javascripts %}
         {# Import map moved to head section to prevent Turbo reload conflicts #}

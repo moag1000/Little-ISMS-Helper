@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * SSO Wizard Stimulus controller.
@@ -38,7 +39,7 @@ export default class extends Controller {
         const url = this.discoveryUrlTarget.value.trim();
         if (!url || !this.validateUrlValue) return;
 
-        this.discoveryResultTarget.innerHTML = '<span class="text-muted">Validating…</span>';
+        this.discoveryResultTarget.innerHTML = `<span class="text-muted">${this._escHtml(faT('sso_wizard.validating'))}</span>`;
 
         try {
             const response = await fetch(this.validateUrlValue, {
@@ -51,14 +52,14 @@ export default class extends Controller {
             if (data.ok) {
                 const issuer = data.issuer ? `<code>${this._escHtml(data.issuer)}</code>` : '';
                 this.discoveryResultTarget.innerHTML =
-                    `<span class="text-success"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> Discovery OK${issuer ? ' — Issuer: ' + issuer : ''}</span>`;
+                    `<span class="text-success"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${this._escHtml(faT('sso_wizard.discovery_ok'))}${issuer ? ` — ${this._escHtml(faT('sso_wizard.issuer'))}: ${issuer}` : ''}</span>`;
             } else {
                 this.discoveryResultTarget.innerHTML =
-                    `<span class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${this._escHtml(data.error || 'Validation failed')}</span>`;
+                    `<span class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${this._escHtml(data.error || faT('sso_wizard.validation_failed'))}</span>`;
             }
         } catch {
             this.discoveryResultTarget.innerHTML =
-                '<span class="text-danger">Network error — could not validate.</span>';
+                `<span class="text-danger">${this._escHtml(faT('sso_wizard.network_error'))}</span>`;
         }
     }
 
@@ -71,7 +72,7 @@ export default class extends Controller {
             const btn = this.element.querySelector('[data-action*="copyCallback"]');
             if (btn) {
                 const original = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> Copied!';
+                btn.innerHTML = `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${this._escHtml(faT('copied'))}`;
                 setTimeout(() => { btn.innerHTML = original; }, 2000);
             }
         } catch {

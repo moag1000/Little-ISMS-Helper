@@ -331,6 +331,16 @@ Benefits:
 - Clearer organization and maintenance
 - Reduced merge conflicts
 
+JavaScript texts:
+- Never hard-code UI text in `assets/**/*.js`. Add it to `translations/ui.{de,en}.yaml`
+  under `ui.js.<controller>.<key>` and read it with `faT('<controller>.<key>', {'%x%': v})`
+  (`assets/js/fa-i18n.js`). Every `ui.js.*` message is shipped automatically as
+  `window.translations.ui` by `_components/_js_translations.html.twig`
+  (`App\Twig\JsTranslationsExtension`); `tests/Twig/JsTranslationsExtensionTest.php`
+  fails when a `faT()` key is missing in DE or EN.
+- Template-specific texts may still travel as `data-<controller>-<name>-value`;
+  the controller then falls back to `faT()`.
+
 Translation Quality:
 - Use `scripts/quality/check_translation_issues.py` to find:
   - Hardcoded text that should be translated

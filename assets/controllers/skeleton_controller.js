@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Skeleton Loader Controller
@@ -92,9 +93,9 @@ export default class extends Controller {
             this.skeletonTarget.innerHTML = `
                 <div class="skeleton-error">
                     <i class="fa-icon fa-icon--status-warning"></i>
-                    <p>Fehler beim Laden der Inhalte</p>
-                    <button class="btn btn-sm btn-primary" data-action="click->skeleton#retry">
-                        Erneut versuchen
+                    <p>${faT('skeleton.load_error')}</p>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm" data-action="click->skeleton#retry">
+                        ${faT('retry')}
                     </button>
                 </div>
             `;
