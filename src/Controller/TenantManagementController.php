@@ -27,12 +27,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TenantManagementController extends AbstractController
 {
+    // Route guards: the TENANT_* permission AND the acting admin's organisation scope (or operator status).
+    // A subsidiary's governance model is decided by its parent organisation (GOVERNOR).
+    private const string IN_SCOPE = ' and is_granted("ADMIN_OWN_TENANT", subject)';
+    private const string OPERATOR = ' and is_granted("ADMIN_GLOBAL_OP")';
+    private const string GOVERNOR = 'args["tenant"].getParent() ?? args["tenant"]';
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
@@ -47,6 +53,7 @@ class TenantManagementController extends AbstractController
         private readonly ISMSContextService $ismsContextService,
         private readonly ISMSContextRepository $ismsContextRepository,
         private readonly \App\Service\AssetSubTypeSeeder $assetSubTypeSeeder,
+        private readonly \App\Service\TenantContext $tenantContext,
         private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
@@ -55,41 +62,33 @@ class TenantManagementController extends AbstractController
     public function index(Request $request): Response
     {
         $filter = $request->query->get('filter', 'all'); // all, active, inactive
-
-        $queryBuilder = $this->tenantRepository->createQueryBuilder('t');
-
-        if ($filter === 'active') {
-            $queryBuilder->where('t.isActive = :active')
-                ->setParameter('active', true);
-        } elseif ($filter === 'inactive') {
-            $queryBuilder->where('t.isActive = :active')
-                ->setParameter('active', false);
-        }
-
-        $queryBuilder->orderBy('t.createdAt', 'DESC');
-
-        $tenants = $queryBuilder->getQuery()->getResult();
-
-        // Calculate statistics for each tenant
-        $tenantsWithStats = [];
-        foreach ($tenants as $tenant) {
-            $tenantsWithStats[] = [
-                'tenant' => $tenant,
-                'userCount' => $tenant->getUsers()->count(),
-            ];
-        }
+        // An organisation's admin sees their own organisation and its subsidiaries only.
+        $isOperator = $this->isGranted('ROLE_SUPER_ADMIN');
+        $scope = array_values(array_filter(
+            $this->tenantRepository->findBy([], ['createdAt' => 'DESC']),
+            fn(Tenant $tenant): bool => $isOperator || $this->tenantContext->canAccessTenant($tenant),
+        ));
+        $activeCount = count(array_filter($scope, fn(Tenant $tenant): bool => $tenant->isActive()));
+        $tenants = array_filter($scope, fn(Tenant $tenant): bool => match ($filter) {
+            'active' => $tenant->isActive(),
+            'inactive' => !$tenant->isActive(),
+            default => true,
+        });
 
         return $this->render('admin/tenants/index.html.twig', [
-            'tenants' => $tenantsWithStats,
+            'tenants' => array_map(
+                static fn(Tenant $tenant): array => ['tenant' => $tenant, 'userCount' => $tenant->getUsers()->count()],
+                array_values($tenants),
+            ),
             'filter' => $filter,
-            'totalCount' => count($this->tenantRepository->findAll()),
-            'activeCount' => count($this->tenantRepository->findBy(['isActive' => true])),
-            'inactiveCount' => count($this->tenantRepository->findBy(['isActive' => false])),
-            'orphanUserCount' => $this->userRepository->countOrphan(),
+            'totalCount' => count($scope),
+            'activeCount' => $activeCount,
+            'inactiveCount' => count($scope) - $activeCount,
+            'orphanUserCount' => $isOperator ? $this->userRepository->countOrphan() : 0,
         ]);
     }
     #[Route('/admin/tenants/new', name: 'tenant_management_new', methods: ['GET', 'POST'])]
-    #[IsGranted('TENANT_CREATE')]
+    #[IsGranted(new Expression('is_granted("TENANT_CREATE")' . self::OPERATOR))]
     public function new(Request $request): Response
     {
         $tenant = new Tenant();
@@ -179,11 +178,16 @@ class TenantManagementController extends AbstractController
         $isMultiTenant = $this->multiTenantCheckService->isMultiTenant();
 
         // Get all root tenants (corporate parents without parents)
-        $allTenants = $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']);
+        $isOperator = $this->isGranted('ROLE_SUPER_ADMIN'); // others: own organisation + subsidiaries
+        $allTenants = array_values(array_filter(
+            $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']),
+            fn(Tenant $tenant): bool => $isOperator || $this->tenantContext->canAccessTenant($tenant),
+        ));
         $corporateGroups = [];
-
         foreach ($allTenants as $tenant) {
-            if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
+            // A group root is a group member whose parent is out of view (none, or beyond the scope).
+            $inGroup = $tenant->isCorporateParent() || $tenant->isPartOfCorporateStructure();
+            if ($inGroup && !in_array($tenant->getParent(), $allTenants, true)) {
                 $tree = $this->corporateStructureService->getStructureTree($tenant);
                 $corporateGroups[] = $tree;
             }
@@ -202,7 +206,7 @@ class TenantManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/tenants/{id}', name: 'tenant_management_show', methods: ['GET'])]
-    #[IsGranted('TENANT_VIEW')]
+    #[IsGranted(new Expression('is_granted("TENANT_VIEW")' . self::IN_SCOPE), 'tenant')]
     public function show(Tenant $tenant): Response
     {
         // Get user statistics
@@ -234,7 +238,7 @@ class TenantManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/tenants/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function edit(Request $request, Tenant $tenant): Response
     {
         // Capture old values for audit log
@@ -248,7 +252,8 @@ class TenantManagementController extends AbstractController
         ];
 
         $oldLogoPath = $tenant->getLogoPath();
-        $form = $this->createForm(TenantType::class, $tenant);
+        $operatorFields = ['operator_fields' => $this->isGranted('ROLE_SUPER_ADMIN')];
+        $form = $this->createForm(TenantType::class, $tenant, $operatorFields);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -337,7 +342,7 @@ class TenantManagementController extends AbstractController
         ], new Response(status: $status));
     }
     #[Route('/admin/tenants/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function toggle(Tenant $tenant, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('toggle_tenant_' . $tenant->getId(), $request->request->get('_token'))) {
@@ -383,7 +388,7 @@ class TenantManagementController extends AbstractController
         return $this->redirectToRoute('tenant_management_index');
     }
     #[Route('/admin/tenants/{id}/delete', name: 'tenant_management_delete', methods: ['POST'])]
-    #[IsGranted('TENANT_DELETE')]
+    #[IsGranted(new Expression('is_granted("TENANT_DELETE")' . self::OPERATOR))]
     public function delete(Request $request, Tenant $tenant): Response
     {
         // Security: Verify CSRF token
@@ -509,7 +514,7 @@ class TenantManagementController extends AbstractController
         }
     }
     #[Route('/admin/tenants/{id}/set-parent', name: 'tenant_management_set_parent', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function setParent(Request $request, Tenant $tenant): Response
     {
         if (!$this->isCsrfTokenValid('set_parent', $request->request->get('_token'))) {
@@ -592,7 +597,7 @@ class TenantManagementController extends AbstractController
         return $this->redirectToRoute('tenant_management_corporate_structure');
     }
     #[Route('/admin/tenants/{id}/update-governance', name: 'tenant_management_update_governance', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), new Expression(self::GOVERNOR))]
     public function updateGovernance(Request $request, Tenant $tenant): Response
     {
         if (!$this->isCsrfTokenValid('update_governance', $request->request->get('_token'))) {
@@ -639,7 +644,7 @@ class TenantManagementController extends AbstractController
      * Add a user to the tenant
      */
     #[Route('/admin/tenants/{id}/add-user', name: 'tenant_management_add_user', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function addUser(Request $request, Tenant $tenant): Response
     {
         // Verify CSRF token
@@ -708,7 +713,7 @@ class TenantManagementController extends AbstractController
      * Remove a user from the tenant
      */
     #[Route('/admin/tenants/{id}/remove-user/{userId}', name: 'tenant_management_remove_user', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function removeUser(Request $request, Tenant $tenant, int $userId): Response
     {
         // Verify CSRF token
@@ -771,7 +776,7 @@ class TenantManagementController extends AbstractController
      * API endpoint to get ISMS Context for a tenant
      */
     #[Route('/admin/tenants/api/tenants/{id}/isms-context', name: 'api_tenant_isms_context', methods: ['GET'])]
-    #[IsGranted('TENANT_VIEW')]
+    #[IsGranted(new Expression('is_granted("TENANT_VIEW")' . self::IN_SCOPE), 'tenant')]
     public function getISMSContext(Tenant $tenant): JsonResponse
     {
         try {
@@ -854,7 +859,7 @@ class TenantManagementController extends AbstractController
      * Edit organisation context settings (industries, size, country)
      */
     #[Route('/admin/tenants/{id}/organisation-context', name: 'tenant_management_organisation_context', methods: ['GET', 'POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function editOrganisationContext(Request $request, Tenant $tenant): Response
     {
         $settings = $tenant->getSettings() ?? [];

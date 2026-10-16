@@ -53,6 +53,8 @@
                 {% endif %}
             </div>
         </div>
+        {# Activating, deleting and assigning users across organisations are instance-operator tasks #}
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
         <div class="btn-group" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
                   data-controller="ui-actions"
@@ -66,6 +68,7 @@
                 </button>
             </form>
         </div>
+        {% endif %}
     </div>
 
     {# Statistics Cards #}
@@ -444,7 +447,7 @@
     {# End Tab Content #}
 
     {# Danger Zone - Outside tabs, always visible #}
-    {% if userCount == 0 %}
+    {% if userCount == 0 and is_granted('ROLE_SUPER_ADMIN') %}
         <section class="fa-section mt-4">
             <div class="fa-section__header">
                 <h2 class="fa-section__title">
@@ -482,6 +485,7 @@
                     </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
                 <div class="fa-modal__body">
                     {# Add User Section #}
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
                     <div class="mb-4">
                         <h3 class="border-bottom pb-2 mb-3 h6">
                             <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
@@ -503,6 +507,7 @@
                             </small>
                         </form>
                     </div>
+                    {% endif %}
 
                     {# Current Users List #}
                     <div>
