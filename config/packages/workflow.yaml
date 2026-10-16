@@ -43,6 +43,8 @@ imports:
     - { resource: '../workflows/threat_led_penetration_test.yaml' }
     - { resource: '../workflows/supplier_questionnaire.yaml' }
     - { resource: '../workflows/access_review_campaign.yaml' }
+    # Global catalogue data (no tenant) — roles enforced from YAML in ComplianceMappingController
+    - { resource: '../workflows/compliance_mapping.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }

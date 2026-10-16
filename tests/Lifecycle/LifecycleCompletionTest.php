@@ -69,7 +69,11 @@ final class LifecycleCompletionTest extends TestCase
     {
         // NoDirectSetStatusRule derives its entity list from the registry, so
         // an entity with a workflow YAML but no registry entry would escape it.
-        $managed = EntityTypeRegistry::managedEntityClasses();
+        // ComplianceMapping is global catalogue data: it must not be reachable
+        // through the tenant-overridable generic transition endpoint, so it
+        // is deliberately left out (ComplianceMappingController enforces the
+        // static YAML roles itself).
+        $managed = [...EntityTypeRegistry::managedEntityClasses(), \App\Entity\ComplianceMapping::class];
         $missing = [];
         foreach (glob(self::ROOT . '/config/workflows/*.yaml') ?: [] as $file) {
             foreach (Yaml::parseFile($file)['framework']['workflows'] ?? [] as $name => $wf) {

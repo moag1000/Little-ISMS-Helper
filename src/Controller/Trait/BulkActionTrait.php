@@ -203,7 +203,10 @@ trait BulkActionTrait
      *
      * @param iterable<object>      $entities           Pre-tenant-scoped entities.
      * @param string                $workflowName       Symfony Workflow name.
-     * @param array<string, string> $statusToTransition Map of newStatus → transitionName.
+     * @param array<string, array<string, string>> $statusMatrix Allowed moves as
+     *        currentStatus → [targetStatus → transitionName]. Only these
+     *        pairs are applied; every other combination is rejected with
+     *        `transition_not_allowed` (CLAUDE.md 5-transition matrix).
      * @param string                $newStatus          Target status posted by the UI.
      * @param string|null           $reason             Optional reason from the UI.
      * @param User|null             $user               Authenticated user.
@@ -215,7 +218,7 @@ trait BulkActionTrait
     protected function applyBulkStatusChange(
         iterable $entities,
         string $workflowName,
-        array $statusToTransition,
+        array $statusMatrix,
         string $newStatus,
         ?string $reason,
         ?User $user,
@@ -233,7 +236,19 @@ trait BulkActionTrait
 
         foreach ($entities as $entity) {
             $id = method_exists($entity, 'getId') ? $entity->getId() : null;
-            $transitionName = $statusToTransition[$newStatus] ?? $newStatus;
+            $currentStatus = method_exists($entity, 'getStatus') ? (string) $entity->getStatus() : '';
+            // The transition depends on where the entity is now: `published`
+            // means `publish` from approved but `restore` from archived.
+            $transitionName = $statusMatrix[$currentStatus][$newStatus] ?? null;
+            if ($transitionName === null) {
+                $rejected[] = ['id' => $id, 'reason' => 'transition_not_allowed'];
+                continue;
+            }
+            // Per-transition roles (YAML + tenant overrides) still apply.
+            if (!$this->isGranted(sprintf('lifecycle.%s.%s', $workflowName, $transitionName), $entity)) {
+                $rejected[] = ['id' => $id, 'reason' => 'forbidden'];
+                continue;
+            }
 
             try {
                 $lifecycleService->transition(
