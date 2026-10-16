@@ -49,6 +49,7 @@ class InAppNotificationCenterController extends AbstractController
      * Route alias: /notifications/center → /notifications (permanent 301).
      * Some E2E suites and bookmarks use the /center suffix — redirect gracefully.
      */
+    // @no-module-gate-required: pure redirect to app_notification_center, which is gated itself.
     #[Route('/center', name: 'center_alias', methods: ['GET'])]
     public function centerAlias(): Response
     {

@@ -126,13 +126,60 @@ class CapturePortfolioSnapshotCommandTest extends KernelTestCase
         );
     }
 
-    private function countSnapshots(): int
+    #[Test]
+    public function testEveryTenantOfOneRunGetsItsSnapshots(): void
+    {
+        // Regression: after the first tenant the command called
+        // EntityManager::clear(PortfolioSnapshot::class). ORM 3 ignores the
+        // argument and detaches everything, so the next tenant was detached
+        // and its snapshots failed with "new entity found through relationship".
+        $uid = uniqid('', true);
+        $second = (new Tenant())->setName('Portfolio Second ' . $uid)->setCode('pf2_' . $uid);
+        $framework = (new \App\Entity\ComplianceFramework())
+            ->setCode('PFT_' . strtoupper(substr(md5($uid), 0, 10)))
+            ->setName('Portfolio Test FW ' . $uid)
+            ->setVersion('1.0')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('Test')
+            ->setMandatory(false)
+            ->setActive(true);
+        $this->entityManager->persist($second);
+        $this->entityManager->persist($framework);
+        $this->entityManager->flush();
+
+        try {
+            $this->commandTester->execute([]);
+
+            $this->assertSame(0, $this->commandTester->getStatusCode(), $this->commandTester->getDisplay());
+            $this->assertStringNotContainsString('[ERR]', $this->commandTester->getDisplay());
+            $this->assertGreaterThan(0, $this->countSnapshots());
+            $this->assertSame($this->countSnapshots(), $this->countSnapshots($second));
+        } finally {
+            $this->entityManager->clear();
+            $this->entityManager->createQueryBuilder()
+                ->delete(PortfolioSnapshot::class, 's')
+                ->where('s.tenant = :tenant')
+                ->setParameter('tenant', $second->getId())
+                ->getQuery()
+                ->execute();
+            foreach ([[Tenant::class, $second->getId()], [\App\Entity\ComplianceFramework::class, $framework->getId()]] as [$class, $id]) {
+                $managed = $this->entityManager->find($class, $id);
+                if ($managed !== null) {
+                    $this->entityManager->remove($managed);
+                }
+            }
+            $this->entityManager->flush();
+            $this->testTenant = $this->entityManager->find(Tenant::class, $this->testTenant->getId());
+        }
+    }
+
+    private function countSnapshots(?Tenant $tenant = null): int
     {
         return (int) $this->entityManager->createQueryBuilder()
             ->select('COUNT(s.id)')
             ->from(PortfolioSnapshot::class, 's')
             ->where('s.tenant = :tenant')
-            ->setParameter('tenant', $this->testTenant)
+            ->setParameter('tenant', ($tenant ?? $this->testTenant)->getId())
             ->getQuery()
             ->getSingleScalarResult();
     }

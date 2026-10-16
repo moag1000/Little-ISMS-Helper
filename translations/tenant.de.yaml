@@ -116,6 +116,7 @@ tenant:
         csrf_error: 'Sicherheitstoken ungültig. Bitte die Seite neu laden und erneut versuchen.'
         transition_forbidden: 'Diese Statusänderung ist nur für Super-Admins erlaubt.'
         error: 'Fehler beim Speichern der Organisation'
+        not_found: 'Die angeforderte Organisation wurde nicht gefunden. Möglicherweise wurde sie gelöscht.'
         has_users: 'Organisation kann nicht gelöscht werden, da sie noch Benutzer hat'
         organisation_context_updated: 'Organisationsprofil erfolgreich aktualisiert'
         organisation_context_error: 'Fehler beim Aktualisieren des Organisationsprofils'

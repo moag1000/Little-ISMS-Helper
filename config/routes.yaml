@@ -21,6 +21,7 @@ app_routes:
         - '../src/Controller/SsoController.php'
         - '../src/Controller/LifecycleController.php'
         - '../src/Controller/GlossaryApiController.php'
+        - '../src/Controller/HealthController.php'
         - '../src/Controller/ReadinessController.php'
         - '../src/Controller/MetricsController.php'
         - '../src/Controller/PublicPostureController.php'
@@ -80,6 +81,10 @@ sso_routes:
 # intentionally omitted: these are machine-to-machine endpoints, not user-facing.
 infra_probe_routes:
     resource: ../src/Controller/ReadinessController.php
+    type: attribute
+
+infra_health_routes:
+    resource: ../src/Controller/HealthController.php
     type: attribute
 
 infra_metrics_routes:

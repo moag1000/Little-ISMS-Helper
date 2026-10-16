@@ -603,6 +603,11 @@ jobs:
         # the file, so the domain fails to load at runtime. Covers all
         # translations/*.yaml (the old script hardcoded two messages files).
         run: python3 scripts/quality/check_yaml_duplicates.py
+      - name: "Gate 64: JSON actions catch Throwable"
+        # `catch (\Exception)` in a JSON/AJAX action lets every \Error (TypeError,
+        # ArgumentCountError, ...) escape as an HTML 500 page the fetch() caller
+        # cannot parse. Keys are path:method, so line shifts do not churn it.
+        run: python3 scripts/quality/check_json_catch_throwable.py --baseline scripts/quality/baselines/json_catch_throwable.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
@@ -787,7 +792,6 @@ jobs:
             echo "=== APP DATABASE_URL FROM ENV ==="
             docker compose exec -T app sh -c 'echo "DATABASE_URL=$DATABASE_URL"; echo "EMBEDDED_DB=$EMBEDDED_DB"' || true
             echo "=== TRY HEALTH MANUALLY ==="
-            docker compose exec -T app curl -i http://localhost/de/health 2>&1 || true
             docker compose exec -T app curl -i http://localhost/health 2>&1 || true
             exit 1
           }

@@ -13,6 +13,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -45,6 +46,9 @@ class DpoDashboardControllerTest extends TestCase
     private TisaxMaturityAssessmentService $tisaxAssessment;
     private MockObject $frameworkRepository;
     private MockObject $container;
+    private MockObject $moduleConfiguration;
+    /** @var list<string> */
+    private array $activeModules = ['privacy', 'compliance', 'tisax'];
     private MockObject $twig;
     private DpoDashboardController $controller;
     private ?array $renderedDashboard = null;
@@ -61,6 +65,10 @@ class DpoDashboardControllerTest extends TestCase
         $this->tisaxAssessment        = new TisaxMaturityAssessmentService($em);
         $this->frameworkRepository    = $this->createMock(ComplianceFrameworkRepository::class);
         $this->container              = $this->createMock(ContainerInterface::class);
+        $this->moduleConfiguration    = $this->createMock(ModuleConfigurationService::class);
+        $this->moduleConfiguration->method('isModuleActive')->willReturnCallback(
+            fn (string $key): bool => in_array($key, $this->activeModules, true),
+        );
         $this->twig                   = $this->createMock(Environment::class);
 
         $self = $this;
@@ -94,6 +102,7 @@ class DpoDashboardControllerTest extends TestCase
             $this->roleDashboardService,
             $this->tisaxAssessment,
             $this->frameworkRepository,
+            $this->moduleConfiguration,
         );
         $this->controller->setContainer($this->container);
     }
@@ -159,6 +168,30 @@ class DpoDashboardControllerTest extends TestCase
         $this->assertSame(1, $this->renderedDashboard['ticking_72h_count']);
         $this->assertSame(2, $this->renderedDashboard['dpias_in_progress_count']); // draft + review
         $this->assertCount(1, $this->renderedDashboard['activities_needing_dpia']);
+    }
+
+    #[Test]
+    public function tisaxAggregateIsSkippedWhenTisaxModuleIsInactive(): void
+    {
+        // Regression: the TISAX block used to read a never-written
+        // `settings['modules']['tisax']` key that defaulted to true, so it ran
+        // for every tenant regardless of module activation.
+        $this->activeModules = ['privacy'];
+        $this->stubTenantAndEmptyRepos();
+        $this->frameworkRepository->expects($this->never())->method('findOneBy');
+
+        ($this->controller)();
+
+        $this->assertNull($this->renderedDashboard['tisax_dp_aggregate']);
+    }
+
+    #[Test]
+    public function tisaxFrameworkIsLookedUpWhenTisaxModuleIsActive(): void
+    {
+        $this->stubTenantAndEmptyRepos();
+        $this->frameworkRepository->expects($this->once())->method('findOneBy')->with(['code' => 'TISAX']);
+
+        ($this->controller)();
     }
 
     #[Test]

@@ -233,7 +233,7 @@ class QuickFixController extends AbstractController
                     ->withValue($cookieToSet)
                     ->withHttpOnly(true)
                     ->withSecure($request->isSecure())
-                    ->withSameSite('Lax'),
+                    ->withSameSite(\Symfony\Component\HttpFoundation\Cookie::SAMESITE_LAX),
             );
         }
 

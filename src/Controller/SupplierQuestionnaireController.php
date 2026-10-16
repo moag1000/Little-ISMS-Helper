@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\User;
 use App\Repository\SupplierQuestionnaireRepository;
 use App\Repository\SupplierRepository;
@@ -21,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * questionnaires + their responses, and send a new one to a supplier.
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('suppliers')]
 final class SupplierQuestionnaireController extends AbstractController
 {
     /** Default DORA/ISO supplier due-diligence question set. */

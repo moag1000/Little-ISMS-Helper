@@ -11,13 +11,14 @@ use App\Message\Schedule\ExecuteScheduledTaskMessage;
 use App\Message\Schedule\GenerateComplianceReportMessage;
 use App\Message\Schedule\SyncEuvdFeedMessage;
 use App\Repository\ScheduledTaskRepository;
-use Exception;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
 use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule as SymfonySchedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
 use Symfony\Contracts\Cache\CacheInterface;
+use Throwable;
 
 /**
  * Main schedule provider for Little ISMS Helper
@@ -30,7 +31,8 @@ class Schedule implements ScheduleProviderInterface
     public function __construct(
         private CacheInterface $cache,
         private ScheduledTaskRepository $taskRepository,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -95,7 +97,7 @@ class Schedule implements ScheduleProviderInterface
     {
         try {
             // Check if scheduled_task table exists before querying
-            $connection = $this->taskRepository->getEntityManager()->getConnection();
+            $connection = $this->entityManager->getConnection();
             $schemaManager = $connection->createSchemaManager();
             $tables = $schemaManager->listTableNames();
 
@@ -124,8 +126,10 @@ class Schedule implements ScheduleProviderInterface
             $this->logger->info('Database scheduled tasks loaded', [
                 'count' => count($tasks),
             ]);
-        } catch (Exception $e) {
-            // Don't fail if database is not available (e.g., during installation)
+        } catch (Throwable $e) {
+            // Don't fail if database is not available (e.g., during installation).
+            // \Throwable: an \Error here would otherwise kill the whole schedule
+            // provider, including the built-in tasks.
             $this->logger->warning('Failed to load database scheduled tasks', [
                 'error' => $e->getMessage(),
             ]);

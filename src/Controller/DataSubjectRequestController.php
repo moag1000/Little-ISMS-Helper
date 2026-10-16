@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use RuntimeException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
@@ -32,6 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/data-subject-request', name: 'app_data_subject_request_')]
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('privacy')]
 class DataSubjectRequestController extends AbstractController
 {
     use \App\Controller\Trait\LocalizedFlashTrait;

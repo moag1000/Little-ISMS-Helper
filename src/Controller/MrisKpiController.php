@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Repository\KpiSnapshotRepository;
 use App\Service\MrisKpiService;
@@ -24,6 +25,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Lizenz: CC BY 4.0.
  */
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('mris')]
 final class MrisKpiController extends AbstractController
 {
     use LocalizedFlashTrait;

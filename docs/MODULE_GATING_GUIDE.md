@@ -208,7 +208,57 @@ class RiskType extends AbstractType
 
 ---
 
-## Pattern 2: Controller Gating via `ModuleGatedControllerTrait`
+## Pattern 2: Controller Gating
+
+### Preferred: `#[RequiresModule]` attribute (central enforcement)
+
+**Files:** `src/Attribute/RequiresModule.php`, `src/EventListener/RequiresModuleListener.php`
+
+Put the attribute on the controller class (all actions) or on single actions.
+It is repeatable; every listed module must be active.
+
+```php
+use App\Attribute\RequiresModule;
+
+#[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('nis2_dora')]
+final class DoraRegisterExportController extends AbstractController { /* ... */ }
+
+// Core controller with one framework-specific action:
+#[Route('/incident/{id}/bcm-impact', name: 'app_incident_bcm_impact')]
+#[RequiresModule('bcm')]
+public function bcmImpact(Incident $incident): Response { /* ... */ }
+```
+
+`RequiresModuleListener` runs on `kernel.controller_arguments` (priority 10,
+after `#[IsGranted]`). When the module is inactive for the current tenant:
+
+- HTML requests → redirect to `app_dashboard` + `common.module_not_active` flash
+  (same behaviour as `checkModuleActive()`),
+- JSON callers (action declared to return `JsonResponse`, XHR, JSON
+  `Accept`/`Content-Type`) → `403 {"success": false, "error": "module_not_active", "module": "<key>"}`.
+
+The former `routes:` lists in `config/modules.yaml` were never enforced and
+have been removed; the attribute on the controller is the single source.
+
+**CI gate (Gate "Module gating", `scripts/quality/check_module_gating.py`):**
+besides FormType fields, the gate scans every routed action in
+`src/Controller/`. If the class name, route path or route name signals an
+optional module (DORA/NIS2/KRITIS, privacy/GDPR, BCM, TISAX, BSI, LkSG,
+MaRisk, MRIS, training, suppliers, resource planning, analytics, …; see
+`CONTROLLER_MODULE_KEYWORDS`), the action needs `#[RequiresModule]`, a
+`checkModuleActive()`/`isModuleActive()` call for one of the matching
+modules, or a `// @no-module-gate-required: <reason>` comment above its
+attributes (class-level comment covers all actions). The ISO 27001 backbone
+modules (assets, risks, controls, incidents, audits, compliance, reviews) are
+deliberately not keyword-mapped.
+
+For explicit tenants outside a request (commands, jobs) use
+`ModuleConfigurationService::isModuleActiveForTenant($key, $tenant)`. Never read
+module state from `Tenant::getSettings()['modules']` — that key is not written
+anywhere.
+
+### Legacy: `ModuleGatedControllerTrait`
 
 **File:** `src/Controller/Trait/ModuleGatedControllerTrait.php`
 
@@ -258,8 +308,13 @@ constructor injection).
 
 | Module Key | Gated Controllers |
 |---|---|
-| `privacy` | DataBreachController, ConsentController, DataSubjectRequestController, ProcessingActivityController, DPIAController |
-| `bcm` | BusinessContinuityPlanController, BCExerciseController, CrisisTeamController |
+| `privacy` | DataBreachController, ConsentController, DataSubjectRequestController, ProcessingActivityController, DPIAController, DpoDashboardController |
+| `bcm` | BusinessContinuityPlanController, BCExerciseController, CrisisTeamController, BcmOfficerDashboardController |
+| `nis2_dora` | DoraComplianceController, DoraRegisterExportController, Nis2ComplianceController, Nis2MusExportController, IctProviderLibraryController |
+| `lksg` / `bsi_grundschutz` / `mris` | LksgReportExportController / BsiGrundschutzCheckController, Admin/GstoolImportController / Mris*Controller |
+| `training` / `suppliers` | TrainingController / SupplierQuestionnaireController, Admin/SupplierCriticalityController |
+
+`check_module_gating.py` is the authoritative inventory — this table lists examples.
 
 ---
 

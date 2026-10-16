@@ -32,6 +32,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class TenantManagementController extends AbstractController
 {
@@ -188,8 +189,7 @@ class TenantManagementController extends AbstractController
 
         foreach ($allTenants as $tenant) {
             if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
-                $tree = $this->corporateStructureService->getStructureTree($tenant);
-                $corporateGroups[] = $tree;
+                $corporateGroups[] = $this->corporateStructureService->getStructureTree($tenant);
             }
         }
 
@@ -824,7 +824,7 @@ class TenantManagementController extends AbstractController
                 'editUrl' => $this->generateUrl('app_context_edit'),
             ]);
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to get ISMS context for tenant', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),

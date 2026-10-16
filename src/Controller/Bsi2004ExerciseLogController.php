@@ -94,8 +94,6 @@ class Bsi2004ExerciseLogController extends AbstractController
             throw $this->createNotFoundException('BCExercise not found.');
         }
 
-        $this->denyAccessUnlessGranted('ROLE_MANAGER');
-
         if ($exercise->hasExerciseLog()) {
             $this->addFlash('warning', $this->translator->trans('bsi_200_4_exercise.error.log_already_exists', [], 'bsi_200_4_exercise'));
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $exercise->getExerciseLog()?->getId()]);

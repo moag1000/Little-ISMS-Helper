@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,7 @@ use Symfony\Component\Yaml\Yaml;
  * Informationssicherheit, v1.5. Lizenz: CC BY 4.0.
  */
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('mris')]
 final class MrisGlossarController extends AbstractController
 {
     #[Route('/mris/glossar', name: 'app_mris_glossar', methods: ['GET'])]

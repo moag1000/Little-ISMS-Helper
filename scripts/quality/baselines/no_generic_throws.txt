@@ -2,7 +2,7 @@
 # Format: <relative-path>:<line>
 src/Controller/AuditFreezeController.php:174
 src/Controller/AuditFreezeController.php:180
-src/Controller/ManagementReportController.php:966
+src/Controller/ManagementReportController.php:922
 src/Entity/AccessReviewCampaign.php:149
 src/Entity/AccessReviewCampaign.php:178
 src/Entity/AccessReviewItem.php:171

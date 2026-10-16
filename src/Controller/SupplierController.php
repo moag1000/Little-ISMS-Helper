@@ -129,7 +129,8 @@ class SupplierController extends AbstractController
 
         // MINOR-6: DORA Register-of-Information export only when framework is active.
         $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA']);
-        $doraActive = $doraFramework !== null && $doraFramework->isActive();
+        $doraActive = $doraFramework !== null && $doraFramework->isActive()
+            && $this->moduleService->isModuleActive('nis2_dora');
 
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $suppliers,

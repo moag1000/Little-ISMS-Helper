@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
@@ -19,7 +19,6 @@ use App\Repository\CommentRepository;
 use App\Repository\IncidentRepository;
 use App\Service\AuditLogger;
 use App\Service\DataBreachService;
-use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
@@ -37,12 +36,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/data-breach', name: 'app_data_breach_')]
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('privacy')]
 class DataBreachController extends AbstractController
 {
     use CurrentUserTrait;
     use InPageFormTrait;
     use LocalizedFlashTrait;
-    use ModuleGatedControllerTrait;
     use BulkActionTrait;
 
     protected function getFlashDomain(): string
@@ -60,7 +59,6 @@ class DataBreachController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
-        private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?IncidentRepository $incidentRepository = null,
@@ -75,8 +73,6 @@ class DataBreachController extends AbstractController
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $filter = $request->query->get('filter', 'all');
 
         $breaches = match ($filter) {
@@ -109,8 +105,6 @@ class DataBreachController extends AbstractController
     #[Route('/dashboard', name: 'dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $statistics = $this->dataBreachService->getDashboardStatistics();
         $complianceScore = $this->dataBreachService->calculateComplianceScore();
         $actionItems = $this->dataBreachService->getActionItems();
@@ -139,8 +133,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function new(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // Create a new breach with tenant and reference number pre-set
         $breach = $this->dataBreachService->prepareNewBreach();
 
@@ -214,8 +206,6 @@ class DataBreachController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // In-modal → condensed read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('data_breach/_detail_modal.html.twig', [
@@ -250,8 +240,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function edit(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!in_array($dataBreach->getStatus(), [DataBreachStatus::Draft->value, DataBreachStatus::UnderAssessment->value], true)) {
             $this->flashError('data_breach.error.cannot_edit_in_status');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
@@ -306,8 +294,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete' . $dataBreach->getId(), $token)) {
             $this->flashError('data_breach.error.invalid_csrf');
@@ -332,8 +318,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function submitForAssessment(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('submit' . $dataBreach->getId(), $token)) {
             $this->flashError('data_breach.error.invalid_csrf');
@@ -357,8 +341,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function notifyAuthority(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('notify_authority' . $dataBreach->getId(), $token)) {
             $this->flashError('data_breach.error.invalid_csrf');
@@ -408,8 +390,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function notifySubjects(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('notify_subjects' . $dataBreach->getId(), $token)) {
             $this->flashError('data_breach.error.invalid_csrf');
@@ -441,8 +421,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function subjectNotificationExemption(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('exemption' . $dataBreach->getId(), $token)) {
             $this->flashError('data_breach.error.invalid_csrf');
@@ -473,8 +451,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function close(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('close' . $dataBreach->getId(), $token)) {
             $this->flashError('data_breach.error.invalid_csrf');
@@ -498,8 +474,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function reopen(Request $request, DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('reopen' . $dataBreach->getId(), $token)) {
             $this->flashError('data_breach.error.invalid_csrf');
@@ -529,8 +503,6 @@ class DataBreachController extends AbstractController
     #[Route('/{id}/export/pdf', name: 'export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function exportPdf(DataBreach $dataBreach): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // Generate version from last update date (Format: Year.Month.Day)
         $lastUpdate = $dataBreach->getUpdatedAt() ?? $dataBreach->getCreatedAt() ?? new DateTime();
         $version = $lastUpdate->format('Y.m.d');
@@ -569,10 +541,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse
     {
-        if ($this->checkModuleActive('privacy') instanceof Response) {
-            return $this->json(['error' => 'Privacy module not active'], 403);
-        }
-
         $data = json_decode($request->getContent(), true);
         $ids = $data['ids'] ?? [];
 
@@ -618,10 +586,6 @@ class DataBreachController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) {
-            return $redirect;
-        }
-
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);

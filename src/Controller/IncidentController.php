@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\IncidentSeverity;
@@ -34,6 +35,7 @@ use App\Service\AuditLogger;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -50,6 +52,7 @@ class IncidentController extends AbstractController
     use BulkActionTrait;
     use CurrentUserTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
@@ -323,6 +326,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('privacy')]
     public function gdprWizardResult(Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -653,6 +657,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('nis2_dora')]
     public function downloadNis2Report(Request $request, Incident $incident): Response
     {
         // Check if NIS2 framework exists and is active
@@ -708,53 +713,13 @@ class IncidentController extends AbstractController
             'Content-Length' => (string) strlen($pdf),
         ]);
     }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
-    }
     // CRITICAL-05: BCM Integration Actions
     /**
      * Display BCM impact analysis for an incident
      */
     #[Route('/incident/{id}/bcm-impact', name: 'app_incident_bcm_impact', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpact(Incident $incident): Response
     {
         $analysis = $this->incidentBCMImpactService->analyzeBusinessImpact($incident);
@@ -769,6 +734,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpactApi(Incident $incident, Request $request): Response
     {
         $downtimeHours = $request->query->get('downtime_hours');
@@ -785,6 +751,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function autoDetectProcesses(Incident $incident): Response
     {
         $detectedProcesses = $this->incidentBCMImpactService->identifyAffectedProcesses($incident);
@@ -862,6 +829,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/bcm-impact/report', name: 'app_incident_bcm_impact_report', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpactReport(Incident $incident): Response
     {
         $reportData = $this->incidentBCMImpactService->generateImpactReport($incident);

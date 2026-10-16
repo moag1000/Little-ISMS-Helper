@@ -65,7 +65,9 @@
     </h2>
 
     <div class="row">
-        {% for category in categories %}
+        {# BCM (ISO 22301) and GDPR categories only when their module is active #}
+        {% set _category_modules = {bcm: 'bcm', gdpr: 'privacy'} %}
+        {% for category in categories|filter(c => _category_modules[c.key] is not defined or is_module_active(_category_modules[c.key])) %}
         <div class="col-md-6 col-lg-4 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-' ~ category.color } %}
                 {% block card_header %}
@@ -125,9 +127,11 @@
                                 <a href="{{ path('app_management_reports_risk_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> Risk Report
                                 </a>
+                                {% if is_module_active('bcm') %}
                                 <a href="{{ path('app_management_reports_bcm_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> BCM Report
                                 </a>
+                                {% endif %}
                                 <a href="{{ path('app_management_reports_compliance_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> Compliance Status
                                 </a>
@@ -148,18 +152,22 @@
                                 <a href="{{ path('app_management_reports_assets_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> Asset Inventory
                                 </a>
+                                {% if is_module_active('bcm') %}
                                 <a href="{{ path('app_management_reports_bcm_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> BCM Report
                                 </a>
+                                {% endif %}
                                 <a href="{{ path('app_management_reports_compliance_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> Compliance Status
                                 </a>
                                 <a href="{{ path('app_management_reports_audit_excel') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> Audit Report
                                 </a>
+                                {% if is_module_active('privacy') %}
                                 <a href="{{ path('app_management_reports_gdpr_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> GDPR / Data Breach
                                 </a>
+                                {% endif %}
                             </div>
                             <h4 class="h6">{{ 'cert_readiness.title'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">

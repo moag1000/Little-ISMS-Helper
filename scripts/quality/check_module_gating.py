@@ -24,6 +24,19 @@ Background — S2 P-6 (var/junior-isb-audit/SOLUTIONS_FOUNDATION.md):
   FormTypes. Tenants who never activated those modules saw irrelevant
   regulatory fields. This CI-gate freezes the helper-pattern.
 
+Controller pass (since 2026-10) — src/Controller/**/*.php:
+  Every routed action whose controller class name, route path or route name
+  signals an optional module (see CONTROLLER_MODULE_KEYWORDS: DORA/NIS2/KRITIS,
+  GDPR/privacy, BCM, TISAX, BSI, LkSG, MaRisk, MRIS, training, suppliers,
+  resource planning, ...) must be gated by one of the matching modules via
+    (a) `#[RequiresModule('<key>')]` on the class or the action
+        (enforced centrally by App\\EventListener\\RequiresModuleListener), or
+    (b) `checkModuleActive('<key>')` / `isModuleActive('<key>')` in the body, or
+    (c) a `// @no-module-gate-required: <reason>` annotation in the action's
+        (or the class's) docblock/attribute area.
+  Baseline entries use `<relative-path>:<method>:route` as key so they do not
+  shift with line numbers.
+
 Exit-codes:
   0 — no violations (or all violations baselined)
   1 — at least one violation outside the baseline
@@ -34,6 +47,7 @@ Usage:
     python3 scripts/quality/check_module_gating.py --paths src/Form/SupplierType.php
     python3 scripts/quality/check_module_gating.py --baseline \
         scripts/quality/baselines/module_gating.txt
+    python3 scripts/quality/check_module_gating.py --controller-paths src/Controller/FooController.php
     python3 scripts/quality/check_module_gating.py --quiet
     python3 scripts/quality/check_module_gating.py --verbose
     python3 scripts/quality/check_module_gating.py --write-baseline \
@@ -339,6 +353,152 @@ def check_file(path: Path) -> list[tuple[int, str, str]]:
     return violations
 
 
+# Controller pass ────────────────────────────────────────────────────────────
+
+CONTROLLER_DIR = ROOT / "src" / "Controller"
+
+# (pattern, module-key). Matched case-insensitively against
+# "<ControllerClassName> <full route path> <route name>". A route may match
+# several modules; gating by ANY of them satisfies the check (e.g.
+# /authority/nis2-registration is fine with either eu_authority_reporting or
+# nis2_dora). Core ISO 27001 modules (assets, risks, controls, incidents,
+# audits, compliance, reviews) are intentionally not listed: they are the
+# mandatory ISMS backbone every other page links into.
+CONTROLLER_MODULE_KEYWORDS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r"dora|nis2|ict[-_]?provider|kritis", re.I), "nis2_dora"),
+    (re.compile(r"lksg", re.I), "lksg"),
+    (re.compile(r"grundschutz|gstool|cross[-_]gap", re.I), "bsi_grundschutz"),
+    (re.compile(r"tisax|prototype[-_]?protection", re.I), "tisax"),
+    (re.compile(r"training", re.I), "training"),
+    (re.compile(r"supplier", re.I), "suppliers"),
+    (re.compile(
+        r"data[-_]?breach|dpia|consent|processing[-_]?activit|data[-_]?subject|privacy|"
+        r"(?<![a-z])dpo(?![a-z])|dpodashboard|gdpr|verfahrensverzeichnis|(?<![a-z])vvt(?![a-z])|"
+        r"transfer[-_]?impact|(?<![a-z])dpa(?![a-z])|dpacontroller",
+        re.I,
+    ), "privacy"),
+    (re.compile(r"bcm|business[-_]?continuity|bc[-_]?exercise|crisis[-_]?team|business[-_]?process", re.I), "bcm"),
+    (re.compile(r"mris", re.I), "mris"),
+    (re.compile(r"vulnerabilit|threat[-_]?intel", re.I), "vulnerability_intel"),
+    (re.compile(r"(?<![a-z])patch", re.I), "patches"),
+    (re.compile(r"marisk", re.I), "marisk"),
+    (re.compile(r"ai[-_]?agent|ai[-_]?governance", re.I), "ai_governance"),
+    (re.compile(r"authority", re.I), "eu_authority_reporting"),
+    (re.compile(r"answer[-_]?library", re.I), "answer_library"),
+    (re.compile(r"(?<![a-z])planning", re.I), "resource_planning"),
+    (re.compile(r"change[-_]?request", re.I), "change_requests"),
+    (re.compile(r"(?<![a-z])locations?(?=[^a-z]|controller|$)", re.I), "locations"),
+    (re.compile(r"(?<![a-z])persons?(?=[^a-z]|controller|$)", re.I), "persons"),
+    (re.compile(r"interested[-_]?part", re.I), "interested_parties"),
+    (re.compile(r"corrective[-_]?action", re.I), "corrective_actions"),
+    (re.compile(r"risk[-_]?appetite", re.I), "risk_appetite"),
+    (re.compile(r"risk[-_]?treatment[-_]?plan", re.I), "risk_treatment_plans"),
+    (re.compile(r"access[-_]?review", re.I), "access_review"),
+    (re.compile(r"analytics|fte[-_]?tracking", re.I), "analytics"),
+    (re.compile(r"report[-_]?builder", re.I), "report_builder"),
+    (re.compile(r"reports/scheduled|scheduled[-_]?report", re.I), "scheduled_reports"),
+    (re.compile(r"portfolio|group[-_]?report", re.I), "portfolio_reports"),
+    (re.compile(r"admin/notification/|notification[-_]?center|\s/notifications", re.I), "notifications"),
+]
+
+RE_CLASS_DECL = re.compile(r"^\s*(?:final\s+|abstract\s+|readonly\s+)*class\s+(\w+)", re.M)
+RE_ROUTE_ATTR = re.compile(r"#\[Route\(\s*(?:path:\s*)?['\"]([^'\"]*)['\"](?:[^\]]*?name:\s*['\"]([^'\"]*)['\"])?")
+RE_REQUIRES_MODULE = re.compile(r"#\[RequiresModule\(\s*(?:module:\s*)?['\"]([a-z0-9_]+)['\"]")
+RE_BODY_MODULE_CHECK = re.compile(r"(?:checkModuleActive|isModuleActive)\(\s*['\"]([a-z0-9_]+)['\"]")
+RE_PUBLIC_METHOD = re.compile(r"\bpublic\s+(?:static\s+)?function\s+(\w+)\s*\(")
+
+
+def _expected_modules(haystack: str) -> set[str]:
+    return {module for pattern, module in CONTROLLER_MODULE_KEYWORDS if pattern.search(haystack)}
+
+
+def _method_body(text: str, start: int) -> tuple[str, int]:
+    """Return (body, end-offset) of the method whose declaration starts at `start`."""
+    brace = text.find("{", text.find(")", start))
+    semicolon = text.find(";", start)
+    if brace == -1 or (semicolon != -1 and semicolon < brace):
+        return "", start + 1  # abstract / interface method
+    depth = 0
+    for i in range(brace, len(text)):
+        ch = text[i]
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[brace:i + 1], i + 1
+    return text[brace:], len(text)
+
+
+def check_controller_file(path: Path) -> list[tuple[str, str]]:
+    """
+    Return (method_name, reason) for each routed action that serves an
+    optional-module feature without a matching module gate.
+    """
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as e:
+        print(f"ERROR reading {path}: {e}", file=sys.stderr)
+        return []
+
+    class_match = RE_CLASS_DECL.search(text)
+    if class_match is None:
+        return []  # trait / interface
+    class_name = class_match.group(1)
+    header = text[:class_match.start()]
+    class_body = text[class_match.end():]
+
+    # Class-level attributes live in the header between the last `use`
+    # statement / docblock and the class keyword.
+    class_routes = RE_ROUTE_ATTR.findall(header)
+    class_prefix, class_route_name = (class_routes[-1] if class_routes else ("", ""))
+    class_modules = set(RE_REQUIRES_MODULE.findall(header))
+    class_exempt = bool(RE_ANNOTATION.search(header))
+
+    violations: list[tuple[str, str]] = []
+    methods = list(RE_PUBLIC_METHOD.finditer(class_body))
+    prev_end = 0
+    for m in methods:
+        method = m.group(1)
+        # Attribute / docblock area: from the end of the previous member up to
+        # this declaration.
+        preamble = class_body[prev_end:m.start()]
+        last_close = max(preamble.rfind(";\n"), preamble.rfind("}\n"))
+        if last_close != -1:
+            preamble = preamble[last_close + 2:]
+        body, prev_end = _method_body(class_body, m.start())
+
+        method_routes = RE_ROUTE_ATTR.findall(preamble)
+        if method_routes:
+            routes = method_routes
+        elif method == "__invoke" and class_routes:
+            routes = [("", "")]
+        else:
+            continue
+
+        if class_exempt or RE_ANNOTATION.search(preamble):
+            continue
+
+        gated = class_modules | set(RE_REQUIRES_MODULE.findall(preamble)) | set(RE_BODY_MODULE_CHECK.findall(body))
+        for route_path, route_name in routes:
+            full_path = f"{class_prefix}{route_path}"
+            haystack = f"{class_name} {full_path} {class_route_name}{route_name}"
+            expected = _expected_modules(haystack)
+            if expected and not (expected & gated):
+                violations.append((
+                    method,
+                    f"route '{full_path}' ({class_name}::{method}) serves module "
+                    f"{'/'.join(sorted(expected))} but has no #[RequiresModule], "
+                    f"checkModuleActive() or @no-module-gate-required",
+                ))
+                break
+    return violations
+
+
+def controller_violation_key(rel: Path, method: str) -> str:
+    return f"{rel}:{method}:route"
+
+
 # Baseline / CLI plumbing ────────────────────────────────────────────────────
 
 
@@ -376,6 +536,12 @@ def main() -> int:
         help="Scope: explicit file/dir paths (default: src/Form/**/*Type.php).",
     )
     parser.add_argument(
+        "--controller-paths",
+        nargs="*",
+        default=None,
+        help="Scope: run only the controller pass on these files (any location).",
+    )
+    parser.add_argument(
         "--baseline",
         type=Path,
         default=None,
@@ -399,31 +565,52 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    # Resolve scope.
-    paths: list[Path] = []
-    if args.paths:
+    # Resolve scope. Files below src/Controller go through the controller
+    # pass, everything else through the FormType pass.
+    form_paths: list[Path] = []
+    controller_paths: list[Path] = []
+
+    def _add(pp: Path) -> None:
+        if CONTROLLER_DIR in pp.parents:
+            controller_paths.append(pp)
+        else:
+            form_paths.append(pp)
+
+    if args.controller_paths:
+        controller_paths = [Path(p) if Path(p).is_absolute() else ROOT / p for p in args.controller_paths]
+    elif args.paths:
         for p in args.paths:
             pp = Path(p)
             if not pp.is_absolute():
                 pp = ROOT / pp
             if pp.is_file():
-                paths.append(pp)
+                _add(pp)
             elif pp.is_dir():
-                paths.extend(sorted(pp.rglob("*Type.php")))
+                pattern = "*.php" if (pp == CONTROLLER_DIR or CONTROLLER_DIR in pp.parents) else "*Type.php"
+                for f in sorted(pp.rglob(pattern)):
+                    _add(f)
     else:
-        if not FORM_DIR.is_dir():
-            print(f"ERROR: {FORM_DIR} not found", file=sys.stderr)
+        if not FORM_DIR.is_dir() or not CONTROLLER_DIR.is_dir():
+            print(f"ERROR: {FORM_DIR} or {CONTROLLER_DIR} not found", file=sys.stderr)
             return 2
-        paths = sorted(FORM_DIR.rglob("*Type.php"))
+        form_paths = sorted(FORM_DIR.rglob("*Type.php"))
+        controller_paths = sorted(CONTROLLER_DIR.rglob("*.php"))
 
     baseline = load_baseline(args.baseline)
-    all_violations: list[tuple[Path, int, str, str]] = []
+    # (baseline-key, human-readable line)
+    all_violations: list[tuple[str, str]] = []
 
-    for path in paths:
+    for path in form_paths:
         if args.verbose:
-            print(f"scan {path.relative_to(ROOT)}", file=sys.stderr)
+            print(f"scan {_rel(path)}", file=sys.stderr)
         for line_no, field, reason in check_file(path):
-            all_violations.append((path, line_no, field, reason))
+            all_violations.append((violation_key(_rel(path), line_no, field), f"{_rel(path)}:{line_no}: {reason}"))
+
+    for path in controller_paths:
+        if args.verbose:
+            print(f"scan {_rel(path)}", file=sys.stderr)
+        for method, reason in check_controller_file(path):
+            all_violations.append((controller_violation_key(_rel(path), method), f"{_rel(path)}: {reason}"))
 
     # Snapshot-write mode.
     if args.write_baseline is not None:
@@ -431,57 +618,49 @@ def main() -> int:
         with args.write_baseline.open("w", encoding="utf-8") as fh:
             fh.write(
                 "# check_module_gating.py baseline — generated snapshot.\n"
-                "# Format: <relative-path>:<line>:<field-name>\n"
-                "# Remove an entry once the FormType is gated properly.\n"
+                "# Format: <relative-path>:<line>:<field-name>   (FormType pass)\n"
+                "#         <relative-path>:<method>:route        (controller pass)\n"
+                "# Remove an entry once the FormType / controller is gated properly.\n"
             )
-            for path, line_no, field, _reason in all_violations:
-                fh.write(f"{_rel(path)}:{line_no}:{field}\n")
+            for key, _line in all_violations:
+                fh.write(f"{key}\n")
         print(
             f"check_module_gating: wrote {len(all_violations)} entries to {args.write_baseline}"
         )
         return 0
 
     # Filter against baseline.
-    new_violations: list[tuple[Path, int, str, str]] = []
-    for v in all_violations:
-        key = violation_key(_rel(v[0]), v[1], v[2])
-        if key not in baseline:
-            new_violations.append(v)
+    new_violations = [v for v in all_violations if v[0] not in baseline]
 
     total = len(all_violations)
     new = len(new_violations)
     baselined = total - new
 
-    if args.quiet:
-        if new == 0:
-            print(
-                f"check_module_gating: OK ({total} regulatory field(s) detected, "
-                f"all gated or baselined)"
-            )
-            return 0
     if new == 0:
-        if not args.quiet:
-            print(
-                f"check_module_gating: OK — {total} regulatory field(s) found, "
-                f"all properly gated or baselined ({baselined} baselined)."
-            )
+        print(
+            f"check_module_gating: OK ({total} ungated regulatory field(s)/route(s), "
+            f"all baselined)" if total else "check_module_gating: OK (all regulatory fields and module routes gated)"
+        )
         return 0
 
     # Report.
     print("check_module_gating: VIOLATIONS\n")
-    for path, line_no, field, reason in new_violations:
-        rel = _rel(path)
-        print(f"FAIL {rel}:{line_no}: {reason}")
+    for _key, line in new_violations:
+        print(f"FAIL {line}")
     print(
         f"\n{new} new violation(s)"
         f" ({baselined} baselined, {total} total)."
     )
     print(
-        "Fix options:\n"
+        "Fix options (FormType):\n"
         "  (a) wrap field in `if ($this->isModuleActive('<key>')) { ... }`\n"
         "  (b) add via `$this->addModuleGatedField($builder, '<key>', '<field>', ...)`\n"
         "  (c) move into a private helper `add{Module}Fields()` invoked from a gated if-block\n"
-        "  (d) intentional? add `// @no-module-gate-required: <reason>` above the ->add() call"
+        "  (d) intentional? add `// @no-module-gate-required: <reason>` above the ->add() call\n"
+        "Fix options (Controller):\n"
+        "  (a) add `#[RequiresModule('<key>')]` to the controller class or the action\n"
+        "  (b) call `checkModuleActive('<key>')` at the top of the action\n"
+        "  (c) intentional? add `// @no-module-gate-required: <reason>` above the action's attributes"
     )
     return 1
 

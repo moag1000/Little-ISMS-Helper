@@ -103,7 +103,7 @@ class PushSubscriptionController extends AbstractController
                 'subscription_id' => $subscription->getId(),
                 'device' => $subscription->getDeviceName(),
             ], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'error' => 'Failed to create subscription',
                 'message' => $e->getMessage(),

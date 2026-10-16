@@ -491,10 +491,14 @@ class MyType extends AbstractType {
 }
 ```
 
-**Quick pattern (Controller):**
+**Quick pattern (Controller):** — preferred: attribute on class or action,
+enforced centrally by `RequiresModuleListener` (HTML → dashboard redirect + flash,
+JSON → 403). CI gate `check_module_gating.py` flags framework routes without a gate.
 ```php
-use App\Controller\Trait\ModuleGatedControllerTrait;
-// ...
+use App\Attribute\RequiresModule;
+#[RequiresModule('privacy')]
+final class MyGdprController extends AbstractController { /* ... */ }
+// legacy, still valid inside an action:
 if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 ```
 
@@ -514,6 +518,9 @@ Compliance audit trail: [`docs/FORM_AUDIT_2026-05.md`](docs/FORM_AUDIT_2026-05.m
 - 4-space indent, max 120 char lines
 - Type hints and return types required
 - Commit format: `feat(scope): message` / `fix(scope): message`
+- JSON/AJAX controller actions catch `\Throwable`, never bare `\Exception` — otherwise an
+  `\Error` escapes as an HTML 500 the fetch() caller cannot parse (CI Gate 64,
+  `scripts/quality/check_json_catch_throwable.py`)
 - File size is ratcheted (Gate 25, `check_god_class_size.py`): every file in `src/` has a per-kind
   LOC limit (controller 600, service 1500 / 15 ctor deps, entity 1000, repository 600, command 800,
   rest 800). Files already over it are listed in `scripts/quality/baselines/god_class_size.txt` and

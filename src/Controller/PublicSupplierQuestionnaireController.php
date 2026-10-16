@@ -20,6 +20,8 @@ use Symfony\Component\Routing\Attribute\Route;
  * constant time (hash_equals) against the stored value; an unknown/closed token
  * 404s. Mirrors the F43 Trust-Center disclosure-safety pattern.
  */
+// @no-module-gate-required: anonymous token portal without tenant context — the
+// `suppliers` gate applies where questionnaires are issued (SupplierQuestionnaireController).
 final class PublicSupplierQuestionnaireController extends AbstractController
 {
     public function __construct(
