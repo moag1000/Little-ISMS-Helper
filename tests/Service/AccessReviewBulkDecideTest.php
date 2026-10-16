@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * Unit tests for {@see AccessReviewCampaignService::bulkDecide()}.
@@ -38,6 +39,7 @@ class AccessReviewBulkDecideTest extends TestCase
     private MockObject&AuditLogger $auditLogger;
     private MockObject&UserRepository $userRepository;
     private MockObject&EmailNotificationService $emailNotificationService;
+    private YamlWorkflowLifecycle $lifecycle;
     private AccessReviewCampaignService $service;
 
     protected function setUp(): void
@@ -52,6 +54,7 @@ class AccessReviewBulkDecideTest extends TestCase
             auditLogger:              $this->auditLogger,
             userRepository:           $this->userRepository,
             emailNotificationService: $this->emailNotificationService,
+            lifecycle:                $this->lifecycle = new YamlWorkflowLifecycle(),
         );
     }
 

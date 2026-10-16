@@ -21,6 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * Policy-Wizard — ApprovalKickoffService GF-routing unit tests.
@@ -146,6 +147,7 @@ final class ApprovalKickoffServiceTopManagementTest extends TestCase
             $em,
             $workflowRepo,
             $auditLogger,
+            new YamlWorkflowLifecycle(),
             null, // tenantSettingResolver — not relevant here
             new \Psr\Log\NullLogger(),
             null, // entityTagRepository

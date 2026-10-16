@@ -1,0 +1,58 @@
+# Threat-Led Penetration Test (DORA Art. 26/27, RTS on TLPT / TIBER-EU).
+#
+#   planned ─▶ scoping ─▶ red_team ─▶ reporting ─▶ closed
+#      └──────────┴──────────┴────────────┴──── cancel ──▶ cancelled
+#
+# Closing and cancelling need a reason: the closure attests that the test
+# summary and remediation plan exist (Art. 26(6)), a cancellation must say why
+# the mandatory test did not take place.
+framework:
+    workflows:
+        threat_led_penetration_test_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\ThreatLedPenetrationTest
+            initial_marking: planned
+            places:
+                - planned
+                - scoping
+                - red_team
+                - reporting
+                - closed
+                - cancelled
+            transitions:
+                start_scoping:
+                    from: planned
+                    to: scoping
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: nis2_dora
+                start_red_team:
+                    from: scoping
+                    to: red_team
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: nis2_dora
+                start_reporting:
+                    from: red_team
+                    to: reporting
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: nis2_dora
+                close:
+                    from: reporting
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: nis2_dora
+                cancel:
+                    from: [planned, scoping, red_team, reporting]
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: nis2_dora

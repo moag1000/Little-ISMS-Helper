@@ -23,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * Policy-Wizard W3-I — ApprovalKickoffService unit tests.
@@ -148,6 +149,7 @@ final class ApprovalKickoffServiceTest extends TestCase
             $em,
             $workflowRepo,
             $auditLogger,
+            new YamlWorkflowLifecycle(),
             $resolver,
         );
     }
@@ -164,6 +166,9 @@ final class ApprovalKickoffServiceTest extends TestCase
         self::assertSame('Document', $instance->getEntityType());
         self::assertSame(101, $instance->getEntityId());
         self::assertSame($tenant, $instance->getTenant());
+        // Seeded at the initial marking and moved by the `start` transition,
+        // never set to in_progress directly.
+        self::assertSame('in_progress', $instance->getStatus());
 
         $persistedInstances = array_filter(
             $this->persisted,

@@ -417,7 +417,11 @@ class WorkflowAutoProgressionService
 
         $workflowInstance->addCompletedStep($step->getId());
 
-        $nextStep = $this->workflowService->moveToNextStep($workflowInstance);
+        $nextStep = $this->workflowService->moveToNextStep(
+            $workflowInstance,
+            $user,
+            'Step automatically approved based on field completion',
+        );
 
         if ($nextStep instanceof WorkflowStep) {
             if ($this->canAutoProgress($nextStep, $entity)) {

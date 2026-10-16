@@ -1,0 +1,26 @@
+# User access review campaign (ISO 27001:2022 A.5.18, A.8.2; NIS2 Art. 21(2)(i)).
+#
+#   open ─ close ─▶ closed
+#
+# A closed campaign is the evidence record of the review cycle; it is not
+# reopened — the next cycle is a new campaign.
+framework:
+    workflows:
+        access_review_campaign_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\AccessReviewCampaign
+            initial_marking: open
+            places:
+                - open
+                - closed
+            transitions:
+                close:
+                    from: open
+                    to: closed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: access_review

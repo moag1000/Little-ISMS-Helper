@@ -428,7 +428,6 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $section = new DocumentSection();
         $section->setDocument($document);
         $section->setSectionKey('legacy_merge');
-        $section->setStatus(DocumentSection::STATUS_DRAFT);
         $section->setTenant($tenant);
         $section->setContentSnapshot($snapshot);
         $this->entityManager->persist($section);
@@ -1635,7 +1634,6 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $section = new DocumentSection();
         $section->setDocument($document);
         $section->setSectionKey($sectionKey);
-        $section->setStatus(DocumentSection::STATUS_DRAFT);
         $section->setTenant($tenant);
         $section->setApprovalRole($approvalRole);
         $this->entityManager->persist($section);
@@ -1746,7 +1744,6 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $section = new DocumentSection();
         $section->setDocument($document);
         $section->setSectionKey($sectionKey);
-        $section->setStatus(DocumentSection::STATUS_DRAFT);
         $section->setTenant($tenant);
         $section->setApprovalRole($row['approval_role']);
 

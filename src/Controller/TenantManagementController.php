@@ -98,7 +98,7 @@ class TenantManagementController extends AbstractController
         // operational from day one. Bypass the workflow on create because
         // the marking-store is not yet wired for an unpersisted entity;
         // setStatus() mirrors into isActive so legacy readers stay correct.
-        $tenant->setStatus(Tenant::STATUS_ACTIVE);
+        $tenant->setStatus(Tenant::STATUS_ACTIVE); // @phpstan-ignore lifecycle.directSetStatus (initial state on an unpersisted Tenant; equals tenant_lifecycle `activate` draft→active, which has no four-eyes/reason; creation is audit-logged as tenant_created)
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
 

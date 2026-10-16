@@ -28,6 +28,8 @@ final class LifecycleService implements LifecycleTransitionInterface
 
     /**
      * @throws InvalidTransitionException
+     * @throws \App\Lifecycle\Exception\ReasonRequiredException
+     * @throws \App\Lifecycle\Exception\FourEyesRequiredException
      */
     public function transition(
         object $entity,

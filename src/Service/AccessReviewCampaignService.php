@@ -8,6 +8,7 @@ use App\Entity\AccessReviewCampaign;
 use App\Entity\AccessReviewItem;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
 use DateTimeImmutable;
@@ -71,6 +72,7 @@ final class AccessReviewCampaignService
         private readonly AuditLogger            $auditLogger,
         private readonly UserRepository         $userRepository,
         private readonly EmailNotificationService $emailNotificationService,
+        private readonly LifecycleTransitionInterface $lifecycle,
     ) {}
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -212,9 +214,9 @@ final class AccessReviewCampaignService
             return; // idempotent
         }
 
-        $campaign->setStatus(AccessReviewCampaign::STATUS_CLOSED);
         $campaign->setClosedAt(new DateTimeImmutable());
-        $this->entityManager->flush();
+        // open → closed through access_review_campaign_lifecycle; flushes.
+        $this->lifecycle->transition($campaign, 'access_review_campaign_lifecycle', 'close', $closer);
 
         $this->auditLogger->logCustom(
             action:      self::ACTION_ACCESS_REVIEW_CLOSED,

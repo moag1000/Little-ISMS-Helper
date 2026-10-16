@@ -70,6 +70,14 @@ class ThreatLedPenetrationTest
     #[ORM\Column(length: 30)]
     private string $status = self::STATUS_PLANNED;
 
+    /**
+     * Optimistic lock for the lifecycle (LifecycleController answers a
+     * stale lock_version with HTTP 409).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: Types::INTEGER, options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $plannedStartDate = null;
 
@@ -309,5 +317,10 @@ class ThreatLedPenetrationTest
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }
