@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\RiskRepository;
+use App\Service\Job\JobTenantScope;
 use Symfony\Component\HttpKernel\KernelInterface;
 use App\Util\CsvSanitizer;
 
@@ -23,6 +25,9 @@ use App\Util\CsvSanitizer;
  * Args:
  *   type ('risks'|'assets'|'compliance') Dataset slice. Validated by both
  *                                        dispatcher and job. Default 'risks'.
+ *   + the tenant scope from {@see JobTenantScope::argsForCurrentUser()}.
+ *     Every query is scoped to that tenant explicitly (the Doctrine tenant
+ *     filter is unarmed outside the HTTP request); a job without scope fails.
  *
  * Phase 3 of the async admin-jobs rollout.
  */
@@ -34,6 +39,7 @@ final class ExportAnalyticsJob implements AsyncJobInterface
         private readonly RiskRepository $riskRepository,
         private readonly AssetRepository $assetRepository,
         private readonly ControlRepository $controlRepository,
+        private readonly JobTenantScope $tenantScope,
         private readonly KernelInterface $kernel,
     ) {
     }
@@ -46,11 +52,13 @@ final class ExportAnalyticsJob implements AsyncJobInterface
             throw new \RuntimeException(sprintf('Unsupported analytics export type "%s".', $type));
         }
 
+        $tenant = $this->tenantScope->resolve($ctx);
+
         $ctx->message(sprintf('Loading %s dataset…', $type));
         $rows = match ($type) {
-            'risks' => $this->buildRiskRows(),
-            'assets' => $this->buildAssetRows(),
-            'compliance' => $this->buildComplianceRows(),
+            'risks' => $this->buildRiskRows($tenant),
+            'assets' => $this->buildAssetRows($tenant),
+            'compliance' => $this->buildComplianceRows($tenant),
         };
 
         $total = max(count($rows) - 1, 0); // exclude header for progress display
@@ -89,9 +97,9 @@ final class ExportAnalyticsJob implements AsyncJobInterface
     /**
      * @return list<list<mixed>>
      */
-    private function buildRiskRows(): array
+    private function buildRiskRows(?Tenant $tenant): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->riskRepository->findBy($this->criteria($tenant));
         $data = [
             ['ID', 'Title', 'Probability', 'Impact', 'Risk Level', 'Status', 'Created At'],
         ];
@@ -113,9 +121,9 @@ final class ExportAnalyticsJob implements AsyncJobInterface
     /**
      * @return list<list<mixed>>
      */
-    private function buildAssetRows(): array
+    private function buildAssetRows(?Tenant $tenant): array
     {
-        $assets = $this->assetRepository->findAll();
+        $assets = $this->assetRepository->findBy($this->criteria($tenant));
         $data = [
             ['ID', 'Name', 'Type', 'Criticality', 'Owner', 'Created At'],
         ];
@@ -135,9 +143,9 @@ final class ExportAnalyticsJob implements AsyncJobInterface
     /**
      * @return list<list<mixed>>
      */
-    private function buildComplianceRows(): array
+    private function buildComplianceRows(?Tenant $tenant): array
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->controlRepository->findBy($this->criteria($tenant));
         $data = [
             ['Control ID', 'Name', 'Status', 'Implementation Date'],
         ];
@@ -150,6 +158,17 @@ final class ExportAnalyticsJob implements AsyncJobInterface
             ];
         }
         return $data;
+    }
+
+    /**
+     * Query criteria for the resolved scope. An empty criteria array (all
+     * rows) only happens for the explicit instance-wide SUPER_ADMIN export.
+     *
+     * @return array<string, Tenant>
+     */
+    private function criteria(?Tenant $tenant): array
+    {
+        return $tenant !== null ? ['tenant' => $tenant] : [];
     }
 
     private function ensureExportDir(string $dir): void

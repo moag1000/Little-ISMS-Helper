@@ -68,6 +68,9 @@ final class TisaxConsolidateCommand extends Command
     /** Where legacy ids with no confirmed canonical target are parked. */
     private const LEGACY_UNMAPPED_CATEGORY = 'legacy_unmapped';
 
+    /** @var array<int, array<string, string>> tenant id => confirmed targets (fixture + that tenant's DB crosswalk) */
+    private array $tenantTargetCache = [];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly AuditLogger $auditLogger,
@@ -242,14 +245,37 @@ final class TisaxConsolidateCommand extends Command
                 }
             }
         }
-        // Merge the per-tenant confirmed crosswalk persisted in the DB (the
-        // ISO-anchor-derived ACC-/INF-→1.1.1 entries the committed fixture can't
-        // carry for copyright reasons). A legacy id resolves to the same control
-        // number across tenants, so a flat merge is correct; DB confirmations win.
-        foreach ($this->crosswalkRepository->findAll() as $entry) {
-            $map[$entry->getLegacyId()] = $entry->getCanonicalId();
-        }
+        // The per-tenant confirmed crosswalk persisted in the DB is merged per
+        // tenant in confirmedTargetsForTenant(), never flat across tenants: it is
+        // derived from each tenant's OWN licensed VDA-ISA workbook, so one
+        // organisation's confirmations must not drive another's migration.
         return $map;
+    }
+
+    /**
+     * Confirmed targets for one tenant's rows: the shared fixture map plus the
+     * crosswalk confirmed in THAT tenant's database (DB confirmations win).
+     * Tenant-less rows only see the fixture map.
+     *
+     * @param array<string, string> $fixtureTargets
+     * @return array<string, string>
+     */
+    private function confirmedTargetsForTenant(?Tenant $tenant, array $fixtureTargets): array
+    {
+        $tenantId = $tenant?->getId();
+        if ($tenantId === null) {
+            return $fixtureTargets;
+        }
+
+        if (!isset($this->tenantTargetCache[$tenantId])) {
+            $tenantTargets = [];
+            foreach ($this->crosswalkRepository->findBy(['tenant' => $tenant]) as $entry) {
+                $tenantTargets[$entry->getLegacyId()] = $entry->getCanonicalId();
+            }
+            $this->tenantTargetCache[$tenantId] = $tenantTargets + $fixtureTargets;
+        }
+
+        return $this->tenantTargetCache[$tenantId];
     }
 
     /**
@@ -403,7 +429,10 @@ final class TisaxConsolidateCommand extends Command
         if ($canonical !== null) {
             foreach ($this->requirementsOf($canonical) as $req) {
                 $rawId = (string) $req->getRequirementId();
-                $norm = $this->normaliseId($rawId, $confirmedTargets);
+                $norm = $this->normaliseId(
+                    $rawId,
+                    $this->confirmedTargetsForTenant($req->getUploadTenant(), $confirmedTargets),
+                );
                 if ($norm['id'] === null) {
                     continue;
                 }
@@ -437,7 +466,10 @@ final class TisaxConsolidateCommand extends Command
                     'unmapped' => [],
                 ];
 
-                $norm = $this->normaliseId((string) $req->getRequirementId(), $confirmedTargets);
+                $norm = $this->normaliseId(
+                    (string) $req->getRequirementId(),
+                    $this->confirmedTargetsForTenant($tenant, $confirmedTargets),
+                );
 
                 if ($norm['kind'] === 'unmapped') {
                     $perTenant[$tenantId]['unmapped'][] = [

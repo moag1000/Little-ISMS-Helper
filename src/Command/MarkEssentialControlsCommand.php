@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Control;
 use App\Repository\ControlRepository;
+use App\Repository\TenantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -81,6 +83,7 @@ final class MarkEssentialControlsCommand
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ControlRepository $controlRepository,
+        private readonly TenantRepository $tenantRepository,
     ) {
     }
 
@@ -88,7 +91,7 @@ final class MarkEssentialControlsCommand
     {
         $io->title('Marking essential controls for small business (KMU/SME)');
 
-        $allControls = $this->controlRepository->findAll();
+        $allControls = $this->controlsTenantByTenant();
 
         if ($allControls === []) {
             $io->warning('No controls found in the database. Load Annex A controls first.');
@@ -124,5 +127,24 @@ final class MarkEssentialControlsCommand
         ));
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * All controls, collected organisation by organisation with an explicit
+     * tenant criterion (the Doctrine tenant filter is unarmed in console
+     * commands), plus tenant-less catalogue rows. The flag is derived from
+     * each control's own control id, so nothing crosses tenants.
+     *
+     * @return list<Control>
+     */
+    private function controlsTenantByTenant(): array
+    {
+        $controls = [];
+        foreach ($this->tenantRepository->findAll() as $tenant) {
+            array_push($controls, ...$this->controlRepository->findBy(['tenant' => $tenant]));
+        }
+        array_push($controls, ...$this->controlRepository->findBy(['tenant' => null]));
+
+        return $controls;
     }
 }

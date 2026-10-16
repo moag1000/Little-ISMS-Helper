@@ -264,17 +264,22 @@ class AnalyticsController extends AbstractController
      * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/export/{type}/dispatch', name: 'app_analytics_export_dispatch', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid('analytics_export_dispatch')]
     public function exportDataDispatch(
         Request $request,
         string $type,
         \App\Service\Job\JobStatusService $jobStatusService,
         \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
         TranslatorInterface $translator,
     ): Response {
         if (!in_array($type, ['risks', 'assets', 'compliance'], true)) {
             throw $this->createNotFoundException(sprintf('Unsupported analytics export type "%s".', $type));
         }
+
+        // Capture the tenant scope while the request still exists.
+        $jobArgs = ['type' => $type] + $jobTenantScope->argsForCurrentUser();
 
         $jobId = $jobStatusService->create('analytics.export', [
             'type' => $type,
@@ -297,7 +302,7 @@ class AnalyticsController extends AbstractController
         // runs in this request, no worker needed; messenger mode queues it).
         return $jobDispatcher->dispatch(
             \App\Job\ExportAnalyticsJob::class,
-            ['type' => $type],
+            $jobArgs,
             $jobId,
             $progressResponse,
             $request->getSession(),
@@ -311,6 +316,7 @@ class AnalyticsController extends AbstractController
      * string.
      */
     #[Route('/export/{type}/download/{id}', name: 'app_analytics_export_download', methods: ['GET'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function exportDownload(
         string $type,
         string $id,
@@ -357,6 +363,7 @@ class AnalyticsController extends AbstractController
     }
 
     #[Route('/api/export/{type}', name: 'app_analytics_export', methods: ['GET'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function exportData(Request $request, string $type): Response
     {
         $data = [];

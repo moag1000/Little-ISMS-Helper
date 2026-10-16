@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Consent;
 use App\Repository\ConsentRepository;
+use App\Repository\TenantRepository;
 use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -35,6 +37,7 @@ class ConsentWithdrawalSyncCommand
 {
     public function __construct(
         private readonly ConsentRepository $consentRepository,
+        private readonly TenantRepository $tenantRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
     ) {
@@ -50,7 +53,7 @@ class ConsentWithdrawalSyncCommand
         $fixed = 0;
         $rows = [];
 
-        foreach ($this->consentRepository->findAll() as $consent) {
+        foreach ($this->consentsTenantByTenant() as $consent) {
             $revoked = $consent->isRevoked();
             $withdrawn = $consent->getWithdrawnAt() !== null;
 
@@ -110,5 +113,22 @@ class ConsentWithdrawalSyncCommand
 
         $symfonyStyle->success(sprintf('Repaired %d inconsistent consent row(s).', $fixed));
         return Command::SUCCESS;
+    }
+
+    /**
+     * Walk the consents organisation by organisation with an explicit tenant
+     * criterion instead of an unscoped findAll(): the Doctrine tenant filter
+     * is unarmed in console commands, so every lookup states its scope.
+     * Rows without a tenant (legacy data) are repaired as well — each row is
+     * reconciled from its own fields only, nothing crosses tenants.
+     *
+     * @return iterable<Consent>
+     */
+    private function consentsTenantByTenant(): iterable
+    {
+        foreach ($this->tenantRepository->findAll() as $tenant) {
+            yield from $this->consentRepository->findBy(['tenant' => $tenant]);
+        }
+        yield from $this->consentRepository->findBy(['tenant' => null]);
     }
 }

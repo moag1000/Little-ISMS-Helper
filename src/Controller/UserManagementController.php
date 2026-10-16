@@ -318,12 +318,17 @@ class UserManagementController extends AbstractController
         UserRepository $userRepository
     ): StreamedResponse {
         // Scope export to current user's tenant (audit M-7: cross-tenant leak via findAll()).
-        // SUPER_ADMIN cross-tenant export requires a dedicated privileged endpoint.
+        // Only a SUPER_ADMIN without an organisation gets the instance-wide list;
+        // any other account without a tenant gets an empty export.
         $currentUser = $this->getUser();
         $tenant = ($currentUser instanceof User) ? $currentUser->getTenant() : null;
-        $users = $tenant !== null
-            ? $userRepository->findBy(['tenant' => $tenant])
-            : $userRepository->findAll();
+        if ($tenant !== null) {
+            $users = $userRepository->findBy(['tenant' => $tenant]);
+        } elseif ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            $users = $userRepository->findAll();
+        } else {
+            $users = [];
+        }
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');
@@ -392,8 +397,13 @@ class UserManagementController extends AbstractController
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
         \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
         TranslatorInterface $translator,
     ): Response {
+        // Capture the tenant scope while the request still exists — the job
+        // scopes its query explicitly and fails without a scope.
+        $jobArgs = $jobTenantScope->argsForCurrentUser();
+
         $jobId = $jobStatusService->create('user_management.export', [
             '_label' => $translator->trans('user.export.progress_title', [], 'user'),
             '_subtitle' => $translator->trans('user.export.progress_subtitle', [], 'user'),
@@ -412,7 +422,7 @@ class UserManagementController extends AbstractController
         // runs in this request, no worker needed; messenger mode queues it).
         return $jobDispatcher->dispatch(
             \App\Job\ExportUsersJob::class,
-            [],
+            $jobArgs,
             $jobId,
             $progressResponse,
             $request->getSession(),

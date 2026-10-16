@@ -408,18 +408,16 @@ class RiskController extends AbstractController
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
         \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
     ): Response {
         if (!$this->isCsrfTokenValid('risk_export_dispatch', $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('app_risk_index');
         }
 
-        $user = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
-        $args = [
-            'tenantId' => $tenant?->getId(),
-            'userId' => $user instanceof User ? $user->getId() : null,
+        // Tenant scope is captured here, while the request still exists; the
+        // job scopes its query explicitly and fails without a scope.
+        $args = $jobTenantScope->argsForCurrentUser() + [
             'level' => $request->request->get('level') ?? $request->query->get('level'),
             'status' => $request->request->get('status') ?? $request->query->get('status'),
             'treatment' => $request->request->get('treatment') ?? $request->query->get('treatment'),
