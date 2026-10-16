@@ -778,7 +778,7 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $ids = [$this->testAsset->getId(), $asset2->getId()];
-        $csrfToken = $this->generateCsrfToken('bulk_delete');
+        $csrfToken = $this->generateCsrfToken('bulk_action');
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
@@ -795,7 +795,7 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
-        $csrfToken = $this->generateCsrfToken('bulk_delete');
+        $csrfToken = $this->generateCsrfToken('bulk_action');
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
@@ -833,7 +833,7 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $this->loginAsUser($this->adminUser);
-        $csrfToken = $this->generateCsrfToken('bulk_delete');
+        $csrfToken = $this->generateCsrfToken('bulk_action');
 
         $ids = [$this->testAsset->getId(), $otherAsset->getId()];
 
@@ -853,7 +853,7 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteHandlesNonexistentAssets(): void
     {
         $this->loginAsUser($this->adminUser);
-        $csrfToken = $this->generateCsrfToken('bulk_delete');
+        $csrfToken = $this->generateCsrfToken('bulk_action');
 
         $ids = [999999, 999998];
 

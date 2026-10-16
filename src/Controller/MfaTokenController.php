@@ -123,6 +123,7 @@ class MfaTokenController extends AbstractController
             'secret' => $this->mfaService->getDecryptedSecret($mfaToken),
         ]);
     }
+    // @csrf-exempt: gated by a TOTP code only the device holder knows
     #[Route('/admin/mfa/{id}/verify', name: 'admin_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('MFA_MANAGE')]
     public function verify(MfaToken $mfaToken, Request $request): JsonResponse

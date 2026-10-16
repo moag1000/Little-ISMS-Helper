@@ -608,6 +608,12 @@ jobs:
         # ArgumentCountError, ...) escape as an HTML 500 page the fetch() caller
         # cannot parse. Keys are path:method, so line shifts do not churn it.
         run: python3 scripts/quality/check_json_catch_throwable.py --baseline scripts/quality/baselines/json_catch_throwable.txt --quiet
+      - name: "Gate 65: state-changing actions need CSRF"
+        # Every POST/PUT/PATCH/DELETE action needs #[IsCsrfTokenValid], an inline
+        # isCsrfTokenValid(), a BulkActionTrait helper or a Symfony form — or a
+        # reviewed `// @csrf-exempt: <reason>` marker. Baseline = files of
+        # in-flight work only; stale entries are reported, never fail.
+        run: python3 scripts/quality/check_csrf_state_changing.py --baseline scripts/quality/baselines/csrf_state_changing.txt
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

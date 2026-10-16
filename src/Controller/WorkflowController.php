@@ -23,6 +23,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -374,6 +376,7 @@ class WorkflowController extends AbstractController
 
     #[Route('/workflow/start/{entityType}/{entityId}', name: 'app_workflow_start', requirements: ['entityId' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[IsCsrfTokenValid(new Expression('"workflow_start_" ~ args["entityType"] ~ "_" ~ args["entityId"]'))]
     public function start(Request $request, string $entityType, int $entityId): Response
     {
         $workflowName = $request->query->get('workflow');

@@ -99,6 +99,7 @@ class ProfileMfaController extends AbstractController
         ]);
     }
 
+    // @csrf-exempt: gated by a TOTP code only the device holder knows
     #[Route('/profile/mfa/{id}/verify', name: 'app_profile_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function verify(MfaToken $mfaToken, Request $request): JsonResponse
     {

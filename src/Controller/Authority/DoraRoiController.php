@@ -20,6 +20,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -242,7 +243,7 @@ class DoraRoiController extends AbstractController
 
     #[Route('/{id}/mark-submitted', name: 'mark_submitted', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    #[IsCsrfTokenValid('dora_roi_mark_submitted_{id}')]
+    #[IsCsrfTokenValid(new Expression('"dora_roi_mark_submitted_" ~ args["id"]'))]
     public function markSubmitted(
         int $id,
         Request $request,

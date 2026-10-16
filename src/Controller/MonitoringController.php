@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use Throwable;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use App\Repository\AuditLogRepository;
-use App\Service\HealthAutoFixService;
 use App\Service\SchemaHealthService;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,7 +43,7 @@ class MonitoringController extends AbstractController
                 'response_time' => $dbTime . ' ms',
                 'driver' => $platformName,
             ];
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $healthChecks['database'] = [
                 'status' => 'error',
                 'error' => $e->getMessage(),
@@ -185,7 +183,7 @@ class MonitoringController extends AbstractController
             try {
                 $opcacheStatus = @opcache_get_status(false);
                 $opcacheEnabled = $opcacheStatus !== false && isset($opcacheStatus['opcache_enabled']) && $opcacheStatus['opcache_enabled'];
-            } catch (Exception) {
+            } catch (\Throwable) {
                 // OPcache not available
                 $opcacheEnabled = false;
             }
@@ -573,85 +571,6 @@ class MonitoringController extends AbstractController
 
         return $errors;
     }
-    #[Route('/admin/monitoring/health/fix/cache', name: 'monitoring_health_fix_cache', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function fixCache(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->fixCachePermissions();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/logs', name: 'monitoring_health_fix_logs', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function fixLogs(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->fixLogPermissions();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/clear-cache', name: 'monitoring_health_clear_cache', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function clearCache(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->clearCache();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/clean-logs', name: 'monitoring_health_clean_logs', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function cleanLogs(HealthAutoFixService $healthAutoFixService, Request $request): JsonResponse
-    {
-        $days = (int) $request->request->get('days', 30);
-        $result = $healthAutoFixService->cleanOldLogs($days);
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/rotate-logs', name: 'monitoring_health_rotate_logs', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function rotateLogs(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->rotateLogs();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/optimize-disk', name: 'monitoring_health_optimize_disk', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function optimizeDisk(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->optimizeDiskSpace();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/var-permissions', name: 'monitoring_health_fix_var', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function fixVarPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->fixVarPermissions();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/uploads-permissions', name: 'monitoring_health_fix_uploads', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function fixUploadsPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->fixUploadsPermissions();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/session-permissions', name: 'monitoring_health_fix_sessions', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function fixSessionPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->fixSessionPermissions();
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/clean-uploads', name: 'monitoring_health_clean_uploads', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function cleanUploads(HealthAutoFixService $healthAutoFixService, Request $request): JsonResponse
-    {
-        $days = (int) $request->request->get('days', 90);
-        $result = $healthAutoFixService->clearOldUploads($days);
-        return $this->json($result);
-    }
-    #[Route('/admin/monitoring/health/fix/composer-install', name: 'monitoring_health_composer_install', methods: ['POST'])]
-    #[IsGranted('MONITORING_MANAGE')]
-    public function composerInstall(HealthAutoFixService $healthAutoFixService): JsonResponse
-    {
-        $result = $healthAutoFixService->runComposerInstall();
-        return $this->json($result);
-    }
     /**
      * Format bytes to human-readable format
      */
@@ -717,7 +636,7 @@ class MonitoringController extends AbstractController
                     $size += $file->getSize();
                 }
             }
-        } catch (Exception) {
+        } catch (\Throwable) {
             // Directory not accessible
             return 0;
         }

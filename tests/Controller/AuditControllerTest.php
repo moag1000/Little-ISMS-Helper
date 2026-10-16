@@ -11,6 +11,7 @@ use App\Repository\InternalAuditRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\Attributes\Test;
@@ -23,6 +24,8 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class AuditControllerTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
@@ -671,7 +674,7 @@ class AuditControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
         $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->testAudit->getId()]]));
+        ], json_encode(['ids' => [$this->testAudit->getId()], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -700,7 +703,7 @@ class AuditControllerTest extends WebTestCase
         $this->loginAsUser($this->adminUser);
         $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseIsSuccessful();
 
@@ -723,7 +726,7 @@ class AuditControllerTest extends WebTestCase
         $this->loginAsUser($this->adminUser);
         $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => []]));
+        ], json_encode(['ids' => [], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -740,7 +743,7 @@ class AuditControllerTest extends WebTestCase
         $this->loginAsUser($this->adminUser);
         $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [999999, 999998]]));
+        ], json_encode(['ids' => [999999, 999998], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         // When no audits are found, the API returns 400 with error details
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -762,7 +765,7 @@ class AuditControllerTest extends WebTestCase
         $this->loginAsUser($this->adminUser);
         $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$validId, $invalidId]]));
+        ], json_encode(['ids' => [$validId, $invalidId], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseIsSuccessful();
 

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use App\Entity\User;
 use App\Enum\TreatmentStrategy;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
-use Exception;
 use DomainException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
@@ -577,6 +577,7 @@ class RiskController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if a Risk has linked Treatment Plans or Incidents before deletion.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/risk/bulk-delete-check', name: 'app_risk_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -606,61 +607,20 @@ class RiskController extends AbstractController
 
     #[Route('/risk/bulk-delete', name: 'app_risk_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $risk = $this->riskRepository->find($id);
-
-                if (!$risk) {
-                    $errors[] = "Risk ID $id not found";
-                    continue;
-                }
-
-                // Security check: cannot delete inherited risks
-                if ($tenant && !$this->riskService->canEditRisk($risk, $tenant)) {
-                    $errors[] = "Risk ID $id is inherited and cannot be deleted";
-                    continue;
-                }
-
-                $this->entityManager->remove($risk);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting risk ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted risks deleted successfully"
-        ]);
+        // Tenant equality (enforced by BulkDeleteService) already excludes
+        // risks inherited from a parent organisation.
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Risk',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->riskRepository->find($id),
+            voterAttribute: 'delete',
+        );
     }
+
     #[Route('/risk/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Request $request, Risk $risk): Response
@@ -1008,7 +968,7 @@ class RiskController extends AbstractController
         try {
             $result = $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $user, $comments);
             $this->flashSuccess('risk.acceptance.success.approved');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
@@ -1038,7 +998,7 @@ class RiskController extends AbstractController
         try {
             $result = $this->riskAcceptanceWorkflowService->rejectAcceptance($risk, $user, $reason);
             $this->flashWarning('risk.acceptance.success.rejected');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 

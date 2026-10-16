@@ -59,6 +59,7 @@ final class ExistingFrameworksController extends AbstractController
         ], new Response(status: $status));
     }
 
+    // @csrf-exempt: only sets a setup-wizard session flag
     #[Route('/skip', name: '_skip', methods: ['GET', 'POST'])]
     public function skip(Request $request): Response
     {

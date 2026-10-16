@@ -46,6 +46,7 @@ class WorkflowStepApiController extends AbstractController
         ]);
     }
 
+    // @csrf-exempt: retired write API — always answers 410 Gone and changes nothing
     #[Route('/api/workflow/{id}/steps', name: 'api_workflow_steps_add', methods: ['POST'])]
     #[Route('/api/workflow/step/{id}', name: 'api_workflow_step_update', methods: ['PUT', 'PATCH'])]
     #[Route('/api/workflow/step/{id}', name: 'api_workflow_step_delete', methods: ['DELETE'])]

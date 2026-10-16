@@ -195,7 +195,7 @@
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="optimize-disk"
-                            data-autofix-url-value="{{ path('monitoring_health') }}">
+                            data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                         <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.optimize_disk'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-optimize-disk"></div>
@@ -296,7 +296,7 @@
                                 data-controller="autofix"
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="cache"
-                                data-autofix-url-value="{{ path('monitoring_health') }}">
+                                data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                             <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                         </button>
                     {% endif %}
@@ -304,7 +304,7 @@
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clear-cache"
-                            data-autofix-url-value="{{ path('monitoring_health') }}">
+                            data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                         <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'monitoring.action.clear_cache'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-cache"></div>
@@ -347,7 +347,7 @@
                                 data-controller="autofix"
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="logs"
-                                data-autofix-url-value="{{ path('monitoring_health') }}">
+                                data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                             <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                         </button>
                     {% endif %}
@@ -355,14 +355,14 @@
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clean-logs"
-                            data-autofix-url-value="{{ path('monitoring_health') }}">
+                            data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                         <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_logs'|trans({}, 'monitoring') }}
                     </button>
                     <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm auto-fix-btn"
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="rotate-logs"
-                            data-autofix-url-value="{{ path('monitoring_health') }}">
+                            data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                         <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'monitoring.action.rotate_logs'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-logs"></div>
@@ -417,7 +417,7 @@
                                 data-controller="autofix"
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="var-permissions"
-                                data-autofix-url-value="{{ path('monitoring_health') }}">
+                                data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                             <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} var/
                         </button>
                     {% endif %}
@@ -426,7 +426,7 @@
                                 data-controller="autofix"
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="uploads-permissions"
-                                data-autofix-url-value="{{ path('monitoring_health') }}">
+                                data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                             <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} uploads/
                         </button>
                     {% endif %}
@@ -480,7 +480,7 @@
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="composer-install"
-                            data-autofix-url-value="{{ path('monitoring_health') }}">
+                            data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                         <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'monitoring.action.composer_install'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-composer-install"></div>
@@ -603,7 +603,7 @@
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="session-permissions"
-                            data-autofix-url-value="{{ path('monitoring_health') }}">
+                            data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                         <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-session-permissions"></div>
@@ -645,7 +645,7 @@
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clean-uploads"
-                            data-autofix-url-value="{{ path('monitoring_health') }}">
+                            data-autofix-url-value="{{ path('monitoring_health') }}" data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
                         <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_uploads'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-clean-uploads"></div>

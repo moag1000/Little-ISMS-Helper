@@ -133,10 +133,12 @@
         </div>
     </div>
 
-    {# Batch Analysis UI - Always visible #}
+    {# Batch Analysis UI - writes analysis results, so ROLE_MANAGER only #}
+    {% if is_granted('ROLE_MANAGER') %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis"
             data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}"
+            data-batch-analysis-csrf-token-value="{{ csrf_token('mapping_quality') }}"
             data-batch-analysis-stats-url-value="{{ path('app_mapping_quality_stats') }}"
             data-batch-analysis-status-analyzing-value="{{ 'compliance.status.analyzing'|trans({}, 'compliance') }}"
             data-batch-analysis-status-done-value="{{ 'compliance.status.done'|trans({}, 'compliance') }}"
@@ -268,6 +270,7 @@
             </div>
         {% endblock %}
     {% endembed %}
+    {% endif %}
 
     {# Charts Row #}
     <div class="row mb-4">
