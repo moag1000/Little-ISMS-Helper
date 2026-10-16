@@ -34,6 +34,7 @@ use App\Repository\ThreatIntelligenceRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Service\ModuleConfigurationService;
+use App\Service\Search\NavigationSearch;
 use App\Service\Search\SearchService;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -170,7 +171,7 @@ class SearchServiceTest extends TestCase
             $this->complianceFrameworkRepo,
             $this->complianceRequirementRepo,
             $this->urlGenerator,
-            $authChecker,
+            new NavigationSearch($this->urlGenerator, $authChecker, $moduleConfig),
             $moduleConfig,
         );
     }
@@ -208,7 +209,7 @@ class SearchServiceTest extends TestCase
             $this->complianceFrameworkRepo,
             $this->complianceRequirementRepo,
             $this->urlGenerator,
-            $this->authChecker,
+            new NavigationSearch($this->urlGenerator, $this->authChecker, $this->moduleConfig),
             $this->moduleConfig,
         );
     }

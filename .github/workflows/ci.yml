@@ -439,8 +439,14 @@ jobs:
         run: python3 scripts/quality/check_translation_dynamic_keys.py --quiet
       - name: "Gate 24: AuditLog must set tenant"
         run: python3 scripts/quality/check_audit_log_tenant.py --baseline scripts/quality/baselines/audit_log_tenant.txt --quiet
-      - name: "Gate 25: God-class size (soft-fail via baseline)"
-        run: python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --quiet
+      - name: "Gate 25: God-class size ratchet (baseline may only shrink)"
+        # Every src/ file vs. a per-kind LOC threshold. Baselined files may not
+        # grow (--baseline), stale entries must be lowered (--strict-shrink) and
+        # the baseline itself may not grow against the PR base (--ratchet-ref),
+        # so "bump the baseline" no longer gets past the gate. See scripts/README.md.
+        run: |
+          git fetch --no-tags --depth=1 origin "${GITHUB_BASE_REF:-main}"
+          python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --ratchet-ref FETCH_HEAD --strict-shrink --quiet
       - name: "Gate 26: Translation top-level keys match domain"
         run: python3 scripts/quality/check_translation_nesting.py --baseline scripts/quality/baselines/translation_nesting.txt --quiet
       - name: "Gate 27: No EntityManager writes in controllers"
@@ -591,6 +597,12 @@ jobs:
         # invisible at runtime. Descriptive keys (license_note, changelog, …) are
         # baselined; a NEW inert key is far more likely dead payload than docs.
         run: python3 scripts/quality/check_fixture_unread_keys.py --baseline scripts/quality/baselines/fixture_unread_keys.txt
+      - name: "Gate 63: no duplicate keys in translation YAML"
+        # PyYAML keeps the last of two equal keys (a whole parent section can
+        # vanish from the Python gates' view) while Symfony's parser rejects
+        # the file, so the domain fails to load at runtime. Covers all
+        # translations/*.yaml (the old script hardcoded two messages files).
+        run: python3 scripts/quality/check_yaml_duplicates.py
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

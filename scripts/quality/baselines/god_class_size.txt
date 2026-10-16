@@ -1,40 +1,56 @@
-# check_god_class_size.py baseline
+# check_god_class_size.py baseline (Gate 25) — a one-way ratchet.
+# format: 2
 # Format: <relative-path>:LOC=NNN deps=MMM
-# NEW file added OR existing file growing beyond LOC will fail CI.
-src/Service/PolicyWizard/DocumentGenerator.php:LOC=1994 deps=18
-src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1842 deps=4
+# Entries may only be lowered or removed; CI rejects new or raised entries
+# (--ratchet-ref) and stale ones (--strict-shrink). See scripts/README.md.
+src/Entity/Risk.php:LOC=1973 deps=0
+src/Entity/Incident.php:LOC=1911 deps=0
+src/Service/PolicyWizard/DocumentGenerator.php:LOC=1817 deps=17
+src/Repository/ComplianceMappingRepository.php:LOC=1816 deps=0
 src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
-src/Service/DashboardStatisticsService.php:LOC=1751 deps=26
-src/Controller/RiskController.php:LOC=1661 deps=0
+src/Service/DashboardStatisticsService.php:LOC=1751 deps=25
+src/Entity/ProcessingActivity.php:LOC=1600 deps=0
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
-src/Service/Export/CertificationBundleExporter.php:LOC=1573 deps=19
+src/Service/Export/CertificationBundleExporter.php:LOC=1573 deps=18
 src/Controller/PolicyWizardController.php:LOC=1483 deps=0
-src/Service/Search/SearchService.php:LOC=1416 deps=33
+src/Entity/DataProtectionImpactAssessment.php:LOC=1443 deps=0
 src/Controller/DocumentController.php:LOC=1401 deps=0
-src/Service/MyDayAggregator.php:LOC=1304 deps=25
+src/Service/MyDayAggregator.php:LOC=1304 deps=24
 src/Controller/ManagementReportController.php:LOC=1294 deps=0
 src/Controller/Admin/DataRepairController.php:LOC=1278 deps=0
-src/Service/ManagementReportService.php:LOC=1164 deps=20
-src/Service/ComplianceWizard/CoverageCheckService.php:LOC=1077 deps=24
+src/Entity/Supplier.php:LOC=1253 deps=0
+src/Controller/RiskController.php:LOC=1211 deps=0
+src/Entity/DataBreach.php:LOC=1171 deps=0
+src/Service/ManagementReportService.php:LOC=1164 deps=19
+src/Entity/BusinessContinuityPlan.php:LOC=1122 deps=0
+src/Entity/Control.php:LOC=1098 deps=0
+src/Entity/InternalAudit.php:LOC=1092 deps=0
+src/Service/ComplianceWizard/CoverageCheckService.php:LOC=1077 deps=23
 src/Controller/UserManagementController.php:LOC=1025 deps=0
+src/Entity/Tenant.php:LOC=1012 deps=0
+src/Entity/BusinessProcess.php:LOC=1003 deps=0
 src/Controller/IncidentController.php:LOC=996 deps=0
+src/Service/Search/SearchService.php:LOC=968 deps=32
+src/Command/TisaxConsolidateCommand.php:LOC=947 deps=0
 src/Controller/TenantManagementController.php:LOC=935 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
 src/Controller/ProcessingActivityController.php:LOC=888 deps=0
 src/Controller/AssetController.php:LOC=856 deps=0
 src/Controller/DPIAController.php:LOC=838 deps=0
+src/Form/ProcessingActivityType.php:LOC=835 deps=0
+src/Command/GenerateIsoProceduresCommand.php:LOC=834 deps=0
 src/Controller/ComplianceWizardController.php:LOC=814 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0
 src/Controller/AnalyticsController.php:LOC=743 deps=0
+src/Controller/QuickFixController.php:LOC=733 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/AuditController.php:LOC=722 deps=0
-src/Controller/QuickFixController.php:LOC=722 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
 src/Controller/DataBreachController.php:LOC=673 deps=0
 src/Controller/TrainingController.php:LOC=672 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=640 deps=0
-src/Service/ScheduledReportService.php:LOC=619 deps=22
-src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=17
-src/Service/DataIntegrityService.php:LOC=438 deps=34
-src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=18
-src/Service/Tisax/Dto/VdaIsaControlRow.php:LOC=125 deps=21
+src/Service/ScheduledReportService.php:LOC=619 deps=21
+src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=16
+src/Service/DataIntegrityService.php:LOC=438 deps=33
+src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=17
+src/Service/Tisax/Dto/VdaIsaControlRow.php:LOC=125 deps=20

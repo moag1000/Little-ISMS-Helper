@@ -246,6 +246,8 @@ class ProcessingActivity
      * Structured evidence: ISO 27001 controls implemented for this processing (M:N).
      *
      * Junior-ISB-Audit-2026-05-22 C2-03: structured nachweis (vs the qualitative TOM narrative).
+     *
+     * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'processing_activity_control')]
@@ -272,6 +274,8 @@ class ProcessingActivity
     /**
      * Consents for this processing activity (Art. 6(1)(a) GDPR)
      * Data Reuse: Track all consents when legalBasis = 'consent'
+     *
+     * @var Collection<int, Consent>
      */
     #[ORM\OneToMany(targetEntity: Consent::class, mappedBy: 'processingActivity', cascade: ['persist'])]
     private Collection $consents;

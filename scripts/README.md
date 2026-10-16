@@ -173,18 +173,18 @@ python3 verify_translations_v2.py
 
 ### quality/check_yaml_duplicates.py
 
-**Zweck:** YAML-Duplikat-Prüfung in Übersetzungsdateien
+**Zweck:** Doppelte Schlüssel in derselben Mapping-Ebene aller
+`translations/*.yaml`-Dateien. PyYAML behält still den letzten Wert (ein ganzer
+Elternabschnitt kann verschwinden), Symfonys YAML-Parser lehnt die Datei ab —
+die Übersetzungs-Domain lädt dann zur Laufzeit nicht.
 
 **Verwendung:**
 ```bash
-cd scripts/quality
-python3 check_yaml_duplicates.py
+python3 scripts/quality/check_yaml_duplicates.py              # alle Übersetzungsdateien
+python3 scripts/quality/check_yaml_duplicates.py datei.yaml   # einzelne Dateien
 ```
 
-**Prüft:**
-- ✅ Doppelte Schlüssel in YAML-Dateien
-- ✅ Namenskonflikte
-- ✅ Überschreibungen
+**CI-Integration:** Gate 63 im `code-quality`-Job (blockierend).
 
 ---
 
@@ -294,6 +294,44 @@ python3 scripts/quality/check_freetext_legacy.py --baseline scripts/quality/base
 **Whitelist-Annotation:** `// @legacy-freetext: <reason>`.
 
 **CI-Integration:** Gate 13 im `code-quality`-Job (`--strict --baseline`).
+
+---
+
+### quality/check_god_class_size.py (Gate 25 — God-Class-Ratchet)
+
+**Zweck:** Jede Datei unter `src/` gegen einen LOC-Schwellwert ihrer Art
+(Controller 600, Service 1500 LOC / 15 Konstruktor-Deps, Entity 1000,
+Repository 600, Command 800, Rest 800, explizit gelistete Daten-Kataloge 2000 —
+Liste `DATA_CATALOGUE_FILES` im Skript). Dateien darüber stehen in
+`scripts/quality/baselines/god_class_size.txt`.
+
+**Die Baseline ist eine Einbahnstraße:**
+- neue Datei über Schwellwert → FAIL
+- gelistete Datei wächst über ihren Eintrag (LOC, bei Services auch Deps) → FAIL
+- `--strict-shrink`: Datei ist geschrumpft, Eintrag aber nicht gesenkt → FAIL
+  (der Gewinn wird festgeschrieben, statt später wieder verbraucht zu werden)
+- `--ratchet-ref <ref>`: Die Baseline selbst darf gegenüber `<ref>` (CI: PR-Basis)
+  nicht wachsen — angehobene oder neue Einträge → FAIL. "Baseline hochsetzen"
+  ist damit kein Weg mehr am Gate vorbei. Eine umbenannte Datei darf den Eintrag
+  einer im selben Change verschwundenen Datei übernehmen, wenn sie nicht größer ist.
+
+**Wenn das Gate fehlschlägt:**
+```bash
+# NEW / GREW: Code in kohäsive Services/Traits auslagern, bis die Datei wieder
+# innerhalb ihres Eintrags bzw. Schwellwerts liegt.
+
+# stale (Datei geschrumpft): Baseline senken
+python3 scripts/quality/check_god_class_size.py --write-baseline scripts/quality/baselines/god_class_size.txt
+
+# lokal wie CI prüfen
+python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt \
+    --ratchet-ref origin/main --strict-shrink
+```
+
+Schwellwerte oder die Daten-Katalog-Liste ändern ist eine bewusste,
+reviewpflichtige Änderung am Skript (ADR-0012), kein Baseline-Bump.
+
+**CI-Integration:** Gate 25 im `code-quality`-Job.
 
 ---
 

@@ -127,6 +127,7 @@ class Tenant
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
+    /** @var Collection<int, User> */
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'tenant')]
     private Collection $users;
 
@@ -135,6 +136,7 @@ class Tenant
     #[ORM\JoinColumn(name: 'parent_id', nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $parent = null;
 
+    /** @var Collection<int, Tenant> */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $subsidiaries;
 
