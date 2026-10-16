@@ -453,12 +453,12 @@ src/Controller/ThreatIntelligenceController.php:232
 src/Controller/ThreatIntelligenceController.php:287
 src/Controller/ThreatIntelligenceController.php:295
 src/Controller/Tisax/TisaxImportWizardController.php:407
-src/Controller/TrainingController.php:116
 src/Controller/TrainingController.php:117
-src/Controller/TrainingController.php:191
-src/Controller/TrainingController.php:199
-src/Controller/TrainingController.php:250
-src/Controller/TrainingController.php:274
+src/Controller/TrainingController.php:118
+src/Controller/TrainingController.php:192
+src/Controller/TrainingController.php:200
+src/Controller/TrainingController.php:252
+src/Controller/TrainingController.php:275
 src/Controller/TrainingController.php:409
 src/Controller/TrainingController.php:413
 src/Controller/TrainingController.php:421
