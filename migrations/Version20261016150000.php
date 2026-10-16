@@ -23,7 +23,7 @@ use Doctrine\Migrations\AbstractMigration;
  * the sole organisation so they keep working. With several organisations an
  * operator assigns them (Tenant management, Data repair). Not reverted by down().
  */
-final class Version20261016120000 extends AbstractMigration
+final class Version20261016150000 extends AbstractMigration
 {
     public function getDescription(): string
     {
