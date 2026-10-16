@@ -68,14 +68,11 @@ final class TisaxConsolidateCommand extends Command
     /** Where legacy ids with no confirmed canonical target are parked. */
     private const LEGACY_UNMAPPED_CATEGORY = 'legacy_unmapped';
 
-    /** @var array<int, array<string, string>> tenant id => confirmed targets (fixture + that tenant's DB crosswalk) */
-    private array $tenantTargetCache = [];
-
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly AuditLogger $auditLogger,
         private readonly \App\Service\Tisax\TisaxFulfillmentSync $fulfillmentSync,
-        private readonly \App\Repository\TisaxCrosswalkEntryRepository $crosswalkRepository,
+        private readonly \App\Service\Tisax\TisaxCrosswalkTargetResolver $crosswalkTargets,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -116,13 +113,13 @@ final class TisaxConsolidateCommand extends Command
             return Command::FAILURE;
         }
         $crosswalkVersion = (string) ($crosswalk['version'] ?? 'unknown');
-        $confirmedTargets = $this->buildConfirmedTargetMap($crosswalk);
+        $confirmedTargets = $this->crosswalkTargets->buildConfirmedTargetMap($crosswalk);
         $io->writeln(sprintf(
             'Crosswalk version <info>%s</info> (ISA %s) — %d confirmed target(s), %d entr(ies) need human review.',
             $crosswalkVersion,
             (string) ($crosswalk['appliesToIsaVersion'] ?? '?'),
             count($confirmedTargets),
-            $this->countNeedsReview($crosswalk),
+            $this->crosswalkTargets->countNeedsReview($crosswalk),
         ));
 
         // ── Resolve frameworks ─────────────────────────────────────────────
@@ -210,96 +207,6 @@ final class TisaxConsolidateCommand extends Command
             $io->error('Failed to parse crosswalk: ' . $e->getMessage());
             return null;
         }
-    }
-
-    /**
-     * Build a map legacy_id → confirmed canonical target id.
-     *
-     * Only entries that carry an explicit `target` AND are NOT flagged
-     * `needs_human_review` are treated as authoritative (no-silent-cap rule:
-     * unconfirmed ids must NOT be auto-mapped). Today the shipped fixture has
-     * zero confirmed targets — all domain-prefixed/AL3 ids therefore park under
-     * legacy_unmapped until a reviewer with the licensed catalogue fills them in.
-     *
-     * @param array<string, mixed> $crosswalk
-     * @return array<string, string>  legacy_id => canonical_id
-     */
-    private function buildConfirmedTargetMap(array $crosswalk): array
-    {
-        $map = [];
-        foreach ((array) ($crosswalk['domain_prefixed_entries'] ?? []) as $entry) {
-            $this->collectConfirmed($entry, $map);
-        }
-        // The AL3 (§3/§4) entries live under the same top-level list in YAML.
-        // parseFile already merged them into domain_prefixed_entries when they
-        // share the key; defensively scan any other list-of-entries keys too.
-        foreach ($crosswalk as $key => $value) {
-            if (!is_array($value) || $key === 'domain_prefixed_entries') {
-                continue;
-            }
-            if (array_is_list($value)) {
-                foreach ($value as $entry) {
-                    if (is_array($entry)) {
-                        $this->collectConfirmed($entry, $map);
-                    }
-                }
-            }
-        }
-        // The per-tenant confirmed crosswalk persisted in the DB is merged per
-        // tenant in confirmedTargetsForTenant(), never flat across tenants: it is
-        // derived from each tenant's OWN licensed VDA-ISA workbook, so one
-        // organisation's confirmations must not drive another's migration.
-        return $map;
-    }
-
-    /**
-     * Confirmed targets for one tenant's rows: the shared fixture map plus the
-     * crosswalk confirmed in THAT tenant's database (DB confirmations win).
-     * Tenant-less rows only see the fixture map.
-     *
-     * @param array<string, string> $fixtureTargets
-     * @return array<string, string>
-     */
-    private function confirmedTargetsForTenant(?Tenant $tenant, array $fixtureTargets): array
-    {
-        $tenantId = $tenant?->getId();
-        if ($tenantId === null) {
-            return $fixtureTargets;
-        }
-
-        if (!isset($this->tenantTargetCache[$tenantId])) {
-            $tenantTargets = [];
-            foreach ($this->crosswalkRepository->findBy(['tenant' => $tenant]) as $entry) {
-                $tenantTargets[$entry->getLegacyId()] = $entry->getCanonicalId();
-            }
-            $this->tenantTargetCache[$tenantId] = $tenantTargets + $fixtureTargets;
-        }
-
-        return $this->tenantTargetCache[$tenantId];
-    }
-
-    /**
-     * @param array<string, mixed> $entry
-     * @param array<string, string> $map
-     */
-    private function collectConfirmed(array $entry, array &$map): void
-    {
-        $legacyId = $entry['legacy_id'] ?? null;
-        $target = $entry['target'] ?? null;
-        $status = $entry['status'] ?? null;
-        if (is_string($legacyId) && is_string($target) && $target !== '' && $status !== 'needs_human_review') {
-            $map[$legacyId] = $target;
-        }
-    }
-
-    /** @param array<string, mixed> $crosswalk */
-    private function countNeedsReview(array $crosswalk): int
-    {
-        $summary = $crosswalk['summary'] ?? [];
-        if (is_array($summary) && isset($summary['needs_human_review'])) {
-            return (int) $summary['needs_human_review'];
-        }
-        return 0;
     }
 
     // ──────────────────────────────────────────────────────────────────────
@@ -431,7 +338,7 @@ final class TisaxConsolidateCommand extends Command
                 $rawId = (string) $req->getRequirementId();
                 $norm = $this->normaliseId(
                     $rawId,
-                    $this->confirmedTargetsForTenant($req->getUploadTenant(), $confirmedTargets),
+                    $this->crosswalkTargets->forTenant($req->getUploadTenant(), $confirmedTargets),
                 );
                 if ($norm['id'] === null) {
                     continue;
@@ -468,7 +375,7 @@ final class TisaxConsolidateCommand extends Command
 
                 $norm = $this->normaliseId(
                     (string) $req->getRequirementId(),
-                    $this->confirmedTargetsForTenant($tenant, $confirmedTargets),
+                    $this->crosswalkTargets->forTenant($tenant, $confirmedTargets),
                 );
 
                 if ($norm['kind'] === 'unmapped') {

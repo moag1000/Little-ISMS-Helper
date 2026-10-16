@@ -13,6 +13,7 @@ use Traversable;
 use DomainException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\Vulnerability;
@@ -53,6 +54,7 @@ class RiskController extends AbstractController
     use LocalizedFlashTrait;
     use BulkActionTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
@@ -1013,55 +1015,6 @@ class RiskController extends AbstractController
 
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     *
-     * @param array $items Array of entities to analyze
-     * @param mixed $currentTenant Current tenant for comparison
-     * @return array Statistics with keys: own, inherited, subsidiaries, total
-     */
-    private function calculateDetailedStats(array $items, mixed $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                // Own record
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                // Inherited from parent/ancestor
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                // From subsidiary
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
-    }
-
     /**
      * Bulk CSV export of selected risks.
      * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
