@@ -7,6 +7,7 @@ namespace App\Tests\Entity;
 use App\Entity\BusinessProcess;
 use App\Entity\Asset;
 use App\Entity\Risk;
+use App\Enum\RiskStatus;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -323,6 +324,53 @@ class BusinessProcessTest extends TestCase
         $process = new BusinessProcess();
 
         $this->assertFalse($process->hasUnmitigatedHighRisks());
+    }
+
+    /**
+     * Regression — the aggregation compared Risk::getStatus() (a RiskStatus
+     * enum) with the string 'active', which never matched: every process with
+     * risks reported 'low', zero active risks and no unmitigated high risks.
+     */
+    #[Test]
+    public function testRiskAggregationCountsOpenRisksAndSkipsClosedOnes(): void
+    {
+        $process = new BusinessProcess();
+
+        $high = new Risk();
+        $high->setTitle('Ransomware');
+        $high->setStatus(RiskStatus::InTreatment);
+        $high->setProbability(5)->setImpact(4);
+        $high->setResidualProbability(4)->setResidualImpact(4);
+
+        $closed = new Risk();
+        $closed->setTitle('Retired legacy system');
+        $closed->setStatus(RiskStatus::Closed);
+        $closed->setProbability(5)->setImpact(5);
+        $closed->setResidualProbability(5)->setResidualImpact(5);
+
+        $process->addIdentifiedRisk($high);
+        $process->addIdentifiedRisk($closed);
+
+        $this->assertSame(1, $process->getActiveRiskCount());
+        $this->assertTrue($process->hasUnmitigatedHighRisks());
+        $this->assertSame('critical', $process->getProcessRiskLevel());
+        $this->assertSame(1, $process->getSuggestedRTO());
+    }
+
+    #[Test]
+    public function testRiskAggregationWithOnlyClosedRisksIsLow(): void
+    {
+        $process = new BusinessProcess();
+
+        $closed = new Risk();
+        $closed->setTitle('Closed risk');
+        $closed->setStatus(RiskStatus::Closed);
+        $closed->setResidualProbability(5)->setResidualImpact(5);
+        $process->addIdentifiedRisk($closed);
+
+        $this->assertSame(0, $process->getActiveRiskCount());
+        $this->assertFalse($process->hasUnmitigatedHighRisks());
+        $this->assertSame('low', $process->getProcessRiskLevel());
     }
 
     #[Test]

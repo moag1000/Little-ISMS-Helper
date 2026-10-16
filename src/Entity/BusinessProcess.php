@@ -8,6 +8,7 @@ use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\Person;
 use App\Entity\Tenant;
+use App\Enum\RiskStatus;
 use App\Repository\BusinessProcessRepository;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -531,7 +532,7 @@ class BusinessProcess
         $count = 0;
 
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus() === 'active') {
+            if (self::isActiveRisk($identifiedRisk)) {
                 $totalInherentRisk += $identifiedRisk->getInherentRiskLevel();
                 $totalResidualRisk += $identifiedRisk->getResidualRiskLevel();
                 $count++;
@@ -603,7 +604,7 @@ class BusinessProcess
      */
     public function getActiveRiskCount(): int
     {
-        return $this->identifiedRisks->filter(fn($r): bool => $r->getStatus() === 'active')->count();
+        return $this->identifiedRisks->filter(fn(Risk $r): bool => self::isActiveRisk($r))->count();
     }
 
     /**
@@ -613,11 +614,24 @@ class BusinessProcess
     public function hasUnmitigatedHighRisks(): bool
     {
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus() === 'active' && $identifiedRisk->getResidualRiskLevel() >= 16) {
+            if (self::isActiveRisk($identifiedRisk) && $identifiedRisk->getResidualRiskLevel() >= 16) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * A risk still affects the process unless it has been closed.
+     *
+     * Risk::getStatus() returns a RiskStatus enum (identified … accepted);
+     * there is no 'active' status. The previous `=== 'active'` string check
+     * never matched, so the BIA risk aggregation always reported 'low',
+     * zero active risks and no unmitigated high risks.
+     */
+    private static function isActiveRisk(Risk $risk): bool
+    {
+        return $risk->getStatus() !== RiskStatus::Closed;
     }
 
     public function getTenant(): ?Tenant

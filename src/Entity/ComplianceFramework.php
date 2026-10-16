@@ -339,8 +339,9 @@ class ComplianceFramework
     /**
      * Compute an in-memory compliance percentage from already-loaded requirements.
      *
-     * Each ComplianceRequirement is considered "fulfilled" when its status equals
-     * 'fulfilled' or 'compliant'. This avoids extra DB queries — the framework
+     * Each ComplianceRequirement is considered "fulfilled" when its derived
+     * status is 'implemented' (fulfilment from mapped controls >= 100 %).
+     * This avoids extra DB queries — the framework
      * index controller eager-loads requirements via LEFT JOIN.
      *
      * @todo 2026-05-14 replace with a dedicated service query for large frameworks once
@@ -365,8 +366,11 @@ class ComplianceFramework
             }
             $total++;
 
-            $status = method_exists($req, 'getStatus') ? $req->getStatus() : null;
-            if (in_array($status, ['fulfilled', 'compliant'], true)) {
+            // ComplianceRequirement::getStatus() speaks the gap-analysis
+            // vocabulary (implemented / partially_implemented / not_implemented).
+            // The former check for 'fulfilled'/'compliant' never matched a real
+            // requirement, so the framework index always showed 0 %.
+            if ($req->getStatus() === 'implemented') {
                 $fulfilled++;
             }
         }
