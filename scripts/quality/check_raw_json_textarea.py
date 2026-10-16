@@ -22,8 +22,8 @@ Correct alternatives:
   - list-of-strings (tags)        → App\\Form\\Type\\JsonTagsType
   - list / map / object of fields → App\\Form\\Type\\JsonBuilderType (generic,
                                     schema-driven, server-side shape check)
-  - IF/THEN rules                 → CollectionType + ConditionBuilderType
-                                    (notification-rule pattern)
+  - IF/THEN rules                 → CollectionType of ConditionRowType rendered
+                                    by _fa_condition_builder (notification-rule pattern)
 
 This gate is FormType-data_class-aware: it follows each FormType's
 `data_class => Entity::class` and only flags fields whose backing entity
@@ -209,7 +209,7 @@ def main() -> int:
     print("Fix paths:")
     print("  - list-of-strings → App\\Form\\Type\\JsonTagsType (chips via tom-select)")
     print("  - list/map/object → App\\Form\\Type\\JsonBuilderType (generic builder + JsonShape)")
-    print("  - IF/THEN rules   → CollectionType + ConditionBuilderType (notification-rule pattern)")
+    print("  - IF/THEN rules   → CollectionType of ConditionRowType + _fa_condition_builder (notification rules)")
     return 1
 
 

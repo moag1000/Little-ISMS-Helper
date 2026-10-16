@@ -823,24 +823,17 @@ window.dispatchEvent(new CustomEvent('fa-toast:show', { detail: {
 Tones: `info` · `success` · `warning` · `danger`. Critical (warning/danger) → `role="alert"` + `aria-live="assertive"`. Auto-dismiss mit Progress-Bar; `persistent: true` für Dauer-Toasts.
 
 ### fa-condition-builder — Visual Rule-Builder (Notification-Rules)
-Ersetzt JSON-Editor. Chip-Row: `[field-dropdown] [operator] [value] [×]  [+ Bedingung]`.
+Ersetzt JSON-Editor. Chip-Zeilen `[WENN] [Feld] [Operator] [Wert] [×]`, weitere Zeilen mit `UND`/`ODER`, darunter `[+ Bedingung hinzufügen]`.
+Form-gebunden: rendert eine CollectionType aus `ConditionRowType` (Schlüssel `field` / `op` / `value` = Format von `NotificationRuleEvaluator`) mit den echten Widgets — CSRF, Validierung und Fehleranzeige bleiben beim Formular.
 ```twig
 {% import '_components/_fa_condition_builder.html.twig' as _fa_condition_builder %}
 
-{{ _fa_condition_builder.render(
-    fields = [
-        { key: 'severity', label: 'Schweregrad', type: 'enum', options: ['low','medium','high','critical'] },
-        { key: 'count',    label: 'Betroffene',  type: 'number' }
-    ],
-    operators = [
-        { key: 'eq',  label: '=', appliesTo: ['enum','string','number'] },
-        { key: 'gte', label: '≥', appliesTo: ['number'] }
-    ],
-    conditions = [{ field: 'severity', operator: 'eq', value: 'high' }],
-    { name: 'rule_conditions', ariaLabel: 'Notification-Bedingungen' }
-) }}
+{{ _fa_condition_builder.render(form.conditionRows, {
+    logic: form.conditionLogic,          {# optional: 'and' | 'or' → UND/ODER-Keyword #}
+    suggestions: constant('App\\Form\\Notification\\ConditionRowType::FIELD_SUGGESTIONS')
+}) }}
 ```
-Stimulus-Controller `condition-builder` serialisiert zu Hidden-Input-JSON. Validiert dass Operator zum Field-Type passt.
+Stimulus-Controller `condition-builder` klont den Collection-Prototype mit dem nächsten Index, entfernt Zeilen, setzt die Keywords bei Wechsel der Verknüpfung neu und meldet Änderungen in einer `aria-live`-Region. Alle Texte kommen übersetzt aus dem `ui`-Domain (`ui.condition_builder.*`).
 
 ### fa-alva-hint — Proaktiver Alva-Tipp
 Wrapper um `fa-alert` mit `„Alva-Tipp:“`-Prefix, optionaler Action-Button (CSRF-protected POST) und Dismiss-Button. Dismissal lebt in der DB → cross-device.

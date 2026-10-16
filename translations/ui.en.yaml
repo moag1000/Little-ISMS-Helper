@@ -310,8 +310,6 @@ ui:
         notification_bell:
             none: 'No new notifications'
             view_all: 'View all %count% notifications'
-        notification_condition_builder:
-            remove: 'Remove condition'
         notifications:
             confirm_clear_all: 'Delete all notifications?'
             days_ago: '%n% day(s) ago'
@@ -498,6 +496,17 @@ ui:
             unnamed: 'Unnamed step'
             users: '%count% users'
     # Generic JSON builder (templates/_components/_fa_json_builder.html.twig)
+    condition_builder:
+        region_label: 'Conditions'
+        empty: 'No conditions – the rule fires on every event of this type.'
+        add: 'Add condition'
+        remove: 'Remove condition'
+        added: 'Condition added'
+        removed: 'Condition removed'
+        keyword:
+            when: 'WHEN'
+            and: 'AND'
+            or: 'OR'
     json_builder:
         add: 'Add entry'
         remove: 'Remove entry'

@@ -234,5 +234,9 @@ notification:
         operator: 'Operator'
         value: 'Wert'
         value_placeholder: 'z. B. high'
-        action:
-            add: 'Bedingung hinzufügen'
+        op:
+            contains: 'enthält'
+        logic:
+            label: 'Verknüpfung'
+            all: 'Alle Bedingungen müssen zutreffen (UND)'
+            any: 'Eine Bedingung genügt (ODER)'

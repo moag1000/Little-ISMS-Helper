@@ -234,5 +234,9 @@ notification:
         operator: 'Operator'
         value: 'Value'
         value_placeholder: 'e.g. high'
-        action:
-            add: 'Add condition'
+        op:
+            contains: 'contains'
+        logic:
+            label: 'Combine with'
+            all: 'All conditions must match (AND)'
+            any: 'Any condition is enough (OR)'

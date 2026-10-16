@@ -10735,6 +10735,35 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
     margin-left: 62px; padding-left: 12px;
     border-left: 2px solid color-mix(in oklab, var(--primary) 35%, var(--surface));
 }
+/* Form-bound builder: rows container, logic select, empty hint, editable chips.
+   The chip parts hold the real form widgets — strip their frame so the chip
+   itself is the control (0,3,0 beats the .form-control.form-control bridge). */
+.fa-condition-builder__rows { display: grid; gap: 8px; }
+.fa-condition-builder__rows:empty { display: none; }
+.fa-condition-builder__logic { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.fa-condition-builder__logic-label { font: 600 12px var(--font-sans); color: var(--fg-2); margin: 0; }
+.fa-condition-builder__logic .fa-condition-builder__logic-select { width: auto; min-width: 16rem; }
+.fa-condition-builder__empty { margin: 0; font-size: 12px; color: var(--fg-3); }
+.fa-condition-builder--readonly { padding: 10px 12px; }
+.fa-condition-chip--edit .fa-condition-chip__part { padding: 2px 6px; }
+.fa-condition-chip--edit .fa-condition-chip__part > .fa-condition-chip__control {
+    width: auto;
+    min-width: 9ch;
+    min-height: 0;
+    padding: 3px 4px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background-color: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+}
+.fa-condition-chip--edit .fa-condition-chip__part > select.fa-condition-chip__control { padding-right: 1.75rem; }
+.fa-condition-chip--edit .fa-condition-chip__part > .fa-condition-chip__control:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 0;
+}
+.fa-condition-builder__row > .fa-cyber-input__errors { flex-basis: 100%; margin: 0 0 0 62px; }
 
 
 /* --- Focus-States (WCAG 2.4.7 / 2.4.11) für Tutorial + Condition-Builder ---

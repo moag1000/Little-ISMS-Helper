@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'notification' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_condition_builder.html.twig' as _fa_condition_builder %}
 
 {% block title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}, 'notification') }}{% endblock %}
 {% block admin_title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}, 'notification') }}{% endblock %}
@@ -50,18 +51,12 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label fw-semibold">{{ 'notification.rule.field.conditions'|trans }}</label>
+                        <span class="form-label fw-semibold d-block">{{ 'notification.rule.field.conditions'|trans }}</span>
                         <p class="text-muted small">{{ 'notification.rule.help.conditions'|trans }}</p>
-                        <div data-controller="notification-condition-builder"
-                             data-notification-condition-builder-prototype-value="__condition_index__">
-                            {{ form_widget(form.conditions) }}
-                            <button type="button"
-                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost mt-2"
-                                    data-action="click->notification-condition-builder#addRow">
-                                <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
-                                {{ 'notification.condition.action.add'|trans }}
-                            </button>
-                        </div>
+                        {{ _fa_condition_builder.render(form.conditionRows, {
+                            logic: form.conditionLogic,
+                            suggestions: constant('App\\Form\\Notification\\ConditionRowType::FIELD_SUGGESTIONS')
+                        }) }}
                     </div>
 
                     <div class="col-12">

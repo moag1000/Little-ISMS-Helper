@@ -79,18 +79,23 @@
                             {% endif %}
                         </dd>
 
-                        {% if rule.conditions is not empty %}
+                        {% if rule.conditionRows is not empty %}
+                        {% set joiner = rule.conditionLogic %}
                         <dt class="col-sm-4">{{ 'notification.rule.field.conditions'|trans }}</dt>
                         <dd class="col-sm-8">
-                            <ul class="list-unstyled mb-0">
-                                {% for cond in rule.conditions %}
-                                    <li class="font-monospace small">
-                                        <span class="text-info">{{ cond.field|default('?') }}</span>
-                                        <span class="text-muted">{{ cond.operator|default('=') }}</span>
-                                        <span class="text-success">"{{ cond.value|default('') }}"</span>
-                                    </li>
+                            <div class="fa-condition-builder fa-condition-builder--readonly">
+                                {% for cond in rule.conditionRows %}
+                                    {% set keyword = loop.first ? 'when' : joiner %}
+                                    <div class="fa-condition-builder__row">
+                                        <span class="fa-condition-builder__keyword fa-condition-builder__keyword--{{ keyword }}">{{ ('ui.condition_builder.keyword.' ~ keyword)|trans({}, 'ui') }}</span>
+                                        <span class="fa-condition-chip">
+                                            <span class="fa-condition-chip__part fa-condition-chip__part--field">{{ cond.field|default('?') }}</span>
+                                            <span class="fa-condition-chip__part fa-condition-chip__part--op">{{ cond.op|default('?') }}</span>
+                                            <span class="fa-condition-chip__part fa-condition-chip__part--value">{{ cond.value is iterable ? cond.value|join(', ') : (cond.value is same as(true) ? 'true' : (cond.value is same as(false) ? 'false' : cond.value)) }}</span>
+                                        </span>
+                                    </div>
                                 {% endfor %}
-                            </ul>
+                            </div>
                         </dd>
                         {% endif %}
 

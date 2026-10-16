@@ -310,8 +310,6 @@ ui:
         notification_bell:
             none: 'Keine neuen Benachrichtigungen'
             view_all: 'Alle %count% Benachrichtigungen anzeigen'
-        notification_condition_builder:
-            remove: 'Bedingung entfernen'
         notifications:
             confirm_clear_all: 'Alle Benachrichtigungen löschen?'
             days_ago: 'vor %n% Tag(en)'
@@ -498,6 +496,17 @@ ui:
             unnamed: 'Unbenannter Schritt'
             users: '%count% Benutzer'
     # Generic JSON builder (templates/_components/_fa_json_builder.html.twig)
+    condition_builder:
+        region_label: 'Bedingungen'
+        empty: 'Keine Bedingungen – die Regel greift bei jedem Ereignis dieses Typs.'
+        add: 'Bedingung hinzufügen'
+        remove: 'Bedingung entfernen'
+        added: 'Bedingung hinzugefügt'
+        removed: 'Bedingung entfernt'
+        keyword:
+            when: 'WENN'
+            and: 'UND'
+            or: 'ODER'
     json_builder:
         add: 'Eintrag hinzufügen'
         remove: 'Eintrag entfernen'
