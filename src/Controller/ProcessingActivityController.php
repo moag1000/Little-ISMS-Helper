@@ -858,13 +858,13 @@ class ProcessingActivityController extends AbstractController
             return $this->json(['ok' => true, 'changed' => 0, 'rejected' => []]);
         }
 
-        // Map target-status to transition name (processing_activity_lifecycle).
-        $statusToTransition = [
-            'in_review' => 'submit_for_review',
-            'approved'  => 'approve',
-            'draft'     => 'request_changes',
-            'archived'  => 'archive',
-            'published' => 'publish',
+        // 5-transition bulk matrix by current status; archived→published is `restore`.
+        $statusMatrix = [
+            'draft'     => ['in_review' => 'submit_for_review'],
+            'in_review' => ['approved' => 'approve', 'draft' => 'request_changes'],
+            'approved'  => ['published' => 'publish'],
+            'published' => ['archived' => 'archive'],
+            'archived'  => ['published' => 'restore'],
         ];
 
         /** @var User|null $user */
@@ -874,7 +874,7 @@ class ProcessingActivityController extends AbstractController
         $result = $this->applyBulkStatusChange(
             $activities,
             'processing_activity_lifecycle',
-            $statusToTransition,
+            $statusMatrix,
             $newStatus,
             $reason,
             $lifecycleUser,

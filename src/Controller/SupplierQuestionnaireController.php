@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\SupplierQuestionnaireRepository;
 use App\Repository\SupplierRepository;
 use App\Service\SupplierQuestionnaireService;
@@ -70,7 +71,14 @@ final class SupplierQuestionnaireController extends AbstractController
         }
 
         $title = trim((string) $request->request->get('title')) ?: 'Security questionnaire';
-        $questionnaire = $this->service->createAndSend($tenant, $supplier, $title, self::DEFAULT_QUESTIONS);
+        $user = $this->getUser();
+        $questionnaire = $this->service->createAndSend(
+            $tenant,
+            $supplier,
+            $title,
+            self::DEFAULT_QUESTIONS,
+            $user instanceof User ? $user : null,
+        );
 
         $link = $this->generateUrl(
             'public_supplier_questionnaire_show',

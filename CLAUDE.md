@@ -362,6 +362,10 @@ Every entity with a `status` field that goes through staged transitions uses **S
 - `isms_objective_lifecycle` (5 custom stages: in_progress / achieved / delayed / cancelled)
 - `policy_template_lifecycle` (5 stages, isActive-sync on publish/archive)
 - `asset_lifecycle` (7 stages: active / in_use / returned / retired / disposed + 4-eyes on disposal)
+- `audit_program_lifecycle`, `document_section_lifecycle` (policy section sign-off, roles empty — service-only), `transfer_impact_assessment_lifecycle` (`privacy`), `threat_led_penetration_test_lifecycle` (`nis2_dora`), `supplier_questionnaire_lifecycle`, `access_review_campaign_lifecycle` (as of 2026-10; full list: `config/packages/workflow.yaml` imports + `EntityTypeRegistry`)
+- `compliance_mapping_lifecycle` — global catalogue data, deliberately NOT in `EntityTypeRegistry` (no tenant overrides); `ComplianceMappingController` enforces the static YAML roles
+
+`tests/PHPStan/Rule/NoDirectSetStatusRule.php` derives its entity list from `EntityTypeRegistry::managedEntityClasses()` — registering an entity automatically bans direct `setStatus()` on it.
 
 **Adding a new entity to the lifecycle:**
 1. `config/workflows/<entity>.yaml` — workflow definition (copy document.yaml as template)

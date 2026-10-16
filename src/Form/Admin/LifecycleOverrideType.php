@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Form\Admin;
 
+use App\Service\ModuleConfigurationService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,6 +25,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class LifecycleOverrideType extends AbstractType
 {
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -55,13 +61,14 @@ final class LifecycleOverrideType extends AbstractType
                 'mapped' => false,
                 'attr' => ['class' => 'lifecycle-override-toggle'],
             ])
-            ->add('module', TextType::class, [
+            ->add('module', ChoiceType::class, [
                 'label' => 'admin.lifecycle_overrides.form.module',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'e.g. privacy, documents',
-                    'autocomplete' => 'off',
-                ],
+                // Only keys from config/modules.yaml are selectable: an unknown key
+                // would make ModuleGateGuard block the transition permanently.
+                'choices' => $this->moduleChoices(),
+                'choice_translation_domain' => false,
+                'placeholder' => '—',
                 'help' => 'admin.lifecycle_overrides.form.module_help',
             ]);
     }
@@ -71,5 +78,19 @@ final class LifecycleOverrideType extends AbstractType
         $resolver->setDefaults([
             'translation_domain' => 'admin',
         ]);
+    }
+
+    /**
+     * @return array<string, string> label => module key
+     */
+    private function moduleChoices(): array
+    {
+        $choices = [];
+        foreach ($this->moduleConfiguration->getAllModules() as $key => $module) {
+            $name = is_array($module) && isset($module['name']) ? (string) $module['name'] : (string) $key;
+            $choices[sprintf('%s (%s)', $name, $key)] = (string) $key;
+        }
+
+        return $choices;
     }
 }

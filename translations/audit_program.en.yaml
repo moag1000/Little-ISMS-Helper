@@ -63,6 +63,8 @@ audit_program:
     error:
         not_found: 'Audit programme not found.'
         save_failed: 'Failed to save the audit programme.'
+        archive_reason_required: 'Please provide a reason for archiving.'
+        archive_not_allowed: 'The audit programme cannot be archived in its current status.'
     validation:
         name_required: 'Please enter a programme name.'
         name_max_length: 'The programme name cannot exceed 255 characters.'
@@ -88,3 +90,4 @@ audit_program:
         danger_zone: 'Danger Zone'
         delete_confirm: 'Permanently delete this audit programme?'
         archive_confirm: 'Archive audit programme?'
+        archive_reason: 'Reason for archiving'

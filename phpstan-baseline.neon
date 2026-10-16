@@ -841,12 +841,6 @@ parameters:
 			path: src/Controller/Api/QuickCreateController.php
 
 		-
-			message: '#^Property App\\Controller\\Api\\WorkflowStepApiController\:\:\$workflowRepository is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: src/Controller/Api/WorkflowStepApiController.php
-
-		-
 			message: '#^Property App\\Controller\\Audit\\AuditWorkbookController\:\:\$em is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1

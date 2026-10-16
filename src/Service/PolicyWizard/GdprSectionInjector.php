@@ -133,7 +133,6 @@ class GdprSectionInjector
         $section = new DocumentSection();
         $section->setDocument($document);
         $section->setSectionKey($sectionKey);
-        $section->setStatus(DocumentSection::STATUS_DRAFT);
         $section->setTenant($tenant);
         $section->setApprovalRole($row['approval_role']);
 

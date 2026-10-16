@@ -81,15 +81,11 @@ initial_controls:
 initial_documents:
   - title: 'B3S-Konformitätserklärung'
     type: policy
-    status: draft
   - title: 'OT-Sicherheits-Leitlinie'
     type: policy
-    status: draft
   - title: 'KRITIS-Meldewege gem. §8b BSIG'
     type: procedure
-    status: draft
   - title: 'BCM-Plan: Versorgungswiederherstellung'
     type: bc_plan
-    status: draft
 
 target_alva_journey: getting_started

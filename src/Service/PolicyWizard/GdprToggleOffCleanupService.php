@@ -7,7 +7,9 @@ namespace App\Service\PolicyWizard;
 use App\Entity\Document;
 use App\Entity\DocumentSection;
 use App\Entity\Tenant;
+use App\Entity\User;
 use App\Enum\DocumentStatus;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DocumentRepository;
 use App\Repository\DocumentSectionRepository;
 use App\Service\AuditLogger;
@@ -32,9 +34,9 @@ use Psr\Log\NullLogger;
  *
  * This service performs an inventoried, reversible cleanup:
  *   - **Documents** with `category='gdpr'` (or generated from a template
- *     where `standard='gdpr'`) are archived (`status='archived'`,
- *     `isArchived=true`). NOT deleted — the rows remain as historical
- *     evidence.
+ *     where `standard='gdpr'`) are archived via the document_lifecycle
+ *     transition `archive_out_of_scope` (`isArchived=true`). NOT deleted —
+ *     the rows remain as historical evidence.
  *   - **DocumentSections** belonging to GDPR templates / sectionKeys
  *     starting with `gdpr_` get their `editLocked` flag set true and
  *     a cleanup notice appended to `contentSnapshot`.
@@ -51,12 +53,14 @@ final class GdprToggleOffCleanupService
     private const string AUDIT_TAG = 'policy-wizard-gdpr-cleanup';
     private const string GDPR_STANDARD = 'gdpr';
     private const string CLEANUP_NOTICE_MARKER = '[GDPR-cleanup]';
+    private const string ARCHIVE_REASON = 'GDPR out of scope: organisation setting org.is_gdpr_subject switched to false';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly DocumentRepository $documentRepository,
         private readonly DocumentSectionRepository $sectionRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly LifecycleTransitionInterface $lifecycle,
         private readonly LoggerInterface $logger = new NullLogger(),
     ) {
     }
@@ -73,7 +77,7 @@ final class GdprToggleOffCleanupService
      *   already_locked_sections: list<int>,
      * }
      */
-    public function cleanupAfterGdprToggleOff(Tenant $tenant): array
+    public function cleanupAfterGdprToggleOff(Tenant $tenant, ?User $actor = null): array
     {
         $report = [
             'tenant_id' => $tenant->getId(),
@@ -94,9 +98,20 @@ final class GdprToggleOffCleanupService
                 $report['already_archived_documents'][] = $id;
                 continue;
             }
+            if ($document->getStatus() === DocumentStatus::Deleted->value) {
+                // Soft-deleted rows are already out of the register.
+                continue;
+            }
             $document->setIsArchived(true);
-            $document->setStatus(DocumentStatus::Archived); // @phpstan-ignore lifecycle.directSetStatus (GDPR module deactivation — bulk archival; lifecycle migration deferred to X.6)
-            $this->entityManager->persist($document);
+            // archive_out_of_scope is allowed from every live place
+            // (draft … published) and writes the status_change audit row.
+            $this->lifecycle->transition(
+                $document,
+                'document_lifecycle',
+                'archive_out_of_scope',
+                $actor,
+                self::ARCHIVE_REASON,
+            );
             $report['archived_documents'][] = $id;
         }
 

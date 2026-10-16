@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Repository\SupplierQuestionnaireRepository;
 use App\Service\SupplierQuestionnaireService;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +25,7 @@ final class PublicSupplierQuestionnaireController extends AbstractController
     public function __construct(
         private readonly SupplierQuestionnaireRepository $repository,
         private readonly SupplierQuestionnaireService $service,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -46,6 +48,10 @@ final class PublicSupplierQuestionnaireController extends AbstractController
         if (!$this->isCsrfTokenValid('supplier_questionnaire_' . $token, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
+
+        // Anonymous request: the questionnaire's own tenant is the context
+        // for this submission (lifecycle TenantGuard, tenant filter).
+        $this->tenantContext->setCurrentTenant($questionnaire->getTenant());
 
         /** @var array<string, string> $answers */
         $answers = $request->request->all('answers');
