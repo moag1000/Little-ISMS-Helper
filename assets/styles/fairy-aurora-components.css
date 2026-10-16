@@ -2358,10 +2358,9 @@ strong, b {
     color: var(--fg);
 }
 
-/* Bootstrap .lead — Hero-Paragraph */
+/* Bootstrap .lead — Hero-Paragraph (colour: see the Aurora-contrast block) */
 .lead {
     font-size: 1.125rem;
-    color: var(--fg-2);
     line-height: 1.6;
 }
 
@@ -2846,34 +2845,12 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
 }
 .form-check-label { color: var(--fg); }
 
-.form-switch .form-check-input {
-    background-color: var(--surface-2);
-    border-color: var(--border-strong);
-}
-.form-switch .form-check-input:checked {
-    background-color: var(--primary);
-    border-color: var(--primary);
-}
-
 /* .required Pflichtfeld-Marker (Form-Field-Component + inline) */
 .required,
 label .required,
 .form-label .required { color: var(--danger); margin-left: 2px; font-weight: 600; }
 
 /* Bootstrap Floating Labels (form-floating) — Aurora-Kontraste */
-.form-floating > label {
-    color: var(--fg-3);
-    font-weight: 500;
-    padding: 1rem 0.75rem;
-}
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label,
-.form-floating > .form-select ~ label {
-    color: var(--primary);
-    opacity: 0.85;
-}
-.form-floating > .form-control,
-.form-floating > .form-select { background-color: var(--surface); }
 .form-floating > .form-control:focus,
 .form-floating > .form-control:not(:placeholder-shown) { background-color: var(--surface); }
 
@@ -2955,18 +2932,9 @@ small.text-muted,
 .bg-info    *:not(.btn, a.btn, .badge)    { color: inherit; }
 
 /* Bootstrap-border-* Utilities (1px Akzent-Borders, z.B. alert.border-success) */
-.border-primary { border-color: var(--primary) !important; }
-.border-success { border-color: var(--success) !important; }
-.border-warning { border-color: var(--warning) !important; }
-.border-danger  { border-color: var(--danger)  !important; }
-.border-info    { border-color: var(--primary) !important; }
 .border-secondary { border-color: var(--border-strong) !important; }
 
 /* btn-close (Alert-Dismiss × + Modal-Close) — Aurora-Kontrast + Dark-Mode */
-.btn-close {
-    opacity: 0.65;
-    transition: opacity 0.15s ease;
-}
 .btn-close:hover,
 .btn-close:focus-visible { opacity: 1; }
 [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
@@ -3532,12 +3500,6 @@ html[data-theme="dark"] .progress {
    Bootstrap rendert .btn-close als SVG-data-url; wir nutzen filter.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Light-Mode: dunkles X auf hellem Surface */
-.btn-close {
-    filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(600%) hue-rotate(220deg);
-    opacity: 0.7;
-}
-.btn-close:hover { opacity: 1; }
 /* Dark-Mode: helles X auf dunklem Surface */
 html[data-theme="dark"] .btn-close {
     filter: brightness(0) saturate(100%) invert(90%);
@@ -4152,10 +4114,17 @@ button.fa-filter-chip.fa-filter-chip--active {
     box-shadow: 0 0 0 3px var(--primary-glow);
     outline: none;
 }
-.form-floating > label { color: var(--fg-3); }
+.form-floating > label {
+    color: var(--fg-3);
+    font-weight: 500;
+    padding: 1rem 0.75rem;
+}
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
-.form-floating > .form-select ~ label { color: var(--primary); }
+.form-floating > .form-select ~ label {
+    color: var(--primary);
+    opacity: 0.85;
+}
 .form-control:not(.fa-cyber-input .form-control):hover,
 .form-select:not(.fa-cyber-input .form-select):hover {
     border-color: var(--border-strong);
@@ -4411,10 +4380,8 @@ button.fa-filter-chip.fa-filter-chip--active {
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-}
-/* Kanon H3 — Notch = Primary-CTA (same chamfer as .fa-cyber-btn--primary).
-   Grouped buttons keep Bootstrap's joined edges, so they stay rectangular. */
-.btn.btn-primary {
+    /* Kanon H3 — Notch = Primary-CTA (same chamfer as .fa-cyber-btn--primary).
+       Grouped buttons keep Bootstrap's joined edges, so they stay rectangular. */
     clip-path: polygon(
         8px 0, 100% 0,
         100% calc(100% - 8px), calc(100% - 8px) 100%,
@@ -4632,6 +4599,8 @@ button.fa-filter-chip.fa-filter-chip--active {
 
 /* btn-close (Bootstrap's X-icon close button for modals/alerts) */
 .btn-close {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(600%) hue-rotate(220deg);
+    transition: opacity 0.15s ease;
     background-color: transparent;
     color: var(--fg-3);
     opacity: 0.7;
@@ -5247,6 +5216,7 @@ html[data-theme="dark"] .framework-card {
     transition: transform var(--t-fast, 0.15s) var(--ease-out, ease-out),
                 box-shadow var(--t-fast, 0.15s) var(--ease-out, ease-out);
     border: 1px solid transparent;
+    position: relative;
 }
 .isms-risk-cell[data-level="1"] { background: var(--cell-1); color: var(--cell-fg-1); }
 .isms-risk-cell[data-level="2"] { background: var(--cell-2); color: var(--cell-fg-2); }
@@ -5669,9 +5639,6 @@ html[data-theme="dark"] .framework-card {
 .isms-risk-dot:hover {
     transform: scale(1.4);
     z-index: 2;
-}
-.isms-risk-cell {
-    position: relative;
 }
 
 /* ── ISMS Risk-Score-Card (Inherent / Residual mini-display) ──────── */
@@ -7201,84 +7168,6 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
 
 .fa-cheatsheet__row span:first-child { color: var(--fg-2); }
 
-/* ─── fa-json-builder family (P-9 visual macros) ──────────────────────────
-   Shared shell for:
-     .fa-team-role-builder, .fa-resource-list, .fa-escalation-chain,
-     .fa-success-criteria, .fa-subcontractor-chain
-   Each is a card-like container with hidden raw-JSON textarea + visual editor.
-*/
-.fa-json-builder {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-}
-
-.fa-json-builder__hidden {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-}
-
-.fa-json-builder__table-wrap {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.fa-json-builder__table th,
-.fa-json-builder__table td {
-    vertical-align: middle;
-    padding: 6px 8px;
-}
-
-.fa-json-builder__empty {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 10px;
-    color: var(--fg-3);
-    font: 500 13px var(--font-sans);
-    background: var(--surface-2);
-    border: 1px dashed var(--border);
-    border-radius: var(--r-sm);
-}
-
-.fa-json-builder__toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.fa-json-builder__raw {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 10px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-}
-
-.fa-json-builder__raw textarea {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    min-height: 120px;
-}
-
-.fa-json-builder__raw-toggle[aria-pressed="true"] {
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-.fa-json-builder__row td:last-child { text-align: end; }
-
 /* ─── fa-json-builder — generic schema-driven builder (JsonBuilderType) ───
    One card per entry; fields in a responsive grid; each input sits in a
    regular .fa-cyber-input__frame so it looks like every other form field. */
@@ -7398,205 +7287,6 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
     font: 500 12px var(--font-sans);
 }
 .fa-json-view__dl > dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
-
-/* ─── fa-resource-list — Tab-Layout for personnel/equipment/supplies ─── */
-.fa-resource-list__tabs {
-    display: flex;
-    gap: 4px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 8px;
-}
-
-.fa-resource-list__tab {
-    background: transparent;
-    border: 1px solid transparent;
-    border-bottom: none;
-    padding: 6px 14px;
-    font: 500 12px var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--fg-3);
-    cursor: pointer;
-    border-radius: var(--r-sm) var(--r-sm) 0 0;
-    transition: color var(--t-fast) var(--ease-out),
-                border-color var(--t-fast) var(--ease-out),
-                background var(--t-fast) var(--ease-out);
-}
-
-.fa-resource-list__tab:hover {
-    color: var(--fg);
-    background: var(--surface-2);
-}
-
-.fa-resource-list__tab[aria-selected="true"] {
-    color: var(--primary);
-    border-color: var(--border);
-    border-bottom-color: var(--surface);
-    background: var(--surface);
-    margin-bottom: -1px;
-}
-
-.fa-resource-list__count {
-    margin-left: 6px;
-    padding: 1px 6px;
-    background: var(--surface-2);
-    border-radius: var(--r-pill);
-    font-size: 10px;
-    color: var(--fg-2);
-}
-
-.fa-resource-list__panel { display: none; }
-.fa-resource-list__panel.is-active { display: flex; flex-direction: column; gap: 8px; }
-
-.fa-resource-list__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    min-height: 32px;
-    padding: 6px;
-    background: var(--surface-2);
-    border: 1px dashed var(--border);
-    border-radius: var(--r-sm);
-}
-
-.fa-resource-list__chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 8px 4px 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-pill);
-    font: 500 12px var(--font-sans);
-    color: var(--fg);
-}
-
-.fa-resource-list__chip-remove {
-    background: transparent;
-    border: none;
-    padding: 0;
-    color: var(--fg-3);
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-}
-
-.fa-resource-list__chip-remove:hover { color: var(--danger); }
-
-.fa-resource-list__add {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-}
-
-.fa-resource-list__add input {
-    flex: 1 1 auto;
-}
-
-/* ─── fa-escalation-chain — horizontal stepper-like rows ─── */
-.fa-escalation-chain__rows {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.fa-escalation-chain__row {
-    display: grid;
-    grid-template-columns: 56px 1fr 1fr 120px 40px;
-    gap: 8px;
-    align-items: center;
-    padding: 8px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-}
-
-.fa-escalation-chain__level {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: var(--primary-tint, var(--surface));
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    border-radius: var(--r-pill);
-    font: 700 14px var(--font-mono);
-}
-
-@media (max-width: 768px) {
-    .fa-escalation-chain__row {
-        grid-template-columns: 56px 1fr 40px;
-        grid-template-rows: auto auto;
-    }
-    .fa-escalation-chain__row > :nth-child(3),
-    .fa-escalation-chain__row > :nth-child(4) {
-        grid-column: 1 / -1;
-    }
-}
-
-/* ─── fa-success-criteria — table with prefill banner ─── */
-.fa-success-criteria__prefill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: var(--accent-tint, var(--surface-2));
-    border: 1px solid var(--accent, var(--border));
-    border-radius: var(--r-sm);
-    color: var(--accent, var(--fg-2));
-    font-size: 12px;
-}
-
-.fa-success-criteria__met-cell { text-align: center; }
-
-.fa-success-criteria__met-yes { color: var(--success); }
-.fa-success-criteria__met-no { color: var(--danger); }
-.fa-success-criteria__met-unknown { color: var(--fg-3); }
-
-/* ─── fa-subcontractor-chain — indented tree builder ─── */
-.fa-subcontractor-chain__tree {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.fa-subcontractor-chain__node {
-    display: grid;
-    grid-template-columns: 1fr 80px 1fr 32px 40px 40px;
-    gap: 6px;
-    align-items: center;
-    padding: 8px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-}
-
-.fa-subcontractor-chain__node[data-depth="1"] { margin-left: 28px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--primary); }
-.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--primary-strong); }
-
-.fa-subcontractor-chain__critical {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-}
-
-.fa-subcontractor-chain__actions {
-    display: flex;
-    gap: 4px;
-}
-
-@media (max-width: 900px) {
-    .fa-subcontractor-chain__node {
-        grid-template-columns: 1fr 80px 32px 40px 40px;
-    }
-    .fa-subcontractor-chain__node > :nth-child(3) {
-        grid-column: 1 / -1;
-    }
-}
 
 /* ==========================================================================
    Aurora v4 — fa-matrix-table (Risk Heatmap)
@@ -8472,6 +8162,11 @@ a.fa-matrix-table__cell:focus-visible {
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
+    /* Viewport-Audit 2026-09 (375 px): without an explicit track the grid root
+       grows to its content width (nowrap outline); minmax(0,1fr) keeps the
+       form inside its column. */
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
 }
 
 .fa-form-layout__header {
@@ -8564,7 +8259,7 @@ a.fa-matrix-table__cell:focus-visible {
 
 .fa-form-layout__body {
     display: grid;
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 240px minmax(0, 1fr);
     min-height: 0;
 }
 
@@ -8672,6 +8367,7 @@ a.fa-matrix-table__cell:focus-visible {
     padding: 18px 24px 24px;
     overflow-y: auto;
     max-height: 600px;
+    min-width: 0;
 }
 
 /* ── Section cards ────────────────────────────────────────────────────────── */
@@ -8817,7 +8513,7 @@ a.fa-matrix-table__cell:focus-visible {
 
 @media (max-width: 768px) {
     .fa-form-layout__body {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .fa-form-layout__outline {
@@ -8828,6 +8524,7 @@ a.fa-matrix-table__cell:focus-visible {
         overflow-x: auto;
         padding: 10px 12px;
         gap: 6px;
+        min-width: 0;
     }
 
     .fa-form-layout__outline-list {
@@ -10817,19 +10514,6 @@ body[data-density="standard"] .fly-section[data-density="expert"]    { display: 
 .kpi-card-value, .fa-stat-card__value, .stat-card__value, .fa-feature-card__number, .fa-reuse-roi-counter__value {
     font-family: var(--font-display);
     font-variant-numeric: tabular-nums;
-}
-
-
-/* ── Viewport-Audit 2026-09: Mobile-Härtung (375 px) ─────────────────────
-   Grid-Root ohne explizite Spur wächst auf Inhaltsbreite (nowrap-Outline) —
-   minmax(0,1fr) hält die Form in der Spalte; Header stapelt. */
-.fa-form-layout { grid-template-columns: minmax(0, 1fr); min-width: 0; }
-.fa-form-layout__body { grid-template-columns: 240px minmax(0, 1fr); }
-.fa-form-layout__sections { min-width: 0; }
-
-@media (max-width: 768px) {
-    .fa-form-layout__body { grid-template-columns: minmax(0, 1fr); }
-    .fa-form-layout__outline { min-width: 0; }
 }
 
 @media (max-width: 640px) {
