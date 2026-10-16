@@ -153,9 +153,12 @@ Admin-Benutzer können auf die Benutzerverwaltung unter `/admin/users` zugreifen
 
 ### Rollenverwaltung
 
-Admin-Benutzer können auf die Rollenverwaltung unter `/admin/roles` zugreifen:
+Admin-Benutzer können die Rollenverwaltung unter `/admin/roles` einsehen.
+Rollen und ihre Berechtigungen gelten instanzweit für alle Organisationen;
+erstellen, bearbeiten und löschen darf sie deshalb nur `ROLE_SUPER_ADMIN`
+(Organisations-Admins sehen die Rollen nur lesend):
 
-- Rollen anzeigen, erstellen, bearbeiten und löschen
+- Rollen anzeigen (Admin), erstellen, bearbeiten und löschen (nur Super-Admin)
 - Berechtigungen zu Rollen zuweisen
 - System-Rollen anzeigen (können nicht gelöscht werden)
 
