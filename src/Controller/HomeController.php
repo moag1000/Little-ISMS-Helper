@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
@@ -59,6 +60,8 @@ class HomeController extends AbstractController
         private readonly ?ImplementationJourneyService $journeyService = null,
     ) {}
 
+    // @no-methods-required: verb-agnostic redirect, unchanged from the former config/routes.yaml entry
+    #[Route('/', name: 'app_home')]
     public function index(Request $request): Response
     {
         // Get preferred locale from session, browser preference, or default to 'de'
@@ -85,6 +88,13 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_welcome', ['_locale' => $locale]);
     }
 
+    // @no-methods-required: verb-agnostic since the former config/routes.yaml entry; kept identical
+    #[Route(
+        '/{_locale}/dashboard',
+        name: 'app_dashboard',
+        requirements: ['_locale' => 'de|en'],
+        defaults: ['_locale' => 'de'],
+    )]
     #[IsGranted('ROLE_USER')]
     public function dashboard(Request $request): Response
     {
@@ -303,6 +313,13 @@ class HomeController extends AbstractController
             && trim((string) $context->getIsmsScope()) !== '';
     }
 
+    #[Route(
+        '/{_locale}/dashboard/dismiss-journey',
+        name: 'app_dashboard_dismiss_journey',
+        requirements: ['_locale' => 'de|en'],
+        defaults: ['_locale' => 'de'],
+        methods: ['POST'],
+    )]
     #[IsGranted('ROLE_USER')]
     public function dismissJourney(Request $request): Response
     {
@@ -313,6 +330,13 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_dashboard');
     }
 
+    #[Route(
+        '/{_locale}/dashboard/restore-journey',
+        name: 'app_dashboard_restore_journey',
+        requirements: ['_locale' => 'de|en'],
+        defaults: ['_locale' => 'de'],
+        methods: ['GET'],
+    )]
     #[IsGranted('ROLE_USER')]
     public function restoreJourney(Request $request): Response
     {

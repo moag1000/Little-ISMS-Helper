@@ -324,6 +324,8 @@ class ComplianceMappingAdminControllerTest extends TestCase
         $data = json_decode($response->getContent(), true);
         $this->assertTrue($data['success']);
     }
+
+    #[Test]
     public function testCreateCrossFrameworkMappingsWithInvalidCSRFToken(): void
     {
         $request = new Request(

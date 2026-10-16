@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Polling endpoint + shared progress page for QuickFix async jobs.
@@ -35,6 +36,7 @@ class QuickFixJobStatusController extends AbstractController
     ) {
     }
 
+    #[Route('/quick-fix/jobs/{id}/status', name: 'app_quick_fix_job_status', methods: ['GET'])]
     public function status(Request $request, QuickFixGuard $guard, string $id): JsonResponse
     {
         if (!$guard->mayAccess($request)) {
@@ -69,6 +71,7 @@ class QuickFixJobStatusController extends AbstractController
      *  - `_label`, `_subtitle` set per-dispatch on the job payload,
      *  - `?return=` query parameter (open-redirect-safe) for the back link.
      */
+    #[Route('/quick-fix/jobs/{id}/progress', name: 'app_quick_fix_job_progress', methods: ['GET'])]
     public function progressPage(
         Request $request,
         QuickFixGuard $guard,

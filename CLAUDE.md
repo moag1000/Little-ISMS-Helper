@@ -19,7 +19,9 @@ Guidelines for Claude Code in this repository.
 
 **Stack:** Symfony 7.4 LTS, PHP 8.4+ (8.5 tested), Doctrine ORM 3.6, Doctrine-Migrations-Bundle 4.0, Twig 3.24, Stimulus 3.2 / Turbo 8, Bootstrap 5.3, FairyAurora v4 Design System, PHPUnit 13.1, Chart.js 4, API Platform 4.3
 
-**Multi-tenancy:** All entities use `tenant_id` field. `TenantContext` service manages context.
+**Multi-tenancy:** Tenant-owned entities carry a `tenant_id` field (119 of 144); global catalogues
+(frameworks, requirements, roles, permissions, policy templates, …) and child/join rows that inherit
+the parent's scope do not. `TenantContext` service manages context.
 
 **RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN, plus holding-level
 ROLE_GROUP_CISO + ROLE_KONZERN_AUDITOR, plus persona-roles
@@ -207,14 +209,14 @@ systemctl enable isms-worker && systemctl start isms-worker
 ## Architecture Quick Guide
 
 **Directory Layout:**
-- `src/Entity/` - Doctrine entities (78 total, all with `tenant_id`)
-- `src/Service/` - Business logic (143 services)
-- `src/Controller/` - HTTP handlers (123 controllers)
-- `src/Command/` - Console commands (91 total)
+- `src/Entity/` - Doctrine entities (144; 119 tenant-owned with `tenant_id`)
+- `src/Service/` - Business logic (543 classes, 159 of them top-level in `src/Service/`)
+- `src/Controller/` - HTTP handlers (230 controllers)
+- `src/Command/` - Console commands (175)
 - `src/Security/Voter/` - Authorization voters
 - `templates/` - Twig templates
 - `assets/controllers/` - Stimulus JS controllers
-- `translations/` - Translation files (180 YAML files organized by 90 domains)
+- `translations/` - Translation files (302 YAML files organized by 151 domains)
 
 **Key Services:**
 - `RiskService`, `AssetService`, `ControlService` - Core CRUD
@@ -285,12 +287,16 @@ Custom modals (like command palette) use CSS classes instead of Bootstrap Modal 
 **Routes:**
 - Locale-prefixed: `/{locale}/dashboard` (de, en)
 - Admin routes: `/admin/` or `/{locale}/admin/`
+- Routes without the locale prefix (QuickFix, Home, SSO, probes, public token URLs): declare them as
+  `#[Route]` attributes and import the controller as a single file AFTER `app_routes` in
+  `config/routes.yaml` — the directory import's `exclude` list is not honoured, so the later
+  registration has to replace the prefixed duplicate by route name.
 
 **Translation Domains:**
 The application uses domain-specific translation files instead of monolithic `messages.*.yaml` files.
 
 Structure:
-- `translations/` contains 180 YAML files (90 domains × 2 languages)
+- `translations/` contains 302 YAML files (151 domains × 2 languages)
 - Each functional area has its own domain: `nav`, `mfa`, `tenant`, `role_management`, etc.
 - `messages.{de,en}.yaml` remains as fallback for common/cross-domain terms
 
@@ -305,7 +311,7 @@ Usage in Twig templates:
 {{ 'common.save'|trans({}, 'messages') }}
 ```
 
-Available domains (90 total):
+Main domains (151 in total — `ls translations/*.de.yaml` lists all):
 - **Navigation:** nav, dashboard, ui, help, welcome
 - **Access Control:** mfa, role_management, session, user, security, four_eyes
 - **ISMS Core:** assets, risk, control, incident, audits, audit_log, audit_freeze, soa, context, risk_appetite, risk_treatment_plan
@@ -460,7 +466,7 @@ Do not add DORA fields to forms without `nis2_dora` gate, do not add GDPR fields
 Full reference: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md)
 
 **Key artifacts:**
-- `config/modules.yaml` — 40 module keys + metadata (6 required: core, authentication, documents, audit_logging, workflows, objectives)
+- `config/modules.yaml` — 45 module keys + metadata (6 required: core, authentication, documents, audit_logging, workflows, objectives)
 - `config/active_modules.yaml` — per-tenant activation overrides
 - `src/Form/Trait/ModuleAwareFormTrait.php` — FormType helper (`isModuleActive()`)
 - `src/Controller/Trait/ModuleGatedControllerTrait.php` — Controller helper (`checkModuleActive()`)
@@ -508,6 +514,13 @@ Compliance audit trail: [`docs/FORM_AUDIT_2026-05.md`](docs/FORM_AUDIT_2026-05.m
 - 4-space indent, max 120 char lines
 - Type hints and return types required
 - Commit format: `feat(scope): message` / `fix(scope): message`
+- File size is ratcheted (Gate 25, `check_god_class_size.py`): every file in `src/` has a per-kind
+  LOC limit (controller 600, service 1500 / 15 ctor deps, entity 1000, repository 600, command 800,
+  rest 800). Files already over it are listed in `scripts/quality/baselines/god_class_size.txt` and
+  may only shrink — CI rejects a raised or added baseline entry and a stale one. When a change would
+  grow such a file, extract a cohesive service/trait instead; after shrinking one, run
+  `python3 scripts/quality/check_god_class_size.py --write-baseline scripts/quality/baselines/god_class_size.txt`.
+  Details: `scripts/README.md` (Gate 25), ADR-0012.
 
 ## Release-Workflow (since 2026-04-30)
 
@@ -549,8 +562,8 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 **Repositories:** `ServiceEntityRepository` pattern. Autowired.
 **Forms:** Single-action with `handleRequest()`. Translation domain via FormType.
 **Testing:** PHPUnit 13.1. Use `#[Test]` attribute. `WebTestCase` for HTTP, `KernelTestCase` for services.
-**Templates:** FairyAurora v4 macros (`_fa_page_header`, `_fa_empty_state`, `_fa_alert`). `_breadcrumb.html.twig` for navigation. `trans_default_domain` at top of every template.
-**Translations:** 90 domains x 2 languages. Check `debug:translation --only-missing` before commit. No YAML duplicate keys.
+**Templates:** FairyAurora v4 macros (`_fa_page_header`, `_fa_empty_state`, `_fa_alert`). `_breadcrumb.html.twig` for navigation. Every `|trans` call names its domain explicitly (`|trans({}, 'risk')`) — enforced by Gate 44; a file-level `trans_default_domain` is optional and never a substitute (it does not reach into `{% embed %}`, see pitfall 10b).
+**Translations:** 151 domains x 2 languages. Check `debug:translation --only-missing` before commit. No YAML duplicate keys (Gate 63).
 **PHP 8.5:** `readonly` properties, `match` expressions, `enum` types where appropriate.
 
 ## Security Checklist
@@ -572,12 +585,13 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 3. **Foreign key order** - Restore/delete entities in dependency order
 4. **Bootstrap not loaded** - Check `window.bootstrap` before using modals
 5. **Turbo cache issues** - Clear cache or disable for problematic pages
-6. **Migrations: avoid `PREPARE/EXECUTE`-pattern** — 17 existing migrations (Phase 8,
-   Versions `20260418*`, `20260419*`, `20260420140000`) use dynamic SQL with
+6. **Migrations: avoid `PREPARE/EXECUTE`-pattern** — dynamic SQL like
    `SET @sql := IF(...) ; PREPARE stmt FROM @sql ; EXECUTE stmt ; DEALLOCATE`
-   for "idempotent" ALTER/CREATE. This pattern silently fails in Doctrine
-   Migrations: the migration is recorded as `executed` but the actual DDL never
-   runs. Symptoms: `Column not found` errors, missing tables.
+   for "idempotent" ALTER/CREATE silently fails in Doctrine Migrations: the
+   migration is recorded as `executed` but the actual DDL never runs. Symptoms:
+   `Column not found` errors, missing tables. The 17 Phase-8 migrations that once
+   used it have been rewritten; none remain, and Gate 33
+   (`check_no_prepare_execute_migrations.py`) blocks new ones.
    - **New migrations**: use plain `ALTER TABLE` / `CREATE TABLE IF NOT EXISTS`
      statements directly. Do NOT wrap in PREPARE/EXECUTE.
    - **DDL migrations need `isTransactional()=false`**: MySQL `ALTER TABLE` /

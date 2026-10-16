@@ -94,6 +94,7 @@ class ThreatLedPenetrationTest
     private ?string $executiveSummary = null;
 
     /** Findings produced by the engagement — feed the AuditFinding workflow. */
+    /** @var Collection<int, AuditFinding> */
     #[ORM\ManyToMany(targetEntity: AuditFinding::class)]
     #[ORM\JoinTable(
         name: 'tlpt_finding',
