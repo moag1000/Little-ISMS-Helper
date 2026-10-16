@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\Tenant;
+use App\Form\TenantType;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -738,7 +739,7 @@ class TenantManagementControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/en/admin/tenants/' . $this->testTenant->getId() . '/edit');
         $this->assertResponseIsSuccessful();
-        foreach (['code', 'isActive', 'parent', 'isCorporateParent', 'azureTenantId', 'settings'] as $field) {
+        foreach (TenantType::OPERATOR_FIELDS as $field) {
             self::assertCount(1, $crawler->filter('[name="tenant[' . $field . ']"][disabled]'), $field . ' must be read-only');
         }
 
