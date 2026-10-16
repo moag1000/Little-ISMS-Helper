@@ -20,8 +20,57 @@ class CorporateStructureService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ISMSContextRepository $ismsContextRepository,
-        private readonly CorporateGovernanceRepository $corporateGovernanceRepository
+        private readonly CorporateGovernanceRepository $corporateGovernanceRepository,
+        private readonly AuditLogger $auditLogger,
     ) {
+    }
+
+    /**
+     * Delete every governance rule of $tenant (used when the tenant is
+     * detached from its parent) and record the deletion in the audit trail.
+     *
+     * The rows are removed with one DQL DELETE, which bypasses the Doctrine
+     * lifecycle (and with it the entity-level audit listener), so the
+     * deleted rules are logged explicitly via AuditLogger::logBulk()
+     * (1 batch entry + 1 entry per rule, ISO 27001 Cl. 7.5.3).
+     *
+     * @return int number of deleted rules
+     */
+    public function removeAllGovernanceRules(Tenant $tenant, string $reason): int
+    {
+        $rules = $this->corporateGovernanceRepository->findBy(['tenant' => $tenant]);
+        if ($rules === []) {
+            return 0;
+        }
+
+        $perEntity = array_map(static fn(CorporateGovernance $rule): array => [
+            'action' => 'delete',
+            'entity_id' => $rule->getId(),
+            'old_values' => [
+                'tenant_id' => $tenant->getId(),
+                'parent_id' => $rule->getParent()?->getId(),
+                'scope' => $rule->getScope(),
+                'scope_id' => $rule->getScopeId(),
+                'governance_model' => $rule->getGovernanceModel()?->value,
+            ],
+        ], $rules);
+
+        $deleted = (int) $this->entityManager->createQueryBuilder()
+            ->delete(CorporateGovernance::class, 'cg')
+            ->where('cg.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->getQuery()
+            ->execute();
+
+        $this->auditLogger->logBulk(
+            'corporate_governance_removed',
+            'CorporateGovernance',
+            ['tenant_id' => $tenant->getId(), 'reason' => $reason, 'deleted' => $deleted],
+            $perEntity,
+            sprintf('Removed %d governance rule(s) of tenant %d (%s)', $deleted, (int) $tenant->getId(), $reason),
+        );
+
+        return $deleted;
     }
 
     /**

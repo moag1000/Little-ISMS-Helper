@@ -568,13 +568,8 @@ class TenantManagementController extends AbstractController
                 // Remove parent and all governance rules
                 $tenant->setParent(null);
 
-                // Delete all governance rules for this tenant
-                $this->entityManager->createQueryBuilder()
-                    ->delete(CorporateGovernance::class, 'cg')
-                    ->where('cg.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()
-                    ->execute();
+                // Delete all governance rules for this tenant (audit-logged)
+                $this->corporateStructureService->removeAllGovernanceRules($tenant, 'parent_removed');
 
                 $this->logger->info('Tenant parent removed', [
                     'tenant_id' => $tenant->getId(),
