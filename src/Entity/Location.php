@@ -89,6 +89,7 @@ class Location
     #[Groups(['location:read', 'location:write'])]
     private ?self $parentLocation = null;
 
+    /** @var Collection<int, self> */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentLocation')]
     #[Groups(['location:read'])]
     private Collection $childLocations;
@@ -134,9 +135,11 @@ class Location
     #[Groups(['location:read', 'location:write'])]
     private ?string $notes = null;
 
+    /** @var Collection<int, PhysicalAccessLog> */
     #[ORM\OneToMany(targetEntity: PhysicalAccessLog::class, mappedBy: 'locationEntity')]
     private Collection $accessLogs;
 
+    /** @var Collection<int, Asset> */
     #[ORM\OneToMany(targetEntity: Asset::class, mappedBy: 'physicalLocation')]
     private Collection $assets;
 

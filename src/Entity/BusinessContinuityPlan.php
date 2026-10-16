@@ -293,6 +293,8 @@ class BusinessContinuityPlan
 
     /**
      * Critical suppliers for this plan
+     *
+     * @var Collection<int, Supplier>
      */
     #[ORM\ManyToMany(targetEntity: Supplier::class)]
     #[ORM\JoinTable(name: 'bc_plan_supplier')]
@@ -301,6 +303,8 @@ class BusinessContinuityPlan
 
     /**
      * Critical assets for this plan
+     *
+     * @var Collection<int, Asset>
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'bc_plan_asset')]
@@ -309,6 +313,8 @@ class BusinessContinuityPlan
 
     /**
      * Documents related to this plan
+     *
+     * @var Collection<int, Document>
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'bc_plan_document')]

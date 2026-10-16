@@ -87,6 +87,8 @@ class BCExercise
 
     /**
      * BC Plan(s) being tested
+     *
+     * @var Collection<int, BusinessContinuityPlan>
      */
     #[ORM\ManyToMany(targetEntity: BusinessContinuityPlan::class)]
     #[ORM\JoinTable(name: 'bc_exercise_plan')]
@@ -350,6 +352,8 @@ class BCExercise
 
     /**
      * Documents related to this exercise
+     *
+     * @var Collection<int, Document>
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'bc_exercise_document')]
