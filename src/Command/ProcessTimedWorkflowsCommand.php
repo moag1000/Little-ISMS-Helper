@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\User;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Enum\WorkflowInstanceStatus;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\Notification\SlaDeadlineWatcher;
-use App\Service\WorkflowAutoProgressionService;
+use App\Service\WorkflowService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -34,18 +35,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * 2. SLA deadline monitoring: ticks {@see \App\Service\Notification\SlaDeadlineWatcher} to fire
  *    approaching-deadline and missed-deadline notifications across all tenants.
  *
- * Note (Y.1): The {@see \App\Service\WorkflowAutoProgressionService} injected here is the
- * deprecated wrapper; it now delegates field-completion checks to FieldCompletionAutoTransition
- * internally. For time-based steps this path is still the correct code path. When the legacy
- * WorkflowStep.metadata approval-chain is fully migrated (Sprint Y.2+), this command will only
- * need to tick the SLA watcher.
+ * Time-based steps are approved through {@see WorkflowService::moveToNextStep()} with the
+ * workflow initiator as acting user. A time-based step that is the last step of its workflow
+ * is never auto-approved: the final approval of a workflow instance is four-eyes
+ * (workflow_instance_lifecycle `approve`) and needs a human approver.
  *
  * Example workflow step metadata:
  * {
  *   "autoProgressConditions": {
  *     "type": "time_based",
- *     "delay": "24 hours",
- *     "condition": "status = 'pending'"  // Optional
+ *     "delay": "24 hours"
  *   }
  * }
  *
@@ -59,7 +58,7 @@ class ProcessTimedWorkflowsCommand extends Command
 {
     public function __construct(
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly WorkflowService $workflowService,
         private readonly EntityManagerInterface $entityManager,
         private readonly SlaDeadlineWatcher $slaDeadlineWatcher,
     ) {
@@ -104,10 +103,11 @@ Add to crontab to run every 15 minutes:
 {
   "autoProgressConditions": {
     "type": "time_based",
-    "delay": "24 hours",
-    "condition": "status = 'pending'"
+    "delay": "24 hours"
   }
 }
+A time-based last step is not auto-approved: the final approval of a
+workflow is four-eyes and needs a human approver.
 HELP
             );
     }
@@ -188,7 +188,6 @@ HELP
 
             if (!$dryRun) {
                 try {
-                    // Get system user (or use workflow initiator as fallback)
                     $user = $workflowInstance->getInitiatedBy();
 
                     if (!$user) {
@@ -199,22 +198,10 @@ HELP
                         continue;
                     }
 
-                    // Get the entity to check conditions
-                    $entity = $this->getWorkflowEntity($workflowInstance);
-
-                    if (!$entity) {
-                        $errors[] = sprintf(
-                            'Could not load entity for workflow #%d',
-                            $workflowInstance->getId()
-                        );
-                        continue;
-                    }
-
-                    // Auto-progress using the service
-                    $this->workflowAutoProgressionService->checkAndProgressWorkflow($entity, $user);
+                    $this->approveByTime($workflowInstance, $currentStep, $user);
 
                     $processed++;
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $errors[] = sprintf(
                         'Error processing workflow #%d: %s',
                         $workflowInstance->getId(),
@@ -306,6 +293,10 @@ HELP
             return false; // No delay specified
         }
 
+        if ($this->isLastStep($workflowInstance, $step)) {
+            return false; // Final approval is four-eyes — never automatic
+        }
+
         // Check if step has been active long enough
         $stepStartTime = $this->getStepStartTime($workflowInstance, $step);
 
@@ -331,25 +322,23 @@ HELP
      */
     private function getStepStartTime(WorkflowInstance $workflowInstance, WorkflowStep $step): ?DateTimeImmutable
     {
-        // Check approval history for when this step became current
+        // The current step became active when the previous step was approved;
+        // history entries are written for the step that was completed, so the
+        // latest approval of ANOTHER step marks the start of this one.
         $history = $workflowInstance->getApprovalHistory() ?? [];
 
-        // Find the most recent action for this step
         foreach (array_reverse($history) as $entry) {
-            if (isset($entry['step_id']) && $entry['step_id'] === $step->getId()) {
-                if (isset($entry['timestamp'])) {
-                    return new DateTimeImmutable($entry['timestamp']);
-                }
+            if (
+                in_array($entry['action'] ?? null, ['approved', 'auto_approved'], true)
+                && ($entry['step_id'] ?? null) !== $step->getId()
+                && isset($entry['timestamp'])
+            ) {
+                return new DateTimeImmutable($entry['timestamp']);
             }
         }
 
-        // Fallback: use workflow start time if this is the first step
-        $firstStep = $workflowInstance->getWorkflow()->getSteps()->first();
-        if ($firstStep === $step) {
-            return $workflowInstance->getStartedAt();
-        }
-
-        return null;
+        // No step approved yet: the step has been active since the workflow started
+        return $workflowInstance->getStartedAt();
     }
 
     /**
@@ -374,20 +363,43 @@ HELP
     }
 
     /**
-     * Get the actual entity object for a workflow instance
+     * Approve a time-based step and activate the next one. Never called for
+     * the last step (see shouldAutoProgressByTime()).
      */
-    private function getWorkflowEntity(WorkflowInstance $workflowInstance): ?object
+    private function approveByTime(WorkflowInstance $workflowInstance, WorkflowStep $step, User $user): void
     {
-        $entityType = $workflowInstance->getEntityType();
-        $entityId = $workflowInstance->getEntityId();
+        $comment = sprintf(
+            'Step automatically approved after time delay of %s',
+            (string) ($step->getMetadata()['autoProgressConditions']['delay'] ?? '?'),
+        );
 
-        $entityClass = 'App\\Entity\\' . $entityType;
+        $workflowInstance->addApprovalHistoryEntry([
+            'step_id' => $step->getId(),
+            'step_name' => $step->getName(),
+            'action' => 'auto_approved',
+            'approver_id' => $user->getId(),
+            'approver_name' => $user->getFirstName() . ' ' . $user->getLastName(),
+            'comments' => $comment,
+            'timestamp' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
+            'auto_progression' => true,
+            'trigger' => 'time_based',
+        ]);
+        $workflowInstance->addCompletedStep($step->getId());
 
-        if (!class_exists($entityClass)) {
-            return null;
+        $nextStep = $this->workflowService->moveToNextStep($workflowInstance, $user, $comment);
+        if ($nextStep instanceof WorkflowStep) {
+            $this->workflowService->handleStepAssignment($workflowInstance, $nextStep);
         }
 
-        return $this->entityManager->find($entityClass, $entityId);
+        $this->entityManager->flush();
+    }
+
+    private function isLastStep(WorkflowInstance $workflowInstance, WorkflowStep $step): bool
+    {
+        $steps = $workflowInstance->getWorkflow()->getSteps()->toArray();
+        $index = array_search($step, $steps, true);
+
+        return $index === false || !isset($steps[$index + 1]);
     }
 
     /**

@@ -16,7 +16,6 @@ use App\Service\MappingSuggestionService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
-use App\Service\WorkflowAutoProgressionService;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -56,7 +55,6 @@ class StatementOfApplicabilityControllerTest extends TestCase
     private MockObject $translator;
     private MockObject $soaReportService;
     private MockObject $security;
-    private MockObject $workflowAutoProgressionService;
     private MockObject $tagFilterService;
     private MockObject $mappingSuggestionService;
     private MockObject $requirementRepository;
@@ -78,7 +76,6 @@ class StatementOfApplicabilityControllerTest extends TestCase
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->soaReportService = $this->createMock(SoAReportService::class);
         $this->security = $this->createMock(Security::class);
-        $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
         $this->tagFilterService = $this->createMock(TagFilterService::class);
         $this->mappingSuggestionService = $this->createMock(MappingSuggestionService::class);
         $this->requirementRepository = $this->createMock(ComplianceRequirementRepository::class);
@@ -133,7 +130,6 @@ class StatementOfApplicabilityControllerTest extends TestCase
             $this->translator,
             $this->soaReportService,
             $this->security,
-            $this->workflowAutoProgressionService,
             $this->tagFilterService,
             $this->mappingSuggestionService,
             $this->requirementRepository,
