@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Exception\Tenant\TenantNotFoundException;
 use App\Job\AsyncJobInterface;
 use App\Job\ExportAnalyticsJob;
+use App\Job\ExportDataJob;
 use App\Job\ExportRisksJob;
 use App\Job\ExportUsersJob;
 use App\Job\JobContext;
@@ -103,6 +104,26 @@ final class ExportJobsTenantScopeTest extends KernelTestCase
         self::assertStringNotContainsString('ForeignRisk', $csv);
     }
 
+    #[Test]
+    public function exportDataJobScopesRowsAndStripsSecrets(): void
+    {
+        [$tenantA, $tenantB] = $this->twoTenants();
+        $this->user($tenantA, 'own-user');
+        $this->user($tenantB, 'foreign-user');
+        $this->em->flush();
+
+        $csv = $this->runJob(ExportDataJob::class, [
+            'entities' => [User::class, \App\Entity\MfaToken::class],
+            'format' => 'csv',
+            JobTenantScope::ARG_TENANT_ID => $tenantA->getId(),
+        ]);
+
+        self::assertStringContainsString('own-user', $csv);
+        self::assertStringNotContainsString('foreign-user', $csv);
+        self::assertStringNotContainsString('hashed_password', $csv);
+        self::assertStringNotContainsString('# MfaToken', $csv);
+    }
+
     /**
      * @param class-string<AsyncJobInterface> $jobClass
      * @param array<string, mixed>           $args
@@ -124,6 +145,7 @@ final class ExportJobsTenantScopeTest extends KernelTestCase
         yield 'analytics, no scope' => [ExportAnalyticsJob::class, ['type' => 'risks']];
         yield 'risks, no scope' => [ExportRisksJob::class, []];
         yield 'risks, unknown tenant' => [ExportRisksJob::class, [JobTenantScope::ARG_TENANT_ID => 999999999]];
+        yield 'data, no scope' => [ExportDataJob::class, ['entities' => [User::class], 'format' => 'csv']];
         yield 'users, allTenants not strictly true' => [ExportUsersJob::class, [JobTenantScope::ARG_ALL_TENANTS => '1']];
     }
 

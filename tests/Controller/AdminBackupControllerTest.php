@@ -545,6 +545,69 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
+    public function testExportExecuteExportsOnlyOwnTenantAndNoSecrets(): void
+    {
+        $foreignUser = new User();
+        $foreignUser->setEmail('foreign_export_' . uniqid() . '@example.com');
+        $foreignUser->setFirstName('Foreign');
+        $foreignUser->setLastName('User');
+        $foreignUser->setRoles(['ROLE_USER']);
+        $foreignUser->setPassword('foreign_hash');
+        $foreignUser->setTenant($this->foreignTenant);
+        $this->entityManager->persist($foreignUser);
+        $this->entityManager->flush();
+
+        $this->loginAsUser($this->tenantAdminUser);
+        $token = $this->seedBackupCsrfToken();
+        $this->client->request('POST', '/en/admin/data/export/execute', [
+            '_token' => $token,
+            'format' => 'json',
+            'entities' => [
+                \App\Entity\User::class,
+                \App\Entity\MfaToken::class,
+                \App\Entity\UserSession::class,
+                \App\Entity\ComplianceFramework::class,
+            ],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $data = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertIsArray($data);
+
+        // Credential/session tables are never exported; global catalogue
+        // tables are not part of an organisation-scoped export.
+        self::assertArrayNotHasKey('MfaToken', $data);
+        self::assertArrayNotHasKey('UserSession', $data);
+        self::assertArrayNotHasKey('ComplianceFramework', $data);
+
+        $emails = array_column($data['User'] ?? [], 'email');
+        self::assertContains($this->tenantAdminUser->getEmail(), $emails);
+        self::assertNotContains($foreignUser->getEmail(), $emails, 'other organisations\' users must not leak');
+        foreach ($data['User'] as $row) {
+            self::assertArrayNotHasKey('password', $row, 'password hashes must never be exported');
+        }
+
+        $managed = $this->entityManager->find(User::class, $foreignUser->getId());
+        if ($managed !== null) {
+            $this->entityManager->remove($managed);
+            $this->entityManager->flush();
+        }
+    }
+
+    #[Test]
+    public function testExportIndexOffersNoCredentialTables(): void
+    {
+        $this->loginAsUser($this->tenantAdminUser);
+        $this->client->request('GET', '/en/admin/data/export');
+
+        $this->assertResponseIsSuccessful();
+        $content = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('App\\Entity\\MfaToken', $content);
+        self::assertStringNotContainsString('App\\Entity\\UserSession', $content);
+        self::assertStringContainsString('App\\Entity\\Risk"', $content);
+    }
+
     // ========== IMPORT TESTS ==========
 
     #[Test]

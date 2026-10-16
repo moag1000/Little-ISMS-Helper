@@ -7,11 +7,12 @@ namespace App\Controller;
 use App\Controller\Trait\LocalizedFlashTrait;
 use Exception;
 use InvalidArgumentException;
-use DateTimeInterface;
 use App\Job\CreateBackupJob;
 use App\Job\RestoreBackupJob;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\BackupService;
+use App\Service\DataExport\EntityDataExporter;
+use App\Service\Job\JobTenantScope;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\RestoreService;
@@ -28,7 +29,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use App\Util\CsvSanitizer;
 
 /**
  * Backup / Restore / Export / Import admin controller.
@@ -48,9 +48,12 @@ use App\Util\CsvSanitizer;
  *  - `data_backup_index` lists backups under the class-level `ROLE_ADMIN`
  *    baseline — tenant-scoped filtering of the listing is deferred to Phase 5
  *    (service-layer `BackupService::listBackups(?Tenant)` filter).
- *  - Generic data export / import endpoints currently rely on the class-level
- *    `ROLE_ADMIN` baseline as well; tenant-scope filtering of exported data is
- *    deferred to Phase 5.
+ *  - Generic data export (`data_export_index`, `data_export_execute`, and the
+ *    async {@see DataExportAsyncController}) exports the caller's own
+ *    organisation only, through {@see EntityDataExporter}: credential/session
+ *    tables are never offered, secret fields are stripped, global tables
+ *    without a tenant are only exportable instance-wide by a SUPER_ADMIN
+ *    without organisation.
  *
  * Cross-tenant attempts are rejected by
  * {@see TenantContext::resolveAdminScope()}, which throws
@@ -69,6 +72,8 @@ class AdminBackupController extends AbstractController
         private readonly JobStatusService $jobStatusService,
         private readonly JobDispatcher $jobDispatcher,
         private readonly TranslatorInterface $translator,
+        private readonly EntityDataExporter $entityDataExporter,
+        private readonly JobTenantScope $jobTenantScope,
     ) {
     }
 
@@ -551,35 +556,16 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/export', name: 'data_export_index', methods: ['GET'])]
-    public function exportIndex(EntityManagerInterface $entityManager): Response
+    public function exportIndex(): Response
     {
-        // Get all entity class names
-        $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
-        $entities = [];
-
-        foreach ($metadata as $meta) {
-            $className = $meta->getName();
-            $shortName = substr($className, strrpos($className, '\\') + 1);
-
-            $entities[] = [
-                'name' => $shortName,
-                'class' => $className,
-                'table' => $meta->getTableName(),
-            ];
-        }
-
-        // Sort by name
-        usort($entities, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));
-
         return $this->render('data_management/export.html.twig', [
-            'entities' => $entities,
+            'entities' => $this->entityDataExporter->listExportableEntities($this->jobTenantScope->currentUserScope()),
         ]);
     }
 
     #[Route('/admin/data/export/execute', name: 'data_export_execute', methods: ['POST'])]
     public function exportExecute(
         Request $request,
-        EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('data_export', $request->request->get('_token'))) {
@@ -587,7 +573,7 @@ class AdminBackupController extends AbstractController
             return $this->redirectToRoute('data_export_index');
         }
 
-        $selectedEntities = $request->request->all('entities') ?? [];
+        $selectedEntities = $request->request->all('entities');
         $format = $request->request->get('format', 'json');
 
         if ($selectedEntities === []) {
@@ -595,33 +581,14 @@ class AdminBackupController extends AbstractController
             return $this->redirectToRoute('data_export_index');
         }
 
+        // Same rules as the async ExportDataJob: own organisation only,
+        // credential tables refused, secret fields stripped.
+        $scope = $this->jobTenantScope->currentUserScope();
+
         // Close session to prevent blocking other requests during export generation
         $request->getSession()->save();
 
-        $exportData = [];
-
-        foreach ($selectedEntities as $selectedEntity) {
-            // Security: Only allow App\Entity namespace
-            if (!str_starts_with((string) $selectedEntity, 'App\\Entity\\')) {
-                continue;
-            }
-
-            try {
-                $repository = $entityManager->getRepository($selectedEntity);
-                $entities = $repository->findAll();
-
-                $shortName = substr((string) $selectedEntity, strrpos((string) $selectedEntity, '\\') + 1);
-                $exportData[$shortName] = [];
-
-                foreach ($entities as $entity) {
-                    // Convert entity to array (simplified)
-                    $exportData[$shortName][] = $this->entityToArray($entity, $entityManager);
-                }
-            } catch (Exception) {
-                // Skip entities that can't be exported
-                continue;
-            }
-        }
+        $exportData = $this->entityDataExporter->export($selectedEntities, $scope);
 
         // Return response based on format
         if ($format === 'json') {
@@ -723,32 +690,6 @@ class AdminBackupController extends AbstractController
     }
 
     /**
-     * Convert entity to array (simplified)
-     */
-    private function entityToArray(object $entity, EntityManagerInterface $entityManager): array
-    {
-        $classMetadata = $entityManager->getClassMetadata($entity::class);
-        $data = [];
-
-        foreach ($classMetadata->getFieldNames() as $field) {
-            try {
-                $value = $classMetadata->getFieldValue($entity, $field);
-
-                // Handle DateTime objects
-                if ($value instanceof DateTimeInterface) {
-                    $value = $value->format('Y-m-d H:i:s');
-                }
-
-                $data[$field] = $value;
-            } catch (Exception) {
-                // Skip fields that can't be accessed
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * Create JSON export response
      */
     private function createJsonExportResponse(array $data): JsonResponse
@@ -783,7 +724,7 @@ class AdminBackupController extends AbstractController
 
                 // Write data
                 foreach ($entities as $entity) {
-                    fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $entity), escape: '\\');
+                    fputcsv($handle, array_map([EntityDataExporter::class, 'csvCell'], $entity), escape: '\\');
                 }
 
                 // Empty line between entities

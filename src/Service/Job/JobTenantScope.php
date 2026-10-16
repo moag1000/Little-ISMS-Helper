@@ -68,7 +68,8 @@ final readonly class JobTenantScope
     }
 
     /**
-     * Resolve the scope captured by {@see self::argsForCurrentUser()}.
+     * Resolve the scope captured by {@see self::argsForCurrentUser()} from a
+     * running job's args.
      *
      * @return Tenant|null the organisation to scope to; null ONLY for an
      *                     explicit instance-wide (allTenants) export
@@ -78,10 +79,33 @@ final readonly class JobTenantScope
      */
     public function resolve(JobContext $ctx): ?Tenant
     {
-        $tenantId = $ctx->arg(self::ARG_TENANT_ID);
+        return $this->resolveArgs($ctx->args());
+    }
+
+    /**
+     * Resolve the calling user's scope directly — for synchronous exports
+     * that apply the same rules as their async counterparts.
+     *
+     * @throws AccessDeniedException when the caller has no organisation and
+     *                               is not a SUPER_ADMIN
+     */
+    public function currentUserScope(): ?Tenant
+    {
+        return $this->resolveArgs($this->argsForCurrentUser());
+    }
+
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @throws TenantNotFoundException when no scope was passed or the tenant
+     *                                 no longer exists
+     */
+    public function resolveArgs(array $args): ?Tenant
+    {
+        $tenantId = $args[self::ARG_TENANT_ID] ?? null;
 
         if ($tenantId === null || $tenantId === '') {
-            if ($ctx->arg(self::ARG_ALL_TENANTS) === true) {
+            if (($args[self::ARG_ALL_TENANTS] ?? null) === true) {
                 return null;
             }
 

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Job;
 
-use DateTimeInterface;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\DataExport\EntityDataExporter;
+use App\Service\Job\JobTenantScope;
 use Symfony\Component\HttpKernel\KernelInterface;
-use App\Util\CsvSanitizer;
 
 /**
  * Async admin job: dump selected Doctrine-mapped entity classes to a file
@@ -21,11 +20,14 @@ use App\Util\CsvSanitizer;
  * runs.
  *
  * Args:
- *   entities (list<class-string>) FQCNs to export. The dispatching controller
- *                                 must already enforce the App\Entity namespace
- *                                 prefix — the job re-checks defensively but
- *                                 does not surface "skipped" entries to the UI.
+ *   entities (list<class-string>) FQCNs to export.
  *   format   ('json'|'csv')       Output format. Default 'json'.
+ *   + the tenant scope captured by {@see JobTenantScope::argsForCurrentUser()}.
+ *
+ * What may be exported, how rows are tenant-scoped and which fields are
+ * stripped is decided by {@see EntityDataExporter} — shared with the sync
+ * path so both apply the same rules. A job without a usable tenant scope
+ * fails instead of exporting every organisation's data.
  *
  * The generated file is served by a separate download action that
  * unlinks the file after streaming.
@@ -33,7 +35,8 @@ use App\Util\CsvSanitizer;
 final class ExportDataJob implements AsyncJobInterface
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private readonly EntityDataExporter $exporter,
+        private readonly JobTenantScope $tenantScope,
         private readonly KernelInterface $kernel,
     ) {
     }
@@ -54,42 +57,17 @@ final class ExportDataJob implements AsyncJobInterface
             throw new \RuntimeException('No entities selected for export.');
         }
 
+        $scope = $this->tenantScope->resolve($ctx);
+
         $ctx->message(sprintf('Preparing %s export for %d entity class(es)…', strtoupper($format), $total));
 
-        $exportData = [];
-        $processed = 0;
-
-        foreach ($selectedEntities as $fqcn) {
-            $processed++;
-
-            $fqcn = (string) $fqcn;
-            if (!str_starts_with($fqcn, 'App\\Entity\\')) {
-                $ctx->progress($processed, $total, sprintf('Skipped %s (not an App\\Entity class).', $fqcn));
-                continue;
-            }
-
-            try {
-                $repository = $this->entityManager->getRepository($fqcn);
-            } catch (\Throwable) {
-                $ctx->progress($processed, $total, sprintf('Skipped %s (no repository).', $fqcn));
-                continue;
-            }
-
-            $shortName = substr($fqcn, (int) strrpos($fqcn, '\\') + 1);
-            $ctx->progress($processed, $total, sprintf('Loading %s…', $shortName));
-
-            try {
-                $rows = $repository->findAll();
-            } catch (\Throwable $e) {
-                $ctx->progress($processed, $total, sprintf('Skipped %s (%s).', $shortName, $e->getMessage()));
-                continue;
-            }
-
-            $exportData[$shortName] = [];
-            foreach ($rows as $entity) {
-                $exportData[$shortName][] = $this->entityToArray($entity);
-            }
-        }
+        $exportData = $this->exporter->export(
+            $selectedEntities,
+            $scope,
+            static function (int $done, int $all, string $shortName) use ($ctx): void {
+                $ctx->progress($done, $all, sprintf('Loading %s…', $shortName));
+            },
+        );
 
         $ctx->message('Writing export file to disk…');
         $jobId = $ctx->getJobId();
@@ -108,33 +86,6 @@ final class ExportDataJob implements AsyncJobInterface
             basename($path),
             (int) round($size / 1024),
         ));
-    }
-
-    /**
-     * Convert an entity to a flat assoc array. Mirrors the original
-     * AdminBackupController::entityToArray() behaviour: scalar fields only,
-     * DateTime → 'Y-m-d H:i:s' string. Associations are skipped.
-     *
-     * @return array<string, mixed>
-     */
-    private function entityToArray(object $entity): array
-    {
-        $meta = $this->entityManager->getClassMetadata($entity::class);
-        $row = [];
-
-        foreach ($meta->getFieldNames() as $field) {
-            try {
-                $value = $meta->getFieldValue($entity, $field);
-                if ($value instanceof DateTimeInterface) {
-                    $value = $value->format('Y-m-d H:i:s');
-                }
-                $row[$field] = $value;
-            } catch (\Throwable) {
-                // Skip inaccessible fields silently — matches the sync behaviour.
-            }
-        }
-
-        return $row;
     }
 
     /**
@@ -171,7 +122,7 @@ final class ExportDataJob implements AsyncJobInterface
                 fputcsv($handle, array_keys($rows[0]), escape: '\\');
 
                 foreach ($rows as $row) {
-                    fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), escape: '\\');
+                    fputcsv($handle, array_map([EntityDataExporter::class, 'csvCell'], $row), escape: '\\');
                 }
 
                 fputcsv($handle, [], escape: '\\');
