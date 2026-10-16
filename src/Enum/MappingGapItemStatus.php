@@ -44,4 +44,55 @@ enum MappingGapItemStatus: string
             self::WontFix    => 'neutral',
         };
     }
+
+    /**
+     * Allowed lifecycle moves. Work moves forward (identified → planned →
+     * in_progress → resolved); `wont_fix` can be decided from any open state;
+     * closed items (resolved / wont_fix) are only reopened, never jumped
+     * between. Staying on the current status is always allowed (no-op).
+     *
+     * @return list<self>
+     */
+    public function allowedTransitions(): array
+    {
+        return match ($this) {
+            self::Identified => [self::Planned, self::InProgress, self::WontFix],
+            self::Planned    => [self::Identified, self::InProgress, self::WontFix],
+            self::InProgress => [self::Planned, self::Resolved, self::WontFix],
+            self::Resolved   => [self::InProgress],
+            self::WontFix    => [self::Identified],
+        };
+    }
+
+    public function canTransitionTo(self $target): bool
+    {
+        return $target === $this || in_array($target, $this->allowedTransitions(), true);
+    }
+
+    /**
+     * Validation message for moving from this status to $target, or null when
+     * the move is allowed. A null $target means the requested value is not a
+     * known status at all.
+     */
+    public function transitionError(?self $target): ?string
+    {
+        $values = static fn (array $statuses): string => implode(', ', array_map(
+            static fn (self $s): string => $s->value,
+            $statuses,
+        ));
+
+        if ($target === null) {
+            return 'Invalid status. Must be one of: ' . $values(self::cases());
+        }
+        if (!$this->canTransitionTo($target)) {
+            return sprintf(
+                'Status change %s → %s is not allowed. Allowed: %s',
+                $this->value,
+                $target->value,
+                $values($this->allowedTransitions()),
+            );
+        }
+
+        return null;
+    }
 }

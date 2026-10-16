@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\LocalizedFlashTrait;
-use Exception;
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
 use App\Entity\ComplianceMapping;
+use App\Enum\MappingGapItemStatus;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\MappingGapItemRepository;
 use App\Service\MappingQualityAnalysisService;
@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -26,6 +27,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class MappingQualityController extends AbstractController
 {
     use LocalizedFlashTrait;
+
+    /** CSRF id for every state-changing JSON action (sent as X-CSRF-Token header). */
+    public const string CSRF_ID = 'mapping_quality';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -78,7 +82,7 @@ class MappingQualityController extends AbstractController
                 'gap_stats' => $gapStats,
                 'framework_comparison' => $frameworkComparison,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.dashboard_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_compliance_index');
         }
@@ -100,7 +104,7 @@ class MappingQualityController extends AbstractController
                 'low_confidence_mappings' => $lowConfidenceMappings,
                 'discrepancies' => $discrepancies,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.review_queue_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
@@ -134,6 +138,8 @@ class MappingQualityController extends AbstractController
      * Update mapping review status and percentage
      */
     #[Route('/compliance/mapping-quality/review/{id}/update', name: 'app_mapping_quality_review_update', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function updateReview(int $id, Request $request): JsonResponse
     {
         try {
@@ -207,7 +213,7 @@ class MappingQualityController extends AbstractController
                     'reviewed_by' => $mapping->getReviewedBy(),
                 ],
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -219,6 +225,8 @@ class MappingQualityController extends AbstractController
      * Re-analyze a specific mapping
      */
     #[Route('/compliance/mapping-quality/analyze/{id}', name: 'app_mapping_quality_analyze', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function analyze(int $id): JsonResponse
     {
         $mapping = $this->complianceMappingRepository->find($id);
@@ -268,7 +276,7 @@ class MappingQualityController extends AbstractController
                 ],
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -296,7 +304,7 @@ class MappingQualityController extends AbstractController
                 'gap_stats_by_priority' => $gapStatsByPriority,
                 'remediation_effort' => $remediationEffort,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.gap_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
@@ -306,6 +314,8 @@ class MappingQualityController extends AbstractController
      * Update gap item status
      */
     #[Route('/compliance/mapping-quality/gap/{id}/update', name: 'app_mapping_quality_gap_update', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function updateGap(int $id, Request $request): JsonResponse
     {
         try {
@@ -327,14 +337,13 @@ class MappingQualityController extends AbstractController
 
             // Validate and update status
             if (isset($data['status'])) {
-                $validStatuses = ['identified', 'planned', 'in_progress', 'resolved', 'wont_fix'];
-                if (!in_array($data['status'], $validStatuses)) {
-                    return $this->json([
-                        'success' => false,
-                        'error' => 'Invalid status. Must be one of: ' . implode(', ', $validStatuses)
-                    ], 400);
+                $target = is_string($data['status']) ? MappingGapItemStatus::tryFrom($data['status']) : null;
+                $current = $gap->getStatusEnum() ?? MappingGapItemStatus::Identified;
+                $error = $current->transitionError($target);
+                if ($error !== null || $target === null) {
+                    return $this->json(['success' => false, 'error' => $error], 400);
                 }
-                $gap->setStatus($data['status']);
+                $gap->setStatus($target);
             }
 
             // Validate and update priority
@@ -374,7 +383,7 @@ class MappingQualityController extends AbstractController
                     'estimated_effort' => $gap->getEstimatedEffort(),
                 ],
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -386,6 +395,8 @@ class MappingQualityController extends AbstractController
      * Batch analyze mappings (for UI-based analysis in chunks)
      */
     #[Route('/compliance/mapping-quality/batch-analyze', name: 'app_mapping_quality_batch_analyze', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function batchAnalyze(Request $request): JsonResponse
     {
         try {
@@ -498,7 +509,7 @@ class MappingQualityController extends AbstractController
                         'gaps_found' => count($gapItems),
                     ];
 
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $errors++;
                     $results[] = [
                         'id' => $mappingId,
@@ -531,7 +542,7 @@ class MappingQualityController extends AbstractController
                 'results' => $results,
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -571,7 +582,7 @@ class MappingQualityController extends AbstractController
                 'percentage' => $total > 0 ? round(($analyzed / $total) * 100, 1) : 0,
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'error' => $e->getMessage()
