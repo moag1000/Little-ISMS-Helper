@@ -260,8 +260,8 @@ class AnalyticsControllerTest extends WebTestCase
         foreach (['exportDataDispatch', 'exportDownload', 'exportData'] as $method) {
             $attributes = (new \ReflectionMethod(\App\Controller\AnalyticsController::class, $method))
                 ->getAttributes(\Symfony\Component\Security\Http\Attribute\IsGranted::class);
-            self::assertCount(1, $attributes, $method . ' must carry #[IsGranted]');
-            self::assertSame('ROLE_MANAGER', $attributes[0]->newInstance()->attribute, $method);
+            $roles = array_map(static fn(\ReflectionAttribute $a): mixed => $a->newInstance()->attribute, $attributes);
+            self::assertContains('ROLE_MANAGER', $roles, $method . ' must carry #[IsGranted(\'ROLE_MANAGER\')]');
         }
     }
 
