@@ -1,9 +1,7 @@
-# Security routes WITHOUT locale prefix (for cleaner URLs and better access control)
-security_routes:
-    resource:
-        path: ../src/Controller/SecurityController.php
-        namespace: App\Controller
-    type: attribute
+# Note: SecurityController is NOT excluded below, so login/logout/OAuth/SAML
+# routes are served with the locale prefix (/{_locale}/login, /{_locale}/saml/acs).
+# IdP registrations (SAML ACS, OAuth redirect URIs) rely on these URLs — do not
+# move them without updating every identity-provider configuration.
 
 # App routes WITH locale prefix
 app_routes:
@@ -17,7 +15,6 @@ app_routes:
     defaults:
         _locale: de
     exclude:
-        - '../src/Controller/SecurityController.php'
         - '../src/Controller/HomeController.php'
         - '../src/Controller/QuickFixController.php'
         - '../src/Controller/QuickFixJobStatusController.php'
