@@ -319,6 +319,56 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($invalidFile);
     }
 
+    #[Test]
+    public function testBackupProfileAcceptsJsonAndGzip(): void
+    {
+        $this->service->validateUploadedFile(
+            $this->createTestFile('backup.json', '{"metadata":{"version":"2.0"},"data":{}}'),
+            FileUploadSecurityService::PROFILE_BACKUP,
+        );
+        $this->service->validateUploadedFile(
+            $this->createTestFile('backup.json.gz', (string) gzencode('{"data":{}}')),
+            FileUploadSecurityService::PROFILE_BACKUP,
+        );
+        $this->addToAssertionCount(2);
+    }
+
+    #[Test]
+    public function testBackupProfileRejectsDisguisedFiles(): void
+    {
+        foreach ([
+            'evil.json' => "<?php system('id'); ?>",
+            'fake.gz' => 'plain text pretending to be gzip',
+            'backup.pdf' => $this->getPdfContent(),
+        ] as $name => $content) {
+            $result = $this->service->validateUpload($this->createTestFile($name, $content), FileUploadSecurityService::PROFILE_BACKUP);
+            $this->assertFalse($result['valid'], $name . ' must be rejected');
+        }
+    }
+
+    #[Test]
+    public function testTabularImportProfileAcceptsCsvAndRejectsOtherTypes(): void
+    {
+        $this->assertTrue($this->service->validateUpload(
+            $this->createTestFile('assets.csv', "name,owner\nServer,IT\n"),
+            FileUploadSecurityService::PROFILE_TABULAR_IMPORT,
+        )['valid']);
+
+        foreach (['assets.php' => '<?php echo 1;', 'assets.pdf' => $this->getPdfContent(), 'assets.json' => '{"a":1}'] as $name => $content) {
+            $this->assertFalse(
+                $this->service->validateUpload($this->createTestFile($name, $content), FileUploadSecurityService::PROFILE_TABULAR_IMPORT)['valid'],
+                $name . ' must be rejected',
+            );
+        }
+    }
+
+    #[Test]
+    public function testUnknownProfileIsAProgrammingError(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->service->validateUploadedFile($this->createTestFile('a.csv', 'a,b'), 'nope');
+    }
+
     private function createTestFile(string $filename, string $content): UploadedFile
     {
         $path = $this->tempDir . '/' . basename($filename);

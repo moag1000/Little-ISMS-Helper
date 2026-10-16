@@ -9,6 +9,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -369,6 +370,45 @@ class AdminBackupControllerTest extends WebTestCase
         // CSRF in controller uses `data_backup_upload` token id.
         $this->sameOriginRequest('POST', '/en/admin/data/backup/upload');
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    /**
+     * Restore uploads go through FileUploadSecurityService (backup profile):
+     * content, not just the client-supplied extension, decides.
+     */
+    #[Test]
+    public function testUploadBackupRejectsDisguisedAndAcceptsGenuineFiles(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $tmp = sys_get_temp_dir() . '/backup_upload_' . uniqid();
+        mkdir($tmp);
+        file_put_contents($tmp . '/evil.json', "<?php system(\$_GET['c']); ?>\n");
+        file_put_contents($tmp . '/fake.gz', 'not gzip at all');
+        file_put_contents($tmp . '/real.json', (string) json_encode(['metadata' => ['version' => '1.0'], 'data' => []]));
+        $backupDir = static::getContainer()->getParameter('kernel.project_dir') . '/var/backups';
+        $before = glob($backupDir . '/uploaded_*') ?: [];
+
+        try {
+            foreach (['evil.json', 'fake.gz'] as $name) {
+                $this->sameOriginRequest('POST', '/en/admin/data/backup/upload', [], [
+                    'backup_file' => new UploadedFile($tmp . '/' . $name, $name, null, null, true),
+                ]);
+                $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, $name . ' must be rejected');
+            }
+            $this->assertSame($before, glob($backupDir . '/uploaded_*') ?: [], 'rejected files must not be stored');
+
+            $this->sameOriginRequest('POST', '/en/admin/data/backup/upload', [], [
+                'backup_file' => new UploadedFile($tmp . '/real.json', 'real.json', null, null, true),
+            ]);
+            $this->assertResponseIsSuccessful();
+            $this->assertCount(count($before) + 1, glob($backupDir . '/uploaded_*') ?: []);
+        } finally {
+            foreach (array_diff(glob($backupDir . '/uploaded_*') ?: [], $before) as $stored) {
+                @unlink($stored);
+            }
+            array_map('unlink', glob($tmp . '/*') ?: []);
+            @rmdir($tmp);
+        }
     }
 
     // ========== DOWNLOAD BACKUP TESTS ==========

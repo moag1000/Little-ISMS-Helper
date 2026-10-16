@@ -13,6 +13,7 @@ use App\Job\RestoreBackupJob;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\BackupService;
 use App\Service\DataExport\EntityDataExporter;
+use App\Service\FileUploadSecurityService;
 use App\Service\Job\JobTenantScope;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
@@ -75,6 +76,7 @@ class AdminBackupController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly EntityDataExporter $entityDataExporter,
         private readonly JobTenantScope $jobTenantScope,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
     ) {
     }
 
@@ -270,11 +272,16 @@ class AdminBackupController extends AbstractController
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            // Validate file extension (.zip added for format 2.0 backups with embedded files)
-            $allowedExtensions = ['json', 'gz', 'zip'];
-            $extension = $file->getClientOriginalExtension();
+            // Extension, server-detected MIME type, signature and size
+            // (.zip = format 2.0 backups with embedded files).
+            $validation = $this->fileUploadSecurityService->validateUpload($file, FileUploadSecurityService::PROFILE_BACKUP);
 
-            if (!in_array($extension, $allowedExtensions)) {
+            if (!$validation['valid']) {
+                $this->logger->warning('Backup upload rejected', [
+                    'user' => $this->getUser()?->getUserIdentifier(),
+                    'reason' => $validation['error'],
+                ]);
+
                 if (!$isXhr) {
                     $this->flashError('admin.backup.error.invalid_file_format');
 
@@ -283,13 +290,13 @@ class AdminBackupController extends AbstractController
 
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.',
+                    'message' => 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt. ' . $validation['error'],
                 ], Response::HTTP_BAD_REQUEST);
             }
 
             // Move file to backups directory
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
-            $filename = 'uploaded_' . date('Y-m-d_H-i-s') . '.' . $file->getClientOriginalExtension();
+            $filename = 'uploaded_' . date('Y-m-d_H-i-s') . '.' . strtolower($file->getClientOriginalExtension());
 
             $file->move($backupDir, $filename);
 

@@ -16,9 +16,55 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
  * - Magic byte verification
  * - Extension whitelist
  * - Filename sanitization
+ *
+ * Profiles: the default profile covers document/evidence uploads. Uploads
+ * with a narrower or different purpose pass a profile constant so they get
+ * their own whitelist instead of bypassing the service:
+ *  - PROFILE_BACKUP          backup restore files (.json / .gz / .zip)
+ *  - PROFILE_TABULAR_IMPORT  bulk-import spreadsheets (.csv / .xlsx / .xls / .ods)
  */
 class FileUploadSecurityService
 {
+    public const string PROFILE_DEFAULT = 'default';
+    public const string PROFILE_BACKUP = 'backup';
+    public const string PROFILE_TABULAR_IMPORT = 'tabular_import';
+
+    /**
+     * Non-default profiles: extension whitelist, server-detected MIME
+     * whitelist and size limit.
+     *
+     * @var array<string, array{extensions: list<string>, mime_types: list<string>, max_size: int}>
+     */
+    private const array PROFILES = [
+        self::PROFILE_BACKUP => [
+            'extensions' => ['json', 'gz', 'zip'],
+            'mime_types' => [
+                'application/json',
+                'text/plain',
+                'application/gzip',
+                'application/x-gzip',
+                'application/zip',
+                'application/x-zip-compressed',
+            ],
+            // Full-instance backups (format 2.0 ZIP with embedded files) are
+            // far larger than documents; PHP's upload_max_filesize usually
+            // binds first.
+            'max_size' => 512 * 1024 * 1024,
+        ],
+        self::PROFILE_TABULAR_IMPORT => [
+            'extensions' => ['csv', 'xlsx', 'xls', 'ods'],
+            'mime_types' => [
+                'text/csv',
+                'application/csv',
+                'text/plain',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
+                'application/vnd.oasis.opendocument.spreadsheet',
+            ],
+            'max_size' => 10 * 1024 * 1024,
+        ],
+    ];
+
     // Security: Allowed MIME types (whitelist approach)
     private const array ALLOWED_MIME_TYPES = [
         // Documents
@@ -63,6 +109,8 @@ class FileUploadSecurityService
         'zip' => ['504b0304', '504b0506'],  // ZIP
         'docx' => ['504b0304'],  // DOCX (ZIP-based)
         'xlsx' => ['504b0304'],  // XLSX (ZIP-based)
+        'ods' => ['504b0304'],  // ODS (ZIP-based)
+        'gz' => ['1f8b'],  // gzip
     ];
 
     /**
@@ -70,10 +118,10 @@ class FileUploadSecurityService
      *
      * @return array{valid: bool, error: string|null}
      */
-    public function validateUpload(UploadedFile $uploadedFile): array
+    public function validateUpload(UploadedFile $uploadedFile, string $profile = self::PROFILE_DEFAULT): array
     {
         try {
-            $this->validateUploadedFile($uploadedFile);
+            $this->validateUploadedFile($uploadedFile, $profile);
             return ['valid' => true, 'error' => null];
         } catch (FileException $e) {
             return ['valid' => false, 'error' => $e->getMessage()];
@@ -83,23 +131,27 @@ class FileUploadSecurityService
     /**
      * Security: Validate uploaded file against all security checks
      *
+     * @param string $profile one of the PROFILE_* constants
+     *
      * @throws FileException if validation fails
      */
-    public function validateUploadedFile(UploadedFile $uploadedFile): void
+    public function validateUploadedFile(UploadedFile $uploadedFile, string $profile = self::PROFILE_DEFAULT): void
     {
+        $rules = $this->rules($profile);
+
         // Security: Check file was uploaded without errors
         if (!$uploadedFile->isValid()) {
             throw new FileException('File upload failed: ' . $uploadedFile->getErrorMessage());
         }
 
         // Security: Check file size
-        $this->validateFileSize($uploadedFile);
+        $this->validateFileSize($uploadedFile, $rules['max_size']);
 
         // Security: Validate file extension
-        $this->validateExtension($uploadedFile);
+        $this->validateExtension($uploadedFile, $rules['extensions']);
 
         // Security: Validate MIME type using finfo (server-side detection)
-        $this->validateMimeType($uploadedFile);
+        $this->validateMimeType($uploadedFile, $rules['mime_types']);
 
         // Security: Validate magic bytes (file signature)
         $this->validateMagicBytes($uploadedFile);
@@ -108,10 +160,10 @@ class FileUploadSecurityService
     /**
      * Security: Validate file size
      */
-    private function validateFileSize(UploadedFile $uploadedFile): void
+    private function validateFileSize(UploadedFile $uploadedFile, int $maxSize): void
     {
-        if ($uploadedFile->getSize() > self::MAX_FILE_SIZE) {
-            $maxSizeMB = self::MAX_FILE_SIZE / (1024 * 1024);
+        if ($uploadedFile->getSize() > $maxSize) {
+            $maxSizeMB = $maxSize / (1024 * 1024);
             throw new FileException(
                 sprintf('File size exceeds maximum allowed size of %dMB', $maxSizeMB)
             );
@@ -121,16 +173,19 @@ class FileUploadSecurityService
     /**
      * Security: Validate file extension (whitelist approach)
      */
-    private function validateExtension(UploadedFile $uploadedFile): void
+    /**
+     * @param list<string> $allowedExtensions
+     */
+    private function validateExtension(UploadedFile $uploadedFile, array $allowedExtensions): void
     {
         $extension = strtolower($uploadedFile->getClientOriginalExtension());
 
-        if (!in_array($extension, self::ALLOWED_EXTENSIONS, true)) {
+        if (!in_array($extension, $allowedExtensions, true)) {
             throw new FileException(
                 sprintf(
                     'File extension "%s" is not allowed. Allowed extensions: %s',
                     $extension,
-                    implode(', ', self::ALLOWED_EXTENSIONS)
+                    implode(', ', $allowedExtensions)
                 )
             );
         }
@@ -139,12 +194,15 @@ class FileUploadSecurityService
     /**
      * Security: Validate MIME type using finfo (not trusting client headers)
      */
-    private function validateMimeType(UploadedFile $uploadedFile): void
+    /**
+     * @param list<string> $allowedMimeTypes
+     */
+    private function validateMimeType(UploadedFile $uploadedFile, array $allowedMimeTypes): void
     {
         // Use finfo to detect actual MIME type from file content
         $mimeType = $uploadedFile->getMimeType();
 
-        if (!in_array($mimeType, self::ALLOWED_MIME_TYPES, true)) {
+        if (!in_array($mimeType, $allowedMimeTypes, true)) {
             throw new FileException(
                 sprintf(
                     'File type "%s" is not allowed. File appears to be: %s',
@@ -153,6 +211,22 @@ class FileUploadSecurityService
                 )
             );
         }
+    }
+
+    /**
+     * @return array{extensions: list<string>, mime_types: list<string>, max_size: int}
+     */
+    private function rules(string $profile): array
+    {
+        if ($profile === self::PROFILE_DEFAULT) {
+            return [
+                'extensions' => self::ALLOWED_EXTENSIONS,
+                'mime_types' => self::ALLOWED_MIME_TYPES,
+                'max_size' => (int) self::MAX_FILE_SIZE,
+            ];
+        }
+
+        return self::PROFILES[$profile] ?? throw new \InvalidArgumentException(sprintf('Unknown upload profile "%s".', $profile));
     }
 
     /**

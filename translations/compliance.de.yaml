@@ -306,6 +306,7 @@ compliance:
                 file_required: 'Bitte CSV-Datei wählen.'
                 file_invalid: 'Datei-Upload fehlerhaft.'
                 file_too_large: 'Datei zu groß (max. 2 MB).'
+                file_type: 'Nur CSV-Dateien sind erlaubt.'
                 file_empty: 'Datei ist leer oder nicht lesbar.'
             result:
                 preview: 'Vorschau (noch nicht gespeichert)'
