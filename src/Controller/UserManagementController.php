@@ -315,17 +315,13 @@ class UserManagementController extends AbstractController
     #[Route('/admin/users/export', name: 'user_management_export', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
     public function export(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
     ): StreamedResponse {
         // Own organisation only (audit M-7); instance-wide solely for a SUPER_ADMIN
-        // without an organisation, empty for any other account without one.
-        $currentUser = $this->getUser();
-        $tenant = ($currentUser instanceof User) ? $currentUser->getTenant() : null;
-        $users = match (true) {
-            $tenant !== null => $userRepository->findBy(['tenant' => $tenant]),
-            $this->isGranted('ROLE_SUPER_ADMIN') => $userRepository->findAll(),
-            default => [],
-        };
+        // without an organisation, denied for any other account without one.
+        $tenant = $jobTenantScope->currentUserScope();
+        $users = $tenant !== null ? $userRepository->findBy(['tenant' => $tenant]) : $userRepository->findAll();
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');

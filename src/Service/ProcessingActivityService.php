@@ -14,6 +14,7 @@ use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * CRITICAL-06: Processing Activity Service for GDPR Art. 30 VVT
@@ -311,7 +312,9 @@ final class ProcessingActivityService
     public function generateVVTExport(?Tenant $tenant = null): array
     {
         // Async jobs pass their tenant explicitly; TenantContext is request-bound.
-        $tenant ??= $this->tenantContext->getCurrentTenant();
+        // The register is per organisation (Art. 30): no organisation, no export.
+        $tenant ??= $this->tenantContext->getCurrentTenant()
+            ?? throw new AccessDeniedException('The VVT export needs an organisation.');
         $processingActivities = $this->processingActivityRepository->findActiveByTenant($tenant);
 
         $export = [

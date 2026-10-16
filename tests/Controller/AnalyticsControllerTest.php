@@ -324,4 +324,16 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertStringContainsString('analytics_risks_', $contentDisposition);
         $this->assertStringContainsString('.csv', $contentDisposition);
     }
+
+    #[Test]
+    public function testSyncExportIsDeniedForAManagerWithoutOrganisation(): void
+    {
+        $this->testUser->setRoles(['ROLE_MANAGER'])->setTenant(null);
+        $this->entityManager->flush();
+        $this->client->loginUser($this->testUser);
+
+        $this->client->request('GET', '/en/analytics/api/export/risks');
+
+        $this->assertResponseStatusCodeSame(403);
+    }
 }

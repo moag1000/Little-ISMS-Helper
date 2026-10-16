@@ -618,6 +618,18 @@ class AuditControllerTest extends WebTestCase
         $this->assertNotEmpty($content);
     }
 
+    #[Test]
+    public function testExportExcelIsDeniedForAnAdminWithoutOrganisation(): void
+    {
+        $this->adminUser->setTenant(null);
+        $this->entityManager->flush();
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request('GET', '/en/audit/export/excel');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     // ========== EXPORT PDF TESTS ==========
 
     #[Test]

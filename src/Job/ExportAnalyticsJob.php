@@ -33,7 +33,7 @@ use App\Util\CsvSanitizer;
  */
 final class ExportAnalyticsJob implements AsyncJobInterface
 {
-    private const ALLOWED_TYPES = ['risks', 'assets', 'compliance'];
+    public const array ALLOWED_TYPES = ['risks', 'assets', 'compliance'];
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
@@ -55,11 +55,7 @@ final class ExportAnalyticsJob implements AsyncJobInterface
         $tenant = $this->tenantScope->resolve($ctx);
 
         $ctx->message(sprintf('Loading %s dataset…', $type));
-        $rows = match ($type) {
-            'risks' => $this->buildRiskRows($tenant),
-            'assets' => $this->buildAssetRows($tenant),
-            'compliance' => $this->buildComplianceRows($tenant),
-        };
+        $rows = $this->rows($type, $tenant);
 
         $total = max(count($rows) - 1, 0); // exclude header for progress display
         $ctx->progress(0, max($total, 1), sprintf('Writing %d row(s) to CSV…', $total));
@@ -92,6 +88,24 @@ final class ExportAnalyticsJob implements AsyncJobInterface
             basename($path),
             (int) round($size / 1024),
         ));
+    }
+
+    /**
+     * CSV rows (header first) of one export type, scoped to $tenant — shared
+     * with the synchronous export so both apply the same organisation scope.
+     *
+     * @param value-of<self::ALLOWED_TYPES> $type
+     * @param Tenant|null $tenant null ONLY for the instance-wide SUPER_ADMIN export
+     *
+     * @return list<list<mixed>>
+     */
+    public function rows(string $type, ?Tenant $tenant): array
+    {
+        return match ($type) {
+            'risks' => $this->buildRiskRows($tenant),
+            'assets' => $this->buildAssetRows($tenant),
+            'compliance' => $this->buildComplianceRows($tenant),
+        };
     }
 
     /**

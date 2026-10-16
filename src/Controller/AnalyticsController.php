@@ -15,6 +15,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
+use App\Job\ExportAnalyticsJob;
 use App\Service\AssetCriticalityService;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ControlEffectivenessService;
@@ -350,22 +351,18 @@ class AnalyticsController extends AbstractController
 
     #[Route('/api/export/{type}', name: 'app_analytics_export', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function exportData(Request $request, string $type): Response
-    {
-        $data = [];
+    public function exportData(
+        Request $request,
+        string $type,
+        ExportAnalyticsJob $exportAnalyticsJob,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
+    ): Response {
         $filename = 'analytics_' . $type . '_' . date('Y-m-d') . '.csv';
-
-        switch ($type) {
-            case 'risks':
-                $data = $this->exportRisks();
-                break;
-            case 'assets':
-                $data = $this->exportAssets();
-                break;
-            case 'compliance':
-                $data = $this->exportCompliance();
-                break;
-        }
+        // Same organisation scope as the async export; denied without one unless SUPER_ADMIN.
+        $tenant = $jobTenantScope->currentUserScope();
+        $data = in_array($type, ExportAnalyticsJob::ALLOWED_TYPES, true)
+            ? $exportAnalyticsJob->rows($type, $tenant)
+            : [];
 
         // Close session to prevent blocking other requests during CSV generation
         $request->getSession()->save();
@@ -482,47 +479,6 @@ class AnalyticsController extends AbstractController
         }
 
         return $trend;
-    }
-    private function exportRisks(): array
-    {
-        $risks = $this->riskRepository->findAll();
-        $data = [
-            ['ID', 'Title', 'Probability', 'Impact', 'Risk Level', 'Status', 'Created At']
-        ];
-
-        foreach ($risks as $risk) {
-            $data[] = [
-                $risk->getId(),
-                $risk->getTitle(),
-                $risk->getProbability(),
-                $risk->getImpact(),
-                $risk->getInherentRiskLevel(),
-                $risk->getStatus(),
-                $risk->getCreatedAt()->format('Y-m-d')
-            ];
-        }
-
-        return $data;
-    }
-    private function exportAssets(): array
-    {
-        $assets = $this->assetRepository->findAll();
-        $data = [
-            ['ID', 'Name', 'Type', 'Criticality', 'Owner', 'Created At']
-        ];
-
-        foreach ($assets as $asset) {
-            $data[] = [
-                $asset->getId(),
-                $asset->getName(),
-                $asset->getAssetType(),
-                $asset->getConfidentialityValue() . '/' . $asset->getIntegrityValue() . '/' . $asset->getAvailabilityValue(),
-                $asset->getOwner() ?? 'N/A',
-                $asset->getCreatedAt()->format('Y-m-d')
-            ];
-        }
-
-        return $data;
     }
     // ========== Phase 7B: New API Endpoints ==========
 
@@ -700,24 +656,6 @@ class AnalyticsController extends AbstractController
 
     // ========== Private Helper Methods ==========
 
-    private function exportCompliance(): array
-    {
-        $controls = $this->controlRepository->findAll();
-        $data = [
-            ['Control ID', 'Name', 'Status', 'Implementation Date']
-        ];
-
-        foreach ($controls as $control) {
-            $data[] = [
-                $control->getControlId(),
-                $control->getName(),
-                $control->getImplementationStatus(),
-                $control->getLastReviewDate() ? $control->getLastReviewDate()->format('Y-m-d') : 'N/A'
-            ];
-        }
-
-        return $data;
-    }
 
     private function generateCSV(array $data): string
     {

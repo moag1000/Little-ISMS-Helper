@@ -74,6 +74,7 @@ class RiskController extends AbstractController
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
+        private readonly \App\Service\Job\JobTenantScope $jobTenantScope,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
@@ -83,6 +84,17 @@ class RiskController extends AbstractController
         private readonly ?UserRepository $userRepository = null,
         private readonly ?RiskCloner $riskCloner = null,
     ) {}
+
+    /**
+     * @return Risk[] the caller's organisation's risks; every risk only for a SUPER_ADMIN without one
+     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException for anyone else without one
+     */
+    private function exportableRisks(): array
+    {
+        $tenant = $this->jobTenantScope->currentUserScope();
+
+        return $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
+    }
 
     protected function getFlashDomain(): string
     {
@@ -141,8 +153,8 @@ class RiskController extends AbstractController
             $inheritanceInfo['currentView'] = $view;
             $inheritanceInfo['isAdmin'] = $isAdmin;
         } else {
-            // Fallback for users without tenant (e.g., super admins)
-            $risks = $this->riskRepository->findAll();
+            // No organisation: only a SUPER_ADMIN gets the instance-wide register
+            $risks = $this->isGranted('ROLE_SUPER_ADMIN') ? $this->riskRepository->findAll() : [];
             $highRisks = [];
             $detailedStats = ['own' => count($risks), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($risks)];
             $inheritanceInfo = [
@@ -240,18 +252,13 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function export(Request $request): Response
     {
-        // Get current user's tenant
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
         // Get filter parameters (same as index)
         $level = $request->query->get('level');
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
 
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
+        $risks = $this->exportableRisks();
 
         // Apply filters (same logic as index)
         if ($level) {
@@ -409,7 +416,6 @@ class RiskController extends AbstractController
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
         \App\Service\Job\JobDispatcher $jobDispatcher,
-        \App\Service\Job\JobTenantScope $jobTenantScope,
     ): Response {
         if (!$this->isCsrfTokenValid('risk_export_dispatch', $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
@@ -418,7 +424,7 @@ class RiskController extends AbstractController
 
         // Tenant scope is captured here, while the request still exists; the
         // job scopes its query explicitly and fails without a scope.
-        $args = $jobTenantScope->argsForCurrentUser() + [
+        $args = $this->jobTenantScope->argsForCurrentUser() + [
             'level' => $request->request->get('level') ?? $request->query->get('level'),
             'status' => $request->request->get('status') ?? $request->query->get('status'),
             'treatment' => $request->request->get('treatment') ?? $request->query->get('treatment'),
@@ -507,18 +513,13 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function exportExcel(Request $request): Response
     {
-        // Get current user's tenant
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
         // Get filter parameters (same as index)
         $level = $request->query->get('level');
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
 
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
+        $risks = $this->exportableRisks();
 
         // Apply filters (same logic as index)
         if ($level) {
@@ -748,18 +749,13 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function exportPdf(Request $request): Response
     {
-        // Get current user's tenant
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
         // Get filter parameters (same as index)
         $level = $request->query->get('level');
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
 
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
+        $risks = $this->exportableRisks();
 
         // Build filter info string
         $filterParts = [];
