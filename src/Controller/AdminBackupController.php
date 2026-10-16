@@ -22,13 +22,13 @@ use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -320,7 +320,7 @@ class AdminBackupController extends AbstractController
                 'message' => 'Backup-Datei erfolgreich hochgeladen',
                 'filename' => $filename,
             ]);
-        } catch (FileException $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Backup upload failed', [
                 'error' => $e->getMessage(),
             ]);
@@ -376,7 +376,10 @@ class AdminBackupController extends AbstractController
                 'warnings' => $validation['warnings'],
                 'metadata' => $backup['metadata'] ?? [],
             ]);
-        } catch (Exception $e) {
+        } catch (AccessDeniedException $e) {
+            // Cross-tenant backup: let Symfony answer 403 instead of a 500 envelope.
+            throw $e;
+        } catch (\Throwable $e) {
             $this->logger->error('Backup validation failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -416,7 +419,10 @@ class AdminBackupController extends AbstractController
                 'success' => true,
                 'preview' => $preview,
             ]);
-        } catch (Exception $e) {
+        } catch (AccessDeniedException $e) {
+            // Cross-tenant backup: let Symfony answer 403 instead of a 500 envelope.
+            throw $e;
+        } catch (\Throwable $e) {
             $this->logger->error('Backup preview failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -551,7 +557,7 @@ class AdminBackupController extends AbstractController
                 'success' => true,
                 'message' => 'Backup erfolgreich gelöscht',
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Backup deletion failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -642,7 +648,7 @@ class AdminBackupController extends AbstractController
             $request->getSession()->set('import_preview_data', $data);
 
             return $this->redirectToRoute('data_import_preview');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $translator->trans('data.import.error.invalid_file', [
                 'error' => $e->getMessage(),
             ], 'messages'));

@@ -461,6 +461,36 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    /**
+     * A malformed backup that triggers a PHP Error (TypeError) inside the
+     * preview must still produce the JSON error envelope the frontend
+     * expects, not an HTML 500 page.
+     */
+    #[Test]
+    public function testPreviewRestoreAnswersJsonForMalformedBackup(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $backupDir = static::getContainer()->getParameter('kernel.project_dir') . '/var/backups';
+        if (!is_dir($backupDir)) {
+            mkdir($backupDir, 0775, true);
+        }
+        $filename = 'backup_malformed_' . uniqid() . '.json';
+        file_put_contents($backupDir . '/' . $filename, (string) json_encode([
+            'metadata' => ['version' => '1.0'],
+            'data' => ['Asset' => 'not-a-list'],
+        ]));
+
+        try {
+            $this->client->request('GET', '/en/admin/data/backup/preview/' . $filename);
+            $this->assertResponseStatusCodeSame(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $this->assertResponseHeaderSame('Content-Type', 'application/json');
+            $payload = json_decode((string) $this->client->getResponse()->getContent(), true);
+            $this->assertFalse($payload['success']);
+        } finally {
+            @unlink($backupDir . '/' . $filename);
+        }
+    }
+
     // ========== PREVIEW RESTORE TESTS ==========
 
     #[Test]
