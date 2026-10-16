@@ -306,6 +306,7 @@ compliance:
                 file_required: 'Please choose a CSV file.'
                 file_invalid: 'File upload failed.'
                 file_too_large: 'File too large (max 2 MB).'
+                file_type: 'Only CSV files are allowed.'
                 file_empty: 'File is empty or unreadable.'
             result:
                 preview: 'Preview (not saved yet)'

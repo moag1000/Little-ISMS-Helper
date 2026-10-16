@@ -26,7 +26,8 @@ export default class extends Controller {
         reportId: Number,
         saveUrl: String,
         widgetDataUrl: String,
-        shareUrl: String
+        shareUrl: String,
+        csrfToken: String
     };
 
     connect() {
@@ -428,6 +429,7 @@ export default class extends Controller {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-Token': this.csrfTokenValue,
                 },
                 body: JSON.stringify(data)
             });
@@ -458,6 +460,7 @@ export default class extends Controller {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-Token': this.csrfTokenValue,
                 },
                 body: JSON.stringify({ user_ids: selectedUsers })
             });

@@ -211,8 +211,8 @@ class SendNotificationsCommand
                 $recipients[] = $incident->getAssignedTo();
             }
 
-            // Get all admins
-            $admins = $this->userRepository->findByRole('ROLE_ADMIN');
+            // Admins of the incident's own organisation only
+            $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $incident->getTenant());
             foreach ($admins as $admin) {
                 if (!in_array($admin, $recipients)) {
                     $recipients[] = $admin;
@@ -295,14 +295,14 @@ class SendNotificationsCommand
             // Get approvers for current step by user IDs
             $approverUserIds = $currentStep->getApproverUsers() ?? [];
             if (!empty($approverUserIds)) {
-                $usersByIds = $this->userRepository->findBy(['id' => $approverUserIds]);
+                $usersByIds = $this->userRepository->findByIdsInTenant($approverUserIds, $overdueInstance->getTenant());
                 $recipients = array_merge($recipients, $usersByIds);
             }
 
             // Get approvers by role (Bug #3 fix)
             $approverRole = $currentStep->getApproverRole();
             if ($approverRole) {
-                $usersByRole = $this->userRepository->findByRole($approverRole);
+                $usersByRole = $this->userRepository->findByRoleInTenant($approverRole, $overdueInstance->getTenant());
                 $recipients = array_merge($recipients, $usersByRole);
             }
 
@@ -368,14 +368,14 @@ class SendNotificationsCommand
             // Get approvers for current step by user IDs
             $approverUserIds = $currentStep->getApproverUsers() ?? [];
             if (!empty($approverUserIds)) {
-                $usersByIds = $this->userRepository->findBy(['id' => $approverUserIds]);
+                $usersByIds = $this->userRepository->findByIdsInTenant($approverUserIds, $instance->getTenant());
                 $recipients = array_merge($recipients, $usersByIds);
             }
 
             // Get approvers by role
             $approverRole = $currentStep->getApproverRole();
             if ($approverRole) {
-                $usersByRole = $this->userRepository->findByRole($approverRole);
+                $usersByRole = $this->userRepository->findByRoleInTenant($approverRole, $instance->getTenant());
                 $recipients = array_merge($recipients, $usersByRole);
             }
 

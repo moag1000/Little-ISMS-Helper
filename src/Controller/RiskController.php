@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Service\BulkDeleteService;
 use App\Entity\User;
 use App\Enum\TreatmentStrategy;
@@ -12,6 +13,7 @@ use Traversable;
 use DomainException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\Vulnerability;
@@ -52,6 +54,7 @@ class RiskController extends AbstractController
     use LocalizedFlashTrait;
     use BulkActionTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
@@ -67,6 +70,7 @@ class RiskController extends AbstractController
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
+        private readonly \App\Service\Job\JobTenantScope $jobTenantScope,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
@@ -76,6 +80,17 @@ class RiskController extends AbstractController
         private readonly ?UserRepository $userRepository = null,
         private readonly ?RiskCloner $riskCloner = null,
     ) {}
+
+    /**
+     * @return Risk[] the caller's organisation's risks; every risk only for a SUPER_ADMIN without one
+     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException for anyone else without one
+     */
+    private function exportableRisks(): array
+    {
+        $tenant = $this->jobTenantScope->currentUserScope();
+
+        return $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
+    }
 
     protected function getFlashDomain(): string
     {
@@ -134,8 +149,8 @@ class RiskController extends AbstractController
             $inheritanceInfo['currentView'] = $view;
             $inheritanceInfo['isAdmin'] = $isAdmin;
         } else {
-            // Fallback for users without tenant (e.g., super admins)
-            $risks = $this->riskRepository->findAll();
+            // No organisation: only a SUPER_ADMIN gets the instance-wide register
+            $risks = $this->isGranted('ROLE_SUPER_ADMIN') ? $this->riskRepository->findAll() : [];
             $highRisks = [];
             $detailedStats = ['own' => count($risks), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($risks)];
             $inheritanceInfo = [
@@ -234,10 +249,8 @@ class RiskController extends AbstractController
      */
     private function filteredRegister(Request $request): array
     {
-        $user = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
         $risks = $this->riskRegisterExporter->filter(
-            $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll(),
+            $this->exportableRisks(),
             $request->query->get('level'),
             $request->query->get('status'),
             $request->query->get('treatment'),
@@ -272,12 +285,9 @@ class RiskController extends AbstractController
             return $this->redirectToRoute('app_risk_index');
         }
 
-        $user = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
-        $args = [
-            'tenantId' => $tenant?->getId(),
-            'userId' => $user instanceof User ? $user->getId() : null,
+        // Tenant scope is captured here, while the request still exists; the
+        // job scopes its query explicitly and fails without a scope.
+        $args = $this->jobTenantScope->argsForCurrentUser() + [
             'level' => $request->request->get('level') ?? $request->query->get('level'),
             'status' => $request->request->get('status') ?? $request->query->get('status'),
             'treatment' => $request->request->get('treatment') ?? $request->query->get('treatment'),
@@ -321,6 +331,7 @@ class RiskController extends AbstractController
      */
     #[Route('/risk/export/download/{id}', name: 'app_risk_export_download', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,
@@ -1004,55 +1015,6 @@ class RiskController extends AbstractController
 
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     *
-     * @param array $items Array of entities to analyze
-     * @param mixed $currentTenant Current tenant for comparison
-     * @return array Statistics with keys: own, inherited, subsidiaries, total
-     */
-    private function calculateDetailedStats(array $items, mixed $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                // Own record
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                // Inherited from parent/ancestor
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                // From subsidiary
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
-    }
-
     /**
      * Bulk CSV export of selected risks.
      * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.

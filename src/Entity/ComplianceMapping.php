@@ -257,6 +257,16 @@ class ComplianceMapping
         return $this->id;
     }
 
+    /**
+     * The organisation that owns this mapping: the upload tenant of a
+     * tenant-uploaded source or target requirement, or NULL when both
+     * requirements are global catalogue rows (shared mapping).
+     */
+    public function getOwnerTenant(): ?Tenant
+    {
+        return $this->sourceRequirement?->getUploadTenant() ?? $this->targetRequirement?->getUploadTenant();
+    }
+
     public function getSourceRequirement(): ?ComplianceRequirement
     {
         return $this->sourceRequirement;

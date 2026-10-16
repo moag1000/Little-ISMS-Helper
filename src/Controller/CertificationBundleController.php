@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Controller\Trait\PdfLocaleTrait;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
@@ -242,6 +243,7 @@ class CertificationBundleController extends AbstractController
      * job ID UUID-v4 is the canonical filename stem.
      */
     #[Route('/export/download/{id}', name: 'export_download', methods: ['GET'])]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,

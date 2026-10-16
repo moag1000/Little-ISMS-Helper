@@ -494,6 +494,18 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('Content-Type', 'text/csv; charset=UTF-8');
     }
 
+    #[Test]
+    public function testExportIsDeniedForAnAdminWithoutOrganisation(): void
+    {
+        $this->adminUser->setTenant(null);
+        $this->entityManager->flush();
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request('GET', '/en/admin/users/export');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     // ========== IMPORT ACTION TESTS ==========
 
     #[Test]

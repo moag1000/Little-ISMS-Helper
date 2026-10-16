@@ -31,6 +31,7 @@ final class SsoUserProvisioningService
         private readonly ClaimToRoleResolver $claimResolver,
         private readonly SsoEventLogger $ssoEventLogger,
         private readonly FteRecorderService $fteRecorder,
+        private readonly ?\App\Repository\TenantRepository $tenantRepository = null,
     ) {
     }
 
@@ -104,8 +105,11 @@ final class SsoUserProvisioningService
         $user->setIsActive(true);
         $user->setRoles([$role]);
         $user->setCreatedAt(new DateTimeImmutable());
-        if ($provider->getTenant() !== null) {
-            $user->setTenant($provider->getTenant());
+        // A global provider has no organisation: on a single-organisation installation
+        // the account belongs to the sole one (otherwise it sees no organisation's data).
+        $tenant = $provider->getTenant() ?? $this->tenantRepository?->findSoleTenant();
+        if ($tenant !== null) {
+            $user->setTenant($tenant);
         }
         $this->syncProfile($user, $provider, $claims);
 

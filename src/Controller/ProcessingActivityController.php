@@ -336,31 +336,21 @@ class ProcessingActivityController extends AbstractController
     #[IsCsrfTokenValid('processing_activity_export_csv_dispatch')]
     public function exportCsvDispatch(
         Request $request,
-        \App\Service\Job\JobStatusService $jobStatusService,
-        \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\AsyncJobDispatcher $asyncJobDispatcher,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
     ): Response {
-        $jobId = $jobStatusService->create('processing_activity.vvt_export', [
-            '_label' => $this->translator->trans('processing_activity.export.progress_title', [], 'privacy'),
-            '_subtitle' => $this->translator->trans('processing_activity.export.progress_subtitle', [], 'privacy'),
-            '_download_label' => $this->translator->trans('processing_activity.export.download_button', [], 'privacy'),
-        ]);
-        $jobStatusService->updatePayload($jobId, [
-            '_download_url' => $this->generateUrl('app_processing_activity_export_csv_download', ['id' => $jobId]),
-        ]);
-
-        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
-            'id'     => $jobId,
-            'return' => $this->generateUrl('app_processing_activity_index'),
-        ], Response::HTTP_SEE_OTHER);
-
-        // Dispatch through the configured runner (in_request by default —
-        // runs in this request, no worker needed; messenger mode queues it).
-        return $jobDispatcher->dispatch(
-            \App\Job\ExportProcessingActivityVvtJob::class,
-            [],
-            $jobId,
-            $progressResponse,
-            $request->getSession(),
+        return $asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: \App\Job\ExportProcessingActivityVvtJob::class,
+            jobArgs: $jobTenantScope->argsForCurrentUser(),
+            jobName: 'processing_activity.vvt_export',
+            payload: [
+                '_label' => $this->translator->trans('processing_activity.export.progress_title', [], 'privacy'),
+                '_subtitle' => $this->translator->trans('processing_activity.export.progress_subtitle', [], 'privacy'),
+                '_download_label' => $this->translator->trans('processing_activity.export.download_button', [], 'privacy'),
+            ],
+            returnUrl: $this->generateUrl('app_processing_activity_index'),
+            downloadRoute: 'app_processing_activity_export_csv_download',
         );
     }
 
@@ -369,6 +359,7 @@ class ProcessingActivityController extends AbstractController
      * and removes it from disk afterwards.
      */
     #[Route('/processing-activity/export/csv/download/{id}', name: 'app_processing_activity_export_csv_download', methods: ['GET'])]
+    #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportCsvDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,

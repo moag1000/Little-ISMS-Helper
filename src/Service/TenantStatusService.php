@@ -94,8 +94,8 @@ final class TenantStatusService
     public function fourEyesApprovers(?User $actor): array
     {
         return array_values(array_filter(
-            $this->userRepository->findByRole('ROLE_SUPER_ADMIN'),
-            static fn (User $u): bool => $u->isActive() && $u !== $actor,
+            $this->userRepository->findActiveInstanceOperators(),
+            static fn (User $u): bool => $u !== $actor,
         ));
     }
 }

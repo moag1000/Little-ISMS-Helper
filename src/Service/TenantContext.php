@@ -103,7 +103,9 @@ class TenantContext
 
         $filters->getFilter('tenant_filter')->setParameter(
             'tenant_id',
-            $this->currentTenant !== null ? (string) $this->currentTenant->getId() : 'null',
+            $this->currentTenant?->getId() !== null
+                ? (string) $this->currentTenant->getId()
+                : \App\Doctrine\TenantFilter::UNSCOPED,
         );
     }
 
@@ -167,14 +169,17 @@ class TenantContext
             $this->currentTenant = $userTenant;
         }
 
-        // Fallback if user has no tenant assigned
-        if ($this->currentTenant === null) {
+        // Only an instance operator without an organisation works in a default
+        // organisation. Any other account without one has no organisation
+        // context, matching the tenant filter (TenantFilter::NO_ORGANISATION):
+        // a fallback would hand it the root organisation and its subsidiaries.
+        if ($this->currentTenant === null && in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)) {
             $this->currentTenant = $this->resolveDefaultTenant();
         }
     }
 
     /**
-     * Resolve default tenant when user has none assigned
+     * Resolve the default tenant for a SUPER_ADMIN without an organisation
      * Priority: 1) Only one tenant exists -> use it
      *           2) Multiple tenants -> use root tenant (no parent)
      *           3) Multiple roots -> use oldest one

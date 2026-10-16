@@ -99,6 +99,13 @@ class AnalyticsControllerTest extends WebTestCase
         $this->client->loginUser($user);
     }
 
+    private function loginAsManager(): void
+    {
+        $this->testUser->setRoles(['ROLE_MANAGER']);
+        $this->entityManager->flush();
+        $this->client->loginUser($this->testUser);
+    }
+
     // ========== DASHBOARD TESTS ==========
 
     #[Test]
@@ -237,6 +244,28 @@ class AnalyticsControllerTest extends WebTestCase
     // ========== EXPORT TESTS ==========
 
     #[Test]
+    public function testExportIsForbiddenForPlainUser(): void
+    {
+        // CSV exports align with the ROLE_MANAGER-gated analytics pages.
+        $this->loginAsUser($this->testUser);
+        $this->client->request('GET', '/en/analytics/api/export/risks');
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    #[Test]
+    public function testAsyncExportEndpointsRequireManagerRole(): void
+    {
+        // The async dispatch is CSRF-protected (CSRF runs before IsGranted),
+        // so assert the role gate on the attributes directly.
+        foreach (['exportDataDispatch', 'exportDownload', 'exportData'] as $method) {
+            $attributes = (new \ReflectionMethod(\App\Controller\AnalyticsController::class, $method))
+                ->getAttributes(\Symfony\Component\Security\Http\Attribute\IsGranted::class);
+            $roles = array_map(static fn(\ReflectionAttribute $a): mixed => $a->newInstance()->attribute, $attributes);
+            self::assertContains('ROLE_MANAGER', $roles, $method . ' must carry #[IsGranted(\'ROLE_MANAGER\')]');
+        }
+    }
+
+    #[Test]
     public function testExportRisksRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics/api/export/risks');
@@ -244,9 +273,9 @@ class AnalyticsControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testExportRisksReturnsCsvForUser(): void
+    public function testExportRisksReturnsCsvForManager(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsManager();
         $this->client->request('GET', '/en/analytics/api/export/risks');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
@@ -260,9 +289,9 @@ class AnalyticsControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testExportAssetsReturnsCsvForUser(): void
+    public function testExportAssetsReturnsCsvForManager(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsManager();
         $this->client->request('GET', '/en/analytics/api/export/assets');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
@@ -276,9 +305,9 @@ class AnalyticsControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testExportComplianceReturnsCsvForUser(): void
+    public function testExportComplianceReturnsCsvForManager(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsManager();
         $this->client->request('GET', '/en/analytics/api/export/compliance');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
@@ -287,12 +316,24 @@ class AnalyticsControllerTest extends WebTestCase
     #[Test]
     public function testExportHasCorrectFilenameHeader(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsManager();
         $this->client->request('GET', '/en/analytics/api/export/risks');
 
         $contentDisposition = $this->client->getResponse()->headers->get('content-disposition');
         $this->assertStringContainsString('attachment', $contentDisposition);
         $this->assertStringContainsString('analytics_risks_', $contentDisposition);
         $this->assertStringContainsString('.csv', $contentDisposition);
+    }
+
+    #[Test]
+    public function testSyncExportIsDeniedForAManagerWithoutOrganisation(): void
+    {
+        $this->testUser->setRoles(['ROLE_MANAGER'])->setTenant(null);
+        $this->entityManager->flush();
+        $this->client->loginUser($this->testUser);
+
+        $this->client->request('GET', '/en/analytics/api/export/risks');
+
+        $this->assertResponseStatusCodeSame(403);
     }
 }

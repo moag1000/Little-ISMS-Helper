@@ -134,13 +134,13 @@ class AuditController extends AbstractController
         ], new Response(status: $status));
     }
     #[Route('/audit/export/excel', name: 'app_audit_export_excel', methods: ['GET'])]
-    public function exportExcel(Request $request): Response
+    public function exportExcel(Request $request, \App\Service\Job\JobTenantScope $jobTenantScope): Response
     {
-        $audits = $this->internalAuditRepository->findAll();
+        $jobTenantScope->currentUserScope(); // no organisation: denied unless SUPER_ADMIN
+        $audits = $this->internalAuditRepository->findAll(); // scoped by the request's tenant filter
 
         $headers = ['ID', 'Title', 'Scope', 'Status', 'Planned Date', 'Actual Date'];
         $data = [];
-
         foreach ($audits as $audit) {
             $data[] = [
                 $audit->getId(),

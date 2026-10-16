@@ -227,17 +227,16 @@ class DocumentApprovalService
 
         // Send to specific users if assigned
         if ($assignedUsers && is_array($assignedUsers)) {
-            foreach ($assignedUsers as $userId) {
-                $user = $this->userRepository->find($userId);
-                if ($user) {
-                    $this->sendNotificationToUser($document, $user, $approvalLevel, $isNewDocument, $workflowInstance);
-                }
+            // Restricted to the document's organisation: step user ids are
+            // plain integers and must never reach another tenant's users.
+            foreach ($this->userRepository->findByIdsInTenant($assignedUsers, $document->getTenant()) as $user) {
+                $this->sendNotificationToUser($document, $user, $approvalLevel, $isNewDocument, $workflowInstance);
             }
         }
 
         // Send to all users with assigned role
         if ($assignedRole) {
-            $roleUsers = $this->userRepository->findByRole($assignedRole);
+            $roleUsers = $this->userRepository->findByRoleInTenant($assignedRole, $document->getTenant());
             foreach ($roleUsers as $roleUser) {
                 $this->sendNotificationToUser($document, $roleUser, $approvalLevel, $isNewDocument, $workflowInstance);
             }

@@ -242,7 +242,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $qb->method('expr')->willReturn(new \Doctrine\ORM\Query\Expr());
         $this->entityManager->method('createQueryBuilder')->willReturn($qb);
 
-        $this->userRepository->method('findByRole')->willReturn([]);
+        $this->userRepository->method('findByRoleInTenant')->willReturn([]);
 
         $this->lifecycleService->expects($this->once())
             ->method('transition')

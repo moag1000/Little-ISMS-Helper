@@ -15,8 +15,8 @@ src/Entity/Document.php:38  ?string $mimeType
 src/Entity/Document.php:41  ?int $fileSize
 src/Entity/Document.php:44  ?string $filePath
 src/Entity/DocumentSection.php:91  ?string $sectionKey
-src/Entity/MappingGapItem.php:39  ?string $gapType
-src/Entity/MappingGapItem.php:45  ?string $description
+src/Entity/MappingGapItem.php:55  ?string $gapType
+src/Entity/MappingGapItem.php:61  ?string $description
 src/Entity/Permission.php:37  ?string $name
 src/Entity/Permission.php:43  ?string $category
 src/Entity/Permission.php:46  ?string $action

@@ -107,6 +107,7 @@
                                 <td class="fa-table__cell"><code class="text-primary">{{ tenant.code }}</code></td>
                                 <td class="fa-table__cell">{{ tenant.name }}</td>
                                 <td class="fa-table__cell fa-table__cell--actions">
+                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
                                     <button type="button"
                                             class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                             data-controller="corporate-modals"
@@ -116,6 +117,7 @@
                                             aria-label="{{ 'corporate.action.set_parent'|trans({}, 'tenant') }}">
                                         <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans({}, 'tenant') }}
                                     </button>
+                                    {% endif %}
                                     <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
@@ -296,6 +298,7 @@
                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                 </a>
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
                 <form method="post" action="{{ path('tenant_management_set_parent', {id: subsidiary.id}) }}" class="d-inline"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
@@ -309,6 +312,7 @@
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                     </button>
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>

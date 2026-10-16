@@ -54,11 +54,10 @@ use PHPUnit\Framework\Attributes\Test;
  * - Results ordered by lastName, firstName ASC
  * - Empty array when no active users
  *
- * For findByRole():
- * - Returns users with specified role in roles array
- * - LIKE query handles JSON array format correctly
+ * For findByRoleInTenant():
+ * - Returns active users with specified role inside ONE tenant
+ * - Null tenant returns [] (no global recipient pool)
  * - Results ordered by lastName, firstName ASC
- * - Works with ROLE_USER, ROLE_ADMIN, etc.
  *
  * For findByCustomRole():
  * - Returns users with specified custom role relationship
@@ -151,7 +150,11 @@ class UserRepositoryTest extends TestCase
         $this->assertTrue(method_exists($this->repository, 'findByAzureObjectId'));
         $this->assertTrue(method_exists($this->repository, 'findOrCreateFromAzure'));
         $this->assertTrue(method_exists($this->repository, 'findActiveUsers'));
-        $this->assertTrue(method_exists($this->repository, 'findByRole'));
+        $this->assertFalse(
+            method_exists($this->repository, 'findByRole'),
+            'the unscoped findByRole() leaked recipients across tenants and must not come back',
+        );
+        $this->assertTrue(method_exists($this->repository, 'findByRoleInTenant'));
         $this->assertTrue(method_exists($this->repository, 'findByCustomRole'));
         $this->assertTrue(method_exists($this->repository, 'searchUsers'));
         $this->assertTrue(method_exists($this->repository, 'getUserStatistics'));
@@ -274,17 +277,18 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * Test findByRole signature
+     * Test findByRoleInTenant signature
      */
     #[Test]
-    public function testFindByRoleSignature(): void
+    public function testFindByRoleInTenantSignature(): void
     {
-        $method = new \ReflectionMethod($this->repository, 'findByRole');
+        $method = new \ReflectionMethod($this->repository, 'findByRoleInTenant');
         $parameters = $method->getParameters();
 
-        $this->assertCount(1, $parameters);
+        $this->assertCount(2, $parameters);
         $this->assertEquals('role', $parameters[0]->getName());
         $this->assertEquals('string', $parameters[0]->getType()->getName());
+        $this->assertEquals('tenant', $parameters[1]->getName());
 
         $returnType = $method->getReturnType();
         $this->assertEquals('array', $returnType->getName());
@@ -397,7 +401,7 @@ class UserRepositoryTest extends TestCase
     {
         $methods = [
             'findActiveUsers',
-            'findByRole',
+            'findByRoleInTenant',
             'findByCustomRole',
             'searchUsers',
             'getUserStatistics',
@@ -472,8 +476,8 @@ class UserRepositoryTest extends TestCase
         $searchParams = $searchMethod->getParameters();
         $this->assertEquals('string', $searchParams[0]->getType()->getName());
 
-        // Verify findByRole accepts string
-        $roleMethod = new \ReflectionMethod($this->repository, 'findByRole');
+        // Verify findByRoleInTenant accepts string
+        $roleMethod = new \ReflectionMethod($this->repository, 'findByRoleInTenant');
         $roleParams = $roleMethod->getParameters();
         $this->assertEquals('string', $roleParams[0]->getType()->getName());
 
@@ -514,7 +518,7 @@ class UserRepositoryTest extends TestCase
             'findByAzureObjectId',
             'findOrCreateFromAzure',
             'findActiveUsers',
-            'findByRole',
+            'findByRoleInTenant',
             'findByCustomRole',
             'searchUsers',
             'getUserStatistics',

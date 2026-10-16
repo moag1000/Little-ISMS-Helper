@@ -84,7 +84,7 @@ class WorkflowController extends AbstractController
             $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
             // Check if step has eligible approvers (for warning display)
             if ($currentStep && $instance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
-                $hasEligibleApprovers[$instance->getId()] = $this->workflowService->hasEligibleApprovers($currentStep);
+                $hasEligibleApprovers[$instance->getId()] = $this->workflowService->hasEligibleApprovers($currentStep, $instance->getTenant());
             } else {
                 $hasEligibleApprovers[$instance->getId()] = true;
             }
@@ -140,9 +140,9 @@ class WorkflowController extends AbstractController
         $hasEligibleApprovers = true;
         $eligibleApprovers = [];
         if ($currentStep instanceof WorkflowStep && $workflowInstance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
-            $hasEligibleApprovers = $this->workflowService->hasEligibleApprovers($currentStep);
+            $hasEligibleApprovers = $this->workflowService->hasEligibleApprovers($currentStep, $workflowInstance->getTenant());
             if (!$hasEligibleApprovers) {
-                $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep);
+                $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep, $workflowInstance->getTenant());
             }
         }
 

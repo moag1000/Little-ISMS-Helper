@@ -418,7 +418,7 @@ class IncidentControllerTest extends TestCase
         $form->method('isSubmitted')->willReturn(true);
         $form->method('isValid')->willReturn(true);
 
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturn($admins);
 
         $this->emailNotificationService->expects($this->once())
@@ -552,7 +552,7 @@ class IncidentControllerTest extends TestCase
         $form->method('isSubmitted')->willReturn(true);
         $form->method('isValid')->willReturn(true);
 
-        $this->userRepository->method('findByRole')
+        $this->userRepository->method('findByRoleInTenant')
             ->willReturn($admins);
 
         $this->emailNotificationService->expects($this->once())

@@ -25,7 +25,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 )]
 class SetupPermissionsCommand
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository, private readonly RoleRepository $roleRepository, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher, private readonly AuditLogger $auditLogger)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository, private readonly RoleRepository $roleRepository, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher, private readonly AuditLogger $auditLogger, private readonly ?\App\Repository\TenantRepository $tenantRepository = null)
     {
     }
 
@@ -482,6 +482,10 @@ class SetupPermissionsCommand
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
         $user->setRoles(['ROLE_ADMIN']);
+        // An admin without an organisation sees no organisation's data; on a
+        // single-organisation installation it belongs to the sole one. During the
+        // setup wizard no organisation exists yet — SetupTenantBootstrapper assigns it.
+        $user->setTenant($this->tenantRepository?->findSoleTenant());
         $user->setAuthProvider('local');
         $user->setIsActive(true);
         $user->setIsVerified(true);

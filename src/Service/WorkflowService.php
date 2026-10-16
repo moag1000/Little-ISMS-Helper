@@ -8,6 +8,7 @@ use DateMalformedStringException;
 use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\WorkflowInstanceStatus;
 use App\Lifecycle\LifecycleTransitionInterface;
@@ -411,7 +412,7 @@ class WorkflowService
         $workflowInstance->addCompletedStep($workflowStep->getId());
 
         // Send notification to assigned users
-        $recipients = $this->getStepApprovers($workflowStep);
+        $recipients = $this->getStepApprovers($workflowStep, $workflowInstance->getTenant());
         if ($recipients !== []) {
             $this->emailNotificationService->sendWorkflowNotificationStepEmail($workflowInstance, $workflowStep, $recipients);
         }
@@ -430,32 +431,36 @@ class WorkflowService
      */
     private function sendStepAssignmentNotification(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep): void
     {
-        $recipients = $this->getStepApprovers($workflowStep);
+        $recipients = $this->getStepApprovers($workflowStep, $workflowInstance->getTenant());
         if ($recipients !== []) {
             $this->emailNotificationService->sendWorkflowAssignmentNotification($workflowInstance, $workflowStep, $recipients);
         }
     }
 
     /**
-     * Get all users who can approve a step
+     * Get all users of $tenant who can approve a step.
+     *
+     * Workflow steps are shared definitions; approvers are always resolved
+     * inside the organisation that owns the workflow instance, never across
+     * tenants (explicit user ids and role holders alike).
      *
      * @return User[]
      */
-    private function getStepApprovers(WorkflowStep $workflowStep): array
+    private function getStepApprovers(WorkflowStep $workflowStep, ?Tenant $tenant): array
     {
         $recipients = [];
 
         // Get approvers by user IDs
         $approverUserIds = $workflowStep->getApproverUsers() ?? [];
         if ($approverUserIds !== []) {
-            $usersByIds = $this->userRepository->findBy(['id' => $approverUserIds]);
+            $usersByIds = $this->userRepository->findByIdsInTenant($approverUserIds, $tenant);
             $recipients = array_merge($recipients, $usersByIds);
         }
 
         // Get approvers by role
         $approverRole = $workflowStep->getApproverRole();
         if ($approverRole) {
-            $usersByRole = $this->userRepository->findByRole($approverRole);
+            $usersByRole = $this->userRepository->findByRoleInTenant($approverRole, $tenant);
             $recipients = array_merge($recipients, $usersByRole);
         }
 
@@ -475,46 +480,43 @@ class WorkflowService
     /**
      * Check if a workflow step has any eligible approvers (non-admin users who can act on it)
      *
-     * Returns true if there are users with the required role or explicit user assignments.
+     * Returns true if there are users with the required role or explicit user assignments
+     * inside $tenant (the organisation owning the workflow instance).
      * Returns false if only admins can approve (which indicates a configuration issue).
      */
-    public function hasEligibleApprovers(WorkflowStep $workflowStep): bool
+    public function hasEligibleApprovers(WorkflowStep $workflowStep, ?Tenant $tenant): bool
     {
         // Check if specific users are assigned
         $approverUsers = $workflowStep->getApproverUsers() ?? [];
         if ($approverUsers !== []) {
-            // Verify at least one of the assigned users exists and is active
-            $existingUsers = $this->userRepository->findBy([
-                'id' => $approverUsers,
-                'isActive' => true,
-            ]);
-            if (count($existingUsers) > 0) {
+            // Verify at least one of the assigned users exists in this tenant and is active
+            $activeAssigned = array_filter(
+                $this->userRepository->findByIdsInTenant($approverUsers, $tenant),
+                static fn(User $user): bool => $user->isActive(),
+            );
+            if ($activeAssigned !== []) {
                 return true;
             }
         }
 
-        // Check if a role is assigned and users with that role exist
+        // Check if a role is assigned and active users with that role exist in this tenant
         $approverRole = $workflowStep->getApproverRole();
         if ($approverRole) {
-            $usersWithRole = $this->userRepository->findByRole($approverRole);
-            // Filter to only active users
-            $activeUsersWithRole = array_filter($usersWithRole, fn($user) => $user->isActive());
-            if (count($activeUsersWithRole) > 0) {
-                return true;
-            }
+            return $this->userRepository->findByRoleInTenant($approverRole, $tenant) !== [];
         }
 
         return false;
     }
 
     /**
-     * Get all eligible approvers for a workflow step (public version of getStepApprovers)
+     * Get all eligible approvers of $tenant for a workflow step
+     * (public version of getStepApprovers).
      *
      * @return User[]
      */
-    public function getEligibleApprovers(WorkflowStep $workflowStep): array
+    public function getEligibleApprovers(WorkflowStep $workflowStep, ?Tenant $tenant): array
     {
-        return $this->getStepApprovers($workflowStep);
+        return $this->getStepApprovers($workflowStep, $tenant);
     }
 
     /**

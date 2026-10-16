@@ -53,7 +53,8 @@
                 {% endif %}
             </div>
         </div>
-        {% if statusTransition and is_granted('lifecycle.tenant_lifecycle.' ~ statusTransition, tenant) %}
+        {# Activating, deleting and assigning users across organisations are instance-operator tasks #}
+        {% if is_granted('ROLE_SUPER_ADMIN') and statusTransition and is_granted('lifecycle.tenant_lifecycle.' ~ statusTransition, tenant) %}
             <a href="#tenant-status" class="fa-cyber-btn fa-cyber-btn--{{ statusTransition == 'suspend' ? 'warning' : 'primary' }}">
                 <i class="fa-icon fa-icon--{{ statusTransition == 'suspend' ? 'pause' : 'play' }}" aria-hidden="true"></i>
                 {{ ('tenant.action.' ~ statusTransition)|trans({}, 'tenant') }}
@@ -61,7 +62,7 @@
         {% endif %}
     </div>
 
-    {% if statusTransition and is_granted('lifecycle.tenant_lifecycle.' ~ statusTransition, tenant) %}
+    {% if is_granted('ROLE_SUPER_ADMIN') and statusTransition and is_granted('lifecycle.tenant_lifecycle.' ~ statusTransition, tenant) %}
     <section class="card mb-4" id="tenant-status" aria-labelledby="tenant-status-title">
         <div class="card-header">
             <h2 class="h6 mb-0" id="tenant-status-title">{{ 'tenant.lifecycle.title'|trans({}, 'tenant') }}</h2>
@@ -476,7 +477,7 @@
     {# End Tab Content #}
 
     {# Danger Zone - Outside tabs, always visible #}
-    {% if userCount == 0 %}
+    {% if userCount == 0 and is_granted('ROLE_SUPER_ADMIN') %}
         <section class="fa-section mt-4">
             <div class="fa-section__header">
                 <h2 class="fa-section__title">
@@ -514,6 +515,7 @@
                     </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
                 <div class="fa-modal__body">
                     {# Add User Section #}
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
                     <div class="mb-4">
                         <h3 class="border-bottom pb-2 mb-3 h6">
                             <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
@@ -535,6 +537,7 @@
                             </small>
                         </form>
                     </div>
+                    {% endif %}
 
                     {# Current Users List #}
                     <div>

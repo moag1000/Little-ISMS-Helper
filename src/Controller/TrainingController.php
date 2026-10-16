@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -175,6 +176,7 @@ class TrainingController extends AbstractController
         );
     }
     #[Route('/training/{id}', name: 'app_training_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(\App\Security\Voter\TrainingVoter::VIEW, 'training')]
     public function show(Request $request, Training $training): Response
     {
         if ($this->isTurboFrameRequest($request)) {
@@ -193,7 +195,7 @@ class TrainingController extends AbstractController
      * resets schedule + attendance data.
      */
     #[Route('/training/{id}/clone', name: 'app_training_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(\App\Security\Voter\TrainingVoter::VIEW, 'training')]
     public function clone(Request $request, Training $training): Response
     {
         if (!$this->isCsrfTokenValid('clone_training_' . $training->getId(), (string) $request->request->get('_token'))) {
@@ -222,7 +224,7 @@ class TrainingController extends AbstractController
     }
 
     #[Route('/training/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(\App\Security\Voter\TrainingVoter::EDIT, 'training')]
     public function edit(Request $request, Training $training): Response
     {
         $form = $this->createForm(TrainingType::class, $training);
@@ -231,9 +233,7 @@ class TrainingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Junior-ISB-Audit-2026-05-22 9.5: persist uploaded material files.
             $this->processMaterialFileUploads($training, $form->get('materialFiles')->getData());
-
             $this->entityManager->flush();
-
             // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
             $this->syncParticipantUsersToParticipationRows($training);
 
@@ -398,7 +398,7 @@ class TrainingController extends AbstractController
      * offered.
      */
     #[Route('/training/{id}/audience-picker', name: 'app_training_audience_picker', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression('is_granted("ROLE_MANAGER") and is_granted("edit", subject)'), 'training')]
     public function audiencePicker(Request $request, Training $training): Response
     {
         $tenant = $training->getTenant();

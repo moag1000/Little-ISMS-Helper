@@ -27,6 +27,8 @@ class RiskControllerTest extends WebTestCase
     private ?User $testUser = null;
     private ?Risk $testRisk = null;
     private ?Asset $testAsset = null;
+    /** @var list<User> */
+    private array $usersWithoutOrganisation = [];
 
     protected function setUp(): void
     {
@@ -40,6 +42,11 @@ class RiskControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        foreach ($this->usersWithoutOrganisation as $user) {
+            $this->entityManager->remove($this->entityManager->find(User::class, $user->getId()));
+        }
+        $this->entityManager->flush();
+
         // Manually delete test data since we're not using transactions
         if ($this->testRisk) {
             try {
@@ -710,6 +717,65 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('Content-Type', 'application/pdf');
         $this->assertResponseHasHeader('Content-Disposition');
+    }
+
+    // ========== EXPORT SCOPE WITHOUT ORGANISATION ==========
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function syncExportUrls(): iterable
+    {
+        yield 'csv' => ['/en/risk/export'];
+        yield 'excel' => ['/en/risk/export/excel'];
+        yield 'pdf' => ['/en/risk/export/pdf'];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('syncExportUrls')]
+    public function syncExportIsDeniedForAnAdminWithoutOrganisation(string $url): void
+    {
+        $this->loginAsUser($this->userWithoutOrganisation(['ROLE_ADMIN']));
+
+        $this->client->request('GET', $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function syncExportIsInstanceWideForASuperAdminWithoutOrganisation(): void
+    {
+        $this->loginAsUser($this->userWithoutOrganisation(['ROLE_SUPER_ADMIN']));
+
+        $this->client->request('GET', '/en/risk/export');
+
+        $this->assertResponseIsSuccessful();
+        self::assertStringContainsString((string) $this->testRisk->getTitle(), (string) $this->client->getInternalResponse()->getContent());
+    }
+
+    #[Test]
+    public function indexShowsNoForeignRisksToAnAdminWithoutOrganisation(): void
+    {
+        $this->loginAsUser($this->userWithoutOrganisation(['ROLE_ADMIN']));
+
+        $this->client->request('GET', '/en/risk');
+
+        $this->assertResponseIsSuccessful();
+        self::assertStringNotContainsString((string) $this->testRisk->getTitle(), (string) $this->client->getResponse()->getContent());
+    }
+
+    /**
+     * @param list<string> $roles
+     */
+    private function userWithoutOrganisation(array $roles): User
+    {
+        $user = (new User())->setEmail(uniqid('no_org_', true) . '@example.com')->setFirstName('No')->setLastName('Organisation')
+            ->setRoles($roles)->setPassword('hashed_password')->setIsActive(true);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        $this->usersWithoutOrganisation[] = $user;
+
+        return $user;
     }
 
     // ========== MATRIX ACTION TESTS ==========

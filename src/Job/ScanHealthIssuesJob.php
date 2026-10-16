@@ -41,7 +41,7 @@ final class ScanHealthIssuesJob implements AsyncJobInterface
         $filters = $this->entityManager->getFilters();
         $wasEnabled = $filters->isEnabled('tenant_filter');
         if ($wasEnabled) {
-            $filters->disable('tenant_filter');
+            $filters->suspend('tenant_filter');
         }
 
         try {
@@ -83,7 +83,7 @@ final class ScanHealthIssuesJob implements AsyncJobInterface
             $ctx->message(sprintf('Done. %d health issue(s) across 4 bucket(s).', $grandTotal));
         } finally {
             if ($wasEnabled && $this->entityManager->isOpen()) {
-                $this->entityManager->getFilters()->enable('tenant_filter');
+                $this->entityManager->getFilters()->restore('tenant_filter');
             }
         }
     }

@@ -245,6 +245,7 @@ admin:
         about_note: '<strong>Note:</strong> Large datasets may take some time to export.'
         configure_title: 'Configure Export'
         format_help: 'JSON format preserves data types and is recommended for re-import. CSV is better for spreadsheet applications.'
+        scope_note: 'Only data of your own organisation is exported. Login credentials, MFA secrets, tokens and session data are never included.'
         select_entities: 'Select Entities to Export:'
         select_all: 'Select All'
         deselect_all: 'Deselect All'

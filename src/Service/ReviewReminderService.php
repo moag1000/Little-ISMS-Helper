@@ -278,8 +278,8 @@ final class ReviewReminderService
             $recipients = array_filter([$dpo, $assessor]);
 
             if ($recipients === []) {
-                // Fallback to all admins
-                $recipients = $this->userRepository->findByRole('ROLE_ADMIN');
+                // Fallback to the admins of the breach's own organisation
+                $recipients = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $breach->getTenant());
             }
 
             foreach ($recipients as $recipient) {
@@ -345,8 +345,8 @@ final class ReviewReminderService
         // Process overdue BC Plans
         foreach ($this->getOverdueBcPlanReviews() as $plan) {
             // BC Plans use planOwner as string, would need to resolve to User
-            // For now, notify admins
-            $admins = $this->userRepository->findByRole('ROLE_ADMIN');
+            // For now, notify the admins of the plan's own organisation
+            $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $plan->getTenant());
             foreach ($admins as $admin) {
                 try {
                     $this->emailNotificationService->sendGenericNotification(

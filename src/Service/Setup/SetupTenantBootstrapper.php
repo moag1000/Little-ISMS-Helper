@@ -7,6 +7,7 @@ namespace App\Service\Setup;
 use App\Entity\ISMSContext;
 use App\Entity\Tenant;
 use App\Repository\TenantRepository;
+use App\Repository\UserRepository;
 use App\Service\AssetSubTypeSeeder;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +36,7 @@ final class SetupTenantBootstrapper
         private readonly EntityManagerInterface $entityManager,
         private readonly AssetSubTypeSeeder $assetSubTypeSeeder,
         private readonly LoggerInterface $logger,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -86,6 +88,7 @@ final class SetupTenantBootstrapper
             }
 
             $this->entityManager->flush();
+            $this->assignAccountsWithoutOrganisation();
 
             // Seed "Kontext der Organisation" (ISO 27001 Clause 4) from wizard.
             $this->seedISMSContextFromWizard($tenant, $session);
@@ -106,6 +109,26 @@ final class SetupTenantBootstrapper
                 'line' => $e->getLine(),
             ]);
         }
+    }
+
+    /**
+     * The wizard creates its admin before the organisation exists. On a
+     * single-organisation installation every account without an organisation
+     * (except an instance operator) becomes a member, because the tenant
+     * filter shows an account without an organisation no organisation's data.
+     */
+    public function assignAccountsWithoutOrganisation(): void
+    {
+        $tenant = $this->tenantRepository->findSoleTenant();
+        if (!$tenant instanceof Tenant) {
+            return;
+        }
+        foreach ($this->userRepository->findOrphan() as $user) {
+            if (!in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)) {
+                $user->setTenant($tenant);
+            }
+        }
+        $this->entityManager->flush();
     }
 
     /**

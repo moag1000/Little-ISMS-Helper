@@ -8,6 +8,7 @@ use App\Entity\AuditLog;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\TenantType;
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -117,7 +118,9 @@ final class TenantStatusLifecycleTest extends WebTestCase
     #[Test]
     public function plainAdminCannotSuspend(): void
     {
-        $this->toggle($this->admin, 'Not my call', $this->superAdmin);
+        // The toggle route is instance-operator only: a plain admin is refused
+        // before the lifecycle transition runs.
+        $this->toggle($this->admin, 'Not my call', $this->superAdmin, Response::HTTP_FORBIDDEN);
 
         self::assertSame(Tenant::STATUS_ACTIVE, $this->reload()->getStatus());
     }
@@ -131,7 +134,7 @@ final class TenantStatusLifecycleTest extends WebTestCase
         self::assertNotContains('isActive', array_merge(...array_values(TenantType::getSectionMap())));
     }
 
-    private function toggle(User $as, string $reason, ?User $approver): void
+    private function toggle(User $as, string $reason, ?User $approver, ?int $expectedStatus = null): void
     {
         $this->client->loginUser($as);
         $this->client->request('GET', '/');
@@ -145,6 +148,11 @@ final class TenantStatusLifecycleTest extends WebTestCase
             'reason' => $reason,
             'four_eyes_approver_id' => $approver?->getId() ?? '',
         ]);
+        if ($expectedStatus !== null) {
+            self::assertResponseStatusCodeSame($expectedStatus);
+
+            return;
+        }
         self::assertResponseRedirects('/en/admin/tenants/' . $this->target->getId());
     }
 

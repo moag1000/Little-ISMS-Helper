@@ -30,6 +30,7 @@ class RoleManagementControllerTest extends WebTestCase
     private ?Tenant $testTenant = null;
     private ?User $testUser = null;
     private ?User $adminUser = null;
+    private ?User $superAdminUser = null;
     private ?Role $testRole = null;
     /** @var Permission[] */
     private array $testPermissions = [];
@@ -79,9 +80,12 @@ class RoleManagementControllerTest extends WebTestCase
             }
         }
 
-        if ($this->adminUser) {
+        foreach ([$this->adminUser, $this->superAdminUser] as $adminUser) {
+            if ($adminUser === null) {
+                continue;
+            }
             try {
-                $user = $this->entityManager->find(User::class, $this->adminUser->getId());
+                $user = $this->entityManager->find(User::class, $adminUser->getId());
                 if ($user) {
                     $this->entityManager->remove($user);
                 }
@@ -138,6 +142,16 @@ class RoleManagementControllerTest extends WebTestCase
         $this->adminUser->setTenant($this->testTenant);
         $this->adminUser->setIsActive(true);
         $this->entityManager->persist($this->adminUser);
+
+        $this->superAdminUser = new User();
+        $this->superAdminUser->setEmail('superadmin_' . $uniqueId . '@example.com');
+        $this->superAdminUser->setFirstName('Super');
+        $this->superAdminUser->setLastName('Admin');
+        $this->superAdminUser->setRoles(['ROLE_SUPER_ADMIN']);
+        $this->superAdminUser->setPassword('hashed_password');
+        $this->superAdminUser->setTenant($this->testTenant);
+        $this->superAdminUser->setIsActive(true);
+        $this->entityManager->persist($this->superAdminUser);
 
         $this->testRole = new Role();
         $this->testRole->setName('Test Role ' . $uniqueId);
@@ -232,7 +246,7 @@ class RoleManagementControllerTest extends WebTestCase
     #[Test]
     public function testNewDisplaysForm(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $crawler = $this->client->request('GET', '/en/admin/roles/new');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -250,7 +264,7 @@ class RoleManagementControllerTest extends WebTestCase
     #[Test]
     public function testEditDisplaysForm(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $crawler = $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId() . '/edit');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -300,9 +314,9 @@ class RoleManagementControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testTemplatesDisplaysForAdmin(): void
+    public function testTemplatesDisplaysForSuperAdmin(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $this->client->request('GET', '/en/admin/roles/templates');
         $this->assertResponseIsSuccessful();
     }
@@ -316,7 +330,7 @@ class RoleManagementControllerTest extends WebTestCase
     #[Test]
     public function testNewFormRendersRichPermissionsTable(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $crawler = $this->client->request('GET', '/en/admin/roles/new');
         $this->assertResponseIsSuccessful();
 
@@ -354,7 +368,7 @@ class RoleManagementControllerTest extends WebTestCase
     #[Test]
     public function testEditFormRendersRichPermissionsTable(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $crawler = $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId() . '/edit');
         $this->assertResponseIsSuccessful();
 
@@ -388,13 +402,69 @@ class RoleManagementControllerTest extends WebTestCase
         $this->testRole->addPermission($assignedPerm);
         $this->entityManager->flush();
 
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->superAdminUser);
         $crawler = $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId() . '/edit');
         $this->assertResponseIsSuccessful();
 
         // The assigned permission's checkbox must be pre-checked
         $checkedBoxes = $crawler->filter('#permissions-table-body input[type="checkbox"]:checked');
         $this->assertGreaterThanOrEqual(1, $checkedBoxes->count(), 'Edit form must pre-check at least one already-assigned permission');
+    }
+
+    // ========== GLOBAL ROLES: WRITE ACCESS IS SUPER_ADMIN ONLY ==========
+
+    /**
+     * Roles are instance-global (no tenant). An organisation admin must not be
+     * able to create, edit or delete them — that would change permissions of
+     * every organisation's users.
+     */
+    #[Test]
+    public function testOrganisationAdminCannotModifyGlobalRoles(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $roleId = $this->testRole->getId();
+
+        $this->client->request('GET', '/en/admin/roles/new');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->client->request('GET', '/en/admin/roles/templates');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->client->request('GET', '/en/admin/roles/' . $roleId . '/edit');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->client->request('POST', '/en/admin/roles/' . $roleId . '/delete');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->entityManager->clear();
+        $this->assertNotNull($this->entityManager->find(Role::class, $roleId), 'role must survive the denied delete');
+    }
+
+    #[Test]
+    public function testOrganisationAdminSeesRolesReadOnly(): void
+    {
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request('GET', '/en/admin/roles');
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        $this->assertStringNotContainsString('/admin/roles/new', $html);
+        $this->assertStringNotContainsString('/admin/roles/' . $this->testRole->getId() . '/edit', $html);
+
+        $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId());
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        $this->assertStringNotContainsString('/admin/roles/' . $this->testRole->getId() . '/edit', $html);
+        $this->assertStringNotContainsString('/admin/roles/' . $this->testRole->getId() . '/delete', $html);
+    }
+
+    #[Test]
+    public function testSuperAdminSeesWriteActions(): void
+    {
+        $this->loginAsUser($this->superAdminUser);
+
+        $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId());
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        $this->assertStringContainsString('/admin/roles/' . $this->testRole->getId() . '/edit', $html);
+        $this->assertStringContainsString('/admin/roles/' . $this->testRole->getId() . '/delete', $html);
     }
 
     // ========== EMPTY STATE TESTS ==========

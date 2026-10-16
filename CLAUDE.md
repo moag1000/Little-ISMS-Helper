@@ -121,6 +121,7 @@ The detach helper is shared with the setup-wizard via
        jobName: 'admin.my_job',
        payload: ['_label' => '…', '_subtitle' => '…'],
        returnUrl: $this->generateUrl('admin_my_index'),
+       downloadRoute: 'admin_my_download', // exports: stores `_download_url` with the job id
    );
    ```
    For the rare case where you need direct template rendering (non-Turbo /
@@ -153,6 +154,15 @@ session is read-only and the original request is gone. Pass everything you
 need (tenantId, userId, …) through `$args` at dispatch time — see
 `ExportRisksJob` as the reference pattern. The shared EntityManager
 keeps working after detach.
+
+**Tenant scope + ownership (security):** jobs that read tenant data take the
+scope from `JobTenantScope::argsForCurrentUser()` at dispatch and call
+`JobTenantScope::resolve($ctx)` in `run()`, passing the tenant into every
+query — never rely on the Doctrine tenant filter (unarmed outside
+kernel.request) and never fall back to `findAll()`. `JobStatusService::create()`
+records the dispatching user + tenant; every download / status endpoint for a
+job id carries `#[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]` (owner or
+SUPER_ADMIN only).
 
 ### Advanced — Messenger worker (opt-in, for dedicated infra)
 

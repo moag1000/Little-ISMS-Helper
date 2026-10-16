@@ -86,9 +86,6 @@
                         <input type="hidden" name="title" value="{{ title }}">
                         <input type="hidden" name="text" value="{{ text }}">
                         <input type="hidden" name="url" value="{{ url }}">
-                        {% for file in files %}
-                        <input type="hidden" name="file_ids[]" value="{{ file.path }}">
-                        {% endfor %}
 
                         <div class="d-grid gap-2">
                             {% for action in shareContext.actions %}

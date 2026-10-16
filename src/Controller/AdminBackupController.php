@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Controller\Trait\LocalizedFlashTrait;
 use Exception;
 use InvalidArgumentException;
-use DateTimeInterface;
 use App\Job\CreateBackupJob;
 use App\Job\RestoreBackupJob;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\BackupService;
+use App\Service\DataExport\EntityDataExporter;
+use App\Service\FileUploadSecurityService;
+use App\Service\Job\JobTenantScope;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\RestoreService;
@@ -19,16 +22,15 @@ use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use App\Util\CsvSanitizer;
 
 /**
  * Backup / Restore / Export / Import admin controller.
@@ -48,9 +50,12 @@ use App\Util\CsvSanitizer;
  *  - `data_backup_index` lists backups under the class-level `ROLE_ADMIN`
  *    baseline — tenant-scoped filtering of the listing is deferred to Phase 5
  *    (service-layer `BackupService::listBackups(?Tenant)` filter).
- *  - Generic data export / import endpoints currently rely on the class-level
- *    `ROLE_ADMIN` baseline as well; tenant-scope filtering of exported data is
- *    deferred to Phase 5.
+ *  - Generic data export (`data_export_index`, `data_export_execute`, and the
+ *    async {@see DataExportAsyncController}) exports the caller's own
+ *    organisation only, through {@see EntityDataExporter}: credential/session
+ *    tables are never offered, secret fields are stripped, global tables
+ *    without a tenant are only exportable instance-wide by a SUPER_ADMIN
+ *    without organisation.
  *
  * Cross-tenant attempts are rejected by
  * {@see TenantContext::resolveAdminScope()}, which throws
@@ -69,6 +74,9 @@ class AdminBackupController extends AbstractController
         private readonly JobStatusService $jobStatusService,
         private readonly JobDispatcher $jobDispatcher,
         private readonly TranslatorInterface $translator,
+        private readonly EntityDataExporter $entityDataExporter,
+        private readonly JobTenantScope $jobTenantScope,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
     ) {
     }
 
@@ -190,6 +198,7 @@ class AdminBackupController extends AbstractController
      */
     #[Route('/admin/data/backup/progress/{id}', name: 'data_backup_progress', methods: ['GET'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function backupProgress(string $id): Response
     {
         return $this->render('data_management/backup_progress.html.twig', [
@@ -263,11 +272,16 @@ class AdminBackupController extends AbstractController
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            // Validate file extension (.zip added for format 2.0 backups with embedded files)
-            $allowedExtensions = ['json', 'gz', 'zip'];
-            $extension = $file->getClientOriginalExtension();
+            // Extension, server-detected MIME type, signature and size
+            // (.zip = format 2.0 backups with embedded files).
+            $validation = $this->fileUploadSecurityService->validateUpload($file, FileUploadSecurityService::PROFILE_BACKUP);
 
-            if (!in_array($extension, $allowedExtensions)) {
+            if (!$validation['valid']) {
+                $this->logger->warning('Backup upload rejected', [
+                    'user' => $this->getUser()?->getUserIdentifier(),
+                    'reason' => $validation['error'],
+                ]);
+
                 if (!$isXhr) {
                     $this->flashError('admin.backup.error.invalid_file_format');
 
@@ -276,13 +290,13 @@ class AdminBackupController extends AbstractController
 
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.',
+                    'message' => 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt. ' . $validation['error'],
                 ], Response::HTTP_BAD_REQUEST);
             }
 
             // Move file to backups directory
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
-            $filename = 'uploaded_' . date('Y-m-d_H-i-s') . '.' . $file->getClientOriginalExtension();
+            $filename = 'uploaded_' . date('Y-m-d_H-i-s') . '.' . strtolower($file->getClientOriginalExtension());
 
             $file->move($backupDir, $filename);
 
@@ -306,7 +320,7 @@ class AdminBackupController extends AbstractController
                 'message' => 'Backup-Datei erfolgreich hochgeladen',
                 'filename' => $filename,
             ]);
-        } catch (FileException $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Backup upload failed', [
                 'error' => $e->getMessage(),
             ]);
@@ -362,7 +376,10 @@ class AdminBackupController extends AbstractController
                 'warnings' => $validation['warnings'],
                 'metadata' => $backup['metadata'] ?? [],
             ]);
-        } catch (Exception $e) {
+        } catch (AccessDeniedException $e) {
+            // Cross-tenant backup: let Symfony answer 403 instead of a 500 envelope.
+            throw $e;
+        } catch (\Throwable $e) {
             $this->logger->error('Backup validation failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -402,7 +419,10 @@ class AdminBackupController extends AbstractController
                 'success' => true,
                 'preview' => $preview,
             ]);
-        } catch (Exception $e) {
+        } catch (AccessDeniedException $e) {
+            // Cross-tenant backup: let Symfony answer 403 instead of a 500 envelope.
+            throw $e;
+        } catch (\Throwable $e) {
             $this->logger->error('Backup preview failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -537,7 +557,7 @@ class AdminBackupController extends AbstractController
                 'success' => true,
                 'message' => 'Backup erfolgreich gelöscht',
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Backup deletion failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -551,35 +571,16 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/export', name: 'data_export_index', methods: ['GET'])]
-    public function exportIndex(EntityManagerInterface $entityManager): Response
+    public function exportIndex(): Response
     {
-        // Get all entity class names
-        $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
-        $entities = [];
-
-        foreach ($metadata as $meta) {
-            $className = $meta->getName();
-            $shortName = substr($className, strrpos($className, '\\') + 1);
-
-            $entities[] = [
-                'name' => $shortName,
-                'class' => $className,
-                'table' => $meta->getTableName(),
-            ];
-        }
-
-        // Sort by name
-        usort($entities, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));
-
         return $this->render('data_management/export.html.twig', [
-            'entities' => $entities,
+            'entities' => $this->entityDataExporter->listExportableEntities($this->jobTenantScope->currentUserScope()),
         ]);
     }
 
     #[Route('/admin/data/export/execute', name: 'data_export_execute', methods: ['POST'])]
     public function exportExecute(
         Request $request,
-        EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('data_export', $request->request->get('_token'))) {
@@ -587,7 +588,7 @@ class AdminBackupController extends AbstractController
             return $this->redirectToRoute('data_export_index');
         }
 
-        $selectedEntities = $request->request->all('entities') ?? [];
+        $selectedEntities = $request->request->all('entities');
         $format = $request->request->get('format', 'json');
 
         if ($selectedEntities === []) {
@@ -595,33 +596,14 @@ class AdminBackupController extends AbstractController
             return $this->redirectToRoute('data_export_index');
         }
 
+        // Same rules as the async ExportDataJob: own organisation only,
+        // credential tables refused, secret fields stripped.
+        $scope = $this->jobTenantScope->currentUserScope();
+
         // Close session to prevent blocking other requests during export generation
         $request->getSession()->save();
 
-        $exportData = [];
-
-        foreach ($selectedEntities as $selectedEntity) {
-            // Security: Only allow App\Entity namespace
-            if (!str_starts_with((string) $selectedEntity, 'App\\Entity\\')) {
-                continue;
-            }
-
-            try {
-                $repository = $entityManager->getRepository($selectedEntity);
-                $entities = $repository->findAll();
-
-                $shortName = substr((string) $selectedEntity, strrpos((string) $selectedEntity, '\\') + 1);
-                $exportData[$shortName] = [];
-
-                foreach ($entities as $entity) {
-                    // Convert entity to array (simplified)
-                    $exportData[$shortName][] = $this->entityToArray($entity, $entityManager);
-                }
-            } catch (Exception) {
-                // Skip entities that can't be exported
-                continue;
-            }
-        }
+        $exportData = $this->entityDataExporter->export($selectedEntities, $scope);
 
         // Return response based on format
         if ($format === 'json') {
@@ -666,7 +648,7 @@ class AdminBackupController extends AbstractController
             $request->getSession()->set('import_preview_data', $data);
 
             return $this->redirectToRoute('data_import_preview');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $translator->trans('data.import.error.invalid_file', [
                 'error' => $e->getMessage(),
             ], 'messages'));
@@ -723,32 +705,6 @@ class AdminBackupController extends AbstractController
     }
 
     /**
-     * Convert entity to array (simplified)
-     */
-    private function entityToArray(object $entity, EntityManagerInterface $entityManager): array
-    {
-        $classMetadata = $entityManager->getClassMetadata($entity::class);
-        $data = [];
-
-        foreach ($classMetadata->getFieldNames() as $field) {
-            try {
-                $value = $classMetadata->getFieldValue($entity, $field);
-
-                // Handle DateTime objects
-                if ($value instanceof DateTimeInterface) {
-                    $value = $value->format('Y-m-d H:i:s');
-                }
-
-                $data[$field] = $value;
-            } catch (Exception) {
-                // Skip fields that can't be accessed
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * Create JSON export response
      */
     private function createJsonExportResponse(array $data): JsonResponse
@@ -783,7 +739,7 @@ class AdminBackupController extends AbstractController
 
                 // Write data
                 foreach ($entities as $entity) {
-                    fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $entity), escape: '\\');
+                    fputcsv($handle, array_map([EntityDataExporter::class, 'csvCell'], $entity), escape: '\\');
                 }
 
                 // Empty line between entities

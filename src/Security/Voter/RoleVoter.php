@@ -14,25 +14,20 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 /**
  * Role Voter
  *
- * Implements fine-grained authorization for Role entity operations.
- * Protects system roles from unauthorized modification or deletion.
+ * Authorization for the Role entity (role definitions + their permission
+ * sets, managed under /admin/roles).
  *
- * Supported Operations:
- * - VIEW: View role definitions and permissions
- * - CREATE: Create new custom roles
- * - EDIT: Modify role permissions and attributes
- * - DELETE: Remove custom roles
+ * Role (and Permission) rows are instance-global — they carry no tenant and
+ * are shared by every organisation. Changing one changes what users of ALL
+ * organisations may do, so writing is an instance-operator task:
  *
- * Security Rules:
- * - ROLE_ADMIN bypasses all checks
- * - Inactive users cannot perform any actions
- * - Permission-based access control (role.view, role.create, role.edit, role.delete)
- * - System roles (ROLE_USER, ROLE_ADMIN) cannot be edited or deleted
- *
- * System Role Protection:
- * - Implements OWASP A1: Broken Access Control prevention
- * - Prevents privilege escalation by protecting core system roles
- * - Ensures role integrity for security-critical operations
+ * - VIEW: ROLE_ADMIN (and above) or the `role.view` permission
+ * - CREATE / EDIT / DELETE: ROLE_SUPER_ADMIN only. Neither an organisation
+ *   admin nor a user holding the `role.create|edit|delete` permission may
+ *   modify a global role — that would be a cross-organisation privilege
+ *   escalation (OWASP A01).
+ * - System roles can never be deleted.
+ * - Inactive users are denied everything.
  */
 final class RoleVoter extends Voter
 {
@@ -48,72 +43,33 @@ final class RoleVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        $supportedAttributes = [
-            self::VIEW,
-            self::CREATE,
-            self::EDIT,
-            self::DELETE,
-        ];
-
-        if (!in_array($attribute, $supportedAttributes)) {
+        if (!in_array($attribute, [self::VIEW, self::CREATE, self::EDIT, self::DELETE], true)) {
             return false;
         }
 
-        // CREATE never needs a subject; VIEW is a pure permission check, so the
-        // role list / compare pages vote without one (#[IsGranted(RoleVoter::VIEW)]).
-        if ($attribute === self::CREATE || ($attribute === self::VIEW && $subject === null)) {
-            return true;
-        }
-
-        // For other actions we need a Role object
-        return $subject instanceof Role;
+        // CREATE needs no subject; VIEW is a pure permission check, so the role
+        // list / compare pages vote without one (#[IsGranted(RoleVoter::VIEW)]);
+        // the other actions need a Role.
+        return $attribute === self::CREATE
+            || ($attribute === self::VIEW && $subject === null)
+            || $subject instanceof Role;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
-
-        if (!$user instanceof User) {
+        if (!$user instanceof User || !$user->isActive()) {
             return false;
         }
 
-        // Inactive users cannot do anything
-        if (!$user->isActive()) {
-            return false;
-        }
-
-        // Admins can do everything
         $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
-            return true;
-        }
+        $isSuperAdmin = in_array('ROLE_SUPER_ADMIN', $reachableRoles, true);
 
         return match ($attribute) {
-            self::VIEW => $user->hasPermission('role.view'),
-            self::CREATE => $user->hasPermission('role.create'),
-            self::EDIT => $this->canEdit($user, $subject),
-            self::DELETE => $this->canDelete($user, $subject),
+            self::VIEW => in_array('ROLE_ADMIN', $reachableRoles, true) || $user->hasPermission('role.view'),
+            self::CREATE, self::EDIT => $isSuperAdmin,
+            self::DELETE => $isSuperAdmin && $subject instanceof Role && !$subject->isSystemRole(),
             default => false,
         };
-    }
-
-    private function canEdit(User $user, Role $role): bool
-    {
-        // System roles cannot be edited
-        if ($role->isSystemRole()) {
-            return false;
-        }
-
-        return $user->hasPermission('role.edit');
-    }
-
-    private function canDelete(User $user, Role $role): bool
-    {
-        // System roles cannot be deleted
-        if ($role->isSystemRole()) {
-            return false;
-        }
-
-        return $user->hasPermission('role.delete');
     }
 }

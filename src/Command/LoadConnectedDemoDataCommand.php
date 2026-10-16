@@ -47,7 +47,7 @@ class LoadConnectedDemoDataCommand
         $symfonyStyle->text(sprintf('Using tenant: %s', $tenant->getName()));
 
         // Find admin user for risk ownership
-        $adminUser = $this->findAdminUser();
+        $adminUser = $this->findAdminUser($tenant);
         if (!$adminUser instanceof User) {
             $symfonyStyle->error('No admin user found. Please create an admin user first.');
             return Command::FAILURE;
@@ -175,9 +175,14 @@ class LoadConnectedDemoDataCommand
         return Command::SUCCESS;
     }
 
-    private function findAdminUser(): ?User
+    /**
+     * Admin of the demo tenant who becomes owner of the seeded records.
+     * Only users of that same tenant qualify — picking a user from another
+     * organisation would make them owner of this tenant's data.
+     */
+    private function findAdminUser(Tenant $tenant): ?User
     {
-        $users = $this->entityManager->getRepository(User::class)->findAll();
+        $users = $this->entityManager->getRepository(User::class)->findBy(['tenant' => $tenant]);
         foreach ($users as $user) {
             $roles = $user->getRoles();
             if (in_array('ROLE_ADMIN', $roles, true) || in_array('ROLE_SUPER_ADMIN', $roles, true)) {
