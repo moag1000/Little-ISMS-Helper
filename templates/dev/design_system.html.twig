@@ -654,17 +654,17 @@
                     Source of truth: <code>assets/styles/fairy-aurora.css</code>
                 </p>
 
-                <div class="table-responsive">
-                    <table class="table" style="color:var(--fg);">
-                        <thead>
-                            <tr style="border-bottom:1px solid var(--border);">
-                                <th style="color:var(--fg-2); font-weight:500; width:40px;"></th>
-                                <th style="color:var(--fg-2); font-weight:500;">Token</th>
-                                <th style="color:var(--fg-2); font-weight:500;">Usage</th>
-                                <th style="color:var(--fg-2); font-weight:500;">CSS Usage</th>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--compact">
+                        <thead class="fa-table__head">
+                            <tr>
+                                <th class="fa-table__th" scope="col" style="width:40px;"><span class="visually-hidden">Swatch</span></th>
+                                <th class="fa-table__th" scope="col">Token</th>
+                                <th class="fa-table__th" scope="col">Usage</th>
+                                <th class="fa-table__th" scope="col">CSS Usage</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="fa-table__body">
                             {% set tokens = [
                                 { token: '--primary',         usage: 'Primary brand colour — interactive elements, key accents' },
                                 { token: '--primary-strong',  usage: 'Darker primary for hover states and borders' },
@@ -683,13 +683,13 @@
                                 { token: '--border-strong',   usage: 'Stronger border for emphasis or dividers' }
                             ] %}
                             {% for t in tokens %}
-                                <tr style="border-bottom:1px solid var(--border);">
-                                    <td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell">
                                         <span style="display:inline-block; width:40px; height:40px; border-radius:6px; background:var({{ t.token }}); border:1px solid var(--border);" title="{{ t.token }}"></span>
                                     </td>
-                                    <td><code style="color:var(--primary);">var({{ t.token }})</code></td>
-                                    <td style="color:var(--fg-2); font-size:.875rem;">{{ t.usage }}</td>
-                                    <td><code style="color:var(--fg-3); font-size:.8rem;">color: var({{ t.token }})</code></td>
+                                    <td class="fa-table__cell"><code style="color:var(--primary);">var({{ t.token }})</code></td>
+                                    <td class="fa-table__cell fa-table__cell--muted">{{ t.usage }}</td>
+                                    <td class="fa-table__cell"><code style="color:var(--fg-3); font-size:.8rem;">color: var({{ t.token }})</code></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
