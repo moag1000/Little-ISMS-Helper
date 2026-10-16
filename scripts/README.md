@@ -173,18 +173,18 @@ python3 verify_translations_v2.py
 
 ### quality/check_yaml_duplicates.py
 
-**Zweck:** YAML-Duplikat-Prüfung in Übersetzungsdateien
+**Zweck:** Doppelte Schlüssel in derselben Mapping-Ebene aller
+`translations/*.yaml`-Dateien. PyYAML behält still den letzten Wert (ein ganzer
+Elternabschnitt kann verschwinden), Symfonys YAML-Parser lehnt die Datei ab —
+die Übersetzungs-Domain lädt dann zur Laufzeit nicht.
 
 **Verwendung:**
 ```bash
-cd scripts/quality
-python3 check_yaml_duplicates.py
+python3 scripts/quality/check_yaml_duplicates.py              # alle Übersetzungsdateien
+python3 scripts/quality/check_yaml_duplicates.py datei.yaml   # einzelne Dateien
 ```
 
-**Prüft:**
-- ✅ Doppelte Schlüssel in YAML-Dateien
-- ✅ Namenskonflikte
-- ✅ Überschreibungen
+**CI-Integration:** Gate 63 im `code-quality`-Job (blockierend).
 
 ---
 
