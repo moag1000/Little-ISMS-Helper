@@ -128,7 +128,7 @@ class ChangeRequest
         'scheduled', 'implemented', 'verified', 'closed', 'cancelled'
     ])]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?string $status = 'draft';
+    private string $status = 'draft';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -471,7 +471,7 @@ class ChangeRequest
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?ChangeRequestStatus
     {
-        return $this->status !== null ? ChangeRequestStatus::tryFrom($this->status) : null;
+        return ChangeRequestStatus::tryFrom($this->status);
     }
 
     public function getClauseReference(): ?string

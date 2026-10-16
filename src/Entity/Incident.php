@@ -493,7 +493,7 @@ class Incident
      */
     public function getStatusValue(): string
     {
-        return $this->status?->value ?? IncidentStatus::Reported->value;
+        return $this->status->value ?? IncidentStatus::Reported->value;
     }
 
     public function setStatusValue(string $statusValue): static

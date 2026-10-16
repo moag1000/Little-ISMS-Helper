@@ -542,7 +542,7 @@ class CustomReport
     /**
      * Clone this report configuration (for creating from template)
      */
-    public function cloneAsNew(User $newOwner): static
+    public function cloneAsNew(User $newOwner): self
     {
         $clone = new self();
         $clone->setName($this->name . ' (Copy)');

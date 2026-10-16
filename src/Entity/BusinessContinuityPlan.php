@@ -118,7 +118,7 @@ class BusinessContinuityPlan
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['draft', 'active', 'under_review', 'archived'])]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?string $status = 'draft';
+    private string $status = 'draft';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -480,7 +480,7 @@ class BusinessContinuityPlan
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?BusinessContinuityPlanStatus
     {
-        return $this->status !== null ? BusinessContinuityPlanStatus::tryFrom($this->status) : null;
+        return BusinessContinuityPlanStatus::tryFrom($this->status);
     }
 
     public function getActivationCriteria(): ?string

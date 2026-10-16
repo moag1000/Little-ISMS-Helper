@@ -126,7 +126,7 @@ class PlanningSettings
         return $this->scopes;
     }
 
-    /** @param list<string> $scopes */
+    /** @param array<array-key, string> $scopes reindexed to a list */
     public function setScopes(array $scopes): static
     {
         $this->scopes = array_values($scopes);

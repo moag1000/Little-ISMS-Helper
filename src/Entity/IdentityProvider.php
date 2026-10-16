@@ -226,7 +226,7 @@ class IdentityProvider
 
     /** @return list<string> */
     public function getScopes(): array { return $this->scopes; }
-    /** @param list<string> $scopes */
+    /** @param array<array-key, string> $scopes reindexed to a list */
     public function setScopes(array $scopes): self { $this->scopes = array_values($scopes); return $this; }
 
     /** @return array<string,string> */
@@ -245,7 +245,7 @@ class IdentityProvider
 
     /** @return list<string> */
     public function getDomainBindings(): array { return $this->domainBindings; }
-    /** @param list<string> $list */
+    /** @param array<array-key, string> $list reindexed to a list */
     public function setDomainBindings(array $list): self { $this->domainBindings = array_values($list); return $this; }
 
     public function getDomainBindingMode(): string { return $this->domainBindingMode; }

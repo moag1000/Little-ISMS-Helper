@@ -17,15 +17,30 @@ parameters:
     # version-specific findings (e.g. postInc.type "++ on literal-string") land
     # in the baseline on one version but not the other. Tolerate unmatched
     # baseline entries — genuinely NEW errors still fail the build.
+    # Deliberately kept false (re-checked when src/Entity/ + src/Lifecycle/
+    # were brought into the analysis): turning it on would fail one of the
+    # two PHP versions on entries that only match on the other.
     reportUnmatchedIgnoredErrors: false
 
-    # Exclude paths that are allowed to call setStatus() directly
-    excludePaths:
-        - src/Entity/
-        - src/Lifecycle/
+    # src/Entity/ and src/Lifecycle/ are analysed like the rest of src/. They
+    # used to be excluded wholesale because they may call setStatus()
+    # directly — NoDirectSetStatusRule allows those directories itself
+    # (ALLOWED_FILE_PATTERNS), so no path exclusion is needed.
+
+    ignoreErrors:
+        # Doctrine assigns generated ids (#[ORM\GeneratedValue]) via
+        # reflection, which PHPStan cannot see without phpstan/phpstan-doctrine
+        # (not installed). Without it every `?int $id` reports "is never
+        # assigned int". Limited to $id on entities; any other property.unusedType
+        # finding still fails the build.
+        -
+            identifier: property.unusedType
+            message: '#^Property App\\Entity\\[A-Za-z0-9_\\]+::\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+            path: src/Entity/*
 
 services:
     # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
+    # (the rule skips those directories, migrations and tests on its own)
     -
         class: App\Tests\PHPStan\Rule\NoDirectSetStatusRule
         tags:

@@ -1,8 +1,8 @@
 # check_setter_nullability.py baseline
 # Format: <relative-path>:<line>  <setter>(<note>)
 src/Entity/AuditLog.php:211  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
-src/Entity/Consent.php:442  setDocumentedAt(DateTimeImmutable $documentedAt (property nullable, setter not))
-src/Entity/Consent.php:587  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
+src/Entity/Consent.php:444  setDocumentedAt(DateTimeImmutable $documentedAt (property nullable, setter not))
+src/Entity/Consent.php:589  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/CorporateGovernance.php:152  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/CrisisTeam.php:715  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/CustomReport.php:494  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))

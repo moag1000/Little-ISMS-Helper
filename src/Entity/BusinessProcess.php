@@ -6,8 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
-use App\Entity\Person;
-use App\Entity\Tenant;
+use App\Enum\RiskStatus;
 use App\Repository\BusinessProcessRepository;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -531,7 +530,7 @@ class BusinessProcess
         $count = 0;
 
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus() === 'active') {
+            if ($identifiedRisk->getStatus() !== RiskStatus::Closed) {
                 $totalInherentRisk += $identifiedRisk->getInherentRiskLevel();
                 $totalResidualRisk += $identifiedRisk->getResidualRiskLevel();
                 $count++;
@@ -603,7 +602,7 @@ class BusinessProcess
      */
     public function getActiveRiskCount(): int
     {
-        return $this->identifiedRisks->filter(fn($r): bool => $r->getStatus() === 'active')->count();
+        return $this->identifiedRisks->filter(fn(Risk $r): bool => $r->getStatus() !== RiskStatus::Closed)->count();
     }
 
     /**
@@ -613,7 +612,7 @@ class BusinessProcess
     public function hasUnmitigatedHighRisks(): bool
     {
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus() === 'active' && $identifiedRisk->getResidualRiskLevel() >= 16) {
+            if ($identifiedRisk->getStatus() !== RiskStatus::Closed && $identifiedRisk->getResidualRiskLevel() >= 16) {
                 return true;
             }
         }
