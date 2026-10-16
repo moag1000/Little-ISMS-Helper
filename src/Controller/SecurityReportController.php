@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use App\Service\SecurityAuditService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 
 class SecurityReportController extends AbstractController
 {
@@ -68,6 +68,7 @@ class SecurityReportController extends AbstractController
     }
 
     #[Route('/about/security/generate', name: 'app_security_report_generate', methods: ['POST'])]
+    #[IsCsrfTokenValid('report_regenerate', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function generate(SecurityAuditService $securityAuditService): JsonResponse
     {
         try {
@@ -85,7 +86,7 @@ class SecurityReportController extends AbstractController
                 'message' => 'Security report generation failed',
                 'error' => $result['error_output'] ?: $result['output'],
             ], 500);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error generating security reports: ' . $e->getMessage(),

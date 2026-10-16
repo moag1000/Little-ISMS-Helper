@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -157,6 +159,7 @@ class AuditFreezeController extends AbstractController
     }
 
     #[Route('/{id}/generate-pdf', name: 'app_audit_freeze_generate_pdf', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsCsrfTokenValid(new Expression('"audit_freeze_generate_pdf_" ~ args["id"]'))]
     public function generatePdf(int $id): Response
     {
         $freeze = $this->loadForTenant($id);

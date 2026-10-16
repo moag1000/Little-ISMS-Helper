@@ -552,7 +552,21 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 ## Security Checklist
 
 - [ ] Entity has `tenant_id` for tenant isolation
-- [ ] CSRF token validated for forms
+- [ ] CSRF token validated for every state-changing action (forms and
+      fetch()/JSON endpoints): `#[IsCsrfTokenValid('id')]`, for fetch() with
+      `tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER`
+      and the token rendered into a `data-*-csrf-token-value` attribute.
+      List-view bulk actions use the shared `bulk_action` token
+      (`BulkActionTrait::isBulkCsrfTokenValid()`); bulk deletes go through
+      `BulkActionTrait::handleBulkDelete()` + `BulkDeleteService` (CSRF, tenant,
+      voter, one `logBulk()` batch). CI Gate 63
+      (`scripts/quality/check_csrf_state_changing.py`) fails on unprotected
+      POST/PUT/PATCH/DELETE actions; genuinely non-state-changing ones carry
+      `// @csrf-exempt: <reason>`. Per-entity ids need an Expression —
+      `new Expression('"x_delete_" ~ args["entity"].getId()')`; a literal
+      `'x_delete_{id}'` is never interpolated and always fails (Gate 63 flags
+      it as `#literal-id`). A failed attribute check answers 403
+      (`ReauthEntryPoint`), not a redirect to /login.
 - [ ] Input sanitized via `InputValidationService`
 - [ ] File uploads checked via `FileUploadSecurityService`
 - [ ] Sensitive data excluded from audit logs

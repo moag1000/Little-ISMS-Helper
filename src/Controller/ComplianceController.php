@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -539,7 +540,13 @@ class ComplianceController extends AbstractController
         ]);
     }
 
+    /**
+     * Re-assess a framework: rewrites the fulfillment percentages of all its
+     * requirements, so it is a manager action and CSRF-protected.
+     */
     #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid('assess_framework')]
     public function assessFramework(int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);

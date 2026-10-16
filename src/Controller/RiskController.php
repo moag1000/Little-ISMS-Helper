@@ -11,7 +11,6 @@ use App\Enum\TreatmentStrategy;
 use DateTime;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
-use Exception;
 use DomainException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
@@ -1028,6 +1027,7 @@ class RiskController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if a Risk has linked Treatment Plans or Incidents before deletion.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/risk/bulk-delete-check', name: 'app_risk_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -1418,7 +1418,7 @@ class RiskController extends AbstractController
         try {
             $result = $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $user, $comments);
             $this->flashSuccess('risk.acceptance.success.approved');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
@@ -1448,7 +1448,7 @@ class RiskController extends AbstractController
         try {
             $result = $this->riskAcceptanceWorkflowService->rejectAcceptance($risk, $user, $reason);
             $this->flashWarning('risk.acceptance.success.rejected');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 

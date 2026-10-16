@@ -539,6 +539,7 @@ class ProcessingActivityController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if a ProcessingActivity has linked Consents, DataBreaches, or DPIAs.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/processing-activity/bulk-delete-check', name: 'app_processing_activity_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse

@@ -14,6 +14,7 @@ export default class extends Controller {
     static values = {
         storageKey: { type: String, default: 'dashboard_widget_preferences' },
         apiUrl: { type: String, default: '' },
+        csrfToken: { type: String, default: '' },
         useDatabaseSync: { type: Boolean, default: true }
     };
 
@@ -265,6 +266,7 @@ export default class extends Controller {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
+                        'X-CSRF-Token': this.csrfTokenValue,
                     },
                     body: JSON.stringify(this.preferences)
                 });

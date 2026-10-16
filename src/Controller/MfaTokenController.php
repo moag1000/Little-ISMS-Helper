@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\MfaToken;
 use App\Entity\User;
@@ -123,6 +122,7 @@ class MfaTokenController extends AbstractController
             'secret' => $this->mfaService->getDecryptedSecret($mfaToken),
         ]);
     }
+    // @csrf-exempt: gated by a TOTP code only the device holder knows
     #[Route('/admin/mfa/{id}/verify', name: 'admin_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('MFA_MANAGE')]
     public function verify(MfaToken $mfaToken, Request $request): JsonResponse
@@ -154,7 +154,7 @@ class MfaTokenController extends AbstractController
                 'message' => 'Invalid verification code',
             ], Response::HTTP_BAD_REQUEST);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('MFA verification failed', [
                 'error' => $e->getMessage(),
                 'token_id' => $mfaToken->getId(),

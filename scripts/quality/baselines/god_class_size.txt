@@ -26,7 +26,8 @@ src/Controller/DPIAController.php:LOC=838 deps=0
 src/Controller/ComplianceWizardController.php:LOC=814 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0
 src/Controller/AnalyticsController.php:LOC=743 deps=0
-src/Controller/MonitoringController.php:LOC=727 deps=0
+src/Controller/MonitoringController.php:LOC=741 deps=0
+src/Controller/MappingQualityController.php:LOC=611 deps=0
 src/Controller/AuditController.php:LOC=722 deps=0
 src/Controller/QuickFixController.php:LOC=722 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0

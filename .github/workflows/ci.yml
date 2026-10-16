@@ -591,6 +591,12 @@ jobs:
         # invisible at runtime. Descriptive keys (license_note, changelog, …) are
         # baselined; a NEW inert key is far more likely dead payload than docs.
         run: python3 scripts/quality/check_fixture_unread_keys.py --baseline scripts/quality/baselines/fixture_unread_keys.txt
+      - name: "Gate 63: state-changing actions need CSRF"
+        # Every POST/PUT/PATCH/DELETE action needs #[IsCsrfTokenValid], an inline
+        # isCsrfTokenValid(), a BulkActionTrait helper or a Symfony form — or a
+        # reviewed `// @csrf-exempt: <reason>` marker. Baseline = files of
+        # in-flight work only; stale entries are reported, never fail.
+        run: python3 scripts/quality/check_csrf_state_changing.py --baseline scripts/quality/baselines/csrf_state_changing.txt
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

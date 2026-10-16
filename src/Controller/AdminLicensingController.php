@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\LicenseReportService;
@@ -13,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -164,6 +164,7 @@ class AdminLicensingController extends AbstractController
      */
     #[Route('/admin/licensing/generate', name: 'admin_licensing_generate', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
+    #[IsCsrfTokenValid('report_regenerate', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function generate(LicenseReportService $licenseReportService): JsonResponse
     {
         try {
@@ -184,7 +185,7 @@ class AdminLicensingController extends AbstractController
                 'message' => 'License report generation failed',
                 'error' => $result['error_output'] ?: $result['output'],
             ], 500);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error generating license report: ' . $e->getMessage(),

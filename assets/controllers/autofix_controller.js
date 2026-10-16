@@ -7,7 +7,8 @@ import { Controller } from '@hotwired/stimulus';
  * <button data-controller="autofix"
  *         data-action="click->autofix#fix"
  *         data-autofix-action-param="clear-cache"
- *         data-autofix-url-value="/monitoring/health">
+ *         data-autofix-url-value="/monitoring/health"
+ *         data-autofix-csrf-token-value="{{ csrf_token('monitoring_autofix') }}">
  *     Fix Issue
  * </button>
  * <div data-autofix-target="result"></div>
@@ -16,6 +17,7 @@ export default class extends Controller {
     static targets = ['result'];
     static values = {
         url: { type: String, default: '' },
+        csrfToken: { type: String, default: '' },
         processingText: { type: String, default: 'Processing...' }
     };
 
@@ -48,7 +50,8 @@ export default class extends Controller {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': this.csrfTokenValue
                 }
             });
 

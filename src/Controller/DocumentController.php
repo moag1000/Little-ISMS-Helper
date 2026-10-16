@@ -413,6 +413,7 @@ class DocumentController extends AbstractController
      * der Abhängigkeiten: HTTP 404: Not Found" before letting the user
      * confirm.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/document/bulk-delete-check', name: 'app_document_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDeleteCheck(Request $request): Response
@@ -441,6 +442,10 @@ class DocumentController extends AbstractController
         ?\App\Repository\TenantBrandingRepository $brandingRepository = null,
     ): Response {
         $data = json_decode($request->getContent(), true);
+        $data = is_array($data) ? $data : [];
+        if (!$this->isBulkCsrfTokenValid($request, $data)) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
+        }
         $ids = $data['ids'] ?? [];
         if (!is_array($ids) || $ids === []) {
             return $this->json(['error' => 'No items selected'], 400);

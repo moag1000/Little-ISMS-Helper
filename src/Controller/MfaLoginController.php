@@ -82,6 +82,7 @@ class MfaLoginController extends AbstractController
         ]);
     }
 
+    // @csrf-exempt: gated by a TOTP code only the device holder knows
     #[Route('/mfa-verify', name: 'app_mfa_verify', methods: ['POST'])]
     public function verify(Request $request): Response|RedirectResponse
     {

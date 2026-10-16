@@ -28,6 +28,7 @@ class SecurityController extends AbstractController
         private readonly TenantContext $tenantContext,
     ) {}
 
+    // @csrf-exempt: form_login validates the authenticate CSRF token (security.yaml enable_csrf)
     #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
@@ -137,7 +138,7 @@ class SecurityController extends AbstractController
 
             // This will never be reached as login() redirects
             return new Response('Redirecting to SAML IdP...');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('security.error.saml_login_error', [], 'messages') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
         }
@@ -146,6 +147,7 @@ class SecurityController extends AbstractController
     /**
      * SAML Assertion Consumer Service - handles SAML response
      */
+    // @csrf-exempt: IdP-initiated POST, authenticated by the signed SAML response
     #[Route('/saml/acs', name: 'saml_acs', methods: ['POST'])]
     public function samlAcs(): Response
     {
@@ -174,7 +176,7 @@ class SecurityController extends AbstractController
             $response->headers->set('Content-Type', 'text/xml');
 
             return $response;
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             throw $this->createNotFoundException('Metadata generation failed: ' . $e->getMessage());
         }
     }
@@ -182,6 +184,7 @@ class SecurityController extends AbstractController
     /**
      * SAML Single Logout Service
      */
+    // @csrf-exempt: IdP-initiated logout, authenticated by the signed SAML message
     #[Route('/saml/sls', name: 'saml_sls', methods: ['GET', 'POST'])]
     public function samlSls(Request $request): Response
     {
@@ -196,7 +199,7 @@ class SecurityController extends AbstractController
             }
 
             return $this->redirectToRoute('app_login');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('security.error.saml_logout_error', [], 'messages') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
         }

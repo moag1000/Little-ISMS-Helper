@@ -222,6 +222,7 @@ class BCExerciseController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * BCExercises are terminal — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/bc-exercise/bulk-delete-check', name: 'app_bc_exercise_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse

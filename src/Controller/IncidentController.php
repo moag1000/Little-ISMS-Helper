@@ -43,6 +43,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -322,6 +324,7 @@ class IncidentController extends AbstractController
      * JSON API endpoint for GDPR wizard to calculate breach risk
      * based on data types and affected count.
      */
+    // @csrf-exempt: pure computation, returns an assessment and persists nothing
     #[Route('/incident/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function gdprWizardResult(Request $request): Response
@@ -343,6 +346,7 @@ class IncidentController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if an Incident has linked DataBreach records or RiskIncidentLinks.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/incident/bulk-delete-check', name: 'app_incident_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -742,6 +746,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
+    #[IsCsrfTokenValid(new Expression('"auto-detect" ~ args["incident"].getId()'))]
     public function autoDetectProcesses(Incident $incident): Response
     {
         $detectedProcesses = $this->incidentBCMImpactService->identifyAffectedProcesses($incident);
@@ -842,6 +847,7 @@ class IncidentController extends AbstractController
      * Shows users what will happen BEFORE they create/update an incident.
      * Returns preview information without triggering actual workflows.
      */
+    // @csrf-exempt: pure computation preview, persists nothing
     #[Route('/incident/escalation-preview', name: 'app_incident_escalation_preview', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function escalationPreview(Request $request): Response

@@ -301,6 +301,7 @@ class AssetController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if an Asset has associated Risks or Incidents that reference it.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/asset/bulk-delete-check', name: 'app_asset_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse

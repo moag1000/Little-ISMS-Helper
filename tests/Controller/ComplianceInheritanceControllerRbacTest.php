@@ -11,6 +11,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -27,6 +28,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ComplianceInheritanceControllerRbacTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
@@ -280,13 +283,38 @@ class ComplianceInheritanceControllerRbacTest extends WebTestCase
     public function testRoleManagerWriteRoutesNotForbidden(): void
     {
         $this->client->loginUser($this->managerRole);
-        // Manager is past the role gate; with no/invalid CSRF or missing data the
-        // controller returns 4xx other-than-403 or a redirect — but NEVER 403.
-        $this->client->request('POST', '/en/compliance/inheritance/activate/' . $this->frameworkCode . '');
+        // Manager is past the role gate; with a valid CSRF token the controller
+        // processes the request (redirect) — never 403.
+        $token = $this->seedSessionCsrfToken($this->client, 'inherit-' . $this->frameworkCode);
+        $this->client->request('POST', '/en/compliance/inheritance/activate/' . $this->frameworkCode, ['_token' => $token]);
         $this->assertNotSame(
             Response::HTTP_FORBIDDEN,
             $this->client->getResponse()->getStatusCode(),
             'ROLE_MANAGER must pass the activate role gate.',
         );
+    }
+
+    #[Test]
+    public function testActivateAndBulkConfirmRequireCsrfToken(): void
+    {
+        $this->client->loginUser($this->managerRole);
+        foreach (['activate', 'bulk-confirm'] as $action) {
+            $this->client->request('POST', '/en/compliance/inheritance/' . $action . '/' . $this->frameworkCode);
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $action . ' without token');
+
+            $this->seedSessionCsrfToken($this->client, 'inherit-' . $this->frameworkCode);
+            $this->client->request('POST', '/en/compliance/inheritance/' . $action . '/' . $this->frameworkCode, ['_token' => 'forged']);
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, $action . ' with wrong token');
+        }
+    }
+
+    #[Test]
+    public function testBulkConfirmWithValidTokenIsProcessed(): void
+    {
+        $this->client->loginUser($this->managerRole);
+        $token = $this->seedSessionCsrfToken($this->client, 'inheritance_bulk_confirm_' . $this->frameworkCode);
+        $this->client->request('POST', '/en/compliance/inheritance/bulk-confirm/' . $this->frameworkCode, ['_token' => $token]);
+        // No log_ids selected → warning flash + redirect back to the queue.
+        $this->assertResponseRedirects();
     }
 }

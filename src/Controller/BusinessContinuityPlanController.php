@@ -217,6 +217,7 @@ class BusinessContinuityPlanController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if a BCPlan is referenced by BCExercises before deletion.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/business-continuity-plan/bulk-delete-check', name: 'app_bc_plan_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse

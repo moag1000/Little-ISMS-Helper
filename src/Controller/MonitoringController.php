@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use Throwable;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -18,10 +17,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MonitoringController extends AbstractController
 {
+    /** CSRF id for the health auto-fix POSTs (autofix_controller.js sends it as X-CSRF-Token). */
+    public const string AUTOFIX_CSRF_ID = 'monitoring_autofix';
+
     #[Route('/admin/monitoring/health', name: 'monitoring_health', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
     public function health(Connection $connection, SchemaHealthService $schemaHealth): Response
@@ -45,7 +48,7 @@ class MonitoringController extends AbstractController
                 'response_time' => $dbTime . ' ms',
                 'driver' => $platformName,
             ];
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $healthChecks['database'] = [
                 'status' => 'error',
                 'error' => $e->getMessage(),
@@ -185,7 +188,7 @@ class MonitoringController extends AbstractController
             try {
                 $opcacheStatus = @opcache_get_status(false);
                 $opcacheEnabled = $opcacheStatus !== false && isset($opcacheStatus['opcache_enabled']) && $opcacheStatus['opcache_enabled'];
-            } catch (Exception) {
+            } catch (\Throwable) {
                 // OPcache not available
                 $opcacheEnabled = false;
             }
@@ -314,7 +317,7 @@ class MonitoringController extends AbstractController
                 'status' => 'healthy',
                 'timestamp' => time(),
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'status' => 'error',
                 'error' => $e->getMessage(),
@@ -575,6 +578,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/cache', name: 'monitoring_health_fix_cache', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function fixCache(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->fixCachePermissions();
@@ -582,6 +586,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/logs', name: 'monitoring_health_fix_logs', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function fixLogs(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->fixLogPermissions();
@@ -589,6 +594,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/clear-cache', name: 'monitoring_health_clear_cache', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function clearCache(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->clearCache();
@@ -596,6 +602,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/clean-logs', name: 'monitoring_health_clean_logs', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function cleanLogs(HealthAutoFixService $healthAutoFixService, Request $request): JsonResponse
     {
         $days = (int) $request->request->get('days', 30);
@@ -604,6 +611,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/rotate-logs', name: 'monitoring_health_rotate_logs', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function rotateLogs(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->rotateLogs();
@@ -611,6 +619,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/optimize-disk', name: 'monitoring_health_optimize_disk', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function optimizeDisk(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->optimizeDiskSpace();
@@ -618,6 +627,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/var-permissions', name: 'monitoring_health_fix_var', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function fixVarPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->fixVarPermissions();
@@ -625,6 +635,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/uploads-permissions', name: 'monitoring_health_fix_uploads', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function fixUploadsPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->fixUploadsPermissions();
@@ -632,6 +643,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/session-permissions', name: 'monitoring_health_fix_sessions', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function fixSessionPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->fixSessionPermissions();
@@ -639,6 +651,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/clean-uploads', name: 'monitoring_health_clean_uploads', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function cleanUploads(HealthAutoFixService $healthAutoFixService, Request $request): JsonResponse
     {
         $days = (int) $request->request->get('days', 90);
@@ -647,6 +660,7 @@ class MonitoringController extends AbstractController
     }
     #[Route('/admin/monitoring/health/fix/composer-install', name: 'monitoring_health_composer_install', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
+    #[IsCsrfTokenValid(self::AUTOFIX_CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function composerInstall(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
         $result = $healthAutoFixService->runComposerInstall();
@@ -717,7 +731,7 @@ class MonitoringController extends AbstractController
                     $size += $file->getSize();
                 }
             }
-        } catch (Exception) {
+        } catch (\Throwable) {
             // Directory not accessible
             return 0;
         }

@@ -234,6 +234,7 @@ class ManagementReviewController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * ManagementReviews are terminal — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/management-review/bulk-delete-check', name: 'app_management_review_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
