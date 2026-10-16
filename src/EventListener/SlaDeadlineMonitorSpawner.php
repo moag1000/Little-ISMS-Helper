@@ -86,7 +86,7 @@ final class SlaDeadlineMonitorSpawner
                     $entity instanceof DataBreach => $this->factory->createForDataBreach($entity),
                     $entity instanceof Incident => $this->factory->createForIncident(
                         $entity,
-                        $entity->getSeverity()?->value ?? 'low',
+                        $entity->getSeverity()->value ?? 'low',
                     ),
                     $entity instanceof AuditFinding => $this->factory->createForCorrectiveAction($entity),
                 };
