@@ -337,8 +337,6 @@ translations/suppliers.de.yaml:450:iso_9001_bridge
 translations/suppliers.en.yaml:1:supplier
 translations/suppliers.en.yaml:372:corporate
 translations/suppliers.en.yaml:449:iso_9001_bridge
-translations/tenant.de.yaml:215:corporate
-translations/tenant.en.yaml:215:corporate
 translations/threat.de.yaml:125:field
 translations/threat.de.yaml:145:placeholder
 translations/threat.de.yaml:153:help
@@ -425,3 +423,5 @@ translations/workflows.en.yaml:293:workflow_step
 translations/workflows.en.yaml:298:sla
 translations/workflows.en.yaml:335:approval
 translations/workflows.en.yaml:376:lifecycle
+translations/tenant.de.yaml:227:corporate
+translations/tenant.en.yaml:227:corporate

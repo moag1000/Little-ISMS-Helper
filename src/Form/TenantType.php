@@ -100,11 +100,8 @@ final class TenantType extends AbstractType implements SectionMapInterface
                     new Assert\Uuid(message: 'tenant.validation.azure_tenant_id_format'),
                 ],
             ])
-            ->add('isActive', CheckboxType::class, [
-                'label' => 'tenant.field.is_active',
-                'help' => 'tenant.field.is_active_help',
-                'required' => false,
-            ])
+            // No isActive checkbox: active/suspended is the tenant_lifecycle
+            // status and changes only through suspend/reactivate (four-eyes).
             // Corporate Structure Fields
             ->add('parent', EntityType::class, [
                 'class' => Tenant::class,
@@ -285,7 +282,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
     public static function getSectionMap(): array
     {
         return [
-            'overview'     => ['name', 'code', 'description', 'isActive'],
+            'overview'     => ['name', 'code', 'description'],
             'branding'     => ['logoFile'],
             'organisation' => ['legalName', 'legalForm', 'leiCode', 'reportingCurrency', 'naceCode'],
             'relations'    => ['parent', 'isCorporateParent', 'corporateNotes'],

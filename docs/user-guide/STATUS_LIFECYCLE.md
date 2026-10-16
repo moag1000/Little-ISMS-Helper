@@ -133,6 +133,11 @@ Closing and cancelling a TLPT require a reason.
 ### Access review campaign
 `open` → `closed`
 
+### Organisation (tenant)
+`draft` → `active` ⇄ `suspended` → `terminated` → `archived`
+
+Suspending and reactivating an organisation is done in the "Organisation status" section of the organisation page (SUPER_ADMIN only). Both need a reason and a second super admin as four-eyes approver; if the organisation has no second super admin, document the offline counter-signature in the reason. The organisation edit form has no "active" switch.
+
 ### Compliance mapping (global catalogue data)
 `draft` → `review` → `approved` → `published` → `deprecated`, restore → `published`
 
