@@ -32,6 +32,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     private ?Bsi2004ExerciseLog $log = null;
     private ?Tenant $foreignTenant = null;
     private ?User $foreignAdmin = null;
+    private ?BCExercise $foreignExercise = null;
 
     protected function setUp(): void
     {
@@ -56,6 +57,12 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
                 $log = $this->em->find(Bsi2004ExerciseLog::class, $this->log->getId());
                 if ($log) {
                     $this->em->remove($log);
+                }
+            }
+            if ($this->foreignExercise) {
+                $fx = $this->em->find(BCExercise::class, $this->foreignExercise->getId());
+                if ($fx) {
+                    $this->em->remove($fx);
                 }
             }
             if ($this->exercise) {
@@ -152,6 +159,36 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
             $this->client->request('GET', '/de/bcm/exercise-log/' . $this->log->getId() . $suffix);
             $this->assertContains($this->client->getResponse()->getStatusCode(), [403, 404], 'log' . $suffix);
         }
+    }
+
+    /**
+     * The calendar used to list every tenant's upcoming exercises
+     * (findUpcoming() had no tenant parameter).
+     */
+    #[Test]
+    public function calendarListsOnlyTheOwnTenantsExercises(): void
+    {
+        $this->foreignExercise = new BCExercise();
+        $this->foreignExercise->setName('Foreign Upcoming ' . uniqid());
+        $this->foreignExercise->setExerciseType('tabletop');
+        $this->foreignExercise->setScope('Foreign scope');
+        $this->foreignExercise->setObjectives('Objective');
+        $this->foreignExercise->setParticipants('Eve');
+        $this->foreignExercise->setFacilitator('Mallory');
+        $this->foreignExercise->setStatus('planned');
+        $this->foreignExercise->setExerciseDate(new \DateTime('+10 days'));
+        $this->foreignExercise->setTenant($this->foreignTenant);
+        $this->em->persist($this->foreignExercise);
+        $this->em->flush();
+
+        $this->loginAs($this->manager);
+        $this->client->request('GET', '/de/bcm/exercise-log/calendar');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString(
+            (string) $this->foreignExercise->getName(),
+            (string) $this->client->getResponse()->getContent(),
+        );
     }
 
     #[Test]

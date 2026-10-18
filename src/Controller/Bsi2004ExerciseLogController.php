@@ -278,8 +278,9 @@ class Bsi2004ExerciseLogController extends AbstractController
         $now  = new \DateTime();
         $end  = (new \DateTime())->modify('+12 months');
 
-        $allExercises = $tenant !== null
-            ? $this->exerciseRepository->findUpcoming()
+        // Own tenant only; a SUPER_ADMIN without tenant context sees all.
+        $allExercises = $tenant !== null || $this->isGranted('ROLE_SUPER_ADMIN')
+            ? $this->exerciseRepository->findUpcoming($tenant)
             : [];
 
         // Filter to max 12-month forward window

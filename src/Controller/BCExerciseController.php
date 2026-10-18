@@ -53,11 +53,16 @@ class BCExerciseController extends AbstractController
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
 
         $currentTenant = $this->tenantContext->getCurrentTenant();
-        $bcExercises = $currentTenant !== null
-            ? $this->bcExerciseRepository->findBy(['tenant' => $currentTenant])
-            : $this->bcExerciseRepository->findAll();
+        $allTenants = $currentTenant === null && $this->isGranted('ROLE_SUPER_ADMIN');
+        $bcExercises = match (true) {
+            $currentTenant !== null => $this->bcExerciseRepository->findBy(['tenant' => $currentTenant]),
+            $allTenants => $this->bcExerciseRepository->findAll(),
+            default => [],
+        };
         $statistics = $this->bcExerciseRepository->getStatistics();
-        $upcoming = $this->bcExerciseRepository->findUpcoming();
+        $upcoming = $currentTenant !== null || $allTenants
+            ? $this->bcExerciseRepository->findUpcoming($currentTenant)
+            : [];
         $incompleteReports = $this->bcExerciseRepository->findIncompleteReports();
 
         return $this->render('bc_exercise/index.html.twig', [

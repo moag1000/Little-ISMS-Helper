@@ -36,7 +36,14 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - Permission checks via hasPermission() method
  *
  * Multi-tenancy:
- * - Users can only view/edit users in their tenant
+ * - Users can only view/edit users in their tenant (the target's
+ *   User::getTenant()). That is the complete assignment model today:
+ *   UserTenantAssignment is an unmapped spec skeleton (no table, no
+ *   repository, no writer), so there are no additional assignments to
+ *   honour. When the multi-tenant assignment lands
+ *   (docs/superpowers/specs/2026-05-26-multi-tenant-user-assignment.md),
+ *   extend the scope check here: read for any active assignment,
+ *   edit/delete only for the primary organisation.
  */
 final class UserVoter extends Voter
 {
