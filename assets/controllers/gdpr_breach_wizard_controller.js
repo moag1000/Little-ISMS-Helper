@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * GDPR Data Breach Assessment Wizard Controller
@@ -223,7 +224,7 @@ export default class extends Controller {
         const percentage = (this.currentStep / this.totalSteps) * 100;
         this.progressBarTarget.style.width = `${percentage}%`;
         this.progressBarTarget.setAttribute('aria-valuenow', percentage);
-        const stepOf = this.translations.step_of || 'of';
+        const stepOf = this.translations.step_of ?? '/';
         this.progressTextTarget.textContent = `${this.currentStep} ${stepOf} ${this.totalSteps}`;
     }
 
@@ -274,7 +275,7 @@ export default class extends Controller {
      * Show "Not a GDPR Breach" message and exit
      */
     showNotGdprBreach() {
-        window.faToast(window.translations?.gdpr?.not_a_breach || 'This is NOT a GDPR breach. Personal data is not involved.', 'info');
+        window.faToast(faT('gdpr_wizard.not_a_breach'), 'info');
         this.clearLocalStorage();
         this.close();
     }
@@ -305,7 +306,7 @@ export default class extends Controller {
 
             this.displayResults(assessment);
         } catch (error) {
-            window.faToast(window.translations?.gdpr?.error_calculating || 'Error calculating risk assessment. Please try again.', 'danger');
+            window.faToast(faT('gdpr_wizard.error_calculating'), 'danger');
         }
     }
 
@@ -320,8 +321,9 @@ export default class extends Controller {
         this.resultRiskLevelTarget.className = `fa-status-pill fa-status-pill--${riskLevelTone} fa-status-pill--lg`;
 
         // Reportable status (translated)
-        const yesText = this.translations.yes_reportable || 'YES - Reportable to Supervisory Authority';
-        const noText = this.translations.no_not_reportable || 'NO - Not Reportable';
+        // Texts come from the template's data-translations (privacy domain).
+        const yesText = this.translations.yes_reportable ?? '';
+        const noText = this.translations.no_not_reportable ?? '';
         const reportableText = assessment.is_reportable ? yesText : noText;
         const reportableTone = assessment.is_reportable ? 'danger' : 'success';
         this.resultReportableTarget.textContent = reportableText;
@@ -411,8 +413,14 @@ export default class extends Controller {
         const descriptionField = document.getElementById('incident_description');
         if (descriptionField && !descriptionField.value) {
             const riskText = this.getRiskLevelTranslation(assessment.risk_level);
-            const reportableText = assessment.is_reportable ? 'REPORTABLE under GDPR Art. 33' : 'Not reportable';
-            descriptionField.value = `GDPR Breach Assessment:\n- Risk Level: ${riskText}\n- ${reportableText}\n- Score: ${assessment.score}\n\n`;
+            const reportableText = assessment.is_reportable
+                ? faT('gdpr_wizard.note_reportable')
+                : faT('gdpr_wizard.note_not_reportable');
+            descriptionField.value = faT('gdpr_wizard.note', {
+                '%risk%': riskText,
+                '%reportable%': reportableText,
+                '%score%': assessment.score,
+            }) + '\n\n';
             this.markFieldAsAutoFilled(descriptionField);
         }
     }
@@ -431,7 +439,7 @@ export default class extends Controller {
         if (!existingHelper) {
             const helper = document.createElement('small');
             helper.className = 'fairy-helper';
-            helper.textContent = this.translations.auto_filled_hint || 'Auto-filled from GDPR Assessment';
+            helper.textContent = faT('gdpr_wizard.auto_filled_hint');
             field.parentElement?.appendChild(helper);
         }
     }
@@ -441,8 +449,8 @@ export default class extends Controller {
      * Falls back to a console log if the toast helper is unavailable.
      */
     showSuccessMessage() {
-        const successTitle = this.translations.success_title || 'GDPR Assessment Complete!';
-        const successText = this.translations.success_text || 'Incident form has been pre-filled with assessment results.';
+        const successTitle = faT('gdpr_wizard.success_title');
+        const successText = faT('gdpr_wizard.success_text');
         if (typeof window.faToast === 'function') {
             window.faToast(`${successTitle} ${successText}`, 'success');
         }

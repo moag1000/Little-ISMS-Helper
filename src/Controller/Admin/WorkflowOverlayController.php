@@ -153,23 +153,22 @@ final class WorkflowOverlayController extends AbstractController
         // Build form data from existing overrides
         $formData = [
             'approverRole' => $existing['approverRole'] ?? null,
-            'approverUsers' => isset($existing['approverUsers'])
-                ? (is_array($existing['approverUsers'])
-                    ? json_encode($existing['approverUsers'])
-                    : (string) $existing['approverUsers'])
-                : null,
+            'approverUsers' => array_values(array_map('intval', array_filter(
+                (array) ($existing['approverUsers'] ?? []),
+                static fn (mixed $id): bool => is_numeric($id),
+            ))),
             'daysToComplete' => $existing['daysToComplete'] ?? null,
-            'autoProgressConditions' => isset($existing['autoProgressConditions'])
-                ? (is_array($existing['autoProgressConditions'])
-                    ? json_encode($existing['autoProgressConditions'], JSON_PRETTY_PRINT)
-                    : (string) $existing['autoProgressConditions'])
+            'autoProgressConditions' => is_array($existing['autoProgressConditions'] ?? null)
+                ? $existing['autoProgressConditions']
                 : null,
             'reasonRequired' => (bool) ($existing['reasonRequired'] ?? false),
             'fourEyes' => (bool) ($existing['fourEyes'] ?? false),
             'module' => $existing['module'] ?? null,
         ];
 
-        $form = $this->createForm(WorkflowStepOverlayType::class, $formData);
+        $form = $this->createForm(WorkflowStepOverlayType::class, $formData, [
+            'user_choices' => $this->userChoices($tenant),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -188,11 +187,9 @@ final class WorkflowOverlayController extends AbstractController
                 $this->deleteStepOverrideKey($tenant, $name, $stepIndex, 'approverRole');
             }
 
-            // approverUsers (JSON array string → decode)
-            $approverUsersRaw = trim((string) ($data['approverUsers'] ?? ''));
-            if ($approverUsersRaw !== '') {
-                $decoded = json_decode($approverUsersRaw, true);
-                $value = is_array($decoded) ? $decoded : $approverUsersRaw;
+            // approverUsers (list of tenant user IDs)
+            $value = array_values(array_map('intval', (array) ($data['approverUsers'] ?? [])));
+            if ($value !== []) {
                 $this->upsertStepOverride($tenant, $name, $stepIndex, 'approverUsers', $value, $user, $now);
                 $newValues['approverUsers'] = $value;
             } else {
@@ -208,11 +205,9 @@ final class WorkflowOverlayController extends AbstractController
                 $this->deleteStepOverrideKey($tenant, $name, $stepIndex, 'daysToComplete');
             }
 
-            // autoProgressConditions (JSON string → decode to array/object)
-            $condRaw = trim((string) ($data['autoProgressConditions'] ?? ''));
-            if ($condRaw !== '') {
-                $decoded = json_decode($condRaw, true);
-                $value = is_array($decoded) ? $decoded : $condRaw;
+            // autoProgressConditions (structured builder → array)
+            $value = $data['autoProgressConditions'] ?? null;
+            if (is_array($value) && $value !== []) {
                 $this->upsertStepOverride($tenant, $name, $stepIndex, 'autoProgressConditions', $value, $user, $now);
                 $newValues['autoProgressConditions'] = $value;
             } else {
@@ -322,6 +317,26 @@ final class WorkflowOverlayController extends AbstractController
      * target another tenant. ROLE_ADMIN falls back to their own active
      * tenant. Throws AccessDeniedException for cross-tenant attempts.
      */
+    /**
+     * Active users of the tenant as ChoiceType choices (label => id).
+     *
+     * @return array<string, int>
+     */
+    private function userChoices(Tenant $tenant): array
+    {
+        $users = $this->em->getRepository(User::class)->findBy(
+            ['tenant' => $tenant, 'isActive' => true],
+            ['lastName' => 'ASC', 'firstName' => 'ASC'],
+        );
+        $choices = [];
+        foreach ($users as $u) {
+            $label = trim(sprintf('%s %s', $u->getFirstName() ?? '', $u->getLastName() ?? ''));
+            $choices[sprintf('%s (%s)', $label !== '' ? $label : (string) $u->getEmail(), (string) $u->getEmail())] = (int) $u->getId();
+        }
+
+        return $choices;
+    }
+
     private function resolveTenant(Request $request): ?Tenant
     {
         $requested = $request->request->get('tenant_id') ?? $request->query->get('tenant_id');

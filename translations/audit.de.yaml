@@ -108,6 +108,7 @@ audit:
         overall_result: Gesamtergebnis
         nonconformities: Nichtkonformitäten
         conclusion: Schlussfolgerung
+        additional_scoped_frameworks: 'Zusätzliche abgedeckte Frameworks'
     status:
         planned: Geplant
         in_progress: 'In Bearbeitung'
@@ -218,6 +219,9 @@ audit:
         evidence_collected: 'Liste der während des Audits gesammelten Nachweise'
         summary: 'Kurze Zusammenfassung des Audits'
         notes: 'Zusätzliche Notizen und Anmerkungen'
+        status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Geplant → In Durchführung → Berichtet → Freigegeben → Abgeschlossen). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
+        additional_scoped_frameworks: 'Mehrfachauswahl — z. B. 27001 + NIS2 + DORA in einem Audit-Durchgang. Findings werden transitiv auf alle abgedeckten Frameworks gemappt.'
+        scoped_assets: 'Assets, die Gegenstand des Audits sind (nur bei Geltungsbereich „Asset"). ISO 19011 Kap. 5.5.2 verlangt die Auflistung der auditierten Objekte.'
     scope: Geltungsbereich
     report_date: Berichtsdatum
     status_in_progress: 'In Bearbeitung'

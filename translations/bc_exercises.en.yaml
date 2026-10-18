@@ -118,6 +118,7 @@ bc_exercises:
         bc_plans_tested: 'BC plans tested in this exercise (ISO 22301 §8.6 a). Multiple selection possible.'
         evidence_artifacts_json: 'JSON array of audit evidence: [{"type":"photo|log|report|screenshot","reference":"filename/URL","description":"Description"}].'
         evidence_artifacts: 'Audit evidence per ISO 22301 §8.6 — add one row per artifact (type, name, URL/reference, capture date).'
+        status_readonly: 'Status is driven by the lifecycle workflow (Planned → In progress → Completed / Cancelled). Direct editing is disabled; use the status actions on the detail page.'
     evidence:
         field:
             type: 'Type'

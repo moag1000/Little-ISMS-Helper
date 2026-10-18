@@ -7,6 +7,7 @@ namespace App\Form\Notification;
 use App\Entity\Notification\NotificationChannel;
 use App\Entity\Notification\NotificationRule;
 use App\Entity\Tenant;
+use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -24,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Channels are filtered to those belonging to the current tenant
  * (passed as form option 'tenant').
  */
-final class NotificationRuleType extends AbstractType
+final class NotificationRuleType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
 
@@ -99,26 +100,46 @@ final class NotificationRuleType extends AbstractType
                 },
                 'help'          => 'notification.rule.help.channels',
             ])
-            ->add('conditions', CollectionType::class, [
-                'label'         => 'notification.rule.field.conditions',
-                'required'      => false,
-                'entry_type'    => ConditionRowType::class,
-                'allow_add'     => true,
-                'allow_delete'  => true,
-                'by_reference'  => false,
-                'prototype'     => true,
-                'prototype_name' => '__condition_index__',
-                'attr'          => [
-                    'data-controller'                             => 'notification-condition-builder',
-                    'data-notification-condition-builder-prototype-value' => '__condition_index__',
+            // Conditions edited as chip rows (_fa_condition_builder); the
+            // `_logic` directive lives in its own select, both map onto the
+            // single `conditions` JSON column via NotificationRule accessors.
+            ->add('conditionLogic', ChoiceType::class, [
+                'label'    => 'notification.condition.logic.label',
+                'choices'  => [
+                    'notification.condition.logic.all' => 'and',
+                    'notification.condition.logic.any' => 'or',
                 ],
-                'help'          => 'notification.rule.help.conditions',
+                'required' => true,
+            ])
+            ->add('conditionRows', CollectionType::class, [
+                'label'          => 'notification.rule.field.conditions',
+                'required'       => false,
+                'entry_type'     => ConditionRowType::class,
+                'entry_options'  => ['label' => false],
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'by_reference'   => false,
+                'prototype'      => true,
+                'prototype_name' => '__condition_index__',
+                // A row the user left completely empty is dropped, not rejected.
+                'delete_empty'   => static fn (mixed $row): bool => !is_array($row)
+                    || (trim((string) ($row['field'] ?? '')) === '' && trim((string) ($row['value'] ?? '')) === ''),
+                'help'           => 'notification.rule.help.conditions',
             ])
             ->add('isActive', CheckboxType::class, [
                 'label'    => 'notification.rule.field.is_active',
                 'required' => false,
                 'help'     => 'notification.rule.help.is_active',
             ]);
+    }
+
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'      => ['name', 'eventType', 'severityFilter', 'isActive'],
+            'details'       => ['conditionLogic', 'conditionRows'],
+            'communication' => ['channels'],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

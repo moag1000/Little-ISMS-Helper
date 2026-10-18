@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Per-tenant Report-Doc Style Configurator (Sprint report-style-admin).
@@ -50,6 +51,7 @@ final class AdminReportStyleController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TenantBrandingRepository $brandingRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -299,32 +301,57 @@ final class AdminReportStyleController extends AbstractController
     {
         return [
             'tenant_name' => $tenant->getName() ?? 'Sample Tenant',
-            'report_title' => 'ISMS-Management-Review Q2/2026',
+            'report_title' => $this->sampleText('admin.report_style.sample.report_title'),
             'report_code' => 'RPT-MR-2026-Q2',
             'report_period' => '2026-04-01 — 2026-06-30',
             'classification' => 'TLP:AMBER',
             'distribution' => [
-                ['name' => 'Geschäftsführung', 'role' => 'Empfänger'],
-                ['name' => 'CISO', 'role' => 'Autor'],
-                ['name' => 'Interne Revision', 'role' => 'In Kopie'],
+                [
+                    'name' => $this->sampleText('admin.report_style.sample.distribution.management'),
+                    'role' => $this->sampleText('admin.report_style.sample.distribution.recipient'),
+                ],
+                ['name' => 'CISO', 'role' => $this->sampleText('admin.report_style.sample.distribution.author')],
+                [
+                    'name' => $this->sampleText('admin.report_style.sample.distribution.internal_audit'),
+                    'role' => $this->sampleText('admin.report_style.sample.distribution.cc'),
+                ],
             ],
-            'exec_summary' => 'Im Berichtszeitraum wurden 12 Risiken neu identifiziert, '
-                . '7 Maßnahmen abgeschlossen und 2 Vorfälle bearbeitet. Die Wirksamkeit '
-                . 'des ISMS bleibt insgesamt angemessen; Empfehlungen siehe Anhang A.',
+            'exec_summary' => $this->sampleText('admin.report_style.sample.exec_summary'),
             'sections' => [
-                ['number' => '1', 'title' => 'Risikolage', 'preview' => 'Verteilung über Bereiche und Trend zum Vorquartal.'],
-                ['number' => '2', 'title' => 'Maßnahmen-Status', 'preview' => 'Anteil offen/in Umsetzung/abgeschlossen pro Domäne.'],
-                ['number' => '3', 'title' => 'Vorfälle und Lessons Learned', 'preview' => 'Top-3 Vorfälle, Ursachen und Wirksamkeit der Reaktion.'],
+                [
+                    'number' => '1',
+                    'title' => $this->sampleText('admin.report_style.sample.section_1.title'),
+                    'preview' => $this->sampleText('admin.report_style.sample.section_1.preview'),
+                ],
+                [
+                    'number' => '2',
+                    'title' => $this->sampleText('admin.report_style.sample.section_2.title'),
+                    'preview' => $this->sampleText('admin.report_style.sample.section_2.preview'),
+                ],
+                [
+                    'number' => '3',
+                    'title' => $this->sampleText('admin.report_style.sample.section_3.title'),
+                    'preview' => $this->sampleText('admin.report_style.sample.section_3.preview'),
+                ],
             ],
             'kpis' => [
-                ['label' => 'Offene Risiken', 'value' => 47],
-                ['label' => 'Maßnahmen-Quote', 'value' => '78%'],
+                ['label' => $this->sampleText('admin.report_style.sample.kpi.open_risks'), 'value' => 47],
+                ['label' => $this->sampleText('admin.report_style.sample.kpi.measure_rate'), 'value' => '78%'],
                 ['label' => 'MTTR (h)', 'value' => 4.2],
             ],
             'appendix' => [
-                ['code' => 'A', 'title' => 'Empfehlungen aus Reviews'],
-                ['code' => 'B', 'title' => 'KPI-Detail-Tabellen'],
+                ['code' => 'A', 'title' => $this->sampleText('admin.report_style.sample.appendix_a')],
+                ['code' => 'B', 'title' => $this->sampleText('admin.report_style.sample.appendix_b')],
             ],
         ];
+    }
+
+    /**
+     * Translates a preview sample string (admin domain) so the live preview
+     * follows the UI locale.
+     */
+    private function sampleText(string $id): string
+    {
+        return $this->translator->trans($id, [], 'admin');
     }
 }

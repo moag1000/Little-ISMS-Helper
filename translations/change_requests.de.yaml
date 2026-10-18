@@ -101,6 +101,7 @@ change_request:
         clause_reference: 'Optionales ISO 27001 / DORA / NIS2 Klausel-Tag für §6.3 geplante Änderungen oder §8.1 operative Maßnahmen-Differenzierung'
         related_finding: 'ISO 27001 Cl. 10.1 — Lineage zur Feststellung, die diesen Change ausgelöst hat (optional, aber empfohlen für Audit-Trail).'
         related_corrective_action: 'ISO 27001 Cl. 10.1 — Lineage zur Korrekturmaßnahme, die diesen Change als Umsetzungsbaustein nutzt (optional).'
+        status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Entwurf → Eingereicht → In Prüfung → Genehmigt → Eingeplant → Umgesetzt → Verifiziert → Geschlossen). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     edit: Bearbeiten
     confirm:
         delete: Löschen

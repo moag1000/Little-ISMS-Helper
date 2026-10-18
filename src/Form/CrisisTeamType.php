@@ -9,7 +9,7 @@ use App\Entity\CrisisTeam;
 use App\Entity\Person;
 use App\Entity\User;
 use App\Form\SectionMapInterface;
-use App\Form\Type\JsonStructuredType;
+use App\Form\Type\JsonBuilderType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -254,16 +254,22 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
                     'rows' => 3,
                 ],
             ])
-            // C-06: JsonStructuredType bakes in the JsonArrayTransformer so
-            // invalid JSON surfaces as TransformationFailedException.
-            ->add('escalationMatrix', JsonStructuredType::class, [
+            // BSI 200-4 §6.2 + NIS2 Art. 23 — external escalation partners.
+            // Shape: [{trigger, externalPartner, contactInfo, escalateAfter}].
+            ->add('escalationMatrix', JsonBuilderType::class, [
                 'label' => 'crisis_team.field.escalation_matrix',
                 'required' => false,
-                'attr' => [
-                    'rows' => 6,
-                    'placeholder' => 'crisis_team.placeholder.escalation_matrix',
-                ],
                 'help' => 'crisis_team.help.escalation_matrix_json',
+                'shape' => 'list',
+                'add_label' => 'crisis_team.json_builder.escalation.add',
+                'fields' => [
+                    ['key' => 'trigger', 'type' => 'text', 'label' => 'crisis_team.json_builder.escalation.trigger', 'required' => true],
+                    ['key' => 'externalPartner', 'type' => 'text', 'label' => 'crisis_team.json_builder.escalation.external_partner', 'required' => true,
+                        'suggestions' => ['BSI', 'CERT-Bund', 'Police', 'BaFin', 'LDA', 'ENISA']],
+                    ['key' => 'contactInfo', 'type' => 'text', 'label' => 'crisis_team.json_builder.escalation.contact_info'],
+                    ['key' => 'escalateAfter', 'type' => 'text', 'label' => 'crisis_team.json_builder.escalation.escalate_after',
+                        'placeholder' => 'crisis_team.json_builder.escalation.escalate_after_placeholder'],
+                ],
             ])
             ->add('activationCount', IntegerType::class, [
                 'label' => 'crisis_team.field.activation_count',
@@ -280,7 +286,6 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
             ])
         ;
 
-        // JsonArrayTransformer is now applied automatically by JsonStructuredType.
     }
 
     /**

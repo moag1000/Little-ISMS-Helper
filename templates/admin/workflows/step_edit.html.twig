@@ -2,6 +2,7 @@
 {% trans_default_domain 'admin' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_json_view.html.twig' as _fa_json_view %}
 
 {% block admin_title %}{{ 'admin.workflows.edit.title'|trans({ '%workflow%': workflowName, '%step%': stepIndex + 1 }, 'admin') }}{% endblock %}
 
@@ -82,7 +83,7 @@
                         <p class="text-muted small mb-2">{{ 'admin.workflows.form.approver_users_help'|trans }}</p>
                         <div class="row g-2 align-items-start">
                             <div class="col-md-8">
-                                {{ form_widget(form.approverUsers, { attr: { class: 'form-control' } }) }}
+                                {{ form_widget(form.approverUsers) }}
                                 {{ form_errors(form.approverUsers) }}
                             </div>
                         </div>
@@ -125,7 +126,7 @@
                             <div class="mt-1 small text-muted">
                                 <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                                 {{ 'admin.workflows.yaml_value'|trans }}:
-                                <code>{{ yamlStep.auto_progress_conditions|json_encode }}</code>
+                                {{ _fa_json_view.render(yamlStep.auto_progress_conditions) }}
                             </div>
                         {% endif %}
                     </div>

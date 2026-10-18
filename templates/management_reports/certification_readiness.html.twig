@@ -92,7 +92,7 @@
                     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for key, clause in clause_compliance %}
                     <tr class="fa-table__row">
-                        <td class="fa-table__cell"><strong>{{ clause.name|trans({}, 'compliance') }}</strong></td>
+                        <td class="fa-table__cell"><strong>{{ clause.name|trans({}, 'wizard') }}</strong></td>
                         <td class="fa-table__cell">
                             {{ _fa_progress.render({ value: clause.score, tone: clause.score >= 80 ? 'success' : (clause.score >= 40 ? 'warning' : 'danger'), showText: true }) }}
                         </td>
@@ -195,7 +195,7 @@
                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                     <strong>{{ gap.name|default(gap.check|default('')) }}</strong>
                     {% if gap.description|default('') %}
-                        <br><small class="text-muted">{{ gap.description }}</small>
+                        <br><small class="text-muted">{{ gap.description|trans(gap.description_params|default({}), 'wizard') }}</small>
                     {% endif %}
                 </li>
                 {% endfor %}
@@ -220,7 +220,7 @@
                     <i class="fa-icon fa-icon--util-arrow-right text-info" aria-hidden="true"></i>
                     {{ improvement.name|default(improvement.check|default('')) }}
                     {% if improvement.description|default('') %}
-                        <br><small class="text-muted">{{ improvement.description }}</small>
+                        <br><small class="text-muted">{{ improvement.description|trans(improvement.description_params|default({}), 'wizard') }}</small>
                     {% endif %}
                 </li>
                 {% endfor %}

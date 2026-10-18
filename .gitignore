@@ -15,7 +15,7 @@
 ###< phpunit/phpunit ###
 
 ###> npm ###
-/node_modules/
+/node_modules
 ###< npm ###
 
 ###> symfony/asset-mapper ###

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Dashboard Customizer Controller
@@ -276,8 +277,8 @@ export default class extends Controller {
                     this.lastSyncedAt = data.updated_at;
                 } else {
                     const msg = response.status === 403
-                        ? 'Keine Berechtigung'
-                        : `Fehler ${response.status}`;
+                        ? faT('forbidden')
+                        : faT('error_status', { '%status%': response.status });
                     window.faToast(msg, 'danger');
                 }
             } catch (error) {
@@ -361,7 +362,7 @@ export default class extends Controller {
 
     // Reset to defaults
     async resetToDefaults() {
-        if (await window.faConfirm(window.translations?.dashboard?.confirm_reset || 'Do you want to reset the dashboard to default settings?', { tone: 'warn' })) {
+        if (await window.faConfirm(faT('dashboard.confirm_reset'), { tone: 'warn' })) {
             this.preferences = this.getDefaultPreferences();
             this.savePreferences();
             this.applyPreferences();
@@ -403,9 +404,9 @@ export default class extends Controller {
                 this.savePreferences();
                 this.applyPreferences();
 
-                window.faToast(window.translations?.dashboard?.settings_imported || 'Dashboard settings successfully imported!', 'success');
+                window.faToast(faT('dashboard.settings_imported'), 'success');
             } catch (error) {
-                window.faToast(window.translations?.dashboard?.import_failed || 'Error importing settings. Please check the file.', 'danger');
+                window.faToast(faT('dashboard.import_failed'), 'danger');
             }
         };
         reader.readAsText(file);

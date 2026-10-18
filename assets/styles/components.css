@@ -3,10 +3,6 @@
    ============================================ */
 
 /* Breadcrumbs */
-[data-theme="dark"] .breadcrumb {
-    background-color: var(--bg);
-}
-
 [data-theme="dark"] .breadcrumb-item,
 [data-theme="dark"] .breadcrumb-item a {
     color: var(--fg-2);
@@ -115,7 +111,7 @@
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg), 0 0 30px var(--primary-glow);
+    box-shadow: var(--shadow-lg);
     position: relative;
     z-index: var(--z-popover-modal); /* above modal backdrop within modal layer */
     transform: scale(0.9);
@@ -166,7 +162,7 @@
     right: 0;
     bottom: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
+    background: var(--primary);
     pointer-events: none;
 }
 
@@ -174,7 +170,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--fg);
-    text-shadow: 0 0 20px var(--primary-tint);
+    text-shadow: none;
 }
 
 .modal:not(.fade) .modal-close {
@@ -206,15 +202,14 @@
     background: var(--surface);
     border-radius: var(--r-md);
     padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
+    box-shadow: var(--shadow-lg);
     min-width: 300px;
     max-width: 400px;
     pointer-events: all;
     opacity: 0;
     transform: translateX(400px);
     transition: all 0.3s ease;
-    border-left: 4px solid;
-    border: 2px solid;
+    border: 1px solid var(--border); /* Kanon: Meldung = Tönungsrahmen */
 }
 
 .notification.notification-visible {
@@ -228,27 +223,27 @@
 }
 
 .notification-success {
-    border-color: var(--success);
+    border-color: color-mix(in oklab, var(--success) 35%, var(--border));
     background: var(--success-glow);
-    box-shadow: var(--shadow-lg), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
+    box-shadow: var(--shadow-lg);
 }
 
 .notification-error {
-    border-color: var(--danger);
+    border-color: color-mix(in oklab, var(--danger) 35%, var(--border));
     background: var(--danger-glow);
-    box-shadow: var(--shadow-lg), 0 0 20px var(--danger-glow);
+    box-shadow: var(--shadow-lg);
 }
 
 .notification-warning {
-    border-color: var(--warning);
+    border-color: color-mix(in oklab, var(--warning) 35%, var(--border));
     background: var(--warning-glow);
-    box-shadow: var(--shadow-lg), 0 0 20px var(--warning-glow);
+    box-shadow: var(--shadow-lg);
 }
 
 .notification-info {
-    border-color: var(--primary);
+    border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
     background: var(--primary-tint);
-    box-shadow: var(--shadow-lg), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: var(--shadow-lg);
 }
 
 .notification-header {
@@ -654,28 +649,28 @@
     border-radius: var(--r-xl);
     transition: width 0.6s ease, background-color 0.3s ease;
     position: relative;
-    background: linear-gradient(90deg, var(--success) 0%, var(--success-strong) 100%);
+    background: var(--success);
 }
 
 /* Color states for progress bar */
 .sla-progress-bar.sla-on-track {
-    background: linear-gradient(90deg, var(--success) 0%, var(--success-strong) 100%);
-    box-shadow: 0 0 10px var(--success-tint);
+    background: var(--success);
+    box-shadow: none;
 }
 
 .sla-progress-bar.sla-at-risk {
-    background: linear-gradient(90deg, var(--warning) 0%, var(--warning-strong) 100%);
-    box-shadow: 0 0 10px var(--warning-glow);
+    background: var(--warning);
+    box-shadow: none;
 }
 
 .sla-progress-bar.sla-critical {
-    background: linear-gradient(90deg, var(--warning-strong) 0%, var(--danger) 100%);
-    box-shadow: 0 0 10px var(--warning-glow);
+    background: var(--warning-strong);
+    box-shadow: none;
 }
 
 .sla-progress-bar.sla-overdue {
-    background: linear-gradient(90deg, var(--danger) 0%, var(--danger) 100%);
-    box-shadow: 0 0 10px var(--danger-glow);
+    background: var(--danger);
+    box-shadow: none;
     animation: sla-pulse 2s ease-in-out infinite;
 }
 
@@ -911,41 +906,3 @@
         min-width: 40px;
     }
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   fa-savebar — floating staged-save bar (resource-planning roadmap grid).
-   Tokens only (Stylelint bans raw hex in color props). BEM.
-   ───────────────────────────────────────────────────────────────────────── */
-.fa-savebar {
-    position: fixed;
-    left: 50%;
-    bottom: 1.5rem;
-    transform: translateX(-50%);
-    z-index: var(--z-sticky);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    max-width: min(40rem, calc(100vw - 2rem));
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg, 0.75rem);
-    background: var(--surface-2, var(--surface));
-    box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
-}
-.fa-savebar[hidden] { display: none; }
-.fa-savebar--warning { border-color: var(--warning); }
-.fa-savebar__icon { color: var(--primary); font-size: 1.1rem; }
-.fa-savebar__text { display: flex; flex-direction: column; line-height: 1.2; }
-.fa-savebar__title { font-weight: 600; }
-.fa-savebar__detail { font-size: 0.85rem; color: var(--fg-2, var(--fg)); }
-.fa-savebar__actions { display: flex; gap: 0.5rem; margin-left: auto; }
-.fa-savebar__btn {
-    padding: 0.35rem 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: var(--r-md, 0.5rem);
-    background: transparent;
-    color: var(--fg);
-    cursor: pointer;
-}
-.fa-savebar__btn--save { background: var(--primary); border-color: var(--primary); color: var(--on-primary, var(--surface)); }
-.fa-savebar__btn--discard:hover { background: var(--surface); }

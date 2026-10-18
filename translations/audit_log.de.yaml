@@ -112,3 +112,11 @@ audit_log:
             gdpr: 'Speicherbegrenzung — personenbezogene Daten dürfen nicht länger aufbewahrt werden als notwendig.'
             nis2: 'Audit-Logs müssen mindestens 12 Monate aufbewahrt werden.'
             iso: 'Protokollierung von Ereignissen — nachweisbare Aufbewahrung erforderlich.'
+    action_code:
+        create: 'Angelegt'
+        update: 'Geändert'
+        delete: 'Gelöscht'
+        view: 'Angesehen'
+        export: 'Exportiert'
+        import: 'Importiert'
+        bulk: 'Massenänderung'

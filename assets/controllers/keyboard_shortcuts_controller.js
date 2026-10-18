@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Keyboard Shortcuts Controller
@@ -18,26 +19,26 @@ export default class extends Controller {
         // Global Command Palette — matches existing binding in command_palette_controller.js
         // (metaKey/ctrlKey + 'p'). Documented here for discoverability; the actual key
         // handling lives in command_palette_controller.js — these entries are display-only.
-        { keys: ['⌘+P'], description: 'Open Command Palette (macOS)', category: 'Global', displayOnly: true },
-        { keys: ['Ctrl+P'], description: 'Open Command Palette (Windows/Linux)', category: 'Global', displayOnly: true },
+        { keys: ['⌘+P'], description: () => faT('keyboard_shortcuts.palette_mac'), category: 'global', displayOnly: true },
+        { keys: ['Ctrl+P'], description: () => faT('keyboard_shortcuts.palette_win'), category: 'global', displayOnly: true },
 
         // Global Navigation (paths without locale - will be prefixed automatically)
-        { keys: ['g', 'd'], description: 'Go to Dashboard', action: () => this.navigateWithLocale('/dashboard'), category: 'Navigation' },
-        { keys: ['g', 'a'], description: 'Go to Assets', action: () => this.navigateWithLocale('/asset'), category: 'Navigation' },
-        { keys: ['g', 'r'], description: 'Go to Risks', action: () => this.navigateWithLocale('/risk'), category: 'Navigation' },
-        { keys: ['g', 'i'], description: 'Go to Incidents', action: () => this.navigateWithLocale('/incident'), category: 'Navigation' },
-        { keys: ['g', 's'], description: 'Go to SoA', action: () => this.navigateWithLocale('/soa'), category: 'Navigation' },
-        { keys: ['g', 't'], description: 'Go to Trainings', action: () => this.navigateWithLocale('/training'), category: 'Navigation' },
-        { keys: ['g', 'c'], description: 'Go to Compliance', action: () => this.navigateWithLocale('/compliance'), category: 'Navigation' },
+        { keys: ['g', 'd'], description: () => faT('keyboard_shortcuts.go_dashboard'), action: () => this.navigateWithLocale('/dashboard'), category: 'navigation' },
+        { keys: ['g', 'a'], description: () => faT('keyboard_shortcuts.go_assets'), action: () => this.navigateWithLocale('/asset'), category: 'navigation' },
+        { keys: ['g', 'r'], description: () => faT('keyboard_shortcuts.go_risks'), action: () => this.navigateWithLocale('/risk'), category: 'navigation' },
+        { keys: ['g', 'i'], description: () => faT('keyboard_shortcuts.go_incidents'), action: () => this.navigateWithLocale('/incident'), category: 'navigation' },
+        { keys: ['g', 's'], description: () => faT('keyboard_shortcuts.go_soa'), action: () => this.navigateWithLocale('/soa'), category: 'navigation' },
+        { keys: ['g', 't'], description: () => faT('keyboard_shortcuts.go_trainings'), action: () => this.navigateWithLocale('/training'), category: 'navigation' },
+        { keys: ['g', 'c'], description: () => faT('keyboard_shortcuts.go_compliance'), action: () => this.navigateWithLocale('/compliance'), category: 'navigation' },
 
         // Actions
-        { keys: ['c'], description: 'Create new (context-aware)', action: () => this.contextCreate(), category: 'Actions' },
-        { keys: ['e'], description: 'Edit current item', action: () => this.contextEdit(), category: 'Actions' },
-        { keys: ['/'], description: 'Focus search', action: () => this.focusSearch(), category: 'Actions' },
+        { keys: ['c'], description: () => faT('keyboard_shortcuts.create'), action: () => this.contextCreate(), category: 'actions' },
+        { keys: ['e'], description: () => faT('keyboard_shortcuts.edit'), action: () => this.contextEdit(), category: 'actions' },
+        { keys: ['/'], description: () => faT('keyboard_shortcuts.search'), action: () => this.focusSearch(), category: 'actions' },
 
         // Special
-        { keys: ['?'], description: 'Show this help', action: () => this.show(), category: 'Help' },
-        { keys: ['Escape'], description: 'Close modals/dialogs', action: () => this.closeModals(), category: 'Help' },
+        { keys: ['?'], description: () => faT('keyboard_shortcuts.help'), action: () => this.show(), category: 'help' },
+        { keys: ['Escape'], description: () => faT('keyboard_shortcuts.close'), action: () => this.closeModals(), category: 'help' },
     ];
 
     keySequence = [];
@@ -250,7 +251,7 @@ export default class extends Controller {
         for (const [category, shortcuts] of Object.entries(grouped)) {
             html += `
                 <div class="keyboard-shortcuts-category">
-                    <h4>${category}</h4>
+                    <h4>${this.categoryLabel(category)}</h4>
                     <dl>
             `;
 
@@ -258,9 +259,9 @@ export default class extends Controller {
                 html += `
                     <div class="keyboard-shortcuts-item">
                         <dt>
-                            ${shortcut.keys.map(k => `<kbd>${this.formatKey(k)}</kbd>`).join(' <span class="then">then</span> ')}
+                            ${shortcut.keys.map(k => `<kbd>${this.formatKey(k)}</kbd>`).join(` <span class="then">${faT('keyboard_shortcuts.then')}</span> `)}
                         </dt>
-                        <dd>${shortcut.description}</dd>
+                        <dd>${shortcut.description()}</dd>
                     </div>
                 `;
             });
@@ -273,6 +274,16 @@ export default class extends Controller {
 
         html += '</div>';
         content.innerHTML = html;
+    }
+
+    categoryLabel(category) {
+        const labels = {
+            global: () => faT('keyboard_shortcuts.category.global'),
+            navigation: () => faT('keyboard_shortcuts.category.navigation'),
+            actions: () => faT('keyboard_shortcuts.category.actions'),
+            help: () => faT('keyboard_shortcuts.category.help'),
+        };
+        return labels[category] ? labels[category]() : category;
     }
 
     groupByCategory(shortcuts) {

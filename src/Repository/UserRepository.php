@@ -378,6 +378,28 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Active users of one tenant, sorted by name — the assignee choices of the
+     * bulk "assign" action.
+     *
+     * @return list<User>
+     */
+    public function findActiveByTenant(\App\Entity\Tenant $tenant): array
+    {
+        /** @var list<User> $users */
+        $users = $this->createQueryBuilder('u')
+            ->andWhere('u.tenant = :tenant')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true)
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $users;
+    }
+
+    /**
      * Count users with NO tenant assignment. Such accounts cannot see any
      * multi-tenant data (controls, risks, VVT, …) because every repository
      * scopes to `u.tenant = :tenant`. Surfaced on the Tenant-Admin index

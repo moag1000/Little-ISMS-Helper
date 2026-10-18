@@ -33,6 +33,9 @@ describe('wizard-form-guard controller', () => {
         expect(ev.defaultPrevented).toBe(true);
         expect(select.classList.contains('is-invalid')).toBe(true);
         expect(window.faToast).toHaveBeenCalledTimes(1);
+        // fa-alerts.js signature is faToast(message, variant) — the variant
+        // must be a string, not an options object.
+        expect(window.faToast).toHaveBeenCalledWith(expect.any(String), 'warning');
     });
 
     it('lets submit through when every required field has a value', async () => {

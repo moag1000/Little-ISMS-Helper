@@ -12,12 +12,12 @@
  # Single chip usage:
  #   {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
  #   {{ _fa_filter_chip.render('Heute', { active: true, href: '?period=today' }) }}
- #   {# or as a <button> without href #}
+ #   (or as a <button> without href)
  #   {{ _fa_filter_chip.render('Heute', { active: true, type: 'button' }) }}
  #
  # Group usage:
  #   {{ _fa_filter_chip.group(['Heute', 'Woche', 'Monat'], 0) }}
- #   {# With hrefs: #}
+ #   (With hrefs:)
  #   _fa_filter_chip.group(
  #       [
  #           { label: 'Heute',  href: '?period=today' },
@@ -74,7 +74,7 @@
 
     <div class="fa-filter-chip-group{{ props.class is defined ? ' ' ~ props.class : '' }}"
          role="group"
-         aria-label="{{ props.ariaLabel|default('Filter') }}">
+         aria-label="{{ props.ariaLabel|default('ui.component.filter'|trans({}, 'ui')) }}">
         {% for idx, item in normalised %}
             {% set isActive = (idx == activeIndex) %}
             {% set chipClass = 'fa-filter-chip' ~ (isActive ? ' fa-filter-chip--active' : '') %}

@@ -18,7 +18,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'status-gauge', label: 'TISAX' },
+        badge: { icon: 'nav-speedometer', label: 'TISAX' },
         title: 'tisax.import.assess.title'|trans({}, 'tisax_isa'),
         subtitle: 'tisax.import.assess.subtitle'|trans({}, 'tisax_isa'),
         actions: [
@@ -26,7 +26,7 @@
                 label: 'tisax.import.assess.export_enx'|trans({}, 'tisax_isa'),
                 href: path('app_tisax_import_export_enx', { _locale: app.request.locale, frameworkId: framework.id }),
                 variant: 'outline-secondary',
-                icon: 'ui-download'
+                icon: 'nav-download'
             }
         ]
     }) }}
@@ -48,7 +48,7 @@
                     label: 'tisax.import.assess.avg_reifegrad'|trans({}, 'tisax_isa'),
                     value: aggregate.average ~ ' / 5',
                     variant: 'primary',
-                    icon: 'status-gauge'
+                    icon: 'nav-speedometer'
                 }) }}
             </div>
             <div class="col-md-3">
@@ -116,21 +116,21 @@
                         {{ 'tisax.import.assess.save_button'|trans({}, 'tisax_isa') }}
                     </button>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-sm table-hover mb-0">
-                        <thead>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--hover fa-table--compact">
+                        <thead class="fa-table__head">
                             <tr>
-                                <th>{{ 'tisax.import.assess.col.id'|trans({}, 'tisax_isa') }}</th>
-                                <th>{{ 'tisax.import.assess.col.title'|trans({}, 'tisax_isa') }}</th>
-                                <th>{{ 'tisax.import.assess.col.tier'|trans({}, 'tisax_isa') }}</th>
-                                <th title="{{ 'tisax.import.assess.col.req_levels_tooltip'|trans({}, 'tisax_isa') }}">
+                                <th scope="col" class="fa-table__th">{{ 'tisax.import.assess.col.id'|trans({}, 'tisax_isa') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'tisax.import.assess.col.title'|trans({}, 'tisax_isa') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'tisax.import.assess.col.tier'|trans({}, 'tisax_isa') }}</th>
+                                <th scope="col" class="fa-table__th" title="{{ 'tisax.import.assess.col.req_levels_tooltip'|trans({}, 'tisax_isa') }}">
                                     {{ 'tisax.import.assess.col.req_levels'|trans({}, 'tisax_isa') }}
                                 </th>
-                                <th>{{ 'tisax.import.assess.col.assessment'|trans({}, 'tisax_isa') }}</th>
-                                <th>{{ 'tisax.import.assess.col.target'|trans({}, 'tisax_isa') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'tisax.import.assess.col.assessment'|trans({}, 'tisax_isa') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'tisax.import.assess.col.target'|trans({}, 'tisax_isa') }}</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="fa-table__body">
                             {% set dimLabels = {
                                 'information_security': 'tisax.import.assess.dimension.information_security'|trans({}, 'tisax_isa'),
                                 'prototype_protection': 'tisax.import.assess.dimension.prototype_protection'|trans({}, 'tisax_isa'),
@@ -140,26 +140,26 @@
                             {% for req in requirements %}
                             {% set isDataProtection = req.category == 'data_protection' %}
                             {% if req.category != prevCat %}
-                                <tr class="table-active">
-                                    <th colspan="6" class="py-2">
-                                        <i class="fa-icon fa-icon--folder me-1"></i>
+                                <tr class="fa-table__row">
+                                    <th colspan="6" class="fa-table__cell bg-body-secondary py-2">
+                                        <i class="fa-icon fa-icon--ui-files me-1"></i>
                                         {{ dimLabels[req.category]|default(req.category|replace({'_': ' '})|capitalize) }}
                                         {% if isDataProtection %}<span class="text-muted fw-normal small ms-2">— {{ 'tisax.import.assess.dp_note'|trans({}, 'tisax_isa') }}</span>{% endif %}
                                     </th>
                                 </tr>
                                 {% set prevCat = req.category %}
                             {% endif %}
-                            <tr>
-                                <td><code>{{ req.requirementId }}</code></td>
-                                <td class="text-truncate" style="max-width:300px" title="{{ req.title }}">{{ req.title }}</td>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell"><code>{{ req.requirementId }}</code></td>
+                                <td class="fa-table__cell text-truncate" style="max-width:300px" title="{{ req.title }}">{{ req.title }}</td>
+                                <td class="fa-table__cell">
                                     {% if isDataProtection %}
                                         <span class="badge bg-info text-dark">{{ dimLabels['data_protection'] }}</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ dimLabels[req.category]|default(req.category|replace({'_': ' '})|capitalize) }}</span>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="fa-table__cell">
                                     {# ── Requirement tiers M/S/H/VH/SGA (B3 tiers-first-class, §9.2) ── #}
                                     {% set tierMap = req.dataSourceMapping ?? {} %}
                                     {% set tiers = [
@@ -186,7 +186,7 @@
                                         {% endif %}
                                     </div>
                                 </td>
-                                <td>
+                                <td class="fa-table__cell">
                                     {% if isDataProtection %}
                                         {# ── Data Protection: 3-state radio (NA / OK / Nicht OK) ── #}
                                         {% set currentDpState = req.assessmentStateDp %}
@@ -242,7 +242,7 @@
                                         </select>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="fa-table__cell">
                                     {% if isDataProtection %}
                                         <span class="badge bg-success-subtle text-success-emphasis">
                                             {{ 'tisax.import.assess.dp.target_label'|trans({}, 'tisax_isa') }}
@@ -258,8 +258,8 @@
                                 </td>
                             </tr>
                             {% else %}
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
+                            <tr class="fa-table__row">
+                                <td colspan="6" class="fa-table__cell fa-table__empty">
                                     {{ 'tisax.import.assess.no_requirements'|trans({}, 'tisax_isa') }}
                                 </td>
                             </tr>
@@ -292,7 +292,7 @@
                     <span class="text-muted">{{ 'tisax.import.assess.success_desc'|trans({}, 'tisax_isa') }}</span>
                 </div>
                 <a href="{{ path('app_compliance_framework_show', { id: framework.id }) }}" class="btn btn-success">
-                    <i class="fa-icon fa-icon--arrow-right me-1"></i> {{ 'tisax.import.assess.view_overview'|trans({}, 'tisax_isa') }}
+                    <i class="fa-icon fa-icon--util-arrow-right me-1"></i> {{ 'tisax.import.assess.view_overview'|trans({}, 'tisax_isa') }}
                 </a>
             </div>
         </div>

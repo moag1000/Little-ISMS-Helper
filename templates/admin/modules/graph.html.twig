@@ -12,9 +12,9 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-workflow', label: 'Modules' },
-        title: 'Modul-Abhängigkeiten',
-        subtitle: 'Visualisierung der Modul-Abhängigkeiten',
+        badge: { icon: 'nav-workflow', label: 'admin.modules.badge'|trans({}, 'admin') },
+        title: 'admin.modules.graph.title'|trans({}, 'admin'),
+        subtitle: 'admin.modules.graph.subtitle'|trans({}, 'admin'),
         actions: [
             { label: 'common.back_to_overview'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('admin_modules_index') }
         ]
@@ -24,43 +24,43 @@
         <div class="col-lg-8">
             <section class="fa-section">
                 <div class="fa-section__header">
-                    <h2 class="fa-section__title">Abhängigkeits-Graph</h2>
+                    <h2 class="fa-section__title">{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }}</h2>
                 </div>
                 <div class="fa-section__body">
                     {% embed '_components/_fa_table.html.twig' %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col" class="fa-table__th">Modul</th>
-                                <th scope="col" class="fa-table__th">Status</th>
-                                <th scope="col" class="fa-table__th">Typ</th>
-                                <th scope="col" class="fa-table__th">Benötigt</th>
-                                <th scope="col" class="fa-table__th">Benötigt von</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.modules.graph.col.module'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.modules.field.status'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.modules.graph.col.type'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.modules.graph.col.requires'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.modules.required_by'|trans({}, 'admin') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
                             {% for key, graph in dependency_graph %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell">
-                                        <strong>{{ graph.name }}</strong>
+                                        <strong>{{ module_name(key, graph.name) }}</strong>
                                     </td>
                                     <td class="fa-table__cell">
                                         {% if key in active_modules %}
-                                            <span class="fa-status-pill fa-status-pill--success">Aktiv</span>
+                                            <span class="fa-status-pill fa-status-pill--success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
                                         {% else %}
-                                            <span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="fa-table__cell">
                                         {% if graph.required %}
-                                            <span class="fa-status-pill fa-status-pill--warning">Erforderlich</span>
+                                            <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.modules.required'|trans({}, 'admin') }}</span>
                                         {% else %}
-                                            <span class="fa-status-pill fa-status-pill--primary">Optional</span>
+                                            <span class="fa-status-pill fa-status-pill--primary">{{ 'admin.modules.optional'|trans({}, 'admin') }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="fa-table__cell">
                                         {% if graph.dependencies|length > 0 %}
                                             {% for dep in graph.dependencies %}
-                                                <span class="fa-status-pill fa-status-pill--warning me-1">{{ dependency_graph[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--warning me-1">{{ module_name(dep, dependency_graph[dep].name) }}</span>
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -69,7 +69,7 @@
                                     <td class="fa-table__cell">
                                         {% if graph.dependents|length > 0 %}
                                             {% for dep in graph.dependents %}
-                                                <span class="fa-status-pill fa-status-pill--primary me-1">{{ dependency_graph[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--primary me-1">{{ module_name(dep, dependency_graph[dep].name) }}</span>
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -86,27 +86,27 @@
         <div class="col-lg-4">
             <section class="fa-section mb-3">
                 <div class="fa-section__header">
-                    <h2 class="fa-section__title">Legende</h2>
+                    <h2 class="fa-section__title">{{ 'admin.modules.graph.legend'|trans({}, 'admin') }}</h2>
                 </div>
                 <div class="fa-section__body">
                     <dl class="mb-0">
-                        <dt><span class="fa-status-pill fa-status-pill--success">Aktiv</span></dt>
-                        <dd>Modul ist derzeit aktiviert</dd>
+                        <dt><span class="fa-status-pill fa-status-pill--success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span></dt>
+                        <dd>{{ 'admin.modules.graph.legend_active'|trans({}, 'admin') }}</dd>
 
-                        <dt><span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span></dt>
-                        <dd>Modul ist derzeit deaktiviert</dd>
+                        <dt><span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span></dt>
+                        <dd>{{ 'admin.modules.graph.legend_inactive'|trans({}, 'admin') }}</dd>
 
-                        <dt><span class="fa-status-pill fa-status-pill--warning">Erforderlich</span></dt>
-                        <dd>Modul ist Pflicht und kann nicht deaktiviert werden</dd>
+                        <dt><span class="fa-status-pill fa-status-pill--warning">{{ 'admin.modules.required'|trans({}, 'admin') }}</span></dt>
+                        <dd>{{ 'admin.modules.graph.legend_required'|trans({}, 'admin') }}</dd>
 
-                        <dt><span class="fa-status-pill fa-status-pill--primary">Optional</span></dt>
-                        <dd>Modul kann aktiviert/deaktiviert werden</dd>
+                        <dt><span class="fa-status-pill fa-status-pill--primary">{{ 'admin.modules.optional'|trans({}, 'admin') }}</span></dt>
+                        <dd>{{ 'admin.modules.graph.legend_optional'|trans({}, 'admin') }}</dd>
 
-                        <dt>Benötigt</dt>
-                        <dd>Module, die vorher aktiviert sein müssen</dd>
+                        <dt>{{ 'admin.modules.graph.col.requires'|trans({}, 'admin') }}</dt>
+                        <dd>{{ 'admin.modules.graph.legend_requires'|trans({}, 'admin') }}</dd>
 
-                        <dt>Benötigt von</dt>
-                        <dd>Module, die dieses Modul benötigen</dd>
+                        <dt>{{ 'admin.modules.required_by'|trans({}, 'admin') }}</dt>
+                        <dd>{{ 'admin.modules.graph.legend_required_by'|trans({}, 'admin') }}</dd>
                     </dl>
                 </div>
             </section>
@@ -115,7 +115,7 @@
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
                         <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
-                        Hinweise
+                        {{ 'admin.modules.hints_title'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body">

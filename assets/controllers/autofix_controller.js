@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * AutoFix Controller - System health auto-fix actions
@@ -18,8 +19,16 @@ export default class extends Controller {
     static values = {
         url: { type: String, default: '' },
         csrfToken: { type: String, default: '' },
-        processingText: { type: String, default: 'Processing...' }
+        processingText: { type: String, default: '' }
     };
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            processingText: () => faT('autofix.processing'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     async fix(event) {
         event.preventDefault();
@@ -33,7 +42,7 @@ export default class extends Controller {
         // Disable button and show loading state
         const originalHtml = button.innerHTML;
         button.disabled = true;
-        button.innerHTML = `<i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i> ${this.processingTextValue}`;
+        button.innerHTML = `<i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i> ${this.label('processingText')}`;
 
         // Find result container
         const resultContainer = this.hasResultTarget
@@ -57,8 +66,8 @@ export default class extends Controller {
 
             if (!response.ok) {
                 const msg = response.status === 403
-                    ? 'Keine Berechtigung'
-                    : `Fehler ${response.status}`;
+                    ? faT('forbidden')
+                    : faT('error_status', { '%status%': response.status });
                 window.faToast(msg, 'danger');
                 if (resultContainer) {
                     resultContainer.innerHTML = `
@@ -84,7 +93,7 @@ export default class extends Controller {
                         <div class="alert alert-success fix-result fairy-magic-glow">
                             <i class="fa-icon fa-icon--ui-stars fairy-icon-sparkle" aria-hidden="true"></i> ${result.message}
                             ${detailsHtml}
-                            <div class="mt-1 small text-muted opacity-75">Die Cyberpunk Fee hat das für dich erledigt!</div>
+                            <div class="mt-1 small text-muted opacity-75">${faT('autofix.done_by_fairy')}</div>
                         </div>
                     `;
                 }

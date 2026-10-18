@@ -370,10 +370,10 @@ class IncidentController extends AbstractController
             fn (\App\Entity\Incident $incident): ?array => ($c = (int) $em->createQuery(
                 'SELECT COUNT(db.id) FROM App\Entity\DataBreach db WHERE db.incident = :incident'
             )->setParameter('incident', $incident)->getSingleScalarResult()) > 0
-                ? ['message' => sprintf('%d Datenpanne(n) verknüpft', $c), 'icon' => 'shield-x']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.data_breaches', ['%count%' => $c], 'bulk_delete'), 'icon' => 'breach']
                 : null,
             fn (\App\Entity\Incident $incident): ?array => ($c = $this->riskIncidentLinkRepository->count(['incident' => $incident])) > 0
-                ? ['message' => sprintf('%d Risiko-Vorfall-Verknüpfung(en)', $c), 'icon' => 'link-45deg']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.risk_links', ['%count%' => $c], 'bulk_delete'), 'icon' => 'ui-link']
                 : null,
         ]);
     }

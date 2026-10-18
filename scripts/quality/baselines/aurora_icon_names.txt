@@ -1,5 +1,3 @@
 # check_aurora_icon_names.py baseline
 # Format: <relative-path>:<line>:<bad-icon-name>
 templates/_components/_fa_persona_cockpit_card.html.twig:32:persona-
-templates/tisax/import/assess.html.twig:145:folder
-templates/tisax/import/assess.html.twig:295:arrow-right

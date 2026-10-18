@@ -1,0 +1,66 @@
+{#
+ # Form theme for App\Form\Type\JsonBuilderType (block prefix `json_builder`).
+ #
+ # Renders the generic Aurora JSON builder instead of a textarea: label and
+ # help like every fa-cyber-input row, but no input frame around the builder
+ # (it brings its own card). Field labels, choices and help texts are
+ # translated here with the form's translation domain and handed to the
+ # json-builder Stimulus controller as one config object.
+ #}
+
+{%- block json_builder_row -%}
+    <div class="fa-cyber-input fa-cyber-input--builder{{ errors|length > 0 ? ' has-error' : '' }}">
+        {%- if label is not same as false -%}
+            <div class="fa-cyber-input__header">{{- form_label(form) -}}</div>
+        {%- endif -%}
+        {{- form_widget(form) -}}
+        {%- if help is not empty -%}
+            <small id="{{ id }}_help" class="fa-cyber-input__hint">
+                {{- help|trans(help_translation_parameters, translation_domain) -}}
+            </small>
+        {%- endif -%}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock -%}
+
+{%- block json_builder_widget -%}
+    {% import '_components/_fa_json_builder.html.twig' as _fa_json_builder %}
+    {%- set _domain = translation_domain is same as false ? 'messages' : translation_domain|default('messages') -%}
+    {%- set _fields = [] -%}
+    {%- for f in json_builder.fields -%}
+        {%- set _choices = [] -%}
+        {%- for choiceLabel, choiceValue in f.choices|default({}) -%}
+            {%- set _choices = _choices|merge([{ value: choiceValue, label: choiceLabel|trans({}, f.choice_translation_domain|default(_domain)) }]) -%}
+        {%- endfor -%}
+        {%- set _fields = _fields|merge([{
+            key: f.key,
+            type: f.type,
+            label: f.label|trans({}, _domain),
+            required: f.required|default(false),
+            choices: _choices,
+            suggestions: f.suggestions|default([]),
+            help: f.help is defined ? f.help|trans({}, _domain) : '',
+            placeholder: f.placeholder is defined ? f.placeholder|trans({}, _domain) : '',
+            itemType: f.item_type|default('text'),
+            wide: f.wide|default(f.type == 'textarea' or f.type == 'tags')
+        }]) -%}
+    {%- endfor -%}
+    {{ _fa_json_builder.render({
+        id: id,
+        name: full_name,
+        value: value,
+        disabled: disabled,
+        attr: attr,
+        ariaDescribedBy: help is not empty ? id ~ '_help' : null,
+        config: {
+            shape: json_builder.shape,
+            scalarValue: json_builder.scalar_value,
+            hiddenKeys: json_builder.hidden_keys,
+            keyLabel: json_builder.key_label ? json_builder.key_label|trans({}, _domain) : 'ui.json_builder.key'|trans({}, 'ui'),
+            keySuggestions: json_builder.key_suggestions,
+            fields: _fields
+        },
+        addLabel: json_builder.add_label ? json_builder.add_label|trans({}, _domain) : null,
+        emptyLabel: json_builder.empty_label ? json_builder.empty_label|trans({}, _domain) : null
+    }) }}
+{%- endblock -%}

@@ -289,6 +289,7 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                             {% for item in roadmap.roadmap %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
@@ -310,15 +311,13 @@
                                     {% include '_components/_badge.html.twig' with { variant: status_variant, content: item.status|replace({'_': ' '})|title } %}
                                 </td>
                                 <td class="fa-table__cell">
-                                    <div class="progress progress-h-20">
-                                        <div class="progress-bar
-                                            {% if item.current_compliance >= 80 %}bg-success
-                                            {% elseif item.current_compliance >= 50 %}bg-warning
-                                            {% else %}bg-danger{% endif %}
-                                        " style="width: {{ item.current_compliance }}%">
-                                            {{ item.current_compliance }}%
-                                        </div>
-                                    </div>
+                                    {{ _fa_progress.render({
+                                        value: item.current_compliance,
+                                        tone: item.current_compliance >= 80 ? 'success' : (item.current_compliance >= 50 ? 'warning' : 'danger'),
+                                        label: item.framework,
+                                        showText: true,
+                                        class: 'progress-h-20',
+                                    }) }}
                                 </td>
                             </tr>
                             {% endfor %}

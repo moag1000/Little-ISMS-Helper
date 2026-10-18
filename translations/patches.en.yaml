@@ -83,6 +83,7 @@ patch:
         testing_notes: 'Documentation of tests before production deployment'
         rollback_plan: 'Instructions in case the patch needs to be rolled back'
         estimated_downtime_minutes: 'Expected downtime in minutes'
+        status_readonly: 'Status is driven by the lifecycle workflow (Pending → Testing → Approved → Deployed; if needed Failed / Rolled back). Direct editing is disabled; use the status actions on the detail page.'
     kpi:
         pending: Pending
         deployed: Deployed

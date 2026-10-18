@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Batch Analysis Controller - Compliance mapping quality analysis
@@ -29,13 +30,24 @@ export default class extends Controller {
         running: { type: Boolean, default: false },
         cancelled: { type: Boolean, default: false },
         // Server-rendered status strings (Bug 2: no raw Twig in JS).
-        statusAnalyzing: { type: String, default: 'Analyzing…' },
-        statusDone: { type: String, default: 'Done' },
-        statusCancelled: { type: String, default: 'Cancelled' },
-        statusError: { type: String, default: 'Error' },
+        statusAnalyzing: { type: String, default: '' },
+        statusDone: { type: String, default: '' },
+        statusCancelled: { type: String, default: '' },
+        statusError: { type: String, default: '' },
         // Template with `__A__` / `__E__` placeholders for the results message.
-        resultsTemplate: { type: String, default: '__A__ analyzed, __E__ errors' }
+        resultsTemplate: { type: String, default: '' }
     };
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            statusAnalyzing: () => faT('batch_analysis.analyzing'),
+            statusDone: () => faT('batch_analysis.done'),
+            statusCancelled: () => faT('batch_analysis.cancelled'),
+            statusError: () => faT('batch_analysis.error'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         this.analyzed = 0;
@@ -124,12 +136,12 @@ export default class extends Controller {
         this.total = count === 'all' ? parseInt(this.element.dataset.totalUnanalyzed || 0) : parseInt(count);
 
         this.updateProgress();
-        this.updateStatus(this.statusAnalyzingValue);
+        this.updateStatus(this.label('statusAnalyzing'));
 
         try {
             await this.processBatches(count, force);
         } catch (error) {
-            this.updateStatus(this.statusErrorValue + ': ' + error.message);
+            this.updateStatus(this.label('statusError') + ': ' + error.message);
         }
 
         this.runningValue = false;
@@ -169,8 +181,8 @@ export default class extends Controller {
                 if (!response.ok) {
                     this.errors++;
                     const msg = response.status === 403
-                        ? 'Keine Berechtigung'
-                        : `Fehler ${response.status}`;
+                        ? faT('forbidden')
+                        : faT('error_status', { '%status%': response.status });
                     this.log(msg);
                     window.faToast(msg, 'danger');
                     break;
@@ -180,7 +192,7 @@ export default class extends Controller {
 
                 if (!result.success) {
                     this.errors++;
-                    this.log('Error: ' + (result.error || result.message || 'unknown error'));
+                    this.log(`${faT('error')}: ${result.error || result.message || faT('unknown_error')}`);
                     break;
                 }
 
@@ -207,7 +219,7 @@ export default class extends Controller {
 
             } catch (error) {
                 this.errors++;
-                this.log('Request error: ' + error.message);
+                this.log(`${faT('network_error')}: ${error.message}`);
                 break;
             }
 
@@ -220,7 +232,7 @@ export default class extends Controller {
 
     cancel() {
         this.cancelledValue = true;
-        this.updateStatus(this.statusCancelledValue);
+        this.updateStatus(this.label('statusCancelled'));
     }
 
     updateProgress() {
@@ -267,9 +279,9 @@ export default class extends Controller {
         }
         if (this.hasResultsMessageTarget) {
             this.resultsMessageTarget.textContent = this.resultsTemplateValue
-                .replace('__A__', this.analyzed)
-                .replace('__E__', this.errors);
+                ? this.resultsTemplateValue.replace('__A__', this.analyzed).replace('__E__', this.errors)
+                : faT('batch_analysis.results', { '%analyzed%': this.analyzed, '%errors%': this.errors });
         }
-        this.updateStatus(this.cancelledValue ? this.statusCancelledValue : this.statusDoneValue);
+        this.updateStatus(this.cancelledValue ? this.label('statusCancelled') : this.label('statusDone'));
     }
 }

@@ -7,22 +7,22 @@
     {% embed '_components/_card.html.twig' with { 'class': 'gradient-purple' } %}
         {% block card_body %}
             <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></div>
-            <p class="fs-15-white-mb fw-bold">Noch keine Framework-Mappings vorhanden</p>
+            <p class="fs-15-white-mb fw-bold">{{ 'compliance.transitive_overview.empty.title'|trans({}, 'compliance') }}</p>
             <p class="fs-11-lh-mb">
-                Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
-                <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
+                {{ 'compliance.transitive_overview.empty.text'|trans({}, 'compliance') }}
+                <br>{{ 'compliance.transitive_overview.empty.text_detail'|trans({}, 'compliance') }}
             </p>
             <div class="info-box-white">
-                <p class="h-white-no-mt-mb-sm fw-bold"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</p>
+                <p class="h-white-no-mt-mb-sm fw-bold"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'compliance.transitive_overview.empty.how_to_title'|trans({}, 'compliance') }}</p>
                 <p class="fs-095-opacity-09">
-                    Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
-                    <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.
+                    {{ 'compliance.transitive_overview.empty.how_to_text'|trans({}, 'compliance') }}
+                    <br>{{ 'compliance.transitive_overview.empty.how_to_contact'|trans({}, 'compliance') }}
                 </p>
             </div>
             <div class="inline-flex-center-wrap">
                 <button id="createMappingsBtn" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--ghost-primary-flex">
                     <span id="btnIcon"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></span>
-                    <span id="btnText">Mappings jetzt erstellen</span>
+                    <span id="btnText">{{ 'compliance.action.create_mappings_now'|trans({}, 'compliance') }}</span>
                 </button>
                 <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fw-600">
                     <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans({}, 'messages') }}
@@ -69,9 +69,14 @@
                     </div>
                 </div>
 
-                <div class="progress progress-bar-bg">
-                    <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%; height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--color-success), var(--color-info)); transition: width 0.3s;"></div>
-                </div>
+                {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                {{ _fa_progress.render({
+                    value: relationship.coveragePercentage,
+                    tone: 'success',
+                    label: relationship.sourceFramework.code ~ ' → ' ~ relationship.targetFramework.code,
+                    size: 'sm',
+                    class: 'progress-bar-bg',
+                }) }}
             {% endblock %}
         {% endembed %}
         {% endfor %}

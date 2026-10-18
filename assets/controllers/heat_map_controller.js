@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Heat Map Controller - Risk Heat Map Visualization
@@ -63,8 +64,8 @@ export default class extends Controller {
             const response = await fetch(url);
             if (!response.ok) {
                 const msg = response.status === 403
-                    ? 'Keine Berechtigung'
-                    : `Fehler ${response.status}`;
+                    ? faT('forbidden')
+                    : faT('error_status', { '%status%': response.status });
                 if (typeof window.faToast === 'function') {
                     window.faToast(msg, 'danger');
                 }
@@ -122,7 +123,10 @@ export default class extends Controller {
                     impact,
                     score,
                 });
-                const ariaLabel = `${count} ${count === 1 ? 'Risiko' : 'Risiken'} · P${probability} × I${impact}`;
+                const ariaParams = { '%count%': count, '%prob%': probability, '%impact%': impact };
+                const ariaLabel = count === 1
+                    ? faT('heat_map.cell_aria_one', ariaParams)
+                    : faT('heat_map.cell_aria', ariaParams);
                 const risksJson = this.escapeAttr(JSON.stringify(cell.risks || []));
 
                 html += `
@@ -174,11 +178,11 @@ export default class extends Controller {
         }
 
         const locale = this.localeValue || 'de';
-        const openLabel = this.localeValue === 'en' ? 'Open risk' : 'Risiko öffnen';
+        const openLabel = this.escapeHtml(faT('heat_map.open_risk'));
 
         let body = '';
         if (risks.length === 0) {
-            body = `<div class="fa-drawer__desc">${this.localeValue === 'en' ? 'No risks in this cell' : 'Keine Risiken in dieser Zelle'}</div>`;
+            body = `<div class="fa-drawer__desc">${this.escapeHtml(faT('heat_map.cell_empty'))}</div>`;
         } else {
             body += '<ul class="fa-drawer__list">';
             risks.forEach(risk => {
@@ -256,9 +260,7 @@ export default class extends Controller {
     showError() {
         this.hideLoading();
         if (this.hasGridTarget) {
-            const msg = this.localeValue === 'en'
-                ? 'Failed to load heat map data. Please try again.'
-                : 'Heatmap konnte nicht geladen werden. Bitte erneut versuchen.';
+            const msg = this.escapeHtml(faT('heat_map.load_error'));
             this.gridTarget.innerHTML = `
                 <div class="alert alert-danger" style="grid-column:1 / -1;">
                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${msg}
@@ -358,28 +360,26 @@ export default class extends Controller {
     }
 
     getBandLabel(band) {
-        const labels = this.localeValue === 'en'
-            ? { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' }
-            : { low: 'Niedrig', medium: 'Mittel', high: 'Hoch', critical: 'Kritisch' };
-        return labels[band] || band;
+        const labels = {
+            low: () => faT('heat_map.band.low'),
+            medium: () => faT('heat_map.band.medium'),
+            high: () => faT('heat_map.band.high'),
+            critical: () => faT('heat_map.band.critical'),
+        };
+        return labels[band] ? labels[band]() : band;
     }
 
     formatTooltip(key, params) {
-        const tplDe = {
-            cell:     `{count} Risiken — {band} ({prob}×{impact} = {score})`,
-            cell_one: `1 Risiko — {band} ({prob}×{impact} = {score})`,
+        const placeholders = {
+            '%count%': params.count,
+            '%band%': params.band,
+            '%prob%': params.prob,
+            '%impact%': params.impact,
+            '%score%': params.score,
         };
-        const tplEn = {
-            cell:     `{count} risks — {band} ({prob}×{impact} = {score})`,
-            cell_one: `1 risk — {band} ({prob}×{impact} = {score})`,
-        };
-        const tpl = (this.localeValue === 'en' ? tplEn : tplDe)[key] || '';
-        return tpl
-            .replace('{count}', params.count)
-            .replace('{band}', params.band)
-            .replace('{prob}', params.prob)
-            .replace('{impact}', params.impact)
-            .replace('{score}', params.score);
+        return key === 'cell_one'
+            ? faT('heat_map.tooltip_one', placeholders)
+            : faT('heat_map.tooltip', placeholders);
     }
 
     escapeHtml(text) {
