@@ -29,6 +29,9 @@ if (Turbo.config?.forms) {
 // Extension Error Handler - Suppress browser extension errors
 import './extension_error_handler.js';
 
+// CSP nonce bridge: keeps nonce'd inline scripts working across Turbo visits.
+import './js/csp-nonce.js';
+
 // CSRF Protection - Global script (not a Stimulus controller)
 import './csrf_protection.js';
 

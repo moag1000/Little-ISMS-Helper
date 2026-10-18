@@ -485,7 +485,7 @@
                         {{ _fa_alert.render({ variant: 'warning', icon: 'ui-lock', class: 'mt-3', body: 'You cannot edit inherited fulfillment data. Only the parent tenant can modify this.' }) }}
                     {% endif %}
 
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                     // Update slider value and progress bar in real-time
                     const slider = document.getElementById('fulfillmentSlider');
                     const hiddenInput = document.getElementById('fulfillmentPercentage');

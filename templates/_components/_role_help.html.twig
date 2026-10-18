@@ -145,7 +145,7 @@
     #role-help-card [aria-expanded="true"] .bi-chevron-down { transform: rotate(180deg); }
 </style>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 // Turbo re-eval guard: IIFE prevents re-declare crash on body-swap navigation
 (function () {
     function initRoleHelp() {

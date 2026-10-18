@@ -278,6 +278,12 @@ six fields implements it at all. Existing offenders are listed in
 because the previous catch-all silently buried ISO 22301 Cl. 8.2.2 RTO/RPO
 fields and BC-Exercise result-fields among unrelated data.
 
+**Inline JavaScript & CSP:** `script-src` has no `'unsafe-inline'` — every
+inline `<script>` needs `nonce="{{ csp_nonce() }}"`; no `on*=` handlers or
+`javascript:` URLs (use Stimulus `data-action`, generic helpers in
+`ui_actions_controller.js`: print, autoSubmit, submitOnce, toggle, disclose,
+copyToClipboard, confirm, …); no CSS imports in JS modules. Gate 67 enforces it.
+
 **Modal Pattern (Important):**
 Bootstrap loaded async via ES Module. For inline scripts:
 ```javascript

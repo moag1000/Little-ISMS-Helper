@@ -610,7 +610,7 @@
     {{ parent() }}
     {# Corporate structure governance is now handled by Stimulus controller: tenant-governance_controller.js #}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         // Load ISMS Context when tab is activated
         function initIsmsContextTab() {
             if (window.ismsContextTabInitialized) return;

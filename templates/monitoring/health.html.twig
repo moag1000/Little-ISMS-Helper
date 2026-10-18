@@ -694,7 +694,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         // Auto-fix helper for programmatic calls
         async function autoFixAction(action) {
             try {

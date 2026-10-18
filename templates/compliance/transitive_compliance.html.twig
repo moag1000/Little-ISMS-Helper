@@ -81,7 +81,7 @@
     ],
 }) }}
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 // Turbo re-eval guard: IIFE prevents re-declare crash on body-swap navigation
 (function () {
 // Create Cross-Framework Mappings

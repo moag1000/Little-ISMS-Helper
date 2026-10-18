@@ -332,7 +332,7 @@
 </div>
 
 {# Initialise Bootstrap tooltips for relationship and MQS badges via Turbo-compatible approach #}
-<script>
+<script nonce="{{ csp_nonce() }}">
 (function () {
     function initTooltips() {
         var els = document.querySelectorAll('[data-bs-toggle="tooltip"]');

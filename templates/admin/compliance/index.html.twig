@@ -172,7 +172,7 @@
 
 {# framework-card styles live in assets/styles/fairy-aurora-components.css #}
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 // Turbo re-eval guard: wrap in IIFE so top-level symbols are not re-declared on body-swap
 (function () {
 {# Aurora migration complete: JS template-literals below use `fa-icon fa-icon--*` markup

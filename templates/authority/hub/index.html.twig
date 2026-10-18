@@ -140,7 +140,7 @@
 
 {% block javascripts %}
 {{ parent() }}
-<script>
+<script nonce="{{ csp_nonce() }}">
 document.addEventListener('turbo:load', function () {
     // Country filter chip interaction
     const chips = document.querySelectorAll('[data-country-filter-chip]');

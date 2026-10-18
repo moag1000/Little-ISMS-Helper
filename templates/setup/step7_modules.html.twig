@@ -144,7 +144,7 @@
         </div>
     </form>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     (function() {
         function initModuleSelection() {
             const checkboxes = document.querySelectorAll('.module-checkbox');

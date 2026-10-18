@@ -501,7 +501,7 @@
 {# Double-submit guard for the repair buttons. Plain script (no Stimulus):
    this page must work even when the asset pipeline is broken. Runs after the
    browser validated the form, so the required confirm checkboxes are enforced. #}
-<script>
+<script nonce="{{ csp_nonce() }}">
 document.addEventListener('submit', function (event) {
     var button = event.submitter;
     if (button && button.hasAttribute('data-submit-once')) {

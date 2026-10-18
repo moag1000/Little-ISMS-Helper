@@ -100,8 +100,14 @@ bin/console debug:voter AssetVoter
 ### A05:2021 – Security Misconfiguration ✅
 
 **Implementation:**
-- Security headers (`SecurityHeadersSubscriber`, production only):
-  - `Content-Security-Policy`
+- Security headers (`SecurityHeadersSubscriber`, all environments except dev):
+  - `Content-Security-Policy` — `script-src 'self' 'nonce-…'` without
+    `'unsafe-inline'`/`'unsafe-eval'`/`data:`. The nonce is per request
+    (`App\Security\CspNonce`); inline scripts carry `nonce="{{ csp_nonce() }}"`,
+    Turbo visits reuse the document's nonce (`assets/js/csp-nonce.js` sends it
+    as `X-CSP-Nonce`). Inline `on*=` handlers, `javascript:` URLs and CSS
+    imports in JS modules are banned by Gate 67. `style-src` still allows
+    `'unsafe-inline'`.
   - `X-Content-Type-Options: nosniff`
   - `X-Frame-Options: SAMEORIGIN`
   - `Strict-Transport-Security` (HSTS)

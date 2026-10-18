@@ -229,7 +229,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         // Global governance descriptions for Stimulus controller access
         window.governanceDescriptions = {
             {% for model in governanceModels %}

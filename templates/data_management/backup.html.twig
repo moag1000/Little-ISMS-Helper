@@ -356,7 +356,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         // Pre-rendered translations for JS dynamic HTML (avoids Twig-in-string render bug)
         var _t = {
             totalRecordsLabel: {{ 'data_management.backup.preview.total_records'|trans({}, 'admin')|json_encode|raw }},

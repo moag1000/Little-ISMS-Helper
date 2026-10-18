@@ -67,7 +67,7 @@
     </form>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 (() => {
     const input = document.getElementById('audience-filter');
     if (!input) return;

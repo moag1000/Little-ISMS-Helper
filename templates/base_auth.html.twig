@@ -16,6 +16,8 @@
 <html lang="{{ app.request.locale }}">
 <head>
     <meta charset="UTF-8">
+    {# CSP nonce for Turbo (assets/js/csp-nonce.js) — inline scripts use csp_nonce() #}
+    <meta name="csp-nonce" content="{{ csp_nonce() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="turbo-cache-control" content="no-cache">
     <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
@@ -29,7 +31,7 @@
     <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         (function () {
             try {
                 var saved = localStorage.getItem('fa-theme');
@@ -46,7 +48,7 @@
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
         {# Aurora-Layer als parallele <link> (kein @import-Barrel → kein FOUC). #}
         {{ include('_aurora_styles.html.twig') }}
-        {{ importmap(['app']) }}
+        {{ importmap(['app'], {'nonce': csp_nonce()}) }}
     {% endblock %}
 </head>
 <body class="fa-auth-body">
@@ -93,7 +95,7 @@
 </div>
 
 {% block javascripts %}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         window.addEventListener('error', function(event) {
             if (event.message && (
                 event.message.includes('runtime.lastError') ||

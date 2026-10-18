@@ -339,7 +339,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         // TB-6: { once: true } — anonymous handler is re-registered on each page render by Turbo;
         // once:true prevents global accumulation. Charts use destroy-before-create for back-nav safety.
         document.addEventListener('turbo:load', function() {

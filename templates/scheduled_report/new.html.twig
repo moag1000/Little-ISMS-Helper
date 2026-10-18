@@ -119,7 +119,7 @@
 
 {% block javascripts %}
 {{ parent() }}
-<script>
+<script nonce="{{ csp_nonce() }}">
 document.addEventListener('turbo:load', function() {
     const scheduleSelect = document.getElementById('scheduled_report_schedule');
     const dayOfWeekGroup = document.getElementById('dayOfWeekGroup');

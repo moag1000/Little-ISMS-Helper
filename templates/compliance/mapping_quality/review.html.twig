@@ -320,7 +320,7 @@
     {% endif %}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 

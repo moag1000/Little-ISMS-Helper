@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import TomSelect from 'tom-select'
-import 'tom-select/dist/css/tom-select.default.min.css'
+// Stylesheet: linked in base.html.twig — a CSS import here would need script-src data: (CSP).
 
 /**
  * Policy-Wizard — TomSelect-backed picker for AuditFinding references in

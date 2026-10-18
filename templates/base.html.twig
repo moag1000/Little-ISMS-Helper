@@ -2,6 +2,8 @@
 <html lang="{{ app.request.locale }}">
 <head>
     <meta charset="UTF-8">
+    {# CSP nonce for Turbo (assets/js/csp-nonce.js) — inline scripts use csp_nonce() #}
+    <meta name="csp-nonce" content="{{ csp_nonce() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="turbo-cache-control" content="no-cache">
     <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
@@ -43,7 +45,7 @@
     <link rel="preload" href="/fonts/space-grotesk-700.woff2" as="font" type="font/woff2" crossorigin>
 
     {# FairyAurora v3.0 — Theme-Init (prevent Flash-of-Wrong-Theme) #}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         (function () {
             try {
                 var saved = localStorage.getItem('fa-theme');
@@ -81,6 +83,10 @@
     {% block stylesheets %}
         {# Bootstrap zuerst — Aurora kommt danach und überschreibt (Cascade-Order). #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        {# Tom Select (tom-select / ts-finding-picker controllers). Linked here, not
+           imported in JS: AssetMapper maps CSS imports to data: URLs, which the
+           CSP script-src does not allow. #}
+        <link href="{{ asset('vendor/tom-select/dist/css/tom-select.default.min.css') }}" rel="stylesheet">
 
         {# Aurora-Layer als parallele <link> (kein @import-Barrel → kein FOUC). #}
         {{ include('_aurora_styles.html.twig') }}
@@ -164,7 +170,7 @@
         {# Nur App-JS via importmap. Aurora-CSS liegt als parallele head-<link>
            im stylesheets-Block (siehe dort) — NICHT als @import-Barrel hier. #}
         <div data-turbo-permanent id="importmap-container">
-            {{ importmap(['app']) }}
+            {{ importmap(['app'], {'nonce': csp_nonce()}) }}
         </div>
     {% endblock %}
 </head>
@@ -524,7 +530,7 @@
        Listener einmalig global registriert; bei Turbo-Navigation darf es nicht
        erneut laufen (würde 'let deferredPrompt' redeclarieren → SyntaxError).
        Wraps zusätzlich in IIFE damit alle Identifier scope-lokal bleiben. #}
-    <script data-turbo-eval="false">
+    <script nonce="{{ csp_nonce() }}" data-turbo-eval="false">
         (function() {
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

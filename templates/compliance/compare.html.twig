@@ -299,7 +299,7 @@
 {% endif %}
 
 {% if selectedFramework1 and selectedFramework2 %}
-<script>
+<script nonce="{{ csp_nonce() }}">
 // Turbo re-eval guard: wrap in IIFE so top-level declarations are not re-declared on body-swap
 (function () {
 function initializeComparisonMappingButton() {

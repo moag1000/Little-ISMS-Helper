@@ -124,7 +124,7 @@
     {% endembed %}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 function selectAllEntities() {
     document.querySelectorAll('.entity-checkbox').forEach(cb => cb.checked = true);
 }

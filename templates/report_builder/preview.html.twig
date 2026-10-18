@@ -250,7 +250,7 @@
     }
 </style>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 function initReportPreviewCharts() {
     // Initialize charts if Chart.js is available
     if (typeof Chart !== 'undefined') {

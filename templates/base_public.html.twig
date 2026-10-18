@@ -17,6 +17,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    {# CSP nonce for Turbo (assets/js/csp-nonce.js) — inline scripts use csp_nonce() #}
+    <meta name="csp-nonce" content="{{ csp_nonce() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {# Prevent indexing of token-gated pages — the token is the access control #}
     <meta name="robots" content="noindex, nofollow">
@@ -33,7 +35,7 @@
     <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
 
     {# Flash theme-mode before first paint to avoid FOUC #}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         (function () {
             try {
                 var saved = localStorage.getItem('fa-theme');
@@ -50,7 +52,7 @@
            Parallel <link> pattern: no @import barrel = no FOUC (PR #795). #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
         {{ include('_aurora_styles.html.twig') }}
-        {{ importmap(['app']) }}
+        {{ importmap(['app'], {'nonce': csp_nonce()}) }}
     {% endblock %}
 </head>
 <body class="fa-public-body {% block body_class %}{% endblock %}">
@@ -87,7 +89,7 @@
 </footer>
 
 {% block javascripts %}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         window.addEventListener('error', function (event) {
             if (event.message && (
                 event.message.includes('runtime.lastError') ||

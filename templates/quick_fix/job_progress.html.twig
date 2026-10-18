@@ -136,7 +136,7 @@
         </a>
     </main>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         (function() {
             // Vanilla JS poller — keeps QuickFix usable without Stimulus / Aurora.
             const statusUrl = {{ statusUrl|json_encode|raw }};

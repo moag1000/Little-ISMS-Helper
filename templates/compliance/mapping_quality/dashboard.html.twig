@@ -435,7 +435,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     (function () {
         // Aurora palette — concrete hex fallbacks so the canvas NEVER renders
         // black if the CSS custom-property is empty/undefined at chart-build

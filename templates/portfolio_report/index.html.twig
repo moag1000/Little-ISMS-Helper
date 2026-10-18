@@ -90,7 +90,7 @@
                 </p>
             {% endblock %}
         {% endembed %}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
         // Uses the app.js global window.Chart (registered + Aurora-themed) instead
         // of a CDN ES-module import. turbo:load guarantees app.js has run and
         // function-scopes the const declarations against Turbo re-execution.

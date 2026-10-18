@@ -407,6 +407,10 @@ Die Icons werden via `importmap:install` heruntergeladen und von `asset-map:comp
 **Ursache:**
 Ein fehlerhafter JavaScript- oder CSS-Import versucht, ein Modul zu laden, das nicht existiert oder nicht aufgelöst werden kann. Dies erzeugt einen `data:application/javascript,` "URL", der von der CSP blockiert wird.
 
+Seit der Nonce-CSP erlaubt `script-src` kein `data:` mehr: JS-Module dürfen
+kein CSS importieren (AssetMapper macht daraus einen `data:`-Loader) —
+Stylesheets werden im Layout verlinkt (Gate 67 prüft das).
+
 **Häufigste Ursachen:**
 1. **Alte kompilierte Assets im Cache** - Nach Code-Änderungen (z.B. Bootstrap Icons Entfernung)
 2. Ein Import in `importmap.php`, der nicht existiert

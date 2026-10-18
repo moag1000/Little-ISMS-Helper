@@ -1088,7 +1088,7 @@
 }
 </style>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 // Initialize Bootstrap tooltips
 function initFrameworkDashboardTooltips() {
     if (!window.bootstrap || !window.bootstrap.Tooltip) { return; }

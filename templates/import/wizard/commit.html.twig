@@ -139,7 +139,7 @@
 </div>
 
 {% if not isCompleted %}
-<script>
+<script nonce="{{ csp_nonce() }}">
     {# Auto-redirect to diff once the batch status transitions to completed/failed.
        The import-progress Stimulus controller polls the page; if it detects a
        terminal status it reloads this page. Once isCompleted is true the user

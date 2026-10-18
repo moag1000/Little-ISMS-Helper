@@ -150,7 +150,7 @@
 </div>
 
 {% if maturityDiff is not empty %}
-<script>
+<script nonce="{{ csp_nonce() }}">
     document.addEventListener('turbo:load', function () {
         var all = document.getElementById('diffSelectAll');
         if (!all) return;
