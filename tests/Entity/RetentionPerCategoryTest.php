@@ -32,9 +32,9 @@ final class RetentionPerCategoryTest extends TestCase
     }
 
     #[Test]
-    public function formExposesRetentionPerCategoryViaJsonType(): void
+    public function formExposesRetentionPerCategoryViaJsonBuilder(): void
     {
         $s = self::source('Form/ProcessingActivityType.php');
-        self::assertStringContainsString("->add('retentionPerCategory', JsonStructuredType::class", $s);
+        self::assertStringContainsString("->add('retentionPerCategory', JsonBuilderType::class", $s);
     }
 }

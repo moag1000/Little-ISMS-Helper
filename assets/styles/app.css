@@ -257,7 +257,7 @@ body {
     font-weight: 500;
     letter-spacing: 0.02em;
     text-transform: uppercase;
-    box-shadow: 0 2px 8px var(--accent-tint);
+    box-shadow: none;
     border: none;
     transition: all 0.2s ease;
 }
@@ -709,7 +709,7 @@ body {
     align-items: center;
     gap: 0.375rem;
     padding: 0.5rem 1rem;
-    background: var(--brand-gradient);
+    background: var(--primary-strong); /* Kanon H4 */
     color: var(--on-primary);
     border: none;
     border-radius: var(--r-pill);
@@ -988,7 +988,7 @@ body {
 
 /* 11. Toast/Notification - Fairy accent */
 .fairy-toast {
-    border-left: 3px solid var(--accent);
+    border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border)); /* ✦-Meldung = Tönungsrahmen */
     position: relative;
     overflow: hidden;
 }
@@ -1160,14 +1160,8 @@ body {
 [data-bs-theme="dark"] .app-sidebar {
     background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
     border-right: 3px solid transparent;
-    border-image: linear-gradient(
-  180deg,
-  var(--primary) 0%,
-  var(--accent) 50%,
-  var(--primary) 100%
-) 1;
-    box-shadow: 2px 0 30px var(--primary-tint),
-                inset -1px 0 20px var(--primary-tint);
+    border-image: none;
+    box-shadow: var(--shadow-md);
 }
 
 /* Dark Mode Scrollbar */
@@ -1181,21 +1175,14 @@ body {
 
 [data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb,
 [data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg,
-                var(--primary) 0%,
-                var(--accent) 50%,
-                var(--accent) 100%);
+    background: var(--primary);
     border: 1px solid var(--primary-tint);
-    box-shadow: 0 0 15px var(--primary-glow),
-                inset 0 0 10px rgb(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 10px rgb(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:hover,
 [data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg,
-                var(--primary) 0%,
-                var(--accent) 50%,
-                var(--accent-hover) 100%);
+    background: var(--primary);
     box-shadow: 0 0 20px var(--primary-glow),
                 0 0 10px var(--accent-glow),
                 inset 0 0 15px rgb(255, 255, 255, 0.2);
@@ -1204,10 +1191,7 @@ body {
 
 [data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:active,
 [data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:active {
-    background: linear-gradient(180deg,
-                var(--primary-hover) 0%,
-                var(--accent) 50%,
-                var(--accent-hover) 100%);
+    background: var(--primary);
     box-shadow: 0 0 25px var(--primary-glow),
                 0 0 15px var(--accent-glow);
 }
@@ -1265,8 +1249,7 @@ body {
 [data-theme="dark"] .app-sidebar .nav-divider,
 [data-bs-theme="dark"] .app-sidebar .nav-divider {
     color: var(--primary);
-    text-shadow: 0 0 15px var(--primary-glow),
-                 0 0 5px var(--primary-glow);
+    text-shadow: none;
 }
 
 [data-theme="dark"] .app-sidebar .nav-divider::before,
@@ -1275,7 +1258,7 @@ body {
                 transparent,
                 var(--primary-glow),
                 transparent);
-    box-shadow: 0 0 10px var(--primary-glow);
+    box-shadow: none;
 }
 
 /* Sidebar Links - Light Mode */
@@ -1303,7 +1286,7 @@ body {
     min-width: 24px;
     text-align: center;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 0 3px var(--primary-tint));
+    filter: none;
 }
 
 .app-sidebar nav:not(#main-navigation) a span {
@@ -1321,10 +1304,7 @@ body {
     top: 0;
     width: 0;
     height: 100%;
-    background: linear-gradient(90deg,
-                var(--primary-tint),
-                var(--accent-tint),
-                transparent);
+    background: var(--primary-tint);
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: var(--r-sm);
 }
@@ -1345,7 +1325,7 @@ body {
 }
 
 .app-sidebar nav:not(#main-navigation) a:hover::after {
-    background: linear-gradient(180deg, var(--primary), var(--accent));
+    background: var(--primary);
     box-shadow: 0 0 10px var(--primary-glow);
 }
 
@@ -1369,36 +1349,22 @@ body {
 
 /* Sidebar Active Link - Bold Gradient */
 .app-sidebar nav:not(#main-navigation) a.active {
-    /* WCAG AA: Solid gradient background ensures 4.5:1 contrast with white text */
-    background: linear-gradient(135deg,
-                var(--primary-tint) 0%,
-                var(--accent-tint) 100%),
-                linear-gradient(rgb(0, 0, 0, 0.4), rgb(0, 0, 0, 0.4)); /* design-spec: sidebar active-link WCAG contrast multiply overlay */
-
-    background-blend-mode: normal, multiply;
-    color: white; /* design-spec: text on dark multiply-blend gradient active link */
+    /* Kanon H4/H5: flat tint, readable strong text, no glow */
+    background: var(--primary-tint);
+    color: var(--primary-strong);
     padding-left: calc(var(--spacing-md) + 4px);
-    box-shadow: 0 2px 15px var(--primary-tint),
-                inset 0 1px 0 rgb(255, 255, 255, 0.1);
-    text-shadow: 0 1px 3px rgb(0, 0, 0, 0.8), /* design-spec: text on dark gradient active link */
-                 0 0 15px var(--primary-glow);
     font-weight: 600;
-    border: 1px solid var(--primary-tint);
+    border: 1px solid color-mix(in oklab, var(--primary) 30%, transparent);
 }
 
 .app-sidebar nav:not(#main-navigation) a.active::before {
     width: 100%;
-    background: linear-gradient(90deg,
-                var(--primary-tint),
-                var(--accent-tint),
-                transparent);
+    background: var(--primary-tint);
 }
 
 .app-sidebar nav:not(#main-navigation) a.active::after {
-    background: linear-gradient(180deg, var(--primary), var(--accent), var(--accent));
+    background: var(--primary);
     width: 4px;
-    box-shadow: 0 0 15px var(--primary-glow),
-                0 0 10px var(--accent-glow);
 }
 
 .app-sidebar nav:not(#main-navigation) a.active i {
@@ -1426,16 +1392,8 @@ body {
 }
 
 [data-theme="dark"] .app-sidebar nav:not(#main-navigation) a.active {
-    /* WCAG AA: Enhanced contrast in dark mode */
-    background: linear-gradient(135deg,
-                var(--primary-tint) 0%,
-                var(--accent-tint) 100%),
-                linear-gradient(rgb(0, 0, 0, 0.3), rgb(0, 0, 0, 0.3)); /* design-spec: dark-mode sidebar active-link WCAG contrast multiply overlay */
-
-    background-blend-mode: normal, multiply;
-    color: white; /* design-spec: text on dark multiply-blend gradient dark-mode active link */
-    text-shadow: 0 1px 3px rgb(0, 0, 0, 0.9), /* design-spec: text on dark gradient dark-mode active link */
-                 0 0 15px rgb(var(--tone-cyan-rgb), 0.6);
+    background: var(--primary-tint);
+    color: var(--fg);
 }
 
 /* Sidebar Submenu (Expandable Navigation) */
@@ -1526,7 +1484,7 @@ body {
 .app-sidebar .badge-mini.badge-danger {
     background: rgb(var(--danger-rgb), 0.8);
     color: var(--on-danger);
-    box-shadow: 0 0 8px rgb(var(--danger-rgb), 0.5);
+    box-shadow: none;
 }
 
 .app-sidebar .framework-link {
@@ -1685,7 +1643,7 @@ h3 {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent), var(--accent));
+    background: var(--primary);
     opacity: 0;
     transition: opacity var(--t-base) var(--ease-out);
 }
@@ -1750,8 +1708,8 @@ h3 {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, var(--primary), var(--accent));
-    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    background: var(--primary);
+    box-shadow: none;
 }
 
 .kpi-card:hover {
@@ -1872,30 +1830,30 @@ h3 {
     padding: var(--spacing-md);
     border-radius: var(--r-md);
     margin: var(--spacing-md) 0;
-    border-left: 4px solid;
+    border: 1px solid; /* Kanon: Meldung = Tönungsrahmen */
 }
 
 .info-box {
     background-color: var(--primary-tint);
-    border-color: var(--primary);
+    border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
     color: var(--fg);
 }
 
 .warning-box {
     background-color: rgb(var(--warning-rgb), 0.1);
-    border-color: var(--warning);
+    border-color: color-mix(in oklab, var(--warning) 35%, var(--border));
     color: var(--fg);
 }
 
 .success-box {
     background-color: rgb(var(--success-rgb), 0.1);
-    border-color: var(--success);
+    border-color: color-mix(in oklab, var(--success) 35%, var(--border));
     color: var(--fg);
 }
 
 .danger-box {
     background-color: rgb(var(--danger-rgb), 0.1);
-    border-color: var(--danger);
+    border-color: color-mix(in oklab, var(--danger) 35%, var(--border));
     color: var(--fg);
 }
 
@@ -1918,17 +1876,12 @@ table {
     color: var(--fg);
 }
 
+/* Same header in light and dark, like .fa-table__head (Kanon: no dark
+   header bar, no coloured rule under it) */
 thead {
-    background-color: var(--fg);
-    color: var(--surface-2);
-    border-bottom: 2px solid var(--primary);
-    box-shadow: 0 2px 0 rgb(var(--bs-primary-rgb), 0.3);
-}
-
-[data-theme="dark"] thead {
     background-color: var(--surface-2);
-    border-bottom-color: var(--border);
-    color: var(--fg);
+    color: var(--fg-2);
+    border-bottom: 1px solid var(--border);
 }
 
 thead th {
@@ -1936,12 +1889,8 @@ thead th {
     text-align: left;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.875rem;
-    letter-spacing: 0.5px;
-}
-
-[data-theme="dark"] thead th {
-    color: var(--fg);
+    font-size: 12px;
+    letter-spacing: 0.04em;
 }
 
 tbody {
@@ -1991,18 +1940,12 @@ tbody td {
 
 .table thead.sticky-top th,
 .table thead.thead-sticky th {
-    background-color: var(--fg);
-    color: var(--surface-2);
+    background-color: var(--surface-2);
+    color: var(--fg-2);
     font-weight: 600;
-    border-bottom: 2px solid var(--border);
+    border-bottom: 1px solid var(--border);
     padding: 0.75rem var(--spacing-sm);
     white-space: nowrap;
-}
-
-[data-theme="dark"] .table thead.sticky-top th,
-[data-theme="dark"] .table thead.thead-sticky th {
-    background-color: var(--surface-2);
-    color: var(--fg);
 }
 
 [data-theme="dark"] .table thead.sticky-top,
@@ -2071,43 +2014,37 @@ tbody td {
 /* SEVERITY BADGES - For Risks, Vulnerabilities, Incidents (WCAG AA Compliant) */
 .badge-critical {
     /* Already WCAG AA compliant: 4.83:1 contrast */
-    background: linear-gradient(135deg, var(--danger), var(--danger-strong));
+    background: var(--danger);
     color: var(--on-danger);
     font-weight: 600;
-    box-shadow: 0 2px 4px rgb(var(--danger-rgb), 0.3);
+    box-shadow: none;
     text-shadow: 0 1px 2px rgb(0, 0, 0, 0.6); /* design-spec: text on colored badge for WCAG AA contrast */
 }
 
 .badge-high {
     /* WCAG AA: Dark overlay improves contrast from 2.80:1 to 4.5:1 */
-    background: linear-gradient(135deg, var(--warning-strong), var(--danger)),
-                linear-gradient(rgb(0, 0, 0, 0.25), rgb(0, 0, 0, 0.25)); /* design-spec: badge-high WCAG contrast multiply overlay */
-
-    background-blend-mode: normal, multiply;
+    background: var(--warning-strong); /* flat; white text ≥ 4.5:1 on warning-strong */
     color: var(--on-danger);
     font-weight: 600;
-    box-shadow: 0 2px 4px var(--warning-glow);
+    box-shadow: none;
     text-shadow: 0 1px 2px rgb(0, 0, 0, 0.7); /* design-spec: text on badge-high for WCAG AA contrast */
 }
 
 .badge-medium {
     /* Already WCAG AA compliant with dark text on amber */
-    background: linear-gradient(135deg, var(--warning), var(--warning-strong));
+    background: var(--warning);
     color: var(--on-warning);
     font-weight: 600;
-    box-shadow: 0 2px 4px var(--warning-glow);
-    text-shadow: 0 1px 1px rgb(255, 255, 255, 0.3);
+    box-shadow: none;
+    text-shadow: none;
 }
 
 .badge-low {
     /* WCAG AA: Dark overlay improves contrast from 3.68:1 to 4.5:1 */
-    background: linear-gradient(135deg, var(--primary), var(--primary-hover)),
-                linear-gradient(rgb(0, 0, 0, 0.2), rgb(0, 0, 0, 0.2)); /* design-spec: badge-low WCAG contrast multiply overlay */
-
-    background-blend-mode: normal, multiply;
+    background: var(--primary-strong); /* flat, on-primary text stays ≥ 4.5:1 */
     color: var(--on-primary);
     font-weight: 600;
-    box-shadow: 0 2px 4px var(--primary-glow);
+    box-shadow: none;
     text-shadow: 0 1px 2px rgb(0, 0, 0, 0.6); /* design-spec: text on colored badge for WCAG AA contrast */
 }
 
@@ -2366,7 +2303,7 @@ textarea.form-control {
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%);
+    background: var(--primary);
     transition: width var(--t-slow) var(--ease-out);
     display: flex;
     align-items: center;
@@ -2374,7 +2311,7 @@ textarea.form-control {
     color: var(--surface);
     font-weight: 600;
     font-size: 0.875rem;
-    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: none;
     position: relative;
 }
 
@@ -2438,7 +2375,7 @@ textarea.form-control {
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
-    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: none;
     position: relative;
 }
 
@@ -2462,63 +2399,35 @@ textarea.form-control {
     50% { opacity: 0.5; }
 }
 
-/* Language Switcher - Cyberpunk Style */
+/* Language Switcher — Aurora segmented control (Kanon H4/H5: flat, no glow) */
 .language-switcher {
     display: flex;
-    gap: var(--spacing-xs);
-    background: var(--primary-tint);
-    padding: var(--spacing-xs);
+    gap: 2px;
+    background: var(--surface-2);
+    padding: 2px;
     border-radius: var(--r-sm);
-    border: 1px solid var(--primary-tint);
-    box-shadow: inset 0 0 10px var(--primary-tint);
+    border: 1px solid var(--border);
 }
 
 .lang-btn {
     padding: var(--spacing-xs) var(--spacing-md);
-    color: var(--surface);
+    color: var(--fg-2);
     text-decoration: none;
     border-radius: var(--r-sm);
     font-weight: 600;
     font-size: 0.875rem;
-    transition: all var(--t-base) var(--ease-out);
-    opacity: 0.7;
     border: 1px solid transparent;
-    position: relative;
-    overflow: hidden;
-}
-
-.lang-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, var(--primary-tint), transparent);
-    transition: left 0.5s;
-}
-
-.lang-btn:hover::before {
-    left: 100%;
+    transition: background-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
 
 .lang-btn:hover {
-    opacity: 1;
-    background: var(--primary-tint);
-    border-color: var(--primary);
-    box-shadow: 0 0 10px var(--primary-glow),
-                inset 0 0 10px var(--primary-tint);
-    text-shadow: 0 0 5px var(--primary-glow);
+    background: var(--surface-3);
+    color: var(--fg);
 }
 
 .lang-btn.active {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    opacity: 1;
-    border-color: var(--accent);
-    box-shadow: 0 0 15px var(--primary-glow),
-                0 0 10px var(--accent-glow),
-                inset 0 0 10px rgb(255, 255, 255, 0.1);
-    text-shadow: 0 0 8px rgb(255, 255, 255, 0.5);
+    background: var(--primary-strong);
+    color: var(--on-primary);
 }
 
 /* Detail Grid - Structured Label-Value Display */
@@ -2587,7 +2496,7 @@ textarea.form-control {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--brand-gradient);
+    background: var(--primary-strong); /* Kanon H4 */
     color: var(--on-primary);
     display: flex;
     align-items: center;
@@ -2764,7 +2673,7 @@ textarea.form-control {
     padding: 0.125rem 0.375rem;
     border-radius: var(--r-sm);
     font-size: 0.875rem;
-    box-shadow: 0 0 5px var(--primary-tint);
+    box-shadow: none;
 }
 
 .footer a {
@@ -3226,70 +3135,75 @@ input.is-valid:focus {
    Default styling for all tables to ensure consistency
    =================================================================== */
 
-/* Base table styling - applies to ALL tables unless overridden */
-table:not(.no-default-style) {
+/* Base table styling - applies to ALL tables unless overridden.
+   Same look as .fa-table (surface rows, surface-2 header, fg-2 header text);
+   .fa-table itself is excluded so its own component rules apply. */
+table:not(.no-default-style, .fa-table) {
     width: 100%;
     margin-bottom: 1rem;
     color: var(--fg);
     border-collapse: collapse;
-    background-color: var(--bg);
+    background-color: var(--surface);
 }
 
-table:not(.no-default-style) th,
-table:not(.no-default-style) td {
+table:not(.no-default-style, .fa-table) th,
+table:not(.no-default-style, .fa-table) td {
     padding: 0.75rem;
     vertical-align: top;
     border-bottom: 1px solid var(--border);
-    background-color: var(--bg);
+    background-color: var(--surface);
 }
 
-[data-theme="dark"] table:not(.no-default-style) td,
-[data-theme="dark"] table:not(.no-default-style) th,
-[data-bs-theme="dark"] table:not(.no-default-style) td,
-[data-bs-theme="dark"] table:not(.no-default-style) th {
+[data-theme="dark"] table:not(.no-default-style, .fa-table) td,
+[data-theme="dark"] table:not(.no-default-style, .fa-table) th,
+[data-bs-theme="dark"] table:not(.no-default-style, .fa-table) td,
+[data-bs-theme="dark"] table:not(.no-default-style, .fa-table) th {
     background-color: var(--surface) !important;
     color: var(--fg) !important;
 }
 
-table:not(.no-default-style) thead th {
+table:not(.no-default-style, .fa-table) thead th {
     vertical-align: bottom;
     font-weight: 600;
-    border-bottom: 2px solid var(--border);
-    color: var(--surface-2);
-    background-color: var(--fg);
-}
-
-[data-theme="dark"] table:not(.no-default-style) thead th {
-    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg-2);
     background-color: var(--surface-2);
 }
 
-table:not(.no-default-style) tbody tr:hover {
-    background-color: var(--bg);
+[data-theme="dark"] table:not(.no-default-style, .fa-table) thead th,
+[data-bs-theme="dark"] table:not(.no-default-style, .fa-table) thead th {
+    /* !important: the dark cell rule above paints every th with --surface */
+    color: var(--fg-2) !important;
+    background-color: var(--surface-2) !important;
 }
 
-[data-theme="dark"] table:not(.no-default-style) tbody tr:hover,
-[data-bs-theme="dark"] table:not(.no-default-style) tbody tr:hover {
+table:not(.no-default-style, .fa-table) tbody tr:hover,
+table:not(.no-default-style, .fa-table) tbody tr:hover td {
+    background-color: var(--surface-2);
+}
+
+[data-theme="dark"] table:not(.no-default-style, .fa-table) tbody tr:hover,
+[data-bs-theme="dark"] table:not(.no-default-style, .fa-table) tbody tr:hover {
     background: var(--surface-2) !important;
 }
 
-[data-theme="dark"] table:not(.no-default-style) tbody tr:hover td,
-[data-bs-theme="dark"] table:not(.no-default-style) tbody tr:hover td {
+[data-theme="dark"] table:not(.no-default-style, .fa-table) tbody tr:hover td,
+[data-bs-theme="dark"] table:not(.no-default-style, .fa-table) tbody tr:hover td {
     color: var(--fg) !important;
     background-color: var(--surface-2) !important;
 }
 
 /* Fix text-muted in tables for dark mode */
-[data-theme="dark"] table:not(.no-default-style) .text-muted,
-[data-theme="dark"] table:not(.no-default-style) small.text-muted {
+[data-theme="dark"] table:not(.no-default-style, .fa-table) .text-muted,
+[data-theme="dark"] table:not(.no-default-style, .fa-table) small.text-muted {
     color: var(--fg-3) !important; /* readable muted text */
 }
 
 /* Ensure strong/bold text is highly visible in dark mode tables */
-[data-theme="dark"] table:not(.no-default-style) strong,
-[data-theme="dark"] table:not(.no-default-style) b,
-[data-theme="dark"] table:not(.no-default-style) td strong,
-[data-theme="dark"] table:not(.no-default-style) td b,
+[data-theme="dark"] table:not(.no-default-style, .fa-table) strong,
+[data-theme="dark"] table:not(.no-default-style, .fa-table) b,
+[data-theme="dark"] table:not(.no-default-style, .fa-table) td strong,
+[data-theme="dark"] table:not(.no-default-style, .fa-table) td b,
 [data-theme="dark"] table tbody td strong,
 [data-theme="dark"] table tbody td b {
     color: var(--fg) !important; /* high contrast text */

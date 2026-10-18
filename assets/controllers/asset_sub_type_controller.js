@@ -1,3 +1,4 @@
+import { faT } from '../js/fa-i18n.js';
 import { Controller } from '@hotwired/stimulus'
 
 /**
@@ -85,8 +86,7 @@ export default class extends Controller {
             hint = document.createElement('small')
             hint.dataset.assetSubTypeHint = '1'
             hint.className = 'text-muted d-block mt-1'
-            hint.textContent = this.subTypeTarget.dataset.emptyHint
-                || 'Keine Sub-Typen für diesen Top-Level. Tipp: Branchen-Preset im Admin-Bereich anwenden.'
+            hint.textContent = this.subTypeTarget.dataset.emptyHint || faT('asset_sub_type.none_for_top_type')
             this.subTypeTarget.parentElement?.appendChild(hint)
         } else if (!show && hint) {
             hint.remove()

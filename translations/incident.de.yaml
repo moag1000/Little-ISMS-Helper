@@ -168,6 +168,7 @@ incident:
     initial_report_submitted_at: Erstmeldung eingereicht (DORA 4h)
     intermediate_report_submitted_at: Zwischenmeldung eingereicht (DORA 72h)
     data_recovery_strategy: Datenwiederherstellungsstrategie (BCM Art. 11)
+    linked_risks: 'Verknüpfte Risiken'
   nis2_compliance:
     title: NIS2 Compliance-Status
     not_applicable: Nicht NIS2-relevant
@@ -309,6 +310,8 @@ incident:
     replication_of_impact: 'Wurde ein Service-Replikat oder Failover aktiviert, um die Auswirkungen zu begrenzen?'
     initial_report_submitted_at: 'DORA 4-Stunden-Erstmeldung (≠ NIS2 24h!): Zeitpunkt der Übermittlung an die zuständige Behörde (Art. 19(4)(a)).'
     data_recovery_strategy: 'Strategie zur Wiederherstellung von Daten und Diensten; Cross-Referenz auf den BCM-Kontinuitätsplan (DORA Art. 11(2)).'
+    owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
+    initial_report_submitted_at_dora: 'Zeitpunkt der Erstmeldung an die zuständige Behörde. DORA Art. 19 i. V. m. RTS: spätestens 4 Stunden nach Einstufung als schwerwiegend und 24 Stunden nach Kenntnisnahme.'
   category:
     data_breach: Datenschutzverletzung
     security_incident: Sicherheitsvorfall

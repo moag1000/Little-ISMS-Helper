@@ -7,8 +7,7 @@ which cold-started the Symfony kernel 12 times sequentially (~12-24s on CI).
 This direct YAML-diff implementation runs in <1s.
 
 Compares the key-sets of <domain>.de.yaml and <domain>.en.yaml for every
-high-priority domain. A "missing" key in DE = key exists in EN but not DE.
-The reverse (EN missing keys present in DE) is also reported.
+domain, in both directions: a key that exists in only one locale fails.
 
 Trade-off vs the original:
   - Loses static template-side "is this key still referenced?" scan
@@ -18,7 +17,7 @@ Trade-off vs the original:
 
 Usage:
     python3 scripts/quality/check_missing_translations.py
-    ALL_DOMAINS=1 python3 scripts/quality/check_missing_translations.py
+    TARGETED=1 python3 scripts/quality/check_missing_translations.py  # high-priority subset only
 """
 from __future__ import annotations
 
@@ -48,9 +47,7 @@ HIGH_PRIORITY_DOMAINS = [
     "vulnerabilities",
 ]
 
-SKIP_DOMAINS = {
-    "messages",  # catch-all fallback with 200+ historical gaps
-}
+SKIP_DOMAINS: set[str] = set()
 
 
 def flatten(data: Any, prefix: str = "") -> Iterable[str]:
@@ -80,6 +77,25 @@ def keys_of(path: Path) -> set[str]:
     return set(flatten(data))
 
 
+def extract_leftovers(path: Path) -> list[str]:
+    """Keys whose value is still a `translation:extract` stub (`__<key>`)."""
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    out: list[str] = []
+
+    def walk(node: Any, prefix: str = "") -> None:
+        if isinstance(node, dict):
+            for k, v in node.items():
+                walk(v, f"{prefix}.{k}" if prefix else str(k))
+        elif isinstance(node, str) and node.startswith("__"):
+            out.append(prefix)
+
+    walk(data)
+    return out
+
+
 def discover_domains() -> list[str]:
     domains: list[str] = []
     for de_file in sorted(TRANSLATIONS_DIR.glob("*.de.yaml")):
@@ -97,10 +113,12 @@ def main() -> int:
         print(f"ERROR: translations/ not found at {TRANSLATIONS_DIR}", file=sys.stderr)
         return 2
 
-    all_mode = os.environ.get("ALL_DOMAINS") == "1"
+    # Full check is the default since 2026-10: every domain, both directions.
+    # TARGETED=1 restores the old high-priority subset for a quick local run.
+    all_mode = os.environ.get("TARGETED") != "1"
     if all_mode:
         domains = discover_domains()
-        print(f"Mode: ALL_DOMAINS ({len(domains)} domains)")
+        print(f"Mode: all domains ({len(domains)})")
     else:
         domains = [
             d for d in HIGH_PRIORITY_DOMAINS
@@ -110,7 +128,7 @@ def main() -> int:
         ]
         print(
             f"Mode: targeted ({len(domains)} high-priority domains; "
-            f"use ALL_DOMAINS=1 for full check)"
+            f"unset TARGETED for the full check)"
         )
 
     total_violations = 0
@@ -130,6 +148,29 @@ def main() -> int:
             for k in missing_in_de[:5]:
                 print(f"  - {k}")
             total_violations += len(missing_in_de)
+
+        # The translator falls back to German, so a key missing in EN shows
+        # German text to English users.
+        missing_in_en = sorted(de_keys - en_keys)
+        if missing_in_en:
+            print(
+                f"FAIL domain '{domain}': "
+                f"{len(missing_in_en)} missing English translation key(s)"
+            )
+            for k in missing_in_en[:5]:
+                print(f"  - {k}")
+            total_violations += len(missing_in_en)
+
+        for locale in ("de", "en"):
+            stubs = extract_leftovers(TRANSLATIONS_DIR / f"{domain}.{locale}.yaml")
+            if stubs:
+                print(
+                    f"FAIL domain '{domain}' ({locale}): "
+                    f"{len(stubs)} untranslated extract stub(s) ('__key')"
+                )
+                for k in stubs[:5]:
+                    print(f"  - {k}")
+                total_violations += len(stubs)
 
     print()
     print(f"Translation check: {checked} domain(s) checked.")

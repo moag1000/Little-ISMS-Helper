@@ -107,6 +107,7 @@ dsr:
             response_document: "Path or UUID of the stored response letter / email archive as evidence."
             response_method: "Art. 12(1): response should where possible use the same format as the request."
             rejection_reason: "Only for rejection (Art. 12(5)(b)): manifestly unfounded or excessive request."
+            extension_notified_at: 'When the data subject was informed of the extension and the reasons — must happen within one month of receipt (GDPR Art. 12(3)).'
 
     # Section headings
     section:

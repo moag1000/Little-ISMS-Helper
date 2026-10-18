@@ -31,7 +31,7 @@
                         <div></div>
                         {% for p in 1..5 %}
                             <div class="isms-risk-matrix__hd">
-                                {{ p }}<span>{{ ('risk.matrix.probability_label.' ~ p)|trans({}, 'risk') }}</span>
+                                {{ p }}<span>{{ ('risk.matrix.likelihood.' ~ p)|trans({}, 'risk') }}</span>
                             </div>
                         {% endfor %}
 

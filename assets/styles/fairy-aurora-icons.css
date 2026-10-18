@@ -44,7 +44,7 @@
 .fa-icon--success     { color: var(--success); }
 .fa-icon--warning     { color: var(--warning); }
 .fa-icon--danger      { color: var(--danger); }
-.fa-icon--info        { color: var(--accent); }
+.fa-icon--info        { color: var(--primary); } /* Kanon H4: Info = Primary, Violett nur ✦/Alva */
 .fa-icon--muted       { color: var(--fg-3); }
 .fa-icon--primary     { color: var(--primary); }
 
@@ -52,7 +52,7 @@
 .fa-icon--status-ok        { color: var(--success); }
 .fa-icon--status-warning   { color: var(--warning); }
 .fa-icon--status-critical  { color: var(--danger); }
-.fa-icon--status-info      { color: var(--accent); }
+.fa-icon--status-info      { color: var(--primary); }
 .fa-icon--status-pending   { color: var(--fg-3); }
 .fa-icon--status-archived  { color: var(--fg-3); }
 
@@ -72,11 +72,11 @@
     transition: border-color 0.15s, background 0.15s;
 }
 .fa-framework-lockup:hover {
-    border-color: var(--accent);
+    border-color: var(--primary); /* Kanon H4: Violett nur ✦/Alva */
     background: var(--surface-3, var(--surface-2));
 }
 .fa-framework-lockup .fa-icon {
-    color: var(--accent);
+    color: var(--primary);
     font-size: 16px;
 }
 .fa-framework-lockup__abbr {

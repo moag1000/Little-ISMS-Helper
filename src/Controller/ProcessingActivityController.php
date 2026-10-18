@@ -516,17 +516,17 @@ class ProcessingActivityController extends AbstractController
         $em = $this->entityManager;
         return $this->checkBulkDependencies($activities, 'getName', [
             fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = $pa->getConsents()->count()) > 0
-                ? ['message' => sprintf('%d Einwilligung(en) verknüpft', $c), 'icon' => 'person-check']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.consents', ['%count%' => $c], 'bulk_delete'), 'icon' => 'ui-person']
                 : null,
             fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = (int) $em->createQuery(
                 'SELECT COUNT(db.id) FROM App\Entity\DataBreach db WHERE db.processingActivity = :pa'
             )->setParameter('pa', $pa)->getSingleScalarResult()) > 0
-                ? ['message' => sprintf('%d Datenpanne(n) verknüpft', $c), 'icon' => 'shield-x']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.data_breaches', ['%count%' => $c], 'bulk_delete'), 'icon' => 'breach']
                 : null,
             fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = (int) $em->createQuery(
                 'SELECT COUNT(d.id) FROM App\Entity\DataProtectionImpactAssessment d WHERE d.processingActivity = :pa'
             )->setParameter('pa', $pa)->getSingleScalarResult()) > 0
-                ? ['message' => sprintf('%d DPIA(s) verknüpft', $c), 'icon' => 'file-earmark-text']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.dpias', ['%count%' => $c], 'bulk_delete'), 'icon' => 'file-earmark-text']
                 : null,
         ]);
     }

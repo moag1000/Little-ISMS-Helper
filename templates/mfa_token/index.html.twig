@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block admin_title %}{{ 'mfa_token.title'|trans({}, 'mfa') }}{% endblock %}
 {% block admin_subtitle %}
@@ -69,9 +70,10 @@
 
     {# Users with MFA Tokens #}
     {% if tokens_by_user|length == 0 %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
-            {% block alert_body %}{{ 'mfa_token.empty'|trans({}, 'mfa') }}{% endblock %}
-        {% endembed %}
+        {{ _fa_empty_state.render({
+            mood: 'sleeping',
+            title: 'mfa_token.empty'|trans({}, 'mfa')
+        }) }}
     {% else %}
         {% for user_id, user_data in tokens_by_user %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
@@ -111,7 +113,7 @@
                         {% endblock %}
                         {% block table_body %}
                             {% for token in user_data.tokens %}
-                                <tr class="{{ token.isActive ? '' : 'table-secondary' }}">
+                                <tr class="{{ token.isActive ? '' : 'fa-table__row--muted' }}">
                                     <td>
                                         {% if token.isActive %}
                                             {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', title: 'mfa_token.status.active'|trans({}, 'mfa') } %}

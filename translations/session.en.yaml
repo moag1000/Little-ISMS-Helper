@@ -49,5 +49,5 @@ session:
     info:
         no_active_sessions_for_user: 'No active sessions found for user %user%.'
         termination_not_implemented: 'Session termination requires additional configuration (database session storage)'
-    subtitle: Subtitle
+    subtitle: 'Management of active user sessions'
     user_activity: 'User Activity'

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Backup Codes Controller
@@ -23,23 +24,44 @@ export default class extends Controller {
         filename: { type: String, default: 'backup-codes.txt' },
         userEmail: { type: String, default: '' },
         deviceName: { type: String, default: '' },
-        // Translation strings
-        titleText: { type: String, default: 'MFA Backup Codes' },
-        userLabel: { type: String, default: 'User' },
-        deviceLabel: { type: String, default: 'Device' },
-        generatedLabel: { type: String, default: 'Generated' },
-        warningTitle: { type: String, default: 'Important Security Notice!' },
-        warningText: { type: String, default: 'Keep these codes secure. Anyone with these codes can access your account.' },
-        codesLabel: { type: String, default: 'Backup Codes' },
-        usageTitle: { type: String, default: 'Usage Instructions' },
-        usage1: { type: String, default: 'Use backup codes when you cannot access your authenticator' },
-        usage2: { type: String, default: 'Each code can only be used once' },
-        usage3: { type: String, default: 'Generate new codes before running out' },
-        usage4: { type: String, default: 'Store these codes in a secure location' },
-        copiedText: { type: String, default: 'Copied!' },
-        downloadedText: { type: String, default: 'Downloaded!' },
-        copyFailedText: { type: String, default: 'Copy failed' }
+        // Labels (translated in the template; empty → faT('backup_codes.*'))
+        titleText: { type: String, default: '' },
+        userLabel: { type: String, default: '' },
+        deviceLabel: { type: String, default: '' },
+        generatedLabel: { type: String, default: '' },
+        warningTitle: { type: String, default: '' },
+        warningText: { type: String, default: '' },
+        codesLabel: { type: String, default: '' },
+        usageTitle: { type: String, default: '' },
+        usage1: { type: String, default: '' },
+        usage2: { type: String, default: '' },
+        usage3: { type: String, default: '' },
+        usage4: { type: String, default: '' },
+        copiedText: { type: String, default: '' },
+        downloadedText: { type: String, default: '' },
+        copyFailedText: { type: String, default: '' }
     };
+
+    label(name) {
+        const fallback = {
+            titleText: () => faT('backup_codes.title'),
+            userLabel: () => faT('backup_codes.user'),
+            deviceLabel: () => faT('backup_codes.device'),
+            generatedLabel: () => faT('backup_codes.generated'),
+            warningTitle: () => faT('backup_codes.warning_title'),
+            warningText: () => faT('backup_codes.warning_text'),
+            codesLabel: () => faT('backup_codes.codes'),
+            usageTitle: () => faT('backup_codes.usage_title'),
+            usage1: () => faT('backup_codes.usage_1'),
+            usage2: () => faT('backup_codes.usage_2'),
+            usage3: () => faT('backup_codes.usage_3'),
+            usage4: () => faT('backup_codes.usage_4'),
+            copiedText: () => faT('backup_codes.copied'),
+            downloadedText: () => faT('backup_codes.downloaded'),
+            copyFailedText: () => faT('backup_codes.copy_failed'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     /**
      * Copy all backup codes to clipboard
@@ -53,7 +75,7 @@ export default class extends Controller {
         if (navigator.clipboard) {
             try {
                 await navigator.clipboard.writeText(codes);
-                this.showFeedback(button, 'success', this.copiedTextValue);
+                this.showFeedback(button, 'success', this.label('copiedText'));
             } catch (err) {
                 this.fallbackCopy(codes, button);
             }
@@ -70,7 +92,7 @@ export default class extends Controller {
 
         const printWindow = window.open('', '', 'width=600,height=800');
         if (!printWindow) {
-            window.faToast(window.translations?.mfa?.allow_popups || 'Please allow popups to print backup codes', 'warning');
+            window.faToast(faT('backup_codes.allow_popups'), 'warning');
             return;
         }
 
@@ -83,7 +105,7 @@ export default class extends Controller {
             <!DOCTYPE html>
             <html>
             <head>
-                <title>${this.titleTextValue} - ${userEmail}</title>
+                <title>${this.label('titleText')} - ${userEmail}</title>
                 <style>
                     body {
                         font-family: Arial, sans-serif;
@@ -138,20 +160,20 @@ export default class extends Controller {
                 </style>
             </head>
             <body>
-                <h1>${this.titleTextValue}</h1>
+                <h1>${this.label('titleText')}</h1>
 
                 <div class="info">
-                    <p><strong>${this.userLabelValue}:</strong> ${userEmail}</p>
-                    <p><strong>${this.deviceLabelValue}:</strong> ${deviceName}</p>
-                    <p><strong>${this.generatedLabelValue}:</strong> ${generatedDate}</p>
+                    <p><strong>${this.label('userLabel')}:</strong> ${userEmail}</p>
+                    <p><strong>${this.label('deviceLabel')}:</strong> ${deviceName}</p>
+                    <p><strong>${this.label('generatedLabel')}:</strong> ${generatedDate}</p>
                 </div>
 
                 <div class="warning">
-                    <strong>⚠️ ${this.warningTitleValue}</strong><br>
-                    ${this.warningTextValue}
+                    <strong>⚠️ ${this.label('warningTitle')}</strong><br>
+                    ${this.label('warningText')}
                 </div>
 
-                <h2>${this.codesLabelValue} (${codes.length})</h2>
+                <h2>${this.label('codesLabel')} (${codes.length})</h2>
                 <div class="codes">
                     ${codes.map((code, i) =>
                         '<div class="code-item"><span class="code-number">' + (i+1) + '</span>' + code + '</div>'
@@ -159,12 +181,12 @@ export default class extends Controller {
                 </div>
 
                 <div class="info">
-                    <h3>${this.usageTitleValue}</h3>
+                    <h3>${this.label('usageTitle')}</h3>
                     <ul>
-                        <li>${this.usage1Value}</li>
-                        <li>${this.usage2Value}</li>
-                        <li>${this.usage3Value}</li>
-                        <li>${this.usage4Value}</li>
+                        <li>${this.label('usage1')}</li>
+                        <li>${this.label('usage2')}</li>
+                        <li>${this.label('usage3')}</li>
+                        <li>${this.label('usage4')}</li>
                     </ul>
                 </div>
             </body>
@@ -191,15 +213,15 @@ export default class extends Controller {
         const filename = `mfa-backup-codes-${userEmail}-${timestamp}.txt`;
 
         let content = '='.repeat(60) + '\n';
-        content += 'MFA BACKUP CODES\n';
+        content += `${this.label('titleText').toUpperCase()}\n`;
         content += '='.repeat(60) + '\n\n';
-        content += `${this.userLabelValue}: ${userEmail}\n`;
-        content += `${this.deviceLabelValue}: ${deviceName}\n`;
-        content += `${this.generatedLabelValue}: ${new Date().toLocaleString()}\n\n`;
-        content += `⚠️  ${this.warningTitleValue}\n`;
-        content += `${this.warningTextValue}\n\n`;
+        content += `${this.label('userLabel')}: ${userEmail}\n`;
+        content += `${this.label('deviceLabel')}: ${deviceName}\n`;
+        content += `${this.label('generatedLabel')}: ${new Date().toLocaleString()}\n\n`;
+        content += `⚠️  ${this.label('warningTitle')}\n`;
+        content += `${this.label('warningText')}\n\n`;
         content += '='.repeat(60) + '\n';
-        content += `${this.codesLabelValue} (${codes.length})\n`;
+        content += `${this.label('codesLabel')} (${codes.length})\n`;
         content += '='.repeat(60) + '\n\n';
 
         codes.forEach((code, i) => {
@@ -207,12 +229,12 @@ export default class extends Controller {
         });
 
         content += '\n' + '='.repeat(60) + '\n';
-        content += `${this.usageTitleValue}\n`;
+        content += `${this.label('usageTitle')}\n`;
         content += '='.repeat(60) + '\n';
-        content += `1. ${this.usage1Value}\n`;
-        content += `2. ${this.usage2Value}\n`;
-        content += `3. ${this.usage3Value}\n`;
-        content += `4. ${this.usage4Value}\n`;
+        content += `1. ${this.label('usage1')}\n`;
+        content += `2. ${this.label('usage2')}\n`;
+        content += `3. ${this.label('usage3')}\n`;
+        content += `4. ${this.label('usage4')}\n`;
 
         const blob = new Blob([content], { type: 'text/plain' });
         const url = window.URL.createObjectURL(blob);
@@ -224,7 +246,7 @@ export default class extends Controller {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
 
-        this.showFeedback(button, 'success', this.downloadedTextValue);
+        this.showFeedback(button, 'success', this.label('downloadedText'));
     }
 
     /**
@@ -264,9 +286,9 @@ export default class extends Controller {
 
         try {
             document.execCommand('copy');
-            this.showFeedback(button, 'success', this.copiedTextValue);
+            this.showFeedback(button, 'success', this.label('copiedText'));
         } catch (err) {
-            window.faToast(this.copyFailedTextValue, 'danger');
+            window.faToast(this.label('copyFailedText'), 'danger');
         }
 
         document.body.removeChild(textarea);

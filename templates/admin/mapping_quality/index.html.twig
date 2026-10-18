@@ -5,6 +5,7 @@
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 {% import '_components/_status_pill.html.twig' as pill %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'admin.mapping_quality.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -100,7 +101,10 @@
     <section class="fa-section">
         <div class="fa-section__body">
             {% if mappings|length == 0 %}
-                {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: 'admin.mapping_quality.no_results'|trans({}, 'admin') }) }}
+                {{ _fa_empty_state.render({
+                    mood: 'scanning',
+                    title: 'admin.mapping_quality.no_results'|trans({}, 'admin')
+                }) }}
             {% else %}
                 {% embed '_components/_fa_table.html.twig' %}
                     {% block table_head %}

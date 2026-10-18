@@ -27,7 +27,10 @@
          data-lifecycle-dropdown-transition-url-value="{{ _post_url }}"
          data-lifecycle-dropdown-csrf-value="{{ _csrf }}"
          data-lifecycle-dropdown-reason-label-value="{{ 'lifecycle.confirm.reason_required'|trans({}, 'lifecycle') }}"
-         data-lifecycle-dropdown-workflow-value="{{ workflow_name }}">
+         data-lifecycle-dropdown-workflow-value="{{ workflow_name }}"
+         data-lifecycle-dropdown-no-transitions-text-value="{{ 'lifecycle.dropdown.no_transitions'|trans({}, 'lifecycle') }}"
+         data-lifecycle-dropdown-load-error-text-value="{{ 'lifecycle.dropdown.load_error'|trans({}, 'lifecycle') }}"
+         data-lifecycle-dropdown-conflict-text-value="{{ 'lifecycle.dropdown.conflict'|trans({}, 'lifecycle') }}">
         <button type="button"
                 class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm"
                 aria-haspopup="true"

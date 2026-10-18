@@ -1,0 +1,71 @@
+{#
+ # FairyAurora v4 — fa-json-builder (generic, schema-driven)
+ #
+ # Structured editor for JSON entity columns: a repeatable list of entries
+ # (`list`), keyed entries (`map`) or a single set of fields (`object`). The
+ # json-builder Stimulus controller renders the entries from `config` and
+ # serialises them into the hidden textarea, which is what the form submits.
+ # Users never type JSON.
+ #
+ # Normally rendered through the JsonBuilderType form theme
+ # (templates/form/json_builder.html.twig) — call it directly only for a
+ # hand-built form.
+ #
+ # Props:
+ #   name            hidden textarea name (required)
+ #   id              id of the hidden textarea (label `for` target)
+ #   value           current value: JSON string or array
+ #   config          { shape, scalarValue, hiddenKeys, keyLabel, keySuggestions,
+ #                     fields: [{ key, type, label, required, choices: [{value,label}],
+ #                                suggestions, help, placeholder, itemType, wide }] }
+ #                   — labels already translated
+ #   addLabel        optional label of the "add entry" button
+ #   emptyLabel      optional empty-state text
+ #   disabled        render read-only
+ #   ariaDescribedBy id of the help text
+ #   attr            form attr; data-* entries go onto the hidden textarea
+ #                   (e.g. data-depends-on for conditional_fields_controller)
+ #}
+{% macro render(props = {}) %}
+    {%- set id = props.id|default('fa-json-builder-' ~ random(99999)) -%}
+    {%- set rawValue = props.value is defined and props.value is not null
+        ? (props.value is iterable ? props.value|json_encode : props.value)
+        : '' -%}
+    {%- set config = props.config|default({}) -%}
+    <div class="fa-json-builder fa-json-builder--{{ config.shape|default('list') }}"
+         data-controller="json-builder"
+         data-json-builder-config-value="{{ config|json_encode }}"
+         data-json-builder-disabled-value="{{ props.disabled|default(false) ? 'true' : 'false' }}"
+         data-json-builder-add-label-value="{{ props.addLabel|default('ui.json_builder.add'|trans({}, 'ui')) }}"
+         data-json-builder-remove-label-value="{{ 'ui.json_builder.remove'|trans({}, 'ui') }}"
+         data-json-builder-choose-label-value="{{ 'ui.json_builder.choose'|trans({}, 'ui') }}"
+         data-json-builder-tag-placeholder-value="{{ 'ui.json_builder.tag_placeholder'|trans({}, 'ui') }}"
+         data-json-builder-tag-remove-label-value="{{ 'ui.json_builder.tag_remove'|trans({}, 'ui') }}"
+         data-json-builder-entry-label-value="{{ 'ui.json_builder.entry'|trans({'%index%': '%index%'}, 'ui') }}"
+         data-json-builder-duplicate-key-label-value="{{ 'ui.json_builder.duplicate_key'|trans({}, 'ui') }}"
+         role="group"
+         {% if props.ariaDescribedBy|default(null) %}aria-describedby="{{ props.ariaDescribedBy }}"{% endif %}>
+
+        <textarea name="{{ props.name }}" id="{{ id }}"
+                  class="fa-json-builder__hidden" hidden aria-hidden="true" tabindex="-1"
+                  data-json-builder-target="hidden"
+                  {%- for attrName, attrValue in props.attr|default({}) %}{% if attrName starts with 'data-' %} {{ attrName }}="{{ attrValue }}"{% endif %}{% endfor %}>{{ rawValue }}</textarea>
+
+        <div class="fa-json-builder__items" data-json-builder-target="items" aria-live="polite"></div>
+
+        <div class="fa-json-builder__empty d-none" data-json-builder-target="empty">
+            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+            <span>{{ props.emptyLabel|default('ui.json_builder.empty'|trans({}, 'ui')) }}</span>
+        </div>
+
+        {% if config.shape|default('list') != 'object' and not props.disabled|default(false) %}
+            <div class="fa-json-builder__toolbar">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                        data-action="click->json-builder#add">
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                    {{ props.addLabel|default('ui.json_builder.add'|trans({}, 'ui')) }}
+                </button>
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}

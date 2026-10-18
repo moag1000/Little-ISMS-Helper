@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Stimulus controller for tenant governance and corporate structure management.
@@ -47,7 +48,7 @@ export default class extends Controller {
             const r = await fetch(`/api/corporate-structure/effective-context/${this.tenantIdValue}`);
 
             if (!r.ok) {
-                const msg = r.status === 403 ? 'Keine Berechtigung' : `Fehler ${r.status}`;
+                const msg = r.status === 403 ? faT('forbidden') : faT('error_status', { '%status%': r.status });
                 window.faToast(msg, 'danger');
                 this.effectiveContextContainerTarget.innerHTML = `
                     <div class="alert alert-danger small mb-0">${this.escapeHtml(this.loadErrorTextValue)}</div>`;
@@ -126,7 +127,7 @@ export default class extends Controller {
             const r = await fetch(`/api/corporate-structure/${this.tenantIdValue}/governance`);
 
             if (!r.ok) {
-                const msg = r.status === 403 ? 'Keine Berechtigung' : `Fehler ${r.status}`;
+                const msg = r.status === 403 ? faT('forbidden') : faT('error_status', { '%status%': r.status });
                 window.faToast(msg, 'danger');
                 this.governanceRulesContainerTarget.innerHTML = `
                     <div class="alert alert-danger small mb-0">${this.escapeHtml(this.saveErrorTextValue)}</div>`;
@@ -208,7 +209,7 @@ export default class extends Controller {
             });
 
             if (!r.ok) {
-                const msg = r.status === 403 ? 'Keine Berechtigung' : `Fehler ${r.status}`;
+                const msg = r.status === 403 ? faT('forbidden') : faT('error_status', { '%status%': r.status });
                 window.faToast(msg, 'danger');
                 return;
             }
