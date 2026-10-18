@@ -523,22 +523,12 @@ grep -r "@import.*\.js" assets/styles/
 
 **⚠️ Hinweis zu Source Map Warnungen:**
 
-~~Die Warnungen über blockierte `.map` Dateien sind normal...~~ **UPDATE: Source Maps sind jetzt erlaubt!**
-
-Die CSP wurde aktualisiert um Source Maps von jsDelivr zu erlauben:
-```php
-// src/EventSubscriber/SecurityHeadersSubscriber.php
-"connect-src 'self' https://cdn.jsdelivr.net"
-```
-
-Source Map Warnungen sollten **nicht mehr** erscheinen. Falls doch:
-```bash
-# Server-seitig: Cache leeren und Assets neu kompilieren
-php bin/console cache:clear --env=prod
-php bin/console asset-map:compile
-
-# Browser-seitig: Harten Reload machen (Strg+F5)
-```
+Die CSP erlaubt keinen CDN-Host mehr (`cdn.jsdelivr.net` wurde aus allen
+Direktiven entfernt — JS, CSS und Fonts kommen lokal über AssetMapper bzw.
+`public/vendor`). Verweisen heruntergeladene Vendor-Dateien per
+`sourceMappingURL` auf jsDelivr, kann die Browser-Konsole beim Öffnen der
+DevTools Warnungen zu `.map`-Dateien zeigen — das ist harmlos und betrifft
+nur das Debugging, nicht die Funktion.
 
 **Kritisch ist nur:** `Loading the script 'data:application/javascript,'` → Das deutet auf einen fehlgeschlagenen Import hin!
 

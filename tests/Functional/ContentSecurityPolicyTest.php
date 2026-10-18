@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
+use App\Entity\Asset;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 /**
  * The CSP allows inline scripts only with the per-request nonce: script-src
@@ -23,6 +29,7 @@ final class ContentSecurityPolicyTest extends WebTestCase
     private ?EntityManagerInterface $entityManager = null;
     private ?Tenant $tenant = null;
     private ?User $user = null;
+    private ?Asset $asset = null;
 
     protected function setUp(): void
     {
@@ -32,7 +39,7 @@ final class ContentSecurityPolicyTest extends WebTestCase
     protected function tearDown(): void
     {
         if ($this->entityManager !== null && $this->entityManager->isOpen()) {
-            foreach ([$this->user, $this->tenant] as $entity) {
+            foreach ([$this->asset, $this->user, $this->tenant] as $entity) {
                 if ($entity !== null && $entity->getId() !== null) {
                     $managed = $this->entityManager->find($entity::class, $entity->getId());
                     if ($managed !== null) {
@@ -64,6 +71,50 @@ final class ContentSecurityPolicyTest extends WebTestCase
 
         $nonce = $this->assertStrictScriptSrc();
         $this->assertInlineScriptsCarry($nonce);
+    }
+
+    #[Test]
+    public function qrLabelPagesLoadTheLocalAuroraIconsInsteadOfACdn(): void
+    {
+        // Rendered directly: the controllers need GD for the QR image, which is
+        // irrelevant for the stylesheet check.
+        $this->createUser();
+        $this->asset = new Asset();
+        $this->asset->setName('CSP label asset');
+        $this->asset->setAssetType('hardware');
+        $this->asset->setOwner('Owner');
+        $this->asset->setTenant($this->tenant);
+        $this->asset->setConfidentialityValue(2);
+        $this->asset->setIntegrityValue(2);
+        $this->asset->setAvailabilityValue(2);
+        $this->asset->setStatus('active');
+        $this->entityManager?->persist($this->asset);
+        $this->entityManager?->flush();
+
+        $container = static::getContainer();
+        $request = Request::create('/en/asset/' . $this->asset->getId() . '/qr-label');
+        $request->setLocale('en');
+        $container->get(RequestStack::class)->push($request);
+        $container->get(RouterInterface::class)->getContext()->setParameter('_locale', 'en');
+        $twig = $container->get(Environment::class);
+        $label = ['asset' => $this->asset, 'qrCode' => 'data:image/png;base64,iVBORw0KGgo=', 'url' => 'https://example.test/a'];
+
+        $pages = [
+            'qr_label' => $twig->render('asset/qr_label.html.twig', ['label' => $label, 'printDate' => new \DateTimeImmutable()]),
+            'qr_labels_sheet' => $twig->render('asset/qr_labels_sheet.html.twig', [
+                'labels' => [$label], 'printDate' => new \DateTimeImmutable(), 'assetsPerPage' => 10,
+            ]),
+        ];
+        foreach ($pages as $name => $html) {
+            $crawler = new Crawler($html);
+            self::assertStringNotContainsString('cdn.jsdelivr.net', $html, $name);
+            self::assertGreaterThan(0, $crawler->filter('i.fa-icon')->count(), $name);
+            $hrefs = $crawler->filter('link[rel="stylesheet"]')->each(static fn (Crawler $l) => (string) $l->attr('href'));
+            self::assertNotEmpty(
+                array_filter($hrefs, static fn (string $h) => str_contains($h, 'fairy-aurora-icons') && str_starts_with($h, '/')),
+                $name . ': fa-icon needs the locally served Aurora icon stylesheet, got ' . implode(', ', $hrefs),
+            );
+        }
     }
 
     #[Test]
@@ -110,6 +161,8 @@ final class ContentSecurityPolicyTest extends WebTestCase
     private function assertStrictScriptSrc(): string
     {
         $csp = (string) $this->client->getResponse()->headers->get('Content-Security-Policy');
+        // Everything is served locally: a CDN host would let any package on it bypass the policy.
+        self::assertStringNotContainsString('cdn.jsdelivr.net', $csp);
         self::assertMatchesRegularExpression('/(?:^|;)\s*script-src ([^;]+)/', $csp, 'CSP header with script-src expected');
         preg_match('/(?:^|;)\s*script-src ([^;]+)/', $csp, $m);
         $scriptSrc = $m[1];

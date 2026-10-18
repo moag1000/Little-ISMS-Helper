@@ -81,11 +81,12 @@ final class SecurityHeadersSubscriber
         // CSS — AssetMapper would map such an import to a data: URL).
         $csp = implode('; ', [
             "default-src 'self'",
-            sprintf("script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net", $this->cspNonce->get()), // AssetMapper + CDN
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com", // Bootstrap + Fonts
+            // All JS/CSS/fonts are served locally (AssetMapper, public/vendor) — no CDN host.
+            sprintf("script-src 'self' 'nonce-%s'", $this->cspNonce->get()),
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // style attributes + Fonts
             "img-src 'self' data: https: blob:", // Allow images from any HTTPS source and data URIs
-            "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net", // Local + Google Fonts + Bootstrap Icons CDN
-            "connect-src 'self' https://cdn.jsdelivr.net", // API calls + source maps from CDN
+            "font-src 'self' data: https://fonts.gstatic.com", // Local + Google Fonts
+            "connect-src 'self'", // API calls
             "frame-ancestors 'self'", // Prevent embedding in iframes (clickjacking protection)
             "base-uri 'self'", // Prevent base tag injection
             "form-action 'self'", // Forms can only submit to same origin
