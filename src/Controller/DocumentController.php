@@ -608,20 +608,31 @@ class DocumentController extends AbstractController
     {
         // Tenant equality (enforced by BulkDeleteService) already excludes
         // documents inherited from a parent organisation.
+        $user = $this->security->getUser();
+        $lifecycleUser = $user instanceof User ? $user : null;
+
         return $this->handleBulkDelete(
             $request,
             $bulkDeleteService,
             'Document',
-            $this->security->getUser(),
+            $user,
             fn (int $id): ?Document => $this->documentRepository->find($id),
-            voterAttribute: 'delete',
-            afterFlush: static function (object $document): void {
-                // Remove the stored file only after the row is gone.
-                $filePath = $document instanceof Document ? $document->getFilePath() : null;
-                if ($filePath !== null && $filePath !== '' && is_file($filePath)) {
-                    @unlink($filePath);
+            // Same X.6 soft_delete transition as the single delete: terminal
+            // `deleted` state, hidden from lists via Document::isOperational();
+            // the row and its stored file stay for the audit trail.
+            deleter: function (object $document) use ($lifecycleUser): void {
+                if ($this->lifecycleService === null) {
+                    throw new \LogicException('LifecycleService unavailable');
                 }
+                $this->lifecycleService->transition(
+                    $document,
+                    'document_lifecycle',
+                    'soft_delete',
+                    $lifecycleUser,
+                    'Document soft-deleted by admin (bulk)',
+                );
             },
+            voterAttribute: 'delete',
         );
     }
 
