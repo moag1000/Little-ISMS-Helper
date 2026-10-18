@@ -1697,6 +1697,14 @@ kpi_threshold:
         delete: 'Schwellwert wirklich löschen? Danach gelten wieder die Defaults.'
 
 industry_preset:
+    document_placeholder:
+        description: 'Platzhalter aus dem Branchen-Preset "%preset%" — Inhalt ergänzen oder finale Datei hochladen.'
+        body: |
+            # %title%
+
+            Dieses Dokument wurde vom Branchen-Preset "%preset%" als Platzhalter angelegt.
+
+            Ersetzen Sie diesen Text durch den Dokumentinhalt oder laden Sie die finale Datei hoch und geben Sie das Dokument anschließend in Prüfung und Freigabe.
     title: 'Industry-Presets'
     badge: 'Setup'
     subtitle: 'Branchen-Vorlagen für Module, Frameworks, Controls und Dokumente — in einem Schritt anwenden.'
@@ -1726,7 +1734,7 @@ industry_preset:
         section_initial_controls: 'Initial-Controls'
         section_initial_documents: 'Initial-Dokumente'
         section_apply: 'Anwenden'
-        apply_hint: 'Mit dem Anwenden werden Module aktiviert, Frameworks freigeschaltet und Initial-Controls/Dokumente persistent angelegt. Bestehende Datensätze bleiben unangetastet.'
+        apply_hint: 'Mit dem Anwenden werden Module aktiviert, Frameworks freigeschaltet, Initial-Controls angelegt und die Initial-Dokumente als Entwurfs-Platzhalter im Dokumentenregister angelegt. Bestehende Datensätze bleiben unangetastet.'
         table:
             code: 'Code'
             priority: 'Priorität'
