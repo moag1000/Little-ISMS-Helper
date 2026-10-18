@@ -247,7 +247,7 @@ class ModuleConfigurationService
      */
     public function saveActiveModulesForTenant(Tenant $tenant, array $modules): void
     {
-        $tenant->setActiveModules(array_values($modules));
+        $tenant->setActiveModules($modules);
         $this->entityManager?->flush();
     }
 
