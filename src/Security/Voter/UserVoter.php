@@ -28,7 +28,8 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *
  * Security Rules:
  * - Inactive users cannot perform any actions
- * - ROLE_ADMIN bypasses all permission checks (except initial admin protection)
+ * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN bypasses permission
+ *   checks only for users of its own tenant
  * - Users can always view and edit themselves
  * - Users cannot delete themselves
  * - Initial setup admin cannot be deleted or deactivated
@@ -39,10 +40,17 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  */
 final class UserVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly InitialAdminService $initialAdminService,
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
     public const string VIEW = 'user.view';
     public const string CREATE = 'user.create';
@@ -90,9 +98,21 @@ final class UserVoter extends Voter
             return false;
         }
 
-        // Admins can do everything
-        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
+        // Per-user attributes: the target must be in the actor's tenant scope
+        // (SUPER_ADMIN everywhere, ROLE_ADMIN only inside its own tenant,
+        // holding roles may view down the tree). Viewing and editing oneself
+        // stays allowed regardless of scope.
+        if ($subject instanceof User) {
+            $isSelf = $user === $subject || ($user->getId() !== null && $user->getId() === $subject->getId());
+            if (!$isSelf || $attribute === self::DELETE) {
+                $scope = $this->decideTenantScope($user, $subject->getTenant(), $attribute === self::VIEW);
+                if ($scope !== null) {
+                    return $scope;
+                }
+            }
+        } elseif ($this->hasReachableRole($user, 'ROLE_ADMIN')) {
+            // Subject-less attributes (create, manage roles, view all) — the
+            // controller scopes the result set to the admin's tenant.
             return true;
         }
 

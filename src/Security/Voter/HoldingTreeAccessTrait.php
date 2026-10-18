@@ -9,26 +9,28 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * Phase 9.P1.6 — Konzern-ISB / Group-CISO read-across-holding-tree.
+ * Shared tenant-scope guard for voters.
  *
- * A user with ROLE_GROUP_CISO (and only for read attributes — never edit
- * or delete) may look into any tenant that lives below their own tenant
- * in the corporate hierarchy. Lateral access (siblings) is not granted;
- * only descendants of the user's tenant count. The role is therefore a
- * modifier on top of the normal role chain: ROLE_GROUP_CISO alone does
- * not grant write on the user's own tenant — that still comes from
- * ROLE_MANAGER / ROLE_ADMIN.
+ * The one place that decides whether a user may act on a record that
+ * belongs to a tenant. Every tenant-scoped voter goes through
+ * {@see decideTenantScope()} before its own role rules:
  *
- * Role-hierarchy-aware: the trait calls {@see getRoleHierarchy()} on the
- * consumer to expand `User::getRoles()` into all reachable roles before
- * matching ROLE_GROUP_CISO. This ensures a user holding only
- * ROLE_SUPER_ADMIN (which inherits ROLE_GROUP_CISO via security.yaml)
- * passes the holding-tree check too. Consumers MUST inject a
- * {@see RoleHierarchyInterface} and implement {@see getRoleHierarchy()}.
+ *  - ROLE_SUPER_ADMIN is the only instance-wide role → always granted.
+ *  - Otherwise the record must be in scope: same tenant (compared by
+ *    identity or id), or — for read attributes only — a descendant tenant
+ *    when the user holds ROLE_GROUP_CISO or ROLE_KONZERN_AUDITOR
+ *    (Phase 9.P1.6 holding read; lateral/sibling access is never granted).
+ *  - ROLE_ADMIN administers its own organisation only, so it passes
+ *    inside that scope and nowhere else.
+ *  - A missing user tenant or record tenant fails closed.
+ *
+ * Role-hierarchy-aware: roles are expanded via the consumer's injected
+ * {@see RoleHierarchyInterface} (exposed through {@see getRoleHierarchy()}).
  */
 trait HoldingTreeAccessTrait
 {
     public const string ROLE_GROUP_CISO = 'ROLE_GROUP_CISO';
+    public const string ROLE_KONZERN_AUDITOR = 'ROLE_KONZERN_AUDITOR';
 
     /**
      * Consumers must expose their injected RoleHierarchyInterface so the
@@ -36,6 +38,56 @@ trait HoldingTreeAccessTrait
      */
     abstract protected function getRoleHierarchy(): RoleHierarchyInterface;
 
+    protected function hasReachableRole(User $user, string $role): bool
+    {
+        return in_array($role, $this->getRoleHierarchy()->getReachableRoleNames($user->getRoles()), true);
+    }
+
+    /**
+     * Tenant-scope pre-decision for a record owned by $targetTenant.
+     *
+     * @return bool|null true = grant (SUPER_ADMIN, or ROLE_ADMIN in scope),
+     *                   false = deny (out of scope / tenant missing),
+     *                   null = in scope, apply the voter's own role rules
+     */
+    protected function decideTenantScope(User $user, ?Tenant $targetTenant, bool $isRead): ?bool
+    {
+        if ($this->hasReachableRole($user, 'ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+        if (!$this->isInTenantScope($user, $targetTenant, $isRead)) {
+            return false;
+        }
+
+        return $this->hasReachableRole($user, 'ROLE_ADMIN') ? true : null;
+    }
+
+    /**
+     * Same tenant, or (read only) holding-tree descendant. Fails closed.
+     */
+    protected function isInTenantScope(User $user, ?Tenant $targetTenant, bool $isRead): bool
+    {
+        return $this->isSameTenant($user, $targetTenant)
+            || ($isRead && $this->canReadAcrossHoldingTree($user, $targetTenant));
+    }
+
+    protected function isSameTenant(User $user, ?Tenant $targetTenant): bool
+    {
+        $userTenant = $user->getTenant();
+        if (!$targetTenant instanceof Tenant || !$userTenant instanceof Tenant) {
+            return false;
+        }
+        if ($targetTenant === $userTenant) {
+            return true;
+        }
+
+        return $userTenant->getId() !== null && $targetTenant->getId() === $userTenant->getId();
+    }
+
+    /**
+     * Holding read: ROLE_GROUP_CISO / ROLE_KONZERN_AUDITOR may read their
+     * own tenant and every descendant tenant — never write.
+     */
     protected function canReadAcrossHoldingTree(User $user, ?Tenant $targetTenant): bool
     {
         if (!$targetTenant instanceof Tenant) {
@@ -45,16 +97,11 @@ trait HoldingTreeAccessTrait
         if (!$userTenant instanceof Tenant) {
             return false;
         }
-        $reachable = $this->getRoleHierarchy()->getReachableRoleNames($user->getRoles());
-        if (!in_array(self::ROLE_GROUP_CISO, $reachable, true)) {
+        if (!$this->hasReachableRole($user, self::ROLE_GROUP_CISO)
+            && !$this->hasReachableRole($user, self::ROLE_KONZERN_AUDITOR)) {
             return false;
         }
-        if ($targetTenant === $userTenant) {
-            return true;
-        }
-        if ($userTenant->getId() !== null && $targetTenant->getId() === $userTenant->getId()) {
-            return true;
-        }
-        return $targetTenant->isChildOf($userTenant);
+
+        return $this->isSameTenant($user, $targetTenant) || $targetTenant->isChildOf($userTenant);
     }
 }

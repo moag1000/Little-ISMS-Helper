@@ -6,7 +6,6 @@ namespace App\Security\Voter;
 
 use App\Entity\Tenant;
 use App\Entity\User;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -37,7 +36,6 @@ final class ApiTenantVoter extends Voter
     use HoldingTreeAccessTrait;
 
     public function __construct(
-        private readonly Security $security,
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
     }
@@ -91,43 +89,23 @@ final class ApiTenantVoter extends Voter
             return false;
         }
 
-        // ROLE_ADMIN bypasses tenant checks (respects Symfony role hierarchy)
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            return true;
-        }
-
-        $userTenant = $user->getTenant();
-        if (!$userTenant instanceof Tenant) {
-            return false;
-        }
-
         $entityTenant = $subject->getTenant();
 
-        return match ($attribute) {
-            self::API_VIEW => $this->canView($entityTenant, $user, $userTenant),
-            self::API_EDIT => $this->canEdit($entityTenant, $userTenant),
-            self::API_CREATE => true, // Tenant set by processor; user is authenticated
-            self::API_DELETE => false, // Only ROLE_ADMIN (handled above)
-            default => false,
-        };
-    }
+        // A freshly denormalised POST body usually has no tenant yet — the
+        // state processor assigns the creator's own tenant. Allow that only
+        // to users who have a tenant to assign (or SUPER_ADMIN).
+        if ($attribute === self::API_CREATE && !$entityTenant instanceof Tenant) {
+            return $this->hasReachableRole($user, 'ROLE_SUPER_ADMIN') || $user->getTenant() instanceof Tenant;
+        }
 
-    private function canView(?Tenant $entityTenant, User $user, Tenant $userTenant): bool
-    {
-        if ($entityTenant === $userTenant) {
-            return true;
+        // Tenant scope: SUPER_ADMIN everywhere, ROLE_ADMIN only inside its
+        // own tenant, holding roles read-only down the tree.
+        $scope = $this->decideTenantScope($user, $entityTenant, $attribute === self::API_VIEW);
+        if ($scope !== null) {
+            return $scope;
         }
-        if ($entityTenant !== null && $entityTenant->getId() === $userTenant->getId()) {
-            return true;
-        }
-        return $this->canReadAcrossHoldingTree($user, $entityTenant);
-    }
 
-    private function canEdit(?Tenant $entityTenant, Tenant $userTenant): bool
-    {
-        if ($entityTenant === $userTenant) {
-            return true;
-        }
-        return $entityTenant !== null && $entityTenant->getId() === $userTenant->getId();
+        // In scope below ROLE_ADMIN: view, edit and create; delete is admin-only.
+        return $attribute !== self::API_DELETE;
     }
 }

@@ -70,45 +70,14 @@ final class AssetVoter extends Voter
         /** @var Asset $asset */
         $asset = $subject;
 
-        // Security: Admins can do everything
-        if ($this->hasRoleHierarchical($user, 'ROLE_ADMIN')) {
-            return true;
+        // Tenant scope first: SUPER_ADMIN everywhere, ROLE_ADMIN only inside
+        // its own tenant, holding roles read-only down the tree.
+        $scope = $this->decideTenantScope($user, $asset->getTenant(), $attribute === self::VIEW);
+        if ($scope !== null) {
+            return $scope;
         }
 
-        return match ($attribute) {
-            self::VIEW => $this->canView($asset, $user),
-            self::EDIT => $this->canEdit($asset, $user),
-            self::DELETE => $this->canDelete($user),
-            default => false,
-        };
-    }
-
-    private function canView(Asset $asset, User $user): bool
-    {
-        // Security: Multi-tenancy - users can view assets from their tenant
-        if ($asset->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
-            return true;
-        }
-        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
-        return $this->canReadAcrossHoldingTree($user, $asset->getTenant());
-    }
-
-    private function canEdit(Asset $asset, User $user): bool
-    {
-        // Security: Only users from same tenant can edit
-        return $asset->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
-    }
-
-    private function canDelete(User $user): bool
-    {
-        // Security: Only admins can delete
-        return $this->hasRoleHierarchical($user, 'ROLE_ADMIN');
-    }
-
-    private function hasRoleHierarchical(User $user, string $role): bool
-    {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($role, $reachable, true);
+        // In scope below ROLE_ADMIN: view and edit, delete stays admin-only.
+        return $attribute !== self::DELETE;
     }
 }

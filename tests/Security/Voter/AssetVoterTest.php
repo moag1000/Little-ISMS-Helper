@@ -49,7 +49,7 @@ class AssetVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyAsset(): void
+    public function testAdminCannotViewOtherTenantAsset(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $asset = $this->createAsset($this->otherTenant);
@@ -57,11 +57,11 @@ class AssetVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $asset, [AssetVoter::VIEW]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanEditAnyAsset(): void
+    public function testAdminCannotEditOtherTenantAsset(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $asset = $this->createAsset($this->otherTenant);
@@ -69,11 +69,11 @@ class AssetVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $asset, [AssetVoter::EDIT]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanDeleteAnyAsset(): void
+    public function testAdminCannotDeleteOtherTenantAsset(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $asset = $this->createAsset($this->otherTenant);
@@ -81,7 +81,7 @@ class AssetVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $asset, [AssetVoter::DELETE]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]

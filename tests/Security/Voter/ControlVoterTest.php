@@ -49,7 +49,7 @@ class ControlVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyControl(): void
+    public function testAdminCannotViewOtherTenantControl(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $control = $this->createControl($this->otherTenant);
@@ -57,11 +57,11 @@ class ControlVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $control, [ControlVoter::VIEW]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanEditAnyControl(): void
+    public function testAdminCannotEditOtherTenantControl(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $control = $this->createControl($this->otherTenant);
@@ -69,11 +69,11 @@ class ControlVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $control, [ControlVoter::EDIT]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanDeleteAnyControl(): void
+    public function testAdminCannotDeleteOtherTenantControl(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $control = $this->createControl($this->otherTenant);
@@ -81,7 +81,7 @@ class ControlVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $control, [ControlVoter::DELETE]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]

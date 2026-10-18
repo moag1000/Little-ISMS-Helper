@@ -49,7 +49,7 @@ class IncidentVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyIncident(): void
+    public function testAdminCannotViewOtherTenantIncident(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $incident = $this->createIncident($this->otherTenant);
@@ -57,11 +57,11 @@ class IncidentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $incident, [IncidentVoter::VIEW]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanEditAnyIncident(): void
+    public function testAdminCannotEditOtherTenantIncident(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $incident = $this->createIncident($this->otherTenant);
@@ -69,11 +69,11 @@ class IncidentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $incident, [IncidentVoter::EDIT]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanDeleteAnyIncident(): void
+    public function testAdminCannotDeleteOtherTenantIncident(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $incident = $this->createIncident($this->otherTenant);
@@ -81,7 +81,7 @@ class IncidentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $incident, [IncidentVoter::DELETE]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
