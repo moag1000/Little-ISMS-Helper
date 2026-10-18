@@ -235,7 +235,8 @@ class ReportController extends AbstractController
                 $control->isApplicable(),
                 $control->getImplementationStatus(),
                 $control->getImplementationPercentage() . '%',
-                $control->getResponsiblePerson() ? $control->getResponsiblePerson()->getEmail() : '-',
+                // User → Person → legacy free-text, like the audit workbooks.
+                $control->getEffectiveResponsiblePerson() ?? '-',
                 $control->getTargetDate() ? $control->getTargetDate()->format('Y-m-d') : '-',
             ];
         }
@@ -302,7 +303,7 @@ class ReportController extends AbstractController
                 $incident->getStatus()?->value,
                 $incident->getDetectedAt()->format('Y-m-d'),
                 $incident->getResolvedAt() ? $incident->getResolvedAt()->format('Y-m-d') : 'Open',
-                $incident->getReportedBy() ? $incident->getReportedBy()->getEmail() : '-',
+                $incident->getEffectiveReportedBy() ?? '-',
             ];
         }
 
