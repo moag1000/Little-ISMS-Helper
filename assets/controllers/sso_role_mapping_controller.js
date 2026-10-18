@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Stimulus controller for the role-mapping collection editor on the IdP show page.
@@ -40,43 +41,48 @@ export default class extends Controller {
     _buildRow(idx) {
         const div = document.createElement('div');
         div.className = 'role-mapping-row border rounded p-3 mb-2 bg-body-secondary';
+        const t = (text) => {
+            const el = document.createElement('span');
+            el.textContent = text;
+            return el.innerHTML;
+        };
         div.innerHTML = `
             <div class="row g-2 align-items-end">
                 <div class="col-md-2">
                     <input type="text" name="role_mappings[${idx}][claimKey]"
                            class="form-control form-control-sm" placeholder="groups"
-                           aria-label="Claim key">
+                           aria-label="${t(faT('sso_role_mapping.claim_key'))}">
                 </div>
                 <div class="col-md-3">
                     <input type="text" name="role_mappings[${idx}][claimValueExpression]"
                            class="form-control form-control-sm" placeholder="isms-admin"
-                           aria-label="Claim value expression">
+                           aria-label="${t(faT('sso_role_mapping.claim_value'))}">
                 </div>
                 <div class="col-md-2">
                     <input type="text" name="role_mappings[${idx}][assignedRole]"
                            class="form-control form-control-sm" placeholder="ROLE_ADMIN"
-                           aria-label="Assigned role">
+                           aria-label="${t(faT('sso_role_mapping.role'))}">
                 </div>
                 <div class="col-md-1">
                     <input type="number" name="role_mappings[${idx}][priority]"
                            class="form-control form-control-sm" value="0" min="0"
-                           aria-label="Priority">
+                           aria-label="${t(faT('sso_role_mapping.priority'))}">
                 </div>
                 <div class="col-md-1 d-flex align-items-center">
                     <input type="checkbox" name="role_mappings[${idx}][isActive]"
                            value="1" checked class="form-check-input"
-                           aria-label="Active">
+                           aria-label="${t(faT('sso_role_mapping.active'))}">
                 </div>
                 <div class="col-md-2">
                     <input type="text" name="role_mappings[${idx}][auditDescription]"
-                           class="form-control form-control-sm" placeholder="Description"
-                           aria-label="Audit description">
+                           class="form-control form-control-sm" placeholder="${t(faT('sso_role_mapping.description'))}"
+                           aria-label="${t(faT('sso_role_mapping.description'))}">
                 </div>
                 <div class="col-md-1 d-flex align-items-end">
                     <button type="button"
-                            class="btn btn-sm btn-outline-danger"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-cyber-btn--danger"
                             data-action="sso-role-mapping#removeRow"
-                            aria-label="Remove mapping">
+                            aria-label="${t(faT('sso_role_mapping.remove'))}">
                         <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                     </button>
                 </div>

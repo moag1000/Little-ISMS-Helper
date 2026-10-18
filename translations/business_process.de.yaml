@@ -96,6 +96,7 @@ business_process:
     process_owner_deputies: 'Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.'
     empty_link: /de/help/glossary#glossary-bia
     a5_30_ict: 'ISO 27001 A.5.30 — ICT Readiness for Business Continuity. Verknüpfung zu BC-Planung (ISO 22301): ICT-Services müssen die im BIA festgelegten RTO/RPO-Ziele technisch erfüllen können.'
+    owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
   tooltip:
     criticality: <strong>Geschäftskritikalität (ISO 22301)</strong><br><table class="table
       table-sm table-borderless mb-0 mt-1"><tr><td><strong>Niedrig</strong></td><td>Ausfall
@@ -123,6 +124,7 @@ business_process:
     process_owner_user: -- Prozesseigentümer --
     process_owner_person: '-- Person aus Stammdaten --'
     impact_unset: '— noch nicht bewertet —'
+    owner_legacy: 'Name (veraltet, nur für Altdaten)'
   empty:
     title: Noch keine Geschäftsprozesse vorhanden
     description: Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'reports' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'reports.page.title'|trans({}, 'reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -14,9 +15,10 @@
         ]
     } %}
 
-    <h1 class="h2 mb-4">
-        <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i> {{ 'reports.page.title'|trans({}, 'reports') }}
-    </h1>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-reports', label: '' },
+        title: 'reports.page.title'|trans({}, 'reports')
+    }) }}
 
     {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: 'reports.page.subtitle'|trans({}, 'reports') }) }}
 

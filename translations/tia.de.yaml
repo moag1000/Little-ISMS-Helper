@@ -115,3 +115,5 @@ tia:
     updated: 'TIA aktualisiert'
     assessed: 'TIA bewertet'
     deleted: 'TIA gelöscht'
+  show:
+    none_documented: 'Keine dokumentiert'

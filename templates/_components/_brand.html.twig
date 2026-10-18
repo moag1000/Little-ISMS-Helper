@@ -3,11 +3,11 @@
  #
  # Usage:
  #   {% import '_components/_brand.html.twig' as brand %}
- #   {{ brand.render() }}                      {# default 28px mark + full text #}
- #   {{ brand.render(size='sm') }}             {# 22px mark, small text #}
- #   {{ brand.render(size='lg') }}             {# 40px mark, hero-variant #}
- #   {{ brand.render(link='/dashboard') }}     {# wraps in <a> #}
- #   {{ brand.render(text=false) }}            {# mark only (for Sidebar-Logo) #}
+ #   {{ brand.render() }}                      (default 28px mark + full text)
+ #   {{ brand.render(size='sm') }}             (22px mark, small text)
+ #   {{ brand.render(size='lg') }}             (40px mark, hero-variant)
+ #   {{ brand.render(link='/dashboard') }}     (wraps in <a>)
+ #   {{ brand.render(text=false) }}            (mark only (for Sidebar-Logo))
  #
  # Reads version from composer.json via Twig-Global `app_version`.
  #}

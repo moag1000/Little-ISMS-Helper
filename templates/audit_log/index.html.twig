@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'audit_log' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {# Title/subtitle suppressed — fa-page-header renders these inside admin_content #}
 {% block admin_title %}{% endblock %}
@@ -283,7 +284,10 @@
     {% endif %}
 </div>
 {% else %}
-{{ _fa_alert.render({ variant: 'info', class: 'mt-2', body: 'audit_log.message.no_entries'|trans({}, 'audit_log') }) }}
+{{ _fa_empty_state.render({
+    mood: 'sleeping',
+    title: 'audit_log.message.no_entries'|trans({}, 'audit_log')
+}) }}
 {% endif %}
 
 </main>

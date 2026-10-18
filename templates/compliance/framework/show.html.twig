@@ -108,7 +108,7 @@
                 value:   compliance_percentage|round,
                 unit:    '%',
                 variant: _kpiVariant,
-                icon:    'ui-bar-chart'
+                icon:    'nav-bar-chart'
             }) }}
         </div>
     </div>
@@ -123,7 +123,7 @@
                 label: 'compliance.framework.tisax.tier_is_label'|trans({}, 'compliance'),
                 value: 'compliance.framework.tisax.tier_is_value'|trans({'%avg%': tierData.average, '%target%': 3, '%gap%': (3 - tierData.average)|round(1)}, 'compliance'),
                 variant: tierData.average >= 3 ? 'success' : (tierData.average >= 2 ? 'warning' : 'danger'),
-                icon: 'status-gauge'
+                icon: 'nav-speedometer'
             }) }}
             {% elseif tier == 'prototype_protection' %}
             {{ _fa_feature_card.render({

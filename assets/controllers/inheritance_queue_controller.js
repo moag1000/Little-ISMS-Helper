@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Polls the pending-review count and updates the navigation badge.
@@ -37,7 +38,7 @@ export default class extends Controller {
         if (count > 0) {
             badge.textContent = count;
             badge.classList.remove('d-none');
-            badge.setAttribute('aria-label', `${count} Ableitungsvorschläge offen`);
+            badge.setAttribute('aria-label', faT('inheritance_queue.pending', { '%count%': count }));
         } else {
             badge.classList.add('d-none');
         }

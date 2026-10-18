@@ -1,16 +1,19 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_title %}{{ 'session.list'|trans({}, 'session') }}{% endblock %}
-{% block admin_subtitle %}
-    <p class="text-muted">{{ 'session.subtitle'|trans({}, 'session') }}</p>
-{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item active" aria-current="page">{{ 'admin.nav.sessions'|trans({}, 'admin') }}</li>
 {% endblock %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        title: 'session.list'|trans({}, 'session'),
+        subtitle: 'session.subtitle'|trans({}, 'session')
+    }) }}
+
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
@@ -193,9 +196,11 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
-                    {% block alert_body %}{{ 'session.no_sessions_found'|trans({}, 'session') }}{% endblock %}
-                {% endembed %}
+                {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                {{ _fa_empty_state.render({
+                    mood: 'sleeping',
+                    title: 'session.no_sessions_found'|trans({}, 'session')
+                }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

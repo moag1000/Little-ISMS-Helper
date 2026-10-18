@@ -10,7 +10,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
-use App\Form\Type\JsonStructuredType;
+use App\Form\Type\JsonBuilderType;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityRepository;
@@ -336,27 +336,42 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                 ],
                 'help' => 'management_review.help.policy_review_outcome',
             ])
-            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
-            ->add('actionItemsWithDeadlines', JsonStructuredType::class, [
+            // ISO 27001 Cl. 9.3.3 — decisions/actions with owner + deadline.
+            // Structured builder, shape: [{action, owner, deadline, status}].
+            ->add('actionItemsWithDeadlines', JsonBuilderType::class, [
                 'label' => 'management_review.field.action_items_with_deadlines',
                 'required' => false,
-                'attr' => [
-                    'rows' => 6,
-                    'placeholder' => 'management_review.placeholder.action_items_with_deadlines',
-                ],
                 'help' => 'management_review.help.action_items_with_deadlines',
+                'shape' => 'list',
+                'add_label' => 'management_review.json_builder.action_items.add',
+                'fields' => [
+                    ['key' => 'action', 'type' => 'text', 'label' => 'management_review.json_builder.action_items.action', 'required' => true, 'wide' => true],
+                    ['key' => 'owner', 'type' => 'text', 'label' => 'management_review.json_builder.action_items.owner'],
+                    ['key' => 'deadline', 'type' => 'date', 'label' => 'management_review.json_builder.action_items.deadline'],
+                    ['key' => 'status', 'type' => 'select', 'label' => 'management_review.json_builder.action_items.status', 'choices' => [
+                        'management_review.json_builder.action_items.status_open' => 'open',
+                        'management_review.json_builder.action_items.status_in_progress' => 'in_progress',
+                        'management_review.json_builder.action_items.status_done' => 'done',
+                    ]],
+                ],
             ]);
 
         if ($this->isModuleActive('compliance')) {
-            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
-            $builder->add('frameworkComplianceStatus', JsonStructuredType::class, [
+            // Snapshot per framework, shape: [{framework, status, last_review, open_items}].
+            $builder->add('frameworkComplianceStatus', JsonBuilderType::class, [
                 'label' => 'management_review.field.framework_compliance_status',
                 'required' => false,
-                'attr' => [
-                    'rows' => 4,
-                    'placeholder' => 'management_review.placeholder.framework_compliance_status',
-                ],
                 'help' => 'management_review.help.framework_compliance_status',
+                'shape' => 'list',
+                'add_label' => 'management_review.json_builder.framework_status.add',
+                'fields' => [
+                    ['key' => 'framework', 'type' => 'text', 'label' => 'management_review.json_builder.framework_status.framework', 'required' => true,
+                        'suggestions' => ['ISO 27001:2022', 'NIS2', 'DORA', 'BaFin MaRisk', 'BAIT', 'TISAX', 'GDPR', 'BSI IT-Grundschutz']],
+                    ['key' => 'status', 'type' => 'text', 'label' => 'management_review.json_builder.framework_status.status',
+                        'suggestions' => ['compliant', 'partially_compliant', 'in_progress', 'non_compliant']],
+                    ['key' => 'last_review', 'type' => 'date', 'label' => 'management_review.json_builder.framework_status.last_review'],
+                    ['key' => 'open_items', 'type' => 'number', 'label' => 'management_review.json_builder.framework_status.open_items'],
+                ],
             ]);
         }
     }

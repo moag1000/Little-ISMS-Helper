@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Guided Tour Controller (Sprint 13 / S13-1).
@@ -293,7 +294,7 @@ export default class extends Controller {
         this.popoverEl.innerHTML = `
             <div class="guided-tour-popover-header">
                 <span class="guided-tour-progress">${progress}</span>
-                <button type="button" class="guided-tour-close" aria-label="Close"
+                <button type="button" class="guided-tour-close" aria-label="${this.escapeHtml(faT('close'))}"
                         data-guided-tour-action="close">&times;</button>
             </div>
             <h3 id="guided-tour-title" class="guided-tour-title">
@@ -507,9 +508,9 @@ export default class extends Controller {
             <i class="fa-icon fa-icon--phone" aria-hidden="true"></i>
             <strong>${this.escapeHtml(this.translations('mobile_title'))}</strong>
             ${this.escapeHtml(this.translations('mobile_body'))}
-            <button type="button" class="btn-close" aria-label="Close"
-                    onclick="this.closest('.guided-tour-mobile-hint').remove()"></button>
+            <button type="button" class="btn-close" aria-label="${this.escapeHtml(faT('close'))}"></button>
         `;
+        hint.querySelector('.btn-close').addEventListener('click', () => hint.remove());
         document.body.appendChild(hint);
     }
 
@@ -518,14 +519,15 @@ export default class extends Controller {
         // Minimal fallback — production uses twig-set dataset on the mount point.
         const t = this.data.get(`i18n-${key}`);
         if (t) return t;
-        return {
-            next: 'Weiter',
-            previous: 'Zurück',
-            finish: 'Fertig',
-            skip: 'Überspringen',
-            mobile_title: 'Tour am Desktop',
-            mobile_body: 'Die geführte Tour ist für Desktop optimiert. Bitte öffnen Sie das Tool auf einem größeren Bildschirm für die volle Erfahrung.',
-        }[key] ?? key;
+        const fallback = {
+            next: () => faT('guided_tour.next'),
+            previous: () => faT('guided_tour.previous'),
+            finish: () => faT('guided_tour.finish'),
+            skip: () => faT('guided_tour.skip'),
+            mobile_title: () => faT('guided_tour.mobile_title'),
+            mobile_body: () => faT('guided_tour.mobile_body'),
+        }[key];
+        return fallback ? fallback() : key;
     }
 
     escapeHtml(str) {

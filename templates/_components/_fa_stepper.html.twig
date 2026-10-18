@@ -42,7 +42,7 @@
 {% macro render(steps, currentIndex = 0, props = {}) %}
     <nav class="fa-stepper{{ props.class is defined ? ' ' ~ props.class : '' }}"
          role="navigation"
-         aria-label="{{ props.ariaLabel|default('Wizard') }}">
+         aria-label="{{ props.ariaLabel|default('ui.component.wizard'|trans({}, 'ui')) }}">
         <ol class="fa-stepper__list">
             {% for idx, step in steps %}
                 {% set status = step.status|default(
@@ -56,12 +56,12 @@
                     {% if isActive %}aria-current="step"{% endif %}>
                     {% if step.href is defined and step.href and not isActive %}
                         <a href="{{ step.href }}" class="fa-stepper__link"
-                           aria-label="Schritt {{ idx + 1 }}: {{ step.label }}{% if status == 'completed' %} — abgeschlossen{% endif %}">
+                           aria-label="{{ (status == 'completed' ? 'ui.component.step_completed' : 'ui.component.step')|trans({'%n%': idx + 1, '%label%': step.label}, 'ui') }}">
                             {{ _self.step_indicator(idx, step.label, status, step.icon|default(null)) }}
                         </a>
                     {% else %}
                         <span class="fa-stepper__link fa-stepper__link--static"
-                              aria-label="Schritt {{ idx + 1 }}: {{ step.label }}{% if status == 'completed' %} — abgeschlossen{% endif %}">
+                              aria-label="{{ (status == 'completed' ? 'ui.component.step_completed' : 'ui.component.step')|trans({'%n%': idx + 1, '%label%': step.label}, 'ui') }}">
                             {{ _self.step_indicator(idx, step.label, status, step.icon|default(null)) }}
                         </span>
                     {% endif %}

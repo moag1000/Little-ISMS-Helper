@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Quick View Controller
@@ -22,13 +23,24 @@ export default class extends Controller {
         url: String,
         type: String,
         // Translation strings
-        loadingText: { type: String, default: 'Loading preview...' },
-        errorTitle: { type: String, default: 'Error loading preview' },
-        errorSubtitle: { type: String, default: 'Please try again' },
-        closeText: { type: String, default: 'Close' }
+        loadingText: { type: String, default: '' },
+        errorTitle: { type: String, default: '' },
+        errorSubtitle: { type: String, default: '' },
+        closeText: { type: String, default: '' }
     };
 
     previouslyFocusedElement = null;
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            loadingText: () => faT('quick_view.loading'),
+            errorTitle: () => faT('quick_view.error_title'),
+            errorSubtitle: () => faT('quick_view.error_subtitle'),
+            closeText: () => faT('quick_view.close'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         // Register space key handler
@@ -167,9 +179,9 @@ export default class extends Controller {
         this.bodyTarget.innerHTML = `
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">${this.loadingTextValue}</span>
+                    <span class="visually-hidden">${this.label('loadingText')}</span>
                 </div>
-                <p class="mt-3 text-muted">${this.loadingTextValue}</p>
+                <p class="mt-3 text-muted">${this.label('loadingText')}</p>
             </div>
         `;
     }
@@ -182,10 +194,10 @@ export default class extends Controller {
         this.bodyTarget.innerHTML = `
             <div class="text-center py-5">
                 <i class="fa-icon fa-icon--status-warning text-danger" style="font-size: 3rem;" aria-hidden="true"></i>
-                <p class="mt-3 mb-2">${this.errorTitleValue}</p>
-                <p class="text-muted small">${this.errorSubtitleValue}</p>
+                <p class="mt-3 mb-2">${this.label('errorTitle')}</p>
+                <p class="text-muted small">${this.label('errorSubtitle')}</p>
                 <button class="btn btn-sm btn-primary mt-3" data-action="click->quick-view#close">
-                    ${this.closeTextValue}
+                    ${this.label('closeText')}
                 </button>
             </div>
         `;

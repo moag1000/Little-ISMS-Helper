@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Policy-Wizard Bestandsaufnahme — MUST #4: Bulk action bar.
@@ -96,14 +97,14 @@ export default class extends Controller {
     // ── Confirm gate (shared by all actions) ──────────────────────────────
     _gateAndApply(rows, body, runFn) {
         if (rows.length === 0) {
-            this._announce(this._dataset('noTargetsMessage') || 'No matching rows found.');
+            this._announce(this._dataset('noTargetsMessage') || faT('bestandsaufnahme_bulk.no_targets'));
             return;
         }
 
         const interpolated = (body || '').replace('%count%', String(rows.length));
         const commit = () => {
             const applied = runFn();
-            this._announce((this._dataset('appliedTemplate') || '%count% rows updated.').replace('%count%', String(applied)));
+            this._announce((this._dataset('appliedTemplate') || faT('bestandsaufnahme_bulk.applied')).replace('%count%', String(applied)));
         };
 
         if (this.hasConfirmModalTarget && this.hasConfirmApplyBtnTarget) {
@@ -164,7 +165,7 @@ export default class extends Controller {
         };
         const datasetKey = map[kind] || 'keepBody';
         const fromParam = event && event.params ? event.params[datasetKey] : null;
-        return fromParam || this._dataset(datasetKey) || this._dataset('keepBody') || 'Apply to %count% row(s)?';
+        return fromParam || this._dataset(datasetKey) || this._dataset('keepBody') || faT('bestandsaufnahme_bulk.confirm');
     }
 
     _dataset(key) {

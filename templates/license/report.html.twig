@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Lizenzbericht - Detailliert{% endblock %}
 
@@ -14,11 +15,11 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'Detaillierter Lizenzbericht',
         subtitle: 'Vollständige Compliance-Analyse aller Dependencies',
-        icon: 'nav-bar-chart'
-    } %}
+        badge: { icon: 'nav-bar-chart', label: '' }
+    }) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">

@@ -77,6 +77,7 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                             {% for mapping in mapping_group.mappings|slice(0, 5) %}
                                 <tr class="border-bottom-light">
                                     <td class="p-md">
@@ -93,9 +94,13 @@
                                     </td>
                                     <td class="td-center-p-075">
                                         <div class="flex-center-gap-05">
-                                            <div class="progress-bar-container">
-                                                <div style="height: 100%; width: {{ mapping.mappingPercentage }}%; background: {% if mapping.mappingPercentage >= 100 %}var(--color-success){% elseif mapping.mappingPercentage >= 50 %}var(--color-warning){% else %}var(--color-secondary){% endif %};"></div>
-                                            </div>
+                                            {{ _fa_progress.render({
+                                                value: mapping.mappingPercentage,
+                                                tone: mapping.mappingPercentage >= 100 ? 'success' : (mapping.mappingPercentage >= 50 ? 'warning' : 'neutral'),
+                                                label: mapping.targetRequirement.requirementId,
+                                                size: 'sm',
+                                                class: 'progress-bar-container',
+                                            }) }}
                                             <span class="fw-600-min-w-45">{{ mapping.mappingPercentage }}%</span>
                                         </div>
                                     </td>

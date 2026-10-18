@@ -84,26 +84,26 @@
             <div class="chart-widget">
                 {% if data.type == 'heatmap' %}
                 {# Risk Matrix Heatmap #}
-                <div class="risk-matrix-preview">
-                    <table class="table table-bordered table-sm text-center">
-                        <thead>
+                <div class="risk-matrix-preview fa-table-wrap">
+                    <table class="fa-table fa-table--compact">
+                        <thead class="fa-table__head">
                             <tr>
-                                <th scope="col"></th>
+                                <th class="fa-table__th" scope="col"></th>
                                 {% for label in data.labels.x %}
-                                <th scope="col" class="small">{{ label }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--center small">{{ label }}</th>
                                 {% endfor %}
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="fa-table__body">
                             {% for y in 5..1 %}
-                            <tr>
-                                <th scope="col" class="small">{{ data.labels.y[y - 1] }}</th>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell small">{{ data.labels.y[y - 1] }}</th>
                                 {% for x in 1..5 %}
                                 {% set count = data.matrix[y][x]|default(0) %}
                                 {% set score = y * x %}
                                 {% set bgClass = score >= 15 ? 'bg-danger' : (score >= 8 ? 'bg-warning' : (score >= 4 ? 'bg-info' : 'bg-success')) %}
                                 {% set fgClass = score >= 8 and score < 15 ? '' : 'text-white' %}
-                                <td class="{{ bgClass }} {{ fgClass }}">{{ count > 0 ? count : '' }}</td>
+                                <td class="fa-table__cell fa-table__cell--center {{ bgClass }} {{ fgClass }}">{{ count > 0 ? count : '' }}</td>
                                 {% endfor %}
                             </tr>
                             {% endfor %}

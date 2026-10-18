@@ -102,6 +102,8 @@ final class AuroraTableMacrosBucket3Test extends KernelTestCase
     #[Test]
     public function matrixTableRagModeRendersCaptionAndLegend(): void
     {
+        // Legend labels are translated (ui.component.matrix_legend.*); assert the EN catalogue.
+        self::getContainer()->get('translator')->setLocale('en');
         $output = $this->renderMatrixRag();
 
         self::assertStringContainsString('fa-matrix-table__caption', $output);

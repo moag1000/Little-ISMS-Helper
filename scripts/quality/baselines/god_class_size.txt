@@ -34,8 +34,8 @@ src/Command/TisaxConsolidateCommand.php:LOC=947 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
 src/Controller/IncidentController.php:LOC=927 deps=0
 src/Controller/TenantManagementController.php:LOC=917 deps=0
-src/Form/ProcessingActivityType.php:LOC=835 deps=0
 src/Command/GenerateIsoProceduresCommand.php:LOC=834 deps=0
+src/Form/ProcessingActivityType.php:LOC=822 deps=0
 src/Controller/ComplianceWizardController.php:LOC=814 deps=0
 src/Controller/ProcessingActivityController.php:LOC=812 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0

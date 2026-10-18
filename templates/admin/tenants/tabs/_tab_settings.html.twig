@@ -1,10 +1,11 @@
 {#
  # Tenant form — tab: settings
- # Fields: settings (JSON), MRIS-KPI toggle (inline checkbox)
+ # Tenant::$settings is an internal bag whose parts have dedicated editors
+ # (organisation context, MRIS KPIs, TISAX). It is shown read-only here —
+ # never as editable raw JSON. The MRIS-KPI toggle is the only inline edit.
  #}
 {% trans_default_domain 'tenant' %}
-
-{{ form_row(form.settings) }}
+{% import '_components/_fa_json_view.html.twig' as _fa_json_view %}
 
 {# MRIS: KPI-Modul-Toggle. Default = aktiv. Inline-Checkbox, nicht
    via Form-Type, weil TenantType in vielen Stellen referenziert wird.
@@ -19,28 +20,26 @@
                    id="mris_kpis_enabled"
                    name="mris_kpis_enabled"
                    value="1"
+                   aria-describedby="mris_kpis_enabled_help"
                    {% if mrisKpisEnabled %}checked{% endif %}>
             <label for="mris_kpis_enabled" class="form-check-label">
-                MRIS-Mythos-KPIs anzeigen
+                {{ 'tenant.settings.mris_kpis_enabled'|trans({}, 'tenant') }}
             </label>
         </div>
-        <div class="form-text small">
-            Deaktivieren wenn die Organisation nicht von MRIS profitiert
-            (z. B. nicht-DORA, nicht-NIS2-Adressat).
+        <div class="form-text small" id="mris_kpis_enabled_help">
+            {{ 'tenant.settings.mris_kpis_enabled_help'|trans({}, 'tenant') }}
         </div>
     </div>
 {% endif %}
 
-<div class="form-text mt-2">
-    <strong>{{ 'tenant.settings.example_title'|trans({}, 'tenant') }}</strong><br>
-    <pre class="bg-body-secondary p-2 rounded small mb-0"><code>{
-  "branding": {
-    "primaryColor": "#0d6efd",
-    "logoUrl": "/uploads/tenant-logo.png"
-  },
-  "features": {
-    "darkMode": true,
-    "globalSearch": false
-  }
-}</code></pre>
-</div>
+<h3 class="h6 mt-3 mb-2">{{ 'tenant.settings.stored_title'|trans({}, 'tenant') }}</h3>
+<p class="form-text mt-0">{{ 'tenant.settings.stored_help'|trans({}, 'tenant') }}</p>
+{% if tenant is not null and tenant.id %}
+    <p class="mb-2">
+        <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            {{ 'tenant.settings.edit_organisation_context'|trans({}, 'tenant') }}
+        </a>
+    </p>
+{% endif %}
+{{ _fa_json_view.render(tenant is not null ? tenant.settings : null) }}

@@ -782,10 +782,6 @@
     background-color: var(--warning-glow);
 }
 
-.bg-danger-light-border-left-danger {
-    background: var(--danger-glow);
-    border-left: 4px solid var(--danger);
-}
 
 /* KPI Card components */
 .kpi-label {
@@ -1623,7 +1619,7 @@
 [data-theme="dark"] .chart-legend-label,
 [data-bs-theme="dark"] .chart-legend-label {
     color: var(--fg);
-    text-shadow: 0 0 10px rgb(255, 255, 255, 0.3);
+    text-shadow: none;
 }
 
 .w-h-100 {
@@ -1653,15 +1649,7 @@
 }
 
 /* Workflow Overdue Utilities */
-.alert-danger-border {
-    background: var(--danger-glow);
-    border-left: 4px solid var(--danger);
-}
 
-.alert-warning-border {
-    background: var(--warning-glow);
-    border-left: 4px solid var(--warning);
-}
 
 /* SOA Index Utilities */
 .badge-neutral {
@@ -2189,7 +2177,7 @@
 
 /* Compliance Index Utilities - Cyberpunk Fairy Emerald Gradient */
 .alert-gradient-success {
-    background: linear-gradient(135deg, var(--success) 0%, var(--success-strong) 100%);  /* Emerald fairy dust */
+    background: var(--success);  /* Emerald fairy dust */
     color: var(--on-success);
     border: none;
     margin-bottom: var(--spacing-lg);
@@ -2214,19 +2202,19 @@
 }
 
 .bg-gradient-danger {
-    background: linear-gradient(135deg, var(--danger), var(--danger));
+    background: var(--danger);
 }
 
 .bg-gradient-warning {
-    background: linear-gradient(135deg, var(--warning), var(--warning));
+    background: var(--warning);
 }
 
 .bg-gradient-success {
-    background: linear-gradient(135deg, var(--success), var(--success));
+    background: var(--success);
 }
 
 .bg-gradient-info {
-    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    background: var(--primary);
 }
 
 /* Location Form Utilities */
@@ -2472,37 +2460,37 @@
 [data-theme="dark"] .badge-create {
     background: var(--success);
     color: var(--on-success);
-    box-shadow: 0 0 8px rgb(var(--success-rgb), 0.3);
+    box-shadow: none;
 }
 
 [data-theme="dark"] .badge-update {
     background: var(--warning);
     color: var(--on-warning);
-    box-shadow: 0 0 8px rgb(var(--warning-rgb), 0.3);
+    box-shadow: none;
 }
 
 [data-theme="dark"] .badge-delete {
     background: var(--danger);
     color: var(--on-danger);
-    box-shadow: 0 0 8px var(--danger-tint);
+    box-shadow: none;
 }
 
 [data-theme="dark"] .badge-view {
     background: var(--primary);
     color: var(--on-primary);
-    box-shadow: 0 0 8px var(--primary-glow);
+    box-shadow: none;
 }
 
 [data-theme="dark"] .badge-export {
     background: var(--fg-2);
     color: white; /* design-spec: text on fg-2 slate dark badge, no --on-fg token */
-    box-shadow: 0 0 8px rgb(100, 116, 139, 0.3);
+    box-shadow: none;
 }
 
 [data-theme="dark"] .badge-import {
     background: var(--accent);  /* Mystical purple aura */
     color: var(--on-accent);
-    box-shadow: 0 0 8px var(--accent-tint);
+    box-shadow: none;
 }
 
 /* ============================================
@@ -2766,11 +2754,11 @@
    submit, so the user sees exactly which row/field blocks "Weiter". */
 .wizard-row-invalid > td,
 .wizard-row-invalid > th {
-    background: var(--danger-tint, rgba(220, 38, 38, 0.08));
+    background: var(--danger-tint, rgb(220, 38, 38, 0.08));
 }
 .fa-cyber-input__field.is-invalid,
 select.is-invalid,
 textarea.is-invalid {
     border-color: var(--danger) !important;
-    box-shadow: 0 0 0 2px var(--danger-tint, rgba(220, 38, 38, 0.18)) !important;
+    box-shadow: 0 0 0 2px var(--danger-tint, rgb(220, 38, 38, 0.18)) !important;
 }

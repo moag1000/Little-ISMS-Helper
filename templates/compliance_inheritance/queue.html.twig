@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'compliance_inheritance.queue.title'|trans({ '%framework%': framework.code }, 'compliance_inheritance') }}{% endblock %}
 
@@ -47,9 +48,10 @@
     </div>
 
     {% if logs is empty %}
-        <div class="fa-alert fa-alert--info" role="status">
-            {{ 'compliance_inheritance.queue.empty'|trans({}, 'compliance_inheritance') }}
-        </div>
+        {{ _fa_empty_state.render({
+            mood: 'happy',
+            title: 'compliance_inheritance.queue.empty'|trans({}, 'compliance_inheritance')
+        }) }}
     {% else %}
         <div class="list-group">
             {% for log in logs %}

@@ -337,6 +337,16 @@ Benefits:
 - Clearer organization and maintenance
 - Reduced merge conflicts
 
+JavaScript texts:
+- Never hard-code UI text in `assets/**/*.js`. Add it to `translations/ui.{de,en}.yaml`
+  under `ui.js.<controller>.<key>` and read it with `faT('<controller>.<key>', {'%x%': v})`
+  (`assets/js/fa-i18n.js`). Every `ui.js.*` message is shipped automatically as
+  `window.translations.ui` by `_components/_js_translations.html.twig`
+  (`App\Twig\JsTranslationsExtension`); `tests/Twig/JsTranslationsExtensionTest.php`
+  fails when a `faT()` key is missing in DE or EN.
+- Template-specific texts may still travel as `data-<controller>-<name>-value`;
+  the controller then falls back to `faT()`.
+
 Translation Quality:
 - Use `scripts/quality/check_translation_issues.py` to find:
   - Hardcoded text that should be translated
@@ -674,6 +684,27 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
    alert-*`, spacing/flex) still work. Full anti-pattern list in
    `templates/_components/_CARD_GUIDE.md` §"Anti-Patterns".
 
+## Design System Source (claude.ai artifact)
+
+The design system (FairyAurora v4) is maintained as a claude.ai Design System
+artifact: https://claude.ai/artifact/D2J6dQUWYUBjq3q7MMeA3D (private; read it
+with the Artifact tool, not WebFetch). It is the reference for **design**
+decisions (palette, type, glow/shadow rules, component look). The repo stays
+the reference for **technical** tokens (z-index stack, Bootstrap bridge
+`--bs-*`, print, touch targets).
+
+- Token snapshot: `docs/design_system/artifact/` (tokens.css +
+  fairy-aurora.css) — a copy, never hand-edit. `SOURCE.md` there documents
+  the sync in both directions.
+- CI-Gate 61 `scripts/quality/check_design_tokens_sync.py` fails when a token in
+  `assets/styles/` differs from the snapshot and is not in
+  `scripts/quality/baselines/design_tokens_sync.txt`.
+- Changing a token: change it in the artifact and in `assets/styles/` together,
+  refresh the snapshot, and drop the baseline line if one existed.
+- "Design System ins Repo synchronisieren" = read the two files from the
+  artifact, replace the snapshot, run the gate, align or baseline each new
+  deviation, open a PR.
+
 ## Aurora v4 Components (prefer these for new UI)
 
 Macro library under `templates/_components/_fa_*.html.twig`. Live preview +
@@ -691,7 +722,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-entity-badge` | ISMS-entity marker (10 types: finding/nonconformity/risk/control/evidence/policy/asset/incident/audit/training) | `_fa_entity_badge.html.twig` |
 | `fa-stepper` | Multi-step wizard chrome (Preset → Discovery → Test for SSO; Upload → Map → Preview → Commit for Bulk-Import) | `_fa_stepper.html.twig` |
 | `fa-diff-row` | Old → New value diff visualization for Bulk-Import Delta-Mode + OSCAL-Conflict-Cards | `_fa_diff_row.html.twig` |
-| `fa-condition-builder` | Visual rule-builder (chip-row WHEN/CONDITIONS) for Notification-Rules — replaces raw JSON editing | `_fa_condition_builder.html.twig` |
+| `fa-condition-builder` | Visual rule-builder (WHEN / AND / OR chip rows) for Notification-Rules — replaces raw JSON editing. Form-bound: `render(form.conditionRows, { logic: form.conditionLogic, suggestions: [...] })` renders a CollectionType of `ConditionRowType` (`field`/`op`/`value`, the evaluator format) with the real widgets; Stimulus `condition-builder` clones the prototype | `_fa_condition_builder.html.twig` |
 | `fa-table` | Aurora-styled data table (replaces raw `<table class="table">`) — 80+ adopted in v3.5 | `_fa_table.html.twig` |
 | `fa-matrix-table` | Multi-axis grid for risk-heatmaps (`mode: 'severity'`, default — ISO-27005 score-based) and compliance-heatmaps (`mode: 'rag'`, framework × cluster). Supports `caption`, `colspan` via grid template, `<th scope="col"/"row">` semantics, optional severity/RAG legend, optional per-cell `href` links, per-cell `severity` override. | `_fa_matrix_table.html.twig` |
 | `fa-settings-table` | Tabular form-grid for `/admin/settings/*` (label / control / status three-col layout). 8 row-kinds: `text/email/number/select/chips/toggle/textarea/widget`. `widget` passes through pre-rendered HTML (e.g. `form_widget()` output) so Symfony FormType controls keep CSRF/validation. Optional `headers: [{label, ...}]` switches to multi-column data-table mode with per-row `trailing` cell — used by Bulk-Import column-mapping wizard. | `_fa_settings_table.html.twig` |
@@ -704,6 +735,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-tabs` | Tab-group for settings-style forms with 3-6 equal groups (TenantType, UserType, Branding-Config). NOT for regulatory forms (use fa-form-layout) or linear flows (use fa-modal--wizard) | `_fa_tabs.html.twig` |
 | `fa-modal` (confirm + settings + wizard) | Canonical unified modal library. 3 modes: `confirm` (destructive/approval, 4 tones), `settings` (preferences/toggles), `wizard` (multi-step). Stimulus shell controller `fa-modal` + dispatcher `fa-modal-dispatcher`. Sub-controllers `fa-confirm` (type-to-confirm + cooldown) compose alongside via `data-controller="fa-modal fa-confirm"`. Open from JS via `document.dispatchEvent(new CustomEvent('fa-modal:request-open', { detail: { id: 'modal-id' } }))` — drop-in replacement for `new bootstrap.Modal()`. **Sweep status (2026-05-22):** 73+ modals across 49 templates migrated (PRs #547/#551/#555/#558 + Wave 4). Out-of-spec intentional exceptions: `_command_palette.html.twig` (⌘P power-user pattern), `_quick_view_modal.html.twig` (info popover), `_gdpr_breach_wizard_modal.html.twig` (uses `fa-prefs-modal` shell — kept for layout-stability, harmonization deferred). | `_fa_modal.html.twig` |
 | `fa-modal--wizard` | High-stakes linear flow modal with step-pips + validation gates (Tenant-Setup, GDPR-Breach-Initial, Compliance-Wizard) — accessible via `_fa_modal.wizard()` delegate or direct `_fa_modal_wizard.render()` | `_fa_modal_wizard.html.twig` |
+| `fa-json-builder` | Structured editor for JSON entity columns (list / map / object of typed fields). Use via `JsonBuilderType` (`shape`, `fields`, `hidden_keys`) — never a raw JSON textarea; `JsonShape` re-validates server-side, Gate 34 enforces. Read-only counterpart `_fa_json_view.html.twig` | `_fa_json_builder.html.twig` |
 | `fa-cyber-field` | Hand-rolled Aurora-Frame inputs (text/textarea/select) | `_fa_cyber_field.html.twig` |
 | `fa-drawer` | Slide-in side-sheet (right default, `--left`, `--sm`, `--lg`). Use `.fa-drawer-backdrop` + `.is-open`. CSS only — no macro yet. | CSS: `fairy-aurora-components.css` |
 | `fa-menu` | Dropdown / overflow-action menu (`fa-menu-anchor` + `.fa-menu.is-open`). Supports groups, icons, shortcuts, danger items, dividers. CSS only. | CSS: `fairy-aurora-components.css` |
@@ -725,11 +757,12 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-maturity-heat-map` | Inline maturity score widget (0–5 dot row with heat-level BEM modifier). | `_fa_maturity_heat_map.html.twig` |
 
 Import pattern for macros: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
+Gate 62 (`check_aurora_legacy_markup.py`) ratchets Bootstrap markup that has an Aurora replacement: counts per template may only go down.
 For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...], variant: 'neutral' } %}` (it is a plain include, not a macro). `variant: 'brand'` for hero lists (risk, document). The canonical CSS class set is `.fa-bulk-bar*` (BEM); the old `.bulk-action-bar*` is a deprecated shim.
 Legacy `.kpi-card` / `variant:'kpi'` still works for backward-compat but emits
 a dev-env console deprecation warning.
 
-Stylelint (`npm run stylelint`) bans raw hex in 14 color-valued properties
+Stylelint (`npm run stylelint`, CI job "JS Unit Tests") bans raw hex in 14 color-valued properties
 app-wide; use Aurora tokens only. Allow-list: `fairy-aurora.css` (SoT),
 `alva.css` (SVG brand fills), vendor bootstrap*.css.
 

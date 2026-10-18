@@ -21,12 +21,26 @@ mris:
             point_reason: 'a <strong>rationale</strong> why this level is relevant (regulation, risk landscape, typical threats),'
             point_preserve: '<strong>existing maturity assessments are preserved</strong> (<code>maturity_current</code> values are never overwritten).'
             example: '<strong>Example:</strong> <code>healthcare-provider</code> sets phishing-resistant MFA (MHC-03) to <code>managed</code> due to the 2024/25 ransomware wave, but multi-tenancy (MHC-07) only to <code>defined</code> because it is internal. After application, the SoA + maturity report shows the gap between actual (your assessment) and target (baseline) as a prioritised action list.'
+        title: 'MRIS industry baselines'
+        intro: 'Preconfigured target levels per MHC, tailored to industries such as critical infrastructure / NIS2 essential, finance / DORA, automotive / TISAX and SaaS / CRA. Applying only sets the target (<code>maturity_target</code>) — existing self-assessments (actual) remain untouched.'
+        no_tenant: 'No organization assigned — baselines require an organization context to be applied.'
+        empty: 'No baselines available. YAML files are expected under <code>fixtures/mris/baselines/</code>.'
+        file_label: 'File:'
+        dry_run: 'Preview (dry run)'
+        apply: 'Apply'
+        confirm_apply: 'Really apply baseline ''%baseline%'' to organization ''%tenant%''? Existing target levels will be overwritten.'
+        tenant_required: 'Organization context required.'
+        manager_required: 'Applying requires the Manager role (ROLE_MANAGER).'
+        cli_hint: 'Console equivalent for automation:'
+        source_files: 'The baseline source files are located under <code>fixtures/mris/baselines/*.yaml</code>.'
     page:
         kpi_title: 'Mythos-relevant KPIs'
         kpi_intro: |
             Eight KPIs from MRIS v1.5 Ch. 10.6. Three are computed automatically
             from existing data, five require manual entry per organization.
         source: 'Source: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. License: CC BY 4.0.'
+        kpi_breadcrumb: 'MRIS KPIs'
+        note_label: 'Note:'
     badge:
         auto: auto
         manual: manual
@@ -37,6 +51,7 @@ mris:
             The five manually-maintained KPIs (SBOM coverage, KEV patch latency,
             CCM coverage, crypto inventory coverage, TLPT findings closure) require
             external data sources. Manual entry fields are below.
+        manual_note_pending: 'The five manually maintained KPIs (SBOM coverage, KEV patch latency, CCM coverage, crypto inventory coverage, TLPT findings closure) currently require external data sources. Manual input fields will follow in a later version.'
     manual_form:
         title: 'Manual KPI values'
         save: 'Save values'
@@ -52,6 +67,29 @@ mris:
             open: 'Open'
             warning_missing: 'High-risk AI without DPIA — required under GDPR Art. 35 + AI Act Art. 9.'
             create_button: 'Create DPIA'
+        index:
+            title: 'AI agent inventory'
+            intro: 'Asset subtype <code>ai_agent</code>. Simultaneously covers <strong>EU AI Act Art. 6/9-16</strong>, <strong>ISO 42001 Annex A</strong>, <strong>MRIS MHC-13</strong> and <strong>ISO 27001 A.5.16/A.8.27</strong>.'
+            source: 'MRIS source: Peddi, R. (2026). MRIS v1.5. CC BY 4.0.'
+            stat_total: 'AI agents total'
+            stat_high_risk: 'High risk (AI Act Art. 6)'
+            stat_unclassified: 'Not classified'
+            stat_completeness: 'Avg. documentation completeness'
+            high_risk_incomplete: '<strong>%count% high-risk agent(s) with incomplete documentation.</strong><br>EU AI Act Art. 11 requires complete technical documentation for high-risk systems. Complete it before first use.'
+            empty: 'No AI agents in the inventory yet. Create an asset with <code>assetType=ai_agent</code> (e.g. GitHub Copilot, Cursor, Claude Code, your own MCP server).'
+            col:
+                name: 'Name'
+                provider: 'Provider'
+                model: 'Model'
+                classification: 'Risk class'
+                completeness: 'Documentation completeness'
+            class:
+                prohibited: 'Prohibited'
+                high_risk: 'High risk'
+                limited_risk: 'Limited'
+                minimal_risk: 'Minimal'
+                unclassified: 'Not classified'
+            required_fields: '<strong>Required fields per AI agent (9):</strong> risk classification (AI Act Art. 6), intended purpose (Art. 11), data governance (Art. 10), human oversight (Art. 14), provider (Art. 16), model version (ISO 42001), capability scope (MHC-13), threat model (Art. 9 + MHC-13), extension allowlist (MHC-13).'
     audit_report:
         flash:
             no_tenant: 'No organization assigned — MRIS audit report requires an organization context.'
@@ -140,3 +178,252 @@ mris:
             reibung: 'Pure Friction (R)'
             nicht_betroffen: 'Not Affected (N)'
             unklassifiziert: 'Not Classified'
+    wizard:
+        common:
+            note_label: 'Note:'
+            fallback_notice: 'Maintain the wizard data in <code>fixtures/mris/help-texts.yaml</code> under <code>blocker_solutions:</code> so this content is loaded centrally from YAML. The built-in default content is currently shown.'
+            norm_refs: 'Standard references'
+            example: 'Example'
+            source: 'Source: Peddi (2026) MRIS v1.5.'
+            breadcrumb_kpis: 'MRIS KPIs'
+        pure_friction:
+            page_title: 'MRIS wizard — Pure friction'
+            breadcrumb: 'Wizard: Pure friction'
+            title: '5-step decision routine — Pure friction'
+            intro: 'If an Annex A control is marked as "pure friction" in an audit, you must not silently drop it. Follow this routine to document an audit-proof decision.'
+            evidence_label: 'Audit evidence:'
+            step_1:
+                title: 'Check the threat landscape'
+                detail: 'Which real attack vector does the control address? Look for evidence in CISA KEV, the BSI situation report, MITRE ATT&CK or your own incident backlog. If nothing is found, it is likely a "myth control".'
+                evidence: 'Linked threat source (CISA KEV ID, BSI document ID, ATT&CK tactic ID).'
+            step_2:
+                title: 'Measure the effect'
+                detail: 'Which KPI demonstrates the protective effect? Coverage, detection rate, MTTC, KEV patch latency. If the control yields no measurable figure, it is a compliance-theatre candidate.'
+                evidence: 'KPI snapshot or justification "not measurable".'
+            step_3:
+                title: 'Obtain risk owner approval'
+                detail: 'Present three options to the business risk owner: (a) adapt, (b) replace with a more effective control, (c) remove. The junior ISO does not decide alone — four-eyes principle.'
+                evidence: 'Written approval (email / workflow step) with the chosen option.'
+            step_4:
+                title: 'Document the SoA justification'
+                detail: 'Justify the change in the Statement of Applicability: source (e.g. NIST SP 800-63B §5.1.1.2), risk owner approval, date, new status. For "removal" also add an Annex A cross-reference.'
+                evidence: 'SoA entry with justification text and audit trail.'
+            step_5:
+                title: 'Residual risk + review date'
+                detail: 'Record a residual risk (even if small) and set an annual review date. Threat landscapes change — what is friction today may become relevant again tomorrow.'
+                evidence: 'Risk entry + calendar entry for the annual review.'
+            example: '90-day password change: NIST SP 800-63B (2017) refutes its effectiveness, helpdesk tickets rise, protection is zero. The risk owner chooses option (c) removal. The SoA justification references NIST + the risk owner approval of 2026-04-26.'
+            norm_ref_1: 'ISO/IEC 27001:2022 Clause 6.1.3 d) — SoA justification'
+            norm_ref_2: 'NIST SP 800-63B §5.1.1.2 — Memorized Secret Verifiers'
+            norm_ref_3: 'MRIS v1.5 ch. 6 — Pure friction'
+        maturity:
+            page_title: 'MRIS wizard — Maturity evidence per MHC'
+            breadcrumb: 'Wizard: Maturity evidence'
+            title: 'Maturity evidence per MHC'
+            intro: 'Three maturity levels per MHC — with a list of audit-proof evidence for each level. Initial = "first steps documented", Defined = "binding organisation-wide", Managed = "measured, steered, KPI". Click an MHC to see the evidence list.'
+            legend_initial: 'first steps documented'
+            legend_defined: 'binding organisation-wide'
+            legend_managed: 'measured, steered, KPI'
+            no_evidence: '— no evidence maintained —'
+            mhc_01:
+                name: 'Identity & MFA'
+                initial_1: 'MFA pilot documented (configuration screenshot, tester list).'
+                initial_2: 'IdP inventory as a table (maintained manually).'
+                defined_1: 'Organisation policy "MFA mandatory for all users", approved by management.'
+                defined_2: 'Quarterly coverage report, deviations with risk acceptance.'
+                managed_1: 'KPI: phishing-resistant MFA coverage > 95% (FIDO2/WebAuthn).'
+                managed_2: 'Automatic IdP drift alert + monthly review in the management report.'
+            mhc_02:
+                name: 'Endpoint'
+                initial_1: 'EDR on > 50% of server endpoints, maintenance plan in place.'
+                initial_2: 'Current hardening baseline (CIS / BSI SiSyPHuS) as a document.'
+                defined_1: 'Organisation-wide binding EDR policy, all servers + 80% of clients.'
+                defined_2: 'Quarterly compliance scan against the baseline with deviation tracking.'
+                managed_1: 'KPI: EDR coverage > 98%, MTTD < 24 h.'
+                managed_2: 'Automatic asset discovery + drift reporting to the SIEM.'
+            mhc_03:
+                name: 'Privileged Access'
+                initial_1: 'List of privileged accounts (admin / service) maintained.'
+                initial_2: 'Manual PIM reviews with four-eyes principle documented.'
+                defined_1: 'PAM solution in use, all tier-0 access via vault.'
+                defined_2: 'Just-in-time access policy and quarterly recertification.'
+                managed_1: 'KPI: standing privilege share < 5%, session recording active.'
+                managed_2: 'Automated anomaly detection on privileged sessions.'
+            mhc_04:
+                name: 'Patching'
+                initial_1: 'Patch backlog list (manual), threshold "critical / high".'
+                initial_2: 'Monthly patch window with change ticket.'
+                defined_1: 'SLA: KEV patches < 14 days, critical < 30 days, approved in writing.'
+                defined_2: 'Patch compliance report per asset class, escalation on breach.'
+                managed_1: 'KPI: median KEV patch latency < 7 days, automatic tracking.'
+                managed_2: 'Vulnerability scanner + automatic ticket creation + asset linkage.'
+            mhc_05:
+                name: 'Backup & Recovery'
+                initial_1: 'Backup plan documented, at least one restore test in the last year.'
+                initial_2: '3-2-1 rule as target, deviations justified.'
+                defined_1: 'Organisation-wide backup policy with RPO/RTO per asset class.'
+                defined_2: 'Semi-annual restore test per critical system, with protocol.'
+                managed_1: 'KPI: restore test success rate > 95%, immutable backup coverage > 80%.'
+                managed_2: 'Automated restore tests + evaluation in the management review.'
+            mhc_06:
+                name: 'Logging & Detection'
+                initial_1: 'Central log collection for servers + IdP, 90-day retention.'
+                initial_2: 'First detection use cases (failed logon, admin anomaly).'
+                defined_1: 'SIEM use cases mapped to MITRE ATT&CK and documented.'
+                defined_2: 'Tier-1 triage SOP, escalation paths to the incident team.'
+                managed_1: 'KPI: MTTD < 1 h, use-case coverage > 70% of tactics.'
+                managed_2: 'Threat hunting backlog + continuous validation (Atomic Red Team).'
+            mhc_07:
+                name: 'Email & Phishing'
+                initial_1: 'SPF + DKIM + DMARC with p=none active, reports collected.'
+                initial_2: 'Phishing mailbox / report button available in the mail client.'
+                defined_1: 'DMARC p=quarantine or reject organisation-wide, regular reports.'
+                defined_2: 'Phishing awareness training twice a year, click-rate reporting.'
+                managed_1: 'KPI: phishing click rate < 5%, report rate > 25%.'
+                managed_2: 'Automatic URL detonation + in-context coaching after a click.'
+            mhc_08:
+                name: 'Network Segmentation'
+                initial_1: 'Network diagram in place, at least DMZ and internal zone separated.'
+                initial_2: 'Firewall rules documented, annual manual review.'
+                defined_1: 'Organisation-wide zone model (mgmt, OT, office, DMZ), default deny.'
+                defined_2: 'Micro-segmentation in critical areas, documented.'
+                managed_1: 'KPI: east-west traffic visibility > 80%, lateral movement tests passed.'
+                managed_2: 'Automatic policy drift reporting + topology inventory.'
+            mhc_09:
+                name: 'Cloud Hardening'
+                initial_1: 'CSPM tool active, monthly findings report.'
+                initial_2: 'IAM baseline (root account protection, MFA for admins) documented.'
+                defined_1: 'Landing zone with guardrails (SCP / Azure Policy), binding organisation-wide.'
+                defined_2: 'CCM mapping to the Cloud Controls Matrix v4.x per provider.'
+                managed_1: 'KPI: CCM coverage > 90%, critical misconfiguration MTTR < 24 h.'
+                managed_2: 'Automatic drift reporting + continuous compliance scan.'
+            mhc_10:
+                name: 'Supply Chain'
+                initial_1: 'Supplier list with risk class (manual).'
+                initial_2: 'DPA filed for critical providers.'
+                defined_1: 'SBOM requirement for own software, supplier audit programme.'
+                defined_2: 'TPRM workflow with annual re-assessment for tier-1 suppliers.'
+                managed_1: 'KPI: SBOM coverage > 90%, supplier risk score in the KPI dashboard.'
+                managed_2: 'Automatic vulnerability correlation SBOM × KEV + DORA register sync.'
+            mhc_11:
+                name: 'Awareness & Training'
+                initial_1: 'Onboarding training with security module, participant list.'
+                initial_2: 'Annual awareness email with click tracking.'
+                defined_1: 'Role-based training (dev, admin, user, management), mandatory quiz.'
+                defined_2: 'Phishing simulations four times a year, evaluation in the management report.'
+                managed_1: 'KPI: training completion > 95%, phishing resistance score measured.'
+                managed_2: 'Adaptive learning paths + just-in-time coaching after incidents.'
+            mhc_12:
+                name: 'Incident Response'
+                initial_1: 'IR plan documented, escalation paths defined.'
+                initial_2: 'Last tabletop test within the current year.'
+                defined_1: 'Playbooks for the top 5 scenarios (ransomware, BEC, data leak, DDoS, insider).'
+                defined_2: 'Semi-annual live drill + mandatory post-mortem with lessons learned.'
+                managed_1: 'KPI: median MTTR < SLA, > 80% of lessons learned implemented from the backlog.'
+                managed_2: 'TLPT (DORA Art. 26) passed + retainer contract with a DFIR provider.'
+            mhc_13:
+                name: 'AI / Agent Governance'
+                initial_1: 'AI agent inventory with capability scope maintained.'
+                initial_2: 'First threat models for 2–3 top agents documented.'
+                defined_1: 'AI use policy + extension allowlist binding organisation-wide.'
+                defined_2: 'Mandatory threat model + documentation per agent before go-live.'
+                managed_1: 'KPI: documentation completeness > 90%, risk class reviewed per agent.'
+                managed_2: 'EU AI Act classification + ISO 42001 conformity documented.'
+        ai_risk:
+            page_title: 'MRIS wizard — AI risk class'
+            breadcrumb: 'Wizard: AI risk class'
+            title: '12-tool decision matrix — AI risk class'
+            intro: 'Classify AI tools into the four EU AI Act classes: minimal, limited, high, prohibited. The matrix lists 12 real-world tools with recommended class, AI Act reference and rationale. For your own tools use the 4-step decision flow below.'
+            flow_heading: '4-step decision flow'
+            tools_heading: '12 typical tools'
+            col:
+                tool: 'Tool'
+                class: 'Recommended class'
+                reference: 'AI Act reference'
+                rationale: 'Rationale'
+            class:
+                minimal: 'Minimal'
+                limited: 'Limited'
+                high: 'High risk'
+                prohibited: 'Prohibited'
+            flow_1:
+                title: 'Prohibited practice (Art. 5)?'
+                detail: 'Social scoring, real-time biometric identification in public spaces, manipulative subliminal techniques — if yes: prohibited, stop immediately.'
+            flow_2:
+                title: 'High-risk use case (Annex III)?'
+                detail: 'Critical infrastructure control, education/examination, employment/HR, essential services, law enforcement, migration/asylum, justice, elections — if yes: high risk, full conformity assessment (Art. 6, 8–15).'
+            flow_3:
+                title: 'Transparency obligation (Art. 50)?'
+                detail: 'Chatbots, emotion recognition, biometric categorisation, deepfakes, AI-generated content — if yes: limited risk, labelling obligation.'
+            flow_4:
+                title: 'Otherwise: minimal risk'
+                detail: 'Spam filters, game AI, recommenders without profiling — no specific AI Act obligations, but continue to comply with MRIS MHC-13 (AI governance) and ISO 42001.'
+            tool_01:
+                tool: 'GitHub Copilot'
+                ai_act_ref: 'No Annex III; GPAI Art. 51–55 (provider)'
+                rationale: 'Code suggestions in the developer workflow — not a high-risk use case. Provider obligations lie with the model provider; on the user side MHC-13 + coding policy.'
+            tool_02:
+                tool: 'Cursor IDE'
+                ai_act_ref: 'No Annex III; GPAI clause with the model provider'
+                rationale: 'AI IDE based on GPAI — like Copilot. Caution: code exfiltration risk; document the extension allowlist + telemetry review in MHC-13.'
+            tool_03:
+                tool: 'Claude Code (Anthropic)'
+                ai_act_ref: 'No Annex III; GPAI Art. 51–55 (provider)'
+                rationale: 'Agentic coding assistant — standard tooling. MHC-13 requires a capability scope (write permissions, file access) and an audit trail.'
+            tool_04:
+                tool: 'ChatGPT Enterprise'
+                ai_act_ref: 'No Annex III; Art. 50 if used externally as a chatbot'
+                rationale: 'General office assistant. High risk only for specific Annex III use (HR screening, education). Observe the DPA.'
+            tool_05:
+                tool: 'AI-assisted recruiter / CV screener'
+                ai_act_ref: 'Annex III No. 4 — employment'
+                rationale: 'Pre-selection of applicants or personnel decisions — explicitly listed as high risk. Full conformity assessment, DPIA, bias audit.'
+            tool_06:
+                tool: 'Robo-advisor (financial advice)'
+                ai_act_ref: 'Annex III No. 5(b) — creditworthiness assessment'
+                rationale: 'If a credit scoring function is included: high risk. Pure portfolio optimisation without a score: minimal. DORA + MaRisk apply in addition.'
+            tool_07:
+                tool: 'Predictive policing'
+                ai_act_ref: 'Annex III No. 6 — law enforcement'
+                rationale: 'Risk assessment of persons or areas for law enforcement — high risk. Profiling of natural persons may even be prohibited under Art. 5.'
+            tool_08:
+                tool: 'Medical imaging diagnosis AI'
+                ai_act_ref: 'Art. 6(1) + MDR (medical device)'
+                rationale: 'Safety component of a medical device under the MDR — high risk per Art. 6(1). Conformity assessment integrated with the MDR procedure.'
+            tool_09:
+                tool: 'Fraud detection (banking)'
+                ai_act_ref: 'Annex III No. 5(b) — creditworthiness / finance'
+                rationale: 'If it affects customer creditworthiness or account blocking: high risk. Pure back-end anomaly detection without customer impact: minimal. BaFin + DORA apply in addition.'
+            tool_10:
+                tool: 'Marketing recommender (e-commerce)'
+                ai_act_ref: 'No Annex III; GDPR Art. 22 for profiling'
+                rationale: 'Product suggestions without automated individual decisions — minimal. Automated pricing or credit decisions turn it into high risk.'
+            tool_11:
+                tool: 'Smart home voice assistant'
+                ai_act_ref: 'Art. 50 — transparency obligation (chatbot)'
+                rationale: 'Chatbot-like interaction — users must be able to tell they are talking to an AI. Not a high-risk function, but a labelling obligation applies.'
+            tool_12:
+                tool: 'Critical infrastructure control (SCADA + AI)'
+                ai_act_ref: 'Annex III No. 2 — critical infrastructure'
+                rationale: 'AI as a safety component of critical digital or physical infrastructure — high risk. NIS2 + MRIS MHC-13 + ISO 42001 mandatory.'
+            norm_ref_1: 'EU AI Act (Reg. 2024/1689) Art. 5, 6, 50 + Annex III'
+            norm_ref_2: 'ISO/IEC 42001:2023 — AI management system'
+            norm_ref_3: 'MRIS v1.5 MHC-13 — AI/agent governance'
+            norm_ref_4: 'ENISA Multilayer Framework for Good Cybersecurity Practices for AI (2023)'
+    glossar:
+        title: 'MRIS glossary'
+        intro: 'Terms of myth-resistant information security with definition, bridge to ISO 9001 and standard reference. Suitable as a reference for junior ISOs and former quality managers.'
+        source: 'Source: Peddi, R. (2026). MRIS — Myth-resistant information security, v1.5. Licence: CC BY 4.0.'
+        empty_title: 'No glossary entries found'
+        empty_text: 'The file <code>fixtures/mris/help-texts.yaml</code> currently contains no glossary entries.'
+        search_label: 'Search (term, definition, source)'
+        search_placeholder: 'e.g. Standfest, FIDO2, ISO …'
+        entry_count: '%count% entries'
+        reset: 'Reset'
+        col:
+            term: 'Term'
+            definition: 'Definition'
+            analogy: 'ISO 9001 analogy'
+            source: 'Source'
+        no_results: 'No matches for the current search.'
+        footer_source: 'Source: Peddi, R. (2026). MRIS v1.5. Licence'

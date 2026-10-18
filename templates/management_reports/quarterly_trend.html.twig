@@ -63,7 +63,7 @@
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for metric in metrics %}
                     <tr class="fa-table__row">
-                        <td class="fa-table__cell"><strong>{{ metric.label }}</strong></td>
+                        <td class="fa-table__cell"><strong>{{ metric.label|trans({}, 'management_reports') }}</strong></td>
                         <td class="fa-table__cell fa-table__cell--center">
                             {% if metric.previous is not null %}
                                 {{ metric.previous }}{{ metric.unit }}

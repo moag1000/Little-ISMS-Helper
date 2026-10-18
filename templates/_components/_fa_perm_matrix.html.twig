@@ -44,7 +44,7 @@
     <table class="fa-perm-matrix">
         <thead>
             <tr>
-                <th>{{ props.moduleHeader|default('Modul') }}</th>
+                <th>{{ props.moduleHeader|default('ui.component.module'|trans({}, 'ui')) }}</th>
                 {% for role in roles %}
                     <th>
                         <span class="role-tag" style="--c: {{ role.color }};">{{ role.label }}</span>

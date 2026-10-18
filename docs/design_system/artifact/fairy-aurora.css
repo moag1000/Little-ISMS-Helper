@@ -1,0 +1,553 @@
+/*
+ * FairyAurora v3.0 — Design-Token-Layer
+ *
+ * Source-of-Truth für alle Farben, Timing, Typografie, Radius.
+ * Light ist Default; Dark wird via html[data-theme="dark"] aktiviert.
+ * system-preference fällt über @media (prefers-color-scheme: dark) greift,
+ * wenn [data-theme="system"] oder kein data-theme gesetzt ist.
+ *
+ * Diese Datei darf KEINE Selektoren enthalten, die auf konkrete Komponenten
+ * zielen — nur Token-Definitionen. Komponenten-Regeln in fairy-aurora-components.css.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Fonts — Inter, JetBrains Mono, Space Grotesk.
+   Served via the root styles.css (@import Google Fonts) — same families.
+   Production may self-host under /fonts/ and reinstate @font-face here
+   (see README „Font substitution flag"). The previous self-hosted blocks
+   pointed at /fonts/*.woff2 that don't ship with this project.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Light-Palette (Default)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Values that live in tokens.json are declared once, in the generated tokens.css,
+   and imported here so every page that links this sheet keeps them. */
+@import url('../../tokens.css');
+
+:root {
+    /* — Flächen — */
+
+    /* — Ränder — */
+
+    /* — Vordergrund / Text — */
+
+    /* — Primär (Cyan) — */
+    --primary-rgb:    2, 132, 199; /* @kind color */
+
+    /* — Accent (Violett) — */
+    --accent-rgb:    124, 58, 237; /* @kind color */
+
+    /* — Semantic — */
+
+    /* — „On-Color" — WCAG-kompatible Text-Farbe auf farbigem Grund — */
+
+    /* — Alva / Fairy — */
+
+    /* — Aurora-Gradient (Hero-BG, Brand-Mark) — */
+    --aurora-gradient:
+        radial-gradient(at 20% 30%, rgba(2, 132, 199, 0.08) 0%, transparent 50%),
+        radial-gradient(at 80% 70%, rgba(124, 58, 237, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #f5f6fa 0%, #eef0f9 100%); /* @kind color */
+    --brand-gradient: linear-gradient(135deg, var(--primary), var(--accent)); /* @kind color */ /* Kanon H4: nur Ambient (Aurora-Surface) und Hero/Login-Hintergrund · nie als Fill auf Mark, Balken, Button, Avatar */
+
+    /* — v4 Aurora-Pattern + Brand-Accent-Varianten — */
+    --brand-gradient-soft: linear-gradient(90deg, var(--primary-tint), transparent); /* @kind color */ /* Kanon H4 */
+    --brand-gradient-line: linear-gradient(90deg, var(--primary), color-mix(in oklab, var(--primary) 0%, transparent)); /* @kind color */ /* Kanon H4: Akzentlinie Primary, kein Violett */
+
+    /* — v4 Alva-Companion Dock — */
+
+    /* — Z-Index-Stack (Layer-Token-System) — */
+
+    /* — Typografie — D07: Inter primär → Space Grotesk (Geometric-Sans-Fallback)
+       → system-ui → OS-Stack. Reihenfolge ist bewusst gewählt: Space Grotesk
+       hat ähnliche Metriken wie Inter und dämpft Reflow in Form-Inputs. */
+    --font-sans: "Inter", "Space Grotesk", system-ui,
+                 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+
+    /* — Radius — */
+
+    /* — Spacing — D05: --spacing-* ist Canon, 7 Stufen inkl. 3xl 64px.
+       Bootstrap-Utilities (p-3, m-2) bleiben unberührt; --space-* in
+       colors_and_type.css ist Deprecation-Alias. */
+
+    /* — Timing-Tokens (Motion-Policy § 14) — */
+    --t-instant: 80ms; /* @kind other */
+    --t-fast:    120ms; /* @kind other */
+    --t-base:    240ms; /* @kind other */
+    --t-slow:    360ms; /* @kind other */
+    --t-magic:   600ms; /* @kind other */
+    --ease-out:   cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+
+    /* ═══════════════════════════════════════════════════════════════
+       Welle-1-Tokens (Designer-Brief 2026-05-27)
+       Density · Persona · Coverage-Heat · Reuse · Mega-Menu · Glossary
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* C.1 — Density-Padding (Basic / Standard / Expert) — Theme-unabhängig */
+
+    /* C.2 — Persona-Accent (8 Personas) · derived from Aurora primitives via color-mix
+       (keeps the palette in-family · auto-adapts to dark mode via token-overrides below) */
+    --persona-dpo:        color-mix(in oklab, var(--accent) 65%, var(--danger) 35%);              /* Magenta · Privacy */
+    --persona-risk:       color-mix(in oklab, var(--warning) 70%, var(--danger) 30%);             /* Burnt Orange · Risk */
+    --persona-compliance: color-mix(in oklab, var(--success) 80%, #000 15%);                      /* Forest Green · Compliance */
+    --persona-board:      color-mix(in oklab, var(--primary) 60%, #000 30%);                      /* Deep Blue · Board */
+
+    /* C.3 — Coverage-Heat (5 Stufen) · derived from Aurora semantic-colors via color-mix
+       Heat-0 = neutral surface tint, Heat-4 = full success. Linear interpolation through
+       warning at midpoint preserves colorblind-safe lightness curve. */
+    --coverage-heat-1: color-mix(in oklab, var(--danger) 18%, var(--surface));                 /* schwach · danger-tint */
+    --coverage-heat-2: color-mix(in oklab, var(--warning) 32%, var(--surface));                /* mittel-schwach · warning-tint */
+    --coverage-heat-3: color-mix(in oklab, var(--success) 38%, var(--surface));                /* mittel · success-tint */
+    --coverage-heat-4: color-mix(in oklab, var(--success) 70%, var(--surface));                /* erfüllt · success */
+
+    /* C.4 — Reuse-ROI-Counter Glow · uses Aurora primary-glow + accent-glow */
+    --reuse-roi-glow:        0 0 24px var(--primary-glow), 0 0 12px var(--accent-glow);
+    --reuse-roi-glow-strong: 0 0 32px var(--primary-glow), 0 0 18px var(--accent-glow);
+
+    /* C.5 — Mega-Menu Tenant-Stempel */
+
+    /* C.6 — Quick-Action-Button Shadow · uses Aurora primary-glow for hover */
+    --quick-action-shadow-hover: 0 4px 12px rgba(0,0,0,0.15), 0 0 16px var(--primary-glow);
+
+    /* C.7 — Onboarding-Banner-Surface · uses Aurora primary-glow */
+    --onboarding-banner-bg:     linear-gradient(135deg, var(--primary-tint), var(--accent-tint));
+
+    /* C.8 — Audit-Program-Timeline */
+    --audit-timeline-today-glow:   0 0 8px var(--accent-glow);
+    --audit-timeline-overdue-glow: 0 0 8px var(--danger-glow);
+
+    /* C.9 — Glossary-Tooltip-Indicator */
+    --glossary-tooltip-bg:     var(--surface-3, var(--surface-2));
+
+    /* — Alva-CSS-Custom-Properties (für Logo-SVG und zentralen Character) —
+       Fee hat IMMER hellen Körper + dunkle Augen/Mund in beiden Modi.
+       (Kein var(--fg)/var(--bg) mehr — das würde mitinvertieren.) */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dark-Palette — gleichwertig, nicht als Nachgedanke
+   ═══════════════════════════════════════════════════════════════════ */
+
+html[data-theme="dark"] {
+
+
+
+    --primary-rgb:    56, 189, 248; /* @kind color */
+
+    --accent-rgb:    167, 139, 250; /* @kind color */
+
+
+    /* Dark-Mode: „on-color" ist dunkel (bright primary → dark text) */
+
+
+    --aurora-gradient:
+        radial-gradient(at 20% 30%, rgba(56, 189, 248, 0.10) 0%, transparent 50%),
+        radial-gradient(at 80% 70%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, #0a0e1a 0%, #141829 100%); /* @kind color */
+    --brand-gradient: linear-gradient(135deg, var(--primary), var(--accent));
+
+    /* C.2–C.7 Dark · alle Tokens autoadaptieren über color-mix() von --primary/--accent/--success/--warning/--danger/--surface (theme-aware primitives) — kein eigener Override mehr nötig.
+       Einzig --quick-action-shadow bekommt im Dark-Mode kräftigeren Shadow-Schwarzwert: */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   System-Mode — folgt OS-prefers-color-scheme
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --bg:          #0a0e1a;
+        --surface:     #141829;
+        --surface-2:   #1e2139;
+        --surface-3:   #282d48;
+        --border:        #232845;
+        --border-strong: #3d4270;
+        --fg:   #e9eaf5;
+        --fg-2: #b9bad4;
+        --fg-3: #6d6f99;
+        --primary:        #38bdf8;
+        --primary-rgb: 56, 189, 248; /* @kind color */
+        --primary-strong: #38bdf8;
+        --primary-hover:  #7dd3fc;
+        --primary-glow:   rgba(56, 189, 248, 0.3);
+        --primary-tint:   rgba(56, 189, 248, 0.12);
+        --accent:        #a78bfa;
+        --accent-rgb: 167, 139, 250; /* @kind color */
+        --accent-strong: #a78bfa;
+        --accent-hover:  #c4b5fd;
+        --accent-glow:   rgba(167, 139, 250, 0.3);
+        --accent-tint:   rgba(167, 139, 250, 0.12);
+        --success: #34d399; --success-strong: #34d399; --success-glow: rgba(52,211,153,0.25);
+        --warning: #fbbf24; --warning-strong: #fbbf24; --warning-glow: rgba(251,191,36,0.25); --warning-text: #fbbf24;
+        --danger:  #f87171; --danger-strong: #f87171; --danger-glow:  rgba(248,113,113,0.3);
+        --info:    #38bdf8; --info-glow:    rgba(56,189,248,0.25);
+        --on-primary: #0a0e1a; --on-accent: #0a0e1a; --on-success: #0a0e1a;
+        --on-warning: #0a0e1a; --on-danger: #0a0e1a;
+        --fairy-primary: #38bdf8;
+        --fairy-accent:  #a78bfa;
+        --fairy-aura:    #6366f1;
+        --aurora-gradient:
+            radial-gradient(at 20% 30%, rgba(56, 189, 248, 0.10) 0%, transparent 50%),
+            radial-gradient(at 80% 70%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+            linear-gradient(180deg, #0a0e1a 0%, #141829 100%); /* @kind color */
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mode-Transition (sanfter L↔D-Wechsel, keine Flash)
+   ═══════════════════════════════════════════════════════════════════ */
+
+html {
+    transition: background-color var(--t-base) var(--ease-in-out),
+                color            var(--t-base) var(--ease-in-out);
+}
+
+html * {
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--t-base);
+    transition-timing-function: var(--ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html, html * { transition: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-CSS-Var-Aliases — Token-Layer
+   Mappe Aurora-Tokens auf --bs-*-Vars, damit Bootstrap-interne Rules
+   (die wir nicht alle explizit überschreiben) automatisch Aurora-
+   Farben erhalten. Gilt für alle Themes; Dark-Forks am Ende.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* — Flächen / Text — */
+    --bs-body-bg:               var(--bg);
+    --bs-body-color:            var(--fg);
+    --bs-secondary-bg:          var(--surface-2);
+    --bs-tertiary-bg:           var(--surface-3);
+    --bs-body-secondary-color:  var(--fg-2);
+    --bs-body-tertiary-color:   var(--fg-3);
+    --bs-emphasis-color:        var(--fg);
+    --bs-heading-color:         var(--fg);
+
+    /* — Borders — */
+    --bs-border-color:              var(--border);
+    --bs-border-color-translucent:  var(--border);
+
+    /* — Links — */
+    --bs-link-color:       var(--primary-strong);
+    --bs-link-hover-color: var(--primary-hover);
+
+    /* Phase 8QW-follow: Bootstrap 5.3 Utility-Klassen (.bg-body-secondary etc.)
+       nutzen intern rgba(var(--bs-*-rgb), var(--bs-bg-opacity)) für Opacity-
+       Support. Ohne die -rgb-Varianten fallen sie auf Bootstrap-Defaults zurück
+       und ignorieren unsere Aurora-Mapping via --bs-secondary-bg.
+       Alle -rgb-Werte sind comma-separated R,G,B OHNE rgb()-Wrapper. */
+
+    /* — Surface/Body RGB (für .bg-body, .bg-body-secondary, .bg-body-tertiary) — */
+    --bs-body-bg-rgb:               245, 246, 250;   /* --bg #f5f6fa */
+    --bs-secondary-bg-rgb:          238, 240, 249;   /* --surface-2 #eef0f9 */
+    --bs-tertiary-bg-rgb:           229, 232, 244;   /* --surface-3 #e5e8f4 */
+
+    /* — Text/Emphasis RGB — */
+    --bs-body-color-rgb:            30, 27, 75;      /* --fg #1e1b4b */
+    --bs-emphasis-color-rgb:        30, 27, 75;      /* --fg #1e1b4b */
+
+    /* — Link RGB (für link-opacity-Utilities) — */
+    --bs-link-color-rgb:            3, 105, 161;     /* --primary-strong #0369a1 */
+
+    /* — Secondary RGB (für .bg-secondary, .btn-secondary etc.) — */
+    --bs-secondary-rgb:             108, 117, 125; /* @kind color */   /* Bootstrap-kompatibles neutral */
+
+    /* — Primary — */
+    --bs-primary:                   var(--primary);
+    --bs-primary-rgb:               2, 132, 199; /* @kind color */
+    --bs-primary-bg-subtle:         var(--primary-tint);
+    --bs-primary-border-subtle:     var(--primary-glow);
+    --bs-primary-text-emphasis:     var(--primary-strong);
+
+    /* — Success — */
+    --bs-success:                   var(--success);
+    --bs-success-rgb:               5, 150, 105; /* @kind color */     /* --success #059669 */
+    --bs-success-bg-subtle:         var(--success-glow);
+    --bs-success-border-subtle:     var(--success-glow);
+    --bs-success-text-emphasis:     var(--success-strong);
+
+    /* — Warning — */
+    --bs-warning:                   var(--warning);
+    --bs-warning-rgb:               217, 119, 6; /* @kind color */     /* --warning #d97706 */
+    --bs-warning-bg-subtle:         var(--warning-glow);
+    --bs-warning-border-subtle:     var(--warning-glow);
+    --bs-warning-text-emphasis:     var(--warning-strong);
+
+    /* — Danger — */
+    --bs-danger:                    var(--danger);
+    --bs-danger-rgb:                220, 38, 38; /* @kind color */     /* --danger #dc2626 */
+    --bs-danger-bg-subtle:          var(--danger-glow);
+    --bs-danger-border-subtle:      var(--danger-glow);
+    --bs-danger-text-emphasis:      var(--danger-strong);
+
+    /* — Info (= primary) — */
+    --bs-info:                      var(--primary);
+    --bs-info-rgb:                  2, 132, 199; /* @kind color */     /* same as --primary #0284c7 */
+    --bs-info-bg-subtle:            var(--primary-tint);
+    --bs-info-border-subtle:        var(--primary-glow);
+    --bs-info-text-emphasis:        var(--primary-strong);
+
+    /* — Secondary text-emphasis (for .text-bg-secondary, alert-secondary etc.) — */
+    --bs-secondary-text-emphasis:   var(--fg-2);
+
+    /* — Dropdown — */
+    --bs-dropdown-bg:               var(--surface);
+    --bs-dropdown-color:            var(--fg);
+    --bs-dropdown-border-color:     var(--border);
+    --bs-dropdown-link-color:       var(--fg);
+    --bs-dropdown-link-hover-color: var(--fg);
+    --bs-dropdown-link-hover-bg:    var(--surface-2);
+    --bs-dropdown-link-active-color: var(--on-primary);
+    --bs-dropdown-link-active-bg:   var(--primary-strong);
+    --bs-dropdown-header-color:     var(--fg-2);
+    --bs-dropdown-divider-bg:       var(--border);
+
+    /* — Card (Bootstrap 5.3 Native-Tokens) — */
+    --bs-card-bg:                   var(--surface);
+    --bs-card-color:                var(--fg);
+    --bs-card-border-color:         var(--border);
+    --bs-card-cap-bg:               var(--surface-2);
+    --bs-card-cap-color:            var(--fg);
+    --bs-card-subtitle-color:       var(--fg-2);
+    --bs-card-title-color:          var(--fg);
+
+    /* — Modal — */
+    --bs-modal-bg:                  var(--surface);
+    --bs-modal-color:               var(--fg);
+    --bs-modal-border-color:        var(--border);
+    --bs-modal-header-border-color: var(--border);
+    --bs-modal-footer-border-color: var(--border);
+
+    /* — Offcanvas — */
+    --bs-offcanvas-bg:              var(--surface);
+    --bs-offcanvas-color:           var(--fg);
+    --bs-offcanvas-border-color:    var(--border);
+
+    /* — Accordion — */
+    --bs-accordion-bg:              var(--surface);
+    --bs-accordion-color:           var(--fg);
+    --bs-accordion-border-color:    var(--border);
+    --bs-accordion-btn-bg:          var(--surface);
+    --bs-accordion-btn-color:       var(--fg);
+    --bs-accordion-active-bg:       var(--primary-tint);
+    --bs-accordion-active-color:    var(--primary-strong);
+
+    /* — Breadcrumb — */
+    --bs-breadcrumb-divider-color:  var(--fg-3);
+
+    /* — Pagination — */
+    --bs-pagination-bg:             var(--surface);
+    --bs-pagination-color:          var(--primary-strong);
+    --bs-pagination-border-color:   var(--border);
+    --bs-pagination-hover-bg:       var(--surface-2);
+    --bs-pagination-hover-color:    var(--primary-hover);
+    --bs-pagination-hover-border-color: var(--border);
+    --bs-pagination-active-bg:      var(--primary-strong);
+    --bs-pagination-active-color:   var(--on-primary);
+    --bs-pagination-active-border-color: var(--primary-strong);
+    --bs-pagination-disabled-bg:    var(--surface);
+    --bs-pagination-disabled-color: var(--fg-3);
+    --bs-pagination-disabled-border-color: var(--border);
+
+    /* — List-Group — */
+    --bs-list-group-bg:             var(--surface);
+    --bs-list-group-color:          var(--fg);
+    --bs-list-group-border-color:   var(--border);
+    --bs-list-group-action-color:   var(--fg);
+    --bs-list-group-action-hover-bg: var(--surface-2);
+    --bs-list-group-action-hover-color: var(--fg);
+    --bs-list-group-active-bg:      var(--primary-strong);
+    --bs-list-group-active-color:   var(--on-primary);
+    --bs-list-group-active-border-color: var(--primary-strong);
+    --bs-list-group-disabled-bg:    var(--surface);
+    --bs-list-group-disabled-color: var(--fg-3);
+
+    /* — Table — */
+    --bs-table-bg:                  var(--surface);
+    --bs-table-color:               var(--fg);
+    --bs-table-border-color:        var(--border);
+    --bs-table-striped-bg:          var(--surface-2);
+    --bs-table-striped-color:       var(--fg);
+    --bs-table-hover-bg:            var(--surface-3);
+    --bs-table-hover-color:         var(--fg);
+    --bs-table-active-bg:           var(--surface-3);
+    --bs-table-active-color:        var(--fg);
+
+    /* — Toast — */
+    --bs-toast-bg:                  var(--surface);
+    --bs-toast-color:               var(--fg);
+    --bs-toast-border-color:        var(--border);
+    --bs-toast-header-bg:           var(--surface-2);
+    --bs-toast-header-color:        var(--fg);
+    --bs-toast-header-border-color: var(--border);
+
+    /* — Popover — */
+    --bs-popover-bg:                var(--surface);
+    --bs-popover-color:             var(--fg);
+    --bs-popover-border-color:      var(--border);
+    --bs-popover-header-bg:         var(--surface-2);
+    --bs-popover-header-color:      var(--fg);
+    --bs-popover-body-color:        var(--fg);
+
+    /* — Tooltip — */
+    --bs-tooltip-bg:                var(--fg);
+    --bs-tooltip-color:             var(--surface);
+
+    /* — Nav — (already set further below; kept here for global context) */
+    --bs-nav-link-color:            var(--fg-2);
+    --bs-nav-link-hover-color:      var(--primary-strong);
+    --bs-nav-link-disabled-color:   var(--fg-3);
+    --bs-nav-tabs-link-active-color: var(--primary-strong);
+    --bs-nav-tabs-link-active-bg:   var(--surface);
+    --bs-nav-tabs-link-active-border-color: var(--border) var(--border) var(--surface);
+    --bs-nav-tabs-border-color:     var(--border);
+    --bs-nav-pills-link-active-color: var(--on-primary);
+    --bs-nav-pills-link-active-bg:  var(--primary-strong);
+
+    /* — Form — */
+    --bs-form-control-bg:           var(--surface);
+    --bs-form-control-color:        var(--fg);
+    --bs-form-control-disabled-bg:  var(--surface-2);
+    --bs-form-select-bg:            var(--surface);
+    --bs-form-select-color:         var(--fg);
+    --bs-form-select-disabled-bg:   var(--surface-2);
+    --bs-form-check-input-bg:       var(--surface);
+    --bs-form-check-input-border:   var(--border-strong);
+    --bs-focus-ring-color:          var(--primary-glow);
+    --bs-input-btn-focus-box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* Dark-Mode-Forks: Active-Backgrounds auf helleres --primary
+   (Dark: --primary ist hell auf dunkel = AAA, nicht --primary-strong) */
+html[data-theme="dark"] {
+    /* — Surface/Body RGB (dark values) — */
+    --bs-body-bg-rgb:               10, 14, 26;      /* --bg #0a0e1a */
+    --bs-secondary-bg-rgb:          30, 33, 57;      /* --surface-2 #1e2139 */
+    --bs-tertiary-bg-rgb:           40, 45, 72;      /* --surface-3 #282d48 */
+
+    /* — Text/Emphasis RGB (dark values) — */
+    --bs-body-color-rgb:            233, 234, 245;   /* --fg #e9eaf5 */
+    --bs-emphasis-color-rgb:        233, 234, 245;   /* --fg #e9eaf5 */
+
+    /* — Link RGB (dark: --primary #38bdf8) — */
+    --bs-link-color-rgb:            56, 189, 248;    /* --primary #38bdf8 */
+
+    /* — Primary — */
+    --bs-primary-rgb:               56, 189, 248; /* @kind color */
+
+    /* — Success RGB (dark: #34d399) — */
+    --bs-success-rgb:               52, 211, 153; /* @kind color */
+
+    /* — Warning RGB (dark: #fbbf24) — */
+    --bs-warning-rgb:               251, 191, 36; /* @kind color */
+
+    /* — Danger RGB (dark: #f87171) — */
+    --bs-danger-rgb:                248, 113, 113; /* @kind color */
+
+    /* — Info RGB (dark: same as primary #38bdf8) — */
+    --bs-info-rgb:                  56, 189, 248; /* @kind color */
+
+    /* — Text-emphasis vars (dark overrides) — */
+    --bs-secondary-text-emphasis:   var(--fg-2);
+    --bs-success-text-emphasis:     var(--success-strong);
+    --bs-warning-text-emphasis:     var(--warning-strong);
+    --bs-danger-text-emphasis:      var(--danger-strong);
+    --bs-info-text-emphasis:        var(--primary);
+    --bs-primary-text-emphasis:     var(--primary);
+
+    /* — Active/Nav overrides — */
+    --bs-link-color:                var(--primary);
+    --bs-link-hover-color:          var(--primary-hover);
+    --bs-dropdown-link-active-bg:   var(--primary);
+    --bs-pagination-active-bg:      var(--primary);
+    --bs-pagination-active-color:   var(--on-primary);
+    --bs-pagination-active-border-color: var(--primary);
+    --bs-list-group-active-bg:      var(--primary);
+    --bs-list-group-active-border-color: var(--primary);
+    --bs-nav-pills-link-active-bg:  var(--primary);
+    --bs-accordion-active-color:    var(--primary);
+    --bs-tooltip-bg:                var(--surface-2);
+    --bs-tooltip-color:             var(--fg);
+}
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        /* — Surface/Body RGB (dark values) — */
+        --bs-body-bg-rgb:               10, 14, 26;
+        --bs-secondary-bg-rgb:          30, 33, 57;
+        --bs-tertiary-bg-rgb:           40, 45, 72;
+
+        /* — Text/Emphasis RGB (dark values) — */
+        --bs-body-color-rgb:            233, 234, 245;
+        --bs-emphasis-color-rgb:        233, 234, 245;
+
+        /* — Link RGB (dark) — */
+        --bs-link-color-rgb:            56, 189, 248;
+
+        /* — Primary — */
+        --bs-primary-rgb:               56, 189, 248; /* @kind color */
+
+        /* — Semantic RGB (dark) — */
+        --bs-success-rgb:               52, 211, 153; /* @kind color */
+        --bs-warning-rgb:               251, 191, 36; /* @kind color */
+        --bs-danger-rgb:                248, 113, 113; /* @kind color */
+        --bs-info-rgb:                  56, 189, 248; /* @kind color */
+
+        /* — Text-emphasis vars (dark overrides) — */
+        --bs-secondary-text-emphasis:   var(--fg-2);
+        --bs-success-text-emphasis:     var(--success-strong);
+        --bs-warning-text-emphasis:     var(--warning-strong);
+        --bs-danger-text-emphasis:      var(--danger-strong);
+        --bs-info-text-emphasis:        var(--primary);
+        --bs-primary-text-emphasis:     var(--primary);
+
+        /* — Active/Nav overrides — */
+        --bs-link-color:                var(--primary);
+        --bs-link-hover-color:          var(--primary-hover);
+        --bs-dropdown-link-active-bg:   var(--primary);
+        --bs-pagination-active-bg:      var(--primary);
+        --bs-pagination-active-color:   var(--on-primary);
+        --bs-pagination-active-border-color: var(--primary);
+        --bs-list-group-active-bg:      var(--primary);
+        --bs-list-group-active-border-color: var(--primary);
+        --bs-nav-pills-link-active-bg:  var(--primary);
+        --bs-accordion-active-color:    var(--primary);
+        --bs-tooltip-bg:                var(--surface-2);
+        --bs-tooltip-color:             var(--fg);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Base-Typography-Anwendung
+   ═══════════════════════════════════════════════════════════════════ */
+
+html {
+    font-family: var(--font-sans);
+    color: var(--fg);
+    background: var(--bg);
+}
+
+.font-mono,
+code, kbd, samp, pre {
+    font-family: var(--font-mono);
+}
+
+
+/* Kanon H1 — Display-Anwendung */
+h1, h2, .h1, .h2,
+.fa-page-header__title, .fa-hero__title, .fa-kpi-card__value, .fa-feature-card__value, .kpi-card-value,
+.fa-form-layout__title, .fa-tutorial-checkpoint__title, .fa-brand-name {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+}
+.fa-kpi-card__value, .fa-feature-card__value, .kpi-card-value { font-variant-numeric: tabular-nums; }

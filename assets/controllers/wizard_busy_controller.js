@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Wizard Busy Controller
@@ -21,9 +22,17 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static values = {
-        message:  { type: String, default: 'Alva kümmert sich darum…' },
+        message:  { type: String, default: '' },
         alvaMood: { type: String, default: 'working' },
     };
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            message: () => faT('wizard_busy.message'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         this._onSubmit       = this.handleSubmit.bind(this);
@@ -52,7 +61,7 @@ export default class extends Controller {
         this._originalMood = this.captureAlvaMood();
         this.disableForm();
         this.setAlvaMood(this.alvaMoodValue);
-        this.showOverlay(this.messageValue);
+        this.showOverlay(this.label('message'));
     }
 
     handleTurboEnd(event) {
