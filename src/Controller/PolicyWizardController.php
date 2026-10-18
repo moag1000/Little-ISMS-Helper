@@ -284,8 +284,6 @@ final class PolicyWizardController extends AbstractController
                 'total_steps_in_mode' => $progress['total_steps_in_mode'],
             ], $stepExtras), new Response('', Response::HTTP_UNPROCESSABLE_ENTITY));
         } catch (\App\Exception\InvalidArgument\InvalidArgumentException) {
-            // processStep() throws the app exception (a \RuntimeException), not
-            // the SPL \InvalidArgumentException this used to catch.
             $this->addFlash('warning', $this->translator->trans('policy_wizard.error.invalid_step', [], 'policy_wizard'));
             return $this->redirectToRoute('app_policy_wizard_index');
         }

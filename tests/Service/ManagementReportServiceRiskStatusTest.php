@@ -91,14 +91,14 @@ final class ManagementReportServiceRiskStatusTest extends TestCase
     }
 
     #[Test]
-    public function statusFilterAcceptsBackingValueAndEnum(): void
+    public function statusFilterMatchesTheBackingValue(): void
     {
         $open = $this->risk(RiskStatus::Assessed);
         $closed = $this->risk(RiskStatus::Closed);
         $service = $this->service([$open, $closed]);
 
         self::assertSame(1, $service->getRiskManagementReport(['status' => 'closed'])['total_risks']);
-        self::assertSame(1, $service->getRiskManagementReport(['status' => RiskStatus::Assessed])['total_risks']);
+        self::assertSame(1, $service->getRiskManagementReport(['status' => 'assessed'])['total_risks']);
         self::assertSame(0, $service->getRiskManagementReport(['status' => 'no_such_status'])['total_risks']);
     }
 }
