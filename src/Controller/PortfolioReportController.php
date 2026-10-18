@@ -186,8 +186,8 @@ class PortfolioReportController extends AbstractController
     private function buildWorkbook(
         array $matrix,
         string $tenantName,
-        DateTimeImmutable $stichtag,
-        ?DateTimeImmutable $vorperiode,
+        \DateTimeInterface $stichtag,
+        ?\DateTimeInterface $vorperiode,
     ): Spreadsheet {
         $thresholds = $this->thresholds();
 
