@@ -1,24 +1,25 @@
 {% extends 'base.html.twig' %}
-{% block title %}VVT Dashboard{% endblock %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% block title %}{{ 'processing_activity.dashboard.title'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'shield-check' },
-            { label: 'VVT Dashboard' }
+            { label: 'processing_activity.dashboard.breadcrumb_gdpr'|trans({}, 'privacy'), url: path('app_processing_activity_index'), icon: 'shield-check' },
+            { label: 'processing_activity.dashboard.title'|trans({}, 'privacy') }
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
-        title: 'VVT Dashboard',
-        subtitle: 'Art. 30 GDPR Compliance Overview',
-        icon: 'nav-dashboard',
+    {{ _fa_page_header.render({
+        title: 'processing_activity.dashboard.title'|trans({}, 'privacy'),
+        subtitle: 'processing_activity.dashboard.subtitle'|trans({}, 'privacy'),
+        badge: { icon: 'nav-dashboard', label: '' },
         actions: [
-            { label: 'View All Activities', url: path('app_processing_activity_index'), variant: 'primary', icon: 'ui-list' },
-            { label: 'New Activity', url: path('app_processing_activity_new'), variant: 'success', icon: 'plus' }
+            { label: 'processing_activity.dashboard.action.view_all'|trans({}, 'privacy'), href: path('app_processing_activity_index'), variant: 'primary', icon: 'ui-list', attrs: { 'data-turbo-action': 'advance' } },
+            { label: 'processing_activity.dashboard.action.new'|trans({}, 'privacy'), href: path('app_processing_activity_new'), variant: 'success', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } }
         ]
-    } %}
+    }) }}
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
@@ -137,7 +138,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0 h5"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Statistics</h2></div>
+                    <div class="card-header"><h2 class="mb-0 h5"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'processing_activity.dashboard.statistics'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <h3 class="h6">{{ 'privacy.chart.by_legal_basis'|trans({}, 'privacy') }}</h3>
@@ -146,7 +147,7 @@
                             {% for basis, count in statistics.by_legal_basis %}
                                 <li class="mb-2">
                                     {% include '_components/_badge.html.twig' with { variant: 'primary', content: count } %}
-                                    {{ basis|replace({'_': ' '})|title }}
+                                    {{ ('processing_activity.legal_basis.' ~ basis)|trans({}, 'privacy') }}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -164,21 +165,21 @@
                                 }[level] %}
                                 <li class="mb-2">
                                     {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
-                                    {{ level|upper }}
+                                    {{ ('privacy.risk_level.' ~ level)|trans({}, 'privacy') }}
                                 </li>
                             {% endfor %}
                         </ul>
                     {% endif %}
 
-                    <h3 class="h6 mt-4">Special Processing</h3>
+                    <h3 class="h6 mt-4">{{ 'processing_activity.dashboard.special_processing'|trans({}, 'privacy') }}</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: statistics.special_categories } %}
-                            Special Categories (Art. 9)
+                            {{ 'processing_activity.dashboard.special_categories'|trans({}, 'privacy') }}
                         </li>
                         <li class="mb-2">
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: statistics.third_country_transfers } %}
-                            Third Country Transfers
+                            {{ 'processing_activity.dashboard.third_country_transfers'|trans({}, 'privacy') }}
                         </li>
                     </ul>
                 {% endblock %}

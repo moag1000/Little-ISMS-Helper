@@ -106,7 +106,10 @@
                                         <form method="post"
                                               action="{{ path('admin_notification_rule_delete', { id: rule.id }) }}"
                                               class="d-inline"
-                                              onsubmit="return confirm('{{ 'notification.rule.confirm.delete'|trans|e('js') }}')">
+                                              data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'notification.rule.confirm.delete'|trans({}, 'notification') }}"
+                      data-ui-actions-tone-param="danger">
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('notification_rule_delete_' ~ rule.id) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"

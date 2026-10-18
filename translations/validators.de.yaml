@@ -581,7 +581,6 @@ gstool_import:
         file_type_error: 'Bitte eine XML-Datei hochladen.'
 
 # Form / Assert\Range / Assert\Regex / Datei-Upload-Validator-Meldungen
-'admin.workflows.validation.conditions_invalid_json': 'Auto-Progress-Bedingungen müssen gültiges JSON sein.'
 'import.error.must_equal_commit': 'Bitte COMMIT eingeben, um den Import zu bestätigen.'
 'import.upload.invalid_mime_type': 'Ungültiger Dateityp. Bitte XLSX-, CSV- oder JSON-Datei hochladen.'
 'import.upload.file_too_large': 'Datei zu groß. Maximale Größe ist {{ limit }} {{ suffix }}.'
@@ -833,3 +832,7 @@ gstool_import:
 'tisax.import.upload.xlsx_only': 'Nur XLSX-Dateien werden akzeptiert.'
 'tisax.import.upload.too_large': 'Die Datei darf 10 MB nicht überschreiten.'
 'tisax.import.disclaimer.must_confirm': 'Sie müssen die Lizenz-Compliance bestätigen, bevor Sie fortfahren.'
+'json_builder.invalid_structure': 'Die Einträge haben nicht die erwartete Struktur.'
+'json_builder.required': 'Eintrag %row%: „%field%“ ist ein Pflichtfeld.'
+'json_builder.invalid_value': 'Eintrag %row%: „%field%“ enthält einen ungültigen Wert.'
+'json_builder.empty_key': 'Eintrag %row%: Der Schlüssel darf nicht leer sein.'

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Form Validation Controller
@@ -259,10 +260,10 @@ export default class extends Controller {
             document.body.appendChild(liveRegion);
         }
 
-        // Announce error count in German
+        // Announce error count (translated, see ui.js.form_validation.*)
         const message = errorCount === 1
-            ? 'Das Formular enthält einen Fehler. Bitte korrigieren Sie das markierte Feld.'
-            : `Das Formular enthält ${errorCount} Fehler. Bitte korrigieren Sie die markierten Felder.`;
+            ? faT('form_validation.one_error')
+            : faT('form_validation.n_errors', { '%count%': errorCount });
 
         liveRegion.textContent = message;
 

@@ -24,7 +24,7 @@ final readonly class DpiaTemplateDto
         public readonly string $nameTransKey,
         /** Translation key for the one-line "for whom / when" usage hint */
         public readonly string $usageHint,
-        /** Icon name for the Aurora card picker (lucide icon slug) */
+        /** Icon name for the Aurora card picker (fa-icon name, see fairy-aurora-icons.css) */
         public readonly string $icon,
         public readonly string $processingDescription,
         public readonly string $processingPurposes,

@@ -84,7 +84,7 @@
                     </div>
                     <div>
                         <div class="policy-doc__brand-name">{{ props.brand_name|default('') }}</div>
-                        <div class="policy-doc__brand-meta">{{ props.brand_meta|default('Information Security Management System') }}</div>
+                        <div class="policy-doc__brand-meta">{{ props.brand_meta|default(('policy_wizard.export.cover.brand_meta'|trans({}, 'policy_wizard'))) }}</div>
                     </div>
                 </div>
                 <div class="policy-doc__chips">
@@ -114,67 +114,67 @@
             <dl class="policy-doc__cover-grid">
                 {% if cover.owner is defined and cover.owner %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.owner_label|default('Owner') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.owner_label|default(('policy_wizard.export.cover.owner'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value">{{ cover.owner }}</dd>
                     </div>
                 {% endif %}
                 {% if cover.approver is defined and cover.approver %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.approver_label|default('Approver') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.approver_label|default(('policy_wizard.export.cover.approved_by'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value">{{ cover.approver }}</dd>
                     </div>
                 {% endif %}
                 {% if cover.version is defined and cover.version %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.version_label|default('Version') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.version_label|default(('policy_wizard.export.cover.version'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value">v{{ cover.version }}</dd>
                     </div>
                 {% endif %}
                 {% if cover.valid_from is defined and cover.valid_from %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.valid_from_label|default('Stand') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.valid_from_label|default(('policy_wizard.export.cover.valid_from'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value"><time>{{ cover.valid_from }}</time>{% if cover.valid_until is defined and cover.valid_until %} &ndash; <time>{{ cover.valid_until }}</time>{% endif %}</dd>
                     </div>
                 {% endif %}
                 {% if cover.next_review is defined and cover.next_review %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.next_review_label|default('Nächstes Review') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.next_review_label|default(('policy_wizard.export.cover.next_review'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value"><time>{{ cover.next_review }}</time></dd>
                     </div>
                 {% endif %}
                 {% if cover.classification is defined and cover.classification %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.classification_label|default('Klassifikation') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.classification_label|default(('policy_wizard.export.cover.classification'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value">{{ cover.classification }}</dd>
                     </div>
                 {% endif %}
                 {% if cover.standard is defined and cover.standard %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.standard_label|default('Standard') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.standard_label|default(('policy_wizard.export.cover.standard'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value">{{ cover.standard|upper }}{% if cover.topic is defined and cover.topic %} &middot; {{ cover.topic|replace({'_': ' '}) }}{% endif %}</dd>
                     </div>
                 {% endif %}
                 {% if cover.dora_validity_date is defined and cover.dora_validity_date %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.dora_validity_label|default('DORA-Stand') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.dora_validity_label|default(('policy_wizard.export.cover.dora_validity'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value"><time>{{ cover.dora_validity_date }}</time></dd>
                     </div>
                 {% endif %}
                 {% if cover.climate_change_aware is defined and cover.climate_change_aware %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.climate_change_label|default('Climate Change') }}</dt>
-                        <dd class="policy-doc__cover-value">{{ cover.climate_change_value|default('ISO 27001:2022 Amd. 1:2024') }}</dd>
+                        <dt class="policy-doc__cover-label">{{ cover.climate_change_label|default(('policy_wizard.export.cover.climate_change'|trans({}, 'policy_wizard'))) }}</dt>
+                        <dd class="policy-doc__cover-value">{{ cover.climate_change_value|default(('policy_wizard.export.cover.climate_change_value'|trans({}, 'policy_wizard'))) }}</dd>
                     </div>
                 {% endif %}
                 {% if cover.generated_on is defined and cover.generated_on %}
                     <div>
-                        <dt class="policy-doc__cover-label">{{ cover.generated_on_label|default('Erstellt am') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.generated_on_label|default(('policy_wizard.export.cover.generated_on'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value"><time>{{ cover.generated_on }}</time></dd>
                     </div>
                 {% endif %}
                 {% if cover.annex_a_refs is defined and cover.annex_a_refs %}
                     <div style="grid-column: 1 / -1;">
-                        <dt class="policy-doc__cover-label">{{ cover.annex_a_label|default('Annex-A') }}</dt>
+                        <dt class="policy-doc__cover-label">{{ cover.annex_a_label|default(('policy_wizard.export.cover.annex_a'|trans({}, 'policy_wizard'))) }}</dt>
                         <dd class="policy-doc__cover-value">{{ cover.annex_a_refs|join(' · ') }}</dd>
                     </div>
                 {% endif %}
@@ -193,8 +193,8 @@
            slot is suppressed entirely. #}
         {% set _headings_raw = body_html|default('')|split('<h2') %}
         {% if _headings_raw|length > 1 %}
-            <nav class="policy-doc__toc" aria-label="{{ cover.toc_label|default('Inhalt') }}">
-                <h2 class="policy-doc__toc-heading">{{ cover.toc_label|default('Inhalt') }}</h2>
+            <nav class="policy-doc__toc" aria-label="{{ cover.toc_label|default(('policy_wizard.export.toc.heading'|trans({}, 'policy_wizard'))) }}">
+                <h2 class="policy-doc__toc-heading">{{ cover.toc_label|default(('policy_wizard.export.toc.heading'|trans({}, 'policy_wizard'))) }}</h2>
                 <ol class="policy-doc__toc-list">
                     {% for chunk in _headings_raw|slice(1) %}
                         {% set _open_close = chunk|split('</h2>') %}
@@ -240,15 +240,15 @@
 
         {% if _history|length > 0 %}
             <section class="policy-doc__history">
-                <h2 class="policy-doc__history-heading">{{ cover.history_label|default('Versionshistorie') }}</h2>
+                <h2 class="policy-doc__history-heading">{{ cover.history_label|default(('policy_wizard.export.history.heading'|trans({}, 'policy_wizard'))) }}</h2>
                 <table class="policy-doc__history-table">
                     <thead>
                         <tr>
-                            <th>{{ cover.history_col_version|default('Version') }}</th>
-                            <th>{{ cover.history_col_date|default('Datum') }}</th>
-                            <th>{{ cover.history_col_change|default('Änderung') }}</th>
-                            <th>{{ cover.history_col_author|default('Autor') }}</th>
-                            <th>{{ cover.history_col_approver|default('Approver') }}</th>
+                            <th>{{ cover.history_col_version|default(('policy_wizard.export.history.col_version'|trans({}, 'policy_wizard'))) }}</th>
+                            <th>{{ cover.history_col_date|default(('policy_wizard.export.history.col_date'|trans({}, 'policy_wizard'))) }}</th>
+                            <th>{{ cover.history_col_change|default(('policy_wizard.export.history.col_change'|trans({}, 'policy_wizard'))) }}</th>
+                            <th>{{ cover.history_col_author|default(('policy_wizard.export.history.col_author'|trans({}, 'policy_wizard'))) }}</th>
+                            <th>{{ cover.history_col_approver|default(('policy_wizard.export.history.col_approver'|trans({}, 'policy_wizard'))) }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -292,13 +292,13 @@
         {% if _signatures|length > 0 %}
             <footer class="policy-doc__signature" data-signature-method="{{ cover.signature_method|default('internal') }}">
                 <p class="policy-doc__signature-intro">
-                    <strong>{{ cover.signature_intro_label|default('Freigabe.') }}</strong>
-                    {{ cover.signature_intro|default('Die Unterzeichnenden bestätigen die Gültigkeit dieser Policy für den genannten Geltungsbereich.') }}
+                    <strong>{{ cover.signature_intro_label|default(('policy_wizard.export.signature.intro_label'|trans({}, 'policy_wizard'))) }}</strong>
+                    {{ cover.signature_intro|default(('policy_wizard.export.signature.intro'|trans({}, 'policy_wizard'))) }}
                 </p>
                 <div class="policy-doc__signature-grid">
                     {% for sig in _signatures|slice(0, 3) %}
                         <div class="policy-doc__signature-field" data-role="{{ sig.role|default('approver')|lower }}">
-                            <p class="policy-doc__signature-role">{{ sig.role|default('Approver') }}</p>
+                            <p class="policy-doc__signature-role">{{ sig.role|default(('policy_wizard.export.history.col_approver'|trans({}, 'policy_wizard'))) }}</p>
                             <div class="policy-doc__signature-line" aria-hidden="true"></div>
                             <p class="policy-doc__signature-name">{{ sig.name|default('—') }}</p>
                             {% if sig.meta is defined and sig.meta %}

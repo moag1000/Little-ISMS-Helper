@@ -213,31 +213,31 @@
                                 {{ 'audit.cross_framework_coverage.fte_saving'|trans({'%days%': _saving}, 'audit') }}
                             </div>
                         {% endif %}
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle">
-                                <thead>
+                        <div class="fa-table-wrap">
+                            <table class="fa-table fa-table--hover fa-table--compact">
+                                <thead class="fa-table__head">
                                     <tr>
-                                        <th scope="col">{{ 'audit.cross_framework_coverage.col.framework'|trans({}, 'audit') }}</th>
-                                        <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.direct'|trans({}, 'audit') }}</th>
-                                        <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.transitive'|trans({}, 'audit') }}</th>
-                                        <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.total'|trans({}, 'audit') }}</th>
+                                        <th class="fa-table__th" scope="col">{{ 'audit.cross_framework_coverage.col.framework'|trans({}, 'audit') }}</th>
+                                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'audit.cross_framework_coverage.col.direct'|trans({}, 'audit') }}</th>
+                                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'audit.cross_framework_coverage.col.transitive'|trans({}, 'audit') }}</th>
+                                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'audit.cross_framework_coverage.col.total'|trans({}, 'audit') }}</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="fa-table__body">
                                     {% for row in coverageReport.summaryRows %}
-                                        <tr>
-                                            <td>
+                                        <tr class="fa-table__row">
+                                            <td class="fa-table__cell">
                                                 {% include '_components/_badge.html.twig' with { variant: 'primary', content: row.framework.name } %}
                                             </td>
-                                            <td class="text-end">{{ row.direct }}</td>
-                                            <td class="text-end">
+                                            <td class="fa-table__cell fa-table__cell--num">{{ row.direct }}</td>
+                                            <td class="fa-table__cell fa-table__cell--num">
                                                 {% if row.transitive > 0 %}
                                                     <span class="badge bg-info-subtle text-info-emphasis">+{{ row.transitive }}</span>
                                                 {% else %}
                                                     <span class="text-muted">0</span>
                                                 {% endif %}
                                             </td>
-                                            <td class="text-end fw-semibold">{{ row.total }}</td>
+                                            <td class="fa-table__cell fa-table__cell--num fw-semibold">{{ row.total }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -251,29 +251,29 @@
                                     <summary class="fw-semibold small">
                                         {{ 'audit.cross_framework_coverage.transitive_for'|trans({'%framework%': fw.name, '%count%': _transitive_rows|length}, 'audit') }}
                                     </summary>
-                                    <div class="table-responsive mt-2">
-                                        <table class="table table-sm small">
-                                            <thead>
+                                    <div class="fa-table-wrap mt-2">
+                                        <table class="fa-table fa-table--hover fa-table--compact small">
+                                            <thead class="fa-table__head">
                                                 <tr>
-                                                    <th scope="col">{{ 'audit.cross_framework_coverage.col.finding'|trans({}, 'audit') }}</th>
-                                                    <th scope="col">{{ 'audit.cross_framework_coverage.col.target_requirement'|trans({}, 'audit') }}</th>
-                                                    <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.mapping_strength'|trans({}, 'audit') }}</th>
+                                                    <th class="fa-table__th" scope="col">{{ 'audit.cross_framework_coverage.col.finding'|trans({}, 'audit') }}</th>
+                                                    <th class="fa-table__th" scope="col">{{ 'audit.cross_framework_coverage.col.target_requirement'|trans({}, 'audit') }}</th>
+                                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'audit.cross_framework_coverage.col.mapping_strength'|trans({}, 'audit') }}</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="fa-table__body">
                                                 {% for row in _transitive_rows %}
-                                                    <tr>
-                                                        <td>
+                                                    <tr class="fa-table__row">
+                                                        <td class="fa-table__cell">
                                                             <a href="{{ path('app_audit_finding_show', { id: row.finding.id }) }}">
                                                                 {{ row.finding.findingNumber|default('#' ~ row.finding.id) }}
                                                             </a>
                                                             <span class="text-muted">— {{ row.finding.title|u.truncate(60, '…', false) }}</span>
                                                         </td>
-                                                        <td>
+                                                        <td class="fa-table__cell">
                                                             <code class="small">{{ row.target_requirement.requirementId }}</code>
                                                             <span class="text-muted">— {{ row.target_requirement.title|u.truncate(60, '…', false) }}</span>
                                                         </td>
-                                                        <td class="text-end">{{ row.mapping_percentage }}%</td>
+                                                        <td class="fa-table__cell fa-table__cell--num">{{ row.mapping_percentage }}%</td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>

@@ -1,3 +1,4 @@
+import { faT } from '../js/fa-i18n.js';
 /**
  * Persona Quick-Switcher Controller
  *
@@ -84,7 +85,7 @@ export default class extends Controller {
             this._busy = false;
             this.optionTargets.forEach(opt => { opt.disabled = false; });
             window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: 'Persona-Wechsel fehlgeschlagen.', type: 'error' },
+                detail: { message: faT('persona_switcher.failed'), type: 'error' },
             }));
         }
     }

@@ -121,6 +121,8 @@ user:
         last_login: 'Last Login'
         competencies: 'Competencies (§7.2)'
         previous_qms_background: 'Previous QM-System experience'
+        avatar_help: 'Optional: JPG, PNG, GIF or WebP. A square image works best.'
+        tenant_help: 'Organization (tenant) the user belongs to. Determines which data the user can see and edit.'
     placeholder:
         tenant: '-- Select organization --'
         competencies_json: '[{"name":"ISO 27001 Fundamentals","category":"compliance","level":3,"certifiedBy":null,"certifiedAt":null,"expiresAt":null}]'

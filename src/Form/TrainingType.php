@@ -305,22 +305,20 @@ final class TrainingType extends AbstractType implements SectionMapInterface
         // + trainer legacy text). Legacy free-text `trainer` is preserved
         // as read-only Migration-Hint when populated.
         $this->addOwnerPicker($builder, [
-            'field_prefix'       => 'trainer',
+            'translation_prefix' => 'training',
             'user_field'         => 'trainerUser',
             'person_field'       => 'trainerPerson',
             'deputies_field'     => 'trainerDeputyPersons',
             'legacy_field'       => 'trainer',
-            'label_user'         => 'training.field.trainer',
-            'label_person'       => 'training.field.trainer_person',
-            'label_deputies'     => 'training.field.trainer_deputy_persons',
-            'label_legacy'       => 'training.field.trainer_legacy',
-            'placeholder_user'   => 'training.placeholder.trainer_user',
-            'placeholder_person' => 'training.placeholder.trainer_person',
-            'help_user'          => 'training.help.trainer_user',
-            'help_person'        => 'training.help.trainer_person',
-            'help_deputies'      => 'training.help.trainer_deputy_persons',
-            'with_deputies'      => true,
-            'with_legacy'        => true,
+            'user_label'         => 'training.field.trainer',
+            'person_label'       => 'training.field.trainer_person',
+            'deputies_label'     => 'training.field.trainer_deputy_persons',
+            'legacy_label'       => 'training.field.trainer_legacy',
+            'user_placeholder'   => 'training.placeholder.trainer_user',
+            'person_placeholder' => 'training.placeholder.trainer_person',
+            'user_help'          => 'training.help.trainer_user',
+            'person_help'        => 'training.help.trainer_person',
+            'deputies_help'      => 'training.help.trainer_deputy_persons',
         ]);
     }
 

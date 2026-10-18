@@ -1,28 +1,19 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'user.profile.title'|trans({}, 'user') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col">
-            <h1 class="mb-0">
-                <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
-                {{ 'user.profile.title'|trans({}, 'user') }}
-            </h1>
-        </div>
-        <div class="col-auto">
-            <a href="{{ path('app_profile_edit') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                {{ 'user.profile.action.edit'|trans({}, 'user') }}
-            </a>
-            <a href="{{ path('app_api_tokens') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--nav-key" aria-hidden="true"></i>
-                {{ 'api_token.title'|trans({}, 'api_token') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'user', label: '' },
+        title: 'user.profile.title'|trans({}, 'user'),
+        actions: [
+            { label: 'user.profile.action.edit'|trans({}, 'user'), href: path('app_profile_edit'), variant: 'primary', icon: 'ui-edit' },
+            { label: 'api_token.title'|trans({}, 'api_token'), href: path('app_api_tokens'), variant: 'ghost', icon: 'nav-key' }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-md-4 mb-4">

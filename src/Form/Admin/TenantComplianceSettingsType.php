@@ -13,20 +13,20 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Controller\Admin\SystemSettings\DataRetentionController;
+use App\Form\Type\JsonBuilderType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Tier-1 Compliance Settings on the Tenant entity (locale, timezone,
- * financial year, TLP, DPO contact). Supervisory-authorities and
- * retention-policies are JSON blobs and edited in dedicated sub-forms
- * (or as JSON for now).
+ * financial year, TLP, DPO contact). The JSON configuration columns
+ * (authorities, retention, notifications, CSIRT endpoints, on-call rota) are
+ * edited with the structured JsonBuilderType — shapes per Tenant docblocks.
  */
 // SectionMap replaced by fa-tabs in edit.html.twig (JSON-config fields + sidebar preserved).
-// Tabs: Defaults/Frameworks/Modules/Contact/Advanced(JSON).
+// Tabs: Defaults/Frameworks/Modules/Contact/Advanced (structured JSON builders).
 // Global-settings sidebar is a sibling col-lg-4 alongside the form col-lg-8.
 final class TenantComplianceSettingsType extends AbstractType implements SectionMapInterface
 {
@@ -139,6 +139,10 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
                 'translation_domain' => 'admin',
             ])
             ->add('dpoIsExternal', CheckboxType::class, [
+                // Tenant exposes isDpoExternal(), which PropertyAccess cannot
+                // derive from "dpoIsExternal" — without an explicit getter the
+                // form crashed as soon as the privacy module was active.
+                'getter' => static fn (Tenant $tenant): bool => $tenant->isDpoExternal(),
                 'label' => 'admin.tenant_settings.dpo_is_external',
                 'required' => false,
                 'translation_domain' => 'admin',
@@ -213,24 +217,87 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
             ])
         ;
 
-        // JSON-fields with prettty-print transformer.
-        $jsonFields = [
-            'supervisoryAuthorities' => 'admin.tenant_settings.supervisory_authorities',
-            'dataRetentionPolicies'  => 'admin.tenant_settings.data_retention_policies',
-            'notificationPreferences' => 'admin.tenant_settings.notification_preferences',
-            'csirtEndpoints'         => 'admin.tenant_settings.csirt_endpoints',
-            'crisisTeamOnCall'       => 'admin.tenant_settings.crisis_team_on_call',
-        ];
-        foreach ($jsonFields as $name => $label) {
-            $builder->add($name, TextareaType::class, [
-                'label' => $label,
-                'help' => $label . '_help',
-                'required' => false,
-                'translation_domain' => 'admin',
-                'attr' => ['rows' => 8, 'class' => 'fa-form-control font-monospace small', 'spellcheck' => 'false'],
-            ]);
-            $builder->get($name)->addModelTransformer(new JsonArrayTransformer());
-        }
+        $tr = 'admin.tenant_settings.json_builder.';
+
+        // Supervisory authorities keyed by jurisdiction/role (BSI, BaFin, LDA …).
+        $builder->add('supervisoryAuthorities', JsonBuilderType::class, [
+            'label' => 'admin.tenant_settings.supervisory_authorities',
+            'help' => 'admin.tenant_settings.supervisory_authorities_help',
+            'required' => false,
+            'shape' => 'map',
+            'key_label' => $tr . 'authority_key',
+            'key_suggestions' => ['BSI', 'BaFin', 'LDA', 'CSIRT-Bund', 'ENISA'],
+            'add_label' => $tr . 'authority_add',
+            'fields' => [
+                ['key' => 'name', 'type' => 'text', 'label' => $tr . 'name', 'required' => true],
+                ['key' => 'email', 'type' => 'email', 'label' => $tr . 'email'],
+                ['key' => 'phone', 'type' => 'text', 'label' => $tr . 'phone'],
+                ['key' => 'scope', 'type' => 'text', 'label' => $tr . 'scope'],
+            ],
+        ]);
+
+        // GDPR retention per data category — same shape as /admin/settings/data-retention.
+        $builder->add('dataRetentionPolicies', JsonBuilderType::class, [
+            'label' => 'admin.tenant_settings.data_retention_policies',
+            'help' => 'admin.tenant_settings.data_retention_policies_help',
+            'required' => false,
+            'shape' => 'map',
+            'key_label' => $tr . 'retention_key',
+            'key_suggestions' => array_keys(DataRetentionController::DEFAULTS),
+            'add_label' => $tr . 'retention_add',
+            'fields' => [
+                ['key' => 'retention_days', 'type' => 'number', 'label' => $tr . 'retention_days', 'required' => true],
+                ['key' => 'auto_delete', 'type' => 'bool', 'label' => $tr . 'auto_delete'],
+            ],
+        ]);
+
+        // Delivery channels per event type. `_global` (digest, webhook timeout)
+        // belongs to /admin/settings/notifications and is kept untouched.
+        $builder->add('notificationPreferences', JsonBuilderType::class, [
+            'label' => 'admin.tenant_settings.notification_preferences',
+            'help' => 'admin.tenant_settings.notification_preferences_help',
+            'required' => false,
+            'shape' => 'map',
+            'hidden_keys' => ['_global'],
+            'key_label' => $tr . 'event_key',
+            'key_suggestions' => ['incident', 'breach', 'audit_finding', 'training_overdue'],
+            'add_label' => $tr . 'event_add',
+            'fields' => [
+                ['key' => 'email', 'type' => 'bool', 'label' => $tr . 'channel_email'],
+                ['key' => 'slack', 'type' => 'bool', 'label' => $tr . 'channel_slack'],
+                ['key' => 'teams', 'type' => 'bool', 'label' => $tr . 'channel_teams'],
+            ],
+        ]);
+
+        // CSIRT endpoints for automated incident reporting (BSI, sectoral CSIRT, ENISA).
+        $builder->add('csirtEndpoints', JsonBuilderType::class, [
+            'label' => 'admin.tenant_settings.csirt_endpoints',
+            'help' => 'admin.tenant_settings.csirt_endpoints_help',
+            'required' => false,
+            'shape' => 'map',
+            'key_label' => $tr . 'csirt_key',
+            'key_suggestions' => ['BSI-CERT', 'CERT-Bund', 'ENISA'],
+            'add_label' => $tr . 'csirt_add',
+            'fields' => [
+                ['key' => 'url', 'type' => 'url', 'label' => $tr . 'url'],
+                ['key' => 'contact', 'type' => 'text', 'label' => $tr . 'contact'],
+                ['key' => 'auth_type', 'type' => 'text', 'label' => $tr . 'auth_type', 'suggestions' => ['none', 'api_key', 'oauth2', 'mtls']],
+            ],
+        ]);
+
+        // Crisis-team on-call rotation (date, primary, deputy).
+        $builder->add('crisisTeamOnCall', JsonBuilderType::class, [
+            'label' => 'admin.tenant_settings.crisis_team_on_call',
+            'help' => 'admin.tenant_settings.crisis_team_on_call_help',
+            'required' => false,
+            'shape' => 'list',
+            'add_label' => $tr . 'on_call_add',
+            'fields' => [
+                ['key' => 'date', 'type' => 'date', 'label' => $tr . 'on_call_date', 'required' => true],
+                ['key' => 'primary', 'type' => 'text', 'label' => $tr . 'on_call_primary'],
+                ['key' => 'deputy', 'type' => 'text', 'label' => $tr . 'on_call_deputy'],
+            ],
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -252,7 +319,7 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
             'privacy'               => ['dpoContactName', 'dpoContactEmail', 'dpoAppointmentDate', 'dpoIsExternal', 'dpoAuthorityNotifiedAt', 'dpoDeputyName', 'representativeName', 'representativeContact'],
             'risk_assessment'       => ['riskMethodology', 'riskMatrixSize', 'wizardMaturityTarget'],
             'entity_classification' => ['doraEntityCategory'],
-            'advanced'              => ['apiRateLimitPerMinute'],
+            'advanced'              => ['apiRateLimitPerMinute', 'supervisoryAuthorities', 'dataRetentionPolicies', 'notificationPreferences', 'csirtEndpoints', 'crisisTeamOnCall'],
         ];
     }
 }

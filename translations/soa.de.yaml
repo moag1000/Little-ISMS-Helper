@@ -110,6 +110,8 @@ soa:
         classification_confidential: Vertraulich
         classification_confidential_upper: VERTRAULICH
         effectiveness_score: 'Wirksamkeitswert'
+        status: 'Status'
+        completed_on: 'Abgeschlossen am'
     message:
         no_controls_filtered: 'Keine Controls gefunden, die den Filterkriterien entsprechen.'
         auto_seeded: '%count% ISO 27001 Annex A Controls wurden automatisch für diese Organisation geladen.'

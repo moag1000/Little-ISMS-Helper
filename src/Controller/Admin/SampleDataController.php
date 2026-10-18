@@ -112,6 +112,9 @@ class SampleDataController extends AbstractController
                 'key' => (string) $key,
                 'name' => $data['name'] ?? (string) $key,
                 'description' => $data['description'] ?? '',
+                // Source identifiers for the translated label lookup (module_data_text()).
+                'file' => $data['file'] ?? null,
+                'command' => $data['command'] ?? null,
                 'required_modules' => $requiredModules,
                 'modules_ok' => $modulesOk,
                 'count' => $rawCount,

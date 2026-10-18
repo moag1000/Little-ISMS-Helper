@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Preferences Controller - User Preferences Management
@@ -145,7 +146,7 @@ export default class extends Controller {
     }
 
     async resetToDefaults() {
-        if (await window.faConfirm(window.translations?.preferences?.confirm_reset || 'Do you want to reset all settings?', { tone: 'warn' })) {
+        if (await window.faConfirm(faT('preferences.confirm_reset'), { tone: 'warn' })) {
             this.preferences = this.getDefaultPreferences();
             this.savePreferences();
             this.applyPreferences();
@@ -154,7 +155,7 @@ export default class extends Controller {
             this.updateFormFields();
 
             // Show success message
-            this.showSuccessMessage(window.translations?.preferences?.reset_success || 'Settings have been reset');
+            this.showSuccessMessage(faT('preferences.reset_success'));
         }
     }
 
@@ -206,9 +207,9 @@ export default class extends Controller {
                 this.savePreferences();
                 this.applyPreferences();
                 this.updateFormFields();
-                this.showSuccessMessage(window.translations?.preferences?.imported || 'Settings successfully imported');
+                this.showSuccessMessage(faT('preferences.imported'));
             } catch (err) {
-                window.faToast(window.translations?.preferences?.import_failed || 'Error importing settings', 'danger');
+                window.faToast(faT('preferences.import_failed'), 'danger');
             }
         };
         reader.readAsText(file);

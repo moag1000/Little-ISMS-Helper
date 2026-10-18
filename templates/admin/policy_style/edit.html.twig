@@ -66,26 +66,26 @@
                         {
                             id: 'branding',
                             label: 'admin.policy_style.tab.branding'|trans({}, 'admin'),
-                            icon: 'nav-droplet',
+                            icon: 'nav-palette',
                             body: include('admin/policy_style/_tab_branding.html.twig', { form: form })
                         },
                         {
                             id: 'layout',
                             label: 'admin.policy_style.tab.layout'|trans({}, 'admin'),
-                            icon: 'nav-layout',
+                            icon: 'nav-grid',
                             body: include('admin/policy_style/_tab_layout.html.twig', { form: form })
                         },
                         {
                             id: 'content',
                             label: 'admin.policy_style.tab.content'|trans({}, 'admin'),
-                            icon: 'nav-text-file',
+                            icon: 'nav-file-earmark-text',
                             body: include('admin/policy_style/_tab_content.html.twig', { form: form })
                         },
                     ]|merge(
                         form.policyDocCustomCss is defined ? [{
                             id: 'advanced',
                             label: 'admin.policy_style.tab.advanced'|trans({}, 'admin'),
-                            icon: 'nav-code',
+                            icon: 'nav-sliders',
                             body: include('admin/policy_style/_tab_advanced.html.twig', { form: form })
                         }] : []
                     )
@@ -105,7 +105,9 @@
                 <form method="post"
                       action="{{ path('app_admin_policy_style_reset') }}"
                       class="mt-3"
-                      onsubmit="return confirm('{{ 'admin.policy_style.reset_confirm'|trans|e('js') }}');">
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'admin.policy_style.reset_confirm'|trans({}, 'admin') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('admin_policy_style_reset') }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm text-warning">
                         <i class="fa-icon fa-icon--ui-refresh me-1"></i>

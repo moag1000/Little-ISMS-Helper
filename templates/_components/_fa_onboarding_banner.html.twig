@@ -53,14 +53,14 @@
                       data-turbo="true">
                     <input type="hidden" name="_token" value="{{ csrf_token('dismiss_' ~ config.dismissKey) }}">
                     <input type="hidden" name="permanent" value="1">
-                    <button type="submit" class="fa-onboarding-banner__dismiss">Ausblenden</button>
+                    <button type="submit" class="fa-onboarding-banner__dismiss">{{ 'ui.component.onboarding.hide'|trans({}, 'ui') }}</button>
                 </form>
                 <form method="post"
                       action="{{ path('app_preferences_dismiss', {key: config.dismissKey}) }}"
                       data-turbo="true">
                     <input type="hidden" name="_token" value="{{ csrf_token('dismiss_' ~ config.dismissKey) }}">
                     <input type="hidden" name="permanent" value="0">
-                    <button type="submit" class="fa-onboarding-banner__dismiss">Später</button>
+                    <button type="submit" class="fa-onboarding-banner__dismiss">{{ 'ui.component.onboarding.later'|trans({}, 'ui') }}</button>
                 </form>
             </div>
         {% endif %}

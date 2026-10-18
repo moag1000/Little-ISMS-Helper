@@ -83,6 +83,7 @@ patch:
         testing_notes: 'Dokumentation von Tests vor dem Produktiveinsatz'
         rollback_plan: 'Anweisungen für den Fall, dass der Patch zurückgenommen werden muss'
         estimated_downtime_minutes: 'Erwartete Ausfallzeit in Minuten'
+        status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Ausstehend → Test → Freigegeben → Ausgerollt; ggf. Fehlgeschlagen / Zurückgerollt). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     kpi:
         pending: Ausstehend
         deployed: Eingespielt

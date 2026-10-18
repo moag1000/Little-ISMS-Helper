@@ -276,6 +276,10 @@ lifecycle:
 
     confirm:
         reason_required: 'Please provide a reason'
+    dropdown:
+        no_transitions: 'No transitions available.'
+        load_error: 'Could not load transitions.'
+        conflict: 'The record was changed in the meantime – the page will reload.'
 
     field:
         status: Status

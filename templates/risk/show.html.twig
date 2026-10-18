@@ -182,7 +182,7 @@
                                 value: risk.singleLossExpectancy|number_format(0, ',', '.'),
                                 unit: '€',
                                 variant: 'primary',
-                                icon: 'currency-euro',
+                                icon: 'bank',
                                 hint: 'risk.quant.help.sle'|trans({}, 'risk')
                             }) }}
                         </div>
@@ -201,13 +201,13 @@
                                 value: risk.annualLossExpectancy|number_format(0, ',', '.'),
                                 unit: '€',
                                 variant: risk.annualLossExpectancy >= 1000000 ? 'danger' : (risk.annualLossExpectancy >= 100000 ? 'warning' : 'success'),
-                                icon: 'graph-up-arrow',
+                                icon: 'nav-analytics',
                                 hint: 'risk.quant.display.hint_per_year'|trans({}, 'risk')
                             }) }}
                         </div>
                     </div>
                     <p class="text-muted small">
-                        <i class="fa-icon fa-icon--info" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                         {{ 'risk.quant.display.hint_module_info'|trans({}, 'risk') }}
                     </p>
                 </div>
@@ -222,7 +222,7 @@
                 {% if canEdit is defined and canEdit %}
                     <div class="detail-section text-muted small">
                         <i class="fa-icon fa-icon--bank" aria-hidden="true"></i>
-                        {{ 'risk.quant.board_report.no_data'|trans({}, 'risk') }}
+                        {{ 'risk.quant.display.empty'|trans({}, 'risk') }}
                         — <a href="{{ path('app_risk_edit', {id: risk.id}) }}">{{ 'action.edit'|trans({}, 'messages') }}</a>
                     </div>
                 {% endif %}
@@ -341,13 +341,13 @@
                     <h3>
                         <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i>
                         {{ 'risk.section.risk_subject'|trans({}, 'risk') }}
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'ms-2', content: risk.riskSubjectType|upper } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'ms-2', content: ('risk.subject.' ~ risk.riskSubjectType ~ '.label')|trans({}, 'risk') } %}
                     </h3>
 
                     {% if risk.asset %}
                         <div class="subject-info card fa-section mb-3">
                             <div class="card-header">
-                                <i class="fa-icon fa-icon--nav-cpu text-primary" aria-hidden="true"></i> {{ 'asset.title'|trans({}, 'asset') }}
+                                <span class="d-inline-flex align-items-center gap-2"><i class="fa-icon fa-icon--nav-cpu text-primary" aria-hidden="true"></i> {{ 'risk.subject.asset.label'|trans({}, 'risk') }}</span>
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.asset.name }}</div>
@@ -375,7 +375,7 @@
                     {% if risk.person %}
                         <div class="subject-info card fa-section mb-3">
                             <div class="card-header">
-                                <i class="fa-icon fa-icon--ui-person text-info" aria-hidden="true"></i> {{ 'person.title'|trans({}, 'messages') }}
+                                <span class="d-inline-flex align-items-center gap-2"><i class="fa-icon fa-icon--ui-person text-info" aria-hidden="true"></i> {{ 'risk.subject.person.label'|trans({}, 'risk') }}</span>
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.person.fullName }}</div>
@@ -395,7 +395,7 @@
                     {% if risk.location %}
                         <div class="subject-info card fa-section mb-3">
                             <div class="card-header">
-                                <i class="fa-icon fa-icon--nav-location text-warning" aria-hidden="true"></i> {{ 'location.title'|trans({}, 'locations') }}
+                                <span class="d-inline-flex align-items-center gap-2"><i class="fa-icon fa-icon--nav-location text-warning" aria-hidden="true"></i> {{ 'risk.subject.location.label'|trans({}, 'risk') }}</span>
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.location.name }}</div>
@@ -415,7 +415,7 @@
                     {% if risk.supplier %}
                         <div class="subject-info card fa-section mb-3">
                             <div class="card-header">
-                                <i class="fa-icon fa-icon--nav-truck fa-icon--success" aria-hidden="true"></i> {{ 'supplier.title'|trans({}, 'suppliers') }}
+                                <span class="d-inline-flex align-items-center gap-2"><i class="fa-icon fa-icon--nav-truck fa-icon--success" aria-hidden="true"></i> {{ 'risk.subject.supplier.label'|trans({}, 'risk') }}</span>
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.supplier.name }}</div>

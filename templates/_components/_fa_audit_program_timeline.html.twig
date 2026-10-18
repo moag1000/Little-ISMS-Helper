@@ -31,10 +31,10 @@
     <div class="fa-audit-program-timeline"
          data-controller="audit-timeline"
          role="region"
-         aria-label="Audit-Programm Timeline">
+         aria-label="{{ 'ui.component.audit_timeline.label'|trans({}, 'ui') }}">
         {# Quarter headers #}
         <div class="fa-audit-program-timeline__header">
-            <div class="fa-audit-program-timeline__col-label" style="width: 8rem;">Audittyp</div>
+            <div class="fa-audit-program-timeline__col-label" style="width: 8rem;">{{ 'ui.component.audit_timeline.audit_type'|trans({}, 'ui') }}</div>
             {% for year in config.years|default([]) %}
                 {% for q in 1..4 %}
                     <div class="fa-audit-program-timeline__col-label">{{ year }}/Q{{ q }}</div>

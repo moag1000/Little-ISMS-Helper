@@ -1364,6 +1364,10 @@ policy_wizard:
         kritis_energie:
             label: 'KRITIS Energie (BSI-KritisV + EnWG § 11.1b)'
             description: 'KRITIS-Sektor Energie (Strom, Gas, Fernwärme, Mineralöl) nach BSI-KritisV. Kombiniert BSI IT-Grundschutz, NIS-2 und IT-Sicherheitskatalog Strom/Gas (EnWG § 11 Abs. 1b). Defaults: ISO 27001 + BSI + NIS-2 + BCM, sehr konservativ, 4 h RPO, physische Schwerpunkte.'
+        incomplete:
+            title: 'Preset-Bibliothek unvollständig'
+            body: '%missing% von %total% Industrie-Presets fehlen in der Datenbank.'
+            howto: 'Fehlende Presets einspielen mit:'
 
     standard_badge:
         iso27001: 'ISO 27001'

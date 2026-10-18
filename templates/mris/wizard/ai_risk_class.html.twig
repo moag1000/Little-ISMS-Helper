@@ -1,15 +1,16 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'mris' %}
 
-{% block title %}MRIS-Wizard — AI-Risiko-Klasse{% endblock %}
+{% block title %}{{ 'mris.wizard.ai_risk.page_title'|trans({}, 'mris') }}{% endblock %}
 
 {% block body %}
 <div class="container">
 
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">MRIS-KPIs</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Wizard: AI-Risiko-Klasse</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'nav.dashboard'|trans({}, 'nav') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">{{ 'mris.wizard.common.breadcrumb_kpis'|trans({}, 'mris') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'mris.wizard.ai_risk.breadcrumb'|trans({}, 'mris') }}</li>
         </ol>
     </nav>
 
@@ -17,22 +18,19 @@
         <div>
             <h1>
                 <i class="fa-icon fa-icon--nav-cpu" aria-hidden="true"></i>
-                {{ matrix.title|default('12-Tools-Entscheidungsmatrix — AI-Risiko-Klasse') }}
+                {{ matrix.title|default('mris.wizard.ai_risk.title'|trans({}, 'mris')) }}
             </h1>
             <p class="text-muted small mb-0">
-                {{ matrix.intro|default('Klassifikation von KI-Tools nach EU AI Act Art. 6 + Anhang III.') }}
+                {{ matrix.intro|default('mris.wizard.ai_risk.intro'|trans({}, 'mris')) }}
             </p>
         </div>
     </div>
 
     {% if fallback_used %}
-        <div class="fa-alert fa-alert--info small">
+        <div class="fa-alert fa-alert--info">
             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
-            <strong>Hinweis:</strong>
-            Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter
-            <code>blocker_solutions:</code> pflegen, damit dieser Inhalt
-            zentral aus YAML geladen wird. Aktuell wird der eingebettete
-            Default angezeigt.
+            <strong>{{ 'mris.wizard.common.note_label'|trans({}, 'mris') }}</strong>
+            {{ 'mris.wizard.common.fallback_notice'|trans({}, 'mris')|raw }}
         </div>
     {% endif %}
 
@@ -40,7 +38,7 @@
     {% if matrix.decision_flow is defined and matrix.decision_flow|length > 0 %}
         <h2 class="h5 mt-2 mb-3">
             <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
-            4-Schritt-Decision-Flow
+            {{ 'mris.wizard.ai_risk.flow_heading'|trans({}, 'mris') }}
         </h2>
         <div class="row g-3 mb-4">
             {% for step in matrix.decision_flow %}
@@ -64,7 +62,7 @@
     {# 12-Tools-Tabelle. #}
     <h2 class="h5 mt-2 mb-3">
         <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
-        12 typische Tools
+        {{ 'mris.wizard.ai_risk.tools_heading'|trans({}, 'mris') }}
     </h2>
 
     {% embed '_components/_card.html.twig' %}
@@ -72,10 +70,10 @@
             {% embed '_components/_fa_table.html.twig' %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col" class="fa-table__th" style="width: 22%;">Tool</th>
-                        <th scope="col" class="fa-table__th" style="width: 16%;">Empfohlene Klasse</th>
-                        <th scope="col" class="fa-table__th" style="width: 24%;">AI-Act-Verweis</th>
-                        <th scope="col" class="fa-table__th" style="width: 38%;">Begruendung</th>
+                        <th scope="col" class="fa-table__th" style="width: 22%;">{{ 'mris.wizard.ai_risk.col.tool'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th" style="width: 16%;">{{ 'mris.wizard.ai_risk.col.class'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th" style="width: 24%;">{{ 'mris.wizard.ai_risk.col.reference'|trans({}, 'mris') }}</th>
+                        <th scope="col" class="fa-table__th" style="width: 38%;">{{ 'mris.wizard.ai_risk.col.rationale'|trans({}, 'mris') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -91,7 +89,7 @@
                             <td class="fa-table__cell">
                                 {% include '_components/_badge.html.twig' with {
                                     variant: badgeVariant,
-                                    content: tool.class_label|default(tool.class|default('Minimal'))
+                                    content: tool.class_label|default(('mris.wizard.ai_risk.class.' ~ classKey)|trans({}, 'mris'))
                                 } %}
                             </td>
                             <td class="fa-table__cell small">{{ tool.ai_act_ref|default('—') }}</td>
@@ -109,7 +107,7 @@
                 <div class="card-header">
                     <h2 class="h6 mb-0">
                         <i class="fa-icon fa-icon--ui-star" aria-hidden="true"></i>
-                        Norm-Verweise
+                        {{ 'mris.wizard.common.norm_refs'|trans({}, 'mris') }}
                     </h2>
                 </div>
             {% endblock %}
@@ -124,7 +122,7 @@
     {% endif %}
 
     <footer class="text-center text-muted small mt-4 pt-3 border-top">
-        Quelle: Peddi (2026) MRIS v1.5.
+        {{ 'mris.wizard.common.source'|trans({}, 'mris') }}
         <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">{{ 'mris.license.cc_by_40'|trans({}, 'mris') }}</a>.
     </footer>
 

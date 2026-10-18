@@ -58,6 +58,7 @@ vulnerability:
         remediation_deadline: 'Frist für die Behebung der Schwachstelle'
         exploit_availability: 'Verfügbarkeit von Exploit-Code'
         actively_exploited: 'Wird die Schwachstelle aktiv in freier Wildbahn ausgenutzt?'
+        status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Offen → Triage → In Behebung → Gepatcht / Gemindert / Akzeptiert → Geschlossen). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     severity:
         critical: Kritisch
         high: Hoch

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Tenant;
-use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -20,8 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class TenantType extends AbstractType implements SectionMapInterface
 {
-    /** Fields only an instance operator (SUPER_ADMIN) may change — see the operator_fields option. */
-    public const array OPERATOR_FIELDS = ['code', 'parent', 'isCorporateParent', 'azureTenantId', 'settings'];
+    /**
+     * Fields only an instance operator (SUPER_ADMIN) may change — see the operator_fields option.
+     * Tenant::$settings is not a form field at all (read-only settings tab).
+     */
+    public const array OPERATOR_FIELDS = ['code', 'parent', 'isCorporateParent', 'azureTenantId'];
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -254,23 +256,14 @@ final class TenantType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
             ])
-            // Mapped JSON field — JsonStructuredType round-trips array<->JSON via
-            // App\Form\DataTransformer\JsonArrayTransformer. Invalid JSON surfaces
-            // as a user-friendly TransformationFailedException instead of silently
-            // overwriting settings with null (C-06).
-            ->add('settings', JsonStructuredType::class, [
-                'label' => 'tenant.field.settings',
-                'help' => 'tenant.field.settings_help',
-                'required' => false,
-                'attr' => [
-                    'rows' => 10,
-                    'placeholder' => 'tenant.placeholder.settings',
-                    'class' => 'font-monospace',
-                ],
-            ])
+            // Tenant::$settings is NOT edited here: it is an internal bag whose
+            // parts have dedicated structured editors (organisation context →
+            // tenant_management_organisation_context, MRIS KPIs → /mris/kpis and
+            // the toggle in the settings tab, TISAX module data). The settings
+            // tab shows it read-only via _fa_json_view.
         ;
 
-        // Identity, corporate structure, SSO binding and raw settings are
+        // Identity, corporate structure and SSO binding are
         // instance-operator decisions (activation is the operator-only lifecycle
         // toggle, not a form field): an organisation's own admin sees them
         // read-only, and a disabled field ignores whatever is submitted for it.
@@ -302,7 +295,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
             'organisation' => ['legalName', 'legalForm', 'leiCode', 'reportingCurrency', 'naceCode'],
             'relations'    => ['parent', 'isCorporateParent', 'corporateNotes'],
             'registration' => ['nis2Classification', 'nis2Sector', 'nis2ContactPoint', 'nis2RegisteredAt'],
-            'advanced'     => ['azureTenantId', 'settings'],
+            'advanced'     => ['azureTenantId'],
         ];
     }
 }

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 import { readTokens, applyAuroraDefaults } from '../chart-theme.js';
 
 /**
@@ -31,13 +32,12 @@ export default class extends Controller {
 
     // Translated labels for chart datasets
     get labels() {
-        const isGerman = this.localeValue === 'de';
         return {
-            high: isGerman ? 'Hoch' : 'High',
-            medium: isGerman ? 'Mittel' : 'Medium',
-            low: isGerman ? 'Niedrig' : 'Low',
-            critical: isGerman ? 'Kritisch' : 'Critical',
-            totalAssets: isGerman ? 'Gesamt Assets' : 'Total Assets'
+            high: faT('heat_map.band.high'),
+            medium: faT('heat_map.band.medium'),
+            low: faT('heat_map.band.low'),
+            critical: faT('heat_map.band.critical'),
+            totalAssets: faT('trend_chart.total_assets')
         };
     }
 
@@ -116,8 +116,8 @@ export default class extends Controller {
 
             if (!response.ok) {
                 const msg = response.status === 403
-                    ? 'Keine Berechtigung'
-                    : `Fehler ${response.status}`;
+                    ? faT('forbidden')
+                    : faT('error_status', { '%status%': response.status });
                 window.faToast(msg, 'danger');
                 this.showError();
                 return;

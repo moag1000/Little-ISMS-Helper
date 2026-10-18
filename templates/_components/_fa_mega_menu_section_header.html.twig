@@ -34,9 +34,9 @@
         {% if config.viewAllHref is defined and config.viewAllHref and not (config.normRef is defined and config.normRef) %}
             <a href="{{ config.viewAllHref }}" class="fa-mega-menu-section-header__view-all">
                 {%- if config.viewAllCount is defined and config.viewAllCount -%}
-                    Alle <span class="fa-mega-menu-section-header__count">{{ config.viewAllCount }}</span> anzeigen →
+                    {{ 'ui.component.mega_menu.view_all_count'|trans({'%count%': '<span class="fa-mega-menu-section-header__count">' ~ config.viewAllCount|e ~ '</span>'}, 'ui')|raw }}
                 {%- else -%}
-                    Alle anzeigen →
+                    {{ 'ui.component.mega_menu.view_all'|trans({}, 'ui') }}
                 {%- endif -%}
             </a>
         {% endif %}

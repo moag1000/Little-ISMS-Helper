@@ -153,4 +153,42 @@ final class NotificationRuleEvaluatorTest extends TestCase
         $rule = $this->ruleWith([['no_field_key' => 'bad']]);
         self::assertFalse($this->evaluator->evaluate($rule, ['severity' => 'high']));
     }
+
+    /** The rule form stores text, so a boolean state must match "true" / "1" / "false". */
+    #[Test]
+    #[DataProvider('booleanValues')]
+    public function booleanStateMatchesTextValue(bool $state, mixed $expected, bool $matches): void
+    {
+        $rule = $this->ruleWith([['field' => 'evidenceOutdated', 'op' => '==', 'value' => $expected]]);
+        self::assertSame($matches, $this->evaluator->evaluate($rule, ['evidenceOutdated' => $state]));
+    }
+
+    /** @return iterable<string, array{bool, mixed, bool}> */
+    public static function booleanValues(): iterable
+    {
+        yield 'true vs "true"' => [true, 'true', true];
+        yield 'true vs "1"' => [true, '1', true];
+        yield 'true vs bool true' => [true, true, true];
+        yield 'false vs "false"' => [false, 'false', true];
+        yield 'false vs "0"' => [false, '0', true];
+        yield 'false vs "true"' => [false, 'true', false];
+        yield 'true vs "no"' => [true, 'no', false];
+    }
+
+    #[Test]
+    public function ruleAccessorsSplitAndMergeTheLogicDirective(): void
+    {
+        $rule = $this->ruleWith([['field' => 'a', 'op' => '==', 'value' => '1']]);
+        self::assertSame('and', $rule->getConditionLogic());
+
+        $rule->setConditionLogic('or');
+        self::assertSame([['_logic' => 'or'], ['field' => 'a', 'op' => '==', 'value' => '1']], $rule->getConditions());
+
+        $rule->setConditionRows([['field' => 'b', 'op' => '!=', 'value' => '2']]);
+        self::assertSame([['_logic' => 'or'], ['field' => 'b', 'op' => '!=', 'value' => '2']], $rule->getConditions());
+        self::assertSame([['field' => 'b', 'op' => '!=', 'value' => '2']], $rule->getConditionRows());
+
+        $rule->setConditionLogic('and');
+        self::assertSame([['field' => 'b', 'op' => '!=', 'value' => '2']], $rule->getConditions());
+    }
 }

@@ -11,7 +11,7 @@
  */
 
 /* ═══════════════════════════════════════════════════════════════════
-   @font-face — Self-Hosted Inter + JetBrains Mono
+   @font-face — Self-Hosted Inter + JetBrains Mono + Space Grotesk
    ═══════════════════════════════════════════════════════════════════ */
 
 @font-face {
@@ -65,6 +65,22 @@
     src: url("/fonts/jetbrains-mono-600.woff2") format("woff2");
 }
 
+/* Space Grotesk — Display-Font für Titel (Kanon H1, Review 2026-09) */
+@font-face {
+    font-family: "Space Grotesk";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("/fonts/space-grotesk-600.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Space Grotesk";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("/fonts/space-grotesk-700.woff2") format("woff2");
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Light-Palette (Default)
    ═══════════════════════════════════════════════════════════════════ */
@@ -84,6 +100,7 @@
     --fg:   #1e1b4b;
     --fg-2: #4c4a73;
     --fg-3: #6d6b92;
+    --fg-1: var(--fg);   /* Alias, in vielen Templates verwendet */
 
     /* — Primär (Cyan) — */
     --primary:        #0284c7;   /* display: icons, sparklines, borders (AA-Large) */
@@ -237,8 +254,12 @@
     --alva-z:           9500;
 
     /* — Typografie — */
-    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                 "Helvetica Neue", Arial, sans-serif;
+    /* D07: Inter primär → Space Grotesk → system-ui → OS-Stack */
+    --font-sans: "Inter", "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Kanon H1: Display-Font für h1/h2 und Seitentitel */
+    --font-display: "Space Grotesk", "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+                    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
     /* — Radius — */
@@ -360,9 +381,9 @@ html[data-theme="dark"] {
     --sev-neutral-rgb:  148, 163, 184;
 
     /* — Shadows (dark mode: stronger black + primary-aura accent) — */
-    --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4),  0 0 8px  rgba(var(--primary-rgb), 0.10);
-    --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(var(--primary-rgb), 0.15);
-    --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
+    --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6);
     --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.4);
     --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.5);
     --shadow-overlay: 0 20px 60px rgba(0, 0, 0, 0.55);
@@ -434,9 +455,9 @@ html[data-theme="dark"] {
         --sev-info-rgb: 34, 211, 238; --sev-warning-rgb: 251, 191, 36;
         --sev-critical-rgb: 251, 146, 60; --sev-danger-rgb: 248, 113, 113;
         --sev-success-rgb: 52, 211, 153; --sev-neutral-rgb: 148, 163, 184;
-        --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4),  0 0 8px  rgba(var(--primary-rgb), 0.10);
-        --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(var(--primary-rgb), 0.15);
-        --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
+        --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4);
+        --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5);
+        --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6);
         --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.4);
         --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.5);
         --shadow-overlay: 0 20px 60px rgba(0, 0, 0, 0.55);
@@ -812,48 +833,39 @@ code, kbd, samp, pre {
 
 /* C.2 — Persona-Cockpit-Accent-Tokens */
 :root {
-    --persona-ciso:       #6d28d9;
-    --persona-isb:        #0891b2;
+    --persona-ciso:       var(--accent-strong);
+    --persona-isb:        var(--primary);
     --persona-dpo:        #be185d;
     --persona-risk:       #c2410c;
     --persona-compliance: #15803d;
-    --persona-bcm:        #b45309;
-    --persona-auditor:    #525252;
+    --persona-bcm:        var(--warning-strong);
+    --persona-auditor:    var(--fg-3);
     --persona-board:      #1e40af;
 }
 html[data-theme="dark"] {
-    --persona-ciso:       #a78bfa;
-    --persona-isb:        #22d3ee;
     --persona-dpo:        #f472b6;
     --persona-risk:       #fb923c;
     --persona-compliance: #4ade80;
-    --persona-bcm:        #fbbf24;
-    --persona-auditor:    #a3a3a3;
     --persona-board:      #60a5fa;
 }
 @media (prefers-color-scheme: dark) {
     html[data-theme="system"] {
-        --persona-ciso:       #a78bfa;
-        --persona-isb:        #22d3ee;
         --persona-dpo:        #f472b6;
         --persona-risk:       #fb923c;
         --persona-compliance: #4ade80;
-        --persona-bcm:        #fbbf24;
-        --persona-auditor:    #a3a3a3;
         --persona-board:      #60a5fa;
     }
 }
 
 /* C.3 — Coverage-Matrix Heat-Grid (5-Stufen, colorblind-safe) */
 :root {
-    --coverage-heat-0: #e4e4e7;
+    --coverage-heat-0: var(--surface-3);
     --coverage-heat-1: #fda4af;
     --coverage-heat-2: #fde68a;
     --coverage-heat-3: #bbf7d0;
     --coverage-heat-4: #4ade80;
 }
 html[data-theme="dark"] {
-    --coverage-heat-0: #3f3f46;
     --coverage-heat-1: #be123c;
     --coverage-heat-2: #b45309;
     --coverage-heat-3: #15803d;
@@ -861,7 +873,6 @@ html[data-theme="dark"] {
 }
 @media (prefers-color-scheme: dark) {
     html[data-theme="system"] {
-        --coverage-heat-0: #3f3f46;
         --coverage-heat-1: #be123c;
         --coverage-heat-2: #b45309;
         --coverage-heat-3: #15803d;
@@ -914,15 +925,7 @@ html[data-theme="dark"] {
 :root {
     --onboarding-banner-bg:     linear-gradient(135deg, var(--primary-tint), var(--accent-tint));
     --onboarding-banner-border: var(--primary);
-    --onboarding-banner-glow:   0 0 32px rgba(6, 182, 212, 0.15);
-}
-html[data-theme="dark"] {
-    --onboarding-banner-glow:   0 0 32px rgba(34, 211, 238, 0.25);
-}
-@media (prefers-color-scheme: dark) {
-    html[data-theme="system"] {
-        --onboarding-banner-glow:   0 0 32px rgba(34, 211, 238, 0.25);
-    }
+    --onboarding-banner-glow:   none;   /* Kanon H5: kein Glow auf ruhenden Flächen */
 }
 
 /* C.8 — Audit-Program-Timeline-Today-Line */

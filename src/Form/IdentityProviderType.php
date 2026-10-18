@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\IdentityProvider;
 use App\Entity\Tenant;
+use App\Form\Type\JsonBuilderType;
 use App\Repository\TenantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -59,7 +60,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'required' => false,
                 'help' => 'sso.help.discovery_url',
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
@@ -67,7 +68,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'label' => 'sso.field.issuer',
                 'required' => false,
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
@@ -75,7 +76,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'label' => 'sso.field.auth_endpoint',
                 'required' => false,
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
@@ -83,7 +84,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'label' => 'sso.field.token_endpoint',
                 'required' => false,
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
@@ -91,7 +92,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'label' => 'sso.field.userinfo_endpoint',
                 'required' => false,
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
@@ -99,7 +100,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'label' => 'sso.field.jwks_uri',
                 'required' => false,
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
@@ -110,13 +111,29 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'help' => 'sso.help.scopes',
                 'data' => implode(' ', $options['scopes_initial'] ?? []),
             ])
-            ->add('attributeMapJson', TextType::class, [
+            ->add('attributeMapJson', JsonBuilderType::class, [
+                // IdP claim → local user field, read by SsoUserProvisioningService
+                // and OidcAuthenticationFlow ({claimKey: userField}).
                 'label' => 'sso.field.attribute_map',
                 'mapped' => false,
                 'required' => false,
                 'help' => 'sso.help.attribute_map',
-                'data' => (string) ($options['attribute_map_json'] ?? ''),
-                'attr' => ['placeholder' => '{"email":"email","given_name":"firstName","family_name":"lastName"}'],
+                'data' => $options['attribute_map_initial'] !== [] ? $options['attribute_map_initial'] : null,
+                'shape' => 'map',
+                'scalar_value' => true,
+                'key_label' => 'sso.attribute_map.claim',
+                'key_suggestions' => ['email', 'given_name', 'family_name', 'name', 'preferred_username', 'upn', 'job_title', 'jobTitle', 'department'],
+                'add_label' => 'sso.attribute_map.add',
+                'fields' => [
+                    ['key' => 'user_field', 'type' => 'select', 'label' => 'sso.attribute_map.user_field', 'required' => true,
+                        'choices' => [
+                            'sso.attribute_map.target.email' => 'email',
+                            'sso.attribute_map.target.first_name' => 'firstName',
+                            'sso.attribute_map.target.last_name' => 'lastName',
+                            'sso.attribute_map.target.job_title' => 'jobTitle',
+                            'sso.attribute_map.target.department' => 'department',
+                        ]],
+                ],
             ])
             ->add('buttonLabel', TextType::class, ['label' => 'sso.field.button_label', 'required' => false])
             ->add('buttonIcon', TextType::class, [
@@ -153,7 +170,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                     'ROLE_AUDITOR' => 'ROLE_AUDITOR',
                     'ROLE_MANAGER' => 'ROLE_MANAGER',
                 ],
-                'constraints' => [new NotBlank(), new Choice(['ROLE_USER', 'ROLE_AUDITOR', 'ROLE_MANAGER'])],
+                'constraints' => [new NotBlank(), new Choice(choices: ['ROLE_USER', 'ROLE_AUDITOR', 'ROLE_MANAGER'])],
             ]);
 
         if ($allowGlobal) {
@@ -176,7 +193,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
             'translation_domain' => 'sso',
             'allow_global' => false,
             'scopes_initial' => [],
-            'attribute_map_json' => '',
+            'attribute_map_initial' => [],
             'domain_bindings_initial' => [],
         ]);
     }

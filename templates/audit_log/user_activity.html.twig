@@ -2,6 +2,7 @@
 {% trans_default_domain 'audit_log' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block admin_title %}{{ 'audit_log.user_activity.title'|trans({}, 'audit_log') }}{% endblock %}
 {% block admin_subtitle %}
@@ -57,7 +58,10 @@
     </div>
 </div>
 {% else %}
-{{ _fa_alert.render({ variant: 'info', class: 'mt-4', body: 'audit_log.message.no_user_activities'|trans({}, 'audit_log') }) }}
+{{ _fa_empty_state.render({
+    mood: 'sleeping',
+    title: 'audit_log.message.no_user_activities'|trans({}, 'audit_log')
+}) }}
 {% endif %}
 
 {% endblock %}
