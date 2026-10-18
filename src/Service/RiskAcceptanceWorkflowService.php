@@ -363,10 +363,11 @@ class RiskAcceptanceWorkflowService
         try {
             $this->emailNotificationService->sendRiskAcceptanceRequest(
                 risk: $risk,
+                user: $user,
                 approvalLevel: $approvalLevel,
-                approver: $user
             );
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            // Catch-all: a failed notification must never abort the acceptance request.
             $this->logger->error('Failed to send approval notification', [
                 'error' => $e->getMessage(),
                 'risk_id' => $risk->getId(),
@@ -424,7 +425,7 @@ class RiskAcceptanceWorkflowService
                     $risk->getRiskOwner(),
                     $user
                 );
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->error('Failed to send approval notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),
@@ -486,7 +487,7 @@ class RiskAcceptanceWorkflowService
                     $reason,
                     $user
                 );
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->error('Failed to send rejection notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),
