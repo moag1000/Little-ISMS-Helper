@@ -84,6 +84,32 @@ final class BulkDeleteServiceTest extends TestCase
     }
 
     #[Test]
+    public function superAdminWithoutTenantMayDeleteAcrossTenants(): void
+    {
+        $asset = $this->asset(10, $this->tenant(1), 'Server');
+        $this->authChecker->method('isGranted')->willReturnCallback(
+            static fn (string $attribute): bool => $attribute === 'ROLE_SUPER_ADMIN',
+        );
+        $this->em->expects(self::once())->method('remove')->with($asset);
+
+        $result = $this->service->delete('Asset', [10], null, static fn (): object => $asset);
+
+        self::assertSame(1, $result['deleted']);
+    }
+
+    #[Test]
+    public function rowWithoutTenantIsNeverDeletable(): void
+    {
+        $orphan = $this->createStub(Asset::class);
+        $orphan->method('getTenant')->willReturn(null);
+        $this->em->expects(self::never())->method('remove');
+
+        $result = $this->service->delete('Asset', [10], $this->tenant(1), static fn (): object => $orphan);
+
+        self::assertSame(0, $result['deleted']);
+    }
+
+    #[Test]
     public function voterDenialAndGuardRejectionSkipTheRow(): void
     {
         $tenant = $this->tenant(1);

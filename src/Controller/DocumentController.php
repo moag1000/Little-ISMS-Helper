@@ -470,7 +470,7 @@ class DocumentController extends AbstractController
                 continue;
             }
             // Tenant scope guard.
-            if ($tenant !== null && $doc->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($doc, $tenant)) {
                 continue;
             }
             $safeName = preg_replace('/[^\w\.\-]+/', '_', (string) ($doc->getOriginalFilename() ?: 'document-' . $doc->getId()));

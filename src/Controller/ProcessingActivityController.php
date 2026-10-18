@@ -686,7 +686,7 @@ class ProcessingActivityController extends AbstractController
             if ($activity === null) {
                 continue;
             }
-            if ($tenant !== null && $activity->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($activity, $tenant)) {
                 continue;
             }
             $activities[] = $activity;

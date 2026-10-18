@@ -338,7 +338,7 @@ class StatementOfApplicabilityController extends AbstractController
             if (!$control instanceof Control) {
                 continue;
             }
-            if ($tenant !== null && $control->getTenant()?->getId() !== $tenant->getId()) {
+            if (!$this->isInBulkTenantScope($control, $tenant)) {
                 continue; // tenant isolation
             }
             $previous = $control->isApplicable();
@@ -548,7 +548,7 @@ class StatementOfApplicabilityController extends AbstractController
             if ($control === null) {
                 continue;
             }
-            if ($tenant !== null && $control->getTenant()?->getId() !== $tenant->getId()) {
+            if (!$this->isInBulkTenantScope($control, $tenant)) {
                 continue;
             }
             $controls[] = $control;

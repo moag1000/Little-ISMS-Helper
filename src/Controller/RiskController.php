@@ -1041,7 +1041,7 @@ class RiskController extends AbstractController
             if ($risk === null) {
                 continue;
             }
-            if ($tenant !== null && $risk->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($risk, $tenant)) {
                 continue;
             }
             $risks[] = $risk;
@@ -1100,7 +1100,7 @@ class RiskController extends AbstractController
         if (!$assignee instanceof User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+        if (!$this->isInBulkTenantScope($assignee, $tenant)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -1110,7 +1110,7 @@ class RiskController extends AbstractController
             if ($risk === null) {
                 continue;
             }
-            if ($tenant !== null && $risk->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($risk, $tenant)) {
                 continue;
             }
             $risks[] = $risk;

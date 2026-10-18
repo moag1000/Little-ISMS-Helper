@@ -280,7 +280,7 @@ class BCExerciseController extends AbstractController
             if ($exercise === null) {
                 continue;
             }
-            if ($tenant !== null && $exercise->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($exercise, $tenant)) {
                 continue;
             }
             $exercises[] = $exercise;

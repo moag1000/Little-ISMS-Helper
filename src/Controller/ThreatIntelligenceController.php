@@ -302,7 +302,7 @@ class ThreatIntelligenceController extends AbstractController
             if ($threat === null) {
                 continue;
             }
-            if ($tenant !== null && $threat->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($threat, $tenant)) {
                 continue;
             }
             $threats[] = $threat;

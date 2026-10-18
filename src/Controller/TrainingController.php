@@ -505,7 +505,7 @@ class TrainingController extends AbstractController
             if ($training === null) {
                 continue;
             }
-            if ($tenant !== null && $training->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($training, $tenant)) {
                 continue;
             }
             $trainings[] = $training;
@@ -559,7 +559,7 @@ class TrainingController extends AbstractController
         if (!$assignee instanceof User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+        if (!$this->isInBulkTenantScope($assignee, $tenant)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -569,7 +569,7 @@ class TrainingController extends AbstractController
             if ($training === null) {
                 continue;
             }
-            if ($tenant !== null && $training->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($training, $tenant)) {
                 continue;
             }
             $trainings[] = $training;

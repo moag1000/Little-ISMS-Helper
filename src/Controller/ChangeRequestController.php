@@ -254,7 +254,7 @@ class ChangeRequestController extends AbstractController
             if ($cr === null) {
                 continue;
             }
-            if ($tenant !== null && $cr->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($cr, $tenant)) {
                 continue;
             }
             $changeRequests[] = $cr;

@@ -289,7 +289,7 @@ class BusinessContinuityPlanController extends AbstractController
             if ($plan === null) {
                 continue;
             }
-            if ($tenant !== null && $plan->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($plan, $tenant)) {
                 continue;
             }
             $plans[] = $plan;

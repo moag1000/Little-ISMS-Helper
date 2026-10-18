@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Security\TenantOwnership;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
@@ -73,15 +74,7 @@ trait HoldingTreeAccessTrait
 
     protected function isSameTenant(User $user, ?Tenant $targetTenant): bool
     {
-        $userTenant = $user->getTenant();
-        if (!$targetTenant instanceof Tenant || !$userTenant instanceof Tenant) {
-            return false;
-        }
-        if ($targetTenant === $userTenant) {
-            return true;
-        }
-
-        return $userTenant->getId() !== null && $targetTenant->getId() === $userTenant->getId();
+        return TenantOwnership::isSameTenant($user->getTenant(), $targetTenant);
     }
 
     /**
