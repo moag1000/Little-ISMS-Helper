@@ -31,8 +31,9 @@ use App\Repository\WizardRunRepository;
  * off a fresh targeted run for each target topic.
  *
  * Source signal: {@see WizardRun::$inputs}['bestandsaufnahme']['decisions'][].
- * Spec anchor: `07-phase4-sprint-reconciliation.md` W4-C + DocumentGenerator
- * inline TODO at `src/Service/PolicyWizard/DocumentGenerator.php:302`.
+ * Spec anchor: `07-phase4-sprint-reconciliation.md` W4-C + the
+ * `split_to_topics` warning branch in
+ * `DocumentGenerator::runPersistent()` (reached via generate()).
  */
 final class DocumentSplitNeededRule extends AbstractAlvaHintRule
 {

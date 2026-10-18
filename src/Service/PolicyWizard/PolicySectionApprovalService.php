@@ -189,7 +189,7 @@ final class PolicySectionApprovalService
      * DPO signs off the section. Idempotent: re-approving an already-
      * approved section is a no-op (returns silently).
      *
-     * @throws InvalidArgumentException if the section is in `rejected`
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException if the section is in `rejected`
      *         state and not first reset to `draft` via a save.
      */
     public function approve(DocumentSection $section, User $approver): void
@@ -627,7 +627,7 @@ final class PolicySectionApprovalService
      * {@see \App\Service\PolicyWizard\Step\RolesStep::validate} so the
      * runtime guard never contradicts the wizard-time guard.
      *
-     * @throws InvalidArgumentException on violation (≥ 2 approvers OR
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException on violation (≥ 2 approvers OR
      *                                  fallback when UserRepository is
      *                                  missing).
      */

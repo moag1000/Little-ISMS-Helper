@@ -275,8 +275,7 @@ class BackupService
      * @param bool        $includeFiles       When true, collect file-path references for ZIP packaging
      * @param Tenant|null $tenantScope        When set, restricts backup to this tenant's data
      * @return array Backup data with metadata
-     * @throws Exception If an error occurs during backup creation
-     * @throws RuntimeException If backup cannot be compressed
+     * @throws \Exception If an error occurs during backup creation (rethrown after logging)
      */
     public function createBackup(
         bool $includeAuditLog = true,

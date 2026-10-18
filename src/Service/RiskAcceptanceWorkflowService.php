@@ -11,6 +11,7 @@ use App\Entity\WorkflowInstance;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Tenant;
+use App\Exception\BusinessRule\BusinessRuleException;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Lifecycle\LifecycleTransitionInterface;
@@ -65,7 +66,7 @@ class RiskAcceptanceWorkflowService
      * @param Risk $risk The risk to be accepted
      * @param User $user User requesting the acceptance
      * @param string $justification Justification for accepting the risk
-     * @throws DomainException If risk does not qualify for acceptance
+     * @throws BusinessRuleException If risk does not qualify for acceptance
      * @return array Status information about the acceptance request
      */
     public function requestAcceptance(Risk $risk, User $user, string $justification): array
@@ -101,7 +102,7 @@ class RiskAcceptanceWorkflowService
     /**
      * Validate if risk qualifies for acceptance strategy
      *
-     * @throws DomainException If risk doesn't qualify
+     * @throws BusinessRuleException If risk doesn't qualify
      */
     private function validateRiskForAcceptance(Risk $risk): void
     {

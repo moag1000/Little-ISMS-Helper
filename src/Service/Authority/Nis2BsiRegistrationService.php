@@ -136,7 +136,7 @@ final class Nis2BsiRegistrationService
      * The JSON schema follows the BSI Meldung-Portal API (BSIG § 33),
      * published by BSI in January 2026 for essential and important facilities.
      *
-     * @throws LogicException if required contacts are not set (validate() must pass first)
+     * @throws \LogicException if required contacts are not set (validate() must pass first)
      */
     public function exportToJson(Nis2RegistrationProfile $profile): string
     {

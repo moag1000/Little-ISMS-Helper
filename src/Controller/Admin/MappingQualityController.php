@@ -140,7 +140,7 @@ class MappingQualityController extends AbstractController
     }
 
     /**
-     * @return array{total: int, avg_mqs: float, by_state: array<string, int>, low_score: int}
+     * @return array{total: int, avg_mqs: float, by_state: array<string, int>, low_score_published: int}
      */
     private function computeStats(): array
     {
@@ -153,7 +153,7 @@ class MappingQualityController extends AbstractController
         $total = 0;
         $weightedAvg = 0.0;
         foreach ($rows as $r) {
-            $byState[$r['state']] = (int) $r['c'];
+            $byState[(string) $r['state']] = (int) $r['c'];
             $total += (int) $r['c'];
             $weightedAvg += (float) $r['avg_score'] * (int) $r['c'];
         }

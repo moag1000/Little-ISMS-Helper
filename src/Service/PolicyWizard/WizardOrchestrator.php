@@ -33,8 +33,9 @@ use Psr\Log\NullLogger;
  *    step decided to hoist), advance `step` to the next applicable
  *    one.
  *  - {@see complete}: invoke `DocumentGeneratorInterface::generate`,
- *    finalise lifecycle status. Wired to {@see DocumentGeneratorStub}
- *    for W2; returns empty `document_ids` until W3 lands.
+ *    finalise lifecycle status. config/services.yaml aliases the
+ *    interface to the real {@see DocumentGenerator}; the W2
+ *    {@see DocumentGeneratorStub} is only used by unit tests.
  *  - {@see cancel}: mark run cancelled; delete when no documents
  *    were persisted.
  *
@@ -199,7 +200,7 @@ final class WizardOrchestrator
      * `step` pointer when validation passes.
      *
      * @param array<string, mixed> $input
-     * @throws InvalidArgumentException When the step key is unknown or
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException When the step key is unknown or
      *         does not match the run's current step.
      * @throws StepValidationException When validation fails.
      */
