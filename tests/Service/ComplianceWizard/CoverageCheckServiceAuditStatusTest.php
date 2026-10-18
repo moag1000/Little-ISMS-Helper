@@ -14,19 +14,13 @@ use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ConsentRepository;
 use App\Repository\ControlRepository;
 use App\Repository\DataSubjectRequestRepository;
-use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
-use App\Repository\InterestedPartyRepository;
 use App\Repository\InternalAuditRepository;
-use App\Repository\ISMSContextRepository;
-use App\Repository\ISMSObjectiveRepository;
-use App\Repository\ManagementReviewRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
-use App\Repository\VulnerabilityRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
 use App\Service\ComplianceWizard\CoverageCheckService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -68,12 +62,6 @@ final class CoverageCheckServiceAuditStatusTest extends TestCase
             $this->createMock(ComplianceFrameworkRepository::class),
             $this->createMock(ComplianceRequirementFulfillmentRepository::class),
             new PolicyWizardCheckRegistry([]),
-            $this->createMock(ISMSContextRepository::class),
-            $this->createMock(InterestedPartyRepository::class),
-            $this->createMock(ISMSObjectiveRepository::class),
-            $this->createMock(ManagementReviewRepository::class),
-            $this->createMock(DocumentRepository::class),
-            $this->createMock(VulnerabilityRepository::class),
             null,
         );
     }

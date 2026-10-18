@@ -19,10 +19,8 @@ use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\TrainingRepository;
-use App\Service\AuditLogger;
 use App\Service\DashboardStatisticsService;
 use App\Service\ManagementReportService;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -60,8 +58,6 @@ final class ManagementReportServiceRiskStatusTest extends TestCase
             $this->createMock(RiskTreatmentPlanRepository::class),
             $this->createMock(DashboardStatisticsService::class),
             $this->createMock(TranslatorInterface::class),
-            $this->createMock(EntityManagerInterface::class),
-            $this->createMock(AuditLogger::class),
         );
     }
 
@@ -91,14 +87,14 @@ final class ManagementReportServiceRiskStatusTest extends TestCase
     }
 
     #[Test]
-    public function statusFilterMatchesTheBackingValue(): void
+    public function statusFilterAcceptsBackingValueAndEnum(): void
     {
         $open = $this->risk(RiskStatus::Assessed);
         $closed = $this->risk(RiskStatus::Closed);
         $service = $this->service([$open, $closed]);
 
         self::assertSame(1, $service->getRiskManagementReport(['status' => 'closed'])['total_risks']);
-        self::assertSame(1, $service->getRiskManagementReport(['status' => 'assessed'])['total_risks']);
+        self::assertSame(1, $service->getRiskManagementReport(['status' => RiskStatus::Assessed])['total_risks']);
         self::assertSame(0, $service->getRiskManagementReport(['status' => 'no_such_status'])['total_risks']);
     }
 }
