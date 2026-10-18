@@ -70,9 +70,13 @@
         {% for location in locations %}
             {% include 'location/_row.html.twig' with { location: location } %}
         {% else %}
+        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
         <tr>
-            <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'location.message.no_locations'|trans({}, 'locations') }}
+            <td colspan="7">
+                {{ _fa_empty_state.render({
+                    mood: 'sleeping',
+                    title: 'location.message.no_locations'|trans({}, 'locations')
+                }) }}
             </td>
         </tr>
         {% endfor %}

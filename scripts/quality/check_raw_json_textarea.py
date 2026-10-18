@@ -2,18 +2,28 @@
 """
 check_raw_json_textarea.py — Gate 34.
 
-Detects FormTypes that expose a JSON-typed array-shaped entity property
-(`#[ORM\\Column(type: Types::JSON)]` + `private ?array $foo`) via raw
-`TextareaType`. Users typing JSON into a textarea get zero schema
-validation, zero IDE support, and zero UX affordance for the actual
-shape (list of tags, list of objects, IF/THEN rules, …).
+Users never edit JSON by hand. The gate flags every way a FormType can
+still expose raw JSON:
+
+  textarea     JSON+array entity column (`#[ORM\\Column(type: Types::JSON)]`
+               + `private ?array $foo`) added as raw `TextareaType`
+               (data_class-aware, see below).
+  no-theme     `JsonStructuredType` field without a custom
+               `_<block_prefix>_<field>_row|widget` theme block — the type is
+               only a transport, the builder lives in that block.
+  transformer  `new JsonArrayTransformer()` wired onto a field in a FormType
+               (a TextareaType/TextType turned into a JSON editor).
+  constraint   Symfony `Json` constraint in a FormType (validates hand-typed
+               JSON — the field itself is the problem).
+  placeholder  JSON-looking placeholder (`'{"…`, `'[{…`) — an example for
+               users to type JSON.
 
 Correct alternatives:
-  - list-of-strings (tags)  → App\\Form\\Type\\JsonTagsType
-  - list-of-objects         → Symfony CollectionType + EntryType
-  - IF/THEN rules           → CollectionType + ConditionBuilderType
-                              (notification-rule pattern)
-  - generic k/v config      → schema-aware per-key admin UI
+  - list-of-strings (tags)        → App\\Form\\Type\\JsonTagsType
+  - list / map / object of fields → App\\Form\\Type\\JsonBuilderType (generic,
+                                    schema-driven, server-side shape check)
+  - IF/THEN rules                 → CollectionType of ConditionRowType rendered
+                                    by _fa_condition_builder (notification-rule pattern)
 
 This gate is FormType-data_class-aware: it follows each FormType's
 `data_class => Entity::class` and only flags fields whose backing entity
@@ -38,6 +48,12 @@ RE_DATA_CLASS = re.compile(r"data_class['\"]\s*[=:]>\s*([A-Za-z][\w]*)::class")
 RE_FORM_TEXTAREA_ADD = re.compile(
     r"->add\(\s*'(?P<name>\w+)'\s*,\s*TextareaType::class",
 )
+RE_STRUCTURED_ADD = re.compile(r"->add\(\s*'(?P<name>\w+)'\s*,\s*JsonStructuredType::class")
+RE_TRANSFORMER = re.compile(r"new\s+(?:\\?App\\Form\\DataTransformer\\)?JsonArrayTransformer\s*\(")
+RE_JSON_CONSTRAINT = re.compile(r"new\s+(?:\\?Symfony\\Component\\Validator\\Constraints\\|Assert\\)?Json\s*\(")
+RE_JSON_PLACEHOLDER = re.compile(r"""['"]placeholder['"]\s*=>\s*(?:'\s*(?:\{\s*"|\[\s*[{"])|"\s*(?:\{\s*\\?"|\[\s*[{\\]))""")
+RE_BLOCK_PREFIX = re.compile(r"function\s+getBlockPrefix\(\)\s*:\s*string\s*\{\s*return\s*'(?P<p>\w+)'")
+RE_PHP_COMMENT = re.compile(r"^\s*(?://|\*|/\*|#(?!\[))")
 
 
 def _entity_json_array_props(entity_text: str) -> set[str]:
@@ -66,7 +82,32 @@ def _entity_json_array_props(entity_text: str) -> set[str]:
     return props
 
 
+def _block_prefix(ft: Path, text: str) -> str:
+    """Symfony's default block prefix: FQCN short name minus `Type`, snake_case."""
+    m = RE_BLOCK_PREFIX.search(text)
+    if m:
+        return m.group("p")
+    name = ft.stem[:-4] if ft.stem.endswith("Type") else ft.stem
+    return re.sub(r"(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])", "_", name).lower()
+
+
+def _theme_blocks() -> str:
+    return "\n".join(
+        t.read_text(encoding="utf-8", errors="ignore") for t in (ROOT / "templates").rglob("*.twig")
+    )
+
+
+def _line(text: str, pos: int) -> int:
+    return text.count("\n", 0, pos) + 1
+
+
+def _is_comment(text: str, pos: int) -> bool:
+    line_start = text.rfind("\n", 0, pos) + 1
+    return bool(RE_PHP_COMMENT.match(text[line_start:pos]))
+
+
 def scan() -> list[tuple[Path, int, str]]:
+    """Return (FormType, line, finding-key); the key is `<kind>` or `<property>`."""
     findings: list[tuple[Path, int, str]] = []
     # Cache: entity-stem -> set of JSON-array property names
     entity_cache: dict[str, set[str]] = {}
@@ -74,21 +115,33 @@ def scan() -> list[tuple[Path, int, str]]:
         entity_cache[ent.stem] = _entity_json_array_props(
             ent.read_text(encoding="utf-8", errors="ignore")
         )
+    themes = _theme_blocks()
 
-    for ft in FORM_DIR.rglob("*Type.php"):
+    for ft in sorted(FORM_DIR.rglob("*Type.php")):
         text = ft.read_text(encoding="utf-8", errors="ignore")
+        is_transport_type = ft.parent.name == "Type"  # the JSON transport types themselves
+
         m_dc = RE_DATA_CLASS.search(text)
-        if m_dc is None:
-            continue
-        entity_stem = m_dc.group(1)
-        props = entity_cache.get(entity_stem, set())
-        if not props:
-            continue
+        props = entity_cache.get(m_dc.group(1), set()) if m_dc else set()
         for m in RE_FORM_TEXTAREA_ADD.finditer(text):
+            if m.group("name") in props:
+                findings.append((ft, _line(text, m.start()), m.group("name")))
+
+        prefix = _block_prefix(ft, text)
+        for m in RE_STRUCTURED_ADD.finditer(text):
             name = m.group("name")
-            if name in props:
-                ln = text.count("\n", 0, m.start()) + 1
-                findings.append((ft, ln, name))
+            if _is_comment(text, m.start()):
+                continue
+            if not re.search(r"block\s+_%s_%s_(?:row|widget)\b" % (re.escape(prefix), re.escape(name)), themes):
+                findings.append((ft, _line(text, m.start()), f"no-theme:{name}"))
+
+        if is_transport_type:
+            continue
+        for kind, rx in (("transformer", RE_TRANSFORMER), ("constraint", RE_JSON_CONSTRAINT),
+                         ("placeholder", RE_JSON_PLACEHOLDER)):
+            for m in rx.finditer(text):
+                if not _is_comment(text, m.start()):
+                    findings.append((ft, _line(text, m.start()), kind))
     return findings
 
 
@@ -141,13 +194,22 @@ def main() -> int:
         return 0
 
     print("check_raw_json_textarea: VIOLATIONS\n")
+    messages = {
+        "transformer": "JsonArrayTransformer wired onto a form field (raw JSON editor)",
+        "constraint": "Json constraint validates hand-typed JSON",
+        "placeholder": "JSON example as placeholder (users would type JSON)",
+    }
     for p, ln, name in new:
-        print(f"FAIL {_rel(p)}:{ln}: TextareaType bound to JSON+array column `{name}`")
+        if name.startswith("no-theme:"):
+            msg = f"JsonStructuredType field `{name[9:]}` has no `_<form>_{name[9:]}_row` builder theme block"
+        else:
+            msg = messages.get(name, f"TextareaType bound to JSON+array column `{name}`")
+        print(f"FAIL {_rel(p)}:{ln}: {msg}")
     print(f"\ncheck_raw_json_textarea: {len(new)} new ({baselined} baselined, {total} total).")
     print("Fix paths:")
     print("  - list-of-strings → App\\Form\\Type\\JsonTagsType (chips via tom-select)")
-    print("  - list-of-objects → Symfony CollectionType + custom EntryType")
-    print("  - IF/THEN rules   → CollectionType + ConditionBuilderType (notification-rule pattern)")
+    print("  - list/map/object → App\\Form\\Type\\JsonBuilderType (generic builder + JsonShape)")
+    print("  - IF/THEN rules   → CollectionType of ConditionRowType + _fa_condition_builder (notification rules)")
     return 1
 
 

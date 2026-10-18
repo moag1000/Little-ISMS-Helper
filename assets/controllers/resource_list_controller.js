@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * resource-list — P-9 JsonBuilder for BCPlan.requiredResources (ISO 22301 §8.1).
@@ -145,7 +146,7 @@ export default class extends Controller {
                     data-category="${category}"
                     data-index="${idx}"
                     data-action="click->resource-list#removeEntry"
-                    aria-label="Remove">×</button>
+                    aria-label="${this.escapeHtml(faT('remove_entry', { '%label%': entry }))}">×</button>
         </span>`;
     }
 

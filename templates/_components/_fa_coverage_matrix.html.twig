@@ -26,16 +26,16 @@
  #}
 {% macro fa_coverage_matrix(config) %}
     {% set dimensions = [
-        {key: 'implemented', label: 'Implementiert'},
-        {key: 'effective',   label: 'Wirksam'},
-        {key: 'maturity',    label: 'Reifegrad'},
-        {key: 'gaps',        label: 'Lücken'},
-        {key: 'recert',      label: 'Re-Cert'},
-        {key: 'trend',       label: 'Trend'},
-    ] %}
+        {key: 'implemented'},
+        {key: 'effective'},
+        {key: 'maturity'},
+        {key: 'gaps'},
+        {key: 'recert'},
+        {key: 'trend'},
+    ]|map(d => d|merge({label: ('ui.component.coverage_matrix.dimension.' ~ d.key)|trans({}, 'ui')})) %}
     <div class="fa-coverage-matrix-wrap">
         <div class="fa-coverage-matrix-wrap__head">
-            <h3 class="fa-coverage-matrix-wrap__title">Framework-Coverage-Matrix</h3>
+            <h3 class="fa-coverage-matrix-wrap__title">{{ 'ui.component.coverage_matrix.title'|trans({}, 'ui') }}</h3>
             {% if config.filters is defined and config.filters %}
                 <div class="ms-3 d-flex gap-1">
                     {% for f in config.filters %}
@@ -44,14 +44,14 @@
                 </div>
             {% endif %}
             {% if config.snapshotAt is defined and config.snapshotAt %}
-                <span class="fa-coverage-matrix-wrap__snapshot">Stand: {{ config.snapshotAt }}</span>
+                <span class="fa-coverage-matrix-wrap__snapshot">{{ 'ui.component.coverage_matrix.snapshot'|trans({'%date%': config.snapshotAt}, 'ui') }}</span>
             {% endif %}
         </div>
 
         <table class="fa-coverage-matrix" role="grid">
             <thead>
                 <tr>
-                    <th scope="col">Framework</th>
+                    <th scope="col">{{ 'ui.component.coverage_matrix.framework'|trans({}, 'ui') }}</th>
                     {% for dim in dimensions %}
                         <th scope="col">{{ dim.label }}</th>
                     {% endfor %}
@@ -60,7 +60,7 @@
             <tbody>
                 {% for fw in config.frameworks|default([]) %}
                     <tr>
-                        <td data-label="Framework"><strong>{{ fw.name }}</strong></td>
+                        <td data-label="{{ 'ui.component.coverage_matrix.framework'|trans({}, 'ui') }}"><strong>{{ fw.name }}</strong></td>
                         {% for dim in dimensions %}
                             {% set cell = fw.cells[dim.key]|default({}) %}
                             {% set heat = cell.heat|default(0) %}
@@ -68,7 +68,7 @@
                                 tabindex="0"
                                 role="gridcell"
                                 data-label="{{ dim.label }}"
-                                aria-label="{{ fw.name }} · {{ dim.label }} · Stufe {{ heat }} von 4">
+                                aria-label="{{ 'ui.component.coverage_matrix.cell'|trans({'%framework%': fw.name, '%dimension%': dim.label, '%level%': heat}, 'ui') }}">
                                 {% if cell.dots is defined %}
                                     <span class="fa-coverage-matrix__dots"
                                           aria-hidden="true">{{- cell.dots -}}</span>
@@ -84,7 +84,7 @@
                 {% else %}
                     <tr>
                         <td colspan="{{ dimensions|length + 1 }}" class="text-center py-4 text-muted">
-                            Keine Frameworks aktiv — im Compliance-Bereich aktivieren.
+                            {{ 'ui.component.coverage_matrix.empty'|trans({}, 'ui') }}
                         </td>
                     </tr>
                 {% endfor %}

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Enhanced Sidebar Toggle Controller
@@ -130,7 +131,7 @@ export default class extends Controller {
         }
 
         // Announce to screen readers
-        this.announce('Navigation geöffnet');
+        this.announce(faT('sidebar.opened'));
     }
 
     /**
@@ -164,7 +165,7 @@ export default class extends Controller {
         }
 
         // Announce to screen readers
-        this.announce('Navigation geschlossen');
+        this.announce(faT('sidebar.closed'));
     }
 
     /**

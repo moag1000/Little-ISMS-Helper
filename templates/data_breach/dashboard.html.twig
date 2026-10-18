@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'data_breach.dashboard.title'|trans({}, 'privacy') }}{% endblock %}
 
@@ -13,15 +14,15 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'data_breach.dashboard.title'|trans({}, 'privacy'),
         subtitle: 'data_breach.dashboard.subtitle'|trans({}, 'privacy'),
-        icon: 'nav-dashboard',
+        badge: { icon: 'nav-dashboard', label: '' },
         actions: [
-            { label: 'data_breach.dashboard.action.view_all'|trans({}, 'privacy'), url: path('app_data_breach_index'), variant: 'primary', icon: 'ui-list' },
-            { label: 'data_breach.dashboard.action.new'|trans({}, 'privacy'), url: path('app_data_breach_new'), variant: 'danger', icon: 'plus' }
+            { label: 'data_breach.dashboard.action.view_all'|trans({}, 'privacy'), href: path('app_data_breach_index'), variant: 'primary', icon: 'ui-list', attrs: { 'data-turbo-action': 'advance' } },
+            { label: 'data_breach.dashboard.action.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } }
         ]
-    } %}
+    }) }}
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}

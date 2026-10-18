@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Per-tenant Policy-Doc Style Configurator (Sprint policy-style-admin).
@@ -45,6 +46,7 @@ final class AdminPolicyStyleController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TenantBrandingRepository $brandingRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -295,19 +297,54 @@ final class AdminPolicyStyleController extends AbstractController
             'version' => '2.4',
             'classification' => 'TLP:AMBER',
             'sections' => [
-                ['number' => '1', 'title' => 'Geltungsbereich', 'preview' => 'Diese Richtlinie gilt für alle Mitarbeitenden, Auftragnehmer und Drittparteien.'],
-                ['number' => '2', 'title' => 'Verantwortlichkeiten', 'preview' => 'Die Geschäftsführung trägt Gesamtverantwortung; der CISO operationalisiert.'],
-                ['number' => '3', 'title' => 'Anforderungen', 'preview' => 'Es gelten die Vorgaben aus ISO 27001:2022 Annex A inkl. organisationsinterner Erweiterungen.'],
+                [
+                    'number' => '1',
+                    'title' => $this->sampleText('admin.policy_style.sample.section_1.title'),
+                    'preview' => $this->sampleText('admin.policy_style.sample.section_1.preview'),
+                ],
+                [
+                    'number' => '2',
+                    'title' => $this->sampleText('admin.policy_style.sample.section_2.title'),
+                    'preview' => $this->sampleText('admin.policy_style.sample.section_2.preview'),
+                ],
+                [
+                    'number' => '3',
+                    'title' => $this->sampleText('admin.policy_style.sample.section_3.title'),
+                    'preview' => $this->sampleText('admin.policy_style.sample.section_3.preview'),
+                ],
             ],
             'history' => [
-                ['version' => '2.4', 'date' => '2026-05-10', 'author' => 'CISO', 'note' => 'Annex-A-Update aus 2022-Revision.'],
-                ['version' => '2.3', 'date' => '2025-11-02', 'author' => 'ISB', 'note' => 'Klarstellung Lieferantenpflichten.'],
+                [
+                    'version' => '2.4',
+                    'date' => '2026-05-10',
+                    'author' => 'CISO',
+                    'note' => $this->sampleText('admin.policy_style.sample.history_2_4'),
+                ],
+                [
+                    'version' => '2.3',
+                    'date' => '2025-11-02',
+                    'author' => 'ISB',
+                    'note' => $this->sampleText('admin.policy_style.sample.history_2_3'),
+                ],
             ],
             'approvers' => [
-                ['name' => 'Anna Beispiel', 'role' => 'Geschäftsführung', 'signed_at' => null],
+                [
+                    'name' => 'Anna Beispiel',
+                    'role' => $this->sampleText('admin.policy_style.sample.role_management'),
+                    'signed_at' => null,
+                ],
                 ['name' => 'Bert Muster', 'role' => 'CISO', 'signed_at' => null],
             ],
             'annex_a_refs' => ['A.5.1', 'A.6.1', 'A.8.1'],
         ];
+    }
+
+    /**
+     * Translates a preview sample string (admin domain) so the live preview
+     * follows the UI locale.
+     */
+    private function sampleText(string $id): string
+    {
+        return $this->translator->trans($id, [], 'admin');
     }
 }

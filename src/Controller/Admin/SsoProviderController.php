@@ -180,9 +180,10 @@ final class SsoProviderController extends AbstractController
         try {
             $this->discovery->applyDiscoveryToProvider($provider);
             $this->em->flush();
-            $this->addFlash('success', sprintf(
-                'Discovery OK for "%s". Endpoints synced.',
-                $provider->getName()
+            $this->addFlash('success', $this->translator->trans(
+                'admin.sso_provider.success.discovery_ok',
+                ['%name%' => $provider->getName()],
+                'admin'
             ));
         } catch (\Throwable $e) {
             $this->addFlash('error', $this->translator->trans('admin.sso_provider.error.discovery_failed', ['%message%' => $e->getMessage()], 'admin'));
@@ -197,7 +198,7 @@ final class SsoProviderController extends AbstractController
         $form = $this->createForm(IdentityProviderType::class, $provider, [
             'allow_global' => $allowGlobal,
             'scopes_initial' => $provider->getScopes(),
-            'attribute_map_json' => json_encode($provider->getAttributeMap(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '',
+            'attribute_map_initial' => $provider->getAttributeMap(),
             'domain_bindings_initial' => $provider->getDomainBindings(),
         ]);
         $form->handleRequest($request);
@@ -210,21 +211,11 @@ final class SsoProviderController extends AbstractController
             }
             $provider->setScopes($scopes);
 
-            $attrJson = (string) $form->get('attributeMapJson')->getData();
-            if ($attrJson !== '') {
-                try {
-                    $decoded = json_decode($attrJson, true, flags: JSON_THROW_ON_ERROR);
-                    if (is_array($decoded)) {
-                        $provider->setAttributeMap($decoded);
-                    }
-                } catch (\JsonException) {
-                    $form->get('attributeMapJson')->addError(new \Symfony\Component\Form\FormError('Invalid JSON.'));
-                    return $this->render('admin/sso/form.html.twig', [
-                        'form' => $form->createView(),
-                        'provider' => $provider,
-                        'is_new' => $isNew,
-                    ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
-                }
+            // Structured claim builder (JsonBuilderType) — decoded and
+            // shape-validated; an empty builder keeps the current mapping.
+            $attributeMap = $form->get('attributeMapJson')->getData();
+            if (is_array($attributeMap) && $attributeMap !== []) {
+                $provider->setAttributeMap($attributeMap);
             }
 
             $bindingsCsv = (string) $form->get('domainBindingsCsv')->getData();
@@ -247,7 +238,11 @@ final class SsoProviderController extends AbstractController
                     'tenant_id' => $provider->getTenant()?->getId(),
                 ]
             );
-            $this->addFlash('success', $isNew ? 'SSO provider created.' : 'SSO provider updated.');
+            $this->addFlash('success', $this->translator->trans(
+                $isNew ? 'admin.sso_provider.success.created' : 'admin.sso_provider.success.updated',
+                [],
+                'admin'
+            ));
 
             return $this->redirectToRoute('admin_sso_edit', ['id' => $provider->getId()]);
         }
@@ -404,7 +399,11 @@ final class SsoProviderController extends AbstractController
             'email' => $approval->getEmail(),
             'user_id' => $user->getId(),
         ]);
-        $this->addFlash('success', sprintf('Approved: %s', $approval->getEmail()));
+        $this->addFlash('success', $this->translator->trans(
+            'admin.sso_provider.success.approval_approved',
+            ['%email%' => $approval->getEmail()],
+            'admin'
+        ));
 
         return $this->redirectToRoute('admin_sso_approvals');
     }
@@ -430,7 +429,11 @@ final class SsoProviderController extends AbstractController
         $this->audit->logCustom('sso.approval.reject', 'SsoUserApproval', $approval->getId(), null, [
             'email' => $approval->getEmail(),
         ]);
-        $this->addFlash('success', sprintf('Rejected: %s', $approval->getEmail()));
+        $this->addFlash('success', $this->translator->trans(
+            'admin.sso_provider.success.approval_rejected',
+            ['%email%' => $approval->getEmail()],
+            'admin'
+        ));
 
         return $this->redirectToRoute('admin_sso_approvals');
     }

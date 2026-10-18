@@ -4,14 +4,25 @@ bulk_delete:
         warning: 'This action cannot be undone.'
     selection:
         title: 'Selected Entries'
+    dependency:
+        load_error: 'Error loading dependencies'
+        data_breaches: 'Linked data breaches: %count%'
+        risk_links: 'Risk-incident links: %count%'
+        exercises: 'Linked exercises: %count%'
+        risks: 'Linked risks: %count%'
+        incidents: 'Linked incidents: %count%'
+        controls: 'Linked controls: %count%'
+        consents: 'Linked consents: %count%'
+        dpias: 'Linked DPIAs: %count%'
+        treatment_plans: 'Linked treatment plans: %count%'
     dependencies:
         title: 'Affected Dependencies'
         list: 'List of affected dependencies'
     loading: 'Checking dependencies...'
-    warning: Warning
+    warning: 'Warning: This action cannot be undone'
     will_be_deleted: 'Will Be Deleted'
     selected_items: 'Selected Items'
-    understand: Understand
+    understand: 'I understand the consequences'
     confirm_help: 'Type "DELETE" to confirm deletion'
     confirm_count: '%count% items will be permanently deleted'
     success: '%count% items were successfully deleted'

@@ -84,6 +84,7 @@ role_management:
             privacy: 'Data Protection (GDPR)'
             security: 'Security & KPIs'
             policy: 'Policies'
+            policy_wizard: 'Policy Wizard'
         module:
             authentication: 'User & Roles'
             assets: 'Asset Management'
@@ -107,6 +108,9 @@ role_management:
             export: 'Export'
             respond: 'Respond'
             revoke: 'Revoke'
+            review: 'Review'
+            manage: 'Manage'
+            veto: 'Veto'
 role:
     user: User
     manager: Manager
@@ -138,6 +142,16 @@ role:
         system_badge: 'System'
     templates:
         title: Title
-        description: Description
+        description: 'Predefined role templates for typical ISMS functions'
         intro: 'Pick a predefined role template and optionally adjust the name. The template already bundles a sensible set of permissions for the typical use case.'
         custom_name: 'Custom Name'
+        notes:
+            title: 'Important notes'
+            adjustable: 'The created role can be adjusted after creation'
+            missing_skipped: 'Missing permissions are skipped (e.g. if they do not exist yet)'
+            custom_role: 'The role is created as a custom role (not a system role)'
+            edit_permissions: 'After creation you can add or remove permissions'
+    field:
+        system_role: 'System Role'
+    help:
+        system_role: 'System role with predefined permissions'

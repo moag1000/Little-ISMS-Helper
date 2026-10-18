@@ -47,10 +47,11 @@ export default class extends Controller {
     }
 
     /**
-     * Get translated string with fallback
+     * Translated string from the translations value (rendered with |trans by
+     * the incident templates — every key used here is passed there).
      */
-    t(key, fallback) {
-        return this.translationsValue[key] || fallback || key;
+    t(key) {
+        return this.translationsValue[key] || key;
     }
 
     /**
@@ -141,7 +142,7 @@ export default class extends Controller {
                 <div class="card-header bg-warning text-dark">
                     <h3 class="h6 mb-0">
                         <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
-                        ${this.escapeHtml(this.t('title', 'Escalation Preview'))}
+                        ${this.escapeHtml(this.t('title'))}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -153,14 +154,14 @@ export default class extends Controller {
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
                         <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
-                        ${this.escapeHtml(this.t('workflow_name', 'Workflow'))}
+                        ${this.escapeHtml(this.t('workflow_name'))}
                     </h4>
                     <div class="d-flex align-items-center gap-2">
                         <strong>${this.escapeHtml(preview.workflow_name)}</strong>
                         <span class="badge ${levelBadgeClass}">${this.escapeHtml(levelText)}</span>
                         <span class="badge bg-primary">
                             <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                            ${this.escapeHtml(this.t('automatic', 'Automatic'))}
+                            ${this.escapeHtml(this.t('automatic'))}
                         </span>
                     </div>
                 </div>
@@ -173,7 +174,7 @@ export default class extends Controller {
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
                         <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
-                        ${this.escapeHtml(this.t('notified_users', 'Who will be notified:'))}
+                        ${this.escapeHtml(this.t('notified_users'))}
                     </h4>
                     <ul class="list-unstyled mb-0">
             `;
@@ -197,7 +198,7 @@ export default class extends Controller {
                     </ul>
                     <p class="mb-0 mt-2">
                         <span class="badge bg-info">
-                            ${preview.notified_users.length} ${this.escapeHtml(this.t('emails', 'emails will be sent'))}
+                            ${preview.notified_users.length} ${this.escapeHtml(this.t('emails'))}
                         </span>
                     </p>
                 </div>
@@ -209,7 +210,7 @@ export default class extends Controller {
             <div class="mb-3">
                 <h4 class="h6 mb-2">
                     <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
-                    ${this.escapeHtml(this.t('sla_requirement', 'SLA Requirement'))}
+                    ${this.escapeHtml(this.t('sla_requirement'))}
                 </h4>
                 <div class="alert alert-info mb-0" role="alert">
                     <strong>${this.escapeHtml(preview.sla_description)}</strong>
@@ -224,14 +225,14 @@ export default class extends Controller {
                     <div class="alert alert-danger" role="alert">
                         <h4 class="alert-heading h6">
                             <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                            ${this.escapeHtml(this.t('gdpr_warning', 'GDPR Data Breach - 72h Deadline'))}
+                            ${this.escapeHtml(this.t('gdpr_warning'))}
                         </h4>
                         <p class="mb-2">
-                            <strong>${this.escapeHtml(this.t('gdpr_deadline', 'Deadline:'))}</strong>
+                            <strong>${this.escapeHtml(this.t('gdpr_deadline'))}</strong>
                             ${this.formatDateTime(preview.gdpr_deadline)}
                         </p>
                         <p class="mb-0 small">
-                            ${this.escapeHtml(this.t('gdpr_reference', 'GDPR Art. 33 requires notification to supervisory authority within 72 hours of becoming aware of the breach.'))}
+                            ${this.escapeHtml(this.t('gdpr_reference'))}
                         </p>
                     </div>
                 </div>
@@ -244,7 +245,7 @@ export default class extends Controller {
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
                         <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                        ${this.escapeHtml(this.t('approval_required', 'Approval Required'))}
+                        ${this.escapeHtml(this.t('approval_required'))}
                     </h4>
                     <ol class="mb-2">
             `;
@@ -263,7 +264,7 @@ export default class extends Controller {
                     </ol>
                     <p class="mb-0">
                         <small>
-                            <strong>${this.escapeHtml(this.t('estimated_time', 'Estimated Time:'))}</strong>
+                            <strong>${this.escapeHtml(this.t('estimated_time'))}</strong>
                             ${this.escapeHtml(preview.estimated_completion_time)}
                         </small>
                     </p>
@@ -276,26 +277,26 @@ export default class extends Controller {
                     <div class="border-top pt-3">
                         <h4 class="h6 mb-2">
                             <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                            ${this.escapeHtml(this.t('summary_title', 'What will happen:'))}
+                            ${this.escapeHtml(this.t('summary_title'))}
                         </h4>
                         <ul class="mb-0">
                             <li>
                                 <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
-                                ${this.escapeHtml(this.t('action_workflow_started', 'Workflow will start automatically'))}
+                                ${this.escapeHtml(this.t('action_workflow_started'))}
                             </li>
                             <li>
                                 <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
-                                ${this.escapeHtml(this.t('action_notifications_sent', 'Email notifications will be sent to stakeholders'))}
+                                ${this.escapeHtml(this.t('action_notifications_sent'))}
                             </li>
                             ${preview.requires_approval ? `
                             <li>
                                 <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
-                                ${this.escapeHtml(this.t('action_approval_required', 'Approval steps will be initiated'))}
+                                ${this.escapeHtml(this.t('action_approval_required'))}
                             </li>
                             ` : ''}
                             <li>
                                 <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
-                                ${this.escapeHtml(this.t('action_sla_tracked', 'SLA tracking will begin'))} (${preview.sla_hours}h)
+                                ${this.escapeHtml(this.t('action_sla_tracked'))} (${preview.sla_hours}h)
                             </li>
                         </ul>
                     </div>
@@ -318,9 +319,9 @@ export default class extends Controller {
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
-                            <span class="visually-hidden">${this.escapeHtml(this.t('loading', 'Loading...'))}</span>
+                            <span class="visually-hidden">${this.escapeHtml(this.t('loading'))}</span>
                         </div>
-                        <span>${this.escapeHtml(this.t('loading_preview', 'Loading escalation preview...'))}</span>
+                        <span>${this.escapeHtml(this.t('loading_preview'))}</span>
                     </div>
                 </div>
             </div>
@@ -335,7 +336,7 @@ export default class extends Controller {
         this.previewContentTarget.innerHTML = `
             <div class="alert alert-danger" role="alert">
                 <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                ${this.escapeHtml(this.t('error', 'Failed to load escalation preview. Please try again.'))}
+                ${this.escapeHtml(this.t('error'))}
             </div>
         `;
     }
@@ -366,15 +367,7 @@ export default class extends Controller {
      * Get text for escalation level
      */
     getEscalationLevelText(level) {
-        const key = 'level_' + level;
-        const fallbacks = {
-            'data_breach': 'Data Breach',
-            'critical': 'Critical',
-            'high': 'High',
-            'medium': 'Medium',
-            'low': 'Low'
-        };
-        return this.t(key, fallbacks[level] || level);
+        return this.translationsValue[`level_${level}`] || level;
     }
 
     /**

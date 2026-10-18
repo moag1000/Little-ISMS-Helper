@@ -253,16 +253,10 @@ class NotificationChannelController extends AbstractController
      */
     private function applyUnmappedFields(mixed $form, NotificationChannel $channel): void
     {
-        // Parse JSON config textarea
-        $configJson = $form->get('configJson')->getData();
-        $config     = $channel->getConfig(); // start from the current config
-
-        if ($configJson !== null && $configJson !== '') {
-            $decoded = json_decode((string) $configJson, true);
-            if (is_array($decoded)) {
-                $config = $decoded;
-            }
-        }
+        // Structured config builder (JsonBuilderType) — already decoded and
+        // shape-validated; it carries every key of the existing config.
+        $configData = $form->get('configJson')->getData();
+        $config     = is_array($configData) ? $configData : [];
 
         // F3 digest mode — merge delivery_mode from the radio field into config
         $deliveryMode = $form->get('deliveryMode')->getData();

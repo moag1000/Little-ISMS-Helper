@@ -403,7 +403,6 @@
                 document.dispatchEvent(event);
             }
 
-            // Bootstrap is available globally via window.bootstrap (loaded in app.js)
             // Create Backup Form
             const createBackupBtn = document.getElementById('createBackupBtn');
             const createBackupStatus = document.getElementById('createBackupStatus');
@@ -684,7 +683,7 @@
                             // Clone the server-rendered fa-table shell + row template
                             // (defined in #previewTableTemplate / #previewRowTemplate).
                             // Replaces the prior innerHTML template-literal that hand-rolled
-                            // raw <table class="table"> markup and bypassed Aurora styling.
+                            // Bootstrap table markup and bypassed Aurora styling.
                             previewContent.innerHTML = '';
 
                             const tableTpl = document.getElementById('previewTableTemplate');
@@ -804,12 +803,12 @@
                         }
 
                         if (result.statistics) {
-                            html += '<br><br><strong>{{ 'data_management.backup.restore.statistics'|trans({}, 'admin') }}:</strong><table class="table table-sm mt-2">';
-                            html += '<thead><tr><th scope="col">{{ 'data_management.backup.restore.stat_entity'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_created'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_updated'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_skipped'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_errors'|trans({}, 'admin') }}</th></tr></thead><tbody>';
+                            html += '<br><br><strong>{{ 'data_management.backup.restore.statistics'|trans({}, 'admin') }}:</strong><div class="fa-table-wrap mt-2"><table class="fa-table fa-table--hover fa-table--compact">';
+                            html += '<thead class="fa-table__head"><tr><th scope="col" class="fa-table__th">{{ 'data_management.backup.restore.stat_entity'|trans({}, 'admin') }}</th><th scope="col" class="fa-table__th fa-table__th--num">{{ 'data_management.backup.restore.stat_created'|trans({}, 'admin') }}</th><th scope="col" class="fa-table__th fa-table__th--num">{{ 'data_management.backup.restore.stat_updated'|trans({}, 'admin') }}</th><th scope="col" class="fa-table__th fa-table__th--num">{{ 'data_management.backup.restore.stat_skipped'|trans({}, 'admin') }}</th><th scope="col" class="fa-table__th fa-table__th--num">{{ 'data_management.backup.restore.stat_errors'|trans({}, 'admin') }}</th></tr></thead><tbody class="fa-table__body">';
                             for (const [entity, stats] of Object.entries(result.statistics)) {
-                                html += `<tr><td>${entity}</td><td>${stats.created}</td><td>${stats.updated}</td><td>${stats.skipped}</td><td>${stats.errors}</td></tr>`;
+                                html += `<tr class="fa-table__row"><td class="fa-table__cell">${entity}</td><td class="fa-table__cell fa-table__cell--num">${stats.created}</td><td class="fa-table__cell fa-table__cell--num">${stats.updated}</td><td class="fa-table__cell fa-table__cell--num">${stats.skipped}</td><td class="fa-table__cell fa-table__cell--num">${stats.errors}</td></tr>`;
                             }
-                            html += '</tbody></table>';
+                            html += '</tbody></table></div>';
                         }
 
                         if (result.warnings && result.warnings.length > 0) {
@@ -902,34 +901,17 @@
             window.backupTurboLoadRegistered = false;
         }
 
-        // Helper function to wait for Bootstrap to be available
-        function waitForBootstrap(callback, maxAttempts = 10) {
-            let attempts = 0;
-            const checkBootstrap = () => {
-                attempts++;
-                if (window.bootstrap && window.bootstrap.Modal) {
-                    callback();
-                } else if (attempts < maxAttempts) {
-                    setTimeout(checkBootstrap, 100);
-                } else {
-                    console.error('Bootstrap could not be loaded after', maxAttempts, 'attempts');
-                    callback(); // Initialize anyway, will show errors when trying to use modals
-                }
-            };
-            checkBootstrap();
-        }
-
         document.addEventListener('turbo:load', function() {
             window.backupTurboLoadRegistered = true;
             window.backupPageInitialized = false; // Reset on each Turbo navigation
-            waitForBootstrap(initBackupPage);
+            initBackupPage();
         });
 
         // Only use DOMContentLoaded/immediate if turbo:load hasn't fired yet
         // Give turbo:load 100ms to fire first
         setTimeout(function() {
             if (!window.backupTurboLoadRegistered && !window.backupPageInitialized) {
-                waitForBootstrap(initBackupPage);
+                initBackupPage();
             }
         }, 100);
     </script>

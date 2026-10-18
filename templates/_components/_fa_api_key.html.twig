@@ -13,8 +13,8 @@
  #       name:       'CI · Build-Pipeline',
  #       prefix:     'lih_live_8a4f',
  #       masked:     '•••••••••••••••••',
- #       full:       null,                {# pass full token only when authorised reveal #}
- #       state:      'ok',                {# ok | warn | err #}
+ #       full:       null,                (pass full token only when authorised reveal)
+ #       state:      'ok',                (ok | warn | err)
  #       stateLabel: 'aktiv',
  #       meta: [
  #           { icon: 'shield-check',    label: 'controls:read · evidence:write' },
@@ -66,7 +66,7 @@
                     class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                     data-action="api-key-reveal#toggle"
                     data-api-key-reveal-target="toggle"
-                    aria-label="Reveal token">
+                    aria-label="{{ 'ui.component.api_key.reveal'|trans({}, 'ui') }}">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true" data-api-key-reveal-target="icon"></i>
             </button>
         {% endif %}
@@ -75,7 +75,7 @@
             <form method="post" action="{{ props.revokeUrl }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ props.revokeCsrf }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                    <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i> Revoke
+                    <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i> {{ 'ui.component.api_key.revoke'|trans({}, 'ui') }}
                 </button>
             </form>
         {% endif %}

@@ -8,28 +8,30 @@
         {{ 'compliance_policy.policy_profile.register.lead'|trans({}, 'compliance_policy') }}{% if frameworks is not empty %} — {{ 'compliance_policy.policy_profile.register.lead'|trans({}, 'compliance_policy') }}: <strong>{{ frameworks|join(', ')|upper }}</strong>{% endif %}.
         {{ 'compliance_policy.policy_profile.register.regulatory_hint'|trans({}, 'compliance_policy') }}
     </p>
-    <table class="table table-sm">
-        <thead><tr>
-            <th>{{ 'compliance_policy.policy_profile.th.parameter'|trans({}, 'compliance_policy') }}</th>
-            <th>{{ 'compliance_policy.policy_profile.th.value'|trans({}, 'compliance_policy') }}</th>
-            <th>{{ 'compliance_policy.policy_profile.th.authority'|trans({}, 'compliance_policy') }}</th>
-            <th>{{ 'compliance_policy.policy_profile.th.source'|trans({}, 'compliance_policy') }}</th>
-            <th>{{ 'compliance_policy.policy_profile.th.iso_clause'|trans({}, 'compliance_policy') }}</th>
-            <th>{{ 'compliance_policy.policy_profile.th.frameworks'|trans({}, 'compliance_policy') }}</th>
+    <div class="fa-table-wrap mb-3">
+    <table class="fa-table fa-table--hover fa-table--compact">
+        <thead class="fa-table__head"><tr>
+            <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.parameter'|trans({}, 'compliance_policy') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.value'|trans({}, 'compliance_policy') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.authority'|trans({}, 'compliance_policy') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.source'|trans({}, 'compliance_policy') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.iso_clause'|trans({}, 'compliance_policy') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'compliance_policy.policy_profile.th.frameworks'|trans({}, 'compliance_policy') }}</th>
         </tr></thead>
-        <tbody>
+        <tbody class="fa-table__body">
             {% for row in rows %}
-                <tr class="{{ row.isRegulatory() ? 'table-warning' : '' }}">
-                    <td>{{ row.label }}<br><small class="text-muted">{{ row.paramKey }}</small></td>
-                    <td>{{ row.value }}</td>
-                    <td>{% if row.authority %}<span class="badge {{ row.isRegulatory() ? 'bg-danger' : 'bg-secondary' }}">{{ row.authority }}</span>{% else %}<span class="text-muted">–</span>{% endif %}</td>
-                    <td><small>{{ row.source ?? '–' }}</small></td>
-                    <td><small>{{ row.isoClauses|join(', ') }}</small></td>
-                    <td><small>{{ row.frameworks is not empty ? row.frameworks|join(', ')|upper : '–' }}</small></td>
+                <tr class="fa-table__row {{ row.isRegulatory() ? 'bg-warning-subtle' : '' }}">
+                    <td class="fa-table__cell">{{ row.label }}<br><small class="text-muted">{{ row.paramKey }}</small></td>
+                    <td class="fa-table__cell">{{ row.value }}</td>
+                    <td class="fa-table__cell">{% if row.authority %}<span class="badge {{ row.isRegulatory() ? 'bg-danger' : 'bg-secondary' }}">{{ row.authority }}</span>{% else %}<span class="text-muted">–</span>{% endif %}</td>
+                    <td class="fa-table__cell"><small>{{ row.source ?? '–' }}</small></td>
+                    <td class="fa-table__cell"><small>{{ row.isoClauses|join(', ') }}</small></td>
+                    <td class="fa-table__cell"><small>{{ row.frameworks is not empty ? row.frameworks|join(', ')|upper : '–' }}</small></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>
     <a href="{{ path('app_policy_profile_index', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">{{ 'compliance_policy.policy_profile.register.back'|trans({}, 'compliance_policy') }}</a>
 </div>
 {% endblock %}

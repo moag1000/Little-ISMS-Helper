@@ -119,10 +119,10 @@ class TenantManagementController extends AbstractController
                     }
                 }
 
-                // Settings are now mapped via App\Form\Type\JsonStructuredType —
-                // the JsonArrayTransformer round-trips array<->JSON and raises a
-                // user-friendly TransformationFailedException on invalid JSON
-                // instead of silently writing null (C-06).
+                // Tenant::$settings is deliberately not part of TenantType: it is
+                // an internal bag whose parts have dedicated editors (organisation
+                // context, MRIS KPI toggle, TISAX) and is shown read-only in the
+                // settings tab — no raw JSON editing (supersedes C-06).
 
                 $this->entityManager->persist($tenant);
                 $this->entityManager->flush();
@@ -274,9 +274,9 @@ class TenantManagementController extends AbstractController
                     }
                 }
 
-                // Settings are now mapped via App\Form\Type\JsonStructuredType
-                // (C-06). The JsonArrayTransformer has already deserialised the
-                // textarea content into $tenant->getSettings() by this point.
+                // Tenant::$settings is not part of TenantType (internal bag with
+                // dedicated editors) — only the MRIS toggle below touches it,
+                // merging into the existing keys.
 
                 // MRIS-KPI-Toggle (inline checkbox, gated to ROLE_ADMIN). Merge
                 // statt überschreiben, damit andere Settings-Keys erhalten bleiben.

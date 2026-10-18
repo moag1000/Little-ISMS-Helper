@@ -91,7 +91,10 @@
                                 </button>
                             </form>
                             <form method="post" action="{{ path('admin_sso_delete', {id: p.id}) }}" class="d-inline"
-                                  data-confirm="{{ 'sso.confirm.delete'|trans({'%name%': p.name}, 'sso') }}">
+                                  data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'sso.confirm.delete'|trans({'%name%': p.name}, 'sso') }}"
+                      data-ui-actions-tone-param="danger">
                                 <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_delete') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
                                     <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Bulk Delete Confirmation Controller
@@ -22,6 +23,10 @@ import { Controller } from '@hotwired/stimulus';
  * });
  */
 export default class extends Controller {
+    static values = {
+        dependencyErrorText: { type: String, default: '' }, // empty → faT('bulk_delete.dependency_error')
+    };
+
     static targets = [
         'modal',
         'message',
@@ -117,7 +122,7 @@ export default class extends Controller {
                 // Silently skip dep-check on 404 (endpoint not implemented);
                 // surface only real server errors (5xx, parse errors etc).
                 if (!String(error.message).startsWith('HTTP 404')) {
-                    this.showError('Fehler beim Laden der Abhängigkeiten: ' + error.message);
+                    this.showError(`${this.dependencyErrorTextValue || faT('bulk_delete.dependency_error')}: ${error.message}`);
                 }
             }
         }
@@ -170,7 +175,7 @@ export default class extends Controller {
             li.className = 'd-flex align-items-center gap-2 mb-1';
 
             const icon = document.createElement('i');
-            icon.className = `bi bi-${dep.icon || 'link-45deg'} text-warning`;
+            icon.className = `fa-icon fa-icon--${dep.icon || 'ui-link'} fa-icon--warning`;
             icon.setAttribute('aria-hidden', 'true');
 
             const text = document.createElement('span');
@@ -248,8 +253,7 @@ export default class extends Controller {
     }
 
     getDefaultMessage(count, entityLabel) {
-        const label = entityLabel.toLowerCase();
-        return `Möchten Sie wirklich ${count} ${label} löschen?`;
+        return faT('bulk_actions.confirm_delete', { '%count%': count, '%entity%': entityLabel });
     }
 
     // Keyboard accessibility

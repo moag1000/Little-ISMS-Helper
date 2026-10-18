@@ -55,6 +55,10 @@ group_report:
         n_a_help: 'No applicable requirements in this organization.'
         col:
             tenant: 'Organization'
+        glossary:
+            applicable: 'Number of requirements that apply to the tenant (after scope filter)'
+            fulfilled: 'Number of requirements with status "fulfilled" or "compliant"'
+            percentage: 'fulfilled / applicable * 100, rounded'
     soa:
         title: 'Group SoA matrix'
         subtitle: 'Annex A controls × organizations — %controls% controls over %tenants% organizations.'

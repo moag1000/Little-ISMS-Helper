@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * notification-bell — Sprint-6b F3 in-app notification bell.
@@ -123,7 +124,7 @@ export default class extends Controller {
         if (items.length === 0) {
             const empty = document.createElement('p');
             empty.className = 'text-muted fst-italic small p-2 mb-0';
-            empty.textContent = list.dataset.noNewLabel ?? 'No new notifications';
+            empty.textContent = list.dataset.noNewLabel ?? faT('notification_bell.none');
             list.appendChild(empty);
             return;
         }
@@ -142,7 +143,7 @@ export default class extends Controller {
             const more = document.createElement('a');
             more.href = this.centerUrlValue;
             more.className = 'd-block text-center small p-2';
-            more.textContent = `View all ${items.length} notifications`;
+            more.textContent = faT('notification_bell.view_all', { '%count%': items.length });
             list.appendChild(more);
         }
     }
