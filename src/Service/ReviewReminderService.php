@@ -10,6 +10,7 @@ use App\Entity\DataBreach;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\CorrectiveActionStatus;
 use App\Repository\BusinessContinuityPlanRepository;
@@ -34,6 +35,11 @@ use Throwable;
  * 1. A scheduled command (cron job) for automated notifications
  * 2. Dashboard widgets for real-time overdue counts
  * 3. API endpoints for frontend integration
+ *
+ * Every query takes an explicit Tenant: the cron command runs without an
+ * HTTP request, so the Doctrine tenant_filter is not armed and an unscoped
+ * read would mix all organisations' records (see
+ * NoUnscopedTenantQueryInBackgroundRule). The command loops active tenants.
  */
 final class ReviewReminderService
 {
@@ -61,7 +67,7 @@ final class ReviewReminderService
      *
      * @return CorrectiveAction[]
      */
-    public function getCapaEffectivenessReviewsDueWithin(int $days = 14): array
+    public function getCapaEffectivenessReviewsDueWithin(Tenant $tenant, int $days = 14): array
     {
         if ($this->correctiveActionRepository === null) {
             return [];
@@ -70,7 +76,10 @@ final class ReviewReminderService
         $now = new DateTime();
         $threshold = (clone $now)->modify("+{$days} days");
 
-        $capas = $this->correctiveActionRepository->findBy(['status' => CorrectiveActionStatus::Completed->value]);
+        $capas = $this->correctiveActionRepository->findBy([
+            'tenant' => $tenant,
+            'status' => CorrectiveActionStatus::Completed->value,
+        ]);
 
         return array_filter($capas, function (CorrectiveAction $capa) use ($now, $threshold): bool {
             $reviewDate = $capa->getEffectivenessReviewDate();
@@ -87,15 +96,22 @@ final class ReviewReminderService
     /**
      * Get all overdue reviews across all entity types
      *
-     * @return array{risks: array, bc_plans: array, processing_activities: array, dpias: array, data_breaches: array, summary: array}
+     * @return array{
+     *   risks: Risk[],
+     *   bc_plans: BusinessContinuityPlan[],
+     *   processing_activities: ProcessingActivity[],
+     *   dpias: DataProtectionImpactAssessment[],
+     *   data_breaches: DataBreach[],
+     *   summary: array{total_overdue: int, urgent_breaches: int, risks_count: int, bc_plans_count: int, processing_activities_count: int, dpias_count: int},
+     * }
      */
-    public function getAllOverdueReviews(): array
+    public function getAllOverdueReviews(Tenant $tenant): array
     {
-        $overdueRisks = $this->getOverdueRiskReviews();
-        $overdueBcPlans = $this->getOverdueBcPlanReviews();
-        $overdueProcessingActivities = $this->getOverdueProcessingActivityReviews();
-        $overdueDpias = $this->getOverdueDpiaReviews();
-        $urgentDataBreaches = $this->getUrgentDataBreaches();
+        $overdueRisks = $this->getOverdueRiskReviews($tenant);
+        $overdueBcPlans = $this->getOverdueBcPlanReviews($tenant);
+        $overdueProcessingActivities = $this->getOverdueProcessingActivityReviews($tenant);
+        $overdueDpias = $this->getOverdueDpiaReviews($tenant);
+        $urgentDataBreaches = $this->getUrgentDataBreaches($tenant);
 
         return [
             'risks' => $overdueRisks,
@@ -119,10 +135,10 @@ final class ReviewReminderService
      *
      * @return Risk[]
      */
-    public function getOverdueRiskReviews(): array
+    public function getOverdueRiskReviews(Tenant $tenant): array
     {
         $now = new DateTime();
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->riskRepository->findBy(['tenant' => $tenant]);
 
         return array_filter($risks, function (Risk $risk) use ($now): bool {
             $reviewDate = $risk->getReviewDate();
@@ -139,9 +155,9 @@ final class ReviewReminderService
      *
      * @return BusinessContinuityPlan[]
      */
-    public function getOverdueBcPlanReviews(): array
+    public function getOverdueBcPlanReviews(Tenant $tenant): array
     {
-        $bcPlans = $this->bcPlanRepository->findBy(['status' => 'active']);
+        $bcPlans = $this->bcPlanRepository->findBy(['tenant' => $tenant, 'status' => 'active']);
 
         return array_filter($bcPlans, function (BusinessContinuityPlan $plan): bool {
             return $plan->isReviewOverdue() || $plan->isTestOverdue();
@@ -153,11 +169,11 @@ final class ReviewReminderService
      *
      * @return ProcessingActivity[]
      */
-    public function getOverdueProcessingActivityReviews(): array
+    public function getOverdueProcessingActivityReviews(Tenant $tenant): array
     {
         $now = new DateTime();
         // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
-        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
+        $activities = $this->processingActivityRepository->findBy(['tenant' => $tenant, 'status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now): bool {
             $nextReview = $activity->getNextReviewDate();
@@ -170,10 +186,10 @@ final class ReviewReminderService
      *
      * @return DataProtectionImpactAssessment[]
      */
-    public function getOverdueDpiaReviews(): array
+    public function getOverdueDpiaReviews(Tenant $tenant): array
     {
         $now = new DateTime();
-        $dpias = $this->dpiaRepository->findBy(['status' => 'approved']);
+        $dpias = $this->dpiaRepository->findBy(['tenant' => $tenant, 'status' => 'approved']);
 
         return array_filter($dpias, function (DataProtectionImpactAssessment $dpia) use ($now): bool {
             $nextReview = $dpia->getNextReviewDate();
@@ -187,9 +203,10 @@ final class ReviewReminderService
      * @param int $hoursThreshold Hours before deadline to consider urgent (default: 24)
      * @return DataBreach[]
      */
-    public function getUrgentDataBreaches(int $hoursThreshold = 24): array
+    public function getUrgentDataBreaches(Tenant $tenant, int $hoursThreshold = 24): array
     {
         $breaches = $this->dataBreachRepository->findBy([
+            'tenant' => $tenant,
             'requiresAuthorityNotification' => true,
         ]);
 
@@ -216,16 +233,16 @@ final class ReviewReminderService
      * @return array{risks: array, bc_plans: array, processing_activities: array, dpias: array}
      * @throws \DateMalformedStringException
      */
-    public function getUpcomingReviews(int $days = 14): array
+    public function getUpcomingReviews(Tenant $tenant, int $days = 14): array
     {
         $now = new DateTime();
         $threshold = (clone $now)->modify("+{$days} days");
 
         return [
-            'risks' => $this->getUpcomingRiskReviews($now, $threshold),
-            'bc_plans' => $this->getUpcomingBcPlanReviews($now, $threshold),
-            'processing_activities' => $this->getUpcomingProcessingActivityReviews($now, $threshold),
-            'dpias' => $this->getUpcomingDpiaReviews($now, $threshold),
+            'risks' => $this->getUpcomingRiskReviews($tenant, $now, $threshold),
+            'bc_plans' => $this->getUpcomingBcPlanReviews($tenant, $now, $threshold),
+            'processing_activities' => $this->getUpcomingProcessingActivityReviews($tenant, $now, $threshold),
+            'dpias' => $this->getUpcomingDpiaReviews($tenant, $now, $threshold),
         ];
     }
 
@@ -235,14 +252,14 @@ final class ReviewReminderService
      * @param bool $includeUpcoming Also send reminders for upcoming (not yet overdue) reviews
      * @return array{sent: int, failed: int, details: array}
      */
-    public function sendReminderNotifications(bool $includeUpcoming = false): array
+    public function sendReminderNotifications(Tenant $tenant, bool $includeUpcoming = false): array
     {
         $sent = 0;
         $failed = 0;
         $details = [];
 
         // Process overdue risks
-        foreach ($this->getOverdueRiskReviews() as $risk) {
+        foreach ($this->getOverdueRiskReviews($tenant) as $risk) {
             $owner = $risk->getRiskOwner();
             if ($owner instanceof User) {
                 try {
@@ -272,7 +289,7 @@ final class ReviewReminderService
         }
 
         // Process urgent data breaches (72h deadline)
-        foreach ($this->getUrgentDataBreaches() as $breach) {
+        foreach ($this->getUrgentDataBreaches($tenant) as $breach) {
             $dpo = $breach->getDataProtectionOfficer();
             $assessor = $breach->getAssessor();
             $recipients = array_filter([$dpo, $assessor]);
@@ -312,7 +329,7 @@ final class ReviewReminderService
         }
 
         // S3 P0-31 — Process CAPA effectiveness-review reminders.
-        foreach ($this->getCapaEffectivenessReviewsDueWithin(14) as $capa) {
+        foreach ($this->getCapaEffectivenessReviewsDueWithin($tenant, 14) as $capa) {
             $owner = $capa->getResponsiblePersonUser();
             if (!$owner instanceof User) {
                 continue;
@@ -343,7 +360,7 @@ final class ReviewReminderService
         }
 
         // Process overdue BC Plans
-        foreach ($this->getOverdueBcPlanReviews() as $plan) {
+        foreach ($this->getOverdueBcPlanReviews($tenant) as $plan) {
             // BC Plans use planOwner as string, would need to resolve to User
             // For now, notify the admins of the plan's own organisation
             $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $plan->getTenant());
@@ -384,11 +401,17 @@ final class ReviewReminderService
     /**
      * Get dashboard statistics for overdue items
      *
-     * @return array{total: int, critical: int, by_type: array, by_days_overdue: array}
+     * @return array{
+     *   total: int,
+     *   critical: int,
+     *   urgent_breaches: int,
+     *   by_type: array{risks: int, bc_plans: int, processing_activities: int, dpias: int},
+     *   by_days_overdue: array{'0-7': int, '8-30': int, '31-90': int, '90+': int},
+     * }
      */
-    public function getDashboardStatistics(): array
+    public function getDashboardStatistics(Tenant $tenant): array
     {
-        $allOverdue = $this->getAllOverdueReviews();
+        $allOverdue = $this->getAllOverdueReviews($tenant);
         $now = new DateTime();
 
         $criticalCount = 0;
@@ -427,9 +450,9 @@ final class ReviewReminderService
     // Private Helper Methods
     // ============================================================================
 
-    private function getUpcomingRiskReviews(DateTime $now, DateTime $threshold): array
+    private function getUpcomingRiskReviews(Tenant $tenant, DateTime $now, DateTime $threshold): array
     {
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->riskRepository->findBy(['tenant' => $tenant]);
 
         return array_filter($risks, function (Risk $risk) use ($now, $threshold): bool {
             $reviewDate = $risk->getReviewDate();
@@ -440,9 +463,9 @@ final class ReviewReminderService
         });
     }
 
-    private function getUpcomingBcPlanReviews(DateTime $now, DateTime $threshold): array
+    private function getUpcomingBcPlanReviews(Tenant $tenant, DateTime $now, DateTime $threshold): array
     {
-        $plans = $this->bcPlanRepository->findBy(['status' => 'active']);
+        $plans = $this->bcPlanRepository->findBy(['tenant' => $tenant, 'status' => 'active']);
 
         return array_filter($plans, function (BusinessContinuityPlan $plan) use ($now, $threshold): bool {
             $nextReview = $plan->getNextReviewDate();
@@ -455,10 +478,10 @@ final class ReviewReminderService
         });
     }
 
-    private function getUpcomingProcessingActivityReviews(DateTime $now, DateTime $threshold): array
+    private function getUpcomingProcessingActivityReviews(Tenant $tenant, DateTime $now, DateTime $threshold): array
     {
         // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
-        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
+        $activities = $this->processingActivityRepository->findBy(['tenant' => $tenant, 'status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now, $threshold): bool {
             $nextReview = $activity->getNextReviewDate();
@@ -466,9 +489,9 @@ final class ReviewReminderService
         });
     }
 
-    private function getUpcomingDpiaReviews(DateTime $now, DateTime $threshold): array
+    private function getUpcomingDpiaReviews(Tenant $tenant, DateTime $now, DateTime $threshold): array
     {
-        $dpias = $this->dpiaRepository->findBy(['status' => 'approved']);
+        $dpias = $this->dpiaRepository->findBy(['tenant' => $tenant, 'status' => 'approved']);
 
         return array_filter($dpias, function (DataProtectionImpactAssessment $dpia) use ($now, $threshold): bool {
             $nextReview = $dpia->getNextReviewDate();

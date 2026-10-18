@@ -9,6 +9,7 @@ use App\Entity\DataBreach;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\DataBreachRepository;
@@ -37,6 +38,7 @@ class ReviewReminderServiceTest extends TestCase
     private MockObject $emailNotificationService;
     private MockObject $logger;
     private ReviewReminderService $service;
+    private Tenant $tenant;
 
     protected function setUp(): void
     {
@@ -48,6 +50,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->emailNotificationService = $this->createMock(EmailNotificationService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->tenant = new Tenant();
 
         $this->service = new ReviewReminderService(
             $this->riskRepository,
@@ -68,7 +71,7 @@ class ReviewReminderServiceTest extends TestCase
     {
         $this->setupEmptyRepositories();
 
-        $result = $this->service->getAllOverdueReviews();
+        $result = $this->service->getAllOverdueReviews($this->tenant);
 
         $this->assertArrayHasKey('risks', $result);
         $this->assertArrayHasKey('bc_plans', $result);
@@ -84,7 +87,7 @@ class ReviewReminderServiceTest extends TestCase
         // Set up 2 overdue risks
         $overdueRisk1 = $this->createOverdueRisk();
         $overdueRisk2 = $this->createOverdueRisk();
-        $this->riskRepository->method('findAll')->willReturn([$overdueRisk1, $overdueRisk2]);
+        $this->riskRepository->method('findBy')->willReturn([$overdueRisk1, $overdueRisk2]);
 
         // Set up 1 overdue BC plan
         $overdueBcPlan = $this->createOverdueBcPlan();
@@ -94,7 +97,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->dpiaRepository->method('findBy')->willReturn([]);
         $this->dataBreachRepository->method('findBy')->willReturn([]);
 
-        $result = $this->service->getAllOverdueReviews();
+        $result = $this->service->getAllOverdueReviews($this->tenant);
 
         $this->assertSame(3, $result['summary']['total_overdue']);
         $this->assertSame(2, $result['summary']['risks_count']);
@@ -111,10 +114,10 @@ class ReviewReminderServiceTest extends TestCase
         $closedRisk = $this->createClosedRisk();
         $noDateRisk = $this->createRiskWithoutDate();
 
-        $this->riskRepository->method('findAll')
+        $this->riskRepository->method('findBy')
             ->willReturn([$overdueRisk, $futureRisk, $closedRisk, $noDateRisk]);
 
-        $result = $this->service->getOverdueRiskReviews();
+        $result = $this->service->getOverdueRiskReviews($this->tenant);
 
         $this->assertCount(1, $result);
         $this->assertContains($overdueRisk, $result);
@@ -127,9 +130,9 @@ class ReviewReminderServiceTest extends TestCase
         $acceptedRisk->method('getReviewDate')->willReturn(new DateTime('-1 week'));
         $acceptedRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('accepted'));
 
-        $this->riskRepository->method('findAll')->willReturn([$acceptedRisk]);
+        $this->riskRepository->method('findBy')->willReturn([$acceptedRisk]);
 
-        $result = $this->service->getOverdueRiskReviews();
+        $result = $this->service->getOverdueRiskReviews($this->tenant);
 
         $this->assertCount(0, $result);
     }
@@ -147,7 +150,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->bcPlanRepository->method('findBy')
             ->willReturn([$overduePlan, $currentPlan]);
 
-        $result = $this->service->getOverdueBcPlanReviews();
+        $result = $this->service->getOverdueBcPlanReviews($this->tenant);
 
         $this->assertCount(1, $result);
         $this->assertContains($overduePlan, $result);
@@ -162,7 +165,7 @@ class ReviewReminderServiceTest extends TestCase
 
         $this->bcPlanRepository->method('findBy')->willReturn([$testOverduePlan]);
 
-        $result = $this->service->getOverdueBcPlanReviews();
+        $result = $this->service->getOverdueBcPlanReviews($this->tenant);
 
         $this->assertCount(1, $result);
     }
@@ -181,7 +184,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->processingActivityRepository->method('findBy')
             ->willReturn([$overdueActivity, $futureActivity]);
 
-        $result = $this->service->getOverdueProcessingActivityReviews();
+        $result = $this->service->getOverdueProcessingActivityReviews($this->tenant);
 
         $this->assertCount(1, $result);
         $this->assertContains($overdueActivity, $result);
@@ -201,7 +204,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->dpiaRepository->method('findBy')
             ->willReturn([$overdueDpia, $futureDpia]);
 
-        $result = $this->service->getOverdueDpiaReviews();
+        $result = $this->service->getOverdueDpiaReviews($this->tenant);
 
         $this->assertCount(1, $result);
         $this->assertContains($overdueDpia, $result);
@@ -219,7 +222,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->dataBreachRepository->method('findBy')
             ->willReturn([$notifiedBreach]);
 
-        $result = $this->service->getUrgentDataBreaches();
+        $result = $this->service->getUrgentDataBreaches($this->tenant);
 
         $this->assertCount(0, $result);
     }
@@ -234,7 +237,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->dataBreachRepository->method('findBy')
             ->willReturn([$urgentBreach]);
 
-        $result = $this->service->getUrgentDataBreaches();
+        $result = $this->service->getUrgentDataBreaches($this->tenant);
 
         $this->assertCount(1, $result);
     }
@@ -249,7 +252,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->dataBreachRepository->method('findBy')
             ->willReturn([$overdueBreach]);
 
-        $result = $this->service->getUrgentDataBreaches();
+        $result = $this->service->getUrgentDataBreaches($this->tenant);
 
         $this->assertCount(1, $result);
     }
@@ -264,7 +267,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->dataBreachRepository->method('findBy')
             ->willReturn([$notUrgentBreach]);
 
-        $result = $this->service->getUrgentDataBreaches();
+        $result = $this->service->getUrgentDataBreaches($this->tenant);
 
         $this->assertCount(0, $result);
     }
@@ -280,11 +283,11 @@ class ReviewReminderServiceTest extends TestCase
             ->willReturn([$breach]);
 
         // Default threshold 24h - not urgent
-        $result24 = $this->service->getUrgentDataBreaches(24);
+        $result24 = $this->service->getUrgentDataBreaches($this->tenant, 24);
         $this->assertCount(0, $result24);
 
         // Custom threshold 48h - urgent
-        $result48 = $this->service->getUrgentDataBreaches(48);
+        $result48 = $this->service->getUrgentDataBreaches($this->tenant, 48);
         $this->assertCount(1, $result48);
     }
 
@@ -293,12 +296,12 @@ class ReviewReminderServiceTest extends TestCase
     #[Test]
     public function testGetUpcomingReviewsReturnsAllCategories(): void
     {
-        $this->riskRepository->method('findAll')->willReturn([]);
+        $this->riskRepository->method('findBy')->willReturn([]);
         $this->bcPlanRepository->method('findBy')->willReturn([]);
         $this->processingActivityRepository->method('findBy')->willReturn([]);
         $this->dpiaRepository->method('findBy')->willReturn([]);
 
-        $result = $this->service->getUpcomingReviews();
+        $result = $this->service->getUpcomingReviews($this->tenant);
 
         $this->assertArrayHasKey('risks', $result);
         $this->assertArrayHasKey('bc_plans', $result);
@@ -317,12 +320,12 @@ class ReviewReminderServiceTest extends TestCase
         $farFutureRisk->method('getReviewDate')->willReturn(new DateTime('+60 days'));
         $farFutureRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
 
-        $this->riskRepository->method('findAll')->willReturn([$upcomingRisk, $farFutureRisk]);
+        $this->riskRepository->method('findBy')->willReturn([$upcomingRisk, $farFutureRisk]);
         $this->bcPlanRepository->method('findBy')->willReturn([]);
         $this->processingActivityRepository->method('findBy')->willReturn([]);
         $this->dpiaRepository->method('findBy')->willReturn([]);
 
-        $result = $this->service->getUpcomingReviews(14); // 14 days
+        $result = $this->service->getUpcomingReviews($this->tenant, 14); // 14 days
 
         $this->assertCount(1, $result['risks']);
         $this->assertContains($upcomingRisk, $result['risks']);
@@ -335,7 +338,7 @@ class ReviewReminderServiceTest extends TestCase
     {
         $this->setupEmptyRepositories();
 
-        $result = $this->service->getDashboardStatistics();
+        $result = $this->service->getDashboardStatistics($this->tenant);
 
         $this->assertArrayHasKey('total', $result);
         $this->assertArrayHasKey('critical', $result);
@@ -358,13 +361,13 @@ class ReviewReminderServiceTest extends TestCase
         $highRisk->method('getReviewDate')->willReturn(new DateTime('-3 days'));
         $highRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         $highRisk->method('isHighRisk')->willReturn(true);
-        $this->riskRepository->method('findAll')->willReturn([$highRisk]);
+        $this->riskRepository->method('findBy')->willReturn([$highRisk]);
 
         $this->bcPlanRepository->method('findBy')->willReturn([]);
         $this->processingActivityRepository->method('findBy')->willReturn([]);
         $this->dpiaRepository->method('findBy')->willReturn([]);
 
-        $result = $this->service->getDashboardStatistics();
+        $result = $this->service->getDashboardStatistics($this->tenant);
 
         // 1 urgent breach + 1 high risk = 2 critical
         $this->assertSame(2, $result['critical']);
@@ -393,7 +396,7 @@ class ReviewReminderServiceTest extends TestCase
         $risk120Days->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         $risk120Days->method('isHighRisk')->willReturn(false);
 
-        $this->riskRepository->method('findAll')
+        $this->riskRepository->method('findBy')
             ->willReturn([$risk3Days, $risk15Days, $risk60Days, $risk120Days]);
 
         $this->bcPlanRepository->method('findBy')->willReturn([]);
@@ -401,7 +404,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->dpiaRepository->method('findBy')->willReturn([]);
         $this->dataBreachRepository->method('findBy')->willReturn([]);
 
-        $result = $this->service->getDashboardStatistics();
+        $result = $this->service->getDashboardStatistics($this->tenant);
 
         $this->assertSame(1, $result['by_days_overdue']['0-7']);
         $this->assertSame(1, $result['by_days_overdue']['8-30']);
@@ -413,7 +416,7 @@ class ReviewReminderServiceTest extends TestCase
 
     private function setupEmptyRepositories(): void
     {
-        $this->riskRepository->method('findAll')->willReturn([]);
+        $this->riskRepository->method('findBy')->willReturn([]);
         $this->bcPlanRepository->method('findBy')->willReturn([]);
         $this->processingActivityRepository->method('findBy')->willReturn([]);
         $this->dpiaRepository->method('findBy')->willReturn([]);
