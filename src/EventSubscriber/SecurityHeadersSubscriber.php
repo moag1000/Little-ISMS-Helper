@@ -83,9 +83,9 @@ final class SecurityHeadersSubscriber
             "default-src 'self'",
             // All JS/CSS/fonts are served locally (AssetMapper, public/vendor) — no CDN host.
             sprintf("script-src 'self' 'nonce-%s'", $this->cspNonce->get()),
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // style attributes + Fonts
+            "style-src 'self' 'unsafe-inline'", // style attributes
             "img-src 'self' data: https: blob:", // Allow images from any HTTPS source and data URIs
-            "font-src 'self' data: https://fonts.gstatic.com", // Local + Google Fonts
+            "font-src 'self' data:", // self-hosted fonts (public/fonts)
             "connect-src 'self'", // API calls
             "frame-ancestors 'self'", // Prevent embedding in iframes (clickjacking protection)
             "base-uri 'self'", // Prevent base tag injection

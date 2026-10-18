@@ -162,7 +162,9 @@ final class ContentSecurityPolicyTest extends WebTestCase
     {
         $csp = (string) $this->client->getResponse()->headers->get('Content-Security-Policy');
         // Everything is served locally: a CDN host would let any package on it bypass the policy.
-        self::assertStringNotContainsString('cdn.jsdelivr.net', $csp);
+        foreach (['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'] as $host) {
+            self::assertStringNotContainsString($host, $csp);
+        }
         self::assertMatchesRegularExpression('/(?:^|;)\s*script-src ([^;]+)/', $csp, 'CSP header with script-src expected');
         preg_match('/(?:^|;)\s*script-src ([^;]+)/', $csp, $m);
         $scriptSrc = $m[1];
