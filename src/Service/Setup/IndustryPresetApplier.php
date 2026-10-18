@@ -50,7 +50,11 @@ class IndustryPresetApplier
 
     /**
      * Controls and documents are only created when a tenant is given; modules
-     * and frameworks are applied either way.
+     * and frameworks are applied either way. With a tenant the modules are
+     * activated for that tenant — not for the tenant in context, which differs
+     * when a super-admin applies a preset to another organisation. Without one
+     * the module service's default scope applies (context tenant or, in a
+     * console run without tenant, the instance default).
      *
      * @param array<string, mixed> $config Parsed preset YAML
      * @return array{modules_activated: list<string>, frameworks_activated: int, controls_created: int, documents_created: int}
@@ -58,7 +62,7 @@ class IndustryPresetApplier
     public function apply(string $presetId, array $config, ?Tenant $tenant): array
     {
         $result = [
-            'modules_activated' => $this->activateModules($config),
+            'modules_activated' => $this->activateModules($config, $tenant),
             'frameworks_activated' => $this->activateFrameworks($config),
             'controls_created' => 0,
             'documents_created' => 0,
@@ -78,20 +82,26 @@ class IndustryPresetApplier
      * @param array<string, mixed> $config
      * @return list<string>
      */
-    private function activateModules(array $config): array
+    private function activateModules(array $config, ?Tenant $tenant): array
     {
         $presetModules = array_map('strval', $config['modules'] ?? []);
         if ($presetModules === []) {
             return [];
         }
 
-        $current = $this->moduleConfiguration->getActiveModules();
+        $current = $tenant instanceof Tenant
+            ? $this->moduleConfiguration->getActiveModulesForTenant($tenant)
+            : $this->moduleConfiguration->getActiveModules();
         $merged = array_values(array_unique(array_merge($current, $presetModules)));
         if (count($merged) === count($current)) {
             return [];
         }
 
-        $this->moduleConfiguration->saveActiveModules($merged);
+        if ($tenant instanceof Tenant) {
+            $this->moduleConfiguration->saveActiveModulesForTenant($tenant, $merged);
+        } else {
+            $this->moduleConfiguration->saveActiveModules($merged);
+        }
 
         return array_values(array_diff($merged, $current));
     }

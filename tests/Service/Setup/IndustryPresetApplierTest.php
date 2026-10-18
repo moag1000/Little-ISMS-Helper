@@ -16,6 +16,7 @@ use App\Service\AnnexAControlsBootstrapService;
 use App\Service\ModuleConfigurationService;
 use App\Service\Setup\IndustryPresetApplier;
 use App\Service\Setup\SetupIndustryPresetService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -181,6 +182,48 @@ final class IndustryPresetApplierTest extends KernelTestCase
             self::assertTrue($framework->isMandatory());
         } finally {
             $this->em->getConnection()->executeStatement('DELETE FROM compliance_framework WHERE code = ?', [$code]);
+        }
+    }
+
+    /**
+     * Regression: a super-admin applying a preset to another tenant activated
+     * the preset modules on the admin's own (context) tenant — or, without a
+     * context tenant, in the instance-wide active_modules.yaml — instead of on
+     * the target tenant. Uses the real module service; the admin's tenant is
+     * in context, so even the old behaviour never writes the shared file.
+     */
+    #[Test]
+    public function modulesAreActivatedForTheTargetTenantNotTheAdminsOwn(): void
+    {
+        $container = static::getContainer();
+        $adminTenant = new Tenant();
+        $adminTenant->setName('Preset Admin ' . uniqid());
+        $adminTenant->setCode('preset_admin_' . uniqid());
+        $adminTenant->setActiveModules(['core', 'assets']);
+        $this->em->persist($adminTenant);
+        $this->em->flush();
+
+        $tenantContext = $container->get(TenantContext::class);
+        $tenantContext->setCurrentTenant($adminTenant);
+        $yaml = \dirname(__DIR__, 3) . '/config/active_modules.yaml';
+        $yamlBefore = is_file($yaml) ? file_get_contents($yaml) : null;
+        $this->tenant->setActiveModules(['core']);
+        $this->em->flush();
+
+        try {
+            $result = $this->applier($container->get(ModuleConfigurationService::class))
+                ->apply('test', ['modules' => ['core', 'privacy']], $this->tenant);
+
+            self::assertSame(['privacy'], $result['modules_activated']);
+            $this->em->clear();
+            $target = $this->em->find(Tenant::class, $this->tenant->getId());
+            $admin = $this->em->find(Tenant::class, $adminTenant->getId());
+            self::assertContains('privacy', $target?->getActiveModules() ?? []);
+            self::assertSame(['core', 'assets'], $admin?->getActiveModules());
+            self::assertSame($yamlBefore, is_file($yaml) ? file_get_contents($yaml) : null);
+        } finally {
+            $tenantContext->setCurrentTenant(null);
+            $this->em->getConnection()->executeStatement('DELETE FROM tenant WHERE id = ?', [$adminTenant->getId()]);
         }
     }
 }

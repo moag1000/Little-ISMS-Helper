@@ -223,6 +223,35 @@ class ModuleConfigurationService
     }
 
     /**
+     * Active modules of an explicit tenant — same resolution as
+     * getActiveModules(), for code that acts on a tenant other than the one in
+     * context (super-admin targeting another tenant, console commands).
+     *
+     * @return list<string>
+     */
+    public function getActiveModulesForTenant(Tenant $tenant): array
+    {
+        $required = array_keys($this->getRequiredModules());
+
+        return array_values(array_unique(array_merge(
+            $required,
+            $tenant->getActiveModules() ?? $this->getInstanceDefaultModules(),
+        )));
+    }
+
+    /**
+     * Stores a module selection on an explicit tenant. Never writes the
+     * instance-wide file and never touches the tenant in context.
+     *
+     * @param list<string> $modules
+     */
+    public function saveActiveModulesForTenant(Tenant $tenant, array $modules): void
+    {
+        $tenant->setActiveModules(array_values($modules));
+        $this->entityManager?->flush();
+    }
+
+    /**
      * Instance-wide default from config/active_modules.yaml — the fallback for
      * tenants without their own selection, and the value the setup wizard writes
      * before any tenant exists.

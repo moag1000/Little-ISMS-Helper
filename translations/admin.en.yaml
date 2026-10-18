@@ -2046,7 +2046,7 @@ industry_preset:
         section_initial_controls: 'Initial controls'
         section_initial_documents: 'Initial documents'
         section_apply: 'Apply'
-        apply_hint: 'Applying activates modules, unlocks frameworks, creates the initial controls and adds the initial documents as draft placeholders to the document register. Existing records remain untouched.'
+        apply_hint: 'Applying activates modules for the selected organisation, unlocks frameworks, creates the initial controls and adds the initial documents as draft placeholders to the document register. Existing records remain untouched.'
         table:
             code: 'Code'
             priority: 'Priority'
