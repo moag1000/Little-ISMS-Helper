@@ -7,12 +7,15 @@ namespace App\Tests\Form\Admin;
 use App\Form\Admin\LifecycleOverrideType;
 use App\Form\Admin\WorkflowStepOverlayType;
 use App\Service\ModuleConfigurationService;
+use App\Validator\Constraint\JsonShapeValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * The module override in both admin overlay forms only accepts keys from
@@ -24,13 +27,20 @@ final class LifecycleModuleChoiceTypeTest extends TypeTestCase
     protected function getExtensions(): array
     {
         $modules = new ModuleConfigurationService(\dirname(__DIR__, 3));
+        // WorkflowStepOverlayType also carries a JsonBuilderType field whose
+        // JsonShape validator needs the translator; wire it explicitly.
+        $validators = new ConstraintValidatorFactory([
+            JsonShapeValidator::class => new JsonShapeValidator($this->createStub(TranslatorInterface::class)),
+        ]);
 
         return [
             new PreloadedExtension([
                 new LifecycleOverrideType($modules),
                 new WorkflowStepOverlayType($modules),
             ], []),
-            new ValidatorExtension(Validation::createValidator()),
+            new ValidatorExtension(
+                Validation::createValidatorBuilder()->setConstraintValidatorFactory($validators)->getValidator(),
+            ),
         ];
     }
 
