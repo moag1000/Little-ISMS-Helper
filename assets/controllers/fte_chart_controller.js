@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * F11 FTE-Tracking — Chart.js trend chart with period toggle.
@@ -83,7 +84,7 @@ export default class extends Controller {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Minutes saved' },
+                        title: { display: true, text: faT('fte_chart.minutes_saved') },
                     },
                 },
             },

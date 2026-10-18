@@ -323,7 +323,7 @@ html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255
     position: absolute;
     left: 20px; bottom: -1px;
     width: 60px; height: 2px;
-    background: var(--brand-gradient-line);
+    background: var(--primary); /* Kanon H4 */
     border-radius: var(--r-xs);
 }
 .ds-admin-page-mock__eyebrow {
@@ -470,7 +470,7 @@ html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255
     background: var(--primary);
     border-color: var(--primary);
     color: var(--on-primary);
-    box-shadow: 0 0 8px var(--primary-glow);
+    box-shadow: none;
 }
 .ds-mock-btn--ghost { background: transparent; }
 .ds-mock-btn--danger {
@@ -571,12 +571,12 @@ html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255
     width: 8px; height: 8px;
     border-radius: var(--r-pill);
     background: var(--primary);
-    box-shadow: 0 0 6px var(--primary);
+    box-shadow: none;
 }
-.fa-audit-row__sev--info     { background: var(--sev-info-color);     box-shadow: 0 0 6px rgba(var(--sev-info-rgb), .6); }
-.fa-audit-row__sev--warning  { background: var(--sev-warning-color);  box-shadow: 0 0 6px rgba(var(--sev-warning-rgb), .6); }
-.fa-audit-row__sev--critical { background: var(--sev-critical-color); box-shadow: 0 0 8px rgba(var(--sev-critical-rgb), .7); }
-.fa-audit-row__sev--danger   { background: var(--sev-danger-color);   box-shadow: 0 0 8px rgba(var(--sev-danger-rgb), .7); }
+.fa-audit-row__sev--info     { background: var(--sev-info-color);     box-shadow: none; }
+.fa-audit-row__sev--warning  { background: var(--sev-warning-color);  box-shadow: none; }
+.fa-audit-row__sev--critical { background: var(--sev-critical-color); box-shadow: none; }
+.fa-audit-row__sev--danger   { background: var(--sev-danger-color);   box-shadow: none; }
 
 .fa-audit-row__actor {
     font-weight: 600;
@@ -732,7 +732,7 @@ html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255
     width: 8px; height: 8px;
     border-radius: var(--r-pill);
     background: var(--state-color);
-    box-shadow: 0 0 6px var(--state-color);
+    box-shadow: none;
     flex-shrink: 0;
 }
 .fa-svc-tile .metrics {
@@ -1141,7 +1141,7 @@ html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255
 .audit-log-item--sealed .audit-log-item__icon {
     background: var(--accent-tint);
     color: var(--accent);
-    box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 30%, transparent);
+    box-shadow: none;
 }
 .audit-log-item--sealed .audit-log-item__hash::before {
     content: "✦ ";

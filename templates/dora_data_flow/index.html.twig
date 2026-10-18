@@ -14,7 +14,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield', label: 'DORA Art. 28 · RT_03' },
+        badge: { icon: 'nav-shield', label: 'DORA Art. 28 · RT_03' },
         title: 'dora_data_flow.title.list'|trans({}, 'dora_data_flow'),
         subtitle: 'dora_data_flow.description.overview'|trans({}, 'dora_data_flow'),
         actions: [
@@ -42,9 +42,13 @@
             {% for flow in flows %}
                 {% include 'dora_data_flow/_row.html.twig' with { flow: flow } %}
             {% else %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             <tr>
-                <td colspan="6" class="text-center-p-xl-muted">
-                    {{ 'dora_data_flow.message.no_flows'|trans({}, 'dora_data_flow') }}
+                <td colspan="6">
+                    {{ _fa_empty_state.render({
+                        mood: 'sleeping',
+                        title: 'dora_data_flow.message.no_flows'|trans({}, 'dora_data_flow')
+                    }) }}
                 </td>
             </tr>
             {% endfor %}

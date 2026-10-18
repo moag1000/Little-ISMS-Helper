@@ -14,6 +14,7 @@
  * `fa-drawer` (defined in fairy-aurora-components.css).
  */
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 export default class extends Controller {
     static values = {
@@ -58,7 +59,10 @@ export default class extends Controller {
                     drawer.innerHTML = await resp.text();
                 }
             } catch {
-                drawer.innerHTML = '<p class="p-4 text-muted">Failed to load version history.</p>';
+                const p = document.createElement('p');
+                p.className = 'p-4 text-muted';
+                p.textContent = faT('reuse_drawer.load_failed');
+                drawer.replaceChildren(p);
             }
         }
 

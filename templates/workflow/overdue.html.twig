@@ -7,6 +7,7 @@
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {{ _fa_page_header.render({
     badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
@@ -61,6 +62,7 @@
 </div>
 
 {# Overdue Workflows Table #}
+{% if overdue_workflows is not empty %}
 {% embed '_components/_table.html.twig' with {
     'wrapperClass': 'table-container',
     'noMargin': true
@@ -80,7 +82,7 @@
     {% block table_body %}
         {% for instance in overdue_workflows %}
         {% set daysOverdue = instance.dueDate ? (('now'|date('U') - instance.dueDate.timestamp) / 86400)|round : 0 %}
-        <tr class="{% if daysOverdue > 7 %}table-danger{% else %}table-warning{% endif %}">
+        <tr class="{% if daysOverdue > 7 %}fa-table__row--danger{% else %}fa-table__row--warning{% endif %}">
             <td>
                 <strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong>
                 {% if daysOverdue > 7 %}
@@ -143,19 +145,16 @@
                 </div>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="8" class="text-center text-muted p-4">
-                <div class="fs-2 mb-2"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
-                <p><strong>{{ 'workflow.message.no_overdue'|trans({}, 'workflows') }}</strong></p>
-                <p class="text-muted mb-0">
-                    {{ 'workflow.message.no_overdue_desc'|trans({}, 'workflows') }}
-                </p>
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'happy',
+        title: 'workflow.message.no_overdue'|trans({}, 'workflows'),
+        text: 'workflow.message.no_overdue_desc'|trans({}, 'workflows')
+    }) }}
+{% endif %}
 
 {# Modals for Approve/Reject Actions #}
 {% for instance in overdue_workflows %}

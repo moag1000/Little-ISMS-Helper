@@ -323,6 +323,11 @@ evidence_reverification:
         notes_label: 'Notizen'
         completed_at: 'Abgeschlossen am'
         skip_reason: 'Grund für Überspringen'
+    filter:
+        open: 'Offen'
+        mine: 'Mir zugewiesen'
+        overdue: 'Überfällig'
+        all: 'Alle'
 iso_9001_bridge:
     policy: 'Identisch mit ISO 9001 Klausel 7.5 "Lenkung dokumentierter Information" — Richtlinien, Verfahrensanweisungen und Aufzeichnungen werden nach demselben Lenkungsschema versioniert und freigegeben.'
     procedure: 'In ISO 9001 ist das eine "dokumentierte Verfahrensanweisung" (7.5.1) — Prozessbeschreibung mit Rollen, Ein-/Ausgang und Mess-Kriterien.'

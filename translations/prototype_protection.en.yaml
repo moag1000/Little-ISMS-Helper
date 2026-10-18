@@ -46,6 +46,7 @@ prototype_protection:
         required_labels: 'Multi-select — all prototype labels applicable to the scope.'
         assessor_person: 'Person without system login as assessor. Order: User > Person > empty.'
         assessor_deputy_persons: 'Additional persons with deputy role for the assessment.'
+        status_readonly: 'Status is driven by the lifecycle workflow (Draft → In review → Approved / Rejected → Expired). Direct editing is disabled; use the status actions on the detail page.'
     status:
         draft: 'Draft'
         in_review: 'In review'

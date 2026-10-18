@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'portfolio_report' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -14,13 +15,9 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <div>
-            <h1 class="h2 mb-1">
-                <i class="fa-icon fa-icon--nav-grid text-primary" aria-hidden="true"></i>
-                {{ 'portfolio_report.title'|trans({}, 'portfolio_report') }}
-            </h1>
-            <p class="text-muted mb-0">
+    {# Subtitle carries inline markup (tenant, Stichtag, Vorperiode) — captured via
+     # set-block so the macro outputs it unescaped (Twig Markup). #}
+    {% set _portfolio_subtitle %}
                 <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
                 <strong>{{ tenant.name }}</strong>
                 <span class="mx-2">&middot;</span>
@@ -33,27 +30,21 @@
                     {{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:
                     <strong>{{ vorperiode|date('Y-m-d') }}</strong>
                 {% endif %}
-            </p>
-        </div>
-        <div class="btn-group">
-            <a href="{{ path('app_management_reports_portfolio_pdf', {
-                _locale: app.request.locale,
-                stichtag: stichtag|date('Y-m-d'),
-                vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
-            }) }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                {{ 'portfolio_report.action.download_pdf'|trans({}, 'portfolio_report') }}
-            </a>
-            <a href="{{ path('app_management_reports_portfolio_excel', {
-                _locale: app.request.locale,
-                stichtag: stichtag|date('Y-m-d'),
-                vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
-            }) }}" class="fa-cyber-btn fa-cyber-btn--success">
-                <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
-                {{ 'portfolio_report.action.download_excel'|trans({}, 'portfolio_report') }}
-            </a>
-        </div>
-    </div>
+    {% endset %}
+    {% set _portfolio_params = {
+        _locale: app.request.locale,
+        stichtag: stichtag|date('Y-m-d'),
+        vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
+    } %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-grid', label: '' },
+        title: 'portfolio_report.title'|trans({}, 'portfolio_report'),
+        subtitle: _portfolio_subtitle,
+        actions: [
+            { label: 'portfolio_report.action.download_pdf'|trans({}, 'portfolio_report'), href: path('app_management_reports_portfolio_pdf', _portfolio_params), variant: 'danger', icon: 'nav-file-pdf' },
+            { label: 'portfolio_report.action.download_excel'|trans({}, 'portfolio_report'), href: path('app_management_reports_portfolio_excel', _portfolio_params), variant: 'success', icon: 'nav-file-check' }
+        ]
+    }) }}
 
     {# FTE Executive KPI (CM-5) — 8H.4 migrated #}
     {% if fte_saved is defined %}

@@ -37,11 +37,11 @@
                 <div class="col-12 col-md-6 col-xl-4">
                     <section class="fa-section h-100">
                         <div class="fa-section__header">
-                            <h2 class="fa-section__title mb-1">{{ preset.name }}</h2>
+                            <h2 class="fa-section__title mb-1">{% set _preset_name_key = 'industry_preset.catalog.' ~ preset.id ~ '.name' -%}{%- set _preset_name = _preset_name_key|trans({}, 'admin') -%}{{ _preset_name != _preset_name_key ? _preset_name : preset.name }}</h2>
                             <small class="text-muted">{{ preset.id }} · {{ preset.locale|upper }}</small>
                         </div>
                         <div class="fa-section__body">
-                            <p class="text-muted small mb-3">{{ preset.description|nl2br }}</p>
+                            <p class="text-muted small mb-3">{% set _preset_desc_key = 'industry_preset.catalog.' ~ preset.id ~ '.description' -%}{%- set _preset_desc = _preset_desc_key|trans({}, 'admin') -%}{{ (_preset_desc != _preset_desc_key ? _preset_desc : preset.description)|nl2br }}</p>
                             <div class="d-flex flex-wrap gap-2 mb-3">
                                 {{ pill.render(preset.modules_count ~ ' ' ~ 'industry_preset.badge_label.modules'|trans, 'primary', {size: 'sm', icon: 'nav-boxes'}) }}
                                 {{ pill.render(preset.frameworks_count ~ ' ' ~ 'industry_preset.badge_label.frameworks'|trans, 'primary', {size: 'sm', icon: 'shield-check'}) }}

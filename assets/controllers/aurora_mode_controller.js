@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * FairyAurora Mode-Switch Controller — 3-State (Light / Dark / System)
@@ -10,14 +11,24 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static values = {
-        labelLight:  { type: String, default: 'Light' },
-        labelDark:   { type: String, default: 'Dark' },
-        labelSystem: { type: String, default: 'System' }
+        labelLight:  { type: String, default: '' },
+        labelDark:   { type: String, default: '' },
+        labelSystem: { type: String, default: '' }
     };
     static targets = ['srText'];
 
     static STORAGE_KEY = 'fa-theme';
     static CYCLE = ['light', 'dark', 'system'];
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            labelLight: () => faT('aurora_mode.light'),
+            labelDark: () => faT('aurora_mode.dark'),
+            labelSystem: () => faT('aurora_mode.system'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         this.syncFromStorage();
@@ -48,9 +59,9 @@ export default class extends Controller {
     updateUI() {
         this.element.setAttribute('data-current-mode', this.current);
         if (this.hasSrTextTarget) {
-            const label = this.current === 'light' ? this.labelLightValue
-                        : this.current === 'dark'  ? this.labelDarkValue
-                        :                            this.labelSystemValue;
+            const label = this.current === 'light' ? this.label('labelLight')
+                        : this.current === 'dark'  ? this.label('labelDark')
+                        :                            this.label('labelSystem');
             this.srTextTarget.textContent = label;
         }
     }

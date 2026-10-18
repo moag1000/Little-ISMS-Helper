@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * AsyncJob Controller — polls the /admin/jobs/{id}/status endpoint and
@@ -119,7 +120,7 @@ export default class extends Controller {
 
             if (!resp.ok) {
                 // Kickoff rejected (CSRF / validation). Surface server message.
-                let msg = `Request failed (${resp.status}).`;
+                let msg = faT('error_status', { '%status%': resp.status });
                 try {
                     const j = await resp.json();
                     if (j && j.message) msg = j.message;
@@ -131,7 +132,7 @@ export default class extends Controller {
             // Kickoff accepted ({status:'started'}) — poll for the real result.
             this._startPolling();
         } catch (_e) {
-            this._applyTerminalFailure('Network error while starting the job.');
+            this._applyTerminalFailure(faT('async_job.start_network_error'));
         }
     }
 
@@ -179,7 +180,7 @@ export default class extends Controller {
             if (!resp.ok) {
                 // 404 → job file deleted; treat as terminal failure
                 if (resp.status === 404) {
-                    this._applyTerminalFailure('Job not found (deleted or expired).');
+                    this._applyTerminalFailure(faT('async_job.not_found'));
                 }
                 return; // other transient errors — keep polling
             }
@@ -301,7 +302,7 @@ export default class extends Controller {
             const label = k.replace(/_/g, ' ');
             let value;
             if (Array.isArray(v)) {
-                value = v.length === 0 ? '—' : `${v.length} item(s)`;
+                value = v.length === 0 ? '—' : this._escapeHtml(faT('async_job.items', { '%count%': v.length }));
             } else if (v && typeof v === 'object') {
                 value = `<code>${this._escapeHtml(JSON.stringify(v))}</code>`;
             } else {

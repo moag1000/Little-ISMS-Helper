@@ -142,7 +142,7 @@
                             <span class="fa-tabs__nav-badge"
                                   data-{{ controller }}-target="errorBadge"
                                   data-tab-id="{{ tabId }}"
-                                  aria-label="{{ tab.errors }} Fehler">{{ tab.errors }}</span>
+                                  aria-label="{{ 'ui.component.errors_count'|trans({'%count%': tab.errors}, 'ui') }}">{{ tab.errors }}</span>
                         {%- endif -%}
                     </button>
                 </li>

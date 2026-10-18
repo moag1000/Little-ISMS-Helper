@@ -27,7 +27,7 @@
     {% set persona = config.persona|default('isb') %}
     <a href="{{ config.href }}"
        class="fa-persona-cockpit-card fa-persona-cockpit-card--{{ persona }}"
-       aria-label="{{ config.name }}{% if config.role is defined and config.role %} · {{ config.role }}{% endif %} Cockpit öffnen">
+       aria-label="{{ 'ui.component.persona_cockpit.open'|trans({'%label%': config.name ~ (config.role is defined and config.role ? ' · ' ~ config.role : '')}, 'ui') }}">
         <div class="fa-persona-cockpit-card__icon">
             <i class="fa-icon fa-icon--persona-{{ persona }}" aria-hidden="true"></i>
         </div>
@@ -53,6 +53,6 @@
             </div>
         {% endif %}
 
-        <span class="fa-persona-cockpit-card__cta">Zum Cockpit →</span>
+        <span class="fa-persona-cockpit-card__cta">{{ 'ui.component.persona_cockpit.cta'|trans({}, 'ui') }}</span>
     </a>
 {% endmacro %}

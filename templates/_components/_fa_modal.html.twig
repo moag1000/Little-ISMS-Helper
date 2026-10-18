@@ -63,7 +63,7 @@
     {%- set id              = props.id ?? ('fa-modal-' ~ random()) -%}
     {%- set tone            = props.tone ?? 'neutral' -%}
     {%- set icon            = props.icon ?? (tone == 'danger' ? 'exclamation-triangle-fill' : (tone == 'warning' ? 'exclamation-triangle' : (tone == 'success' ? 'check-circle' : 'info-circle'))) -%}
-    {%- set cancelLabel     = props.cancelLabel ?? 'Abbrechen' -%}
+    {%- set cancelLabel     = props.cancelLabel ?? ('ui.component.cancel'|trans({}, 'ui')) -%}
     {%- set cooldownSeconds = props.cooldownSeconds ?? 0 -%}
     {%- set formMethod      = props.formMethod ?? 'post' -%}
     {%- set hasTypeConfirm  = props.typeToConfirm is defined and props.typeToConfirm -%}
@@ -137,7 +137,7 @@
                     {% if hasTypeConfirm %}
                         <label class="fa-modal__field">
                             <span class="fa-modal__field-hint">
-                                {{- (props.confirmHint ?? ('Tippe <code>' ~ props.typeToConfirm ~ '</code> zum Bestätigen'))|raw -}}
+                                {{- (props.confirmHint ?? 'ui.component.modal.type_to_confirm'|trans({'%phrase%': props.typeToConfirm|e}, 'ui'))|raw -}}
                             </span>
                             <input type="text"
                                    class="fa-modal__field-input"
@@ -183,8 +183,8 @@
 {% macro settings(props = {}) %}
     {%- set id            = props.id ?? ('fa-modal-' ~ random()) -%}
     {%- set icon          = props.icon ?? 'sliders' -%}
-    {%- set cancelLabel   = props.cancelLabel ?? 'Schließen' -%}
-    {%- set primaryLabel  = props.primaryLabel ?? 'Speichern' -%}
+    {%- set cancelLabel   = props.cancelLabel ?? ('ui.component.close'|trans({}, 'ui')) -%}
+    {%- set primaryLabel  = props.primaryLabel ?? ('ui.component.save'|trans({}, 'ui')) -%}
     {%- set primaryVariant = props.primaryVariant ?? 'primary' -%}
     {%- set formMethod    = props.formMethod ?? 'post' -%}
     {%- set hasForm       = props.formAction is defined and props.formAction -%}

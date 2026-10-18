@@ -66,7 +66,7 @@ body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
 .keyboard-shortcuts-container {
     background: var(--surface);
     border-radius: var(--r-xl);
-    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4), 0 0 40px var(--primary-glow); /* design-spec: keyboard shortcuts overlay premium shadow with glow */
+    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4); /* design-spec: keyboard shortcuts overlay premium shadow with glow */
     border: 2px solid var(--primary);
     width: 900px;
     max-width: 90vw;

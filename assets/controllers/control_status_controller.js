@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * control-status controller
@@ -107,11 +108,11 @@ export default class extends Controller {
 
     #disabledTooltip() {
         return this.element.getAttribute('data-control-status-verified-tooltip')
-            || 'Verifiziert = vollständig umgesetzt';
+            || faT('control_status.verified_tooltip');
     }
 
     #confirmMessage() {
         return this.element.getAttribute('data-control-status-implemented-confirm')
-            || 'Als vollständig umgesetzt (100%) markieren?';
+            || faT('control_status.implemented_confirm');
     }
 }

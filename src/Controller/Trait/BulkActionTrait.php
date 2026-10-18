@@ -63,7 +63,7 @@ trait BulkActionTrait
                 if ($check !== null && isset($check['message']) && $check['message'] !== '') {
                     $deps[] = [
                         'message' => $label . ': ' . $check['message'],
-                        'icon' => $check['icon'] ?? 'link-45deg',
+                        'icon' => $check['icon'] ?? 'ui-link',
                     ];
                 }
             }
@@ -146,7 +146,11 @@ trait BulkActionTrait
      * @param User              $assignee   The User being assigned.
      * @param string            $entityType Short entity class name for audit-log.
      * @param AuditLogger|null  $auditLogger Optional.
-     * @return array{ok: bool, changed: int, rejected: list<array{id: mixed, reason: string}>}
+     * Entities the current user may not edit (voter attribute `edit`) are
+     * rejected with reason `access_denied`; an inactive assignee rejects the
+     * whole batch (`assignee_inactive`), as nobody could act on the records.
+     *
+     * @return array{ok: bool, changed: int, rejected: list<array{id: mixed, reason: string}>, error?: string}
      */
     protected function applyBulkAssign(
         iterable $entities,
@@ -159,7 +163,18 @@ trait BulkActionTrait
         $rejected = [];
         $perEntityData = [];
 
+        if (!$assignee->isActive()) {
+            return ['ok' => false, 'changed' => 0, 'rejected' => [], 'error' => 'assignee_inactive'];
+        }
+
         foreach ($entities as $entity) {
+            if (!$this->isGranted('edit', $entity)) {
+                $rejected[] = [
+                    'id' => method_exists($entity, 'getId') ? $entity->getId() : null,
+                    'reason' => 'access_denied',
+                ];
+                continue;
+            }
             try {
                 ($assigner)($entity, $assignee);
                 $id = method_exists($entity, 'getId') ? $entity->getId() : null;

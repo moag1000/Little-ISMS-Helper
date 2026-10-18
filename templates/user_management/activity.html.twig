@@ -110,7 +110,11 @@
                     </div>
                 {% endfor %}
             {% else %}
-                {{ _fa_alert.render({ variant: 'info', body: 'user.activity.no_activities'|trans({}, 'user') }) }}
+                {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                {{ _fa_empty_state.render({
+                    mood: 'sleeping',
+                    title: 'user.activity.no_activities'|trans({}, 'user')
+                }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

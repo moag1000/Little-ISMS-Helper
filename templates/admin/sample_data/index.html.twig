@@ -81,9 +81,9 @@
                                        {% if not sample.modules_ok %}disabled{% endif %}>
                             </td>
                             <td class="fa-table__cell">
-                                <label for="sample_{{ sample.key }}" class="fw-semibold mb-0">{{ sample.name }}</label>
+                                <label for="sample_{{ sample.key }}" class="fw-semibold mb-0">{{ module_data_text(sample, 'name') }}</label>
                             </td>
-                            <td class="fa-table__cell text-muted small">{{ sample.description }}</td>
+                            <td class="fa-table__cell text-muted small">{{ module_data_text(sample, 'description') }}</td>
                             <td class="fa-table__cell">
                                 {% for m in sample.required_modules %}
                                     <span class="fa-status-pill fa-status-pill--neutral">{{ m }}</span>
@@ -111,7 +111,7 @@
                                           class="d-inline"
                                           data-controller="ui-actions"
                                           data-action="submit->ui-actions#confirm"
-                                          data-ui-actions-message-param="{{ 'admin.sample_data.confirm_remove'|trans({'%name%': sample.name, '%count%': sample.count}, 'admin') }}">
+                                          data-ui-actions-message-param="{{ 'admin.sample_data.confirm_remove'|trans({'%name%': module_data_text(sample, 'name'), '%count%': sample.count}, 'admin') }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('sample_data_remove_' ~ sample.key) }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
                                             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'admin.sample_data.remove_button'|trans({}, 'admin') }}

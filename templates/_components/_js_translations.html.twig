@@ -1,0 +1,12 @@
+{#
+ # window.translations — the JavaScript UI dictionary, included by every
+ # layout that loads the importmap (base, base_auth, base_public, setup).
+ #
+ # JSON-encoded so a quote or </script> in a translation can never break out
+ # of the string. `ui` holds every ui.js.* message of the ui domain
+ # (App\Twig\JsTranslationsExtension), read through faT() in
+ # assets/js/fa-i18n.js — controller texts, dialog buttons, errors.
+ #}
+<script>
+    window.translations = {{ {ui: js_ui_translations()}|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }};
+</script>

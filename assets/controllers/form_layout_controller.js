@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * FormLayout Controller — Scrollspy + Progress + Collapse + Jumplink + Auto-save indicator
@@ -250,9 +251,9 @@ export default class extends Controller {
         if (metaEl && !section.classList.contains('fa-form-section--error')) {
             const pending = totalFields - filledFields;
             if (filledFields === totalFields && totalFields > 0) {
-                metaEl.textContent = `${totalFields} Felder · alle ausgefüllt`;
+                metaEl.textContent = faT('form_layout.section_complete', { '%total%': totalFields });
             } else {
-                metaEl.textContent = `${totalFields} Felder · ${filledFields} ausgefüllt · ${pending} ausstehend`;
+                metaEl.textContent = faT('form_layout.section_progress', { '%total%': totalFields, '%filled%': filledFields, '%pending%': pending });
             }
         }
 
@@ -316,8 +317,8 @@ export default class extends Controller {
         }
 
         if (this.hasProgressTextTarget) {
-            this.progressTextTarget.innerHTML =
-                `<strong>${done}</strong> von <strong>${total}</strong> Abschnitten · ${percent}%`;
+            this.progressTextTarget.textContent =
+                faT('form_layout.progress', { '%done%': done, '%total%': total, '%percent%': percent });
         }
     }
 
@@ -357,13 +358,16 @@ export default class extends Controller {
 
         let label;
         if (diffSec < 60) {
-            label = `Entwurf gespeichert vor ${diffSec} s`;
+            label = faT('form_layout.draft_saved_seconds', { '%n%': diffSec });
         } else if (diffSec < 3600) {
-            label = `Entwurf gespeichert vor ${Math.round(diffSec / 60)} min`;
+            label = faT('form_layout.draft_saved_minutes', { '%n%': Math.round(diffSec / 60) });
         } else {
-            label = `Entwurf gespeichert vor ${Math.round(diffSec / 3600)} h`;
+            label = faT('form_layout.draft_saved_hours', { '%n%': Math.round(diffSec / 3600) });
         }
 
-        this.draftStateTarget.innerHTML = `<i class="fa-icon fa-icon--check-circle-fill"></i> ${label}`;
+        const icon = document.createElement('i');
+        icon.className = 'fa-icon fa-icon--check-circle-fill';
+        icon.setAttribute('aria-hidden', 'true');
+        this.draftStateTarget.replaceChildren(icon, ` ${label}`);
     }
 }

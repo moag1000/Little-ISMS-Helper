@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_fa_skel.html.twig' as _fa_skel %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -36,11 +37,11 @@
     {# Page Header with Customize Button and Role Dashboard Switcher #}
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            {% include '_components/_page_header.html.twig' with {
+            {{ _fa_page_header.render({
                 title: 'dashboard.title'|trans({}, 'dashboard'),
                 subtitle: 'dashboard.subtitle'|trans({}, 'dashboard'),
-                icon: 'nav-dashboard'
-            } %}
+                badge: { icon: 'nav-dashboard', label: '' }
+            }) }}
         </div>
         <div class="btn-group">
             {# Role-Based Dashboard Switcher #}

@@ -50,7 +50,7 @@
         <div class="col-sm-6 col-xl-3">
             <div data-testid="bucket-erledigt" data-tour-step="bsi-gap-bucket-erledigt">
                 {{ _fa_feature_card.render({
-                    icon: 'check-circle',
+                    icon: 'status-ok',
                     title: 'bsi.cross_gap.bucket.erledigt'|trans,
                     value: result.bucketCounts.erledigt,
                     subtitle: 'bsi.cross_gap.bucket.erledigt_hint'|trans,
@@ -61,7 +61,7 @@
         <div class="col-sm-6 col-xl-3">
             <div data-testid="bucket-quick_win" data-tour-step="bsi-gap-bucket-quick_win">
                 {{ _fa_feature_card.render({
-                    icon: 'lightning',
+                    icon: 'rocket-takeoff',
                     title: 'bsi.cross_gap.bucket.quick_win'|trans,
                     value: result.bucketCounts.quick_win,
                     subtitle: 'bsi.cross_gap.bucket.quick_win_hint'|trans,
@@ -72,7 +72,7 @@
         <div class="col-sm-6 col-xl-3">
             <div data-testid="bucket-bsi_arbeit" data-tour-step="bsi-gap-bucket-bsi_arbeit">
                 {{ _fa_feature_card.render({
-                    icon: 'wrench',
+                    icon: 'nav-wrench',
                     title: 'bsi.cross_gap.bucket.bsi_arbeit'|trans,
                     value: result.bucketCounts.bsi_arbeit,
                     subtitle: 'bsi.cross_gap.bucket.bsi_arbeit_hint'|trans,
@@ -83,7 +83,7 @@
         <div class="col-sm-6 col-xl-3">
             <div data-testid="bucket-pruefen" data-tour-step="bsi-gap-bucket-pruefen">
                 {{ _fa_feature_card.render({
-                    icon: 'magnifying-glass',
+                    icon: 'ui-search',
                     title: 'bsi.cross_gap.bucket.pruefen'|trans,
                     value: result.bucketCounts.pruefen,
                     subtitle: 'bsi.cross_gap.bucket.pruefen_hint'|trans,
@@ -155,7 +155,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
-                <i class="fa-icon fa-icon--warning" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-exclamation-triangle fa-icon--warning" aria-hidden="true"></i>
                 <div>
                     {{ 'bsi.cross_gap.pending_review'|trans({'%count%': pendingReview}, 'compliance') }}
                     <a href="{{ path('app_compliance_inheritance_queue', {frameworkCode: bsiCode ?? 'BSI_GRUNDSCHUTZ'}) }}" class="alert-link ms-1">

@@ -84,6 +84,7 @@ role_management:
             privacy: 'Datenschutz (DSGVO)'
             security: 'Sicherheit & KPIs'
             policy: 'Richtlinien'
+            policy_wizard: 'Policy-Wizard'
         module:
             authentication: 'Benutzer & Rollen'
             assets: 'Asset-Management'
@@ -107,6 +108,9 @@ role_management:
             export: 'Exportieren'
             respond: 'Antworten'
             revoke: 'Widerrufen'
+            review: 'Prüfen'
+            manage: 'Verwalten'
+            veto: 'Veto einlegen'
 role:
     user: Benutzer
     manager: Manager
@@ -141,6 +145,12 @@ role:
         description: 'Vordefinierte Rollenvorlagen für typische ISMS-Funktionen'
         intro: 'Wählen Sie eine vordefinierte Rollenvorlage aus und passen Sie optional den Namen an. Die Vorlage enthält bereits eine sinnvolle Kombination von Berechtigungen für den jeweiligen Anwendungsfall.'
         custom_name: 'Benutzerdefinierter Name'
+        notes:
+            title: 'Wichtige Hinweise'
+            adjustable: 'Die erstellte Rolle kann nach der Erstellung angepasst werden'
+            missing_skipped: 'Fehlende Berechtigungen werden übersprungen (z. B. wenn sie noch nicht existieren)'
+            custom_role: 'Die Rolle wird als benutzerdefinierte Rolle (nicht System-Rolle) erstellt'
+            edit_permissions: 'Nach der Erstellung können Sie Berechtigungen hinzufügen oder entfernen'
     field:
         system_role: Systemrolle
     help:
