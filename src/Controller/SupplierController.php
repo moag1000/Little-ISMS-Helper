@@ -455,7 +455,7 @@ class SupplierController extends AbstractController
             if ($supplier === null) {
                 continue;
             }
-            if ($tenant !== null && $supplier->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($supplier, $tenant)) {
                 continue;
             }
             $suppliers[] = $supplier;

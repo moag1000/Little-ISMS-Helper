@@ -582,7 +582,7 @@ class DataBreachController extends AbstractController
             if ($breach === null) {
                 continue;
             }
-            if ($tenant !== null && $breach->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($breach, $tenant)) {
                 continue;
             }
             $breaches[] = $breach;

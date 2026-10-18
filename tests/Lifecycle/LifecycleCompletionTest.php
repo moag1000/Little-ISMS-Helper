@@ -129,7 +129,11 @@ final class LifecycleCompletionTest extends TestCase
                 self::assertArrayNotHasKey('status', $doc, basename($file) . ': ' . ($doc['title'] ?? '?'));
             }
         }
-        foreach (['src/Controller/Admin/IndustryPresetController.php', 'src/Command/LoadIndustryPresetCommand.php'] as $file) {
+        foreach ([
+            'src/Controller/Admin/IndustryPresetController.php',
+            'src/Command/LoadIndustryPresetCommand.php',
+            'src/Service/Setup/IndustryPresetApplier.php',
+        ] as $file) {
             self::assertStringNotContainsString('$doc->setStatus(', (string) file_get_contents(self::ROOT . '/' . $file));
         }
     }

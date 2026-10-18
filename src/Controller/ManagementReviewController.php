@@ -13,7 +13,7 @@ use App\Entity\ManagementReview;
 use App\Enum\ManagementReviewStatus;
 use App\Form\ManagementReviewType;
 use App\Repository\ManagementReviewRepository;
-use App\Service\ManagementReportService;
+use App\Service\ManagementReviewAutoCollector;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,7 +39,7 @@ class ManagementReviewController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly PdfExportService $pdfExportService,
-        private readonly ManagementReportService $managementReportService,
+        private readonly ManagementReviewAutoCollector $managementReviewAutoCollector,
         private readonly Security $security,
     ) {}
     #[Route('/management-review', name: 'app_management_review_index', methods: ['GET'])]
@@ -206,7 +206,7 @@ class ManagementReviewController extends AbstractController
         $referenceDate = new DateTimeImmutable();
         $locale = $request->getLocale() === 'de' ? 'de' : 'en';
 
-        $review = $this->managementReportService->createManagementReviewFromReport(
+        $review = $this->managementReviewAutoCollector->createManagementReviewFromReport(
             $tenant,
             $referenceDate,
             $locale

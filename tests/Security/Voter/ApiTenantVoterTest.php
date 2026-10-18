@@ -13,7 +13,6 @@ use App\Security\Voter\ApiTenantVoter;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 #[AllowMockObjectsWithoutExpectations]
@@ -23,15 +22,8 @@ class ApiTenantVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $security = $this->createMock(Security::class);
-        // ROLE_ADMIN check via Security::isGranted — default false, overridden per-test
-        $security->method('isGranted')->willReturnCallback(
-            fn(string $role): bool => $role === 'ROLE_ADMIN' && $this->currentUserIsAdmin
-        );
-        $this->voter = new ApiTenantVoter($security, VoterTestHelper::createRoleHierarchy());
+        $this->voter = new ApiTenantVoter(VoterTestHelper::createRoleHierarchy());
     }
-
-    private bool $currentUserIsAdmin = false;
 
     private function createToken(User $user): UsernamePasswordToken
     {
@@ -160,23 +152,63 @@ class ApiTenantVoterTest extends TestCase
     }
 
     #[Test]
-    public function grantsAllForAdmin(): void
+    public function grantsAllForAdminInOwnTenant(): void
     {
-        $this->currentUserIsAdmin = true;
-        $tenantA = $this->createTenant(1);
-        $tenantB = $this->createTenant(2);
-        $admin = $this->createUser($tenantA, ['ROLE_USER', 'ROLE_ADMIN']);
+        $tenant = $this->createTenant(1);
+        $admin = $this->createUser($tenant, ['ROLE_USER', 'ROLE_ADMIN']);
         $supplier = new Supplier();
-        $supplier->setTenant($tenantB); // Different tenant
+        $supplier->setTenant($tenant);
 
         foreach (['API_VIEW', 'API_EDIT', 'API_DELETE', 'API_CREATE'] as $attr) {
-            $vote = $this->voter->vote(
-                $this->createToken($admin),
-                $supplier,
-                [$attr]
-            );
-            $this->assertSame(1, $vote, "Admin should be granted $attr");
+            $vote = $this->voter->vote($this->createToken($admin), $supplier, [$attr]);
+            $this->assertSame(1, $vote, "Admin should be granted $attr in the own tenant");
         }
+    }
+
+    /**
+     * ROLE_ADMIN is per organisation: it used to bypass the tenant check.
+     */
+    #[Test]
+    public function deniesAllForAdminOfOtherTenant(): void
+    {
+        $admin = $this->createUser($this->createTenant(1), ['ROLE_USER', 'ROLE_ADMIN']);
+        $supplier = new Supplier();
+        $supplier->setTenant($this->createTenant(2));
+
+        foreach (['API_VIEW', 'API_EDIT', 'API_DELETE', 'API_CREATE'] as $attr) {
+            $vote = $this->voter->vote($this->createToken($admin), $supplier, [$attr]);
+            $this->assertSame(-1, $vote, "Admin of another tenant must be denied $attr");
+        }
+    }
+
+    #[Test]
+    public function grantsAllForSuperAdminAcrossTenants(): void
+    {
+        $superAdmin = $this->createUser(null, ['ROLE_SUPER_ADMIN']);
+        $supplier = new Supplier();
+        $supplier->setTenant($this->createTenant(2));
+
+        foreach (['API_VIEW', 'API_EDIT', 'API_DELETE', 'API_CREATE'] as $attr) {
+            $vote = $this->voter->vote($this->createToken($superAdmin), $supplier, [$attr]);
+            $this->assertSame(1, $vote, "Super admin should be granted $attr");
+        }
+    }
+
+    #[Test]
+    public function createWithoutTenantNeedsAUserTenant(): void
+    {
+        $supplier = new Supplier();
+
+        $this->assertSame(1, $this->voter->vote(
+            $this->createToken($this->createUser($this->createTenant(1))),
+            $supplier,
+            ['API_CREATE'],
+        ));
+        $this->assertSame(-1, $this->voter->vote(
+            $this->createToken($this->createUser(null, ['ROLE_ADMIN'])),
+            $supplier,
+            ['API_CREATE'],
+        ));
     }
 
     #[Test]

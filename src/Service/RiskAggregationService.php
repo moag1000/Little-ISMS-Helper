@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Risk;
+use App\Enum\RiskStatus;
 use App\Entity\Tenant;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
@@ -225,9 +226,17 @@ final class RiskAggregationService
         $identifiedOrAssessed = 0;
         foreach ($risks as $risk) {
             $status = $risk->getStatus();
-            if (in_array($status, ['treated', 'monitored', 'closed', 'accepted'], true)) {
+            // getStatus() returns the RiskStatus enum — compare against its
+            // cases (a string list never matched, so the trend was always 'stable').
+            if (in_array($status, [
+                RiskStatus::Treated,
+                RiskStatus::Mitigated,
+                RiskStatus::Monitored,
+                RiskStatus::Closed,
+                RiskStatus::Accepted,
+            ], true)) {
                 $treatedOrClosed++;
-            } elseif (in_array($status, ['identified', 'assessed'], true)) {
+            } elseif (in_array($status, [RiskStatus::Identified, RiskStatus::Assessed, RiskStatus::Open], true)) {
                 $identifiedOrAssessed++;
             }
         }

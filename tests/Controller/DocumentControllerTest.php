@@ -729,7 +729,9 @@ class DocumentControllerTest extends TestCase
         $this->security->method('getUser')->willReturn($user);
         $this->documentService->method('canEditDocument')->willReturn(true);
 
-        $this->entityManager->expects($this->once())->method('flush');
+        // Soft delete via the lifecycle (DocumentService::softDelete), no remove().
+        $this->documentService->expects($this->once())->method('softDelete')->with($document, $user);
+        $this->entityManager->expects($this->never())->method('remove');
         $this->translator->method('trans')->willReturn('Deleted');
 
         $request = $this->createRequestWithSession([], ['_token' => 'valid_token']);
@@ -788,8 +790,14 @@ class DocumentControllerTest extends TestCase
                 [2, $document2],
             ]);
 
-        $this->entityManager->expects($this->exactly(2))->method('remove');
-        $this->entityManager->expects($this->once())->method('flush');
+        // Bulk delete is the same soft delete as the single delete — never
+        // a hard remove (it used to remove() the rows and unlink the files).
+        $softDeleted = [];
+        $this->documentService->expects($this->exactly(2))->method('softDelete')
+            ->willReturnCallback(function (Document $doc, ?User $by, string $reason) use (&$softDeleted): void {
+                $softDeleted[] = [$doc, $by, $reason];
+            });
+        $this->entityManager->expects($this->never())->method('remove');
 
         $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1, 2], '_token' => 'valid']));
         $request->setMethod('POST');
@@ -801,6 +809,9 @@ class DocumentControllerTest extends TestCase
         $data = json_decode($response->getContent(), true);
         $this->assertTrue($data['success']);
         $this->assertEquals(2, $data['deleted']);
+        $this->assertSame([$document1, $document2], array_column($softDeleted, 0));
+        $this->assertSame($user, $softDeleted[0][1]);
+        $this->assertNotSame('', $softDeleted[0][2], 'soft_delete requires a reason');
     }
 
     /**

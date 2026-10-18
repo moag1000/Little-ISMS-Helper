@@ -6,6 +6,7 @@ namespace App\Security\Voter\Notification;
 
 use App\Entity\Notification\NotificationRule;
 use App\Entity\User;
+use App\Security\Voter\HoldingTreeAccessTrait;
 use App\Service\ModuleConfigurationService;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -21,6 +22,8 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  */
 final class NotificationRuleVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public const string VIEW   = 'view';
     public const string EDIT   = 'edit';
     public const string DELETE = 'delete';
@@ -29,6 +32,11 @@ final class NotificationRuleVoter extends Voter
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {}
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
+    }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -51,22 +59,17 @@ final class NotificationRuleVoter extends Voter
             return false;
         }
 
-        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        // Admins bypass tenant check
-        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
-            return true;
-        }
-
-        // Tenant isolation
-        if ($rule->getTenant()?->getId() !== $user->getTenant()?->getId()) {
-            return false;
+        // Tenant scope (fail closed): SUPER_ADMIN everywhere, ROLE_ADMIN
+        // only inside its own tenant, holding roles read-only down the tree.
+        $scope = $this->decideTenantScope($user, $rule->getTenant(), $attribute === self::VIEW);
+        if ($scope !== null) {
+            return $scope;
         }
 
         return match ($attribute) {
             self::VIEW   => true,
             self::EDIT,
-            self::DELETE => in_array('ROLE_MANAGER', $reachableRoles, true),
+            self::DELETE => $this->hasReachableRole($user, 'ROLE_MANAGER'),
             default      => false,
         };
     }

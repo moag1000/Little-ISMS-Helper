@@ -441,6 +441,45 @@ class DataImportServiceTest extends TestCase
         $this->assertStringContainsString('nicht gefunden', $result['results'][0]['message']);
     }
 
+    /**
+     * Regression: createEntity() called $type::tryFrom() on every enum-typed
+     * setter; a pure (non-backed) enum has no tryFrom() and threw \Error.
+     * Pure enums now resolve by case name, backed enums by value.
+     */
+    #[Test]
+    public function testCreateEntityConvertsPureBackedAndIntEnums(): void
+    {
+        $method = new \ReflectionMethod($this->service, 'createEntity');
+
+        $entity = $method->invoke($this->service, DataImportEnumFixtureEntity::class, [
+            'mood' => 'Calm',
+            'level' => 'high',
+            'rank' => '2',
+        ]);
+
+        $this->assertInstanceOf(DataImportEnumFixtureEntity::class, $entity);
+        $this->assertSame(DataImportPureEnumFixture::Calm, $entity->mood);
+        $this->assertSame(DataImportBackedEnumFixture::High, $entity->level);
+        $this->assertSame(DataImportIntEnumFixture::Two, $entity->rank);
+    }
+
+    #[Test]
+    public function testCreateEntitySkipsUnknownEnumValues(): void
+    {
+        $method = new \ReflectionMethod($this->service, 'createEntity');
+
+        $entity = $method->invoke($this->service, DataImportEnumFixtureEntity::class, [
+            'mood' => 'calm',   // case names are case-sensitive
+            'level' => 'urgent',
+            'rank' => 'two',
+        ]);
+
+        $this->assertNull($entity->mood);
+        $this->assertNull($entity->level);
+        $this->assertNull($entity->rank);
+        $this->assertStringContainsString('nicht in enum', implode("\n", array_column($this->service->getImportLog(), 'message')));
+    }
+
     private function removeDirectory(string $dir): void
     {
         if (!is_dir($dir)) {
@@ -453,5 +492,45 @@ class DataImportServiceTest extends TestCase
             is_dir($path) ? $this->removeDirectory($path) : unlink($path);
         }
         rmdir($dir);
+    }
+}
+
+enum DataImportPureEnumFixture
+{
+    case Calm;
+    case Angry;
+}
+
+enum DataImportBackedEnumFixture: string
+{
+    case Low = 'low';
+    case High = 'high';
+}
+
+enum DataImportIntEnumFixture: int
+{
+    case One = 1;
+    case Two = 2;
+}
+
+final class DataImportEnumFixtureEntity
+{
+    public ?DataImportPureEnumFixture $mood = null;
+    public ?DataImportBackedEnumFixture $level = null;
+    public ?DataImportIntEnumFixture $rank = null;
+
+    public function setMood(DataImportPureEnumFixture $mood): void
+    {
+        $this->mood = $mood;
+    }
+
+    public function setLevel(DataImportBackedEnumFixture $level): void
+    {
+        $this->level = $level;
+    }
+
+    public function setRank(DataImportIntEnumFixture $rank): void
+    {
+        $this->rank = $rank;
     }
 }

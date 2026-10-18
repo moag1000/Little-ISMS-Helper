@@ -12,6 +12,7 @@ use App\Security\Voter\TagVoter;
 use App\Service\BulkTagService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,10 +93,9 @@ final class TagController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    public function edit(Tag $tag, Request $request): Response
+    #[IsGranted(TagVoter::TAG_MANAGE, subject: 'tag')]
+    public function edit(#[MapEntity(id: 'id')] Tag $tag, Request $request): Response
     {
-        $this->denyAccessUnlessGranted(TagVoter::TAG_MANAGE, $tag);
-
         $form = $this->createForm(TagType::class, $tag);
         $form->handleRequest($request);
 
@@ -117,10 +117,9 @@ final class TagController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function delete(Tag $tag, Request $request): Response
+    #[IsGranted(TagVoter::TAG_MANAGE, subject: 'tag')]
+    public function delete(#[MapEntity(id: 'id')] Tag $tag, Request $request): Response
     {
-        $this->denyAccessUnlessGranted(TagVoter::TAG_MANAGE, $tag);
-
         if (!$this->isCsrfTokenValid('tag_delete_' . $tag->getId(), (string) $request->request->get('_token'))) {
             $this->addFlash('danger', $this->translator->trans('tags.flash.csrf_invalid', [], 'tags'));
             return $this->redirectToRoute('admin_tag_index');

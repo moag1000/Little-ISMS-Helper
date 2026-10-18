@@ -2009,6 +2009,14 @@ kpi_threshold:
         delete: 'Really delete this threshold? Defaults will apply afterwards.'
 
 industry_preset:
+    document_placeholder:
+        description: 'Placeholder from industry preset "%preset%" — add the content or upload the final file.'
+        body: |
+            # %title%
+
+            This document was created as a placeholder by the industry preset "%preset%".
+
+            Replace this text with the document content or upload the final file, then send the document through review and approval.
     title: 'Industry Presets'
     badge: 'Setup'
     subtitle: 'Industry templates for modules, frameworks, controls and documents — apply in one step.'
@@ -2038,7 +2046,7 @@ industry_preset:
         section_initial_controls: 'Initial controls'
         section_initial_documents: 'Initial documents'
         section_apply: 'Apply'
-        apply_hint: 'Applying activates modules, unlocks frameworks, and persists initial controls/documents. Existing records remain untouched.'
+        apply_hint: 'Applying activates modules for the selected organisation, unlocks frameworks, creates the initial controls and adds the initial documents as draft placeholders to the document register. Existing records remain untouched.'
         table:
             code: 'Code'
             priority: 'Priority'

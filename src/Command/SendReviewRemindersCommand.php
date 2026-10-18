@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Tenant;
 use App\Repository\ComplianceCertificateRepository;
 use App\Repository\TenantRepository;
 use App\Service\Evidence\EvidenceCascadeInvalidationService;
@@ -112,9 +113,20 @@ class SendReviewRemindersCommand
     ): int {
         $symfonyStyle->title('ISMS Review Reminder System');
 
-        // Get current statistics
-        $stats = $this->reviewReminderService->getDashboardStatistics();
-        $allOverdue = $this->reviewReminderService->getAllOverdueReviews();
+        // The cron runs without an HTTP request, so nothing scopes the queries
+        // implicitly: collect per active tenant and aggregate.
+        $tenants = $this->tenantRepository->findActive();
+        $stats = self::emptyStats();
+        $urgentBreachesAll = [];
+        $perTenant = [];
+        $this->forEachTenant($tenants, function (Tenant $tenant) use (&$stats, &$urgentBreachesAll, &$perTenant): void {
+            $tenantStats = $this->reviewReminderService->getDashboardStatistics($tenant);
+            $stats = self::addStats($stats, $tenantStats);
+            array_push($urgentBreachesAll, ...$this->reviewReminderService->getUrgentDataBreaches($tenant));
+            if ($tenantStats['total'] > 0 || $tenantStats['urgent_breaches'] > 0) {
+                $perTenant[] = [(string) $tenant->getName(), $tenantStats['total'], $tenantStats['urgent_breaches']];
+            }
+        });
 
         $symfonyStyle->section('Current Status');
         $symfonyStyle->table(
@@ -131,6 +143,11 @@ class SendReviewRemindersCommand
             ]
         );
 
+        if ($perTenant !== []) {
+            $symfonyStyle->section('By Organisation');
+            $symfonyStyle->table(['Organisation', 'Overdue Reviews', 'Urgent Breaches'], $perTenant);
+        }
+
         if ($stats['total'] > 0 || $stats['urgent_breaches'] > 0) {
             $symfonyStyle->section('Overdue by Age');
             $symfonyStyle->table(
@@ -145,10 +162,10 @@ class SendReviewRemindersCommand
         }
 
         // Show urgent data breaches
-        if ($allOverdue['data_breaches'] !== []) {
+        if ($urgentBreachesAll !== []) {
             $symfonyStyle->section('Urgent Data Breaches (72h Deadline)');
             $breachData = [];
-            foreach ($allOverdue['data_breaches'] as $breach) {
+            foreach ($urgentBreachesAll as $breach) {
                 $hoursRemaining = $breach->getHoursUntilAuthorityDeadline();
                 $status = $hoursRemaining < 0 ? '🔴 OVERDUE' : ($hoursRemaining < 12 ? '🟠 CRITICAL' : '🟡 WARNING');
                 $breachData[] = [
@@ -167,7 +184,7 @@ class SendReviewRemindersCommand
         // Skipped in stats-only/breaches-only (no mutation) and reported (not run)
         // in dry-run.
         if (!$breachesOnly && !$statsOnly) {
-            $this->scanExpiredEvidence($symfonyStyle, $dryRun);
+            $this->scanExpiredEvidence($symfonyStyle, $dryRun, $tenants);
         }
 
         if ($statsOnly) {
@@ -196,24 +213,19 @@ class SendReviewRemindersCommand
 
         if ($breachesOnly) {
             $symfonyStyle->writeln('Mode: Breach notifications only');
-            // Only process data breaches
-            $urgentBreaches = $this->reviewReminderService->getUrgentDataBreaches();
-            $sent = 0;
-            $failed = 0;
-
-            foreach ($urgentBreaches as $breach) {
-                // Send notification logic would go here
-                // For now, we'll count them
-                $sent++;
-            }
-
+            // Only process data breaches (collected per tenant above)
             $symfonyStyle->success([
-                sprintf('Processed %d urgent data breach notifications', count($urgentBreaches)),
+                sprintf('Processed %d urgent data breach notifications', count($urgentBreachesAll)),
             ]);
 
             return Command::SUCCESS;
         } else {
-            $results = $this->reviewReminderService->sendReminderNotifications($includeUpcoming);
+            $results = ['sent' => 0, 'failed' => 0];
+            $this->forEachTenant($tenants, function (Tenant $tenant) use (&$results, $includeUpcoming): void {
+                $tenantResults = $this->reviewReminderService->sendReminderNotifications($tenant, $includeUpcoming);
+                $results['sent'] += $tenantResults['sent'];
+                $results['failed'] += $tenantResults['failed'];
+            });
 
             $symfonyStyle->section('Results');
             $symfonyStyle->table(
@@ -249,18 +261,71 @@ class SendReviewRemindersCommand
     }
 
     /**
+     * Runs $work once per tenant with TenantContext set, so tenant-aware
+     * collaborators (audit log, mail branding) see the right organisation, and
+     * resets the context afterwards.
+     *
+     * @param iterable<Tenant> $tenants
+     * @param callable(Tenant): void $work
+     */
+    private function forEachTenant(iterable $tenants, callable $work): void
+    {
+        try {
+            foreach ($tenants as $tenant) {
+                $this->tenantContext->setCurrentTenant($tenant);
+                $work($tenant);
+            }
+        } finally {
+            $this->tenantContext->setCurrentTenant(null);
+        }
+    }
+
+    /**
+     * @return array{total: int, critical: int, urgent_breaches: int, by_type: array{risks: int, bc_plans: int, processing_activities: int, dpias: int}, by_days_overdue: array{'0-7': int, '8-30': int, '31-90': int, '90+': int}}
+     */
+    private static function emptyStats(): array
+    {
+        return [
+            'total' => 0,
+            'critical' => 0,
+            'urgent_breaches' => 0,
+            'by_type' => ['risks' => 0, 'bc_plans' => 0, 'processing_activities' => 0, 'dpias' => 0],
+            'by_days_overdue' => ['0-7' => 0, '8-30' => 0, '31-90' => 0, '90+' => 0],
+        ];
+    }
+
+    /**
+     * @param array{total: int, critical: int, urgent_breaches: int, by_type: array<string, int>, by_days_overdue: array<string, int>} $sum
+     * @param array{total: int, critical: int, urgent_breaches: int, by_type: array<string, int>, by_days_overdue: array<string, int>} $add
+     * @return array{total: int, critical: int, urgent_breaches: int, by_type: array<string, int>, by_days_overdue: array<string, int>}
+     */
+    private static function addStats(array $sum, array $add): array
+    {
+        foreach (['total', 'critical', 'urgent_breaches'] as $key) {
+            $sum[$key] += $add[$key];
+        }
+        foreach (['by_type', 'by_days_overdue'] as $group) {
+            foreach ($add[$group] as $key => $count) {
+                $sum[$group][$key] = ($sum[$group][$key] ?? 0) + $count;
+            }
+        }
+
+        return $sum;
+    }
+
+    /**
      * Flag overdue ComplianceRequirementFulfillments (nextReviewDate < now) as
      * evidenceOutdated for every active tenant. This is the signal that picks up
      * certificate-fulfilled controls once the certificate's validUntil passes.
      *
      * flagExpiredEvidence() has no dry mode, so in dry-run we only report intent
      * and do not mutate.
+     *
+     * @param Tenant[] $tenants
      */
-    private function scanExpiredEvidence(SymfonyStyle $symfonyStyle, bool $dryRun): void
+    private function scanExpiredEvidence(SymfonyStyle $symfonyStyle, bool $dryRun, array $tenants): void
     {
         $symfonyStyle->section('Evidence Expiry Re-Review');
-
-        $tenants = $this->tenantRepository->findActive();
 
         if ($dryRun) {
             $expiredCerts = 0;

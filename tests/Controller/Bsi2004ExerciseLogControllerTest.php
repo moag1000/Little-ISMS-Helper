@@ -30,6 +30,9 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     private ?User $auditor  = null;
     private ?BCExercise $exercise = null;
     private ?Bsi2004ExerciseLog $log = null;
+    private ?Tenant $foreignTenant = null;
+    private ?User $foreignAdmin = null;
+    private ?BCExercise $foreignExercise = null;
 
     protected function setUp(): void
     {
@@ -56,13 +59,19 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
                     $this->em->remove($log);
                 }
             }
+            if ($this->foreignExercise) {
+                $fx = $this->em->find(BCExercise::class, $this->foreignExercise->getId());
+                if ($fx) {
+                    $this->em->remove($fx);
+                }
+            }
             if ($this->exercise) {
                 $ex = $this->em->find(BCExercise::class, $this->exercise->getId());
                 if ($ex) {
                     $this->em->remove($ex);
                 }
             }
-            foreach ([$this->manager, $this->auditor] as $u) {
+            foreach ([$this->manager, $this->auditor, $this->foreignAdmin] as $u) {
                 if ($u) {
                     $user = $this->em->find(User::class, $u->getId());
                     if ($user) {
@@ -70,8 +79,8 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
                     }
                 }
             }
-            if ($this->tenant) {
-                $t = $this->em->find(Tenant::class, $this->tenant->getId());
+            foreach ([$this->tenant, $this->foreignTenant] as $tenant) {
+                $t = $tenant ? $this->em->find(Tenant::class, $tenant->getId()) : null;
                 if ($t) {
                     $this->em->remove($t);
                 }
@@ -132,6 +141,56 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * ROLE_ADMIN of another organisation used to pass the voter (admin
+     * bypass), and new() loaded any tenant's exercise by id.
+     */
+    #[Test]
+    public function foreignAdminCannotReachLogOrExerciseOfAnotherTenant(): void
+    {
+        $this->loginAs($this->foreignAdmin);
+
+        $this->client->request('GET', '/de/bcm/exercise-log/new/' . $this->exercise->getId());
+        $this->assertResponseStatusCodeSame(403);
+
+        // The tenant Doctrine filter may already hide the log (404); either
+        // way it must not be reachable.
+        foreach (['', '/edit'] as $suffix) {
+            $this->client->request('GET', '/de/bcm/exercise-log/' . $this->log->getId() . $suffix);
+            $this->assertContains($this->client->getResponse()->getStatusCode(), [403, 404], 'log' . $suffix);
+        }
+    }
+
+    /**
+     * The calendar used to list every tenant's upcoming exercises
+     * (findUpcoming() had no tenant parameter).
+     */
+    #[Test]
+    public function calendarListsOnlyTheOwnTenantsExercises(): void
+    {
+        $this->foreignExercise = new BCExercise();
+        $this->foreignExercise->setName('Foreign Upcoming ' . uniqid());
+        $this->foreignExercise->setExerciseType('tabletop');
+        $this->foreignExercise->setScope('Foreign scope');
+        $this->foreignExercise->setObjectives('Objective');
+        $this->foreignExercise->setParticipants('Eve');
+        $this->foreignExercise->setFacilitator('Mallory');
+        $this->foreignExercise->setStatus('planned');
+        $this->foreignExercise->setExerciseDate(new \DateTime('+10 days'));
+        $this->foreignExercise->setTenant($this->foreignTenant);
+        $this->em->persist($this->foreignExercise);
+        $this->em->flush();
+
+        $this->loginAs($this->manager);
+        $this->client->request('GET', '/de/bcm/exercise-log/calendar');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString(
+            (string) $this->foreignExercise->getName(),
+            (string) $this->client->getResponse()->getContent(),
+        );
+    }
+
     #[Test]
     public function calendarRendersForManager(): void
     {
@@ -148,6 +207,12 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $this->tenant->setName('BSI Log Test Tenant ' . uniqid());
         $this->tenant->setCode('TST-' . uniqid());
         $this->em->persist($this->tenant);
+
+        $this->foreignTenant = new Tenant();
+        $this->foreignTenant->setName('BSI Log Foreign Tenant ' . uniqid());
+        $this->foreignTenant->setCode('TSF-' . uniqid());
+        $this->em->persist($this->foreignTenant);
+        $this->foreignAdmin = $this->makeUser('bsi_foreign_admin_' . uniqid(), ['ROLE_ADMIN'], $this->foreignTenant);
 
         $this->manager = $this->makeUser('bsi_manager_' . uniqid(), ['ROLE_MANAGER']);
         $this->auditor = $this->makeUser('bsi_auditor_' . uniqid(), ['ROLE_AUDITOR']);
@@ -177,7 +242,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $this->em->flush();
     }
 
-    private function makeUser(string $email, array $roles): User
+    private function makeUser(string $email, array $roles, ?Tenant $tenant = null): User
     {
         $user = new User();
         $user->setEmail($email . '@test.com');
@@ -185,7 +250,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $user->setFirstName('Test');
         $user->setLastName('User');
         $user->setRoles($roles);
-        $user->setTenant($this->tenant);
+        $user->setTenant($tenant ?? $this->tenant);
         $this->em->persist($user);
         return $user;
     }

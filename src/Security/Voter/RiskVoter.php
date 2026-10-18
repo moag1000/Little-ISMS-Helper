@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - DELETE: Remove risk assessments (admin only)
  *
  * Security Rules:
- * - ROLE_ADMIN bypasses all checks
+ * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN only within its own tenant
  * - Users can only access risks from their own tenant
  * - Tenant isolation strictly enforced
  * - Only admins can delete risk assessments
@@ -70,46 +70,14 @@ final class RiskVoter extends Voter
         /** @var Risk $risk */
         $risk = $subject;
 
-        // Security: Admins can do everything
-        if ($this->hasRoleHierarchical($user, 'ROLE_ADMIN')) {
-            return true;
+        // Tenant scope first: SUPER_ADMIN everywhere, ROLE_ADMIN only inside
+        // its own tenant, holding roles read-only down the tree.
+        $scope = $this->decideTenantScope($user, $risk->getTenant(), $attribute === self::VIEW);
+        if ($scope !== null) {
+            return $scope;
         }
 
-        return match ($attribute) {
-            self::VIEW => $this->canView($risk, $user),
-            self::EDIT => $this->canEdit($risk, $user),
-            self::DELETE => $this->canDelete($user),
-            default => false,
-        };
-    }
-
-    private function canView(Risk $risk, User $user): bool
-    {
-        // Security: Multi-tenancy - users can view risks from their tenant
-        if ($risk->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
-            return true;
-        }
-        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
-        return $this->canReadAcrossHoldingTree($user, $risk->getTenant());
-    }
-
-    private function canEdit(Risk $risk, User $user): bool
-    {
-        // Security: Users can edit risks from their tenant
-        // Could be extended with risk owner checks
-        return $risk->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
-    }
-
-    private function canDelete(User $user): bool
-    {
-        // Security: Only admins can delete
-        return $this->hasRoleHierarchical($user, 'ROLE_ADMIN');
-    }
-
-    private function hasRoleHierarchical(User $user, string $role): bool
-    {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($role, $reachable, true);
+        // In scope below ROLE_ADMIN: view and edit, delete stays admin-only.
+        return $attribute !== self::DELETE;
     }
 }

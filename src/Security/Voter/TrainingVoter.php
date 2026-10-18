@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
-use App\Entity\Tenant;
 use App\Entity\Training;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -15,20 +14,27 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 /**
  * Training Voter — tenant isolation for Training records (OWASP A01).
  *
- * VIEW / EDIT: the training belongs to the user's own tenant (ROLE_ADMIN
- * bypasses, as in RiskVoter / AssetVoter). Without a dedicated voter only the
+ * VIEW / EDIT: the training belongs to the user's own tenant (holding roles
+ * may VIEW descendants; only ROLE_SUPER_ADMIN crosses tenants). Without a dedicated voter only the
  * permission-based EntityVoter answered, which requires an explicit
  * `training.edit` permission no built-in role carries — so per-record checks
  * such as the bulk "assign" action rejected every manager.
  */
 final class TrainingVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public const string VIEW = 'view';
     public const string EDIT = 'edit';
 
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -43,10 +49,8 @@ final class TrainingVoter extends Voter
             return false;
         }
 
-        if (in_array('ROLE_ADMIN', $this->roleHierarchy->getReachableRoleNames($user->getRoles()), true)) {
-            return true;
-        }
-
-        return $user->getTenant() instanceof Tenant && $subject->getTenant() === $user->getTenant();
+        // SUPER_ADMIN everywhere; everyone else (ROLE_ADMIN included) only
+        // inside the own tenant, holding roles read-only down the tree.
+        return $this->decideTenantScope($user, $subject->getTenant(), $attribute === self::VIEW) ?? true;
     }
 }

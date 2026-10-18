@@ -6,6 +6,7 @@ namespace App\Security\Voter\Authority;
 
 use App\Entity\Authority\DoraRegisterOfInformation;
 use App\Entity\User;
+use App\Security\Voter\HoldingTreeAccessTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -24,9 +25,16 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  */
 final class DoraRoiVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     public const string VIEW           = 'view';
@@ -47,17 +55,20 @@ final class DoraRoiVoter extends Voter
             return false;
         }
 
+        // Tenant scope: SUPER_ADMIN everywhere; everyone else only inside the
+        // own tenant (holding roles may read descendants); role rules below.
+        /** @var DoraRegisterOfInformation $register */
+        $register = $subject;
+        $isRead = in_array($attribute, [self::VIEW, self::EXPORT], true);
+        if (!$this->hasReachableRole($user, 'ROLE_SUPER_ADMIN')
+            && !$this->isInTenantScope($user, $register->getTenant(), $isRead)) {
+            return false;
+        }
+
         return match ($attribute) {
-            self::VIEW, self::EXPORT  => $this->hasRole($user, 'ROLE_MANAGER'),
-            self::MARK_SUBMITTED      => $this->hasRole($user, 'ROLE_ADMIN'),
+            self::VIEW, self::EXPORT  => $this->hasReachableRole($user, 'ROLE_MANAGER'),
+            self::MARK_SUBMITTED      => $this->hasReachableRole($user, 'ROLE_ADMIN'),
             default                   => false,
         };
-    }
-
-    private function hasRole(User $user, string $role): bool
-    {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($role, $reachable, true);
     }
 }

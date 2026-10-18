@@ -80,6 +80,23 @@ class AnnexAControlsBootstrapService
     }
 
     /**
+     * Canonical Annex-A entry for one control id (e.g. "A.5.1"), or null
+     * when the id is not an ISO 27001:2022 Annex-A control.
+     *
+     * @return array{controlId: string, name: string, description: string, category: string}|null
+     */
+    public function getCatalogEntry(string $controlId): ?array
+    {
+        foreach ($this->getAnnexAControls() as $data) {
+            if ($data['controlId'] === $controlId) {
+                return $data;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return array<int, array{controlId: string, name: string, description: string, category: string}>
      */
     private function getAnnexAControls(): array

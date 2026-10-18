@@ -389,7 +389,7 @@ class ConsentController extends AbstractController
             if ($consent === null) {
                 continue;
             }
-            if ($tenant !== null && $consent->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($consent, $tenant)) {
                 continue;
             }
             $consents[] = $consent;

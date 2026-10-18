@@ -9,11 +9,11 @@ use App\Entity\WizardRun;
 /**
  * Policy-Wizard W2-A — contract for document generation.
  *
- * Real implementation lands in W3 (variable substitution + SoA link +
- * approval workflow kick-off). For W2 the wizard depends on this
- * interface and is wired to the `DocumentGeneratorStub` which throws
- * `BadMethodCallException` so partial-flow tests fail loudly when they
- * hit the not-yet-implemented surface.
+ * config/services.yaml aliases this interface to the real
+ * {@see DocumentGenerator} (W3: variable substitution + SoA link +
+ * approval workflow kick-off). The W2 `DocumentGeneratorStub`, which
+ * throws `BadMethodCallException`, remains for unit tests that
+ * instantiate it directly.
  *
  * @phpstan-type GenerationResult array{
  *   document_ids: list<int>,

@@ -64,7 +64,7 @@ final class DoraSettingsCollector
      *
      * @return array<string, scalar|null>
      *
-     * @throws InvalidArgumentException when `entity_type` is supplied
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException when `entity_type` is supplied
      *         but does not match {@see ALLOWED_ENTITY_TYPES}. We let
      *         the exception bubble — the wizard validation step
      *         catches invalid input long before the collector is

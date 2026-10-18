@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Security\Voter;
 
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\Voter\UserVoter;
 use App\Service\InitialAdminService;
@@ -18,16 +19,24 @@ class UserVoterTest extends TestCase
 {
     private UserVoter $voter;
     private InitialAdminService $initialAdminService;
+    private Tenant $tenant;
 
     protected function setUp(): void
     {
+        $this->tenant = $this->createMock(Tenant::class);
         $this->initialAdminService = $this->createMock(InitialAdminService::class);
         $this->voter = new UserVoter($this->initialAdminService, VoterTestHelper::createRoleHierarchy());
     }
 
-    private function createUser(int $id = 1, array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User
-    {
+    private function createUser(
+        int $id = 1,
+        array $roles = ['ROLE_USER'],
+        bool $isActive = true,
+        array $permissions = [],
+        ?Tenant $tenant = null,
+    ): User {
         $user = $this->createMock(User::class);
+        $user->method('getTenant')->willReturn($tenant ?? $this->tenant);
         $user->method('getId')->willReturn($id);
         $user->method('getRoles')->willReturn($roles);
         $user->method('isActive')->willReturn($isActive);
@@ -43,7 +52,7 @@ class UserVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyUser(): void
+    public function testAdminCanViewUserOfOwnTenant(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_ADMIN']);
         $targetUser = $this->createUser(2);
@@ -55,7 +64,7 @@ class UserVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanEditAnyUser(): void
+    public function testAdminCanEditUserOfOwnTenant(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_ADMIN']);
         $targetUser = $this->createUser(2);

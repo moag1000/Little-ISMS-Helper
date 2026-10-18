@@ -49,7 +49,7 @@ class RiskVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyRisk(): void
+    public function testAdminCannotViewOtherTenantRisk(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $risk = $this->createRisk($this->otherTenant);
@@ -57,11 +57,11 @@ class RiskVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $risk, [RiskVoter::VIEW]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanEditAnyRisk(): void
+    public function testAdminCannotEditOtherTenantRisk(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $risk = $this->createRisk($this->otherTenant);
@@ -69,11 +69,11 @@ class RiskVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $risk, [RiskVoter::EDIT]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanDeleteAnyRisk(): void
+    public function testAdminCannotDeleteOtherTenantRisk(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $risk = $this->createRisk($this->otherTenant);
@@ -81,7 +81,7 @@ class RiskVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $risk, [RiskVoter::DELETE]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]

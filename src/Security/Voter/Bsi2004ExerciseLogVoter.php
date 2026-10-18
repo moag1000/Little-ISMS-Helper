@@ -14,16 +14,25 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 /**
  * Authorization voter for Bsi2004ExerciseLog.
  *
- * VIEW    — ROLE_MANAGER (same tenant)
+ * VIEW    — ROLE_MANAGER (same tenant); holding roles down the tree
  * EDIT    — ROLE_MANAGER (same tenant, not yet submitted)
  * CONFIRM — ROLE_AUDITOR (same tenant)
- * DELETE  — ROLE_ADMIN
+ * DELETE  — ROLE_ADMIN (same tenant)
+ *
+ * ROLE_SUPER_ADMIN is the only role that crosses tenants.
  */
 final class Bsi2004ExerciseLogVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     public const string VIEW    = 'VIEW';
@@ -47,29 +56,20 @@ final class Bsi2004ExerciseLogVoter extends Voter
         /** @var Bsi2004ExerciseLog $log */
         $log = $subject;
 
-        if ($this->hasRole($user, 'ROLE_ADMIN')) {
-            return true;
+        // Tenant scope: SUPER_ADMIN everywhere, ROLE_ADMIN only inside its
+        // own tenant, holding roles read-only down the tree.
+        $scope = $this->decideTenantScope($user, $log->getTenant(), $attribute === self::VIEW);
+        if ($scope !== null) {
+            return $scope;
         }
 
         return match ($attribute) {
-            self::VIEW    => $this->isSameTenant($log, $user) && $this->hasRole($user, 'ROLE_MANAGER'),
-            self::EDIT    => $this->isSameTenant($log, $user) && $this->hasRole($user, 'ROLE_MANAGER') && !$log->isSubmitted(),
-            self::CONFIRM => $this->isSameTenant($log, $user) && $this->hasRole($user, 'ROLE_AUDITOR'),
+            self::VIEW    => $this->hasReachableRole($user, 'ROLE_MANAGER')
+                || $this->canReadAcrossHoldingTree($user, $log->getTenant()),
+            self::EDIT    => $this->hasReachableRole($user, 'ROLE_MANAGER') && !$log->isSubmitted(),
+            self::CONFIRM => $this->hasReachableRole($user, 'ROLE_AUDITOR'),
             self::DELETE  => false,
             default       => false,
         };
-    }
-
-    private function isSameTenant(Bsi2004ExerciseLog $log, User $user): bool
-    {
-        return $log->getTenant() !== null
-            && $log->getTenant() === $user->getTenant();
-    }
-
-    private function hasRole(User $user, string $role): bool
-    {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($role, $reachable, true);
     }
 }
