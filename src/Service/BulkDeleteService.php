@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Tenant;
+use App\Security\TenantOwnership;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -16,7 +17,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CSRF token and the route-level role. This service enforces, per entity:
  *   - existence (finder returns null → rejected),
  *   - tenant isolation (entity tenant must equal the caller's tenant; a caller
- *     without tenant context cannot delete anything),
+ *     without tenant context can delete nothing unless ROLE_SUPER_ADMIN —
+ *     see TenantOwnership::isInScope()),
  *   - an optional voter attribute (entities with a dedicated voter),
  *   - an optional domain guard (e.g. inherited records are read-only),
  * then removes the accepted entities in one flush and writes one
@@ -154,19 +156,11 @@ class BulkDeleteService
 
     private function belongsToTenant(object $entity, ?Tenant $tenant): bool
     {
-        if ($tenant === null || !method_exists($entity, 'getTenant')) {
-            return false;
-        }
-        $entityTenant = $entity->getTenant();
-
-        if (!$entityTenant instanceof Tenant) {
-            return false;
-        }
-
-        // Identity first; id comparison covers Doctrine proxies. Never treat
-        // two unsaved (id-less) tenants as equal.
-        return $entityTenant === $tenant
-            || ($tenant->getId() !== null && $entityTenant->getId() === $tenant->getId());
+        return TenantOwnership::isInScope(
+            $entity,
+            $tenant,
+            $tenant === null && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN'),
+        );
     }
 
     private function labelOf(object $entity): ?string

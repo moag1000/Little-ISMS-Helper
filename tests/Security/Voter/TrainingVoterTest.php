@@ -42,9 +42,15 @@ final class TrainingVoterTest extends TestCase
     }
 
     #[Test]
-    public function adminBypassesTenantCheck(): void
+    public function adminIsScopedToOwnTenant(): void
     {
-        self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote(['ROLE_ADMIN'], $this->otherTenant, TrainingVoter::EDIT));
+        // ROLE_ADMIN is per organisation; only ROLE_SUPER_ADMIN crosses tenants.
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote(['ROLE_ADMIN'], $this->otherTenant, TrainingVoter::EDIT));
+        self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote(['ROLE_ADMIN'], $this->tenant, TrainingVoter::EDIT));
+        self::assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            $this->vote(['ROLE_SUPER_ADMIN'], $this->otherTenant, TrainingVoter::EDIT),
+        );
     }
 
     #[Test]

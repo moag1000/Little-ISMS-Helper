@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
-use App\Entity\Tenant;
 use App\Entity\Incident;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -24,7 +23,7 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - DELETE: Remove incident records (admin only)
  *
  * Security Rules:
- * - ROLE_ADMIN bypasses all checks
+ * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN only within its own tenant
  * - Users can only access incidents from their own tenant
  * - Tenant isolation strictly enforced
  * - Only admins can delete incident records
@@ -75,52 +74,18 @@ final class IncidentVoter extends Voter
         /** @var Incident $incident */
         $incident = $subject;
 
-        // Security: Admins can do everything
-        if ($this->hasRoleHierarchical($user, 'ROLE_ADMIN')) {
-            return true;
+        // Tenant scope first: SUPER_ADMIN everywhere, ROLE_ADMIN only inside
+        // its own tenant. Holding roles read down the tree only when the
+        // subsidiary has not opted out of cross-posting (9.P2.3
+        // confidential-incident carve-out, e.g. HR cases that must not
+        // reach the parent company's crisis team).
+        $holdingRead = $attribute === self::VIEW && $incident->isVisibleToHolding();
+        $scope = $this->decideTenantScope($user, $incident->getTenant(), $holdingRead);
+        if ($scope !== null) {
+            return $scope;
         }
 
-        return match ($attribute) {
-            self::VIEW => $this->canView($incident, $user),
-            self::EDIT => $this->canEdit($incident, $user),
-            self::DELETE => $this->canDelete($user),
-            default => false,
-        };
-    }
-
-    private function canView(Incident $incident, User $user): bool
-    {
-        // Security: Multi-tenancy - users can view incidents from their tenant
-        if ($incident->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
-            return true;
-        }
-        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree,
-        // but only if the subsidiary hasn't opted out of cross-posting
-        // (9.P2.3 confidential-incident carve-out, e.g. HR cases that
-        // must not reach the parent company's crisis team).
-        if (!$incident->isVisibleToHolding()) {
-            return false;
-        }
-        return $this->canReadAcrossHoldingTree($user, $incident->getTenant());
-    }
-
-    private function canEdit(Incident $incident, User $user): bool
-    {
-        // Security: Users can edit incidents from their tenant
-        // Could be extended with reporter/assigned user checks
-        return $incident->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
-    }
-
-    private function canDelete(User $user): bool
-    {
-        // Security: Only admins can delete
-        return $this->hasRoleHierarchical($user, 'ROLE_ADMIN');
-    }
-
-    private function hasRoleHierarchical(User $user, string $role): bool
-    {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($role, $reachable, true);
+        // In scope below ROLE_ADMIN: view and edit, delete stays admin-only.
+        return $attribute !== self::DELETE;
     }
 }

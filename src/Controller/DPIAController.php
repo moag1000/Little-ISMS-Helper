@@ -735,7 +735,7 @@ class DPIAController extends AbstractController
             if ($dpia === null) {
                 continue;
             }
-            if ($tenant !== null && $dpia->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($dpia, $tenant)) {
                 continue;
             }
             $dpias[] = $dpia;

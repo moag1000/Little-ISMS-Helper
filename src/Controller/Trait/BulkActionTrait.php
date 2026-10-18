@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Trait;
 
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Lifecycle\LifecycleService;
+use App\Security\TenantOwnership;
 use App\Service\AuditLogger;
 use App\Service\BulkDeleteService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +35,18 @@ trait BulkActionTrait
      * sends it as body `_token` (and as `X-CSRF-Token` header).
      */
     protected const string BULK_ACTION_CSRF_ID = 'bulk_action';
+
+    /**
+     * Tenant guard for every bulk export / assign / pack loop.
+     *
+     * The entity must belong to the acting user's tenant (compared by id,
+     * fail closed). A ROLE_SUPER_ADMIN without tenant context is the only
+     * all-tenant case. Same rule as BulkDeleteService.
+     */
+    protected function isInBulkTenantScope(object $entity, ?Tenant $tenant): bool
+    {
+        return TenantOwnership::isInScope($entity, $tenant, $tenant === null && $this->isGranted('ROLE_SUPER_ADMIN'));
+    }
 
     /**
      * Validate the bulk-action CSRF token of a JSON (or form) request.

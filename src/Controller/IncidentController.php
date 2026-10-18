@@ -893,7 +893,7 @@ class IncidentController extends AbstractController
             if ($incident === null) {
                 continue;
             }
-            if ($tenant !== null && $incident->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($incident, $tenant)) {
                 continue;
             }
             $incidents[] = $incident;

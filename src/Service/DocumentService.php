@@ -8,6 +8,8 @@ use App\Entity\CorporateGovernance;
 use App\Enum\GovernanceModel;
 use App\Entity\Document;
 use App\Entity\Tenant;
+use App\Entity\User;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DocumentRepository;
 use App\Repository\CorporateGovernanceRepository;
 
@@ -19,8 +21,24 @@ class DocumentService
     public function __construct(
         private readonly DocumentRepository $documentRepository,
         private readonly ?CorporateStructureService $corporateStructureService = null,
-        private readonly ?CorporateGovernanceRepository $corporateGovernanceRepository = null
+        private readonly ?CorporateGovernanceRepository $corporateGovernanceRepository = null,
+        private readonly ?LifecycleTransitionInterface $lifecycle = null,
     ) {}
+
+    /**
+     * Soft-delete via the X.6 `soft_delete` lifecycle transition: terminal
+     * `deleted` place, hidden from lists by Document::isOperational(), row
+     * and stored file kept for the audit trail. Single and bulk delete both
+     * go through here so they behave the same.
+     */
+    public function softDelete(Document $document, ?User $user, string $reason): void
+    {
+        if ($this->lifecycle === null) {
+            // @intentional-assertion: LifecycleTransitionInterface is autowired; null only in hand-built tests.
+            throw new \LogicException('Document lifecycle unavailable');
+        }
+        $this->lifecycle->transition($document, 'document_lifecycle', 'soft_delete', $user, $reason);
+    }
 
     /**
      * Get all documents visible to a tenant (own + inherited based on governance)

@@ -434,7 +434,7 @@ class DataSubjectRequestController extends AbstractController
             if ($dsr === null) {
                 continue;
             }
-            if ($tenant !== null && $dsr->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($dsr, $tenant)) {
                 continue;
             }
             $dsrs[] = $dsr;

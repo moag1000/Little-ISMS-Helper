@@ -5,6 +5,24 @@ declare(strict_types=1);
 namespace App\Security\Voter;
 
 use ReflectionClass;
+use App\Entity\ActionItem;
+use App\Entity\Asset;
+use App\Entity\Authority\DoraRegisterOfInformation;
+use App\Entity\Authority\Nis2RegistrationProfile;
+use App\Entity\Control;
+use App\Entity\Department;
+use App\Entity\Document;
+use App\Entity\DocumentVersion;
+use App\Entity\EvidenceReverificationTask;
+use App\Entity\IdentityProvider;
+use App\Entity\Incident;
+use App\Entity\Notification\NotificationChannel;
+use App\Entity\Notification\NotificationRule;
+use App\Entity\Risk;
+use App\Entity\RoadmapTask;
+use App\Entity\Team;
+use App\Entity\Training;
+use App\Entity\Tenant;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -26,8 +44,16 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - EXPORT: Export entity data
  *
  * Security Rules:
- * - ROLE_ADMIN bypasses all checks
+ * - Abstains on (class, attribute) pairs a dedicated voter decides
+ *   ({@see DEDICATED}) — with the default "affirmative" strategy a grant
+ *   from this permission-based fallback would otherwise override the
+ *   dedicated voter's deny (e.g. its tenant isolation).
  * - Inactive users cannot perform any actions
+ * - Subjects with getTenant() go through the shared tenant-scope guard:
+ *   ROLE_SUPER_ADMIN everywhere, everyone else (ROLE_ADMIN included) only
+ *   inside the own tenant; view/export also down the holding tree for
+ *   ROLE_GROUP_CISO / ROLE_KONZERN_AUDITOR; a NULL tenant fails closed
+ * - ROLE_ADMIN then bypasses the permission check
  * - Dynamic permission resolution: {entity_name}.{action}
  * - Works with any entity object through reflection
  *
@@ -41,9 +67,16 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  */
 final class EntityVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     // Entity actions
@@ -53,6 +86,33 @@ final class EntityVoter extends Voter
     public const string DELETE = 'delete';
     public const string APPROVE = 'approve';
     public const string EXPORT = 'export';
+
+    /**
+     * Subject classes and attributes answered by a dedicated voter. This
+     * voter abstains there. Kept in sync with the voters' supports() by
+     * EntityVoterDedicatedMapTest.
+     *
+     * @var array<class-string, list<string>>
+     */
+    public const array DEDICATED = [
+        ActionItem::class => [self::VIEW, self::EDIT, self::DELETE],
+        Asset::class => [self::VIEW, self::EDIT, self::DELETE],
+        DoraRegisterOfInformation::class => [self::VIEW, self::EXPORT],
+        Nis2RegistrationProfile::class => [self::VIEW, self::EDIT, self::EXPORT],
+        Control::class => [self::VIEW, self::EDIT, self::DELETE],
+        Department::class => [self::VIEW, self::EDIT, self::DELETE],
+        Document::class => [self::VIEW, self::EDIT, self::DELETE],
+        DocumentVersion::class => [self::VIEW, self::DELETE],
+        EvidenceReverificationTask::class => [self::VIEW, self::DELETE],
+        IdentityProvider::class => [self::VIEW, self::EDIT, self::DELETE],
+        Incident::class => [self::VIEW, self::EDIT, self::DELETE],
+        NotificationChannel::class => [self::VIEW, self::EDIT, self::DELETE],
+        NotificationRule::class => [self::VIEW, self::EDIT, self::DELETE],
+        Risk::class => [self::VIEW, self::EDIT, self::DELETE],
+        RoadmapTask::class => [self::VIEW, self::EDIT, self::DELETE],
+        Team::class => [self::VIEW, self::EDIT, self::DELETE],
+        Training::class => [self::VIEW, self::EDIT],
+    ];
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -70,8 +130,18 @@ final class EntityVoter extends Voter
             return false;
         }
 
-        // We support all entity objects
-        return is_object($subject);
+        if (!is_object($subject)) {
+            return false;
+        }
+
+        // Abstain where a dedicated voter decides.
+        foreach (self::DEDICATED as $class => $attributes) {
+            if ($subject instanceof $class && in_array($attribute, $attributes, true)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -88,9 +158,16 @@ final class EntityVoter extends Voter
             return false;
         }
 
-        // Admins can do everything
-        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
+        // Tenant-owned subjects: shared scope guard (SUPER_ADMIN everywhere,
+        // ROLE_ADMIN only inside its own tenant, fail closed on NULL).
+        if (method_exists($subject, 'getTenant')) {
+            $tenant = $subject->getTenant();
+            $isRead = in_array($attribute, [self::VIEW, self::EXPORT], true);
+            $scope = $this->decideTenantScope($user, $tenant instanceof Tenant ? $tenant : null, $isRead);
+            if ($scope !== null) {
+                return $scope;
+            }
+        } elseif ($this->hasReachableRole($user, 'ROLE_ADMIN')) {
             return true;
         }
 

@@ -49,7 +49,7 @@ class DocumentVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyDocument(): void
+    public function testAdminCannotViewOtherTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $otherUser = $this->createUser(['ROLE_USER'], $this->otherTenant);
@@ -58,11 +58,11 @@ class DocumentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $document, [DocumentVoter::VIEW]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanEditAnyDocument(): void
+    public function testAdminCannotEditOtherTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $otherUser = $this->createUser(['ROLE_USER'], $this->otherTenant);
@@ -71,11 +71,11 @@ class DocumentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $document, [DocumentVoter::EDIT]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanDeleteAnyDocument(): void
+    public function testAdminCannotDeleteOtherTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $otherUser = $this->createUser(['ROLE_USER'], $this->otherTenant);
@@ -84,7 +84,7 @@ class DocumentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $document, [DocumentVoter::DELETE]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]

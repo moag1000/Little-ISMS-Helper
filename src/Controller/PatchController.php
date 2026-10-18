@@ -336,7 +336,7 @@ class PatchController extends AbstractController
             if ($patch === null) {
                 continue;
             }
-            if ($tenant !== null && $patch->getTenant() !== $tenant) {
+            if (!$this->isInBulkTenantScope($patch, $tenant)) {
                 continue;
             }
             $patches[] = $patch;

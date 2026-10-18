@@ -9,6 +9,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\PrototypeProtectionAssessment;
 use App\Form\PrototypeProtectionAssessmentType;
 use App\Repository\PrototypeProtectionAssessmentRepository;
+use App\Security\TenantOwnership;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -224,7 +225,8 @@ class PrototypeProtectionAssessmentController extends AbstractController
     private function assertAccess(PrototypeProtectionAssessment $assessment): void
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if ($tenant !== null && $assessment->getTenant() !== null && $assessment->getTenant()->getId() !== $tenant->getId()) {
+        $isSuperAdmin = $tenant === null && $this->isGranted('ROLE_SUPER_ADMIN');
+        if (!TenantOwnership::isInScope($assessment, $tenant, $isSuperAdmin)) {
             throw $this->createAccessDeniedException('Cross-tenant access denied');
         }
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Security\Voter;
 
 use App\Entity\RiskIncidentLink;
-use App\Entity\Tenant;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -26,9 +25,16 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  */
 final class RiskIncidentLinkVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     public const string VIEW   = 'risk_incident_link_view';
@@ -52,19 +58,17 @@ final class RiskIncidentLinkVoter extends Voter
         /** @var RiskIncidentLink $link */
         $link = $subject;
 
-        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
-            return true;
+        // Tenant scope: SUPER_ADMIN everywhere, ROLE_ADMIN only inside its
+        // own tenant, holding roles read-only down the tree.
+        $scope = $this->decideTenantScope($user, $link->getTenant(), $attribute === self::VIEW);
+        if ($scope !== null) {
+            return $scope;
         }
 
-        $sameTenant = $link->getTenant() instanceof Tenant
-            && $link->getTenant() === $user->getTenant();
-
         return match ($attribute) {
-            self::VIEW   => $sameTenant && in_array('ROLE_USER', $reachableRoles, true),
+            self::VIEW   => $this->hasReachableRole($user, 'ROLE_USER'),
             self::CREATE,
-            self::DELETE => $sameTenant && in_array('ROLE_MANAGER', $reachableRoles, true),
+            self::DELETE => $this->hasReachableRole($user, 'ROLE_MANAGER'),
             default      => false,
         };
     }

@@ -6,6 +6,8 @@ namespace App\Tests\Service;
 
 use App\Entity\CorporateGovernance;
 use App\Entity\Document;
+use App\Entity\User;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
 use App\Repository\CorporateGovernanceRepository;
@@ -36,6 +38,19 @@ class DocumentServiceTest extends TestCase
             $this->corporateStructureService,
             $this->governanceRepository
         );
+    }
+
+    #[Test]
+    public function softDeleteRunsTheSoftDeleteLifecycleTransition(): void
+    {
+        $document = $this->createStub(Document::class);
+        $user = $this->createStub(User::class);
+        $lifecycle = $this->createMock(LifecycleTransitionInterface::class);
+        $lifecycle->expects($this->once())->method('transition')
+            ->with($document, 'document_lifecycle', 'soft_delete', $user, 'reason');
+
+        $service = new DocumentService($this->documentRepository, null, null, $lifecycle);
+        $service->softDelete($document, $user, 'reason');
     }
 
     #[Test]

@@ -28,21 +28,36 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *
  * Security Rules:
  * - Inactive users cannot perform any actions
- * - ROLE_ADMIN bypasses all permission checks (except initial admin protection)
+ * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN bypasses permission
+ *   checks only for users of its own tenant
  * - Users can always view and edit themselves
  * - Users cannot delete themselves
  * - Initial setup admin cannot be deleted or deactivated
  * - Permission checks via hasPermission() method
  *
  * Multi-tenancy:
- * - Users can only view/edit users in their tenant
+ * - Users can only view/edit users in their tenant (the target's
+ *   User::getTenant()). That is the complete assignment model today:
+ *   UserTenantAssignment is an unmapped spec skeleton (no table, no
+ *   repository, no writer), so there are no additional assignments to
+ *   honour. When the multi-tenant assignment lands
+ *   (docs/superpowers/specs/2026-05-26-multi-tenant-user-assignment.md),
+ *   extend the scope check here: read for any active assignment,
+ *   edit/delete only for the primary organisation.
  */
 final class UserVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly InitialAdminService $initialAdminService,
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
     public const string VIEW = 'user.view';
     public const string CREATE = 'user.create';
@@ -90,9 +105,21 @@ final class UserVoter extends Voter
             return false;
         }
 
-        // Admins can do everything
-        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
+        // Per-user attributes: the target must be in the actor's tenant scope
+        // (SUPER_ADMIN everywhere, ROLE_ADMIN only inside its own tenant,
+        // holding roles may view down the tree). Viewing and editing oneself
+        // stays allowed regardless of scope.
+        if ($subject instanceof User) {
+            $isSelf = $user === $subject || ($user->getId() !== null && $user->getId() === $subject->getId());
+            if (!$isSelf || $attribute === self::DELETE) {
+                $scope = $this->decideTenantScope($user, $subject->getTenant(), $attribute === self::VIEW);
+                if ($scope !== null) {
+                    return $scope;
+                }
+            }
+        } elseif ($this->hasReachableRole($user, 'ROLE_ADMIN')) {
+            // Subject-less attributes (create, manage roles, view all) — the
+            // controller scopes the result set to the admin's tenant.
             return true;
         }
 
