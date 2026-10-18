@@ -8,7 +8,6 @@ use App\Service\AuditLogger;
 use App\Service\BulkDeleteService;
 use App\Controller\DocumentController;
 use App\Entity\Document;
-use App\Lifecycle\LifecycleService;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\DocumentType;
@@ -22,9 +21,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Workflow\Marking;
-use Symfony\Component\Workflow\Registry;
-use Symfony\Component\Workflow\WorkflowInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -733,7 +729,9 @@ class DocumentControllerTest extends TestCase
         $this->security->method('getUser')->willReturn($user);
         $this->documentService->method('canEditDocument')->willReturn(true);
 
-        $this->entityManager->expects($this->once())->method('flush');
+        // Soft delete via the lifecycle (DocumentService::softDelete), no remove().
+        $this->documentService->expects($this->once())->method('softDelete')->with($document, $user);
+        $this->entityManager->expects($this->never())->method('remove');
         $this->translator->method('trans')->willReturn('Deleted');
 
         $request = $this->createRequestWithSession([], ['_token' => 'valid_token']);
@@ -792,50 +790,28 @@ class DocumentControllerTest extends TestCase
                 [2, $document2],
             ]);
 
-        // Bulk delete is the same soft_delete lifecycle transition as the
-        // single delete — never a hard remove (it used to remove() the rows
-        // and unlink the files).
-        $workflow = $this->createMock(WorkflowInterface::class);
-        $applied = [];
-        $workflow->expects($this->exactly(2))->method('apply')
-            ->willReturnCallback(function (object $doc, string $transition, array $context) use (&$applied) {
-                $applied[] = [$doc, $transition, $context['user'], $context['reason']];
-
-                return $this->createStub(Marking::class);
+        // Bulk delete is the same soft delete as the single delete — never
+        // a hard remove (it used to remove() the rows and unlink the files).
+        $softDeleted = [];
+        $this->documentService->expects($this->exactly(2))->method('softDelete')
+            ->willReturnCallback(function (Document $doc, ?User $by, string $reason) use (&$softDeleted): void {
+                $softDeleted[] = [$doc, $by, $reason];
             });
-        $registry = $this->createStub(Registry::class);
-        $registry->method('get')->willReturn($workflow);
         $this->entityManager->expects($this->never())->method('remove');
-
-        $controller = new DocumentController(
-            $this->documentRepository,
-            $this->documentService,
-            $this->entityManager,
-            $this->projectDir,
-            $this->rateLimiterFactory,
-            $this->fileUploadSecurityService,
-            $this->securityEventLogger,
-            $this->translator,
-            $this->security,
-            lifecycleService: new LifecycleService($registry, $this->entityManager),
-        );
-        $controller->setContainer($this->container);
 
         $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1, 2], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $controller->bulkDelete($request, $this->createBulkDeleteService());
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         $this->assertTrue($data['success']);
         $this->assertEquals(2, $data['deleted']);
-        $this->assertSame($document1, $applied[0][0]);
-        $this->assertSame($document2, $applied[1][0]);
-        $this->assertSame(['soft_delete', 'soft_delete'], array_column($applied, 1));
-        $this->assertSame($user, $applied[0][2]);
-        $this->assertNotEmpty($applied[0][3], 'soft_delete requires a reason');
+        $this->assertSame([$document1, $document2], array_column($softDeleted, 0));
+        $this->assertSame($user, $softDeleted[0][1]);
+        $this->assertNotSame('', $softDeleted[0][2], 'soft_delete requires a reason');
     }
 
     /**

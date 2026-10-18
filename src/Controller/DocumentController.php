@@ -609,7 +609,6 @@ class DocumentController extends AbstractController
         // Tenant equality (enforced by BulkDeleteService) already excludes
         // documents inherited from a parent organisation.
         $user = $this->security->getUser();
-        $lifecycleUser = $user instanceof User ? $user : null;
 
         return $this->handleBulkDelete(
             $request,
@@ -617,21 +616,12 @@ class DocumentController extends AbstractController
             'Document',
             $user,
             fn (int $id): ?Document => $this->documentRepository->find($id),
-            // Same X.6 soft_delete transition as the single delete: terminal
-            // `deleted` state, hidden from lists via Document::isOperational();
-            // the row and its stored file stay for the audit trail.
-            deleter: function (object $document) use ($lifecycleUser): void {
-                if ($this->lifecycleService === null) {
-                    throw new \LogicException('LifecycleService unavailable');
-                }
-                $this->lifecycleService->transition(
-                    $document,
-                    'document_lifecycle',
-                    'soft_delete',
-                    $lifecycleUser,
-                    'Document soft-deleted by admin (bulk)',
-                );
-            },
+            // Same soft_delete transition as the single delete (no hard delete).
+            deleter: fn (object $document) => $this->documentService->softDelete(
+                $document,
+                $user instanceof User ? $user : null,
+                'Document soft-deleted by admin (bulk)',
+            ),
             voterAttribute: 'delete',
         );
     }
@@ -1067,22 +1057,11 @@ class DocumentController extends AbstractController
 
         if ($this->isCsrfTokenValid('delete'.$document->getId(), $request->request->get('_token'))) {
             // X.6: soft_delete transition — terminal state, ROLE_ADMIN only, reason required.
-            // Replaces direct setStatus('deleted'). document_lifecycle extended with
-            // 'deleted' place + 'soft_delete' transition (X.6, config/workflows/document.yaml).
-            if ($this->lifecycleService !== null) {
-                $lifecycleUser = $user instanceof User ? $user : null;
-                $this->lifecycleService->transition(
-                    $document,
-                    'document_lifecycle',
-                    'soft_delete',
-                    $lifecycleUser,
-                    'Document soft-deleted by admin',
-                );
-            } else {
-                // Fallback: direct setter if lifecycle service unavailable (should not happen in prod).
-                $document->setStatus('deleted'); // @phpstan-ignore lifecycle.directSetStatus (LifecycleService unavailable fallback — guarded by null-check)
-                $this->entityManager->flush();
-            }
+            $this->documentService->softDelete(
+                $document,
+                $user instanceof User ? $user : null,
+                'Document soft-deleted by admin',
+            );
 
             $this->addFlash('success', $this->translator->trans('document.success.deleted', [], 'messages'));
         }
