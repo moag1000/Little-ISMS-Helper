@@ -257,6 +257,14 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
      without one (setup-wizard admin, global SSO provider, `app:setup-permissions`)
      join the sole organisation automatically; with several organisations an
      operator assigns them.
+   - Record-level checks (voters) share one guard,
+     `HoldingTreeAccessTrait::decideTenantScope()`: `ROLE_SUPER_ADMIN` may act on
+     any record; everyone else, `ROLE_ADMIN` included, only on records of their own
+     organisation. `ROLE_GROUP_CISO` and `ROLE_KONZERN_AUDITOR` may additionally
+     *read* records of subsidiaries (never write). A missing tenant on the user or
+     the record denies access. Bulk export/assign/delete endpoints use the same
+     comparison (`TenantOwnership`); only a `ROLE_SUPER_ADMIN` without an
+     organisation context processes records of all organisations.
 
 2. **Admin Access:**
    - Only ROLE_ADMIN can manage tenants, and only within their own organisation tree
