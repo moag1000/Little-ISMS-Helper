@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\ComplianceWizard;
 
+use App\Entity\AuditFinding;
 use App\Entity\Tenant;
 use App\Enum\RiskTreatmentPlanStatus;
 use App\Repository\AssetRepository;
@@ -675,16 +676,19 @@ final class CoverageCheckService
                 $completed++;
             }
 
-            $findings = $audit->getFindings() ?? [];
+            // getFindings() is the deprecated free-text field (?string) —
+            // count()/foreach on it threw a TypeError. Use the AuditFinding
+            // entities instead.
+            $findings = $audit->getStructuredFindings();
             $totalFindings += count($findings);
 
             foreach ($findings as $finding) {
-                if ($finding['status'] ?? '' === 'closed') {
+                if ($finding->getStatus() === AuditFinding::STATUS_CLOSED) {
                     $findingsClosed++;
-                } elseif (($finding['severity'] ?? '') === 'critical') {
+                } elseif ($finding->getSeverity() === AuditFinding::SEVERITY_CRITICAL) {
                     $openCriticalFindings[] = [
                         'audit_id' => $audit->getId(),
-                        'finding' => $finding['title'] ?? 'Finding',
+                        'finding' => $finding->getTitle() ?? 'Finding',
                     ];
                 }
             }
