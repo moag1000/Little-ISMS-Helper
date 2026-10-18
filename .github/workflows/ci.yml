@@ -624,11 +624,13 @@ jobs:
         # reviewed `// @csrf-exempt: <reason>` marker. Baseline = files of
         # in-flight work only; stale entries are reported, never fail.
         run: python3 scripts/quality/check_csrf_state_changing.py --baseline scripts/quality/baselines/csrf_state_changing.txt
-      - name: "Gate 67: no unguarded native browser dialogs"
-        # alert()/confirm()/prompt() are banned as UX — use window.faToast /
-        # faConfirm / faPrompt (templates: ui-actions#confirm / #promptSubmit).
-        # A native call passes only as a fallback guarded by a
-        # `typeof window.fa*` check. No baseline: the codebase is clean.
+      - name: "Gate 67: no native browser dialogs, no inline JavaScript"
+        # alert()/confirm()/prompt() are banned as UX — import faToast /
+        # faConfirm / faPrompt from assets/js/fa-alerts.js (templates:
+        # ui-actions#confirm / #promptSubmit); no native fallback.
+        # The CSP has no script-src 'unsafe-inline': no on*= handlers, no
+        # javascript: URLs, inline <script> only with nonce="{{ csp_nonce() }}",
+        # no CSS imports in JS modules. No baseline: the codebase is clean.
         run: python3 scripts/quality/check_native_dialogs.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
