@@ -204,7 +204,8 @@
                                    name="skip_welcome"
                                    value="1"
                                    {% if skip_welcome %}checked{% endif %}
-                                   onchange="this.form.submit()">
+                                   data-controller="ui-actions"
+                                   data-action="change->ui-actions#autoSubmit">
                             <label class="form-check-label" for="skipWelcome">
                                 {{ 'welcome.preference.skip_next_time'|trans({}, 'welcome') }}
                             </label>

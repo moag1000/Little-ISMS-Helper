@@ -155,7 +155,7 @@
                     <input type="checkbox" name="confirm_already_exists" value="1" required style="margin-top: 3px;">
                     <span>{{ 'quick_fix.apply_failure.skip_single_confirm'|trans({}, 'quick_fix') }}</span>
                 </label>
-                <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                <button type="submit" style="background: var(--danger); color: var(--bg);" data-submit-once>
                     {{ 'quick_fix.apply_failure.skip_single_button'|trans({}, 'quick_fix') }}
                 </button>
             </form>
@@ -173,7 +173,7 @@
                             <input type="checkbox" name="confirm_all_already_exist" value="1" required style="margin-top: 3px;">
                             <span>{{ 'quick_fix.apply_failure.skip_all_confirm'|trans({}, 'quick_fix') }}</span>
                         </label>
-                        <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                        <button type="submit" style="background: var(--danger); color: var(--bg);" data-submit-once>
                             {{ 'quick_fix.apply_failure.skip_all_button'|trans({}, 'quick_fix') }}
                         </button>
                     </form>
@@ -197,7 +197,7 @@
                             <input type="checkbox" name="confirm_destructive_force" value="1" style="margin-top: 3px;">
                             <span>{{ 'quick_fix.force.confirm_destructive'|trans({}, 'quick_fix') }}</span>
                         </label>
-                        <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" onclick="this.disabled=true;this.form.submit();">
+                        <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" data-submit-once>
                             {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
                         </button>
                     </form>
@@ -221,7 +221,7 @@
                     <input type="checkbox" name="confirm_already_exists" value="1" required style="margin-top: 3px;">
                     <span>{{ 'quick_fix.phantom_diff.confirm_label'|trans({}, 'quick_fix') }}</span>
                 </label>
-                <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                <button type="submit" style="background: var(--danger); color: var(--bg);" data-submit-once>
                     {{ 'quick_fix.phantom_diff.button'|trans({}, 'quick_fix') }}
                 </button>
             </form>
@@ -239,7 +239,7 @@
                             <input type="checkbox" name="confirm_all_already_exist" value="1" required style="margin-top: 3px;">
                             <span>{{ 'quick_fix.phantom_diff.mark_all_confirm_label'|trans({}, 'quick_fix') }}</span>
                         </label>
-                        <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                        <button type="submit" style="background: var(--danger); color: var(--bg);" data-submit-once>
                             {{ 'quick_fix.phantom_diff.mark_all_button'|trans({}, 'quick_fix') }}
                         </button>
                     </form>
@@ -274,7 +274,7 @@
                     <input type="checkbox" name="confirm_destructive_force" value="1" style="margin-top: 3px;">
                     <span>{{ 'quick_fix.force.confirm_destructive'|trans({}, 'quick_fix') }}</span>
                 </label>
-                <button type="submit" style="background: var(--accent); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                <button type="submit" style="background: var(--accent); color: var(--bg);" data-submit-once>
                     {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
                 </button>
             </form>
@@ -291,7 +291,7 @@
             <div class="count-label">{{ 'quick_fix.pending.count_label'|trans({}, 'quick_fix') }}</div>
             <form method="POST" action="{{ path('app_quick_fix_apply') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_apply') }}">
-                <button type="submit" onclick="this.disabled=true;this.form.submit();">
+                <button type="submit" data-submit-once>
                     {{ 'quick_fix.pending.button'|trans({}, 'quick_fix') }}
                 </button>
             </form>
@@ -315,7 +315,7 @@
                             <input type="checkbox" name="confirm_all_already_exist" value="1" required style="margin-top: 3px;">
                             <span>{{ 'quick_fix.apply_failure.skip_all_confirm'|trans({}, 'quick_fix') }}</span>
                         </label>
-                        <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                        <button type="submit" style="background: var(--danger); color: var(--bg);" data-submit-once>
                             {{ 'quick_fix.pending.phantom_skip_button'|trans({}, 'quick_fix') }}
                         </button>
                     </form>
@@ -369,14 +369,14 @@
                         <input type="checkbox" name="confirm_destructive" value="1" required style="margin-top: 3px;">
                         <span>{{ 'quick_fix.drift.destructive_confirm_label'|trans({}, 'quick_fix') }}</span>
                     </label>
-                    <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                    <button type="submit" style="background: var(--danger); color: var(--bg);" data-submit-once>
                         {{ 'quick_fix.drift.destructive_button'|trans({}, 'quick_fix') }}
                     </button>
                 </form>
             {% else %}
                 <form method="POST" action="{{ path('app_quick_fix_reconcile') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_reconcile') }}">
-                    <button type="submit" onclick="this.disabled=true;this.form.submit();">
+                    <button type="submit" data-submit-once>
                         {{ 'quick_fix.drift.button'|trans({}, 'quick_fix') }}
                     </button>
                 </form>
@@ -399,7 +399,7 @@
                             <input type="checkbox" name="confirm_destructive_force" value="1" style="margin-top: 3px;">
                             <span>{{ 'quick_fix.force.confirm_destructive'|trans({}, 'quick_fix') }}</span>
                         </label>
-                        <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" onclick="this.disabled=true;this.form.submit();">
+                        <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" data-submit-once>
                             {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
                         </button>
                     </form>
@@ -435,7 +435,7 @@
                 {% if orphan_count > 0 %}
                 <form method="POST" action="{{ path('app_quick_fix_repair_orphans') }}" style="display:inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_orphans') }}">
-                    <button type="submit" class="btn-repair" onclick="this.disabled=true;this.form.submit();">
+                    <button type="submit" class="btn-repair" data-submit-once>
                         {{ 'quick_fix.repair.orphans.button'|trans({}, 'quick_fix') }}
                     </button>
                 </form>
@@ -451,7 +451,7 @@
                 {% if mismatch_count > 0 %}
                 <form method="POST" action="{{ path('app_quick_fix_repair_mismatches') }}" style="display:inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_mismatches') }}">
-                    <button type="submit" class="btn-repair" onclick="this.disabled=true;this.form.submit();">
+                    <button type="submit" class="btn-repair" data-submit-once>
                         {{ 'quick_fix.repair.tenant_mismatches.button'|trans({}, 'quick_fix') }}
                     </button>
                 </form>
@@ -471,7 +471,7 @@
                     {% if cnt > 0 %}
                     <form method="POST" action="{{ path('app_quick_fix_repair_duplicates', {entityType: type}) }}" style="display:inline;">
                         <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_duplicates') }}">
-                        <button type="submit" class="btn-repair" onclick="this.disabled=true;this.form.submit();">
+                        <button type="submit" class="btn-repair" data-submit-once>
                             {{ 'quick_fix.repair.duplicates.button'|trans({}, 'quick_fix') }}
                         </button>
                     </form>
@@ -487,7 +487,7 @@
             {% if has_integrity_issues %}
             <form method="POST" action="{{ path('app_quick_fix_repair_all') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_all') }}">
-                <button type="submit" class="btn-all" onclick="this.disabled=true;this.form.submit();">
+                <button type="submit" class="btn-all" data-submit-once>
                     🛡️ {{ 'quick_fix.repair.all.button'|trans({}, 'quick_fix') }}
                 </button>
             </form>
@@ -498,5 +498,16 @@
 
         <div class="footer">Little ISMS Helper</div>
     </main>
+{# Double-submit guard for the repair buttons. Plain script (no Stimulus):
+   this page must work even when the asset pipeline is broken. Runs after the
+   browser validated the form, so the required confirm checkboxes are enforced. #}
+<script>
+document.addEventListener('submit', function (event) {
+    var button = event.submitter;
+    if (button && button.hasAttribute('data-submit-once')) {
+        setTimeout(function () { button.disabled = true; }, 0);
+    }
+});
+</script>
 </body>
 </html>

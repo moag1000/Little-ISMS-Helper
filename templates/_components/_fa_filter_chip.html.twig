@@ -33,6 +33,7 @@
  #   props.href   - if set renders as <a>, else <button type="button">
  #   props.icon   - Bootstrap Icons name without 'bi-' prefix (optional)
  #   props.class  - extra CSS classes (optional)
+ #   props.attrs  - extra HTML attributes as map, e.g. Stimulus data-* wiring (optional)
  #
  # Parameters (group):
  #   items       - array of strings OR { label, href } objects (required)
@@ -44,16 +45,17 @@
 {% macro render(label, props = {}) %}
     {% set isActive = props.active|default(false) %}
     {% set chipClass = 'fa-filter-chip' ~ (isActive ? ' fa-filter-chip--active' : '') ~ (props.class is defined ? ' ' ~ props.class : '') %}
+    {% set chipAttrs %}{% for k, v in props.attrs|default({}) %} {{ k }}="{{ v }}"{% endfor %}{% endset %}
 
     {% if props.href is defined and props.href %}
-        <a href="{{ props.href }}" class="{{ chipClass }}">
+        <a href="{{ props.href }}" class="{{ chipClass }}"{{ chipAttrs|raw }}>
             {% if props.icon is defined and props.icon %}
                 <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
             {% endif %}
             {{ label }}
         </a>
     {% else %}
-        <button type="{{ props.type|default('button') }}" class="{{ chipClass }}">
+        <button type="{{ props.type|default('button') }}" class="{{ chipClass }}"{{ chipAttrs|raw }}>
             {% if props.icon is defined and props.icon %}
                 <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
             {% endif %}

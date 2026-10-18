@@ -1,5 +1,6 @@
 audit_log:
     integrity:
+        verify_button: 'Verify HMAC chain'
         disabled: 'Audit-log integrity verification is disabled (APP_AUDIT_HMAC_KEY missing).'
         intact: 'Audit-log chain intact — no tampering detected.'
     page:

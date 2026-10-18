@@ -168,7 +168,8 @@
                                         aria-expanded="false"
                                         aria-controls="mapping-detail-{{ mapping.id }}"
                                         aria-label="{{ 'compliance.mapping.col.rationale'|trans({}, 'compliance') }}"
-                                        onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true'); document.getElementById('mapping-detail-{{ mapping.id }}').hidden=!document.getElementById('mapping-detail-{{ mapping.id }}').hidden; this.querySelector('.chevron-icon').style.transform=this.getAttribute('aria-expanded')==='true'?'rotate(90deg)':'';">
+                                        data-controller="ui-actions"
+                                        data-action="ui-actions#disclose">
                                     <i class="fa-icon fa-icon--util-chevron-right chevron-icon" aria-hidden="true"
                                        style="transition:transform .2s ease;"></i>
                                 </button>

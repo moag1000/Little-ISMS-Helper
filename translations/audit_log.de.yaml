@@ -1,5 +1,6 @@
 audit_log:
     integrity:
+        verify_button: 'HMAC-Kette verifizieren'
         disabled: 'Audit-Log-Integritätsprüfung ist deaktiviert (APP_AUDIT_HMAC_KEY fehlt).'
         intact: 'Audit-Log-Kette intakt — keine Manipulationen erkannt.'
     page:

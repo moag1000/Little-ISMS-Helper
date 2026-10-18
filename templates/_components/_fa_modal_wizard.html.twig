@@ -28,11 +28,11 @@
  # Actions schema:
  #   cancel:
  #     label         string
- #     onclick       string|null  — raw JS expression, alternative to route
+ #     action        string|null  — Stimulus data-action replacing the default
+ #                                    '<controller>#cancel' (no inline JS: CSP)
  #     route         string|null  — Symfony route name (used as href on cancel link)
  #   submit:
  #     label         string
- #     onclick       string|null
  #     variant       'primary'|'danger'   (default: 'primary')
  #
  # Usage:
@@ -190,21 +190,12 @@
             <div class="fa-modal__wizard-footer-actions">
                 {# Cancel #}
                 {% if actions.cancel is defined %}
-                    {% if actions.cancel.onclick is defined and actions.cancel.onclick %}
-                        <button type="button"
-                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                onclick="{{ actions.cancel.onclick }}"
-                                data-{{ controller }}-target="cancelBtn">
-                            <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
-                        </button>
-                    {% else %}
-                        <button type="button"
-                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                data-action="{{ controller }}#cancel"
-                                data-{{ controller }}-target="cancelBtn">
-                            <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
-                        </button>
-                    {% endif %}
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-action="{{ actions.cancel.action ?? (controller ~ '#cancel') }}"
+                            data-{{ controller }}-target="cancelBtn">
+                        <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
+                    </button>
                 {% endif %}
 
                 {# Back (hidden on first step) #}

@@ -18,9 +18,10 @@
                     variant: 'ghost',
                     icon: 'ui-checks',
                     href: '#',
-                    attr: {
-                        'data-turbo': 'false',
-                        onclick: "document.getElementById('mark-read-form').submit(); return false;"
+                    attrs: {
+                        'data-controller': 'ui-actions',
+                        'data-action': 'ui-actions#submitForm',
+                        'data-ui-actions-form-id-param': 'mark-read-form'
                     }
                 }
             ]
@@ -44,17 +45,24 @@
                 {{ _fa_filter_chip.render(tab.label, {
                     active: i == 0,
                     type: 'button',
-                    attr: {
+                    attrs: {
                         'data-tab': tab.key,
                         role: 'tab',
-                        onclick: "showTab('" ~ tab.key ~ "')"
+                        'aria-selected': i == 0 ? 'true' : 'false',
+                        'aria-controls': 'tab-' ~ tab.key,
+                        'data-controller': 'ui-actions',
+                        'data-action': 'ui-actions#showPanel',
+                        'data-ui-actions-panel-param': '#tab-' ~ tab.key,
+                        'data-ui-actions-panels-param': '.notification-tab-panel',
+                        'data-ui-actions-triggers-param': '[data-tab]',
+                        'data-ui-actions-active-class-param': 'fa-filter-chip--active'
                     }
                 }) }}
             {% endfor %}
         </div>
 
         {# All deliveries tab #}
-        <div id="tab-all">
+        <div id="tab-all" class="notification-tab-panel" role="tabpanel">
             {% if deliveries is empty %}
                 {{ _fa_empty_state.render({
                     mood: 'happy',
@@ -88,7 +96,7 @@
         {# Severity-grouped tabs (hidden initially) #}
         {% for severity, items in grouped %}
             {% if severity != 'other' %}
-                <div id="tab-{{ severity }}" class="d-none">
+                <div id="tab-{{ severity }}" class="notification-tab-panel d-none" role="tabpanel">
                     {% if items is empty %}
                         <p class="text-muted fst-italic">{{ 'notification.center.empty.severity'|trans({'%severity%': ('notification.severity.' ~ severity)|trans({}, 'notification')}, 'notification') }}</p>
                     {% else %}
@@ -107,15 +115,4 @@
         {% endfor %}
     </div>
 
-    <script>
-    function showTab(key) {
-        ['all', 'critical', 'high', 'medium', 'low'].forEach(function(t) {
-            var el = document.getElementById('tab-' + t);
-            if (el) el.classList.toggle('d-none', t !== key);
-        });
-        document.querySelectorAll('[data-tab]').forEach(function(btn) {
-            btn.classList.toggle('fa-filter-chip--active', btn.dataset.tab === key);
-        });
-    }
-    </script>
 {% endblock body %}

@@ -43,7 +43,9 @@
                         <select id="cert-bundle-framework-select"
                                 class="form-select form-select-sm"
                                 aria-describedby="cert-bundle-framework-help"
-                                onchange="document.getElementById('cert-bundle-framework-input').value = this.value;">
+                                data-controller="ui-actions"
+                                data-action="change->ui-actions#copyValue"
+                                data-ui-actions-target-param="#cert-bundle-framework-input">
                             {# Always offer ISO27001 even if not loaded as ComplianceFramework. #}
                             {% set has_iso = false %}
                             {% for fw in frameworks %}
@@ -321,7 +323,7 @@
     {# Generate Button — POSTs to async dispatch route (Phase 3 async-jobs rollout).
        data-turbo="false" so the dispatch redirect to the progress page survives.
        Audit-V3 EF-3: hidden #cert-bundle-framework-input mirrors the dropdown above
-       (kept in sync via inline onchange) so POST carries the chosen framework code. #}
+       (kept in sync via ui-actions#copyValue) so POST carries the chosen framework code. #}
     <div class="text-center">
         <form method="post" action="{{ path('app_certification_bundle_export_dispatch') }}" data-turbo="false" id="cert-bundle-export-form">
             <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export_dispatch') }}">

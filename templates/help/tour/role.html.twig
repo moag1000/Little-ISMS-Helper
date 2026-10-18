@@ -33,7 +33,7 @@
                 <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                 {{ 'help.tour.start_interactive'|trans({}, 'help') }}
             </a>
-            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" onclick="window.print()">
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-controller="ui-actions" data-action="ui-actions#print">
                 <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>
                 {{ 'help.tour.print'|trans({}, 'help') }}
             </button>
