@@ -1017,17 +1017,18 @@ final class DataImportService
                 continue;
             }
 
-            // Enum-Strings: wenn der Setter einen BackedEnum-Typ erwartet,
-            // String-Wert über ::tryFrom() konvertieren. Sonst wirft PHP
-            // TypeError, der vom outer try/catch geschluckt wird → Property
-            // bleibt null → DB-NotNullConstraint-Violation beim flush().
+            // Enum-Strings: wenn der Setter einen Enum-Typ erwartet, String-Wert
+            // konvertieren — BackedEnum über ::tryFrom() (Backing-Value), reines
+            // UnitEnum über den Case-Namen (tryFrom() gibt es dort nicht → \Error).
+            // Sonst wirft PHP TypeError, der vom outer try/catch geschluckt wird
+            // → Property bleibt null → DB-NotNullConstraint-Violation beim flush().
             if (is_string($value)) {
                 try {
                     $reflection = new \ReflectionMethod($entity, $setter);
                     $paramType = $reflection->getParameters()[0]?->getType();
                     $typeName = $paramType instanceof \ReflectionNamedType ? $paramType->getName() : null;
                     if ($typeName !== null && enum_exists($typeName)) {
-                        $enumValue = $typeName::tryFrom($value);
+                        $enumValue = $this->enumFromString($typeName, $value);
                         if ($enumValue === null) {
                             $this->addLog("Skipped {$entityClass}::{$setter} — '{$value}' nicht in enum {$typeName}");
                             continue;
@@ -1072,6 +1073,29 @@ final class DataImportService
     /**
      * Prüft ob ein Array nur ref:-Strings enthält (für Collection-Properties).
      */
+    /**
+     * @param class-string<\UnitEnum> $enumClass
+     */
+    private function enumFromString(string $enumClass, string $value): ?\UnitEnum
+    {
+        if (is_subclass_of($enumClass, \BackedEnum::class)) {
+            if ((string) (new \ReflectionEnum($enumClass))->getBackingType() === 'int') {
+                // strict_types: an int-backed tryFrom() rejects strings with a TypeError.
+                return preg_match('/^-?\d+$/', $value) === 1 ? $enumClass::tryFrom((int) $value) : null;
+            }
+
+            return $enumClass::tryFrom($value);
+        }
+
+        foreach ($enumClass::cases() as $case) {
+            if ($case->name === $value) {
+                return $case;
+            }
+        }
+
+        return null;
+    }
+
     private function isRefList(array $arr): bool
     {
         if (empty($arr) || !array_is_list($arr)) {
