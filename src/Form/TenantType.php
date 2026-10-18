@@ -19,8 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class TenantType extends AbstractType implements SectionMapInterface
 {
-    /** Fields only an instance operator (SUPER_ADMIN) may change — see the operator_fields option. */
-    public const array OPERATOR_FIELDS = ['code', 'parent', 'isCorporateParent', 'azureTenantId', 'settings'];
+    /**
+     * Fields only an instance operator (SUPER_ADMIN) may change — see the operator_fields option.
+     * Tenant::$settings is not a form field at all (read-only settings tab).
+     */
+    public const array OPERATOR_FIELDS = ['code', 'parent', 'isCorporateParent', 'azureTenantId'];
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -260,7 +263,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
             // tab shows it read-only via _fa_json_view.
         ;
 
-        // Identity, corporate structure, SSO binding and raw settings are
+        // Identity, corporate structure and SSO binding are
         // instance-operator decisions (activation is the operator-only lifecycle
         // toggle, not a form field): an organisation's own admin sees them
         // read-only, and a disabled field ignores whatever is submitted for it.
