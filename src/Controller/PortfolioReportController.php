@@ -15,6 +15,8 @@ use App\Service\ModuleConfigurationService;
 use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -160,6 +162,33 @@ class PortfolioReportController extends AbstractController
             : null;
 
         $matrix = $this->portfolioReportService->buildMatrix($tenant, $stichtag, $vorperiode);
+        $spreadsheet = $this->buildWorkbook($matrix, (string) $tenant->getName(), $stichtag, $vorperiode);
+
+        $filename = sprintf('portfolio-report-%s.xlsx', $stichtag->format('Y-m-d'));
+        $response = new StreamedResponse(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+        });
+        $response->headers->set(
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+        $response->headers->set(
+            'Content-Disposition',
+            sprintf('attachment; filename="%s"', $filename)
+        );
+        $response->headers->set('Cache-Control', 'max-age=0');
+        return $response;
+    }
+
+    /**
+     * @param array{frameworks: list<array{code: string, name: string}>, rows: list<array{category: string, cells: array<string, array{pct: int|float, count: int}>}>} $matrix
+     */
+    private function buildWorkbook(
+        array $matrix,
+        string $tenantName,
+        DateTimeImmutable $stichtag,
+        ?DateTimeImmutable $vorperiode,
+    ): Spreadsheet {
         $thresholds = $this->thresholds();
 
         $spreadsheet = $this->excelExportService->createSpreadsheet('Portfolio Compliance Report');
@@ -169,7 +198,7 @@ class PortfolioReportController extends AbstractController
         // Header block
         $sheet->setCellValue('A1', 'Cross-Framework Portfolio Report');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->setCellValue('A2', sprintf('Tenant: %s', (string) $tenant->getName()));
+        $sheet->setCellValue('A2', sprintf('Tenant: %s', $tenantName));
         $sheet->setCellValue('A3', sprintf('Stichtag: %s', $stichtag->format('Y-m-d')));
         if ($vorperiode !== null) {
             $sheet->setCellValue('A4', sprintf('Vorperiode: %s', $vorperiode->format('Y-m-d')));
@@ -178,15 +207,19 @@ class PortfolioReportController extends AbstractController
         // Column headers: Kategorie + per-framework columns
         $headerRow = 6;
         $sheet->setCellValue('A' . $headerRow, 'Kategorie');
+        // Column A = Kategorie, one column per framework after it. `--$col`
+        // on a letter string is a no-op in PHP, so derive the last column
+        // from its index instead of stepping the letter back.
+        $lastCol = Coordinate::stringFromColumnIndex(1 + count($matrix['frameworks']));
         $col = 'B';
         foreach ($matrix['frameworks'] as $framework) {
             $sheet->setCellValue($col . $headerRow, $framework['name']);
             $sheet->getStyle($col . $headerRow)->getFont()->setBold(true);
             $col++;
         }
-        $sheet->getStyle('A' . $headerRow . ':' . --$col . $headerRow)->getFill()
+        $sheet->getStyle('A' . $headerRow . ':' . $lastCol . $headerRow)->getFill()
             ->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('0D6EFD');
-        $sheet->getStyle('A' . $headerRow . ':' . $col . $headerRow)->getFont()
+        $sheet->getStyle('A' . $headerRow . ':' . $lastCol . $headerRow)->getFont()
             ->getColor()->setRGB('FFFFFF');
 
         // Data rows
@@ -214,27 +247,14 @@ class PortfolioReportController extends AbstractController
             $row++;
         }
 
-        // Auto-size columns
-        foreach (range('A', $col) as $c) {
-            $sheet->getColumnDimension($c)->setAutoSize(true);
+        // Auto-size columns (range('A', 'AA') would stop at 'A', so iterate indices)
+        for ($i = 1, $last = Coordinate::columnIndexFromString($lastCol); $i <= $last; $i++) {
+            $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($i))->setAutoSize(true);
         }
-        $sheet->getStyle('A' . $headerRow . ':' . $col . ($row - 1))
+        $sheet->getStyle('A' . $headerRow . ':' . $lastCol . max($headerRow, $row - 1))
             ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-        $filename = sprintf('portfolio-report-%s.xlsx', $stichtag->format('Y-m-d'));
-        $response = new StreamedResponse(function () use ($spreadsheet) {
-            (new Xlsx($spreadsheet))->save('php://output');
-        });
-        $response->headers->set(
-            'Content-Type',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        );
-        $response->headers->set(
-            'Content-Disposition',
-            sprintf('attachment; filename="%s"', $filename)
-        );
-        $response->headers->set('Cache-Control', 'max-age=0');
-        return $response;
+        return $spreadsheet;
     }
 
     /**
