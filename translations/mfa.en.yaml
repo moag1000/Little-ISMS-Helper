@@ -91,6 +91,7 @@ mfa:
             code_required: 'Please enter a verification code.'
             invalid_code: 'Invalid code. Please try again.'
             invalid_token: 'Invalid or inactive authentication device.'
+        device_changed: 'Device changed'
     field:
         device_name: 'Device Name'
         token_type: 'Token Type'

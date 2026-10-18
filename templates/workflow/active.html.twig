@@ -7,6 +7,7 @@
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {{ _fa_page_header.render({
     badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
@@ -43,6 +44,7 @@
 </div>
 
 {# Active Workflows Table #}
+{% if active_workflows is not empty %}
 {% embed '_components/_table.html.twig' with {
     'wrapperClass': 'table-container',
     'noMargin': true
@@ -61,7 +63,7 @@
     {% block table_body %}
         {% for instance in active_workflows %}
         {% set isOverdue = instance.dueDate and instance.dueDate < date() and instance.status not in ['approved', 'rejected', 'cancelled'] %}
-        <tr{% if isOverdue %} class="table-danger"{% endif %}>
+        <tr{% if isOverdue %} class="fa-table__row--danger"{% endif %}>
             <td>
                 <strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong>
                 {% if isOverdue %}
@@ -121,15 +123,15 @@
                 </div>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="7" class="text-center text-muted p-4">
-                {{ 'workflow.message.no_active'|trans({}, 'workflows') }}
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'sleeping',
+        title: 'workflow.message.no_active'|trans({}, 'workflows')
+    }) }}
+{% endif %}
 
 {# Modals for Approve/Reject Actions #}
 {% for instance in active_workflows %}

@@ -5,8 +5,7 @@
  #
  # Usage:
  #   {% from '_components/_fa_maturity_heat_map.html.twig' import fa_maturity_heat_map %}
- #   {# Caller gates on density #}
- #   {%- from '_components/_fa_maturity_heat_map.html.twig' import fa_maturity_heat_map -%}
+ #   (the caller gates on density)
  #   fa_maturity_heat_map({score: 4, trend: 0.3, reasoning: 'Datenvollständigkeit 92%'})
  #
  # Params:
@@ -40,9 +39,9 @@
 
     <span class="fa-maturity-heat-map"
           {% if config.reasoning is defined and config.reasoning %}
-              title="{{ config.reasoning }}{% if trend is not null %} · Trend {{ trendStr }} zum Vormonat{% endif %}"
+              title="{{ config.reasoning }}{% if trend is not null %} · {{ 'ui.component.maturity.trend'|trans({'%trend%': trendStr}, 'ui') }}{% endif %}"
           {% endif %}
-          aria-label="{{ score }} von 5 erreicht{% if trend is not null %}, Trend {{ trendStr }} zum Vormonat{% endif %}">
+          aria-label="{{ 'ui.component.maturity.score'|trans({'%score%': score}, 'ui') }}{% if trend is not null %}, {{ 'ui.component.maturity.trend'|trans({'%trend%': trendStr}, 'ui') }}{% endif %}">
         <span class="fa-maturity-heat-map__score" aria-hidden="true">{{ score }}/5</span>
         <span class="fa-maturity-heat-map__dots" aria-hidden="true">
             {% for i in 1..5 %}

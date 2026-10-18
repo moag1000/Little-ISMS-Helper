@@ -117,7 +117,8 @@
                                         var base = '{{ path('app_compliance_wizard_history', {wizard: wizard}) }}';
                                         window.location.href = base.replace('/history', '/diff/' + from + '/' + to);
                                     } else {
-                                        alert('{{ 'diff.select_different'|trans({}, 'compliance_wizard')|e('js') }}');
+                                        var msg = '{{ 'diff.select_different'|trans({}, 'compliance_wizard')|e('js') }}';
+                                        if (typeof window.faToast === 'function') { window.faToast(msg, 'warning'); } else { window.alert(msg); }
                                     }
                                 ">
                             <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>

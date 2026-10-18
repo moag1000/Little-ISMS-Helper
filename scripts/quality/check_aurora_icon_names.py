@@ -8,6 +8,12 @@ Scope:
   - src/**/*.php           (excluding vendor)
   - assets/controllers/**/*.js
 
+Also checked:
+  - macro params `icon: 'x'` / `headerIcon: 'x'` / `iconName: 'x'` in Twig
+    (rendered as `fa-icon--x`; an unknown name renders a solid square)
+  - static `class="fa-icon …"` attributes that carry only colour/size
+    modifiers (`fa-icon--info`, `fa-icon--warning`, …) and no glyph
+
 Allowed dynamic forms (NOT checked, can't statically resolve):
   - class="fa-icon fa-icon--{{ var }}"
   - "fa-icon--" . $var
@@ -31,12 +37,22 @@ RE_ICON = re.compile(r"fa-icon--([a-z0-9][a-z0-9-]*)")
 RE_DYNAMIC = re.compile(r"fa-icon--\{")  # `fa-icon--{{ var }}` or `fa-icon--{$x}`
 
 
+RE_MACRO_ICON = re.compile(r"\b(?:icon|headerIcon|iconName)\s*:\s*'([a-z0-9][a-z0-9-]*)'")
+RE_CLASS_ATTR = re.compile(r'class="([^"]*\bfa-icon\b[^"]*)"')
+
+
 def load_canon() -> set[str]:
     if not CANON_CSS.is_file():
         print(f"ERROR: {CANON_CSS} not found", file=sys.stderr)
         sys.exit(2)
     css = CANON_CSS.read_text(encoding="utf-8")
     return set(re.findall(r"\.fa-icon--([a-z0-9][a-z0-9-]*)", css))
+
+
+def load_glyphs() -> set[str]:
+    """Icon classes that set a mask (`--fa-icon`), i.e. actually draw a glyph."""
+    css = CANON_CSS.read_text(encoding="utf-8")
+    return set(re.findall(r"\.fa-icon--([a-z0-9][a-z0-9-]*)\s*\{\s*--fa-icon", css))
 
 
 def is_skipped(path: Path) -> bool:
@@ -68,19 +84,34 @@ def strip_comments(line: str, ext: str) -> str:
     return line
 
 
-def scan_file(path: Path, canon: set[str]) -> list[tuple[int, str, str]]:
+def scan_file(path: Path, canon: set[str], glyphs: set[str]) -> list[tuple[int, str, str]]:
     """Return list of (line_no, snippet, bad-name)."""
     try:
         text = path.read_text(encoding="utf-8", errors="ignore")
     except OSError:
         return []
-    if "fa-icon--" not in text:
+    if "fa-icon" not in text and "icon:" not in text and "Icon:" not in text:
         return []
     ext = path.suffix
     out: list[tuple[int, str, str]] = []
     for idx, raw in enumerate(text.splitlines(), start=1):
         line = strip_comments(raw, ext)
-        if not line or "fa-icon--" not in line:
+        if not line:
+            continue
+        if ext == ".twig":
+            for m in RE_MACRO_ICON.finditer(line):
+                name = m.group(1)
+                name = name[3:] if name.startswith("bi-") else name
+                if name not in glyphs:
+                    out.append((idx, raw.strip()[:160], name))
+            for m in RE_CLASS_ATTR.finditer(line):
+                cls = m.group(1)
+                if "{" in cls or "$" in cls or "'" in cls:
+                    continue
+                names = RE_ICON.findall(cls)
+                if names and all(n in canon for n in names) and not any(n in glyphs for n in names):
+                    out.append((idx, raw.strip()[:160], "no-glyph:" + "+".join(names)))
+        if "fa-icon--" not in line:
             continue
         # Mask dynamic placeholders, e.g. fa-icon--{{ var }}
         masked = RE_DYNAMIC.sub("fa-icon--__DYN__", line)
@@ -129,6 +160,7 @@ def main() -> int:
     args = ap.parse_args()
 
     canon = load_canon()
+    glyphs = load_glyphs()
     files = (
         walk(ROOT / "templates", ["**/*.html.twig"])
         + walk(ROOT / "src", ["**/*.php"])
@@ -137,7 +169,7 @@ def main() -> int:
 
     violations: list[tuple[Path, int, str, str]] = []
     for f in files:
-        for ln, snip, name in scan_file(f, canon):
+        for ln, snip, name in scan_file(f, canon, glyphs):
             violations.append((f, ln, snip, name))
 
     if args.write_baseline is not None:

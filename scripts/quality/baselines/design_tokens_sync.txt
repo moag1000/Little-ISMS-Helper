@@ -1,0 +1,4 @@
+# check_design_tokens_sync.py baseline
+# Format: <theme>:<token>:<missing|differs>
+# Accepted deviations between assets/styles/*.css and the design-system
+# artifact snapshot. Remove an entry once both sides agree.

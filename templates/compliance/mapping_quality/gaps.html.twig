@@ -55,6 +55,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% if gap_stats_by_type is empty %}
                         <p class="text-muted">{{ 'compliance.mapping_quality.no_gap_data'|trans({}, 'compliance') }}</p>
                     {% else %}
@@ -72,11 +73,14 @@
                                 </span>
                                 <strong>{{ stat.count }}</strong>
                             </div>
-                            <div class="progress progress-h-20">
-                                <div class="progress-bar bg-info"
-                                     style="width: {% set total = gap_stats_by_type|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}{% if total > 0 %}{{ (stat.count / total * 100)|round }}{% else %}0{% endif %}%">
-                                </div>
-                            </div>
+                            {% set total = gap_stats_by_type|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}
+                            {{ _fa_progress.render({
+                                value: stat.count,
+                                max: total,
+                                tone: 'info',
+                                label: stat.gapType|replace({'_': ' '})|title,
+                                class: 'progress-h-20',
+                            }) }}
                             {% if stat.totalImpact %}
                                 <small class="text-muted">Total Impact: {{ stat.totalImpact|round }}%</small>
                             {% endif %}
@@ -95,6 +99,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% if gap_stats_by_priority is empty %}
                         <p class="text-muted">{{ 'compliance.mapping_quality.no_gap_data'|trans({}, 'compliance') }}</p>
                     {% else %}
@@ -111,11 +116,15 @@
                                 </span>
                                 <strong>{{ stat.count }}</strong>
                             </div>
-                            <div class="progress progress-h-20">
-                                <div class="progress-bar {{ badge_priority(stat.priority)|replace({'badge ': ''}) }}"
-                                     style="width: {% set total = gap_stats_by_priority|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}{% if total > 0 %}{{ (stat.count / total * 100)|round }}{% else %}0{% endif %}%">
-                                </div>
-                            </div>
+                            {% set total = gap_stats_by_priority|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}
+                            {% set priority_tone = {critical: 'danger', high: 'warning', medium: 'info'}[stat.priority|lower]|default('neutral') %}
+                            {{ _fa_progress.render({
+                                value: stat.count,
+                                max: total,
+                                tone: priority_tone,
+                                label: stat.priority|upper,
+                                class: 'progress-h-20',
+                            }) }}
                             <small class="text-muted">
                                 Impact: {{ stat.totalImpact|round }}% |
                                 Ø Effort: {{ stat.avgEffort|round(1) }}h

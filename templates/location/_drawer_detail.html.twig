@@ -18,7 +18,7 @@
         <div class="fa-drawer__kv"><span class="label">{{ 'location.field.type'|trans({}, 'locations') }}</span>
             <span>{{ ('location.type.' ~ location.locationType)|trans({}, 'locations') }}</span></div>
         {% if location.code %}<div class="fa-drawer__kv"><span class="label">{{ 'location.field.code'|trans({}, 'locations') }}</span><span><code>{{ location.code }}</code></span></div>{% endif %}
-        {% if location.parentLocation %}<div class="fa-drawer__kv"><span class="label">{{ 'location.field.parent'|trans({}, 'locations') }}</span><span>{{ location.parentLocation.name }}</span></div>{% endif %}
+        {% if location.parentLocation %}<div class="fa-drawer__kv"><span class="label">{{ 'location.field.parent_location'|trans({}, 'locations') }}</span><span>{{ location.parentLocation.name }}</span></div>{% endif %}
         <div class="fa-drawer__kv"><span class="label">{{ 'location.field.city'|trans({}, 'locations') }}</span>
             <span>{{ location.city ?? '–' }}{% if location.country %} · {{ location.country }}{% endif %}</span></div>
         <div class="fa-drawer__kv"><span class="label">{{ 'location.field.badge_access'|trans({}, 'locations') }}</span>

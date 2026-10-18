@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'planning' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'planning.task.title.list'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
 
@@ -14,7 +15,7 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'list-task', label: 'nav.planning'|trans({}, 'nav') },
+    badge: { icon: 'nav-list-check', label: 'nav.planning'|trans({}, 'nav') },
     title: 'planning.task.title.list'|trans({}, 'planning'),
     actions: [
         { label: 'planning.task.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_task_new') }
@@ -23,6 +24,7 @@
 
 <main class="fa-aurora-surface">
 
+{% if tasks is not empty %}
 {% embed '_components/_table.html.twig' with {
     'wrapperClass': 'table-container'
 } %}
@@ -86,22 +88,28 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('delete'~task.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--danger"
                                 aria-label="{{ 'planning.common.delete'|trans({}, 'planning') }} {{ task.name }}"
-                                onclick="return confirm('{{ 'planning.common.confirm_delete'|trans({}, 'planning')|e('js') }}')">
+                                data-controller="ui-actions"
+                                data-action="click->ui-actions#confirm"
+                                data-ui-actions-message-param="{{ 'planning.common.confirm_delete'|trans({}, 'planning') }}"
+                                data-ui-actions-tone-param="danger">
                             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                         </button>
                     </form>
                 </div>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'planning.task.message.no_tasks'|trans({}, 'planning') }}
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'sleeping',
+        title: 'planning.task.message.no_tasks'|trans({}, 'planning'),
+        actions: [
+            { label: 'planning.task.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_task_new') }
+        ]
+    }) }}
+{% endif %}
 
 </main>
 {% endblock %}

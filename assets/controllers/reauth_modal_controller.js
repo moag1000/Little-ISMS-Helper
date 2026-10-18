@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * FairyAurora v4.0 — reauth-modal controller
@@ -70,7 +71,7 @@ export default class extends Controller {
 
         const password = this.passwordInputTarget.value;
         if (!password) {
-            this.#showError(this.#t('reauth.error.password_required', 'Bitte Passwort eingeben.'));
+            this.#showError(faT('reauth.password_required'));
             return;
         }
 
@@ -98,13 +99,11 @@ export default class extends Controller {
             if (response.ok && data.success) {
                 this.#onSuccess(data.return_to || this.returnToValue);
             } else {
-                const msg = data.error
-                    ? this.#t(data.error, this.#fallbackErrorMsg(data.error))
-                    : this.#t('reauth.error.generic', 'Authentifizierung fehlgeschlagen.');
+                const msg = this.#errorText(data.error);
                 this.#showError(msg);
             }
         } catch (_err) {
-            this.#showError(this.#t('reauth.error.network', 'Verbindungsfehler. Bitte erneut versuchen.'));
+            this.#showError(faT('reauth.network'));
         } finally {
             this.#setLoading(false);
         }
@@ -216,30 +215,14 @@ export default class extends Controller {
     }
 
     /**
-     * Simple translation lookup from window.translations.security.
-     * Falls back to the provided default string.
+     * Server error key (reauth.error.*) → translated message (faT dictionary).
      */
-    #t(key, fallback) {
-        try {
-            const parts = key.split('.');
-            // key format: "reauth.error.invalid_password" → translations.security.reauth.error.invalid_password
-            let node = window.translations?.security;
-            for (const part of parts.slice(0)) {
-                node = node?.[part];
-            }
-            return (typeof node === 'string') ? node : fallback;
-        } catch (_) {
-            return fallback;
-        }
-    }
-
-    #fallbackErrorMsg(errorKey) {
-        const map = {
-            'reauth.error.invalid_password': 'Passwort ist falsch.',
-            'reauth.error.password_required': 'Bitte Passwort eingeben.',
-            'reauth.error.generic': 'Authentifizierung fehlgeschlagen.',
-            'reauth.error.network': 'Verbindungsfehler.',
+    #errorText(errorKey) {
+        const known = {
+            'reauth.error.invalid_password': () => faT('reauth.invalid_password'),
+            'reauth.error.password_required': () => faT('reauth.password_required'),
+            'reauth.error.network': () => faT('reauth.network'),
         };
-        return map[errorKey] ?? 'Authentifizierung fehlgeschlagen.';
+        return (known[errorKey] ?? (() => faT('reauth.generic')))();
     }
 }

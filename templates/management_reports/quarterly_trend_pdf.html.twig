@@ -103,7 +103,7 @@
             ? '<span class="badge badge-danger">' ~ ('management_reports.quarterly_trend.worse'|trans({}, 'management_reports')) ~ '</span>'
             : '<span class="badge badge-secondary">' ~ ('management_reports.quarterly_trend.stable'|trans({}, 'management_reports')) ~ '</span>') %}
     {% set _trend_rows = _trend_rows|merge([[
-        '<strong>' ~ metric.label ~ '</strong>',
+        '<strong>' ~ (metric.label|trans({}, 'management_reports')) ~ '</strong>',
         metric.previous is not null ? metric.previous ~ metric.unit : '-',
         '<strong>' ~ metric.current ~ metric.unit ~ '</strong>',
         _delta_cell,

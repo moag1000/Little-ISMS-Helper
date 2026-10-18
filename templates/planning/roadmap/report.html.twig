@@ -19,7 +19,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'bar-chart-line', label: 'Cl. 9.3 · Cl. 7.1' },
+        badge: { icon: 'nav-bar-chart', label: 'Cl. 9.3 · Cl. 7.1' },
         title: 'planning.report.title'|trans({}, 'planning'),
         subtitle: 'planning.report.subtitle'|trans({ '%weeks%': horizonWeeks }, 'planning')
     }) }}
@@ -28,7 +28,7 @@
     <div class="row g-3 mb-4">
         <div class="col-sm-4">
             {{ _fa_feature_card.render({
-                icon:    'person-lines-fill',
+                icon:    'nav-users',
                 label:   'planning.report.total_capacity'|trans({}, 'planning'),
                 value:   totalCapacityPt,
                 unit:    'PT',
@@ -37,7 +37,7 @@
         </div>
         <div class="col-sm-4">
             {{ _fa_feature_card.render({
-                icon:    'calendar-check',
+                icon:    'nav-calendar-check',
                 label:   'planning.report.total_load'|trans({}, 'planning'),
                 value:   totalLoadPt,
                 unit:    'PT',

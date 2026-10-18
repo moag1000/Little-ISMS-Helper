@@ -75,9 +75,7 @@
 
     /* Cyberpunk-Fee Double-Border: innerer pink-cyan gradient + äußerer subtle shadow */
     box-shadow:
-        0 0 0 1px var(--accent-tint),
-        0 12px 40px var(--primary-tint),
-        0 24px 64px rgb(15, 23, 42, 0.28);
+        0 0 0 1px var(--accent-tint), var(--shadow-md), 0 24px 64px rgb(15, 23, 42, 0.28);
 
     /* Shimmer-Border overlay */
     position: absolute;
@@ -119,9 +117,7 @@
     background: var(--surface);
     color: var(--fg);
     box-shadow:
-        0 0 0 1px var(--accent-tint),
-        0 12px 40px var(--primary-glow),
-        0 24px 72px rgb(0, 0, 0, 0.55); /* design-spec: tour popover deep-shadow for focus isolation */
+        0 0 0 1px var(--accent-tint), var(--shadow-md), 0 24px 72px rgb(0, 0, 0, 0.55); /* design-spec: tour popover deep-shadow for focus isolation */
 }
 
 .guided-tour-popover-header {
@@ -137,7 +133,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     /* Cyan-Pink-Gradient-Text */
-    background: linear-gradient(90deg, var(--primary), var(--accent) 50%, var(--accent));
+    background: var(--primary);
     background-clip: text;
     background-clip: text;
     color: transparent;
@@ -220,7 +216,7 @@
     max-width: 480px;
     margin: 0 auto;
     border-left: 4px solid var(--accent);
-    box-shadow: 0 4px 16px var(--accent-tint);
+    box-shadow: var(--shadow-md);
 }
 
 /* Banner auf dem Dashboard */
@@ -316,7 +312,7 @@
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--accent) 50%, var(--accent));
+    background: var(--primary);
     color: var(--on-primary);
     font-weight: 700;
     font-size: 0.9rem;

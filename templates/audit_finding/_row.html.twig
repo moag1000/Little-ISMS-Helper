@@ -6,40 +6,40 @@
     : (finding.status in ['verified', 'closed', 'resolved'] ? 'success'
     : (finding.status == 'in_progress' ? 'info' : 'secondary')) %}
 {% set _findingNumber = finding.findingNumber ?? ('#' ~ finding.id) %}
-<tr id="audit-finding-row-{{ finding.id }}"
+<tr class="fa-table__row" id="audit-finding-row-{{ finding.id }}"
     data-finding-id="{{ finding.id }}"
     data-finding-severity="{{ finding.severity }}">
-    <td>
+    <td class="fa-table__cell">
         <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}"
            data-turbo-frame="fa-form-modal"
            class="fa-row-link"><strong>{{ finding.title }}</strong></a>
         <br><small class="text-muted">{{ _findingNumber }}</small>
     </td>
-    <td>
+    <td class="fa-table__cell">
         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') } %}
     </td>
-    <td class="text-center">
+    <td class="fa-table__cell fa-table__cell--center">
         {% set _sevVariant = finding.severity == 'critical' ? 'danger'
             : (finding.severity == 'high' ? 'warning'
             : (finding.severity == 'medium' ? 'warning' : 'secondary')) %}
         {% include '_components/_badge.html.twig' with { variant: _sevVariant, content: ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') } %}
     </td>
-    <td class="text-center">
+    <td class="fa-table__cell fa-table__cell--center">
         {% include '_components/_badge.html.twig' with { variant: _statusVariant, content: ('audit_finding.status.' ~ finding.status)|trans({}, 'audits') } %}
     </td>
-    <td>
+    <td class="fa-table__cell">
         {% if finding.audit %}
             <span class="text-muted small">{{ finding.audit.title }}</span>
         {% endif %}
     </td>
-    <td>
+    <td class="fa-table__cell">
         {% if finding.dueDate %}
             <span class="{{ finding.isOverdue ? 'text-danger' : 'text-muted' }} small">
                 {{ finding.dueDate|date('Y-m-d') }}
             </span>
         {% endif %}
     </td>
-    <td class="text-center">
+    <td class="fa-table__cell fa-table__cell--actions">
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
             <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}"
                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"

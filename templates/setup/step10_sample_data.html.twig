@@ -65,8 +65,8 @@
                                                 <label class="form-check-label w-100" for="sample_{{ key }}">
                                                     <div class="d-flex align-items-start">
                                                         <div class="flex-grow-1">
-                                                            <p class="h6 mb-1">{{ data.name }}</p>
-                                                            <p class="text-muted mb-2">{{ data.description }}</p>
+                                                            <p class="h6 mb-1">{{ module_data_text(data, 'name') }}</p>
+                                                            <p class="text-muted mb-2">{{ module_data_text(data, 'description') }}</p>
                                                             {% if data.command is defined %}
                                                                 <small class="text-muted">
                                                                     <i class="fa-icon me-1 fa-icon--nav-tools" aria-hidden="true"></i>

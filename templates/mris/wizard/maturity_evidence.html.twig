@@ -1,15 +1,16 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'mris' %}
 
-{% block title %}MRIS-Wizard — Reifegrad-Evidence pro MHC{% endblock %}
+{% block title %}{{ 'mris.wizard.maturity.page_title'|trans({}, 'mris') }}{% endblock %}
 
 {% block body %}
 <div class="container">
 
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">MRIS-KPIs</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Wizard: Reifegrad-Evidence</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'nav.dashboard'|trans({}, 'nav') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">{{ 'mris.wizard.common.breadcrumb_kpis'|trans({}, 'mris') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'mris.wizard.maturity.breadcrumb'|trans({}, 'mris') }}</li>
         </ol>
     </nav>
 
@@ -17,35 +18,32 @@
         <div>
             <h1>
                 <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
-                {{ matrix.title|default('Reifegrad-Evidence pro MHC') }}
+                {{ matrix.title|default('mris.wizard.maturity.title'|trans({}, 'mris')) }}
             </h1>
             <p class="text-muted small mb-0">
-                {{ matrix.intro|default('13 Mythos-Hardening-Cluster, je 3 Reifegrade mit Audit-Belegen.') }}
+                {{ matrix.intro|default('mris.wizard.maturity.intro'|trans({}, 'mris')) }}
             </p>
         </div>
     </div>
 
     {% if fallback_used %}
-        <div class="fa-alert fa-alert--info small">
+        <div class="fa-alert fa-alert--info">
             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
-            <strong>Hinweis:</strong>
-            Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter
-            <code>blocker_solutions:</code> pflegen, damit dieser Inhalt
-            zentral aus YAML geladen wird. Aktuell wird der eingebettete
-            Default angezeigt.
+            <strong>{{ 'mris.wizard.common.note_label'|trans({}, 'mris') }}</strong>
+            {{ 'mris.wizard.common.fallback_notice'|trans({}, 'mris')|raw }}
         </div>
     {% endif %}
 
     {# Legende der drei Reifegrade — Bootstrap badges, gleicher Token wie SoA. #}
     <div class="mb-3 small">
         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Initial' } %}
-        <span class="text-muted">erste Schritte dokumentiert</span>
+        <span class="text-muted">{{ 'mris.wizard.maturity.legend_initial'|trans({}, 'mris') }}</span>
         &nbsp;·&nbsp;
         {% include '_components/_badge.html.twig' with { variant: 'info', content: 'Defined' } %}
-        <span class="text-muted">org-weit verbindlich</span>
+        <span class="text-muted">{{ 'mris.wizard.maturity.legend_defined'|trans({}, 'mris') }}</span>
         &nbsp;·&nbsp;
         {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Managed' } %}
-        <span class="text-muted">gemessen, gesteuert, KPI</span>
+        <span class="text-muted">{{ 'mris.wizard.maturity.legend_managed'|trans({}, 'mris') }}</span>
     </div>
 
     {# Akkordeon je MHC. Bootstrap 5.3 collapse — kein Custom-JS noetig. #}
@@ -90,7 +88,7 @@
                                                     {% endfor %}
                                                 </ul>
                                             {% else %}
-                                                <p class="small text-muted fst-italic mb-0">— keine Belege gepflegt —</p>
+                                                <p class="small text-muted fst-italic mb-0">{{ 'mris.wizard.maturity.no_evidence'|trans({}, 'mris') }}</p>
                                             {% endif %}
                                         {% endblock %}
                                     {% endembed %}
@@ -109,7 +107,7 @@
                 <div class="card-header">
                     <h2 class="h6 mb-0">
                         <i class="fa-icon fa-icon--ui-star" aria-hidden="true"></i>
-                        Norm-Verweise
+                        {{ 'mris.wizard.common.norm_refs'|trans({}, 'mris') }}
                     </h2>
                 </div>
             {% endblock %}
@@ -124,7 +122,7 @@
     {% endif %}
 
     <footer class="text-center text-muted small mt-4 pt-3 border-top">
-        Quelle: Peddi (2026) MRIS v1.5.
+        {{ 'mris.wizard.common.source'|trans({}, 'mris') }}
         <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">{{ 'mris.license.cc_by_40'|trans({}, 'mris') }}</a>.
     </footer>
 

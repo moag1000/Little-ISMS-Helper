@@ -54,7 +54,7 @@ final class DpiaTemplateCatalogue
             key: 'healthcare_bdsg_sect22',
             nameTransKey: 'dpia.template.healthcare_bdsg_sect22.name',
             usageHint: 'dpia.template.healthcare_bdsg_sect22.usage_hint',
-            icon: 'heart-pulse',
+            icon: 'nav-heart-pulse',
             processingDescription: 'Verarbeitung von Gesundheitsdaten gemäß § 22 Abs. 1 Nr. 1 Buchst. b BDSG i.V.m. Art. 9 Abs. 2 Buchst. h DSGVO zum Zweck der Gesundheitsversorgung.' . "\n\n"
                 . 'Die Verarbeitung umfasst: Erhebung, Speicherung und Nutzung von Patientenstammdaten (Name, Geburtsdatum, Versicherungsnummer), Diagnose- und Behandlungsdaten (ICD-10-Codes, Laborbefunde, Bildgebung/DICOM), Medikationspläne, Arztbriefe und Entlassdokumentationen. Daten werden im Krankenhausinformationssystem (KIS) verarbeitet und über HL7 FHIR R4 Schnittstellen an nachgelagerte Systeme (Labor, Radiologie, Apotheke) übertragen.' . "\n\n"
                 . 'Sonderkategorien gem. Art. 9 DSGVO: Gesundheitsdaten (primär), ggf. genetische Daten (bei Labordiagnostik).',
@@ -150,7 +150,7 @@ final class DpiaTemplateCatalogue
             key: 'financial_services_dora',
             nameTransKey: 'dpia.template.financial_services_dora.name',
             usageHint: 'dpia.template.financial_services_dora.usage_hint',
-            icon: 'landmark',
+            icon: 'bank',
             processingDescription: 'Verarbeitung personenbezogener Kundendaten im Rahmen digitaler operationeller Resilienz gem. DORA (EU 2022/2554) und DSGVO Art. 6 Abs. 1 Buchst. c i.V.m. Art. 6 Abs. 1 Buchst. f.' . "\n\n"
                 . 'Die Verarbeitung umfasst: Kundenstammdaten (Name, Adresse, IBAN, Steuer-ID), Transaktionsdaten (Überweisungen, Kartenzahlungen, Wertpapierhandel), ICT-Risikomonitoringdaten (Systemzugriffslogs, Anomalie-Erkennungsdaten), Daten aus DORA-Drittanbieterverträgen (Subcontractor-Mapping). Daten werden in zentralen Banking-Core-Systemen, einem SIEM-System und einem DORA-Threat-Intelligence-Register verarbeitet.' . "\n\n"
                 . 'Verarbeitungsdauer: Transaktionsdaten 10 Jahre (§ 147 AO, § 238 HGB); SIEM-Logs 12 Monate aktiv, 36 Monate Archiv; ICT-Vertragsdaten für Laufzeit + 10 Jahre.',
@@ -239,7 +239,7 @@ final class DpiaTemplateCatalogue
             key: 'ai_act_annex_iii',
             nameTransKey: 'dpia.template.ai_act_annex_iii.name',
             usageHint: 'dpia.template.ai_act_annex_iii.usage_hint',
-            icon: 'brain-circuit',
+            icon: 'nav-robot',
             processingDescription: 'Einsatz eines Hochrisiko-KI-Systems gemäß EU AI Act Annex III (Verordnung (EU) 2024/1689) mit Personenbezug. Das KI-System verarbeitet personenbezogene Daten zu Zwecken der automatisierten Entscheidungsunterstützung oder -findung in einem oder mehreren der in Annex III genannten Hochrisiko-Bereiche:' . "\n\n"
                 . 'Typische Hochrisiko-KI-Bereiche (Annex III EU AI Act):' . "\n"
                 . '- Nr. 1: Biometrische Identifizierung und Kategorisierung natürlicher Personen' . "\n"

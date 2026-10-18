@@ -217,16 +217,17 @@ export default class extends Controller {
                 // Backward compat: support legacy bi-* icon names — render
                 // as Bootstrap-Icon. New code should use fa-icon names.
                 const iconHtml = (cmd.icon || '').startsWith('bi-')
-                    ? `<i class="bi ${cmd.icon} command-item-icon" aria-hidden="true"></i>`
-                    : `<i class="fa-icon fa-icon--${cmd.icon} command-item-icon" aria-hidden="true"></i>`;
+                    ? `<i class="bi ${cmd.icon}" aria-hidden="true"></i>`
+                    : `<i class="fa-icon fa-icon--${cmd.icon}" aria-hidden="true"></i>`;
 
+                // Layout per design system (.fa-cmdp__item): icon tile | label | meta
                 html += `
                     <div class="command-item ${isSelected ? 'selected' : ''}"
                          data-command-id="${cmd.id}"
                          data-action="click->command-palette#execute"
                          data-index="${globalIndex}">
+                        <span class="command-item-icon">${iconHtml}</span>
                         <div class="command-item-content">
-                            ${iconHtml}
                             <span class="command-item-label">${cmd.label}</span>
                         </div>
                         ${this.getShortcutBadge(cmd)}

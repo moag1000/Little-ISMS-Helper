@@ -283,6 +283,14 @@ workflow:
         error:
             clarification_empty: 'Please enter your question before sending.'
             clarification_failed: 'The question could not be sent. Please try again or contact the ISO.'
+    entity_type:
+        risk: 'Risk'
+        control: 'Control'
+        incident: 'Incident'
+        asset: 'Asset'
+        change_request: 'Change Request'
+        document: 'Document'
+        audit: 'Audit'
 workflow_instance:
     status:
         pending: Pending

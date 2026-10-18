@@ -76,7 +76,7 @@ context:
         no_objectives: 'No ISMS objectives defined yet.'
         policy: Policy
         review: Review
-        exclusions: Exclusions
+        exclusions: 'Exclusions from the ISMS scope'
         external_issues: 'External Issues'
         internal_issues: 'Internal Issues'
     field:

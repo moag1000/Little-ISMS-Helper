@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Global Search Controller
@@ -156,9 +157,9 @@ export default class extends Controller {
         this.resultsTarget.innerHTML = `
             <div class="search-loading">
                 <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden">${this.escapeHtml(faT('loading'))}</span>
                 </div>
-                <span class="ms-2">Suche läuft...</span>
+                <span class="ms-2">${this.escapeHtml(faT('search.searching'))}</span>
             </div>
         `;
     }
@@ -173,36 +174,36 @@ export default class extends Controller {
 
         // Group results by category — navigation FIRST so admins find settings fast
         const categories = [
-            { key: 'navigation',             label: 'Navigation',          icon: 'util-arrow-right', color: 'primary' },
-            { key: 'assets',                 label: 'Assets',              icon: 'asset-server',     color: 'primary' },
-            { key: 'risks',                  label: 'Risiken',             icon: 'status-warning',   color: 'warning' },
-            { key: 'controls',               label: 'Controls',            icon: 'nav-shield-check', color: 'success' },
-            { key: 'incidents',              label: 'Vorfälle',            icon: 'status-critical',  color: 'danger' },
-            { key: 'trainings',              label: 'Trainings',           icon: 'nav-mortarboard',  color: 'info' },
-            { key: 'documents',              label: 'Dokumente',           icon: 'nav-document',     color: 'info' },
-            { key: 'suppliers',              label: 'Lieferanten',         icon: 'nav-truck',        color: 'info' },
-            { key: 'processing_activities',  label: 'Verarbeitungstätigkeiten', icon: 'nav-shield-lock', color: 'primary' },
-            { key: 'dpias',                  label: 'DSFA',                icon: 'nav-shield-lock',      color: 'primary' },
-            { key: 'data_breaches',          label: 'Datenpannen',         icon: 'nav-shield-lock',      color: 'danger' },
-            { key: 'audit_findings',         label: 'Audit-Findings',      icon: 'nav-clipboard-check',        color: 'warning' },
-            { key: 'corrective_actions',     label: 'Korrekturmaßnahmen',  icon: 'nav-clipboard-check',        color: 'warning' },
-            { key: 'change_requests',        label: 'Change Requests',     icon: 'nav-change',       color: 'info' },
-            { key: 'internal_audits',        label: 'Audits',              icon: 'nav-clipboard-check',        color: 'info' },
-            { key: 'business_processes',     label: 'Geschäftsprozesse',   icon: 'nav-flow',          color: 'info' },
-            { key: 'bc_plans',               label: 'BC-Pläne',            icon: 'nav-flow',          color: 'info' },
-            { key: 'bc_exercises',           label: 'BC-Übungen',          icon: 'nav-flow',          color: 'info' },
-            { key: 'crisis_teams',           label: 'Krisenteams',         icon: 'nav-flow',          color: 'warning' },
-            { key: 'management_reviews',     label: 'Management-Reviews',  icon: 'nav-reports',       color: 'info' },
-            { key: 'objectives',             label: 'Ziele',               icon: 'nav-target',       color: 'primary' },
-            { key: 'vulnerabilities',        label: 'Schwachstellen',      icon: 'status-critical',  color: 'danger' },
-            { key: 'patches',                label: 'Patches',             icon: 'nav-wrench',       color: 'info' },
-            { key: 'threat_intelligence',    label: 'Threat Intel',        icon: 'status-warning',   color: 'warning' },
-            { key: 'persons',                label: 'Personen',            icon: 'nav-people',       color: 'info' },
-            { key: 'interested_parties',     label: 'Stakeholder',         icon: 'nav-people',       color: 'info' },
-            { key: 'consents',               label: 'Einwilligungen',      icon: 'nav-shield-lock',      color: 'info' },
-            { key: 'data_subject_requests',  label: 'Betroffenenanfragen', icon: 'nav-shield-lock',      color: 'warning' },
-            { key: 'compliance_frameworks',  label: 'Compliance-Frameworks', icon: 'compliance-shield', color: 'primary' },
-            { key: 'compliance_requirements', label: 'Compliance-Anforderungen', icon: 'compliance-shield', color: 'primary' }
+            { key: 'navigation',             label: () => faT('search.category.navigation'),          icon: 'util-arrow-right', color: 'primary' },
+            { key: 'assets',                 label: () => faT('search.category.assets'),              icon: 'asset-server',     color: 'primary' },
+            { key: 'risks',                  label: () => faT('search.category.risks'),             icon: 'status-warning',   color: 'warning' },
+            { key: 'controls',               label: () => faT('search.category.controls'),            icon: 'nav-shield-check', color: 'success' },
+            { key: 'incidents',              label: () => faT('search.category.incidents'),            icon: 'status-critical',  color: 'danger' },
+            { key: 'trainings',              label: () => faT('search.category.trainings'),           icon: 'nav-mortarboard',  color: 'info' },
+            { key: 'documents',              label: () => faT('search.category.documents'),           icon: 'nav-document',     color: 'info' },
+            { key: 'suppliers',              label: () => faT('search.category.suppliers'),         icon: 'nav-truck',        color: 'info' },
+            { key: 'processing_activities',  label: () => faT('search.category.processing_activities'), icon: 'nav-shield-lock', color: 'primary' },
+            { key: 'dpias',                  label: () => faT('search.category.dpias'),                icon: 'nav-shield-lock',      color: 'primary' },
+            { key: 'data_breaches',          label: () => faT('search.category.data_breaches'),         icon: 'nav-shield-lock',      color: 'danger' },
+            { key: 'audit_findings',         label: () => faT('search.category.audit_findings'),      icon: 'nav-clipboard-check',        color: 'warning' },
+            { key: 'corrective_actions',     label: () => faT('search.category.corrective_actions'),  icon: 'nav-clipboard-check',        color: 'warning' },
+            { key: 'change_requests',        label: () => faT('search.category.change_requests'),     icon: 'nav-change',       color: 'info' },
+            { key: 'internal_audits',        label: () => faT('search.category.internal_audits'),              icon: 'nav-clipboard-check',        color: 'info' },
+            { key: 'business_processes',     label: () => faT('search.category.business_processes'),   icon: 'nav-flow',          color: 'info' },
+            { key: 'bc_plans',               label: () => faT('search.category.bc_plans'),            icon: 'nav-flow',          color: 'info' },
+            { key: 'bc_exercises',           label: () => faT('search.category.bc_exercises'),          icon: 'nav-flow',          color: 'info' },
+            { key: 'crisis_teams',           label: () => faT('search.category.crisis_teams'),         icon: 'nav-flow',          color: 'warning' },
+            { key: 'management_reviews',     label: () => faT('search.category.management_reviews'),  icon: 'nav-reports',       color: 'info' },
+            { key: 'objectives',             label: () => faT('search.category.objectives'),               icon: 'nav-target',       color: 'primary' },
+            { key: 'vulnerabilities',        label: () => faT('search.category.vulnerabilities'),      icon: 'status-critical',  color: 'danger' },
+            { key: 'patches',                label: () => faT('search.category.patches'),             icon: 'nav-wrench',       color: 'info' },
+            { key: 'threat_intelligence',    label: () => faT('search.category.threat_intelligence'),        icon: 'status-warning',   color: 'warning' },
+            { key: 'persons',                label: () => faT('search.category.persons'),            icon: 'nav-people',       color: 'info' },
+            { key: 'interested_parties',     label: () => faT('search.category.interested_parties'),         icon: 'nav-people',       color: 'info' },
+            { key: 'consents',               label: () => faT('search.category.consents'),      icon: 'nav-shield-lock',      color: 'info' },
+            { key: 'data_subject_requests',  label: () => faT('search.category.data_subject_requests'), icon: 'nav-shield-lock',      color: 'warning' },
+            { key: 'compliance_frameworks',  label: () => faT('search.category.compliance_frameworks'), icon: 'compliance-shield', color: 'primary' },
+            { key: 'compliance_requirements', label: () => faT('search.category.compliance_requirements'), icon: 'compliance-shield', color: 'primary' }
         ];
 
         categories.forEach(category => {
@@ -220,8 +221,8 @@ export default class extends Controller {
             <div class="search-category">
                 <div class="search-category-header">
                     <i class="fa-icon fa-icon--${category.icon} text-${category.color}" aria-hidden="true"></i>
-                    <span>${category.label}</span>
-                    <span class="badge bg-${category.color}">${items.length}</span>
+                    <span>${this.escapeHtml(category.label())}</span>
+                    <span class="fa-status-pill fa-status-pill--${category.color === 'info' ? 'primary' : category.color}">${items.length}</span>
                 </div>
                 <div class="search-category-items">
         `;
@@ -232,7 +233,7 @@ export default class extends Controller {
                 ? (item.icon.startsWith('fa-icon--') ? item.icon : `fa-icon--${item.icon}`)
                 : `fa-icon--${category.icon}`;
             html += `
-                <a href="${item.url}"
+                <a href="${this.escapeHtml(item.url)}"
                    class="search-result-item"
                    data-index="${index}"
                    data-action="click->search#handleResultClick">
@@ -243,7 +244,7 @@ export default class extends Controller {
                         <div class="search-result-title">${this.highlight(item.title, query)}</div>
                         ${item.description ? `<div class="search-result-description">${this.highlight(item.description, query)}</div>` : ''}
                     </div>
-                    ${item.badge ? `<span class="badge bg-secondary">${item.badge}</span>` : ''}
+                    ${item.badge ? `<span class="fa-status-pill fa-status-pill--neutral">${this.escapeHtml(item.badge)}</span>` : ''}
                 </a>
             `;
         });
@@ -259,16 +260,26 @@ export default class extends Controller {
     highlight(text, query) {
         if (!text) return '';
 
-        const regex = new RegExp(`(${query})`, 'gi');
-        return text.replace(regex, '<mark>$1</mark>');
+        // Escape first, then mark the (regex-escaped) query — the result is
+        // inserted as HTML, so neither may carry markup.
+        const safe = this.escapeHtml(text);
+        const needle = this.escapeHtml(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (!needle) return safe;
+        return safe.replace(new RegExp(`(${needle})`, 'gi'), '<mark>$1</mark>');
+    }
+
+    escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
     }
 
     displayEmpty(query) {
         this.resultsTarget.innerHTML = `
             <div class="search-empty">
-                <i class="fa-icon fa-icon--ui-search" style="font-size: 3rem; color: #ccc;" aria-hidden="true"></i>
-                <p class="mt-3 mb-0">Keine Ergebnisse für "${query}"</p>
-                <p class="text-muted small">Versuchen Sie andere Suchbegriffe</p>
+                <i class="fa-icon fa-icon--ui-search" style="font-size: 3rem; color: var(--fg-3);" aria-hidden="true"></i>
+                <p class="mt-3 mb-0">${this.escapeHtml(faT('search.no_results', { '%query%': query }))}</p>
+                <p class="text-muted small">${this.escapeHtml(faT('search.no_results_hint'))}</p>
             </div>
         `;
     }
@@ -277,8 +288,8 @@ export default class extends Controller {
         this.resultsTarget.innerHTML = `
             <div class="search-error">
                 <i class="fa-icon fa-icon--status-warning text-danger" style="font-size: 3rem;" aria-hidden="true"></i>
-                <p class="mt-3 mb-0">Fehler bei der Suche</p>
-                <p class="text-muted small">Bitte versuchen Sie es erneut</p>
+                <p class="mt-3 mb-0">${this.escapeHtml(faT('search.error'))}</p>
+                <p class="text-muted small">${this.escapeHtml(faT('search.error_hint'))}</p>
             </div>
         `;
     }

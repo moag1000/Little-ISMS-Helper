@@ -132,12 +132,12 @@
     {# Info Box #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', class: 'mt-4' } } %}
         {% block alert_body %}
-        <div class="fa-alert__title">Wichtige Hinweise</div>
+        <div class="fa-alert__title">{{ 'role.templates.notes.title'|trans({}, 'role_management') }}</div>
         <ul class="mb-0">
-            <li>Die erstellte Rolle kann nach der Erstellung angepasst werden</li>
-            <li>Fehlende Berechtigungen werden übersprungen (z.B. wenn sie noch nicht existieren)</li>
-            <li>Die Rolle wird als benutzerdefinierte Rolle (nicht System-Rolle) erstellt</li>
-            <li>Nach der Erstellung können Sie Berechtigungen hinzufügen oder entfernen</li>
+            <li>{{ 'role.templates.notes.adjustable'|trans({}, 'role_management') }}</li>
+            <li>{{ 'role.templates.notes.missing_skipped'|trans({}, 'role_management') }}</li>
+            <li>{{ 'role.templates.notes.custom_role'|trans({}, 'role_management') }}</li>
+            <li>{{ 'role.templates.notes.edit_permissions'|trans({}, 'role_management') }}</li>
         </ul>
         {% endblock %}
     {% endembed %}

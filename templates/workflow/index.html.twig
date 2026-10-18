@@ -7,6 +7,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -96,6 +97,7 @@
 {# Workflow Instances Table #}
 <h2>{{ 'workflow.section.recent_instances'|trans({}, 'workflows') }}</h2>
 
+{% if instances is not empty %}
 {% embed '_components/_table.html.twig' with {
     'wrapperClass': 'table-container',
     'noMargin': true
@@ -165,15 +167,15 @@
                 </div>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="7" class="text-center text-muted p-4">
-                {{ 'workflow.message.no_instances'|trans({}, 'workflows') }}
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'sleeping',
+        title: 'workflow.message.no_instances'|trans({}, 'workflows')
+    }) }}
+{% endif %}
 
 {# Modals for Approve/Reject Actions #}
 {% for instance in instances|slice(0, 20) %}
