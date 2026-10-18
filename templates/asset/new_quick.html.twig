@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'asset' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'asset.quick_form.title'|trans({}, 'asset') }} - {{ parent() }}{% endblock %}
 
@@ -13,14 +14,14 @@
 } %}
 
 {# Page Header #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
     title: 'asset.quick_form.title'|trans({}, 'asset'),
     subtitle: 'asset.quick_form.subtitle'|trans({}, 'asset'),
-    icon: 'ui-lightbulb',
+    badge: { icon: 'ui-lightbulb', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_asset_index'), variant: 'secondary', icon: 'util-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_asset_index'), variant: 'secondary', icon: 'util-arrow-left', attrs: { 'data-turbo-action': 'advance' } }
     ]
-} %}
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}

@@ -144,6 +144,34 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   2xl (≥ 1920px) — Full-HD / QHD / 4K
+   Ohne Deckel läuft Content auf 4K auf >200 Zeichen Zeilenlänge aus
+   (WCAG 1.4.8 empfiehlt ≤ 80). Wir deckeln die Shell und zentrieren,
+   statt die Spalten weiter zu dehnen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1920px) {
+    .container { max-width: 1840px; }
+
+    /* Content-Bereich der App-Shell deckeln + zentrieren */
+    .main-content > .container,
+    .page-content,
+    .ds-main { max-width: 1840px; margin-inline: auto; }
+
+    /* Fließtext-Blöcke bleiben lesbar (≈ 80–90 Zeichen) */
+    .fa-form-layout__sections,
+    .fa-setup-right__content { max-width: 860px; }
+}
+
+@media (min-width: 2560px) {
+    /* 4K/5K: nicht weiter dehnen — Rand wächst, Content bleibt konstant */
+    .container,
+    .main-content > .container,
+    .page-content,
+    .ds-main { max-width: 2200px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Touch-Device-Erkennung (unabhängig von Viewport)
    ═══════════════════════════════════════════════════════════════════ */
 

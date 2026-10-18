@@ -1,20 +1,20 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ module.name }} - {{ 'admin.modules.details'|trans({}, 'admin') }}{% endblock %}
+{% block title %}{{ module_name(module_key, module.name) }} - {{ 'admin.modules.details'|trans({}, 'admin') }}{% endblock %}
 
-{% block admin_title %}{{ module.name }}{% endblock %}
+{% block admin_title %}{{ module_name(module_key, module.name) }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{{ path('admin_modules_index') }}">{{ 'admin.nav.module_management'|trans({}, 'admin') }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ module.name }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ module_name(module_key, module.name) }}</li>
 {% endblock %}
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: module.icon, label: 'Module' },
-        title: module.name,
-        subtitle: module.description,
+        badge: { icon: module.icon, label: 'admin.modules.badge_single'|trans({}, 'admin') },
+        title: module_name(module_key, module.name),
+        subtitle: module_description(module_key, module.description),
         actions: [
             { label: 'common.back_to_overview'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('admin_modules_index') }
         ]
@@ -27,43 +27,43 @@
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
                         <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
-                        Modul-Informationen
+                        {{ 'admin.modules.info_title'|trans({}, 'admin') }}
                     </h2>
                     <div class="fa-section__tools">
                         {% if is_active %}
-                            <span class="fa-status-pill fa-status-pill--success">Aktiv</span>
+                            <span class="fa-status-pill fa-status-pill--success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
                         {% else %}
-                            <span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span>
+                            <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
                         {% endif %}
                     </div>
                 </div>
                 <div class="fa-section__body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-3">Beschreibung</dt>
-                        <dd class="col-sm-9">{{ module.description }}</dd>
+                        <dt class="col-sm-3">{{ 'admin.modules.field.description'|trans({}, 'admin') }}</dt>
+                        <dd class="col-sm-9">{{ module_description(module_key, module.description) }}</dd>
 
-                        <dt class="col-sm-3">Status</dt>
+                        <dt class="col-sm-3">{{ 'admin.modules.field.status'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-9">
                             {% if module.required %}
-                                <span class="fa-status-pill fa-status-pill--warning me-1">Erforderlich</span>
+                                <span class="fa-status-pill fa-status-pill--warning me-1">{{ 'admin.modules.required'|trans({}, 'admin') }}</span>
                             {% else %}
-                                <span class="fa-status-pill fa-status-pill--primary me-1">Optional</span>
+                                <span class="fa-status-pill fa-status-pill--primary me-1">{{ 'admin.modules.optional'|trans({}, 'admin') }}</span>
                             {% endif %}
                             {% if is_active %}
-                                <span class="fa-status-pill fa-status-pill--success">Aktiv</span>
+                                <span class="fa-status-pill fa-status-pill--success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
                             {% else %}
-                                <span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span>
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
                             {% endif %}
                         </dd>
 
-                        <dt class="col-sm-3">Entities</dt>
+                        <dt class="col-sm-3">{{ 'admin.modules.field.entities'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-9">
                             {% for entity in module.entities %}
                                 <span class="fa-status-pill fa-status-pill--neutral me-1">{{ entity }}</span>
                             {% endfor %}
                         </dd>
 
-                        <dt class="col-sm-3">Routen</dt>
+                        <dt class="col-sm-3">{{ 'admin.modules.field.routes'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-9">
                             {% for route in module.routes %}
                                 <code class="me-2">{{ route }}</code>
@@ -79,18 +79,18 @@
                     <div class="fa-section__header">
                         <h2 class="fa-section__title">
                             <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
-                            Abhängigkeiten
+                            {{ 'admin.modules.dependencies'|trans({}, 'admin') }}
                         </h2>
                     </div>
                     <div class="fa-section__body">
                         {% if graph.dependencies|length > 0 %}
                             <h3 class="h6 mb-2">
                                 <i class="fa-icon fa-icon--ui-link text-warning" aria-hidden="true"></i>
-                                Benötigt folgende Module:
+                                {{ 'admin.modules.requires_modules'|trans({}, 'admin') }}
                             </h3>
                             <div class="mb-4">
                                 {% for dep in graph.dependencies %}
-                                    <span class="fa-status-pill fa-status-pill--warning me-2 mb-2">{{ dep }}</span>
+                                    <span class="fa-status-pill fa-status-pill--warning me-2 mb-2">{{ module_name(dep) }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -98,11 +98,11 @@
                         {% if graph.dependents|length > 0 %}
                             <h3 class="h6 mb-2">
                                 <i class="fa-icon fa-icon--util-arrow-right text-info" aria-hidden="true"></i>
-                                Wird benötigt von:
+                                {{ 'admin.modules.required_by_modules'|trans({}, 'admin') }}
                             </h3>
                             <div>
                                 {% for dep in graph.dependents %}
-                                    <span class="fa-status-pill fa-status-pill--primary me-2 mb-2">{{ dep }}</span>
+                                    <span class="fa-status-pill fa-status-pill--primary me-2 mb-2">{{ module_name(dep) }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -116,7 +116,7 @@
                     <div class="fa-section__header">
                         <h2 class="fa-section__title">
                             <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
-                            Verfügbare Beispiel-Daten
+                            {{ 'admin.modules.sample_data.title'|trans({}, 'admin') }}
                         </h2>
                     </div>
                     <div class="fa-section__body">
@@ -126,15 +126,15 @@
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" name="samples[{{ key }}]" value="1" id="sample_{{ key }}">
                                     <label class="form-check-label" for="sample_{{ key }}">
-                                        <strong>{{ data.name }}</strong>
+                                        <strong>{{ module_data_text(data, 'name') }}</strong>
                                         <br>
-                                        <small class="text-muted">{{ data.description }}</small>
+                                        <small class="text-muted">{{ module_data_text(data, 'description') }}</small>
                                     </label>
                                 </div>
                             {% endfor %}
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary mt-3">
                                 <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
-                                Ausgewählte Daten importieren
+                                {{ 'admin.modules.sample_data.import_selected'|trans({}, 'admin') }}
                             </button>
                         </form>
                     </div>
@@ -148,7 +148,7 @@
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
                         <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i>
-                        Aktionen
+                        {{ 'common.actions'|trans({}, 'messages') }}
                     </h2>
                 </div>
                 <div class="fa-section__body">
@@ -158,37 +158,37 @@
                                 <form method="post" action="{{ path('admin_modules_deactivate', {moduleKey: module_key}) }}"
                                       data-controller="ui-actions"
                                       data-action="submit->ui-actions#confirm"
-                                      data-ui-actions-message-param="Modul {{ module.name }} wirklich deaktivieren?">
+                                      data-ui-actions-message-param="{{ 'admin.modules.confirm_deactivate_named'|trans({'%name%': module_name(module_key, module.name)}, 'admin') }}">
                                     <input type="hidden" name="_token" value="{{ csrf_token('module_deactivate_' ~ module_key) }}">
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                                         <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
-                                        Modul deaktivieren
+                                        {{ 'admin.modules.deactivate_module'|trans({}, 'admin') }}
                                     </button>
                                 </form>
                             {% else %}
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" disabled>
                                     <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
-                                    Modul ist erforderlich
+                                    {{ 'admin.modules.is_required'|trans({}, 'admin') }}
                                 </button>
                             {% endif %}
 
                             <a href="{{ path('admin_modules_export', {moduleKey: module_key}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="fa-icon fa-icon--import" aria-hidden="true"></i>
-                                Daten exportieren
+                                {{ 'admin.modules.export_data'|trans({}, 'admin') }}
                             </a>
                         {% else %}
                             <form method="post" action="{{ path('admin_modules_activate', {moduleKey: module_key}) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('module_activate_' ~ module_key) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100">
                                     <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                                    Modul aktivieren
+                                    {{ 'admin.modules.activate_module'|trans({}, 'admin') }}
                                 </button>
                             </form>
                         {% endif %}
 
                         <a href="{{ path('admin_modules_graph') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
-                            Dependency-Graph
+                            {{ 'admin.modules.dependency_graph'|trans({}, 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -199,19 +199,19 @@
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
                         <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
-                        Hinweise
+                        {{ 'admin.modules.hints_title'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body">
                     <ul class="mb-0 small">
                         {% if module.required %}
-                            <li>Dieses Modul ist erforderlich und kann nicht deaktiviert werden</li>
+                            <li>{{ 'admin.modules.hint.required_cannot_deactivate'|trans({}, 'admin') }}</li>
                         {% endif %}
                         {% if graph.dependents|length > 0 %}
-                            <li>Andere Module hängen von diesem Modul ab</li>
+                            <li>{{ 'admin.modules.hint.has_dependents'|trans({}, 'admin') }}</li>
                         {% endif %}
-                        <li>Beim Deaktivieren werden keine Daten gelöscht</li>
-                        <li>Sie können das Modul jederzeit wieder aktivieren</li>
+                        <li>{{ 'admin.modules.hint.no_data_deleted'|trans({}, 'admin') }}</li>
+                        <li>{{ 'admin.modules.hint.reactivate_anytime'|trans({}, 'admin') }}</li>
                     </ul>
                 </div>
             </section>

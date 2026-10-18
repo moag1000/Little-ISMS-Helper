@@ -131,16 +131,14 @@
         {% endblock %}
         {% block card_body %}
             {% if reviews|length == 0 %}
-            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
-                {% block alert_body %}
-                    {{ 'management_review.no_reviews'|trans({}, 'management_review') }}
-                    {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('app_management_review_new') }}" class="fa-alert__link" data-turbo-action="advance">
-                        {{ 'management_review.create_first'|trans({}, 'management_review') }}
-                    </a>
-                    {% endif %}
-                {% endblock %}
-            {% endembed %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+            {{ _fa_empty_state.render({
+                mood: 'sleeping',
+                title: 'management_review.no_reviews'|trans({}, 'management_review'),
+                actions: is_granted('ROLE_ADMIN') ? [
+                    { label: 'management_review.create_first'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new') }
+                ] : []
+            }) }}
             {% else %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover table-striped',

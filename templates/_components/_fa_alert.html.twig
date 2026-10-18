@@ -72,7 +72,7 @@
             {% block alert_body %}{% endblock %}
         </div>
         {%- if props.dismissible is defined and props.dismissible -%}
-            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="{{ 'ui.component.close'|trans({}, 'ui') }}">
                 <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
             </button>
         {%- endif -%}
@@ -103,7 +103,7 @@
             {%- endif -%}
         </div>
         {%- if props.dismissible is defined and props.dismissible -%}
-            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="{{ 'ui.component.close'|trans({}, 'ui') }}">
                 <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
             </button>
         {%- endif -%}

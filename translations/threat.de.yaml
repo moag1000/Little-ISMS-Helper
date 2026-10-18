@@ -141,6 +141,7 @@ field:
     assigned_to_user: 'Zugewiesen an (Benutzer)'
     assigned_person: 'Verantwortlich (Person)'
     assigned_deputy_persons: 'Vertretungen (Personen)'
+    status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Neu → In Analyse → Gemindert → Überwachung → Geschlossen). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
 
 placeholder:
     title: 'Bedrohungstitel eingeben'

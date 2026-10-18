@@ -144,10 +144,13 @@
             {% for plan in plans %}
                 {% include 'risk_treatment_plan/_row.html.twig' with { plan: plan } %}
             {% else %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             <tr>
-                <td colspan="8" class="text-center text-muted">
-                    {{ 'risk_treatment_plan.no_plans'|trans({}, 'risk_treatment_plan') }}
-
+                <td colspan="8">
+                    {{ _fa_empty_state.render({
+                        mood: 'sleeping',
+                        title: 'risk_treatment_plan.no_plans'|trans({}, 'risk_treatment_plan')
+                    }) }}
                 </td>
             </tr>
             {% endfor %}

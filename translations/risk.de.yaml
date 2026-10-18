@@ -1,4 +1,27 @@
 risk:
+  quant:
+    section:
+      title: 'Monetäre Risikoquantifizierung (SLE/ARO/ALE)'
+      subtitle: 'Ergänzende Bewertung — qualitative Einstufung bleibt primär'
+    field:
+      sle: 'Einzelschadenserwartung (SLE) in €'
+      aro: 'Jährliche Eintrittshäufigkeit (ARO)'
+      ale: 'Jährlicher Schadenswert (ALE)'
+    placeholder:
+      sle: 'z.B. 50000 — geschätzter Schaden pro Vorfall in €'
+      aro: 'z.B. 0.25 — einmal alle 4 Jahre'
+    help:
+      sle: 'Single Loss Expectancy: geschätzter finanzieller Schaden bei einem Einzelereignis in €. ALE = SLE × ARO.'
+      aro: 'Annual Rate of Occurrence: erwartete Häufigkeit pro Jahr (0,25 = alle 4 Jahre; 1,0 = einmal jährlich; 2,0 = zweimal jährlich).'
+      ale: 'Annual Loss Expectancy = SLE × ARO. Jährlich erwarteter monetärer Gesamtschaden aus diesem Risiko.'
+    board_report:
+      aggregate_label: 'Gesamtexposure (ALE) aller Risiken'
+      aggregate_hint: 'Summe aller Annual Loss Expectancy-Werte mit ausgefüllten SLE/ARO-Feldern'
+      no_data: 'Keine Risiken mit monetärer Quantifizierung vorhanden'
+    display:
+      empty: 'Für dieses Risiko ist noch keine monetäre Quantifizierung (SLE/ARO) erfasst.'
+      hint_per_year: 'pro Jahr (ALE)'
+      hint_module_info: 'SLE × ARO — monetäre Quantifizierung nach NIST SP 800-30'
   not_found: 'Risiko nicht gefunden.'
   success:
     created: 'Risiko wurde angelegt.'
@@ -58,6 +81,8 @@ risk:
       threat: Bedrohung
       probability: Wahrscheinlichkeit
       impact: Auswirkung
+      score_breakdown: 'W %probability% × A %impact%'
+      score_breakdown_title: 'Wahrscheinlichkeit %probability%/5 × Auswirkung %impact%/5'
       risk_score: Risikoscore
       residual_risk: Restrisiko
       treatment: Behandlung
@@ -377,9 +402,15 @@ risk:
     review_suggestion: Überprüfen Sie die Risikobewertung und Behandlungsmaßnahmen
       aufgrund eingetretener Vorfälle
   subject:
+    person:
+      label: Person
+    supplier:
+      label: Lieferant
     asset:
+      label: Asset
       monetary_value_hint: Geschätzter monetärer Wert des Assets in EUR
     location:
+      label: Standort
       city_country: Stadt, Land
   mini_heatmap:
     title_inherent: 'Live-Matrix (Brutto)'
@@ -696,28 +727,6 @@ fair:
     slm: 'FAIR: Sekundärer Schadensbetrag — indirekter Schaden in € inkl. Reputationsschaden und Bußgelder (Min/Max/Modus).'
 
 # ── F46 Quantitative Risk (SLE/ARO/ALE) — Modul risk_quant ─────────────────
-quant:
-  section:
-    title: 'Monetäre Risikoquantifizierung (SLE/ARO/ALE)'
-    subtitle: 'Ergänzende Bewertung — qualitative Einstufung bleibt primär'
-  field:
-    sle: 'Einzelschadenserwartung (SLE) in €'
-    aro: 'Jährliche Eintrittshäufigkeit (ARO)'
-    ale: 'Jährlicher Schadenswert (ALE)'
-  placeholder:
-    sle: 'z.B. 50000 — geschätzter Schaden pro Vorfall in €'
-    aro: 'z.B. 0.25 — einmal alle 4 Jahre'
-  help:
-    sle: 'Single Loss Expectancy: geschätzter finanzieller Schaden bei einem Einzelereignis in €. ALE = SLE × ARO.'
-    aro: 'Annual Rate of Occurrence: erwartete Häufigkeit pro Jahr (0,25 = alle 4 Jahre; 1,0 = einmal jährlich; 2,0 = zweimal jährlich).'
-    ale: 'Annual Loss Expectancy = SLE × ARO. Jährlich erwarteter monetärer Gesamtschaden aus diesem Risiko.'
-  board_report:
-    aggregate_label: 'Gesamtexposure (ALE) aller Risiken'
-    aggregate_hint: 'Summe aller Annual Loss Expectancy-Werte mit ausgefüllten SLE/ARO-Feldern'
-    no_data: 'Keine Risiken mit monetärer Quantifizierung vorhanden'
-  display:
-    hint_per_year: 'pro Jahr (ALE)'
-    hint_module_info: 'SLE × ARO — monetäre Quantifizierung nach NIST SP 800-30'
 
 risk_management:
   title: Titel

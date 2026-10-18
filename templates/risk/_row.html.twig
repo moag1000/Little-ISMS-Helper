@@ -27,22 +27,17 @@
         {% endif %}
     </td>
     <td>
-        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.threat } %}
-    </td>
-    <td class="text-center">
-        <span class="{{ badge_score(risk.probability) }}">
-            {{ risk.probability }}/5
-        </span>
-    </td>
-    <td class="text-center">
-        <span class="{{ badge_score(risk.impact) }}">
-            {{ risk.impact }}/5
-        </span>
+        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.threat, class: 'text-wrap text-start' } %}
     </td>
     <td class="text-center">
         <span class="risk-score risk-score-{{ riskScore >= 20 ? 'critical' : (riskScore >= 12 ? 'high' : (riskScore >= 6 ? 'medium' : 'low')) }}">
             {{ riskScore }}
         </span>
+        {# Probability × impact under the score instead of two own columns, so the table fits at 1400px. #}
+        <div class="small text-muted text-nowrap mt-1"
+             title="{{ 'risk.index.table.score_breakdown_title'|trans({'%probability%': risk.probability, '%impact%': risk.impact}, 'risk') }}">
+            {{ 'risk.index.table.score_breakdown'|trans({'%probability%': risk.probability, '%impact%': risk.impact}, 'risk') }}
+        </div>
     </td>
     <td class="text-center">
         {% if residual < riskScore %}

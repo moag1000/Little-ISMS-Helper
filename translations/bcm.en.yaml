@@ -204,3 +204,21 @@ business_process:
         benefit_consistency: 'Consistency: Unified data across all modules'
         benefit_compliance: 'Compliance: Automatic linking to requirements'
         benefit_quality: 'Quality: Verified data from validated source'
+bc_exercises:
+    exercise_type:
+        tabletop: 'Tabletop Exercise'
+        walkthrough: 'Walkthrough'
+        simulation: 'Simulation'
+        full_test: 'Full Test'
+        component_test: 'Component Test'
+    status:
+        planned: 'Planned'
+        in_progress: 'In Progress'
+        completed: 'Completed'
+        cancelled: 'Cancelled'
+bc_plans:
+    status:
+        draft: 'Draft'
+        under_review: 'Under Review'
+        active: 'Active'
+        archived: 'Archived'

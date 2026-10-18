@@ -16,6 +16,14 @@
 - Subset: latin only
 - Delivered via `@fontsource/jetbrains-mono@5.0.16`
 
+## Space Grotesk (Display: h1/h2, Seitentitel, Kennzahlen)
+
+- Source: https://github.com/floriankarsten/space-grotesk
+- Licence: SIL Open Font License 1.1
+- Weights: 600, 700
+- Subset: latin only
+- Delivered via `@fontsource/space-grotesk@5.0.16`
+
 ## Re-downloading
 
 ```bash
@@ -27,5 +35,9 @@ done
 for w in 400 500 600; do
   curl -sSL -o jetbrains-mono-$w.woff2 \
     "https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.16/files/jetbrains-mono-latin-$w-normal.woff2"
+done
+for w in 600 700; do
+  curl -sSL -o space-grotesk-$w.woff2 \
+    "https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.16/files/space-grotesk-latin-$w-normal.woff2"
 done
 ```

@@ -21,16 +21,19 @@
     <fieldset class="fa-density-toggle"
               data-controller="density-toggle"
               data-density-toggle-endpoint-value="{{ config.formAction }}">
-        <legend class="visually-hidden">Menü-Dichte wählen</legend>
+        <legend class="visually-hidden">{{ 'ui.component.density_toggle.legend'|trans({}, 'ui') }}</legend>
         <div class="fa-density-toggle__group" role="radiogroup">
             {% set options = [
-                {value: 'basic',    icon: 'density-1', label: 'Basic',    hint: '5–7 Items · Akronyme erklärt'},
-                {value: 'standard', icon: 'density-2', label: 'Standard', hint: '10–12 Items · ausgewogen'},
-                {value: 'expert',   icon: 'density-3', label: 'Expert',   hint: 'Alle Items · Maturity-Scores'},
-            ] %}
+                {value: 'basic',    icon: 'density-1'},
+                {value: 'standard', icon: 'density-2'},
+                {value: 'expert',   icon: 'density-3'},
+            ]|map(o => o|merge({
+                label: ('ui.component.density_toggle.' ~ o.value)|trans({}, 'ui'),
+                hint: ('ui.component.density_toggle.' ~ o.value ~ '_hint')|trans({}, 'ui')
+            })) %}
             {% for opt in options %}
                 <label class="fa-density-toggle__opt fa-density-toggle__opt--{{ opt.value }}{% if current == opt.value %} is-active{% endif %}"
-                       {% if locked %}title="Gesperrt durch: {{ config.lockedBy }}"{% endif %}
+                       {% if locked %}title="{{ 'ui.component.density_toggle.locked_by'|trans({'%name%': config.lockedBy}, 'ui') }}"{% endif %}
                        aria-describedby="density-hint-{{ opt.value }}">
                     <input type="radio"
                            name="density"

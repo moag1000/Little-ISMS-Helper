@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 import Sortable from 'sortablejs';
 
 /**
@@ -20,10 +21,20 @@ export default class extends Controller {
         apiUrl: String,
         csrfToken: String,
         // Translation strings
-        editTitle: { type: String, default: 'Edit' },
-        duplicateTitle: { type: String, default: 'Duplicate' },
-        deleteTitle: { type: String, default: 'Delete' }
+        editTitle: { type: String, default: '' },
+        duplicateTitle: { type: String, default: '' },
+        deleteTitle: { type: String, default: '' }
     };
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            editTitle: () => faT('workflow_builder.edit'),
+            duplicateTitle: () => faT('workflow_builder.duplicate'),
+            deleteTitle: () => faT('workflow_builder.delete'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         this.reorderInProgress = false;
@@ -64,17 +75,17 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                this.showNotification('Invalid server response format', 'error');
+                this.showNotification(faT('workflow_builder.invalid_response'), 'error');
                 return;
             }
 
             if (data && data.success) {
                 this.renderSteps(data.steps || []);
             } else {
-                this.showNotification(data?.error || 'Error loading steps', 'error');
+                this.showNotification(data?.error || faT('workflow_builder.load_failed'), 'error');
             }
         } catch (error) {
-            this.showNotification('Failed to load workflow steps', 'error');
+            this.showNotification(faT('workflow_builder.load_failed'), 'error');
         } finally {
             this.hideLoading();
         }
@@ -87,7 +98,7 @@ export default class extends Controller {
             this.stepsListTarget.innerHTML = `
                 <div class="text-center py-5 text-muted">
                     <i class="fa-icon fa-icon--nav-workflow fs-1 d-block mb-3"></i>
-                    <p>No steps defined yet. Add steps using the form below or apply a template.</p>
+                    <p>${this.escapeHtml(faT('workflow_builder.empty'))}</p>
                 </div>
             `;
             return;
@@ -125,11 +136,11 @@ export default class extends Controller {
                             <i class="fa-icon fa-icon--${stepTypeIcon} fs-4 text-${this.getStepTypeColor(step.stepType)}" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="card-title mb-1">${this.escapeHtml(step.name || 'Unnamed Step')}</h5>
+                            <h5 class="card-title mb-1">${this.escapeHtml(step.name || faT('workflow_builder.unnamed'))}</h5>
                             <div class="d-flex flex-wrap gap-2 mb-2">
                                 ${stepTypeBadge}
-                                ${step.isRequired ? '<span class="badge bg-warning text-dark">Required</span>' : '<span class="badge bg-secondary">Optional</span>'}
-                                ${daysToComplete && !isNaN(daysToComplete) ? `<span class="badge bg-info"><i class="fa-icon fa-icon--ui-clock me-1"></i>${daysToComplete} days SLA</span>` : ''}
+                                ${step.isRequired ? `<span class="badge bg-warning text-dark">${this.escapeHtml(faT('workflow_builder.required'))}</span>` : `<span class="badge bg-secondary">${this.escapeHtml(faT('workflow_builder.optional'))}</span>`}
+                                ${daysToComplete && !isNaN(daysToComplete) ? `<span class="badge bg-info"><i class="fa-icon fa-icon--ui-clock me-1"></i>${this.escapeHtml(faT('workflow_builder.sla_days', { '%days%': daysToComplete }))}</span>` : ''}
                             </div>
                             ${approverInfo}
                             ${step.description ? `<p class="card-text text-muted small mt-2">${this.escapeHtml(step.description)}</p>` : ''}
@@ -139,19 +150,19 @@ export default class extends Controller {
                                 <button class="btn btn-sm btn-outline-primary"
                                         data-action="click->workflow-builder#editStep"
                                         data-step-id="${stepId}"
-                                        title="${this.editTitleValue}">
+                                        title="${this.label('editTitle')}">
                                     <i class="fa-icon fa-icon--ui-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-secondary"
                                         data-action="click->workflow-builder#duplicateStep"
                                         data-step-id="${stepId}"
-                                        title="${this.duplicateTitleValue}">
+                                        title="${this.label('duplicateTitle')}">
                                     <i class="fa-icon fa-icon--ui-copy"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger"
                                         data-action="click->workflow-builder#deleteStep"
                                         data-step-id="${stepId}"
-                                        title="${this.deleteTitleValue}">
+                                        title="${this.label('deleteTitle')}">
                                     <i class="fa-icon fa-icon--ui-trash"></i>
                                 </button>
                             </div>
@@ -183,9 +194,9 @@ export default class extends Controller {
 
     getStepTypeBadge(stepType) {
         const labels = {
-            'approval': 'Approval',
-            'notification': 'Notification',
-            'auto_action': 'Auto Action'
+            'approval': faT('workflow_builder.type.approval'),
+            'notification': faT('workflow_builder.type.notification'),
+            'auto_action': faT('workflow_builder.type.auto_action')
         };
         const color = this.getStepTypeColor(stepType);
         // Escape stepType if not in predefined labels to prevent XSS
@@ -210,7 +221,7 @@ export default class extends Controller {
             // Number is safe, but ensure it's actually a number
             const userCount = parseInt(step.approverUsers.length, 10);
             if (!isNaN(userCount)) {
-                info.push(`<span class="badge bg-light text-dark"><i class="fa-icon fa-icon--nav-people me-1"></i>${userCount} users</span>`);
+                info.push(`<span class="badge bg-light text-dark"><i class="fa-icon fa-icon--nav-people me-1"></i>${this.escapeHtml(faT('workflow_builder.users', { '%count%': userCount }))}</span>`);
             }
         }
 
@@ -234,7 +245,7 @@ export default class extends Controller {
             .filter(id => id !== null);
 
         if (stepIds.length !== stepCards.length) {
-            this.showNotification('Invalid step data detected', 'error');
+            this.showNotification(faT('workflow_builder.invalid_steps'), 'error');
             this.loadSteps();
             return;
         }
@@ -255,21 +266,21 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                this.showNotification('Invalid server response', 'error');
+                this.showNotification(faT('workflow_builder.invalid_response'), 'error');
                 this.loadSteps();
                 return;
             }
 
             if (data && data.success) {
-                this.showNotification('Steps reordered successfully', 'success');
+                this.showNotification(faT('workflow_builder.reordered'), 'success');
                 // Update step numbers in UI
                 this.updateStepNumbers();
             } else {
-                this.showNotification(data?.error || 'Failed to reorder steps', 'error');
+                this.showNotification(data?.error || faT('workflow_builder.reorder_failed'), 'error');
                 this.loadSteps(); // Reload to revert
             }
         } catch (error) {
-            this.showNotification('Error reordering steps', 'error');
+            this.showNotification(faT('workflow_builder.reorder_failed'), 'error');
             this.loadSteps(); // Reload to revert
         } finally {
             this.reorderInProgress = false;
@@ -321,20 +332,20 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                this.showNotification('Invalid server response', 'error');
+                this.showNotification(faT('workflow_builder.invalid_response'), 'error');
                 return;
             }
 
             if (data && data.success) {
-                this.showNotification('Step added successfully', 'success');
+                this.showNotification(faT('workflow_builder.added'), 'success');
                 form.reset();
                 this.loadSteps();
             } else {
-                const errorMsg = data?.errors ? data.errors.join(', ') : (data?.error || 'Failed to add step');
+                const errorMsg = data?.errors ? data.errors.join(', ') : (data?.error || faT('workflow_builder.add_failed'));
                 this.showNotification(errorMsg, 'error');
             }
         } catch (error) {
-            this.showNotification('Error adding step', 'error');
+            this.showNotification(faT('workflow_builder.add_failed'), 'error');
         } finally {
             if (submitBtn) submitBtn.disabled = false;
         }
@@ -343,7 +354,7 @@ export default class extends Controller {
     async editStep(event) {
         const stepId = event.currentTarget.dataset.stepId;
         // Open edit modal or inline form
-        this.showNotification(`Edit step ${stepId} - Feature coming soon`, 'info');
+        this.showNotification(faT('workflow_builder.edit_unavailable', { '%id%': stepId }), 'info');
     }
 
     async duplicateStep(event) {
@@ -362,13 +373,13 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.success) {
-                this.showNotification('Step duplicated successfully', 'success');
+                this.showNotification(faT('workflow_builder.duplicated'), 'success');
                 this.loadSteps();
             } else {
-                this.showNotification(data.error || 'Failed to duplicate step', 'error');
+                this.showNotification(data.error || faT('workflow_builder.duplicate_failed'), 'error');
             }
         } catch (error) {
-            this.showNotification('Error duplicating step', 'error');
+            this.showNotification(faT('workflow_builder.duplicate_failed'), 'error');
         }
     }
 
@@ -376,7 +387,7 @@ export default class extends Controller {
         const stepId = event.currentTarget.dataset.stepId;
         const button = event.currentTarget;
 
-        if (!await window.faConfirm(window.translations?.workflow?.confirm_delete_step || 'Are you sure you want to delete this step?', { tone: 'danger' })) {
+        if (!await window.faConfirm(faT('workflow_builder.confirm_delete'), { tone: 'danger' })) {
             return;
         }
 
@@ -395,18 +406,18 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                this.showNotification('Invalid server response', 'error');
+                this.showNotification(faT('workflow_builder.invalid_response'), 'error');
                 return;
             }
 
             if (data && data.success) {
-                this.showNotification('Step deleted successfully', 'success');
+                this.showNotification(faT('workflow_builder.deleted'), 'success');
                 this.loadSteps();
             } else {
-                this.showNotification(data?.error || 'Failed to delete step', 'error');
+                this.showNotification(data?.error || faT('workflow_builder.delete_failed'), 'error');
             }
         } catch (error) {
-            this.showNotification('Error deleting step', 'error');
+            this.showNotification(faT('workflow_builder.delete_failed'), 'error');
         } finally {
             button.disabled = false;
         }
@@ -414,7 +425,7 @@ export default class extends Controller {
 
     async applyTemplate(event) {
         const templateKey = event.currentTarget.dataset.templateKey;
-        const clearExisting = await window.faConfirm(window.translations?.workflow?.confirm_replace_steps || 'Do you want to replace existing steps? Click OK to replace, Cancel to append.', { tone: 'warn' });
+        const clearExisting = await window.faConfirm(faT('workflow_builder.confirm_replace'), { tone: 'warn' });
 
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/apply-template`, {
@@ -430,13 +441,13 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.success) {
-                this.showNotification(`Template applied: ${data.stepsAdded} steps added`, 'success');
+                this.showNotification(faT('workflow_builder.template_applied', { '%count%': data.stepsAdded }), 'success');
                 this.loadSteps();
             } else {
-                this.showNotification(data.error || 'Failed to apply template', 'error');
+                this.showNotification(data.error || faT('workflow_builder.template_failed'), 'error');
             }
         } catch (error) {
-            this.showNotification('Error applying template', 'error');
+            this.showNotification(faT('workflow_builder.template_failed'), 'error');
         }
     }
 
@@ -452,7 +463,7 @@ export default class extends Controller {
             this.notificationTarget.innerHTML = `
                 <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
                     ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="${this.escapeHtml(faT('close'))}"></button>
                 </div>
             `;
 

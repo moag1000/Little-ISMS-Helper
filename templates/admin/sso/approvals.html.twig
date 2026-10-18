@@ -63,7 +63,10 @@
                                 </button>
                             </form>
                             <form method="post" action="{{ path('admin_sso_approval_reject', {id: a.id}) }}" class="d-inline ms-1"
-                                  onsubmit="this.querySelector('[name=reason]').value = prompt('{{ 'sso.prompt.reject_reason'|trans }}') || '';">
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#promptSubmit"
+                                  data-ui-actions-message-param="{{ 'sso.prompt.reject_reason'|trans({}, 'sso') }}"
+                                  data-ui-actions-field-param="reason">
                                 <input type="hidden" name="_token" value="{{ csrf_token('sso_approval') }}">
                                 <input type="hidden" name="reason" value="">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">

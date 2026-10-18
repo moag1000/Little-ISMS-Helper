@@ -85,11 +85,11 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <h3 class="h6 mb-0">
                                             <i class="fa-icon fa-icon--{{ _module_icon_map[module.icon] ?? 'nav-shield' }} text-{{ module.required ? 'warning' : 'success' }}" aria-hidden="true"></i>
-                                            {{ module.name }}
+                                            {{ module_name(key, module.name) }}
                                         </h3>
                                         <span class="fa-status-pill fa-status-pill--success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
                                     </div>
-                                    <p class="text-muted small">{{ module.description }}</p>
+                                    <p class="text-muted small">{{ module_description(key, module.description) }}</p>
 
                                     {% if dependency_graph[key].dependencies|length > 0 %}
                                         <div class="mb-2">
@@ -98,7 +98,7 @@
                                                 <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependencies %}
-                                                <span class="fa-status-pill fa-status-pill--warning me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--warning me-1 mb-1">{{ module_name(dep, all_modules[dep].name) }}</span>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -110,7 +110,7 @@
                                                 <strong>{{ 'admin.modules.required_by'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependents %}
-                                                <span class="fa-status-pill fa-status-pill--primary me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--primary me-1 mb-1">{{ module_name(dep, all_modules[dep].name) }}</span>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -123,7 +123,7 @@
                                             <form method="post" action="{{ path('admin_modules_deactivate', {moduleKey: key}) }}"
                                                   data-controller="ui-actions"
                                                   data-action="submit->ui-actions#confirm"
-                                                  data-ui-actions-message-param="{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module.name}, 'admin') }}">
+                                                  data-ui-actions-message-param="{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module_name(key, module.name)}, 'admin') }}">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('module_deactivate_' ~ key) }}">
                                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
                                                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.modules.deactivate'|trans({}, 'admin') }}
@@ -172,11 +172,11 @@
                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                     <h3 class="h6 mb-0 text-secondary">
                                         <i class="fa-icon fa-icon--{{ _module_icon_map[module.icon] ?? 'nav-shield' }}" aria-hidden="true"></i>
-                                        {{ module.name }}
+                                        {{ module_name(key, module.name) }}
                                     </h3>
                                     <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
                                 </div>
-                                <p class="text-muted small">{{ module.description }}</p>
+                                <p class="text-muted small">{{ module_description(key, module.description) }}</p>
 
                                 {% if dependency_graph[key].dependencies|length > 0 %}
                                     <div class="mb-2">
@@ -185,7 +185,7 @@
                                             <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
                                         </small><br>
                                         {% for dep in dependency_graph[key].dependencies %}
-                                            <span class="fa-status-pill fa-status-pill--warning me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                            <span class="fa-status-pill fa-status-pill--warning me-1 mb-1">{{ module_name(dep, all_modules[dep].name) }}</span>
                                         {% endfor %}
                                     </div>
                                 {% endif %}

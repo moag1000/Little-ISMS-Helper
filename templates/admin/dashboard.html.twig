@@ -315,7 +315,15 @@
                                 <div class="list-group-item">
                                     <div class="d-flex w-100 justify-content-between align-items-start">
                                         <div>
-                                            <div class="mb-1 small fw-semibold">{{ log.action|trans }}</div>
+                                            <div class="mb-1 small fw-semibold">
+                                                {#- Core CRUD actions are translated; module-specific codes
+                                                    (e.g. sso.login.success) form an open set and stay as code. -#}
+                                                {%- if log.action in ['create', 'update', 'delete', 'view', 'export', 'import', 'bulk'] -%}
+                                                    {{ ('audit_log.action_code.' ~ log.action)|trans({}, 'audit_log') }}
+                                                {%- else -%}
+                                                    <code>{{ log.action }}</code>
+                                                {%- endif -%}
+                                            </div>
                                             <p class="mb-1 small text-muted">
                                                 {{ log.entityType }} #{{ log.entityId }}
                                                 {% if log.username %}

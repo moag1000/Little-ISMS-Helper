@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * MFA Setup Controller
@@ -23,12 +24,22 @@ export default class extends Controller {
         verifyUrl: String,
         successRedirect: String,
         // Translation strings
-        verifyingText: { type: String, default: 'Verifying...' },
-        verifyButtonText: { type: String, default: 'Verify & Activate' },
-        errorText: { type: String, default: 'Error' },
-        copiedText: { type: String, default: 'Copied!' },
-        copyText: { type: String, default: 'Copy' }
+        verifyingText: { type: String, default: '' },
+        verifyButtonText: { type: String, default: '' },
+        errorText: { type: String, default: '' },
+        copiedText: { type: String, default: '' }
     };
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            verifyingText: () => faT('mfa_setup.verifying'),
+            verifyButtonText: () => faT('mfa_setup.verify'),
+            errorText: () => faT('mfa_setup.error'),
+            copiedText: () => faT('mfa_setup.copied'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     connect() {
         // Auto-submit when 6 digits are entered
@@ -63,7 +74,7 @@ export default class extends Controller {
 
         // Disable button during verification
         button.disabled = true;
-        button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${this.verifyingTextValue}`;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${this.label('verifyingText')}`;
 
         try {
             const response = await fetch(this.verifyUrlValue, {
@@ -97,7 +108,7 @@ export default class extends Controller {
                 this.codeInputTarget.focus();
             }
         } catch (error) {
-            this.showError(`${this.errorTextValue}: ${error.message}`);
+            this.showError(`${this.label('errorText')}: ${error.message}`);
             button.disabled = false;
             button.innerHTML = originalHTML;
         }
@@ -127,7 +138,7 @@ export default class extends Controller {
 
             // Show feedback
             const originalHTML = button.innerHTML;
-            button.innerHTML = `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${this.copiedTextValue}`;
+            button.innerHTML = `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${this.label('copiedText')}`;
             button.classList.add('btn-success');
             button.classList.remove('btn-outline-secondary');
 

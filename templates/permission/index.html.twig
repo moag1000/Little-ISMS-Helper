@@ -131,7 +131,7 @@
     {% endfor %}
 
     {% if groupedPermissions|length == 0 %}
-        {{ _fa_alert.render({ variant: 'info', body: 'Keine Berechtigungen gefunden.' }) }}
+        {{ _fa_alert.render({ variant: 'info', body: 'role_management.permissions.no_results'|trans({}, 'role_management') }) }}
     {% endif %}
     </main>
 {% endblock %}

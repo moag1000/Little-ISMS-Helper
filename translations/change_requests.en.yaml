@@ -42,17 +42,17 @@ change_request:
         overview: Overview
         details: 'Requester & Prioritisation'
         description: Description
-        justification: Justification
-        impact: Impact
+        justification: 'Justification and Need'
+        impact: 'Impact Analysis'
         risk_assessment: 'Risk Assessment'
-        plan: Plan
+        plan: 'Implementation Plan and Schedule'
         rollback_plan: 'Rollback Plan'
         testing_requirements: 'Testing Requirements'
         approval_info: 'Approval Info'
-        verification: Verification
-        closure: Closure
+        verification: 'Verification & Completion'
+        closure: 'Closure and Lessons Learned'
         affected_assets: 'Affected Assets'
-        affected_controls: 'Affected Controls'
+        affected_controls: 'Affected Controls (ISO 27001)'
         affected_risks: 'Affected Risks'
         associated_risks: 'Associated Risks'
     field:
@@ -86,8 +86,8 @@ change_request:
         planned_implementation: 'Planned Implementation'
         approval_date: 'Approval Date'
         comments: Comments
-        implementation_date: 'Implementation Date'
-        notes: Notes
+        implementation_date: 'Actual implementation date'
+        notes: 'Notes and additional information'
         verification_date: 'Verification Date'
         results: Results
         clause_reference: 'Clause Reference'
@@ -101,6 +101,7 @@ change_request:
         clause_reference: 'Optional ISO 27001 / DORA / NIS2 clause tag for §6.3 planned changes or §8.1 operational control differentiation'
         related_finding: 'ISO 27001 Cl. 10.1 — lineage to the audit finding that triggered this change request (optional but recommended for the audit trail).'
         related_corrective_action: 'ISO 27001 Cl. 10.1 — lineage to the corrective action that uses this change request as its implementation vehicle (optional).'
+        status_readonly: 'Status is driven by the lifecycle workflow (Draft → Submitted → Under review → Approved → Scheduled → Implemented → Verified → Closed). Direct editing is disabled; use the status actions on the detail page.'
     edit: Edit
     confirm:
         delete: Delete

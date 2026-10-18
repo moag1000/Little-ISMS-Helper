@@ -312,16 +312,15 @@
                     {% endif %}
 
                     <div class="text-center mb-3">
-                        <div class="progress progress-h-30">
-                            <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
-                                 role="progressbar"
-                                 style="width: {{ fulfillment.fulfillmentPercentage }}%"
-                                 aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100">
-                                <strong>{{ fulfillment.fulfillmentPercentage }}%</strong>
-                            </div>
-                        </div>
+                        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                        {% set fp = fulfillment.fulfillmentPercentage %}
+                        {{ _fa_progress.render({
+                            value: fp,
+                            tone: fp >= 100 ? 'success' : (fp >= 75 ? 'info' : (fp >= 50 ? 'warning' : 'danger')),
+                            showText: true,
+                            size: 'lg',
+                            class: 'progress-h-30',
+                        }) }}
                         <small class="text-muted">Status: <span class="{{ badge_completion(fulfillment.fulfillmentPercentage) }}">{{ fulfillment.status }}</span></small>
                     </div>
 

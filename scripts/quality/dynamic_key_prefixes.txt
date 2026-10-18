@@ -33,6 +33,7 @@ audit_finding.severity	4
 audit_finding.status	5
 audit_finding.type	3
 audit_freeze.purpose	3
+audit_log.action_code	1
 audit_program.frequency	3
 audit_program.status	3
 authority	1
@@ -152,6 +153,7 @@ management_review.status	5
 mapping_gap_item.status	1
 mfa.token_type	1
 mfa_token.type	2
+mris.wizard.ai_risk.class	1
 my_day.hint	1
 my_day.kpi	1
 my_day.section	1
@@ -205,9 +207,10 @@ portfolio_report.trend	1
 privacy.data_breach.risk	3
 privacy.data_breach.severity	2
 privacy.data_breach.status	3
+privacy.risk_level	1
 privacy.sdm.goal	2
 privacy.sdm.risk_level	1
-processing_activity.legal_basis	2
+processing_activity.legal_basis	3
 processing_activity.risk_level	1
 processing_activity.status	1
 prototype_protection.label	2
@@ -226,9 +229,9 @@ risk.index.treatment	2
 risk.level	1
 risk.link_incident.link_type	2
 risk.matrix.impact_label	1
-risk.matrix.likelihood	1
-risk.matrix.probability_label	1
+risk.matrix.likelihood	2
 risk.modern.status	1
+risk.subject	1
 risk.treatment	1
 risk_treatment_plan.priority	4
 risk_treatment_plan.status	5
@@ -271,6 +274,9 @@ training.status	4
 training.type	4
 training_participation.status	1
 type	3
+ui.component.coverage_matrix.dimension	1
+ui.component.density_toggle	1
+ui.condition_builder.keyword	2
 user.profile.alva.position	1
 user.profile.alva.size	1
 vulnerability.severity	3

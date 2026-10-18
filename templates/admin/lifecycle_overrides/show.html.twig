@@ -86,7 +86,9 @@
                                             {% if tOverrides is not empty %}
                                                 <form method="post"
                                                       action="{{ path('admin_lifecycle_overrides_reset', {workflowName: workflowName, transitionName: transition}) }}"
-                                                      onsubmit="return confirm({{ 'admin.lifecycle_overrides.reset_confirm'|trans|json_encode|raw }})">
+                                                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'admin.lifecycle_overrides.reset_confirm'|trans({}, 'admin') }}">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('lifecycle_reset_' ~ transition) }}">
                                                     <button type="submit"
                                                             class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"

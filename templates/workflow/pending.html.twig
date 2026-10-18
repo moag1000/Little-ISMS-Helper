@@ -8,6 +8,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {{ _fa_page_header.render({
     badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
@@ -36,6 +37,7 @@
 </div>
 
 {# Pending Workflows Table #}
+{% if pending_approvals is not empty %}
 {% embed '_components/_table.html.twig' with {
     'class': 'table-container',
     'noMargin': true
@@ -98,15 +100,15 @@
                 </a>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'workflow.message.no_pending'|trans({}, 'workflows') }}
-            </td>
-        </tr>
         {% endfor %}
     {% endblock %}
 {% endembed %}
+{% else %}
+    {{ _fa_empty_state.render({
+        mood: 'happy',
+        title: 'workflow.message.no_pending'|trans({}, 'workflows')
+    }) }}
+{% endif %}
 
 {# Modals for Approve/Reject Actions #}
 {% for instance in pending_approvals %}

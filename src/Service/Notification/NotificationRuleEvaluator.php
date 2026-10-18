@@ -98,6 +98,17 @@ class NotificationRuleEvaluator
      */
     private function compare(mixed $actual, mixed $expected): int
     {
+        // Boolean state (e.g. evidenceOutdated) against a form-entered value:
+        // the rule form stores text, so "true" / "1" / "yes" must match true.
+        if (is_bool($actual)) {
+            $expectedBool = is_bool($expected)
+                ? $expected
+                : filter_var($expected, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($expectedBool !== null) {
+                return $actual <=> $expectedBool;
+            }
+        }
+
         // Severity-aware comparison
         $actualSev   = is_string($actual)   ? (self::SEVERITY_ORDER[strtolower($actual)]   ?? null) : null;
         $expectedSev = is_string($expected) ? (self::SEVERITY_ORDER[strtolower($expected)] ?? null) : null;

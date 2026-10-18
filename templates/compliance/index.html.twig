@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'compliance.page_title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -111,9 +112,13 @@
                    title="{{ item.name }}">
                     <div class="quick-access-code">{{ item.code }}</div>
                     <div class="quick-access-progress">
-                        <div class="progress-bar-mini">
-                            <div class="progress-fill-mini progress-{% if item.compliance_percentage >= 75 %}success{% elseif item.compliance_percentage >= 50 %}warning{% else %}danger{% endif %}" style="width: {{ item.compliance_percentage }}%;"></div>
-                        </div>
+                        {{ _fa_progress.render({
+                            value: item.compliance_percentage,
+                            tone: item.compliance_percentage >= 75 ? 'success' : (item.compliance_percentage >= 50 ? 'warning' : 'danger'),
+                            label: item.name,
+                            size: 'sm',
+                            class: 'progress-h-6 mb-1',
+                        }) }}
                         <span class="progress-text">{{ item.compliance_percentage }}%</span>
                     </div>
                     {% if framework and framework.mandatory %}
@@ -388,22 +393,6 @@ html[data-theme="dark"] .quick-access-code { color: var(--primary); }
     text-align: center;
 }
 
-.progress-bar-mini {
-    height: 6px;
-    background: var(--surface-3);
-    border-radius: var(--r-sm);
-    overflow: hidden;
-    margin-bottom: 4px;
-}
-
-.progress-fill-mini {
-    height: 100%;
-    transition: width 0.3s;
-}
-.progress-fill-mini.progress-success { background: var(--success); }
-.progress-fill-mini.progress-warning { background: var(--warning); }
-.progress-fill-mini.progress-danger  { background: var(--danger); }
-
 .progress-text {
     font-size: 0.75rem;
     font-weight: 600;
@@ -542,18 +531,6 @@ html[data-theme="dark"] .quick-value { color: var(--primary); }
     font-size: 1.2rem;
 }
 html[data-theme="dark"] .progress-value { color: var(--primary); }
-
-.progress-bar {
-    height: 24px;
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    transition: width 0.3s ease;
-}
 
 .framework-stats {
     display: grid;

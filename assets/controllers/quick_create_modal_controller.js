@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * S14 Cluster A — Quick-Create Modal Controller
@@ -231,13 +232,12 @@ export default class extends Controller {
         const slug = key.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
         const attr = `data-quick-create-modal-i18n-${slug}`;
         const fromDom = this.element.getAttribute(attr);
-        let str = fromDom
-            || {
-                'quick-create-error-name-required': 'Name is required.',
-                'quick-create-error-network':       'Network error. Please retry.',
-                'quick-create-toast-success':       'Created: %label%',
-            }[slug]
-            || key;
+        const fallback = {
+            'quick-create-error-name-required': () => faT('quick_create.name_required'),
+            'quick-create-error-network': () => faT('quick_create.network'),
+            'quick-create-toast-success': () => faT('quick_create.created'),
+        }[slug];
+        let str = fromDom || (fallback ? fallback() : key);
         for (const [k, v] of Object.entries(params)) {
             str = str.replace(`%${k}%`, String(v));
         }

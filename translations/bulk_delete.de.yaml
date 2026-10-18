@@ -9,6 +9,17 @@ bulk_delete:
     will_be_deleted: 'werden gelöscht'
     selection:
         title: 'Ausgewählte Einträge'
+    dependency:
+        load_error: 'Fehler beim Laden der Abhängigkeiten'
+        data_breaches: 'Verknüpfte Datenpannen: %count%'
+        risk_links: 'Risiko-Vorfall-Verknüpfungen: %count%'
+        exercises: 'Verknüpfte Übungen: %count%'
+        risks: 'Verknüpfte Risiken: %count%'
+        incidents: 'Verknüpfte Vorfälle: %count%'
+        controls: 'Verknüpfte Maßnahmen: %count%'
+        consents: 'Verknüpfte Einwilligungen: %count%'
+        dpias: 'Verknüpfte DSFAs: %count%'
+        treatment_plans: 'Verknüpfte Behandlungspläne: %count%'
     dependencies:
         title: 'Betroffene Verknüpfungen'
         list: 'Liste der betroffenen Verknüpfungen'

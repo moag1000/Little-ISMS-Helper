@@ -140,10 +140,13 @@ bc_plans:
     rto: 'ISO 22301 Cl. 8.4.2 — maximum acceptable recovery time after an outage, in hours. Examples: critical=1, high=4, medium=24, low=72.'
     rpo: 'ISO 22301 Cl. 8.4.2 — maximum tolerable data loss, measured in hours between last consistent backup and the start of the disruption.'
     critical_assets: 'Assets essential for the recovery of this business process. Multiple selection possible.'
+    owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
+    status_readonly: 'Status is driven by the lifecycle workflow (Draft → Under review → Active → Archived; four-eyes principle on activation). Direct editing is disabled; use the status actions on the detail page.'
   placeholder:
     plan_owner_user: -- Select owner --
     plan_owner_person: -- Person from master data --
     response_team_members: '[{"role":"incident_commander","userId":null,"name":"John Doe","contact":"+49 123 456789","responsibilities":"Overall responsibility"}]'
+    owner_legacy: 'Name (legacy, migrated data only)'
   tooltip:
     activation_criteria: 'Predefined conditions that trigger plan activation (e.g. server outage > 4h, building evacuation). Measurable thresholds make the decision easier during a crisis.'
     recovery_procedures: 'Step-by-step guide to restoring business operations. Each step should include responsible persons, time targets and verification criteria (ISO 22301 Cl. 8.4).'

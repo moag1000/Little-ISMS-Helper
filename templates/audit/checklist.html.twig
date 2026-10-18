@@ -34,9 +34,15 @@
             <span>{{ 'checklist.progress'|trans({'%verified%': stats.verified, '%total%': stats.total}, 'audit') }}</span>
             <span class="progress-percent">{{ ((stats.verified / stats.total) * 100)|number_format(0) }}%</span>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" style="width: {{ ((stats.verified / stats.total) * 100) }}%;"></div>
-        </div>
+        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+        {{ _fa_progress.render({
+            value: stats.verified,
+            max: stats.total,
+            tone: 'success',
+            label: 'checklist.progress'|trans({'%verified%': stats.verified, '%total%': stats.total}, 'audit'),
+            size: 'sm',
+            class: 'progress-h-10 mb-3',
+        }) }}
         <div class="progress-stats">
             <span class="stat-success">✓ {{ stats.compliant }} {{ 'checklist.status.compliant'|trans({}, 'audit') }}</span>
             <span class="stat-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ stats.partial }} {{ 'checklist.status.partial'|trans({}, 'audit') }}</span>
@@ -95,20 +101,6 @@
 .progress-percent {
     color: var(--primary-strong);
     font-size: 1.2rem;
-}
-
-.progress-bar {
-    height: 12px;
-    background: var(--surface);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: var(--spacing-md);
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(135deg, var(--success), var(--success-strong));
-    transition: width 0.3s;
 }
 
 .progress-stats {

@@ -7,6 +7,7 @@
  # Expected variable: journey (JourneyProgress object)
  #}
 {% import '_components/_alva.html.twig' as alva %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'journey' %}
 
 {% set progress = journey %}
@@ -28,13 +29,13 @@
             </p>
             <div class="d-flex align-items-center gap-3">
                 <div class="isms-journey__progress-bar flex-grow-1">
-                    <div class="progress" style="height: 10px;" role="progressbar"
-                         aria-valuenow="{{ progress.overallPercent }}"
-                         aria-valuemin="0" aria-valuemax="100"
-                         aria-label="{{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}, 'journey') }}">
-                        <div class="progress-bar bg-primary"
-                             style="width: {{ progress.overallPercent }}%;"></div>
-                    </div>
+                    {{ _fa_progress.render({
+                        value: progress.overallPercent,
+                        tone: 'primary',
+                        label: 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}, 'journey'),
+                        size: 'sm',
+                        class: 'progress-h-10',
+                    }) }}
                 </div>
                 <span class="isms-journey__percent fw-bold text-primary">
                     {{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}, 'journey') }}
@@ -86,10 +87,12 @@
                 {# Mini progress bar #}
                 {% if status != 'locked' and status != 'dismissed' %}
                     <div class="isms-journey__phase-progress">
-                        <div class="progress" style="height: 3px;">
-                            <div class="progress-bar {% if status == 'complete' %}bg-success{% else %}bg-primary{% endif %}"
-                                 style="width: {{ phase.completionPercent }}%;"></div>
-                        </div>
+                        {{ _fa_progress.render({
+                            value: phase.completionPercent,
+                            tone: status == 'complete' ? 'success' : 'primary',
+                            label: ('journey.phase.' ~ phase.key ~ '.label')|trans,
+                            size: 'sm',
+                        }) }}
                     </div>
                 {% endif %}
             </div>
@@ -231,6 +234,10 @@
 
     .isms-journey__phase-progress {
         margin-top: 0.35rem;
+    }
+
+    .isms-journey__phase-progress .fa-progress {
+        height: 3px;
     }
 
     /* Next step */

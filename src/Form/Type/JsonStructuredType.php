@@ -11,21 +11,21 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * JsonStructuredType — textarea input bound to a structured JSON-array entity
- * column (map or list-of-objects).
+ * JsonStructuredType — transport type for a structured JSON-array entity
+ * column whose editor is a bespoke builder theme.
  *
- * Replaces raw `TextareaType` for `#[ORM\Column(type: Types::JSON)]` properties
- * whose shape is more than a flat list of strings (use `JsonTagsType` for those).
- * Users still author JSON by hand, but the value is now round-tripped through
- * `JsonArrayTransformer` so invalid JSON produces a user-friendly
- * `TransformationFailedException` instead of a silent `null` overwrite or a
- * crash deeper in the persistence layer (regression-bug-pattern Section 15).
+ * The value round-trips through `JsonArrayTransformer` so invalid JSON yields
+ * a field error instead of a silent `null` overwrite (regression-bug-pattern
+ * Section 15). It is NOT a user-facing editor: every field using it MUST be
+ * rendered by a custom `_<form>_<field>_row` theme block that mounts a
+ * structured builder (see templates/business_continuity_plan/
+ * _bc_plan_form_theme.html.twig, templates/audit_finding/
+ * _audit_finding_form_theme.html.twig). Gate 34
+ * (scripts/quality/check_raw_json_textarea.py) fails a field without one.
  *
- * Wire-up:
- *   $builder->add('settings', JsonStructuredType::class, [
- *       'label' => 'tenant.field.settings',
- *       'attr'  => ['rows' => 10, 'class' => 'font-monospace'],
- *   ]);
+ * For a new JSON field prefer the generic, schema-driven JsonBuilderType —
+ * it brings its own builder, theme and server-side shape validation. Flat
+ * lists of strings use JsonTagsType.
  *
  * View model:  pretty-printed JSON string
  * Norm model:  array<mixed, mixed>|null

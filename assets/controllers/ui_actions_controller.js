@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * UI Actions Controller - Common UI interactions
@@ -10,6 +11,8 @@ import { Controller } from '@hotwired/stimulus';
  * <div data-controller="ui-actions">
  *     <button data-action="ui-actions#print">Print</button>
  *     <button data-action="ui-actions#confirm" data-ui-actions-message-param="Are you sure?">Delete</button>
+ *     <form data-action="submit->ui-actions#promptSubmit" data-ui-actions-message-param="Reason?"
+ *           data-ui-actions-field-param="reason">…<input type="hidden" name="reason"></form>
  *     <button data-action="ui-actions#copyToClipboard" data-ui-actions-text-param="text to copy">Copy</button>
  *     <button data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#content">A</button>
  *     <button data-action="ui-actions#reload">Refresh</button>
@@ -18,7 +21,8 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static values = {
-        confirmMessage: { type: String, default: 'Are you sure?' }
+        // Empty default → falls back to the translated generic text (faT).
+        confirmMessage: { type: String, default: '' }
     };
 
     /**
@@ -39,7 +43,10 @@ export default class extends Controller {
      * underlying intent (submit the form / follow the link).
      */
     confirm(event) {
-        const target = event.target;
+        // currentTarget = the element the action is bound to (the form for
+        // submit->…, the button/link for click->…); event.target may be an
+        // inner <i> icon of a button.
+        const target = event.currentTarget instanceof Element ? event.currentTarget : event.target;
         // Bypass when this submission was already confirmed via #proceed.
         if (target instanceof HTMLFormElement && target.dataset.faConfirmBypass === '1') {
             delete target.dataset.faConfirmBypass;
@@ -47,7 +54,7 @@ export default class extends Controller {
         }
         event.preventDefault();
         event.stopPropagation();
-        const message = event.params?.message || this.confirmMessageValue;
+        const message = event.params?.message || this.confirmMessageValue || faT('are_you_sure');
         const tone = event.params?.tone || 'warn';
 
         if (typeof window.faConfirm !== 'function') {
@@ -73,6 +80,49 @@ export default class extends Controller {
      */
     confirmLink(event) {
         return this.confirm(event);
+    }
+
+    /**
+     * Ask for a free-text value (Aurora prompt) before submitting a form and
+     * write it into one of the form's inputs — e.g. a rejection reason.
+     * Use with: data-action="submit->ui-actions#promptSubmit"
+     *           data-ui-actions-message-param="Reason for rejection"
+     *           data-ui-actions-field-param="reason"          (input name)
+     *           data-ui-actions-required-param="true"         (optional)
+     * Cancelling the prompt aborts the submission.
+     */
+    promptSubmit(event) {
+        const form = event.currentTarget instanceof HTMLFormElement ? event.currentTarget : event.target;
+        if (!(form instanceof HTMLFormElement)) {
+            return true;
+        }
+        if (form.dataset.faConfirmBypass === '1') {
+            delete form.dataset.faConfirmBypass;
+            return true;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+
+        const message = event.params?.message || '';
+        const required = event.params?.required === true || event.params?.required === 'true';
+        const field = form.querySelector(`[name="${CSS.escape(event.params?.field || 'reason')}"]`);
+
+        const apply = (value) => {
+            if (value === null || (required && value.trim() === '')) {
+                return;
+            }
+            if (field) {
+                field.value = value.trim();
+            }
+            this.#proceed(event, form);
+        };
+
+        if (typeof window.faPrompt === 'function') {
+            window.faPrompt(message, { required, allowEmpty: !required, maxlength: 1000 }).then(apply);
+        } else {
+            apply(window.prompt(message)); // fallback: helper not mounted yet
+        }
+        return false;
     }
 
     #proceed(event, target) {
@@ -107,9 +157,9 @@ export default class extends Controller {
         if (text && navigator.clipboard) {
             try {
                 await navigator.clipboard.writeText(text);
-                this.showToast('Copied to clipboard', 'success');
+                this.showToast(event.params?.successMessage || faT('copied'), 'success');
             } catch (err) {
-                this.showToast('Failed to copy', 'error');
+                this.showToast(event.params?.errorMessage || faT('copy_failed'), 'danger');
             }
         }
     }
@@ -255,7 +305,7 @@ export default class extends Controller {
     async confirmAndFetch(event) {
         event.preventDefault();
 
-        const message = event.params?.confirm || this.confirmMessageValue;
+        const message = event.params?.confirm || this.confirmMessageValue || faT('are_you_sure');
         const tone = event.params?.tone || 'danger';
         const ok = typeof window.faConfirm === 'function'
             ? await window.faConfirm(message, { tone })
@@ -289,17 +339,17 @@ export default class extends Controller {
             const result = await response.json();
 
             if (result.success) {
-                this.showToast(result.message || 'Success', 'success');
+                this.showToast(result.message || faT('success'), 'success');
                 if (shouldReload) {
                     setTimeout(() => window.location.reload(), 1000);
                 }
             } else {
-                this.#notifyError(result.error || result.message || 'Unknown error');
+                this.#notifyError(result.error || result.message || faT('unknown_error'));
                 button.disabled = false;
                 button.innerHTML = originalHtml;
             }
         } catch (error) {
-            this.#notifyError('Network error: ' + error.message);
+            this.#notifyError(`${faT('network_error')}: ${error.message}`);
             button.disabled = false;
             button.innerHTML = originalHtml;
         }
@@ -340,15 +390,14 @@ export default class extends Controller {
     }
 
     /**
-     * Show a toast notification (if toast system available)
+     * Show an Aurora toast (window.faToast). Also dispatches `ui-actions:toast`
+     * so a page can react to it.
      */
     showToast(message, type = 'info') {
-        // Dispatch event for toast system to handle
         this.dispatch('toast', { detail: { message, type } });
 
-        // Fallback: check for global toast function
-        if (typeof window.showToast === 'function') {
-            window.showToast(message, type);
+        if (typeof window.faToast === 'function') {
+            window.faToast(message, type === 'error' ? 'danger' : type);
         }
     }
 }

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Form\Notification;
 
 use App\Entity\Notification\NotificationChannel;
+use App\Form\Type\JsonBuilderType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -22,8 +22,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * secretPlain is mapped: false — the controller encrypts and stores it
  * via SecretEncryptionInterface before persisting.
  *
- * config is a JSON textarea so admins can set channel-specific keys
- * (e.g. recipients[], url, timeout) without bespoke sub-forms for each type.
+ * configJson (mapped: false) edits NotificationChannel::$config with the
+ * structured JsonBuilderType — the keys EmailChannel (recipients, from,
+ * subject) and WebhookChannel (url, timeout) read. Other keys already in the
+ * config survive untouched; `delivery_mode` is driven by the deliveryMode
+ * radio below.
  */
 final class NotificationChannelType extends AbstractType
 {
@@ -52,16 +55,22 @@ final class NotificationChannelType extends AbstractType
                 'choice_translation_domain' => 'notification',
                 'help'                      => 'notification.channel.help.type',
             ])
-            ->add('configJson', TextareaType::class, [
-                'label'      => 'notification.channel.field.config',
-                'required'   => false,
-                'mapped'     => false,
-                'attr'       => [
-                    'rows'        => 6,
-                    'placeholder' => '{"recipients": ["admin@example.com"]}',
-                    'class'       => 'font-monospace',
+            ->add('configJson', JsonBuilderType::class, [
+                'label'       => 'notification.channel.field.config',
+                'required'    => false,
+                'mapped'      => false,
+                'help'        => 'notification.channel.help.config',
+                'shape'       => 'object',
+                'hidden_keys' => ['delivery_mode'],
+                'fields'      => [
+                    ['key' => 'recipients', 'type' => 'tags', 'item_type' => 'email', 'label' => 'notification.channel.config.recipients',
+                        'help' => 'notification.channel.config.recipients_help'],
+                    ['key' => 'from', 'type' => 'email', 'label' => 'notification.channel.config.from'],
+                    ['key' => 'subject', 'type' => 'text', 'label' => 'notification.channel.config.subject'],
+                    ['key' => 'url', 'type' => 'url', 'label' => 'notification.channel.config.url',
+                        'help' => 'notification.channel.config.url_help'],
+                    ['key' => 'timeout', 'type' => 'number', 'label' => 'notification.channel.config.timeout'],
                 ],
-                'help'       => 'notification.channel.help.config',
             ])
             ->add('secretPlain', PasswordType::class, [
                 'label'    => 'notification.channel.field.secret',
@@ -90,20 +99,26 @@ final class NotificationChannelType extends AbstractType
                 'multiple'                  => false,
                 'choice_translation_domain' => 'notification',
                 'help'                      => 'notification.channel_digest.help.delivery_mode',
-                'data'                      => NotificationChannel::DELIVERY_MODE_IMMEDIATE,
                 'attr'                      => ['class' => 'js-delivery-mode-radio'],
             ]);
 
-        // Pre-fill deliveryMode from the existing channel config on edit
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
+        // Pre-fill the unmapped deliveryMode + configJson from the channel.
+        // POST_SET_DATA, not PRE_SET_DATA: the data mapper resets every
+        // unmapped child to its configured data right after PRE_SET_DATA, and
+        // a child with a static `data` option ignores setData() altogether —
+        // either way the stored values never reached the edit form (it showed
+        // the defaults and saving overwrote the stored config).
+        $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event): void {
             /** @var NotificationChannel|null $channel */
             $channel = $event->getData();
-            if ($channel === null) {
-                return;
-            }
             $form = $event->getForm();
             if ($form->has('deliveryMode')) {
-                $form->get('deliveryMode')->setData($channel->getDeliveryMode());
+                $form->get('deliveryMode')->setData(
+                    $channel?->getDeliveryMode() ?? NotificationChannel::DELIVERY_MODE_IMMEDIATE,
+                );
+            }
+            if ($form->has('configJson') && $channel !== null && $channel->getConfig() !== []) {
+                $form->get('configJson')->setData($channel->getConfig());
             }
         });
     }

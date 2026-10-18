@@ -19,6 +19,11 @@ admin:
         success:
             deleted: 'SSO-Provider wurde gelöscht.'
             role_mappings_saved: 'Rollen-Mappings gespeichert.'
+            created: 'SSO-Provider angelegt.'
+            updated: 'SSO-Provider aktualisiert.'
+            discovery_ok: 'Discovery für „%name%“ erfolgreich – Endpunkte synchronisiert.'
+            approval_approved: 'Freigegeben: %email%'
+            approval_rejected: 'Abgelehnt: %email%'
         error:
             discovery_failed: 'Discovery fehlgeschlagen: %message%'
     title: Administration
@@ -251,6 +256,10 @@ admin:
             report_generated: 'Lizenz-Report erfolgreich erstellt.'
         error:
             report_generation_failed: 'Erstellung des Lizenz-Reports fehlgeschlagen.'
+        no_report:
+            title: 'Kein Bericht gefunden'
+            text: 'Der Lizenzbericht wurde noch nicht generiert. Bitte führen Sie das folgende Kommando aus:'
+            generate: 'Bericht generieren'
     data_export:
         title: Daten-Export
         format: Export-Format
@@ -316,6 +325,7 @@ admin:
             lockout_duration_help: 'Dauer der Account-Sperre in Minuten nach zu vielen Fehlversuchen (Standard: 15)'
             require_2fa_help: 'Multi-Faktor-Authentifizierung für alle Benutzer erzwingen (NIS2-konform, Art. 21.2.b)'
             warning: 'Warnung: Änderungen an Sicherheitseinstellungen können bestehende Sessions ungültig machen'
+            remember_me_lifetime_help: 'Gültigkeit des „Angemeldet bleiben"-Cookies in Sekunden (86400 = 1 Tag, max. 7776000 = 90 Tage; Standard 2592000 = 30 Tage).'
         features:
             title: Feature-Einstellungen
             description: 'Aktivierung und Konfiguration von optionalen Funktionen'
@@ -843,6 +853,249 @@ admin:
             activate_required: 'Beim Aktivieren werden alle benötigten Module mit aktiviert'
             deactivate_dependency: 'Module können nur deaktiviert werden, wenn keine anderen Module davon abhängen'
             required_always_active: 'Erforderliche Module können nie deaktiviert werden'
+            required_cannot_deactivate: 'Dieses Modul ist erforderlich und kann nicht deaktiviert werden'
+            has_dependents: 'Andere Module hängen von diesem Modul ab'
+            no_data_deleted: 'Beim Deaktivieren werden keine Daten gelöscht'
+            reactivate_anytime: 'Sie können das Modul jederzeit wieder aktivieren'
+        catalog:
+            core:
+                description: 'Basis-Funktionalität für ISO 27001 ISMS'
+            assets:
+                description: 'Verwaltung von Informationswerten und Assets'
+            risks:
+                description: 'Risikobewertung und -behandlung'
+            controls:
+                description: 'ISO 27001 Annex A Controls und Statement of Applicability'
+            incidents:
+                description: 'Verwaltung von Sicherheitsvorfällen'
+            audits:
+                description: 'Interne Audits und Prüfungen'
+            training:
+                description: 'Schulungen und Sensibilisierung'
+            access_review:
+                description: 'ISO 27001 A.5.18 / A.8.2 + NIS2 Art. 21(2)(e) + BSI ORP.4 — periodische Prüfung und Rezertifizierung wer welchen Zugriff behalten darf. Kampagnen-basiert: eine Kampagne erzeugt pro Nutzer/Rolle ein Review-Item; Reviewer genehmigt oder widerruft.'
+                name: 'Zugriffsrezertifizierung (UAR)'
+            reviews:
+                description: 'Management-Bewertungen des ISMS'
+            bcm:
+                description: 'Geschäftsprozesse und BCM/BIA'
+            compliance:
+                description: 'Compliance-Management für ISO 27001, TISAX, DORA'
+            authentication:
+                description: 'Benutzerverwaltung, Rollen und Berechtigungen mit Azure AD Integration'
+            audit_logging:
+                description: 'ISO 27001 A.8.15 + A.5.28 — Logging-Pflicht + Forensik-Beweismittel. Required für jedes zertifizierungsfähige ISMS.'
+            privacy:
+                description: 'EU DSGVO + BDSG + ISO 27701 PIMS — DPO-Workflows, DSR (Art. 12-23), Data Breach 72h (Art. 33/34), DPIA (Art. 35), Consent (Art. 7)'
+                name: 'Privacy & Datenschutz (GDPR + ISO 27701)'
+            nis2_dora:
+                description: 'EU Cyber-Resilience: NIS2 24h/72h/1mo Reporting (Art. 23) + DORA ICT-Risk-Management (Art. 6-44) + 4h-Initial-Report'
+            ai_governance:
+                description: 'KI-System-Klassifikation per EU AI Act Art. 6+Annex III, Risk-Management Art. 9-29 für High-Risk-AI, ISO 42001 AIMS-Controls'
+            cloud_security:
+                description: 'Cloud-Provider + Cloud-User Controls + Shared-Responsibility-Mapping. ISO 27017 Cloud-Sicherheit, ISO 27018 PII-in-Cloud, BSI C5:2026, BSI AIC4 für AI-Cloud'
+            vulnerability_intel:
+                description: 'CVE/CVSS-Tracking + EPSS + KEV-Liste + Threat-Intel + MITRE ATT&CK Tactics/Techniques + STIX 2.1 IoCs'
+            marisk:
+                description: 'Mindestanforderungen Risikomanagement BaFin — ICT-Anteil seit Jan 2025 obsolet via DORA + RTS 2024/1773 + ITS 2024/2956 (BAIT/VAIT/KAIT/ZAIT formal von BaFin zurückgezogen). Non-ICT-Stack bleibt relevant: AT 4 Governance, AT 5 Vergütung, AT 9 non-ICT-Outsourcing, BTO/BTR Kredit/Trading/Liquidität (Bank-Treasury-Domäne). Für ICT-Banken-Compliance: nis2_dora-Modul nutzen.'
+                name: 'MaRisk (DACH-Banken/Versicherer)'
+            lksg:
+                description: 'Deutsches Lieferkettensorgfaltspflichtengesetz — Menschenrechts- und Umwelt-Risiken in der Lieferkette, Risikoanalyse, Beschwerdemechanismus, Präventionsmaßnahmen. Pflicht für Unternehmen >1000 MA (seit 2024).'
+                name: 'LkSG (Lieferkettensorgfaltspflichten)'
+            tisax:
+                description: 'TISAX VDA-ISA Information Security Assessment + Prototype Protection für Tier-1/Tier-2 Auto-Industrie-Lieferanten'
+                name: 'TISAX (Auto-Industrie)'
+            risk_quant:
+                description: 'Monetäre Risikoquantifizierung nach NIST SP 800-30 / ISO 27005 — Single Loss Expectancy × Annual Rate of Occurrence = Annual Loss Expectancy (€). Ergänzt die qualitative Bewertung, ersetzt sie nicht. Off-by-default.'
+                name: 'Quantitative Risikoanalyse (SLE/ARO/ALE)'
+            notifications:
+                description: 'Tenant-konfigurierbare Notification-Rules pro Event-Typ, Channels (Email-Digest, Webhook+HMAC, In-App-Center), SLA-Timer-Events für DORA Art. 19 + NIS-2 Art. 23 + GDPR Art. 33 Deadlines'
+            eu_authority_reporting:
+                description: 'Pre-Filling und Export für DACH/EU-Behörden-Meldepflichten — BSI-Meldestelle (NIS-2), BfDI + 16 LfDI (DSGVO Art. 33), DSB-AT, EDÖB-CH, BaFin MVP (DORA-Incidents), ESAs (DORA RoI XBRL), ANSSI/CERT-FR, NCSC.ch'
+                name: 'EU-Behörden-Reporting-Hub'
+            answer_library:
+                description: 'F44 — Wiederverwendbare Antworten auf inbound Sicherheits-Fragebögen (RFP, Kundenaudits, Due-Diligence). Reuse-Zählung speist den ROI-Rechner (F11). ISO 27001 Cl. 7.5 — dokumentierte Information.'
+                name: 'Antwort-Bibliothek (Sicherheits-Fragebögen)'
+            documents:
+                description: 'ISO 27001 Clause 7.5 — dokumentierte Information ist Pflicht. Kein Audit ohne Doku. Policy-Bibliothek mit Versionskontrolle und Genehmigungsworkflow.'
+                name: 'Dokumente & Policies'
+            suppliers:
+                description: 'Lieferantenbewertung, AVV-Tracking, DORA-Drittparteien-Register (Art. 28) — ISO 27001 A.5.19-5.22'
+                name: 'Lieferanten & Drittparteien'
+            locations:
+                description: 'Physische Standorte, Rechenzentren und Infrastruktur-Inventar für Asset-Zuordnung und BIA'
+                name: 'Standorte & Infrastruktur'
+            persons:
+                description: 'Interne und externe Kontakte — ISB, DSB, Risk-Owner, Lieferanten-Kontakte'
+                name: 'Personen & Kontakte'
+            interested_parties:
+                description: 'ISO 27001 Clause 4.2 — Stakeholder-Analyse: Kunden, Behörden, Aufsichtsrat, Zertifizierungsstellen'
+                name: 'Interessierte Parteien'
+            objectives:
+                description: 'ISO 27001 Clause 6.2 — messbare Informationssicherheitsziele mit KPI-Tracking und Fortschrittsüberwachung. Pflicht für jedes zertifizierungsfähige ISMS.'
+                name: 'ISMS-Ziele'
+            change_requests:
+                description: 'Änderungsmanagement nach ISO 27001 A.8.32 — RFC-Workflow, Risikobewertung, Genehmigungspfad'
+            patches:
+                description: 'Patch-Tracking und CVE-Behebung — NIS2 Art. 21.2(e) + ISO 27001 A.8.8 Vulnerability-Mgmt'
+            corrective_actions:
+                description: 'ISO 27001 Clause 10.2 — Nonconformity-Tracking, Root-Cause-Analyse, Wirksamkeitsprüfung aus Audit-Findings'
+                name: 'Korrekturmaßnahmen'
+            workflows:
+                description: 'Event-getriebene Genehmigungs-Workflows — GDPR Art. 33 (72h Data Breach), DORA Art. 19 Incident-Reporting, ISO 27001 A.5.24, Risk-Treatment, DPIA. Required für die Pflicht-SLAs.'
+                name: 'Workflow-Automatisierung'
+            risk_appetite:
+                description: 'ISO 27001 Clause 6.1.3 + DORA Art. 6(2) — Risikoappetit-Schwellwerte für Financial, Operational, Reputational und Compliance-Risiken'
+                name: 'Risikoappetit & Toleranz'
+            risk_treatment_plans:
+                description: 'ISO 27001 Clause 6.1.3 — strukturierte RTP-Dokumente mit Maßnahmen-Tracking und 4-Augen-Genehmigung'
+                name: 'Risikobehandlungspläne'
+            analytics:
+                description: 'ISMS-Kennzahlen, KPI-Snapshots, Trend-Charts — Management-Ready Reporting für ISO 27001 Clause 9.1'
+            report_builder:
+                description: 'Konfigurierbarer Berichts-Generator für Management-Reports, Gap-Reports, Portfolio-Reports'
+            scheduled_reports:
+                description: 'Automatisierte Report-Auslieferung per E-Mail-Digest zu konfigurierbaren Zeitplänen'
+                name: 'Geplante Berichte'
+            portfolio_reports:
+                description: 'Mandanten-übergreifende Rollup-Reports für Holding-CISO und Konzern-Auditor (ROLE_GROUP_CISO)'
+                name: 'Portfolio- & Konzern-Reports'
+            mris:
+                description: 'Tenant-scoped Custom-Framework nach Peddi 2026, MRIS v1.5: Standfest/Degradiert/Reibung-Klassifikation für SoA-Controls. Off-by-default — Nische.'
+                name: 'MRIS — Mythos-resistente Informationssicherheit'
+            bsi_grundschutz:
+                description: 'BSI IT-Grundschutz nach BSI-Standard 200-1/200-2/200-3 — Vorgehensweise-Auswahl (Basis/Standard/Kern-Absicherung), Schutzbedarfsfeststellung, ISO→BSI-Anforderungsmapping und Gap-Analyse gegen den IT-Grundschutz-Kompendium-Bausteinkatalog.'
+            resource_planning:
+                description: 'Maßnahmenplanung (Sammel-Hub), Kapazitäts-Roadmap (PT/KW) und Planungs-Stammdaten — ISO 27001 Cl. 6.2/7.1/9.3.'
+                name: 'Ressourcenplanung'
+            ocr_processing:
+                description: 'Automatische Texterkennung (OCR) für hochgeladene Compliance-Zertifikate — extrahiert Gültigkeitsdaten, Norm-Referenzen und Aussteller-Informationen per pdftotext + Tesseract. Erfordert poppler-utils und tesseract-ocr auf dem Server.'
+                name: 'OCR-Verarbeitung (Compliance-Zertifikate)'
+        data_catalog:
+            isms_load_annex_a_controls:
+                name: 'ISO 27001 Annex-A-Controls'
+                description: 'Alle 93 ISO 27001:2022 Annex-A-Controls'
+            app_setup_permissions:
+                name: 'System-Berechtigungen'
+                description: 'Basis-Berechtigungen für Rollen- und Benutzerverwaltung'
+            sample_assets:
+                name: 'Beispiel-Assets'
+                description: 'Vordefinierte Asset-Beispiele (Server, Datenbanken usw.)'
+            sample_risks:
+                name: 'Beispiel-Risiken'
+                description: 'Typische Risiko-Szenarien'
+            sample_business_processes:
+                name: 'Beispiel-Geschäftsprozesse'
+                description: 'Typische Geschäftsprozesse mit BIA-Daten'
+            app_load_tisax_requirements:
+                name: 'TISAX-Anforderungen'
+                description: 'TISAX-(VDA-ISA-)Anforderungen für die Automobilindustrie'
+            app_load_dora_requirements:
+                name: 'DORA-Anforderungen'
+                description: 'EU-DORA-Anforderungen für den Finanzsektor'
+            sample_incidents:
+                name: 'Beispiel-Incidents'
+                description: 'Beispiel-Sicherheitsvorfälle'
+            sample_documents:
+                name: 'Beispiel-Dokumente'
+                description: 'Policies, Prozesse, Anweisungen (ISO 27001 A.5.1)'
+            sample_audits:
+                name: 'Beispiel-Audits'
+                description: 'Internes Audit-Programm (ISO 27001 Kap. 9.2)'
+            sample_trainings:
+                name: 'Beispiel-Schulungen'
+                description: 'Security-Awareness, Phishing-Übung, DSGVO, Incident-Response'
+            sample_management_reviews:
+                name: 'Beispiel-Management-Reviews'
+                description: 'Quartalsweise ISMS-Management-Reviews (ISO 27001 Kap. 9.3)'
+            sample_processing_activities:
+                name: 'Beispiel-Verarbeitungstätigkeiten (VVT)'
+                description: 'DSGVO Art. 30 — Recruiting, HR, CRM, Newsletter, Video, Service'
+            sample_data_breaches:
+                name: 'Beispiel-Datenschutzverletzungen'
+                description: 'DSGVO Art. 33/34 — typische Breach-Szenarien'
+            sample_consents:
+                name: 'Beispiel-Einwilligungen'
+                description: 'DSGVO Art. 7 — Newsletter, Marketing, Tracking, Forschung'
+            sample_dpias:
+                name: 'Beispiel-DSFAs'
+                description: 'DSGVO Art. 35 — Videoüberwachung, KI-Recruiting, Monitoring'
+            sample_data_subject_requests:
+                name: 'Beispiel-Betroffenenanfragen'
+                description: 'DSGVO Art. 15–21 — Auskunft, Löschung, Portabilität'
+            sample_bc_plans:
+                name: 'Beispiel-BC-Pläne'
+                description: 'ISO 22301 — IT-Ausfall, Gebäude, Lieferkette, Cyber-Krise'
+            sample_bc_exercises:
+                name: 'Beispiel-BC-Übungen'
+                description: 'Tabletop, Walk-through, Simulation, DR-Test'
+            sample_crisis_teams:
+                name: 'Beispiel-Krisenstäbe'
+                description: 'IT-, Kommunikations- und Business-Krisenstab'
+            sample_suppliers:
+                name: 'Beispiel-Lieferanten'
+                description: 'Cloud, SaaS, Hardware, Beratung — inkl. DSGVO-AVV, DORA'
+            sample_locations:
+                name: 'Beispiel-Standorte'
+                description: 'Hauptsitz, Rechenzentren (Primär/DR), Außendienst, Homeoffice'
+            sample_people:
+                name: 'Beispiel-Personen'
+                description: 'CISO, ISB, DSB, IT-Leitung, Risk-Owner, externer Berater'
+            sample_interested_parties:
+                name: 'Beispiel-Interessierte Parteien'
+                description: 'ISO 27001 Kap. 4.2 — Kunden, Behörden, Aufsichtsrat, Zertifizierungsstelle'
+            sample_objectives:
+                name: 'Beispiel-ISMS-Ziele'
+                description: 'ISO 27001 Kap. 6.2 — Incident-Response, Patching, Schulung, Compliance'
+            sample_risk_appetite:
+                name: 'Beispiel-Risikoappetit'
+                description: 'Schwellenwerte für finanzielle, operative, Reputations- und Compliance-Risiken'
+            sample_vulnerabilities:
+                name: 'Beispiel-Schwachstellen (CVE)'
+                description: '6 reale CVEs (XZ-Backdoor, Outlook-RCE, ScreenConnect, Apache Struts) — NIS2/DORA-Schwachstellenmanagement'
+            sample_patches:
+                name: 'Beispiel-Patches'
+                description: '6 Patches zu CVEs + Routine-Updates — Patch-Management-Demo (NIS2 Art. 21 Abs. 2 lit. e)'
+            sample_change_requests:
+                name: 'Beispiel-Change-Requests'
+                description: '6 typische Änderungen (Cloud-Migration, AD-Refresh, MFA-Pflicht, Notfall-Patch) — ISO A.8.32'
+            sample_corrective_actions:
+                name: 'Beispiel-Korrekturmaßnahmen'
+                description: '7 abgeschlossene Audit-Feststellungen mit Ursachenanalyse + Wirksamkeitsprüfung — ISO 27001 Kap. 10.2'
+        badge: 'Module'
+        badge_single: 'Modul'
+        info_title: 'Modul-Informationen'
+        field:
+            description: 'Beschreibung'
+            status: 'Status'
+            entities: 'Entitäten'
+            routes: 'Routen'
+        optional: 'Optional'
+        requires_modules: 'Benötigt folgende Module:'
+        required_by_modules: 'Wird benötigt von:'
+        sample_data:
+            title: 'Verfügbare Beispieldaten'
+            import_selected: 'Ausgewählte Daten importieren'
+        confirm_deactivate_named: 'Modul „%name%" wirklich deaktivieren?'
+        deactivate_module: 'Modul deaktivieren'
+        is_required: 'Modul ist erforderlich'
+        export_data: 'Daten exportieren'
+        activate_module: 'Modul aktivieren'
+        hints_title: 'Hinweise'
+        graph:
+            title: 'Modul-Abhängigkeiten'
+            subtitle: 'Visualisierung der Modul-Abhängigkeiten'
+            col:
+                module: 'Modul'
+                type: 'Typ'
+                requires: 'Benötigt'
+            legend: 'Legende'
+            legend_active: 'Modul ist derzeit aktiviert'
+            legend_inactive: 'Modul ist derzeit deaktiviert'
+            legend_required: 'Modul ist Pflicht und kann nicht deaktiviert werden'
+            legend_optional: 'Modul kann aktiviert/deaktiviert werden'
+            legend_requires: 'Module, die vorher aktiviert sein müssen'
+            legend_required_by: 'Module, die dieses Modul benötigen'
 
     tenant_settings:
         title: 'Compliance-Einstellungen'
@@ -900,7 +1153,7 @@ admin:
         wizard_maturity_target_help: 'Wird in jedem Wizard-Result als Soll-Reife angezeigt.'
         section_api: 'API-Limits'
         section_json: 'Strukturierte JSON-Felder (Aufsichtsbehoerden / Aufbewahrung / Notifications / CSIRT / Krisenstab-Rotation)'
-        json_help: 'Eingabe als JSON-Objekt. Leer = Default. Beispiel-Templates in der Doku.'
+        json_help: 'Strukturierte Konfiguration je Bereich. Leer = Standardverhalten.'
         api_rate_limit: 'API-Rate-Limit (Requests/Minute)'
         api_rate_limit_help: '0 = unlimitiert. 600 = 10/Sek. Default für fairen Multi-Organisationen-Betrieb.'
         dora_entity_category: 'DORA-Verpflichtungsstatus (Art. 2)'
@@ -908,16 +1161,41 @@ admin:
         dora_entity_category.none: 'Nicht DORA-pflichtig (Standard)'
         dora_entity_category.financial_entity: 'Finanzunternehmen (DORA Art. 2 Abs. 2) — Bank / Versicherer / Investment-Firm'
         dora_entity_category.critical_ict_third_party: 'Kritischer IKT-Drittanbieter (CTPP per ESAs, DORA Art. 31)'
-        supervisory_authorities: 'Aufsichtsbehoerden (JSON)'
-        supervisory_authorities_help: 'JSON-Map: { "BSI": { name, email, phone, scope } }'
-        data_retention_policies: 'DSGVO-Aufbewahrungsfristen (JSON)'
-        data_retention_policies_help: 'JSON-Map: { "crm": { years, basis } }'
-        notification_preferences: 'Benachrichtigungs-Einstellungen (JSON)'
-        notification_preferences_help: 'JSON-Map: { "incident": { email: true, slack: false } }'
-        csirt_endpoints: 'CSIRT-Endpunkte (JSON)'
-        csirt_endpoints_help: 'JSON-Map: { "BSI-CERT": { url, contact, auth_type } }'
-        crisis_team_on_call: 'Krisenstab On-Call-Rotation (JSON)'
-        crisis_team_on_call_help: 'JSON-Array: [ { date, primary, deputy } ]'
+        supervisory_authorities: 'Aufsichtsbehörden'
+        supervisory_authorities_help: 'Zuständige Behörde je Rolle/Rechtsraum (z. B. BSI, BaFin, Landesdatenschutzbehörde) mit Kontaktdaten.'
+        data_retention_policies: 'DSGVO-Aufbewahrungsfristen'
+        data_retention_policies_help: 'Aufbewahrungsdauer je Datenkategorie und ob abgelaufene Datensätze automatisch gelöscht werden (dieselben Werte wie unter Einstellungen → Datenaufbewahrung).'
+        notification_preferences: 'Benachrichtigungskanäle'
+        notification_preferences_help: 'Zustellkanäle je Ereignistyp. Digest und Webhook-Timeout werden unter Einstellungen → Benachrichtigungen gepflegt.'
+        csirt_endpoints: 'CSIRT-Endpunkte'
+        csirt_endpoints_help: 'Meldeendpunkte für die automatisierte Vorfallmeldung (BSI, sektorales CSIRT, ENISA).'
+        crisis_team_on_call: 'Krisenstab-Rufbereitschaft'
+        crisis_team_on_call_help: 'Rufbereitschaftsplan: Datum, Hauptverantwortliche/r und Vertretung.'
+        json_builder:
+            authority_key: 'Rolle / Rechtsraum'
+            authority_add: 'Behörde hinzufügen'
+            name: 'Name'
+            email: 'E-Mail'
+            phone: 'Telefon'
+            scope: 'Zuständigkeit'
+            retention_key: 'Datenkategorie'
+            retention_add: 'Kategorie hinzufügen'
+            retention_days: 'Aufbewahrung (Tage)'
+            auto_delete: 'Automatisch löschen'
+            event_key: 'Ereignistyp'
+            event_add: 'Ereignistyp hinzufügen'
+            channel_email: 'E-Mail'
+            channel_slack: 'Slack'
+            channel_teams: 'Microsoft Teams'
+            csirt_key: 'Bezeichnung'
+            csirt_add: 'Endpunkt hinzufügen'
+            url: 'URL'
+            contact: 'Kontakt'
+            auth_type: 'Authentifizierung'
+            on_call_add: 'Dienst hinzufügen'
+            on_call_date: 'Datum'
+            on_call_primary: 'Hauptverantwortlich'
+            on_call_deputy: 'Vertretung'
         backup_schedule: 'Backup-Schedule'
         backup_retention: 'Backup-Aufbewahrung'
         environment_label: 'Environment'
@@ -1159,6 +1437,19 @@ admin:
             col_note: 'Anmerkung'
             default_footer: '%tenant% — Vertrauliches ISMS-Dokument — Ausdruck unkontrolliert'
             custom_css_inert: 'Custom-CSS (in Vorschau inaktiv — wird nur in PDF-Export gerendert)'
+        sample:
+            section_1:
+                title: 'Geltungsbereich'
+                preview: 'Diese Richtlinie gilt für alle Mitarbeitenden, Auftragnehmer und Drittparteien.'
+            section_2:
+                title: 'Verantwortlichkeiten'
+                preview: 'Die Geschäftsführung trägt Gesamtverantwortung; der CISO operationalisiert.'
+            section_3:
+                title: 'Anforderungen'
+                preview: 'Es gelten die Vorgaben aus ISO 27001:2022 Annex A inkl. organisationsinterner Erweiterungen.'
+            history_2_4: 'Annex-A-Update aus 2022-Revision.'
+            history_2_3: 'Klarstellung Lieferantenpflichten.'
+            role_management: 'Geschäftsführung'
 
     report_style:
         title: 'Report-Optik'
@@ -1247,6 +1538,29 @@ admin:
             col_role: 'Rolle'
             default_footer: '%tenant% — vertraulich. Nicht ohne Genehmigung weitergeben.'
             custom_css_inert: 'Custom-CSS (nur im Export aktiv — Vorschau bleibt unangetastet)'
+        sample:
+            report_title: 'ISMS-Management-Review Q2/2026'
+            distribution:
+                management: 'Geschäftsführung'
+                recipient: 'Empfänger'
+                author: 'Autor'
+                internal_audit: 'Interne Revision'
+                cc: 'In Kopie'
+            exec_summary: 'Im Berichtszeitraum wurden 12 Risiken neu identifiziert, 7 Maßnahmen abgeschlossen und 2 Vorfälle bearbeitet. Die Wirksamkeit des ISMS bleibt insgesamt angemessen; Empfehlungen siehe Anhang A.'
+            section_1:
+                title: 'Risikolage'
+                preview: 'Verteilung über Bereiche und Trend zum Vorquartal.'
+            section_2:
+                title: 'Maßnahmen-Status'
+                preview: 'Anteil offen/in Umsetzung/abgeschlossen pro Domäne.'
+            section_3:
+                title: 'Vorfälle und Lessons Learned'
+                preview: 'Top-3 Vorfälle, Ursachen und Wirksamkeit der Reaktion.'
+            kpi:
+                open_risks: 'Offene Risiken'
+                measure_rate: 'Maßnahmen-Quote'
+            appendix_a: 'Empfehlungen aus Reviews'
+            appendix_b: 'KPI-Detail-Tabellen'
     lifecycle_overrides:
         title: 'Lifecycle-Konfiguration'
         subtitle: 'Workflow-Transition-Metadaten organisationsspezifisch überschreiben'
@@ -1376,12 +1690,12 @@ admin:
         form:
             approver_role: 'Genehmiger-Rolle'
             approver_role_help: 'ROLE_*-Wert, der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
-            approver_users: 'Genehmiger (JSON)'
-            approver_users_help: 'JSON-Array mit Benutzer-IDs, z.B. [42, 57]. Leer lassen für YAML-Standard.'
+            approver_users: 'Genehmiger'
+            approver_users_help: 'Benutzer dieser Organisation, die den Schritt genehmigen dürfen. Leer lassen für YAML-Standard.'
             days_to_complete: 'Tage bis Abschluss'
             days_to_complete_help: 'SLA-Tage-Override. Leer lassen für YAML-Standard.'
-            auto_progress_conditions: 'Auto-Progress-Bedingungen (JSON)'
-            auto_progress_conditions_help: 'JSON-Bedingungsobjekt für automatische Schrittgenehmigung. Leer lassen für YAML-Standard.'
+            auto_progress_conditions: 'Auto-Progress-Bedingungen'
+            auto_progress_conditions_help: 'Wann der Schritt automatisch weiterläuft. Leer lassen für YAML-Standard.'
             reason_required: 'Begründung erforderlich'
             reason_required_value: 'Begründung verlangen'
             four_eyes: 'Vier-Augen-Prinzip'
@@ -1389,13 +1703,27 @@ admin:
             module: 'Modul-Gate'
             module_help: 'Modul-Schlüssel (z.B. privacy, documents). Leer für keine Einschränkung.'
             enable_override: 'Override aktivieren'
+        conditions:
+            type: 'Art der Bedingung'
+            type_field_completion: 'Felder ausgefüllt'
+            type_auto: 'Ausdruck erfüllt'
+            type_risk_appetite: 'Innerhalb Risikoappetit'
+            type_time_based: 'Zeitablauf'
+            entity: 'Entität'
+            entity_help: 'Kurzname der Entität, z. B. DataBreach, Incident, Risk.'
+            fields: 'Pflichtfelder'
+            fields_help: 'Feldnamen, die gefüllt sein müssen (Enter nach jedem Feld).'
+            condition: 'Ausdruck'
+            condition_help: 'z. B. severity >= high AND affectedDataSubjectsCount > 100'
+            risk_score_field: 'Risikowert-Feld'
+            delay: 'Verzögerung'
+            delay_help: 'Nur bei Zeitablauf, z. B. 24h, 3d.'
         hint:
             yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'
             lifecycle_redirect: 'Lifecycle-Konfigurationen verwenden Transitions-Overrides. Klicken Sie auf "Transitions-Overrides" zur Konfiguration.'
             lifecycle_has_transitions: 'Dies ist eine Lifecycle-Konfiguration. Verwenden Sie den Lifecycle-Overrides-Editor für Transitions-Metadaten.'
         validation:
             days_non_negative: 'Tage bis Abschluss muss 0 oder größer sein.'
-            conditions_invalid_json: 'Auto-Progress-Bedingungen müssen gültiges JSON sein.'
         help:
             approver_role:
                 title: 'Genehmiger-Rolle'

@@ -372,6 +372,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
                 {# Filter Panel - Hidden by Default #}
                 <div class="filter-panel d-none" data-toggle-target="filterPanel">
@@ -407,9 +408,13 @@
                                 <div class="requirement-status">
                                     {% include '_components/_badge.html.twig' with { variant: requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary'), content: requirement.priority|upper } %}
                                     {% set fulfillment = fulfillments[requirement.id] %}
-                                    <div class="progress-mini">
-                                        <div class="progress-fill" style="width: {{ fulfillment.fulfillmentPercentage }}%; background: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--warning)' : 'var(--danger)') }};"></div>
-                                    </div>
+                                    {{ _fa_progress.render({
+                                        value: fulfillment.fulfillmentPercentage,
+                                        tone: fulfillment.fulfillmentPercentage >= 75 ? 'success' : (fulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger'),
+                                        label: requirement.requirementId,
+                                        size: 'sm',
+                                        class: 'progress-mini',
+                                    }) }}
                                     <span class="percentage">{{ fulfillment.fulfillmentPercentage }}%</span>
                                     {% if requirement.hasDetailedRequirements() %}
                                         <span class="expand-icon" data-toggle-target="expandIcon">▼</span>
@@ -429,9 +434,13 @@
                                                     <span class="detailed-title">{{ detailed.title }}</span>
                                                 </div>
                                                 <div class="detailed-status">
-                                                    <div class="progress-mini">
-                                                        <div class="progress-fill" style="width: {{ detailedFulfillment.fulfillmentPercentage }}%;"></div>
-                                                    </div>
+                                                    {{ _fa_progress.render({
+                                                        value: detailedFulfillment.fulfillmentPercentage,
+                                                        tone: detailedFulfillment.fulfillmentPercentage >= 75 ? 'success' : (detailedFulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger'),
+                                                        label: detailed.requirementId,
+                                                        size: 'sm',
+                                                        class: 'progress-mini',
+                                                    }) }}
                                                     <span class="percentage-small">{{ detailedFulfillment.fulfillmentPercentage }}%</span>
                                                 </div>
                                             </div>
@@ -455,6 +464,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% if dashboard.gaps.total > 0 %}
                         {% for gap in dashboard.gaps.list %}
                             <div class="gap-item priority-{{ gap.priority }}">
@@ -468,9 +478,13 @@
                                 <div class="gap-progress">
                                     {% set gapFulfillment = fulfillments[gap.id] %}
                                     {% set fulfillmentPct = gapFulfillment ? gapFulfillment.fulfillmentPercentage : 0 %}
-                                    <div class="progress-bar">
-                                        <div class="progress-fill bg-danger" style="width: {{ fulfillmentPct }}%;"></div>
-                                    </div>
+                                    {{ _fa_progress.render({
+                                        value: fulfillmentPct,
+                                        tone: 'danger',
+                                        label: gap.requirementId,
+                                        size: 'sm',
+                                        class: 'progress-h-8 flex-grow-1',
+                                    }) }}
                                     <span>{{ fulfillmentPct }}{{ 'compliance.gaps.fulfilled_percentage'|trans({}, 'compliance') }}</span>
                                 </div>
                             </div>
@@ -742,11 +756,6 @@
     background: var(--surface);
     border-radius: 4px;
     overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    transition: width 0.3s;
 }
 
 .percentage {

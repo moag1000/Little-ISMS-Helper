@@ -49,7 +49,7 @@
     {% set rowClass = 'fa-diff-row fa-diff-row--' ~ changeType ~ (props.class is defined ? ' ' ~ props.class : '') %}
 
     <div class="{{ rowClass }}"
-         aria-label="{{ props.label|default('Diff') }}: {{ ('diff.change_type.' ~ changeType)|trans({}, 'data_import') }}">
+         aria-label="{{ props.label|default('ui.component.change'|trans({}, 'ui')) }}: {{ ('diff.change_type.' ~ changeType)|trans({}, 'data_import') }}">
         {% if props.label is defined and props.label %}
             <div class="fa-diff-row__label">{{ props.label }}</div>
         {% endif %}

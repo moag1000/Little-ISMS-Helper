@@ -129,7 +129,9 @@
                                             {% if step.has_overrides %}
                                                 <form method="post"
                                                       action="{{ path('admin_workflow_overlay_reset', {name: workflowName, stepIndex: step.index}) }}"
-                                                      onsubmit="return confirm({{ 'admin.workflows.reset_confirm'|trans|json_encode|raw }})">
+                                                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'admin.workflows.reset_confirm'|trans({}, 'admin') }}">
                                                     <input type="hidden" name="_token"
                                                            value="{{ csrf_token('workflow_step_reset_' ~ workflowName ~ '_' ~ step.index) }}">
                                                     <button type="submit"

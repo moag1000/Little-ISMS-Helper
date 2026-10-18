@@ -4,7 +4,9 @@ check_dql_non_portable.py — Gate 37.
 
 Forbids non-portable date / time functions inside DQL strings:
 `YEAR()`, `MONTH()`, `DAY()`, `DATE_FORMAT()`, `DATEDIFF()`,
-`UNIX_TIMESTAMP()`, `NOW()`, `CURDATE()`.
+`UNIX_TIMESTAMP()`, `NOW()`, `CURDATE()`, plus MySQL functions Doctrine
+does not know at all (`GREATEST()`, `LEAST()`, `IFNULL()`, …). Covers
+DQL literals and QueryBuilder string arguments (`->andWhere('…')`).
 
 These compile only against MySQL/MariaDB. Postgres, SQLite (CI test
 DB) and SQL Server reject them, so DQL queries that use them break
@@ -35,7 +37,16 @@ SRC = ROOT / "src"
 # Functions banned from DQL — uppercase + word-boundaried.
 BANNED = re.compile(
     r"\b(YEAR|MONTH|DAY|DATE_FORMAT|DATEDIFF|UNIX_TIMESTAMP|NOW|CURDATE|HOUR|MINUTE|SECOND|"
-    r"TIMEDIFF|FROM_UNIXTIME|STR_TO_DATE)\s*\("
+    r"TIMEDIFF|FROM_UNIXTIME|STR_TO_DATE|"
+    # Not DQL at all ("Expected known function") — crashed /dashboard via
+    # BcmRecoveryPlansPresentCheck: GREATEST() inside a QueryBuilder where().
+    r"GREATEST|LEAST|IFNULL|GROUP_CONCAT|CONCAT_WS)\s*\("
+)
+# QueryBuilder string arguments carry DQL fragments without SELECT/FROM.
+RE_QB_ARG = re.compile(
+    r"->(?:where|andWhere|orWhere|select|addSelect|having|andHaving|orHaving|"
+    r"orderBy|addOrderBy|groupBy|addGroupBy)\(\s*(?P<q>['\"])(?P<body>(?:\\.|(?!(?P=q)).)*?)(?P=q)",
+    re.DOTALL,
 )
 # Heuristic: only flag inside a DQL string. DQL appears as the argument to
 # createQuery(...) or in QueryBuilder->expr()->... — we scan PHP files
@@ -71,6 +82,14 @@ def scan() -> list[tuple[Path, int, str, str]]:
             fm = BANNED.search(body)
             if fm:
                 ln = text.count("\n", 0, sm.start()) + 1
+                findings.append((php, ln, fm.group(1), body[:60].replace("\n", " ")))
+        for qm in RE_QB_ARG.finditer(text):
+            body = qm.group("body")
+            if re.search(r"\b(SELECT|UPDATE|DELETE|FROM)\b", body, re.IGNORECASE):
+                continue  # already covered by the literal scan above
+            fm = BANNED.search(body)
+            if fm:
+                ln = text.count("\n", 0, qm.start()) + 1
                 findings.append((php, ln, fm.group(1), body[:60].replace("\n", " ")))
     return findings
 
