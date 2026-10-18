@@ -292,6 +292,37 @@ class PolicyWizardControllerTest extends WebTestCase
         $this->assertSame(['iso27001'], $reloaded->getStandardsAdopted());
     }
 
+    /**
+     * Regression: stepSubmit() caught the SPL \InvalidArgumentException, but
+     * WizardOrchestrator::processStep() throws
+     * App\Exception\InvalidArgument\InvalidArgumentException (a
+     * \RuntimeException) for an unknown or non-applicable step — so the
+     * intended flash + redirect never happened and the user got a 500.
+     */
+    #[Test]
+    public function testStepSubmitWithUnknownStepRedirectsInsteadOfFailing(): void
+    {
+        $this->client->loginUser($this->cisoUser);
+
+        $startToken = $this->generateCsrfToken('policy_wizard_start');
+        $this->client->request('POST', '/en/policy-wizard/start', [
+            '_token' => $startToken,
+            'mode' => WizardStepKeys::MODE_FULL,
+        ]);
+        $run = $this->entityManager->getRepository(WizardRun::class)->findOneBy(['tenant' => $this->testTenant]);
+        $this->assertNotNull($run);
+        $run->setStep('no_such_step');
+        $this->entityManager->flush();
+
+        $stepToken = $this->generateCsrfToken('policy_wizard_step');
+        $this->client->request('POST', '/en/policy-wizard/run/' . $run->getId() . '/step/no_such_step', [
+            '_token' => $stepToken,
+        ]);
+
+        $this->assertResponseRedirects();
+        $this->assertStringEndsWith('/policy-wizard', (string) $this->client->getResponse()->headers->get('Location'));
+    }
+
     #[Test]
     public function testCancelMarksRunCancelled(): void
     {
