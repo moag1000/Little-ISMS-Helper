@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
+import { faToast } from '../js/fa-alerts.js';
 
 /**
  * Audit Checklist Save Controller
@@ -93,13 +94,9 @@ export default class extends Controller {
         window.dispatchEvent(new CustomEvent('fa-toast:show', { detail }));
         document.dispatchEvent(new CustomEvent('toast:show', { detail }));
         // No toast stack mounted (e.g. a page without base.html.twig): use the
-        // global Aurora toast helper; native alert only if even that is missing.
+        // Aurora toast helper directly.
         if (!document.querySelector('.fa-toast-stack') && !document.querySelector('.toast-container')) {
-            if (typeof window.faToast === 'function') {
-                window.faToast(message, variant);
-            } else {
-                window.alert(message);
-            }
+            faToast(message, variant);
         }
     }
 }

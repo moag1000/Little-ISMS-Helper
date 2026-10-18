@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
+import { faToast, faPrompt } from '../js/fa-alerts.js';
 
 /**
  * FairyAurora — Lifecycle Transition Dropdown Controller (lifecycle X.3)
@@ -127,9 +128,7 @@ export default class extends Controller {
         let reason = null;
 
         if (needsReason) {
-            reason = typeof window.faPrompt === 'function'
-                ? await window.faPrompt(this.reasonLabelValue, { required: true, maxlength: 1000 })
-                : window.prompt(this.reasonLabelValue); // fallback: helper not mounted yet
+            reason = await faPrompt(this.reasonLabelValue, { required: true, maxlength: 1000 });
             if (reason === null || reason.trim() === '') {
                 // User cancelled or empty — abort silently
                 this._close();
@@ -177,14 +176,9 @@ export default class extends Controller {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    // Aurora toast instead of the native browser alert() — non-blocking and
-    // on-brand. Falls back to alert() only if the global helper is unavailable.
+    // Aurora toast instead of the native browser alert() — non-blocking and on-brand.
     #notify(message, type = 'info') {
-        if (typeof window.faToast === 'function') {
-            window.faToast(message, type);
-        } else {
-            window.alert(message);
-        }
+        faToast(message, type);
     }
 
     _transitionLabel(name) {

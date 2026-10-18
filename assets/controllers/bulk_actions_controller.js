@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
+import { faConfirm, faPrompt } from '../js/fa-alerts.js';
 
 /**
  * Bulk Actions Controller — canonical Aurora bulk-action-bar (per
@@ -233,7 +234,7 @@ export default class extends Controller {
         if (!confirmModal) {
             // Fallback to simple confirm if modal not available
             const confirmText = faT('bulk_actions.confirm_delete');
-            const confirmed = await window.faConfirm(confirmText.replace('%count%', ids.length).replace('%entity%', entityLabel), { tone: 'danger' });
+            const confirmed = await faConfirm(confirmText.replace('%count%', ids.length).replace('%entity%', entityLabel), { tone: 'danger' });
             if (!confirmed) {
                 return;
             }
@@ -381,11 +382,8 @@ export default class extends Controller {
             return;
         }
 
-        // Native prompt() is banned as UX — use the Aurora dialog. Fall back
-        // to the native one only if fa-alerts has not mounted yet.
-        const tag = typeof window.faPrompt === 'function'
-            ? await window.faPrompt(this.label('tagPrompt'), { required: true, maxlength: 64 })
-            : prompt(this.label('tagPrompt'));
+        // Native prompt() is banned as UX — use the Aurora dialog.
+        const tag = await faPrompt(this.label('tagPrompt'), { required: true, maxlength: 64 });
 
         if (!tag) {
             return;
@@ -571,9 +569,7 @@ export default class extends Controller {
 
             const choices = assignees.map((a) => ({ value: a.id, label: a.label }));
             const message = faT('bulk_actions.assign_prompt', { '%count%': ids.length });
-            const assigneeId = typeof window.faPrompt === 'function'
-                ? await window.faPrompt(message, { choices, required: true })
-                : null;
+            const assigneeId = await faPrompt(message, { choices, required: true });
             if (!assigneeId) {
                 return;
             }

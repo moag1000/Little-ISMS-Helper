@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
+import { faConfirm } from '../js/fa-alerts.js';
 
 /**
  * ModalWizard Controller — High-stakes linear-flow modal with validation-gates
@@ -158,9 +159,7 @@ export default class extends Controller {
     async cancel() {
         if (this.hasChangesValue) {
             const message = this.discardMessageValue || faT('discard_changes');
-            const confirmed = typeof window.faConfirm === 'function'
-                ? await window.faConfirm(message, { tone: 'warn' })
-                : window.confirm(message); // fallback: helper not mounted yet
+            const confirmed = await faConfirm(message, { tone: 'warn' });
             if (!confirmed) {
                 return;
             }

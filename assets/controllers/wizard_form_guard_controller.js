@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
+import { faToast } from '../js/fa-alerts.js';
 
 /**
  * Policy-Wizard step-form submit guard.
@@ -73,14 +74,8 @@ export default class extends Controller {
     };
 
     #toast(message, variant) {
-        if (typeof window.faToast === 'function') {
-            // fa-alerts.js signature: faToast(message, variant, options)
-            window.faToast(message, variant);
-        } else {
-            // Last-resort visibility if the toast helper is not mounted.
-            // eslint-disable-next-line no-alert
-            window.alert(message);
-        }
+        // fa-alerts.js signature: faToast(message, variant, options)
+        faToast(message, variant);
     }
 
     #missingMessage(n) {

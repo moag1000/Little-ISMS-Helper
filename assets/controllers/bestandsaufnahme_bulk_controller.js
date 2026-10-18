@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
+import { faConfirm } from '../js/fa-alerts.js';
 
 /**
  * Policy-Wizard Bestandsaufnahme — MUST #4: Bulk action bar.
@@ -116,13 +117,8 @@ export default class extends Controller {
             this.confirmApplyBtnTarget.parentNode.replaceChild(fresh, this.confirmApplyBtnTarget);
             fresh.addEventListener('click', () => { commit(); this._hideModal(); }, { once: true });
             this._showModal();
-        } else if (typeof window.faConfirm === 'function') {
-            window.faConfirm(interpolated, { tone: 'warn' }).then((ok) => { if (ok) { commit(); } });
         } else {
-            // eslint-disable-next-line no-alert
-            if (window.confirm(interpolated)) {
-                commit();
-            }
+            faConfirm(interpolated, { tone: 'warn' }).then((ok) => { if (ok) { commit(); } });
         }
     }
 
