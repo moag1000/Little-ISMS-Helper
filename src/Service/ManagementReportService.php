@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
+use App\Enum\RiskStatus;
 use App\Enum\RiskTreatmentPlanStatus;
 use App\Service\Tisax\TisaxReportSectionBuilder;
 use DateTime;
@@ -167,7 +168,12 @@ final class ManagementReportService
 
         // Apply filters
         if (!empty($filters['status'])) {
-            $risks = array_filter($risks, fn(Risk $r): bool => $r->getStatus() === $filters['status']);
+            // Accept the enum or its backing value (e.g. a query parameter);
+            // comparing the RiskStatus enum to a string never matched.
+            $statusFilter = $filters['status'] instanceof RiskStatus
+                ? $filters['status']
+                : RiskStatus::tryFrom((string) $filters['status']);
+            $risks = array_filter($risks, fn(Risk $r): bool => $statusFilter !== null && $r->getStatus() === $statusFilter);
         }
         if (!empty($filters['category'])) {
             $risks = array_filter($risks, fn(Risk $r): bool => $r->getCategory() === $filters['category']);
@@ -269,8 +275,7 @@ final class ManagementReportService
                 }
 
                 // Skip closed risks (they no longer represent active exposure)
-                $status = $risk->getStatus();
-                if ($status === 'closed') {
+                if ($risk->getStatus() === RiskStatus::Closed) {
                     continue;
                 }
 
