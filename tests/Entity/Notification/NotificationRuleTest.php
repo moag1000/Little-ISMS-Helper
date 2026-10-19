@@ -86,4 +86,15 @@ final class NotificationRuleTest extends TestCase
         $rule->removeChannel($channel);
         self::assertCount(0, $rule->getChannels());
     }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function testConditionAccessorsSkipStrayNonArrayElements(): void
+    {
+        $rule = new NotificationRule();
+        /** @phpstan-ignore argument.type */
+        $rule->setConditions(['stray', null, ['_logic' => 'or'], ['field' => 'severity', 'op' => '==', 'value' => 'high']]);
+
+        $this->assertSame('or', $rule->getConditionLogic());
+        $this->assertSame([['field' => 'severity', 'op' => '==', 'value' => 'high']], $rule->getConditionRows());
+    }
 }

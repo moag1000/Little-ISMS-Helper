@@ -418,4 +418,21 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(4, $process->getBusinessImpactScore()); // (5+3+4)/3
         $this->assertEquals(4, $process->getSuggestedAvailabilityValue()); // RTO=2 -> High (4)
     }
+
+    #[Test]
+    public function testHandledRisksAreNotActiveOrUnmitigated(): void
+    {
+        $process = new BusinessProcess();
+        foreach ([RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated, RiskStatus::Closed] as $status) {
+            $risk = new Risk();
+            $risk->setTitle('r');
+            $risk->setStatus($status);
+            $risk->setResidualProbability(5)->setResidualImpact(5);
+            $process->addIdentifiedRisk($risk);
+        }
+
+        $this->assertSame(0, $process->getActiveRiskCount());
+        $this->assertFalse($process->hasUnmitigatedHighRisks());
+        $this->assertSame('low', $process->getProcessRiskLevel());
+    }
 }

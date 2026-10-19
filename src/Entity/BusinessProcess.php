@@ -530,7 +530,7 @@ class BusinessProcess
         $count = 0;
 
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus() !== RiskStatus::Closed) {
+            if (self::isUnhandledRisk($identifiedRisk)) {
                 $totalInherentRisk += $identifiedRisk->getInherentRiskLevel();
                 $totalResidualRisk += $identifiedRisk->getResidualRiskLevel();
                 $count++;
@@ -597,12 +597,25 @@ class BusinessProcess
     }
 
     /**
+     * A risk counts as active/unmitigated unless it is already handled:
+     * closed, accepted, mitigated or treated.
+     */
+    private static function isUnhandledRisk(Risk $risk): bool
+    {
+        return !in_array(
+            $risk->getStatus(),
+            [RiskStatus::Closed, RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated],
+            true,
+        );
+    }
+
+    /**
      * Get count of active risks affecting this process
      * Data Reuse: Quick risk overview
      */
     public function getActiveRiskCount(): int
     {
-        return $this->identifiedRisks->filter(fn(Risk $r): bool => $r->getStatus() !== RiskStatus::Closed)->count();
+        return $this->identifiedRisks->filter(fn(Risk $r): bool => self::isUnhandledRisk($r))->count();
     }
 
     /**
@@ -612,7 +625,7 @@ class BusinessProcess
     public function hasUnmitigatedHighRisks(): bool
     {
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus() !== RiskStatus::Closed && $identifiedRisk->getResidualRiskLevel() >= 16) {
+            if (self::isUnhandledRisk($identifiedRisk) && $identifiedRisk->getResidualRiskLevel() >= 16) {
                 return true;
             }
         }

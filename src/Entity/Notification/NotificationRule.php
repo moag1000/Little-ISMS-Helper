@@ -36,7 +36,7 @@ class NotificationRule
     #[ORM\Column(name: 'event_type', length: 80)]
     private string $eventType = '';
 
-    /** @var array<int, array<string, mixed>> */
+    /** @var array<int, mixed> persisted JSON — elements are expected to be arrays, but legacy rows may hold strays */
     #[ORM\Column(type: Types::JSON)]
     private array $conditions = [];
 
@@ -116,7 +116,7 @@ class NotificationRule
     {
         return array_values(array_filter(
             $this->conditions,
-            static fn (array $c): bool => !array_key_exists('_logic', $c),
+            static fn (mixed $c): bool => is_array($c) && !array_key_exists('_logic', $c),
         ));
     }
 
@@ -136,7 +136,7 @@ class NotificationRule
     public function getConditionLogic(): string
     {
         foreach ($this->conditions as $c) {
-            if (isset($c['_logic'])) {
+            if (is_array($c) && isset($c['_logic'])) {
                 return strtolower((string) $c['_logic']) === 'or' ? 'or' : 'and';
             }
         }

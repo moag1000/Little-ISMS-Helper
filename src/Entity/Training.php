@@ -185,7 +185,9 @@ class Training
      * flows through {@see FileUploadSecurityService::validateUploadedFile()}
      * (MIME / magic-byte / extension / size whitelist).
      *
-     * @var array<int, array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string}>|null
+     * Persisted JSON: legacy rows may lack keys, hence the optional shape keys.
+     *
+     * @var array<int, array{filename?: string, originalName?: string, mimeType?: string, size?: int, uploadedAt?: string}>|null
      */
     #[ORM\Column(name: 'material_files', type: Types::JSON, nullable: true)]
     #[Groups(['training:read'])]
@@ -583,7 +585,7 @@ public function __construct()
             return null;
         }
         foreach ($this->materialFiles as $idx => $entry) {
-            if ($entry['filename'] === $filename) {
+            if (($entry['filename'] ?? null) === $filename) {
                 $removed = $entry;
                 unset($this->materialFiles[$idx]);
                 $this->materialFiles = $this->materialFiles === [] ? null : array_values($this->materialFiles);
