@@ -6,7 +6,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Security\Voter\UserVoter;
 use App\Service\GuidedTourService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +33,7 @@ class AdminTourCompletionController extends AbstractController
         private readonly GuidedTourService $tourService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -41,7 +44,7 @@ class AdminTourCompletionController extends AbstractController
         $onlyIncomplete = $request->query->getBoolean('only_incomplete');
         $search = trim((string) $request->query->get('q', ''));
 
-        $users = $this->userRepository->findBy([], ['email' => 'ASC']);
+        $users = $this->visibleUsers();
         $tours = GuidedTourService::ALL_TOURS;
 
         $rows = [];
@@ -92,7 +95,7 @@ class AdminTourCompletionController extends AbstractController
     #[Route('/admin/tours/completion/export.csv', name: 'admin_tour_completion_export', methods: ['GET'])]
     public function export(): StreamedResponse
     {
-        $users = $this->userRepository->findBy([], ['email' => 'ASC']);
+        $users = $this->visibleUsers();
         $tours = GuidedTourService::ALL_TOURS;
 
         $response = new StreamedResponse(function () use ($users, $tours): void {
@@ -135,6 +138,8 @@ class AdminTourCompletionController extends AbstractController
         if (!$user instanceof User) {
             throw $this->createNotFoundException();
         }
+        // Security hotfix: only users the admin may administer (tenant tree).
+        $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
         if ($role === 'all') {
             $user->resetAllTours();
@@ -151,6 +156,36 @@ class AdminTourCompletionController extends AbstractController
         ], 'admin'));
 
         return $this->redirectToRoute('admin_tour_completion_index');
+    }
+
+    /**
+     * Users the current admin may see (security hotfix, admin scope):
+     * SUPER_ADMIN all; everyone else users of the accessible tenant tree,
+     * filtered in the query, then by {@see UserVoter::VIEW}.
+     *
+     * @return list<User>
+     */
+    private function visibleUsers(): array
+    {
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return $this->userRepository->findBy([], ['email' => 'ASC']);
+        }
+        $tenants = $this->tenantContext->getAccessibleTenants();
+        if ($tenants === []) {
+            return [];
+        }
+        /** @var list<User> $users */
+        $users = $this->userRepository->createQueryBuilder('u')
+            ->where('u.tenant IN (:tenants)')
+            ->setParameter('tenants', $tenants)
+            ->orderBy('u.email', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return array_values(array_filter(
+            $users,
+            fn (User $user): bool => $this->isGranted(UserVoter::VIEW, $user),
+        ));
     }
 
     private function matchesSearch(User $user, string $q): bool

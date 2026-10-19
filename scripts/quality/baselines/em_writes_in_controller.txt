@@ -96,7 +96,7 @@ src/Controller/Admin/WorkflowOverlayController.php:481
 src/Controller/Admin/WorkflowOverlayController.php:499
 src/Controller/AdminComplianceController.php:135
 src/Controller/AdminComplianceController.php:136
-src/Controller/AdminTourCompletionController.php:147
+src/Controller/AdminTourCompletionController.php:152
 src/Controller/AdminTourContentController.php:158
 src/Controller/AdminTourContentController.php:170
 src/Controller/AdminTourContentController.php:181
