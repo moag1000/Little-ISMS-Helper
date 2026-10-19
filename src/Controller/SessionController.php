@@ -41,18 +41,18 @@ class SessionController extends AbstractController
         $limit = $request->query->get('limit', 100);
 
         // Get active sessions from SessionManager (tenant-scoped for non-SUPER_ADMIN)
-        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-            $activeSessions = $sessionManager->getAllActiveSessions($userEmail, $limit);
-        } else {
+        $tenantScope = $this->resolveTenantScope($tenantContext);
+        $activeSessions = $sessionManager->getAllActiveSessions($userEmail, $limit, $tenantScope);
+        if ($tenantScope !== null) {
             $activeSessions = array_values(array_filter(
-                $sessionManager->getAllActiveSessions($userEmail, $limit, $tenantContext->getAccessibleTenants()),
+                $activeSessions,
                 fn(UserSession $session): bool => $session->getUser() instanceof User
                     && $this->isGranted(UserVoter::EDIT, $session->getUser()),
             ));
         }
 
-        // Get statistics
-        $statistics = $sessionManager->getStatistics();
+        // Get statistics (same tenant scope)
+        $statistics = $sessionManager->getStatistics($tenantScope);
         $statistics['max_concurrent'] = $sessionManager->getMaxConcurrentSessions();
 
         return $this->render('session/index.html.twig', [
@@ -62,14 +62,22 @@ class SessionController extends AbstractController
         ]);
     }
     #[Route('/admin/sessions/statistics', name: 'session_statistics', methods: ['GET'])]
+    #[IsGranted('SESSION_VIEW')]
     public function statistics(
-        AuditLogRepository $auditLogRepository
+        AuditLogRepository $auditLogRepository,
+        TenantContext $tenantContext
     ): JsonResponse {
         // Get login statistics for the last 30 days
         $thirtyDaysAgo = new DateTime('-30 days');
         $now = new DateTime();
 
-        $loginEvents = $auditLogRepository->findByDateRange($thirtyDaysAgo, $now);
+        // Tenant-scoped for non-SUPER_ADMIN (explicit — the Doctrine
+        // tenant_filter is bypassed for tenantless actors)
+        $loginEvents = $auditLogRepository->findByDateRange(
+            $thirtyDaysAgo,
+            $now,
+            $this->resolveTenantScope($tenantContext),
+        );
 
         // Filter for login events
         $logins = array_filter($loginEvents, fn($log): bool => in_array($log->getAction(), ['login', 'login_success', 'authentication']));
@@ -220,5 +228,17 @@ class SessionController extends AbstractController
         }
 
         return $this->redirectToRoute('session_index');
+    }
+
+    /**
+     * Tenant scope for listings / statistics: null (instance-wide) for
+     * SUPER_ADMIN, otherwise the actor's accessible tenant tree ([] when the
+     * actor has no tenant — yields nothing).
+     *
+     * @return \App\Entity\Tenant[]|null
+     */
+    private function resolveTenantScope(TenantContext $tenantContext): ?array
+    {
+        return $this->isGranted('ROLE_SUPER_ADMIN') ? null : $tenantContext->getAccessibleTenants();
     }
 }

@@ -114,30 +114,36 @@ class UserSessionRepository extends ServiceEntityRepository
 
     /**
      * Get session statistics
+     *
+     * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
      */
-    public function getStatistics(): array
+    public function getStatistics(?array $tenants = null): array
     {
-        $queryBuilder = $this->createQueryBuilder('s');
+        if ($tenants === []) {
+            return ['total_active' => 0, 'total_last_24h' => 0, 'unique_users' => 0];
+        }
+
+        $queryBuilder = $this->scopedQueryBuilder($tenants);
 
         $totalActive = (int) $queryBuilder->select('COUNT(s.id)')
-            ->where('s.isActive = :active')
+            ->andWhere('s.isActive = :active')
             ->setParameter('active', true)
             ->getQuery()
             ->getSingleScalarResult();
 
         // Get sessions from last 24 hours
         $yesterday = new DateTimeImmutable('-24 hours');
-        $totalLast24h = (int) $this->createQueryBuilder('s')
+        $totalLast24h = (int) $this->scopedQueryBuilder($tenants)
             ->select('COUNT(s.id)')
-            ->where('s.createdAt >= :since')
+            ->andWhere('s.createdAt >= :since')
             ->setParameter('since', $yesterday)
             ->getQuery()
             ->getSingleScalarResult();
 
         // Get unique users with active sessions
-        $uniqueUsers = (int) $this->createQueryBuilder('s')
+        $uniqueUsers = (int) $this->scopedQueryBuilder($tenants)
             ->select('COUNT(DISTINCT s.user)')
-            ->where('s.isActive = :active')
+            ->andWhere('s.isActive = :active')
             ->setParameter('active', true)
             ->getQuery()
             ->getSingleScalarResult();
@@ -147,6 +153,21 @@ class UserSessionRepository extends ServiceEntityRepository
             'total_last_24h' => $totalLast24h,
             'unique_users' => $uniqueUsers,
         ];
+    }
+
+    /**
+     * @param \App\Entity\Tenant[]|null $tenants
+     */
+    private function scopedQueryBuilder(?array $tenants): \Doctrine\ORM\QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+        if ($tenants !== null) {
+            $queryBuilder->innerJoin('s.user', 'su')
+                ->andWhere('su.tenant IN (:tenants)')
+                ->setParameter('tenants', $tenants);
+        }
+
+        return $queryBuilder;
     }
 
     /**

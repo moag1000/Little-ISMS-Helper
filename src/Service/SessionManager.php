@@ -360,8 +360,10 @@ class SessionManager
 
     /**
      * Get session statistics
+     *
+     * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
      */
-    public function getStatistics(): array
+    public function getStatistics(?array $tenants = null): array
     {
         if (!$this->isTableAvailable()) {
             return [
@@ -372,7 +374,7 @@ class SessionManager
         }
 
         try {
-            return $this->userSessionRepository->getStatistics();
+            return $this->userSessionRepository->getStatistics($tenants);
         } catch (Exception $e) {
             $this->logger->error('Failed to get session statistics', [
                 'error' => $e->getMessage(),

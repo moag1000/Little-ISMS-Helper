@@ -126,14 +126,27 @@ class AuditLogRepository extends ServiceEntityRepository
 
     /**
      * Find audit logs by date range
+     *
+     * @param \App\Entity\Tenant[]|null $tenants restrict to logs of these tenants (null = all)
      */
-    public function findByDateRange(DateTimeInterface $start, DateTimeInterface $end): array
+    public function findByDateRange(DateTimeInterface $start, DateTimeInterface $end, ?array $tenants = null): array
     {
-        return $this->createQueryBuilder('a')
+        if ($tenants === []) {
+            return [];
+        }
+
+        $queryBuilder = $this->createQueryBuilder('a')
             ->where('a.createdAt >= :start')
             ->andWhere('a.createdAt <= :end')
             ->setParameter('start', $start)
-            ->setParameter('end', $end)
+            ->setParameter('end', $end);
+
+        if ($tenants !== null) {
+            $queryBuilder->andWhere('a.tenant IN (:tenants)')
+                ->setParameter('tenants', $tenants);
+        }
+
+        return $queryBuilder
             ->orderBy('a.createdAt', 'DESC')
             ->getQuery()
             ->getResult();

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\AuditLog;
 use App\Entity\MfaToken;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\UserSession;
+use App\Repository\UserSessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -61,6 +63,9 @@ final class MfaSessionAdminScopeTest extends WebTestCase
     protected function tearDown(): void
     {
         $this->em->clear();
+        $this->em->createQuery('DELETE FROM ' . AuditLog::class . ' a WHERE a.userName LIKE :p')
+            ->setParameter('p', '%' . $this->uid . '%')
+            ->execute();
         $userRepo = $this->em->getRepository(User::class);
         foreach ($userRepo->createQueryBuilder('u')->where('u.email LIKE :p')
             ->setParameter('p', '%' . $this->uid . '%')->getQuery()->getResult() as $user) {
@@ -293,6 +298,79 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         self::assertFalse($this->em->find(UserSession::class, $session->getId())->isActive());
     }
 
+    #[Test]
+    public function loginStatisticsAreScopedToTenantAdminsTree(): void
+    {
+        $this->auditLogin($this->userA, $this->tenantA);
+        $this->auditLogin($this->userB, $this->tenantB);
+        $this->em->flush();
+
+        $this->client->loginUser($this->adminA);
+        $this->client->request('GET', '/en/admin/sessions/statistics');
+        self::assertResponseIsSuccessful();
+        $data = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertSame(1, $data['total_logins']);
+        self::assertSame(1, $data['unique_users']);
+
+        $this->client->loginUser($this->superA);
+        $this->client->request('GET', '/en/admin/sessions/statistics');
+        self::assertResponseIsSuccessful();
+        $data = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertGreaterThanOrEqual(1, $data['unique_users']);
+    }
+
+    #[Test]
+    public function tenantlessAdminGetsNoInstanceWideStatistics(): void
+    {
+        $this->auditLogin($this->userA, $this->tenantA);
+        $this->auditLogin($this->userB, $this->tenantB);
+        $this->session($this->userB);
+        $tenantless = $this->user('mfa_admin_none', ['ROLE_ADMIN'], null);
+        $this->em->flush();
+
+        // The Doctrine tenant_filter is bypassed for tenantless actors, so
+        // only the explicit scope keeps instance-wide counts away.
+        $this->client->loginUser($tenantless);
+        $this->client->request('GET', '/en/admin/sessions/statistics');
+        self::assertResponseIsSuccessful();
+        $data = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertSame(0, $data['total_logins']);
+        self::assertSame(0, $data['unique_users']);
+
+        $crawler = $this->client->request('GET', '/en/admin/sessions');
+        self::assertResponseIsSuccessful();
+        self::assertSame('0', trim($crawler->filter('p.display-6.text-primary')->first()->text()));
+    }
+
+    #[Test]
+    public function sessionIndexStatisticsAreScopedToTenantAdminsTree(): void
+    {
+        $this->session($this->userA);
+        $this->session($this->userB);
+        /** @var UserSessionRepository $repo */
+        $repo = $this->em->getRepository(UserSession::class);
+        $scoped = $repo->getStatistics([$this->tenantA]);
+        $global = $repo->getStatistics();
+        self::assertSame(1, $scoped['total_active']);
+        self::assertGreaterThan($scoped['total_active'], $global['total_active']);
+
+        $this->client->loginUser($this->adminA);
+        $crawler = $this->client->request('GET', '/en/admin/sessions');
+        self::assertResponseIsSuccessful();
+        self::assertSame('1', trim($crawler->filter('p.display-6.text-primary')->first()->text()));
+    }
+
+    private function auditLogin(User $user, Tenant $tenant): void
+    {
+        $log = new AuditLog();
+        $log->setAction('login_success');
+        $log->setEntityType('User');
+        $log->setEntityId($user->getId());
+        $log->setUserName($user->getEmail());
+        $log->setTenant($tenant);
+        $this->em->persist($log);
+    }
+
     // -------------------------------------------------------------- helpers
 
     /**
@@ -320,7 +398,7 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         return $tenant;
     }
 
-    private function user(string $label, array $roles, Tenant $tenant): User
+    private function user(string $label, array $roles, ?Tenant $tenant): User
     {
         $user = new User();
         $user->setEmail($label . '_' . $this->uid . '@example.com');
