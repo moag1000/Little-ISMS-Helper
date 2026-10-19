@@ -8,6 +8,7 @@ use App\Entity\Asset;
 use App\Entity\Tenant;
 use App\Service\AuditLogger;
 use App\Service\BulkDeleteService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,6 +21,7 @@ final class BulkDeleteServiceTest extends TestCase
     private EntityManagerInterface&MockObject $em;
     private AuditLogger&MockObject $auditLogger;
     private AuthorizationCheckerInterface&MockObject $authChecker;
+    private TenantContext&MockObject $tenantContext;
     private BulkDeleteService $service;
 
     protected function setUp(): void
@@ -30,7 +32,18 @@ final class BulkDeleteServiceTest extends TestCase
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnArgument(0);
 
-        $this->service = new BulkDeleteService($this->em, $this->auditLogger, $this->authChecker, $translator);
+        $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->tenantContext->method('canAccessTenant')->willReturnCallback(
+            fn (Tenant $candidate): bool => $this->tenantContext->getCurrentTenant()?->getId() === $candidate->getId(),
+        );
+
+        $this->service = new BulkDeleteService(
+            $this->em,
+            $this->auditLogger,
+            $this->authChecker,
+            $translator,
+            $this->tenantContext,
+        );
     }
 
     #[Test]
@@ -58,7 +71,7 @@ final class BulkDeleteServiceTest extends TestCase
             )
             ->willReturn('batch-uuid');
 
-        $result = $this->service->delete('Asset', [10, 11, 12], $tenant, static fn (int $id): ?object => $rows[$id] ?? null);
+        $result = $this->actingIn($tenant)->delete('Asset', [10, 11, 12], static fn (int $id): ?object => $rows[$id] ?? null);
 
         self::assertSame(1, $result['deleted']);
         self::assertSame('batch-uuid', $result['batch_id']);
@@ -77,7 +90,7 @@ final class BulkDeleteServiceTest extends TestCase
         $this->em->expects(self::never())->method('flush');
         $this->auditLogger->expects(self::never())->method('logBulk');
 
-        $result = $this->service->delete('Asset', [10], null, static fn (): object => $asset);
+        $result = $this->actingIn(null)->delete('Asset', [10], static fn (): object => $asset);
 
         self::assertSame(0, $result['deleted']);
         self::assertFalse($result['success']);
@@ -92,7 +105,7 @@ final class BulkDeleteServiceTest extends TestCase
         );
         $this->em->expects(self::once())->method('remove')->with($asset);
 
-        $result = $this->service->delete('Asset', [10], null, static fn (): object => $asset);
+        $result = $this->actingIn(null)->delete('Asset', [10], static fn (): object => $asset);
 
         self::assertSame(1, $result['deleted']);
     }
@@ -104,7 +117,7 @@ final class BulkDeleteServiceTest extends TestCase
         $orphan->method('getTenant')->willReturn(null);
         $this->em->expects(self::never())->method('remove');
 
-        $result = $this->service->delete('Asset', [10], $this->tenant(1), static fn (): object => $orphan);
+        $result = $this->actingIn($this->tenant(1))->delete('Asset', [10], static fn (): object => $orphan);
 
         self::assertSame(0, $result['deleted']);
     }
@@ -123,10 +136,9 @@ final class BulkDeleteServiceTest extends TestCase
         $this->em->expects(self::never())->method('remove');
         $this->auditLogger->expects(self::never())->method('logBulk');
 
-        $result = $this->service->delete(
+        $result = $this->actingIn($tenant)->delete(
             'Asset',
             [1, 2],
-            $tenant,
             static fn (int $id): ?object => $rows[$id] ?? null,
             guard: static fn (object $e): ?string => $e === $b ? 'inherited' : null,
             voterAttribute: 'delete',
@@ -144,10 +156,9 @@ final class BulkDeleteServiceTest extends TestCase
         $this->auditLogger->expects(self::never())->method('logBulk');
         $afterFlushCalled = false;
 
-        $result = $this->service->delete(
+        $result = $this->actingIn($tenant)->delete(
             'Asset',
             [5],
-            $tenant,
             static fn (): object => $asset,
             afterFlush: static function () use (&$afterFlushCalled): void {
                 $afterFlushCalled = true;
@@ -169,10 +180,9 @@ final class BulkDeleteServiceTest extends TestCase
         $this->em->expects(self::never())->method('remove');
         $this->auditLogger->method('logBulk')->willReturn('b');
 
-        $result = $this->service->delete(
+        $result = $this->actingIn($tenant)->delete(
             'Asset',
             [7],
-            $tenant,
             static fn (): object => $asset,
             deleter: static function (object $e) use (&$deleted): void {
                 $deleted[] = $e;
@@ -185,6 +195,96 @@ final class BulkDeleteServiceTest extends TestCase
         self::assertSame(1, $result['deleted']);
         self::assertSame([$asset], $deleted);
         self::assertSame([$asset], $cleaned);
+    }
+
+    private function actingIn(?Tenant $tenant): BulkDeleteService
+    {
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+
+        return $this->service;
+    }
+
+    #[Test]
+    public function tenantComesFromContextNotFromTheUser(): void
+    {
+        // SUPER_ADMIN has no own tenant but views tenant 1 through TenantContext.
+        $asset = $this->asset(10, $this->tenant(1), 'Server');
+        $this->authChecker->method('isGranted')->willReturnCallback(
+            static fn (string $attribute): bool => $attribute === 'ROLE_SUPER_ADMIN',
+        );
+        $this->em->expects(self::once())->method('remove')->with($asset);
+        $this->auditLogger->method('logBulk')->willReturn('b');
+
+        $result = $this->actingIn($this->tenant(1))->delete('Asset', [10], static fn (): object => $asset);
+
+        self::assertSame(1, $result['deleted']);
+    }
+
+    #[Test]
+    public function atomicBatchRollsBackWhenALaterDeleterFailsAndSaysSo(): void
+    {
+        $tenant = $this->tenant(1);
+        $a = $this->asset(1, $tenant, 'A');
+        $b = $this->asset(2, $tenant, 'B');
+        $rows = [1 => $a, 2 => $b];
+        $deleted = [];
+
+        $this->em->expects(self::once())->method('beginTransaction');
+        $this->em->expects(self::never())->method('commit');
+        $this->em->expects(self::once())->method('rollback');
+        $this->em->expects(self::once())->method('clear');
+        $this->auditLogger->expects(self::never())->method('logBulk');
+
+        $result = $this->actingIn($tenant)->delete(
+            'Asset',
+            [1, 2],
+            static fn (int $id): ?object => $rows[$id] ?? null,
+            deleter: static function (object $e) use (&$deleted, $b): void {
+                if ($e === $b) {
+                    throw new \RuntimeException('EntityManager is closed');
+                }
+                $deleted[] = $e; // a domain service that already flushed internally
+            },
+        );
+
+        self::assertSame(0, $result['deleted']);
+        self::assertFalse($result['success']);
+        self::assertStringContainsString('nothing was deleted', $result['errors'][0]);
+        self::assertNull($result['batch_id']);
+    }
+
+    #[Test]
+    public function commitHappensBeforeTheAuditBatchIsWritten(): void
+    {
+        $tenant = $this->tenant(1);
+        $asset = $this->asset(3, $tenant, 'C');
+        $order = [];
+        $this->em->method('commit')->willReturnCallback(static function () use (&$order): void {
+            $order[] = 'commit';
+        });
+        $this->auditLogger->method('logBulk')->willReturnCallback(static function () use (&$order): string {
+            $order[] = 'audit';
+
+            return 'b';
+        });
+
+        $result = $this->actingIn($tenant)->delete('Asset', [3], static fn (): object => $asset);
+
+        self::assertSame(1, $result['deleted']);
+        self::assertSame(['commit', 'audit'], $order);
+    }
+
+    #[Test]
+    public function auditFailureAfterCommitStillReportsTheCommittedDeletion(): void
+    {
+        $tenant = $this->tenant(1);
+        $asset = $this->asset(3, $tenant, 'C');
+        $this->auditLogger->method('logBulk')->willThrowException(new \RuntimeException('audit down'));
+
+        $result = $this->actingIn($tenant)->delete('Asset', [3], static fn (): object => $asset);
+
+        self::assertSame(1, $result['deleted']);
+        self::assertStringContainsString('audit log failed', $result['errors'][0]);
     }
 
     private function tenant(int $id): Tenant

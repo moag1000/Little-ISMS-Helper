@@ -662,10 +662,13 @@
     {# Restore Journey Progress Link (shown when journey has been dismissed) #}
     {% if not show_journey|default(true) %}
     <div class="text-center mt-3">
-        <a href="{{ path('app_dashboard_restore_journey') }}" class="text-muted small">
-            <i class="fa-icon fa-icon--ui-refresh me-1" aria-hidden="true"></i>
-            {{ 'journey.restore'|trans({}, 'journey') }}
-        </a>
+        <form method="post" action="{{ path('app_dashboard_restore_journey') }}" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('restore_journey') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                <i class="fa-icon fa-icon--ui-refresh me-1" aria-hidden="true"></i>
+                {{ 'journey.restore'|trans({}, 'journey') }}
+            </button>
+        </form>
     </div>
     {% endif %}
 

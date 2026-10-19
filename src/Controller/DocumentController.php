@@ -567,7 +567,6 @@ class DocumentController extends AbstractController
 
         /** @var User|null $user */
         $user = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
 
         $documents = [];
         $rejected = [];
@@ -579,7 +578,7 @@ class DocumentController extends AbstractController
                 $rejected[] = ['id' => $id, 'reason' => 'not_found'];
                 continue;
             }
-            if ($tenant === null || $document->getTenant()?->getId() !== $tenant->getId()) {
+            if (!$this->isInBulkContextScope($document, $this->tenantContext)) {
                 $rejected[] = ['id' => $id, 'reason' => 'tenant_mismatch'];
                 continue;
             }

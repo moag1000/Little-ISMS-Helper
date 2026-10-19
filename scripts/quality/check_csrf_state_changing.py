@@ -25,6 +25,17 @@ the check compares against the text "delete_{id}" and always fails. Such
 entries are reported as `<path>::<method>#literal-id`; use
 new Expression('"delete_" ~ args["entity"].getId()') instead.
 
+GET (and HEAD) routes are checked too: a public action whose #[Route] allows only
+safe verbs (GET/HEAD/OPTIONS, or no `methods:` at all) must not write. A method
+body that calls `->flush()`, `->persist(` or `->remove(` is reported as
+`<path>::<method>#get-writes`; links, prefetch and <img> tags would trigger it
+without any CSRF check. Move the write to a POST route with
+#[IsCsrfTokenValid], or mark a deliberate case (e.g. a write that only touches
+a session or a log) with `// @get-write-ok: <reason>` in its docblock. Limits:
+the scan is textual and covers the method body plus one level of same-class
+private helpers; writes hidden in other services (`$service->doIt()` that
+flushes internally) cannot be seen — those stay a review concern.
+
 Baseline entries (`<relative-path>::<method>`) cover files owned by in-flight
 work; stale entries are reported but never fail the gate.
 """
@@ -39,7 +50,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CONTROLLER_DIR = ROOT / "src" / "Controller"
 
 RE_METHOD = re.compile(r"^\s*(public|protected|private)\s+(static\s+)?function\s+(\w+)\s*\(", re.M)
-RE_ROUTE_METHODS = re.compile(r"#\[Route\((?:[^\]\[]|\[[^\]]*\])*?methods:\s*\[([^\]]*)\]", re.S)
+RE_ROUTE_METHODS = re.compile(r"#\[Route\((?:(?!\)\]).)*?methods:\s*\[([^\]]*)\]", re.S)
 RE_WRITE_VERB = re.compile(r"['\"](POST|PUT|PATCH|DELETE)['\"]")
 RE_PROTECTION = re.compile(
     r"IsCsrfTokenValid|isCsrfTokenValid\s*\(|isBulkCsrfTokenValid\s*\(|handleBulkDelete\s*\("
@@ -47,6 +58,8 @@ RE_PROTECTION = re.compile(
 )
 RE_EXEMPT = re.compile(r"@csrf-exempt:\s*\S")
 RE_THIS_CALL = re.compile(r"\$this->(\w+)\s*\(")
+RE_GET_WRITE = re.compile(r"(?:entityManager|\$em|->em|[mM]anager|registry)\s*->\s*(?:flush|persist|remove)\s*\(")
+RE_GET_WRITE_OK = re.compile(r"@get-write-ok:\s*\S")
 RE_LITERAL_PLACEHOLDER = re.compile(r"IsCsrfTokenValid\(\s*(?:id:\s*)?['\"][^'\"]*\{\w+\}")
 
 
@@ -97,7 +110,15 @@ def scan(path: Path) -> list[str]:
         if RE_LITERAL_PLACEHOLDER.search(pre):
             violations.append(f"{name}#literal-id")
         m = RE_ROUTE_METHODS.search(pre)
-        if not m or not RE_WRITE_VERB.search(m.group(1)):
+        if "#[Route" in pre and (not m or not RE_WRITE_VERB.search(m.group(1))):
+            body = text[start:end]
+            helpers = {h for h in RE_THIS_CALL.findall(body) if h in bodies and h != name}
+            if not RE_GET_WRITE_OK.search(pre) and (
+                RE_GET_WRITE.search(body) or any(RE_GET_WRITE.search(bodies[h]) for h in helpers)
+            ):
+                violations.append(f"{name}#get-writes")
+            continue
+        if not m:
             continue
         if class_level or RE_EXEMPT.search(pre):
             continue

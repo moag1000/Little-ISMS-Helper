@@ -763,8 +763,6 @@ class ProcessingActivityController extends AbstractController
             return $this->json(['error' => 'Invalid target status'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $activities = [];
         $rejected = [];
         foreach ($ids as $rawId) {
@@ -774,7 +772,7 @@ class ProcessingActivityController extends AbstractController
                 $rejected[] = ['id' => $id, 'reason' => 'not_found'];
                 continue;
             }
-            if ($tenant === null || $activity->getTenant()?->getId() !== $tenant->getId()) {
+            if (!$this->isInBulkContextScope($activity, $this->tenantContext)) {
                 $rejected[] = ['id' => $id, 'reason' => 'tenant_mismatch'];
                 continue;
             }

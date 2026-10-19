@@ -31,6 +31,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -335,9 +336,10 @@ class HomeController extends AbstractController
         name: 'app_dashboard_restore_journey',
         requirements: ['_locale' => 'de|en'],
         defaults: ['_locale' => 'de'],
-        methods: ['GET'],
+        methods: ['POST'],
     )]
     #[IsGranted('ROLE_USER')]
+    #[IsCsrfTokenValid('restore_journey', tokenKey: '_token')]
     public function restoreJourney(Request $request): Response
     {
         $request->getSession()->remove('journey_dismissed');

@@ -1003,6 +1003,13 @@ class IncidentControllerTest extends TestCase
         $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
         $authorizationChecker->method('isGranted')->willReturn(true);
 
-        return new BulkDeleteService($this->entityManager, $auditLogger, $authorizationChecker, $this->translator);
+        // Acting tenant = tenant of the logged-in test user (what TenantContext resolves).
+        $tenantContext = $this->createStub(\App\Service\TenantContext::class);
+        $tenantContext->method('getCurrentTenant')->willReturnCallback(fn () => $this->security->getUser()?->getTenant());
+        $tenantContext->method('canAccessTenant')->willReturnCallback(
+            fn (\App\Entity\Tenant $t): bool => $this->security->getUser()?->getTenant()?->getId() === $t->getId(),
+        );
+
+        return new BulkDeleteService($this->entityManager, $auditLogger, $authorizationChecker, $this->translator, $tenantContext);
     }
 }

@@ -10,6 +10,7 @@ use App\Lifecycle\LifecycleService;
 use App\Security\TenantOwnership;
 use App\Service\AuditLogger;
 use App\Service\BulkDeleteService;
+use App\Service\TenantContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,6 +47,16 @@ trait BulkActionTrait
     protected function isInBulkTenantScope(object $entity, ?Tenant $tenant): bool
     {
         return TenantOwnership::isInScope($entity, $tenant, $tenant === null && $this->isGranted('ROLE_SUPER_ADMIN'));
+    }
+
+    /**
+     * Tenant guard for bulk status change / delete: the tenant the actor is
+     * acting in per TenantContext (own + descendants), not `$user->getTenant()`.
+     * Same rule as BulkDeleteService (TenantOwnership::isInContextScope()).
+     */
+    protected function isInBulkContextScope(object $entity, ?TenantContext $tenantContext): bool
+    {
+        return TenantOwnership::isInContextScope($entity, $tenantContext, fn (): bool => $this->isGranted('ROLE_SUPER_ADMIN'));
     }
 
     /**
@@ -107,13 +118,10 @@ trait BulkActionTrait
             return new JsonResponse(['success' => false, 'error' => 'No items selected'], Response::HTTP_BAD_REQUEST);
         }
 
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         try {
             $result = $bulkDeleteService->delete(
                 $entityType,
                 array_values($ids),
-                $tenant,
                 $finder,
                 $deleter,
                 $guard,
