@@ -586,11 +586,12 @@ class AuditFinding
     }
 
     /**
-     * Single source for "finding is done": resolved, verified or closed.
+     * Finding is done (resolved, verified or closed) — single source:
+     * {@see AuditFindingStatus::isDone()}.
      */
     public function isDone(): bool
     {
-        return in_array($this->status, [self::STATUS_RESOLVED, self::STATUS_VERIFIED, self::STATUS_CLOSED], true);
+        return AuditFindingStatus::tryFrom($this->status)?->isDone() ?? false;
     }
 
     public function isOverdue(): bool

@@ -20,14 +20,18 @@ class AuditFindingRepository extends ServiceEntityRepository
         parent::__construct($registry, AuditFinding::class);
     }
 
-    /** @return AuditFinding[] */
+    /**
+     * Findings that are not done ({@see AuditFindingStatus::isDone()}).
+     *
+     * @return AuditFinding[]
+     */
     public function findOpenByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('f')
             ->andWhere('f.tenant = :tenant')
-            ->andWhere('f.status NOT IN (:closed)')
+            ->andWhere('f.status NOT IN (:done)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('closed', [AuditFindingStatus::Closed->value, AuditFindingStatus::Verified->value])
+            ->setParameter('done', AuditFindingStatus::doneValues())
             ->orderBy('f.severity', 'ASC')
             ->addOrderBy('f.createdAt', 'DESC')
             ->getQuery()
@@ -35,7 +39,7 @@ class AuditFindingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Open findings (not closed/verified) that carry NO linked
+     * Open findings (not done, {@see AuditFindingStatus::isDone()}) that carry NO linked
      * ComplianceRequirements. Shared single source of truth for
      * NonconformityAutoTaskTipRule (the Alva hint) and the finding index
      * `focus=nc_unreferenced` filter, so the hint deep-links to EXACTLY the
@@ -48,10 +52,10 @@ class AuditFindingRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('f')
             ->leftJoin('f.linkedRequirements', 'lr')
             ->andWhere('f.tenant = :tenant')
-            ->andWhere('f.status NOT IN (:closed)')
+            ->andWhere('f.status NOT IN (:done)')
             ->andWhere('lr.id IS NULL')
             ->setParameter('tenant', $tenant)
-            ->setParameter('closed', [AuditFindingStatus::Closed->value, AuditFindingStatus::Verified->value])
+            ->setParameter('done', AuditFindingStatus::doneValues())
             ->orderBy('f.severity', 'ASC')
             ->addOrderBy('f.createdAt', 'DESC')
             ->getQuery()
@@ -65,10 +69,10 @@ class AuditFindingRepository extends ServiceEntityRepository
             ->andWhere('f.tenant = :tenant')
             ->andWhere('f.dueDate IS NOT NULL')
             ->andWhere('f.dueDate < :now')
-            ->andWhere('f.status NOT IN (:closed)')
+            ->andWhere('f.status NOT IN (:done)')
             ->setParameter('tenant', $tenant)
             ->setParameter('now', new \DateTimeImmutable())
-            ->setParameter('closed', [AuditFindingStatus::Closed->value, AuditFindingStatus::Verified->value, AuditFindingStatus::Resolved->value])
+            ->setParameter('done', AuditFindingStatus::doneValues())
             ->getQuery()
             ->getResult();
     }

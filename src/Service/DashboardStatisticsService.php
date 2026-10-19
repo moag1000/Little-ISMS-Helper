@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\AuditFinding;
 use App\Entity\Asset;
 use App\Entity\Risk;
 use App\Entity\Tenant;
@@ -1440,16 +1441,14 @@ class DashboardStatisticsService
             fn($a): bool => $a->getPlannedDate() !== null && $a->getPlannedDate()->format('Y') === $thisYear
         );
         $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
-        // Count open findings (assuming audits have a method for findings)
+        // Open = not done (AuditFinding::isDone(): resolved/verified/closed).
+        // getFindings() is the deprecated free-text field — count the
+        // structured AuditFinding records.
         $openFindings = 0;
         foreach ($auditsThisYear as $audit) {
-            if (method_exists($audit, 'getFindings')) {
-                $findings = $audit->getFindings();
-                $openFindings += count(array_filter(
-                    $findings instanceof \Traversable ? iterator_to_array($findings) : (array) $findings,
-                    fn($f): bool => method_exists($f, 'getStatus') && $f->getStatus() !== 'closed'
-                ));
-            }
+            $openFindings += $audit->getStructuredFindings()
+                ->filter(static fn (AuditFinding $f): bool => !$f->isDone())
+                ->count();
         }
         return [
             'audits_completed_ytd' => [
