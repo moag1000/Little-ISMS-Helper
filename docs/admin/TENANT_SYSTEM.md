@@ -277,9 +277,18 @@ logs every change in the `doctrine:migrations:migrate` output):
 
 1. If **no** user holds `ROLE_SUPER_ADMIN`, the initial setup admin (the
    user with the lowest id holding `ROLE_ADMIN`, the same rule the app uses
-   to protect that account) is promoted to `ROLE_SUPER_ADMIN`. Default
-   installs never had an operator account — the setup admin effectively
-   acted as one through the escalation this release closes.
+   to protect that account) is promoted to `ROLE_SUPER_ADMIN` — **but only
+   if that admin has no organisation (default setup) or the instance has
+   exactly one organisation.** Default installs never had an operator
+   account — the setup admin effectively acted as one through the
+   escalation this release closes.
+   **Otherwise nobody is promoted** (the lowest-id admin of a
+   multi-organisation instance may just be one organisation's admin): the
+   migration output shows a `WARNING … nobody was promoted` line and you
+   must run `php bin/console app:user:grant-super-admin <email>` for the
+   correct operator account right after the upgrade — until then no account
+   can manage users without an organisation, instance-wide backups or
+   system roles.
 2. If exactly **one** organisation exists, users without an organisation
    are assigned to it (instance operators stay without organisation). With
    several organisations nothing is assigned; the affected e-mail addresses
@@ -355,6 +364,12 @@ organisation-owned identity provider. Such a provider now:
 - never assigns a privileged role, whether through a claim→role mapping, the
   default role or the fallback role — such mappings are ignored at login.
   Saving a role mapping with a privileged role requires `ROLE_SUPER_ADMIN`.
+
+**Action required:** existing SSO links of holding-level users
+(`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) or operators through an
+organisation-owned provider stop working with this release — move these
+users to a global provider or a local login before or right after the
+upgrade.
 
 Global providers behave as before.
 

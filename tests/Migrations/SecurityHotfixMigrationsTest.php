@@ -83,6 +83,50 @@ final class SecurityHotfixMigrationsTest extends TestCase
     }
 
     #[Test]
+    public function promotesTenantlessSetupAdminOnMultiTenantInstall(): void
+    {
+        $this->tenant(1);
+        $this->tenant(2);
+        $this->user(1, 'setup-admin@example.com', ['ROLE_ADMIN'], null);
+        $this->user(2, 'org-admin@example.com', ['ROLE_ADMIN'], 1);
+
+        $this->migrate(Version20261019120000_operator_bootstrap::class);
+
+        self::assertSame(['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'], $this->roles(1));
+        self::assertSame(['ROLE_ADMIN'], $this->roles(2));
+    }
+
+    #[Test]
+    public function promotesTenantBoundSetupAdminOnSingleTenantInstall(): void
+    {
+        $this->tenant(1);
+        $this->user(1, 'setup-admin@example.com', ['ROLE_ADMIN'], 1);
+
+        $this->migrate(Version20261019120000_operator_bootstrap::class);
+
+        self::assertSame(['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'], $this->roles(1));
+        self::assertSame(1, $this->tenantOf(1));
+    }
+
+    #[Test]
+    public function doesNotPromoteTenantBoundLowestAdminOnMultiTenantInstall(): void
+    {
+        $this->tenant(1);
+        $this->tenant(2);
+        $this->user(1, 'org-a-admin@example.com', ['ROLE_ADMIN'], 1);
+        $this->user(2, 'org-b-admin@example.com', ['ROLE_ADMIN'], 2);
+
+        $sql = $this->migrate(Version20261019120000_operator_bootstrap::class);
+
+        self::assertSame(0, $sql, 'nobody promoted, nothing assigned');
+        self::assertSame(['ROLE_ADMIN'], $this->roles(1));
+        self::assertSame(['ROLE_ADMIN'], $this->roles(2));
+        $log = implode("\n", $this->log);
+        self::assertStringContainsString('nobody was promoted', $log);
+        self::assertStringContainsString('app:user:grant-super-admin', $log);
+    }
+
+    #[Test]
     public function reservedCustomRoleNamesAreReportedNotChanged(): void
     {
         $this->connection->insert('roles', ['id' => 1, 'name' => 'ROLE_ADMIN', 'is_system_role' => 0]);
