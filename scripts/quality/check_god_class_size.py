@@ -34,8 +34,10 @@ The baseline is a one-way ratchet:
   * --ratchet-ref <git-ref>: the baseline itself may not grow compared to
     the baseline at <git-ref> (CI passes the PR base). Raising an entry or
     adding one fails, so "bump the baseline" is no longer a way around the
-    gate. A renamed file may take over the entry of a file that disappeared
-    in the same change if it is not larger. The ratchet engages once the
+    gate. A file may only take over a base entry if
+    `git diff --find-renames --find-copies` reports it as a rename/copy of that
+    file (entry dropped, not larger); a delete + unrelated new file cannot
+    inherit headroom. Without a usable git base the gate fails closed. The ratchet engages once the
     baseline at <git-ref> carries the `# format: 2` header (bootstrap).
 
 Lowering is mechanical: `--write-baseline <baseline>` rewrites the file from
@@ -187,25 +189,60 @@ def baseline_at_ref(ref: str, baseline: Path) -> str:
     return res.stdout
 
 
-def ratchet_violations(current: dict[str, tuple[int, int]], ref: dict[str, tuple[int, int]]) -> list[str]:
-    msgs: list[str] = []
-    # Entries of files that no longer exist may be taken over by a renamed file.
-    vanished = sorted(
-        ((loc, deps, rel) for rel, (loc, deps) in ref.items()
-         if rel not in current and not (ROOT / rel).exists()),
-        reverse=True,
+def git_renames(ref: str) -> dict[str, str]:
+    """{new_path: old_path} for renames/copies between <ref> and the working HEAD.
+
+    Two-dot (tree vs. tree) on purpose: works with the shallow `--depth=1`
+    fetch CI uses, where no merge base is available. Raises RuntimeError.
+    """
+    res = subprocess.run(
+        ["git", "-C", str(ROOT), "diff", "--find-renames", "--find-copies",
+         "--name-status", ref, "HEAD", "--", "src"],
+        capture_output=True, text=True, check=False,
     )
+    if res.returncode != 0:
+        raise RuntimeError(res.stderr.strip() or f"git diff {ref} HEAD failed")
+    return parse_renames(res.stdout)
+
+
+def parse_renames(name_status: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for line in name_status.splitlines():
+        parts = line.split("\t")
+        if len(parts) == 3 and parts[0][:1] in ("R", "C"):
+            out[parts[2]] = parts[1]
+    return out
+
+
+def ratchet_violations(
+    current: dict[str, tuple[int, int]],
+    ref: dict[str, tuple[int, int]],
+    renames: dict[str, str],
+) -> list[str]:
+    """A new baseline entry is only allowed if git reports its file as a
+    rename/copy of a base entry whose own entry is dropped, and it is not larger.
+    A delete + unrelated new file is NOT a rename and cannot inherit headroom."""
+    msgs: list[str] = []
+    consumed: set[str] = set()
     for rel, (loc, deps) in sorted(current.items()):
         if rel in ref:
             r_loc, r_deps = ref[rel]
             if loc > r_loc or deps > r_deps:
                 msgs.append(f"FAIL {rel}: baseline RAISED to LOC={loc} deps={deps} (base: LOC={r_loc} deps={r_deps})")
             continue
-        taker = next((v for v in vanished if v[0] >= loc and v[1] >= deps), None)
-        if taker is not None:
-            vanished.remove(taker)
+        old = renames.get(rel)
+        if old is not None and old in ref and old not in current and old not in consumed:
+            o_loc, o_deps = ref[old]
+            if loc <= o_loc and deps <= o_deps:
+                consumed.add(old)
+                continue
+            msgs.append(f"FAIL {rel}: renamed from {old} but larger (LOC={loc} deps={deps} vs "
+                        f"LOC={o_loc} deps={o_deps}) — baseline entry may not grow")
             continue
-        msgs.append(f"FAIL {rel}: baseline entry ADDED (LOC={loc} deps={deps}) — not in the base baseline")
+        msgs.append(f"FAIL {rel}: baseline entry ADDED (LOC={loc} deps={deps}) — not in the base baseline "
+                    "and git reports no rename/copy of a baselined file. A new over-threshold file "
+                    "cannot inherit another file's headroom: split it up, or update the baseline "
+                    "explicitly in a reviewed change")
     return msgs
 
 
@@ -276,7 +313,15 @@ def main() -> int:
             return 1
         ref_entries, ref_has_header = parse_baseline(ref_text)
         if ref_has_header:
-            fails.extend(ratchet_violations(baseline, ref_entries))
+            if not args.ratchet_ref:
+                renames: dict[str, str] = {}  # --ratchet-base-file has no git base: no takeover
+            else:
+                try:
+                    renames = git_renames(args.ratchet_ref)
+                except RuntimeError as exc:
+                    print(f"check_god_class_size: cannot determine renames against {source}: {exc}")
+                    return 1
+            fails.extend(ratchet_violations(baseline, ref_entries, renames))
         else:
             print(f"check_god_class_size: base baseline {source} predates '{FORMAT_HEADER}' "
                   "— ratchet bootstrap, comparison skipped.")

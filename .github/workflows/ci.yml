@@ -446,6 +446,8 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "${GITHUB_BASE_REF:-main}"
           python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --ratchet-ref FETCH_HEAD --strict-shrink --quiet
+      - name: "Gate 25 self-test: ratchet rename-only takeover"
+        run: python3 -m unittest discover -s scripts/quality/tests
       - name: "Gate 26: Translation top-level keys match domain"
         run: python3 scripts/quality/check_translation_nesting.py --baseline scripts/quality/baselines/translation_nesting.txt --quiet
       - name: "Gate 27: No EntityManager writes in controllers"
