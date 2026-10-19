@@ -299,6 +299,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Does any user hold ROLE_SUPER_ADMIN (instance operator) as a stored
+     * role? Same LIKE rule as {@see \App\Service\InitialAdminService}.
+     */
+    public function hasSuperAdmin(): bool
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.roles LIKE :super')
+            ->setParameter('super', \App\Service\InitialAdminService::ROLE_SUPER_ADMIN_LIKE)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
+    }
+
+    /**
      * Same keys as {@see getUserStatistics()}, computed over an already scoped
      * user list (security hotfix: tenant admins must not see global counts).
      *
