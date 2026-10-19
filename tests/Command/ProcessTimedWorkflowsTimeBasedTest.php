@@ -110,6 +110,47 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         self::assertSame([], $instance->getApprovalHistory());
     }
 
+    /**
+     * A refused closing approval (e.g. the next notification step completes
+     * the workflow and its four-eyes `approve` has no approver) must not
+     * leave the first instance's history / completed step / step advance in
+     * memory — the next instance's flush would persist them.
+     */
+    #[Test]
+    public function refusedInstanceIsRolledBackBeforeTheNextInstanceIsProcessed(): void
+    {
+        [$refused, $refusedFirst, $refusedSecond] = $this->instance('1 hours', new DateTimeImmutable('-2 hours'));
+        [$ok, , $okSecond] = $this->instance('1 hours', new DateTimeImmutable('-2 hours'));
+
+        $this->workflowService->expects(self::exactly(2))->method('moveToNextStep')->willReturnCallback(
+            static function (WorkflowInstance $i) use ($refused, $refusedSecond, $okSecond): WorkflowStep {
+                $next = $i === $refused ? $refusedSecond : $okSecond;
+                $i->setCurrentStep($next);
+                $i->setCurrentStepIndex(1);
+
+                return $next;
+            },
+        );
+        $this->workflowService->expects(self::exactly(2))->method('handleStepAssignment')->willReturnCallback(
+            static function (WorkflowInstance $i) use ($refused): void {
+                if ($i === $refused) {
+                    throw \App\Lifecycle\Exception\FourEyesRequiredException::missing('workflow_instance_lifecycle', 'approve');
+                }
+            },
+        );
+
+        $tester = $this->runCommand($refused, $ok);
+
+        self::assertSame(Command::FAILURE, $tester->getStatusCode());
+        self::assertSame([], $refused->getApprovalHistory(), 'no history for the refused instance');
+        self::assertNotContains($refusedFirst->getId(), $refused->getCompletedSteps() ?? []);
+        self::assertSame($refusedFirst, $refused->getCurrentStep());
+        self::assertSame(0, $refused->getCurrentStepIndex());
+
+        self::assertSame('auto_approved', $ok->getApprovalHistory()[0]['action']);
+        self::assertSame($okSecond, $ok->getCurrentStep());
+    }
+
     /** @return array{WorkflowInstance, WorkflowStep, WorkflowStep} */
     private function instance(?string $firstDelay, DateTimeImmutable $startedAt): array
     {
@@ -142,10 +183,10 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         return $step;
     }
 
-    private function runCommand(WorkflowInstance $instance): CommandTester
+    private function runCommand(WorkflowInstance ...$instances): CommandTester
     {
         $repository = $this->createStub(WorkflowInstanceRepository::class);
-        $repository->method('findBy')->willReturn([$instance]);
+        $repository->method('findBy')->willReturn($instances);
 
         $tenants = $this->createStub(TenantRepository::class);
         $tenants->method('findActive')->willReturn([]);

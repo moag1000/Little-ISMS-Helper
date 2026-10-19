@@ -373,6 +373,28 @@ HELP
             (string) ($step->getMetadata()['autoProgressConditions']['delay'] ?? '?'),
         );
 
+        // A refusal further down (e.g. a closing notification step whose
+        // four-eyes `approve` has no approver) must not leave this
+        // instance's progress in memory: the next instance's flush would
+        // persist it. Same pattern as WorkflowService::approveStep().
+        $snapshot = $workflowInstance->captureProgress();
+        try {
+            $this->recordTimeBasedApproval($workflowInstance, $step, $user, $comment);
+        } catch (\Throwable $e) {
+            $workflowInstance->restoreProgress($snapshot);
+            throw $e;
+        }
+
+        $this->entityManager->flush();
+    }
+
+    private function recordTimeBasedApproval(
+        WorkflowInstance $workflowInstance,
+        WorkflowStep $step,
+        User $user,
+        string $comment,
+    ): void
+    {
         $workflowInstance->addApprovalHistoryEntry([
             'step_id' => $step->getId(),
             'step_name' => $step->getName(),
@@ -390,8 +412,6 @@ HELP
         if ($nextStep instanceof WorkflowStep) {
             $this->workflowService->handleStepAssignment($workflowInstance, $nextStep);
         }
-
-        $this->entityManager->flush();
     }
 
     private function isLastStep(WorkflowInstance $workflowInstance, WorkflowStep $step): bool
