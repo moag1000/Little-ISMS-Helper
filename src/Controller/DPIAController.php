@@ -558,7 +558,7 @@ class DPIAController extends AbstractController
      * Search DPIAs (AJAX endpoint)
      */
     #[Route('/dpia/search', name: 'app_dpia_search', methods: ['GET'])]
-    public function search(Request $request): Response
+    public function search(Request $request): JsonResponse
     {
         $query = $request->query->get('q', '');
 
@@ -654,7 +654,7 @@ class DPIAController extends AbstractController
      * Compliance report for a single DPIA (JSON API)
      */
     #[Route('/dpia/{id}/compliance-report', name: 'app_dpia_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function complianceReport(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
+    public function complianceReport(DataProtectionImpactAssessment $dataProtectionImpactAssessment): JsonResponse
     {
         $report = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
@@ -665,7 +665,7 @@ class DPIAController extends AbstractController
      * Validate DPIA (AJAX endpoint)
      */
     #[Route('/dpia/{id}/validate', name: 'app_dpia_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
+    public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): JsonResponse
     {
         $errors = $this->dataProtectionImpactAssessmentService->validate($dataProtectionImpactAssessment);
         $isCompliant = $errors === [];

@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
+use App\Attribute\RequiresModule;
 use App\Repository\InterestedPartyRepository;
 use App\State\TenantAwareStateProcessor;
 use App\Entity\Tenant;
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Understanding the needs and expectations of interested parties
  */
+#[RequiresModule('interested_parties')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),

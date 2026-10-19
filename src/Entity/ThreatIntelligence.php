@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Attribute\RequiresModule;
 use App\Repository\ThreatIntelligenceRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_threat_severity', columns: ['severity'])]
 #[ORM\Index(name: 'idx_threat_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_threat_detection_date', columns: ['detection_date'])]
+#[RequiresModule('vulnerability_intel')]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),

@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Enum\BusinessContinuityPlanStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
@@ -34,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Junior-ISB-Audit-2026-05-22 C2-06: 3-team-worlds consolidation —
  * responseTeamMembers canonical, crisisTeams reusable, bcTeam deprecated.
  */
+#[RequiresModule('bcm')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),

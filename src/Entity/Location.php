@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Attribute\RequiresModule;
 use App\Repository\LocationRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 #[ORM\Index(name: 'idx_location_type', columns: ['location_type'])]
 #[ORM\Index(name: 'idx_location_active', columns: ['active'])]
+#[RequiresModule('locations')]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),

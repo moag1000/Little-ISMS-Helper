@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Enum\BCExerciseStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\BCExerciseRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Documents BC plan testing, exercises, and drills
  */
+#[RequiresModule('bcm')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),

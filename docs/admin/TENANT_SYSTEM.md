@@ -324,6 +324,29 @@ returns **403** for everyone except a `ROLE_SUPER_ADMIN`.
 before deploying, or simply start them again after the deploy. Old status
 files are harmless and can be deleted from `var/jobs/` once no job is running.
 
+### Module switch now also guards `/api/...` and keeps pre-gate modules active
+
+**Effect.** The module switch (`#[RequiresModule]`) now also applies to API
+Platform: the operations of module-owned resources (business continuity plans
+and exercises -> `bcm`, persons -> `persons`, suppliers -> `suppliers`,
+training -> `training`, interested parties -> `interested_parties`, locations
+-> `locations`, change requests -> `change_requests`, threat intelligence ->
+`vulnerability_intel`) answer **403 JSON** (`module_not_active`) while the
+module is off for the organisation. Integrations that still call such
+endpoints with a module switched off will start failing after the upgrade.
+
+**Existing `config/active_modules.yaml`.** The pages of `persons`,
+`risk_appetite`, `risk_treatment_plans`, `portfolio_reports`,
+`scheduled_reports`, `corrective_actions` and `interested_parties` were
+reachable before they were gated. An instance file written by an older release
+does not list them, so they are treated as active as long as the file carries
+no `gating_baseline` marker. Nothing to do on upgrade. The marker is written
+the next time a module selection is saved (Admin -> Modules, setup wizard,
+industry preset); from then on a module missing from the file is really
+inactive. New installs get the marker from `config/active_modules.yaml.dist`.
+Organisations with their own module selection are not affected by this
+fallback.
+
 ## Migration
 
 ### Add logoPath Field

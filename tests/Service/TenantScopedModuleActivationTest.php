@@ -38,7 +38,7 @@ final class TenantScopedModuleActivationTest extends TestCase
         );
         file_put_contents(
             $this->projectDir . '/config/active_modules.yaml',
-            "active_modules:\n    - privacy\n    - assets\n",
+            "active_modules:\n    - privacy\n    - assets\ngating_baseline: 1\n",
         );
     }
 

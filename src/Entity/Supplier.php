@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\SupplierStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\SupplierRepository;
 use App\State\TenantAwareStateProcessor;
 use App\Entity\Document;
@@ -39,6 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_supplier_next_assessment', columns: ['next_assessment_date'])]
 #[ORM\Index(name: 'idx_supplier_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_supplier_tenant', columns: ['tenant_id'])]
+#[RequiresModule('suppliers')]
 #[ApiResource(
     operations: [
         new Get(

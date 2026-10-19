@@ -21,6 +21,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\TrainingStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\TrainingRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -35,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_training_type', columns: ['training_type'])]
 #[ORM\Index(name: 'idx_training_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_training_scheduled_date', columns: ['scheduled_date'])]
+#[RequiresModule('training')]
 #[ApiResource(
     operations: [
         new Get(

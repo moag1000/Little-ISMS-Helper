@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Attribute\RequiresModule;
 use App\Repository\PersonRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_person_type', columns: ['person_type'])]
 #[ORM\Index(name: 'idx_person_badge', columns: ['badge_id'])]
 #[ORM\Index(name: 'idx_person_company', columns: ['company'])]
+#[RequiresModule('persons')]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),

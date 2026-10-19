@@ -35,3 +35,4 @@ active_modules:
     - scheduled_reports
     - portfolio_reports
     - notifications
+gating_baseline: 1

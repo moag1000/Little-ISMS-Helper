@@ -331,7 +331,7 @@ class IncidentController extends AbstractController
     #[Route('/incident/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     #[RequiresModule('privacy')]
-    public function gdprWizardResult(Request $request): Response
+    public function gdprWizardResult(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -696,7 +696,7 @@ class IncidentController extends AbstractController
     #[Route('/incident/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     #[RequiresModule('bcm')]
-    public function bcmImpactApi(Incident $incident, Request $request): Response
+    public function bcmImpactApi(Incident $incident, Request $request): JsonResponse
     {
         $downtimeHours = $request->query->get('downtime_hours');
 

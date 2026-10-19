@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Enum\ChangeRequestStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\ChangeRequestRepository;
 use App\State\TenantAwareStateProcessor;
 use App\Entity\Tenant;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Tracks changes to the ISMS and related systems
  */
+#[RequiresModule('change_requests')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),

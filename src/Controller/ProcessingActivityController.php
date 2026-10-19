@@ -473,7 +473,7 @@ class ProcessingActivityController extends AbstractController
      * Search processing activities (AJAX endpoint)
      */
     #[Route('/processing-activity/search', name: 'app_processing_activity_search', methods: ['GET'])]
-    public function search(Request $request): Response
+    public function search(Request $request): JsonResponse
     {
         $query = $request->query->get('q', '');
 
@@ -583,7 +583,7 @@ class ProcessingActivityController extends AbstractController
      * Compliance report for a single processing activity (JSON API)
      */
     #[Route('/processing-activity/{id}/compliance-report', name: 'app_processing_activity_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function complianceReport(ProcessingActivity $processingActivity): Response
+    public function complianceReport(ProcessingActivity $processingActivity): JsonResponse
     {
         $report = $this->processingActivityService->generateComplianceReport($processingActivity);
 
@@ -594,7 +594,7 @@ class ProcessingActivityController extends AbstractController
      * Validate processing activity (AJAX endpoint)
      */
     #[Route('/processing-activity/{id}/validate', name: 'app_processing_activity_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function validate(ProcessingActivity $processingActivity): Response
+    public function validate(ProcessingActivity $processingActivity): JsonResponse
     {
         $errors = $this->processingActivityService->validate($processingActivity);
         $isCompliant = $errors === [];
@@ -735,7 +735,7 @@ class ProcessingActivityController extends AbstractController
      */
     #[Route('/processing-activity/bulk-status-change', name: 'app_processing_activity_bulk_status_change', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkStatusChange(Request $request): Response
+    public function bulkStatusChange(Request $request): JsonResponse
     {
         $data      = json_decode($request->getContent(), true);
         $data      = is_array($data) ? $data : [];

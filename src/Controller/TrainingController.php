@@ -540,7 +540,7 @@ class TrainingController extends AbstractController
      */
     #[Route('/training/bulk-assign', name: 'app_training_bulk_assign', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkAssign(Request $request): Response
+    public function bulkAssign(Request $request): JsonResponse
     {
         $data     = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
