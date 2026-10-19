@@ -15,6 +15,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\IdentityProviderRepository;
 use App\Repository\IdentityProviderRoleMappingRepository;
 use App\Repository\SsoUserApprovalRepository;
+use App\Security\UserAdministrationGuard;
 use App\Security\Voter\IdentityProviderVoter;
 use App\Security\Voter\SsoConfigVoter;
 use App\Security\Voter\TenantScopedAdminVoter;
@@ -82,6 +83,7 @@ final class SsoProviderController extends AbstractController
         private readonly IdentityProviderRoleMappingRepository $roleMappingRepo,
         private readonly AuditLogRepository $auditLogRepo,
         private readonly TranslatorInterface $translator,
+        private readonly UserAdministrationGuard $userAdministrationGuard,
     ) {
     }
 
@@ -289,13 +291,32 @@ final class SsoProviderController extends AbstractController
         }
         $this->denyAccessUnlessGranted(SsoConfigVoter::CONFIGURE, $provider);
 
+        $data   = $request->request->all('role_mappings') ?: [];
+
+        // Only a SUPER_ADMIN may map claims to a privileged role. Validate
+        // BEFORE the existing mappings are removed, so a rejected save
+        // changes nothing.
+        $forbidden = [];
+        foreach ($data as $row) {
+            $role = trim((string) ($row['assignedRole'] ?? ''));
+            if ($role !== '' && !$this->userAdministrationGuard->mayAssignRoleName($role)) {
+                $forbidden[] = strtoupper($role);
+            }
+        }
+        if ($forbidden !== []) {
+            $this->flashError('admin.sso_provider.error.privileged_role_mapping', [
+                '%roles%' => implode(', ', array_unique($forbidden)),
+            ]);
+
+            return $this->redirectToRoute('admin_sso_show', ['id' => $provider->getId()]);
+        }
+
         // Remove all existing mappings, re-persist from submitted form data
         foreach ($provider->getRoleMappings() as $m) {
             $this->em->remove($m);
         }
         $this->em->flush();
 
-        $data   = $request->request->all('role_mappings') ?: [];
         $tenant = $provider->getTenant();
 
         foreach ($data as $row) {

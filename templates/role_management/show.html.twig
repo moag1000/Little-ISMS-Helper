@@ -24,7 +24,7 @@
 
     {# Stats #}
     <div class="row g-3 mb-4">
-        <div class="col-md-4">{{ _fa_kpi_card.render({ value: role.users|length, label: 'role_management.field.users'|trans({}, 'role_management') }) }}</div>
+        <div class="col-md-4">{{ _fa_kpi_card.render({ value: visible_holders|length, label: 'role_management.field.users'|trans({}, 'role_management') }) }}</div>
         <div class="col-md-4">{{ _fa_kpi_card.render({ value: role.permissions|length, label: 'role_management.field.permissions'|trans({}, 'role_management') }) }}</div>
         <div class="col-md-4">{{ _fa_kpi_card.render({ value: role.systemRole ? 'System' : 'Custom', label: 'role_management.field.type'|trans({}, 'role_management') }) }}</div>
     </div>
@@ -82,11 +82,11 @@
             <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
                 {{ 'role_management.section.users'|trans({}, 'role_management') }}
-                <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ role.users|length }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ visible_holders|length }}</span>
             </h2>
         </div>
         <div class="fa-section__body">
-            {% if role.users|length > 0 %}
+            {% if visible_holders|length > 0 %}
                 {% embed '_components/_fa_table.html.twig' with { hover: true } %}
                     {% block table_head %}
                         <tr>
@@ -96,17 +96,20 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
-                        {% for user in role.users %}
+                        {% for user in visible_holders %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell"><strong>{{ user.fullName }}</strong></td>
                                 <td class="fa-table__cell">{{ user.email|default('-') }}</td>
-                                <td class="fa-table__cell">{{ user.roleAssignedAt|date('d.m.Y H:i') }}</td>
+                                <td class="fa-table__cell">{{ user.roleAssignedAt is defined and user.roleAssignedAt ? user.roleAssignedAt|date('d.m.Y H:i') : '-' }}</td>
                             </tr>
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
-            {% else %}
+            {% elseif hidden_holder_count == 0 %}
                 <p class="text-muted mb-0">{{ 'role_management.message.no_users'|trans({}, 'role_management') }}</p>
+            {% endif %}
+            {% if hidden_holder_count > 0 %}
+                <p class="text-muted mb-0 mt-2" data-testid="role-hidden-holders">{{ 'role_management.message.hidden_holders'|trans({'%count%': hidden_holder_count}, 'role_management') }}</p>
             {% endif %}
         </div>
     </section>
@@ -121,7 +124,7 @@
         <a href="{{ path('role_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
-        {% if is_granted('role.delete', role) %}
+        {% if not role.systemRole and is_granted('role.delete', role) %}
             <form method="post" action="{{ path('role_management_delete', {id: role.id}) }}" class="d-inline"
                   data-controller="ui-actions"
                   data-action="submit->ui-actions#confirm"

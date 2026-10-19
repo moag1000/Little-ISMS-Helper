@@ -37,7 +37,7 @@
         {{ _fa_feature_card.render({ label: 'role_management.stats.system_roles'|trans({}, 'role_management'), value: roles|filter(r => r.systemRole)|length, variant: 'info' }) }}
     </div>
     <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'role_management.stats.with_users'|trans({}, 'role_management'), value: roles|filter(r => r.users|length > 0)|length, variant: 'success' }) }}
+        {{ _fa_feature_card.render({ label: 'role_management.stats.with_users'|trans({}, 'role_management'), value: roles|filter(r => (visible_holder_counts[r.id] ?? 0) > 0)|length, variant: 'success' }) }}
     </div>
     <div class="col-auto">
         {% set totalPerms = 0 %}
@@ -82,7 +82,7 @@
                         {{ pill.render(role.permissions|length, 'neutral') }}
                     </td>
                     <td class="fa-table__cell fa-table__cell--center">
-                        {{ pill.render(role.users|length, 'primary') }}
+                        {{ pill.render(visible_holder_counts[role.id] ?? 0, 'primary') }}
                     </td>
                     <td class="fa-table__cell fa-table__cell--center">
                         {% if role.systemRole %}

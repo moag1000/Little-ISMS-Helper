@@ -712,6 +712,7 @@ gstool_import:
 
 # Role
 'role.validation.name_unique': 'This role name is already in use.'
+'role.validation.name_reserved': 'This name is reserved for a built-in system role and cannot be used for a custom role.'
 
 # Supplier
 'supplier.validation.name_required': 'Supplier name is required.'

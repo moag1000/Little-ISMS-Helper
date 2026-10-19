@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\User;
 use App\Entity\Role;
 use App\Entity\Tenant;
+use App\Security\UserAdministrationGuard;
 use App\Service\PasswordPolicyResolver;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -38,6 +39,7 @@ final class UserType extends AbstractType implements SectionMapInterface
         private readonly TranslatorInterface $translator,
         private readonly PasswordPolicyResolver $passwordPolicyResolver,
         private readonly TenantContext $tenantContext,
+        private readonly UserAdministrationGuard $userAdministrationGuard,
     ) {
     }
 
@@ -191,6 +193,17 @@ final class UserType extends AbstractType implements SectionMapInterface
             if (!$isEdit) {
                 $rolesOptions['data'] = ['ROLE_USER'];
             }
+            // Security hotfix (admin scope): privileged roles are offered to
+            // SUPER_ADMIN only. The controller enforces this server-side too.
+            $canManagePrivileged = $this->userAdministrationGuard->canManagePrivilegedRoles();
+            if (!$canManagePrivileged) {
+                $rolesOptions['choices'] = array_filter(
+                    $rolesOptions['choices'],
+                    static fn (string $role): bool => !in_array($role, UserAdministrationGuard::PRIVILEGED_ROLES, true),
+                );
+            }
+            // Non-SUPER_ADMIN actors may only assign tenants of their own tree.
+            $assignableTenantIds = $canManagePrivileged ? null : ($this->userAdministrationGuard->assignableTenantIds() ?: [0]);
 
             $builder
                 // Roles & Permissions
@@ -203,6 +216,12 @@ final class UserType extends AbstractType implements SectionMapInterface
                 'expanded' => true,
                 'required' => false,
                 'help' => 'Benutzerdefinierte Rollen mit spezifischen Berechtigungen',
+                // Security hotfix: hide privileged / reserved-name custom roles
+                // from non-SUPER_ADMIN actors (server rejects them anyway).
+                'choice_filter' => $canManagePrivileged
+                    ? null
+                    : fn (?Role $role): bool => $role instanceof Role
+                        && $this->userAdministrationGuard->mayOfferCustomRole($role),
             ])
 
             // Tenant Assignment
@@ -213,10 +232,18 @@ final class UserType extends AbstractType implements SectionMapInterface
                 'placeholder' => 'user.placeholder.tenant',
                 'required' => false,
                 'help' => 'user.field.tenant_help',
-                'query_builder' => fn($repository) => $repository->createQueryBuilder('t')
-                    ->where('t.isActive = :active')
-                    ->setParameter('active', true)
-                    ->orderBy('t.name', 'ASC'),
+                'query_builder' => static function ($repository) use ($assignableTenantIds) {
+                    $qb = $repository->createQueryBuilder('t')
+                        ->where('t.isActive = :active')
+                        ->setParameter('active', true)
+                        ->orderBy('t.name', 'ASC');
+                    if ($assignableTenantIds !== null) {
+                        $qb->andWhere('t.id IN (:assignableTenantIds)')
+                            ->setParameter('assignableTenantIds', $assignableTenantIds);
+                    }
+
+                    return $qb;
+                },
             ])
 
             // Status — omit 'data' in edit mode so Symfony reads the entity value;

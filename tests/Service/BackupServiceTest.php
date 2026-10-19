@@ -914,6 +914,38 @@ class BackupServiceTest extends TestCase
     }
 
     /**
+     * Security hotfix — isBackupVisibleTo() shares the listing rule: instance-wide and
+     * legacy backups are invisible to a tenant scope, visible to SUPER (null scope).
+     */
+    #[Test]
+    public function testIsBackupVisibleToSharesListingRule(): void
+    {
+        $backupDir = $this->projectDir . '/var/backups';
+        mkdir($backupDir, 0755, true);
+        $write = static fn(string $n, array $meta) => file_put_contents(
+            $backupDir . '/' . $n,
+            (string) json_encode(['metadata' => $meta, 'data' => []])
+        );
+        $write('backup_2026-05-18_10-00-00.json', ['version' => '2.0', 'tenant_scope' => [1]]);
+        $write('backup_2026-05-18_11-00-00.json', ['version' => '2.0', 'tenant_scope' => [2]]);
+        $write('backup_2026-05-18_12-00-00.json', ['version' => '2.0', 'tenant_scope' => []]);
+        $write('backup_2026-05-18_13-00-00.json', ['version' => '1.0']);
+
+        $tenant1 = $this->createMock(Tenant::class);
+        $tenant1->method('getId')->willReturn(1);
+        $tenant1->method('getAllSubsidiaries')->willReturn([]);
+
+        $this->assertTrue($this->service->isBackupVisibleTo('backup_2026-05-18_10-00-00.json', $tenant1));
+        $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_11-00-00.json', $tenant1));
+        $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_12-00-00.json', $tenant1));
+        $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_13-00-00.json', $tenant1));
+        $this->assertFalse($this->service->isBackupVisibleTo('../backup_2026-05-18_10-00-00.json', $tenant1));
+        $this->assertFalse($this->service->isBackupVisibleTo('backup_2026-05-18_99-00-00.json', null));
+        $this->assertTrue($this->service->isBackupVisibleTo('backup_2026-05-18_12-00-00.json', null));
+        $this->assertCount(1, $this->service->listBackups($tenant1));
+    }
+
+    /**
      * Phase 5 — Opportunistic sidecar caching: after first listBackups() call,
      * a `<filename>.meta.json` sidecar is written so subsequent calls hit the
      * fast path without re-reading the (potentially compressed) backup payload.

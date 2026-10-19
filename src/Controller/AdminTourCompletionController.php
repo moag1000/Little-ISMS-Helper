@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Security\Voter\UserVoter;
 use App\Service\GuidedTourService;
 use App\Service\Job\JobTenantScope;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,8 +51,15 @@ class AdminTourCompletionController extends AbstractController
 
         /** @var list<User> $users */
         $users = $this->userRepository->findBy($scope !== null ? ['tenant' => $scope] : [], ['email' => 'ASC']);
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return $users;
+        }
 
-        return $users;
+        // Security hotfix: a non-SUPER_ADMIN only sees users it may view.
+        return array_values(array_filter(
+            $users,
+            fn (User $user): bool => $this->isGranted(UserVoter::VIEW, $user),
+        ));
     }
 
     #[Route('/admin/tours/completion', name: 'admin_tour_completion_index', methods: ['GET'])]
@@ -157,6 +165,8 @@ class AdminTourCompletionController extends AbstractController
         if (!$user instanceof User || ($scope !== null && $user->getTenant()?->getId() !== $scope->getId())) {
             throw $this->createNotFoundException();
         }
+        // Security hotfix: only users the admin may administer (tenant tree).
+        $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
         if ($role === 'all') {
             $user->resetAllTours();

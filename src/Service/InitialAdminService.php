@@ -27,6 +27,14 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 class InitialAdminService
 {
+    /**
+     * The initial admin is the lowest user id whose stored roles match one of
+     * these LIKE patterns. Also used by the 3.15.3 security migration
+     * (Version20261019120000_operator_bootstrap), so the rule lives here once.
+     */
+    public const string ROLE_ADMIN_LIKE = '%"ROLE_ADMIN"%';
+    public const string ROLE_SUPER_ADMIN_LIKE = '%"ROLE_SUPER_ADMIN"%';
+
     private const string CACHE_KEY = 'initial_admin_id';
     private const int CACHE_TTL = 300; // 5 minutes
 
@@ -53,8 +61,8 @@ class InitialAdminService
                 // Find the first admin user (lowest ID with ROLE_ADMIN or ROLE_SUPER_ADMIN)
                 $admin = $this->userRepository->createQueryBuilder('u')
                     ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
-                    ->setParameter('role_admin', '%"ROLE_ADMIN"%')
-                    ->setParameter('role_super_admin', '%"ROLE_SUPER_ADMIN"%')
+                    ->setParameter('role_admin', self::ROLE_ADMIN_LIKE)
+                    ->setParameter('role_super_admin', self::ROLE_SUPER_ADMIN_LIKE)
                     ->orderBy('u.id', 'ASC')
                     ->setMaxResults(1)
                     ->getQuery()

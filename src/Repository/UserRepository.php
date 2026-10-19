@@ -350,6 +350,41 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Does any user hold ROLE_SUPER_ADMIN (instance operator) as a stored
+     * role? Same LIKE rule as {@see \App\Service\InitialAdminService}.
+     */
+    public function hasSuperAdmin(): bool
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.roles LIKE :super')
+            ->setParameter('super', \App\Service\InitialAdminService::ROLE_SUPER_ADMIN_LIKE)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
+    }
+
+    /**
+     * Same keys as {@see getUserStatistics()}, computed over an already scoped
+     * user list (security hotfix: tenant admins must not see global counts).
+     *
+     * @param list<User> $users
+     * @return array{total: int, active: int, inactive: int, azure: int, local: int}
+     */
+    public function computeStatistics(array $users): array
+    {
+        $active = count(array_filter($users, static fn (User $u): bool => $u->isActive()));
+        $providers = array_map(static fn (User $u): ?string => $u->getAuthProvider(), $users);
+
+        return [
+            'total' => count($users),
+            'active' => $active,
+            'inactive' => count($users) - $active,
+            'azure' => count(array_intersect($providers, ['azure_oauth', 'azure_saml'])),
+            'local' => count(array_filter($providers, static fn (?string $p): bool => $p === null || $p === 'local')),
+        ];
+    }
+
+    /**
      * Get recently logged in users
      */
     public function getRecentlyActiveUsers(int $limit = 10): array

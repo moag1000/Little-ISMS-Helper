@@ -31,6 +31,8 @@ class TenantManagementControllerTest extends WebTestCase
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
     private ?Tenant $targetTenant = null;
+    /** An organisation outside the admin's tree (targetTenant is its subsidiary). */
+    private ?Tenant $foreignTenant = null;
     private ?User $testUser = null;
     private ?User $adminUser = null;
     private ?User $superAdminUser = null;
@@ -102,6 +104,17 @@ class TenantManagementControllerTest extends WebTestCase
             }
         }
 
+        if ($this->foreignTenant) {
+            try {
+                $tenant = $this->entityManager->find(Tenant::class, $this->foreignTenant->getId());
+                if ($tenant) {
+                    $this->entityManager->remove($tenant);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
         // Clean up test tenant last
         if ($this->testTenant) {
             try {
@@ -140,7 +153,16 @@ class TenantManagementControllerTest extends WebTestCase
         $this->targetTenant->setCode('target_tenant_' . $uniqueId);
         $this->targetTenant->setDescription('Target tenant for testing');
         $this->targetTenant->setIsActive(true);
+        // Security hotfix (admin scope): ROLE_ADMIN may only manage its own
+        // tenant tree, so the CRUD target lives below the admin's tenant.
+        $this->targetTenant->setParent($this->testTenant);
         $this->entityManager->persist($this->targetTenant);
+
+        $this->foreignTenant = new Tenant();
+        $this->foreignTenant->setName('Foreign Tenant ' . $uniqueId);
+        $this->foreignTenant->setCode('foreign_tenant_' . $uniqueId);
+        $this->foreignTenant->setIsActive(true);
+        $this->entityManager->persist($this->foreignTenant);
 
         // Create test user with ROLE_USER only
         $this->testUser = new User();
@@ -655,7 +677,7 @@ class TenantManagementControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request($method, '/en/admin/tenants/' . $this->targetTenant->getId() . $suffix);
+        $this->client->request($method, '/en/admin/tenants/' . $this->foreignTenant->getId() . $suffix);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -665,7 +687,7 @@ class TenantManagementControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('GET', '/en/admin/tenants/api/tenants/' . $this->targetTenant->getId() . '/isms-context');
+        $this->client->request('GET', '/en/admin/tenants/api/tenants/' . $this->foreignTenant->getId() . '/isms-context');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -727,7 +749,7 @@ class TenantManagementControllerTest extends WebTestCase
             $this->assertResponseIsSuccessful();
             $content = (string) $this->client->getResponse()->getContent();
             self::assertStringContainsString((string) $this->testTenant->getCode(), $content, $url);
-            self::assertStringNotContainsString((string) $this->targetTenant->getCode(), $content, $url);
+            self::assertStringNotContainsString((string) $this->foreignTenant->getCode(), $content, $url);
         }
     }
 
@@ -747,7 +769,7 @@ class TenantManagementControllerTest extends WebTestCase
         $values = $form->getPhpValues();
         $values['tenant']['name'] = 'Renamed by organisation admin';
         $values['tenant']['code'] = 'hijacked_code';
-        $values['tenant']['parent'] = (string) $this->targetTenant->getId();
+        $values['tenant']['parent'] = (string) $this->foreignTenant->getId();
         $this->client->request('POST', $form->getUri(), $values);
 
         $this->assertResponseRedirects();

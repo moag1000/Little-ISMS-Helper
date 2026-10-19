@@ -21,6 +21,9 @@ use App\Service\CorporateStructureService;
 use App\Service\MultiTenantCheckService;
 use App\Service\ISMSContextService;
 use App\Repository\ISMSContextRepository;
+use App\Security\UserAdministrationGuard;
+use App\Security\Voter\TenantScopedAdminVoter;
+use App\Security\Voter\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Psr\Log\LoggerInterface;
@@ -30,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -59,6 +63,7 @@ class TenantManagementController extends AbstractController
         private readonly \App\Service\TenantContext $tenantContext,
         private readonly TenantStatusService $tenantStatusService,
         private readonly TranslatorInterface $translator,
+        private readonly UserAdministrationGuard $userAdministrationGuard,
         private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
@@ -105,8 +110,13 @@ class TenantManagementController extends AbstractController
         $tenant->setStatus(Tenant::STATUS_ACTIVE); // @phpstan-ignore lifecycle.directSetStatus (initial state on an unpersisted Tenant; equals tenant_lifecycle `activate` draft→active, which has no four-eyes/reason; creation is audit-logged as tenant_created)
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
+        $parentViolation = $form->isSubmitted() && !$this->isParentChangeAllowed(null, $tenant->getParent());
+        if ($parentViolation) {
+            $tenant->setParent(null);
+            $this->addFlash('danger', 'corporate.flash.parent_not_found');
+        }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && !$parentViolation) {
             try {
                 // Handle logo upload
                 /** @var UploadedFile|null $logoFile */
@@ -213,6 +223,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_VIEW")' . self::IN_SCOPE), 'tenant')]
     public function show(Tenant $tenant): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         // Get user statistics
         $users = $tenant->getUsers();
         $activeUsers = $users->filter(fn($user): bool => $user->isActive())->count();
@@ -247,6 +258,8 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function edit(Request $request, Tenant $tenant): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
+        $oldParent = $tenant->getParent();
         // Capture old values for audit log
         $oldValues = [
             'code' => $tenant->getCode(),
@@ -261,8 +274,13 @@ class TenantManagementController extends AbstractController
         $operatorFields = ['operator_fields' => $this->isGranted('ROLE_SUPER_ADMIN')];
         $form = $this->createForm(TenantType::class, $tenant, $operatorFields);
         $form->handleRequest($request);
+        $parentViolation = $form->isSubmitted() && !$this->isParentChangeAllowed($oldParent, $tenant->getParent());
+        if ($parentViolation) {
+            $tenant->setParent($oldParent);
+            $this->addFlash('danger', 'corporate.flash.parent_not_found');
+        }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && !$parentViolation) {
             try {
                 // Handle logo upload
                 /** @var UploadedFile|null $logoFile */
@@ -337,7 +355,7 @@ class TenantManagementController extends AbstractController
             }
         }
 
-        $status = ($form->isSubmitted() && !$form->isValid())
+        $status = ($form->isSubmitted() && (!$form->isValid() || $parentViolation))
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
@@ -352,6 +370,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function toggle(Tenant $tenant, Request $request): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         $transition = $this->tenantStatusService->nextTransition($tenant);
         $result = match (true) {
             !$this->isCsrfTokenValid('toggle_tenant_' . $tenant->getId(), $request->request->get('_token'))
@@ -373,6 +392,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_DELETE")' . self::OPERATOR))]
     public function delete(Request $request, Tenant $tenant): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         // Security: Verify CSRF token
         if (!$this->isCsrfTokenValid('delete_tenant_' . $tenant->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'common.csrf_error');
@@ -432,6 +452,38 @@ class TenantManagementController extends AbstractController
     /**
      * Handle logo upload with security validation
      */
+    /**
+     * Security hotfix (admin scope): non-SUPER_ADMIN actors may only address
+     * tenants of their own tree (ADMIN_OWN_TENANT: own + descendants);
+     * anything else is reported as "not found".
+     */
+    private function denyUnlessTenantInScope(Tenant $tenant): void
+    {
+        if (!$this->isTenantInScope($tenant)) {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    private function isTenantInScope(Tenant $tenant): bool
+    {
+        return $this->isGranted('ROLE_SUPER_ADMIN')
+            || $this->isGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $tenant);
+    }
+
+    /**
+     * Re-parenting moves a subtree between trees: a non-SUPER_ADMIN actor must
+     * administer both the old and the new parent (null = root).
+     */
+    private function isParentChangeAllowed(?Tenant $oldParent, ?Tenant $newParent): bool
+    {
+        if ($oldParent === $newParent || $this->isGranted('ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+
+        return ($oldParent === null || $this->isTenantInScope($oldParent))
+            && ($newParent === null || $this->isTenantInScope($newParent));
+    }
+
     private function handleLogoUpload(UploadedFile $uploadedFile, Tenant $tenant): ?string
     {
         try {
@@ -499,6 +551,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function setParent(Request $request, Tenant $tenant): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         if (!$this->isCsrfTokenValid('set_parent', $request->request->get('_token'))) {
             $this->addFlash('danger', 'common.csrf_error');
             return $this->redirectToRoute('tenant_management_corporate_structure');
@@ -517,6 +570,11 @@ class TenantManagementController extends AbstractController
 
                 if (!$governanceModel || !in_array($governanceModel, ['hierarchical', 'shared', 'independent'])) {
                     $this->addFlash('danger', 'corporate.flash.invalid_governance');
+                    return $this->redirectToRoute('tenant_management_corporate_structure');
+                }
+                // Security hotfix: an out-of-scope parent is treated as not found.
+                if (!$this->isParentChangeAllowed($tenant->getParent(), $parent)) {
+                    $this->addFlash('danger', 'corporate.flash.parent_not_found');
                     return $this->redirectToRoute('tenant_management_corporate_structure');
                 }
 
@@ -552,6 +610,10 @@ class TenantManagementController extends AbstractController
 
                 $this->addFlash('success', 'corporate.flash.parent_set');
             } else {
+                if (!$this->isParentChangeAllowed($tenant->getParent(), null)) {
+                    $this->addFlash('danger', 'corporate.flash.error');
+                    return $this->redirectToRoute('tenant_management_corporate_structure');
+                }
                 // Remove parent and all governance rules
                 $tenant->setParent(null);
 
@@ -582,6 +644,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), new Expression(self::GOVERNOR))]
     public function updateGovernance(Request $request, Tenant $tenant): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         if (!$this->isCsrfTokenValid('update_governance', $request->request->get('_token'))) {
             $this->addFlash('danger', 'common.csrf_error');
             return $this->redirectToRoute('tenant_management_corporate_structure');
@@ -629,6 +692,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function addUser(Request $request, Tenant $tenant): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         // Verify CSRF token
         if (!$this->isCsrfTokenValid('add_user_' . $tenant->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'common.csrf_error');
@@ -647,6 +711,14 @@ class TenantManagementController extends AbstractController
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $userEmail]);
 
             if (!$user instanceof User) {
+                $this->addFlash('warning', 'tenant.users.flash.user_not_found');
+                return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+            }
+
+            // Security hotfix (admin scope): the actor must be allowed to place
+            // users into $tenant AND to edit the user (own tree, no SUPER_ADMIN
+            // target). Out-of-scope users are reported as "not found".
+            if (!$this->userAdministrationGuard->canAssignTenant($tenant) || !$this->isGranted(UserVoter::EDIT, $user)) {
                 $this->addFlash('warning', 'tenant.users.flash.user_not_found');
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
             }
@@ -698,6 +770,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function removeUser(Request $request, Tenant $tenant, int $userId): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         // Verify CSRF token
         if (!$this->isCsrfTokenValid('remove_user_' . $tenant->getId() . '_' . $userId, $request->request->get('_token'))) {
             $this->addFlash('danger', 'common.csrf_error');
@@ -716,6 +789,12 @@ class TenantManagementController extends AbstractController
             if (!$user->getTenant() instanceof Tenant || $user->getTenant()->getId() !== $tenant->getId()) {
                 $this->addFlash('warning', 'tenant.users.flash.not_assigned');
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+            }
+
+            // Security hotfix: making a user tenantless is SUPER_ADMIN-only
+            // (canAssignTenant(null)), and the target must be editable.
+            if (!$this->userAdministrationGuard->canAssignTenant(null) || !$this->isGranted(UserVoter::EDIT, $user)) {
+                throw $this->createAccessDeniedException();
             }
 
             $userEmail = $user->getEmail();
@@ -742,6 +821,8 @@ class TenantManagementController extends AbstractController
             );
 
             $this->addFlash('success', 'tenant.users.flash.user_removed');
+        } catch (AccessDeniedException $e) {
+            throw $e;
         } catch (Exception $e) {
             $this->logger->error('Failed to remove user from tenant', [
                 'tenant_id' => $tenant->getId(),
@@ -761,6 +842,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_VIEW")' . self::IN_SCOPE), 'tenant')]
     public function getISMSContext(Tenant $tenant): JsonResponse
     {
+        $this->denyUnlessTenantInScope($tenant);
         try {
             // Get ISMS Context for this tenant
             $context = $this->ismsContextRepository->findOneBy(['tenant' => $tenant]);
@@ -844,6 +926,7 @@ class TenantManagementController extends AbstractController
     #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function editOrganisationContext(Request $request, Tenant $tenant): Response
     {
+        $this->denyUnlessTenantInScope($tenant);
         $settings = $tenant->getSettings() ?? [];
         $orgSettings = $settings['organisation'] ?? [];
 

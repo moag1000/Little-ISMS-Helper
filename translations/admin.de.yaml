@@ -26,6 +26,7 @@ admin:
             approval_rejected: 'Abgelehnt: %email%'
         error:
             discovery_failed: 'Discovery fehlgeschlagen: %message%'
+            privileged_role_mapping: 'Rollen-Mappings nicht gespeichert: Nur Instanz-Administratoren (Super-Admin) dürfen privilegierte Rollen (%roles%) zuweisen.'
     title: Administration
     cancel: 'Abbrechen'
     tenant_management:

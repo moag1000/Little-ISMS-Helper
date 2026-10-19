@@ -7,12 +7,14 @@ namespace App\Entity;
 use Stringable;
 use DateTimeImmutable;
 use App\Repository\RoleRepository;
+use App\Security\RoleNames;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 #[ORM\Table(name: 'roles')]
@@ -233,6 +235,22 @@ class Role implements Stringable
     public function getLockVersion(): int
     {
         return $this->lockVersion;
+    }
+
+    /**
+     * Security hotfix: User::getRoles() turns custom role names into Symfony
+     * roles, so a non-system role must not carry a reserved Symfony role name
+     * (e.g. ROLE_ALLOWED_TO_SWITCH). Only ROLE_SUPER_ADMIN can flag system
+     * roles (RoleType disables the field for everyone else).
+     */
+    #[Assert\Callback]
+    public function validateReservedName(ExecutionContextInterface $context): void
+    {
+        if (!$this->isSystemRole && RoleNames::isReserved($this->name)) {
+            $context->buildViolation('role.validation.name_reserved')
+                ->atPath('name')
+                ->addViolation();
+        }
     }
 
     public function __toString(): string

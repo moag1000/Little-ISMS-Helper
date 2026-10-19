@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use DateTimeImmutable;
 use App\Entity\MfaToken;
+use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -49,6 +50,39 @@ class MfaTokenRepository extends ServiceEntityRepository
             ->setParameter('active', true)
             ->orderBy('m.isPrimary', 'DESC')
             ->addOrderBy('m.enrolledAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Tokens whose owning user belongs to one of the given tenants, plus the
+     * given user's own tokens (admin MFA overview for non-SUPER_ADMIN actors).
+     *
+     * @param Tenant[] $tenants
+     * @return MfaToken[]
+     */
+    public function findForTenantsOrUser(array $tenants, ?User $self): array
+    {
+        $queryBuilder = $this->createQueryBuilder('m')
+            ->innerJoin('m.user', 'u')
+            ->addSelect('u');
+
+        $conditions = [];
+        if ($tenants !== []) {
+            $conditions[] = 'u.tenant IN (:tenants)';
+            $queryBuilder->setParameter('tenants', $tenants);
+        }
+        if ($self instanceof User) {
+            $conditions[] = 'm.user = :self';
+            $queryBuilder->setParameter('self', $self);
+        }
+        if ($conditions === []) {
+            return [];
+        }
+
+        return $queryBuilder
+            ->where(implode(' OR ', $conditions))
+            ->orderBy('m.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

@@ -10,6 +10,7 @@ use Exception;
 use InvalidArgumentException;
 use App\Job\CreateBackupJob;
 use App\Job\RestoreBackupJob;
+use App\Entity\Tenant;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\BackupService;
 use App\Service\DataExport\EntityDataExporter;
@@ -90,15 +91,24 @@ class AdminBackupController extends AbstractController
         return $this->translator;
     }
 
+    /**
+     * Visibility scope for filename-addressed backup endpoints — identical to the listing
+     * rule (null = SUPER_ADMIN sees all). Resolved via BackupService::isBackupVisibleTo().
+     */
+    private function backupVisibilityScope(): ?Tenant
+    {
+        return $this->isGranted('ROLE_SUPER_ADMIN')
+            ? null
+            : $this->tenantContext->resolveAdminScope(null);
+    }
+
     #[Route('/admin/data/backup', name: 'data_backup_index', methods: ['GET'])]
     public function index(): Response
     {
         // Phase 5: service-layer tenant filtering — SUPER_ADMIN sees all backups,
         // ROLE_ADMIN sees only backups whose embedded tenant_scope intersects with
         // their own tenant tree. Pass null for SUPER to bypass the filter.
-        $scope = $this->isGranted('ROLE_SUPER_ADMIN')
-            ? null
-            : $this->tenantContext->resolveAdminScope(null);
+        $scope = $this->backupVisibilityScope();
         $backups = $this->backupService->listBackups($scope);
 
         return $this->render('data_management/backup.html.twig', [
@@ -217,12 +227,13 @@ class AdminBackupController extends AbstractController
             throw $this->createNotFoundException('Invalid backup filename');
         }
 
-        $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
-        $filepath = $backupDir . '/' . $filename;
-
-        if (!file_exists($filepath)) {
+        // 404 (not 403) for invisible backups: no existence oracle across tenants
+        if (!$this->backupService->isBackupVisibleTo($filename, $this->backupVisibilityScope())) {
             throw $this->createNotFoundException('Backup file not found');
         }
+
+        $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
+        $filepath = $backupDir . '/' . $filename;
 
         $streamedResponse = new StreamedResponse(function () use ($filepath): void {
             $outputStream = fopen('php://output', 'wb');
@@ -346,6 +357,11 @@ class AdminBackupController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
+        // 404 for invisible backups (same rule as listing) before any other check
+        if (!$this->backupService->isBackupVisibleTo($filename, $this->backupVisibilityScope())) {
+            return new JsonResponse(['success' => false, 'message' => 'Backup file not found'], Response::HTTP_NOT_FOUND);
+        }
+
         // Phase 5: resolve caller scope so validateBackup() can reject cross-tenant
         // attempts with AccessDeniedException (Symfony maps to 403).
         $callerScope = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
@@ -403,13 +419,12 @@ class AdminBackupController extends AbstractController
                 throw new InvalidArgumentException('Invalid backup filename');
             }
 
+            if (!$this->backupService->isBackupVisibleTo($filename, $this->backupVisibilityScope())) {
+                return new JsonResponse(['success' => false, 'message' => 'Backup file not found'], Response::HTTP_NOT_FOUND);
+            }
+
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
             $filepath = $backupDir . '/' . $filename;
-
-            if (!file_exists($filepath)) {
-                // @intentional-assertion: filename + path validation guard
-                throw new InvalidArgumentException('Backup file not found');
-            }
 
             // Load backup and get preview
             $backup = $this->backupService->loadBackupFromFile($filepath);
@@ -441,6 +456,11 @@ class AdminBackupController extends AbstractController
     {
         if (!$this->isCsrfTokenValid('data_backup_restore', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
+        // 404 for invisible backups (same rule as listing) before any other check
+        if (!$this->backupService->isBackupVisibleTo($filename, $this->backupVisibilityScope())) {
+            return new JsonResponse(['success' => false, 'message' => 'Backup file not found'], Response::HTTP_NOT_FOUND);
         }
 
         // Resolve tenant scope BEFORE dispatch so a cross-tenant restore
@@ -538,15 +558,15 @@ class AdminBackupController extends AbstractController
                 throw new InvalidArgumentException('Invalid backup filename');
             }
 
+            if (!$this->backupService->isBackupVisibleTo($filename, $this->backupVisibilityScope())) {
+                return new JsonResponse(['success' => false, 'message' => 'Backup file not found'], Response::HTTP_NOT_FOUND);
+            }
+
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
             $filepath = $backupDir . '/' . $filename;
 
-            if (!file_exists($filepath)) {
-                // @intentional-assertion: filename + path validation guard
-                throw new InvalidArgumentException('Backup file not found');
-            }
-
             unlink($filepath);
+            @unlink($filepath . '.meta.json');
 
             $this->logger->info('Backup deleted', [
                 'user' => $this->getUser()?->getUserIdentifier(),

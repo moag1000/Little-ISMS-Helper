@@ -481,11 +481,16 @@ class SetupPermissionsCommand
         $user->setEmail($email);
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
-        $user->setRoles(['ROLE_ADMIN']);
-        // An admin without an organisation sees no organisation's data; on a
-        // single-organisation installation it belongs to the sole one. During the
-        // setup wizard no organisation exists yet — SetupTenantBootstrapper assigns it.
-        $user->setTenant($this->tenantRepository?->findSoleTenant());
+        // Security hotfix 3.15.3: ROLE_ADMIN is scoped to its own tenant tree,
+        // so the installer must be the instance operator. Only the first
+        // operator is created this way; later admins stay ROLE_ADMIN.
+        $isOperator = !$this->userRepository->hasSuperAdmin();
+        $user->setRoles($isOperator ? ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] : ['ROLE_ADMIN']);
+        // The instance operator stays without an organisation (instance-wide,
+        // like SetupTenantBootstrapper::assignAccountsWithoutOrganisation()).
+        // Any other admin without an organisation would see no organisation's
+        // data; on a single-organisation installation it belongs to the sole one.
+        $user->setTenant($isOperator ? null : $this->tenantRepository?->findSoleTenant());
         $user->setAuthProvider('local');
         $user->setIsActive(true);
         $user->setIsVerified(true);
@@ -497,7 +502,13 @@ class SetupPermissionsCommand
 
         try {
             $this->entityManager->flush();
-            $symfonyStyle->success("Admin user created: $firstName $lastName ($email)");
+            $symfonyStyle->success(sprintf(
+                'Admin user created: %s %s (%s)%s',
+                $firstName,
+                $lastName,
+                $email,
+                in_array('ROLE_SUPER_ADMIN', $user->getStoredRoles(), true) ? ' with ROLE_SUPER_ADMIN (instance operator)' : '',
+            ));
         } catch (Exception $e) {
             $symfonyStyle->error("Failed to create admin user: " . $e->getMessage());
             throw $e;

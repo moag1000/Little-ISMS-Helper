@@ -25,9 +25,14 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - CREATE / EDIT / DELETE: ROLE_SUPER_ADMIN only. Neither an organisation
  *   admin nor a user holding the `role.create|edit|delete` permission may
  *   modify a global role — that would be a cross-organisation privilege
- *   escalation (OWASP A01).
+ *   escalation (OWASP A01). This subsumes the 3.15.3 hotfix rule (system
+ *   roles SUPER_ADMIN-only; custom roles only while every holder is in the
+ *   actor's scope): no holder set is ever in scope for a non-SUPER_ADMIN.
  * - System roles can never be deleted.
  * - Inactive users are denied everything.
+ * - A denied EDIT/DELETE that is due to the role being global carries
+ *   {@see REASON_OUT_OF_SCOPE}, so the UI can tell it apart from a plain
+ *   missing permission.
  */
 final class RoleVoter extends Voter
 {
@@ -35,6 +40,13 @@ final class RoleVoter extends Voter
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
     }
+
+    /**
+     * Vote reason set when EDIT/DELETE is denied because the role is global
+     * (only ROLE_SUPER_ADMIN changes roles; system roles are never deleted) —
+     * lets the UI tell this apart from a plain missing permission.
+     */
+    public const string REASON_OUT_OF_SCOPE = 'role.out_of_scope';
 
     public const string VIEW = 'role.view';
     public const string CREATE = 'role.create';
@@ -64,6 +76,19 @@ final class RoleVoter extends Voter
 
         $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
         $isSuperAdmin = in_array('ROLE_SUPER_ADMIN', $reachableRoles, true);
+
+        if ($subject instanceof Role && in_array($attribute, [self::EDIT, self::DELETE], true)) {
+            $deniedAsGlobal = $isSuperAdmin
+                ? $attribute === self::DELETE && $subject->isSystemRole()
+                : $subject->isSystemRole()
+                    || in_array('ROLE_ADMIN', $reachableRoles, true)
+                    || $user->hasPermission($attribute);
+            if ($deniedAsGlobal) {
+                $vote?->addReason(self::REASON_OUT_OF_SCOPE);
+
+                return false;
+            }
+        }
 
         return match ($attribute) {
             self::VIEW => in_array('ROLE_ADMIN', $reachableRoles, true) || $user->hasPermission('role.view'),

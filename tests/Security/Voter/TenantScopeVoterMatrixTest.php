@@ -37,8 +37,6 @@ use App\Security\Voter\RiskIncidentLinkVoter;
 use App\Security\Voter\RiskVoter;
 use App\Security\Voter\TagVoter;
 use App\Security\Voter\TrainingVoter;
-use App\Security\Voter\UserVoter;
-use App\Service\InitialAdminService;
 use App\Service\ModuleConfigurationService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -56,6 +54,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  * Before the fix every voter below returned true for ROLE_ADMIN (or had no
  * tenant check at all), so an organisation admin could act on records of
  * any other tenant.
+ *
+ * UserVoter is not in this matrix: user *administration* follows the
+ * organisation-administration scope (ROLE_ADMIN: own organisation and its
+ * subsidiaries, 3.15.3 security hotfix), not the record scope. It is pinned
+ * by UserVoterTenantScopeTest and UserVoterHoldingScopeTest.
  */
 #[AllowMockObjectsWithoutExpectations]
 final class TenantScopeVoterMatrixTest extends TestCase
@@ -93,7 +96,6 @@ final class TenantScopeVoterMatrixTest extends TestCase
             'RiskIncidentLinkVoter' => [
                 RiskIncidentLink::class, RiskIncidentLinkVoter::VIEW, RiskIncidentLinkVoter::DELETE,
             ],
-            'UserVoter' => [User::class, UserVoter::VIEW, UserVoter::EDIT],
             'NotificationChannelVoter' => [
                 NotificationChannel::class, NotificationChannelVoter::VIEW, NotificationChannelVoter::EDIT,
             ],
@@ -280,7 +282,6 @@ final class TenantScopeVoterMatrixTest extends TestCase
             'ApiTenantVoter' => new ApiTenantVoter($hierarchy),
             'Bsi2004ExerciseLogVoter' => new Bsi2004ExerciseLogVoter($hierarchy),
             'RiskIncidentLinkVoter' => new RiskIncidentLinkVoter($hierarchy),
-            'UserVoter' => new UserVoter($this->createMock(InitialAdminService::class), $hierarchy),
             'NotificationChannelVoter' => new NotificationChannelVoter($modules, $hierarchy),
             'NotificationRuleVoter' => new NotificationRuleVoter($modules, $hierarchy),
             'EntityVoter' => new EntityVoter($hierarchy),
