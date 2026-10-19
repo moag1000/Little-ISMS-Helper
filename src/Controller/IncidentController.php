@@ -884,16 +884,13 @@ class IncidentController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $incidents = [];
         foreach ($ids as $rawId) {
             $incident = $this->incidentRepository->find((int) $rawId);
             if ($incident === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($incident, $tenant)) {
+            if (!$this->isInBulkContextScope($incident, $this->tenantContext)) {
                 continue;
             }
             $incidents[] = $incident;

@@ -426,15 +426,13 @@ class DataSubjectRequestController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext?->getCurrentTenant();
-
         $dsrs = [];
         foreach ($ids as $rawId) {
             $dsr = $this->dataSubjectRequestRepository?->find((int) $rawId);
             if ($dsr === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($dsr, $tenant)) {
+            if (!$this->isInBulkContextScope($dsr, $this->tenantContext)) {
                 continue;
             }
             $dsrs[] = $dsr;

@@ -246,15 +246,13 @@ class ChangeRequestController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $changeRequests = [];
         foreach ($ids as $rawId) {
             $cr = $this->changeRequestRepository->find((int) $rawId);
             if ($cr === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($cr, $tenant)) {
+            if (!$this->isInBulkContextScope($cr, $this->tenantContext)) {
                 continue;
             }
             $changeRequests[] = $cr;

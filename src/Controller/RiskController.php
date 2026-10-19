@@ -37,6 +37,7 @@ use App\Repository\RiskIncidentLinkRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Clone\RiskCloner;
+use App\Service\TenantContext;
 use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -1021,7 +1022,7 @@ class RiskController extends AbstractController
      */
     #[Route('/risk/bulk-export', name: 'app_risk_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
@@ -1032,16 +1033,13 @@ class RiskController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $risks = [];
         foreach ($ids as $rawId) {
             $risk = $this->riskRepository->find((int) $rawId);
             if ($risk === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($risk, $tenant)) {
+            if (!$this->isInBulkContextScope($risk, $tenantContext)) {
                 continue;
             }
             $risks[] = $risk;
@@ -1080,7 +1078,7 @@ class RiskController extends AbstractController
      */
     #[Route('/risk/bulk-assign', name: 'app_risk_bulk_assign', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkAssign(Request $request): Response
+    public function bulkAssign(Request $request, TenantContext $tenantContext): Response
     {
         $data     = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
@@ -1093,14 +1091,11 @@ class RiskController extends AbstractController
             return $this->json(['error' => 'No items selected or no assignee'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $assignee = $this->userRepository?->find($assignId);
         if (!$assignee instanceof User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if (!$this->isInBulkTenantScope($assignee, $tenant)) {
+        if (!$this->isInBulkContextScope($assignee, $tenantContext)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -1110,7 +1105,7 @@ class RiskController extends AbstractController
             if ($risk === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($risk, $tenant)) {
+            if (!$this->isInBulkContextScope($risk, $tenantContext)) {
                 continue;
             }
             $risks[] = $risk;

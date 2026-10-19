@@ -29,6 +29,8 @@ class RiskBulkActionTest extends WebTestCase
     private ?Tenant $otherTenant = null;
     private ?Risk $risk = null;
     private ?Risk $otherRisk = null;
+    private ?Tenant $subsidiary = null;
+    private ?User $subsidiaryUser = null;
 
     protected function setUp(): void
     {
@@ -69,7 +71,7 @@ class RiskBulkActionTest extends WebTestCase
                 } catch (\Exception) {}
             }
         }
-        foreach ([$this->userRole, $this->managerRole, $this->otherUser] as $u) {
+        foreach ([$this->userRole, $this->managerRole, $this->otherUser, $this->subsidiaryUser] as $u) {
             if ($u) {
                 try {
                     $e = $this->em->find(User::class, $u->getId());
@@ -77,7 +79,7 @@ class RiskBulkActionTest extends WebTestCase
                 } catch (\Exception) {}
             }
         }
-        foreach ([$this->tenant, $this->otherTenant] as $t) {
+        foreach ([$this->subsidiary, $this->tenant, $this->otherTenant] as $t) {
             if ($t) {
                 try {
                     $e = $this->em->find(Tenant::class, $t->getId());
@@ -212,6 +214,43 @@ class RiskBulkActionTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $body = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertSame(0, $body['changed'] ?? -1);
+    }
+
+    /**
+     * Bulk assign uses the same tenant rule as bulk delete / status change
+     * (TenantOwnership::isInContextScope(): acting organisation and its
+     * subsidiaries). It used to compare the assignee with the actor's own
+     * tenant only, so a subsidiary's user could not be assigned.
+     */
+    #[Test]
+    public function assignAcceptsAssigneeOfASubsidiary(): void
+    {
+        $uid = uniqid('sub_', true);
+        $this->subsidiary = (new Tenant())->setName('Sub ' . $uid)->setCode('sb_' . substr($uid, -8));
+        $this->subsidiary->setParent($this->tenant);
+        $this->em->persist($this->subsidiary);
+        $this->subsidiaryUser = $this->makeUser('sub_' . $uid . '@x.test', ['ROLE_USER'], $this->subsidiary);
+        $this->em->flush();
+
+        $this->client->loginUser($this->managerRole);
+        $this->client->request('POST', '/en/risk/bulk-assign', [], [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->subsidiaryUser->getId(), '_token' => $this->getBulkCsrfToken()]));
+
+        $this->assertResponseIsSuccessful();
+        $body = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertSame(1, $body['changed'] ?? 0);
+    }
+
+    #[Test]
+    public function assignRejectsAssigneeOfAForeignOrganisation(): void
+    {
+        $this->client->loginUser($this->managerRole);
+        $this->client->request('POST', '/en/risk/bulk-assign', [], [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->otherUser->getId(), '_token' => $this->getBulkCsrfToken()]));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────

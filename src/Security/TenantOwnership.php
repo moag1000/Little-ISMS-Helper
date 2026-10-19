@@ -8,10 +8,12 @@ use App\Entity\Tenant;
 use App\Service\TenantContext;
 
 /**
- * The one tenant-ownership comparison used by voters
- * ({@see Voter\HoldingTreeAccessTrait}), bulk endpoints
- * ({@see \App\Controller\Trait\BulkActionTrait::isInBulkTenantScope()}) and
- * {@see \App\Service\BulkDeleteService}.
+ * The tenant-ownership comparisons: same organisation ({@see isSameTenant()},
+ * record-level voters via {@see Voter\HoldingTreeAccessTrait}) and own
+ * organisation or below ({@see isSameOrDescendant()}, holding read and
+ * {@see TenantContext::canAccessTenant()}). Every bulk endpoint
+ * ({@see \App\Controller\Trait\BulkActionTrait::isInBulkContextScope()},
+ * {@see \App\Service\BulkDeleteService}) uses {@see isInContextScope()}.
  *
  * Fails closed: a missing tenant on either side never matches, and two
  * unsaved (id-less) tenants are never treated as equal. Identity first; the
@@ -83,8 +85,8 @@ final class TenantOwnership
      *
      * Own tenant or any descendant ({@see TenantContext::canAccessTenant()}).
      * Without any tenant context only ROLE_SUPER_ADMIN is in scope.
-     * Fails closed on entities without a tenant. The single rule for bulk
-     * delete and bulk status change.
+     * Fails closed on entities without a tenant. The single rule for every
+     * bulk operation (export, assign, status change, delete).
      */
     public static function isInContextScope(object $entity, ?TenantContext $tenantContext, bool|\Closure $actorIsSuperAdmin): bool
     {

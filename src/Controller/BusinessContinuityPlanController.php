@@ -281,15 +281,13 @@ class BusinessContinuityPlanController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $plans = [];
         foreach ($ids as $rawId) {
             $plan = $this->businessContinuityPlanRepository->find((int) $rawId);
             if ($plan === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($plan, $tenant)) {
+            if (!$this->isInBulkContextScope($plan, $this->tenantContext)) {
                 continue;
             }
             $plans[] = $plan;

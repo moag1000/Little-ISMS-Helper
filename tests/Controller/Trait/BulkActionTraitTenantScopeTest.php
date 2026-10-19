@@ -7,52 +7,56 @@ namespace App\Tests\Controller\Trait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Risk;
 use App\Entity\Tenant;
+use App\Security\TenantOwnership;
+use App\Service\TenantContext;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * BulkActionTrait::isInBulkTenantScope() guards every bulk export / assign
- * loop. It replaces `if ($tenant !== null && $e->getTenant() !== $tenant)`,
- * which exported every tenant's rows when the actor had no tenant and
- * compared Doctrine proxies by identity.
+ * BulkActionTrait::isInBulkContextScope() is the one tenant guard of every
+ * bulk endpoint (export, assign, status change, delete). It replaced the
+ * export/assign guard that compared with `$user->getTenant()` only.
  */
 final class BulkActionTraitTenantScopeTest extends TestCase
 {
     #[Test]
-    public function ownTenantRowIsInScopeEvenAsADifferentInstance(): void
+    public function actingOrganisationRowIsInScopeEvenAsADifferentInstance(): void
     {
-        $proxyOfSameTenant = $this->tenant(1);
-        $row = $this->risk($proxyOfSameTenant);
-
-        self::assertTrue($this->controller(false)->inScope($row, $this->tenant(1)));
+        self::assertTrue($this->controller(false)->inScope($this->risk($this->tenant(1)), $this->context($this->tenant(1))));
     }
 
     #[Test]
-    public function foreignTenantRowIsOutOfScope(): void
+    public function subsidiaryRowIsInScope(): void
     {
-        self::assertFalse($this->controller(false)->inScope($this->risk($this->tenant(2)), $this->tenant(1)));
+        $holding = $this->tenant(1);
+
+        self::assertTrue($this->controller(false)->inScope($this->risk($this->tenant(2, $holding)), $this->context($holding)));
     }
 
     #[Test]
-    public function rowWithoutTenantIsOutOfScope(): void
+    public function foreignParentAndOrphanRowsAreOutOfScope(): void
     {
-        self::assertFalse($this->controller(false)->inScope($this->risk(null), $this->tenant(1)));
+        $holding = $this->tenant(1);
+        $subsidiary = $this->tenant(2, $holding);
+        $controller = $this->controller(false);
+
+        self::assertFalse($controller->inScope($this->risk($this->tenant(3)), $this->context($holding)), 'foreign');
+        self::assertFalse($controller->inScope($this->risk($holding), $this->context($subsidiary)), 'parent');
+        self::assertFalse($controller->inScope($this->risk(null), $this->context($holding)), 'orphan');
     }
 
     #[Test]
-    public function actorWithoutTenantSeesNothing(): void
+    public function withoutTenantContextOnlySuperAdminIsInScope(): void
     {
-        self::assertFalse($this->controller(false)->inScope($this->risk($this->tenant(2)), null));
-    }
+        $row = $this->risk($this->tenant(2));
 
-    #[Test]
-    public function superAdminWithoutTenantIsTheOnlyAllTenantCase(): void
-    {
-        self::assertTrue($this->controller(true)->inScope($this->risk($this->tenant(2)), null));
+        self::assertFalse($this->controller(false)->inScope($row, $this->context(null)));
+        self::assertFalse($this->controller(false)->inScope($row, null));
+        self::assertTrue($this->controller(true)->inScope($row, $this->context(null)));
         // With a tenant context even SUPER_ADMIN stays inside it.
-        self::assertFalse($this->controller(true)->inScope($this->risk($this->tenant(2)), $this->tenant(1)));
+        self::assertFalse($this->controller(true)->inScope($row, $this->context($this->tenant(1))));
     }
 
     private function controller(bool $isSuperAdmin): object
@@ -69,11 +73,22 @@ final class BulkActionTraitTenantScopeTest extends TestCase
                 return $attribute === 'ROLE_SUPER_ADMIN' && $this->isSuperAdmin;
             }
 
-            public function inScope(object $entity, ?Tenant $tenant): bool
+            public function inScope(object $entity, ?TenantContext $context): bool
             {
-                return $this->isInBulkTenantScope($entity, $tenant);
+                return $this->isInBulkContextScope($entity, $context);
             }
         };
+    }
+
+    private function context(?Tenant $acting): TenantContext
+    {
+        $context = $this->createStub(TenantContext::class);
+        $context->method('getCurrentTenant')->willReturn($acting);
+        $context->method('canAccessTenant')->willReturnCallback(
+            static fn (Tenant $candidate): bool => TenantOwnership::isSameOrDescendant($acting, $candidate),
+        );
+
+        return $context;
     }
 
     private function risk(?Tenant $tenant): Risk
@@ -84,10 +99,13 @@ final class BulkActionTraitTenantScopeTest extends TestCase
         return $risk;
     }
 
-    private function tenant(int $id): Tenant
+    private function tenant(int $id, ?Tenant $parent = null): Tenant
     {
         $tenant = new Tenant();
         new ReflectionProperty(Tenant::class, 'id')->setValue($tenant, $id);
+        if ($parent instanceof Tenant) {
+            $tenant->setParent($parent);
+        }
 
         return $tenant;
     }

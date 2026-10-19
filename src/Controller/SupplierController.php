@@ -22,6 +22,7 @@ use App\Service\InverseCoverageService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -434,7 +435,7 @@ class SupplierController extends AbstractController
      */
     #[Route('/supplier/bulk-export', name: 'app_supplier_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $data = json_decode($request->getContent(), true);
@@ -446,16 +447,13 @@ class SupplierController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
         $suppliers = [];
         foreach ($ids as $rawId) {
             $supplier = $this->supplierRepository->find((int) $rawId);
             if ($supplier === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($supplier, $tenant)) {
+            if (!$this->isInBulkContextScope($supplier, $tenantContext)) {
                 continue;
             }
             $suppliers[] = $supplier;

@@ -8,7 +8,6 @@ use DateTime;
 use DateTimeImmutable;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Control;
-use App\Entity\User;
 use App\Entity\Tenant;
 use App\Form\ControlType;
 use App\Repository\CommentRepository;
@@ -21,6 +20,7 @@ use App\Service\MappingSuggestionService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -316,7 +316,7 @@ class StatementOfApplicabilityController extends AbstractController
      */
     #[Route('/soa/bulk/applicability', name: 'app_soa_bulk_applicability', methods: ['POST'])]
     #[IsCsrfTokenValid('soa_bulk_applicability', tokenKey: '_token')]
-    public function bulkApplicability(Request $request): Response
+    public function bulkApplicability(Request $request, TenantContext $tenantContext): Response
     {
         $ids = $request->request->all('control_ids');
         if (!is_array($ids) || $ids === []) {
@@ -331,14 +331,13 @@ class StatementOfApplicabilityController extends AbstractController
             return $this->redirectToRoute('app_soa_index');
         }
 
-        $tenant = $this->security->getUser()?->getTenant();
         $updated = 0;
         foreach (array_filter(array_map('intval', $ids)) as $controlId) {
             $control = $this->controlRepository->find($controlId);
             if (!$control instanceof Control) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($control, $tenant)) {
+            if (!$this->isInBulkContextScope($control, $tenantContext)) {
                 continue; // tenant isolation
             }
             $previous = $control->isApplicable();
@@ -528,7 +527,7 @@ class StatementOfApplicabilityController extends AbstractController
      */
     #[Route('/soa/bulk-export', name: 'app_soa_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
@@ -539,16 +538,13 @@ class StatementOfApplicabilityController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $controls = [];
         foreach ($ids as $rawId) {
             $control = $this->controlRepository->find((int) $rawId);
             if ($control === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($control, $tenant)) {
+            if (!$this->isInBulkContextScope($control, $tenantContext)) {
                 continue;
             }
             $controls[] = $control;

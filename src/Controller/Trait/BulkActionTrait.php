@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Trait;
 
-use App\Entity\Tenant;
 use App\Entity\User;
 use App\Lifecycle\LifecycleService;
 use App\Security\TenantOwnership;
@@ -38,21 +37,13 @@ trait BulkActionTrait
     protected const string BULK_ACTION_CSRF_ID = 'bulk_action';
 
     /**
-     * Tenant guard for every bulk export / assign / pack loop.
-     *
-     * The entity must belong to the acting user's tenant (compared by id,
-     * fail closed). A ROLE_SUPER_ADMIN without tenant context is the only
-     * all-tenant case. Same rule as BulkDeleteService.
-     */
-    protected function isInBulkTenantScope(object $entity, ?Tenant $tenant): bool
-    {
-        return TenantOwnership::isInScope($entity, $tenant, $tenant === null && $this->isGranted('ROLE_SUPER_ADMIN'));
-    }
-
-    /**
-     * Tenant guard for bulk status change / delete: the tenant the actor is
-     * acting in per TenantContext (own + descendants), not `$user->getTenant()`.
-     * Same rule as BulkDeleteService (TenantOwnership::isInContextScope()).
+     * The one tenant guard for every bulk endpoint — export, assign (records
+     * and assignee), status change, delete, pack: the entity must belong to
+     * the organisation the actor is acting in per TenantContext or one of its
+     * subsidiaries, not to `$user->getTenant()`. Fails closed on entities
+     * without a tenant; without any tenant context only ROLE_SUPER_ADMIN is
+     * in scope. Same rule as BulkDeleteService
+     * ({@see TenantOwnership::isInContextScope()}).
      */
     protected function isInBulkContextScope(object $entity, ?TenantContext $tenantContext): bool
     {

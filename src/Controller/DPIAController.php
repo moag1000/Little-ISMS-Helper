@@ -727,15 +727,13 @@ class DPIAController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $dpias = [];
         foreach ($ids as $rawId) {
             $dpia = $this->dpiaRepository?->find((int) $rawId);
             if ($dpia === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($dpia, $tenant)) {
+            if (!$this->isInBulkContextScope($dpia, $this->tenantContext)) {
                 continue;
             }
             $dpias[] = $dpia;

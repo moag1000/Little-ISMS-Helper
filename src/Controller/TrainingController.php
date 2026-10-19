@@ -497,15 +497,13 @@ class TrainingController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $trainings = [];
         foreach ($ids as $rawId) {
             $training = $this->trainingRepository->find((int) $rawId);
             if ($training === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($training, $tenant)) {
+            if (!$this->isInBulkContextScope($training, $this->tenantContext)) {
                 continue;
             }
             $trainings[] = $training;
@@ -553,13 +551,12 @@ class TrainingController extends AbstractController
             return $this->json(['error' => 'No items selected or no assignee'], 400);
         }
 
-        $tenant   = $this->tenantContext->getCurrentTenant();
         $assignee = $this->userRepository?->find($assignId);
 
         if (!$assignee instanceof User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if (!$this->isInBulkTenantScope($assignee, $tenant)) {
+        if (!$this->isInBulkContextScope($assignee, $this->tenantContext)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -569,7 +566,7 @@ class TrainingController extends AbstractController
             if ($training === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($training, $tenant)) {
+            if (!$this->isInBulkContextScope($training, $this->tenantContext)) {
                 continue;
             }
             $trainings[] = $training;

@@ -663,7 +663,6 @@ class AssetController extends AbstractController
 
         /** @var \App\Entity\User|null $user */
         $user   = $this->security->getUser();
-        $tenant = $user instanceof \App\Entity\User ? $user->getTenant() : null;
 
         $assets = [];
         foreach ($ids as $rawId) {
@@ -671,7 +670,7 @@ class AssetController extends AbstractController
             if ($asset === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($asset, $tenant)) {
+            if (!$this->isInBulkContextScope($asset, $this->tenantContext)) {
                 continue;
             }
             $assets[] = $asset;
@@ -724,13 +723,12 @@ class AssetController extends AbstractController
 
         /** @var \App\Entity\User|null $user */
         $user   = $this->security->getUser();
-        $tenant = $user instanceof \App\Entity\User ? $user->getTenant() : null;
 
         $assignee = $this->userRepository?->find($assignId);
         if (!$assignee instanceof \App\Entity\User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if (!$this->isInBulkTenantScope($assignee, $tenant)) {
+        if (!$this->isInBulkContextScope($assignee, $this->tenantContext)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -740,7 +738,7 @@ class AssetController extends AbstractController
             if ($asset === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($asset, $tenant)) {
+            if (!$this->isInBulkContextScope($asset, $this->tenantContext)) {
                 continue;
             }
             $assets[] = $asset;

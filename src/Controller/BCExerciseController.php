@@ -277,15 +277,13 @@ class BCExerciseController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $exercises = [];
         foreach ($ids as $rawId) {
             $exercise = $this->bcExerciseRepository->find((int) $rawId);
             if ($exercise === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($exercise, $tenant)) {
+            if (!$this->isInBulkContextScope($exercise, $this->tenantContext)) {
                 continue;
             }
             $exercises[] = $exercise;

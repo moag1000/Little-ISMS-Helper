@@ -678,15 +678,13 @@ class ProcessingActivityController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $activities = [];
         foreach ($ids as $rawId) {
             $activity = $this->processingActivityRepository?->find((int) $rawId);
             if ($activity === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($activity, $tenant)) {
+            if (!$this->isInBulkContextScope($activity, $this->tenantContext)) {
                 continue;
             }
             $activities[] = $activity;

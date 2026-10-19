@@ -294,15 +294,13 @@ class ThreatIntelligenceController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $threats = [];
         foreach ($ids as $rawId) {
             $threat = $this->repository->find((int) $rawId);
             if ($threat === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($threat, $tenant)) {
+            if (!$this->isInBulkContextScope($threat, $this->tenantContext)) {
                 continue;
             }
             $threats[] = $threat;

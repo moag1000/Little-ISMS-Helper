@@ -267,9 +267,12 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
      under *Admin Portal Access*: settings, contexts, membership) covers the own
      organisation and its subsidiaries; *records* (risks, assets, incidents …)
      cover the own organisation only, plus the holding read above. Both decide
-     "own organisation or below" with `TenantOwnership::isSameOrDescendant()`. Bulk export/assign/delete endpoints use the same
-     comparison (`TenantOwnership`); only a `ROLE_SUPER_ADMIN` without an
-     organisation context processes records of all organisations.
+     "own organisation or below" with `TenantOwnership::isSameOrDescendant()`.
+   - Bulk endpoints (export, assign, status change, delete) share one rule,
+     `TenantOwnership::isInContextScope()`: the record must belong to the
+     organisation the actor is acting in (`TenantContext`) or one of its
+     subsidiaries; only a `ROLE_SUPER_ADMIN` without any organisation context
+     processes records of all organisations.
 
 2. **Admin Access:**
    - Only ROLE_ADMIN can manage tenants, and only within their own organisation tree

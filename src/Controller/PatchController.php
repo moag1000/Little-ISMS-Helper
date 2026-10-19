@@ -14,6 +14,7 @@ use App\Form\PatchType;
 use App\Repository\PatchRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -312,7 +313,7 @@ class PatchController extends AbstractController
      */
     #[Route('/patch/bulk-export', name: 'app_patch_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         if (!$this->moduleService->isModuleActive('patches')) {
             return $this->json(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
@@ -327,16 +328,13 @@ class PatchController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
         $patches = [];
         foreach ($ids as $rawId) {
             $patch = $this->patchRepository->find((int) $rawId);
             if ($patch === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($patch, $tenant)) {
+            if (!$this->isInBulkContextScope($patch, $tenantContext)) {
                 continue;
             }
             $patches[] = $patch;

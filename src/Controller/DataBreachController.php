@@ -574,15 +574,13 @@ class DataBreachController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $breaches = [];
         foreach ($ids as $rawId) {
             $breach = $this->dataBreachService->findById((int) $rawId);
             if ($breach === null) {
                 continue;
             }
-            if (!$this->isInBulkTenantScope($breach, $tenant)) {
+            if (!$this->isInBulkContextScope($breach, $this->tenantContext)) {
                 continue;
             }
             $breaches[] = $breach;
