@@ -642,19 +642,18 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
         // Slot identity matches existing entity fields so the validator
         // (validateContactPersonSlot) continues to function unchanged.
         $this->addOwnerPicker($builder, [
-            'field_prefix'   => 'contact',
-            'user_field'     => 'contactPersonUser',
-            'person_field'   => 'contactPerson',
-            'deputies_field' => 'contactDeputyPersons',
-            'label_user'     => 'processing_activity.form.contact_person',
-            'label_person'   => 'processing_activity.form.contact_person_person',
-            'label_deputies' => 'processing_activity.form.contact_deputies',
-            'help_user'      => 'processing_activity.help.contact_person',
-            'help_person'    => 'processing_activity.help.contact_person_person',
-            'help_deputies'  => 'processing_activity.help.contact_deputies',
-            'placeholder_person' => 'processing_activity.placeholder.contact_person_person',
-            'with_deputies'  => true,
-            'with_legacy'    => false,
+            'translation_prefix'  => 'processing_activity',
+            'user_field'          => 'contactPersonUser',
+            'person_field'        => 'contactPerson',
+            'deputies_field'      => 'contactDeputyPersons',
+            'user_label'          => 'processing_activity.form.contact_person',
+            'person_label'        => 'processing_activity.form.contact_person_person',
+            'deputies_label'      => 'processing_activity.form.contact_deputies',
+            'user_help'           => 'processing_activity.help.contact_person',
+            'person_help'         => 'processing_activity.help.contact_person_person',
+            'deputies_help'       => 'processing_activity.help.contact_deputies',
+            'user_placeholder'    => 'processing_activity.placeholder.contact_person',
+            'person_placeholder'  => 'processing_activity.placeholder.contact_person_person',
         ]);
 
         // DPO compound slot — DPO-Modul-Gate: `dpoSlot` nur sichtbar wenn `privacy`-Modul
@@ -665,19 +664,18 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
         // checks both for null before raising).
         if ($this->isModuleActive('privacy')) {
             $this->addOwnerPicker($builder, [
-                'field_prefix'   => 'dpo',
-                'user_field'     => 'dataProtectionOfficer',
-                'person_field'   => 'dataProtectionOfficerPerson',
-                'deputies_field' => 'dataProtectionOfficerDeputyPersons',
-                'label_user'     => 'processing_activity.form.data_protection_officer',
-                'label_person'   => 'processing_activity.form.data_protection_officer_person',
-                'label_deputies' => 'processing_activity.form.data_protection_officer_deputies',
-                'help_user'      => 'processing_activity.help.data_protection_officer',
-                'help_person'    => 'processing_activity.help.data_protection_officer_person',
-                'help_deputies'  => 'processing_activity.help.data_protection_officer_deputies',
-                'placeholder_person' => 'processing_activity.placeholder.data_protection_officer_person',
-                'with_deputies'  => true,
-                'with_legacy'    => false,
+                'translation_prefix'  => 'processing_activity',
+                'user_field'          => 'dataProtectionOfficer',
+                'person_field'        => 'dataProtectionOfficerPerson',
+                'deputies_field'      => 'dataProtectionOfficerDeputyPersons',
+                'user_label'          => 'processing_activity.form.data_protection_officer',
+                'person_label'        => 'processing_activity.form.data_protection_officer_person',
+                'deputies_label'      => 'processing_activity.form.data_protection_officer_deputies',
+                'user_help'           => 'processing_activity.help.data_protection_officer',
+                'person_help'         => 'processing_activity.help.data_protection_officer_person',
+                'deputies_help'       => 'processing_activity.help.data_protection_officer_deputies',
+                'user_placeholder'    => 'processing_activity.placeholder.data_protection_officer',
+                'person_placeholder'  => 'processing_activity.placeholder.data_protection_officer_person',
             ]);
         }
     }

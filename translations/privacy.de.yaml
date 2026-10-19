@@ -515,6 +515,8 @@ processing_activity:
         end_date: 'Ende der Verarbeitung'
         next_review_date: 'Nächstes Überprüfungsdatum'
     placeholder:
+        contact_person: 'Benutzer auswählen...'
+        data_protection_officer: 'Benutzer auswählen...'
         contact_person_person: 'Person aus Stammdaten auswählen...'
         data_protection_officer_person: 'Person aus Stammdaten auswählen...'
     field:

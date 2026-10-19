@@ -161,17 +161,17 @@ final class ProcessingActivityTypeTest extends TestCase
     {
         $source = self::getFormTypeSource();
         self::assertStringContainsString(
-            "'user_field'     => 'contactPersonUser',",
+            "'user_field'          => 'contactPersonUser',",
             $source,
             'Contact-Person slot must keep contactPersonUser as the User-slot field.'
         );
         self::assertStringContainsString(
-            "'person_field'   => 'contactPerson',",
+            "'person_field'        => 'contactPerson',",
             $source,
             'Contact-Person fallback slot must keep contactPerson as the Person-slot field.'
         );
         self::assertStringContainsString(
-            "'deputies_field' => 'contactDeputyPersons',",
+            "'deputies_field'      => 'contactDeputyPersons',",
             $source,
             'Contact deputies must remain contactDeputyPersons.'
         );
@@ -188,17 +188,17 @@ final class ProcessingActivityTypeTest extends TestCase
             'DPO slot must be wired via addOwnerPicker INSIDE an isModuleActive(privacy) guard.'
         );
         self::assertStringContainsString(
-            "'user_field'     => 'dataProtectionOfficer',",
+            "'user_field'          => 'dataProtectionOfficer',",
             $source,
             'DPO User-slot must remain dataProtectionOfficer.'
         );
         self::assertStringContainsString(
-            "'person_field'   => 'dataProtectionOfficerPerson',",
+            "'person_field'        => 'dataProtectionOfficerPerson',",
             $source,
             'DPO Person fallback slot must remain dataProtectionOfficerPerson.'
         );
         self::assertStringContainsString(
-            "'deputies_field' => 'dataProtectionOfficerDeputyPersons',",
+            "'deputies_field'      => 'dataProtectionOfficerDeputyPersons',",
             $source,
             'DPO deputies must remain dataProtectionOfficerDeputyPersons.'
         );
@@ -246,5 +246,48 @@ final class ProcessingActivityTypeTest extends TestCase
             $source,
             'dataProtectionOfficerDeputyPersons must be wired exclusively via addOwnerPicker.'
         );
+    }
+
+    /**
+     * addOwnerPicker() only honours user_label/person_label/deputies_label,
+     * *_help, *_placeholder and translation_prefix. The legacy option names
+     * (field_prefix, label_user, help_*, with_deputies, ...) are silently
+     * ignored and make the pickers render generic "Owner ..." labels.
+     */
+    #[Test]
+    public function ownerPickerSlotsUseOnlyOptionsTheTraitHonours(): void
+    {
+        $source = self::getFormTypeSource();
+
+        foreach (['field_prefix', 'label_user', 'label_person', 'label_deputies', 'help_user',
+            'help_person', 'help_deputies', 'placeholder_person', 'with_deputies', 'with_legacy'] as $legacy) {
+            self::assertStringNotContainsString(
+                "'{$legacy}'",
+                $source,
+                "Legacy addOwnerPicker option '{$legacy}' is ignored by OwnerPickerFormTrait."
+            );
+        }
+
+        self::assertSame(2, substr_count($source, "'translation_prefix'  => 'processing_activity',"));
+        self::assertStringContainsString("'user_label'          => 'processing_activity.form.contact_person',", $source);
+        self::assertStringContainsString("'user_label'          => 'processing_activity.form.data_protection_officer',", $source);
+        self::assertStringContainsString("'deputies_help'       => 'processing_activity.help.data_protection_officer_deputies',", $source);
+    }
+
+    #[Test]
+    public function ownerPickerTranslationKeysExistInBothLocales(): void
+    {
+        foreach (['de', 'en'] as $locale) {
+            $data = \Symfony\Component\Yaml\Yaml::parseFile(__DIR__ . "/../../translations/privacy.{$locale}.yaml");
+            foreach (['contact_person', 'contact_person_person', 'contact_deputies',
+                'data_protection_officer', 'data_protection_officer_person', 'data_protection_officer_deputies'] as $k) {
+                foreach (['form', 'help'] as $section) {
+                    self::assertNotEmpty($data['processing_activity'][$section][$k] ?? null, "{$locale}: processing_activity.{$section}.{$k}");
+                }
+            }
+            foreach (['contact_person', 'contact_person_person', 'data_protection_officer', 'data_protection_officer_person'] as $k) {
+                self::assertNotEmpty($data['processing_activity']['placeholder'][$k] ?? null, "{$locale}: processing_activity.placeholder.{$k}");
+            }
+        }
     }
 }

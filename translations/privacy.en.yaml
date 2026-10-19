@@ -622,6 +622,8 @@ processing_activity:
         end_date: 'When did this processing end (if applicable)?'
         next_review_date: 'When should this be reviewed next?'
     placeholder:
+        contact_person: 'Select user...'
+        data_protection_officer: 'Select user...'
         contact_person_person: 'Select person from master data...'
         data_protection_officer_person: 'Select person from master data...'
     # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
