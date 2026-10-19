@@ -6,9 +6,9 @@ tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:168
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:193
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:225
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:248
-tests/Controller/DocumentControllerTest.php:359
-tests/Controller/DocumentControllerTest.php:430
-tests/Controller/DocumentControllerTest.php:488
+tests/Controller/DocumentControllerTest.php:362
+tests/Controller/DocumentControllerTest.php:433
+tests/Controller/DocumentControllerTest.php:491
 tests/Controller/IncidentControllerTest.php:342
 tests/Controller/IncidentControllerTest.php:359
 tests/Controller/IncidentControllerTest.php:386
