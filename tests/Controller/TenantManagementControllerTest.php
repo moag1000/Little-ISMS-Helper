@@ -129,6 +129,9 @@ class TenantManagementControllerTest extends WebTestCase
         $this->targetTenant->setCode('target_tenant_' . $uniqueId);
         $this->targetTenant->setDescription('Target tenant for testing');
         $this->targetTenant->setIsActive(true);
+        // Security hotfix (admin scope): ROLE_ADMIN may only manage its own
+        // tenant tree, so the CRUD target lives below the admin's tenant.
+        $this->targetTenant->setParent($this->testTenant);
         $this->entityManager->persist($this->targetTenant);
 
         // Create test user with ROLE_USER only

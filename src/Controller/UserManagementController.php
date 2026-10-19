@@ -567,7 +567,12 @@ class UserManagementController extends AbstractController
                     // Security hotfix (admin scope): tenant admins import into
                     // their own tenant (not tenantless/invisible users).
                     if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-                        $user->setTenant($this->userAdministrationGuard->getActorTenant());
+                        $actorTenant = $this->userAdministrationGuard->getActorTenant();
+                        if (!$this->userAdministrationGuard->canAssignTenant($actorTenant)) {
+                            $errors[] = "Skipped {$email}: no organisation available to assign";
+                            continue;
+                        }
+                        $user->setTenant($actorTenant);
                     }
 
                     // Set password
