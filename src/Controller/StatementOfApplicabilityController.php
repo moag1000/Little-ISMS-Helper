@@ -13,6 +13,7 @@ use App\Form\ControlType;
 use App\Repository\CommentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
+use App\Security\Voter\ControlVoter;
 use App\Service\AnnexAControlsBootstrapService;
 use App\Service\AuditLogger;
 use App\Service\InverseCoverageService;
@@ -313,8 +314,12 @@ class StatementOfApplicabilityController extends AbstractController
      * Bulk update applicability for a set of Controls (Sprint 3 / C3).
      * Accepts selected control IDs + new applicable status + reason.
      * Every row change is recorded in the audit log with actor + reason.
+     *
+     * ROLE_MANAGER (as the UI shortcut on soa/index) plus ControlVoter::EDIT
+     * per control: read-only roles (auditors, holding roles) never write.
      */
     #[Route('/soa/bulk/applicability', name: 'app_soa_bulk_applicability', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid('soa_bulk_applicability', tokenKey: '_token')]
     public function bulkApplicability(Request $request, TenantContext $tenantContext): Response
     {
@@ -337,8 +342,9 @@ class StatementOfApplicabilityController extends AbstractController
             if (!$control instanceof Control) {
                 continue;
             }
-            if (!$this->isInBulkContextScope($control, $tenantContext)) {
-                continue; // tenant isolation
+            if (!$this->isInBulkContextScope($control, $tenantContext)
+                || !$this->isGranted(ControlVoter::EDIT, $control)) {
+                continue; // tenant isolation + per-control edit right
             }
             $previous = $control->isApplicable();
             if ($previous === $applicable) {
