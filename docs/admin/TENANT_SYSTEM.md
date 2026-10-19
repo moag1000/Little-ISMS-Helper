@@ -278,6 +278,52 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
    - Tenant cannot be deleted if users are assigned
    - Deactivating tenant blocks all user logins for that tenant
 
+## Upgrade notes — first release after 3.15.2
+
+Read this before deploying the release that follows 3.15.2 (tenant-isolation
+hardening). Single-organisation installations need no action.
+
+### Accounts without an organisation see no data (multi-organisation installs)
+
+**Effect.** The tenant filter used to show an account without an organisation
+the data of *every* organisation. It now shows such an account *no*
+organisation's data — only a `ROLE_SUPER_ADMIN` without an organisation stays
+instance-wide. Migration `Version20261016150000` assigns accounts without an
+organisation to the sole organisation, but only when exactly one organisation
+exists; with two or more it leaves them untouched. Existing `ROLE_ADMIN`,
+`ROLE_MANAGER`, `ROLE_USER` … accounts without an organisation therefore go
+from "see everything" to "see nothing" after the upgrade.
+
+**Before the upgrade**, list the affected accounts:
+
+```sql
+SELECT id, email, roles FROM users
+WHERE tenant_id IS NULL AND roles NOT LIKE '%ROLE_SUPER_ADMIN%';
+```
+
+**Fix.** Log in as a `ROLE_SUPER_ADMIN` (an admin without an organisation can
+no longer see the accounts it would have to fix), open **`/admin/users`**,
+edit each listed account and pick its organisation in the *Organization*
+field (German UI: *Organisation*). `/quick-fix` does not help here: Data
+repair deliberately skips user accounts, because a SUPER_ADMIN may
+legitimately have no organisation.
+
+New accounts created by SSO (generic OIDC, Azure OAuth, Azure SAML) on a
+multi-organisation install without a provider-specific organisation also start
+without one and need the same assignment.
+
+### Async job status from before the deploy returns 403
+
+**Effect.** Job status files (`var/jobs/<uuid>.json`) now record their owner
+(`owner_user_id`, `owner_tenant_id`), and status polling plus export downloads
+are only served to that owner. Files written before the deploy have no owner,
+so polling a job started before the upgrade — and downloading its export —
+returns **403** for everyone except a `ROLE_SUPER_ADMIN`.
+
+**Fix.** Let running admin jobs/exports finish (and download their files)
+before deploying, or simply start them again after the deploy. Old status
+files are harmless and can be deleted from `var/jobs/` once no job is running.
+
 ## Migration
 
 ### Add logoPath Field
