@@ -425,7 +425,7 @@ risk:
       low: Low
       minor: Minor
     risks_total: 'Risks total'
-    cell_title: 'Risk Level: %level% (%count% risks)'
+    cell_title: 'Probability: %probability% | Impact: %impact%'
     likelihood:
       1: 'Very Unlikely'
       2: 'Unlikely'
