@@ -321,8 +321,8 @@ translations/risk.en.yaml:682:quant
 translations/risk.en.yaml:705:risk_management
 translations/risk_treatment_plan.de.yaml:106:iso_9001_bridge
 translations/risk_treatment_plan.en.yaml:106:iso_9001_bridge
-translations/role_management.de.yaml:112:role
-translations/role_management.en.yaml:112:role
+translations/role_management.de.yaml:114:role
+translations/role_management.en.yaml:114:role
 translations/scheduled_reports.de.yaml:3:scheduled_report
 translations/scheduled_reports.de.yaml:174:email
 translations/scheduled_reports.de.yaml:179:form

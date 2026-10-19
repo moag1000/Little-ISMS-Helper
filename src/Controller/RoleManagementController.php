@@ -7,11 +7,13 @@ namespace App\Controller;
 use App\Entity\Permission;
 use DateTimeImmutable;
 use App\Entity\Role;
+use App\Entity\User;
 use App\Form\RoleType;
 use App\Repository\RoleRepository;
 use App\Repository\PermissionRepository;
 use App\Security\RoleNames;
 use App\Security\Voter\RoleVoter;
+use App\Security\Voter\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,8 +31,15 @@ class RoleManagementController extends AbstractController
 
         $roles = $roleRepository->getRolesWithUserCount();
 
+        // Security hotfix: roles are global — count only holders the actor may see.
+        $visibleHolderCounts = [];
+        foreach ($roles as $role) {
+            $visibleHolderCounts[$role->getId()] = count($this->visibleHolders($role));
+        }
+
         return $this->render('role_management/index.html.twig', [
             'roles' => $roles,
+            'visible_holder_counts' => $visibleHolderCounts,
         ]);
     }
     #[Route('/admin/roles/new', name: 'role_management_new', methods: ['GET', 'POST'])]
@@ -185,9 +194,13 @@ class RoleManagementController extends AbstractController
         $this->denyAccessUnlessGranted(RoleVoter::VIEW, $role);
 
         $role = $roleRepository->findWithPermissions($role->getId());
+        $visibleHolders = $role instanceof Role ? $this->visibleHolders($role) : [];
 
         return $this->render('role_management/show.html.twig', [
             'role' => $role,
+            // Security hotfix: never expose holders of other organisations.
+            'visible_holders' => $visibleHolders,
+            'hidden_holder_count' => $role instanceof Role ? $role->getUsers()->count() - count($visibleHolders) : 0,
         ]);
     }
     #[Route('/admin/roles/{id}/edit', name: 'role_management_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -198,10 +211,7 @@ class RoleManagementController extends AbstractController
         PermissionRepository $permissionRepository,
         TranslatorInterface $translator
     ): Response {
-        if (!$this->isGranted(RoleVoter::EDIT, $role)) {
-            $this->addFlash('danger', $translator->trans('role_management.error.not_modifiable', [], 'role_management'));
-        }
-        $this->denyAccessUnlessGranted(RoleVoter::EDIT, $role);
+        $this->denyRoleChangeUnlessGranted(RoleVoter::EDIT, $role, $translator);
 
         $form = $this->createForm(RoleType::class, $role);
         $permissions = $permissionRepository->findAllGroupedByCategory();
@@ -239,10 +249,7 @@ class RoleManagementController extends AbstractController
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
-        if (!$this->isGranted(RoleVoter::DELETE, $role)) {
-            $this->addFlash('danger', $translator->trans('role_management.error.not_modifiable', [], 'role_management'));
-        }
-        $this->denyAccessUnlessGranted(RoleVoter::DELETE, $role);
+        $this->denyRoleChangeUnlessGranted(RoleVoter::DELETE, $role, $translator);
 
         if ($this->isCsrfTokenValid('delete' . $role->getId(), $request->request->get('_token'))) {
             $entityManager->remove($role);
@@ -253,6 +260,45 @@ class RoleManagementController extends AbstractController
 
         return $this->redirectToRoute('role_management_index');
     }
+    /**
+     * Security hotfix: custom roles are global, so their holder list spans
+     * all tenants. Only holders the actor may VIEW (UserVoter) are exposed.
+     *
+     * @return list<User>
+     */
+    private function visibleHolders(Role $role): array
+    {
+        return array_values(array_filter(
+            $role->getUsers()->toArray(),
+            fn (User $holder): bool => $this->isGranted(UserVoter::VIEW, $holder),
+        ));
+    }
+
+    /**
+     * 403 for a denied role EDIT/DELETE; a specific flash when the voter denied
+     * because the role is global (system role / holders outside the actor's
+     * scope), a generic one otherwise.
+     */
+    private function denyRoleChangeUnlessGranted(string $attribute, Role $role, TranslatorInterface $translator): void
+    {
+        $decision = $this->getAccessDecision($attribute, $role);
+        if ($decision->isGranted) {
+            return;
+        }
+
+        $outOfScope = false;
+        foreach ($decision->votes as $vote) {
+            $outOfScope = $outOfScope || in_array(RoleVoter::REASON_OUT_OF_SCOPE, $vote->reasons, true);
+        }
+        $this->addFlash('danger', $translator->trans(
+            $outOfScope ? 'role_management.error.not_modifiable' : 'role_management.error.access_denied',
+            [],
+            'role_management',
+        ));
+
+        throw $this->createAccessDeniedException($decision->getMessage());
+    }
+
     /**
      * Define role templates with predefined permissions
      */

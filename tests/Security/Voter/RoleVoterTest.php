@@ -6,9 +6,11 @@ namespace App\Tests\Security\Voter;
 
 use App\Entity\Role;
 use App\Entity\User;
-use App\Repository\RoleRepository;
 use App\Security\Voter\RoleVoter;
-use App\Service\TenantContext;
+use App\Security\Voter\UserVoter;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -20,18 +22,24 @@ use PHPUnit\Framework\Attributes\Test;
 class RoleVoterTest extends TestCase
 {
     private RoleVoter $voter;
-    private RoleRepository&MockObject $roleRepository;
-    private int $foreignHolders = 0;
+    private AccessDecisionManagerInterface&MockObject $accessDecisionManager;
+    /** Result of UserVoter::EDIT for every holder in these unit tests. */
+    private bool $holderEditable = true;
+    /** @var list<User> */
+    private array $holders = [];
 
     protected function setUp(): void
     {
-        $this->foreignHolders = 0;
-        $this->roleRepository = $this->createMock(RoleRepository::class);
-        $this->roleRepository->method('countHoldersOutsideTenants')
-            ->willReturnCallback(fn (): int => $this->foreignHolders);
-        $tenantContext = $this->createMock(TenantContext::class);
-        $tenantContext->method('getAccessibleTenants')->willReturn([]);
-        $this->voter = new RoleVoter(VoterTestHelper::createRoleHierarchy(), $this->roleRepository, $tenantContext);
+        $this->holderEditable = true;
+        $this->holders = [];
+        $this->accessDecisionManager = $this->createMock(AccessDecisionManagerInterface::class);
+        $this->accessDecisionManager->method('decide')
+            ->willReturnCallback(function ($token, array $attributes): bool {
+                self::assertSame([UserVoter::EDIT], $attributes);
+
+                return $this->holderEditable;
+            });
+        $this->voter = new RoleVoter(VoterTestHelper::createRoleHierarchy(), $this->accessDecisionManager);
     }
 
     private function createUser(array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User
@@ -50,6 +58,7 @@ class RoleVoterTest extends TestCase
         $role = $this->createMock(Role::class);
         $role->method('isSystemRole')->willReturn($isSystemRole);
         $role->method('getId')->willReturn(42);
+        $role->method('getUsers')->willReturnCallback(fn () => new ArrayCollection($this->holders));
         return $role;
     }
 
@@ -190,26 +199,60 @@ class RoleVoterTest extends TestCase
     }
 
     #[Test]
-    public function adminCannotEditOrDeleteCustomRoleHeldOutsideOwnTenantTree(): void
+    public function editOrDeleteDeniedWhenAHolderIsNotEditableByActor(): void
     {
-        // Security hotfix: custom roles are global — a role with holders the
-        // actor may not edit (foreign tenant / SUPER_ADMIN) is off limits.
-        $this->foreignHolders = 1;
+        // Security hotfix: custom roles are global — a role with a holder the
+        // actor may not edit per UserVoter::EDIT is off limits.
+        $this->holders = [$this->createUser()];
+        $this->holderEditable = false;
         $role = $this->createRole(false);
 
         foreach ([['ROLE_ADMIN'], ['ROLE_USER']] as $roles) {
             $token = $this->createToken($this->createUser($roles, true, ['role.view', 'role.edit', 'role.delete']));
-            $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $role, [RoleVoter::EDIT]));
+            $vote = new Vote();
+            $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $role, [RoleVoter::EDIT], $vote));
+            $this->assertContains(RoleVoter::REASON_OUT_OF_SCOPE, $vote->reasons);
             $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $role, [RoleVoter::DELETE]));
             $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $role, [RoleVoter::VIEW]));
         }
     }
 
     #[Test]
+    public function editAllowedWhenAllHoldersAreEditableByActor(): void
+    {
+        $this->holders = [$this->createUser(), $this->createUser()];
+        $token = $this->createToken($this->createUser(['ROLE_ADMIN']));
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRole(false), [RoleVoter::EDIT]));
+    }
+
+    #[Test]
+    public function actorHoldingTheRoleItselfDoesNotBlockIt(): void
+    {
+        $actor = $this->createUser(['ROLE_ADMIN']);
+        $this->holders = [$actor];
+        $this->holderEditable = false;
+        $this->accessDecisionManager->expects($this->never())->method('decide');
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->createToken($actor), $this->createRole(false), [RoleVoter::EDIT]));
+    }
+
+    #[Test]
+    public function missingPermissionCarriesNoOutOfScopeReason(): void
+    {
+        $token = $this->createToken($this->createUser(['ROLE_USER'], true, ['role.view']));
+        $vote = new Vote();
+
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRole(false), [RoleVoter::EDIT], $vote));
+        $this->assertNotContains(RoleVoter::REASON_OUT_OF_SCOPE, $vote->reasons);
+    }
+
+    #[Test]
     public function superAdminMayEditCustomRoleHeldInForeignTenant(): void
     {
-        $this->foreignHolders = 3;
-        $this->roleRepository->expects($this->never())->method('countHoldersOutsideTenants');
+        $this->holders = [$this->createUser()];
+        $this->holderEditable = false;
+        $this->accessDecisionManager->expects($this->never())->method('decide');
         $token = $this->createToken($this->createUser(['ROLE_SUPER_ADMIN']));
 
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRole(false), [RoleVoter::EDIT]));

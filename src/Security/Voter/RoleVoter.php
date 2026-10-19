@@ -6,9 +6,8 @@ namespace App\Security\Voter;
 
 use App\Entity\Role;
 use App\Entity\User;
-use App\Repository\RoleRepository;
-use App\Service\TenantContext;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
@@ -32,9 +31,8 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - System roles (ROLE_USER, ROLE_ADMIN) cannot be edited or deleted —
  *   except by ROLE_SUPER_ADMIN (the ROLE_ADMIN bypass does not cover them)
  * - Custom roles are global (no tenant): a non-SUPER_ADMIN actor may EDIT or
- *   DELETE one only while every holder is a user it may edit per UserVoter
- *   (tenant inside the actor's tree, not a SUPER_ADMIN account); otherwise a
- *   change would alter what users of foreign tenants may do. CREATE and
+ *   DELETE one only while every other holder passes UserVoter::EDIT for it;
+ *   otherwise a change would alter what users of foreign tenants may do. CREATE and
  *   assignment are unaffected (security hotfix, admin scope)
  *
  * System Role Protection:
@@ -46,10 +44,16 @@ final class RoleVoter extends Voter
 {
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
-        private readonly RoleRepository $roleRepository,
-        private readonly TenantContext $tenantContext,
+        private readonly AccessDecisionManagerInterface $accessDecisionManager,
     ) {
     }
+
+    /**
+     * Vote reason set when EDIT/DELETE is denied because the role is global
+     * (system role, or held by users the actor may not edit) — lets the UI
+     * tell this apart from a plain missing permission.
+     */
+    public const string REASON_OUT_OF_SCOPE = 'role.out_of_scope';
 
     public const string VIEW = 'role.view';
     public const string CREATE = 'role.create';
@@ -100,6 +104,8 @@ final class RoleVoter extends Voter
             && in_array($attribute, [self::EDIT, self::DELETE], true)
             && !in_array('ROLE_SUPER_ADMIN', $reachableRoles, true)
         ) {
+            $vote?->addReason(self::REASON_OUT_OF_SCOPE);
+
             return false;
         }
 
@@ -108,8 +114,10 @@ final class RoleVoter extends Voter
         if ($subject instanceof Role
             && in_array($attribute, [self::EDIT, self::DELETE], true)
             && !in_array('ROLE_SUPER_ADMIN', $reachableRoles, true)
-            && $this->hasHoldersOutsideActorScope($user, $subject)
+            && $this->hasHolderActorMayNotEdit($token, $user, $subject)
         ) {
+            $vote?->addReason(self::REASON_OUT_OF_SCOPE);
+
             return false;
         }
 
@@ -128,24 +136,21 @@ final class RoleVoter extends Voter
     }
 
     /**
-     * Same scope as UserVoter::EDIT for non-SUPER_ADMIN actors (self always,
-     * otherwise tenant accessible via TenantContext and not a SUPER_ADMIN),
-     * evaluated as one COUNT query instead of hydrating every holder.
+     * True when any holder (other than the actor) fails UserVoter::EDIT for
+     * the actor — the single source of the "may edit this user" rule.
      */
-    private function hasHoldersOutsideActorScope(User $actor, Role $role): bool
+    private function hasHolderActorMayNotEdit(TokenInterface $token, User $actor, Role $role): bool
     {
-        if ($role->getId() === null) {
-            return false; // not persisted yet => no holders
-        }
-
-        $tenantIds = [];
-        foreach ($this->tenantContext->getAccessibleTenants() as $tenant) {
-            if ($tenant->getId() !== null) {
-                $tenantIds[] = $tenant->getId();
+        foreach ($role->getUsers() as $holder) {
+            if ($holder === $actor || ($actor->getId() !== null && $holder->getId() === $actor->getId())) {
+                continue;
+            }
+            if (!$this->accessDecisionManager->decide($token, [UserVoter::EDIT], $holder)) {
+                return true;
             }
         }
 
-        return $this->roleRepository->countHoldersOutsideTenants($role, $tenantIds, $actor->getId()) > 0;
+        return false;
     }
 
     private function canEdit(User $user, Role $role): bool

@@ -32,6 +32,9 @@ final class RoleManagementHolderScopeTest extends WebTestCase
     private User $userA;
     private User $userB;
     private User $super;
+    /** @var list<string> extra user labels created by individual tests */
+    private array $extraUsers = [];
+    private ?Tenant $subsidiary = null;
     private Role $role;
     private Permission $permission;
 
@@ -63,14 +66,14 @@ final class RoleManagementHolderScopeTest extends WebTestCase
             ->setDescription('original')
             ->setIsSystemRole(false);
         $this->em->persist($this->role);
-        $this->userA->addCustomRole($this->role);
+        $this->role->addUser($this->userA);
         $this->em->flush();
     }
 
     protected function tearDown(): void
     {
         $this->em->clear();
-        foreach (['admina', 'usera', 'userb', 'super'] as $label) {
+        foreach (['admina', 'usera', 'userb', 'super', ...$this->extraUsers] as $label) {
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $label . '_' . $this->uid . '@example.com']);
             if ($user !== null) {
                 $this->em->remove($user);
@@ -82,12 +85,13 @@ final class RoleManagementHolderScopeTest extends WebTestCase
                 $this->em->remove($entity);
             }
         }
-        foreach ([$this->tenantA->getId(), $this->tenantB->getId()] as $id) {
-            if (($tenant = $this->em->find(Tenant::class, $id)) !== null) {
+        $this->em->flush();
+        foreach ([$this->subsidiary?->getId(), $this->tenantA->getId(), $this->tenantB->getId()] as $id) {
+            if ($id !== null && ($tenant = $this->em->find(Tenant::class, $id)) !== null) {
                 $this->em->remove($tenant);
+                $this->em->flush();
             }
         }
-        $this->em->flush();
         parent::tearDown();
     }
 
@@ -133,12 +137,68 @@ final class RoleManagementHolderScopeTest extends WebTestCase
     #[Test]
     public function tenantAdminCannotEditRoleHeldBySuperAdminOfOwnTenant(): void
     {
-        $this->super->addCustomRole($this->role);
+        $this->role->addUser($this->super);
         $this->em->flush();
         $this->client->loginUser($this->adminA);
 
         $this->client->request('GET', $this->editUrl());
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function tenantAdminCanEditRoleHeldInOwnSubsidiary(): void
+    {
+        $this->subsidiary = (new Tenant())->setName('Holder Sub ' . $this->uid)->setCode('holder_sub_' . $this->uid)
+            ->setParent($this->tenantA);
+        $this->em->persist($this->subsidiary);
+        $this->extraUsers[] = 'usersub';
+        $this->role->addUser($this->user('usersub', ['ROLE_USER'], $this->subsidiary));
+        $this->em->flush();
+
+        $values = $this->formValues($this->adminA, 'changed');
+        $this->client->request('POST', $this->editUrl(), $values);
+        self::assertResponseRedirects();
+        self::assertSame('changed', $this->reloadRole()->getDescription());
+    }
+
+    #[Test]
+    public function tenantAdminCannotEditRoleHeldByTenantlessUser(): void
+    {
+        $this->extraUsers[] = 'notenant';
+        $this->role->addUser($this->user('notenant', ['ROLE_USER'], null));
+        $this->em->flush();
+        $this->client->loginUser($this->adminA);
+
+        $this->client->request('GET', $this->editUrl());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function showAndIndexNeverExposeForeignHolders(): void
+    {
+        $this->assignToUserB();
+        $this->client->loginUser($this->adminA);
+
+        $crawler = $this->client->request('GET', '/en/admin/roles/' . $this->role->getId());
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('usera_' . $this->uid . '@example.com', $html);
+        self::assertStringNotContainsString('userb_' . $this->uid, $html, 'foreign holder identity must not leak');
+        self::assertStringContainsString('1', $crawler->filter('[data-testid="role-hidden-holders"]')->text());
+        self::assertStringNotContainsString($this->editUrl(), $html, 'edit link hidden for unmodifiable role');
+        self::assertStringNotContainsString('/admin/roles/' . $this->role->getId() . '/delete', $html);
+
+        $this->client->request('GET', '/en/admin/roles');
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('userb_' . $this->uid, $html);
+        self::assertStringNotContainsString($this->editUrl(), $html);
+
+        // SUPER_ADMIN sees every holder and no hidden-holder hint.
+        $this->client->loginUser($this->super);
+        $crawler = $this->client->request('GET', '/en/admin/roles/' . $this->role->getId());
+        self::assertStringContainsString('userb_' . $this->uid . '@example.com', (string) $this->client->getResponse()->getContent());
+        self::assertCount(0, $crawler->filter('[data-testid="role-hidden-holders"]'));
     }
 
     #[Test]
@@ -186,7 +246,7 @@ final class RoleManagementHolderScopeTest extends WebTestCase
 
     private function assignToUserB(): void
     {
-        $this->userB->addCustomRole($this->role);
+        $this->role->addUser($this->userB);
         $this->em->flush();
     }
 
@@ -202,7 +262,7 @@ final class RoleManagementHolderScopeTest extends WebTestCase
         return $this->em->find(Role::class, $this->role->getId());
     }
 
-    private function user(string $label, array $roles, Tenant $tenant): User
+    private function user(string $label, array $roles, ?Tenant $tenant): User
     {
         $user = (new User())
             ->setEmail($label . '_' . $this->uid . '@example.com')
