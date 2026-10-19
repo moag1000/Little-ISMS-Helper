@@ -505,8 +505,9 @@
 
             let ChartCtor;
             try {
-                const mod = await import('chart.js/auto');
-                ChartCtor = mod.default || mod.Chart;
+                // window.Chart is registered once in app.js; the importmap only
+                // maps 'chart.js' (no 'chart.js/auto'), so fall back to that.
+                ChartCtor = window.Chart || (await import('chart.js')).Chart;
             } catch (_e) {
                 return;
             }
