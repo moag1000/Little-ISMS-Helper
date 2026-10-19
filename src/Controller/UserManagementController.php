@@ -15,12 +15,14 @@ use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\MfaTokenRepository;
+use App\Security\UserAdministrationGuard;
 use App\Security\Voter\UserVoter;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\InitialAdminService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -45,6 +47,7 @@ class UserManagementController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly AuditLogger $auditLogger,
         private readonly InitialAdminService $initialAdminService,
+        private readonly UserAdministrationGuard $userAdministrationGuard,
         private readonly string $uploadsDirectory = 'uploads/users',
     ) {
     }
@@ -57,6 +60,16 @@ class UserManagementController extends AbstractController
         // the N+1 pattern (before: 1+N queries, after: 2 queries).
         $users = $userRepository->findAllWithRoles();
         $statistics = $userRepository->getUserStatistics();
+
+        // Security hotfix (admin scope): non-SUPER_ADMIN actors only see users
+        // of their accessible tenant tree (TenantFilter skips User).
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $users = array_values(array_filter(
+                $users,
+                fn (User $candidate): bool => $this->isGranted(UserVoter::VIEW, $candidate),
+            ));
+            $statistics = $userRepository->computeStatistics($users);
+        }
 
         // Identify the initial admin for UI display
         $initialAdmin = $this->initialAdminService->getInitialAdmin();
@@ -80,10 +93,20 @@ class UserManagementController extends AbstractController
         $user = new User();
         $user->setAuthProvider('local');
 
+        $guardSnapshot = $this->userAdministrationGuard->snapshot($user);
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => false,
         ]);
         $form->handleRequest($request);
+
+        // Security hotfix (admin scope): privileged roles + tenant scope.
+        $violations = $form->isSubmitted()
+            ? $this->userAdministrationGuard->enforceSubmittedValues($user, $guardSnapshot, true)
+            : [];
+        foreach ($violations as $violation) {
+            $form->addError(new FormError($translator->trans($violation, [], 'user')));
+            $this->addFlash('error', $translator->trans($violation, [], 'user'));
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Hash password if provided (and not empty)
@@ -215,7 +238,11 @@ class UserManagementController extends AbstractController
                     $roleId = $request->request->get('role_id');
                     $role = $roleRepository->find($roleId);
 
-                    if ($role && $this->isGranted(UserVoter::EDIT, $user)) {
+                    if ($role && !$this->userAdministrationGuard->mayAssignRoleName((string) $role->getName())) {
+                        // Security hotfix: privileged roles are SUPER_ADMIN-only.
+                        $skipped = true;
+                        $skipReason = 'no_permission';
+                    } elseif ($role && $this->isGranted(UserVoter::EDIT, $user)) {
                         if (!$user->getCustomRoles()->contains($role)) {
                             $user->addCustomRole($role);
                             $user->setUpdatedAt(new DateTimeImmutable());
@@ -321,9 +348,18 @@ class UserManagementController extends AbstractController
         // SUPER_ADMIN cross-tenant export requires a dedicated privileged endpoint.
         $currentUser = $this->getUser();
         $tenant = ($currentUser instanceof User) ? $currentUser->getTenant() : null;
-        $users = $tenant !== null
-            ? $userRepository->findBy(['tenant' => $tenant])
-            : $userRepository->findAll();
+        // Security hotfix (admin scope): non-SUPER_ADMIN actors export their
+        // accessible tenant tree only — never all users when tenantless.
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $users = array_values(array_filter(
+                $userRepository->findAll(),
+                fn (User $candidate): bool => $this->isGranted(UserVoter::VIEW, $candidate),
+            ));
+        } else {
+            $users = $tenant !== null
+                ? $userRepository->findBy(['tenant' => $tenant])
+                : $userRepository->findAll();
+        }
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');
@@ -412,7 +448,11 @@ class UserManagementController extends AbstractController
         // runs in this request, no worker needed; messenger mode queues it).
         return $jobDispatcher->dispatch(
             \App\Job\ExportUsersJob::class,
-            [],
+            // Security hotfix (admin scope): the job runs detached from the
+            // request, so the actor's scope travels as args (fail-closed).
+            $this->isGranted('ROLE_SUPER_ADMIN')
+                ? ['global' => true]
+                : ['tenantIds' => $this->userAdministrationGuard->assignableTenantIds()],
             $jobId,
             $progressResponse,
             $request->getSession(),
@@ -524,6 +564,11 @@ class UserManagementController extends AbstractController
                     $user->setLastName($lastName);
                     $user->setIsActive($isActive);
                     $user->setAuthProvider('local');
+                    // Security hotfix (admin scope): tenant admins import into
+                    // their own tenant (not tenantless/invisible users).
+                    if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+                        $user->setTenant($this->userAdministrationGuard->getActorTenant());
+                    }
 
                     // Set password
                     if ($password) {
@@ -540,6 +585,10 @@ class UserManagementController extends AbstractController
                     foreach ($roleNames as $roleName) {
                         $roleName = trim($roleName);
                         $role = $roleRepository->findOneBy(['name' => $roleName]);
+                        if ($role && !$this->userAdministrationGuard->mayAssignRoleName((string) $role->getName())) {
+                            $errors[] = "Skipped privileged role {$roleName} for {$email}";
+                            continue;
+                        }
                         if ($role) {
                             $user->addCustomRole($role);
                         }
@@ -606,10 +655,20 @@ class UserManagementController extends AbstractController
         ];
 
         $oldAvatarPath = $user->getProfilePicture();
+        $guardSnapshot = $this->userAdministrationGuard->snapshot($user);
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => true,
         ]);
         $form->handleRequest($request);
+
+        // Security hotfix (admin scope): privileged roles + tenant scope.
+        $violations = $form->isSubmitted()
+            ? $this->userAdministrationGuard->enforceSubmittedValues($user, $guardSnapshot, false)
+            : [];
+        foreach ($violations as $violation) {
+            $form->addError(new FormError($translator->trans($violation, [], 'user')));
+            $this->addFlash('error', $translator->trans($violation, [], 'user'));
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Check if user is editing themselves

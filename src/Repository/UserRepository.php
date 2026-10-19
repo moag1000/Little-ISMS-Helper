@@ -299,6 +299,27 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Same keys as {@see getUserStatistics()}, computed over an already scoped
+     * user list (security hotfix: tenant admins must not see global counts).
+     *
+     * @param list<User> $users
+     * @return array{total: int, active: int, inactive: int, azure: int, local: int}
+     */
+    public function computeStatistics(array $users): array
+    {
+        $active = count(array_filter($users, static fn (User $u): bool => $u->isActive()));
+        $providers = array_map(static fn (User $u): ?string => $u->getAuthProvider(), $users);
+
+        return [
+            'total' => count($users),
+            'active' => $active,
+            'inactive' => count($users) - $active,
+            'azure' => count(array_intersect($providers, ['azure_oauth', 'azure_saml'])),
+            'local' => count(array_filter($providers, static fn (?string $p): bool => $p === null || $p === 'local')),
+        ];
+    }
+
+    /**
      * Get recently logged in users
      */
     public function getRecentlyActiveUsers(int $limit = 10): array

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Security\Voter;
 
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\Voter\UserVoter;
 use App\Service\InitialAdminService;
+use App\Service\TenantContext;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -18,11 +20,17 @@ class UserVoterTest extends TestCase
 {
     private UserVoter $voter;
     private InitialAdminService $initialAdminService;
+    private Tenant $tenant;
 
     protected function setUp(): void
     {
         $this->initialAdminService = $this->createMock(InitialAdminService::class);
-        $this->voter = new UserVoter($this->initialAdminService, VoterTestHelper::createRoleHierarchy());
+        // All users below share one tenant; cross-tenant scope is covered by
+        // UserVoterTenantScopeTest.
+        $this->tenant = new Tenant();
+        $tenantContext = $this->createMock(TenantContext::class);
+        $tenantContext->method('canAccessTenant')->willReturnCallback(fn (Tenant $t): bool => $t === $this->tenant);
+        $this->voter = new UserVoter($this->initialAdminService, VoterTestHelper::createRoleHierarchy(), $tenantContext);
     }
 
     private function createUser(int $id = 1, array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User
@@ -31,6 +39,7 @@ class UserVoterTest extends TestCase
         $user->method('getId')->willReturn($id);
         $user->method('getRoles')->willReturn($roles);
         $user->method('isActive')->willReturn($isActive);
+        $user->method('getTenant')->willReturn($this->tenant);
         $user->method('hasPermission')->willReturnCallback(function ($perm) use ($permissions) {
             return in_array($perm, $permissions);
         });
