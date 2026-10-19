@@ -44,6 +44,18 @@ final class TenantOwnershipTreeTest extends TestCase
     }
 
     #[Test]
+    public function descendantExcludesTheRootItself(): void
+    {
+        $holding = $this->tenant(1);
+        $subsidiary = $this->tenant(2, $holding);
+
+        self::assertTrue(TenantOwnership::isDescendant($this->tenant(1), $subsidiary));
+        self::assertFalse(TenantOwnership::isDescendant($holding, $this->tenant(1)), 'not the root itself');
+        self::assertFalse(TenantOwnership::isDescendant($subsidiary, $holding), 'never up');
+        self::assertFalse(TenantOwnership::isDescendant(null, $subsidiary));
+    }
+
+    #[Test]
     public function failsClosed(): void
     {
         $tenant = $this->tenant(1);

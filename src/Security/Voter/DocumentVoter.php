@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
-use App\Entity\Tenant;
 use App\Entity\Document;
 use App\Entity\User;
+use App\Security\TenantOwnership;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -84,9 +84,7 @@ final class DocumentVoter extends Voter
 
         // Phase 9.P2.1 — inheritable holding policy: a subsidiary user may
         // read a document marked inheritable=true on any ancestor tenant.
-        $userTenant = $user->getTenant();
-        if ($isRead && $document->isInheritable() && $userTenant instanceof Tenant
-            && $docTenant instanceof Tenant && $userTenant->isChildOf($docTenant)) {
+        if ($isRead && $document->isInheritable() && TenantOwnership::isDescendant($docTenant, $user->getTenant())) {
             return true;
         }
 

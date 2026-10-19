@@ -62,6 +62,15 @@ final class TenantOwnership
     }
 
     /**
+     * Strictly below $root in the holding tree ({@see isSameOrDescendant()}
+     * without $root itself) — the id-safe replacement for Tenant::isChildOf().
+     */
+    public static function isDescendant(?Tenant $root, ?Tenant $target): bool
+    {
+        return self::isSameOrDescendant($root, $target) && !self::isSameTenant($root, $target);
+    }
+
+    /**
      * Whether an actor acting in $actingTenant may process $entity.
      *
      * The entity must belong to the acting tenant. An actor without tenant

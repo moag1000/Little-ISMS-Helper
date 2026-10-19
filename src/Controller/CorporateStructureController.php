@@ -11,6 +11,7 @@ use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
 use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
+use App\Security\TenantOwnership;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\CorporateStructureService;
 use App\Service\TenantContext;
@@ -82,7 +83,7 @@ class CorporateStructureController extends AbstractController
             return true;
         }
         $current = $this->tenantContext->getCurrentTenant();
-        if (!$current instanceof Tenant || !$tenant->isChildOf($current)) {
+        if (!TenantOwnership::isDescendant($current, $tenant)) {
             return false;
         }
 
