@@ -35,9 +35,10 @@ final class TenantOwnership
      * holding tree (never up, never sideways).
      *
      * The one tree comparison: {@see TenantContext::canAccessTenant()}
-     * (organisation administration, `TenantScopedAdminVoter`, bulk context
-     * scope) and the holding read of {@see Voter\HoldingTreeAccessTrait}
-     * both use it. Ancestors are compared like {@see isSameTenant()} (identity
+     * (organisation administration, `TenantScopedAdminVoter`) and the holding
+     * read of {@see Voter\HoldingTreeAccessTrait} both use it. Bulk
+     * operations do NOT — they follow the own-organisation record scope of
+     * {@see isInContextScope()}. Ancestors are compared like {@see isSameTenant()} (identity
      * or id), so a Doctrine proxy or detached copy of $root still matches.
      * Fails closed on a missing tenant.
      */
