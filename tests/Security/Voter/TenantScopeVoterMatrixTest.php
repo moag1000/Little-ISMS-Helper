@@ -186,6 +186,29 @@ final class TenantScopeVoterMatrixTest extends TestCase
         );
     }
 
+    /**
+     * Holding read uses the same tree comparison as organisation
+     * administration (TenantOwnership::isSameOrDescendant()): the parent is
+     * matched by id, not only by object identity.
+     */
+    #[Test]
+    #[DataProvider('voters')]
+    public function holdingReadMatchesTheParentAsAnotherInstance(string $subjectClass, ?string $read, string $write): void
+    {
+        if ($read === null) {
+            $this->expectNotToPerformAssertions();
+
+            return;
+        }
+        $voter = $this->voter($this->dataName());
+        $subject = $this->subject($subjectClass, $this->subsidiary);
+        $holdingCopy = $this->tenant(1);
+        $groupCiso = $this->actor(['ROLE_GROUP_CISO', 'ROLE_MANAGER', 'ROLE_AUDITOR'], $holdingCopy, true);
+
+        self::assertSame(VoterInterface::ACCESS_GRANTED, $this->vote($voter, $groupCiso, $subject, $read), $read);
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote($voter, $groupCiso, $subject, $write), $write);
+    }
+
     #[Test]
     #[DataProvider('voters')]
     public function adminWithoutTenantIsDenied(string $subjectClass, ?string $read, string $write): void
@@ -275,10 +298,12 @@ final class TenantScopeVoterMatrixTest extends TestCase
 
     /**
      * @param list<string> $roles
+     * @param bool         $allPermissions hasPermission() result (UserVoter / EntityVoter read)
      */
-    private function actor(array $roles, ?Tenant $tenant): User
+    private function actor(array $roles, ?Tenant $tenant, bool $allPermissions = false): User
     {
         $user = $this->createMock(User::class);
+        $user->method('hasPermission')->willReturn($allPermissions);
         $user->method('getRoles')->willReturn($roles);
         $user->method('getTenant')->willReturn($tenant);
         $user->method('isActive')->willReturn(true);

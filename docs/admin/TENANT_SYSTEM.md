@@ -262,7 +262,12 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
      any record; everyone else, `ROLE_ADMIN` included, only on records of their own
      organisation. `ROLE_GROUP_CISO` and `ROLE_KONZERN_AUDITOR` may additionally
      *read* records of subsidiaries (never write). A missing tenant on the user or
-     the record denies access. Bulk export/assign/delete endpoints use the same
+     the record denies access.
+   - Two scopes, one tree comparison: organisation *administration* (the table
+     under *Admin Portal Access*: settings, contexts, membership) covers the own
+     organisation and its subsidiaries; *records* (risks, assets, incidents …)
+     cover the own organisation only, plus the holding read above. Both decide
+     "own organisation or below" with `TenantOwnership::isSameOrDescendant()`. Bulk export/assign/delete endpoints use the same
      comparison (`TenantOwnership`); only a `ROLE_SUPER_ADMIN` without an
      organisation context processes records of all organisations.
 

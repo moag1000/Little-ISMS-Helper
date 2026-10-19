@@ -29,6 +29,33 @@ final class TenantOwnership
     }
 
     /**
+     * Whether $target is $root itself or lies anywhere below it in the
+     * holding tree (never up, never sideways).
+     *
+     * The one tree comparison: {@see TenantContext::canAccessTenant()}
+     * (organisation administration, `TenantScopedAdminVoter`, bulk context
+     * scope) and the holding read of {@see Voter\HoldingTreeAccessTrait}
+     * both use it. Ancestors are compared like {@see isSameTenant()} (identity
+     * or id), so a Doctrine proxy or detached copy of $root still matches.
+     * Fails closed on a missing tenant.
+     */
+    public static function isSameOrDescendant(?Tenant $root, ?Tenant $target): bool
+    {
+        if (!$root instanceof Tenant) {
+            return false;
+        }
+        $seen = []; // guards against a corrupt parent cycle
+        for ($node = $target; $node instanceof Tenant && !isset($seen[spl_object_id($node)]); $node = $node->getParent()) {
+            if (self::isSameTenant($node, $root)) {
+                return true;
+            }
+            $seen[spl_object_id($node)] = true;
+        }
+
+        return false;
+    }
+
+    /**
      * Whether an actor acting in $actingTenant may process $entity.
      *
      * The entity must belong to the acting tenant. An actor without tenant

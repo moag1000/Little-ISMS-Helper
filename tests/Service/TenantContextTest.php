@@ -267,6 +267,24 @@ class TenantContextTest extends TestCase
     }
 
     #[Test]
+    public function testCanAccessTenantMatchesTheCurrentTenantByIdUpTheTree(): void
+    {
+        // The subsidiary's parent is another instance of the current tenant
+        // (Doctrine proxy / detached copy) - same organisation, same id.
+        $current = (new Tenant())->setCode('holding');
+        $parentCopy = (new Tenant())->setCode('holding');
+        foreach ([$current, $parentCopy] as $tenant) {
+            (new \ReflectionProperty(Tenant::class, 'id'))->setValue($tenant, 77);
+        }
+        $sub = (new Tenant())->setCode('sub');
+        $parentCopy->addSubsidiary($sub);
+
+        $this->tenantContext->setCurrentTenant($current);
+
+        $this->assertTrue($this->tenantContext->canAccessTenant($sub));
+    }
+
+    #[Test]
     public function testCanAccessTenantSiblingReturnsFalse(): void
     {
         $holding = (new Tenant())->setCode('holding');

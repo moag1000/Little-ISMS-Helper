@@ -21,8 +21,14 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *    identity or id), or — for read attributes only — a descendant tenant
  *    when the user holds ROLE_GROUP_CISO or ROLE_KONZERN_AUDITOR
  *    (Phase 9.P1.6 holding read; lateral/sibling access is never granted).
- *  - ROLE_ADMIN administers its own organisation only, so it passes
- *    inside that scope and nowhere else.
+ *  - ROLE_ADMIN passes for records of its own organisation only. This is
+ *    deliberately narrower than organisation administration
+ *    (TenantScopedAdminVoter::ADMIN_OWN_TENANT / TenantContext::canAdminister:
+ *    own organisation and its subsidiaries — settings, contexts, membership),
+ *    see docs/admin/TENANT_SYSTEM.md. Reading a subsidiary's records needs a
+ *    holding role; writing them is never granted below the own organisation.
+ *  - Both scopes use the same tree comparison,
+ *    {@see TenantOwnership::isSameOrDescendant()}.
  *  - A missing user tenant or record tenant fails closed.
  *
  * Role-hierarchy-aware: roles are expanded via the consumer's injected
@@ -95,6 +101,6 @@ trait HoldingTreeAccessTrait
             return false;
         }
 
-        return $this->isSameTenant($user, $targetTenant) || $targetTenant->isChildOf($userTenant);
+        return TenantOwnership::isSameOrDescendant($userTenant, $targetTenant);
     }
 }

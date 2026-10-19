@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
+use App\Security\TenantOwnership;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -269,17 +270,7 @@ class TenantContext
      */
     public function canAccessTenant(Tenant $candidate): bool
     {
-        $current = $this->getCurrentTenant();
-        if (!$current instanceof Tenant) {
-            return false;
-        }
-        if ($current === $candidate) {
-            return true;
-        }
-        if ($current->getId() !== null && $current->getId() === $candidate->getId()) {
-            return true;
-        }
-        return $candidate->isChildOf($current);
+        return TenantOwnership::isSameOrDescendant($this->getCurrentTenant(), $candidate);
     }
 
     /**
