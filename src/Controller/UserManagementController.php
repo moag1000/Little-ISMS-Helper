@@ -434,6 +434,10 @@ class UserManagementController extends AbstractController
             '_label' => $translator->trans('user.export.progress_title', [], 'user'),
             '_subtitle' => $translator->trans('user.export.progress_subtitle', [], 'user'),
             '_download_label' => $translator->trans('user.export.download_button', [], 'user'),
+            // Security hotfix: the download is bound to the user who started
+            // the export (read by exportDownload(); missing = not downloadable
+            // for non-SUPER_ADMIN).
+            '_actor_id' => $this->getUser() instanceof User ? $this->getUser()->getId() : null,
         ]);
         $jobStatusService->updatePayload($jobId, [
             '_download_url' => $this->generateUrl('user_management_export_download', ['id' => $jobId]),
@@ -481,6 +485,17 @@ class UserManagementController extends AbstractController
             );
         }
         $record = $jobStatusService->read($id);
+        // Security hotfix: only the user who started the export (or a
+        // SUPER_ADMIN) may download it; 404 avoids an existence oracle.
+        $actor = $this->getUser();
+        $ownerId = $record['payload']['_actor_id'] ?? null;
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')
+            && (!$actor instanceof User || $ownerId === null || (int) $ownerId !== $actor->getId())
+        ) {
+            throw $this->createNotFoundException(
+                $translator->trans('user.export.file_not_found', [], 'user'),
+            );
+        }
         if (($record['status'] ?? '') !== 'succeeded') {
             throw $this->createNotFoundException(
                 $translator->trans('user.export.file_not_found', [], 'user'),
@@ -551,10 +566,16 @@ class UserManagementController extends AbstractController
                         continue;
                     }
 
-                    // Check if user already exists
+                    // Check if user already exists. Security hotfix: e-mail is
+                    // unique instance-wide, so the message must not tell a
+                    // tenant admin whether the account lives in another tenant.
                     $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
                     if ($existingUser instanceof User) {
-                        $errors[] = "Skipped: User with email {$email} already exists";
+                        $errors[] = $translator->trans(
+                            'user.validation.import_email_unavailable',
+                            ['%email%' => $email],
+                            'user',
+                        );
                         continue;
                     }
 

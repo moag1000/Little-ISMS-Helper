@@ -16,7 +16,7 @@ src/Controller/ManagementReportController.php:LOC=1294 deps=0
 src/Controller/Admin/DataRepairController.php:LOC=1278 deps=0
 src/Service/ManagementReportService.php:LOC=1164 deps=20
 src/Service/ComplianceWizard/CoverageCheckService.php:LOC=1077 deps=24
-src/Controller/UserManagementController.php:LOC=1089 deps=0
+src/Controller/UserManagementController.php:LOC=1110 deps=0
 src/Controller/IncidentController.php:LOC=996 deps=0
 src/Controller/TenantManagementController.php:LOC=1038 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0

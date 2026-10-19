@@ -177,6 +177,7 @@ user:
         password_min_length: 'The password must be at least {{ limit }} characters long.'
         privileged_role_forbidden: 'Only a super administrator may grant or revoke the roles Super Admin, Group CISO and Group Auditor. The change was not saved.'
         tenant_not_assignable: 'You can only assign organizations you administer. The change was not saved.'
+        import_email_unavailable: 'Skipped: %email% cannot be imported (e-mail address not available).'
     auth_provider:
         local: 'Local Authentication'
     auth:
