@@ -32,8 +32,8 @@
                     <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'analytics.action.export'|trans({}, 'analytics') }}
                 </button>
                 <ul class="dropdown-menu">
-                    {# CSV exports are ROLE_MANAGER-gated server-side (AnalyticsController) #}
-                    {% if is_granted('ROLE_MANAGER') %}
+                    {# Read-only CSV exports are ROLE_AUDITOR-gated server-side (AnalyticsController) #}
+                    {% if is_granted('ROLE_AUDITOR') %}
                     <li>
                         <form method="post" action="{{ path('app_analytics_export_dispatch', {type: 'risks'}) }}" data-turbo="false" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('analytics_export_dispatch') }}">

@@ -267,7 +267,7 @@ class AnalyticsController extends AbstractController
      * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/export/{type}/dispatch', name: 'app_analytics_export_dispatch', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_AUDITOR')]
     #[IsCsrfTokenValid('analytics_export_dispatch')]
     public function exportDataDispatch(
         Request $request,
@@ -304,7 +304,7 @@ class AnalyticsController extends AbstractController
      * string.
      */
     #[Route('/export/{type}/download/{id}', name: 'app_analytics_export_download', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_AUDITOR')]
     #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $type,
@@ -352,7 +352,7 @@ class AnalyticsController extends AbstractController
     }
 
     #[Route('/api/export/{type}', name: 'app_analytics_export', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_AUDITOR')]
     public function exportData(
         Request $request,
         string $type,
