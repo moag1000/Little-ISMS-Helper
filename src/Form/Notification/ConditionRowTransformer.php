@@ -107,14 +107,8 @@ final class ConditionRowTransformer implements DataTransformerInterface
         $quoted = false;
         $inQuotes = false;
         $len = strlen($text);
-        $flush = static function () use (&$cells, &$cell, &$quoted): void {
-            $value = $quoted ? $cell : trim($cell);
-            if ($quoted || $value !== '') {
-                $cells[] = $value;
-            }
-            $cell = '';
-            $quoted = false;
-        };
+        /** @var list<array{string, bool}> $raw */
+        $raw = [];
         for ($i = 0; $i < $len; ++$i) {
             $ch = $text[$i];
             if ($inQuotes) {
@@ -131,12 +125,20 @@ final class ConditionRowTransformer implements DataTransformerInterface
                 $quoted = true;
                 $cell = '';
             } elseif ($ch === ',') {
-                $flush();
+                $raw[] = [$cell, $quoted];
+                $cell = '';
+                $quoted = false;
             } elseif (!$quoted || trim($ch) !== '') {
                 $cell .= $ch;
             }
         }
-        $flush();
+        $raw[] = [$cell, $quoted];
+        foreach ($raw as [$value, $wasQuoted]) {
+            $value = $wasQuoted ? $value : trim($value);
+            if ($wasQuoted || $value !== '') {
+                $cells[] = $value;
+            }
+        }
 
         return $cells;
     }
