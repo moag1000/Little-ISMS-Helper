@@ -18,9 +18,8 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
  * `Workflow::apply()` MUST contain a `four_eyes_approver` (App\Entity\User)
  * that:
  *   1. is non-null
- *   2. differs from the `user` (initiator) — UNLESS the tenant has
- *      exactly ONE active user holding any of the required roles
- *      (single-user-tenant escape, see below)
+ *   2. differs from the `user` (initiator) — UNLESS nobody else in the
+ *      tenant could approve (single-user-tenant escape, see below)
  *   3. carries at least one of the `roles` listed in the transition metadata,
  *      resolved through the Symfony role hierarchy (ROLE_DPO / ROLE_ADMIN
  *      reach ROLE_MANAGER) — UNLESS the caller sets
@@ -34,11 +33,17 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
  *
  * ── Single-user-tenant escape (KMU pragma) ──────────────────────────────
  * Many KMU run their ISMS as a one-person operation (ISB == Geschäftsführer).
- * Hard-blocking 4-eyes would make the tool unusable for them. So if the
- * tenant has exactly ONE active user carrying any of the required roles,
- * self-approval is permitted on the condition that:
- *   - the transition declares `reason_required: true` (most do) OR a
- *     reason is in fact supplied
+ * Hard-blocking 4-eyes would make the tool unusable for them. So if nobody
+ * else in the tenant could act as the second approver, self-approval is
+ * permitted. "Nobody else" means: when the caller passes
+ * `four_eyes_eligible_approver` (a Closure(User): bool — WorkflowService:
+ * users eligible for the authorising step), no OTHER active tenant user
+ * satisfies it; otherwise at most one active user carries any of the
+ * transition's required roles. Conditions:
+ *   - the caller has not disabled the escape
+ *     (`four_eyes_self_approval_escape: false` — used when the only reason
+ *     available is system-generated, e.g. the policy-section host release)
+ *   - a reason is in fact supplied (the offline counter-signature)
  *   - the audit-log records both `user` and `four_eyes_approver` as the
  *     SAME id, which makes the offline-sign-off auditable
  *
@@ -114,8 +119,11 @@ final class FourEyesValidator
             && $initiator instanceof User
             && $initiator->getId() === $approver->getId();
         $approverOmitted = !($approver instanceof User);
+        $escapeAllowed = ($context['four_eyes_self_approval_escape'] ?? true) !== false;
+        $isEligible = $context['four_eyes_eligible_approver'] ?? null;
         if (($approverOmitted || $approverIsInitiator)
-            && $this->isSingleApproverTenant($initiator, $requiredRoles)) {
+            && $escapeAllowed
+            && $this->isSingleApproverTenant($initiator, $requiredRoles, $isEligible instanceof \Closure ? $isEligible : null)) {
             $reason = $context['reason'] ?? null;
             if (!is_string($reason) || trim($reason) === '') {
                 // Force the user to document the offline-sign-off in the reason.
@@ -168,13 +176,18 @@ final class FourEyesValidator
     }
 
     /**
-     * True when the initiator's tenant has at most ONE active user holding
-     * any of the required roles — i.e. there is nobody else to act as the
-     * second approver. KMU-pragma documented in class doc-block.
+     * True when nobody in the initiator's tenant besides the initiator could
+     * act as the second approver. KMU-pragma documented in class doc-block.
      *
-     * @param array<int, string> $requiredRoles
+     * With $isEligible (the caller's own approver rule, e.g. the workflow
+     * step's approver_role / approver_users) every other active tenant user
+     * is tested against it; otherwise the transition's required roles are
+     * counted.
+     *
+     * @param array<int, string>        $requiredRoles
+     * @param (\Closure(User): bool)|null $isEligible
      */
-    private function isSingleApproverTenant(mixed $initiator, array $requiredRoles): bool
+    private function isSingleApproverTenant(mixed $initiator, array $requiredRoles, ?\Closure $isEligible = null): bool
     {
         if (!$initiator instanceof User) {
             return false;
@@ -182,6 +195,15 @@ final class FourEyesValidator
         $tenant = $initiator->getTenant();
         if ($tenant === null) {
             return false;
+        }
+        if ($isEligible !== null) {
+            foreach ($this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true]) as $u) {
+                if ($u->getId() !== $initiator->getId() && $isEligible($u) === true) {
+                    return false;
+                }
+            }
+
+            return true;
         }
         if ($requiredRoles === []) {
             // No role-gating on the transition — fall back to counting any

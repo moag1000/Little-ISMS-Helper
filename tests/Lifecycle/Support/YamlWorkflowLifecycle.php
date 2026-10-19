@@ -42,6 +42,8 @@ final class YamlWorkflowLifecycle implements LifecycleTransitionInterface
         ?string $reason = null,
         ?User $fourEyesApprover = null,
         bool $approverAuthorityVerified = false,
+        ?\Closure $isEligibleApprover = null,
+        bool $allowSelfApprovalEscape = true,
     ): void {
         $workflow = $this->machine($workflowName);
         $from = (string) $entity->getStatus();

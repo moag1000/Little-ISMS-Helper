@@ -232,6 +232,102 @@ class PolicySectionApprovalServiceTest extends TestCase
         self::assertSame('cancelled', $host->getStatus());
         self::assertSame(['approve'], $lifecycle->appliedTransitions());
     }
+    /**
+     * The host release passes a fixed system reason. It must not satisfy the
+     * single-approver escape: even in a one-approver organisation the
+     * initiator cannot release their own host workflow by signing off the
+     * last section.
+     */
+    #[Test]
+    public function fixedHostReleaseReasonDoesNotOpenTheSingleApproverEscape(): void
+    {
+        $tenant = $this->createMock(Tenant::class);
+        $initiatorAndApprover = $this->createMock(User::class);
+        $initiatorAndApprover->method('getId')->willReturn(7);
+        $initiatorAndApprover->method('getTenant')->willReturn($tenant);
+        $initiatorAndApprover->method('getRoles')->willReturn(['ROLE_MANAGER']);
+
+        $gate = $this->createMock(\App\Entity\WorkflowStep::class);
+        $gate->method('getName')->willReturn('top_mgmt_signoff');
+        $host = new \App\Entity\WorkflowInstance();
+        $host->setStatus('in_progress');
+        $host->setCurrentStep($gate);
+        $host->setInitiatedBy($initiatorAndApprover);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $hostRepo = $this->createMock(EntityRepository::class);
+        $hostRepo->method('findOneBy')->willReturn($host);
+        $em->method('getRepository')->willReturn($hostRepo);
+
+        $section = $this->makeSection();
+        $sectionRepo = $this->createMock(DocumentSectionRepository::class);
+        $sectionRepo->method('findByDocument')->willReturn([$section]);
+        $sectionRepo->method('allSectionsApproved')->willReturn(true);
+
+        // Sole active manager of the organisation: the escape would apply
+        // if the fixed reason counted as the documented counter-signature.
+        $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
+        $resolver->method('resolve')->willReturn(['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']]);
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepo->method('findBy')->willReturn([$initiatorAndApprover]);
+        $validator = new FourEyesValidator($resolver, $userRepo, new RoleHierarchy([]));
+
+        $inner = new YamlWorkflowLifecycle();
+        $service = new PolicySectionApprovalService(
+            $em,
+            $sectionRepo,
+            $this->createMock(AuditLogger::class),
+            $inner,
+            fourEyesValidator: $validator,
+        );
+
+        try {
+            $service->approve($section, $initiatorAndApprover);
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('same_user', $e->reasonCode);
+        }
+        self::assertSame(DocumentSection::STATUS_DRAFT, $section->getStatus());
+        self::assertSame('in_progress', $host->getStatus());
+    }
+
+    #[Test]
+    public function hostReleaseTransitionDisablesTheSelfApprovalEscape(): void
+    {
+        $gate = $this->createMock(\App\Entity\WorkflowStep::class);
+        $gate->method('getName')->willReturn('top_mgmt_signoff');
+        $host = new \App\Entity\WorkflowInstance();
+        $host->setStatus('in_progress');
+        $host->setCurrentStep($gate);
+        $host->setInitiatedBy($this->makeUser(3));
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $hostRepo = $this->createMock(EntityRepository::class);
+        $hostRepo->method('findOneBy')->willReturn($host);
+        $em->method('getRepository')->willReturn($hostRepo);
+        $sectionRepo = $this->createMock(DocumentSectionRepository::class);
+        $sectionRepo->method('allSectionsApproved')->willReturn(true);
+
+        $lifecycle = $this->createMock(LifecycleTransitionInterface::class);
+        $hostCall = null;
+        $lifecycle->method('transition')->willReturnCallback(
+            function (object $entity, string $wf, string $tr, ...$rest) use (&$hostCall): void {
+                if ($wf === 'workflow_instance_lifecycle') {
+                    $hostCall = $rest;
+                } else {
+                    $entity->setStatus(DocumentSection::STATUS_APPROVED);
+                }
+            },
+        );
+
+        $service = new PolicySectionApprovalService($em, $sectionRepo, $this->auditLogger, $lifecycle);
+        $service->approve($this->makeSection(), $this->makeUser(9));
+
+        self::assertIsArray($hostCall, 'host approve transition applied');
+        // [user, reason, approver, authorised, isEligibleApprover, allowSelfApprovalEscape]
+        self::assertFalse($hostCall[5]);
+    }
+
     #[Test]
     public function refusedHostReleaseLeavesSectionAndHostUntouched(): void
     {
@@ -274,6 +370,8 @@ class PolicySectionApprovalServiceTest extends TestCase
                 ?string $reason = null,
                 ?User $fourEyesApprover = null,
                 bool $approverAuthorityVerified = false,
+                ?\Closure $isEligibleApprover = null,
+                bool $allowSelfApprovalEscape = true,
             ): void {
                 if ($workflowName === 'workflow_instance_lifecycle'
                     && $user !== null && $user->getId() === $fourEyesApprover?->getId()) {

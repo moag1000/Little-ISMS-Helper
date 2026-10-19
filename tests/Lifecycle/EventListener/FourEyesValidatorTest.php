@@ -260,6 +260,90 @@ class FourEyesValidatorTest extends TestCase
     }
 
     /**
+     * The escape used to count users reaching the transition roles
+     * (ROLE_MANAGER / ROLE_CISO). A step-eligible second approver without
+     * those roles (an explicit approver_users entry) was ignored, so the
+     * initiator could self-approve although someone else could have.
+     */
+    #[Test]
+    public function stepEligibleSecondApproverBlocksTheSelfApprovalEscape(): void
+    {
+        $initiator = $this->makeUser(1, ['ROLE_MANAGER']);
+        $namedApprover = $this->makeUser(2, ['ROLE_USER']); // in the step's approver_users
+        $validator = $this->validatorWithTenantUsers([$initiator, $namedApprover]);
+
+        try {
+            $validator->onTransition($this->makeEvent(context: [
+                'user' => $initiator,
+                'four_eyes_approver' => $initiator,
+                'four_eyes_approver_authorized' => true,
+                'four_eyes_eligible_approver' => static fn (User $u): bool => in_array($u->getId(), [1, 2], true),
+                'reason' => 'self-approval attempt',
+            ]));
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('same_user', $e->reasonCode);
+        }
+    }
+
+    #[Test]
+    public function escapeAppliesWhenNoOtherUserIsEligibleForTheStep(): void
+    {
+        $initiator = $this->makeUser(1, ['ROLE_DPO']);
+        $otherManager = $this->makeUser(2, ['ROLE_MANAGER']); // reaches the transition role, but not the step
+        $validator = $this->validatorWithTenantUsers([$initiator, $otherManager]);
+
+        $validator->onTransition($this->makeEvent(context: [
+            'user' => $initiator,
+            'four_eyes_approver' => $initiator,
+            'four_eyes_approver_authorized' => true,
+            'four_eyes_eligible_approver' => static fn (User $u): bool => $u->getId() === 1,
+            'reason' => 'Offline counter-signature by the managing director, mail of 12 May',
+        ]));
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
+     * Callers with only a system-generated reason (policy-section host
+     * release) disable the escape: a fixed text is no documented offline
+     * counter-signature.
+     */
+    #[Test]
+    public function escapeIsRefusedWhenTheCallerDisablesIt(): void
+    {
+        $u = $this->makeUser(1, ['ROLE_MANAGER']);
+        $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_MANAGER']],
+            tenantUserCount: 1,
+        );
+
+        try {
+            $validator->onTransition($this->makeEvent(context: [
+                'user' => $u,
+                'four_eyes_approver' => $u,
+                'reason' => 'All gated policy sections approved',
+                'four_eyes_self_approval_escape' => false,
+            ]));
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('same_user', $e->reasonCode);
+        }
+    }
+
+    /**
+     * @param list<User> $users active users of the tenant
+     */
+    private function validatorWithTenantUsers(array $users): FourEyesValidator
+    {
+        $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
+        $resolver->method('resolve')->willReturn(['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']]);
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepo->method('findBy')->willReturn($users);
+
+        return new FourEyesValidator($resolver, $userRepo, $this->roleHierarchy());
+    }
+
+    /**
      * @param array<string, mixed> $metadata
      */
     private function makeValidator(array $metadata, int $tenantUserCount = 5): FourEyesValidator

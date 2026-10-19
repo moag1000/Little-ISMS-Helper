@@ -237,6 +237,9 @@ final class PolicySectionApprovalService
                     'user' => $releasedHost->getInitiatedBy(),
                     'reason' => self::HOST_RELEASE_REASON,
                     'four_eyes_approver' => $approver,
+                    // The fixed release reason is not a user-documented
+                    // offline counter-signature: no single-approver escape.
+                    'four_eyes_self_approval_escape' => false,
                 ],
             );
         }
@@ -494,6 +497,7 @@ final class PolicySectionApprovalService
             $hostInstance->getInitiatedBy(),
             self::HOST_RELEASE_REASON,
             $finalApprover,
+            allowSelfApprovalEscape: false,
         );
 
         $this->auditLogger->logCustom(
