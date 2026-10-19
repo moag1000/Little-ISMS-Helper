@@ -598,13 +598,13 @@ class BusinessProcess
 
     /**
      * A risk counts as active/unmitigated unless it is already handled:
-     * closed, accepted, mitigated or treated.
+     * closed, accepted, mitigated, treated or monitored.
      */
     private static function isUnhandledRisk(Risk $risk): bool
     {
         return !in_array(
             $risk->getStatus(),
-            [RiskStatus::Closed, RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated],
+            [RiskStatus::Closed, RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated, RiskStatus::Monitored],
             true,
         );
     }

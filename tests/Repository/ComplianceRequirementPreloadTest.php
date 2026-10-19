@@ -9,6 +9,7 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Repository\ComplianceRequirementRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\PersistentCollection;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -56,6 +57,17 @@ final class ComplianceRequirementPreloadTest extends KernelTestCase
             $req->addMappedControl($control);
             $this->em->persist($req);
         }
+        // Parity cases: top-level without mapped controls (not implemented) and a
+        // child requirement (excluded from numerator and denominator).
+        $bare = (new ComplianceRequirement())
+            ->setFramework($framework)->setRequirementId('R-bare')->setTitle('t')
+            ->setDescription('d')->setCategory('c')->setPriority('high')->setRequirementType('core');
+        $this->em->persist($bare);
+        $child = (new ComplianceRequirement())
+            ->setFramework($framework)->setRequirementId('R-child')->setTitle('t')
+            ->setDescription('d')->setCategory('c')->setPriority('high')->setRequirementType('sub_requirement')
+            ->setParentRequirement($bare);
+        $this->em->persist($child);
         $this->em->flush();
         $id = $framework->getId();
         $this->em->clear();
@@ -70,11 +82,26 @@ final class ComplianceRequirementPreloadTest extends KernelTestCase
         $percentage = $loaded->getCompliancePercentage();
         $used = $this->questions() - $before - 1; // minus the SHOW STATUS probe itself
 
-        $this->assertSame(50.0, $percentage);
+        // 6 of 13 top-level fulfilled (12 mapped + 1 bare); the child is ignored.
+        $this->assertSame(46.2, $percentage);
         $this->assertLessThanOrEqual(3, $used, "expected bounded queries, got $used for $n requirements");
         foreach ($loaded->getRequirements() as $r) {
-            $this->assertTrue($r->getMappedControls()->isInitialized());
+            if ($r->getParentRequirement() === null) {
+                $controls = $r->getMappedControls();
+                $this->assertInstanceOf(PersistentCollection::class, $controls);
+                $this->assertTrue($controls->isInitialized());
+            }
         }
+
+        // Parity with the un-preloaded (lazy) computation.
+        $this->assertSame($percentage, $this->freshPercentage($id));
+    }
+
+    private function freshPercentage(int $id): float
+    {
+        $this->em->clear();
+
+        return $this->em->find(ComplianceFramework::class, $id)->getCompliancePercentage();
     }
 
     private function questions(): int

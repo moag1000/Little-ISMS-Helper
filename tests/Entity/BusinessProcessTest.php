@@ -423,7 +423,7 @@ class BusinessProcessTest extends TestCase
     public function testHandledRisksAreNotActiveOrUnmitigated(): void
     {
         $process = new BusinessProcess();
-        foreach ([RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated, RiskStatus::Closed] as $status) {
+        foreach ([RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated, RiskStatus::Monitored, RiskStatus::Closed] as $status) {
             $risk = new Risk();
             $risk->setTitle('r');
             $risk->setStatus($status);
