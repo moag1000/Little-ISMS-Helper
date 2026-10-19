@@ -3,6 +3,13 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.15.3](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.2...v3.15.3) (2026-10-19)
+
+
+### Fixed
+
+* **security:** scope tenant admins to their organisation tree (3.15.3) ([#1056](https://github.com/moag1000/Little-ISMS-Helper/issues/1056)) ([53d62af](https://github.com/moag1000/Little-ISMS-Helper/commit/53d62afdbb6e910c5e896ea529ed2546aca53307))
+
 ## [3.15.2](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.1...v3.15.2) (2026-10-11)
 
 
