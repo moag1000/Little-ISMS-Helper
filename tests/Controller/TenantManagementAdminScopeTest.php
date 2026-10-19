@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 /**
@@ -97,6 +98,11 @@ final class TenantManagementAdminScopeTest extends WebTestCase
             $this->postWithToken('/en/admin/tenants/' . $this->tenantA->getId() . '/add-user', 'add_user_' . $this->tenantA->getId(), [
                 'user_email' => $victim->getEmail(),
             ]);
+            // Rejected like an unknown user (no existence oracle), not moved.
+            self::assertResponseRedirects();
+            $session = $this->client->getRequest()->getSession();
+            self::assertInstanceOf(FlashBagAwareSessionInterface::class, $session);
+            self::assertContains('tenant.users.flash.user_not_found', $session->getFlashBag()->get('warning'));
             self::assertSame($this->tenantB->getId(), $this->tenantIdOf($victim), (string) $victim->getEmail());
         }
     }

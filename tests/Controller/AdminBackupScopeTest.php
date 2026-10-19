@@ -168,7 +168,9 @@ final class AdminBackupScopeTest extends WebTestCase
         $this->client->loginUser($this->adminA);
         $this->postWithToken('/en/admin/data/backup/validate/' . $file, 'data_backup_validate');
         self::assertNotSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-        $this->postWithToken('/en/admin/data/backup/restore/' . $file, 'data_backup_restore');
+        // dry_run=1: the own-tenant restore must pass the scope check without
+        // actually restoring anything in the shared test DB.
+        $this->postWithToken('/en/admin/data/backup/restore/' . $file, 'data_backup_restore', ['dry_run' => '1']);
         self::assertNotSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
@@ -190,7 +192,8 @@ final class AdminBackupScopeTest extends WebTestCase
         return $name;
     }
 
-    private function postWithToken(string $url, string $tokenId): void
+    /** @param array<string, string> $params */
+    private function postWithToken(string $url, string $tokenId, array $params = []): void
     {
         $this->client->request('GET', '/en/admin/users');
         $session = $this->client->getRequest()->getSession();
@@ -198,7 +201,7 @@ final class AdminBackupScopeTest extends WebTestCase
         $session->set('_csrf/' . $tokenId, $token);
         $session->save();
 
-        $this->client->request('POST', $url, ['_token' => $token]);
+        $this->client->request('POST', $url, ['_token' => $token] + $params);
     }
 
     private function tenant(string $label): Tenant
