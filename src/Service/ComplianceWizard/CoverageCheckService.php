@@ -597,7 +597,7 @@ final class CoverageCheckService
             $totalFindings += count($findings);
 
             foreach ($findings as $finding) {
-                if ($finding->getStatus() === AuditFinding::STATUS_CLOSED) {
+                if ($finding->isDone()) {
                     $findingsClosed++;
                 } elseif ($finding->getSeverity() === AuditFinding::SEVERITY_CRITICAL) {
                     $openCriticalFindings[] = [

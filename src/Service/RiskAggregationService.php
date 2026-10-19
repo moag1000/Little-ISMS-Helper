@@ -236,7 +236,7 @@ final class RiskAggregationService
                 RiskStatus::Accepted,
             ], true)) {
                 $treatedOrClosed++;
-            } elseif (in_array($status, [RiskStatus::Identified, RiskStatus::Assessed, RiskStatus::Open], true)) {
+            } elseif (in_array($status, [RiskStatus::Identified, RiskStatus::Assessed, RiskStatus::Open, RiskStatus::InTreatment], true)) {
                 $identifiedOrAssessed++;
             }
         }

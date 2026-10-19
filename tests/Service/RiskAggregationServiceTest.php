@@ -91,4 +91,18 @@ final class RiskAggregationServiceTest extends TestCase
 
         self::assertSame('stable', $trend);
     }
+
+    #[Test]
+    public function inTreatmentRisksCountAsStillOpen(): void
+    {
+        $trend = $this->portfolioTrend([
+            $this->risk(RiskStatus::InTreatment, 5, 5),
+            $this->risk(RiskStatus::InTreatment, 5, 4),
+            $this->risk(RiskStatus::InTreatment, 4, 5),
+            $this->risk(RiskStatus::Treated, 1, 1),
+            $this->risk(RiskStatus::Closed, 1, 1),
+        ]);
+
+        self::assertSame('increasing', $trend);
+    }
 }

@@ -106,4 +106,19 @@ final class CoverageCheckServiceAuditStatusTest extends TestCase
         self::assertSame(100.0, $result['score']);
         self::assertNull($result['gap']);
     }
+
+    #[Test]
+    public function resolvedAndVerifiedFindingsCountAsClosed(): void
+    {
+        $audit = new InternalAudit();
+        $audit->setTitle('ISMS audit');
+        $audit->setStatus('completed');
+        $audit->addStructuredFinding($this->finding(AuditFinding::STATUS_RESOLVED, AuditFinding::SEVERITY_CRITICAL, 'Resolved critical'));
+        $audit->addStructuredFinding($this->finding(AuditFinding::STATUS_VERIFIED, AuditFinding::SEVERITY_CRITICAL, 'Verified critical'));
+
+        $result = $this->buildService([$audit])->checkAuditStatus([], null);
+
+        self::assertSame(100.0, $result['score']);
+        self::assertNull($result['gap']);
+    }
 }
