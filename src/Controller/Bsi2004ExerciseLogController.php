@@ -10,7 +10,6 @@ use App\Entity\Bsi2004ExerciseLog;
 use App\Form\Bsi2004ExerciseLogType;
 use App\Repository\BCExerciseRepository;
 use App\Repository\Bsi2004ExerciseLogRepository;
-use App\Security\TenantOwnership;
 use App\Security\Voter\Bsi2004ExerciseLogVoter;
 use App\Service\AuditLogger;
 use App\Service\Bsi2004ExerciseLogService;
@@ -90,10 +89,12 @@ class Bsi2004ExerciseLogController extends AbstractController
             return $redirect;
         }
 
-        // The exercise must belong to the acting tenant (only a SUPER_ADMIN
-        // without tenant context may reach every tenant's exercises).
-        $tenant = $this->tenantContext->getCurrentTenant();
-        if (!TenantOwnership::isInScope($exercise, $tenant, $tenant === null && $this->isGranted('ROLE_SUPER_ADMIN'))) {
+        // Same rule as editing the log it creates: the log inherits the
+        // exercise's tenant, so ask Bsi2004ExerciseLogVoter::EDIT for an
+        // unsaved log of that tenant (SUPER_ADMIN everywhere, everyone else
+        // inside the own organisation).
+        $probe = (new Bsi2004ExerciseLog())->setTenant($exercise->getTenant());
+        if (!$this->isGranted(Bsi2004ExerciseLogVoter::EDIT, $probe)) {
             throw $this->createAccessDeniedException('Cross-tenant access denied.');
         }
 

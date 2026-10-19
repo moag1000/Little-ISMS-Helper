@@ -33,6 +33,8 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     private ?Tenant $foreignTenant = null;
     private ?User $foreignAdmin = null;
     private ?BCExercise $foreignExercise = null;
+    /** @var list<User> */
+    private array $superAdmins = [];
 
     protected function setUp(): void
     {
@@ -71,7 +73,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
                     $this->em->remove($ex);
                 }
             }
-            foreach ([$this->manager, $this->auditor, $this->foreignAdmin] as $u) {
+            foreach ([$this->manager, $this->auditor, $this->foreignAdmin, ...$this->superAdmins] as $u) {
                 if ($u) {
                     $user = $this->em->find(User::class, $u->getId());
                     if ($user) {
@@ -162,6 +164,47 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     }
 
     /**
+     * new() took the scope from TenantContext (own or default organisation),
+     * so a SUPER_ADMIN got 403 for any other organisation's exercise although
+     * Bsi2004ExerciseLogVoter grants the instance operator global access.
+     */
+    #[Test]
+    public function superAdminCanCreateLogForAnotherOrganisationsExercise(): void
+    {
+        $this->foreignExercise = $this->makeExercise('Foreign Log Target ' . uniqid(), $this->foreignTenant);
+        $this->em->flush();
+
+        // Without an organisation the operator works in the default (oldest
+        // root) organisation, never in this freshly created one. (A
+        // SUPER_ADMIN with an organisation is scoped to it by the tenant
+        // Doctrine filter and gets 404 before the controller runs.)
+        $superAdmin = $this->makeUser('bsi_super_' . uniqid(), ['ROLE_SUPER_ADMIN']);
+        $superAdmin->setTenant(null);
+        $this->em->flush();
+        $this->superAdmins = [$superAdmin];
+
+        $this->loginAs($superAdmin);
+        $this->client->request('GET', '/de/bcm/exercise-log/new/' . $this->foreignExercise->getId());
+        $this->assertResponseIsSuccessful();
+    }
+
+    /**
+     * Same rule as Bsi2004ExerciseLogVoter::EDIT: a manager stays inside the
+     * own organisation, even for an exercise of a subsidiary.
+     */
+    #[Test]
+    public function managerCannotCreateLogForASubsidiarysExercise(): void
+    {
+        $this->foreignTenant->setParent($this->tenant);
+        $this->foreignExercise = $this->makeExercise('Subsidiary Log Target ' . uniqid(), $this->foreignTenant);
+        $this->em->flush();
+
+        $this->loginAs($this->manager);
+        $this->client->request('GET', '/de/bcm/exercise-log/new/' . $this->foreignExercise->getId());
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    /**
      * The calendar used to list every tenant's upcoming exercises
      * (findUpcoming() had no tenant parameter).
      */
@@ -240,6 +283,23 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $this->em->persist($this->log);
 
         $this->em->flush();
+    }
+
+    private function makeExercise(string $name, Tenant $tenant): BCExercise
+    {
+        $exercise = new BCExercise();
+        $exercise->setName($name);
+        $exercise->setExerciseType('tabletop');
+        $exercise->setScope('Scope');
+        $exercise->setObjectives('Objective');
+        $exercise->setParticipants('Alice');
+        $exercise->setFacilitator('Charlie');
+        $exercise->setStatus('completed');
+        $exercise->setExerciseDate(new \DateTime('-1 day'));
+        $exercise->setTenant($tenant);
+        $this->em->persist($exercise);
+
+        return $exercise;
     }
 
     private function makeUser(string $email, array $roles, ?Tenant $tenant = null): User
