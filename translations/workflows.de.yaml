@@ -344,6 +344,10 @@ approval:
     section_title: 'Zur Freigabe'
     error:
         clarification_empty: 'Bitte formulieren Sie eine konkrete Rückfrage.'
+        four_eyes:
+            same_user: 'Sie haben diesen Workflow gestartet und können ihn deshalb nicht selbst abschließend freigeben. Eine andere berechtigte Person muss freigeben (Vier-Augen-Prinzip).'
+            missing_approver: 'Die abschließende Freigabe braucht eine zweite Person (Vier-Augen-Prinzip). Sind Sie die einzige berechtigte Person in Ihrer Organisation, dokumentieren Sie die Offline-Gegenzeichnung im Kommentar.'
+            approver_lacks_role: 'Ihre Rolle ist nicht berechtigt, diesen Workflow abschließend freizugeben.'
     success:
         clarification_sent: 'Rückfrage gesendet.'
     deadline:

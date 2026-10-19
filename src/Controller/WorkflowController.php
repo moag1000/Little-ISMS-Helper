@@ -10,6 +10,7 @@ use DateTimeImmutable;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
@@ -163,7 +164,19 @@ class WorkflowController extends AbstractController
         }
 
         $comments = $request->request->get('comments');
-        $success = $this->workflowService->approveStep($workflowInstance, $this->currentUser(), $comments);
+        try {
+            $success = $this->workflowService->approveStep($workflowInstance, $this->currentUser(), $comments);
+        } catch (FourEyesRequiredException $e) {
+            // Four-eyes refusal of the closing approval is a domain outcome,
+            // not a server error. approveStep() has already undone its
+            // in-memory progress.
+            $this->addFlash('error', $this->translator->trans(
+                'approval.error.four_eyes.' . $e->reasonCode,
+                [],
+                'workflows',
+            ));
+            return $this->getSmartRedirect($request, $workflowInstance);
+        }
 
         if ($success) {
             $this->addFlash('success', $this->translator->trans('workflow.success.approved', [], 'messages'));

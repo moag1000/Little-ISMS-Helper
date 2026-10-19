@@ -12,7 +12,9 @@ use App\Lifecycle\EventListener\FourEyesValidator;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\UserRepository;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Workflow\Event\TransitionEvent;
+use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\WorkflowInterface;
@@ -144,6 +146,119 @@ class FourEyesValidatorTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
+    public function personaRoleInheritingManagerSatisfiesManagerRequirement(): void
+    {
+        // ROLE_DPO inherits ROLE_MANAGER via security.yaml role_hierarchy.
+        $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']],
+        );
+        $validator->onTransition($this->makeEvent(context: [
+            'user' => $this->makeUser(1, ['ROLE_MANAGER']),
+            'four_eyes_approver' => $this->makeUser(2, ['ROLE_DPO']),
+        ]));
+        $this->expectNotToPerformAssertions();
+    }
+
+    #[Test]
+    public function adminSatisfiesManagerRequirementThroughHierarchy(): void
+    {
+        $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']],
+        );
+        $validator->onTransition($this->makeEvent(context: [
+            'user' => $this->makeUser(1, ['ROLE_MANAGER']),
+            'four_eyes_approver' => $this->makeUser(2, ['ROLE_ADMIN']),
+        ]));
+        $this->expectNotToPerformAssertions();
+    }
+
+    #[Test]
+    public function stepAuthorisedApproverIsNotRoleCheckedAgainstTransitionRoles(): void
+    {
+        // The workflow-instance path already verified the approver against the
+        // step definition (approver_role / approver_users). The transition's
+        // roles list must not veto such an approver.
+        $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']],
+        );
+        $validator->onTransition($this->makeEvent(context: [
+            'user' => $this->makeUser(1, ['ROLE_MANAGER']),
+            'four_eyes_approver' => $this->makeUser(2, ['ROLE_AUDITOR']),
+            'four_eyes_approver_authorized' => true,
+        ]));
+        $this->expectNotToPerformAssertions();
+    }
+
+    #[Test]
+    public function auditorWithoutStepAuthorityStillLacksRole(): void
+    {
+        $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']],
+        );
+        try {
+            $validator->onTransition($this->makeEvent(context: [
+                'user' => $this->makeUser(1, ['ROLE_MANAGER']),
+                'four_eyes_approver' => $this->makeUser(2, ['ROLE_AUDITOR']),
+            ]));
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('approver_lacks_role', $e->reasonCode);
+        }
+    }
+
+    #[Test]
+    public function stepAuthorityDoesNotWaiveTheDistinctApproverRule(): void
+    {
+        $u = $this->makeUser(1, ['ROLE_MANAGER']);
+        $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_MANAGER']],
+            tenantUserCount: 3,
+        );
+        try {
+            $validator->onTransition($this->makeEvent(context: [
+                'user' => $u,
+                'four_eyes_approver' => $u,
+                'four_eyes_approver_authorized' => true,
+                'reason' => 'ok',
+            ]));
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('same_user', $e->reasonCode);
+        }
+    }
+
+    #[Test]
+    public function singleApproverEscapeCountsUsersThatReachTheRoleThroughHierarchy(): void
+    {
+        // The tenant has the initiating MANAGER plus a DPO (who inherits
+        // ROLE_MANAGER). There IS a second eligible approver, so the
+        // single-user escape must not apply to a self-approval.
+        $initiator = $this->makeUser(1, ['ROLE_MANAGER']);
+        $dpo = $this->makeUser(2, ['ROLE_DPO']);
+
+        $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
+        $resolver->method('resolve')->willReturn(['four_eyes' => true, 'roles' => ['ROLE_MANAGER']]);
+        $userRepo = $this->createStub(UserRepository::class);
+        // Raw role LIKE-query only finds the literal ROLE_MANAGER holder.
+        $userRepo->method('findByRoleInTenant')->willReturnCallback(
+            static fn (string $role): array => $role === 'ROLE_MANAGER' ? [$initiator] : [],
+        );
+        $userRepo->method('findBy')->willReturn([$initiator, $dpo]);
+        $validator = new FourEyesValidator($resolver, $userRepo, $this->roleHierarchy());
+
+        try {
+            $validator->onTransition($this->makeEvent(context: [
+                'user' => $initiator,
+                'four_eyes_approver' => $initiator,
+                'reason' => 'self-approval attempt',
+            ]));
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('same_user', $e->reasonCode);
+        }
+    }
+
     /**
      * @param array<string, mixed> $metadata
      */
@@ -162,7 +277,18 @@ class FourEyesValidatorTest extends TestCase
         $userRepo->method('findByRoleInTenant')->willReturn($users);
         $userRepo->method('findBy')->willReturn($users);
 
-        return new FourEyesValidator($resolver, $userRepo);
+        return new FourEyesValidator($resolver, $userRepo, $this->roleHierarchy());
+    }
+
+    /** Real role hierarchy from config/packages/security.yaml. */
+    private function roleHierarchy(): RoleHierarchy
+    {
+        $config = Yaml::parseFile(\dirname(__DIR__, 3) . '/config/packages/security.yaml');
+
+        return new RoleHierarchy(array_map(
+            static fn (string|array $reachable): array => (array) $reachable,
+            $config['security']['role_hierarchy'],
+        ));
     }
 
     /**

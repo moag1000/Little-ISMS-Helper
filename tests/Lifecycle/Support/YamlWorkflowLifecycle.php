@@ -28,7 +28,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class YamlWorkflowLifecycle implements LifecycleTransitionInterface
 {
-    /** @var list<array{workflow: string, transition: string, user: ?User, reason: ?string, approver: ?User}> */
+    /** @var list<array{workflow: string, transition: string, user: ?User, reason: ?string, approver: ?User, approver_authorized: bool}> */
     public array $applied = [];
 
     /** @var array<string, array{machine: StateMachine, reasonRequired: array<string, bool>}> */
@@ -41,6 +41,7 @@ final class YamlWorkflowLifecycle implements LifecycleTransitionInterface
         ?User $user = null,
         ?string $reason = null,
         ?User $fourEyesApprover = null,
+        bool $approverAuthorityVerified = false,
     ): void {
         $workflow = $this->machine($workflowName);
         $from = (string) $entity->getStatus();
@@ -67,6 +68,7 @@ final class YamlWorkflowLifecycle implements LifecycleTransitionInterface
             'user' => $user,
             'reason' => $reason,
             'approver' => $fourEyesApprover,
+            'approver_authorized' => $approverAuthorityVerified,
         ];
     }
 

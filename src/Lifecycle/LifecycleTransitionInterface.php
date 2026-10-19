@@ -19,6 +19,13 @@ interface LifecycleTransitionInterface
      * @param  User|null $fourEyesApprover Required when the transition declares
      *                                     `four_eyes: true` in YAML metadata.
      *                                     Enforced by FourEyesValidator subscriber.
+     * @param  bool      $approverAuthorityVerified True when the caller has already
+     *                                     verified $fourEyesApprover's authority
+     *                                     against a more specific rule than the
+     *                                     transition's `roles` (WorkflowService:
+     *                                     the step's approver_role / approver_users).
+     *                                     FourEyesValidator then skips its role
+     *                                     check; the distinct-user rule still applies.
      *
      * @throws InvalidTransitionException
      * @throws \App\Lifecycle\Exception\ReasonRequiredException
@@ -31,5 +38,6 @@ interface LifecycleTransitionInterface
         ?User $user = null,
         ?string $reason = null,
         ?User $fourEyesApprover = null,
+        bool $approverAuthorityVerified = false,
     ): void;
 }

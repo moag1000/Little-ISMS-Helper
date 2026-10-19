@@ -9,6 +9,7 @@ use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\UserRepository;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
 /**
@@ -20,7 +21,13 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
  *   2. differs from the `user` (initiator) — UNLESS the tenant has
  *      exactly ONE active user holding any of the required roles
  *      (single-user-tenant escape, see below)
- *   3. carries at least one of the `roles` listed in the transition metadata
+ *   3. carries at least one of the `roles` listed in the transition metadata,
+ *      resolved through the Symfony role hierarchy (ROLE_DPO / ROLE_ADMIN
+ *      reach ROLE_MANAGER) — UNLESS the caller sets
+ *      `four_eyes_approver_authorized: true`, meaning it has already
+ *      verified the approver's authority against a more specific rule
+ *      (WorkflowService: the step's approver_role / approver_users).
+ *      The distinct-user rule (2) is never waived by that flag.
  *
  * Otherwise throws FourEyesRequiredException (caught by LifecycleService
  * + translated to 422 in LifecycleController).
@@ -52,21 +59,39 @@ final class FourEyesValidator
     public function __construct(
         private readonly LifecycleConfigResolverInterface $resolver,
         private readonly UserRepository $userRepository,
+        private readonly RoleHierarchyInterface $roleHierarchy,
     ) {}
 
     public function onTransition(TransitionEvent $event): void
     {
-        $effective = $this->resolver->resolve(
+        $this->assertSatisfied(
             $event->getSubject(),
             $event->getWorkflowName(),
             $event->getTransition()->getName(),
+            $event->getContext(),
         );
+    }
+
+    /**
+     * Runs the four-eyes check without applying the transition. Callers
+     * that must not leave partial writes behind when the transition is
+     * refused (e.g. a section sign-off that releases a host workflow)
+     * call this BEFORE mutating anything; the listener runs the very same
+     * check again when the transition is applied.
+     *
+     * @param array<string, mixed> $context same keys LifecycleService passes
+     *                                      to Workflow::apply()
+     *
+     * @throws FourEyesRequiredException
+     */
+    public function assertSatisfied(object $subject, string $workflowName, string $transitionName, array $context): void
+    {
+        $effective = $this->resolver->resolve($subject, $workflowName, $transitionName);
 
         if (($effective['four_eyes'] ?? false) !== true) {
             return;
         }
 
-        $context = $event->getContext();
         $initiator = $context['user'] ?? null;
         $approver = $context['four_eyes_approver'] ?? null;
         $requiredRoles = $effective['roles'] ?? [];
@@ -99,8 +124,8 @@ final class FourEyesValidator
                 // YAML omitted reason_required but the single-approver-escape
                 // still demands it for audit-trail integrity.
                 throw FourEyesRequiredException::missing(
-                    $event->getWorkflowName(),
-                    $event->getTransition()->getName(),
+                    $workflowName,
+                    $transitionName,
                 );
             }
             // Self-approval permitted. Record the initiator as approver too
@@ -110,16 +135,22 @@ final class FourEyesValidator
 
         if (!$approver instanceof User) {
             throw FourEyesRequiredException::missing(
-                $event->getWorkflowName(),
-                $event->getTransition()->getName(),
+                $workflowName,
+                $transitionName,
             );
         }
 
         if ($initiator instanceof User && $initiator->getId() === $approver->getId()) {
             throw FourEyesRequiredException::sameUser(
-                $event->getWorkflowName(),
-                $event->getTransition()->getName(),
+                $workflowName,
+                $transitionName,
             );
+        }
+
+        // Approver authority already verified by the caller against a more
+        // specific rule (workflow step approver_role / approver_users).
+        if (($context['four_eyes_approver_authorized'] ?? false) === true) {
+            return;
         }
 
         // Approver MUST carry one of the YAML `roles` for this transition.
@@ -129,8 +160,8 @@ final class FourEyesValidator
         // APPROVER.
         if ($requiredRoles !== [] && !$this->approverHasAnyRole($approver, $requiredRoles)) {
             throw FourEyesRequiredException::approverLacksRole(
-                $event->getWorkflowName(),
-                $event->getTransition()->getName(),
+                $workflowName,
+                $transitionName,
                 $requiredRoles,
             );
         }
@@ -162,15 +193,14 @@ final class FourEyesValidator
             return count($allActive) <= 1;
         }
 
+        // Count with the same predicate the approver check uses (role
+        // hierarchy + SUPER_ADMIN), so a DPO who inherits ROLE_MANAGER
+        // counts as a second eligible approver.
         $approvers = [];
-        foreach ($requiredRoles as $role) {
-            foreach ($this->userRepository->findByRoleInTenant($role, $tenant) as $u) {
+        foreach ($this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true]) as $u) {
+            if ($this->approverHasAnyRole($u, $requiredRoles)) {
                 $approvers[$u->getId()] = true;
             }
-        }
-        // ROLE_SUPER_ADMIN is always a valid approver — count those too.
-        foreach ($this->userRepository->findByRoleInTenant('ROLE_SUPER_ADMIN', $tenant) as $u) {
-            $approvers[$u->getId()] = true;
         }
         return count($approvers) <= 1;
     }
@@ -180,7 +210,10 @@ final class FourEyesValidator
      */
     private function approverHasAnyRole(User $approver, array $requiredRoles): bool
     {
-        $approverRoles = $approver->getRoles();
+        // Resolve through the Symfony role hierarchy (security.yaml), the
+        // same way isGranted() does: ROLE_ADMIN / ROLE_DPO / ROLE_CISO …
+        // reach ROLE_MANAGER.
+        $approverRoles = $this->roleHierarchy->getReachableRoleNames($approver->getRoles());
         foreach ($requiredRoles as $required) {
             if (in_array($required, $approverRoles, true)) {
                 return true;

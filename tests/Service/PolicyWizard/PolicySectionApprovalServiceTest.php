@@ -8,7 +8,12 @@ use App\Entity\Document;
 use App\Entity\DocumentSection;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Lifecycle\Config\LifecycleConfigResolverInterface;
+use App\Lifecycle\EventListener\FourEyesValidator;
+use App\Lifecycle\Exception\FourEyesRequiredException;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DocumentSectionRepository;
+use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\PolicyWizard\PolicySectionApprovalService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +23,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 
 /**
  * Unit tests for PolicySectionApprovalService — Phase 4-C / W3-C.
@@ -225,5 +231,124 @@ class PolicySectionApprovalServiceTest extends TestCase
 
         self::assertSame('cancelled', $host->getStatus());
         self::assertSame(['approve'], $lifecycle->appliedTransitions());
+    }
+    #[Test]
+    public function refusedHostReleaseLeavesSectionAndHostUntouched(): void
+    {
+        // The DPO who signs off the last gated section also initiated the
+        // host workflow, and a second approver exists → the host's four-eyes
+        // `approve` is refused. Section and host must stay consistent: the
+        // section is NOT approved either, so a different approver can sign
+        // it off and release the host.
+        $initiatorAndApprover = $this->makeUser(7);
+
+        $step = $this->createMock(\App\Entity\WorkflowStep::class);
+        $step->method('getName')->willReturn('top_mgmt_signoff');
+        $host = new \App\Entity\WorkflowInstance();
+        $host->setStatus('in_progress');
+        $host->setCurrentStep($step);
+        $host->setInitiatedBy($initiatorAndApprover);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $hostRepo = $this->createMock(EntityRepository::class);
+        $hostRepo->method('findOneBy')->willReturn($host);
+        $em->method('getRepository')->willReturn($hostRepo);
+        $em->expects(self::never())->method('persist');
+
+        $section = $this->makeSection();
+        $sectionRepo = $this->createMock(DocumentSectionRepository::class);
+        $sectionRepo->method('findByDocument')->willReturn([$section]);
+        $sectionRepo->method('allSectionsApproved')->willReturn(true);
+
+        $inner = new YamlWorkflowLifecycle();
+        // Production LifecycleService runs FourEyesValidator on the host
+        // transition; mirror its refusal here.
+        $lifecycle = new class ($inner) implements LifecycleTransitionInterface {
+            public function __construct(public readonly YamlWorkflowLifecycle $inner) {}
+
+            public function transition(
+                object $entity,
+                string $workflowName,
+                string $transitionName,
+                ?User $user = null,
+                ?string $reason = null,
+                ?User $fourEyesApprover = null,
+                bool $approverAuthorityVerified = false,
+            ): void {
+                if ($workflowName === 'workflow_instance_lifecycle'
+                    && $user !== null && $user->getId() === $fourEyesApprover?->getId()) {
+                    throw FourEyesRequiredException::sameUser($workflowName, $transitionName);
+                }
+                $this->inner->transition($entity, $workflowName, $transitionName, $user, $reason, $fourEyesApprover, $approverAuthorityVerified);
+            }
+        };
+
+        $auditLogger = $this->createMock(AuditLogger::class);
+        $auditLogger->expects(self::never())->method('logCustom');
+
+        $service = new PolicySectionApprovalService(
+            $em,
+            $sectionRepo,
+            $auditLogger,
+            $lifecycle,
+            fourEyesValidator: $this->makeFourEyesValidator(),
+        );
+
+        try {
+            $service->approve($section, $initiatorAndApprover);
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('same_user', $e->reasonCode);
+        }
+
+        self::assertSame(DocumentSection::STATUS_DRAFT, $section->getStatus());
+        self::assertNull($section->getApprovedAt());
+        self::assertNull($section->getApprovedByUser());
+        self::assertFalse($section->isEditLocked());
+        self::assertSame([], $inner->appliedTransitions());
+        self::assertSame('in_progress', $host->getStatus());
+        self::assertNull($host->getCompletedAt());
+        self::assertSame([], $host->getApprovalHistory());
+    }
+    #[Test]
+    public function reopenForDpoEditOnSectionAlreadyInDpoSignOffIsANoOp(): void
+    {
+        $section = $this->makeSection(status: DocumentSection::STATUS_DPO_SIGN_OFF);
+        $author = $this->makeUser(3);
+        $section->setAuthoredByUser($author);
+
+        $this->auditLogger->expects(self::never())->method('logCustom');
+        $this->em->expects(self::never())->method('persist');
+
+        $this->service->reopenForDpoEdit($section, $this->makeUser(9));
+
+        self::assertSame(DocumentSection::STATUS_DPO_SIGN_OFF, $section->getStatus());
+        self::assertSame($author, $section->getAuthoredByUser());
+        self::assertSame([], $this->lifecycle->appliedTransitions());
+    }
+
+    #[Test]
+    public function rejectOnAlreadyRejectedSectionIsANoOp(): void
+    {
+        $section = $this->makeSection(status: DocumentSection::STATUS_REJECTED);
+        $section->setRejectionReason('First veto');
+
+        $this->auditLogger->expects(self::never())->method('logCustom');
+        $this->em->expects(self::never())->method('persist');
+
+        $this->service->reject($section, $this->makeUser(9), 'Second veto');
+
+        self::assertSame(DocumentSection::STATUS_REJECTED, $section->getStatus());
+        self::assertSame('First veto', $section->getRejectionReason());
+        self::assertSame([], $this->lifecycle->appliedTransitions());
+    }
+
+    private function makeFourEyesValidator(): FourEyesValidator
+    {
+        $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
+        $resolver->method('resolve')->willReturn(['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']]);
+        $userRepo = $this->createStub(UserRepository::class);
+
+        return new FourEyesValidator($resolver, $userRepo, new RoleHierarchy([]));
     }
 }

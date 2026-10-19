@@ -419,10 +419,10 @@ translations/workflows.de.yaml:294:workflow_instance
 translations/workflows.de.yaml:301:workflow_step
 translations/workflows.de.yaml:306:sla
 translations/workflows.de.yaml:343:approval
-translations/workflows.de.yaml:384:lifecycle
+translations/workflows.de.yaml:388:lifecycle
 translations/workflows.en.yaml:1:workflow
 translations/workflows.en.yaml:294:workflow_instance
 translations/workflows.en.yaml:301:workflow_step
 translations/workflows.en.yaml:306:sla
 translations/workflows.en.yaml:343:approval
-translations/workflows.en.yaml:384:lifecycle
+translations/workflows.en.yaml:388:lifecycle

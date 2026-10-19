@@ -344,6 +344,10 @@ approval:
     section_title: 'For approval'
     error:
         clarification_empty: 'Please formulate a concrete question.'
+        four_eyes:
+            same_user: 'You started this workflow, so you cannot give its final approval yourself. Another authorised person has to approve it (four-eyes principle).'
+            missing_approver: 'The final approval needs a second person (four-eyes principle). If you are the only authorised approver in your organisation, document the offline counter-signature in the comment.'
+            approver_lacks_role: 'Your role is not authorised to give the final approval for this workflow.'
     success:
         clarification_sent: 'Question sent.'
     deadline:

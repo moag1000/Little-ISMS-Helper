@@ -444,6 +444,17 @@ Workflows can auto-progress after a time delay:
   approved automatically: the final approval of a workflow instance is
   four-eyes (`workflow_instance_lifecycle` `approve`) and needs a human
   approver.
+- Final approval (four-eyes): whoever may approve the final step (its
+  `approver_role`, resolved through the role hierarchy, or its
+  `approver_users`) may give it — the transition's own `roles` are not
+  re-checked for that approver. The workflow initiator cannot be the sole
+  final approver (unless they are the only eligible approver and document
+  the offline counter-signature in the comment). A refused final approval
+  shows an error message and changes nothing; a field-completion
+  auto-approval that would close the workflow for its initiator stops at
+  the final step and waits for a manual approval. If the last step is a
+  notification step, the approver of the preceding step grants the final
+  approval.
 - There is no extra field condition; use `field_completion` steps for
   data-dependent progression.
 

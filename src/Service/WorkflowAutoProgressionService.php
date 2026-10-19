@@ -9,6 +9,7 @@ use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\RiskAppetite;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -131,8 +132,9 @@ class WorkflowAutoProgressionService
             return false;
         }
 
-        $this->autoApproveStep($workflowInstance, $currentStep, $user, $entity);
-
+        if (!$this->autoApproveStep($workflowInstance, $currentStep, $user, $entity)) {
+            return false;
+        }
 
         $this->logger->info('[WAPS legacy] Workflow auto-progressed via step metadata', [
             'workflow_instance_id' => $workflowInstance->getId(),
@@ -381,22 +383,61 @@ class WorkflowAutoProgressionService
         };
     }
 
+    /**
+     * Auto-approves $step (and, recursively, following auto-progressable
+     * steps). Returns false when $step itself could not be completed because
+     * the closing four-eyes approval was refused — the step then stays
+     * current, awaiting a manual approval by a second person, and nothing
+     * of this attempt is left in memory or written.
+     */
     private function autoApproveStep(
         WorkflowInstance $workflowInstance,
         WorkflowStep $step,
         User $user,
         object $entity,
         int $depth = 0,
-    ): void {
+    ): bool {
         if ($depth >= 20) {
             $this->logger->warning('[WAPS legacy] Auto-progression recursion limit reached', [
                 'workflow_instance_id' => $workflowInstance->getId(),
                 'step_id'              => $step->getId(),
                 'depth'                => $depth,
             ]);
-            return;
+            return false;
         }
 
+        $snapshot = $workflowInstance->captureProgress();
+        try {
+            $this->applyAutoApproval($workflowInstance, $step, $user, $entity, $depth);
+        } catch (FourEyesRequiredException $e) {
+            // The user who saved the fields may not grant the closing
+            // four-eyes approval (e.g. they initiated the workflow). Undo this
+            // attempt; the step waits for a manual approval by someone else.
+            $workflowInstance->restoreProgress($snapshot);
+            $this->logger->info('[WAPS legacy] Closing approval refused (four-eyes) — step left for manual approval', [
+                'workflow_instance_id' => $workflowInstance->getId(),
+                'step_id'              => $step->getId(),
+                'reason_code'          => $e->reasonCode,
+            ]);
+            if ($depth > 0 && $step->getStepType() !== 'notification') {
+                // Reached via auto-progression: the step was never assigned.
+                $this->workflowService->handleStepAssignment($workflowInstance, $step);
+            }
+            return false;
+        }
+
+        $this->entityManager->flush();
+
+        return true;
+    }
+
+    private function applyAutoApproval(
+        WorkflowInstance $workflowInstance,
+        WorkflowStep $step,
+        User $user,
+        object $entity,
+        int $depth,
+    ): void {
         $workflowInstance->addApprovalHistoryEntry([
             'step_id'          => $step->getId(),
             'step_name'        => $step->getName(),
@@ -421,13 +462,11 @@ class WorkflowAutoProgressionService
             if ($this->canAutoProgress($nextStep, $entity)) {
                 $this->autoApproveStep($workflowInstance, $nextStep, $user, $entity, $depth + 1);
             } else {
-                $this->workflowService->handleStepAssignment($workflowInstance, $nextStep);
+                $this->workflowService->handleStepAssignment($workflowInstance, $nextStep, $user);
             }
         } else {
             $this->handleWorkflowCompletion($workflowInstance, $entity, $user);
         }
-
-        $this->entityManager->flush();
     }
 
     private function handleWorkflowCompletion(WorkflowInstance $workflowInstance, object $entity, User $user): void

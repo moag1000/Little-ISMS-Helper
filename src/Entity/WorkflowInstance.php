@@ -312,6 +312,42 @@ class WorkflowInstance
         return $this->lockVersion;
     }
 
+    /**
+     * Snapshot of the approval-chain progress fields that WorkflowService
+     * mutates while advancing a step (status is excluded — it only changes
+     * through the lifecycle transition itself).
+     *
+     * Used to undo in-memory progress when the closing `approve` transition
+     * is refused (four-eyes), so a refused approval leaves no partial
+     * history / completed-step entries that a later flush could persist.
+     *
+     * @return array{currentStep: ?WorkflowStep, currentStepIndex: int, completedSteps: ?array, approvalHistory: ?array, completedAt: ?DateTimeImmutable, dueDate: ?DateTimeImmutable}
+     */
+    public function captureProgress(): array
+    {
+        return [
+            'currentStep' => $this->currentStep,
+            'currentStepIndex' => $this->currentStepIndex,
+            'completedSteps' => $this->completedSteps,
+            'approvalHistory' => $this->approvalHistory,
+            'completedAt' => $this->completedAt,
+            'dueDate' => $this->dueDate,
+        ];
+    }
+
+    /**
+     * @param array{currentStep: ?WorkflowStep, currentStepIndex: int, completedSteps: ?array, approvalHistory: ?array, completedAt: ?DateTimeImmutable, dueDate: ?DateTimeImmutable} $snapshot
+     */
+    public function restoreProgress(array $snapshot): void
+    {
+        $this->currentStep = $snapshot['currentStep'];
+        $this->currentStepIndex = $snapshot['currentStepIndex'];
+        $this->completedSteps = $snapshot['completedSteps'];
+        $this->approvalHistory = $snapshot['approvalHistory'];
+        $this->completedAt = $snapshot['completedAt'];
+        $this->dueDate = $snapshot['dueDate'];
+    }
+
     public function getCurrentStepIndex(): int
     {
         return $this->currentStepIndex;
