@@ -34,19 +34,38 @@ SNAPSHOT_FILES = [SNAPSHOT_DIR / "tokens.css", SNAPSHOT_DIR / "fairy-aurora.css"
 STYLES = ROOT / "assets" / "styles"
 # Canon file first: when several stylesheets define a token, its value wins.
 PRIORITY = ["fairy-aurora.css"]
+# Not a theme: its :root / html[data-theme="dark"] selector list forces the
+# light palette onto paper inside @media print, so it must never be read as a
+# definition of either theme.
+EXCLUDED_FILES = {"fairy-aurora-print.css"}
 
 RE_COMMENT = re.compile(r"/\*.*?\*/", re.S)
 RE_RULE = re.compile(r"([^{}]+)\{([^{}]*)\}")
 RE_DECL = re.compile(r"(--[\w-]+)\s*:\s*([^;]+);")
 
 
-def theme_of(selector: str) -> str | None:
-    sel = " ".join(selector.split())
-    if "@" in sel:
-        return None
+def _theme_of_one(sel: str) -> str | None:
     if 'data-theme="dark"' in sel or 'data-bs-theme="dark"' in sel or 'data-theme="system"' in sel:
         return "dark"
     if sel.startswith(":root") or sel.startswith("html") or sel == '[data-theme="light"]':
+        return "light"
+    return None
+
+
+def themes_of(selector: str) -> set[str]:
+    """Themes a rule defines. A selector LIST applies to every theme named in it."""
+    sel = " ".join(selector.split())
+    if "@" in sel:
+        return set()
+    return {t for part in sel.split(",") if (t := _theme_of_one(part.strip()))}
+
+
+def theme_of(selector: str) -> str | None:
+    """Single-theme view kept for callers: dark wins only if the list is dark-only."""
+    themes = themes_of(selector)
+    if themes == {"dark"}:
+        return "dark"
+    if "light" in themes:
         return "light"
     return None
 
@@ -64,11 +83,9 @@ def parse(css: str) -> dict[str, dict[str, str]]:
     out: dict[str, dict[str, str]] = {"light": {}, "dark": {}}
     css = RE_COMMENT.sub("", css)
     for m in RE_RULE.finditer(css):
-        theme = theme_of(m.group(1))
-        if theme is None:
-            continue
-        for d in RE_DECL.finditer(m.group(2)):
-            out[theme].setdefault(d.group(1), normalize(d.group(2)))
+        for theme in themes_of(m.group(1)):
+            for d in RE_DECL.finditer(m.group(2)):
+                out[theme].setdefault(d.group(1), normalize(d.group(2)))
     return out
 
 
@@ -77,6 +94,8 @@ def load_app() -> dict[str, dict[str, set[str]]]:
     app: dict[str, dict[str, set[str]]] = {"light": {}, "dark": {}}
     canon: dict[str, dict[str, str]] = {"light": {}, "dark": {}}
     for f in files:
+        if f.name in EXCLUDED_FILES:
+            continue
         parsed = parse(f.read_text(encoding="utf-8"))
         for theme, decls in parsed.items():
             for k, v in decls.items():
@@ -123,12 +142,24 @@ def main() -> int:
                 if artifact["light"].get(token) == value:
                     continue
                 have = app["light"].get(token)
+                canon_value = canon["light"].get(token)
             else:
                 have = app[theme].get(token)
+                canon_value = canon[theme].get(token)
             if not have:
                 violations.append((theme, token, "missing", value))
-            elif value not in have:
-                shown = canon[theme].get(token) or canon["light"].get(token) or sorted(have)[0]
+                continue
+            # The canon file (fairy-aurora.css) owns the token: its definition
+            # is what the cascade resolves to, so a stale second definition in
+            # another stylesheet must not satisfy the check. Only a token the
+            # canon file does not define falls back to "any stylesheet agrees".
+            if canon_value is not None:
+                ok = canon_value == value
+                shown = canon_value
+            else:
+                ok = value in have
+                shown = sorted(have)[0]
+            if not ok:
                 violations.append((theme, token, "differs", f"artifact={value} app={shown}"))
 
     if args.write_baseline is not None:
