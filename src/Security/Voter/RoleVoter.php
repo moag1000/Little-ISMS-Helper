@@ -27,7 +27,8 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - ROLE_ADMIN bypasses all checks
  * - Inactive users cannot perform any actions
  * - Permission-based access control (role.view, role.create, role.edit, role.delete)
- * - System roles (ROLE_USER, ROLE_ADMIN) cannot be edited or deleted
+ * - System roles (ROLE_USER, ROLE_ADMIN) cannot be edited or deleted —
+ *   except by ROLE_SUPER_ADMIN (the ROLE_ADMIN bypass does not cover them)
  *
  * System Role Protection:
  * - Implements OWASP A1: Broken Access Control prevention
@@ -81,8 +82,19 @@ final class RoleVoter extends Voter
             return false;
         }
 
-        // Admins can do everything
         $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        // Security hotfix: system roles are global (shared by all tenants) and
+        // their names map to Symfony roles — only ROLE_SUPER_ADMIN may change them.
+        if ($subject instanceof Role
+            && $subject->isSystemRole()
+            && in_array($attribute, [self::EDIT, self::DELETE], true)
+            && !in_array('ROLE_SUPER_ADMIN', $reachableRoles, true)
+        ) {
+            return false;
+        }
+
+        // Admins can do everything else
         if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
             return true;
         }

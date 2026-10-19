@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Security\RoleNames;
 use App\Enum\MenuDensity;
 use DateTimeImmutable;
 use Deprecated;
@@ -298,9 +299,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
 
-        // Add roles from custom role entities
+        // Add roles from custom role entities. Security hotfix: a custom role
+        // may not impersonate a reserved Symfony role (e.g. a self-made
+        // "ROLE_ALLOWED_TO_SWITCH") — see RoleNames::isGrantedByCustomRole().
         foreach ($this->customRoles as $customRole) {
-            $roles[] = $customRole->getName();
+            if (RoleNames::isGrantedByCustomRole($customRole->getName(), $customRole->isSystemRole())) {
+                $roles[] = $customRole->getName();
+            }
         }
 
         // guarantee every user at least has ROLE_USER

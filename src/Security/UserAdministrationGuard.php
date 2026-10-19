@@ -28,14 +28,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 final class UserAdministrationGuard
 {
     /**
-     * Instance operator + holding-level roles. Only ROLE_SUPER_ADMIN may
-     * grant or revoke them.
+     * Instance operator, switch_user and holding-level roles. Only
+     * ROLE_SUPER_ADMIN may grant or revoke them. Defined in {@see RoleNames}.
      */
-    public const array PRIVILEGED_ROLES = [
-        'ROLE_SUPER_ADMIN',
-        'ROLE_GROUP_CISO',
-        'ROLE_KONZERN_AUDITOR',
-    ];
+    public const array PRIVILEGED_ROLES = RoleNames::PRIVILEGED;
 
     public function __construct(
         private readonly Security $security,
@@ -57,7 +53,8 @@ final class UserAdministrationGuard
      */
     public function mayAssignRoleName(string $roleName): bool
     {
-        return !in_array($roleName, self::PRIVILEGED_ROLES, true) || $this->canManagePrivilegedRoles();
+        return !in_array(strtoupper(trim($roleName)), self::PRIVILEGED_ROLES, true)
+            || $this->canManagePrivilegedRoles();
     }
 
     /**
@@ -173,7 +170,17 @@ final class UserAdministrationGuard
         }
         $user->setRoles($storedRoles);
 
-        if (self::privilegedRolesChanged($before['roles'], $user->getRoles())) {
+        // Compare effective roles plus (normalised) custom role names, so a
+        // custom Role named like a privileged role cannot be (un)assigned even
+        // where User::getRoles() would not let it grant anything.
+        $customNames = static fn (array $customRoles): array => array_map(
+            static fn (Role $r): string => strtoupper(trim((string) $r->getName())),
+            $customRoles,
+        );
+        if (self::privilegedRolesChanged(
+            [...$before['roles'], ...$customNames($before['customRoles'])],
+            [...$user->getRoles(), ...$customNames($user->getCustomRoles()->toArray())],
+        )) {
             $user->setRoles($before['storedRoles']);
             foreach ($user->getCustomRoles()->toArray() as $customRole) {
                 $user->removeCustomRole($customRole);

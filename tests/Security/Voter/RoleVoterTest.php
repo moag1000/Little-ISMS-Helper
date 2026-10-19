@@ -94,6 +94,30 @@ class RoleVoterTest extends TestCase
     }
 
     #[Test]
+    public function adminCannotEditOrDeleteGlobalSystemRole(): void
+    {
+        // Security hotfix: system roles are global (all tenants) — only the
+        // instance operator may change them.
+        $token = $this->createToken($this->createUser(['ROLE_ADMIN']));
+        $role = $this->createRole(true);
+
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $role, [RoleVoter::EDIT]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $role, [RoleVoter::DELETE]));
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $role, [RoleVoter::VIEW]));
+    }
+
+    #[Test]
+    public function superAdminCanEditSystemRole(): void
+    {
+        $token = $this->createToken($this->createUser(['ROLE_SUPER_ADMIN']));
+
+        $this->assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            $this->voter->vote($token, $this->createRole(true), [RoleVoter::EDIT]),
+        );
+    }
+
+    #[Test]
     public function testUserWithPermissionCanViewRole(): void
     {
         $user = $this->createUser(['ROLE_USER'], true, ['role.view']);

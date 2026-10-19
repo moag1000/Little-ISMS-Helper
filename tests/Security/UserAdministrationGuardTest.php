@@ -65,6 +65,8 @@ final class UserAdministrationGuardTest extends TestCase
 
         self::assertTrue($guard->mayAssignRoleName('ROLE_ADMIN'));
         self::assertFalse($guard->mayAssignRoleName('ROLE_SUPER_ADMIN'));
+        self::assertFalse($guard->mayAssignRoleName('ROLE_ALLOWED_TO_SWITCH'));
+        self::assertFalse($guard->mayAssignRoleName(' role_group_ciso '));
         self::assertTrue($guard->canAssignTenant($this->own));
         self::assertFalse($guard->canAssignTenant($this->foreign));
         self::assertFalse($guard->canAssignTenant(null));
@@ -103,6 +105,25 @@ final class UserAdministrationGuardTest extends TestCase
         self::assertSame(['ROLE_MANAGER'], $user->getStoredRoles());
         self::assertCount(0, $user->getCustomRoles());
         self::assertSame($this->own, $user->getTenant());
+    }
+
+    #[Test]
+    public function adminCannotAssignSeededSystemHoldingRoleButSuperAdminCan(): void
+    {
+        $holdingRole = (new Role())->setName('ROLE_GROUP_CISO')->setIsSystemRole(true);
+
+        $user = (new User())->setTenant($this->own);
+        $guard = $this->guard(false);
+        $before = $guard->snapshot($user);
+        $user->addCustomRole($holdingRole);
+        self::assertSame(['user.validation.privileged_role_forbidden'], $guard->enforceSubmittedValues($user, $before, false));
+        self::assertCount(0, $user->getCustomRoles());
+
+        $guard = $this->guard(true);
+        $before = $guard->snapshot($user);
+        $user->addCustomRole($holdingRole);
+        self::assertSame([], $guard->enforceSubmittedValues($user, $before, false));
+        self::assertContains('ROLE_GROUP_CISO', $user->getRoles());
     }
 
     #[Test]

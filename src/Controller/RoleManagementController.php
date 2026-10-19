@@ -10,6 +10,7 @@ use App\Entity\Role;
 use App\Form\RoleType;
 use App\Repository\RoleRepository;
 use App\Repository\PermissionRepository;
+use App\Security\RoleNames;
 use App\Security\Voter\RoleVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -143,6 +144,12 @@ class RoleManagementController extends AbstractController
 
             if (isset($templates[$templateKey])) {
                 $template = $templates[$templateKey];
+
+                // Security hotfix: no custom role may carry a reserved Symfony role name.
+                if (RoleNames::isReserved($customName ?: $template['name'])) {
+                    $this->addFlash('danger', $translator->trans('role.validation.name_reserved', [], 'validators'));
+                    return $this->redirectToRoute('role_management_templates');
+                }
 
                 $role = new Role();
                 $role->setName($customName ?: $template['name']);
