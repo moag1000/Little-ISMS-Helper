@@ -21,8 +21,6 @@ use App\Enum\SupplierStatus;
 use App\Attribute\RequiresModule;
 use App\Repository\SupplierRepository;
 use App\State\TenantAwareStateProcessor;
-use App\Entity\Document;
-use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;

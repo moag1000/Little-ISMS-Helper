@@ -15,4 +15,17 @@ enum RiskStatus: string
     case Closed = 'closed';
     case Accepted = 'accepted';
     case Open = 'open';
+
+    /**
+     * Single source for "handled": closed, accepted, mitigated, treated or
+     * monitored (post-treatment monitoring, ISO 27005). Every other case —
+     * including InTreatment — is still open / unmitigated.
+     */
+    public function isHandled(): bool
+    {
+        return match ($this) {
+            self::Closed, self::Accepted, self::Mitigated, self::Treated, self::Monitored => true,
+            self::Identified, self::Assessed, self::InTreatment, self::Open => false,
+        };
+    }
 }

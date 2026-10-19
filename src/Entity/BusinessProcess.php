@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
-use App\Enum\RiskStatus;
 use App\Repository\BusinessProcessRepository;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -530,7 +529,7 @@ class BusinessProcess
         $count = 0;
 
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if (self::isUnhandledRisk($identifiedRisk)) {
+            if ($identifiedRisk->getStatus()?->isHandled() !== true) {
                 $totalInherentRisk += $identifiedRisk->getInherentRiskLevel();
                 $totalResidualRisk += $identifiedRisk->getResidualRiskLevel();
                 $count++;
@@ -597,25 +596,12 @@ class BusinessProcess
     }
 
     /**
-     * A risk counts as active/unmitigated unless it is already handled:
-     * closed, accepted, mitigated, treated or monitored.
-     */
-    private static function isUnhandledRisk(Risk $risk): bool
-    {
-        return !in_array(
-            $risk->getStatus(),
-            [RiskStatus::Closed, RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated, RiskStatus::Monitored],
-            true,
-        );
-    }
-
-    /**
      * Get count of active risks affecting this process
      * Data Reuse: Quick risk overview
      */
     public function getActiveRiskCount(): int
     {
-        return $this->identifiedRisks->filter(fn(Risk $r): bool => self::isUnhandledRisk($r))->count();
+        return $this->identifiedRisks->filter(fn(Risk $r): bool => $r->getStatus()?->isHandled() !== true)->count();
     }
 
     /**
@@ -625,7 +611,7 @@ class BusinessProcess
     public function hasUnmitigatedHighRisks(): bool
     {
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if (self::isUnhandledRisk($identifiedRisk) && $identifiedRisk->getResidualRiskLevel() >= 16) {
+            if ($identifiedRisk->getStatus()?->isHandled() !== true && $identifiedRisk->getResidualRiskLevel() >= 16) {
                 return true;
             }
         }

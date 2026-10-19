@@ -13,13 +13,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
-
 use App\Enum\BusinessContinuityPlanStatus;
 use App\Attribute\RequiresModule;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
-use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
