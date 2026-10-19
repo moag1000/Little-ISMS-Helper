@@ -78,15 +78,25 @@ class UserSessionRepository extends ServiceEntityRepository
     /**
      * Get active sessions with optional filters
      *
+     * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
      * @return UserSession[]
      */
-    public function getActiveSessions(?int $limit = null, ?string $userEmail = null): array
+    public function getActiveSessions(?int $limit = null, ?string $userEmail = null, ?array $tenants = null): array
     {
         $queryBuilder = $this->createQueryBuilder('s')
             ->leftJoin('s.user', 'u')
             ->addSelect('u')
             ->where('s.isActive = :active')
             ->setParameter('active', true);
+
+        // Tenant scope (null = unrestricted, e.g. SUPER_ADMIN; [] = nothing)
+        if ($tenants !== null) {
+            if ($tenants === []) {
+                return [];
+            }
+            $queryBuilder->andWhere('u.tenant IN (:tenants)')
+                ->setParameter('tenants', $tenants);
+        }
 
         if ($userEmail) {
             $queryBuilder->andWhere('u.email LIKE :email')

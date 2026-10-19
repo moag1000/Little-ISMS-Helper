@@ -7,8 +7,13 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
+use App\Entity\User;
+use App\Entity\UserSession;
 use App\Repository\UserRepository;
+use App\Repository\UserSessionRepository;
+use App\Security\Voter\UserVoter;
 use App\Service\SessionManager;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,20 +22,34 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Security hotfix (admin scope): for non-SUPER_ADMIN actors, listing,
+ * activity view and termination are bound to target users the actor may
+ * administer ({@see UserVoter::EDIT} — own tenant tree, never a SUPER_ADMIN).
+ */
 class SessionController extends AbstractController
 {
     #[Route('/admin/sessions', name: 'session_index', methods: ['GET'])]
     #[IsGranted('SESSION_VIEW')]
     public function index(
         SessionManager $sessionManager,
-        Request $request
+        Request $request,
+        TenantContext $tenantContext
     ): Response {
         // Get filter parameters
         $userEmail = $request->query->get('email');
         $limit = $request->query->get('limit', 100);
 
-        // Get active sessions from SessionManager
-        $activeSessions = $sessionManager->getAllActiveSessions($userEmail, $limit);
+        // Get active sessions from SessionManager (tenant-scoped for non-SUPER_ADMIN)
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            $activeSessions = $sessionManager->getAllActiveSessions($userEmail, $limit);
+        } else {
+            $activeSessions = array_values(array_filter(
+                $sessionManager->getAllActiveSessions($userEmail, $limit, $tenantContext->getAccessibleTenants()),
+                fn(UserSession $session): bool => $session->getUser() instanceof User
+                    && $this->isGranted(UserVoter::EDIT, $session->getUser()),
+            ));
+        }
 
         // Get statistics
         $statistics = $sessionManager->getStatistics();
@@ -82,8 +101,16 @@ class SessionController extends AbstractController
     #[IsGranted('SESSION_VIEW')]
     public function show(
         string $userName,
-        AuditLogRepository $auditLogRepository
+        AuditLogRepository $auditLogRepository,
+        UserRepository $userRepository
     ): Response {
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $targetUser = $userRepository->findOneBy(['email' => $userName]);
+            if (!$targetUser instanceof User || !$this->isGranted(UserVoter::EDIT, $targetUser)) {
+                throw $this->createAccessDeniedException();
+            }
+        }
+
         // Get all activities for this user (last 7 days)
         $userActivities = $auditLogRepository->findByUser($userName, 500);
 
@@ -136,9 +163,15 @@ class SessionController extends AbstractController
         $user = $userRepository->findOneBy(['email' => $userName]);
 
         if (!$user) {
+            // Non-SUPER_ADMIN: no "not found" vs "out of scope" oracle
+            if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+                throw $this->createAccessDeniedException();
+            }
             $this->addFlash('danger', $translator->trans('session.error.user_not_found', [], 'session'));
             return $this->redirectToRoute('session_index');
         }
+
+        $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
         // Terminate all active sessions for this user
         $adminEmail = $this->getUser()?->getUserIdentifier();
@@ -158,8 +191,17 @@ class SessionController extends AbstractController
         string $sessionId,
         Request $request,
         SessionManager $sessionManager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        UserSessionRepository $userSessionRepository
     ): Response {
+        // Session-id addressed: 404 when out of scope (no existence oracle)
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $target = $userSessionRepository->findBySessionId($sessionId)?->getUser();
+            if (!$target instanceof User || !$this->isGranted(UserVoter::EDIT, $target)) {
+                throw $this->createNotFoundException();
+            }
+        }
+
         // Verify CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('terminate_single_' . $sessionId, $token)) {

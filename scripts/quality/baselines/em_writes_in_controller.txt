@@ -318,8 +318,8 @@ src/Controller/MappingQualityController.php:479
 src/Controller/MappingQualityController.php:487
 src/Controller/MappingQualityController.php:490
 src/Controller/MappingQualityController.php:511
-src/Controller/MfaTokenController.php:239
-src/Controller/MfaTokenController.php:240
+src/Controller/MfaTokenController.php:271
+src/Controller/MfaTokenController.php:272
 src/Controller/Notification/InAppNotificationCenterController.php:148
 src/Controller/PatchController.php:120
 src/Controller/PatchController.php:121
