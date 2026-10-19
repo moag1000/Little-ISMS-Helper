@@ -47,7 +47,11 @@ final class TenantOwnership
             return false;
         }
         $seen = []; // guards against a corrupt parent cycle
-        for ($node = $target; $node instanceof Tenant && !isset($seen[spl_object_id($node)]); $node = $node->getParent()) {
+        for (
+            $node = $target;
+            $node instanceof Tenant && !isset($seen[spl_object_id($node)]);
+            $node = $node->getParent()
+        ) {
             if (self::isSameTenant($node, $root)) {
                 return true;
             }
