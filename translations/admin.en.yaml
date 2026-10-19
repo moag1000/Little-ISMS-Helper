@@ -21,6 +21,7 @@ admin:
             role_mappings_saved: 'Role mappings saved.'
         error:
             discovery_failed: 'Discovery failed: %message%'
+            privileged_role_mapping: 'Role mappings not saved: only instance administrators (super admin) may assign privileged roles (%roles%).'
     title: Administration
     cancel: 'Cancel'
     tenant_management:

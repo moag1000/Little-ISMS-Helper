@@ -56,6 +56,7 @@ final class SsoUserProvisioningService
         // 1) Already linked by provider+sub
         $existing = $this->userRepo->findOneBy(['ssoProvider' => $provider, 'ssoExternalId' => $externalId]);
         if ($existing instanceof User) {
+            $this->assertMayAuthenticateAs($provider, $existing);
             $this->syncProfile($existing, $provider, $claims);
             $this->em->flush();
             $this->logger->debug('SSO JIT: returned existing linked user', ['email' => $email]);
@@ -65,6 +66,9 @@ final class SsoUserProvisioningService
         // 2) Link by email
         $byEmail = $this->userRepo->findOneBy(['email' => $email]);
         if ($byEmail instanceof User) {
+            // Never link a tenant-owned provider to an account outside its
+            // tenant tree or to a privileged account (account takeover).
+            $this->assertMayAuthenticateAs($provider, $byEmail);
             $byEmail->setSsoProvider($provider);
             $byEmail->setSsoExternalId($externalId);
             $byEmail->setAuthProvider('sso:' . $provider->getSlug());
@@ -93,7 +97,9 @@ final class SsoUserProvisioningService
     private function createUser(IdentityProvider $provider, string $email, string $externalId, array $claims): User
     {
         $resolverResult = $this->claimResolver->resolve($provider, $claims);
-        $role           = $resolverResult->role;
+        $role           = SsoAccountLinkPolicy::mayAssignRole($provider, $resolverResult->role)
+            ? $resolverResult->role
+            : 'ROLE_USER';
 
         $user = new User();
         $user->setEmail($email);
@@ -110,6 +116,19 @@ final class SsoUserProvisioningService
         $this->syncProfile($user, $provider, $claims);
 
         return $user;
+    }
+
+    private function assertMayAuthenticateAs(IdentityProvider $provider, User $target): void
+    {
+        if (SsoAccountLinkPolicy::mayAuthenticateAs($provider, $target)) {
+            return;
+        }
+        $this->logger->warning('SSO JIT: login rejected, provider may not act for this account', [
+            'provider' => $provider->getSlug(),
+            'target_user_id' => $target->getId(),
+        ]);
+
+        throw new AuthenticationException('SSO login is not permitted for this account.');
     }
 
     private function syncProfile(User $user, IdentityProvider $provider, array $claims): void

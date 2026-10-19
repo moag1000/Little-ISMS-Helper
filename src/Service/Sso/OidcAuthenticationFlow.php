@@ -62,6 +62,15 @@ final class OidcAuthenticationFlow
         if (!$result->matched) {
             return;
         }
+        // A tenant-owned provider never hands out a privileged role, even if
+        // such a mapping row exists (created before the security hotfix).
+        if (!SsoAccountLinkPolicy::mayAssignRole($provider, $result->role)) {
+            $this->logger->warning('SSO: privileged mapped role ignored for tenant-owned provider', [
+                'provider' => $provider->getSlug(),
+                'role' => $result->role,
+            ]);
+            return;
+        }
 
         $oldRole = $user->getStoredRoles()[0] ?? 'ROLE_USER';
         if ($result->role === $oldRole) {
@@ -125,6 +134,18 @@ final class OidcAuthenticationFlow
         }
 
         $claims = $this->extractClaims($provider, $client, $token);
+
+        return $this->resolveUserFromClaims($provider, $claims);
+    }
+
+    /**
+     * Resolve the verified claims to a local user (existing binding, link by
+     * email, JIT) or a queued approval.
+     *
+     * @param array<string,mixed> $claims
+     */
+    private function resolveUserFromClaims(IdentityProvider $provider, array $claims): User|SsoUserApproval
+    {
         $email = $this->mapClaimToField($claims, $provider->getAttributeMap(), 'email');
         if ($email === null || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new AuthenticationException('IdP returned no usable email claim.');
@@ -137,6 +158,7 @@ final class OidcAuthenticationFlow
         // 1) Existing SSO user (provider+sub binding)
         $existing = $this->userRepo->findOneBy(['ssoProvider' => $provider, 'ssoExternalId' => $externalId]);
         if ($existing instanceof User) {
+            $this->assertMayAuthenticateAs($provider, $existing);
             $this->updateProfile($existing, $provider, $claims);
             $this->applyRoleMapping($existing, $provider, $claims, false);
             $this->em->flush();
@@ -147,6 +169,9 @@ final class OidcAuthenticationFlow
         // 2) Existing local user with matching email — link account
         $byEmail = $this->userRepo->findOneBy(['email' => $email]);
         if ($byEmail instanceof User) {
+            // Never link a tenant-owned provider to an account outside its
+            // tenant tree or to a privileged account (account takeover).
+            $this->assertMayAuthenticateAs($provider, $byEmail);
             $byEmail->setSsoProvider($provider);
             $byEmail->setSsoExternalId($externalId);
             $byEmail->setAuthProvider('sso:' . $provider->getSlug());
@@ -373,7 +398,8 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
         $user->setAuthProvider('sso:' . $provider->getSlug());
         $user->setIsVerified(true);
         $user->setIsActive(true);
-        $user->setRoles([$provider->getDefaultRole() ?: 'ROLE_USER']);
+        $defaultRole = $provider->getDefaultRole() ?: 'ROLE_USER';
+        $user->setRoles([SsoAccountLinkPolicy::mayAssignRole($provider, $defaultRole) ? $defaultRole : 'ROLE_USER']);
         $user->setCreatedAt(new DateTimeImmutable());
         if ($provider->getTenant() !== null) {
             $user->setTenant($provider->getTenant());
@@ -383,6 +409,23 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
         $this->applyRoleMapping($user, $provider, $claims, true);
 
         return $user;
+    }
+
+    /**
+     * Rejects the login (no linking, no profile/role update, no flush) when
+     * the provider may not act for this local account.
+     */
+    private function assertMayAuthenticateAs(IdentityProvider $provider, User $target): void
+    {
+        if (SsoAccountLinkPolicy::mayAuthenticateAs($provider, $target)) {
+            return;
+        }
+        $this->logger->warning('SSO: login rejected, provider may not act for this account', [
+            'provider' => $provider->getSlug(),
+            'target_user_id' => $target->getId(),
+        ]);
+
+        throw new AuthenticationException('SSO login is not permitted for this account.');
     }
 
     private function updateProfile(User $user, IdentityProvider $provider, array $claims): void

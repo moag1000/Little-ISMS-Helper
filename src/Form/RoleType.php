@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Permission;
 use App\Entity\Role;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -17,6 +18,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class RoleType extends AbstractType
 {
+    public function __construct(
+        private readonly Security $security,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -43,6 +49,10 @@ final class RoleType extends AbstractType
                 'label' => 'role_management.field.system_role',
                 'help' => 'role_management.help.system_role',
                 'required' => false,
+                // Security hotfix: system roles are global and their names map
+                // to Symfony roles. A disabled field ignores submitted data, so
+                // this is enforced server-side for non-SUPER_ADMIN actors.
+                'disabled' => !$this->security->isGranted('ROLE_SUPER_ADMIN'),
             ])
             ->add('permissions', EntityType::class, [
                 'class' => Permission::class,

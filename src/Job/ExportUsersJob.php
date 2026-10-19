@@ -17,10 +17,10 @@ use App\Util\CsvSanitizer;
  * same column layout (`escape: '\\\\'`) and CSV-injection sanitization so the
  * file is byte-equivalent regardless of which entry-point produced it.
  *
- * No args are consumed: this is an unconditional global dump because the
- * dispatcher already enforces VIEW_ALL (admin-scope). Keeping it argless lets
- * the same payload key drive both the dispatch flow and any future scheduled
- * cron export.
+ * Scope args (security hotfix, admin scope — fail-closed):
+ *  - `global: true`       → all users (dispatched for ROLE_SUPER_ADMIN only)
+ *  - `tenantIds: int[]`   → users of these tenants (the tenant admin's tree)
+ *  - neither              → empty export (never an implicit global dump)
  *
  * Phase 3 of the async admin-jobs rollout.
  */
@@ -35,7 +35,7 @@ final class ExportUsersJob implements AsyncJobInterface
     public function run(JobContext $ctx): void
     {
         $ctx->message('Loading user list…');
-        $users = $this->userRepository->findAll();
+        $users = $this->resolveUsers($ctx);
         $total = count($users);
         $ctx->progress(0, max($total, 1), sprintf('Building CSV for %d user(s)…', $total));
 
@@ -96,6 +96,26 @@ final class ExportUsersJob implements AsyncJobInterface
             basename($path),
             (int) round($size / 1024),
         ));
+    }
+
+    /**
+     * @return list<\App\Entity\User>
+     */
+    private function resolveUsers(JobContext $ctx): array
+    {
+        if ($ctx->arg('global', false) === true) {
+            return $this->userRepository->findAll();
+        }
+
+        $tenantIds = array_values(array_filter(
+            array_map('intval', (array) $ctx->arg('tenantIds', [])),
+            static fn (int $id): bool => $id > 0,
+        ));
+        if ($tenantIds === []) {
+            return [];
+        }
+
+        return $this->userRepository->findBy(['tenant' => $tenantIds]);
     }
 
     private function ensureExportDir(string $dir): void

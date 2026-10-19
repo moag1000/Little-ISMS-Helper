@@ -97,7 +97,9 @@ class RoleRepository extends ServiceEntityRepository
             ->leftJoin('r.permissions', 'p')
             ->addSelect('u')
             ->addSelect('p')
-            ->groupBy('r.id')
+            // No GROUP BY: with fetch-joins it collapsed rows and hydrated only
+            // one holder/permission per role (wrong counts, and the role voter
+            // judged the holder scope on a partial collection).
             ->orderBy('r.name', 'ASC')
             ->getQuery()
             ->getResult();

@@ -42,6 +42,15 @@ class ClaimToRoleResolver
                 continue;
             }
 
+            if (!SsoAccountLinkPolicy::mayAssignRole($provider, $mapping->getAssignedRole())) {
+                $traceLines[] = sprintf(
+                    'skip mapping priority=%d: privileged role %s not assignable by a tenant-owned provider',
+                    $mapping->getPriority(),
+                    $mapping->getAssignedRole(),
+                );
+                continue;
+            }
+
             if ($mapping->matches($value)) {
                 $traceLines[] = sprintf(
                     'match priority=%d: claim "%s" matched expression "%s" → %s',
@@ -67,6 +76,9 @@ class ClaimToRoleResolver
         }
 
         $fallback     = $provider->getDefaultFallbackRole() ?: 'ROLE_USER';
+        if (!SsoAccountLinkPolicy::mayAssignRole($provider, $fallback)) {
+            $fallback = 'ROLE_USER';
+        }
         $traceLines[] = sprintf('fallback: no mapping matched, using %s', $fallback);
 
         return new ClaimToRoleResolverResult(

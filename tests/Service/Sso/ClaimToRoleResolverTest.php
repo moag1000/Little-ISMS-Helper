@@ -138,4 +138,32 @@ final class ClaimToRoleResolverTest extends TestCase
 
         self::assertSame(['perm_risk_write', 'perm_audit_read'], $result->assignedPermissions);
     }
+
+    #[Test]
+    public function tenantOwnedProviderSkipsPrivilegedMappingAndFallback(): void
+    {
+        $provider = $this->makeProvider('ROLE_SUPER_ADMIN');
+        $provider->setTenant((new \App\Entity\Tenant())->setName('A')->setCode('a'));
+        $privileged = $this->makeMapping('groups', 'admins', 'ROLE_SUPER_ADMIN', 1);
+        $ordinary = $this->makeMapping('groups', 'admins', 'ROLE_MANAGER', 2);
+        $this->repo->method('findActiveByProvider')->willReturn([$privileged, $ordinary]);
+
+        $result = $this->resolver->resolve($provider, ['groups' => ['admins']]);
+        self::assertSame('ROLE_MANAGER', $result->role);
+        self::assertTrue($result->matched);
+
+        $fallback = $this->resolver->resolve($provider, ['groups' => ['nobody']]);
+        self::assertSame('ROLE_USER', $fallback->role);
+        self::assertFalse($fallback->matched);
+    }
+
+    #[Test]
+    public function globalProviderKeepsPrivilegedMapping(): void
+    {
+        $provider = $this->makeProvider();
+        $this->repo->method('findActiveByProvider')
+            ->willReturn([$this->makeMapping('groups', 'ops', 'ROLE_SUPER_ADMIN')]);
+
+        self::assertSame('ROLE_SUPER_ADMIN', $this->resolver->resolve($provider, ['groups' => ['ops']])->role);
+    }
 }

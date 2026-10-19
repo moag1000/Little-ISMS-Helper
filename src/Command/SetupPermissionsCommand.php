@@ -481,7 +481,12 @@ class SetupPermissionsCommand
         $user->setEmail($email);
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
-        $user->setRoles(['ROLE_ADMIN']);
+        // Security hotfix 3.15.3: ROLE_ADMIN is scoped to its own tenant tree,
+        // so the installer must be the instance operator. Only the first
+        // operator is created this way; later admins stay ROLE_ADMIN.
+        $user->setRoles($this->userRepository->hasSuperAdmin()
+            ? ['ROLE_ADMIN']
+            : ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN']);
         $user->setAuthProvider('local');
         $user->setIsActive(true);
         $user->setIsVerified(true);
@@ -493,7 +498,13 @@ class SetupPermissionsCommand
 
         try {
             $this->entityManager->flush();
-            $symfonyStyle->success("Admin user created: $firstName $lastName ($email)");
+            $symfonyStyle->success(sprintf(
+                'Admin user created: %s %s (%s)%s',
+                $firstName,
+                $lastName,
+                $email,
+                in_array('ROLE_SUPER_ADMIN', $user->getStoredRoles(), true) ? ' with ROLE_SUPER_ADMIN (instance operator)' : '',
+            ));
         } catch (Exception $e) {
             $symfonyStyle->error("Failed to create admin user: " . $e->getMessage());
             throw $e;

@@ -175,6 +175,9 @@ user:
     validation:
         avatar_format: 'Bitte laden Sie ein gültiges Bild hoch (JPEG, PNG, GIF oder WebP)'
         password_min_length: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
+        privileged_role_forbidden: 'Nur ein Super-Administrator darf die Rollen Super-Admin, Konzern-CISO und Konzern-Auditor vergeben oder entziehen. Die Änderung wurde nicht gespeichert.'
+        tenant_not_assignable: 'Sie können nur Organisationen zuweisen, die Sie selbst verwalten. Die Änderung wurde nicht gespeichert.'
+        import_email_unavailable: 'Übersprungen: %email% kann nicht importiert werden (E-Mail-Adresse nicht verfügbar).'
     auth_provider:
         local: 'Lokale Authentifizierung'
     auth:

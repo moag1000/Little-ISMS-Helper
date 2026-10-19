@@ -51,12 +51,16 @@ role_management:
     message:
         no_permissions: 'Dieser Rolle sind keine Berechtigungen zugewiesen'
         no_users: 'Dieser Rolle sind keine Benutzer zugewiesen'
+        hidden_holders: '%count% weitere Inhaber, die für Sie nicht sichtbar sind (z. B. in anderen Organisationen)'
         no_roles: 'Noch keine Rollen erstellt'
     warning:
         system_role: Systemrolle
         system_role_desc: 'Dies ist eine Systemrolle und kann nicht gelöscht werden. Nur Berechtigungen können angepasst werden.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diese Rolle löschen möchten? Alle Benutzerzuweisungen werden entfernt.'
+    error:
+        access_denied: 'Sie haben keine Berechtigung, diese Rolle zu ändern.'
+        not_modifiable: 'Diese Rolle kann nicht geändert werden: Sie ist eine Systemrolle oder Benutzern außerhalb Ihrer Organisation zugewiesen.'
     aria:
         actions_for_role: 'Aktionen für Rolle %name%'
     permissions:

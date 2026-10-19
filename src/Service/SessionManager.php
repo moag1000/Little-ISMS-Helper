@@ -339,16 +339,17 @@ class SessionManager
     /**
      * Get all currently active sessions
      *
+     * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
      * @return UserSession[]
      */
-    public function getAllActiveSessions(?string $userEmail = null, ?int $limit = null): array
+    public function getAllActiveSessions(?string $userEmail = null, ?int $limit = null, ?array $tenants = null): array
     {
         if (!$this->isTableAvailable()) {
             return [];
         }
 
         try {
-            return $this->userSessionRepository->getActiveSessions($limit, $userEmail);
+            return $this->userSessionRepository->getActiveSessions($limit, $userEmail, $tenants);
         } catch (Exception $e) {
             $this->logger->error('Failed to get all active sessions', [
                 'error' => $e->getMessage(),
@@ -359,8 +360,10 @@ class SessionManager
 
     /**
      * Get session statistics
+     *
+     * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
      */
-    public function getStatistics(): array
+    public function getStatistics(?array $tenants = null): array
     {
         if (!$this->isTableAvailable()) {
             return [
@@ -371,7 +374,7 @@ class SessionManager
         }
 
         try {
-            return $this->userSessionRepository->getStatistics();
+            return $this->userSessionRepository->getStatistics($tenants);
         } catch (Exception $e) {
             $this->logger->error('Failed to get session statistics', [
                 'error' => $e->getMessage(),

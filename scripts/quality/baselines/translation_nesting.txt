@@ -1,13 +1,13 @@
 # check_translation_nesting.py baseline
 # Format: <relative-path>:<line>:<key>
-translations/admin.de.yaml:1476:data_management
-translations/admin.de.yaml:1584:setup
-translations/admin.de.yaml:1655:kpi_threshold
-translations/admin.de.yaml:1698:industry_preset
-translations/admin.en.yaml:1460:data_management
-translations/admin.en.yaml:1569:setup
-translations/admin.en.yaml:1640:kpi_threshold
-translations/admin.en.yaml:1683:industry_preset
+translations/admin.de.yaml:1477:data_management
+translations/admin.de.yaml:1585:setup
+translations/admin.de.yaml:1656:kpi_threshold
+translations/admin.de.yaml:1699:industry_preset
+translations/admin.en.yaml:1461:data_management
+translations/admin.en.yaml:1570:setup
+translations/admin.en.yaml:1641:kpi_threshold
+translations/admin.en.yaml:1684:industry_preset
 translations/alva.de.yaml:60:vulnerability
 translations/alva.de.yaml:66:data_subject_request
 translations/alva.de.yaml:72:asset
@@ -321,8 +321,8 @@ translations/risk.en.yaml:682:quant
 translations/risk.en.yaml:705:risk_management
 translations/risk_treatment_plan.de.yaml:106:iso_9001_bridge
 translations/risk_treatment_plan.en.yaml:106:iso_9001_bridge
-translations/role_management.de.yaml:110:role
-translations/role_management.en.yaml:110:role
+translations/role_management.de.yaml:114:role
+translations/role_management.en.yaml:114:role
 translations/scheduled_reports.de.yaml:3:scheduled_report
 translations/scheduled_reports.de.yaml:174:email
 translations/scheduled_reports.de.yaml:179:form
@@ -361,10 +361,10 @@ translations/tisax_isa.de.yaml:7:tisax
 translations/tisax_isa.en.yaml:7:tisax
 translations/training.de.yaml:183:iso_9001_bridge
 translations/training.en.yaml:177:iso_9001_bridge
-translations/user.de.yaml:298:user_management
-translations/user.de.yaml:302:profile
-translations/user.en.yaml:298:user_management
-translations/user.en.yaml:302:profile
+translations/user.de.yaml:301:user_management
+translations/user.de.yaml:305:profile
+translations/user.en.yaml:301:user_management
+translations/user.en.yaml:305:profile
 translations/validators.de.yaml:110:Error
 translations/validators.de.yaml:224:setup
 translations/validators.de.yaml:244:document

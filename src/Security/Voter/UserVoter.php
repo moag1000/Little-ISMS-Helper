@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\User;
 use App\Service\InitialAdminService;
+use App\Service\TenantContext;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -34,14 +35,20 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - Initial setup admin cannot be deleted or deactivated
  * - Permission checks via hasPermission() method
  *
- * Multi-tenancy:
- * - Users can only view/edit users in their tenant
+ * Multi-tenancy / scope (security hotfix, admin scope):
+ * - ROLE_SUPER_ADMIN is global and may act on any user
+ * - Every other actor (incl. ROLE_ADMIN) may VIEW/EDIT/DELETE only users whose
+ *   tenant is accessible to it (TenantContext::canAccessTenant — own tenant +
+ *   descendants); users without a tenant are visible to SUPER_ADMIN only
+ * - A non-SUPER_ADMIN actor can never EDIT/DELETE a ROLE_SUPER_ADMIN account
+ * - Self VIEW/EDIT is always allowed (self-service)
  */
 final class UserVoter extends Voter
 {
     public function __construct(
         private readonly InitialAdminService $initialAdminService,
         private readonly RoleHierarchyInterface $roleHierarchy,
+        private readonly TenantContext $tenantContext,
     ) {
     }
     public const string VIEW = 'user.view';
@@ -90,8 +97,19 @@ final class UserVoter extends Voter
             return false;
         }
 
-        // Admins can do everything
         $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        // Tenant / rank scope for every non-SUPER_ADMIN actor — applies
+        // before the ROLE_ADMIN bypass so tenant admins stay in their tree.
+        if (!in_array('ROLE_SUPER_ADMIN', $reachableRoles, true)
+            && $subject instanceof User
+            && in_array($attribute, [self::VIEW, self::EDIT, self::DELETE], true)
+            && !$this->isWithinActorScope($user, $subject, $attribute)
+        ) {
+            return false;
+        }
+
+        // Admins can do everything (within the scope checked above)
         if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
             return true;
         }
@@ -106,6 +124,30 @@ final class UserVoter extends Voter
             self::VIEW_ALL => $user->hasPermission('user.view_all'),
             default => false,
         };
+    }
+
+    /**
+     * Scope rule for non-SUPER_ADMIN actors: self is always in scope; a
+     * SUPER_ADMIN target may only be viewed; otherwise the target's tenant
+     * must be accessible to the actor (own + descendants). Tenantless targets
+     * are out of scope.
+     */
+    private function isWithinActorScope(User $actor, User $target, string $attribute): bool
+    {
+        if ($actor === $target || ($actor->getId() !== null && $actor->getId() === $target->getId())) {
+            return true;
+        }
+
+        if ($attribute !== self::VIEW && in_array('ROLE_SUPER_ADMIN', $target->getRoles(), true)) {
+            return false;
+        }
+
+        $targetTenant = $target->getTenant();
+        if ($targetTenant === null) {
+            return false;
+        }
+
+        return $this->tenantContext->canAccessTenant($targetTenant);
     }
 
     private function canView(User $currentUser, User $targetUser): bool

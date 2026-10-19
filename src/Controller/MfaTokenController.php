@@ -10,8 +10,10 @@ use App\Entity\MfaToken;
 use App\Entity\User;
 use App\Repository\MfaTokenRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Security\Voter\UserVoter;
 use App\Service\AuditLogger;
 use App\Service\MfaService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +32,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * their own users; SUPER_ADMIN passes through transparently. Existing
  * method-level `MFA_VIEW`/`MFA_SETUP`/`MFA_MANAGE`/`MFA_DELETE` permission
  * attributes stay authoritative for fine-grained access.
+ *
+ * Security hotfix (admin scope): MfaToken has no tenant column, so every
+ * action is additionally bound to the token owner via {@see UserVoter::EDIT}
+ * (actor tenant tree, never a SUPER_ADMIN target for non-SUPER actors).
+ * Token-id addressed actions answer 404 when out of scope (no oracle);
+ * user-addressed setup answers 403.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class MfaTokenController extends AbstractController
@@ -43,6 +51,7 @@ class MfaTokenController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext,
     ) {}
 
     protected function getFlashDomain(): string
@@ -58,7 +67,18 @@ class MfaTokenController extends AbstractController
     #[IsGranted('MFA_VIEW')]
     public function index(): Response
     {
-        $mfaTokens = $this->mfaTokenRepository->findAll();
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            $mfaTokens = $this->mfaTokenRepository->findAll();
+        } else {
+            $actor = $this->getUser();
+            $mfaTokens = array_values(array_filter(
+                $this->mfaTokenRepository->findForTenantsOrUser(
+                    $this->tenantContext->getAccessibleTenants(),
+                    $actor instanceof User ? $actor : null,
+                ),
+                fn(MfaToken $mfaToken): bool => $this->isGranted(UserVoter::EDIT, $mfaToken->getUser()),
+            ));
+        }
 
         // Statistics
         $activeCount = count(array_filter($mfaTokens, fn(MfaToken $mfaToken): bool => $mfaToken->isActive()));
@@ -90,6 +110,8 @@ class MfaTokenController extends AbstractController
     #[IsGranted('MFA_SETUP')]
     public function setupTotp(User $user, Request $request): Response
     {
+        $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
+
         $deviceName = $request->query->get('device_name', 'Authenticator App');
 
         // Generate TOTP secret
@@ -127,6 +149,8 @@ class MfaTokenController extends AbstractController
     #[IsGranted('MFA_MANAGE')]
     public function verify(MfaToken $mfaToken, Request $request): JsonResponse
     {
+        $this->assertTokenInScope($mfaToken);
+
         $code = $request->request->get('code');
 
         if (!$code) {
@@ -170,6 +194,8 @@ class MfaTokenController extends AbstractController
     #[IsGranted('MFA_MANAGE')]
     public function regenerateBackupCodes(MfaToken $mfaToken, Request $request): Response
     {
+        $this->assertTokenInScope($mfaToken);
+
         if (!$this->isCsrfTokenValid('regenerate_backup_' . $mfaToken->getId(), $request->request->get('_token'))) {
             $this->flashError('mfa.token.error.invalid_csrf');
             return $this->redirectToRoute('admin_mfa_show', ['id' => $mfaToken->getId()]);
@@ -193,6 +219,8 @@ class MfaTokenController extends AbstractController
     #[IsGranted('MFA_VIEW')]
     public function show(MfaToken $mfaToken): Response
     {
+        $this->assertTokenInScope($mfaToken);
+
         $remainingBackupCodes = count($mfaToken->getBackupCodes() ?? []);
 
         return $this->render('mfa_token/show.html.twig', [
@@ -204,6 +232,8 @@ class MfaTokenController extends AbstractController
     #[IsGranted('MFA_MANAGE')]
     public function disable(MfaToken $mfaToken, Request $request): Response
     {
+        $this->assertTokenInScope($mfaToken);
+
         if (!$this->isCsrfTokenValid('disable_' . $mfaToken->getId(), $request->request->get('_token'))) {
             $this->flashError('mfa.token.error.invalid_csrf');
             return $this->redirectToRoute('admin_mfa_show', ['id' => $mfaToken->getId()]);
@@ -226,6 +256,8 @@ class MfaTokenController extends AbstractController
     #[IsGranted('MFA_DELETE')]
     public function delete(MfaToken $mfaToken, Request $request): Response
     {
+        $this->assertTokenInScope($mfaToken);
+
         if (!$this->isCsrfTokenValid('delete_' . $mfaToken->getId(), $request->request->get('_token'))) {
             $this->flashError('mfa.token.error.invalid_csrf');
             return $this->redirectToRoute('admin_mfa_index');
@@ -257,5 +289,17 @@ class MfaTokenController extends AbstractController
         $this->flashSuccess('mfa.token.success.deleted');
 
         return $this->redirectToRoute('admin_mfa_index');
+    }
+
+    /**
+     * 404 (not 403) for tokens whose owner the actor may not administer, so
+     * token ids of other tenants / SUPER_ADMINs are not confirmed to exist.
+     */
+    private function assertTokenInScope(MfaToken $mfaToken): void
+    {
+        $owner = $mfaToken->getUser();
+        if (!$owner instanceof User || !$this->isGranted(UserVoter::EDIT, $owner)) {
+            throw $this->createNotFoundException();
+        }
     }
 }

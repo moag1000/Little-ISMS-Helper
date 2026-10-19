@@ -677,14 +677,8 @@ class BackupService
             $tenantScopeIds = $this->detectBackupTenantScope($file);
 
             // Apply tenant filter when a scope is active
-            if ($scope !== null) {
-                if ($tenantScopeIds === null) {
-                    // Legacy backup without scope info — exclude from non-SUPER listings
-                    continue;
-                }
-                if ($tenantScopeIds !== [] && array_intersect($tenantScopeIds, $accessibleIds) === []) {
-                    continue;
-                }
+            if ($scope !== null && !$this->scopeIdsVisibleTo($tenantScopeIds, $accessibleIds)) {
+                continue;
             }
 
             $backups[] = [
@@ -703,6 +697,50 @@ class BackupService
         usort($backups, fn(array $a, array $b): int => $b['created_at'] <=> $a['created_at']);
 
         return $backups;
+    }
+
+    /**
+     * Single source of truth for backup visibility (listing, download, delete, preview).
+     *
+     * $scope = null (SUPER_ADMIN) sees every existing backup. A tenant scope sees only
+     * backups whose embedded tenant_scope intersects its accessible tree. Instance-wide
+     * (empty scope) and legacy/unknown-scope backups are NOT visible to a tenant scope.
+     * Filenames are validated against traversal; missing files are not visible.
+     */
+    public function isBackupVisibleTo(string $filename, ?Tenant $scope): bool
+    {
+        if ($filename !== basename($filename)
+            || !preg_match('/^(backup_|uploaded_)[A-Za-z0-9_.-]+\.(zip|json\.gz|json|gz)$/', $filename)
+            || str_ends_with($filename, '.meta.json')
+        ) {
+            return false;
+        }
+
+        $filepath = $this->projectDir . '/var/backups/' . $filename;
+        if (!is_file($filepath)) {
+            return false;
+        }
+        if ($scope === null) {
+            return true;
+        }
+
+        return $this->scopeIdsVisibleTo(
+            $this->detectBackupTenantScope($filepath),
+            $this->resolveScopeIds($scope)
+        );
+    }
+
+    /**
+     * @param int[]|null $backupScopeIds null = unknown/legacy, [] = instance-wide
+     * @param int[]      $accessibleIds
+     */
+    private function scopeIdsVisibleTo(?array $backupScopeIds, array $accessibleIds): bool
+    {
+        if ($backupScopeIds === null || $backupScopeIds === []) {
+            return false;
+        }
+
+        return array_intersect($backupScopeIds, $accessibleIds) !== [];
     }
 
     /**
