@@ -119,6 +119,79 @@ final class NotificationRuleConditionsTest extends KernelTestCase
         self::assertTrue((new NotificationRuleEvaluator())->evaluate($rule, ['score' => 15]));
     }
 
+    /**
+     * @param array<mixed> $stored
+     * @return array{0: string, 1: NotificationRule}
+     */
+    private function renderAndResubmit(array $stored, string $op, ?string $editedText = null): array
+    {
+        $rule = (new NotificationRule())->setName('r')->setEventType('incident.created')
+            ->setConditions([['field' => 'f', 'op' => $op, 'value' => $stored]]);
+        $form = $this->form($rule);
+        $text = $form->createView()['conditionRows'][0]['value']->vars['value'];
+        $form->submit([
+            'name' => 'r', 'eventType' => 'incident.created', 'conditionLogic' => 'and',
+            'conditionRows' => [['field' => 'f', 'op' => $op, 'value' => $editedText ?? $text]],
+        ]);
+        self::assertTrue($form->isValid(), (string) $form->getErrors(true));
+
+        return [$text, $rule];
+    }
+
+    #[Test]
+    public function itemsContainingCommasAndQuotesRoundTripLosslessly(): void
+    {
+        $stored = ['a,b', 'c', 'say "hi"', ' padded '];
+        [$text, $rule] = $this->renderAndResubmit($stored, 'in');
+        self::assertSame('"a,b", c, "say ""hi""", " padded "', $text);
+        self::assertSame($stored, $rule->getConditions()[0]['value']);
+
+        // Edited text is parsed CSV-style too (a quoted comma stays one item).
+        [, $edited] = $this->renderAndResubmit($stored, 'in', '"a,b", d');
+        self::assertSame(['a,b', 'd'], $edited->getConditions()[0]['value']);
+    }
+
+    /** @return iterable<string, array{0: array<mixed>}> */
+    public static function untouchedValues(): iterable
+    {
+        yield 'numeric strings' => [['1', '2']];
+        yield 'bool' => [[true, false]];
+        yield 'null item' => [['x', null]];
+        yield 'nested array' => [['x', ['k' => 'v']]];
+        yield 'ints and floats' => [[1, 2.5]];
+    }
+
+    /** @param array<mixed> $stored */
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('untouchedValues')]
+    public function unchangedArrayValuesAreRestoredIdenticallyForAnyOperator(array $stored): void
+    {
+        foreach (['in', '==', 'contains'] as $op) {
+            [, $rule] = $this->renderAndResubmit($stored, $op);
+            self::assertSame($stored, $rule->getConditions()[0]['value'], $op);
+        }
+    }
+
+    #[Test]
+    public function emptyListIsNotSilentlyRewritten(): void
+    {
+        $rule = (new NotificationRule())->setName('r')->setEventType('incident.created')
+            ->setConditions([['field' => 'f', 'op' => 'in', 'value' => []]]);
+        $text = $this->form($rule)->createView()['conditionRows'][0]['value']->vars['value'];
+        self::assertSame('', $text);
+    }
+
+    #[Test]
+    public function editedTextKeepsOriginalItemTypesAndOtherCellsAreStringsUnlessCanonicalNumbers(): void
+    {
+        // "1","2" are strings in the stored rule: kept as strings when still present.
+        [, $rule] = $this->renderAndResubmit(['1', '2'], 'in', '1, 2, 3, 007, x');
+        self::assertSame(['1', '2', 3, '007', 'x'], $rule->getConditions()[0]['value']);
+
+        [, $rule] = $this->renderAndResubmit([true], 'in', 'true, 5');
+        self::assertSame([true, 5], $rule->getConditions()[0]['value']);
+    }
+
     #[Test]
     public function incompleteRowIsRejected(): void
     {

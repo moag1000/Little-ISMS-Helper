@@ -70,9 +70,27 @@ final class SsoProviderAttributeMapTest extends WebTestCase
         self::assertSame(['upn' => 'email'], $this->reload($client, $id)->getAttributeMap());
     }
 
+    #[Test]
+    public function editPageHasNoNestedFormsAndTheCrawlerFormCarriesTheBuilderAndToken(): void
+    {
+        [$client, $id] = $this->boot(['mail' => 'email']);
+
+        $crawler = $client->request('GET', '/de/admin/sso/' . $id . '/edit');
+        self::assertResponseIsSuccessful();
+        self::assertSame(0, $crawler->filter('form form')->count(), 'no nested <form>');
+
+        $form = $crawler->filterXPath('//textarea[@name="identity_provider[attributeMapJson]"]/ancestor::form//button[@type="submit" and not(@form)]')->first()->form();
+        self::assertTrue($form->has('identity_provider[attributeMapJson]'));
+        self::assertTrue($form->has('identity_provider[_token]'));
+        $form['identity_provider[attributeMapJson]'] = '';
+        $client->submit($form);
+
+        self::assertResponseRedirects();
+        self::assertSame([], $this->reload($client, $id)->getAttributeMap());
+    }
+
     /**
-     * Posted by hand: the edit page nests the "discover" form inside the
-     * provider form, so a crawler-built form drops the trailing fields.
+     * Posted by hand (token = stateless double-submit marker).
      *
      * @return array<string, mixed>
      */

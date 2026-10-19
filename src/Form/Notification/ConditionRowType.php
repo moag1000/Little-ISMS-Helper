@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Form\Notification;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -74,37 +73,8 @@ final class ConditionRowType extends AbstractType
                 ],
             ]);
 
-        $builder->addModelTransformer(new CallbackTransformer(
-            // array value (op `in`) -> "a, b" for the text input
-            static function (mixed $row): mixed {
-                if (is_array($row) && is_array($row['value'] ?? null)) {
-                    $row['value'] = implode(', ', array_map(static fn (mixed $v): string => (string) (is_bool($v) ? (int) $v : $v), $row['value']));
-                }
-
-                return $row;
-            },
-            // "a, b" -> ['a', 'b'] when the operator is `in`
-            static function (mixed $row): mixed {
-                if (is_array($row) && ($row['op'] ?? null) === 'in' && is_string($row['value'] ?? null)) {
-                    $items = [];
-                    foreach (explode(',', $row['value']) as $part) {
-                        $part = trim($part);
-                        if ($part === '') {
-                            continue;
-                        }
-                        // Keep numbers numeric: the evaluator compares `in` strictly.
-                        $items[] = match (true) {
-                            (string) (int) $part === $part => (int) $part,
-                            is_numeric($part) && (string) (float) $part === $part => (float) $part,
-                            default => $part,
-                        };
-                    }
-                    $row['value'] = $items;
-                }
-
-                return $row;
-            },
-        ));
+        // One transformer instance per row form (it remembers the row's original value).
+        $builder->addModelTransformer(new ConditionRowTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

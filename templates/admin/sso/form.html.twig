@@ -55,12 +55,10 @@
                     <h2 class="fa-section__title">{{ 'sso.section.endpoints'|trans }}</h2>
                     {% if not is_new %}
                         <div class="fa-section__tools">
-                            <form method="post" action="{{ path('admin_sso_test', {id: provider.id}) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_test') }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                    <i class="fa-icon fa-icon--asset-cloud" aria-hidden="true"></i> {{ 'sso.action.discover'|trans }}
-                                </button>
-                            </form>
+                            {# Belongs to the standalone form below (HTML forms must not nest). #}
+                            <button type="submit" form="sso-discover-form" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--asset-cloud" aria-hidden="true"></i> {{ 'sso.action.discover'|trans }}
+                            </button>
                         </div>
                     {% endif %}
                 </div>
@@ -137,4 +135,9 @@
         </button>
     </div>
     {{ form_end(form) }}
+    {% if not is_new %}
+        <form id="sso-discover-form" method="post" action="{{ path('admin_sso_test', {id: provider.id}) }}" class="d-none">
+            <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_test') }}">
+        </form>
+    {% endif %}
 {% endblock %}
