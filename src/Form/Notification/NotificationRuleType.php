@@ -122,8 +122,15 @@ final class NotificationRuleType extends AbstractType implements SectionMapInter
                 'prototype'      => true,
                 'prototype_name' => '__condition_index__',
                 // A row the user left completely empty is dropped, not rejected.
-                'delete_empty'   => static fn (mixed $row): bool => !is_array($row)
-                    || (trim((string) ($row['field'] ?? '')) === '' && trim((string) ($row['value'] ?? '')) === ''),
+                'delete_empty'   => static function (mixed $row): bool {
+                    if (!is_array($row)) {
+                        return true;
+                    }
+                    $value = $row['value'] ?? '';
+                    $valueEmpty = is_array($value) ? $value === [] : trim((string) $value) === '';
+
+                    return trim((string) ($row['field'] ?? '')) === '' && $valueEmpty;
+                },
                 'help'           => 'notification.rule.help.conditions',
             ])
             ->add('isActive', CheckboxType::class, [

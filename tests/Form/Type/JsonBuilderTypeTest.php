@@ -53,6 +53,17 @@ final class JsonBuilderTypeTest extends KernelTestCase
     }
 
     #[Test]
+    public function legacyScalarListEntriesAreKeptAndDoNotBlockTheSave(): void
+    {
+        $data = ['Call the DPO', ['action' => 'x'], 42];
+        $form = $this->form(['shape' => 'list', 'fields' => self::LIST_FIELDS], $data);
+        $form->submit(['value' => json_encode($data)]);
+
+        self::assertTrue($form->isValid(), (string) $form->getErrors(true));
+        self::assertSame($data, $form->get('value')->getData());
+    }
+
+    #[Test]
     public function emptySubmissionStoresNull(): void
     {
         $form = $this->form(['shape' => 'list', 'fields' => self::LIST_FIELDS], [['action' => 'x']]);

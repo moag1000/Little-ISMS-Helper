@@ -236,6 +236,7 @@ notification:
         value_placeholder: 'e.g. high'
         op:
             contains: 'contains'
+            in: 'is one of (comma-separated)'
         logic:
             label: 'Combine with'
             all: 'All conditions must match (AND)'

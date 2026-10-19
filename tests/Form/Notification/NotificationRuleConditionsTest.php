@@ -74,6 +74,52 @@ final class NotificationRuleConditionsTest extends KernelTestCase
     }
 
     #[Test]
+    public function storedInRuleWithArrayValueIsEditableAndKeepsTypes(): void
+    {
+        // Shape written by TemplateInstantiator::setConditions / older rules.
+        $rule = (new NotificationRule())
+            ->setName('r')
+            ->setEventType('incident.created')
+            ->setConditions([['field' => 'severity', 'op' => 'in', 'value' => ['high', 'critical']]]);
+
+        $form = $this->form($rule);
+        $view = $form->createView();
+        self::assertSame('high, critical', $view['conditionRows'][0]['value']->vars['value']);
+        self::assertSame('in', $view['conditionRows'][0]['op']->vars['value']);
+
+        $form->submit([
+            'name' => 'r',
+            'eventType' => 'incident.created',
+            'conditionLogic' => 'and',
+            'conditionRows' => [['field' => 'severity', 'op' => 'in', 'value' => 'high, critical, medium']],
+        ]);
+
+        self::assertTrue($form->isValid(), (string) $form->getErrors(true));
+        self::assertSame(
+            [['field' => 'severity', 'op' => 'in', 'value' => ['high', 'critical', 'medium']]],
+            $rule->getConditions(),
+        );
+        self::assertTrue((new NotificationRuleEvaluator())->evaluate($rule, ['severity' => 'medium']));
+    }
+
+    #[Test]
+    public function inRuleWithNumericItemsStaysNumeric(): void
+    {
+        $rule = new NotificationRule();
+        $form = $this->form($rule);
+        $form->submit([
+            'name' => 'r',
+            'eventType' => 'risk.created',
+            'conditionLogic' => 'and',
+            'conditionRows' => [['field' => 'score', 'op' => 'in', 'value' => '12, 15']],
+        ]);
+
+        self::assertTrue($form->isValid(), (string) $form->getErrors(true));
+        self::assertSame([12, 15], $rule->getConditions()[0]['value']);
+        self::assertTrue((new NotificationRuleEvaluator())->evaluate($rule, ['score' => 15]));
+    }
+
+    #[Test]
     public function incompleteRowIsRejected(): void
     {
         $form = $this->form(new NotificationRule());

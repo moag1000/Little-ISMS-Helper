@@ -236,6 +236,7 @@ notification:
         value_placeholder: 'z. B. high'
         op:
             contains: 'enthält'
+            in: 'ist eines von (kommagetrennt)'
         logic:
             label: 'Verknüpfung'
             all: 'Alle Bedingungen müssen zutreffen (UND)'

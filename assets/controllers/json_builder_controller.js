@@ -105,7 +105,11 @@ export default class extends Controller {
             return entries;
         }
         const list = Array.isArray(data) ? data : [];
-        return list.map((value) => ({ value: value && typeof value === 'object' ? value : {} }));
+        // Legacy free-JSON data can hold plain strings/numbers/nested lists.
+        // Keep them verbatim as read-only `raw` entries instead of dropping them.
+        return list.map((value) => (
+            value && typeof value === 'object' && !Array.isArray(value) ? { value } : { raw: value }
+        ));
     }
 
     /** Internal entries → value written to the hidden textarea ('' = empty). */
@@ -131,7 +135,17 @@ export default class extends Controller {
             Object.assign(out, this.hidden || {});
             return Object.keys(out).length ? JSON.stringify(out) : '';
         }
-        const list = this.entries.map((e) => this.#clean(e.value)).filter((v) => Object.keys(v).length > 0);
+        const list = [];
+        for (const e of this.entries) {
+            if ('raw' in e) {
+                list.push(e.raw);
+                continue;
+            }
+            const cleaned = this.#clean(e.value);
+            if (Object.keys(cleaned).length > 0) {
+                list.push(cleaned);
+            }
+        }
         return list.length ? JSON.stringify(list) : '';
     }
 
@@ -201,6 +215,16 @@ export default class extends Controller {
         grid.className = 'fa-json-builder__grid';
         card.appendChild(grid);
 
+        if ('raw' in entry) {
+            // Not an object: shown read-only, written back unchanged, removable.
+            const code = document.createElement('code');
+            code.className = 'fa-json-builder__raw';
+            code.textContent = typeof entry.raw === 'string' ? entry.raw : JSON.stringify(entry.raw);
+            grid.appendChild(code);
+            this.#appendRemove(card, index);
+            return card;
+        }
+
         if (shape === 'map') {
             const keyControl = this.#renderControl(
                 { key: '__key', type: 'text', label: this.config.keyLabel, required: true, suggestions: this.config.keySuggestions },
@@ -226,18 +250,23 @@ export default class extends Controller {
             }
         }
 
-        if (shape !== 'object' && !this.disabledValue) {
-            const remove = document.createElement('button');
-            remove.type = 'button';
-            remove.className = 'fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-cyber-btn--danger fa-json-builder__remove';
-            remove.dataset.index = String(index);
-            remove.dataset.action = 'click->json-builder#remove';
-            remove.setAttribute('aria-label', this.removeLabelValue);
-            remove.title = this.removeLabelValue;
-            remove.innerHTML = '<i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>';
-            card.appendChild(remove);
-        }
+        this.#appendRemove(card, index);
         return card;
+    }
+
+    #appendRemove(card, index) {
+        if (this.config.shape === 'object' || this.disabledValue) {
+            return;
+        }
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-cyber-btn--danger fa-json-builder__remove';
+        remove.dataset.index = String(index);
+        remove.dataset.action = 'click->json-builder#remove';
+        remove.setAttribute('aria-label', this.removeLabelValue);
+        remove.title = this.removeLabelValue;
+        remove.innerHTML = '<i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>';
+        card.appendChild(remove);
     }
 
     #renderControl(field, value, onChange, index) {

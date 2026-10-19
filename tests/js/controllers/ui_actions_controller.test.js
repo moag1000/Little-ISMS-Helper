@@ -130,3 +130,29 @@ describe('ui-actions controller — promptSubmit', () => {
         expect(HTMLFormElement.prototype.requestSubmit).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('ui-actions controller — bypass flag hygiene', () => {
+    afterEach(() => {
+        stopAll();
+        delete window.faConfirm;
+    });
+
+    it('clears the bypass flag when native validation blocks the re-submit, so the next submit asks again', async () => {
+        window.faConfirm = vi.fn(() => Promise.resolve(true));
+        // Validation-blocked requestSubmit: no submit event is dispatched.
+        HTMLFormElement.prototype.requestSubmit = vi.fn();
+        const { element } = await mount('ui-actions', Controller, `
+          <form data-controller="ui-actions" data-action="submit->ui-actions#confirm"
+                data-ui-actions-message-param="Delete it?"><button type="submit">x</button></form>`);
+
+        submit(element);
+        await tick();
+        expect(HTMLFormElement.prototype.requestSubmit).toHaveBeenCalledTimes(1);
+        expect(element.dataset.faConfirmBypass).toBeUndefined();
+
+        const ev = submit(element);
+        expect(ev.defaultPrevented).toBe(true);
+        await tick();
+        expect(window.faConfirm).toHaveBeenCalledTimes(2);
+    });
+});

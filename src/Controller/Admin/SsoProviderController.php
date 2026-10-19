@@ -212,10 +212,13 @@ final class SsoProviderController extends AbstractController
             $provider->setScopes($scopes);
 
             // Structured claim builder (JsonBuilderType) — decoded and
-            // shape-validated; an empty builder keeps the current mapping.
-            $attributeMap = $form->get('attributeMapJson')->getData();
-            if (is_array($attributeMap) && $attributeMap !== []) {
-                $provider->setAttributeMap($attributeMap);
+            // shape-validated. A field that was submitted empty clears the
+            // mapping; a field absent from the request (partial/API post)
+            // keeps the current one.
+            $posted = $request->request->all($form->getName());
+            if (array_key_exists('attributeMapJson', $posted)) {
+                $attributeMap = $form->get('attributeMapJson')->getData();
+                $provider->setAttributeMap(is_array($attributeMap) ? $attributeMap : []);
             }
 
             $bindingsCsv = (string) $form->get('domainBindingsCsv')->getData();

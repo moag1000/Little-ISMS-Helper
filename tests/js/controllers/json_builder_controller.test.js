@@ -118,3 +118,27 @@ describe('json-builder controller', () => {
         expect(JSON.parse(hidden().value)).toEqual({ recipients: ['a@example.com', 'b@example.com'], delivery_mode: 'digest_daily' });
     });
 });
+
+describe('json-builder legacy non-object list entries', () => {
+    afterEach(() => stopAll());
+
+    const cfg = { shape: 'list', fields: [{ key: 'action', type: 'text', label: 'Maßnahme' }] };
+
+    it('keeps plain-string/number entries verbatim on round-trip and shows them read-only', async () => {
+        const value = JSON.stringify(['Call the DPO', { action: 'A' }, 42]);
+        await mount('json-builder', JsonBuilderController, fixture(cfg, value));
+
+        expect(cards()).toHaveLength(3);
+        expect(cards()[0].textContent).toContain('Call the DPO');
+        expect(cards()[0].querySelector('input')).toBeNull();
+
+        typeInto(cards()[1].querySelector('input'), 'B');
+        expect(JSON.parse(hidden().value)).toEqual(['Call the DPO', { action: 'B' }, 42]);
+    });
+
+    it('lets the user remove a raw entry explicitly', async () => {
+        await mount('json-builder', JsonBuilderController, fixture(cfg, JSON.stringify(['x', { action: 'A' }])));
+        cards()[0].querySelector('.fa-json-builder__remove').click();
+        expect(JSON.parse(hidden().value)).toEqual([{ action: 'A' }]);
+    });
+});

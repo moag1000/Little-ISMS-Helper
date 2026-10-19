@@ -42,6 +42,11 @@ final class JsonShapeValidator extends ConstraintValidator
                     return;
                 }
                 foreach ($value as $i => $entry) {
+                    // Legacy free-JSON data may hold plain scalars; the builder
+                    // keeps them verbatim (read-only), so they must not block a save.
+                    if (is_string($entry) || is_int($entry) || is_float($entry)) {
+                        continue;
+                    }
                     if (!is_array($entry) || ($entry !== [] && array_is_list($entry))) {
                         $this->context->buildViolation($constraint->invalidStructureMessage)->addViolation();
                         return;

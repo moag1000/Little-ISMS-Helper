@@ -119,24 +119,33 @@ export default class extends Controller {
         return false;
     }
 
+    /**
+     * Re-submit a form past this controller's confirm/prompt hook. The submit
+     * event is dispatched synchronously inside requestSubmit(), so the hook
+     * consumes the flag there; when native validation blocks the submission no
+     * event fires and the flag would linger and skip the NEXT confirm — hence
+     * it is always cleared once requestSubmit() returns.
+     */
+    #submitBypassing(form, submitter) {
+        form.dataset.faConfirmBypass = '1';
+        try {
+            if (typeof form.requestSubmit === 'function') {
+                form.requestSubmit(submitter ?? null);
+            } else {
+                form.submit();
+            }
+        } finally {
+            delete form.dataset.faConfirmBypass;
+        }
+    }
+
     #proceed(event, target) {
         if (target instanceof HTMLFormElement) {
-            // Re-submit the form bypassing the controller's confirm hook.
-            target.dataset.faConfirmBypass = '1';
-            if (typeof target.requestSubmit === 'function') {
-                target.requestSubmit(event.submitter ?? null);
-            } else {
-                target.submit();
-            }
+            this.#submitBypassing(target, event.submitter ?? null);
         } else if (target instanceof HTMLAnchorElement && target.href) {
             window.location.href = target.href;
         } else if (target instanceof HTMLButtonElement && target.form) {
-            target.form.dataset.faConfirmBypass = '1';
-            if (typeof target.form.requestSubmit === 'function') {
-                target.form.requestSubmit(target);
-            } else {
-                target.form.submit();
-            }
+            this.#submitBypassing(target.form, target);
         }
     }
 
