@@ -143,6 +143,91 @@ class SoaBulkActionTest extends WebTestCase
         $this->assertTrue($this->reload($this->otherControl)->isApplicable(), 'foreign control untouched');
     }
 
+    #[Test]
+    public function applicabilityIsDeniedForAnAuditor(): void
+    {
+        $auditor = $this->makeUser('aud_' . uniqid() . '@x.test', $this->tenant, ['ROLE_AUDITOR']);
+        $this->em->flush();
+
+        $this->client->loginUser($auditor);
+        $this->postApplicability([$this->control->getId()]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertTrue($this->reload($this->control)->isApplicable());
+    }
+
+    /**
+     * app_soa_edit had no authorisation beyond the firewall: any account of
+     * the organisation — auditors included — could edit any control.
+     *
+     * @return iterable<string, array{list<string>}>
+     */
+    public static function readOnlyRoles(): iterable
+    {
+        yield 'auditor' => [['ROLE_AUDITOR']];
+        yield 'holding auditor' => [['ROLE_KONZERN_AUDITOR']];
+        yield 'plain user' => [['ROLE_USER']];
+    }
+
+    /**
+     * @param list<string> $roles
+     */
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('readOnlyRoles')]
+    public function editIsDeniedForReadOnlyRoles(array $roles): void
+    {
+        $actor = $this->makeUser('ro_' . uniqid() . '@x.test', $this->tenant, $roles);
+        $this->em->flush();
+
+        $this->client->loginUser($actor);
+        $this->client->request('GET', '/en/soa/' . $this->control->getId() . '/edit');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->client->request('POST', '/en/soa/' . $this->control->getId() . '/edit', ['control' => ['name' => 'hijacked']]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertStringNotContainsString('hijacked', (string) $this->reload($this->control)->getName());
+    }
+
+    #[Test]
+    public function managerMayOpenTheEditForm(): void
+    {
+        $manager = $this->makeUser('mgr_' . uniqid() . '@x.test', $this->tenant, ['ROLE_MANAGER']);
+        $this->em->flush();
+
+        $this->client->loginUser($manager);
+        $this->client->request('GET', '/en/soa/' . $this->control->getId() . '/edit');
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[Test]
+    public function managerCannotEditAForeignControl(): void
+    {
+        $manager = $this->makeUser('mgr_' . uniqid() . '@x.test', $this->tenant, ['ROLE_MANAGER']);
+        $this->em->flush();
+
+        $this->client->loginUser($manager);
+        $this->client->request('GET', '/en/soa/' . $this->otherControl->getId() . '/edit');
+
+        $this->assertContains($this->client->getResponse()->getStatusCode(), [Response::HTTP_FORBIDDEN, Response::HTTP_NOT_FOUND]);
+    }
+
+    #[Test]
+    public function showHidesTheEditLinkFromAnAuditor(): void
+    {
+        $auditor = $this->makeUser('aud_' . uniqid() . '@x.test', $this->tenant, ['ROLE_AUDITOR']);
+        $this->em->flush();
+
+        $this->client->loginUser($auditor);
+        $this->client->request('GET', '/en/soa/' . $this->control->getId());
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString(
+            '/soa/' . $this->control->getId() . '/edit',
+            (string) $this->client->getResponse()->getContent(),
+        );
+    }
+
     private function reload(Control $control): Control
     {
         $this->em->clear();

@@ -27,6 +27,9 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN only within its own tenant
  * - Users can only access controls from their own tenant
  * - Tenant isolation strictly enforced
+ * - EDIT below ROLE_ADMIN needs ROLE_MANAGER (role hierarchy) or the
+ *   fine-grained `control.edit` permission — ROLE_USER / ROLE_AUDITOR and
+ *   the holding roles are read-only
  * - Only admins can delete controls
  *
  * Multi-tenancy:
@@ -77,7 +80,12 @@ final class ControlVoter extends Voter
             return $scope;
         }
 
-        // In scope below ROLE_ADMIN: view and edit, delete stays admin-only.
-        return $attribute !== self::DELETE;
+        // In scope below ROLE_ADMIN: everyone may view; editing needs the
+        // manager scope (or the control.edit permission); delete stays admin-only.
+        return match ($attribute) {
+            self::VIEW => true,
+            self::EDIT => $this->hasReachableRole($user, 'ROLE_MANAGER') || $user->hasPermission('control.edit'),
+            default => false,
+        };
     }
 }

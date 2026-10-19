@@ -456,6 +456,7 @@ class StatementOfApplicabilityController extends AbstractController
         return $this->redirectToRoute('app_soa_show', ['id' => $control->getId()]);
     }
     #[Route('/soa/{id}/edit', name: 'app_soa_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(ControlVoter::EDIT, subject: 'control')]
     public function edit(Request $request, Control $control): Response
     {
         $form = $this->createForm(ControlType::class, $control, [

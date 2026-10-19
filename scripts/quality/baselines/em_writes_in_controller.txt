@@ -374,7 +374,7 @@ src/Controller/SourceConversionController.php:91
 src/Controller/SourceConversionController.php:99
 src/Controller/StatementOfApplicabilityController.php:380
 src/Controller/StatementOfApplicabilityController.php:420
-src/Controller/StatementOfApplicabilityController.php:472
+src/Controller/StatementOfApplicabilityController.php:473
 src/Controller/SupplierController.php:166
 src/Controller/SupplierController.php:167
 src/Controller/SupplierController.php:300

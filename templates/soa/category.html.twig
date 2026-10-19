@@ -144,9 +144,11 @@
                 <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost me-1" title="{{ 'soa.action.view_details'|trans({}, 'soa') }}">
                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'soa.action.view_details'|trans({}, 'soa') }}
                 </a>
+                {% if is_granted('edit', control) %}
                 <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" title="{{ 'soa.action.edit'|trans({}, 'soa') }}">
                     <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
                 </a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
