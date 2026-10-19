@@ -196,4 +196,46 @@ final class SsoUserProvisioningServiceTest extends TestCase
 
         self::assertContains('ROLE_AUDITOR', $user->getRoles());
     }
+
+    #[Test]
+    public function tenantOwnedProviderCannotLinkByEmailToForeignOrPrivilegedUser(): void
+    {
+        $tenantA = (new \App\Entity\Tenant())->setName('A')->setCode('a');
+        $tenantB = (new \App\Entity\Tenant())->setName('B')->setCode('b');
+        $this->provider->setTenant($tenantA);
+
+        $foreign = (new User())->setEmail('alice@acme.com')->setTenant($tenantB);
+        $super = (new User())->setEmail('root@acme.com')->setTenant($tenantA)->setRoles(['ROLE_SUPER_ADMIN']);
+        $this->userRepo->method('findOneBy')
+            ->willReturnCallback(static fn (array $c): ?User => match ($c['email'] ?? null) {
+                'alice@acme.com' => $foreign,
+                'root@acme.com' => $super,
+                default => null,
+            });
+        $this->em->expects(self::never())->method('flush');
+
+        foreach (['alice@acme.com', 'root@acme.com'] as $email) {
+            try {
+                $this->makeService()->provision($this->provider, ['sub' => 'evil', 'email' => $email]);
+                self::fail('Linking must be rejected for ' . $email);
+            } catch (AuthenticationException) {
+                $this->addToAssertionCount(1);
+            }
+        }
+        self::assertNull($foreign->getSsoExternalId());
+        self::assertNull($super->getSsoExternalId());
+    }
+
+    #[Test]
+    public function tenantOwnedProviderNeverProvisionsPrivilegedRole(): void
+    {
+        $this->provider->setTenant((new \App\Entity\Tenant())->setName('A')->setCode('a'));
+        $this->provider->setDefaultFallbackRole('ROLE_SUPER_ADMIN');
+        $this->userRepo->method('findOneBy')->willReturn(null);
+
+        $user = $this->makeService()->provision($this->provider, ['sub' => 'jit', 'email' => 'new@acme.com']);
+
+        self::assertNotContains('ROLE_SUPER_ADMIN', $user->getRoles());
+        self::assertSame(['ROLE_USER'], $user->getStoredRoles());
+    }
 }

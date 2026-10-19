@@ -71,6 +71,14 @@ final class RoleNames
     }
 
     /**
+     * Case- and whitespace-insensitive membership in {@see PRIVILEGED}.
+     */
+    public static function isPrivileged(?string $name): bool
+    {
+        return in_array(strtoupper(trim((string) $name)), self::PRIVILEGED, true);
+    }
+
+    /**
      * May a custom Role with this name contribute the name to
      * User::getRoles()? Ordinary names: yes (unchanged behaviour). Reserved
      * names: only for seeded system roles (holding / persona roles such as
