@@ -92,9 +92,11 @@ class Bsi2004ExerciseLogController extends AbstractController
         // Same rule as editing the log it creates: the log inherits the
         // exercise's tenant, so ask Bsi2004ExerciseLogVoter::EDIT for an
         // unsaved log of that tenant (SUPER_ADMIN everywhere, everyone else
-        // inside the own organisation).
-        $probe = (new Bsi2004ExerciseLog())->setTenant($exercise->getTenant());
-        if (!$this->isGranted(Bsi2004ExerciseLogVoter::EDIT, $probe)) {
+        // inside the own organisation). An exercise without a tenant would
+        // yield an unscopable orphan log: fail closed for everyone.
+        $exerciseTenant = $exercise->getTenant();
+        $probe = (new Bsi2004ExerciseLog())->setTenant($exerciseTenant);
+        if ($exerciseTenant === null || !$this->isGranted(Bsi2004ExerciseLogVoter::EDIT, $probe)) {
             throw $this->createAccessDeniedException('Cross-tenant access denied.');
         }
 

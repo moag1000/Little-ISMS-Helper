@@ -143,9 +143,9 @@ src/Controller/BCExerciseController.php:177
 src/Controller/BCExerciseController.php:219
 src/Controller/BCExerciseController.php:220
 src/Controller/Bsi/IsoBsiGapController.php:115
-src/Controller/Bsi2004ExerciseLogController.php:121
-src/Controller/Bsi2004ExerciseLogController.php:122
-src/Controller/Bsi2004ExerciseLogController.php:190
+src/Controller/Bsi2004ExerciseLogController.php:123
+src/Controller/Bsi2004ExerciseLogController.php:124
+src/Controller/Bsi2004ExerciseLogController.php:192
 src/Controller/BusinessProcessController.php:162
 src/Controller/BusinessProcessController.php:163
 src/Controller/BusinessProcessController.php:285

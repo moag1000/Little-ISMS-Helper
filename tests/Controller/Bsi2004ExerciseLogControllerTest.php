@@ -189,6 +189,25 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     }
 
     /**
+     * An exercise without an organisation would create an orphan log that
+     * no voter can scope: fail closed, even for the instance operator.
+     */
+    #[Test]
+    public function newIsDeniedForAnExerciseWithoutOrganisation(): void
+    {
+        $this->foreignExercise = $this->makeExercise('Orphan Exercise ' . uniqid(), $this->foreignTenant);
+        $this->foreignExercise->setTenant(null);
+        $superAdmin = $this->makeUser('bsi_super_orphan_' . uniqid(), ['ROLE_SUPER_ADMIN']);
+        $superAdmin->setTenant(null);
+        $this->em->flush();
+        $this->superAdmins = [$superAdmin];
+
+        $this->loginAs($superAdmin);
+        $this->client->request('GET', '/de/bcm/exercise-log/new/' . $this->foreignExercise->getId());
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    /**
      * Same rule as Bsi2004ExerciseLogVoter::EDIT: a manager stays inside the
      * own organisation, even for an exercise of a subsidiary.
      */
@@ -285,7 +304,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $this->em->flush();
     }
 
-    private function makeExercise(string $name, Tenant $tenant): BCExercise
+    private function makeExercise(string $name, ?Tenant $tenant): BCExercise
     {
         $exercise = new BCExercise();
         $exercise->setName($name);
