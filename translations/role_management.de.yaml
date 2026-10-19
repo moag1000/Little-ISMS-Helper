@@ -57,6 +57,8 @@ role_management:
         system_role_desc: 'Dies ist eine Systemrolle und kann nicht gelöscht werden. Nur Berechtigungen können angepasst werden.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diese Rolle löschen möchten? Alle Benutzerzuweisungen werden entfernt.'
+    error:
+        not_modifiable: 'Diese Rolle kann nicht geändert werden: Sie ist eine Systemrolle oder Benutzern außerhalb Ihrer Organisation zugewiesen.'
     aria:
         actions_for_role: 'Aktionen für Rolle %name%'
     permissions:

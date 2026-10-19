@@ -6,7 +6,10 @@ namespace App\Tests\Security\Voter;
 
 use App\Entity\Role;
 use App\Entity\User;
+use App\Repository\RoleRepository;
 use App\Security\Voter\RoleVoter;
+use App\Service\TenantContext;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -17,10 +20,18 @@ use PHPUnit\Framework\Attributes\Test;
 class RoleVoterTest extends TestCase
 {
     private RoleVoter $voter;
+    private RoleRepository&MockObject $roleRepository;
+    private int $foreignHolders = 0;
 
     protected function setUp(): void
     {
-        $this->voter = new RoleVoter(VoterTestHelper::createRoleHierarchy());
+        $this->foreignHolders = 0;
+        $this->roleRepository = $this->createMock(RoleRepository::class);
+        $this->roleRepository->method('countHoldersOutsideTenants')
+            ->willReturnCallback(fn (): int => $this->foreignHolders);
+        $tenantContext = $this->createMock(TenantContext::class);
+        $tenantContext->method('getAccessibleTenants')->willReturn([]);
+        $this->voter = new RoleVoter(VoterTestHelper::createRoleHierarchy(), $this->roleRepository, $tenantContext);
     }
 
     private function createUser(array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User
@@ -38,6 +49,7 @@ class RoleVoterTest extends TestCase
     {
         $role = $this->createMock(Role::class);
         $role->method('isSystemRole')->willReturn($isSystemRole);
+        $role->method('getId')->willReturn(42);
         return $role;
     }
 
@@ -175,5 +187,31 @@ class RoleVoterTest extends TestCase
         $result = $this->voter->vote($token, $role, [RoleVoter::VIEW]);
 
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
+    }
+
+    #[Test]
+    public function adminCannotEditOrDeleteCustomRoleHeldOutsideOwnTenantTree(): void
+    {
+        // Security hotfix: custom roles are global — a role with holders the
+        // actor may not edit (foreign tenant / SUPER_ADMIN) is off limits.
+        $this->foreignHolders = 1;
+        $role = $this->createRole(false);
+
+        foreach ([['ROLE_ADMIN'], ['ROLE_USER']] as $roles) {
+            $token = $this->createToken($this->createUser($roles, true, ['role.view', 'role.edit', 'role.delete']));
+            $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $role, [RoleVoter::EDIT]));
+            $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $role, [RoleVoter::DELETE]));
+            $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $role, [RoleVoter::VIEW]));
+        }
+    }
+
+    #[Test]
+    public function superAdminMayEditCustomRoleHeldInForeignTenant(): void
+    {
+        $this->foreignHolders = 3;
+        $this->roleRepository->expects($this->never())->method('countHoldersOutsideTenants');
+        $token = $this->createToken($this->createUser(['ROLE_SUPER_ADMIN']));
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRole(false), [RoleVoter::EDIT]));
     }
 }

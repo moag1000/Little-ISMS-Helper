@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Role;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -101,5 +102,37 @@ class RoleRepository extends ServiceEntityRepository
             ->orderBy('r.name', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Security hotfix (admin scope): number of holders of $role that the
+     * actor may NOT edit per {@see \App\Security\Voter\UserVoter} — users
+     * without a tenant, users outside $accessibleTenantIds, and ROLE_SUPER_ADMIN
+     * accounts. The actor itself ($exceptUserId) is always editable. Counted
+     * in SQL so roles with many holders are not hydrated.
+     *
+     * @param list<int> $accessibleTenantIds
+     */
+    public function countHoldersOutsideTenants(Role $role, array $accessibleTenantIds, ?int $exceptUserId): int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(DISTINCT u.id)')
+            ->from(User::class, 'u')
+            ->innerJoin('u.customRoles', 'r')
+            ->andWhere('r = :role')
+            ->setParameter('role', $role);
+
+        // No accessible tenant => every other holder is out of scope.
+        if ($accessibleTenantIds !== []) {
+            $qb->andWhere('u.tenant IS NULL OR IDENTITY(u.tenant) NOT IN (:tenantIds) OR u.roles LIKE :superAdmin')
+                ->setParameter('tenantIds', $accessibleTenantIds)
+                ->setParameter('superAdmin', '%"ROLE_SUPER_ADMIN"%');
+        }
+
+        if ($exceptUserId !== null) {
+            $qb->andWhere('u.id <> :self')->setParameter('self', $exceptUserId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }

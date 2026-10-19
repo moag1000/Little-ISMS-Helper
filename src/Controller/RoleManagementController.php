@@ -198,6 +198,9 @@ class RoleManagementController extends AbstractController
         PermissionRepository $permissionRepository,
         TranslatorInterface $translator
     ): Response {
+        if (!$this->isGranted(RoleVoter::EDIT, $role)) {
+            $this->addFlash('danger', $translator->trans('role_management.error.not_modifiable', [], 'role_management'));
+        }
         $this->denyAccessUnlessGranted(RoleVoter::EDIT, $role);
 
         $form = $this->createForm(RoleType::class, $role);
@@ -236,6 +239,9 @@ class RoleManagementController extends AbstractController
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
+        if (!$this->isGranted(RoleVoter::DELETE, $role)) {
+            $this->addFlash('danger', $translator->trans('role_management.error.not_modifiable', [], 'role_management'));
+        }
         $this->denyAccessUnlessGranted(RoleVoter::DELETE, $role);
 
         if ($this->isCsrfTokenValid('delete' . $role->getId(), $request->request->get('_token'))) {

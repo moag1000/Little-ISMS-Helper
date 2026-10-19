@@ -403,9 +403,9 @@ src/Controller/RoleManagementController.php:52
 src/Controller/RoleManagementController.php:53
 src/Controller/RoleManagementController.php:167
 src/Controller/RoleManagementController.php:168
-src/Controller/RoleManagementController.php:215
-src/Controller/RoleManagementController.php:242
-src/Controller/RoleManagementController.php:243
+src/Controller/RoleManagementController.php:218
+src/Controller/RoleManagementController.php:248
+src/Controller/RoleManagementController.php:249
 src/Controller/ScheduledReportController.php:70
 src/Controller/ScheduledReportController.php:71
 src/Controller/ScheduledReportController.php:126

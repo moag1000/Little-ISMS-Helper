@@ -6,6 +6,8 @@ namespace App\Security\Voter;
 
 use App\Entity\Role;
 use App\Entity\User;
+use App\Repository\RoleRepository;
+use App\Service\TenantContext;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -29,6 +31,11 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - Permission-based access control (role.view, role.create, role.edit, role.delete)
  * - System roles (ROLE_USER, ROLE_ADMIN) cannot be edited or deleted —
  *   except by ROLE_SUPER_ADMIN (the ROLE_ADMIN bypass does not cover them)
+ * - Custom roles are global (no tenant): a non-SUPER_ADMIN actor may EDIT or
+ *   DELETE one only while every holder is a user it may edit per UserVoter
+ *   (tenant inside the actor's tree, not a SUPER_ADMIN account); otherwise a
+ *   change would alter what users of foreign tenants may do. CREATE and
+ *   assignment are unaffected (security hotfix, admin scope)
  *
  * System Role Protection:
  * - Implements OWASP A1: Broken Access Control prevention
@@ -39,6 +46,8 @@ final class RoleVoter extends Voter
 {
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
+        private readonly RoleRepository $roleRepository,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -94,6 +103,16 @@ final class RoleVoter extends Voter
             return false;
         }
 
+        // Security hotfix: custom roles are global — editing/deleting one
+        // changes every holder, so all holders must be within the actor's scope.
+        if ($subject instanceof Role
+            && in_array($attribute, [self::EDIT, self::DELETE], true)
+            && !in_array('ROLE_SUPER_ADMIN', $reachableRoles, true)
+            && $this->hasHoldersOutsideActorScope($user, $subject)
+        ) {
+            return false;
+        }
+
         // Admins can do everything else
         if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
             return true;
@@ -106,6 +125,27 @@ final class RoleVoter extends Voter
             self::DELETE => $this->canDelete($user, $subject),
             default => false,
         };
+    }
+
+    /**
+     * Same scope as UserVoter::EDIT for non-SUPER_ADMIN actors (self always,
+     * otherwise tenant accessible via TenantContext and not a SUPER_ADMIN),
+     * evaluated as one COUNT query instead of hydrating every holder.
+     */
+    private function hasHoldersOutsideActorScope(User $actor, Role $role): bool
+    {
+        if ($role->getId() === null) {
+            return false; // not persisted yet => no holders
+        }
+
+        $tenantIds = [];
+        foreach ($this->tenantContext->getAccessibleTenants() as $tenant) {
+            if ($tenant->getId() !== null) {
+                $tenantIds[] = $tenant->getId();
+            }
+        }
+
+        return $this->roleRepository->countHoldersOutsideTenants($role, $tenantIds, $actor->getId()) > 0;
     }
 
     private function canEdit(User $user, Role $role): bool
