@@ -343,6 +343,11 @@ class AdminBackupController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
+        // 404 for invisible backups (same rule as listing) before any other check
+        if (!$this->backupService->isBackupVisibleTo($filename, $this->backupVisibilityScope())) {
+            return new JsonResponse(['success' => false, 'message' => 'Backup file not found'], Response::HTTP_NOT_FOUND);
+        }
+
         // Phase 5: resolve caller scope so validateBackup() can reject cross-tenant
         // attempts with AccessDeniedException (Symfony maps to 403).
         $callerScope = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
@@ -431,6 +436,11 @@ class AdminBackupController extends AbstractController
     {
         if (!$this->isCsrfTokenValid('data_backup_restore', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
+        // 404 for invisible backups (same rule as listing) before any other check
+        if (!$this->backupService->isBackupVisibleTo($filename, $this->backupVisibilityScope())) {
+            return new JsonResponse(['success' => false, 'message' => 'Backup file not found'], Response::HTTP_NOT_FOUND);
         }
 
         // Resolve tenant scope BEFORE dispatch so a cross-tenant restore

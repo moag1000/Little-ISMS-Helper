@@ -148,6 +148,30 @@ final class AdminBackupScopeTest extends WebTestCase
         }
     }
 
+    #[Test]
+    public function tenantAdminCannotValidateOrRestoreInvisibleBackup(): void
+    {
+        $this->client->loginUser($this->adminA);
+        foreach ([$this->backup([]), $this->backup([$this->tenantB->getId()]), $this->backup(null)] as $file) {
+            $this->postWithToken('/en/admin/data/backup/validate/' . $file, 'data_backup_validate');
+            self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND, 'validate ' . $file);
+            $this->postWithToken('/en/admin/data/backup/restore/' . $file, 'data_backup_restore');
+            self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND, 'restore ' . $file);
+            self::assertStringNotContainsString('/progress/', (string) $this->client->getResponse()->headers->get('Location'));
+        }
+    }
+
+    #[Test]
+    public function tenantAdminCanValidateAndDryRunRestoreOwnBackup(): void
+    {
+        $file = $this->backup([$this->tenantA->getId()]);
+        $this->client->loginUser($this->adminA);
+        $this->postWithToken('/en/admin/data/backup/validate/' . $file, 'data_backup_validate');
+        self::assertNotSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->postWithToken('/en/admin/data/backup/restore/' . $file, 'data_backup_restore');
+        self::assertNotSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+    }
+
     /** @param int[]|null $scope null = legacy backup without tenant_scope */
     private function backup(?array $scope): string
     {
