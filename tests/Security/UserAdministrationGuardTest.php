@@ -142,4 +142,40 @@ final class UserAdministrationGuardTest extends TestCase
         self::assertSame([], $guard->enforceSubmittedValues($new, $beforeNew, true));
         self::assertSame($this->own, $new->getTenant());
     }
+
+    #[Test]
+    public function userFormHidesPrivilegedAndInertReservedCustomRolesFromAdmins(): void
+    {
+        $holding = (new Role())->setName('ROLE_GROUP_CISO')->setIsSystemRole(true);
+        $persona = (new Role())->setName('ROLE_CISO')->setIsSystemRole(true);
+        $inert = (new Role())->setName('ROLE_ADMIN')->setIsSystemRole(false);
+        $ordinary = (new Role())->setName('Auditors')->setIsSystemRole(false);
+
+        $admin = $this->guard(false);
+        self::assertFalse($admin->mayOfferCustomRole($holding));
+        self::assertFalse($admin->mayOfferCustomRole($inert));
+        self::assertTrue($admin->mayOfferCustomRole($persona));
+        self::assertTrue($admin->mayOfferCustomRole($ordinary));
+
+        $super = $this->guard(true);
+        self::assertTrue($super->mayOfferCustomRole($holding));
+        self::assertTrue($super->mayOfferCustomRole($inert));
+    }
+
+    #[Test]
+    public function hiddenCustomRolesOfTheTargetAreCarriedOverNotRevoked(): void
+    {
+        $holding = (new Role())->setName('ROLE_GROUP_CISO')->setIsSystemRole(true);
+        $user = (new User())->setRoles(['ROLE_USER'])->setTenant($this->own);
+        $user->addCustomRole($holding);
+        $guard = $this->guard(false);
+        $before = $guard->snapshot($user);
+
+        // The filtered form does not offer the role, so the submit drops it.
+        $user->removeCustomRole($holding);
+
+        self::assertSame([], $guard->enforceSubmittedValues($user, $before, false));
+        self::assertTrue($user->getCustomRoles()->contains($holding));
+    }
 }
+

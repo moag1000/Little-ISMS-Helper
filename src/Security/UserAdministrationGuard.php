@@ -58,6 +58,24 @@ final class UserAdministrationGuard
     }
 
     /**
+     * May the user form offer this custom Role to the current actor?
+     * SUPER_ADMIN: every role. Others: not if it is named like a privileged
+     * role, nor if it is named like a reserved role without granting it
+     * (a non-system role such as "ROLE_ADMIN" is inert and only misleads).
+     * Hidden roles a target already holds are carried over on submit
+     * ({@see enforceSubmittedValues()}).
+     */
+    public function mayOfferCustomRole(Role $role): bool
+    {
+        if ($this->canManagePrivilegedRoles()) {
+            return true;
+        }
+
+        return !RoleNames::isPrivileged($role->getName())
+            && RoleNames::isGrantedByCustomRole($role->getName(), $role->isSystemRole());
+    }
+
+    /**
      * The privileged roles contained in $roles (sorted, unique).
      *
      * @param array<array-key, mixed> $roles
@@ -169,6 +187,12 @@ final class UserAdministrationGuard
             }
         }
         $user->setRoles($storedRoles);
+        // Same for custom roles the (filtered) form does not offer.
+        foreach ($before['customRoles'] as $customRole) {
+            if (!$this->mayOfferCustomRole($customRole) && !$user->getCustomRoles()->contains($customRole)) {
+                $user->addCustomRole($customRole);
+            }
+        }
 
         // Compare effective roles plus (normalised) custom role names, so a
         // custom Role named like a privileged role cannot be (un)assigned even

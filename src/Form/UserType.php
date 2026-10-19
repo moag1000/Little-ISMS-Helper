@@ -216,6 +216,12 @@ final class UserType extends AbstractType implements SectionMapInterface
                 'expanded' => true,
                 'required' => false,
                 'help' => 'Benutzerdefinierte Rollen mit spezifischen Berechtigungen',
+                // Security hotfix: hide privileged / reserved-name custom roles
+                // from non-SUPER_ADMIN actors (server rejects them anyway).
+                'choice_filter' => $canManagePrivileged
+                    ? null
+                    : fn (?Role $role): bool => $role instanceof Role
+                        && $this->userAdministrationGuard->mayOfferCustomRole($role),
             ])
 
             // Tenant Assignment
