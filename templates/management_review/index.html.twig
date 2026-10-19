@@ -136,7 +136,7 @@
                 mood: 'sleeping',
                 title: 'management_review.no_reviews'|trans({}, 'management_review'),
                 actions: is_granted('ROLE_ADMIN') ? [
-                    { label: 'management_review.create_first'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new') }
+                    { label: 'management_review.create_first'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new'), attrs: { 'data-turbo-action': 'advance' } }
                 ] : []
             }) }}
             {% else %}

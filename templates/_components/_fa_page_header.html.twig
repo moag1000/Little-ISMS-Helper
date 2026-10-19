@@ -25,13 +25,17 @@
     {% set actions = props.actions|default([]) %}
     <header class="fa-page-header" role="banner">
         <div class="fa-page-header__meta">
-            {# Optional badge chip #}
-            {% if props.badge is defined and props.badge %}
+            {# Optional badge chip — rendered only when it has an icon or a
+               non-empty label, so `badge: { label: '' }` (or a label that
+               resolves to '') no longer emits an empty pill. #}
+            {% set _badge_label = props.badge.label|default('')|trim %}
+            {% set _badge_icon = props.badge.icon|default('') %}
+            {% if props.badge is defined and props.badge and (_badge_label != '' or _badge_icon != '') %}
                 <span class="fa-page-header__badge" aria-hidden="true">
-                    {% if props.badge.icon is defined and props.badge.icon %}
-                        <i class="fa-icon fa-icon--{{ props.badge.icon }}" aria-hidden="true"></i>
+                    {% if _badge_icon != '' %}
+                        <i class="fa-icon fa-icon--{{ _badge_icon }}" aria-hidden="true"></i>
                     {% endif %}
-                    {{ props.badge.label|default('') }}
+                    {{ _badge_label }}
                 </span>
             {% endif %}
 
