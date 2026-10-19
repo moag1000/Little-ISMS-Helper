@@ -13,8 +13,12 @@ use PHPUnit\Framework\TestCase;
 
 final class TenantOwnershipContextScopeTest extends TestCase
 {
+    /**
+     * Record scope: only the acting tenant itself — never a subsidiary, even
+     * though TenantContext::canAccessTenant() would allow it.
+     */
     #[Test]
-    public function contextTenantAndDescendantsAreInScopeForeignAndOrphansAreNot(): void
+    public function onlyTheContextTenantIsInScopeSubsidiariesForeignAndOrphansAreNot(): void
     {
         $viewed = $this->tenant(1);
         $child = $this->tenant(2);
@@ -26,9 +30,20 @@ final class TenantOwnershipContextScopeTest extends TestCase
         );
 
         self::assertTrue(TenantOwnership::isInContextScope($this->asset($viewed), $context, false));
-        self::assertTrue(TenantOwnership::isInContextScope($this->asset($child), $context, false));
-        self::assertFalse(TenantOwnership::isInContextScope($this->asset($foreign), $context, true), 'super admin viewing a tenant stays scoped to it');
-        self::assertFalse(TenantOwnership::isInContextScope($this->asset(null), $context, false));
+        self::assertTrue(TenantOwnership::isInContextScope($this->asset($this->tenant(1)), $context, false), 'same id');
+        self::assertFalse(TenantOwnership::isInContextScope($this->asset($child), $context, false), 'subsidiary');
+        self::assertFalse(TenantOwnership::isInContextScope($this->asset($foreign), $context, false), 'foreign');
+        self::assertFalse(TenantOwnership::isInContextScope($this->asset(null), $context, false), 'orphan');
+    }
+
+    #[Test]
+    public function superAdminIsGlobalEvenWithATenantContext(): void
+    {
+        $context = $this->createStub(TenantContext::class);
+        $context->method('getCurrentTenant')->willReturn($this->tenant(1));
+
+        self::assertTrue(TenantOwnership::isInContextScope($this->asset($this->tenant(3)), $context, true));
+        self::assertTrue(TenantOwnership::isInContextScope($this->asset($this->tenant(3)), $context, fn (): bool => true));
     }
 
     #[Test]

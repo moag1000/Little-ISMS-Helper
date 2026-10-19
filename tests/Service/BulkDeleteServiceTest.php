@@ -7,6 +7,7 @@ namespace App\Tests\Service;
 use App\Entity\Asset;
 use App\Entity\Tenant;
 use App\Service\AuditLogger;
+use App\Security\TenantOwnership;
 use App\Service\BulkDeleteService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +35,10 @@ final class BulkDeleteServiceTest extends TestCase
 
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->tenantContext->method('canAccessTenant')->willReturnCallback(
-            fn (Tenant $candidate): bool => $this->tenantContext->getCurrentTenant()?->getId() === $candidate->getId(),
+            fn (Tenant $candidate): bool => TenantOwnership::isSameOrDescendant(
+                $this->tenantContext->getCurrentTenant(),
+                $candidate,
+            ),
         );
 
         $this->service = new BulkDeleteService(
@@ -131,7 +135,7 @@ final class BulkDeleteServiceTest extends TestCase
         $rows = [1 => $a, 2 => $b];
 
         $this->authChecker->method('isGranted')->willReturnCallback(
-            static fn (string $attr, object $subject): bool => $subject !== $a,
+            static fn (string $attr, ?object $subject = null): bool => $attr !== 'ROLE_SUPER_ADMIN' && $subject !== $a,
         );
         $this->em->expects(self::never())->method('remove');
         $this->auditLogger->expects(self::never())->method('logBulk');
@@ -207,8 +211,26 @@ final class BulkDeleteServiceTest extends TestCase
     #[Test]
     public function tenantComesFromContextNotFromTheUser(): void
     {
-        // SUPER_ADMIN has no own tenant but views tenant 1 through TenantContext.
+        // The service never reads the user's tenant column: the acting
+        // tenant is whatever TenantContext says (non-SUPER_ADMIN actor).
         $asset = $this->asset(10, $this->tenant(1), 'Server');
+        $this->authChecker->method('isGranted')->willReturn(false);
+        $this->em->expects(self::once())->method('remove')->with($asset);
+        $this->auditLogger->method('logBulk')->willReturn('b');
+
+        $result = $this->actingIn($this->tenant(1))->delete('Asset', [10], static fn (): object => $asset);
+
+        self::assertSame(1, $result['deleted']);
+    }
+
+    /**
+     * Record scope: ROLE_SUPER_ADMIN is instance-wide even while it views an
+     * organisation through TenantContext.
+     */
+    #[Test]
+    public function superAdminWithTenantContextStaysGlobal(): void
+    {
+        $asset = $this->asset(10, $this->tenant(2), 'Server');
         $this->authChecker->method('isGranted')->willReturnCallback(
             static fn (string $attribute): bool => $attribute === 'ROLE_SUPER_ADMIN',
         );
@@ -218,6 +240,24 @@ final class BulkDeleteServiceTest extends TestCase
         $result = $this->actingIn($this->tenant(1))->delete('Asset', [10], static fn (): object => $asset);
 
         self::assertSame(1, $result['deleted']);
+    }
+
+    /**
+     * Record scope: never a subsidiary's rows, not even for the holding.
+     */
+    #[Test]
+    public function subsidiaryRowIsNotDeletableFromTheHolding(): void
+    {
+        $holding = $this->tenant(1);
+        $subsidiary = $this->tenant(2);
+        $subsidiary->method('getParent')->willReturn($holding);
+        $asset = $this->asset(10, $subsidiary, 'Server');
+        $this->authChecker->method('isGranted')->willReturn(false);
+        $this->em->expects(self::never())->method('remove');
+
+        $result = $this->actingIn($holding)->delete('Asset', [10], static fn (): object => $asset);
+
+        self::assertSame(0, $result['deleted']);
     }
 
     #[Test]

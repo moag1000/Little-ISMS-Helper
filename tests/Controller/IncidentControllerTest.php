@@ -1000,8 +1000,11 @@ class IncidentControllerTest extends TestCase
         $auditLogger = $this->createStub(AuditLogger::class);
         $auditLogger->method('logBulk')->willReturn('batch');
 
+        // Voters grant; the actor is not ROLE_SUPER_ADMIN (instance-wide in the bulk scope).
         $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
-        $authorizationChecker->method('isGranted')->willReturn(true);
+        $authorizationChecker->method('isGranted')->willReturnCallback(
+            static fn (mixed $attribute): bool => $attribute !== 'ROLE_SUPER_ADMIN',
+        );
 
         // Acting tenant = tenant of the logged-in test user (what TenantContext resolves).
         $tenantContext = $this->createStub(\App\Service\TenantContext::class);

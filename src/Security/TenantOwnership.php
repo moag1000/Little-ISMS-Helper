@@ -82,27 +82,28 @@ final class TenantOwnership
     }
 
     /**
-     * Scope check for bulk operations, resolved from the tenant the actor is
-     * actually acting in ({@see TenantContext::getCurrentTenant()}), NOT from
-     * the user's own tenant column — a ROLE_SUPER_ADMIN has none but views a
-     * tenant through the context.
+     * Scope check for bulk operations (export, assign incl. the assignee,
+     * status change, delete) — the documented *record* scope, same as the
+     * voters ({@see Voter\HoldingTreeAccessTrait::decideTenantScope()}):
      *
-     * Own tenant or any descendant ({@see TenantContext::canAccessTenant()}).
-     * Without any tenant context only ROLE_SUPER_ADMIN is in scope.
-     * Fails closed on entities without a tenant. The single rule for every
-     * bulk operation (export, assign, status change, delete).
+     *  - ROLE_SUPER_ADMIN is instance-wide, even with a tenant context set.
+     *  - Everyone else (ROLE_ADMIN included): the entity must belong to the
+     *    tenant the actor is acting in ({@see TenantContext::getCurrentTenant()},
+     *    NOT the user's tenant column). Never subsidiaries — holding roles
+     *    only read records one by one, they never bulk-process them.
+     *  - No tenant context, or an entity without a tenant: out of scope.
      */
     public static function isInContextScope(object $entity, ?TenantContext $tenantContext, bool|\Closure $actorIsSuperAdmin): bool
     {
-        $acting = $tenantContext?->getCurrentTenant();
-        if (!$acting instanceof Tenant) {
-            return $actorIsSuperAdmin instanceof \Closure ? $actorIsSuperAdmin() : $actorIsSuperAdmin;
+        if ($actorIsSuperAdmin instanceof \Closure ? $actorIsSuperAdmin() : $actorIsSuperAdmin) {
+            return true;
         }
-        if (!method_exists($entity, 'getTenant')) {
+        $acting = $tenantContext?->getCurrentTenant();
+        if (!$acting instanceof Tenant || !method_exists($entity, 'getTenant')) {
             return false;
         }
         $entityTenant = $entity->getTenant();
 
-        return $entityTenant instanceof Tenant && $tenantContext->canAccessTenant($entityTenant);
+        return $entityTenant instanceof Tenant && self::isSameTenant($entityTenant, $acting);
     }
 }

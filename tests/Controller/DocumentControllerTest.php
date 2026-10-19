@@ -137,8 +137,11 @@ class DocumentControllerTest extends TestCase
             };
         });
 
-        // Default: grant all access unless overridden in specific test
-        $this->authorizationChecker->method('isGranted')->willReturn(true);
+        // Default: grant all access unless overridden in specific test — but
+        // not ROLE_SUPER_ADMIN, which is instance-wide in the bulk tenant scope.
+        $this->authorizationChecker->method('isGranted')->willReturnCallback(
+            static fn (mixed $attribute): bool => $attribute !== 'ROLE_SUPER_ADMIN',
+        );
 
         $this->controller = new DocumentController(
             $this->documentRepository,

@@ -16,8 +16,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * BulkActionTrait::isInBulkContextScope() is the one tenant guard of every
- * bulk endpoint (export, assign, status change, delete). It replaced the
- * export/assign guard that compared with `$user->getTenant()` only.
+ * bulk endpoint (export, assign, status change, delete): the documented
+ * record scope — SUPER_ADMIN everywhere, everyone else only the tenant it
+ * acts in per TenantContext, never subsidiaries.
  */
 final class BulkActionTraitTenantScopeTest extends TestCase
 {
@@ -28,11 +29,11 @@ final class BulkActionTraitTenantScopeTest extends TestCase
     }
 
     #[Test]
-    public function subsidiaryRowIsInScope(): void
+    public function subsidiaryRowIsOutOfScope(): void
     {
         $holding = $this->tenant(1);
 
-        self::assertTrue($this->controller(false)->inScope($this->risk($this->tenant(2, $holding)), $this->context($holding)));
+        self::assertFalse($this->controller(false)->inScope($this->risk($this->tenant(2, $holding)), $this->context($holding)));
     }
 
     #[Test]
@@ -55,8 +56,12 @@ final class BulkActionTraitTenantScopeTest extends TestCase
         self::assertFalse($this->controller(false)->inScope($row, $this->context(null)));
         self::assertFalse($this->controller(false)->inScope($row, null));
         self::assertTrue($this->controller(true)->inScope($row, $this->context(null)));
-        // With a tenant context even SUPER_ADMIN stays inside it.
-        self::assertFalse($this->controller(true)->inScope($row, $this->context($this->tenant(1))));
+    }
+
+    #[Test]
+    public function superAdminIsGlobalEvenWithATenantContext(): void
+    {
+        self::assertTrue($this->controller(true)->inScope($this->risk($this->tenant(2)), $this->context($this->tenant(1))));
     }
 
     private function controller(bool $isSuperAdmin): object

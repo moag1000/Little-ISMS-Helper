@@ -217,13 +217,12 @@ class RiskBulkActionTest extends WebTestCase
     }
 
     /**
-     * Bulk assign uses the same tenant rule as bulk delete / status change
-     * (TenantOwnership::isInContextScope(): acting organisation and its
-     * subsidiaries). It used to compare the assignee with the actor's own
-     * tenant only, so a subsidiary's user could not be assigned.
+     * Regression pin: bulk assign follows the record scope (own tenant only).
+     * The User entity is not covered by the tenant Doctrine filter, so this
+     * assignee check is the only thing keeping a subsidiary's user out.
      */
     #[Test]
-    public function assignAcceptsAssigneeOfASubsidiary(): void
+    public function assignRejectsAssigneeOfASubsidiary(): void
     {
         $uid = uniqid('sub_', true);
         $this->subsidiary = (new Tenant())->setName('Sub ' . $uid)->setCode('sb_' . substr($uid, -8));
@@ -237,9 +236,7 @@ class RiskBulkActionTest extends WebTestCase
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->subsidiaryUser->getId(), '_token' => $this->getBulkCsrfToken()]));
 
-        $this->assertResponseIsSuccessful();
-        $body = json_decode($this->client->getResponse()->getContent(), true);
-        $this->assertSame(1, $body['changed'] ?? 0);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     #[Test]

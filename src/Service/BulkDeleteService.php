@@ -15,9 +15,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Callers (via BulkActionTrait::handleBulkDelete) have already validated the
  * CSRF token and the route-level role. This service enforces, per entity:
  *   - existence (finder returns null → rejected),
- *   - tenant isolation (entity must belong to the tenant the caller acts in
- *     per TenantContext, or a descendant; no tenant context = nothing unless
- *     ROLE_SUPER_ADMIN — see TenantOwnership::isInContextScope()),
+ *   - tenant isolation (record scope: ROLE_SUPER_ADMIN everywhere, everyone
+ *     else only the tenant it acts in per TenantContext — never subsidiaries;
+ *     see TenantOwnership::isInContextScope()),
  *   - an optional voter attribute (entities with a dedicated voter),
  *   - an optional domain guard (e.g. inherited records are read-only),
  * then removes the accepted entities atomically (one explicit transaction —

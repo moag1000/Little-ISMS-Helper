@@ -38,11 +38,11 @@ trait BulkActionTrait
 
     /**
      * The one tenant guard for every bulk endpoint — export, assign (records
-     * and assignee), status change, delete, pack: the entity must belong to
-     * the organisation the actor is acting in per TenantContext or one of its
-     * subsidiaries, not to `$user->getTenant()`. Fails closed on entities
-     * without a tenant; without any tenant context only ROLE_SUPER_ADMIN is
-     * in scope. Same rule as BulkDeleteService
+     * and assignee), status change, delete, pack. The documented record
+     * scope: ROLE_SUPER_ADMIN everywhere (even with a tenant context set);
+     * everyone else only entities of the organisation it acts in per
+     * TenantContext (not `$user->getTenant()`), never subsidiaries. Fails
+     * closed on entities without a tenant. Same rule as BulkDeleteService
      * ({@see TenantOwnership::isInContextScope()}).
      */
     protected function isInBulkContextScope(object $entity, ?TenantContext $tenantContext): bool
