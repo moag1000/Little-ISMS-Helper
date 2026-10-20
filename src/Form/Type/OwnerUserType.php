@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Form\Type;
 
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -30,16 +32,23 @@ final class OwnerUserType extends AbstractType
     {
         $resolver->setDefaults([
             'class' => User::class,
-            'query_builder' => function (EntityRepository $repository): QueryBuilder {
-                $qb = $repository->createQueryBuilder('u')->orderBy('u.lastName')->addOrderBy('u.firstName');
-                $tenant = $this->tenantContext->getCurrentTenant();
-                if ($tenant === null) {
-                    return $qb->andWhere('1 = 0');
-                }
+            // Tenant of the bound record; null = use the current tenant.
+            'tenant' => null,
+            'query_builder' => function (Options $options): \Closure {
+                $recordTenant = $options['tenant'];
 
-                return $qb->andWhere('u.tenant = :ownerTenant')->setParameter('ownerTenant', $tenant);
+                return function (EntityRepository $repository) use ($recordTenant): QueryBuilder {
+                    $qb = $repository->createQueryBuilder('u')->orderBy('u.lastName')->addOrderBy('u.firstName');
+                    $tenant = $recordTenant ?? $this->tenantContext->getCurrentTenant();
+                    if ($tenant === null) {
+                        return $qb->andWhere('1 = 0');
+                    }
+
+                    return $qb->andWhere('u.tenant = :ownerTenant')->setParameter('ownerTenant', $tenant);
+                };
             },
         ]);
+        $resolver->setAllowedTypes('tenant', ['null', Tenant::class]);
     }
 
     public function getParent(): string

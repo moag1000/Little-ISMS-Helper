@@ -222,4 +222,29 @@ final class PersonPickerSweepControllerTest extends WebTestCase
         self::assertStringContainsString('Please specify a responsible person', $html);
         self::assertStringNotContainsString('objective.validation.owner_required', $html, 'raw translation key shown');
     }
+
+    #[Test]
+    public function tenantlessSuperAdminEditingForeignRecordKeepsItsOwnerAndSeesOnlyItsUsers(): void
+    {
+        $superAdmin = $this->makeUser('Super', 'Admin', ['ROLE_SUPER_ADMIN']);
+        $superAdmin->setTenant(null);
+        $objective = $this->seed(ISMSObjective::class);
+        $objective->setResponsiblePersonUser($this->owner);
+        $this->em->flush();
+        $id = $objective->getId();
+
+        $this->client->loginUser($superAdmin);
+        $crawler = $this->client->request('GET', '/en/objective/' . $id . '/edit');
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Ownerpick' . $this->uid, $html, 'record-tenant owner is listed');
+        self::assertStringNotContainsString('Foreignuser' . $this->uid, $html, 'users of other tenants are not listed');
+
+        $form = $crawler->filter('select[name$="[responsiblePersonUser]"]')->closest('form')->form();
+        $this->client->submit($form);
+        self::assertResponseRedirects();
+
+        $this->em->clear();
+        self::assertSame($this->owner->getId(), $this->em->find(ISMSObjective::class, $id)->getResponsiblePersonUser()?->getId());
+    }
 }
