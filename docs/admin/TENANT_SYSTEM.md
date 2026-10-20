@@ -424,10 +424,13 @@ installations need no action.
   "an organisation admin may edit a custom role if it may edit every holder"
   is gone, because a role is global and changes what users of every
   organisation may do. System roles can never be deleted.
-- **User CSV export and guided-tour report** cover the organisation the
-  admin belongs to (not its subsidiaries), and within it only users the admin
-  may view. Only a `ROLE_SUPER_ADMIN` without an organisation exports or lists
-  all users. A user export is still downloadable only by the user who started
+- **User CSV export and guided-tour report** return exactly the users of the
+  user list for the same account (one rule, `UserListScope`): `ROLE_ADMIN`
+  its own organisation and its subsidiaries, `ROLE_SUPER_ADMIN` all users
+  (with or without an organisation of its own), holding roles their read
+  scope. The async export receives the resolved organisation ids and refuses
+  to run without them; an account that sees no organisation gets **403**.
+  A user export is still downloadable only by the user who started
   it (or a `ROLE_SUPER_ADMIN`); a different user now gets **403** (job owner
   check, see "Async job status" below) instead of 404.
 - **Holding roles** (`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) may *view*

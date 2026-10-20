@@ -8,7 +8,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Security\Voter\UserVoter;
 use App\Service\GuidedTourService;
-use App\Service\Job\JobTenantScope;
+use App\Service\User\UserListScope;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,10 +25,9 @@ use App\Util\CsvSanitizer;
  * ISO 27001 A.6.3 Awareness-Training Audit-Nachweis: welche User haben
  * welche Tour durchlaufen? Plus Bulk-Reset-Action für Admins.
  *
- * Tenant scope: ROLE_ADMIN is a per-organisation admin, so list, CSV export
- * and reset only cover users of the admin's own organisation. Only a
- * SUPER_ADMIN without an organisation sees every tenant's users (same rule
- * as the user export, {@see JobTenantScope}).
+ * Tenant scope: list, CSV export and reset cover exactly the users of the
+ * user index ({@see UserListScope}: ROLE_ADMIN own organisation +
+ * subsidiaries, SUPER_ADMIN all); a reset additionally needs UserVoter::EDIT.
  */
 #[IsGranted('ROLE_ADMIN')]
 class AdminTourCompletionController extends AbstractController
@@ -38,7 +37,7 @@ class AdminTourCompletionController extends AbstractController
         private readonly GuidedTourService $tourService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly JobTenantScope $tenantScope,
+        private readonly UserListScope $userListScope,
     ) {
     }
 
@@ -47,19 +46,10 @@ class AdminTourCompletionController extends AbstractController
      */
     private function visibleUsers(): array
     {
-        $scope = $this->tenantScope->currentUserScope();
+        $users = $this->userListScope->visibleUsers();
+        usort($users, static fn (User $a, User $b): int => strcmp((string) $a->getEmail(), (string) $b->getEmail()));
 
-        /** @var list<User> $users */
-        $users = $this->userRepository->findBy($scope !== null ? ['tenant' => $scope] : [], ['email' => 'ASC']);
-        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-            return $users;
-        }
-
-        // Security hotfix: a non-SUPER_ADMIN only sees users it may view.
-        return array_values(array_filter(
-            $users,
-            fn (User $user): bool => $this->isGranted(UserVoter::VIEW, $user),
-        ));
+        return $users;
     }
 
     #[Route('/admin/tours/completion', name: 'admin_tour_completion_index', methods: ['GET'])]
@@ -160,9 +150,8 @@ class AdminTourCompletionController extends AbstractController
         }
 
         $user = $this->userRepository->find($id);
-        $scope = $this->tenantScope->currentUserScope();
-        // Users of other organisations are treated as non-existent.
-        if (!$user instanceof User || ($scope !== null && $user->getTenant()?->getId() !== $scope->getId())) {
+        // Users outside the user list's scope are treated as non-existent.
+        if (!$user instanceof User || !$this->isGranted(UserVoter::VIEW, $user)) {
             throw $this->createNotFoundException();
         }
         // Security hotfix: only users the admin may administer (tenant tree).

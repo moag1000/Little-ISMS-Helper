@@ -24,7 +24,7 @@ src/Controller/RiskController.php:LOC=1128 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1122 deps=0
 src/Entity/Control.php:LOC=1098 deps=0
 src/Entity/InternalAudit.php:LOC=1089 deps=0
-src/Controller/UserManagementController.php:LOC=1084 deps=0
+src/Controller/UserManagementController.php:LOC=1066 deps=0
 src/Entity/Tenant.php:LOC=1012 deps=0
 src/Entity/BusinessProcess.php:LOC=1001 deps=0
 src/Controller/TenantManagementController.php:LOC=1000 deps=0
