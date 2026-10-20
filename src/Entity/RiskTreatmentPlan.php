@@ -10,6 +10,7 @@ use DateTime;
 use App\Enum\RiskTreatmentPlanStatus;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -131,6 +132,7 @@ class RiskTreatmentPlan
     #[ORM\JoinColumn(name: 'responsible_person_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[MaxDepth(1)]
+    #[SameTenantOwner]
     private ?User $responsiblePersonUser = null;
 
     /**
@@ -139,6 +141,7 @@ class RiskTreatmentPlan
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
+    #[SameTenantOwner]
     private ?Person $responsiblePerson = null;
 
     /**

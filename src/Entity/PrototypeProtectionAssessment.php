@@ -8,6 +8,7 @@ use App\Entity\Person;
 use App\Enum\PrototypeProtectionAssessmentStatus;
 use App\Repository\PrototypeProtectionAssessmentRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -121,10 +122,12 @@ class PrototypeProtectionAssessment
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $assessor = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $assessorPerson = null;
 
     /** @var Collection<int, Person> */

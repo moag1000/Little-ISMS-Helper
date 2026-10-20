@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Enum\CorrectiveActionStatus;
 use App\Repository\CorrectiveActionRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -132,6 +133,7 @@ class CorrectiveAction
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'responsible_person_id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $responsiblePersonUser = null;
 
     /**
@@ -139,6 +141,7 @@ class CorrectiveAction
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $responsiblePerson = null;
 
     /**

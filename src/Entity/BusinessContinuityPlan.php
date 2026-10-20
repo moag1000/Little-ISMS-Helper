@@ -13,10 +13,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Entity\Trait\BcPlanOwnerTrait;
 use App\Enum\BusinessContinuityPlanStatus;
 use App\Attribute\RequiresModule;
 use App\Repository\BusinessContinuityPlanRepository;
-use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -53,6 +53,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class BusinessContinuityPlan
 {
+    use BcPlanOwnerTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -1016,103 +1018,6 @@ class BusinessContinuityPlan
             'aufrechterhaltung' => 'Aufrechterhaltung & Verbesserung',
             default => null,
         };
-    }
-
-    /**
-     * Pattern A dual-state: preferred structured owner. Falls back to string planOwner.
-     */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'plan_owner_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?User $planOwnerUser = null;
-
-    public function getPlanOwnerUser(): ?User
-    {
-        return $this->planOwnerUser;
-    }
-
-    public function setPlanOwnerUser(?User $planOwnerUser): static
-    {
-        $this->planOwnerUser = $planOwnerUser;
-        return $this;
-    }
-
-    /**
-     * Person-based plan owner: for contacts without a system login.
-     */
-    #[ORM\ManyToOne(targetEntity: Person::class)]
-    #[ORM\JoinColumn(name: 'plan_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?Person $planOwnerPerson = null;
-
-    public function getPlanOwnerPerson(): ?Person
-    {
-        return $this->planOwnerPerson;
-    }
-
-    public function setPlanOwnerPerson(?Person $planOwnerPerson): static
-    {
-        $this->planOwnerPerson = $planOwnerPerson;
-        return $this;
-    }
-
-    /**
-     * Deputies / Vertretung — n additional Persons sharing plan ownership.
-     *
-     * @var Collection<int, Person>
-     */
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    #[ORM\JoinTable(name: 'bc_plan_owner_deputy')]
-    #[ORM\JoinColumn(name: 'bc_plan_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Collection $planOwnerDeputyPersons;
-
-    /** @return Collection<int, Person> */
-    public function getPlanOwnerDeputyPersons(): Collection
-    {
-        return $this->planOwnerDeputyPersons;
-    }
-
-    public function addPlanOwnerDeputyPerson(Person $person): static
-    {
-        if (!$this->planOwnerDeputyPersons->contains($person)) {
-            $this->planOwnerDeputyPersons->add($person);
-        }
-        return $this;
-    }
-
-    public function removePlanOwnerDeputyPerson(Person $person): static
-    {
-        $this->planOwnerDeputyPersons->removeElement($person);
-        return $this;
-    }
-
-    /**
-     * Effective planOwner: prefer planOwnerUser.fullName, then Person, fall back to legacy string.
-     */
-    public function getEffectivePlanOwner(): ?string
-    {
-        return OwnerResolver::resolveEffective(
-            $this->planOwnerUser,
-            $this->planOwnerPerson,
-            $this->planOwner,
-        );
-    }
-
-    /**
-     * Full plan owner roster: primary + every deputy.
-     *
-     * @return list<string>
-     */
-    public function getAllPlanOwners(): array
-    {
-        return OwnerResolver::resolveAll(
-            $this->planOwnerUser,
-            $this->planOwnerPerson,
-            $this->planOwner,
-            $this->planOwnerDeputyPersons,
-        );
     }
 
     public function getLockVersion(): int

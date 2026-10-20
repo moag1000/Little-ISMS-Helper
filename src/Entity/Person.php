@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Delete;
 use App\Attribute\RequiresModule;
 use App\Repository\PersonRepository;
 use App\State\TenantAwareStateProcessor;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -91,6 +92,7 @@ class Person
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'linkedPersons')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['person:read'])]
+    #[SameTenantOwner]
     private ?User $linkedUser = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]

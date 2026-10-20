@@ -8,6 +8,7 @@ use App\Entity\Person;
 use App\Enum\FourEyesApprovalRequestStatus;
 use App\Repository\FourEyesApprovalRequestRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -53,10 +54,12 @@ class FourEyesApprovalRequest
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $requestedApprover = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $requestedApproverPerson = null;
 
     /** @var Collection<int, Person> */

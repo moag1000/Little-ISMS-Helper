@@ -17,10 +17,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Entity\Trait\IncidentReporterTrait;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
-use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -71,6 +71,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(DateFilter::class, properties: ['detectedAt', 'resolvedAt', 'closedAt'])]
 class Incident
 {
+    use IncidentReporterTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -1317,103 +1319,6 @@ class Incident
         }
 
         return $count > 0 ? (int) round($totalScore / $count) : 0;
-    }
-
-    /**
-     * Pattern A dual-state: preferred structured owner. Falls back to string reportedBy.
-     */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'reported_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['incident:read', 'incident:write'])]
-    private ?User $reportedByUser = null;
-
-    public function getReportedByUser(): ?User
-    {
-        return $this->reportedByUser;
-    }
-
-    public function setReportedByUser(?User $reportedByUser): static
-    {
-        $this->reportedByUser = $reportedByUser;
-        return $this;
-    }
-
-    /**
-     * Person-based reporter: for persons without a system login.
-     */
-    #[ORM\ManyToOne(targetEntity: Person::class)]
-    #[ORM\JoinColumn(name: 'reported_by_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['incident:read', 'incident:write'])]
-    private ?Person $reportedByPerson = null;
-
-    public function getReportedByPerson(): ?Person
-    {
-        return $this->reportedByPerson;
-    }
-
-    public function setReportedByPerson(?Person $reportedByPerson): static
-    {
-        $this->reportedByPerson = $reportedByPerson;
-        return $this;
-    }
-
-    /**
-     * Deputies / Vertretung — n additional Persons sharing reporter role.
-     *
-     * @var Collection<int, Person>
-     */
-    #[Groups(['incident:read', 'incident:write'])]
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    #[ORM\JoinTable(name: 'incident_reporter_deputy')]
-    #[ORM\JoinColumn(name: 'incident_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Collection $reportedByDeputyPersons;
-
-    /** @return Collection<int, Person> */
-    public function getReportedByDeputyPersons(): Collection
-    {
-        return $this->reportedByDeputyPersons;
-    }
-
-    public function addReportedByDeputyPerson(Person $person): static
-    {
-        if (!$this->reportedByDeputyPersons->contains($person)) {
-            $this->reportedByDeputyPersons->add($person);
-        }
-        return $this;
-    }
-
-    public function removeReportedByDeputyPerson(Person $person): static
-    {
-        $this->reportedByDeputyPersons->removeElement($person);
-        return $this;
-    }
-
-    /**
-     * Effective reportedBy: prefer reportedByUser.fullName, then Person, fall back to legacy string.
-     */
-    public function getEffectiveReportedBy(): ?string
-    {
-        return OwnerResolver::resolveEffective(
-            $this->reportedByUser,
-            $this->reportedByPerson,
-            $this->reportedBy,
-        );
-    }
-
-    /**
-     * Full reporter roster: primary + every deputy.
-     *
-     * @return list<string>
-     */
-    public function getAllReporters(): array
-    {
-        return OwnerResolver::resolveAll(
-            $this->reportedByUser,
-            $this->reportedByPerson,
-            $this->reportedBy,
-            $this->reportedByDeputyPersons,
-        );
     }
 
     /**

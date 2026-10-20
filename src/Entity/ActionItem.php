@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ActionItemRepository;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -66,10 +67,12 @@ class ActionItem
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $responsibleUser = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $responsiblePerson = null;
 
     /** @var Collection<int, Team> */

@@ -8,6 +8,7 @@ use DateTimeInterface;
 use DateTimeImmutable;
 use App\Enum\DocumentStatus;
 use App\Repository\DocumentRepository;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -334,6 +335,7 @@ class Document
     #[ORM\JoinTable(name: 'document_acknowledgement_audience')]
     #[ORM\JoinColumn(name: 'document_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $acknowledgementAudience;
 
     // ── F4 Evidence-Versioning fields ─────────────────────────────────────────

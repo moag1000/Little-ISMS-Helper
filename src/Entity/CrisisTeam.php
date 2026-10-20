@@ -9,6 +9,7 @@ use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Repository\CrisisTeamRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -64,10 +65,12 @@ class CrisisTeam
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $teamLeader = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $teamLeaderPerson = null;
 
     /** @var Collection<int, Person> */
@@ -82,10 +85,12 @@ class CrisisTeam
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $deputyLeader = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $deputyLeaderPerson = null;
 
     /** @var Collection<int, Person> */

@@ -8,9 +8,9 @@ use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\Person;
 use App\Entity\Tenant;
+use App\Entity\Trait\InternalAuditLeadAuditorTrait;
 use App\Entity\User;
 use App\Enum\InternalAuditStatus;
-use App\Service\OwnerResolver;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -68,6 +68,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(DateFilter::class, properties: ['plannedDate', 'actualDate'])]
 class InternalAudit
 {
+    use InternalAuditLeadAuditorTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -174,36 +176,6 @@ class InternalAudit
     private ?DateTimeInterface $actualDate = null;
 
     /**
-     * Legacy free-text lead auditor name. P-15 DataReuse: kept read-only for
-     * migration display once `leadAuditorUser` or `leadAuditorPerson` is set.
-     * No longer NotBlank — the Pattern-A validator on the form enforces that
-     * at least one of legacy/user/person is provided.
-     */
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'internal_audit.validation.lead_auditor_max_length')]
-    private ?string $leadAuditor = null;
-
-    /**
-     * Pattern A dual-state (P-15 DataReuse): preferred structured lead auditor
-     * as an application User. Falls back to leadAuditorPerson, then legacy
-     * `leadAuditor` string.
-     */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'lead_auditor_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['audit:read', 'audit:write'])]
-    private ?User $leadAuditorUser = null;
-
-    /**
-     * Pattern A dual-state (P-15 DataReuse): preferred structured lead auditor
-     * as a Stammdaten Person (external auditor without app login).
-     */
-    #[ORM\ManyToOne(targetEntity: Person::class)]
-    #[ORM\JoinColumn(name: 'lead_auditor_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['audit:read', 'audit:write'])]
-    private ?Person $leadAuditorPerson = null;
-
-    /**
      * Legacy free-text audit team list ("Names, comma-separated"). P-15
      * DataReuse: kept read-only for migration display once the typed
      * `auditTeamMembers` collection is populated.
@@ -305,7 +277,6 @@ class InternalAudit
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['audit:read'])]
     private ?DateTimeInterface $updatedAt = null;
-
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -588,53 +559,6 @@ public function __construct()
         $diff = (new \DateTime())->diff($this->actualDate);
 
         return $diff->invert ? $diff->days : -$diff->days;
-    }
-
-    public function getLeadAuditor(): ?string
-    {
-        return $this->leadAuditor;
-    }
-
-    public function setLeadAuditor(?string $leadAuditor): static
-    {
-        $this->leadAuditor = $leadAuditor;
-        return $this;
-    }
-
-    public function getLeadAuditorUser(): ?User
-    {
-        return $this->leadAuditorUser;
-    }
-
-    public function setLeadAuditorUser(?User $leadAuditorUser): static
-    {
-        $this->leadAuditorUser = $leadAuditorUser;
-        return $this;
-    }
-
-    public function getLeadAuditorPerson(): ?Person
-    {
-        return $this->leadAuditorPerson;
-    }
-
-    public function setLeadAuditorPerson(?Person $leadAuditorPerson): static
-    {
-        $this->leadAuditorPerson = $leadAuditorPerson;
-        return $this;
-    }
-
-    /**
-     * P-15 DataReuse Tri-State resolver — prefer structured User name, then
-     * Person, fall back to legacy `leadAuditor` free-text. Templates should
-     * read this instead of accessing the raw fields directly.
-     */
-    public function getEffectiveLeadAuditorName(): ?string
-    {
-        return OwnerResolver::resolveEffective(
-            $this->leadAuditorUser,
-            $this->leadAuditorPerson,
-            $this->leadAuditor,
-        );
     }
 
     public function getAuditTeam(): ?string

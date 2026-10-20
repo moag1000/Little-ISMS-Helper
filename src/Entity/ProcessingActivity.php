@@ -6,10 +6,12 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Trait\ProcessingActivityDpoTrait;
 use App\Enum\ProcessingActivityStatus;
 use App\Lifecycle\LifecycleRegistry;
 use App\Repository\ProcessingActivityRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -38,6 +40,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\HasLifecycleCallbacks]
 class ProcessingActivity
 {
+    use ProcessingActivityDpoTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -363,6 +367,7 @@ class ProcessingActivity
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'contact_person_id', nullable: true)]
+    #[SameTenantOwner]
     private ?User $contactPersonUser = null;
 
     /**
@@ -370,6 +375,7 @@ class ProcessingActivity
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'contact_person_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $contactPerson = null;
 
     /**
@@ -382,31 +388,6 @@ class ProcessingActivity
     #[ORM\JoinColumn(name: 'processing_activity_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $contactDeputyPersons;
-
-    /**
-     * Data Protection Officer notified about this activity
-     */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?User $dataProtectionOfficer = null;
-
-    /**
-     * Tri-State Person slot: DPO as Person master-data record.
-     */
-    #[ORM\ManyToOne(targetEntity: Person::class)]
-    #[ORM\JoinColumn(name: 'data_protection_officer_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Person $dataProtectionOfficerPerson = null;
-
-    /**
-     * Deputy Persons for the DPO slot.
-     *
-     * @var Collection<int, Person>
-     */
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    #[ORM\JoinTable(name: 'processing_activity_dpo_deputy')]
-    #[ORM\JoinColumn(name: 'processing_activity_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Collection $dataProtectionOfficerDeputyPersons;
 
     // ============================================================================
     // Processor Relationships (Art. 28 GDPR)
@@ -1097,75 +1078,6 @@ class ProcessingActivity
             $this->contactPerson,
             null,
             $this->contactDeputyPersons,
-        );
-    }
-
-    public function getDataProtectionOfficer(): ?User
-    {
-        return $this->dataProtectionOfficer;
-    }
-
-    public function setDataProtectionOfficer(?User $user): static
-    {
-        $this->dataProtectionOfficer = $user;
-        return $this;
-    }
-
-    public function getDataProtectionOfficerPerson(): ?Person
-    {
-        return $this->dataProtectionOfficerPerson;
-    }
-
-    public function setDataProtectionOfficerPerson(?Person $dataProtectionOfficerPerson): static
-    {
-        $this->dataProtectionOfficerPerson = $dataProtectionOfficerPerson;
-        return $this;
-    }
-
-    /** @return Collection<int, Person> */
-    public function getDataProtectionOfficerDeputyPersons(): Collection
-    {
-        return $this->dataProtectionOfficerDeputyPersons;
-    }
-
-    public function addDataProtectionOfficerDeputyPerson(Person $person): static
-    {
-        if (!$this->dataProtectionOfficerDeputyPersons->contains($person)) {
-            $this->dataProtectionOfficerDeputyPersons->add($person);
-        }
-        return $this;
-    }
-
-    public function removeDataProtectionOfficerDeputyPerson(Person $person): static
-    {
-        $this->dataProtectionOfficerDeputyPersons->removeElement($person);
-        return $this;
-    }
-
-    /**
-     * Effective DPO: prefer dataProtectionOfficer (User), then dataProtectionOfficerPerson, then null.
-     */
-    public function getEffectiveDataProtectionOfficer(): ?string
-    {
-        return OwnerResolver::resolveEffective(
-            $this->dataProtectionOfficer,
-            $this->dataProtectionOfficerPerson,
-            null,
-        );
-    }
-
-    /**
-     * Full DPO roster: primary + every deputy.
-     *
-     * @return list<string>
-     */
-    public function getAllDataProtectionOfficers(): array
-    {
-        return OwnerResolver::resolveAll(
-            $this->dataProtectionOfficer,
-            $this->dataProtectionOfficerPerson,
-            null,
-            $this->dataProtectionOfficerDeputyPersons,
         );
     }
 

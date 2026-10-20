@@ -19,6 +19,7 @@ use App\Enum\AssetStatus;
 use App\Repository\AssetRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -815,6 +816,7 @@ class Asset
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'owner_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['asset:read', 'asset:write'])]
+    #[SameTenantOwner]
     private ?User $ownerUser = null;
 
     public function getOwnerUser(): ?User
@@ -836,6 +838,7 @@ class Asset
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['asset:read', 'asset:write'])]
+    #[SameTenantOwner]
     private ?Person $ownerPerson = null;
 
     public function getOwnerPerson(): ?Person

@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
+use App\Validator\Constraint\SameTenantOwner;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ManagementReviewRepository::class)]
@@ -36,6 +37,7 @@ class ManagementReview
 
     /** @var Collection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class)]
+    #[SameTenantOwner]
     private Collection $participants;
 
     /**
@@ -113,10 +115,12 @@ class ManagementReview
     // Neue, formularkompatible Felder (Option B)
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'reviewed_by_id', nullable: true)]
+    #[SameTenantOwner]
     private ?User $reviewedBy = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $reviewedByPerson = null;
 
     /** @var Collection<int, Person> */
