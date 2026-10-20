@@ -32,11 +32,26 @@ enum RiskStatus: string
     /**
      * Single source for "is re-assessed at planned intervals": every risk
      * except a closed one — handled risks too, accepted risks in particular
-     * (ISO 27001 8.2, ISO 27005). Review reminders and the data-integrity
-     * "review date passed" check both use it.
+     * (ISO 27001 8.2, ISO 27005). The only review rule: reminders (mail +
+     * dashboard), My Day, the register filter, the data-integrity check and
+     * the review queries ({@see periodicReviewValues()}) all use it.
      */
     public function requiresPeriodicReview(): bool
     {
         return $this !== self::Closed;
+    }
+
+    /**
+     * Raw values of the statuses that require periodic review — for DQL
+     * `status IN (:reviewable)`.
+     *
+     * @return list<string>
+     */
+    public static function periodicReviewValues(): array
+    {
+        return array_values(array_map(
+            static fn (self $s): string => $s->value,
+            array_filter(self::cases(), static fn (self $s): bool => $s->requiresPeriodicReview()),
+        ));
     }
 }

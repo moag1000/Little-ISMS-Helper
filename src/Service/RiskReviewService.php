@@ -9,6 +9,7 @@ use DateTime;
 use DateTimeInterface;
 use App\Entity\Risk;
 use App\Entity\Tenant;
+use App\Enum\RiskStatus;
 use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,9 +60,11 @@ final class RiskReviewService
     /**
      * Get risks that are overdue for review
      *
-     * Returns all risks where:
+     * Returns all risks that require periodic review
+     * (RiskStatus::requiresPeriodicReview() — never closed ones) where:
      * - reviewDate is in the past, OR
-     * - reviewDate is null (never reviewed)
+     * - reviewDate is null (never reviewed — a separate rule of this
+     *   dashboard list: a risk without any review date counts as overdue)
      *
      * @return array<Risk>
      */
@@ -70,6 +73,8 @@ final class RiskReviewService
         $queryBuilder = $this->riskRepository->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->andWhere('r.reviewDate < :today OR r.reviewDate IS NULL')
+            ->andWhere('r.status IN (:reviewable)')
+            ->setParameter('reviewable', RiskStatus::periodicReviewValues())
             ->setParameter('tenant', $tenant)
             ->setParameter('today', new DateTime())
             ->orderBy('r.reviewDate', 'ASC');
@@ -92,6 +97,8 @@ final class RiskReviewService
         $queryBuilder = $this->riskRepository->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->andWhere('r.reviewDate BETWEEN :today AND :futureDate')
+            ->andWhere('r.status IN (:reviewable)')
+            ->setParameter('reviewable', RiskStatus::periodicReviewValues())
             ->setParameter('tenant', $tenant)
             ->setParameter('today', $today)
             ->setParameter('futureDate', $futureDate)

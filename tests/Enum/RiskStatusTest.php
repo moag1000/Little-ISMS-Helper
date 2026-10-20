@@ -45,4 +45,16 @@ final class RiskStatusTest extends TestCase
             self::assertSame($status !== RiskStatus::Closed, $status->requiresPeriodicReview(), $status->value);
         }
     }
+
+    #[Test]
+    public function periodicReviewValuesAreDerivedFromTheRule(): void
+    {
+        $expected = array_values(array_map(
+            static fn (RiskStatus $s): string => $s->value,
+            array_filter(RiskStatus::cases(), static fn (RiskStatus $s): bool => $s->requiresPeriodicReview()),
+        ));
+
+        self::assertSame($expected, RiskStatus::periodicReviewValues());
+        self::assertNotContains('closed', RiskStatus::periodicReviewValues());
+    }
 }
