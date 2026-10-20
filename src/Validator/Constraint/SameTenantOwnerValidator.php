@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 final class SameTenantOwnerValidator extends ConstraintValidator
 {
-    public function __construct(private readonly TenantContext $tenantContext)
+    /**
+     * TenantContext is optional so a standalone validator (no container, e.g.
+     * Validation::createValidatorBuilder()) still works — then only the
+     * record's own tenant is compared.
+     */
+    public function __construct(private readonly ?TenantContext $tenantContext = null)
     {
     }
 
@@ -55,6 +60,6 @@ final class SameTenantOwnerValidator extends ConstraintValidator
      */
     private function expectedTenant(): Tenant|int|null
     {
-        return RecordTenant::of($this->context->getObject()) ?? $this->tenantContext->getCurrentTenant();
+        return RecordTenant::of($this->context->getObject()) ?? $this->tenantContext?->getCurrentTenant();
     }
 }
