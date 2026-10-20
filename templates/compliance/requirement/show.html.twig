@@ -91,7 +91,7 @@
             {% endembed %}
 
             {# MRIS — Reifegrad-Tracking pro MHC (nur für MRIS-v1.5 Framework) #}
-            {% if is_mris and mris %}
+            {% if is_mris and mris and is_module_active('mris') %}
                 <div data-tour="mris-maturity-table">
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                     {% block card_header %}
@@ -312,16 +312,15 @@
                     {% endif %}
 
                     <div class="text-center mb-3">
-                        <div class="progress progress-h-30">
-                            <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
-                                 role="progressbar"
-                                 style="width: {{ fulfillment.fulfillmentPercentage }}%"
-                                 aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100">
-                                <strong>{{ fulfillment.fulfillmentPercentage }}%</strong>
-                            </div>
-                        </div>
+                        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                        {% set fp = fulfillment.fulfillmentPercentage %}
+                        {{ _fa_progress.render({
+                            value: fp,
+                            tone: fp >= 100 ? 'success' : (fp >= 75 ? 'info' : (fp >= 50 ? 'warning' : 'danger')),
+                            showText: true,
+                            size: 'lg',
+                            class: 'progress-h-30',
+                        }) }}
                         <small class="text-muted">Status: <span class="{{ badge_completion(fulfillment.fulfillmentPercentage) }}">{{ fulfillment.status }}</span></small>
                     </div>
 
@@ -486,7 +485,7 @@
                         {{ _fa_alert.render({ variant: 'warning', icon: 'ui-lock', class: 'mt-3', body: 'You cannot edit inherited fulfillment data. Only the parent tenant can modify this.' }) }}
                     {% endif %}
 
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                     // Update slider value and progress bar in real-time
                     const slider = document.getElementById('fulfillmentSlider');
                     const hiddenInput = document.getElementById('fulfillmentPercentage');

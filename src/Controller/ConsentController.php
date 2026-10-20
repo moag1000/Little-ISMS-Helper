@@ -381,15 +381,13 @@ class ConsentController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $consents = [];
         foreach ($ids as $rawId) {
             $consent = $this->consentRepository->find((int) $rawId);
             if ($consent === null) {
                 continue;
             }
-            if ($tenant !== null && $consent->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($consent, $this->tenantContext)) {
                 continue;
             }
             $consents[] = $consent;

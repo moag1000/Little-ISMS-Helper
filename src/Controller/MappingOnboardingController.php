@@ -72,6 +72,7 @@ class MappingOnboardingController extends AbstractController
     }
 
     #[Route('/reset', name: 'app_mapping_onboarding_reset', methods: ['POST'])]
+    #[IsCsrfTokenValid('mapping_onboarding')]
     public function reset(): JsonResponse
     {
         /** @var User $user */

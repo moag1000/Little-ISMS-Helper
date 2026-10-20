@@ -7,8 +7,16 @@ which cold-started the Symfony kernel 12 times sequentially (~12-24s on CI).
 This direct YAML-diff implementation runs in <1s.
 
 Compares the key-sets of <domain>.de.yaml and <domain>.en.yaml for every
-high-priority domain. A "missing" key in DE = key exists in EN but not DE.
-The reverse (EN missing keys present in DE) is also reported.
+domain, in both directions: a key that exists in only one locale fails.
+
+Beyond key presence it also fails on
+  - an EMPTY value in one locale while the other locale has text (the key
+    exists, so the translator does not fall through to the next locale and
+    the user sees a blank label),
+  - a differing placeholder set (`%name%`, `{name}`) between the two locales
+    of the same key (e.g. `%level%` vs `%probability%` -> literal `%level%`
+    leaks into the UI), and
+  - a domain file that exists in only one locale.
 
 Trade-off vs the original:
   - Loses static template-side "is this key still referenced?" scan
@@ -18,11 +26,12 @@ Trade-off vs the original:
 
 Usage:
     python3 scripts/quality/check_missing_translations.py
-    ALL_DOMAINS=1 python3 scripts/quality/check_missing_translations.py
+    TARGETED=1 python3 scripts/quality/check_missing_translations.py  # high-priority subset only
 """
 from __future__ import annotations
 
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -48,8 +57,12 @@ HIGH_PRIORITY_DOMAINS = [
     "vulnerabilities",
 ]
 
-SKIP_DOMAINS = {
-    "messages",  # catch-all fallback with 200+ historical gaps
+SKIP_DOMAINS: set[str] = set()
+
+# (domain, key) pairs whose placeholder token is a literal, user-facing EXAMPLE
+# that is deliberately translated (never substituted by the translator).
+PLACEHOLDER_ALLOWLIST: set[tuple[str, str]] = {
+    ("answer_library", "answer_library.placeholder.answer"),
 }
 
 
@@ -80,6 +93,79 @@ def keys_of(path: Path) -> set[str]:
     return set(flatten(data))
 
 
+def extract_leftovers(path: Path) -> list[str]:
+    """Keys whose value is still a `translation:extract` stub (`__<key>`)."""
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    out: list[str] = []
+
+    def walk(node: Any, prefix: str = "") -> None:
+        if isinstance(node, dict):
+            for k, v in node.items():
+                walk(v, f"{prefix}.{k}" if prefix else str(k))
+        elif isinstance(node, str) and node.startswith("__"):
+            out.append(prefix)
+
+    walk(data)
+    return out
+
+
+PLACEHOLDER_RE = re.compile(r"%[A-Za-z_][A-Za-z0-9_]*%|\{[A-Za-z_][A-Za-z0-9_]*\}")
+
+
+def leaves(path: Path) -> dict[str, Any]:
+    """Map every dot-notated leaf key to its raw value."""
+    if not path.exists():
+        return {}
+    with path.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    out: dict[str, Any] = {}
+
+    def walk(node: Any, prefix: str = "") -> None:
+        if isinstance(node, dict):
+            for k, v in node.items():
+                walk(v, f"{prefix}.{k}" if prefix else str(k))
+        elif isinstance(node, list):
+            for i, item in enumerate(node):
+                walk(item, f"{prefix}.{i}")
+        else:
+            out[prefix] = node
+
+    walk(data)
+    return out
+
+
+def is_blank(value: Any) -> bool:
+    return value is None or (isinstance(value, str) and value.strip() == "")
+
+
+def value_problems(domain: str) -> tuple[list[str], list[str]]:
+    """Return (empty-value keys, placeholder-mismatch descriptions)."""
+    de = leaves(TRANSLATIONS_DIR / f"{domain}.de.yaml")
+    en = leaves(TRANSLATIONS_DIR / f"{domain}.en.yaml")
+    empty: list[str] = []
+    mismatch: list[str] = []
+    for key in sorted(de.keys() & en.keys()):
+        d, e = de[key], en[key]
+        if is_blank(d) != is_blank(e):
+            empty.append(f"{key} (de={'empty' if is_blank(d) else 'set'}, en={'empty' if is_blank(e) else 'set'})")
+            continue
+        if isinstance(d, str) and isinstance(e, str):
+            pd, pe = set(PLACEHOLDER_RE.findall(d)), set(PLACEHOLDER_RE.findall(e))
+            if pd != pe and (domain, key) not in PLACEHOLDER_ALLOWLIST:
+                mismatch.append(f"{key} (de={sorted(pd)}, en={sorted(pe)})")
+    return empty, mismatch
+
+
+def single_locale_domains() -> list[str]:
+    """Domain files present in one locale only."""
+    de = {p.name.removesuffix(".de.yaml") for p in TRANSLATIONS_DIR.glob("*.de.yaml")}
+    en = {p.name.removesuffix(".en.yaml") for p in TRANSLATIONS_DIR.glob("*.en.yaml")}
+    return sorted((de ^ en) - SKIP_DOMAINS)
+
+
 def discover_domains() -> list[str]:
     domains: list[str] = []
     for de_file in sorted(TRANSLATIONS_DIR.glob("*.de.yaml")):
@@ -87,7 +173,7 @@ def discover_domains() -> list[str]:
         if domain in SKIP_DOMAINS:
             continue
         if not (TRANSLATIONS_DIR / f"{domain}.en.yaml").exists():
-            continue
+            continue  # reported by single_locale_domains()
         domains.append(domain)
     return domains
 
@@ -97,10 +183,12 @@ def main() -> int:
         print(f"ERROR: translations/ not found at {TRANSLATIONS_DIR}", file=sys.stderr)
         return 2
 
-    all_mode = os.environ.get("ALL_DOMAINS") == "1"
+    # Full check is the default since 2026-10: every domain, both directions.
+    # TARGETED=1 restores the old high-priority subset for a quick local run.
+    all_mode = os.environ.get("TARGETED") != "1"
     if all_mode:
         domains = discover_domains()
-        print(f"Mode: ALL_DOMAINS ({len(domains)} domains)")
+        print(f"Mode: all domains ({len(domains)})")
     else:
         domains = [
             d for d in HIGH_PRIORITY_DOMAINS
@@ -110,11 +198,16 @@ def main() -> int:
         ]
         print(
             f"Mode: targeted ({len(domains)} high-priority domains; "
-            f"use ALL_DOMAINS=1 for full check)"
+            f"unset TARGETED for the full check)"
         )
 
     total_violations = 0
     checked = 0
+
+    for domain in single_locale_domains():
+        have = "de" if (TRANSLATIONS_DIR / f"{domain}.de.yaml").exists() else "en"
+        print(f"FAIL domain '{domain}': only {domain}.{have}.yaml exists, the other locale file is missing")
+        total_violations += 1
 
     for domain in domains:
         checked += 1
@@ -130,6 +223,42 @@ def main() -> int:
             for k in missing_in_de[:5]:
                 print(f"  - {k}")
             total_violations += len(missing_in_de)
+
+        # config/packages/translation.yaml has `fallbacks: [de, en]`, so a key
+        # missing in EN shows German text to English users (an EMPTY value does
+        # not fall back at all and renders blank - checked below).
+        missing_in_en = sorted(de_keys - en_keys)
+        if missing_in_en:
+            print(
+                f"FAIL domain '{domain}': "
+                f"{len(missing_in_en)} missing English translation key(s)"
+            )
+            for k in missing_in_en[:5]:
+                print(f"  - {k}")
+            total_violations += len(missing_in_en)
+
+        empty, mismatch = value_problems(domain)
+        if empty:
+            print(f"FAIL domain '{domain}': {len(empty)} empty value(s) while the other locale has text")
+            for k in empty[:5]:
+                print(f"  - {k}")
+            total_violations += len(empty)
+        if mismatch:
+            print(f"FAIL domain '{domain}': {len(mismatch)} placeholder mismatch(es) between de and en")
+            for k in mismatch[:5]:
+                print(f"  - {k}")
+            total_violations += len(mismatch)
+
+        for locale in ("de", "en"):
+            stubs = extract_leftovers(TRANSLATIONS_DIR / f"{domain}.{locale}.yaml")
+            if stubs:
+                print(
+                    f"FAIL domain '{domain}' ({locale}): "
+                    f"{len(stubs)} untranslated extract stub(s) ('__key')"
+                )
+                for k in stubs[:5]:
+                    print(f"  - {k}")
+                total_violations += len(stubs)
 
     print()
     print(f"Translation check: {checked} domain(s) checked.")

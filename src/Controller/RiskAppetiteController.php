@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\RiskAppetite;
@@ -19,6 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[RequiresModule('risk_appetite')]
 class RiskAppetiteController extends AbstractController
 {
     use InPageFormTrait;

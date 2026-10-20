@@ -13,10 +13,12 @@ use App\Entity\User;
 use App\Repository\BCExerciseRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\PersonRepository;
+use App\Repository\TenantRepository;
 use App\Repository\TrainingParticipationRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,6 +62,7 @@ final class MigrateFreetextOwnersCommand extends Command
         private readonly UserRepository $userRepository,
         private readonly PersonRepository $personRepository,
         private readonly TrainingParticipationRepository $participationRepository,
+        private readonly TenantRepository $tenantRepository,
         private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -132,12 +135,33 @@ final class MigrateFreetextOwnersCommand extends Command
     }
 
     /**
+     * Rows of $repository collected organisation by organisation with an
+     * explicit tenant criterion: the Doctrine tenant filter is unarmed in
+     * console commands, so an unscoped findAll() would read across tenants.
+     * Rows without a tenant are skipped — owner matching is tenant-bound
+     * (matchSingleUser / matchSinglePerson) and could never resolve them.
+     *
+     * @template T of object
+     * @param ObjectRepository<T> $repository
+     * @return list<T>
+     */
+    private function rowsTenantByTenant(ObjectRepository $repository): array
+    {
+        $rows = [];
+        foreach ($this->tenantRepository->findAll() as $tenant) {
+            array_push($rows, ...$repository->findBy(['tenant' => $tenant]));
+        }
+
+        return $rows;
+    }
+
+    /**
      * @param array<string, array<string, int>> $summary
      */
     private function backfillInternalAudits(SymfonyStyle $io, bool $dryRun, array &$summary): void
     {
         $io->section('InternalAudit');
-        $audits = $this->internalAuditRepository->findAll();
+        $audits = $this->rowsTenantByTenant($this->internalAuditRepository);
         foreach ($audits as $audit) {
             if (!$audit instanceof InternalAudit) {
                 continue;
@@ -202,7 +226,7 @@ final class MigrateFreetextOwnersCommand extends Command
     private function backfillTrainings(SymfonyStyle $io, bool $dryRun, array &$summary): void
     {
         $io->section('Training');
-        $trainings = $this->trainingRepository->findAll();
+        $trainings = $this->rowsTenantByTenant($this->trainingRepository);
         foreach ($trainings as $training) {
             if (!$training instanceof Training) {
                 continue;
@@ -250,7 +274,7 @@ final class MigrateFreetextOwnersCommand extends Command
     private function backfillBcExercises(SymfonyStyle $io, bool $dryRun, array &$summary): void
     {
         $io->section('BCExercise');
-        $exercises = $this->bcExerciseRepository->findAll();
+        $exercises = $this->rowsTenantByTenant($this->bcExerciseRepository);
         foreach ($exercises as $ex) {
             if (!$ex instanceof BCExercise) {
                 continue;

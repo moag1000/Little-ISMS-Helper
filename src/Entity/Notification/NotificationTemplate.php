@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Notification;
 
+use App\Doctrine\SharedTenantRowsInterface;
 use App\Entity\Tenant;
 use App\Repository\Notification\NotificationTemplateRepository;
 use DateTimeImmutable;
@@ -15,7 +16,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'uniq_template_key_tenant', columns: ['template_key', 'tenant_id'])]
 #[ORM\Index(name: 'idx_notif_tpl_category', columns: ['category'])]
 #[ORM\HasLifecycleCallbacks]
-class NotificationTemplate
+/**
+ * Global templates (tenant NULL) are shared with every organisation; the
+ * tenant filter shows an organisation those plus its own templates.
+ */
+class NotificationTemplate implements SharedTenantRowsInterface
 {
     public const CATEGORY_INCIDENT   = 'incident';
     public const CATEGORY_COMPLIANCE = 'compliance';

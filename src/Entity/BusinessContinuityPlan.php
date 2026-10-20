@@ -13,12 +13,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
-
 use App\Enum\BusinessContinuityPlanStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
-use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -34,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Junior-ISB-Audit-2026-05-22 C2-06: 3-team-worlds consolidation —
  * responseTeamMembers canonical, crisisTeams reusable, bcTeam deprecated.
  */
+#[RequiresModule('bcm')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),
@@ -118,7 +118,7 @@ class BusinessContinuityPlan
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['draft', 'active', 'under_review', 'archived'])]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?string $status = 'draft';
+    private string $status = 'draft';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -293,6 +293,8 @@ class BusinessContinuityPlan
 
     /**
      * Critical suppliers for this plan
+     *
+     * @var Collection<int, Supplier>
      */
     #[ORM\ManyToMany(targetEntity: Supplier::class)]
     #[ORM\JoinTable(name: 'bc_plan_supplier')]
@@ -301,6 +303,8 @@ class BusinessContinuityPlan
 
     /**
      * Critical assets for this plan
+     *
+     * @var Collection<int, Asset>
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'bc_plan_asset')]
@@ -309,6 +313,8 @@ class BusinessContinuityPlan
 
     /**
      * Documents related to this plan
+     *
+     * @var Collection<int, Document>
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'bc_plan_document')]
@@ -474,7 +480,7 @@ class BusinessContinuityPlan
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?BusinessContinuityPlanStatus
     {
-        return $this->status !== null ? BusinessContinuityPlanStatus::tryFrom($this->status) : null;
+        return BusinessContinuityPlanStatus::tryFrom($this->status);
     }
 
     public function getActivationCriteria(): ?string

@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -98,7 +99,9 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
 
         if ($result instanceof SsoUserApproval) {
             // Stash for the failure handler so it can show a friendly screen.
-            $session->getFlashBag()->add('sso_pending', $result->getEmail() ?? '');
+            if ($session instanceof FlashBagAwareSessionInterface) {
+                $session->getFlashBag()->add('sso_pending', $result->getEmail() ?? '');
+            }
             throw new AuthenticationException('Your SSO account is awaiting administrator approval.');
         }
 

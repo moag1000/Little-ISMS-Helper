@@ -102,14 +102,14 @@
             <p class="fa-feature-card__hint">{{ subtitle }}</p>
         {% endif %}
         {% if progress_value is not null %}
-            <div class="progress progress-h-6 mt-2">
-                <div class="progress-bar bg-{{ progress_color|default('primary') }}"
-                     role="progressbar"
-                     style="width: {{ progress_value }}%"
-                     aria-valuenow="{{ progress_value }}"
-                     aria-valuemin="0"
-                     aria-valuemax="100"></div>
-            </div>
+            {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+            {{ _fa_progress.render({
+                value: progress_value,
+                tone: progress_color|default('primary') == 'secondary' ? 'neutral' : progress_color|default('primary'),
+                label: title,
+                size: 'sm',
+                class: 'progress-h-6 mt-2',
+            }) }}
         {% endif %}
     </article>
 {% endmacro %}

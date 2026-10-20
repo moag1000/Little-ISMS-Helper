@@ -8,12 +8,12 @@ use DateTime;
 use DateTimeImmutable;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Control;
-use App\Entity\User;
 use App\Entity\Tenant;
 use App\Form\ControlType;
 use App\Repository\CommentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
+use App\Security\Voter\ControlVoter;
 use App\Service\AnnexAControlsBootstrapService;
 use App\Service\AuditLogger;
 use App\Service\InverseCoverageService;
@@ -21,7 +21,7 @@ use App\Service\MappingSuggestionService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
-use App\Service\WorkflowAutoProgressionService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -42,7 +42,6 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly SoAReportService $soaReportService,
         private readonly Security $security,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly TagFilterService $tagFilterService,
         private readonly MappingSuggestionService $mappingSuggestionService,
         private readonly ComplianceRequirementRepository $requirementRepository,
@@ -315,10 +314,14 @@ class StatementOfApplicabilityController extends AbstractController
      * Bulk update applicability for a set of Controls (Sprint 3 / C3).
      * Accepts selected control IDs + new applicable status + reason.
      * Every row change is recorded in the audit log with actor + reason.
+     *
+     * ROLE_MANAGER (as the UI shortcut on soa/index) plus ControlVoter::EDIT
+     * per control: read-only roles (auditors, holding roles) never write.
      */
     #[Route('/soa/bulk/applicability', name: 'app_soa_bulk_applicability', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid('soa_bulk_applicability', tokenKey: '_token')]
-    public function bulkApplicability(Request $request): Response
+    public function bulkApplicability(Request $request, TenantContext $tenantContext): Response
     {
         $ids = $request->request->all('control_ids');
         if (!is_array($ids) || $ids === []) {
@@ -333,15 +336,15 @@ class StatementOfApplicabilityController extends AbstractController
             return $this->redirectToRoute('app_soa_index');
         }
 
-        $tenant = $this->security->getUser()?->getTenant();
         $updated = 0;
         foreach (array_filter(array_map('intval', $ids)) as $controlId) {
             $control = $this->controlRepository->find($controlId);
             if (!$control instanceof Control) {
                 continue;
             }
-            if ($tenant !== null && $control->getTenant()?->getId() !== $tenant->getId()) {
-                continue; // tenant isolation
+            if (!$this->isInBulkContextScope($control, $tenantContext)
+                || !$this->isGranted(ControlVoter::EDIT, $control)) {
+                continue; // tenant isolation + per-control edit right
             }
             $previous = $control->isApplicable();
             if ($previous === $applicable) {
@@ -453,6 +456,7 @@ class StatementOfApplicabilityController extends AbstractController
         return $this->redirectToRoute('app_soa_show', ['id' => $control->getId()]);
     }
     #[Route('/soa/{id}/edit', name: 'app_soa_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(ControlVoter::EDIT, subject: 'control')]
     public function edit(Request $request, Control $control): Response
     {
         $form = $this->createForm(ControlType::class, $control, [
@@ -464,13 +468,9 @@ class StatementOfApplicabilityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $control->setUpdatedAt(new DateTimeImmutable());
 
+            // Auto-progression runs on flush via the FieldCompletionAutoTransition
+            // Doctrine listener; no explicit call is needed here.
             $this->entityManager->flush();
-
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($control, $currentUser);
-            }
 
             $this->addFlash('success', $this->translator->trans('control.success.updated', [], 'control'));
 
@@ -534,7 +534,7 @@ class StatementOfApplicabilityController extends AbstractController
      */
     #[Route('/soa/bulk-export', name: 'app_soa_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
@@ -545,16 +545,13 @@ class StatementOfApplicabilityController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $controls = [];
         foreach ($ids as $rawId) {
             $control = $this->controlRepository->find((int) $rawId);
             if ($control === null) {
                 continue;
             }
-            if ($tenant !== null && $control->getTenant()?->getId() !== $tenant->getId()) {
+            if (!$this->isInBulkContextScope($control, $tenantContext)) {
                 continue;
             }
             $controls[] = $control;

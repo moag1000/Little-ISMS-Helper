@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use DateTimeImmutable;
@@ -21,6 +22,7 @@ use App\Service\InverseCoverageService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -129,7 +131,8 @@ class SupplierController extends AbstractController
 
         // MINOR-6: DORA Register-of-Information export only when framework is active.
         $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA']);
-        $doraActive = $doraFramework !== null && $doraFramework->isActive();
+        $doraActive = $doraFramework !== null && $doraFramework->isActive()
+            && $this->moduleService->isModuleActive('nis2_dora');
 
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $suppliers,
@@ -191,6 +194,7 @@ class SupplierController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Suppliers have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/supplier/bulk-delete-check', name: 'app_supplier_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -205,63 +209,18 @@ class SupplierController extends AbstractController
 
     #[Route('/supplier/bulk-delete', name: 'app_supplier_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if (!$this->moduleService->isModuleActive('suppliers')) {
             return $this->json(['error' => 'module_inactive'], 403);
         }
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $supplier = $this->supplierRepository->find($id);
-
-                if (!$supplier instanceof Supplier) {
-                    $errors[] = "Supplier ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's suppliers
-                if ($tenant && $supplier->getTenant() !== $tenant) {
-                    $errors[] = "Supplier ID $id does not belong to your organization";
-                    continue;
-                }
-
-                $this->entityManager->remove($supplier);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting supplier ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted suppliers deleted successfully"
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Supplier',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->supplierRepository->find($id),
+        );
     }
     #[Route('/supplier/{id}', name: 'app_supplier_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -476,7 +435,7 @@ class SupplierController extends AbstractController
      */
     #[Route('/supplier/bulk-export', name: 'app_supplier_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $data = json_decode($request->getContent(), true);
@@ -488,16 +447,13 @@ class SupplierController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
         $suppliers = [];
         foreach ($ids as $rawId) {
             $supplier = $this->supplierRepository->find((int) $rawId);
             if ($supplier === null) {
                 continue;
             }
-            if ($tenant !== null && $supplier->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($supplier, $tenantContext)) {
                 continue;
             }
             $suppliers[] = $supplier;

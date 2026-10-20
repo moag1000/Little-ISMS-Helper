@@ -108,7 +108,7 @@
                 value:   compliance_percentage|round,
                 unit:    '%',
                 variant: _kpiVariant,
-                icon:    'ui-bar-chart'
+                icon:    'nav-bar-chart'
             }) }}
         </div>
     </div>
@@ -123,7 +123,7 @@
                 label: 'compliance.framework.tisax.tier_is_label'|trans({}, 'compliance'),
                 value: 'compliance.framework.tisax.tier_is_value'|trans({'%avg%': tierData.average, '%target%': 3, '%gap%': (3 - tierData.average)|round(1)}, 'compliance'),
                 variant: tierData.average >= 3 ? 'success' : (tierData.average >= 2 ? 'warning' : 'danger'),
-                icon: 'status-gauge'
+                icon: 'nav-speedometer'
             }) }}
             {% elseif tier == 'prototype_protection' %}
             {{ _fa_feature_card.render({
@@ -329,12 +329,14 @@
                     <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
                         <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'compliance.framework.action.gap_analysis'|trans({}, 'compliance') }}
                     </a>
+                    {% if is_granted('ROLE_MANAGER') %}
                     <form method="post" action="{{ path('app_compliance_assess', {id: framework.id}) }}" style="display: inline;">
                         <input type="hidden" name="_token" value="{{ csrf_token('assess_framework') }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--sop" aria-hidden="true"></i> {{ 'compliance.framework.action.assess'|trans({}, 'compliance') }}
                         </button>
                     </form>
+                    {% endif %}
                 </div>
                 {% endblock %}
             {% endembed %}

@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\ComplianceFramework;
-use App\Entity\Control;
-use App\Entity\Document;
 use App\Entity\Tenant;
-use App\Service\ModuleConfigurationService;
+use App\Service\Setup\IndustryPresetApplier;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -39,7 +36,7 @@ class LoadIndustryPresetCommand
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
-        private readonly ?ModuleConfigurationService $moduleService = null,
+        private readonly IndustryPresetApplier $presetApplier,
     ) {
     }
 
@@ -79,26 +76,11 @@ class LoadIndustryPresetCommand
             $io->warning('No tenant resolved — controls/documents will be skipped. Pass --tenant-id=N to apply.');
         }
 
-        // V3 W2-M3: Module activation — append preset modules to active_modules.yaml
-        $modulesActivated = [];
         $io->section('Modules to enable');
         foreach ($config['modules'] ?? [] as $module) {
             $io->writeln('  - ' . $module);
         }
-        if (!$dryRun && $this->moduleService !== null && !empty($config['modules'])) {
-            $current = $this->moduleService->getActiveModules();
-            $merged = array_values(array_unique(array_merge($current, $config['modules'])));
-            if (count($merged) !== count($current)) {
-                $modulesActivated = array_values(array_diff($merged, $current));
-                $this->moduleService->saveActiveModules($merged);
-                $io->writeln(sprintf('  → Activated %d new modules', count($modulesActivated)));
-            }
-        }
 
-        // V3 W2-M3: Framework activation — flip active=true on existing
-        // ComplianceFramework records or create skeletons. Mapping/requirement
-        // import remains a separate step (mapping-library or wizard).
-        $frameworksActivated = 0;
         $io->section('Frameworks');
         foreach ($config['frameworks'] ?? [] as $framework) {
             $io->writeln(sprintf(
@@ -107,105 +89,21 @@ class LoadIndustryPresetCommand
                 $framework['priority'] ?? '?',
                 ($framework['activate'] ?? false) ? 'activate' : 'optional',
             ));
-            if (!$dryRun && ($framework['activate'] ?? false)) {
-                $code = (string) ($framework['code'] ?? '');
-                if ($code === '') {
-                    continue;
-                }
-                $fwRepo = $this->entityManager->getRepository(ComplianceFramework::class);
-                $existing = $fwRepo->findOneBy(['code' => $code]);
-                if ($existing instanceof ComplianceFramework) {
-                    if ($existing->isActive() !== true) {
-                        $existing->setActive(true);
-                        $frameworksActivated++;
-                    }
-                } else {
-                    $fw = new ComplianceFramework();
-                    $fw->setCode($code);
-                    $fw->setName($code);
-                    $fw->setVersion('latest');
-                    $fw->setApplicableIndustry($config['name'] ?? 'all');
-                    $fw->setRegulatoryBody('—');
-                    $fw->setMandatory(($framework['priority'] ?? null) === 'primary');
-                    $fw->setActive(true);
-                    $this->entityManager->persist($fw);
-                    $frameworksActivated++;
-                }
-            }
         }
 
-        // Risk categories
         $io->section('Risk categories');
         foreach ($config['risk_categories'] ?? [] as $rc) {
             $io->writeln('  - ' . ($rc['name'] ?? '?'));
         }
 
-        // Initial controls
-        $controlsCreated = 0;
-        if ($tenant && !$dryRun) {
-            $controlRepo = $this->entityManager->getRepository(Control::class);
-            foreach ($config['initial_controls'] ?? [] as $cdef) {
-                $existing = $controlRepo->findOneBy([
-                    'tenant' => $tenant,
-                    'controlId' => $cdef['identifier'] ?? null,
-                ]);
-                if ($existing instanceof Control) {
-                    continue;
-                }
-                $control = new Control();
-                if (method_exists($control, 'setTenant')) {
-                    $control->setTenant($tenant);
-                }
-                if (method_exists($control, 'setControlId')) {
-                    $control->setControlId((string) ($cdef['identifier'] ?? ''));
-                }
-                if (method_exists($control, 'setName')) {
-                    $control->setName((string) ($cdef['name'] ?? ''));
-                }
-                if (method_exists($control, 'setImplementationStatus')) {
-                    $control->setImplementationStatus((string) ($cdef['implementation_status'] ?? 'not_started'));
-                }
-                if (method_exists($control, 'setApplicable')) {
-                    $control->setApplicable(true);
-                }
-                $this->entityManager->persist($control);
-                $controlsCreated++;
-            }
+        $result = ['modules_activated' => [], 'frameworks_activated' => 0, 'controls_created' => 0, 'documents_created' => 0];
+        if (!$dryRun) {
+            $result = $this->presetApplier->apply($preset, $config, $tenant instanceof Tenant ? $tenant : null);
         }
-
-        // Initial documents
-        $documentsCreated = 0;
-        if ($tenant && !$dryRun) {
-            $docRepo = $this->entityManager->getRepository(Document::class);
-            foreach ($config['initial_documents'] ?? [] as $ddef) {
-                $existing = $docRepo->findOneBy([
-                    'tenant' => $tenant,
-                    'title' => $ddef['title'] ?? null,
-                ]);
-                if ($existing instanceof Document) {
-                    continue;
-                }
-                $doc = new Document();
-                if (method_exists($doc, 'setTenant')) {
-                    $doc->setTenant($tenant);
-                }
-                if (method_exists($doc, 'setTitle')) {
-                    $doc->setTitle((string) ($ddef['title'] ?? ''));
-                }
-                if (method_exists($doc, 'setDocumentType')) {
-                    $doc->setDocumentType((string) ($ddef['type'] ?? 'policy'));
-                }
-                if (method_exists($doc, 'setStatus')) {
-                    $doc->setStatus((string) ($ddef['status'] ?? 'draft')); // @phpstan-ignore lifecycle.directSetStatus (industry preset seeder — initial state setup outside lifecycle flow)
-                }
-                $this->entityManager->persist($doc);
-                $documentsCreated++;
-            }
-        }
-
-        if (!$dryRun && ($controlsCreated > 0 || $documentsCreated > 0 || $frameworksActivated > 0)) {
-            $this->entityManager->flush();
-        }
+        $modulesActivated = $result['modules_activated'];
+        $frameworksActivated = $result['frameworks_activated'];
+        $controlsCreated = $result['controls_created'];
+        $documentsCreated = $result['documents_created'];
 
         $io->success(sprintf(
             'Preset "%s" %s. Activated %d modules, %d frameworks. Created %d controls, %d documents.',

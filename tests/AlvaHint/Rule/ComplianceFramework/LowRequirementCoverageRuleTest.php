@@ -7,6 +7,7 @@ namespace App\Tests\AlvaHint\Rule\ComplianceFramework;
 use App\AlvaHint\Rule\ComplianceFramework\LowRequirementCoverageRule;
 use App\Entity\ComplianceFramework;
 use App\Entity\User;
+use App\Repository\ComplianceRequirementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -17,10 +18,12 @@ class LowRequirementCoverageRuleTest extends TestCase
 {
     private LowRequirementCoverageRule $rule;
     private User $user;
+    private ComplianceRequirementRepository&\PHPUnit\Framework\MockObject\MockObject $repo;
 
     protected function setUp(): void
     {
-        $this->rule = new LowRequirementCoverageRule();
+        $this->repo = $this->createMock(ComplianceRequirementRepository::class);
+        $this->rule = new LowRequirementCoverageRule($this->repo);
         $this->user = new User();
     }
 
@@ -89,5 +92,19 @@ class LowRequirementCoverageRuleTest extends TestCase
     public function moduleGateIsCompliance(): void
     {
         $this->assertSame(['compliance'], $this->rule->requiredModules());
+    }
+
+    #[Test]
+    public function percentageIsComputedOnceAndPreloadedOnceAcrossAppliesToAndBuild(): void
+    {
+        $framework = $this->createMock(ComplianceFramework::class);
+        $framework->method('isActive')->willReturn(true);
+        $framework->method('getRequirements')->willReturn(new ArrayCollection([new \stdClass()]));
+        $framework->method('getName')->willReturn('X');
+        $framework->expects($this->once())->method('getCompliancePercentage')->willReturn(30.0);
+        $this->repo->expects($this->once())->method('preloadMappedControls')->with($framework);
+
+        $this->assertTrue($this->rule->appliesTo($framework, $this->user));
+        $this->rule->build($framework, $this->user);
     }
 }

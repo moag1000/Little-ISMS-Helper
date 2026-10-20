@@ -225,9 +225,11 @@ final class RiskAggregationService
         $identifiedOrAssessed = 0;
         foreach ($risks as $risk) {
             $status = $risk->getStatus();
-            if (in_array($status, ['treated', 'monitored', 'closed', 'accepted'], true)) {
+            // Handled = RiskStatus::isHandled() (single source); every other
+            // status — incl. InTreatment — counts on the still-open side.
+            if ($status?->isHandled() === true) {
                 $treatedOrClosed++;
-            } elseif (in_array($status, ['identified', 'assessed'], true)) {
+            } elseif ($status !== null) {
                 $identifiedOrAssessed++;
             }
         }

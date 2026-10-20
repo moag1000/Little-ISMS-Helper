@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'security_reports' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'security_reports.page.title'|trans({}, 'reports') }} - {{ 'app.title'|trans({}, 'security_reports') }}{% endblock %}
 
@@ -15,11 +16,11 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'security_reports.page.title'|trans({}, 'security_reports'),
         subtitle: 'security_reports.page.subtitle'|trans({}, 'security_reports'),
-        icon: 'nav-shield-lock'
-    } %}
+        badge: { icon: 'nav-shield-lock', label: '' }
+    }) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">
@@ -65,6 +66,7 @@
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
                                 data-report-regenerate-url-value="{{ path('app_security_report_generate') }}"
+                                data-report-regenerate-csrf-token-value="{{ csrf_token('report_regenerate') }}"
                                 data-report-regenerate-loading-text-value="{{ 'common.generating_reports'|trans({}, 'messages') }}"
                                 data-report-regenerate-success-text-value="{{ 'common.report_regenerated'|trans({}, 'messages') }}">
                             <i class="fa-icon me-1 fa-icon--ui-refresh" aria-hidden="true"></i>{{ 'security_reports.action.regenerate'|trans({}, 'security_reports') }}

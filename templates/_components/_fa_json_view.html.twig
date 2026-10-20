@@ -1,0 +1,57 @@
+{#
+ # FairyAurora v4 — fa-json-view: read-only rendering of a JSON value.
+ #
+ # Show-page counterpart of the JSON builders: maps become definition lists,
+ # lists of objects become stacked cards, lists of scalars a comma list —
+ # never a raw JSON dump.
+ #
+ # Usage:
+ #   {% import '_components/_fa_json_view.html.twig' as _fa_json_view %}
+ #   {{ _fa_json_view.render(tenant.settings) }}
+ #   {{ _fa_json_view.render(value, { retention_days: 'Aufbewahrung (Tage)' }) }}
+ #
+ # Params:
+ #   value   mixed   decoded JSON value
+ #   labels  object  optional key → (translated) label; other keys are humanised
+ #}
+{% macro render(value, labels = {}) %}
+    {%- import _self as _self_view -%}
+    {%- if value is iterable -%}
+        {%- if value is empty -%}
+            <span class="text-muted">—</span>
+        {%- elseif value|keys == range(0, value|length - 1) -%}
+            {%- set _scalars = true -%}
+            {%- for item in value -%}{%- if item is iterable -%}{%- set _scalars = false -%}{%- endif -%}{%- endfor -%}
+            {%- if _scalars -%}
+                {{ value|map(v => _self_view.scalar(v))|join(', ')|raw }}
+            {%- else -%}
+                <ul class="fa-json-view__list">
+                    {%- for item in value -%}
+                        <li class="fa-json-view__item">{{ _self_view.render(item, labels) }}</li>
+                    {%- endfor -%}
+                </ul>
+            {%- endif -%}
+        {%- else -%}
+            <dl class="fa-json-view__dl">
+                {%- for key, item in value -%}
+                    <dt>{{ labels[key] ?? (key|humanize) }}</dt>
+                    <dd>{{ _self_view.render(item, labels) }}</dd>
+                {%- endfor -%}
+            </dl>
+        {%- endif -%}
+    {%- else -%}
+        {{ _self_view.scalar(value) }}
+    {%- endif -%}
+{% endmacro %}
+
+{% macro scalar(value) %}
+    {%- if value is same as(true) -%}
+        {{ 'common.yes'|trans({}, 'messages') }}
+    {%- elseif value is same as(false) -%}
+        {{ 'common.no'|trans({}, 'messages') }}
+    {%- elseif value is null or value == '' -%}
+        <span class="text-muted">—</span>
+    {%- else -%}
+        {{ value }}
+    {%- endif -%}
+{% endmacro %}

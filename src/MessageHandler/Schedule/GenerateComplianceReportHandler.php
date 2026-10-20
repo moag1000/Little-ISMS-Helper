@@ -55,7 +55,7 @@ class GenerateComplianceReportHandler
             // event (or scheduled UserNotification) should be dispatched here so the
             // recipient list (CISO, Compliance Manager) can be managed via tenant settings
             // rather than hard-coded in this handler. Requires UserRepository injection
-            // and a findByRole('ROLE_CISO') call — tracked as a notification-system task.
+            // and a findByRoleInTenant('ROLE_CISO', $tenant) call — tracked as a notification-system task.
 
         } catch (Exception $e) {
             $this->logger->error('Failed to generate compliance report', [

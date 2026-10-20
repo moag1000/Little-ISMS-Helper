@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Entity\AuditLog;
+use App\Entity\LifecycleConfig;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -208,5 +210,40 @@ final class LifecycleOverridesControllerTest extends WebTestCase
         self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
         $location = (string) $this->client->getResponse()->headers->get('Location');
         self::assertStringContainsString('lifecycle-overrides/document_lifecycle', $location);
+    }
+
+    #[Test]
+    public function testResetWithOverridesWritesAuditEntry(): void
+    {
+        // Regression: the reset was logged via logUpdate(old, []) — logUpdate
+        // only diffs keys of the new values, so nothing was ever recorded.
+        $override = (new LifecycleConfig())
+            ->setTenant($this->tenant)
+            ->setWorkflowName('document_lifecycle')
+            ->setTransitionName('submit_for_review')
+            ->setConfigKey('roles')
+            ->setConfigValue(['ROLE_ADMIN'])
+            ->setUpdatedAt(new \DateTimeImmutable());
+        $this->em->persist($override);
+        $this->em->flush();
+
+        $this->client->loginUser($this->adminUser);
+        $this->client->request('GET', '/de/dashboard');
+        $session = $this->client->getRequest()->getSession();
+        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/lifecycle_reset_submit_for_review', $token);
+        \call_user_func([$session, 'save']);
+
+        $this->client->request('POST', '/de/admin/lifecycle-overrides/document_lifecycle/submit_for_review/reset', [
+            '_token' => $token,
+        ]);
+
+        self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $entry = $this->em->getRepository(AuditLog::class)->findOneBy(
+            ['entityType' => 'LifecycleConfig', 'action' => 'delete'],
+            ['id' => 'DESC'],
+        );
+        self::assertNotNull($entry, 'override reset must be audit-logged');
+        self::assertStringContainsString('submit_for_review', (string) $entry->getDescription());
     }
 }

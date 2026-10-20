@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\PHPStan\Rule;
 
+use App\Lifecycle\EntityTypeRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -13,6 +14,11 @@ use PHPStan\Rules\RuleErrorBuilder;
 /**
  * Forbids direct ->setStatus() calls on lifecycle-managed entities from
  * production code. Status transitions must go through LifecycleService.
+ *
+ * The set of lifecycle-managed entities comes from
+ * {@see EntityTypeRegistry::managedEntityClasses()} — registering an entity
+ * there is what puts it under this rule; there is no second list to keep
+ * in sync.
  *
  * Allowed contexts:
  *   - LifecycleService itself (delegating to Symfony Workflow)
@@ -25,35 +31,6 @@ use PHPStan\Rules\RuleErrorBuilder;
  */
 final class NoDirectSetStatusRule implements Rule
 {
-    private const LIFECYCLE_ENTITIES = [
-        'App\\Entity\\Document',
-        'App\\Entity\\ProcessingActivity',
-        'App\\Entity\\ISMSObjective',
-        'App\\Entity\\PolicyTemplate',
-        'App\\Entity\\Asset',
-        'App\\Entity\\DataBreach',
-        'App\\Entity\\Incident',
-        'App\\Entity\\Risk',
-        'App\\Entity\\DataProtectionImpactAssessment',
-        'App\\Entity\\CorrectiveAction',
-        'App\\Entity\\AuditFinding',
-        'App\\Entity\\InternalAudit',
-        'App\\Entity\\Vulnerability',
-        'App\\Entity\\DataSubjectRequest',
-        'App\\Entity\\Consent',
-        // Sprint Y.5 — 10 additional lifecycle-managed entities
-        'App\\Entity\\Training',
-        'App\\Entity\\RiskTreatmentPlan',
-        'App\\Entity\\Supplier',
-        'App\\Entity\\PrototypeProtectionAssessment',
-        'App\\Entity\\BusinessContinuityPlan',
-        'App\\Entity\\Patch',
-        'App\\Entity\\ManagementReview',
-        'App\\Entity\\ChangeRequest',
-        'App\\Entity\\ThreatIntelligence',
-        'App\\Entity\\BCExercise',
-    ];
-
     private const ALLOWED_FILE_PATTERNS = [
         '#/src/Entity/#',
         '#/src/Lifecycle/#',
@@ -82,7 +59,7 @@ final class NoDirectSetStatusRule implements Rule
         $classNames = $type->getObjectClassNames();
         $isLifecycleEntity = false;
         foreach ($classNames as $className) {
-            foreach (self::LIFECYCLE_ENTITIES as $managed) {
+            foreach (EntityTypeRegistry::managedEntityClasses() as $managed) {
                 if ($className === $managed || is_subclass_of($className, $managed)) {
                     $isLifecycleEntity = true;
                     break 2;

@@ -6,6 +6,7 @@ namespace App\Security\Voter\Authority;
 
 use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\User;
+use App\Security\Voter\HoldingTreeAccessTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -25,9 +26,16 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  */
 final class Nis2RegistrationProfileVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     public const string VIEW          = 'view';
@@ -49,17 +57,20 @@ final class Nis2RegistrationProfileVoter extends Voter
             return false;
         }
 
+        // Tenant scope: SUPER_ADMIN everywhere; everyone else only inside the
+        // own tenant (holding roles may read descendants); role rules below.
+        /** @var Nis2RegistrationProfile $profile */
+        $profile = $subject;
+        $isRead = in_array($attribute, [self::VIEW, self::EXPORT], true);
+        if (!$this->hasReachableRole($user, 'ROLE_SUPER_ADMIN')
+            && !$this->isInTenantScope($user, $profile->getTenant(), $isRead)) {
+            return false;
+        }
+
         return match ($attribute) {
-            self::VIEW, self::EDIT, self::EXPORT => $this->hasRole($user, 'ROLE_MANAGER'),
-            self::MARK_REPORTED                  => $this->hasRole($user, 'ROLE_ADMIN'),
+            self::VIEW, self::EDIT, self::EXPORT => $this->hasReachableRole($user, 'ROLE_MANAGER'),
+            self::MARK_REPORTED                  => $this->hasReachableRole($user, 'ROLE_ADMIN'),
             default                              => false,
         };
-    }
-
-    private function hasRole(User $user, string $role): bool
-    {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($role, $reachable, true);
     }
 }

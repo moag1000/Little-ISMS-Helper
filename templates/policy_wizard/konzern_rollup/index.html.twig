@@ -487,7 +487,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% if report is not null and not report.isEmpty and report.complianceScore|length > 0 %}
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         // Stacked-bar chart per tenant for compliance scores. Lazy-loads
         // Chart.js via the importmap when available. Falls back silently
         // when offline / network-blocked so the rest of the page is
@@ -505,8 +505,9 @@
 
             let ChartCtor;
             try {
-                const mod = await import('chart.js/auto');
-                ChartCtor = mod.default || mod.Chart;
+                // window.Chart is registered once in app.js; the importmap only
+                // maps 'chart.js' (no 'chart.js/auto'), so fall back to that.
+                ChartCtor = window.Chart || (await import('chart.js')).Chart;
             } catch (_e) {
                 return;
             }

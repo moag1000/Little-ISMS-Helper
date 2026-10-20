@@ -36,7 +36,7 @@ login:
     azure_saml: 'Sign in with Microsoft Azure (SAML)'
     no_account_message: "Don't have an account yet? Contact your administrator."
     placeholder:
-        email: ''
+        email: 'your.email@company.com'
         password: 'Your password'
 auth:
     companion: 'Alva — companion'
@@ -303,50 +303,54 @@ common:
     retry: 'Retry'
     optional: '(optional)'
     tooltip:
-        go_to_module_management: ''
-        framework_dashboard_description: ''
-        reload_to_see_framework: ''
-        fulfillment_slider: ''
-        status_in_progress: ''
-        status_fully_implemented: ''
-        framework_loaded_success: ''
-        opens_requirements_list: ''
-        requirements_sorted_by_fulfillment: ''
-        reach_100_percent: ''
-        view_gap_analysis: ''
-        activate_module: ''
-    reload: ''
-    info: ''
-    activities: ''
-    no_items_found: ''
-    items: ''
-    pdf_export: ''
+        go_to_module_management: 'Go to module management to enable additional features'
+        framework_dashboard_description: 'Overview of all enabled compliance frameworks with their fulfillment level'
+        reload_to_see_framework: 'Reload the page to see the newly enabled framework'
+        fulfillment_slider: 'The slider shows the current fulfillment level of the requirements'
+        status_in_progress: 'This requirement is currently in progress'
+        status_fully_implemented: 'This requirement has been fully implemented'
+        framework_loaded_success: 'Framework was loaded successfully and is now available'
+        opens_requirements_list: 'Opens the complete list of all requirements of this framework'
+        requirements_sorted_by_fulfillment: 'Requirements are sorted by fulfillment level (lowest first)'
+        reach_100_percent: 'Implement all requirements to reach 100% fulfillment'
+        view_gap_analysis: 'View gap analysis - identifies gaps between current and target state'
+        activate_module: 'Enable the module to unlock this functionality'
+    reload: 'Reload'
+    info: 'Information'
+    activities: 'Activities'
+    no_items_found: 'No items found'
+    items: 'Items'
+    pdf_export: 'PDF export'
     placeholder:
-        case_number_from_authority: ''
-        explain_deadline_exceeded: ''
-        explain_breach_reopened: ''
+        case_number_from_authority: 'Supervisory authority case number (e.g. AZ-2024-123)'
+        explain_deadline_exceeded: 'Explain why the 72-hour deadline was exceeded (Art. 33(1) GDPR)'
+        explain_breach_reopened: 'Explain why the data breach needs to be reopened'
         owner_user: '-- Select user --'
         owner_person: '-- Select person --'
-    reset_all_filters: ''
-    time_savings: ''
-    consistency: ''
-    audit_evidence: ''
-    informed_decisions: ''
-    search_processes: ''
-    data_reuse: ''
-    confirm_delete: ''
-    roles_and_responsibilities: ''
-    team_members: ''
-    observers: ''
+        owner_legacy: 'Name (legacy, migrated data only)'
+    reset_all_filters: 'Reset all filters'
+    time_savings: 'Time savings'
+    consistency: 'Consistency'
+    audit_evidence: 'Audit evidence'
+    informed_decisions: 'Informed decisions'
+    search_processes: 'Search processes'
+    data_reuse: 'Data reuse'
+    confirm_delete: 'Confirm deletion'
+    roles_and_responsibilities: 'Roles and responsibilities'
+    team_members: 'Team members'
+    observers: 'Observers'
     notes: Notes
     field:
         owner_user: 'Owner (System User)'
         owner_person: 'Owner (Person)'
         owner_deputies: Deputies
+        owner_legacy: 'Owner (free text, legacy)'
     help:
         owner_user: 'System user with login as the responsible owner.'
         owner_person: 'Person without login as owner (priority: User > Person).'
         owner_deputies: 'Additional persons sharing ownership or deputising.'
+        owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
+    deselect_all: 'Deselect all'
 framework: Framework
 requirement: Requirement
 bia: 'Business Impact Analysis'
@@ -361,12 +365,12 @@ activity:
     asset_added: 'Asset added'
     risk_identified: 'Risk identified'
     recently: recently
-    minutes_ago: '%d minutes'
+    minutes_ago: '%count% minutes ago'
     system: System
     security_team: 'Security Team'
     new_risk: 'New Risk'
 person:
-    title: ''
+    title: 'Person'
     name: Person
     full_name: 'Full Name'
     person_type: 'Person Type'
@@ -385,7 +389,7 @@ person:
         overview: 'Manage employees, contractors, visitors, and other people in your organization.'
     action:
         create: 'Create Person'
-        view_details: ''
+        view_details: 'View person details'
     stats:
         total: 'Total People'
         employees: Employees
@@ -410,6 +414,11 @@ person:
         company: Company
         department: Department
         job_title: 'Job Title'
+        linked_user: 'Linked User'
+        active: 'Active'
+        access_valid_from: 'Access Valid From'
+        access_valid_until: 'Access Valid Until'
+        notes: 'Notes'
     section:
         access: 'Access Permissions'
         basic_info: 'Basic Information'
@@ -423,8 +432,21 @@ person:
     placeholder:
         name: 'e.g. John Doe'
         badge: 'e.g. BADGE-12345'
+        full_name: 'e.g. John Doe'
+        badge_id: 'e.g. BADGE-12345'
+        company: 'e.g. Example Inc.'
+        email: 'e.g. john.doe@example.com'
+        phone: 'e.g. +49 30 12345678'
+        department: 'e.g. IT Department'
+        job_title: 'e.g. Senior Developer'
+        linked_user: 'Select a user...'
+        notes: 'Additional remarks and notes'
     help:
         badge: 'Unique badge identifier for physical access control'
+        badge_id: 'Unique badge identifier for physical access control'
+        linked_user: 'Link this person to a user account for additional permissions'
+        access_valid_from: 'Start date of valid access (for temporary access)'
+        access_valid_until: 'End date of valid access (for temporary access)'
     confirm:
         delete: 'Are you sure you want to delete this person?'
     success:
@@ -432,12 +454,17 @@ person:
         updated: 'Person updated successfully.'
         deleted: 'Person deleted successfully.'
     actions:
-        label: ''
-    title._default: 'Person Management'
+        label: 'Person actions'
     title.list: People
     title.show: 'View Person'
     title.create: 'Create New Person'
     title.edit: 'Edit Person'
+    titles:
+        _default: 'Person Management'
+        list: 'People'
+        show: 'View Person'
+        create: 'Create New Person'
+        edit: 'Edit Person'
 module:
     info:
         added_as_dependency: "Module '{name}' was added as dependency"
@@ -551,7 +578,7 @@ entity_history:
     entry_count: '%count% entries'
     show_details: 'Show details'
     no_entries: 'No entries available'
-    subtitle: ''
+    subtitle: 'Change history and audit trail'
 preferences:
     success:
         imported: 'Settings successfully imported'
@@ -572,7 +599,7 @@ permission:
         system: System
         custom: Custom
         categories: Categories
-    subtitle: ''
+    subtitle: 'Permission management and access control'
 data:
     title: 'Data Management'
     backup:
@@ -882,7 +909,7 @@ setup:
         docker_password_location: 'Saved in: /var/www/html/var/mysql_credentials.txt'
         config_loaded: 'Database configuration loaded from .env.local. Fields have been pre-filled with existing values.'
         docker_auto_configured: 'Docker deployment detected: Database has been automatically configured. Proceeding to step 3.'
-        test_failed: ''
+        test_failed: 'Database connection test failed. Please check your credentials.'
     admin:
         title: 'Create Administrator'
         header: 'Administrator Account'
@@ -1069,19 +1096,20 @@ setup:
 status:
     in_progress: 'In Progress'
     not_started: 'Not Started'
-    approved: ''
+    approved: 'Approved'
 action:
     new_asset: 'New Asset'
     assess_risk: 'Assess Risk'
     report_incident: 'Report Incident'
-    close: ''
-    cancel: ''
-    delete: ''
-    delete_selected: ''
-    view: ''
-    edit: ''
-    back_to_list: ''
-    view_all: ''
+    close: 'Close'
+    cancel: 'Cancel'
+    delete: 'Delete'
+    delete_selected: 'Delete selected'
+    view: 'View'
+    edit: 'Edit'
+    back_to_list: 'Back to list'
+    view_all: 'View all'
+    label: 'Action'
 form:
     json:
         invalid: 'Invalid JSON. Please use valid JSON syntax (e.g. {"key":"value"} or [...]).'
@@ -1135,7 +1163,7 @@ form:
         privacy: 'Data protection (GDPR)'
         classification: 'Classification'
         affected_assets: 'Affected Assets'
-        mitigation: 'Mitigation'
+        mitigation: 'Treatment & Remediation'
         lifecycle: 'Lifecycle'
         schedule: 'Schedule'
         audience: 'Audience'
@@ -1218,6 +1246,24 @@ form:
         warning:
             unmapped_title: 'Notice (dev only):'
             unmapped_body: 'The following fields are not covered by any section and fall through to the catch-all bucket: %fields%. Update the SectionPolicy on the FormType class.'
+        effort: 'Effort'
+        evidence: 'Evidence'
+        lead: 'Lead'
+        meta: 'Metadata'
+        validity: 'Validity'
+        visibility: 'Visibility'
+        assessment: 'Assessment'
+        basic_info: 'Basic information'
+        conclusion: 'Conclusion'
+        dates: 'Dates'
+        decision_trail: 'Decision trail'
+        identification: 'Identification'
+        nc_capa: 'Nonconformity & CAPA'
+        risk: 'Risk'
+        risk_quant: 'Quantitative risk assessment'
+        security: 'Security'
+        status: 'Status'
+        transfer: 'Transfer'
 corporate:
     title: 'Corporate Structure'
     subtitle: 'Management of parent companies and subsidiaries'
@@ -1433,10 +1479,10 @@ nis2:
             view_patches: 'View Patches'
             manage_mfa: 'Manage MFA'
     article: 'NIS2 Art. %article%'
-    not_installed: ''
-    not_active: ''
-    report_not_available: ''
-    incident_not_reportable: ''
+    not_installed: 'Not installed'
+    not_active: 'Not active'
+    report_not_available: 'Report not available'
+    incident_not_reportable: 'Incident is not reportable'
 bsi_check:
     title: 'BSI IT-Grundschutz Check'
     description: 'Soll/Ist-Vergleich per Baustein with MUSS/SOLLTE/KANN weighting. Values are derived from ComplianceRequirement inventory and mapped controls — no duplicate entry.'
@@ -1502,18 +1548,18 @@ Evaluation: Evaluation
 Terminated: Terminated
 vulnerability:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Vulnerability created successfully'
+        updated: 'Vulnerability updated successfully'
+        deleted: 'Vulnerability deleted successfully'
 processing_activity:
-    created: ''
-    updated: ''
-    deleted: ''
-    activated: ''
-    archived: ''
-    marked_for_review: ''
-    review_completed: ''
-    cloned: ''
+    created: 'Processing activity created successfully'
+    updated: 'Processing activity updated successfully'
+    deleted: 'Processing activity deleted successfully'
+    activated: 'Processing activity activated'
+    archived: 'Processing activity archived'
+    marked_for_review: 'Marked for review'
+    review_completed: 'Review completed'
+    cloned: 'Duplicated successfully'
     alert:
         compliance_issues: 'Compliance issues have been detected. Please review the affected entries.'
     stat:
@@ -1529,107 +1575,111 @@ processing_activity:
         fail: 'Non-compliant'
 business_continuity_plan:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Business continuity plan created successfully'
+        updated: 'Business continuity plan updated successfully'
+        deleted: 'Business continuity plan deleted successfully'
 change_request:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Change request created successfully'
+        updated: 'Change request updated successfully'
+        deleted: 'Change request deleted successfully'
 workflow:
     success:
-        approved: ''
-        started: ''
-        definition_created: ''
-        definition_updated: ''
-        definition_deleted: ''
+        approved: 'Workflow step approved'
+        started: 'Workflow started'
+        definition_created: 'Workflow definition created successfully'
+        definition_updated: 'Workflow definition updated successfully'
+        definition_deleted: 'Workflow definition deleted successfully'
     error:
-        not_authorized_approve: ''
-        comments_required: ''
-        not_authorized_reject: ''
-        not_found: ''
-        has_active_instances: ''
+        not_authorized_approve: 'You are not authorized to approve this step'
+        comments_required: 'A comment is required for this step'
+        not_authorized_reject: 'You are not authorized to reject this step'
+        not_found: 'Workflow not found'
+        has_active_instances: 'The workflow definition cannot be deleted - active instances still exist'
     warning:
-        rejected: ''
+        rejected: 'Workflow step was rejected'
     info:
-        cancelled: ''
-        no_active_workflow: ''
+        cancelled: 'Workflow was cancelled'
+        no_active_workflow: 'No active workflow'
+    days: 'Days'
+    message:
+        no_overdue: 'No overdue workflows'
+        no_overdue_desc: 'All workflow instances are currently within their deadlines'
 security:
     error:
-        too_many_attempts: ''
-        saml_login_error: ''
-        saml_logout_error: ''
-    csrf_token_invalid: ''
+        too_many_attempts: 'Too many login attempts. Please try again later.'
+        saml_login_error: 'SAML login error'
+        saml_logout_error: 'SAML logout error'
+    csrf_token_invalid: 'Invalid CSRF token - please reload the page'
     url:
         no_internal_ip: 'Internal IP addresses are not permitted for security reasons (SSRF protection). Please use a public URL.'
         dns_resolution_failed: 'Hostname could not be resolved (potential DNS-pinning attack blocked).'
 location:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Location created successfully'
+        updated: 'Location updated successfully'
+        deleted: 'Location deleted successfully'
 context:
     success:
-        updated: ''
+        updated: 'Context updated successfully'
 mfa:
     challenge:
         error:
-            code_required: ''
-            invalid_token: ''
-            invalid_code: ''
-        success: ''
+            code_required: 'Code required'
+            invalid_token: 'Invalid MFA token'
+            invalid_code: 'Invalid code'
+        success: 'MFA verification successful'
     error:
-        token_not_found: ''
+        token_not_found: 'MFA token not found'
     success:
-        token_reset: ''
+        token_reset: 'MFA token reset successfully'
 user:
     success:
-        created: ''
-        bulk_action_completed: ''
-        imported: ''
-        updated: ''
-        deleted: ''
-        activated: ''
-        deactivated: ''
+        created: 'User created successfully'
+        bulk_action_completed: 'Bulk action completed successfully'
+        imported: 'Users imported successfully'
+        updated: 'User updated successfully'
+        deleted: 'User deleted successfully'
+        activated: 'User activated successfully'
+        deactivated: 'User deactivated successfully'
     error:
-        no_users_selected: ''
-        no_file_uploaded: ''
-        cannot_deactivate_initial_admin: ''
-        cannot_remove_admin_role_from_initial_admin: ''
-        cannot_delete_initial_admin: ''
+        no_users_selected: 'No users selected'
+        no_file_uploaded: 'No file uploaded'
+        cannot_deactivate_initial_admin: 'The initial administrator cannot be deactivated'
+        cannot_remove_admin_role_from_initial_admin: 'The administrator role cannot be removed from the initial administrator'
+        cannot_delete_initial_admin: 'The initial administrator cannot be deleted'
     info:
-        bulk_skipped_initial_admin: ''
-        bulk_skipped_current_user: ''
-        bulk_skipped_no_permission: ''
-        bulk_skipped_already_has_role: ''
+        bulk_skipped_initial_admin: 'Initial administrator was skipped'
+        bulk_skipped_current_user: 'Current user was skipped'
+        bulk_skipped_no_permission: 'Skipped - no permission'
+        bulk_skipped_already_has_role: 'Skipped - already has this role'
     warning:
-        own_password_changed: ''
-        session_will_be_invalidated: ''
+        own_password_changed: 'You have changed your own password'
+        session_will_be_invalidated: 'Your session will be invalidated and you will need to sign in again'
 dpia:
-    created: ''
-    updated: ''
-    deleted: ''
-    submitted_for_review: ''
-    approved: ''
-    rejected: ''
-    revision_requested: ''
-    reopened: ''
-    dpo_consulted: ''
-    supervisory_consulted: ''
-    marked_for_review: ''
-    review_completed: ''
-    cloned: ''
+    created: 'DPIA created successfully'
+    updated: 'DPIA updated successfully'
+    deleted: 'DPIA deleted successfully'
+    submitted_for_review: 'DPIA submitted for review'
+    approved: 'DPIA approved'
+    rejected: 'DPIA rejected'
+    revision_requested: 'Revision requested'
+    reopened: 'DPIA reopened'
+    dpo_consulted: 'Data Protection Officer consulted'
+    supervisory_consulted: 'Supervisory authority consulted'
+    marked_for_review: 'Marked for review'
+    review_completed: 'Review completed'
+    cloned: 'DPIA duplicated successfully'
 admin:
     data_repair:
-        tenant_not_found: ''
-        invalid_entity_type: ''
-        assigned_count: ''
-        entity_not_found: ''
-        entity_reassigned: ''
-        select_asset: ''
-        asset_not_found: ''
-        select_risk: ''
+        tenant_not_found: 'Organization not found'
+        invalid_entity_type: 'Invalid entity type'
+        assigned_count: '%count% entities assigned'
+        entity_not_found: 'Entity not found'
+        entity_reassigned: 'Entity reassigned successfully'
+        select_asset: 'Select asset'
+        asset_not_found: 'Asset not found'
+        select_risk: 'Select risk'
     data_export:
         configure_title: 'Configure Export'
         select_entities: 'Select Entities to Export'
@@ -1639,77 +1689,99 @@ admin:
         format_help: 'Choose the export format'
         format_selection: 'Format Selection'
         submit: 'Export'
+    health_fix:
+        fix_cache_permissions: 'System health: cache permissions fixed'
+        fix_log_permissions: 'System health: log permissions fixed'
+        clear_cache: 'System health: cache cleared'
+        clean_old_logs: 'System health: old log files cleaned up'
+        rotate_logs: 'System health: log files rotated'
+        optimize_disk_space: 'System health: disk space optimized'
+        fix_var_permissions: 'System health: var/ permissions fixed'
+        fix_uploads_permissions: 'System health: upload permissions fixed'
+        fix_session_permissions: 'System health: session permissions fixed'
+        clear_old_uploads: 'System health: old uploads cleaned up'
+        run_composer_install: 'System health: Composer install executed'
 business_process:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Business process created successfully'
+        updated: 'Business process updated successfully'
+        deleted: 'Business process deleted successfully'
+    index:
+        table:
+            name: 'Name'
+            owner: 'Owner'
+            criticality: 'Criticality'
+            rto: 'RTO'
+            rpo: 'RPO'
+            mtpd: 'MTPD'
+            impact_score: 'Impact Score'
+            actions: 'Actions'
 asset:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Asset created successfully'
+        updated: 'Asset updated successfully'
+        deleted: 'Asset deleted successfully'
     bulk_delete:
-        success: ''
-        no_items: ''
+        success: '%count% assets deleted successfully'
+        no_items: 'No assets selected for deletion'
 training:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Training created successfully'
+        updated: 'Training updated successfully'
+        deleted: 'Training deleted successfully'
 interested_party:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Interested party created successfully'
+        updated: 'Interested party updated successfully'
+        deleted: 'Interested party deleted successfully'
 session:
     error:
-        invalid_token: ''
+        invalid_token: 'Invalid security token. Please sign in again.'
 objective:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Objective created successfully'
+        updated: 'Objective updated successfully'
+        deleted: 'Objective deleted successfully'
 control:
     success:
-        updated: ''
+        updated: 'Control updated successfully'
 audit:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Audit created successfully'
+        updated: 'Audit updated successfully'
+        deleted: 'Audit deleted successfully'
 document:
     error:
-        too_many_uploads: ''
-        upload_failed: ''
+        too_many_uploads: 'Too many files uploaded'
+        upload_failed: 'File upload failed'
     success:
-        uploaded: ''
-        updated: ''
-        deleted: ''
+        uploaded: 'Document uploaded successfully'
+        updated: 'Document updated successfully'
+        deleted: 'Document deleted successfully'
 crisis_team:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
-        activated: ''
+        created: 'Crisis team created successfully'
+        updated: 'Crisis team updated successfully'
+        deleted: 'Crisis team deleted successfully'
+        activated: 'Crisis team activated'
 bc_exercise:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'BC exercise created successfully'
+        updated: 'BC exercise updated successfully'
+        deleted: 'BC exercise deleted successfully'
 management_review:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Management review created successfully'
+        updated: 'Management review updated successfully'
+        deleted: 'Management review deleted successfully'
 incident:
     success:
-        reported: ''
-        updated: ''
-        deleted: ''
+        reported: 'Incident reported successfully'
+        updated: 'Incident updated successfully'
+        deleted: 'Incident deleted successfully'
     bcm:
-        auto_detect_success: ''
-        no_processes_detected: ''
+        auto_detect_success: 'Business processes detected automatically'
+        no_processes_detected: 'No business processes detected'
 risk:
     level:
         critical: 'Critical'
@@ -1718,115 +1790,117 @@ risk:
         low: 'Low'
         very_low: 'Very Low'
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Risk created successfully'
+        updated: 'Risk updated successfully'
+        deleted: 'Risk deleted successfully'
     acceptance:
         error:
-            wrong_strategy: ''
-            already_accepted: ''
-            justification_required: ''
-            reason_required: ''
+            wrong_strategy: 'Wrong treatment strategy - only "Accept" allows risk acceptance'
+            already_accepted: 'Risk has already been accepted'
+            justification_required: 'A justification is required for risk acceptance'
+            reason_required: 'A rejection reason is required'
         success:
-            auto_accepted: ''
-            approval_requested: ''
-            approved: ''
-            rejected: ''
+            auto_accepted: 'Risk accepted automatically (below threshold)'
+            approval_requested: 'Risk acceptance submitted for approval'
+            approved: 'Risk acceptance approved'
+            rejected: 'Risk acceptance rejected'
 risk_appetite:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Risk appetite created successfully'
+        updated: 'Risk appetite updated successfully'
+        deleted: 'Risk appetite deleted successfully'
 patch:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Patch created successfully'
+        updated: 'Patch updated successfully'
+        deleted: 'Patch deleted successfully'
 supplier:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Supplier created successfully'
+        updated: 'Supplier updated successfully'
+        deleted: 'Supplier deleted successfully'
+    page:
+        edit_title: 'Edit Supplier'
 risk_treatment_plan:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Risk treatment plan created successfully'
+        updated: 'Risk treatment plan updated successfully'
+        deleted: 'Risk treatment plan deleted successfully'
 compliance:
     framework:
         flash:
-            created: ''
-            updated: ''
-            has_requirements: ''
-            deleted: ''
-            duplicated: ''
+            created: 'Framework created successfully'
+            updated: 'Framework updated successfully'
+            has_requirements: 'The framework cannot be deleted - it still contains requirements'
+            deleted: 'Framework deleted successfully'
+            duplicated: 'Framework duplicated successfully'
 clause:
-    4: ''
-    5: ''
-    6: ''
-    7: ''
-    8: ''
-    9: ''
-    10: ''
+    4: 'Clause 4 - Context of the organization'
+    5: 'Clause 5 - Leadership'
+    6: 'Clause 6 - Planning'
+    7: 'Clause 7 - Support'
+    8: 'Clause 8 - Operation'
+    9: 'Clause 9 - Performance evaluation'
+    10: 'Clause 10 - Improvement'
 data_management:
     import:
-        step_upload: ''
-        step_preview: ''
-        step_confirm: ''
-        step_validate: ''
-        format_json: ''
-        format_export: ''
-        ensure_disk_space: ''
-        plan_downtime: ''
-        test_small: ''
-        validation_required: ''
-        no_duplicate_detection: ''
+        step_upload: 'Step 1: Upload file'
+        step_preview: 'Step 2: Review preview'
+        step_confirm: 'Step 3: Confirm import'
+        step_validate: 'Step 4: Validate data'
+        format_json: 'Format: JSON (from Little ISMS Helper export)'
+        format_export: 'Only use export files from the same system'
+        ensure_disk_space: 'Make sure there is sufficient disk space'
+        plan_downtime: 'Plan a maintenance window for large imports'
+        test_small: 'Test with a small data set first'
+        validation_required: 'Validation is required before import'
+        no_duplicate_detection: 'No automatic duplicate detection - please check manually'
     export:
-        includes_all_records: ''
-        sensitive_data_warning: ''
-        large_exports_warning: ''
-        relationships_warning: ''
-email.automated_notification: ''
-email.workflow.automated_alert: ''
-email.workflow.login_to_process_step: ''
-email.automated_reminder: ''
-email.training.mark_calendar: ''
-email.workflow.time_to_complete: ''
-email.workflow.login_to_process: ''
-email.risk_acceptance.review_reason: ''
-email.risk_acceptance.identify_controls: ''
-email.risk_acceptance.update_assessment: ''
-email.risk_acceptance.reassess_risk: ''
-email.risk_acceptance.request_again: ''
-email.new_incident_reported: ''
-email.take_appropriate_action: ''
-email.workflow.workflow_update: ''
-email.workflow.login_for_details: ''
-email.workflow.deadline_warning: ''
-email.workflow.login_to_review: ''
-email.ensure_preparations: ''
-email.ensure_control_completion: ''
+        includes_all_records: 'The export contains all records of the organization'
+        sensitive_data_warning: 'WARNING: The export may contain confidential data (GDPR-relevant)'
+        large_exports_warning: 'Large amounts of data may take longer to process'
+        relationships_warning: 'Relationships between entities are exported as well'
+email.automated_notification: 'This is an automated notification'
+email.workflow.automated_alert: 'Automated workflow notification'
+email.workflow.login_to_process_step: 'Please sign in to process the workflow step'
+email.automated_reminder: 'Automated reminder'
+email.training.mark_calendar: 'Add the date to your calendar'
+email.workflow.time_to_complete: 'Time to complete'
+email.workflow.login_to_process: 'Sign in to process the workflow'
+email.risk_acceptance.review_reason: 'Review the justification for the risk acceptance'
+email.risk_acceptance.identify_controls: 'Identify additional controls to reduce the risk'
+email.risk_acceptance.update_assessment: 'Update the risk assessment'
+email.risk_acceptance.reassess_risk: 'Reassess risk'
+email.risk_acceptance.request_again: 'Request new acceptance'
+email.new_incident_reported: 'A new security incident has been reported'
+email.take_appropriate_action: 'Please take appropriate action'
+email.workflow.workflow_update: 'Workflow update'
+email.workflow.login_for_details: 'Sign in for details'
+email.workflow.deadline_warning: 'Deadline warning'
+email.workflow.login_to_review: 'Sign in to review'
+email.ensure_preparations: 'Ensure preparations are complete'
+email.ensure_control_completion: 'Ensure the control is fully implemented'
 pdf:
     framework_comparison:
-        solid_mappings_minor: ''
+        solid_mappings_minor: 'Solid mappings with minor deviations'
     gap_analysis:
-        distribution_by_severity: ''
-        not_addressed: ''
-        very_low: ''
-        partial: ''
+        distribution_by_severity: 'Distribution by severity'
+        not_addressed: 'Not addressed'
+        very_low: 'Very low'
+        partial: 'Partial'
     base:
-        define_content_block: ''
+        define_content_block: 'Define the content block here'
     risk_report:
-        distribution_by_level: ''
-        distribution_by_status: ''
+        distribution_by_level: 'Distribution by risk level'
+        distribution_by_status: 'Distribution by status'
     data_reuse:
-        recommendations_title: ''
+        recommendations_title: 'Data reuse recommendations'
         no_quick_wins: 'No Quick Wins with ≥80% Reuse + High Confidence found. Focus on mid-term potentials (50-80%).'
         methodology: '<p>Data reuse analysis evaluates each framework requirement for potential overlap with existing ISMS data, controls, and documentation. Reuse percentage = reusable data points / total required data points. Confidence levels (low/medium/high) reflect mapping quality. Time savings estimated from historical compliance effort baselines.</p>'
     transitive_compliance:
-        from_framework: ''
-        to_framework: ''
-        establish_hub: ''
+        from_framework: 'From framework'
+        to_framework: 'To framework'
+        establish_hub: 'Establish a hub framework for optimal coverage'
 bulk_actions:
     select_all: 'Select all'
     selected: 'selected'
@@ -1848,14 +1922,17 @@ bulk_actions:
 
 aria:
     notifications: 'Notifications'
-not_assigned: ''
+not_assigned: 'Not assigned'
 page:
-    title: ''
+    title: 'Page title'
 label:
-    classification_confidential: ''
-    classification_confidential_upper: ''
+    classification_confidential: 'Confidential'
+    classification_confidential_upper: 'CONFIDENTIAL'
 report:
-    default_approver: ''
+    default_approver: 'Default approver'
+    document_type: 'Document Type'
+    header_center: 'Header (Center)'
+    default_reviewer: 'Default Reviewer'
 yes: Yes
 no: No
 notifications:
@@ -1887,6 +1964,7 @@ share:
         note_saved: 'Note saved successfully.'
     warning:
         unknown_action: 'Unknown action.'
+        file_rejected: 'The file "%name%" was rejected (file type or size not allowed).'
     title: 'Share Content'
     content_preview: 'Shared Content'
     select_action: 'What would you like to do?'
@@ -2366,3 +2444,13 @@ owner_picker:
 'common.update': 'Update'
 'common.source': 'Source'
 'common.target': 'Target'
+user_management:
+    import_irreversible: 'Import cannot be undone - create a backup first'
+monitoring:
+    by_level: 'By Level'
+    show_entries: 'Show Entries'
+    no_errors_found: 'No errors found'
+    reverse_order: 'Reverse Order'
+    recent_entries_only: 'Recent Entries Only'
+    full_log_analysis: 'Full Log Analysis'
+    large_files_warning: 'Warning: Large log files may cause long loading times'

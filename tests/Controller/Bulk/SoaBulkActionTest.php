@@ -26,6 +26,8 @@ class SoaBulkActionTest extends WebTestCase
     private ?Tenant $otherTenant = null;
     private ?Control $control = null;
     private ?Control $otherControl = null;
+    /** @var list<User> */
+    private array $extraUsers = [];
 
     protected function setUp(): void
     {
@@ -55,7 +57,9 @@ class SoaBulkActionTest extends WebTestCase
         foreach ([$this->control, $this->otherControl] as $e) {
             if ($e) { try { $x = $this->em->find(Control::class, $e->getId()); if ($x) $this->em->remove($x); } catch (\Exception) {} }
         }
-        if ($this->userRole) { try { $x = $this->em->find(User::class, $this->userRole->getId()); if ($x) $this->em->remove($x); } catch (\Exception) {} }
+        foreach ([$this->userRole, ...$this->extraUsers] as $u) {
+            if ($u) { try { $x = $this->em->find(User::class, $u->getId()); if ($x) $this->em->remove($x); } catch (\Exception) {} }
+        }
         foreach ([$this->tenant, $this->otherTenant] as $t) {
             if ($t) { try { $x = $this->em->find(Tenant::class, $t->getId()); if ($x) $this->em->remove($x); } catch (\Exception) {} }
         }
@@ -100,6 +104,163 @@ class SoaBulkActionTest extends WebTestCase
 
 
     /**
+     * bulkApplicability had only a CSRF check: any authenticated account —
+     * a read-only holding auditor included — could change applicability.
+     */
+    #[Test]
+    public function applicabilityIsDeniedForAHoldingAuditor(): void
+    {
+        $auditor = $this->makeUser('auditor_' . uniqid() . '@x.test', $this->tenant, ['ROLE_KONZERN_AUDITOR']);
+        $this->em->flush();
+
+        $this->client->loginUser($auditor);
+        $this->postApplicability([$this->control->getId()]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertTrue($this->reload($this->control)->isApplicable());
+    }
+
+    #[Test]
+    public function applicabilityIsDeniedForAPlainUser(): void
+    {
+        $this->client->loginUser($this->userRole);
+        $this->postApplicability([$this->control->getId()]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function managerChangesApplicabilityOfOwnControlsOnly(): void
+    {
+        $manager = $this->makeUser('manager_' . uniqid() . '@x.test', $this->tenant, ['ROLE_MANAGER']);
+        $this->em->flush();
+
+        $this->client->loginUser($manager);
+        $this->postApplicability([$this->control->getId(), $this->otherControl->getId()]);
+
+        $this->assertResponseRedirects();
+        $this->assertFalse($this->reload($this->control)->isApplicable());
+        $this->assertTrue($this->reload($this->otherControl)->isApplicable(), 'foreign control untouched');
+    }
+
+    #[Test]
+    public function applicabilityIsDeniedForAnAuditor(): void
+    {
+        $auditor = $this->makeUser('aud_' . uniqid() . '@x.test', $this->tenant, ['ROLE_AUDITOR']);
+        $this->em->flush();
+
+        $this->client->loginUser($auditor);
+        $this->postApplicability([$this->control->getId()]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertTrue($this->reload($this->control)->isApplicable());
+    }
+
+    /**
+     * app_soa_edit had no authorisation beyond the firewall: any account of
+     * the organisation — auditors included — could edit any control.
+     *
+     * @return iterable<string, array{list<string>}>
+     */
+    public static function readOnlyRoles(): iterable
+    {
+        yield 'auditor' => [['ROLE_AUDITOR']];
+        yield 'holding auditor' => [['ROLE_KONZERN_AUDITOR']];
+        yield 'plain user' => [['ROLE_USER']];
+    }
+
+    /**
+     * @param list<string> $roles
+     */
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('readOnlyRoles')]
+    public function editIsDeniedForReadOnlyRoles(array $roles): void
+    {
+        $actor = $this->makeUser('ro_' . uniqid() . '@x.test', $this->tenant, $roles);
+        $this->em->flush();
+
+        $this->client->loginUser($actor);
+        $this->client->request('GET', '/en/soa/' . $this->control->getId() . '/edit');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->client->request('POST', '/en/soa/' . $this->control->getId() . '/edit', ['control' => ['name' => 'hijacked']]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertStringNotContainsString('hijacked', (string) $this->reload($this->control)->getName());
+    }
+
+    #[Test]
+    public function managerMayOpenTheEditForm(): void
+    {
+        $manager = $this->makeUser('mgr_' . uniqid() . '@x.test', $this->tenant, ['ROLE_MANAGER']);
+        $this->em->flush();
+
+        $this->client->loginUser($manager);
+        $this->client->request('GET', '/en/soa/' . $this->control->getId() . '/edit');
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[Test]
+    public function managerCannotEditAForeignControl(): void
+    {
+        $manager = $this->makeUser('mgr_' . uniqid() . '@x.test', $this->tenant, ['ROLE_MANAGER']);
+        $this->em->flush();
+
+        $this->client->loginUser($manager);
+        $this->client->request('GET', '/en/soa/' . $this->otherControl->getId() . '/edit');
+
+        $this->assertContains($this->client->getResponse()->getStatusCode(), [Response::HTTP_FORBIDDEN, Response::HTTP_NOT_FOUND]);
+    }
+
+    #[Test]
+    public function showHidesTheEditLinkFromAnAuditor(): void
+    {
+        $auditor = $this->makeUser('aud_' . uniqid() . '@x.test', $this->tenant, ['ROLE_AUDITOR']);
+        $this->em->flush();
+
+        $this->client->loginUser($auditor);
+        $this->client->request('GET', '/en/soa/' . $this->control->getId());
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString(
+            '/soa/' . $this->control->getId() . '/edit',
+            (string) $this->client->getResponse()->getContent(),
+        );
+    }
+
+    private function reload(Control $control): Control
+    {
+        $this->em->clear();
+        // The request left the tenant filter scoped to the actor's tenant.
+        if ($this->em->getFilters()->isEnabled('tenant_filter')) {
+            $this->em->getFilters()->disable('tenant_filter');
+        }
+        $fresh = $this->em->find(Control::class, $control->getId());
+        $this->assertInstanceOf(Control::class, $fresh);
+
+        return $fresh;
+    }
+
+    /**
+     * @param list<int|null> $ids
+     */
+    private function postApplicability(array $ids): void
+    {
+        $this->client->request('GET', '/');
+        $session = $this->client->getRequest()->getSession();
+        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/soa_bulk_applicability', $token);
+        $session->save();
+
+        $this->client->request('POST', '/en/soa/bulk/applicability', [
+            'control_ids' => $ids,
+            'applicable' => '0',
+            'reason' => 'Not in scope',
+            '_token' => $token,
+        ]);
+    }
+
+    /**
      * Generates a valid CSRF token for bulk-action endpoints by writing it
      * directly to the session (audit C-1 — OWASP A01).
      */
@@ -120,12 +281,18 @@ class SoaBulkActionTest extends WebTestCase
         return $tokenValue;
     }
 
-    private function makeUser(string $email, Tenant $tenant): User
+    /**
+     * @param list<string> $roles
+     */
+    private function makeUser(string $email, Tenant $tenant, array $roles = ['ROLE_USER']): User
     {
         $u = new User();
         $u->setEmail($email)->setFirstName('T')->setLastName('U')
-          ->setRoles(['ROLE_USER'])->setPassword('hashed')->setTenant($tenant)->setIsActive(true);
+          ->setRoles($roles)->setPassword('hashed')->setTenant($tenant)->setIsActive(true);
         $this->em->persist($u);
+        if ($roles !== ['ROLE_USER']) {
+            $this->extraUsers[] = $u;
+        }
         return $u;
     }
 

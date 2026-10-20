@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Report Regenerate Controller - Regenerate reports via AJAX
@@ -14,10 +15,21 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static values = {
         url: String,
-        loadingText: { type: String, default: 'Generating...' },
-        successText: { type: String, default: 'Report regenerated!' },
-        errorText: { type: String, default: 'Error regenerating report' }
+        csrfToken: { type: String, default: '' },
+        loadingText: { type: String, default: '' },
+        successText: { type: String, default: '' },
+        errorText: { type: String, default: '' }
     };
+
+    /** Template-passed label value, else the translated faT() fallback. */
+    label(name) {
+        const fallback = {
+            loadingText: () => faT('report_regenerate.loading'),
+            successText: () => faT('report_regenerate.success'),
+            errorText: () => faT('report_regenerate.error'),
+        };
+        return this[`${name}Value`] || fallback[name]();
+    }
 
     async regenerate(event) {
         event.preventDefault();
@@ -26,21 +38,22 @@ export default class extends Controller {
 
         // Disable button and show loading state
         button.disabled = true;
-        button.innerHTML = `<i class="fa-icon fa-icon--ui-refresh spinner-border spinner-border-sm me-1" aria-hidden="true"></i>${this.loadingTextValue}`;
+        button.innerHTML = `<i class="fa-icon fa-icon--ui-refresh spinner-border spinner-border-sm me-1" aria-hidden="true"></i>${this.label('loadingText')}`;
 
         try {
             const response = await fetch(this.urlValue, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': this.csrfTokenValue
                 }
             });
 
             const data = await response.json();
 
             if (data.success) {
-                button.innerHTML = `<i class="fa-icon fa-icon--ui-check me-1"></i>${this.successTextValue}`;
+                button.innerHTML = `<i class="fa-icon fa-icon--ui-check me-1"></i>${this.label('successText')}`;
                 button.classList.remove('btn-outline-warning');
                 button.classList.add('btn-success');
 
@@ -49,10 +62,10 @@ export default class extends Controller {
                     window.location.reload();
                 }, 1500);
             } else {
-                this.showError(button, originalHtml, data.message || this.errorTextValue);
+                this.showError(button, originalHtml, data.message || this.label('errorText'));
             }
         } catch (error) {
-            this.showError(button, originalHtml, this.errorTextValue);
+            this.showError(button, originalHtml, this.label('errorText'));
         }
     }
 

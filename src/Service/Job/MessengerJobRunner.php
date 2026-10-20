@@ -77,9 +77,31 @@ class MessengerJobRunner
             jobClass: $jobClass,
             args: $args,
             jobId: $jobId,
-            tenantId: $this->tenantContext->getCurrentTenantId(),
+            tenantId: $this->workerTenantId($args),
         ));
 
         return $response;
+    }
+
+    /**
+     * Tenant the worker arms its tenant filter with.
+     *
+     * An instance-wide job ({@see JobTenantScope::ARG_ALL_TENANTS}, captured only
+     * for a SUPER_ADMIN without an organisation) runs unscoped, exactly as in the
+     * in-request runner, whose request filter is unscoped for that account.
+     * TenantContext would instead hand that account a default organisation, and
+     * the worker would silently export only that organisation's data.
+     *
+     * @param array<string, mixed> $args
+     */
+    private function workerTenantId(array $args): ?int
+    {
+        if (($args[JobTenantScope::ARG_ALL_TENANTS] ?? null) === true
+            && ($args[JobTenantScope::ARG_TENANT_ID] ?? null) === null
+        ) {
+            return null;
+        }
+
+        return $this->tenantContext->getCurrentTenantId();
     }
 }

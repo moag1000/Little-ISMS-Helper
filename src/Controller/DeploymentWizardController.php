@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use RuntimeException;
-use Exception;
 use App\Entity\Risk;
 use App\Entity\Asset;
 use App\Form\AdminUserType;
@@ -371,7 +370,7 @@ class DeploymentWizardController extends AbstractController
                     }
                     // Redirect to same page to show error (Turbo compatibility)
                     return $this->redirectToRoute('setup_step2_database_config');
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $this->addFlash('error', $this->translator->trans('setup.database.config_failed', [], 'messages') . ': ' . $e->getMessage());
                     // Redirect to same page to show error (Turbo compatibility)
                     return $this->redirectToRoute('setup_step2_database_config');
@@ -709,7 +708,7 @@ class DeploymentWizardController extends AbstractController
                 'backup_restore_result' => $restoreResult,
             ]);
             return $immediateResponse;
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $logger->error('Backup restore failed during setup step 3', [
                 'error' => $e->getMessage(),
             ]);
@@ -911,7 +910,7 @@ class DeploymentWizardController extends AbstractController
 
             // Redirect to step 11 to complete setup
             return $this->redirectToRoute('setup_step11_complete');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $logger->error('Failed to repair orphaned entities', [
                 'error' => $e->getMessage(),
             ]);
@@ -1007,7 +1006,7 @@ class DeploymentWizardController extends AbstractController
                 $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed', [], 'setup') . ': ' . $result['message']);
                 return $this->redirectToRoute('setup_step4_admin_user');
 
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->addFlash('error', 'Fehler: ' . $e->getMessage());
                 return $this->redirectToRoute('setup_step4_admin_user');
             }
@@ -1096,7 +1095,7 @@ class DeploymentWizardController extends AbstractController
                 $this->addFlash('success', $this->translator->trans('setup.email.config_saved', [], 'messages'));
 
                 return $this->redirectToRoute('setup_step6_organisation_info');
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->addFlash('error', $this->translator->trans('setup.email.config_failed', [], 'messages') . ': ' . $e->getMessage());
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step5_email_config');
@@ -1174,7 +1173,7 @@ class DeploymentWizardController extends AbstractController
 
                 // V4-EF-1: Offer Industry-Preset Express-Path before manual module selection.
                 return $this->redirectToRoute('setup_industry_preset');
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed', [], 'messages') . ': ' . $e->getMessage());
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step6_organisation_info');
@@ -1733,6 +1732,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Reset Setup (Development Only)
      */
+    // @csrf-exempt: dev-environment only (throws outside APP_ENV=dev)
     #[Route('/setup/reset', name: 'setup_wizard_reset', methods: ['GET', 'POST'])]
     public function reset(SessionInterface $session): Response
     {

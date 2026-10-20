@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Tenant;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -30,6 +31,30 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  */
 class ModuleConfigurationService
 {
+    /**
+     * Marker written into config/active_modules.yaml once the file knows about
+     * {@see self::LATE_GATED_MODULES}. A file without it predates the central
+     * module gate.
+     */
+    public const GATING_BASELINE_KEY = 'gating_baseline';
+    public const GATING_BASELINE = 1;
+
+    /**
+     * Modules whose pages were reachable for everybody until the central
+     * #[RequiresModule] gate was introduced. An instance file written before
+     * that (no GATING_BASELINE_KEY) cannot list them, so they count as active
+     * there — otherwise an upgrade would silently hide pages that worked before.
+     */
+    public const LATE_GATED_MODULES = [
+        'persons',
+        'risk_appetite',
+        'risk_treatment_plans',
+        'portfolio_reports',
+        'scheduled_reports',
+        'corrective_actions',
+        'interested_parties',
+    ];
+
     private array $modules;
     private array $baseData;
     private array $sampleData;
@@ -193,7 +218,8 @@ class ModuleConfigurationService
         $configPath = $this->projectDir . '/config/active_modules.yaml';
 
         $data = [
-            'active_modules' => $modules,
+            'active_modules' => array_values($modules),
+            self::GATING_BASELINE_KEY => self::GATING_BASELINE,
             'updated_at' => date('Y-m-d H:i:s'),
         ];
 
@@ -222,6 +248,35 @@ class ModuleConfigurationService
     }
 
     /**
+     * Active modules of an explicit tenant — same resolution as
+     * getActiveModules(), for code that acts on a tenant other than the one in
+     * context (super-admin targeting another tenant, console commands).
+     *
+     * @return list<string>
+     */
+    public function getActiveModulesForTenant(Tenant $tenant): array
+    {
+        $required = array_keys($this->getRequiredModules());
+
+        return array_values(array_unique(array_merge(
+            $required,
+            $tenant->getActiveModules() ?? $this->getInstanceDefaultModules(),
+        )));
+    }
+
+    /**
+     * Stores a module selection on an explicit tenant. Never writes the
+     * instance-wide file and never touches the tenant in context.
+     *
+     * @param list<string> $modules
+     */
+    public function saveActiveModulesForTenant(Tenant $tenant, array $modules): void
+    {
+        $tenant->setActiveModules($modules);
+        $this->entityManager?->flush();
+    }
+
+    /**
      * Instance-wide default from config/active_modules.yaml — the fallback for
      * tenants without their own selection, and the value the setup wizard writes
      * before any tenant exists.
@@ -236,8 +291,16 @@ class ModuleConfigurationService
         }
 
         $config = Yaml::parseFile($configPath);
+        $modules = array_values($config['active_modules'] ?? []);
 
-        return array_values($config['active_modules'] ?? []);
+        // Legacy file (written before the module gate): keep the now-gated
+        // modules reachable. Once the file is saved again it carries the
+        // marker and a deliberate deactivation is respected.
+        if (!isset($config[self::GATING_BASELINE_KEY])) {
+            $modules = array_values(array_unique(array_merge($modules, self::LATE_GATED_MODULES)));
+        }
+
+        return $modules;
     }
 
     /**
@@ -255,6 +318,21 @@ class ModuleConfigurationService
     public function isModuleActive(string $moduleKey): bool
     {
         return in_array($moduleKey, $this->getActiveModules());
+    }
+
+    /**
+     * Module check for an explicit tenant — for code that runs outside the
+     * request's tenant context (console commands, jobs, per-tenant loops).
+     * Same resolution as getActiveModules(): required modules are always on,
+     * a tenant without its own selection inherits the instance default.
+     */
+    public function isModuleActiveForTenant(string $moduleKey, Tenant $tenant): bool
+    {
+        if (array_key_exists($moduleKey, $this->getRequiredModules())) {
+            return true;
+        }
+
+        return in_array($moduleKey, $tenant->getActiveModules() ?? $this->getInstanceDefaultModules(), true);
     }
 
     /**

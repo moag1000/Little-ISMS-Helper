@@ -36,7 +36,7 @@ class NotificationRule
     #[ORM\Column(name: 'event_type', length: 80)]
     private string $eventType = '';
 
-    /** @var array<int, array<string, mixed>> */
+    /** @var array<int, mixed> persisted JSON — elements are expected to be arrays, but legacy rows may hold strays */
     #[ORM\Column(type: Types::JSON)]
     private array $conditions = [];
 
@@ -105,6 +105,52 @@ class NotificationRule
 
     /** @param array<int, array<string, mixed>> $conditions */
     public function setConditions(array $conditions): static { $this->conditions = $conditions; return $this; }
+
+    /**
+     * The condition rows without the optional `{"_logic": "or"}` directive —
+     * what the rule form edits (NotificationRuleEvaluator reads both).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getConditionRows(): array
+    {
+        return array_values(array_filter(
+            $this->conditions,
+            static fn (mixed $c): bool => is_array($c) && !array_key_exists('_logic', $c),
+        ));
+    }
+
+    /** @param iterable<array<string, mixed>> $rows */
+    public function setConditionRows(iterable $rows): static
+    {
+        $logic = $this->getConditionLogic();
+        $this->conditions = [];
+        foreach ($rows as $row) {
+            $this->conditions[] = $row;
+        }
+
+        return $this->setConditionLogic($logic);
+    }
+
+    /** 'and' (every condition must match, the default) or 'or' (any condition). */
+    public function getConditionLogic(): string
+    {
+        foreach ($this->conditions as $c) {
+            if (is_array($c) && isset($c['_logic'])) {
+                return strtolower((string) $c['_logic']) === 'or' ? 'or' : 'and';
+            }
+        }
+
+        return 'and';
+    }
+
+    public function setConditionLogic(string $logic): static
+    {
+        $rows = $this->getConditionRows();
+        $this->conditions = strtolower($logic) === 'or' ? [['_logic' => 'or'], ...$rows] : $rows;
+
+        return $this;
+    }
 
     public function getSeverityFilter(): ?string { return $this->severityFilter; }
     public function setSeverityFilter(?string $severityFilter): static { $this->severityFilter = $severityFilter; return $this; }

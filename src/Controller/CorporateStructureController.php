@@ -11,7 +11,10 @@ use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
 use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
+use App\Security\TenantOwnership;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\CorporateStructureService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +23,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Corporate-structure (holding / subsidiary) API.
+ *
+ * Authorization model — ROLE_ADMIN is a per-organisation admin, so the
+ * class-level fence alone is not enough; every action is checked against
+ * the tenant it touches (TenantScopedAdminVoter):
+ *
+ *  - read (tree, effective context, governance rules, groups):
+ *    ADMIN_OWN_TENANT or ADMIN_HOLDING_READ on that tenant, i.e. own tenant
+ *    or a descendant of it, or SUPER_ADMIN.
+ *  - governance of a subsidiary (default model, per-scope rules) is decided
+ *    by the holding: ADMIN_OWN_TENANT on the subsidiary's PARENT. A
+ *    subsidiary admin can read but not change how its parent governs it.
+ *  - restructuring (set / remove parent): only a SUPER_ADMIN, or an admin
+ *    moving a strict descendant of their own tenant to another parent inside
+ *    their own tree. Attaching a tenant to another organisation's group
+ *    would hand that group read access to it, so it is SUPER_ADMIN-only.
+ *  - propagate context: ADMIN_OWN_TENANT on the holding tenant (the targets
+ *    are its own subsidiaries).
+ */
 #[IsGranted('ROLE_ADMIN')]
 class CorporateStructureController extends AbstractController
 {
@@ -27,8 +50,78 @@ class CorporateStructureController extends AbstractController
         private readonly TenantRepository $tenantRepository,
         private readonly CorporateGovernanceRepository $corporateGovernanceRepository,
         private readonly CorporateStructureService $corporateStructureService,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TenantContext $tenantContext,
     ) {
+    }
+
+    private function canRead(Tenant $tenant): bool
+    {
+        return $this->isGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $tenant)
+            || $this->isGranted(TenantScopedAdminVoter::ADMIN_HOLDING_READ, $tenant);
+    }
+
+    /**
+     * Governance of $tenant towards its parent is set by the holding side.
+     */
+    private function canManageGovernanceOf(Tenant $tenant): bool
+    {
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+        $parent = $tenant->getParent();
+
+        return $parent instanceof Tenant && $this->isGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $parent);
+    }
+
+    /**
+     * Moving $tenant under $newParent (null = detach).
+     */
+    private function canRestructure(Tenant $tenant, ?Tenant $newParent): bool
+    {
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+        $current = $this->tenantContext->getCurrentTenant();
+        if (!TenantOwnership::isDescendant($current, $tenant)) {
+            return false;
+        }
+
+        return !$newParent instanceof Tenant || $this->isGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $newParent);
+    }
+
+    /**
+     * Run $fn with the Doctrine tenant filter suspended.
+     *
+     * Governance rules and ISMS contexts belong to the SUBSIDIARY's tenant,
+     * while the request filter is armed with the caller's (holding) tenant —
+     * without suspension a holding admin could never see or change the rules
+     * of their own subsidiaries, and a subsidiary could never read the
+     * context it inherits. Only called AFTER the explicit per-tenant
+     * authorization above, and every query inside names its tenant.
+     * suspend()/restore() keeps the filter instance and its parameter.
+     *
+     * @template T
+     * @param callable(): T $fn
+     * @return T
+     */
+    private function withoutTenantFilter(callable $fn): mixed
+    {
+        $filters = $this->entityManager->getFilters();
+        if (!$filters->isEnabled('tenant_filter')) {
+            return $fn();
+        }
+        $filters->suspend('tenant_filter');
+        try {
+            return $fn();
+        } finally {
+            $filters->restore('tenant_filter');
+        }
+    }
+
+    private function accessDenied(): JsonResponse
+    {
+        return $this->json(['error' => 'Access denied for this organisation'], Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -38,6 +131,10 @@ class CorporateStructureController extends AbstractController
     public function getTree(Tenant $tenant): JsonResponse
     {
         $root = $tenant->getRootParent();
+        // The tree spans the whole group, so the caller must be able to read its root.
+        if (!$this->canRead($root)) {
+            return $this->accessDenied();
+        }
         $tree = $this->corporateStructureService->getStructureTree($root);
 
         return $this->json($tree);
@@ -53,7 +150,7 @@ class CorporateStructureController extends AbstractController
         $groups = [];
 
         foreach ($allTenants as $allTenant) {
-            if ($allTenant->isCorporateParent() && $allTenant->getParent() === null) {
+            if ($allTenant->isCorporateParent() && $allTenant->getParent() === null && $this->canRead($allTenant)) {
                 $groups[] = [
                     'id' => $allTenant->getId(),
                     'code' => $allTenant->getCode(),
@@ -94,19 +191,22 @@ class CorporateStructureController extends AbstractController
 
         // Remove parent if parentId is null
         if ($parentId === null) {
+            if (!$this->canRestructure($tenant, null)) {
+                return $this->accessDenied();
+            }
             $tenant->setParent(null);
 
-            // Delete all governance rules for this tenant
-            $this->entityManager->createQueryBuilder()
-                ->delete(CorporateGovernance::class, 'cg')
-                ->where('cg.tenant = :tenant')
-                ->setParameter('tenant', $tenant)
-                ->getQuery()
-                ->execute();
+            // Delete all governance rules for this tenant (audit-logged)
+            $this->withoutTenantFilter(
+                fn(): int => $this->corporateStructureService->removeAllGovernanceRules($tenant, 'parent_removed'),
+            );
         } else {
             $parent = $this->tenantRepository->find($parentId);
             if (!$parent) {
                 return $this->json(['error' => 'Parent tenant not found'], Response::HTTP_NOT_FOUND);
+            }
+            if (!$this->canRestructure($tenant, $parent)) {
+                return $this->accessDenied();
             }
 
             // Validate governance model
@@ -118,7 +218,9 @@ class CorporateStructureController extends AbstractController
             $parent->setIsCorporateParent(true);
 
             // Create or update default governance rule
-            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->withoutTenantFilter(
+                fn(): ?CorporateGovernance => $this->corporateGovernanceRepository->findDefaultGovernance($tenant),
+            );
             if (!$governance instanceof CorporateGovernance) {
                 $governance = new CorporateGovernance();
                 $governance->setTenant($tenant);
@@ -140,7 +242,9 @@ class CorporateStructureController extends AbstractController
         $this->entityManager->flush();
 
         // Get default governance for response
-        $defaultGovernance = $tenant->getParent() ? $this->corporateGovernanceRepository->findDefaultGovernance($tenant) : null;
+        $defaultGovernance = $tenant->getParent() ? $this->withoutTenantFilter(
+            fn(): ?CorporateGovernance => $this->corporateGovernanceRepository->findDefaultGovernance($tenant),
+        ) : null;
 
         return $this->json([
             'success' => true,
@@ -170,12 +274,18 @@ class CorporateStructureController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $governanceModel = $data['governanceModel'] ?? null;
 
+        if (!$this->canManageGovernanceOf($tenant)) {
+            return $this->accessDenied();
+        }
+
         if (!$governanceModel || !in_array($governanceModel, ['hierarchical', 'shared', 'independent'])) {
             return $this->json(['error' => 'Valid governance model is required'], Response::HTTP_BAD_REQUEST);
         }
 
         // Update default governance rule
-        $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        $governance = $this->withoutTenantFilter(
+            fn(): ?CorporateGovernance => $this->corporateGovernanceRepository->findDefaultGovernance($tenant),
+        );
         if (!$governance instanceof CorporateGovernance) {
             return $this->json(['error' => 'No default governance found for this tenant'], Response::HTTP_NOT_FOUND);
         }
@@ -200,7 +310,13 @@ class CorporateStructureController extends AbstractController
     #[Route('/api/corporate-structure/effective-context/{id}', name: 'api_corporate_structure_effective_context', methods: ['GET'])]
     public function getEffectiveContext(Tenant $tenant): JsonResponse
     {
-        $context = $this->corporateStructureService->getEffectiveISMSContext($tenant);
+        if (!$this->canRead($tenant)) {
+            return $this->accessDenied();
+        }
+
+        $context = $this->withoutTenantFilter(
+            fn(): ?ISMSContext => $this->corporateStructureService->getEffectiveISMSContext($tenant),
+        );
 
         if (!$context instanceof ISMSContext) {
             return $this->json(['error' => 'No ISMS context found'], Response::HTTP_NOT_FOUND);
@@ -261,8 +377,11 @@ class CorporateStructureController extends AbstractController
         if (!$targetTenant) {
             return $this->json(['error' => 'Target tenant not found'], Response::HTTP_NOT_FOUND);
         }
-
+        // Relationship details of foreign organisations are not disclosed.
         $hasAccess = $this->corporateStructureService->canAccessTenant($userTenant, $targetTenant);
+        if (!$hasAccess && !$this->canRead($targetTenant)) {
+            return $this->json(['hasAccess' => false, 'reason' => 'No access relationship']);
+        }
 
         return $this->json([
             'hasAccess' => $hasAccess,
@@ -297,7 +416,13 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
-        $context = $this->corporateStructureService->getEffectiveISMSContext($tenant);
+        if (!$this->isGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $tenant)) {
+            return $this->accessDenied();
+        }
+
+        $context = $this->withoutTenantFilter(
+            fn(): ?ISMSContext => $this->corporateStructureService->getEffectiveISMSContext($tenant),
+        );
 
         if (!$context instanceof ISMSContext) {
             return $this->json(['error' => 'No ISMS context found for tenant'], Response::HTTP_NOT_FOUND);
@@ -307,7 +432,9 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Tenant is not a corporate parent'], Response::HTTP_BAD_REQUEST);
         }
 
-        $updatedCount = $this->corporateStructureService->propagateContextChanges($tenant, $context);
+        $updatedCount = $this->withoutTenantFilter(
+            fn(): int => $this->corporateStructureService->propagateContextChanges($tenant, $context),
+        );
 
         return $this->json([
             'success' => true,
@@ -327,7 +454,14 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $rules = $this->corporateGovernanceRepository->findBy(['tenant' => $tenant], ['scope' => 'ASC', 'scopeId' => 'ASC']);
+        if (!$this->canRead($tenant)) {
+            return $this->accessDenied();
+        }
+
+        $rules = $this->withoutTenantFilter(
+            fn(): array => $this->corporateGovernanceRepository
+                ->findBy(['tenant' => $tenant], ['scope' => 'ASC', 'scopeId' => 'ASC']),
+        );
 
         $result = array_map(fn(CorporateGovernance $rule): array => [
             'id' => $rule->getId(),
@@ -372,6 +506,10 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Tenant must have a parent to set governance'], Response::HTTP_BAD_REQUEST);
         }
 
+        if (!$this->canManageGovernanceOf($tenant)) {
+            return $this->accessDenied();
+        }
+
         $data = json_decode($request->getContent(), true);
         $scopeId = $data['scopeId'] ?? null;
         $governanceModel = $data['governanceModel'] ?? null;
@@ -382,7 +520,10 @@ class CorporateStructureController extends AbstractController
         }
 
         // Find existing rule or create new one
-        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
+        $governance = $this->withoutTenantFilter(
+            fn(): ?CorporateGovernance => $this->corporateGovernanceRepository
+                ->findGovernanceForScope($tenant, $scope, $scopeId),
+        );
 
         if (!$governance instanceof CorporateGovernance) {
             $governance = new CorporateGovernance();
@@ -429,7 +570,14 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
+        if (!$this->canManageGovernanceOf($tenant)) {
+            return $this->accessDenied();
+        }
+
+        $governance = $this->withoutTenantFilter(
+            fn(): ?CorporateGovernance => $this->corporateGovernanceRepository
+                ->findGovernanceForScope($tenant, $scope, $scopeId),
+        );
 
         if (!$governance instanceof CorporateGovernance) {
             return $this->json(['error' => 'Governance rule not found'], Response::HTTP_NOT_FOUND);

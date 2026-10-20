@@ -141,6 +141,7 @@ field:
     assigned_to_user: 'Assigned To (User)'
     assigned_person: 'Responsible (Person)'
     assigned_deputy_persons: 'Deputies (Persons)'
+    status_readonly: 'Status is driven by the lifecycle workflow (New → Analyzing → Mitigated → Monitoring → Closed). Direct editing is disabled; use the status actions on the detail page.'
 
 placeholder:
     title: 'Enter threat title'

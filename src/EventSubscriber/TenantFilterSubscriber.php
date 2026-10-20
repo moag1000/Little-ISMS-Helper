@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Doctrine\TenantFilter;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -13,9 +14,10 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Activates the Doctrine TenantFilter on every HTTP request.
  *
- * Sets the tenant_id parameter from the current user's tenant.
- * When no user is authenticated or user has no tenant (super admin),
- * the parameter is set to 'null' which disables filtering (admin mode).
+ * Sets the tenant_id parameter from the current user's tenant. Anonymous
+ * requests and a SUPER_ADMIN without an organisation stay unscoped
+ * ({@see TenantFilter::UNSCOPED}); any other account without an organisation
+ * is scoped to no organisation ({@see TenantFilter::NO_ORGANISATION}).
  */
 #[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest', priority: 7)]
 final class TenantFilterSubscriber
@@ -43,11 +45,13 @@ final class TenantFilterSubscriber
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if ($tenant !== null && $tenant->getId() !== null) {
-            $filter->setParameter('tenant_id', (string) $tenant->getId());
-        } else {
-            // No tenant = admin mode, filter bypasses
-            $filter->setParameter('tenant_id', 'null');
-        }
+        $filter->setParameter('tenant_id', match (true) {
+            $tenant !== null && $tenant->getId() !== null => (string) $tenant->getId(),
+            // Anonymous requests (login, setup wizard, public share links) and the
+            // instance operator stay unscoped.
+            $user === null, $this->security->isGranted('ROLE_SUPER_ADMIN') => TenantFilter::UNSCOPED,
+            // Any other account without an organisation sees no organisation's data.
+            default => TenantFilter::NO_ORGANISATION,
+        });
     }
 }

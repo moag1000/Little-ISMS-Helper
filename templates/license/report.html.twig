@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Lizenzbericht - Detailliert{% endblock %}
 
@@ -14,11 +15,11 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'Detaillierter Lizenzbericht',
         subtitle: 'Vollständige Compliance-Analyse aller Dependencies',
-        icon: 'nav-bar-chart'
-    } %}
+        badge: { icon: 'nav-bar-chart', label: '' }
+    }) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">
@@ -67,6 +68,7 @@
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
                                 data-report-regenerate-url-value="{{ path('app_licenses_generate') }}"
+                                data-report-regenerate-csrf-token-value="{{ csrf_token('report_regenerate') }}"
                                 data-report-regenerate-loading-text-value="{{ 'common.generating_reports'|trans({}, 'messages') }}"
                                 data-report-regenerate-success-text-value="{{ 'common.report_regenerated'|trans({}, 'messages') }}">
                             <i class="fa-icon fa-icon--ui-refresh me-1" aria-hidden="true"></i>{{ 'common.regenerate'|trans({}, 'messages') }}

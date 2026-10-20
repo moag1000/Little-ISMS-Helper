@@ -96,7 +96,7 @@ notification:
             name: 'Channel name'
             name_placeholder: 'e.g. IT Security Email'
             type: 'Channel type'
-            config: 'Configuration (JSON)'
+            config: 'Configuration'
             secret: 'HMAC signature secret'
             secret_placeholder: 'Fill in only to set or change the secret'
             is_active: 'Channel active'
@@ -108,12 +108,18 @@ notification:
         help:
             name: 'A unique name for this channel.'
             type: 'The channel type determines the delivery method.'
-            config: 'JSON configuration e.g. {"recipients": ["admin@company.com"]} for email or {"url": "https://hooks.example.com/…"} for webhook.'
-            config_examples: 'Examples'
-            config_email_example: '{"recipients": ["admin@example.com"], "from": "noreply@example.com"}'
+            config: 'Email channels use recipients, sender and subject; webhook channels use URL and timeout.'
             secret: 'Optional HMAC-SHA256 key for webhook signatures. Stored encrypted.'
             secret_edit_hint: 'Leave blank to keep the existing secret.'
             is_active: 'Inactive channels are skipped during delivery.'
+        config:
+            recipients: 'Email: recipients'
+            recipients_help: 'Email addresses, press Enter after each.'
+            from: 'Email: sender'
+            subject: 'Email: subject'
+            url: 'Webhook: URL'
+            url_help: 'HTTPS endpoint the notification is posted to.'
+            timeout: 'Webhook: timeout (seconds)'
         action:
             new: 'New Channel'
             create: 'Create Channel'
@@ -228,5 +234,10 @@ notification:
         operator: 'Operator'
         value: 'Value'
         value_placeholder: 'e.g. high'
-        action:
-            add: 'Add condition'
+        op:
+            contains: 'contains'
+            in: 'is one of (comma-separated)'
+        logic:
+            label: 'Combine with'
+            all: 'All conditions must match (AND)'
+            any: 'Any condition is enough (OR)'

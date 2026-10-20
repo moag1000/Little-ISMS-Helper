@@ -190,7 +190,11 @@
             <span class="badge bg-secondary ms-2">{{ 'control.bulk.power_user_badge'|trans({}, 'control') }}</span>
         </summary>
         <div class="card-body">
-            <form method="post" action="{{ path('app_soa_bulk_applicability') }}" class="row g-2 align-items-end">
+            <form method="post" action="{{ path('app_soa_bulk_applicability') }}" class="row g-2 align-items-end"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#splitToHidden"
+                  data-ui-actions-source-param="control_ids_raw"
+                  data-ui-actions-name-param="control_ids[]">
                 <input type="hidden" name="_token" value="{{ csrf_token('soa_bulk_applicability') }}">
                 <div class="col-md-4">
                     {{ _fa_cyber.text('control_ids_raw', {
@@ -214,8 +218,7 @@
                     }) }}
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100"
-                            onclick="this.form.querySelectorAll('[name=control_ids_raw]')[0].value.split(/[,\s]+/).filter(Boolean).forEach(id => { var h = document.createElement('input'); h.type='hidden'; h.name='control_ids[]'; h.value=id; this.form.appendChild(h); });">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
                         <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                         {{ 'control.bulk.submit'|trans({}, 'control') }}
                     </button>
@@ -417,7 +420,9 @@
             <td class="fa-table__cell fa-table__cell--actions">
                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                     <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
+                    {% if is_granted('edit', control) %}
                     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+                    {% endif %}
                 </div>
             </td>
         </tr>

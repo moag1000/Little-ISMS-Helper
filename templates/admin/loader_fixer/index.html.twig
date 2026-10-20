@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}{% endblock %}
 
@@ -12,11 +13,14 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-        <div>
-            <h1 class="h3">{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}</h1>
-            <p class="text-muted mb-0">{{ 'loader_fixer.page.lead'|trans({}, 'loader_fixer') }}</p>
-        </div>
+    {{ _fa_page_header.render({
+        title: 'loader_fixer.page.title'|trans({}, 'loader_fixer'),
+        subtitle: 'loader_fixer.page.lead'|trans({}, 'loader_fixer')
+    }) }}
+
+    {# POST action (CSRF form) — fa-page-header actions only render links, so the
+     # run-all form stays as a toolbar row directly below the header. #}
+    <div class="d-flex justify-content-end gap-2 mb-3">
         <form method="post" action="{{ path('admin_loader_fixer_run_all') }}"
               data-controller="ui-actions"
               data-action="submit->ui-actions#confirm"

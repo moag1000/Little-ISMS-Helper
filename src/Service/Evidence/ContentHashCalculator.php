@@ -20,7 +20,7 @@ class ContentHashCalculator
     /**
      * Calculate SHA-256 digest of a file by path.
      *
-     * @throws RuntimeException when the file cannot be opened or read.
+     * @throws \App\Exception\Io\IoException when the file cannot be opened or read.
      */
     public function calculateFromPath(string $filePath): string
     {

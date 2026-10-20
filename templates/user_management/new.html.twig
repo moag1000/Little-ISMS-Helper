@@ -88,7 +88,7 @@
 
 {% block javascripts %}
 {{ parent() }}
-<script>
+<script nonce="{{ csp_nonce() }}">
     // Turbo re-eval guard: wrap in IIFE so top-level declarations are not re-declared on body-swap
     (function () {
     // Initialize Bootstrap tooltips for role checkboxes

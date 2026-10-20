@@ -28,11 +28,11 @@
  # Actions schema:
  #   cancel:
  #     label         string
- #     onclick       string|null  — raw JS expression, alternative to route
+ #     action        string|null  — Stimulus data-action replacing the default
+ #                                    '<controller>#cancel' (no inline JS: CSP)
  #     route         string|null  — Symfony route name (used as href on cancel link)
  #   submit:
  #     label         string
- #     onclick       string|null
  #     variant       'primary'|'danger'   (default: 'primary')
  #
  # Usage:
@@ -85,7 +85,8 @@
          data-controller="{{ controller }}"
          data-{{ controller }}-current-step-value="{{ initialStep }}"
          data-{{ controller }}-total-steps-value="{{ totalSteps }}"
-         data-{{ controller }}-has-changes-value="false">
+         data-{{ controller }}-has-changes-value="false"
+         data-{{ controller }}-discard-message-value="{{ config.discardMessage ?? ('ui.js.discard_changes'|trans({}, 'ui')) }}">
 
         {# ── Wizard Header ──────────────────────────────────────────────── #}
         <header class="fa-modal__wizard-header">
@@ -101,7 +102,7 @@
                 </div>
                 <button type="button"
                         class="fa-modal__wizard-close"
-                        aria-label="Wizard schließen"
+                        aria-label="{{ 'ui.component.wizard_modal.close'|trans({}, 'ui') }}"
                         data-action="{{ controller }}#cancel"
                         data-{{ controller }}-target="closeBtn">
                     <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
@@ -111,7 +112,7 @@
             {# ── Pip-rail ─────────────────────────────────────────────── #}
             <ol class="fa-modal__wizard-pips"
                 role="list"
-                aria-label="Wizard-Schritte">
+                aria-label="{{ 'ui.component.wizard_modal.steps'|trans({}, 'ui') }}">
                 {% for idx, step in steps %}
                     {%- set pipState = (idx < initialStep) ? 'done' : (idx == initialStep ? 'current' : 'pending') -%}
                     <li class="fa-modal__wizard-pip fa-modal__wizard-pip--{{ pipState }}"
@@ -121,7 +122,7 @@
                             data-action="click->{{ controller }}#jumpToPip"
                             role="button"
                             tabindex="0"
-                            aria-label="Zurück zu Schritt {{ idx + 1 }}: {{ step.label }}"
+                            aria-label="{{ 'ui.component.wizard_modal.back_to_step'|trans({'%n%': idx + 1, '%label%': step.label}, 'ui') }}"
                         {% endif %}
                         {% if pipState == 'current' %}aria-current="step"{% endif %}>
                         <div class="fa-modal__wizard-pip-bar" aria-hidden="true"></div>
@@ -153,7 +154,7 @@
                          data-validation-hint="{{ step.validationHint }}"
                      {% endif %}
                      role="group"
-                     aria-label="Schritt {{ idx + 1 }}: {{ step.title }}">
+                     aria-label="{{ 'ui.component.step'|trans({'%n%': idx + 1, '%label%': step.title}, 'ui') }}">
 
                     <p class="fa-modal__wizard-step-title">
                         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
@@ -173,7 +174,7 @@
                         <span class="fa-modal__wizard-validation-text">
                             {{- step.validationHint is defined and step.validationHint
                                 ? step.validationHint
-                                : 'Bitte alle Pflichtfelder ausfüllen, bevor Sie fortfahren.' -}}
+                                : 'ui.component.wizard_modal.validation'|trans({}, 'ui') -}}
                         </span>
                     </div>
                 </div>
@@ -183,27 +184,18 @@
         {# ── Wizard Footer ──────────────────────────────────────────────── #}
         <footer class="fa-modal__wizard-footer">
             <div class="fa-modal__wizard-footer-info">
-                Schritt <strong data-{{ controller }}-target="stepCounter">{{ initialStep + 1 }}</strong>
-                von <strong>{{ totalSteps }}</strong>
+                {{ 'ui.component.wizard_modal.step_word'|trans({}, 'ui') }} <strong data-{{ controller }}-target="stepCounter">{{ initialStep + 1 }}</strong>
+                {{ 'ui.component.wizard_modal.of'|trans({}, 'ui') }} <strong>{{ totalSteps }}</strong>
             </div>
             <div class="fa-modal__wizard-footer-actions">
                 {# Cancel #}
                 {% if actions.cancel is defined %}
-                    {% if actions.cancel.onclick is defined and actions.cancel.onclick %}
-                        <button type="button"
-                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                onclick="{{ actions.cancel.onclick }}"
-                                data-{{ controller }}-target="cancelBtn">
-                            <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
-                        </button>
-                    {% else %}
-                        <button type="button"
-                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                data-action="{{ controller }}#cancel"
-                                data-{{ controller }}-target="cancelBtn">
-                            <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
-                        </button>
-                    {% endif %}
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-action="{{ actions.cancel.action ?? (controller ~ '#cancel') }}"
+                            data-{{ controller }}-target="cancelBtn">
+                        <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
+                    </button>
                 {% endif %}
 
                 {# Back (hidden on first step) #}
@@ -212,9 +204,9 @@
                         data-action="{{ controller }}#back"
                         data-{{ controller }}-target="backBtn"
                         {% if initialStep == 0 %}hidden{% endif %}
-                        aria-label="Zurück zum vorherigen Schritt">
+                        aria-label="{{ 'ui.component.wizard_modal.back_aria'|trans({}, 'ui') }}">
                     <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-                    <span class="fa-cyber-btn__label">Zurück</span>
+                    <span class="fa-cyber-btn__label">{{ 'ui.component.back'|trans({}, 'ui') }}</span>
                 </button>
 
                 {# Next (visible on all but last step) #}
@@ -223,8 +215,8 @@
                         data-action="{{ controller }}#next"
                         data-{{ controller }}-target="nextBtn"
                         {% if initialStep == totalSteps - 1 %}hidden{% endif %}
-                        aria-label="Weiter zum nächsten Schritt">
-                    <span class="fa-cyber-btn__label">Weiter</span>
+                        aria-label="{{ 'ui.component.wizard_modal.next_aria'|trans({}, 'ui') }}">
+                    <span class="fa-cyber-btn__label">{{ 'ui.component.next'|trans({}, 'ui') }}</span>
                     <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                 </button>
 

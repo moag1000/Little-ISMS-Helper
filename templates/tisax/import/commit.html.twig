@@ -15,7 +15,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'action-save', label: 'TISAX' },
+        badge: { icon: 'ui-save', label: 'TISAX' },
         title: 'tisax.import.commit.title'|trans({}, 'tisax_isa'),
         subtitle: 'tisax.import.commit.subtitle'|trans({}, 'tisax_isa')
     }) }}
@@ -73,42 +73,42 @@
                         </div>
                         <div class="card-body">
                             <p class="small text-muted">{{ 'tisax.import.commit.maturity_diff_body'|trans({}, 'tisax_isa') }}</p>
-                            <div class="table-responsive">
-                                <table class="table table-sm align-middle mb-0">
-                                    <thead>
+                            <div class="fa-table-wrap">
+                                <table class="fa-table fa-table--hover fa-table--compact">
+                                    <thead class="fa-table__head">
                                         <tr>
-                                            <th style="width:3rem"></th>
-                                            <th>{{ 'tisax.import.commit.maturity_diff_col_control'|trans({}, 'tisax_isa') }}</th>
-                                            <th class="text-center">{{ 'tisax.import.commit.maturity_diff_col_current'|trans({}, 'tisax_isa') }}</th>
-                                            <th class="text-center"></th>
-                                            <th class="text-center">{{ 'tisax.import.commit.maturity_diff_col_workbook'|trans({}, 'tisax_isa') }}</th>
+                                            <th scope="col" class="fa-table__th" style="width:3rem"></th>
+                                            <th scope="col" class="fa-table__th">{{ 'tisax.import.commit.maturity_diff_col_control'|trans({}, 'tisax_isa') }}</th>
+                                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'tisax.import.commit.maturity_diff_col_current'|trans({}, 'tisax_isa') }}</th>
+                                            <th scope="col" class="fa-table__th fa-table__th--center"></th>
+                                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'tisax.import.commit.maturity_diff_col_workbook'|trans({}, 'tisax_isa') }}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="fa-table__body">
                                         {% for d in maturityDiff %}
-                                            <tr>
-                                                <td>
+                                            <tr class="fa-table__row">
+                                                <td class="fa-table__cell">
                                                     <input class="form-check-input diff-apply-cb" type="checkbox"
                                                            name="apply_maturity[]" value="{{ d.controlId }}"
                                                            id="apply_{{ d.controlId }}">
                                                 </td>
-                                                <td>
+                                                <td class="fa-table__cell">
                                                     <label class="form-check-label" for="apply_{{ d.controlId }}">
                                                         <code>{{ d.controlId }}</code>
                                                         <span class="d-block text-muted small">{{ d.title|length > 80 ? d.title|slice(0, 80) ~ '…' : d.title }}</span>
                                                     </label>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="fa-table__cell fa-table__cell--center">
                                                     <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ d.currentInt }} — {{ ('tisax.import.assess.level.' ~ d.currentLevel)|trans({}, 'tisax_isa') }}</span>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="fa-table__cell fa-table__cell--center">
                                                     {% if d.direction == 'up' %}
                                                         <i class="fa-icon fa-icon--util-arrow-up text-success"></i>
                                                     {% else %}
                                                         <i class="fa-icon fa-icon--util-arrow-down text-danger"></i>
                                                     {% endif %}
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="fa-table__cell fa-table__cell--center">
                                                     <span class="badge bg-primary-subtle text-primary-emphasis">{{ d.workbookInt }} — {{ ('tisax.import.assess.level.' ~ d.workbookLevel)|trans({}, 'tisax_isa') }}</span>
                                                 </td>
                                             </tr>
@@ -150,7 +150,7 @@
 </div>
 
 {% if maturityDiff is not empty %}
-<script>
+<script nonce="{{ csp_nonce() }}">
     document.addEventListener('turbo:load', function () {
         var all = document.getElementById('diffSelectAll');
         if (!all) return;

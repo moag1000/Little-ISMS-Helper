@@ -6,6 +6,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -19,9 +20,10 @@
     title: 'role_management.title.list'|trans({}, 'role_management'),
     subtitle: 'role_management.description.overview'|trans({}, 'role_management'),
     actions: [
-        { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_compare') },
+        { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_compare') }
+    ]|merge(is_granted('role.create') ? [
         { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus', href: path('role_management_new') }
-    ]
+    ] : [])
 }) }}
 
 <main class="fa-aurora-surface">
@@ -49,6 +51,7 @@
 {# Roles Table #}
 <section class="fa-section">
     <div class="fa-section__body">
+        {% if roles is not empty %}
         {% embed '_components/_fa_table.html.twig' with { hover: true } %}
             {% block table_head %}
                 <tr>
@@ -101,15 +104,18 @@
                         </div>
                     </td>
                 </tr>
-                {% else %}
-                <tr>
-                    <td colspan="6" class="fa-table__cell text-center text-muted">
-                        {{ 'role_management.message.no_roles'|trans({}, 'role_management') }}
-                    </td>
-                </tr>
                 {% endfor %}
             {% endblock %}
         {% endembed %}
+        {% else %}
+            {{ _fa_empty_state.render({
+                mood: 'sleeping',
+                title: 'role_management.message.no_roles'|trans({}, 'role_management'),
+                actions: [
+                    { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus', href: path('role_management_new') }
+                ]
+            }) }}
+        {% endif %}
     </div>
 </section>
 </main>

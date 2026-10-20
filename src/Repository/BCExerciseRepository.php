@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\BCExercise;
+use App\Entity\Tenant;
 use App\Enum\BCExerciseStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,16 +24,22 @@ class BCExerciseRepository extends ServiceEntityRepository
     /**
      * Find upcoming exercises
      */
-    public function findUpcoming(): array
+    public function findUpcoming(?Tenant $tenant): array
     {
-        return $this->createQueryBuilder('e')
+        $qb = $this->createQueryBuilder('e')
             ->where('e.exerciseDate >= :now')
             ->andWhere('e.status IN (:statuses)')
             ->setParameter('now', new DateTime())
             ->setParameter('statuses', [BCExerciseStatus::Planned->value, BCExerciseStatus::InProgress->value])
-            ->orderBy('e.exerciseDate', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('e.exerciseDate', 'ASC');
+
+        // null = every tenant; only callers that resolved a SUPER_ADMIN
+        // without tenant context may pass it.
+        if ($tenant instanceof Tenant) {
+            $qb->andWhere('e.tenant = :tenant')->setParameter('tenant', $tenant);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

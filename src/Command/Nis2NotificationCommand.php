@@ -280,9 +280,9 @@ class Nis2NotificationCommand
                 $recipients[] = $incident->getReportedBy();
             }
 
-            // Fetch CISO and admin users as additional recipients
-            $cisoUsers = $this->userRepository->findByRole('ROLE_CISO');
-            $adminUsers = $this->userRepository->findByRole('ROLE_ADMIN');
+            // CISO and admin users of the incident's own organisation
+            $cisoUsers = $this->userRepository->findByRoleInTenant('ROLE_CISO', $incident->getTenant());
+            $adminUsers = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $incident->getTenant());
             foreach (array_merge($cisoUsers, $adminUsers) as $privilegedUser) {
                 if (!in_array($privilegedUser, $recipients, true)) {
                     $recipients[] = $privilegedUser;

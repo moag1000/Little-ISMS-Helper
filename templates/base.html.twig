@@ -2,6 +2,8 @@
 <html lang="{{ app.request.locale }}">
 <head>
     <meta charset="UTF-8">
+    {# CSP nonce for Turbo (assets/js/csp-nonce.js) — inline scripts use csp_nonce() #}
+    <meta name="csp-nonce" content="{{ csp_nonce() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="turbo-cache-control" content="no-cache">
     <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
@@ -40,9 +42,10 @@
        "preload but not used" browser console warnings. #}
     <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/space-grotesk-700.woff2" as="font" type="font/woff2" crossorigin>
 
     {# FairyAurora v3.0 — Theme-Init (prevent Flash-of-Wrong-Theme) #}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         (function () {
             try {
                 var saved = localStorage.getItem('fa-theme');
@@ -80,6 +83,10 @@
     {% block stylesheets %}
         {# Bootstrap zuerst — Aurora kommt danach und überschreibt (Cascade-Order). #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        {# Tom Select (tom-select / ts-finding-picker controllers). Linked here, not
+           imported in JS: AssetMapper maps CSS imports to data: URLs, which the
+           CSP script-src does not allow. #}
+        <link href="{{ asset('vendor/tom-select/dist/css/tom-select.default.min.css') }}" rel="stylesheet">
 
         {# Aurora-Layer als parallele <link> (kein @import-Barrel → kein FOUC). #}
         {{ include('_aurora_styles.html.twig') }}
@@ -163,7 +170,7 @@
         {# Nur App-JS via importmap. Aurora-CSS liegt als parallele head-<link>
            im stylesheets-Block (siehe dort) — NICHT als @import-Barrel hier. #}
         <div data-turbo-permanent id="importmap-container">
-            {{ importmap(['app']) }}
+            {{ importmap(['app'], {'nonce': csp_nonce()}) }}
         </div>
     {% endblock %}
 </head>
@@ -513,46 +520,7 @@
         </div>
     {% endif %}
 
-    {# Global translations for JavaScript #}
-    <script>
-        window.translations = {
-            dashboard: {
-                settings_imported: "{{ 'dashboard.success.settings_imported'|trans({}, 'dashboard')|raw }}",
-                import_failed: "{{ 'dashboard.error.import_failed'|trans({}, 'dashboard')|raw }}"
-            },
-            preferences: {
-                imported: "{{ 'preferences.success.imported'|trans({}, 'messages')|raw }}",
-                import_failed: "{{ 'preferences.error.import_failed'|trans({}, 'messages')|raw }}"
-            },
-            bulk_delete: {
-                confirm_count: "{{ 'bulk_delete.confirm_count'|trans({}, 'bulk_delete')|raw }}",
-                success: "{{ 'bulk_delete.success'|trans({}, 'bulk_delete')|raw }}",
-                error: "{{ 'bulk_delete.error'|trans({}, 'bulk_delete')|raw }}"
-            },
-            common: {
-                yes: "{{ 'common.yes'|trans({}, 'messages')|raw }}",
-                no: "{{ 'common.no'|trans({}, 'messages')|raw }}",
-                cancel: "{{ 'common.cancel'|trans({}, 'messages')|raw }}",
-                confirm: "{{ 'common.confirm'|trans({}, 'messages')|raw }}",
-                save: "{{ 'common.save'|trans({}, 'messages')|raw }}",
-                delete: "{{ 'common.delete'|trans({}, 'messages')|raw }}",
-                export: "{{ 'common.export'|trans({}, 'messages')|raw }}",
-                loading: "{{ 'common.loading'|trans({}, 'messages')|raw }}",
-                error: "{{ 'common.error'|trans({}, 'messages')|raw }}",
-                success: "{{ 'common.success'|trans({}, 'messages')|raw }}"
-            },
-            security: {
-                reauth: {
-                    error: {
-                        password_required: "{{ 'reauth.error.password_required'|trans({}, 'security')|raw }}",
-                        invalid_password:  "{{ 'reauth.error.invalid_password'|trans({}, 'security')|raw }}",
-                        generic:           "{{ 'reauth.error.generic'|trans({}, 'security')|raw }}",
-                        network:           "{{ 'reauth.error.network'|trans({}, 'security')|raw }}"
-                    }
-                }
-            }
-        };
-    </script>
+    {% include '_components/_js_translations.html.twig' %}
 
     {% block javascripts %}
         {# Import map moved to head section to prevent Turbo reload conflicts #}
@@ -562,7 +530,7 @@
        Listener einmalig global registriert; bei Turbo-Navigation darf es nicht
        erneut laufen (würde 'let deferredPrompt' redeclarieren → SyntaxError).
        Wraps zusätzlich in IIFE damit alle Identifier scope-lokal bleiben. #}
-    <script data-turbo-eval="false">
+    <script nonce="{{ csp_nonce() }}" data-turbo-eval="false">
         (function() {
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

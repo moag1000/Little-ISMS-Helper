@@ -98,8 +98,11 @@ class ComplianceMappingControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testNewDisplaysFormForUser(): void
+    public function testNewDisplaysFormForManager(): void
     {
+        // Mappings are global catalogue data — editing needs ROLE_MANAGER.
+        $this->testUser->setRoles(['ROLE_MANAGER']);
+        $this->entityManager->flush();
         $this->client->loginUser($this->testUser);
         $this->client->request('GET', '/en/compliance/mapping/new');
         $this->assertResponseIsSuccessful();

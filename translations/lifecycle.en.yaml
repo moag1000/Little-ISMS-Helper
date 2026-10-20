@@ -17,6 +17,12 @@ lifecycle:
         risk_lifecycle: 'Risk per ISO 27005 (identified → assessed → treated → accepted → reviewed → closed).'
         vulnerability_lifecycle: 'Vulnerability (discovered → triaged → in_remediation → resolved → verified).'
         workflow_instance_lifecycle: 'Workflow instance approval chain (pending → in_progress → approved/rejected/cancelled).'
+        document_section_lifecycle: 'Policy section sign-off per GDPR Art. 38(3) (draft/dpo_sign_off → approved, or rejected → rework).'
+        transfer_impact_assessment_lifecycle: 'Transfer Impact Assessment per GDPR Art. 46 (draft → assessed). Gated by privacy module.'
+        threat_led_penetration_test_lifecycle: 'TLPT per DORA Art. 26 (planned → scoping → red_team → reporting → closed).'
+        supplier_questionnaire_lifecycle: 'Supplier questionnaire (draft → sent → completed → reviewed).'
+        access_review_campaign_lifecycle: 'Access review campaign per ISO 27001 A.5.18 (open → closed).'
+        audit_program_lifecycle: 'Audit programme per ISO 27001 Cl. 9.2 (planning → active → completed → archived).'
 
     status_desc:
         draft: 'Draft — being prepared, not yet submitted for review.'
@@ -64,6 +70,7 @@ lifecycle:
             publish: 'Publish — becomes tenant-wide active and visible.'
             archive: 'Archive — inactive but readable.'
             republish: 'Republish — bring archived version back active.'
+            archive_out_of_scope: 'Archive — topic no longer in scope (e.g. GDPR switched off). Reason required.'
         asset_lifecycle:
             commission: 'Commission — asset becomes actively used.'
             return: 'Return — temporarily out of use.'
@@ -147,6 +154,25 @@ lifecycle:
     retired: Retired
     disposed: Disposed
 
+    # Policy section sign-off places
+    dpo_sign_off: 'DPO Sign-off'
+
+    # TLPT (DORA Art. 26) places
+    scoping: Scoping
+    red_team: 'Red Team Test'
+    reporting: Reporting
+
+    # Supplier questionnaire places
+    sent: Sent
+    reviewed: Reviewed
+
+    # Compliance mapping places
+    review: 'In Review'
+    deprecated: Deprecated
+
+    # Audit programme places
+    planning: Planning
+
     tooltip:
         next: 'Next steps'
 
@@ -223,6 +249,22 @@ lifecycle:
         expire: Expire
         # Objective transitions
         cancel_in_progress: 'Cancel In Progress'
+        # Document transitions
+        archive_on_supersession: 'Archive (superseded)'
+        archive_out_of_scope: 'Archive (out of scope)'
+        restore_to_approved: 'Restore to Approved'
+        soft_delete: Delete
+        # Policy section transitions
+        reopen_for_dpo_edit: 'Reopen for DPO Edit'
+        # TLPT transitions
+        start_scoping: 'Start Scoping'
+        start_red_team: 'Start Red Team Test'
+        start_reporting: 'Start Reporting'
+        # Supplier questionnaire transitions
+        send: Send
+        review: 'Mark Reviewed'
+        # Compliance mapping transitions
+        deprecate: Deprecate
         # Retry
         retry: Retry
 
@@ -234,6 +276,10 @@ lifecycle:
 
     confirm:
         reason_required: 'Please provide a reason'
+    dropdown:
+        no_transitions: 'No transitions available.'
+        load_error: 'Could not load transitions.'
+        conflict: 'The record was changed in the meantime – the page will reload.'
 
     field:
         status: Status

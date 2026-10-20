@@ -114,7 +114,7 @@ class ISMSObjective
     #[ORM\Column(length: 50)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
     #[Assert\Choice(choices: ['not_started', 'in_progress', 'achieved', 'delayed', 'cancelled'])]
-    private ?string $status = 'in_progress';
+    private string $status = 'in_progress';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
@@ -270,7 +270,7 @@ public function __construct()
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?ISMSObjectiveStatus
     {
-        return $this->status !== null ? ISMSObjectiveStatus::tryFrom($this->status) : null;
+        return ISMSObjectiveStatus::tryFrom($this->status);
     }
 
     public function getProgressNotes(): ?string

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Dashboard;
 
+use App\Attribute\RequiresModule;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\ModuleConfigurationService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -34,6 +36,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards/dpo', name: 'app_dashboard_dpo')]
 #[IsGranted(TenantScopedAdminVoter::PERSONA_DPO)]
+#[RequiresModule('privacy')]
 final class DpoDashboardController extends AbstractController
 {
     public function __construct(
@@ -44,6 +47,7 @@ final class DpoDashboardController extends AbstractController
         private readonly RoleDashboardService $roleDashboardService,
         private readonly TisaxMaturityAssessmentService $tisaxAssessment,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -81,8 +85,7 @@ final class DpoDashboardController extends AbstractController
 
         // TISAX DP-tier aggregate — DPO sees data_protection chapter 9 compliance only
         $tisaxDpAggregate = null;
-        $settings = $tenant->getSettings() ?? [];
-        if ($settings['modules']['tisax'] ?? true) {
+        if ($this->moduleConfiguration->isModuleActive('tisax')) {
             $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
             if ($framework !== null) {
                 $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);

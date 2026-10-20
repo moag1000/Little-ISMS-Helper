@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Service\BulkDeleteService;
 use Exception;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Asset;
 use App\Enum\AssetStatus;
@@ -45,6 +48,7 @@ class AssetController extends AbstractController
     use LocalizedFlashTrait;
     use BulkActionTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly AssetRepository $assetRepository,
@@ -300,6 +304,7 @@ class AssetController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if an Asset has associated Risks or Incidents that reference it.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/asset/bulk-delete-check', name: 'app_asset_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -316,87 +321,29 @@ class AssetController extends AbstractController
 
         return $this->checkBulkDependencies($assets, 'getName', [
             fn (Asset $asset): ?array => ($c = $asset->getRisks()->count()) > 0
-                ? ['message' => sprintf('%d Risk(s) verknüpft', $c), 'icon' => 'shield-exclamation']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.risks', ['%count%' => $c], 'bulk_delete'), 'icon' => 'shield-exclamation']
                 : null,
             fn (Asset $asset): ?array => ($c = $asset->getIncidents()->count()) > 0
-                ? ['message' => sprintf('%d Vorfall/Vorfälle verknüpft', $c), 'icon' => 'exclamation-triangle']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.incidents', ['%count%' => $c], 'bulk_delete'), 'icon' => 'exclamation-triangle']
                 : null,
             fn (Asset $asset): ?array => ($c = $asset->getProtectingControls()->count()) > 0
-                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'check-circle']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.controls', ['%count%' => $c], 'bulk_delete'), 'icon' => 'control']
                 : null,
         ]);
     }
 
     #[Route('/asset/bulk-delete', name: 'app_asset_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        if (!$this->isCsrfTokenValid('bulk_delete', $data['_token'] ?? '')) {
-            return $this->json(['error' => 'Invalid CSRF token'], 403);
-        }
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $asset = $this->assetRepository->find($id);
-
-                if (!$asset) {
-                    $errors[] = "Asset ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's assets
-                if ($asset->getTenant() !== $tenant) {
-                    $errors[] = "Asset ID $id does not belong to your organization";
-                    continue;
-                }
-
-                // Check for dependencies (optional warning, but still allow delete)
-                $risks = $asset->getRisks();
-                if ($risks->count() > 0) {
-                    // Log dependency info but continue
-                }
-
-                $this->entityManager->remove($asset);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting asset ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        $message = $deleted > 0
-            ? $this->translator->trans('asset.bulk_delete.success', ['count' => $deleted], 'assets')
-            : $this->translator->trans('asset.bulk_delete.no_items', [], 'assets');
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors,
-                'message' => $message
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => $message
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Asset',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->assetRepository->find($id),
+            voterAttribute: 'delete',
+        );
     }
     #[Route('/asset/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -577,13 +524,13 @@ class AssetController extends AbstractController
         $filters = $this->entityManager->getFilters();
         $tenantFilterEnabled = $filters->isEnabled('tenant_filter');
         if ($tenantFilterEnabled) {
-            $filters->disable('tenant_filter');
+            $filters->suspend('tenant_filter');
         }
         try {
             $asset = $this->assetRepository->find($id);
         } finally {
             if ($tenantFilterEnabled) {
-                $filters->enable('tenant_filter');
+                $filters->restore('tenant_filter');
             }
         }
 
@@ -611,6 +558,7 @@ class AssetController extends AbstractController
     }
     #[Route('/asset/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmInsights(int $id): Response
     {
         $user = $this->security->getUser();
@@ -642,47 +590,6 @@ class AssetController extends AbstractController
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
         ]);
-    }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
 
     /**
@@ -756,7 +663,6 @@ class AssetController extends AbstractController
 
         /** @var \App\Entity\User|null $user */
         $user   = $this->security->getUser();
-        $tenant = $user instanceof \App\Entity\User ? $user->getTenant() : null;
 
         $assets = [];
         foreach ($ids as $rawId) {
@@ -764,7 +670,7 @@ class AssetController extends AbstractController
             if ($asset === null) {
                 continue;
             }
-            if ($tenant !== null && $asset->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($asset, $this->tenantContext)) {
                 continue;
             }
             $assets[] = $asset;
@@ -817,13 +723,12 @@ class AssetController extends AbstractController
 
         /** @var \App\Entity\User|null $user */
         $user   = $this->security->getUser();
-        $tenant = $user instanceof \App\Entity\User ? $user->getTenant() : null;
 
         $assignee = $this->userRepository?->find($assignId);
         if (!$assignee instanceof \App\Entity\User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+        if (!$this->isInBulkContextScope($assignee, $this->tenantContext)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -833,7 +738,7 @@ class AssetController extends AbstractController
             if ($asset === null) {
                 continue;
             }
-            if ($tenant !== null && $asset->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($asset, $this->tenantContext)) {
                 continue;
             }
             $assets[] = $asset;

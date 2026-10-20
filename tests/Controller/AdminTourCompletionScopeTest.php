@@ -44,7 +44,9 @@ final class AdminTourCompletionScopeTest extends WebTestCase
         $this->adminA = $this->user('admina', ['ROLE_ADMIN'], $this->tenantA);
         $this->userA = $this->user('usera', ['ROLE_USER'], $this->tenantA);
         $this->userB = $this->user('userb', ['ROLE_USER'], $this->tenantB);
-        $this->super = $this->user('super', ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'], $this->tenantA);
+        // Instance operator without an organisation: the only account that
+        // lists every organisation's users (JobTenantScope).
+        $this->super = $this->user('super', ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'], null);
         $this->userA->markTourCompleted(GuidedTourService::TOUR_JUNIOR);
         $this->userB->markTourCompleted(GuidedTourService::TOUR_JUNIOR);
         $this->em->flush();
@@ -94,7 +96,8 @@ final class AdminTourCompletionScopeTest extends WebTestCase
         $token = $this->csrf($this->userB);
 
         $this->client->request('POST', $this->resetUrl($this->userB), ['_token' => $token]);
-        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        // Users of other organisations are treated as non-existent.
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
 
         self::assertTrue($this->reload($this->userB)->hasCompletedTour(GuidedTourService::TOUR_JUNIOR));
     }

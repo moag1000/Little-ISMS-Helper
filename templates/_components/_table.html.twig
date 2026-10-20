@@ -1,9 +1,23 @@
 {#
 /**
- * Standardized Table Component
+ * Standardized Table Component — legacy embed API, renders Aurora fa-table
  *
  * Purpose: Provides consistent, accessible, and responsive table structure across all templates.
  * Created to address UI/UX Audit Issue 4.1 - Inconsistent Table Classes (137 tables)
+ *
+ * Since 2026-10 this include emits the same markup as _fa_table.html.twig
+ * (fa-table-wrap / fa-table / fa-table__head|body|foot) plus the
+ * `fa-table--plain` modifier, which styles the call sites' plain <th>/<td>/<tr>
+ * like fa-table__th / fa-table__cell / fa-table__row. Existing call sites keep
+ * their Bootstrap-era parameters; they are translated here:
+ *   class tokens  table-hover → fa-table--hover, table-sm → fa-table--compact,
+ *                 table-striped → fa-table--striped, table-bordered →
+ *                 fa-table--bordered, table-borderless → fa-table--borderless,
+ *                 table / mb-0 dropped (the wrap owns spacing); others pass through
+ *   theadClass    sticky-top / thead-sticky → fa-table--sticky-head,
+ *                 table-light / table-dark dropped (fa-table__head owns the look)
+ * Row tones: use fa-table__row--danger|warning|muted instead of table-danger etc.
+ * New code should embed _fa_table.html.twig directly.
  *
  * @param variant string Table style variant
  *   - 'default': Basic table with hover effect (default)
@@ -11,16 +25,15 @@
  *   - 'small': Compact table with reduced padding
  *   - 'bordered': Table with borders on all sides
  *   - 'borderless': Table without borders
- * @param responsive bool Enable responsive wrapper for mobile (default: true)
+ * @param responsive bool Render the scrolling fa-table-wrap around the table (default: true)
  * @param stickyHeader bool Enable sticky header for scrollable tables (default: false)
  * @param hover bool Enable row hover effect (default: true)
- * @param noMargin bool Remove bottom margin from table (default: false)
- * @param theadClass string Additional classes for thead (e.g., 'table-light', 'table-dark')
+ * @param noMargin bool Accepted for backward compatibility; fa-table has no bottom margin
+ * @param theadClass string Additional classes for thead (sticky markers map to fa-table--sticky-head)
  * @param class string Additional CSS classes for table element
  * @param wrapperClass string Additional CSS classes for wrapper element
  * @param id string HTML id attribute for table
- * @param columns array Column definitions with headers
- *   Each column: { label: 'Column Name', scope: 'col', class: 'text-center', style: 'min-width: 100px;' }
+ * @param rowClick bool Whole-row click opens the row's show link (default: true)
  *
  * Usage Patterns:
  *
@@ -42,11 +55,10 @@
  *        {% endblock %}
  *    {% endembed %}
  *
- * 2. Small striped table with sticky header:
+ * 2. Compact table with sticky header:
  *    {% embed '_components/_table.html.twig' with {
  *        'variant': 'small',
- *        'stickyHeader': true,
- *        'theadClass': 'table-light'
+ *        'stickyHeader': true
  *    } %}
  *        {% block table_head %}
  *            ...
@@ -70,8 +82,7 @@
  * - WCAG 2.1 AA compliant
  *
  * Dark Mode Support:
- * - All variants support dark mode via CSS variables
- * - Consistent with app.css theme system
+ * - Aurora tokens only (fa-table section in fairy-aurora-components.css)
  */
 #}
 
@@ -79,86 +90,82 @@
 {% set isResponsive = responsive is defined ? responsive : true %}
 {% set hasStickyHeader = stickyHeader|default(false) %}
 {% set hasHover = hover is defined ? hover : true %}
-{% set hasNoMargin = noMargin|default(false) %}
 
-{# Build table classes #}
-{% set tableClasses = ['table'] %}
+{# Bootstrap-era class tokens → fa-table modifiers #}
+{% set classMap = {
+    'table-hover': 'fa-table--hover',
+    'table-sm': 'fa-table--compact',
+    'table-striped': 'fa-table--striped',
+    'table-bordered': 'fa-table--bordered',
+    'table-borderless': 'fa-table--borderless',
+    'table': '',
+    'mb-0': ''
+} %}
+{% set variantMap = {
+    'striped': 'fa-table--striped',
+    'small': 'fa-table--compact',
+    'bordered': 'fa-table--bordered',
+    'borderless': 'fa-table--borderless'
+} %}
+
+{% set tableClasses = ['fa-table', 'fa-table--plain'] %}
 {% if hasHover %}
-    {% set tableClasses = tableClasses|merge(['table-hover']) %}
+    {% set tableClasses = tableClasses|merge(['fa-table--hover']) %}
 {% endif %}
-{% if defaultVariant == 'striped' %}
-    {% set tableClasses = tableClasses|merge(['table-striped']) %}
-{% elseif defaultVariant == 'small' %}
-    {% set tableClasses = tableClasses|merge(['table-sm']) %}
-{% elseif defaultVariant == 'bordered' %}
-    {% set tableClasses = tableClasses|merge(['table-bordered']) %}
-{% elseif defaultVariant == 'borderless' %}
-    {% set tableClasses = tableClasses|merge(['table-borderless']) %}
+{% if variantMap[defaultVariant] is defined %}
+    {% set tableClasses = tableClasses|merge([variantMap[defaultVariant]]) %}
 {% endif %}
-{% if hasNoMargin %}
-    {% set tableClasses = tableClasses|merge(['mb-0']) %}
-{% endif %}
-{% if class is defined and class %}
-    {% if class is iterable %}
-        {% set tableClasses = tableClasses|merge(class) %}
-    {% else %}
-        {% set tableClasses = tableClasses|merge(class|split(' ')) %}
+{% set extraClasses = class is defined and class ? (class is iterable ? class : class|split(' ')) : [] %}
+{% for token in extraClasses|filter(t => t is not empty) %}
+    {% set mapped = classMap[token] is defined ? classMap[token] : token %}
+    {% if mapped and mapped not in tableClasses %}
+        {% set tableClasses = tableClasses|merge([mapped]) %}
     {% endif %}
+{% endfor %}
+
+{# thead classes: sticky markers become the fa-table modifier #}
+{% set theadClasses = ['fa-table__head'] %}
+{% set extraThead = theadClass is defined and theadClass ? (theadClass is iterable ? theadClass : theadClass|split(' ')) : [] %}
+{% for token in extraThead|filter(t => t is not empty) %}
+    {% if token in ['sticky-top', 'thead-sticky'] %}
+        {% set hasStickyHeader = true %}
+    {% elseif token not in ['table-light', 'table-dark'] %}
+        {% set theadClasses = theadClasses|merge([token]) %}
+    {% endif %}
+{% endfor %}
+{% if hasStickyHeader and 'fa-table--sticky-head' not in tableClasses %}
+    {% set tableClasses = tableClasses|merge(['fa-table--sticky-head']) %}
 {% endif %}
 
-{# Build thead classes #}
-{% set theadClasses = [] %}
-{% if hasStickyHeader %}
-    {% set theadClasses = theadClasses|merge(['sticky-top']) %}
-{% endif %}
-{% if theadClass is defined and theadClass %}
-    {% if theadClass is iterable %}
-        {% set theadClasses = theadClasses|merge(theadClass) %}
-    {% else %}
-        {% set theadClasses = theadClasses|merge(theadClass|split(' ')) %}
-    {% endif %}
-{% endif %}
-
-{# Build wrapper classes #}
-{% set wrapperClasses = [] %}
-{% if isResponsive %}
-    {% set wrapperClasses = wrapperClasses|merge(['table-responsive']) %}
-{% endif %}
+{# wrapper classes #}
+{% set wrapperClasses = isResponsive ? ['fa-table-wrap'] : [] %}
 {% if wrapperClass is defined and wrapperClass %}
-    {% if wrapperClass is iterable %}
-        {% set wrapperClasses = wrapperClasses|merge(wrapperClass) %}
-    {% else %}
-        {% set wrapperClasses = wrapperClasses|merge(wrapperClass|split(' ')) %}
-    {% endif %}
+    {% set wrapperClasses = wrapperClasses|merge(wrapperClass is iterable ? wrapperClass : wrapperClass|split(' ')) %}
 {% endif %}
 
 {# row-click → show as default since 2026-05-26 — same UX as fa-table (#722).
    Opt out by passing rowClick=false to the embed call. #}
 {% set legacyRowClick = rowClick is defined ? rowClick : true %}
+{% set hasWrapper = wrapperClasses|length > 0 or legacyRowClick %}
 
-{# Render table #}
-{% if isResponsive %}
-<div class="{{ wrapperClasses|join(' ') }}"{% if legacyRowClick %} data-controller="row-click" data-action="click->row-click#navigate"{% endif %}>
-{% else %}
-{% if legacyRowClick %}<div data-controller="row-click" data-action="click->row-click#navigate">{% endif %}
+{% if hasWrapper %}
+<div{% if wrapperClasses|length > 0 %} class="{{ wrapperClasses|join(' ') }}"{% endif %}{% if legacyRowClick %} data-controller="row-click" data-action="click->row-click#navigate"{% endif %}>
 {% endif %}
     <table class="{{ tableClasses|join(' ') }}"{% if id is defined %} id="{{ id }}"{% endif %}>
         {% if block('table_head') is defined %}
-        <thead{% if theadClasses|length > 0 %} class="{{ theadClasses|join(' ') }}"{% endif %}>
+        <thead class="{{ theadClasses|join(' ') }}">
             {% block table_head %}{% endblock %}
         </thead>
         {% endif %}
-        <tbody{% if block('table_body_attrs') is defined %} {{ block('table_body_attrs') }}{% endif %}>
+        <tbody class="fa-table__body"{% if block('table_body_attrs') is defined %} {{ block('table_body_attrs') }}{% endif %}>
             {% block table_body %}{% endblock %}
         </tbody>
         {% if block('table_foot') is defined %}
-        <tfoot>
+        <tfoot class="fa-table__foot">
             {% block table_foot %}{% endblock %}
         </tfoot>
         {% endif %}
     </table>
-{% if isResponsive %}
+{% if hasWrapper %}
 </div>
-{% else %}
-{% if legacyRowClick %}</div>{% endif %}
 {% endif %}

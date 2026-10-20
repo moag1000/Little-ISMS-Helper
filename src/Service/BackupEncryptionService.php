@@ -41,7 +41,7 @@ final class BackupEncryptionService
      *
      * @param string $plaintext Value to encrypt.
      * @return array<string, mixed> Envelope array.
-     * @throws RuntimeException When encryption fails.
+     * @throws \App\Exception\Io\IoException When encryption fails.
      */
     public function encryptValue(string $plaintext): array
     {
@@ -77,7 +77,7 @@ final class BackupEncryptionService
      *
      * @param array<string, mixed> $envelope The encrypted envelope.
      * @return string The original plaintext value.
-     * @throws RuntimeException When decryption fails (e.g. wrong APP_SECRET or corrupted data).
+     * @throws \App\Exception\Io\IoException When decryption fails (e.g. wrong APP_SECRET or corrupted data).
      */
     public function decryptValue(array $envelope): string
     {

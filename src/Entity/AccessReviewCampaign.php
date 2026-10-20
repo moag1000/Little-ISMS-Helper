@@ -214,6 +214,9 @@ class AccessReviewCampaign
     /** @return Collection<int, AccessReviewItem> */
     public function getItems(): Collection
     {
+        // Lazy-init for instances created without __construct() (Doctrine
+        // hydration / reflection); PHPStan only sees the constructor path.
+        // @phpstan-ignore nullCoalesce.initializedProperty (uninitialised when __construct() is bypassed)
         return $this->items ??= new ArrayCollection();
     }
 

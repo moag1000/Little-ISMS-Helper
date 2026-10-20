@@ -176,48 +176,6 @@ workflow:
         user: User
         action: Action
         details: Details
-    builder:
-        title: 'Workflow Builder'
-        breadcrumb: Builder
-        heading: 'Build Your Workflow'
-        steps: 'Workflow Steps'
-        drag_help: 'Drag steps to reorder'
-        add_step: 'Add Step'
-        new_step: 'New Step'
-        templates: 'Workflow Templates'
-        templates_help: 'Start with a pre-built template'
-        info: Information
-        help: 'Builder Help'
-        help_drag: 'Click and drag steps to change the workflow order'
-        help_edit: 'Click the edit icon to modify step details'
-        help_duplicate: 'Duplicate a step to reuse configuration'
-        help_delete: 'Delete steps that are no longer needed'
-        help_template: 'Choose a template to quickly set up common workflow patterns'
-        action:
-            edit: Edit
-            duplicate: Duplicate
-            delete: Delete
-    step.name: 'Step Name'
-    step.type: 'Step Type'
-    step.type.approval: 'Approval Step'
-    step.type.notification: 'Notification Step'
-    step.type.auto_action: 'Automated Action'
-    step.description: Description
-    step.approver_role: 'Approver Role'
-    step.days_to_complete: 'Days to Complete'
-    step.days_help: 'Number of days allocated for completing this step'
-    step.is_required: Required
-    template:
-        risk_assessment: 'Risk Assessment Workflow'
-        risk_assessment_desc: 'Multi-step workflow for identifying, assessing, and treating information security risks'
-        control_implementation: 'Control Implementation Workflow'
-        control_implementation_desc: 'Structured process for implementing and verifying ISO 27001 security controls'
-        incident_response: 'Incident Response Workflow'
-        incident_response_desc: 'Standardized workflow for detecting, responding to, and resolving security incidents'
-        document_review: 'Document Review Workflow'
-        document_review_desc: 'Approval process for reviewing and approving ISMS documentation'
-        change_request: 'Change Request Workflow'
-        change_request_desc: 'Approval workflow for evaluating and implementing system or process changes'
     widget:
         title: 'Pending Approvals'
         no_pending: 'No pending approvals'
@@ -325,6 +283,14 @@ workflow:
         error:
             clarification_empty: 'Please enter your question before sending.'
             clarification_failed: 'The question could not be sent. Please try again or contact the ISO.'
+    entity_type:
+        risk: 'Risk'
+        control: 'Control'
+        incident: 'Incident'
+        asset: 'Asset'
+        change_request: 'Change Request'
+        document: 'Document'
+        audit: 'Audit'
 workflow_instance:
     status:
         pending: Pending
@@ -378,6 +344,10 @@ approval:
     section_title: 'For approval'
     error:
         clarification_empty: 'Please formulate a concrete question.'
+        four_eyes:
+            same_user: 'You started this workflow, so you cannot give its final approval yourself. Another authorised person has to approve it (four-eyes principle).'
+            missing_approver: 'The final approval needs a second person (four-eyes principle). If you are the only authorised approver in your organisation, document the offline counter-signature in the comment.'
+            approver_lacks_role: 'Your role is not authorised to give the final approval for this workflow.'
     success:
         clarification_sent: 'Question sent.'
     deadline:

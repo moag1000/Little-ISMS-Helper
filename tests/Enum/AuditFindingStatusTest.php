@@ -51,4 +51,21 @@ final class AuditFindingStatusTest extends TestCase
         self::assertSame('closed', $entity->getStatus());
         self::assertSame(AuditFindingStatus::Closed, $entity->getStatusEnum());
     }
+
+    #[Test]
+    public function doneIsResolvedVerifiedClosed(): void
+    {
+        self::assertSame(['resolved', 'verified', 'closed'], AuditFindingStatus::doneValues());
+        self::assertFalse(AuditFindingStatus::Open->isDone());
+        self::assertFalse(AuditFindingStatus::InProgress->isDone());
+    }
+
+    #[Test]
+    public function entityIsDoneDelegatesToTheEnum(): void
+    {
+        foreach (AuditFindingStatus::cases() as $status) {
+            $entity = (new AuditFinding())->setStatus($status);
+            self::assertSame($status->isDone(), $entity->isDone(), $status->value);
+        }
+    }
 }

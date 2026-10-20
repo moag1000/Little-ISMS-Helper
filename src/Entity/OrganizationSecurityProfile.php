@@ -47,6 +47,11 @@ class OrganizationSecurityProfile
         return $this->id;
     }
 
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
+
     public function getTenantId(): ?int
     {
         return $this->tenantId;

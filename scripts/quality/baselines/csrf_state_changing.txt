@@ -1,0 +1,17 @@
+# check_csrf_state_changing.py baseline
+# Format: <relative-path>::<method>
+src/Controller/ReportBuilderController.php::clone
+src/Controller/ReportBuilderController.php::save
+src/Controller/ReportBuilderController.php::getWidgetData
+src/Controller/ReportBuilderController.php::toggleFavorite
+src/Controller/ReportBuilderController.php::share
+src/Controller/ReportBuilderController.php::saveAsTemplate
+src/Controller/ReportBuilderController.php::delete
+src/Controller/ShareController.php::handleShare
+# GET routes with idempotent seed / derived-value / usage-counter writes (no user-intent state change); not CSRF-relevant.
+src/Controller/Admin/IncidentSlaConfigController.php::index#get-writes
+src/Controller/Admin/MappingQualityController.php::show#get-writes
+src/Controller/Admin/SupplierCriticalityController.php::index#get-writes
+src/Controller/ReportBuilderController.php::preview#get-writes
+src/Controller/ReportBuilderController.php::exportPdf#get-writes
+src/Controller/TenantManagementController.php::getISMSContext#get-writes

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Enum\IncidentSeverity;
 use DateTime;
 use App\Entity\Risk;
@@ -15,6 +16,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
+use App\Job\ExportAnalyticsJob;
 use App\Service\AssetCriticalityService;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ControlEffectivenessService;
@@ -41,6 +43,7 @@ use App\Util\CsvSanitizer;
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/analytics')]
+#[RequiresModule('analytics')]
 class AnalyticsController extends AbstractController
 {
     public function __construct(
@@ -264,43 +267,33 @@ class AnalyticsController extends AbstractController
      * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/export/{type}/dispatch', name: 'app_analytics_export_dispatch', methods: ['POST'])]
+    #[IsGranted('ROLE_AUDITOR')]
     #[IsCsrfTokenValid('analytics_export_dispatch')]
     public function exportDataDispatch(
         Request $request,
         string $type,
-        \App\Service\Job\JobStatusService $jobStatusService,
-        \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\AsyncJobDispatcher $asyncJobDispatcher,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
         TranslatorInterface $translator,
     ): Response {
         if (!in_array($type, ['risks', 'assets', 'compliance'], true)) {
             throw $this->createNotFoundException(sprintf('Unsupported analytics export type "%s".', $type));
         }
 
-        $jobId = $jobStatusService->create('analytics.export', [
-            'type' => $type,
-            '_label' => $translator->trans('analytics.export.progress_title', [], 'analytics'),
-            '_subtitle' => $translator->trans('analytics.export.progress_subtitle', [], 'analytics'),
-            '_download_label' => $translator->trans('analytics.export.download_button', [], 'analytics'),
-        ]);
-        // Patch the download URL once the UUID is known (chicken-and-egg
-        // with JobStatusService::create — UUID is minted inside the method).
-        $jobStatusService->updatePayload($jobId, [
-            '_download_url' => $this->generateUrl('app_analytics_export_download', ['id' => $jobId, 'type' => $type]),
-        ]);
-
-        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
-            'id'     => $jobId,
-            'return' => $this->generateUrl('app_analytics_dashboard'),
-        ], Response::HTTP_SEE_OTHER);
-
-        // Dispatch through the configured runner (in_request by default —
-        // runs in this request, no worker needed; messenger mode queues it).
-        return $jobDispatcher->dispatch(
-            \App\Job\ExportAnalyticsJob::class,
-            ['type' => $type],
-            $jobId,
-            $progressResponse,
-            $request->getSession(),
+        return $asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: \App\Job\ExportAnalyticsJob::class,
+            jobArgs: ['type' => $type] + $jobTenantScope->argsForCurrentUser(),
+            jobName: 'analytics.export',
+            payload: [
+                'type' => $type,
+                '_label' => $translator->trans('analytics.export.progress_title', [], 'analytics'),
+                '_subtitle' => $translator->trans('analytics.export.progress_subtitle', [], 'analytics'),
+                '_download_label' => $translator->trans('analytics.export.download_button', [], 'analytics'),
+            ],
+            returnUrl: $this->generateUrl('app_analytics_dashboard'),
+            downloadRoute: 'app_analytics_export_download',
+            downloadRouteParams: ['type' => $type],
         );
     }
 
@@ -311,6 +304,8 @@ class AnalyticsController extends AbstractController
      * string.
      */
     #[Route('/export/{type}/download/{id}', name: 'app_analytics_export_download', methods: ['GET'])]
+    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $type,
         string $id,
@@ -357,22 +352,19 @@ class AnalyticsController extends AbstractController
     }
 
     #[Route('/api/export/{type}', name: 'app_analytics_export', methods: ['GET'])]
-    public function exportData(Request $request, string $type): Response
-    {
-        $data = [];
+    #[IsGranted('ROLE_AUDITOR')]
+    public function exportData(
+        Request $request,
+        string $type,
+        ExportAnalyticsJob $exportAnalyticsJob,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
+    ): Response {
         $filename = 'analytics_' . $type . '_' . date('Y-m-d') . '.csv';
-
-        switch ($type) {
-            case 'risks':
-                $data = $this->exportRisks();
-                break;
-            case 'assets':
-                $data = $this->exportAssets();
-                break;
-            case 'compliance':
-                $data = $this->exportCompliance();
-                break;
-        }
+        // Same organisation scope as the async export; denied without one unless SUPER_ADMIN.
+        $tenant = $jobTenantScope->currentUserScope();
+        $data = in_array($type, ExportAnalyticsJob::ALLOWED_TYPES, true)
+            ? $exportAnalyticsJob->rows($type, $tenant)
+            : [];
 
         // Close session to prevent blocking other requests during CSV generation
         $request->getSession()->save();
@@ -472,64 +464,20 @@ class AnalyticsController extends AbstractController
                 return $occuredAt >= $monthStart && $occuredAt <= $monthEnd;
             });
 
-            // Count by severity
-            $low = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Low));
-            $medium = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Medium));
-            $high = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::High));
-            $critical = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Critical));
+            $countBySeverity = static fn(IncidentSeverity $severity): int => count(array_filter($monthIncidents,
+                static fn(Incident $incident): bool => $incident->getSeverity() === $severity));
 
             $trend[] = [
                 'month' => $date->format('M Y'),
-                'low' => $low,
-                'medium' => $medium,
-                'high' => $high,
-                'critical' => $critical,
+                'low' => $countBySeverity(IncidentSeverity::Low),
+                'medium' => $countBySeverity(IncidentSeverity::Medium),
+                'high' => $countBySeverity(IncidentSeverity::High),
+                'critical' => $countBySeverity(IncidentSeverity::Critical),
                 'total' => count($monthIncidents)
             ];
         }
 
         return $trend;
-    }
-    private function exportRisks(): array
-    {
-        $risks = $this->riskRepository->findAll();
-        $data = [
-            ['ID', 'Title', 'Probability', 'Impact', 'Risk Level', 'Status', 'Created At']
-        ];
-
-        foreach ($risks as $risk) {
-            $data[] = [
-                $risk->getId(),
-                $risk->getTitle(),
-                $risk->getProbability(),
-                $risk->getImpact(),
-                $risk->getInherentRiskLevel(),
-                $risk->getStatus(),
-                $risk->getCreatedAt()->format('Y-m-d')
-            ];
-        }
-
-        return $data;
-    }
-    private function exportAssets(): array
-    {
-        $assets = $this->assetRepository->findAll();
-        $data = [
-            ['ID', 'Name', 'Type', 'Criticality', 'Owner', 'Created At']
-        ];
-
-        foreach ($assets as $asset) {
-            $data[] = [
-                $asset->getId(),
-                $asset->getName(),
-                $asset->getAssetType(),
-                $asset->getConfidentialityValue() . '/' . $asset->getIntegrityValue() . '/' . $asset->getAvailabilityValue(),
-                $asset->getOwner() ?? 'N/A',
-                $asset->getCreatedAt()->format('Y-m-d')
-            ];
-        }
-
-        return $data;
     }
     // ========== Phase 7B: New API Endpoints ==========
 
@@ -707,24 +655,6 @@ class AnalyticsController extends AbstractController
 
     // ========== Private Helper Methods ==========
 
-    private function exportCompliance(): array
-    {
-        $controls = $this->controlRepository->findAll();
-        $data = [
-            ['Control ID', 'Name', 'Status', 'Implementation Date']
-        ];
-
-        foreach ($controls as $control) {
-            $data[] = [
-                $control->getControlId(),
-                $control->getName(),
-                $control->getImplementationStatus(),
-                $control->getLastReviewDate() ? $control->getLastReviewDate()->format('Y-m-d') : 'N/A'
-            ];
-        }
-
-        return $data;
-    }
 
     private function generateCSV(array $data): string
     {

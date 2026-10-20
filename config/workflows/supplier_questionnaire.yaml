@@ -1,0 +1,40 @@
+# Outbound supplier security questionnaire (ISO 27001 A.5.19-A.5.22,
+# DORA Art. 28).
+#
+#   draft ─ send ─▶ sent ─ complete ─▶ completed ─ review ─▶ reviewed
+#
+# `complete` is triggered by the supplier through the token-gated public form
+# (SupplierQuestionnaireService::submitResponse). Its roles list is empty so
+# no internal user can fake a supplier answer through the generic lifecycle
+# endpoint.
+framework:
+    workflows:
+        supplier_questionnaire_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\SupplierQuestionnaire
+            initial_marking: draft
+            places:
+                - draft
+                - sent
+                - completed
+                - reviewed
+            transitions:
+                send:
+                    from: draft
+                    to: sent
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                complete:
+                    from: sent
+                    to: completed
+                    metadata:
+                        roles: []
+                review:
+                    from: completed
+                    to: reviewed
+                    metadata:
+                        roles: [ROLE_MANAGER]

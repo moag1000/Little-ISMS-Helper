@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Service\BulkDeleteService;
 use Exception;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use App\Enum\TrainingStatus;
@@ -29,14 +32,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[RequiresModule('training')]
 class TrainingController extends AbstractController
 {
     use BulkActionTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly TrainingRepository $trainingRepository,
@@ -147,6 +153,7 @@ class TrainingController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Trainings have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/training/bulk-delete-check', name: 'app_training_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -158,62 +165,18 @@ class TrainingController extends AbstractController
 
     #[Route('/training/bulk-delete', name: 'app_training_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $training = $this->trainingRepository->find($id);
-
-                if (!$training) {
-                    $errors[] = "Training ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's trainings
-                if ($tenant && $training->getTenant() !== $tenant) {
-                    $errors[] = "Training ID $id does not belong to your organization";
-                    continue;
-                }
-
-                $this->entityManager->remove($training);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting training ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted trainings deleted successfully"
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Training',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->trainingRepository->find($id),
+        );
     }
     #[Route('/training/{id}', name: 'app_training_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(\App\Security\Voter\TrainingVoter::VIEW, 'training')]
     public function show(Request $request, Training $training): Response
     {
         if ($this->isTurboFrameRequest($request)) {
@@ -232,7 +195,7 @@ class TrainingController extends AbstractController
      * resets schedule + attendance data.
      */
     #[Route('/training/{id}/clone', name: 'app_training_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(\App\Security\Voter\TrainingVoter::VIEW, 'training')]
     public function clone(Request $request, Training $training): Response
     {
         if (!$this->isCsrfTokenValid('clone_training_' . $training->getId(), (string) $request->request->get('_token'))) {
@@ -261,7 +224,7 @@ class TrainingController extends AbstractController
     }
 
     #[Route('/training/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(\App\Security\Voter\TrainingVoter::EDIT, 'training')]
     public function edit(Request $request, Training $training): Response
     {
         $form = $this->createForm(TrainingType::class, $training);
@@ -270,9 +233,7 @@ class TrainingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Junior-ISB-Audit-2026-05-22 9.5: persist uploaded material files.
             $this->processMaterialFileUploads($training, $form->get('materialFiles')->getData());
-
             $this->entityManager->flush();
-
             // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
             $this->syncParticipantUsersToParticipationRows($training);
 
@@ -437,7 +398,7 @@ class TrainingController extends AbstractController
      * offered.
      */
     #[Route('/training/{id}/audience-picker', name: 'app_training_audience_picker', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(new Expression('is_granted("ROLE_MANAGER") and is_granted("edit", subject)'), 'training')]
     public function audiencePicker(Request $request, Training $training): Response
     {
         $tenant = $training->getTenant();
@@ -518,47 +479,6 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
-    }
 
     /**
      * Bulk CSV export of selected trainings.
@@ -577,15 +497,13 @@ class TrainingController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $trainings = [];
         foreach ($ids as $rawId) {
             $training = $this->trainingRepository->find((int) $rawId);
             if ($training === null) {
                 continue;
             }
-            if ($tenant !== null && $training->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($training, $this->tenantContext)) {
                 continue;
             }
             $trainings[] = $training;
@@ -620,7 +538,7 @@ class TrainingController extends AbstractController
      */
     #[Route('/training/bulk-assign', name: 'app_training_bulk_assign', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkAssign(Request $request): Response
+    public function bulkAssign(Request $request): JsonResponse
     {
         $data     = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
@@ -633,13 +551,12 @@ class TrainingController extends AbstractController
             return $this->json(['error' => 'No items selected or no assignee'], 400);
         }
 
-        $tenant   = $this->tenantContext->getCurrentTenant();
         $assignee = $this->userRepository?->find($assignId);
 
         if (!$assignee instanceof User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+        if (!$this->isInBulkContextScope($assignee, $this->tenantContext)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -649,7 +566,7 @@ class TrainingController extends AbstractController
             if ($training === null) {
                 continue;
             }
-            if ($tenant !== null && $training->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($training, $this->tenantContext)) {
                 continue;
             }
             $trainings[] = $training;

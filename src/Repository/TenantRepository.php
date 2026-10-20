@@ -28,6 +28,19 @@ class TenantRepository extends ServiceEntityRepository
     }
 
     /**
+     * The only organisation of a single-organisation installation, null as soon
+     * as there are none or several. Accounts created without an organisation
+     * (setup wizard admin, global SSO provider, CLI) belong to it: the tenant
+     * filter shows an account without an organisation no organisation's data.
+     */
+    public function findSoleTenant(): ?Tenant
+    {
+        $tenants = $this->createQueryBuilder('t')->setMaxResults(2)->getQuery()->getResult();
+
+        return count($tenants) === 1 ? $tenants[0] : null;
+    }
+
+    /**
      * Find all active tenants.
      *
      * @return Tenant[] Array of active Tenant entities sorted by name

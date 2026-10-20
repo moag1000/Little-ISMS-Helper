@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
@@ -13,6 +14,7 @@ use App\Form\PatchType;
 use App\Repository\PatchRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -274,6 +276,7 @@ class PatchController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Patches have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/patch/bulk-delete-check', name: 'app_patch_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -289,51 +292,19 @@ class PatchController extends AbstractController
 
     #[Route('/patch/bulk-delete', name: 'app_patch_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if (!$this->moduleService->isModuleActive('patches')) {
             return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $patch = $this->patchRepository->find($id);
-                if (!$patch) {
-                    $errors[] = "Patch ID $id not found";
-                    continue;
-                }
-                if ($tenant && $patch->getTenant() !== $tenant) {
-                    $errors[] = "Patch ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($patch);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting Patch ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted patches deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Patch',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->patchRepository->find($id),
+        );
     }
 
     /**
@@ -342,7 +313,7 @@ class PatchController extends AbstractController
      */
     #[Route('/patch/bulk-export', name: 'app_patch_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         if (!$this->moduleService->isModuleActive('patches')) {
             return $this->json(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
@@ -357,16 +328,13 @@ class PatchController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
         $patches = [];
         foreach ($ids as $rawId) {
             $patch = $this->patchRepository->find((int) $rawId);
             if ($patch === null) {
                 continue;
             }
-            if ($tenant !== null && $patch->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($patch, $tenantContext)) {
                 continue;
             }
             $patches[] = $patch;

@@ -261,7 +261,7 @@ class Asset
         choices: ['draft', 'active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
         message: 'asset.validation.status_invalid'
     )]
-    private ?string $status = 'active';
+    private string $status = 'active';
 
     /**
      * Optimistic locking version counter.
@@ -579,7 +579,7 @@ class Asset
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?AssetStatus
     {
-        return $this->status === null ? null : AssetStatus::tryFrom($this->status);
+        return AssetStatus::tryFrom($this->status);
     }
 
     public function getLockVersion(): int

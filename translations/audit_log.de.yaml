@@ -1,5 +1,6 @@
 audit_log:
     integrity:
+        verify_button: 'HMAC-Kette verifizieren'
         disabled: 'Audit-Log-Integritätsprüfung ist deaktiviert (APP_AUDIT_HMAC_KEY fehlt).'
         intact: 'Audit-Log-Kette intakt — keine Manipulationen erkannt.'
     page:
@@ -112,3 +113,11 @@ audit_log:
             gdpr: 'Speicherbegrenzung — personenbezogene Daten dürfen nicht länger aufbewahrt werden als notwendig.'
             nis2: 'Audit-Logs müssen mindestens 12 Monate aufbewahrt werden.'
             iso: 'Protokollierung von Ereignissen — nachweisbare Aufbewahrung erforderlich.'
+    action_code:
+        create: 'Angelegt'
+        update: 'Geändert'
+        delete: 'Gelöscht'
+        view: 'Angesehen'
+        export: 'Exportiert'
+        import: 'Importiert'
+        bulk: 'Massenänderung'

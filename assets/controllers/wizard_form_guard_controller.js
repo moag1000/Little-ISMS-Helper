@@ -1,4 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
+import { faToast } from '../js/fa-alerts.js';
 
 /**
  * Policy-Wizard step-form submit guard.
@@ -68,22 +70,17 @@ export default class extends Controller {
             .scrollIntoView({ behavior: 'smooth', block: 'center' });
         try { first.focus({ preventScroll: true }); } catch (_) { /* hidden */ }
 
-        this.#toast(this.#missingMessage(missing.length), 'warn');
+        this.#toast(this.#missingMessage(missing.length), 'warning');
     };
 
-    #toast(message, tone) {
-        if (typeof window.faToast === 'function') {
-            window.faToast(message, { tone });
-        } else {
-            // Last-resort visibility if the toast helper is not mounted.
-            // eslint-disable-next-line no-alert
-            window.alert(message);
-        }
+    #toast(message, variant) {
+        // fa-alerts.js signature: faToast(message, variant, options)
+        faToast(message, variant);
     }
 
     #missingMessage(n) {
         const tpl = this.element.dataset.wizardFormGuardMissingTemplate
-            || '%count% Pflichtfeld(er) fehlen noch — rot markiert. Bitte ausfüllen, dann erneut „Weiter".';
+            || faT('required_fields_missing');
         return tpl.replace('%count%', String(n));
     }
 }

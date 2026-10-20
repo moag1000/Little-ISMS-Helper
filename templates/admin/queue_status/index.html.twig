@@ -133,43 +133,43 @@
                     description: 'admin.queue.recent.empty.description'|trans({}, 'admin'),
                 }) }}
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle mb-0">
-                        <thead>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--hover fa-table--compact">
+                        <thead class="fa-table__head">
                             <tr>
-                                <th>{{ 'admin.queue.recent.col.job'|trans({}, 'admin') }}</th>
-                                <th>{{ 'admin.queue.recent.col.status'|trans({}, 'admin') }}</th>
-                                <th>{{ 'admin.queue.recent.col.progress'|trans({}, 'admin') }}</th>
-                                <th>{{ 'admin.queue.recent.col.updated'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.queue.recent.col.job'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.queue.recent.col.status'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.queue.recent.col.progress'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.queue.recent.col.updated'|trans({}, 'admin') }}</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="fa-table__body">
                             {% for job in recent_jobs %}
                                 {% set jobStatus = job.status|default('unknown') %}
                                 {% set statusTone = jobStatus == 'succeeded' ? 'success'
                                     : (jobStatus == 'failed' ? 'danger'
                                     : (jobStatus == 'running' ? 'primary'
                                     : (jobStatus == 'pending' ? 'warning' : 'muted'))) %}
-                                <tr>
-                                    <td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell">
                                         <code class="small">{{ job.name|default('—') }}</code>
                                         {% if job.message %}
                                             <div class="small text-muted">{{ job.message }}</div>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         <span class="badge text-bg-{{ statusTone }}">
                                             {{ ('admin.queue.job_status.' ~ jobStatus)|trans({}, 'admin') }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if job.progress_total|default(0) > 0 %}
                                             {{ job.progress_current|default(0) }} / {{ job.progress_total }}
                                         {% else %}
                                             <span class="text-muted">—</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if job.updated_at %}
                                             <time datetime="{{ job.updated_at|date('c') }}" title="{{ job.updated_at|date('Y-m-d H:i:s') }}">
                                                 {{ job.updated_at|date('Y-m-d H:i:s') }}

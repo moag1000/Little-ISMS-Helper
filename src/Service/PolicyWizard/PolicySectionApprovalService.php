@@ -11,6 +11,9 @@ use App\Entity\User;
 use App\Entity\WizardRun;
 use App\Entity\WorkflowInstance;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\EventListener\FourEyesValidator;
+use App\Lifecycle\Exception\FourEyesRequiredException;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DocumentSectionRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
@@ -44,6 +47,9 @@ use Throwable;
 final class PolicySectionApprovalService
 {
     private const string AUDIT_TAG = 'policy-section-approval';
+    private const string SECTION_LIFECYCLE = 'document_section_lifecycle';
+    private const string WORKFLOW_INSTANCE_LIFECYCLE = 'workflow_instance_lifecycle';
+    private const string HOST_RELEASE_REASON = 'All gated policy sections approved';
 
     /**
      * W6-A §0.A.7 — tenant-setting key holding the org-level GDPR-scope
@@ -59,11 +65,16 @@ final class PolicySectionApprovalService
         private readonly EntityManagerInterface $entityManager,
         private readonly DocumentSectionRepository $sectionRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly LifecycleTransitionInterface $lifecycle,
         private readonly ?UserRepository $userRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?GenerationApprovalElapsedGuard $elapsedGuard = null,
         private readonly ?EmailNotificationService $emailNotificationService = null,
         private readonly ?TopicApproverRoleResolver $topicApproverRoleResolver = null,
+        // Pre-flight for the host release (see approve()). Always autowired
+        // in the container; null only in unit fixtures that do not exercise
+        // the host release — then the refusal surfaces from the transition.
+        private readonly ?FourEyesValidator $fourEyesValidator = null,
     ) {
     }
 
@@ -185,8 +196,12 @@ final class PolicySectionApprovalService
      * DPO signs off the section. Idempotent: re-approving an already-
      * approved section is a no-op (returns silently).
      *
-     * @throws InvalidArgumentException if the section is in `rejected`
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException if the section is in `rejected`
      *         state and not first reset to `draft` via a save.
+     * @throws FourEyesRequiredException when this sign-off would release the
+     *         host workflow but $approver may not grant the host's four-eyes
+     *         `approve` (e.g. they initiated it). Nothing is written then —
+     *         neither the section nor the host change.
      */
     public function approve(DocumentSection $section, User $approver): void
     {
@@ -205,6 +220,29 @@ final class PolicySectionApprovalService
         // who authored the section content MUST NOT be the user who
         // signs it off. Throws InvalidArgumentException on violation.
         $this->assertNotSelfApproval($section, $approver);
+
+        // If this sign-off releases the host workflow, its four-eyes
+        // `approve` must succeed too. Check it BEFORE touching the section:
+        // the section transition flushes, so a host refusal afterwards
+        // would leave the section approved and the host stuck at the gate
+        // with nothing left to re-trigger the release. Runs before the
+        // role-match audit event so a refused sign-off leaves no trace.
+        $releasedHost = $this->findHostReleasedBy($section);
+        if ($releasedHost !== null && $this->fourEyesValidator !== null) {
+            $this->fourEyesValidator->assertSatisfied(
+                $releasedHost,
+                self::WORKFLOW_INSTANCE_LIFECYCLE,
+                'approve',
+                [
+                    'user' => $releasedHost->getInitiatedBy(),
+                    'reason' => self::HOST_RELEASE_REASON,
+                    'four_eyes_approver' => $approver,
+                    // The fixed release reason is not a user-documented
+                    // offline counter-signature: no single-approver escape.
+                    'four_eyes_self_approval_escape' => false,
+                ],
+            );
+        }
 
         // Task #126 — Approver-Role Validation per Topic. NON-blocking:
         // emits one of three audit-events (match / weak-match / mismatch
@@ -227,7 +265,6 @@ final class PolicySectionApprovalService
         }
 
         $previousStatus = $section->getStatus();
-        $section->setStatus(DocumentSection::STATUS_APPROVED);
         $section->setApprovedAt(new DateTimeImmutable());
         $section->setApprovedByUser($approver);
         // Clear any prior rejection metadata so the audit trail reads
@@ -243,7 +280,8 @@ final class PolicySectionApprovalService
         $this->lockSectionForCisoEdits($section);
 
         $this->entityManager->persist($section);
-        $this->entityManager->flush();
+        // draft|dpo_sign_off → approved; LifecycleService flushes.
+        $this->lifecycle->transition($section, self::SECTION_LIFECYCLE, 'approve', $approver);
 
         $this->auditLogger->logCustom(
             action: 'section_approved',
@@ -265,7 +303,7 @@ final class PolicySectionApprovalService
             ),
         );
 
-        $this->maybeAdvanceHostWorkflow($section);
+        $this->maybeAdvanceHostWorkflow($section, $approver);
     }
 
     /**
@@ -281,12 +319,17 @@ final class PolicySectionApprovalService
             );
         }
 
+        // Idempotent: vetoing an already-rejected section is a no-op (the
+        // first veto and its rationale stay on record).
+        if ($section->getStatus() === DocumentSection::STATUS_REJECTED) {
+            return;
+        }
+
         // W6-A §0.A.5 — same self-approval prohibition applies to vetoes.
         // An author cannot use their own veto power on the same section.
         $this->assertNotSelfApproval($section, $approver);
 
         $previousStatus = $section->getStatus();
-        $section->setStatus(DocumentSection::STATUS_REJECTED);
         $section->setRejectedAt(new DateTimeImmutable());
         $section->setRejectedByUser($approver);
         $section->setRejectionReason($reason);
@@ -299,7 +342,7 @@ final class PolicySectionApprovalService
         $section->setEditLocked(false);
 
         $this->entityManager->persist($section);
-        $this->entityManager->flush();
+        $this->lifecycle->transition($section, self::SECTION_LIFECYCLE, 'reject', $approver, $reason);
 
         $this->auditLogger->logCustom(
             action: 'section_rejected',
@@ -418,7 +461,7 @@ final class PolicySectionApprovalService
      * exists (test fixtures, ad-hoc renders), we silently skip — the
      * approval still persisted and the audit-log entry was written.
      */
-    private function maybeAdvanceHostWorkflow(DocumentSection $section): void
+    private function maybeAdvanceHostWorkflow(DocumentSection $section, User $finalApprover): void
     {
         $document = $section->getDocument();
         if (!$document instanceof Document) {
@@ -429,33 +472,12 @@ final class PolicySectionApprovalService
             return;
         }
 
-        $hostInstance = $this->entityManager->getRepository(WorkflowInstance::class)
-            ->findOneBy([
-                'entityType' => 'Document',
-                'entityId'   => $document->getId(),
-            ]);
+        $hostInstance = $this->findParkedHost($document);
         if (!$hostInstance instanceof WorkflowInstance) {
             return;
         }
 
-        $currentStep = $hostInstance->getCurrentStep();
-        if ($currentStep === null) {
-            return;
-        }
-
-        // Per spec §0.A.2 step 5: only advance when the host is parked
-        // at `top_mgmt_signoff` waiting for the gate to release.
-        $stepName = strtolower($currentStep->getName() ?? '');
-        if (!str_contains($stepName, 'top_mgmt_signoff')
-            && !str_contains($stepName, 'top-mgmt-signoff')
-            && !str_contains($stepName, 'top mgmt signoff')
-            && !str_contains($stepName, 'privacy_section_gate')
-        ) {
-            return;
-        }
-
         $previousStatus = $hostInstance->getStatus();
-        $hostInstance->setStatus(WorkflowInstanceStatus::Approved);
         $hostInstance->setCompletedAt(new DateTimeImmutable());
         $hostInstance->addApprovalHistoryEntry([
             'event'      => 'privacy_section_gate_released',
@@ -464,7 +486,19 @@ final class PolicySectionApprovalService
             'tag'        => self::AUDIT_TAG,
         ]);
         $this->entityManager->persist($hostInstance);
-        $this->entityManager->flush();
+
+        // in_progress → approved through workflow_instance_lifecycle. The
+        // transition is four-eyes: the initiator requested the approval,
+        // the user who signed off the last gated section grants it.
+        $this->lifecycle->transition(
+            $hostInstance,
+            self::WORKFLOW_INSTANCE_LIFECYCLE,
+            'approve',
+            $hostInstance->getInitiatedBy(),
+            self::HOST_RELEASE_REASON,
+            $finalApprover,
+            allowSelfApprovalEscape: false,
+        );
 
         $this->auditLogger->logCustom(
             action: 'host_workflow_advanced',
@@ -483,6 +517,67 @@ final class PolicySectionApprovalService
                 $document->getId(),
             ),
         );
+    }
+
+    /**
+     * The host workflow that approving $section would release: every OTHER
+     * section of the document is already approved and the host is parked
+     * at the gate (see findParkedHost()). Null when this sign-off releases
+     * nothing.
+     */
+    private function findHostReleasedBy(DocumentSection $section): ?WorkflowInstance
+    {
+        $document = $section->getDocument();
+        if (!$document instanceof Document) {
+            return null;
+        }
+
+        foreach ($this->sectionRepository->findByDocument($document) as $other) {
+            $isThisSection = $other === $section
+                || ($other->getId() !== null && $other->getId() === $section->getId());
+            if (!$isThisSection && !$other->isApproved()) {
+                return null;
+            }
+        }
+
+        return $this->findParkedHost($document);
+    }
+
+    /**
+     * The document's host WorkflowInstance when it is running and parked at
+     * `top_mgmt_signoff` / the privacy-section gate (spec §0.A.2 step 5).
+     * Pending, approved, rejected or cancelled instances are never released.
+     */
+    private function findParkedHost(Document $document): ?WorkflowInstance
+    {
+        $hostInstance = $this->entityManager->getRepository(WorkflowInstance::class)
+            ->findOneBy([
+                'entityType' => 'Document',
+                'entityId'   => $document->getId(),
+            ]);
+        if (!$hostInstance instanceof WorkflowInstance) {
+            return null;
+        }
+
+        $currentStep = $hostInstance->getCurrentStep();
+        if ($currentStep === null) {
+            return null;
+        }
+
+        $stepName = strtolower($currentStep->getName() ?? '');
+        if (!str_contains($stepName, 'top_mgmt_signoff')
+            && !str_contains($stepName, 'top-mgmt-signoff')
+            && !str_contains($stepName, 'top mgmt signoff')
+            && !str_contains($stepName, 'privacy_section_gate')
+        ) {
+            return null;
+        }
+
+        if ($hostInstance->getStatus() !== WorkflowInstanceStatus::InProgress->value) {
+            return null;
+        }
+
+        return $hostInstance;
     }
 
     /**
@@ -558,14 +653,19 @@ final class PolicySectionApprovalService
      */
     public function reopenForDpoEdit(DocumentSection $section, User $editor): void
     {
+        // Idempotent: a section already back in `dpo_sign_off` is open for
+        // the DPO — nothing to reopen.
+        if ($section->getStatus() === DocumentSection::STATUS_DPO_SIGN_OFF) {
+            return;
+        }
+
         $previousStatus = $section->getStatus();
-        $section->setStatus(DocumentSection::STATUS_DPO_SIGN_OFF);
         $section->setEditLocked(false);
         $section->setApprovedAt(null);
         $section->setApprovedByUser(null);
         $section->setAuthoredByUser($editor);
         $this->entityManager->persist($section);
-        $this->entityManager->flush();
+        $this->lifecycle->transition($section, self::SECTION_LIFECYCLE, 'reopen_for_dpo_edit', $editor);
 
         $this->auditLogger->logCustom(
             action: 'section_reopened_by_dpo',
@@ -609,7 +709,7 @@ final class PolicySectionApprovalService
      * {@see \App\Service\PolicyWizard\Step\RolesStep::validate} so the
      * runtime guard never contradicts the wizard-time guard.
      *
-     * @throws InvalidArgumentException on violation (≥ 2 approvers OR
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException on violation (≥ 2 approvers OR
      *                                  fallback when UserRepository is
      *                                  missing).
      */
@@ -841,24 +941,9 @@ final class PolicySectionApprovalService
         if ($this->userRepository === null) {
             return false;
         }
-        $candidates = $this->userRepository->findByRole('ROLE_DPO');
-        foreach ($candidates as $user) {
-            if (!$user instanceof User) {
-                continue;
-            }
-            // A user "belongs" to the tenant when the User entity carries
-            // the same Tenant reference. Custom-role-only DPOs are also
-            // covered because findByRole() inspects the JSON `roles` field.
-            if (method_exists($user, 'getTenant') && $user->getTenant() === $tenant) {
-                return true;
-            }
-            // Fall through: when the User entity does not expose getTenant
-            // (older fixtures), assume the role match is enough.
-            if (!method_exists($user, 'getTenant')) {
-                return true;
-            }
-        }
-        return false;
+        // Tenant-scoped lookup: a DPO appointed in another organisation does
+        // not count for this tenant.
+        return $this->userRepository->findByRoleInTenant('ROLE_DPO', $tenant) !== [];
     }
 
     /**

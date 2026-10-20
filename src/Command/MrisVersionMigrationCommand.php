@@ -149,7 +149,7 @@ final class MrisVersionMigrationCommand extends Command
         }
 
         try {
-            $applied = $this->applyDiff($framework, $diff, $from, $to);
+            $applied = $this->applyDiff($framework, $diff + ['from' => $fromReqs, 'to' => $toReqs], $from, $to);
         } catch (\Throwable $e) {
             $io->error('Apply-Fehler: ' . $e->getMessage());
             return Command::FAILURE;

@@ -15,10 +15,11 @@
     {{ _fa_page_header.render({
         badge: { icon: 'nav-shield-lock', label: role.systemRole ? 'role_management.badge.system'|trans({}, 'role_management') : 'role_management.badge.custom'|trans({}, 'role_management') },
         title: role.name,
-        actions: [
-            is_granted('role.edit', role) ? { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('role_management_edit', {id: role.id}) } : null,
+        actions: (is_granted('role.edit', role) ? [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('role_management_edit', {id: role.id}) }
+        ] : [])|merge([
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_index') }
-        ]|filter(a => a is not null)
+        ])
     }) }}
 
     {# Stats #}

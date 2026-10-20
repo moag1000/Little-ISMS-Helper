@@ -140,7 +140,7 @@
 
     {# Toggle-Card-State-Sync: :has() reicht für moderne Browser nicht überall,
        plus .is-on soll auch nach Klick server-seitigem Zustand entsprechen. #}
-    <script data-turbo-eval="false">
+    <script nonce="{{ csp_nonce() }}" data-turbo-eval="false">
         (function () {
             document.querySelectorAll('.fa-toggle-card .fa-toggle-card__input').forEach(function (input) {
                 input.addEventListener('change', function () {

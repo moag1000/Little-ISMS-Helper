@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_fa_skel.html.twig' as _fa_skel %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -10,7 +11,8 @@
 {% block body %}
 <div class="container-fluid"
      data-controller="dashboard-customizer"
-     data-dashboard-customizer-api-url-value="{{ path('app_dashboard_layout_get') }}">
+     data-dashboard-customizer-api-url-value="{{ path('app_dashboard_layout_get') }}"
+     data-dashboard-customizer-csrf-token-value="{{ csrf_token('dashboard_layout') }}">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -36,11 +38,11 @@
     {# Page Header with Customize Button and Role Dashboard Switcher #}
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            {% include '_components/_page_header.html.twig' with {
+            {{ _fa_page_header.render({
                 title: 'dashboard.title'|trans({}, 'dashboard'),
                 subtitle: 'dashboard.subtitle'|trans({}, 'dashboard'),
-                icon: 'nav-dashboard'
-            } %}
+                badge: { icon: 'nav-dashboard', label: '' }
+            }) }}
         </div>
         <div class="btn-group">
             {# Role-Based Dashboard Switcher #}
@@ -660,10 +662,13 @@
     {# Restore Journey Progress Link (shown when journey has been dismissed) #}
     {% if not show_journey|default(true) %}
     <div class="text-center mt-3">
-        <a href="{{ path('app_dashboard_restore_journey') }}" class="text-muted small">
-            <i class="fa-icon fa-icon--ui-refresh me-1" aria-hidden="true"></i>
-            {{ 'journey.restore'|trans({}, 'journey') }}
-        </a>
+        <form method="post" action="{{ path('app_dashboard_restore_journey') }}" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('restore_journey') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                <i class="fa-icon fa-icon--ui-refresh me-1" aria-hidden="true"></i>
+                {{ 'journey.restore'|trans({}, 'journey') }}
+            </button>
+        </form>
     </div>
     {% endif %}
 

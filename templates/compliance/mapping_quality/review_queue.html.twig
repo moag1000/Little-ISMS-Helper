@@ -271,7 +271,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         // Initialize Bootstrap tooltips and loading state
         function initReviewQueueTooltips() {
             // Enable tooltips on badges

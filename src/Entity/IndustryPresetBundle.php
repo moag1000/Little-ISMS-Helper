@@ -233,7 +233,7 @@ class IndustryPresetBundle
         return $this->preselectedStandards;
     }
 
-    /** @param list<string> $preselectedStandards */
+    /** @param array<array-key, string> $preselectedStandards reindexed to a list */
     public function setPreselectedStandards(array $preselectedStandards): static
     {
         $this->preselectedStandards = array_values($preselectedStandards);
@@ -327,7 +327,7 @@ class IndustryPresetBundle
         return $this->regulatoryReferences;
     }
 
-    /** @param list<string> $regulatoryReferences */
+    /** @param array<array-key, string> $regulatoryReferences reindexed to a list */
     public function setRegulatoryReferences(array $regulatoryReferences): static
     {
         $this->regulatoryReferences = array_values($regulatoryReferences);

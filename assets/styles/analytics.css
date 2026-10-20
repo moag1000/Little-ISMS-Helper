@@ -24,7 +24,7 @@
     right: 0;
     bottom: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
+    background: var(--primary);
     pointer-events: none;
 }
 
@@ -71,7 +71,7 @@
     left: 0;
     width: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
+    background: var(--primary);
     transition: width 0.3s ease;
 }
 
@@ -108,7 +108,7 @@
     margin-bottom: 20px;
     border: 2px solid var(--primary-tint);
     border-radius: var(--r-xl);
-    box-shadow: var(--shadow-sm), 0 0 15px var(--primary-tint);
+    box-shadow: var(--shadow-sm);
     background: var(--surface);
     overflow: hidden;
     transition: all 0.3s ease;
@@ -211,11 +211,11 @@
 .overall-compliance {
     display: inline-block;
     padding: 20px 40px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    background: var(--primary);
     border-radius: var(--r-xl);
     color: var(--on-primary);
     margin-bottom: 20px;
-    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), var(--shadow-lg);
+    box-shadow: var(--shadow-lg);
     border: 2px solid var(--accent);
 }
 
@@ -268,7 +268,7 @@
 }
 
 .trend-tabs .nav-link.active {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    background: var(--primary);
     color: var(--on-primary);
     box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }

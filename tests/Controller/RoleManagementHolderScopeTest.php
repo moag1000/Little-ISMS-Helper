@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
  * admin must not change the name/permissions of — or delete — a custom role
  * that is held by users outside its own tenant tree, because that would
  * change what those foreign users may do.
+ *
+ * Since the release after 3.15.3 this is subsumed by the stricter rule that
+ * only ROLE_SUPER_ADMIN changes roles at all (RoleVoter): a tenant admin is
+ * denied even when every holder is inside its own tree. Holder visibility on
+ * show/index stays scoped as in 3.15.3.
  */
 final class RoleManagementHolderScopeTest extends WebTestCase
 {
@@ -98,10 +103,11 @@ final class RoleManagementHolderScopeTest extends WebTestCase
     #[Test]
     public function tenantAdminCannotEditRoleHeldInForeignTenant(): void
     {
-        // Form fetched while the role was held only in tenant A, then the
-        // role gets a tenant-B holder: the POST must be rejected server-side.
-        $values = $this->formValues($this->adminA, 'changed');
+        // Form values as an operator would submit them; the tenant admin's
+        // POST must be rejected server-side.
+        $values = $this->formValues($this->super, 'changed');
         $this->assignToUserB();
+        $this->client->loginUser($this->adminA);
 
         $this->client->request('GET', $this->editUrl());
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -146,7 +152,7 @@ final class RoleManagementHolderScopeTest extends WebTestCase
     }
 
     #[Test]
-    public function tenantAdminCanEditRoleHeldInOwnSubsidiary(): void
+    public function tenantAdminCannotEditRoleHeldInOwnSubsidiary(): void
     {
         $this->subsidiary = (new Tenant())->setName('Holder Sub ' . $this->uid)->setCode('holder_sub_' . $this->uid)
             ->setParent($this->tenantA);
@@ -155,10 +161,11 @@ final class RoleManagementHolderScopeTest extends WebTestCase
         $this->role->addUser($this->user('usersub', ['ROLE_USER'], $this->subsidiary));
         $this->em->flush();
 
-        $values = $this->formValues($this->adminA, 'changed');
+        $values = $this->formValues($this->super, 'changed');
+        $this->client->loginUser($this->adminA);
         $this->client->request('POST', $this->editUrl(), $values);
-        self::assertResponseRedirects();
-        self::assertSame('changed', $this->reloadRole()->getDescription());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        self::assertSame('original', $this->reloadRole()->getDescription());
     }
 
     #[Test]
@@ -202,16 +209,19 @@ final class RoleManagementHolderScopeTest extends WebTestCase
     }
 
     #[Test]
-    public function tenantAdminCanEditRoleHeldOnlyInOwnTenant(): void
+    public function tenantAdminCannotEditRoleHeldOnlyInOwnTenant(): void
     {
-        $values = $this->formValues($this->adminA, 'changed');
+        $values = $this->formValues($this->super, 'changed');
+        $this->client->loginUser($this->adminA);
 
+        $this->client->request('GET', $this->editUrl());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->client->request('POST', $this->editUrl(), $values);
-        self::assertResponseRedirects();
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
 
         $role = $this->reloadRole();
-        self::assertSame('changed', $role->getDescription());
-        self::assertCount(1, $role->getPermissions());
+        self::assertSame('original', $role->getDescription());
+        self::assertCount(0, $role->getPermissions());
     }
 
     #[Test]

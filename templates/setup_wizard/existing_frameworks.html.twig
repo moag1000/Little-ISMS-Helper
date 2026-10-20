@@ -187,7 +187,7 @@
     {{ form_end(form) }}
 
 {# Vanilla JS preview loader — no Stimulus dependency, fail-safe on turbo:load. #}
-<script>
+<script nonce="{{ csp_nonce() }}">
 (function() {
     function initExistingFrameworksPreview() {
         var form = document.getElementById('existing-frameworks-form');

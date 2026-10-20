@@ -5,13 +5,17 @@
 {% macro aggregate_bar(aggregate, status_variant) %}
     {% set pct = aggregate.weighted_pct is not null ? aggregate.weighted_pct : 0 %}
     {% set variant = status_variant[aggregate.status] ?? 'secondary' %}
-    <div class="progress progress-h-18" role="progressbar"
-         aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"
-         aria-label="{{ 'bsi_check.weighted_pct'|trans({}, 'messages') }}">
-        <div class="progress-bar bg-{{ variant }}" style="width: {{ pct }}%;">
-            {% if aggregate.weighted_pct is not null %}{{ aggregate.weighted_pct }}%{% else %}n/a{% endif %}
-        </div>
-    </div>
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+    {{ _fa_progress.render({
+        value: pct,
+        tone: variant == 'secondary' ? 'neutral' : variant,
+        label: 'bsi_check.weighted_pct'|trans({}, 'messages'),
+        showText: aggregate.weighted_pct is not null,
+        class: 'progress-h-18',
+    }) }}
+    {% if aggregate.weighted_pct is null %}
+        <small class="text-muted">{{ 'common.not_available'|trans({}, 'messages') }}</small>
+    {% endif %}
 {% endmacro %}
 
 {% macro breakdown_row(label, row) %}
@@ -53,7 +57,7 @@
                         {{ 'bsi_check.filter.absicherungs_stufe'|trans({}, 'messages') }}
                     </label>
                     <select id="absicherungs_stufe" name="absicherungs_stufe" class="form-select form-select-sm fa-cyber-input__field"
-                            onchange="this.form.submit()">
+                            data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="">{{ 'bsi_check.filter.all'|trans({}, 'messages') }}</option>
                         {% for option in stufe_options %}
                             <option value="{{ option }}" {% if absicherungsStufe == option %}selected{% endif %}>

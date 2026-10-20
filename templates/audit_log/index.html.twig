@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'audit_log' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {# Title/subtitle suppressed — fa-page-header renders these inside admin_content #}
 {% block admin_title %}{% endblock %}
@@ -58,11 +59,11 @@
 {# V3 W2-M8 / UF-3: HMAC-Chain Verify button — Auditor's "manipulationssicher?" answer #}
 <div class="d-flex justify-content-end mb-3">
     <form method="post" action="{{ path('app_audit_log_verify') }}" class="d-inline"
-          onsubmit="this.querySelector('button').disabled = true;">
+          data-controller="ui-actions" data-action="submit->ui-actions#submitOnce">
         <input type="hidden" name="_token" value="{{ csrf_token('audit_log_verify') }}">
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="fa-icon fa-icon--compliance-shield"></i>
-            HMAC-Chain verifizieren
+            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+            {{ 'audit_log.integrity.verify_button'|trans({}, 'audit_log') }}
         </button>
     </form>
 </div>
@@ -283,7 +284,10 @@
     {% endif %}
 </div>
 {% else %}
-{{ _fa_alert.render({ variant: 'info', class: 'mt-2', body: 'audit_log.message.no_entries'|trans({}, 'audit_log') }) }}
+{{ _fa_empty_state.render({
+    mood: 'sleeping',
+    title: 'audit_log.message.no_entries'|trans({}, 'audit_log')
+}) }}
 {% endif %}
 
 </main>

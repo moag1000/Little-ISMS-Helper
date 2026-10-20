@@ -65,7 +65,7 @@
     </form>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 (() => {
     const input = document.getElementById('ack-audience-filter');
     if (!input) return;

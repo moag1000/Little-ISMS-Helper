@@ -24,6 +24,31 @@ enum AuditFindingStatus: string
     case Closed = 'closed';
 
     /**
+     * Single source for "finding is done": resolved, verified or closed.
+     * Everything else (open, in progress) is still open.
+     */
+    public function isDone(): bool
+    {
+        return match ($this) {
+            self::Resolved, self::Verified, self::Closed => true,
+            self::Open, self::InProgress => false,
+        };
+    }
+
+    /**
+     * Raw values of the done states — for DQL `status [NOT] IN (:done)`.
+     *
+     * @return list<string>
+     */
+    public static function doneValues(): array
+    {
+        return array_values(array_map(
+            static fn (self $s): string => $s->value,
+            array_filter(self::cases(), static fn (self $s): bool => $s->isDone()),
+        ));
+    }
+
+    /**
      * Translation-key for the human-readable status label.
      * Used by Twig: `{{ finding.statusEnum.label|trans({}, 'audit_finding') }}`.
      */

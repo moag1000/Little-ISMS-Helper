@@ -17,6 +17,7 @@ const API_CACHE = `isms-api-${CACHE_VERSION}`;
 const STATIC_ASSETS = [
     '/',
     '/offline.html',
+    '/offline.js',
     '/manifest.json',
     '/favicon.svg',
     '/favicon.ico',

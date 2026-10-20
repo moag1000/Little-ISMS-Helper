@@ -12,7 +12,7 @@
     {% include 'processing_activity/_form_body.html.twig' with {
         form: form,
         modal: true,
-        title: is_edit ? pa.name : 'processing_activity.new'|trans({}, 'privacy'),
+        title: is_edit ? pa.name : 'processing_activity.page.new_title'|trans({}, 'privacy'),
         actions: {
             close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
             submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }

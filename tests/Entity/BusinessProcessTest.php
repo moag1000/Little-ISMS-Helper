@@ -7,6 +7,7 @@ namespace App\Tests\Entity;
 use App\Entity\BusinessProcess;
 use App\Entity\Asset;
 use App\Entity\Risk;
+use App\Enum\RiskStatus;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -325,6 +326,53 @@ class BusinessProcessTest extends TestCase
         $this->assertFalse($process->hasUnmitigatedHighRisks());
     }
 
+    /**
+     * Regression — the aggregation compared Risk::getStatus() (a RiskStatus
+     * enum) with the string 'active', which never matched: every process with
+     * risks reported 'low', zero active risks and no unmitigated high risks.
+     */
+    #[Test]
+    public function testRiskAggregationCountsOpenRisksAndSkipsClosedOnes(): void
+    {
+        $process = new BusinessProcess();
+
+        $high = new Risk();
+        $high->setTitle('Ransomware');
+        $high->setStatus(RiskStatus::InTreatment);
+        $high->setProbability(5)->setImpact(4);
+        $high->setResidualProbability(4)->setResidualImpact(4);
+
+        $closed = new Risk();
+        $closed->setTitle('Retired legacy system');
+        $closed->setStatus(RiskStatus::Closed);
+        $closed->setProbability(5)->setImpact(5);
+        $closed->setResidualProbability(5)->setResidualImpact(5);
+
+        $process->addIdentifiedRisk($high);
+        $process->addIdentifiedRisk($closed);
+
+        $this->assertSame(1, $process->getActiveRiskCount());
+        $this->assertTrue($process->hasUnmitigatedHighRisks());
+        $this->assertSame('critical', $process->getProcessRiskLevel());
+        $this->assertSame(1, $process->getSuggestedRTO());
+    }
+
+    #[Test]
+    public function testRiskAggregationWithOnlyClosedRisksIsLow(): void
+    {
+        $process = new BusinessProcess();
+
+        $closed = new Risk();
+        $closed->setTitle('Closed risk');
+        $closed->setStatus(RiskStatus::Closed);
+        $closed->setResidualProbability(5)->setResidualImpact(5);
+        $process->addIdentifiedRisk($closed);
+
+        $this->assertSame(0, $process->getActiveRiskCount());
+        $this->assertFalse($process->hasUnmitigatedHighRisks());
+        $this->assertSame('low', $process->getProcessRiskLevel());
+    }
+
     #[Test]
     public function testIsCriticalityAlignedReturnsTrueWhenNoRisks(): void
     {
@@ -369,5 +417,22 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('10000.00', $process->getFinancialImpactPerHour());
         $this->assertEquals(4, $process->getBusinessImpactScore()); // (5+3+4)/3
         $this->assertEquals(4, $process->getSuggestedAvailabilityValue()); // RTO=2 -> High (4)
+    }
+
+    #[Test]
+    public function testHandledRisksAreNotActiveOrUnmitigated(): void
+    {
+        $process = new BusinessProcess();
+        foreach ([RiskStatus::Accepted, RiskStatus::Mitigated, RiskStatus::Treated, RiskStatus::Monitored, RiskStatus::Closed] as $status) {
+            $risk = new Risk();
+            $risk->setTitle('r');
+            $risk->setStatus($status);
+            $risk->setResidualProbability(5)->setResidualImpact(5);
+            $process->addIdentifiedRisk($risk);
+        }
+
+        $this->assertSame(0, $process->getActiveRiskCount());
+        $this->assertFalse($process->hasUnmitigatedHighRisks());
+        $this->assertSame('low', $process->getProcessRiskLevel());
     }
 }

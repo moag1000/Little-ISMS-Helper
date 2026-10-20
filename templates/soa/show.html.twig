@@ -32,10 +32,11 @@
         badge: { icon: 'status-ok', label: control.controlId },
         title: control.name,
         subtitle: categoryLabel,
-        actions: [
-            { label: 'soa.action.edit'|trans({}, 'soa'), variant: 'primary', icon: 'ui-edit', href: path('app_soa_edit', {id: control.id}) },
+        actions: (is_granted('edit', control) ? [
+            { label: 'soa.action.edit'|trans({}, 'soa'), variant: 'primary', icon: 'ui-edit', href: path('app_soa_edit', {id: control.id}) }
+        ] : [])|merge([
             { label: 'soa.action.back_to_category'|trans({'%category%': categoryLabel}, 'soa'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_soa_by_category', {category: control.category}) }
-        ]
+        ])
     }) }}
 
     {# MRIS resilience badge kept below header — multi-badge title row not supported by macro #}
@@ -489,9 +490,11 @@
 
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
+    {% if is_granted('edit', control) %}
     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
     </a>
+    {% endif %}
     <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
         <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>

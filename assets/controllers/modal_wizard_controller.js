@@ -1,4 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
+import { faConfirm } from '../js/fa-alerts.js';
 
 /**
  * ModalWizard Controller — High-stakes linear-flow modal with validation-gates
@@ -10,8 +12,8 @@ import { Controller } from '@hotwired/stimulus';
  *      if any empty, prevent Next + show validation hint + mark step
  *   3. Final submit: on last step, swap Next for Submit; on submit-click,
  *      call form.requestSubmit() on the nearest enclosing <form>
- *   4. Cancel confirmation: if any input has changed, show browser confirm()
- *      before dismissing
+ *   4. Cancel confirmation: if any input has changed, ask via the Aurora
+ *      dialog (window.faConfirm) before dismissing
  *   5. Pip-rail clickable: clicking a done pip jumps back (forward requires
  *      validation chain)
  *   6. Focus management: focus first focusable element in each new step
@@ -22,6 +24,8 @@ import { Controller } from '@hotwired/stimulus';
  *   currentStep  Number   (default: 0)   — 0-based index of active step
  *   totalSteps   Number   (required)     — total number of steps
  *   hasChanges   Boolean  (default: false) — dirty-state for cancel guard
+ *   discardMessage String (default: faT('discard_changes')) — translated
+ *                cancel-guard question, rendered by _fa_modal_wizard.html.twig
  *
  * Targets:
  *   step           — .fa-modal__wizard-step elements (multiple)
@@ -51,6 +55,7 @@ export default class extends Controller {
         currentStep: { type: Number, default: 0 },
         totalSteps: { type: Number, default: 0 },
         hasChanges: { type: Boolean, default: false },
+        discardMessage: { type: String, default: '' },
     };
 
     // ── Lifecycle ──────────────────────────────────────────────────────────
@@ -151,11 +156,10 @@ export default class extends Controller {
     /**
      * Cancel: guard against unsaved changes, then close/navigate.
      */
-    cancel() {
+    async cancel() {
         if (this.hasChangesValue) {
-            const confirmed = window.confirm(
-                'Sind Sie sicher? Eingaben gehen verloren.',
-            );
+            const message = this.discardMessageValue || faT('discard_changes');
+            const confirmed = await faConfirm(message, { tone: 'warn' });
             if (!confirmed) {
                 return;
             }

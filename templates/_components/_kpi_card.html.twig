@@ -6,7 +6,7 @@
     {{ _fa_feature_card.render({
         label: 'Offene Risiken',
         value: 12,
-        icon: 'nav-shield-alert',       {# no 'bi-' prefix #}
+        icon: 'nav-shield-alert',       (no 'bi-' prefix)
         variant: 'primary',
         hint: '+3 seit letzter Woche',
         href: '/risk'
@@ -129,7 +129,7 @@
 </div>
 
 {% if app.environment == 'dev' %}
-<script>
+<script nonce="{{ csp_nonce() }}">
     if (typeof console !== 'undefined' && console.warn) {
         console.warn('[Aurora v4 Deprecation] _components/_kpi_card.html.twig — migrate to _components/_fa_feature_card.html.twig. See /dev/design-system for API.');
     }

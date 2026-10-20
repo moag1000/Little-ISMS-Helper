@@ -89,7 +89,7 @@ class IdentityProviderRoleMapping
 
     /** @return list<string> */
     public function getAssignedPermissions(): array { return $this->assignedPermissions; }
-    /** @param list<string> $perms */
+    /** @param array<array-key, string> $perms reindexed to a list */
     public function setAssignedPermissions(array $perms): self { $this->assignedPermissions = array_values($perms); return $this; }
 
     public function getPriority(): int { return $this->priority; }

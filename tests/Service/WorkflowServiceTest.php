@@ -356,6 +356,66 @@ class WorkflowServiceTest extends TestCase
         $this->assertSame('pending', $instance->getStatus());
     }
 
+    /**
+     * The closing four-eyes `approve` carries the authorising step: its
+     * single-approver escape must count users eligible for THAT step
+     * (approver_users, approver_role via hierarchy, ROLE_ADMIN), not the
+     * holders of the transition's roles.
+     */
+    #[Test]
+    public function finalApprovalPassesTheStepEligibilityRuleToTheLifecycle(): void
+    {
+        $approver = $this->createUser(1, 'Dana', 'Dpo');
+        $approver->method('getRoles')->willReturn(['ROLE_DPO']);
+
+        $step = $this->createWorkflowStep(1, 'DPO sign-off', 5);
+        $step->method('getApproverRole')->willReturn('ROLE_DPO');
+        $step->method('getApproverUsers')->willReturn(['7']);
+        $instance = $this->createWorkflowInstance('in_progress', $step, $this->createWorkflow('T', 'Risk', [$step]));
+        $this->security->method('isGranted')->willReturnCallback(static fn ($role): bool => $role === 'ROLE_DPO');
+
+        $captured = null;
+        $this->lifecycleService->expects($this->once())->method('transition')
+            ->willReturnCallback(function (...$args) use (&$captured): void {
+                $captured = $args;
+            });
+
+        $config = \Symfony\Component\Yaml\Yaml::parseFile(\dirname(__DIR__, 2) . '/config/packages/security.yaml');
+        $service = new WorkflowService(
+            $this->entityManager,
+            $this->workflowRepository,
+            $this->workflowInstanceRepository,
+            $this->userRepository,
+            $this->emailService,
+            $this->security,
+            $this->lifecycleService,
+            $this->regulatoryWorkflowLoader,
+            new \Symfony\Component\Security\Core\Role\RoleHierarchy(array_map(
+                static fn (string|array $r): array => (array) $r,
+                $config['security']['role_hierarchy'],
+            )),
+        );
+
+        self::assertTrue($service->approveStep($instance, $approver, 'ok'));
+        self::assertIsArray($captured);
+        self::assertSame('approve', $captured[2]);
+        self::assertTrue($captured[6], 'approver authority verified against the step');
+        $isEligible = $captured[7];
+        self::assertInstanceOf(\Closure::class, $isEligible);
+
+        $candidate = function (int $id, array $roles): User {
+            $u = $this->createUser($id, 'C', 'U');
+            $u->method('getRoles')->willReturn($roles);
+
+            return $u;
+        };
+        self::assertTrue($isEligible($candidate(7, ['ROLE_USER'])), 'named in approver_users');
+        self::assertTrue($isEligible($candidate(8, ['ROLE_DPO'])), 'holds the step role');
+        self::assertTrue($isEligible($candidate(9, ['ROLE_ADMIN'])), 'admin may approve any step');
+        self::assertFalse($isEligible($candidate(10, ['ROLE_MANAGER'])), 'transition role alone is not enough');
+        self::assertFalse($isEligible($candidate(11, ['ROLE_AUDITOR'])));
+    }
+
     private function createUser(int $id, string $firstName, string $lastName): MockObject
     {
         $user = $this->createMock(User::class);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Entity\Incident;
 use App\Service\Nis2MusExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * incident-reporting payloads in JSON form.
  */
 #[IsGranted('ROLE_MANAGER')]
+#[RequiresModule('nis2_dora')]
 class Nis2MusExportController extends AbstractController
 {
     public function __construct(

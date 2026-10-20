@@ -9,6 +9,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -371,6 +372,45 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    /**
+     * Restore uploads go through FileUploadSecurityService (backup profile):
+     * content, not just the client-supplied extension, decides.
+     */
+    #[Test]
+    public function testUploadBackupRejectsDisguisedAndAcceptsGenuineFiles(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $tmp = sys_get_temp_dir() . '/backup_upload_' . uniqid();
+        mkdir($tmp);
+        file_put_contents($tmp . '/evil.json', "<?php system(\$_GET['c']); ?>\n");
+        file_put_contents($tmp . '/fake.gz', 'not gzip at all');
+        file_put_contents($tmp . '/real.json', (string) json_encode(['metadata' => ['version' => '1.0'], 'data' => []]));
+        $backupDir = static::getContainer()->getParameter('kernel.project_dir') . '/var/backups';
+        $before = glob($backupDir . '/uploaded_*') ?: [];
+
+        try {
+            foreach (['evil.json', 'fake.gz'] as $name) {
+                $this->sameOriginRequest('POST', '/en/admin/data/backup/upload', [], [
+                    'backup_file' => new UploadedFile($tmp . '/' . $name, $name, null, null, true),
+                ]);
+                $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, $name . ' must be rejected');
+            }
+            $this->assertSame($before, glob($backupDir . '/uploaded_*') ?: [], 'rejected files must not be stored');
+
+            $this->sameOriginRequest('POST', '/en/admin/data/backup/upload', [], [
+                'backup_file' => new UploadedFile($tmp . '/real.json', 'real.json', null, null, true),
+            ]);
+            $this->assertResponseIsSuccessful();
+            $this->assertCount(count($before) + 1, glob($backupDir . '/uploaded_*') ?: []);
+        } finally {
+            foreach (array_diff(glob($backupDir . '/uploaded_*') ?: [], $before) as $stored) {
+                @unlink($stored);
+            }
+            array_map('unlink', glob($tmp . '/*') ?: []);
+            @rmdir($tmp);
+        }
+    }
+
     // ========== DOWNLOAD BACKUP TESTS ==========
 
     #[Test]
@@ -419,6 +459,36 @@ class AdminBackupControllerTest extends WebTestCase
         $this->loginAsUser($this->adminUser);
         $this->client->request('GET', '/en/admin/data/backup/validate/backup_2024-01-01_00-00-00.json');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+    /**
+     * A malformed backup that triggers a PHP Error (TypeError) inside the
+     * preview must still produce the JSON error envelope the frontend
+     * expects, not an HTML 500 page.
+     */
+    #[Test]
+    public function testPreviewRestoreAnswersJsonForMalformedBackup(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $backupDir = static::getContainer()->getParameter('kernel.project_dir') . '/var/backups';
+        if (!is_dir($backupDir)) {
+            mkdir($backupDir, 0775, true);
+        }
+        $filename = 'backup_malformed_' . uniqid() . '.json';
+        file_put_contents($backupDir . '/' . $filename, (string) json_encode([
+            'metadata' => ['version' => '1.0'],
+            'data' => ['Asset' => 'not-a-list'],
+        ]));
+
+        try {
+            $this->client->request('GET', '/en/admin/data/backup/preview/' . $filename);
+            $this->assertResponseStatusCodeSame(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $this->assertResponseHeaderSame('Content-Type', 'application/json');
+            $payload = json_decode((string) $this->client->getResponse()->getContent(), true);
+            $this->assertFalse($payload['success']);
+        } finally {
+            @unlink($backupDir . '/' . $filename);
+        }
     }
 
     // ========== PREVIEW RESTORE TESTS ==========
@@ -543,6 +613,69 @@ class AdminBackupControllerTest extends WebTestCase
         $this->client->request('POST', '/en/admin/data/export/execute');
         // Should redirect due to CSRF or missing entities
         $this->assertResponseRedirects();
+    }
+
+    #[Test]
+    public function testExportExecuteExportsOnlyOwnTenantAndNoSecrets(): void
+    {
+        $foreignUser = new User();
+        $foreignUser->setEmail('foreign_export_' . uniqid() . '@example.com');
+        $foreignUser->setFirstName('Foreign');
+        $foreignUser->setLastName('User');
+        $foreignUser->setRoles(['ROLE_USER']);
+        $foreignUser->setPassword('foreign_hash');
+        $foreignUser->setTenant($this->foreignTenant);
+        $this->entityManager->persist($foreignUser);
+        $this->entityManager->flush();
+
+        $this->loginAsUser($this->tenantAdminUser);
+        $token = $this->seedBackupCsrfToken();
+        $this->client->request('POST', '/en/admin/data/export/execute', [
+            '_token' => $token,
+            'format' => 'json',
+            'entities' => [
+                \App\Entity\User::class,
+                \App\Entity\MfaToken::class,
+                \App\Entity\UserSession::class,
+                \App\Entity\ComplianceFramework::class,
+            ],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $data = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertIsArray($data);
+
+        // Credential/session tables are never exported; global catalogue
+        // tables are not part of an organisation-scoped export.
+        self::assertArrayNotHasKey('MfaToken', $data);
+        self::assertArrayNotHasKey('UserSession', $data);
+        self::assertArrayNotHasKey('ComplianceFramework', $data);
+
+        $emails = array_column($data['User'] ?? [], 'email');
+        self::assertContains($this->tenantAdminUser->getEmail(), $emails);
+        self::assertNotContains($foreignUser->getEmail(), $emails, 'other organisations\' users must not leak');
+        foreach ($data['User'] as $row) {
+            self::assertArrayNotHasKey('password', $row, 'password hashes must never be exported');
+        }
+
+        $managed = $this->entityManager->find(User::class, $foreignUser->getId());
+        if ($managed !== null) {
+            $this->entityManager->remove($managed);
+            $this->entityManager->flush();
+        }
+    }
+
+    #[Test]
+    public function testExportIndexOffersNoCredentialTables(): void
+    {
+        $this->loginAsUser($this->tenantAdminUser);
+        $this->client->request('GET', '/en/admin/data/export');
+
+        $this->assertResponseIsSuccessful();
+        $content = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('App\\Entity\\MfaToken', $content);
+        self::assertStringNotContainsString('App\\Entity\\UserSession', $content);
+        self::assertStringContainsString('App\\Entity\\Risk"', $content);
     }
 
     // ========== IMPORT TESTS ==========

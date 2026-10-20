@@ -277,4 +277,115 @@ class ReportControllerTest extends WebTestCase
             "Expected 200 or 302, got {$statusCode}"
         );
     }
+
+    // ========== EXCEL CONTENT (regression) ==========
+
+    /**
+     * Regression: controlsExcel() called ->getEmail() on the ?string returned
+     * by Control::getResponsiblePerson() — a fatal error as soon as a control
+     * had a responsible person.
+     */
+    #[Test]
+    public function testControlsExcelListsResponsiblePerson(): void
+    {
+        $control = new \App\Entity\Control();
+        $control->setControlId('RPT-' . uniqid())->setName('Report regression control')
+            ->setDescription('d')->setCategory('Organisational controls')
+            ->setApplicable(true)->setControlType('preventive')
+            ->setTenant($this->testTenant)
+            ->setResponsiblePerson('Erika Legacy');
+        $withUser = new \App\Entity\Control();
+        $withUser->setControlId('RPT-' . uniqid())->setName('Report regression control 2')
+            ->setDescription('d')->setCategory('Organisational controls')
+            ->setApplicable(true)->setControlType('preventive')
+            ->setTenant($this->testTenant)
+            ->setResponsiblePerson('stale text')
+            ->setResponsiblePersonUser($this->adminUser);
+        $this->entityManager->persist($control);
+        $this->entityManager->persist($withUser);
+        $this->entityManager->flush();
+
+        try {
+            $this->loginAsUser($this->testUser);
+            $this->client->request('GET', '/en/reports/controls/excel');
+            $this->assertResponseIsSuccessful();
+
+            $cells = $this->readXlsxCells($this->client->getResponse()->getContent());
+            $this->assertContains('Erika Legacy', $cells);
+            $this->assertContains($this->adminUser->getFullName(), $cells);
+            $this->assertNotContains('stale text', $cells);
+        } finally {
+            $this->removeEntities(\App\Entity\Control::class, [$control->getId(), $withUser->getId()]);
+        }
+    }
+
+    /**
+     * Regression: incidentsExcel() called ->getEmail() on the ?string returned
+     * by Incident::getReportedBy().
+     */
+    #[Test]
+    public function testIncidentsExcelListsReporter(): void
+    {
+        $incident = new \App\Entity\Incident();
+        $incident->setTitle('Report regression incident')->setIncidentNumber('INC-' . uniqid())
+            ->setDescription('d')->setCategory('security')
+            ->setSeverity(\App\Enum\IncidentSeverity::Medium)
+            ->setStatus(\App\Enum\IncidentStatus::Reported)
+            ->setTenant($this->testTenant)
+            ->setReportedBy('Rudi Reporter');
+        $this->entityManager->persist($incident);
+        $this->entityManager->flush();
+
+        try {
+            $this->loginAsUser($this->testUser);
+            $this->client->request('GET', '/en/reports/incidents/excel');
+            $this->assertResponseIsSuccessful();
+
+            $this->assertContains('Rudi Reporter', $this->readXlsxCells($this->client->getResponse()->getContent()));
+        } finally {
+            $this->removeEntities(\App\Entity\Incident::class, [$incident->getId()]);
+        }
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function readXlsxCells(string $binary): array
+    {
+        if (!class_exists(\ZipArchive::class)) {
+            // The 200 above already covers the fatal; CI has ext-zip for the content check.
+            $this->markTestSkipped('ext-zip is required to read the generated workbook');
+        }
+        $file = tempnam(sys_get_temp_dir(), 'xlsx');
+        file_put_contents($file, $binary);
+        try {
+            $sheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file)->getActiveSheet();
+            $cells = [];
+            foreach ($sheet->toArray() as $row) {
+                foreach ($row as $value) {
+                    $cells[] = (string) $value;
+                }
+            }
+
+            return $cells;
+        } finally {
+            @unlink($file);
+        }
+    }
+
+    /**
+     * @param class-string $class
+     * @param list<int|null> $ids
+     */
+    private function removeEntities(string $class, array $ids): void
+    {
+        $this->entityManager->clear();
+        foreach ($ids as $id) {
+            $entity = $id !== null ? $this->entityManager->find($class, $id) : null;
+            if ($entity !== null) {
+                $this->entityManager->remove($entity);
+            }
+        }
+        $this->entityManager->flush();
+    }
 }

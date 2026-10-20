@@ -25,7 +25,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 )]
 class SetupPermissionsCommand
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository, private readonly RoleRepository $roleRepository, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher, private readonly AuditLogger $auditLogger)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository, private readonly RoleRepository $roleRepository, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher, private readonly AuditLogger $auditLogger, private readonly ?\App\Repository\TenantRepository $tenantRepository = null)
     {
     }
 
@@ -484,9 +484,13 @@ class SetupPermissionsCommand
         // Security hotfix 3.15.3: ROLE_ADMIN is scoped to its own tenant tree,
         // so the installer must be the instance operator. Only the first
         // operator is created this way; later admins stay ROLE_ADMIN.
-        $user->setRoles($this->userRepository->hasSuperAdmin()
-            ? ['ROLE_ADMIN']
-            : ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN']);
+        $isOperator = !$this->userRepository->hasSuperAdmin();
+        $user->setRoles($isOperator ? ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] : ['ROLE_ADMIN']);
+        // The instance operator stays without an organisation (instance-wide,
+        // like SetupTenantBootstrapper::assignAccountsWithoutOrganisation()).
+        // Any other admin without an organisation would see no organisation's
+        // data; on a single-organisation installation it belongs to the sole one.
+        $user->setTenant($isOperator ? null : $this->tenantRepository?->findSoleTenant());
         $user->setAuthProvider('local');
         $user->setIsActive(true);
         $user->setIsVerified(true);

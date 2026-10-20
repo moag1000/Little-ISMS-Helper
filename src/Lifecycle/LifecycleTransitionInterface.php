@@ -19,6 +19,24 @@ interface LifecycleTransitionInterface
      * @param  User|null $fourEyesApprover Required when the transition declares
      *                                     `four_eyes: true` in YAML metadata.
      *                                     Enforced by FourEyesValidator subscriber.
+     * @param  bool      $approverAuthorityVerified True when the caller has already
+     *                                     verified $fourEyesApprover's authority
+     *                                     against a more specific rule than the
+     *                                     transition's `roles` (WorkflowService:
+     *                                     the step's approver_role / approver_users).
+     *                                     FourEyesValidator then skips its role
+     *                                     check; the distinct-user rule still applies.
+     * @param  (\Closure(User): bool)|null $isEligibleApprover Who else could grant this
+     *                                     four-eyes transition (WorkflowService: users
+     *                                     eligible for the authorising step). The
+     *                                     single-approver escape then applies only when
+     *                                     no OTHER active user of the organisation is
+     *                                     eligible; without it the transition `roles`
+     *                                     are counted.
+     * @param  bool      $allowSelfApprovalEscape False when the caller passes a
+     *                                     system-generated reason: the single-approver
+     *                                     escape needs a reason the user typed (the
+     *                                     offline counter-signature), so it is refused.
      *
      * @throws InvalidTransitionException
      * @throws \App\Lifecycle\Exception\ReasonRequiredException
@@ -31,5 +49,8 @@ interface LifecycleTransitionInterface
         ?User $user = null,
         ?string $reason = null,
         ?User $fourEyesApprover = null,
+        bool $approverAuthorityVerified = false,
+        ?\Closure $isEligibleApprover = null,
+        bool $allowSelfApprovalEscape = true,
     ): void;
 }

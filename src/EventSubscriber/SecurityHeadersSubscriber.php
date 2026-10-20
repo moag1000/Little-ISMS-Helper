@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Security\CspNonce;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -25,13 +26,15 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * - Strict-Transport-Security (HSTS): Enforces HTTPS (OWASP A2: Cryptographic Failures)
  *
  * Environment Behavior:
- * - Production: All security headers enabled
+ * - Production (and test, so functional tests see the real policy): all headers enabled
  * - Development: Headers disabled to avoid interfering with debugging tools
  *
  * CSP Configuration:
- * - Permissive policy to support Symfony UX Stimulus
- * - Allows inline scripts and styles (unsafe-inline, unsafe-eval)
- * - Future: Consider stricter CSP with nonces for production hardening
+ * - script-src: 'self' + per-request nonce (App\Security\CspNonce) — no
+ *   'unsafe-inline', no 'unsafe-eval', no data:. Inline <script> blocks carry
+ *   nonce="{{ csp_nonce() }}"; inline on*= handlers and javascript: URLs are
+ *   banned (Gate 67, scripts/quality/check_native_dialogs.py).
+ * - style-src still allows 'unsafe-inline' (style attributes are widespread).
  *
  * HSTS Configuration:
  * - max-age: 15768000 seconds (6 months)
@@ -43,13 +46,14 @@ final class SecurityHeadersSubscriber
 {
     public function __construct(
         #[Autowire('%kernel.environment%')]
-        private readonly string $environment
+        private readonly string $environment,
+        private readonly CspNonce $cspNonce,
     ) {}
 
     public function onKernelResponse(ResponseEvent $responseEvent): void
     {
-        // Only apply security headers in production
-        if ($this->environment !== 'prod') {
+        // Not in dev: the profiler toolbar and debug tooling inject inline scripts.
+        if ($this->environment === 'dev') {
             return;
         }
 
@@ -72,16 +76,17 @@ final class SecurityHeadersSubscriber
         $response->headers->set('X-XSS-Protection', '1; mode=block');
 
         // Security: Content-Security-Policy
-        // Restricts resource loading to prevent XSS attacks
-        // Hardened policy: removed unsafe-eval, kept unsafe-inline for existing inline scripts
-        // Future: Migrate to nonce-based CSP for maximum security
+        // Restricts resource loading to prevent XSS attacks. Inline scripts run
+        // only with the per-request nonce; no data: (JS modules must not import
+        // CSS — AssetMapper would map such an import to a data: URL).
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' data: https://cdn.jsdelivr.net", // Stimulus + CDN + data: for AssetMapper stubs
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com", // Bootstrap + Fonts
+            // All JS/CSS/fonts are served locally (AssetMapper, public/vendor) — no CDN host.
+            sprintf("script-src 'self' 'nonce-%s'", $this->cspNonce->get()),
+            "style-src 'self' 'unsafe-inline'", // style attributes
             "img-src 'self' data: https: blob:", // Allow images from any HTTPS source and data URIs
-            "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net", // Local + Google Fonts + Bootstrap Icons CDN
-            "connect-src 'self' https://cdn.jsdelivr.net", // API calls + source maps from CDN
+            "font-src 'self' data:", // self-hosted fonts (public/fonts)
+            "connect-src 'self'", // API calls
             "frame-ancestors 'self'", // Prevent embedding in iframes (clickjacking protection)
             "base-uri 'self'", // Prevent base tag injection
             "form-action 'self'", // Forms can only submit to same origin

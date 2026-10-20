@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Controller\Trait\BulkActionTrait;
+use App\Service\BulkDeleteService;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
@@ -29,8 +32,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/corrective-action', name: 'app_corrective_action_')]
+#[RequiresModule('corrective_actions')]
 class CorrectiveActionController extends AbstractController
 {
+    use BulkActionTrait;
+
     use InPageFormTrait;
 
     public function __construct(
@@ -273,6 +279,7 @@ class CorrectiveActionController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * CorrectiveActions are terminal — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/bulk-delete-check', name: 'bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -284,25 +291,14 @@ class CorrectiveActionController extends AbstractController
 
     #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $result = $this->correctiveActionService->bulkDelete($ids, $tenant?->getId());
-        $deleted = $result['deleted'];
-        $errors  = $result['errors'];
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted corrective actions deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'CorrectiveAction',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->repository->find($id),
+        );
     }
 }

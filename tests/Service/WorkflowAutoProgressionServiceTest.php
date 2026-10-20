@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
 use App\Service\WorkflowAutoProgressionService;
@@ -166,6 +167,35 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $result = $this->service->checkAndProgressWorkflow($entity, $user);
 
         $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function refusedClosingApprovalLeavesStepForManualApprovalWithoutPartialProgress(): void
+    {
+        $entity = new TestEntity();
+        $entity->setId(1);
+        $entity->setName('Test Name');
+        $entity->setDescription('Test Description');
+        $user = $this->createUser();
+
+        $step = $this->createStepWithFieldCompletion(['name', 'description'], 'TestEntity');
+        $workflow = $this->createMock(Workflow::class);
+        $workflow->method('getSteps')->willReturn(new ArrayCollection([$step]));
+        $instance = new WorkflowInstance(); // @lifecycle-initial-state
+        $instance->setWorkflow($workflow);
+        $instance->setStatus('in_progress');
+        $instance->setCurrentStep($step);
+
+        $this->workflowService->method('getWorkflowInstance')->willReturn($instance);
+        $this->workflowService->method('moveToNextStep')->willThrowException(
+            FourEyesRequiredException::sameUser('workflow_instance_lifecycle', 'approve'),
+        );
+        $this->entityManager->expects($this->never())->method('flush');
+
+        self::assertFalse($this->service->checkAndProgressWorkflow($entity, $user));
+        self::assertSame([], $instance->getApprovalHistory());
+        self::assertSame([], $instance->getCompletedSteps());
+        self::assertSame($step, $instance->getCurrentStep());
     }
 
     #[Test]

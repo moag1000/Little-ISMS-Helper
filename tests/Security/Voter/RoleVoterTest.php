@@ -7,11 +7,8 @@ namespace App\Tests\Security\Voter;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Security\Voter\RoleVoter;
-use App\Security\Voter\UserVoter;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -22,24 +19,13 @@ use PHPUnit\Framework\Attributes\Test;
 class RoleVoterTest extends TestCase
 {
     private RoleVoter $voter;
-    private AccessDecisionManagerInterface&MockObject $accessDecisionManager;
-    /** Result of UserVoter::EDIT for every holder in these unit tests. */
-    private bool $holderEditable = true;
     /** @var list<User> */
     private array $holders = [];
 
     protected function setUp(): void
     {
-        $this->holderEditable = true;
         $this->holders = [];
-        $this->accessDecisionManager = $this->createMock(AccessDecisionManagerInterface::class);
-        $this->accessDecisionManager->method('decide')
-            ->willReturnCallback(function ($token, array $attributes): bool {
-                self::assertSame([UserVoter::EDIT], $attributes);
-
-                return $this->holderEditable;
-            });
-        $this->voter = new RoleVoter(VoterTestHelper::createRoleHierarchy(), $this->accessDecisionManager);
+        $this->voter = new RoleVoter(VoterTestHelper::createRoleHierarchy());
     }
 
     private function createUser(array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User
@@ -80,38 +66,35 @@ class RoleVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanCreateRole(): void
+    public function testOrganisationAdminCannotWriteGlobalRoles(): void
     {
-        $user = $this->createUser(['ROLE_ADMIN']);
-        $token = $this->createToken($user);
+        $token = $this->createToken($this->createUser(['ROLE_ADMIN']));
 
-        $result = $this->voter->vote($token, null, [RoleVoter::CREATE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, null, [RoleVoter::CREATE]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRole(), [RoleVoter::EDIT]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRole(), [RoleVoter::DELETE]));
     }
 
     #[Test]
-    public function testAdminCanEditCustomRole(): void
+    public function testPermissionHolderCannotWriteGlobalRoles(): void
     {
-        $user = $this->createUser(['ROLE_ADMIN']);
-        $role = $this->createRole(false);
+        $user = $this->createUser(['ROLE_USER'], true, ['role.create', 'role.edit', 'role.delete']);
         $token = $this->createToken($user);
 
-        $result = $this->voter->vote($token, $role, [RoleVoter::EDIT]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, null, [RoleVoter::CREATE]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRole(), [RoleVoter::EDIT]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRole(), [RoleVoter::DELETE]));
     }
 
     #[Test]
-    public function testAdminCanDeleteCustomRole(): void
+    public function testSuperAdminCanWriteRolesButNeverDeleteSystemRoles(): void
     {
-        $user = $this->createUser(['ROLE_ADMIN']);
-        $role = $this->createRole(false);
-        $token = $this->createToken($user);
+        $token = $this->createToken($this->createUser(['ROLE_SUPER_ADMIN']));
 
-        $result = $this->voter->vote($token, $role, [RoleVoter::DELETE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, null, [RoleVoter::CREATE]));
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRole(), [RoleVoter::EDIT]));
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRole(), [RoleVoter::DELETE]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRole(true), [RoleVoter::DELETE]));
     }
 
     #[Test]
@@ -148,6 +131,19 @@ class RoleVoterTest extends TestCase
         $result = $this->voter->vote($token, $role, [RoleVoter::VIEW]);
 
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+    }
+
+    #[Test]
+    public function viewWithoutSubjectIsDecidedByThePermission(): void
+    {
+        // #[IsGranted(RoleVoter::VIEW)] on the role list / compare pages votes
+        // without a subject; the voter must not abstain there.
+        $allowed = $this->createToken($this->createUser(['ROLE_USER'], true, ['role.view']));
+        $denied = $this->createToken($this->createUser(['ROLE_USER'], true, []));
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($allowed, null, [RoleVoter::VIEW]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($denied, null, [RoleVoter::VIEW]));
+        $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $this->voter->vote($allowed, null, [RoleVoter::EDIT]));
     }
 
     #[Test]
@@ -199,12 +195,13 @@ class RoleVoterTest extends TestCase
     }
 
     #[Test]
-    public function editOrDeleteDeniedWhenAHolderIsNotEditableByActor(): void
+    public function editOrDeleteByNonSuperAdminIsDeniedAsGlobal(): void
     {
-        // Security hotfix: custom roles are global — a role with a holder the
-        // actor may not edit per UserVoter::EDIT is off limits.
+        // Roles are global: neither an organisation admin nor a holder of the
+        // role.edit / role.delete permission may change one — not even when
+        // every holder is inside the actor's own organisation (this subsumes
+        // the 3.15.3 holder-scope rule).
         $this->holders = [$this->createUser()];
-        $this->holderEditable = false;
         $role = $this->createRole(false);
 
         foreach ([['ROLE_ADMIN'], ['ROLE_USER']] as $roles) {
@@ -218,23 +215,12 @@ class RoleVoterTest extends TestCase
     }
 
     #[Test]
-    public function editAllowedWhenAllHoldersAreEditableByActor(): void
-    {
-        $this->holders = [$this->createUser(), $this->createUser()];
-        $token = $this->createToken($this->createUser(['ROLE_ADMIN']));
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRole(false), [RoleVoter::EDIT]));
-    }
-
-    #[Test]
-    public function actorHoldingTheRoleItselfDoesNotBlockIt(): void
+    public function actorHoldingTheRoleItselfCannotEditIt(): void
     {
         $actor = $this->createUser(['ROLE_ADMIN']);
         $this->holders = [$actor];
-        $this->holderEditable = false;
-        $this->accessDecisionManager->expects($this->never())->method('decide');
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->createToken($actor), $this->createRole(false), [RoleVoter::EDIT]));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->createToken($actor), $this->createRole(false), [RoleVoter::EDIT]));
     }
 
     #[Test]
@@ -251,10 +237,18 @@ class RoleVoterTest extends TestCase
     public function superAdminMayEditCustomRoleHeldInForeignTenant(): void
     {
         $this->holders = [$this->createUser()];
-        $this->holderEditable = false;
-        $this->accessDecisionManager->expects($this->never())->method('decide');
         $token = $this->createToken($this->createUser(['ROLE_SUPER_ADMIN']));
 
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $this->createRole(false), [RoleVoter::EDIT]));
+    }
+
+    #[Test]
+    public function superAdminCannotDeleteSystemRoleAndGetsTheGlobalReason(): void
+    {
+        $token = $this->createToken($this->createUser(['ROLE_SUPER_ADMIN']));
+        $vote = new Vote();
+
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->createRole(true), [RoleVoter::DELETE], $vote));
+        $this->assertContains(RoleVoter::REASON_OUT_OF_SCOPE, $vote->reasons);
     }
 }

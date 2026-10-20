@@ -177,6 +177,34 @@ final class AsyncJobDispatcherTest extends TestCase
     }
 
     #[Test]
+    public function dispatchWithProgressStoresTheDownloadUrlWithTheJobId(): void
+    {
+        $this->urlGenerator->method('generate')->willReturnCallback(
+            static fn (string $route, array $params): string => '/' . $route . '/' . $params['id'] . '/' . ($params['type'] ?? ''),
+        );
+        $capturedJobId = null;
+        $this->runner->expects(self::once())->method('dispatch')
+            ->willReturnCallback(function (string $class, array $args, string $jobId, Response $r) use (&$capturedJobId): Response {
+                $capturedJobId = $jobId;
+                return $r;
+            });
+
+        $this->makeFacade()->dispatchWithProgress(
+            request: $this->makeRequest(null),
+            jobClass: StubAsyncJob::class,
+            jobArgs: [],
+            jobName: 'admin.example.export',
+            payload: ['_label' => 'Export'],
+            downloadRoute: 'example_download',
+            downloadRouteParams: ['type' => 'risks'],
+        );
+
+        $payload = $this->statusService->read((string) $capturedJobId)['payload'];
+        self::assertSame('Export', $payload['_label']);
+        self::assertSame('/example_download/' . $capturedJobId . '/risks', $payload['_download_url']);
+    }
+
+    #[Test]
     public function dispatchWithProgressTemplateRendersHtmlBody(): void
     {
         $session = $this->createMock(SessionInterface::class);

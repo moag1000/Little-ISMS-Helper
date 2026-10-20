@@ -15,6 +15,7 @@ use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -192,7 +193,7 @@ class NotificationRuleController extends AbstractController
     }
 
     #[Route('/{id}/toggle', name: 'toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsCsrfTokenValid('notification_rule_toggle_{id}')]
+    #[IsCsrfTokenValid(new Expression('"notification_rule_toggle_" ~ args["rule"].getId()'))]
     public function toggle(NotificationRule $rule): Response
     {
         if ($redirect = $this->checkModuleActive('notifications')) {
@@ -225,7 +226,7 @@ class NotificationRuleController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsCsrfTokenValid('notification_rule_delete_{id}')]
+    #[IsCsrfTokenValid(new Expression('"notification_rule_delete_" ~ args["rule"].getId()'))]
     public function delete(NotificationRule $rule): Response
     {
         if ($redirect = $this->checkModuleActive('notifications')) {

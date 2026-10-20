@@ -50,6 +50,14 @@ class SupplierQuestionnaire
     private string $status = self::STATUS_DRAFT;
 
     /**
+     * Optimistic lock for the lifecycle (LifecycleController answers a
+     * stale lock_version with HTTP 409).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: Types::INTEGER, options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Ordered list of questions: [{id, text}, ...].
      *
      * @var list<array{id: string, text: string}>
@@ -203,5 +211,10 @@ class SupplierQuestionnaire
     {
         $this->completedAt = $completedAt;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

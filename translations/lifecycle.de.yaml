@@ -17,6 +17,12 @@ lifecycle:
         risk_lifecycle: 'Risiko nach ISO 27005 (identified → assessed → treated → accepted → reviewed → closed).'
         vulnerability_lifecycle: 'Schwachstellen (discovered → triaged → in_remediation → resolved → verified).'
         workflow_instance_lifecycle: 'Workflow-Instanz-Approval-Chain (pending → in_progress → approved/rejected/cancelled).'
+        document_section_lifecycle: 'Freigabe von Richtlinien-Abschnitten nach DSGVO Art. 38 Abs. 3 (draft/dpo_sign_off → approved oder rejected → Überarbeitung).'
+        transfer_impact_assessment_lifecycle: 'Transfer Impact Assessment nach DSGVO Art. 46 (draft → assessed). Benötigt das Datenschutz-Modul.'
+        threat_led_penetration_test_lifecycle: 'TLPT nach DORA Art. 26 (planned → scoping → red_team → reporting → closed).'
+        supplier_questionnaire_lifecycle: 'Lieferanten-Fragebogen (draft → sent → completed → reviewed).'
+        access_review_campaign_lifecycle: 'Zugriffsüberprüfungs-Kampagne nach ISO 27001 A.5.18 (open → closed).'
+        audit_program_lifecycle: 'Auditprogramm nach ISO 27001 Kap. 9.2 (planning → active → completed → archived).'
 
     # Status/place descriptions
     status_desc:
@@ -66,6 +72,7 @@ lifecycle:
             publish: 'Veröffentlichen — tenant-weit aktiv und sichtbar.'
             archive: 'Archivieren — inaktiv, bleibt lesbar.'
             republish: 'Archivierte Version wieder veröffentlichen.'
+            archive_out_of_scope: 'Archivieren — Thema nicht mehr im Geltungsbereich (z. B. DSGVO abgeschaltet). Begründung erforderlich.'
         asset_lifecycle:
             commission: 'In Betrieb nehmen — Asset aktiv genutzt.'
             return: 'Zurückgeben — temporär nicht in Nutzung.'
@@ -149,6 +156,25 @@ lifecycle:
     retired: 'Außer Dienst'
     disposed: Entsorgt
 
+    # Freigabe-Status von Richtlinien-Abschnitten
+    dpo_sign_off: 'DSB-Freigabe'
+
+    # TLPT (DORA Art. 26)
+    scoping: Scoping
+    red_team: 'Red-Team-Test'
+    reporting: Berichterstellung
+
+    # Lieferanten-Fragebogen
+    sent: Versendet
+    reviewed: Geprüft
+
+    # Compliance-Mapping
+    review: 'In Prüfung'
+    deprecated: Veraltet
+
+    # Auditprogramm
+    planning: Planung
+
     tooltip:
         next: 'Nächste Schritte'
 
@@ -225,6 +251,22 @@ lifecycle:
         expire: 'Ablaufen lassen'
         # Objective transitions
         cancel_in_progress: 'Im Verlauf abbrechen'
+        # Dokument-Übergänge
+        archive_on_supersession: 'Archivieren (ersetzt)'
+        archive_out_of_scope: 'Archivieren (nicht mehr im Geltungsbereich)'
+        restore_to_approved: 'Auf Genehmigt zurücksetzen'
+        soft_delete: Löschen
+        # Richtlinien-Abschnitte
+        reopen_for_dpo_edit: 'Für DSB-Bearbeitung wieder öffnen'
+        # TLPT
+        start_scoping: 'Scoping starten'
+        start_red_team: 'Red-Team-Test starten'
+        start_reporting: 'Berichterstellung starten'
+        # Lieferanten-Fragebogen
+        send: Versenden
+        review: 'Als geprüft markieren'
+        # Compliance-Mapping
+        deprecate: 'Als veraltet markieren'
         # Retry
         retry: Wiederholen
 
@@ -236,6 +278,10 @@ lifecycle:
 
     confirm:
         reason_required: 'Bitte Begründung angeben'
+    dropdown:
+        no_transitions: 'Keine Statuswechsel verfügbar.'
+        load_error: 'Statuswechsel konnten nicht geladen werden.'
+        conflict: 'Der Datensatz wurde zwischenzeitlich geändert – die Seite wird neu geladen.'
 
     field:
         status: Status

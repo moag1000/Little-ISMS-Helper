@@ -18,6 +18,7 @@ use App\Service\Notification\Channel\WebhookChannel;
 use App\Service\Sso\SecretEncryptionInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -181,7 +182,7 @@ class NotificationChannelController extends AbstractController
      * For in_app: marks as verified without network I/O.
      */
     #[Route('/{id}/verify', name: 'verify', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsCsrfTokenValid('notification_channel_verify_{id}')]
+    #[IsCsrfTokenValid(new Expression('"notification_channel_verify_" ~ args["channel"].getId()'))]
     public function verify(NotificationChannel $channel): Response
     {
         if ($redirect = $this->checkModuleActive('notifications')) {
@@ -213,7 +214,7 @@ class NotificationChannelController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsCsrfTokenValid('notification_channel_delete_{id}')]
+    #[IsCsrfTokenValid(new Expression('"notification_channel_delete_" ~ args["channel"].getId()'))]
     public function delete(NotificationChannel $channel): Response
     {
         if ($redirect = $this->checkModuleActive('notifications')) {
@@ -253,16 +254,10 @@ class NotificationChannelController extends AbstractController
      */
     private function applyUnmappedFields(mixed $form, NotificationChannel $channel): void
     {
-        // Parse JSON config textarea
-        $configJson = $form->get('configJson')->getData();
-        $config     = $channel->getConfig(); // start from the current config
-
-        if ($configJson !== null && $configJson !== '') {
-            $decoded = json_decode((string) $configJson, true);
-            if (is_array($decoded)) {
-                $config = $decoded;
-            }
-        }
+        // Structured config builder (JsonBuilderType) — already decoded and
+        // shape-validated; it carries every key of the existing config.
+        $configData = $form->get('configJson')->getData();
+        $config     = is_array($configData) ? $configData : [];
 
         // F3 digest mode — merge delivery_mode from the radio field into config
         $deliveryMode = $form->get('deliveryMode')->getData();

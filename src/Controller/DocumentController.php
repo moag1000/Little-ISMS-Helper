@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use Exception;
+use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Control;
 use App\Entity\Document;
@@ -29,6 +29,7 @@ use App\Service\TenantContext;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use App\Service\AuditLogger;
+use App\Service\BulkDeleteService;
 use App\Service\Clone\DocumentCloner;
 use App\Service\PolicyWizard\AuditorScoreCalculator;
 use App\Service\PolicyWizard\Diff\SettingsDriftDetector;
@@ -52,6 +53,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[IsGranted('ROLE_USER')]
 class DocumentController extends AbstractController
 {
+    use BulkActionTrait;
     use InPageFormTrait;
 
     public function __construct(
@@ -411,6 +413,7 @@ class DocumentController extends AbstractController
      * der Abhängigkeiten: HTTP 404: Not Found" before letting the user
      * confirm.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/document/bulk-delete-check', name: 'app_document_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDeleteCheck(Request $request): Response
@@ -439,6 +442,10 @@ class DocumentController extends AbstractController
         ?\App\Repository\TenantBrandingRepository $brandingRepository = null,
     ): Response {
         $data = json_decode($request->getContent(), true);
+        $data = is_array($data) ? $data : [];
+        if (!$this->isBulkCsrfTokenValid($request, $data)) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
+        }
         $ids = $data['ids'] ?? [];
         if (!is_array($ids) || $ids === []) {
             return $this->json(['error' => 'No items selected'], 400);
@@ -463,7 +470,7 @@ class DocumentController extends AbstractController
                 continue;
             }
             // Tenant scope guard.
-            if ($tenant !== null && $doc->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($doc, $this->tenantContext)) {
                 continue;
             }
             $safeName = preg_replace('/[^\w\.\-]+/', '_', (string) ($doc->getOriginalFilename() ?: 'document-' . $doc->getId()));
@@ -522,13 +529,20 @@ class DocumentController extends AbstractController
      *
      * Returns: { "ok": true, "changed": N, "rejected": [{id, reason}] }
      *
-     * ISO 27001 Cl. 7.5.3 — audit logging handled by AuditLogListener on workflow.completed event (not LifecycleService).
+     * CSRF: shared `bulk_action` token (body `_token`).
+     * ISO 27001 Cl. 7.5.3 — BulkActionTrait::applyBulkStatusChange() writes one
+     * AuditLogger::logBulk() batch on top of the per-transition listener entries.
      */
     #[Route('/document/bulk-status-change', name: 'app_document_bulk_status_change', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkStatusChange(Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
+        $data = is_array($data) ? $data : [];
+        if (!$this->isBulkCsrfTokenValid($request, $data)) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
+        }
+
         $ids = $data['ids'] ?? [];
         $newStatus = (string) ($data['newStatus'] ?? '');
         $reason = (string) ($data['reason'] ?? '');
@@ -537,29 +551,25 @@ class DocumentController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $allowedStatuses = ['draft', 'in_review', 'approved', 'published', 'archived'];
-        if (!in_array($newStatus, $allowedStatuses, true)) {
+        // 5-transition bulk matrix by current status → target → transition name
+        // (config/workflows/document.yaml). `published` is context-sensitive:
+        // `restore` when coming from `archived`, `publish` from `approved`.
+        $statusMatrix = [
+            'draft'     => ['in_review' => 'submit_for_review'],
+            'in_review' => ['approved' => 'approve', 'draft' => 'request_changes'],
+            'approved'  => ['published' => 'publish'],
+            'published' => ['archived' => 'archive'],
+            'archived'  => ['published' => 'restore'],
+        ];
+        if (!in_array($newStatus, self::bulkStatusTargets($statusMatrix), true)) {
             return $this->json(['error' => 'Invalid target status'], 400);
         }
 
-        // Map target-status values (posted by the UI) to workflow transition names
-        // defined in config/workflows/document.yaml.
-        // `published` is context-sensitive: use `restore` when coming from `archived`,
-        // else `publish` (from `approved`). Resolved per-document inside the loop.
-        $staticStatusToTransition = [
-            'in_review' => 'submit_for_review',
-            'approved'  => 'approve',
-            'draft'     => 'request_changes',
-            'archived'  => 'archive',
-        ];
-
         /** @var User|null $user */
         $user = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
 
-        $changed = 0;
+        $documents = [];
         $rejected = [];
-
         foreach ($ids as $rawId) {
             $id = (int) $rawId;
             $document = $this->documentRepository->find($id);
@@ -568,109 +578,51 @@ class DocumentController extends AbstractController
                 $rejected[] = ['id' => $id, 'reason' => 'not_found'];
                 continue;
             }
-
-            if ($tenant !== null && $document->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($document, $this->tenantContext)) {
                 $rejected[] = ['id' => $id, 'reason' => 'tenant_mismatch'];
                 continue;
             }
-
-            // Resolve context-sensitive transition for `published` target
-            if ($newStatus === 'published') {
-                $currentStatus = (string) ($document->getStatus() ?? 'draft');
-                $transitionName = $currentStatus === 'archived' ? 'restore' : 'publish';
-            } else {
-                $transitionName = $staticStatusToTransition[$newStatus] ?? $newStatus;
-            }
-
-            if ($this->lifecycleService === null) {
-                $rejected[] = ['id' => $id, 'reason' => 'lifecycle_service_unavailable'];
-                continue;
-            }
-
-            try {
-                $lifecycleUser = $user instanceof User ? $user : null;
-                $this->lifecycleService->transition(
-                    $document,
-                    'document_lifecycle',
-                    $transitionName,
-                    $lifecycleUser,
-                    $reason !== '' ? $reason : null,
-                );
-                $changed++;
-            } catch (\Throwable $e) {
-                $rejected[] = ['id' => $id, 'reason' => $e->getMessage()];
-            }
+            $documents[] = $document;
         }
 
-        return $this->json([
-            'ok'       => true,
-            'changed'  => $changed,
-            'rejected' => $rejected,
-        ]);
+        $result = $this->applyBulkStatusChange(
+            $documents,
+            'document_lifecycle',
+            $statusMatrix,
+            $newStatus,
+            $reason,
+            $user instanceof User ? $user : null,
+            'Document',
+            $this->lifecycleService,
+            $this->auditLogger,
+            $rejected,
+        );
+
+        return $this->json($result, $result['ok'] ? 200 : 400);
     }
 
     #[Route('/document/bulk-delete', name: 'app_document_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
+        // Tenant equality (enforced by BulkDeleteService) already excludes
+        // documents inherited from a parent organisation.
         $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
 
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $document = $this->documentRepository->find($id);
-
-                if (!$document) {
-                    $errors[] = "Document ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's documents
-                if ($tenant && $document->getTenant() !== $tenant) {
-                    $errors[] = "Document ID $id does not belong to your organization";
-                    continue;
-                }
-
-                // Delete physical file if exists
-                $filePath = $document->getFilePath();
-                if ($filePath && file_exists($filePath)) {
-                    @unlink($filePath);
-                }
-
-                $this->entityManager->remove($document);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting document ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted documents deleted successfully"
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Document',
+            $user,
+            fn (int $id): ?Document => $this->documentRepository->find($id),
+            // Same soft_delete transition as the single delete (no hard delete).
+            deleter: fn (object $document) => $this->documentService->softDelete(
+                $document,
+                $user instanceof User ? $user : null,
+                'Document soft-deleted by admin (bulk)',
+            ),
+            voterAttribute: 'delete',
+        );
     }
 
     #[Route('/document/{id}', name: 'app_document_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -1104,22 +1056,11 @@ class DocumentController extends AbstractController
 
         if ($this->isCsrfTokenValid('delete'.$document->getId(), $request->request->get('_token'))) {
             // X.6: soft_delete transition — terminal state, ROLE_ADMIN only, reason required.
-            // Replaces direct setStatus('deleted'). document_lifecycle extended with
-            // 'deleted' place + 'soft_delete' transition (X.6, config/workflows/document.yaml).
-            if ($this->lifecycleService !== null) {
-                $lifecycleUser = $user instanceof User ? $user : null;
-                $this->lifecycleService->transition(
-                    $document,
-                    'document_lifecycle',
-                    'soft_delete',
-                    $lifecycleUser,
-                    'Document soft-deleted by admin',
-                );
-            } else {
-                // Fallback: direct setter if lifecycle service unavailable (should not happen in prod).
-                $document->setStatus('deleted'); // @phpstan-ignore lifecycle.directSetStatus (LifecycleService unavailable fallback — guarded by null-check)
-                $this->entityManager->flush();
-            }
+            $this->documentService->softDelete(
+                $document,
+                $user instanceof User ? $user : null,
+                'Document soft-deleted by admin',
+            );
 
             $this->addFlash('success', $this->translator->trans('document.success.deleted', [], 'messages'));
         }

@@ -31,6 +31,8 @@ class CorporateStructureControllerTest extends WebTestCase
     private ?Tenant $parentTenant = null;
     private ?User $testUser = null;
     private ?User $adminUser = null;
+    /** @var list<User> */
+    private array $extraUsers = [];
 
     protected function setUp(): void
     {
@@ -43,6 +45,23 @@ class CorporateStructureControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        foreach ($this->extraUsers as $extraUser) {
+            $user = $this->entityManager->find(User::class, $extraUser->getId());
+            if ($user) {
+                $this->entityManager->remove($user);
+            }
+        }
+        // Detach the child before the tenants go (parent FK).
+        if ($this->testTenant) {
+            $tenant = $this->entityManager->find(Tenant::class, $this->testTenant->getId());
+            if ($tenant) {
+                foreach ($this->entityManager->getRepository(\App\Entity\CorporateGovernance::class)->findBy(['tenant' => $tenant]) as $rule) {
+                    $this->entityManager->remove($rule);
+                }
+                $tenant->setParent(null);
+            }
+        }
+
         if ($this->testUser) {
             try {
                 $user = $this->entityManager->find(User::class, $this->testUser->getId());
@@ -137,6 +156,39 @@ class CorporateStructureControllerTest extends WebTestCase
     private function loginAsUser(User $user): void
     {
         $this->client->loginUser($user);
+    }
+
+    private function extraUser(string $role, Tenant $tenant): User
+    {
+        $user = new User();
+        $user->setEmail(strtolower($role) . '_' . uniqid('', true) . '@example.com');
+        $user->setFirstName('Extra');
+        $user->setLastName($role);
+        $user->setRoles([$role]);
+        $user->setPassword('hashed_password');
+        $user->setTenant($tenant);
+        $user->setIsActive(true);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        $this->extraUsers[] = $user;
+
+        return $user;
+    }
+
+    /**
+     * Make testTenant a subsidiary of parentTenant with a default governance rule.
+     */
+    private function attachTestTenantToParent(): void
+    {
+        $this->testTenant->setParent($this->parentTenant);
+        $governance = new \App\Entity\CorporateGovernance();
+        $governance->setTenant($this->testTenant);
+        $governance->setParent($this->parentTenant);
+        $governance->setScope('default');
+        $governance->setScopeId(null);
+        $governance->setGovernanceModel(\App\Enum\GovernanceModel::INDEPENDENT);
+        $this->entityManager->persist($governance);
+        $this->entityManager->flush();
     }
 
     /**
@@ -255,13 +307,99 @@ class CorporateStructureControllerTest extends WebTestCase
     #[Test]
     public function testSetParentRequiresValidGovernanceModel(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->extraUser('ROLE_SUPER_ADMIN', $this->testTenant));
         $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
             'tenantId' => $this->testTenant->getId(),
             'parentId' => $this->parentTenant->getId(),
             'governanceModel' => 'invalid'
         ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Test]
+    public function testTenantAdminCannotAttachOwnTenantToForeignGroup(): void
+    {
+        // Attaching a tenant to another organisation's group would give that
+        // group read access to it — SUPER_ADMIN only.
+        $this->loginAsUser($this->adminUser);
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+            'tenantId' => $this->testTenant->getId(),
+            'parentId' => $this->parentTenant->getId(),
+            'governanceModel' => 'hierarchical',
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->entityManager->clear();
+        self::assertNull($this->entityManager->find(Tenant::class, $this->testTenant->getId())?->getParent());
+    }
+
+    #[Test]
+    public function testHoldingAdminCanDetachOwnSubsidiaryAndRemovalIsAudited(): void
+    {
+        $this->attachTestTenantToParent();
+        $holdingAdmin = $this->extraUser('ROLE_ADMIN', $this->parentTenant);
+
+        $this->loginAsUser($holdingAdmin);
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+            'tenantId' => $this->testTenant->getId(),
+            'parentId' => null,
+        ]);
+        $this->assertResponseIsSuccessful();
+
+        $auditRows = $this->entityManager->getRepository(\App\Entity\AuditLog::class)->findBy([
+            'entityType' => 'CorporateGovernance',
+            'action' => 'delete',
+        ]);
+        self::assertNotEmpty($auditRows, 'bulk DQL delete of governance rules must be audit-logged');
+    }
+
+    #[Test]
+    public function testSubsidiaryAdminCannotDetachItselfFromItsGroup(): void
+    {
+        $this->attachTestTenantToParent();
+
+        $this->loginAsUser($this->adminUser);
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+            'tenantId' => $this->testTenant->getId(),
+            'parentId' => null,
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function testGovernanceOfSubsidiaryIsChangedByHoldingOnly(): void
+    {
+        $this->attachTestTenantToParent();
+        $uri = '/en/api/corporate-structure/governance-model/' . $this->testTenant->getId();
+
+        $this->loginAsUser($this->adminUser);
+        $this->jsonRequestWithCsrf('PATCH', $uri, ['governanceModel' => 'shared']);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->loginAsUser($this->extraUser('ROLE_ADMIN', $this->parentTenant));
+        $this->jsonRequestWithCsrf('PATCH', $uri, ['governanceModel' => 'shared']);
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[Test]
+    public function testForeignTenantDataIsNotReadable(): void
+    {
+        // parentTenant is a separate organisation for adminUser here.
+        $this->loginAsUser($this->adminUser);
+        $foreignId = $this->parentTenant->getId();
+
+        $this->client->request('GET', '/en/api/corporate-structure/tree/' . $foreignId);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->client->request('GET', '/en/api/corporate-structure/effective-context/' . $foreignId);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->client->request('GET', '/en/api/corporate-structure/' . $foreignId . '/governance');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/propagate-context/' . $foreignId);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->client->request('GET', '/en/api/corporate-structure/groups');
+        $ids = array_column(json_decode((string) $this->client->getResponse()->getContent(), true), 'id');
+        self::assertNotContains($foreignId, $ids);
     }
 
     // ========== GOVERNANCE MODEL TESTS ==========
@@ -284,7 +422,7 @@ class CorporateStructureControllerTest extends WebTestCase
     #[Test]
     public function testUpdateGovernanceModelRequiresValidModel(): void
     {
-        $this->loginAsUser($this->adminUser);
+        $this->loginAsUser($this->extraUser('ROLE_SUPER_ADMIN', $this->testTenant));
         $this->jsonRequestWithCsrf(
             'PATCH',
             '/en/api/corporate-structure/governance-model/' . $this->testTenant->getId(),

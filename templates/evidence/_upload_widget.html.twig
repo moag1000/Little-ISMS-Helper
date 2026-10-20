@@ -57,7 +57,13 @@
                             <button type="button"
                                     class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost text-danger"
                                     title="{{ 'evidence.unlink'|trans({}, 'evidence') }}"
-                                    onclick="unlinkEvidence({{ doc.id }}, '{{ entityType }}', {{ entityId }})">
+                                    data-controller="ui-actions"
+                                    data-action="ui-actions#confirmAndFetch"
+                                    data-ui-actions-confirm-param="{{ 'evidence.unlink_confirm'|trans({}, 'evidence') }}"
+                                    data-ui-actions-url-param="{{ path('app_evidence_unlink') }}"
+                                    data-ui-actions-csrf-param="{{ csrf_token('evidence_unlink') }}"
+                                    data-ui-actions-fields-param="{{ {document_id: doc.id, entity_type: entityType, entity_id: entityId}|json_encode }}"
+                                    data-ui-actions-reload-param="true">
                                 <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -93,35 +99,3 @@
     {% endblock %}
 {% endembed %}
 
-<script>
-// window-assignment (not `function …`) so Turbo re-running this in-body script
-// on navigation re-assigns instead of throwing "already declared"; the inline
-// onclick handler still reaches it via the global.
-window.unlinkEvidence = async function (documentId, entityType, entityId) {
-    if (!await window.faConfirm('{{ 'evidence.unlink_confirm'|trans({}, 'evidence') }}', { tone: 'danger' })) {
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('_token', '{{ csrf_token('evidence_unlink') }}');
-    formData.append('document_id', documentId);
-    formData.append('entity_type', entityType);
-    formData.append('entity_id', entityId);
-
-    fetch('{{ path('app_evidence_unlink') }}', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.reload();
-        } else {
-            window.faToast(data.error || 'Error unlinking evidence', 'danger');
-        }
-    })
-    .catch(error => {
-        window.faToast('Network error: ' + error.message, 'danger');
-    });
-}
-</script>

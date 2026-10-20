@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Form\Admin;
 
 use App\Form\SectionMapInterface;
+use App\Form\Type\JsonBuilderType;
+use App\Service\ModuleConfigurationService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Json;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 /**
@@ -20,9 +21,10 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
  *
  * Editable keys:
  *   - approverRole               string|null  (ROLE_* override)
- *   - approverUsers              string|null  (JSON array of user IDs)
+ *   - approverUsers              list<int>    (user IDs of the tenant — `user_choices`)
  *   - daysToComplete             int|null     (SLA days override)
- *   - autoProgressConditions     string|null  (JSON condition object)
+ *   - autoProgressConditions     array|null   (condition object, structured builder;
+ *                                              same keys as the YAML auto_progress_conditions)
  *   - reasonRequired             bool|null    (tri-state: null = use YAML)
  *   - fourEyes                   bool|null    (tri-state)
  *   - module                     string|null  (module-gate key)
@@ -31,6 +33,10 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
  */
 final class WorkflowStepOverlayType extends AbstractType implements SectionMapInterface
 {
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -43,13 +49,13 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
                 ],
                 'help' => 'admin.workflows.form.approver_role_help',
             ])
-            ->add('approverUsers', TextType::class, [
+            ->add('approverUsers', ChoiceType::class, [
                 'label' => 'admin.workflows.form.approver_users',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => '[]',
-                    'autocomplete' => 'off',
-                ],
+                'multiple' => true,
+                'choices' => $options['user_choices'],
+                'choice_translation_domain' => false,
+                'attr' => ['data-controller' => 'tom-select'],
                 'help' => 'admin.workflows.form.approver_users_help',
             ])
             ->add('daysToComplete', IntegerType::class, [
@@ -64,18 +70,30 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
                 ],
                 'help' => 'admin.workflows.form.days_to_complete_help',
             ])
-            ->add('autoProgressConditions', TextareaType::class, [
+            // Same keys the YAML `auto_progress_conditions` and
+            // WorkflowAutoProgressionService / ProcessTimedWorkflowsCommand read.
+            ->add('autoProgressConditions', JsonBuilderType::class, [
                 'label' => 'admin.workflows.form.auto_progress_conditions',
                 'required' => false,
-                'constraints' => [
-                    new Json(message: 'admin.workflows.validation.conditions_invalid_json'),
-                ],
-                'attr' => [
-                    'rows' => 5,
-                    'class' => 'form-control font-monospace',
-                    'placeholder' => '{"type": "field_completion", "fields": ["severity"]}',
-                ],
                 'help' => 'admin.workflows.form.auto_progress_conditions_help',
+                'shape' => 'object',
+                'fields' => [
+                    ['key' => 'type', 'type' => 'select', 'label' => 'admin.workflows.conditions.type', 'required' => true, 'choices' => [
+                        'admin.workflows.conditions.type_field_completion' => 'field_completion',
+                        'admin.workflows.conditions.type_auto' => 'auto',
+                        'admin.workflows.conditions.type_risk_appetite' => 'risk_appetite',
+                        'admin.workflows.conditions.type_time_based' => 'time_based',
+                    ]],
+                    ['key' => 'entity', 'type' => 'text', 'label' => 'admin.workflows.conditions.entity',
+                        'help' => 'admin.workflows.conditions.entity_help'],
+                    ['key' => 'fields', 'type' => 'tags', 'label' => 'admin.workflows.conditions.fields',
+                        'help' => 'admin.workflows.conditions.fields_help'],
+                    ['key' => 'condition', 'type' => 'text', 'label' => 'admin.workflows.conditions.condition', 'wide' => true,
+                        'help' => 'admin.workflows.conditions.condition_help'],
+                    ['key' => 'riskScoreField', 'type' => 'text', 'label' => 'admin.workflows.conditions.risk_score_field'],
+                    ['key' => 'delay', 'type' => 'text', 'label' => 'admin.workflows.conditions.delay',
+                        'help' => 'admin.workflows.conditions.delay_help'],
+                ],
             ])
             ->add('reasonRequired', CheckboxType::class, [
                 'label' => 'admin.workflows.form.reason_required',
@@ -97,13 +115,14 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
                 'mapped' => false,
                 'attr' => ['class' => 'workflow-overlay-toggle'],
             ])
-            ->add('module', TextType::class, [
+            ->add('module', ChoiceType::class, [
                 'label' => 'admin.workflows.form.module',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'privacy',
-                    'autocomplete' => 'off',
-                ],
+                // Only keys from config/modules.yaml are selectable: an unknown key
+                // would make ModuleGateGuard block the transition permanently.
+                'choices' => $this->moduleChoices(),
+                'choice_translation_domain' => false,
+                'placeholder' => '—',
                 'help' => 'admin.workflows.form.module_help',
             ]);
     }
@@ -112,7 +131,10 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
     {
         $resolver->setDefaults([
             'translation_domain' => 'admin',
+            // label => user id; the controller passes the tenant's active users.
+            'user_choices' => [],
         ]);
+        $resolver->setAllowedTypes('user_choices', 'array');
     }
 
     /**
@@ -126,5 +148,19 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
             'approval'       => ['reasonRequired', 'reasonRequiredOverride', 'fourEyes', 'fourEyesOverride'],
             'advanced'       => ['autoProgressConditions', 'module'],
         ];
+    }
+
+    /**
+     * @return array<string, string> label => module key
+     */
+    private function moduleChoices(): array
+    {
+        $choices = [];
+        foreach ($this->moduleConfiguration->getAllModules() as $key => $module) {
+            $name = is_array($module) && isset($module['name']) ? (string) $module['name'] : (string) $key;
+            $choices[sprintf('%s (%s)', $name, $key)] = (string) $key;
+        }
+
+        return $choices;
     }
 }

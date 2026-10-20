@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\Trait\LocalizedFlashTrait;
-use App\Entity\ComplianceFramework;
-use App\Entity\Control;
-use App\Entity\Document;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
+use App\Service\Setup\IndustryPresetApplier;
 use App\Service\TenantContext;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +24,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Surfaces the 4 curated presets from `fixtures/library/presets/` so
  * tenant-admins can apply them without dropping to the CLI. Each preset
  * activates modules (active_modules.yaml), flips frameworks active=true,
- * and persists initial Control / Document skeletons.
+ * and persists initial Control / Document skeletons — via the
+ * {@see IndustryPresetApplier} shared with app:load-industry-preset.
  *
  * Phase 4c role-scope migration: ROLE_ADMIN applies presets in their own
  * tenant, SUPER_ADMIN may target any via the `tenant_id` POST param.
@@ -43,10 +41,10 @@ class IndustryPresetController extends AbstractController
     private const PRESET_DIR = __DIR__ . '/../../../fixtures/library/presets';
 
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
+        private readonly IndustryPresetApplier $presetApplier,
         private readonly ?AuditLogger $auditLogger = null,
     ) {
     }
@@ -109,106 +107,11 @@ class IndustryPresetController extends AbstractController
             return $this->redirectToRoute('app_admin_industry_preset_index');
         }
 
-        // 1. Modules
-        $modulesActivated = [];
-        $current = $this->moduleService->getActiveModules();
-        $merged = array_values(array_unique(array_merge($current, $config['modules'] ?? [])));
-        if (count($merged) !== count($current)) {
-            $modulesActivated = array_values(array_diff($merged, $current));
-            $this->moduleService->saveActiveModules($merged);
-        }
-
-        // 2. Frameworks
-        $frameworksActivated = 0;
-        foreach ($config['frameworks'] ?? [] as $framework) {
-            if (!($framework['activate'] ?? false)) {
-                continue;
-            }
-            $code = (string) ($framework['code'] ?? '');
-            if ($code === '') {
-                continue;
-            }
-            $fwRepo = $this->entityManager->getRepository(ComplianceFramework::class);
-            $existing = $fwRepo->findOneBy(['code' => $code]);
-            if ($existing instanceof ComplianceFramework) {
-                if ($existing->isActive() !== true) {
-                    $existing->setActive(true);
-                    $frameworksActivated++;
-                }
-            } else {
-                $fw = new ComplianceFramework();
-                $fw->setCode($code);
-                $fw->setName($code);
-                $fw->setVersion('latest');
-                $fw->setApplicableIndustry($config['name'] ?? 'all');
-                $fw->setRegulatoryBody('—');
-                $fw->setMandatory(($framework['priority'] ?? null) === 'primary');
-                $fw->setActive(true);
-                $this->entityManager->persist($fw);
-                $frameworksActivated++;
-            }
-        }
-
-        // 3. Controls
-        $controlsCreated = 0;
-        $controlRepo = $this->entityManager->getRepository(Control::class);
-        foreach ($config['initial_controls'] ?? [] as $cdef) {
-            $existing = $controlRepo->findOneBy([
-                'tenant' => $tenant,
-                'controlId' => $cdef['identifier'] ?? null,
-            ]);
-            if ($existing instanceof Control) {
-                continue;
-            }
-            $control = new Control();
-            if (method_exists($control, 'setTenant')) {
-                $control->setTenant($tenant);
-            }
-            if (method_exists($control, 'setControlId')) {
-                $control->setControlId((string) ($cdef['identifier'] ?? ''));
-            }
-            if (method_exists($control, 'setName')) {
-                $control->setName((string) ($cdef['name'] ?? ''));
-            }
-            if (method_exists($control, 'setImplementationStatus')) {
-                $control->setImplementationStatus((string) ($cdef['implementation_status'] ?? 'not_started'));
-            }
-            if (method_exists($control, 'setApplicable')) {
-                $control->setApplicable(true);
-            }
-            $this->entityManager->persist($control);
-            $controlsCreated++;
-        }
-
-        // 4. Documents
-        $documentsCreated = 0;
-        $docRepo = $this->entityManager->getRepository(Document::class);
-        foreach ($config['initial_documents'] ?? [] as $ddef) {
-            $existing = $docRepo->findOneBy([
-                'tenant' => $tenant,
-                'title' => $ddef['title'] ?? null,
-            ]);
-            if ($existing instanceof Document) {
-                continue;
-            }
-            $doc = new Document();
-            if (method_exists($doc, 'setTenant')) {
-                $doc->setTenant($tenant);
-            }
-            if (method_exists($doc, 'setTitle')) {
-                $doc->setTitle((string) ($ddef['title'] ?? ''));
-            }
-            if (method_exists($doc, 'setDocumentType')) {
-                $doc->setDocumentType((string) ($ddef['type'] ?? 'policy'));
-            }
-            if (method_exists($doc, 'setStatus')) {
-                $doc->setStatus((string) ($ddef['status'] ?? 'draft')); // @phpstan-ignore lifecycle.directSetStatus (industry preset setup — initial state outside lifecycle flow)
-            }
-            $this->entityManager->persist($doc);
-            $documentsCreated++;
-        }
-
-        $this->entityManager->flush();
+        $result = $this->presetApplier->apply($preset, $config, $tenant);
+        $modulesActivated = $result['modules_activated'];
+        $frameworksActivated = $result['frameworks_activated'];
+        $controlsCreated = $result['controls_created'];
+        $documentsCreated = $result['documents_created'];
 
         if ($this->auditLogger !== null) {
             $this->auditLogger->logCustom(

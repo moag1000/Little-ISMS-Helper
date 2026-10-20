@@ -26,10 +26,12 @@
                 <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
                 {{ 'compliance.mapping.wizard.cta.seeds'|trans({}, 'compliance') }}
             </a>
+            {% if is_granted('ROLE_MANAGER') %}
             <a href="{{ path('app_compliance_mapping_new') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                 <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                 {{ 'compliance.mapping.wizard.cta.advanced'|trans({}, 'compliance') }}
             </a>
+            {% endif %}
         </div>
     </div>
 

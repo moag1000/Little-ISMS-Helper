@@ -22,7 +22,9 @@
  #             default: 'thinking' (plan §21: "noch nichts angelegt")
  #   title   - heading text (required)
  #   text    - descriptive paragraph (optional)
- #   actions - array of { label, variant, icon?, href } (optional)
+ #   actions - array of { label, variant, icon?, href, attrs? } (optional)
+ #             attrs: { key: value } — extra HTML attributes on the <a>
+ #             (e.g. { 'data-turbo-action': 'advance' }); values are escaped
  #   alvaSize - Alva SVG size in px (default 96)
  #   class   - extra CSS classes on wrapper (optional)
  #   norm_ref      - ISO reference line (string, optional) — small muted text below description
@@ -79,7 +81,10 @@
                 {% for action in actions %}
                     {% set variant = action.variant|default('primary') %}
                     <a href="{{ action.href|default('#') }}"
-                       class="fa-cyber-btn fa-cyber-btn--{{ variant }}">
+                       class="fa-cyber-btn fa-cyber-btn--{{ variant }}"
+                       {%- if action.attrs is defined and action.attrs -%}
+                           {%- for attr_name, attr_value in action.attrs %} {{ attr_name }}="{{ attr_value }}"{% endfor -%}
+                       {%- endif -%}>
                         {% if action.icon is defined and action.icon %}
                             <i class="fa-icon fa-icon--{{ action.icon }}" aria-hidden="true"></i>
                         {% endif %}

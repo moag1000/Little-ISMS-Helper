@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use DateTime;
 use App\Entity\Risk;
 use App\Entity\Control;
@@ -234,7 +235,8 @@ class ReportController extends AbstractController
                 $control->isApplicable(),
                 $control->getImplementationStatus(),
                 $control->getImplementationPercentage() . '%',
-                $control->getResponsiblePerson() ? $control->getResponsiblePerson()->getEmail() : '-',
+                // User → Person → legacy free-text, like the audit workbooks.
+                $control->getEffectiveResponsiblePerson() ?? '-',
                 $control->getTargetDate() ? $control->getTargetDate()->format('Y-m-d') : '-',
             ];
         }
@@ -301,7 +303,7 @@ class ReportController extends AbstractController
                 $incident->getStatus()?->value,
                 $incident->getDetectedAt()->format('Y-m-d'),
                 $incident->getResolvedAt() ? $incident->getResolvedAt()->format('Y-m-d') : 'Open',
-                $incident->getReportedBy() ? $incident->getReportedBy()->getEmail() : '-',
+                $incident->getEffectiveReportedBy() ?? '-',
             ];
         }
 
@@ -317,6 +319,7 @@ class ReportController extends AbstractController
     // ===================== TRAINING REPORTS =====================
 
     #[Route('/reports/trainings/pdf', name: 'app_reports_trainings_pdf', methods: ['GET'])]
+    #[RequiresModule('training')]
     public function trainingsPdf(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();
@@ -348,6 +351,7 @@ class ReportController extends AbstractController
     }
 
     #[Route('/reports/trainings/excel', name: 'app_reports_trainings_excel', methods: ['GET'])]
+    #[RequiresModule('training')]
     public function trainingsExcel(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();

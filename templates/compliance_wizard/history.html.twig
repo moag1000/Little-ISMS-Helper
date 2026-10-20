@@ -74,6 +74,9 @@
             <div class="card-body">
                 <form method="get" id="diff-select-form"
                       data-controller="diff-select"
+                      data-action="submit->diff-select#compare"
+                      data-diff-select-url-value="{{ path('app_compliance_wizard_diff', {wizard: wizard, fromId: 0, toId: 0}) }}"
+                      data-diff-select-message-value="{{ 'diff.select_different'|trans({}, 'compliance_wizard') }}"
                       class="row g-3 align-items-end">
                     <div class="col-12 col-md-5">
                         <label class="form-label" for="diff-from">
@@ -108,18 +111,8 @@
                         </select>
                     </div>
                     <div class="col-12 col-md-auto">
-                        {# JS submit redirects to the route; fallback = hidden action filled by JS #}
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--primary"
-                                onclick="
-                                    var from = document.getElementById('diff-from').value;
-                                    var to   = document.getElementById('diff-to').value;
-                                    if (from && to && from !== to) {
-                                        var base = '{{ path('app_compliance_wizard_history', {wizard: wizard}) }}';
-                                        window.location.href = base.replace('/history', '/diff/' + from + '/' + to);
-                                    } else {
-                                        alert('{{ 'diff.select_different'|trans({}, 'compliance_wizard')|e('js') }}');
-                                    }
-                                ">
+                        {# diff-select#compare navigates to the diff route (no inline JS: CSP) #}
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                             {{ 'diff.action.compare'|trans({}, 'compliance_wizard') }}
                         </button>

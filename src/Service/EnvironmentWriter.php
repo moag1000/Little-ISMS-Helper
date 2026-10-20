@@ -31,7 +31,8 @@ final class EnvironmentWriter
      * Write database configuration to .env.local
      *
      * @param array $config Configuration array with keys: type, host, port, name, user, password, unixSocket
-     * @throws RuntimeException if write fails
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException on an unsupported database type
+     * @throws \App\Exception\Io\IoException if write fails
      */
     public function writeDatabaseConfig(array $config): void
     {
@@ -107,7 +108,8 @@ final class EnvironmentWriter
      * Write arbitrary environment variables to .env.local
      *
      * @param array $variables Key-value pairs of environment variables
-     * @throws RuntimeException if write fails
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException on an invalid variable name
+     * @throws \App\Exception\Io\IoException if write fails
      */
     public function writeEnvVariables(array $variables): void
     {

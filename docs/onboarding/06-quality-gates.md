@@ -93,6 +93,8 @@ done
 | `check_aurora_utility_misuse.py` | Aurora utility class misuse patterns | `aurora_utility_misuse.txt` |
 | `check_aurora_v4.sh` | Aurora v4 macro usage convention checks | _(direct fail)_ |
 | `check_aurora_icon_names.py` | Icon names not in the approved Aurora icon set | `aurora_icon_names.txt` |
+| `check_native_dialogs.py` | Gate 67: native `alert()`/`confirm()`/`prompt()` (no fallback allowed — `import { faConfirm, faPrompt, faToast } from '../js/fa-alerts.js'`, templates `ui-actions#confirm`/`#promptSubmit`) and inline JavaScript the CSP blocks: `on*=` handlers (also as Twig attr-map keys), `javascript:` URLs, inline `<script>` without `nonce="{{ csp_nonce() }}"`, CSS imports in JS modules — use Stimulus `data-action` (generic: `ui-actions`) | — |
+| `check_aurora_legacy_markup.py` | Ratchet: Bootstrap tables, progress bars, legacy page headers, `data-bs-toggle="modal"`, `badge bg-*`, `alert alert-*`, `btn btn-*` where an Aurora component exists (Gate 62, counts per file may only go down) | `aurora_legacy_markup.txt` |
 | `check_aurora_icons_only.py` | Raw Font Awesome class usage outside approved patterns | _(direct fail)_ |
 | `check_macro_arg_arity.py` | Macro call sites passing wrong number of arguments | `macro_arg_arity.txt` |
 | `check_double_locale_prefix.py` | Routes with double locale prefix (`/{_locale}/{_locale}/`) | _(direct fail)_ |
@@ -105,7 +107,7 @@ done
 
 | Script | What it checks | Baseline |
 |---|---|---|
-| `check_missing_translations.py` | Keys used in templates missing from translation files | _(direct fail)_ |
+| `check_missing_translations.py` | DE/EN key parity in every domain (both directions) and leftover `__key` extract stubs | _(direct fail)_ |
 | `check_missing_translations.sh` | Shell-based translation key scan | _(direct fail)_ |
 | `check_translation_issues.py` | Hardcoded text, missing domain params, untranslated attributes | _(report only)_ |
 | `check_translation_dynamic_keys.py` | Dynamic translation keys (not statically analysable) | `translation_dynamic_keys.*` |
@@ -122,7 +124,7 @@ done
 | `check_setter_nullability.py` | Setters accepting `null` on non-nullable columns | `setter_nullability.txt` |
 | `check_notblank_on_not_null.py` | `NOT NULL` columns missing `#[Assert\NotBlank]` | `notblank_on_not_null.txt` |
 | `check_disabled_mapped_pair.py` | `disabled: true` FormType fields that are also `mapped: true` | `disabled_mapped_pair.txt` |
-| `check_raw_json_textarea.py` | Direct JSON textarea rendering (must use builder macro) | `raw_json_textarea.txt` |
+| `check_raw_json_textarea.py` | Raw JSON editing in FormTypes (Gate 34): `TextareaType` on a JSON+array column, `JsonStructuredType` without a `_<form>_<field>_row` builder theme, `JsonArrayTransformer` on a field, the `Json` constraint, JSON-looking placeholders. Use `JsonBuilderType` (generic schema-driven builder + `JsonShape` validation) | `raw_json_textarea.txt` |
 | `check_enum_to_json_unwrap.py` | Enum `->value` missing when serialising to JSON | `enum_to_json_unwrap.txt` |
 | `check_status_enum_yaml_parity.py` | Status enum cases not matching workflow YAML places | _(direct fail)_ |
 | `check_freetext_legacy.py` | Legacy freetext fields not yet migrated to taxonomy | `freetext_legacy.txt` |

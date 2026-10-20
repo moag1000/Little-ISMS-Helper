@@ -317,7 +317,10 @@ final class UserManagementAdminScopeTest extends WebTestCase
         $this->client->request('GET', '/en/admin/users/export');
         $csv = (string) ob_get_clean() . (string) $this->client->getInternalResponse()->getContent();
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString((string) $this->userAChild->getEmail(), $csv);
+        // The CSV export is narrower than the list: own organisation only
+        // (audit M-7, JobTenantScope), never subsidiaries or foreign tenants.
+        self::assertStringContainsString((string) $this->userA->getEmail(), $csv);
+        self::assertStringNotContainsString((string) $this->userAChild->getEmail(), $csv);
         self::assertStringNotContainsString((string) $this->userB->getEmail(), $csv);
     }
 

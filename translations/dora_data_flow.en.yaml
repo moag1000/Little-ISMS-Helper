@@ -6,6 +6,8 @@ dora_data_flow:
         show: "Data Flow"
     description:
         overview: "Data flows between the financial entity and ICT third-party providers per DORA Art. 28 (RT_03)."
+    # Eyebrow over detail/form views (norm reference + register name).
+    eyebrow: "DORA Art. 28 · RT_03 · Register of Information"
     action:
         create: "New Data Flow"
     field:

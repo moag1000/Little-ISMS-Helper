@@ -334,6 +334,57 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame(25, $thresholds['executive']['max_score']);
     }
 
+    #[Test]
+    public function testRequestAcceptanceNotifiesApproverWithCorrectArguments(): void
+    {
+        // Regression: sendApprovalNotification() passed a named argument
+        // `approver:` that EmailNotificationService::sendRiskAcceptanceRequest()
+        // does not have — PHP threw \Error ("Unknown named parameter"), which
+        // the old catch(\Exception) did not catch, so every manager/executive
+        // acceptance request crashed.
+        $risk = $this->createValidRiskForAcceptance();
+        $risk->method('getResidualRiskLevel')->willReturn(5); // manager level
+        $requester = $this->createUser();
+
+        $approver = $this->createMock(User::class);
+        $approver->method('getRoles')->willReturn(['ROLE_MANAGER']);
+        $approver->method('getFullName')->willReturn('Mia Manager');
+        $approver->method('getEmail')->willReturn('mia@example.com');
+        $this->userRepository->method('findBy')->willReturn([$approver]);
+        $this->riskAppetiteService->method('getApplicableAppetite')->willReturn(null);
+        $this->workflowService->method('startWorkflow')->willReturn(null);
+
+        $this->emailNotificationService->expects($this->once())
+            ->method('sendRiskAcceptanceRequest')
+            ->with($risk, $approver, 'manager');
+        $this->logger->expects($this->never())->method('error');
+
+        $result = $this->service->requestAcceptance($risk, $requester, 'Justified');
+
+        $this->assertSame('pending_approval', $result['status']);
+        $this->assertSame('manager', $result['approval_level']);
+        $this->assertSame('Mia Manager', $result['approver']);
+    }
+
+    #[Test]
+    public function testRequestAcceptanceSurvivesNotificationError(): void
+    {
+        $risk = $this->createValidRiskForAcceptance();
+        $risk->method('getResidualRiskLevel')->willReturn(5);
+        $approver = $this->createMock(User::class);
+        $approver->method('getRoles')->willReturn(['ROLE_MANAGER']);
+        $this->userRepository->method('findBy')->willReturn([$approver]);
+        $this->riskAppetiteService->method('getApplicableAppetite')->willReturn(null);
+        $this->workflowService->method('startWorkflow')->willReturn(null);
+        $this->emailNotificationService->method('sendRiskAcceptanceRequest')
+            ->willThrowException(new \TypeError('template broke'));
+        $this->logger->expects($this->once())->method('error');
+
+        $result = $this->service->requestAcceptance($risk, $this->createUser(), 'Justified');
+
+        $this->assertSame('pending_approval', $result['status']);
+    }
+
     private function createRisk(): MockObject
     {
         $risk = $this->createMock(Risk::class);

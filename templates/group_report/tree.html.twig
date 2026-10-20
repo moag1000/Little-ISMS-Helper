@@ -65,7 +65,7 @@
 
     {# Navigation shortcuts — rendered as body_html in the nav section #}
     {% set _nav_html = '<div class="d-flex flex-wrap gap-2" style="margin-bottom:1rem;">'
-        ~ '<a href="' ~ path('app_group_report_nis2_registration') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.nis2.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ (is_module_active('nis2_dora') ? '<a href="' ~ path('app_group_report_nis2_registration') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.nis2.title'|trans({}, 'group_report')) ~ '</a>' : '')
         ~ '<a href="' ~ path('app_group_report_risks') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.risks.title'|trans({}, 'group_report')) ~ '</a>'
         ~ '<a href="' ~ path('app_group_report_kpi_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.kpi.title'|trans({}, 'group_report')) ~ '</a>'
         ~ '<a href="' ~ path('app_group_report_soa_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.soa.title'|trans({}, 'group_report')) ~ '</a>'
@@ -114,8 +114,8 @@
             ],
         },
         distribution: [
-            { role: 'Group-CISO',      name: '—' },
-            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
+            { role: 'role.group_ciso'|trans({}, 'role_management'), name: '—' },
+            { role: 'role.konzern_auditor'|trans({}, 'role_management'), name: 'Group Audit Committee' },
         ],
     }) }}
 </div>

@@ -119,16 +119,16 @@ class IncidentEscalationWorkflowService
 
         // Calculate 72h deadline
         $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
-        $deadline = $detectedAt->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
+        $deadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
 
         // Calculate time remaining
         $now = new DateTimeImmutable();
         $hoursRemaining = ($deadline->getTimestamp() - $now->getTimestamp()) / 3600;
 
         // Find DPO, CISO, and CEO
-        $dpo = $this->findUserByRole('ROLE_DPO');
-        $ciso = $this->findUserByRole('ROLE_CISO');
-        $ceo = $this->findUserByRole('ROLE_CEO');
+        $dpo = $this->findUserByRole('ROLE_DPO', $incident);
+        $ciso = $this->findUserByRole('ROLE_CISO', $incident);
+        $ceo = $this->findUserByRole('ROLE_CEO', $incident);
 
         // Create workflow instance for breach notification approval
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -189,9 +189,9 @@ class IncidentEscalationWorkflowService
         ]);
 
         // Find responsible roles
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-        $ciso = $this->findUserByRole('ROLE_CISO');
-        $management = $this->findUsersByRole('ROLE_MANAGER');
+        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+        $ciso = $this->findUserByRole('ROLE_CISO', $incident);
+        $management = $this->findUsersByRole('ROLE_MANAGER', $incident);
 
         // Calculate SLA deadline
         $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'critical') . ' hours');
@@ -268,8 +268,8 @@ class IncidentEscalationWorkflowService
             'incident_number' => $incident->getIncidentNumber(),
         ]);
 
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-        $ciso = $this->findUserByRole('ROLE_CISO');
+        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+        $ciso = $this->findUserByRole('ROLE_CISO', $incident);
 
         $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'high') . ' hours');
 
@@ -333,7 +333,7 @@ class IncidentEscalationWorkflowService
      */
     private function escalateMedium(Incident $incident): array
     {
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
+        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
         $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'medium') . ' hours');
 
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -386,7 +386,7 @@ class IncidentEscalationWorkflowService
      */
     private function escalateLow(Incident $incident): array
     {
-        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
+        $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
         $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'low') . ' hours');
 
         // Generate incident URL for email
@@ -460,20 +460,24 @@ class IncidentEscalationWorkflowService
     }
 
     /**
-     * Find user by role
+     * First active user holding $role inside the incident's organisation.
+     * Never looks outside the incident's tenant — escalation mails carry
+     * incident details that must not reach another organisation.
      */
-    private function findUserByRole(string $role): ?User
+    private function findUserByRole(string $role, Incident $incident): ?User
     {
-        $users = $this->userRepository->findByRole($role);
+        $users = $this->findUsersByRole($role, $incident);
         return $users[0] ?? null;
     }
 
     /**
-     * Find all users with a specific role
+     * All active users holding $role inside the incident's organisation.
+     *
+     * @return list<User>
      */
-    private function findUsersByRole(string $role): array
+    private function findUsersByRole(string $role, Incident $incident): array
     {
-        return $this->userRepository->findByRole($role);
+        return $this->userRepository->findByRoleInTenant($role, $incident->getTenant());
     }
 
     /**
@@ -590,28 +594,28 @@ class IncidentEscalationWorkflowService
 
         if ($isDataBreach) {
             $notifiedRoles = ['DPO', 'CISO', 'CEO'];
-            $dpo = $this->findUserByRole('ROLE_DPO');
-            $ciso = $this->findUserByRole('ROLE_CISO');
-            $ceo = $this->findUserByRole('ROLE_CEO');
+            $dpo = $this->findUserByRole('ROLE_DPO', $incident);
+            $ciso = $this->findUserByRole('ROLE_CISO', $incident);
+            $ceo = $this->findUserByRole('ROLE_CEO', $incident);
             $notifiedUsers = array_filter([$dpo, $ciso, $ceo]);
         } elseif ($severity === self::SEVERITY_CRITICAL) {
             $notifiedRoles = ['Incident Manager', 'CISO', 'Management'];
-            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-            $ciso = $this->findUserByRole('ROLE_CISO');
-            $management = $this->findUsersByRole('ROLE_MANAGER');
-            $notifiedUsers = array_filter(array_merge(
+            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+            $ciso = $this->findUserByRole('ROLE_CISO', $incident);
+            $management = $this->findUsersByRole('ROLE_MANAGER', $incident);
+            $notifiedUsers = array_merge(
                 $incidentManager instanceof User ? [$incidentManager] : [],
                 $ciso instanceof User ? [$ciso] : [],
                 $management
-            ));
+            );
         } elseif ($severity === self::SEVERITY_HIGH) {
             $notifiedRoles = ['Incident Manager', 'CISO'];
-            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-            $ciso = $this->findUserByRole('ROLE_CISO');
+            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
+            $ciso = $this->findUserByRole('ROLE_CISO', $incident);
             $notifiedUsers = array_filter([$incidentManager, $ciso]);
         } elseif ($severity === self::SEVERITY_MEDIUM) {
             $notifiedRoles = ['Incident Manager'];
-            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
+            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER', $incident);
             $notifiedUsers = $incidentManager instanceof User ? [$incidentManager] : [];
         }
 
@@ -619,7 +623,7 @@ class IncidentEscalationWorkflowService
         $gdprDeadline = null;
         if ($isDataBreach) {
             $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
-            $gdprDeadline = $detectedAt->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
+            $gdprDeadline = DateTimeImmutable::createFromInterface($detectedAt)->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
         }
 
         // Approval requirements

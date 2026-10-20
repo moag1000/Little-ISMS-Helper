@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Service\FileUploadSecurityService;
 use App\Service\TenantContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -21,6 +21,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Handles content shared to the PWA via the Web Share Target API.
  * Allows users to share text, URLs, and files directly to the ISMS Helper.
+ *
+ * The share target is invoked by the operating system's share sheet and
+ * therefore cannot carry a CSRF token. It is kept free of server-side side
+ * effects: shared files are validated by FileUploadSecurityService and only
+ * listed (name, type, size) — none of the follow-up actions consumes them, so
+ * they are not written to disk and no server path reaches the browser.
  */
 class ShareController extends AbstractController
 {
@@ -29,9 +35,8 @@ class ShareController extends AbstractController
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly LoggerInterface $logger,
-        #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir,
         private readonly TranslatorInterface $translator,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
     ) {
     }
 
@@ -63,14 +68,19 @@ class ShareController extends AbstractController
         if ($files) {
             $files = is_array($files) ? $files : [$files];
             foreach ($files as $file) {
-                if ($file instanceof UploadedFile && $file->isValid()) {
-                    $uploadedFiles[] = [
-                        'name' => $file->getClientOriginalName(),
-                        'type' => $file->getMimeType(),
-                        'size' => $file->getSize(),
-                        'path' => $this->saveTemporaryFile($file),
-                    ];
+                if (!$file instanceof UploadedFile) {
+                    continue;
                 }
+                $validation = $this->fileUploadSecurityService->validateUpload($file);
+                if (!$validation['valid']) {
+                    $this->flashWarning('share.warning.file_rejected', ['%name%' => $file->getClientOriginalName()]);
+                    continue;
+                }
+                $uploadedFiles[] = [
+                    'name' => $file->getClientOriginalName(),
+                    'type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                ];
             }
         }
 
@@ -109,7 +119,6 @@ class ShareController extends AbstractController
         $title = $request->request->get('title', '');
         $text = $request->request->get('text', '');
         $url = $request->request->get('url', '');
-        $fileIds = $request->request->all('file_ids');
 
         switch ($action) {
             case 'incident':
@@ -147,22 +156,6 @@ class ShareController extends AbstractController
                     '_locale' => $request->getLocale(),
                 ]);
         }
-    }
-
-    /**
-     * Save uploaded file temporarily
-     */
-    private function saveTemporaryFile(UploadedFile $file): string
-    {
-        $tempDir = $this->projectDir . '/var/share_uploads';
-        if (!is_dir($tempDir)) {
-            mkdir($tempDir, 0755, true);
-        }
-
-        $fileName = uniqid('share_') . '_' . $file->getClientOriginalName();
-        $file->move($tempDir, $fileName);
-
-        return $tempDir . '/' . $fileName;
     }
 
     /**

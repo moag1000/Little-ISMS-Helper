@@ -1,0 +1,63 @@
+# ComplianceMapping lifecycle (Mapping-Quality-Vision) — the CLAUDE.md
+# 5-transition matrix with `deprecated` in the role of `archived`.
+#
+#   draft ─ submit_for_review ─▶ review ─ approve ─▶ approved ─ publish ─▶ published
+#     ▲                            │                                 │   ▲
+#     └────── request_changes ─────┘                     deprecate   │   │ restore
+#                                                                    ▼   │
+#                                                                 deprecated
+#
+# Mappings are GLOBAL catalogue data (no tenant): a change affects every
+# organisation on the instance. ComplianceMappingController therefore checks
+# the roles below from this static YAML (never from per-tenant overrides) and
+# the entity is deliberately not exposed through the generic
+# /lifecycle/{type}/{id}/transition endpoint (not in EntityTypeRegistry).
+# Operational states (approved/published/deprecated) need ROLE_ADMIN, the
+# same level the controller requires for deleting a mapping.
+framework:
+    workflows:
+        compliance_mapping_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\ComplianceMapping
+            initial_marking: draft
+            places:
+                - draft
+                - review
+                - approved
+                - published
+                - deprecated
+            transitions:
+                submit_for_review:
+                    from: draft
+                    to: review
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                request_changes:
+                    from: review
+                    to: draft
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                approve:
+                    from: review
+                    to: approved
+                    metadata:
+                        roles: [ROLE_ADMIN]
+                publish:
+                    from: approved
+                    to: published
+                    metadata:
+                        roles: [ROLE_ADMIN]
+                deprecate:
+                    from: published
+                    to: deprecated
+                    metadata:
+                        roles: [ROLE_ADMIN]
+                restore:
+                    from: deprecated
+                    to: published
+                    metadata:
+                        roles: [ROLE_ADMIN]

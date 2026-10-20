@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use App\Tests\Lifecycle\Support\YamlWorkflowLifecycle;
 
 /**
  * W3 Gap-B — PolicySectionApprovalService rejection-notification tests.
@@ -56,6 +57,7 @@ final class PolicySectionApprovalServiceNotifyTest extends TestCase
             $this->em,
             $this->sectionRepo,
             $this->auditLogger,
+            new YamlWorkflowLifecycle(),
             null,
             new \Psr\Log\NullLogger(),
             null,

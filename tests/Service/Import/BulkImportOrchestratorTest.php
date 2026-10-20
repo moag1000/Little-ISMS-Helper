@@ -9,6 +9,8 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Message\BulkImportMessage;
 use App\Service\AuditLogger;
+use App\Exception\Import\ImportFailedException;
+use App\Service\FileUploadSecurityService;
 use App\Service\Import\BulkImportOrchestrator;
 use App\Service\Import\DeltaCalculator;
 use App\Service\Import\Dto\DeltaConfig;
@@ -59,6 +61,11 @@ final class BulkImportOrchestratorTest extends TestCase
 
     private string $uploadDir;
 
+    private FileUploadSecurityService $uploadSecurity;
+
+    /** @var array{valid: bool, error: string|null} */
+    private array $uploadVerdict = ['valid' => true, 'error' => null];
+
     private BulkImportOrchestrator $orchestrator;
 
     /** @var Tenant&MockObject */
@@ -89,6 +96,11 @@ final class BulkImportOrchestratorTest extends TestCase
         $this->mapperRegistry  = new EntityMapperRegistry([$this->mapper]);
         $this->deltaCalculator = new DeltaCalculator($this->mapperRegistry, $this->em);
 
+        $this->uploadSecurity = $this->createStub(FileUploadSecurityService::class);
+        $this->uploadSecurity->method('validateUpload')->willReturnCallback(
+            fn (UploadedFile $file, string $profile): array => $this->uploadVerdict,
+        );
+
         $this->orchestrator = new BulkImportOrchestrator(
             $this->parser,
             $this->headerMapper,
@@ -98,6 +110,7 @@ final class BulkImportOrchestratorTest extends TestCase
             $this->em,
             $this->bus,
             $this->uploadDir,
+            $this->uploadSecurity,
         );
     }
 
@@ -113,6 +126,23 @@ final class BulkImportOrchestratorTest extends TestCase
     // -------------------------------------------------------------------------
     // Step 1: upload
     // -------------------------------------------------------------------------
+
+    #[Test]
+    public function testUploadRejectedBySecurityServiceIsNeverStored(): void
+    {
+        $this->uploadVerdict = ['valid' => false, 'error' => 'File extension "php" is not allowed.'];
+
+        $uploadedFile = $this->createMock(UploadedFile::class);
+        $uploadedFile->method('getClientOriginalName')->willReturn('shell.php');
+        $uploadedFile->method('getClientOriginalExtension')->willReturn('php');
+        $uploadedFile->expects($this->never())->method('move');
+        $this->em->expects($this->never())->method('persist');
+
+        $this->expectException(ImportFailedException::class);
+        $this->expectExceptionMessage('File extension "php" is not allowed.');
+
+        $this->orchestrator->upload($uploadedFile, 'Asset', $this->tenant, $this->user);
+    }
 
     #[Test]
     public function testUploadCreatesBatchWithSha256Hash(): void

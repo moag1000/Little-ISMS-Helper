@@ -163,10 +163,12 @@
     {# Delete action (ROLE_MANAGER) #}
     {% if is_granted('ROLE_MANAGER') %}
         <div class="mt-3">
-            <form method="post" action="{{ path('app_tia_delete', {paId: processing_activity.id, id: tia.id}) }}">
+            <form method="post" action="{{ path('app_tia_delete', {paId: processing_activity.id, id: tia.id}) }}"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'tia.confirm.delete'|trans({}, 'tia') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tia.id) }}">
-                <button type="button" class="btn btn-sm btn-outline-danger"
-                        onclick="window.faConfirm && window.faConfirm('{{ 'tia.confirm.delete'|trans({}, 'tia') }}').then(ok => { if(ok) this.closest('form').submit(); })">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
                     <i class="fa-icon fa-icon--util-trash" aria-hidden="true"></i>
                     {{ 'tia.action.delete'|trans({}, 'tia') }}
                 </button>

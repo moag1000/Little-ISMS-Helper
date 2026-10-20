@@ -4,7 +4,11 @@
  * Replaces `alert()` and `confirm()` with Aurora-styled equivalents so
  * messages stay on-brand and themable via the design tokens.
  *
- * Exposed globals:
+ * ES-module API (preferred in JS modules — the import guarantees the helpers
+ * are mounted, so no native alert()/confirm()/prompt() fallback is needed):
+ *   import { faToast, faConfirm, faPrompt } from '../js/fa-alerts.js';
+ *
+ * Exposed globals (same functions, for inline template scripts):
  *   window.faToast(message, variant?, options?)
  *     Shows a non-blocking toast in the top-right corner. Returns the
  *     toast element. Auto-dismisses after `options.timeout` ms (default
@@ -14,8 +18,8 @@
  *     Shows a modal confirm dialog. Resolves to true when the user
  *     confirms, false on cancel / backdrop / Escape. Options:
  *       title      — bold headline, optional
- *       confirmLabel — primary button label (default 'Bestätigen')
- *       cancelLabel  — secondary button label (default 'Abbrechen')
+ *       confirmLabel — primary button label (default faT('confirm'))
+ *       cancelLabel  — secondary button label (default faT('cancel'))
  *       tone       — 'warn' | 'danger' (default 'warn')
  *       icon       — Bootstrap-Icons name (without bi- prefix);
  *                    defaults: warn -> exclamation-triangle-fill,
@@ -27,11 +31,22 @@
  *       title        — bold headline, optional
  *       placeholder  — input placeholder
  *       value        — prefilled value
- *       confirmLabel — primary button label (default 'Übernehmen')
- *       cancelLabel  — secondary button label (default 'Abbrechen')
+ *       confirmLabel — primary button label (default faT('apply'))
+ *       cancelLabel  — secondary button label (default faT('cancel'))
  *       maxlength    — input maxlength attribute
  *       required     — when true, the confirm button stays disabled while empty
+ *       allowEmpty   — when true, an empty answer resolves to '' (null still
+ *                      means cancel); default: empty resolves to null
+ *       choices      — [{ value, label }] renders a select instead of the text
+ *                      input (with an empty "choose" option first); resolves
+ *                      to the chosen value
  */
+
+import { faT } from './fa-i18n.js';
+
+let toastImpl;
+let confirmImpl;
+let promptImpl;
 
 (function () {
     'use strict';
@@ -108,7 +123,7 @@
         const close = document.createElement('button');
         close.type = 'button';
         close.className = 'fa-alert__close';
-        close.setAttribute('aria-label', 'Close');
+        close.setAttribute('aria-label', faT('close'));
         close.innerHTML = '<i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>';
         close.addEventListener('click', () => removeToast(toast));
         toast.appendChild(close);
@@ -137,7 +152,7 @@
         document.head.appendChild(style);
     }
 
-    window.faToast = function (message, variant, options) {
+    window.faToast = toastImpl = function (message, variant, options) {
         injectKeyframes();
         const container = ensureToastContainer();
         const toast = makeToast(String(message ?? ''), variant || 'info', options || {});
@@ -149,7 +164,7 @@
         return toast;
     };
 
-    window.faConfirm = function (message, options) {
+    window.faConfirm = confirmImpl = function (message, options) {
         const opts = options || {};
         const tone = ['warn', 'danger', 'nuclear'].includes(opts.tone) ? opts.tone : 'warn';
 
@@ -191,8 +206,8 @@
                     </div>
                 </header>
                 <footer class="fa-confirm__footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-fa-confirm-cancel>${escapeHtml(opts.cancelLabel || 'Abbrechen')}</button>
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--${tone === 'warn' ? 'warning' : 'danger'}" data-fa-confirm-ok>${escapeHtml(opts.confirmLabel || 'Bestätigen')}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-fa-confirm-cancel>${escapeHtml(opts.cancelLabel || faT('cancel'))}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--${tone === 'warn' ? 'warning' : 'danger'}" data-fa-confirm-ok>${escapeHtml(opts.confirmLabel || faT('confirm'))}</button>
                 </footer>
             `;
 
@@ -245,7 +260,7 @@
      * the main thread and cannot be themed); this mirrors faConfirm's shell
      * and adds a single text input.
      */
-    window.faPrompt = function (message, options) {
+    window.faPrompt = promptImpl = function (message, options) {
         const opts = options || {};
 
         return new Promise((resolve) => {
@@ -285,16 +300,23 @@
                     </div>
                 </header>
                 <div class="fa-confirm__body">
+                    ${Array.isArray(opts.choices) ? `
+                    <select class="fa-cyber-field__input" data-fa-prompt-input
+                            aria-label="${escapeHtml(opts.title || message)}"
+                            style="width:100%">
+                        <option value="">${escapeHtml(opts.placeholder || faT('choose'))}</option>
+                        ${opts.choices.map((c) => `<option value="${escapeHtml(String(c.value))}"${String(c.value) === String(opts.value ?? '') ? ' selected' : ''}>${escapeHtml(String(c.label))}</option>`).join('')}
+                    </select>` : `
                     <input type="text" class="fa-cyber-field__input" data-fa-prompt-input
                            value="${escapeHtml(opts.value || '')}"
                            placeholder="${escapeHtml(opts.placeholder || '')}"
                            ${opts.maxlength ? `maxlength="${parseInt(opts.maxlength, 10)}"` : ''}
                            aria-label="${escapeHtml(opts.title || message)}"
-                           style="width:100%">
+                           style="width:100%">`}
                 </div>
                 <footer class="fa-confirm__footer">
-                    <button type="button" class="fa-cyber-btn" data-fa-prompt-cancel>${escapeHtml(opts.cancelLabel || 'Abbrechen')}</button>
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-fa-prompt-ok>${escapeHtml(opts.confirmLabel || 'Übernehmen')}</button>
+                    <button type="button" class="fa-cyber-btn" data-fa-prompt-cancel>${escapeHtml(opts.cancelLabel || faT('cancel'))}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-fa-prompt-ok>${escapeHtml(opts.confirmLabel || faT('apply'))}</button>
                 </footer>
             `;
 
@@ -318,9 +340,12 @@
             }
             syncDisabled();
             input.addEventListener('input', syncDisabled);
+            input.addEventListener('change', syncDisabled);
 
             input.focus();
-            input.select();
+            if (typeof input.select === 'function' && input.tagName !== 'SELECT') {
+                input.select();
+            }
 
             function close(value) {
                 document.body.style.overflow = previousOverflow;
@@ -337,7 +362,9 @@
                 if (opts.required && value === '') {
                     return;
                 }
-                close(value === '' ? null : value);
+                // null is reserved for "cancelled" when allowEmpty is set, so a
+                // caller can tell an intentionally empty answer from a cancel.
+                close(value === '' && !opts.allowEmpty ? null : value);
             }
 
             function onKey(event) {
@@ -380,3 +407,9 @@
         return div.innerHTML;
     }
 })();
+
+// The exports go through the window globals so a page (or a test) that swaps
+// the implementation is honoured; the module's own one is the fallback.
+export const faToast = (...args) => (window.faToast || toastImpl)(...args);
+export const faConfirm = (...args) => (window.faConfirm || confirmImpl)(...args);
+export const faPrompt = (...args) => (window.faPrompt || promptImpl)(...args);

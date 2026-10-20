@@ -241,6 +241,20 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     }
 
     /**
+     * Initialise `mappedControls` of all top-level requirements of a framework
+     * with ONE fetch-join query, so ComplianceFramework::getCompliancePercentage()
+     * does not lazy-load per requirement (N+1).
+     */
+    public function preloadMappedControls(ComplianceFramework $complianceFramework): void
+    {
+        $this->topLevelQueryBuilder($complianceFramework)
+            ->addSelect('mc')
+            ->leftJoin('cr.mappedControls', 'mc')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find only applicable requirements for a framework (exclusions filtered out).
      *
      * @param ComplianceFramework $complianceFramework Compliance framework entity

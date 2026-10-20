@@ -15,8 +15,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Security hotfix (M2): the async user-export download was addressable by any
- * user-admin who knew the job UUID. It is now bound to the user who started
- * the export (SUPER_ADMIN may download any); others get 404.
+ * user-admin who knew the job UUID. It is bound to the user who started the
+ * export (SUPER_ADMIN may download any). The binding is the job owner recorded
+ * by JobStatusService (owner_user_id) and enforced by AsyncJobVoter::ACCESS,
+ * so every other user gets 403 — for existing and unknown job ids alike.
  */
 final class UserExportDownloadOwnerTest extends WebTestCase
 {
@@ -70,12 +72,12 @@ final class UserExportDownloadOwnerTest extends WebTestCase
     public function onlyTheCreatorOrSuperAdminCanDownloadTheExport(): void
     {
         $jobId = $this->dispatchExportAs($this->adminA);
-        $payload = static::getContainer()->get(JobStatusService::class)->read($jobId)['payload'];
-        self::assertSame($this->adminA->getId(), $payload['_actor_id'] ?? null, 'dispatch records the creator');
+        $record = static::getContainer()->get(JobStatusService::class)->read($jobId);
+        self::assertSame($this->adminA->getId(), $record['owner_user_id'] ?? null, 'dispatch records the creator');
 
         $this->client->loginUser($this->otherAdminA);
         $this->client->request('GET', $this->downloadUrl($jobId));
-        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
 
         // The rejected request must not have consumed the file.
         $this->client->loginUser($this->adminA);
@@ -106,7 +108,7 @@ final class UserExportDownloadOwnerTest extends WebTestCase
 
         $this->client->loginUser($this->adminA);
         $this->client->request('GET', $this->downloadUrl($jobId));
-        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     private function dispatchExportAs(User $actor): string

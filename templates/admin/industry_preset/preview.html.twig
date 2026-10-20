@@ -7,10 +7,16 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block body %}
+{% set _preset_name_key = 'industry_preset.catalog.' ~ preset ~ '.name' %}
+{% set _preset_name = _preset_name_key|trans({}, 'admin') %}
+{% set _preset_name = _preset_name != _preset_name_key ? _preset_name : config.name|default(preset) %}
+{% set _preset_desc_key = 'industry_preset.catalog.' ~ preset ~ '.description' %}
+{% set _preset_desc = _preset_desc_key|trans({}, 'admin') %}
+{% set _preset_desc = _preset_desc != _preset_desc_key ? _preset_desc : config.description|default('—') %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
         badge:    { icon: 'ui-eye', label: 'industry_preset.preview.badge'|trans },
-        title:    config.name|default(preset),
+        title:    _preset_name,
         subtitle: 'industry_preset.preview.subtitle'|trans,
         actions: [
             { label: 'industry_preset.action.back'|trans, variant: 'ghost', icon: 'util-arrow-left', href: path('app_admin_industry_preset_index') }
@@ -23,7 +29,7 @@
             <section class="fa-section mb-3">
                 <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_description'|trans }}</h2></div>
                 <div class="fa-section__body">
-                    <p class="text-muted">{{ config.description|default('—')|nl2br }}</p>
+                    <p class="text-muted">{{ _preset_desc|nl2br }}</p>
                 </div>
             </section>
 

@@ -70,7 +70,8 @@ class NotificationDispatcher
         $delivery->setTenant($rule->getTenant());
         $delivery->setRule($rule);
         $delivery->setChannel($channel);
-        $delivery->setStatus(NotificationDelivery::STATUS_PENDING);
+        // Status stays at the entity default `pending` — the
+        // notification_delivery_lifecycle initial marking.
         $delivery->setAttemptedAt(new DateTimeImmutable());
 
         $this->entityManager->persist($delivery);

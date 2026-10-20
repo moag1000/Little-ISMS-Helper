@@ -805,7 +805,7 @@ class Document
      * the names in. Returns null when no `dora-validity:*` tag is
      * present or when the date payload fails ISO-8601 parsing.
      *
-     * @param iterable<int, string> $tagNames Active tag names for this document.
+     * @param iterable<mixed> $tagNames Active tag names for this document (non-strings are skipped).
      */
     public static function parseDoraValidityFromTags(iterable $tagNames): ?DateTimeImmutable
     {
@@ -840,12 +840,12 @@ class Document
      * the flag to surface a prominent badge so auditors recognise the
      * 2024 amendment was applied without reading the body prose.
      *
-     * @param iterable<int, string> $tagNames Active tag names for this document.
+     * @param iterable<mixed> $tagNames Active tag names for this document.
      */
     public static function isClimateChangeAwareFromTags(iterable $tagNames): bool
     {
         foreach ($tagNames as $name) {
-            if (is_string($name) && $name === 'climate-change:amended') {
+            if ($name === 'climate-change:amended') {
                 return true;
             }
         }

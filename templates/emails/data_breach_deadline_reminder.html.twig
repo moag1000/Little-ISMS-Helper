@@ -123,7 +123,7 @@
     </ol>
 
     <div style="text-align: center; margin: 30px 0;">
-        <a href="{{ app.request.schemeAndHttpHost }}/{{ app.request.locale }}/data-breach/{{ breach.id }}"
+        <a href="{{ url('app_data_breach_show', {id: breach.id, _locale: app.locale}) }}"
            style="display: inline-block; padding: 15px 40px; background-color: {% if urgency_level == 'OVERDUE' %}#dc3545{% else %}#fd7e14{% endif %}; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em;">
             Complete Breach Documentation Now
         </a>

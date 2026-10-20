@@ -46,6 +46,7 @@ prototype_protection:
         required_labels: 'Mehrfachauswahl — alle für den Scope anwendbaren Prototype-Labels.'
         assessor_person: 'Person ohne System-Login als Assessor. Reihenfolge: User > Person > leer.'
         assessor_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Assessment.'
+        status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Entwurf → In Prüfung → Freigegeben / Abgelehnt → Abgelaufen). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     status:
         draft: 'Entwurf'
         in_review: 'In Prüfung'

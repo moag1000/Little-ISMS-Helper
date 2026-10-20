@@ -198,7 +198,7 @@ class IndustryBaseline
         return $this->requiredFrameworks;
     }
 
-    /** @param list<string> $frameworks */
+    /** @param array<array-key, string> $frameworks reindexed to a list */
     public function setRequiredFrameworks(array $frameworks): static
     {
         $this->requiredFrameworks = array_values($frameworks);
@@ -211,7 +211,7 @@ class IndustryBaseline
         return $this->recommendedFrameworks;
     }
 
-    /** @param list<string> $frameworks */
+    /** @param array<array-key, string> $frameworks reindexed to a list */
     public function setRecommendedFrameworks(array $frameworks): static
     {
         $this->recommendedFrameworks = array_values($frameworks);
@@ -224,7 +224,7 @@ class IndustryBaseline
         return $this->presetRisks;
     }
 
-    /** @param list<array<string,mixed>> $risks */
+    /** @param array<array-key, array<string,mixed>> $risks reindexed to a list */
     public function setPresetRisks(array $risks): static
     {
         $this->presetRisks = array_values($risks);
@@ -237,7 +237,7 @@ class IndustryBaseline
         return $this->presetAssets;
     }
 
-    /** @param list<array<string,mixed>> $assets */
+    /** @param array<array-key, array<string,mixed>> $assets reindexed to a list */
     public function setPresetAssets(array $assets): static
     {
         $this->presetAssets = array_values($assets);
@@ -250,7 +250,7 @@ class IndustryBaseline
         return $this->presetApplicableControls;
     }
 
-    /** @param list<string> $controls */
+    /** @param array<array-key, string> $controls reindexed to a list */
     public function setPresetApplicableControls(array $controls): static
     {
         $this->presetApplicableControls = array_values($controls);

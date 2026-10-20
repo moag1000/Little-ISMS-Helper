@@ -240,6 +240,11 @@ jobs:
       - name: Run Stimulus controller unit tests
         run: npm run test:js
 
+      # Stylelint enforces the Aurora token policy (no raw hex in colour
+      # properties outside the design-system source files).
+      - name: Stylelint (Aurora tokens)
+        run: npm run stylelint
+
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
@@ -311,14 +316,11 @@ jobs:
       - name: "Gate 1: Twig macro import-order"
         run: python3 scripts/quality/check_twig_macro_imports.py
 
-      # Gate 2 — Embed-block trans_default_domain (WARN-ONLY for now)
-      #   Detects {% embed %} blocks using |trans without their own
-      #   {% trans_default_domain %} directive. 44 pre-existing violations
-      #   in templates/ being resolved separately; becomes blocking once
-      #   legacy violations are cleared.
+      # Gate 2 — Embed-block trans_default_domain (BLOCKING since the legacy
+      #   violations were cleared). Detects {% embed %} blocks using |trans
+      #   without their own {% trans_default_domain %} directive.
       - name: "Gate 2: Embed-block trans_default_domain"
         run: python3 scripts/quality/check_twig_embed_domain.py
-        continue-on-error: true
 
       # Gate 3 — MariaDB-11 reserved-words in migrations (BLOCKING)
       #   Detects unquoted ROW_NUMBER/RANK/WINDOW/OVER/etc. as column names.
@@ -333,19 +335,16 @@ jobs:
       - name: "Gate 4: DDL-migrations isTransactional()=false"
         run: bash scripts/quality/check_migration_transactional.sh
 
-      # Gate 5 — Aurora v4 anti-patterns on cards (WARN-ONLY for now)
+      # Gate 5 — Aurora v4 anti-patterns on cards (BLOCKING)
       #   Detects Bootstrap bg-*/text-white on .card/.card-header.
-      #   8 pre-existing violations in templates/ being resolved separately.
       - name: "Gate 5: Aurora anti-patterns on cards"
         run: python3 scripts/quality/check_aurora_anti_patterns.py
-        continue-on-error: true
 
-      # Gate 6 — Missing translation keys (BLOCKING for high-priority domains)
+      # Gate 6 — Missing translation keys (BLOCKING, all domains, DE<->EN both ways)
       #   Pure-Python YAML-diff between <domain>.de.yaml and <domain>.en.yaml.
       #   Replaced the previous shell wrapper around `bin/console
       #   debug:translation` which cold-started the Symfony kernel 12 times
       #   sequentially (~12-24s). Python implementation runs in <1s.
-      #   Full-domain check: ALL_DOMAINS=1 python3 scripts/quality/check_missing_translations.py
       - name: "Gate 6: Missing translation keys"
         run: python3 scripts/quality/check_missing_translations.py
 
@@ -439,8 +438,16 @@ jobs:
         run: python3 scripts/quality/check_translation_dynamic_keys.py --quiet
       - name: "Gate 24: AuditLog must set tenant"
         run: python3 scripts/quality/check_audit_log_tenant.py --baseline scripts/quality/baselines/audit_log_tenant.txt --quiet
-      - name: "Gate 25: God-class size (soft-fail via baseline)"
-        run: python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --quiet
+      - name: "Gate 25: God-class size ratchet (baseline may only shrink)"
+        # Every src/ file vs. a per-kind LOC threshold. Baselined files may not
+        # grow (--baseline), stale entries must be lowered (--strict-shrink) and
+        # the baseline itself may not grow against the PR base (--ratchet-ref),
+        # so "bump the baseline" no longer gets past the gate. See scripts/README.md.
+        run: |
+          git fetch --no-tags --depth=1 origin "${GITHUB_BASE_REF:-main}"
+          python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --ratchet-ref FETCH_HEAD --strict-shrink --quiet
+      - name: "Gate 25 self-test: ratchet rename-only takeover"
+        run: python3 -m unittest discover -s scripts/quality/tests
       - name: "Gate 26: Translation top-level keys match domain"
         run: python3 scripts/quality/check_translation_nesting.py --baseline scripts/quality/baselines/translation_nesting.txt --quiet
       - name: "Gate 27: No EntityManager writes in controllers"
@@ -591,6 +598,42 @@ jobs:
         # invisible at runtime. Descriptive keys (license_note, changelog, …) are
         # baselined; a NEW inert key is far more likely dead payload than docs.
         run: python3 scripts/quality/check_fixture_unread_keys.py --baseline scripts/quality/baselines/fixture_unread_keys.txt
+      - name: "Gate 61: CSS tokens in sync with design-system artifact"
+        # The design system lives as a claude.ai Design System artifact; its token
+        # layer is snapshotted in docs/design_system/artifact/. A token that differs
+        # between that snapshot and assets/styles/ fails unless baselined — so a
+        # design change has to land on both sides. See docs/design_system/artifact/SOURCE.md.
+        run: python3 scripts/quality/check_design_tokens_sync.py --baseline scripts/quality/baselines/design_tokens_sync.txt
+      - name: "Gate 62: Aurora legacy-markup ratchet"
+        # Bootstrap tables, progress bars, badges, alerts, buttons, modals and the
+        # deprecated page header have Aurora components. Existing uses are counted
+        # per file in the baseline and may only shrink; new code uses the components.
+        run: python3 scripts/quality/check_aurora_legacy_markup.py --baseline scripts/quality/baselines/aurora_legacy_markup.txt
+      - name: "Gate 63: no duplicate keys in translation YAML"
+        # PyYAML keeps the last of two equal keys (a whole parent section can
+        # vanish from the Python gates' view) while Symfony's parser rejects
+        # the file, so the domain fails to load at runtime. Covers all
+        # translations/*.yaml (the old script hardcoded two messages files).
+        run: python3 scripts/quality/check_yaml_duplicates.py
+      - name: "Gate 64: JSON actions catch Throwable"
+        # `catch (\Exception)` in a JSON/AJAX action lets every \Error (TypeError,
+        # ArgumentCountError, ...) escape as an HTML 500 page the fetch() caller
+        # cannot parse. Keys are path:method, so line shifts do not churn it.
+        run: python3 scripts/quality/check_json_catch_throwable.py --baseline scripts/quality/baselines/json_catch_throwable.txt --quiet
+      - name: "Gate 65: state-changing actions need CSRF"
+        # Every POST/PUT/PATCH/DELETE action needs #[IsCsrfTokenValid], an inline
+        # isCsrfTokenValid(), a BulkActionTrait helper or a Symfony form — or a
+        # reviewed `// @csrf-exempt: <reason>` marker. Baseline = files of
+        # in-flight work only; stale entries are reported, never fail.
+        run: python3 scripts/quality/check_csrf_state_changing.py --baseline scripts/quality/baselines/csrf_state_changing.txt
+      - name: "Gate 67: no native browser dialogs, no inline JavaScript"
+        # alert()/confirm()/prompt() are banned as UX — import faToast /
+        # faConfirm / faPrompt from assets/js/fa-alerts.js (templates:
+        # ui-actions#confirm / #promptSubmit); no native fallback.
+        # The CSP has no script-src 'unsafe-inline': no on*= handlers, no
+        # javascript: URLs, inline <script> only with nonce="{{ csp_nonce() }}",
+        # no CSS imports in JS modules. No baseline: the codebase is clean.
+        run: python3 scripts/quality/check_native_dialogs.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
@@ -775,7 +818,6 @@ jobs:
             echo "=== APP DATABASE_URL FROM ENV ==="
             docker compose exec -T app sh -c 'echo "DATABASE_URL=$DATABASE_URL"; echo "EMBEDDED_DB=$EMBEDDED_DB"' || true
             echo "=== TRY HEALTH MANUALLY ==="
-            docker compose exec -T app curl -i http://localhost/de/health 2>&1 || true
             docker compose exec -T app curl -i http://localhost/health 2>&1 || true
             exit 1
           }

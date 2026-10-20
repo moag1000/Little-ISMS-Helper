@@ -176,48 +176,6 @@ workflow:
         actions: Aktionen
     step.requires_comment: 'Dieser Schritt erfordert einen Kommentar'
     step.requires_file: 'Dieser Schritt erfordert einen Datei-Upload'
-    builder:
-        title: Workflow-Builder
-        breadcrumb: Builder
-        heading: 'Workflow visuell erstellen'
-        steps: Workflow-Schritte
-        drag_help: 'Ziehen Sie Schritte per Drag & Drop, um die Reihenfolge zu ändern'
-        add_step: 'Schritt hinzufügen'
-        new_step: 'Neuer Schritt'
-        templates: Workflow-Vorlagen
-        templates_help: 'Wählen Sie eine vordefinierte Vorlage für häufige Workflow-Typen (Risikobewertung, Vorfallsreaktion, etc.)'
-        info: Builder-Information
-        help: 'Workflow-Builder Hilfe'
-        help_drag: 'Ziehen & Ablegen: Ändern Sie die Reihenfolge der Schritte durch Drag & Drop'
-        help_edit: 'Bearbeiten: Klicken Sie auf einen Schritt, um Details zu ändern'
-        help_duplicate: 'Duplizieren: Erstellen Sie eine Kopie eines bestehenden Schritts'
-        help_delete: 'Löschen: Entfernen Sie einen Schritt aus dem Workflow'
-        help_template: 'Vorlage verwenden: Erstellen Sie einen Workflow aus einer vordefinierten Vorlage'
-        action:
-            edit: Bearbeiten
-            duplicate: Duplizieren
-            delete: Löschen
-    step.name: Schrittname
-    step.type: Schritttyp
-    step.type.approval: 'Freigabe / Genehmigung'
-    step.type.notification: Benachrichtigung
-    step.type.auto_action: 'Automatische Aktion'
-    step.description: Schrittbeschreibung
-    step.approver_role: 'Genehmigende Rolle'
-    step.days_to_complete: 'Tage bis zur Fertigstellung'
-    step.days_help: 'Anzahl der Tage, die für die Bearbeitung dieses Schritts vorgesehen sind'
-    step.is_required: Pflichtschritt
-    template:
-        risk_assessment: Risikobewertungs-Workflow
-        risk_assessment_desc: 'Strukturierter Workflow zur Durchführung von Risikobewertungen nach ISO 27005: Identifikation, Analyse, Bewertung, Behandlung'
-        control_implementation: Maßnahmen-Implementierungs-Workflow
-        control_implementation_desc: 'Workflow zur Planung, Umsetzung und Überprüfung von Sicherheitsmaßnahmen (ISO 27001 Anhang A Controls)'
-        incident_response: Vorfallsreaktions-Workflow
-        incident_response_desc: 'Incident-Response-Prozess: Erkennung, Eindämmung, Analyse, Behebung, Lessons Learned'
-        document_review: Dokumentenprüfungs-Workflow
-        document_review_desc: 'Strukturierter Review-Prozess für ISMS-Dokumente: Entwurf, Prüfung, Freigabe, Veröffentlichung'
-        change_request: Change-Request-Workflow
-        change_request_desc: 'Change-Management-Prozess: Antrag, Bewertung, Genehmigung, Umsetzung, Überprüfung'
     widget:
         title: 'Ausstehende Freigaben'
         no_pending: 'Keine ausstehenden Freigaben'
@@ -364,6 +322,15 @@ sla:
             pending_title: '%count% ausstehende Workflow-Genehmigungen'
             pending_message: 'Sie haben %count% Workflows, die Ihre Genehmigung erfordern.'
             view_all: 'Alle Workflows anzeigen'
+    action:
+        pending: 'Ausstehend'
+    stats:
+        in_progress: 'In Bearbeitung'
+        approved: 'Genehmigt'
+    section:
+        in_progress: 'In Bearbeitung'
+    description:
+        in_progress: 'Workflows, die gerade bearbeitet werden'
 
 # Dashboard Alert Keys (alternative path)
 workflow.dashboard.alert.overdue_title: '%count% überfällige Workflow-Genehmigungen!'
@@ -377,6 +344,10 @@ approval:
     section_title: 'Zur Freigabe'
     error:
         clarification_empty: 'Bitte formulieren Sie eine konkrete Rückfrage.'
+        four_eyes:
+            same_user: 'Sie haben diesen Workflow gestartet und können ihn deshalb nicht selbst abschließend freigeben. Eine andere berechtigte Person muss freigeben (Vier-Augen-Prinzip).'
+            missing_approver: 'Die abschließende Freigabe braucht eine zweite Person (Vier-Augen-Prinzip). Sind Sie die einzige berechtigte Person in Ihrer Organisation, dokumentieren Sie die Offline-Gegenzeichnung im Kommentar.'
+            approver_lacks_role: 'Ihre Rolle ist nicht berechtigt, diesen Workflow abschließend freizugeben.'
     success:
         clarification_sent: 'Rückfrage gesendet.'
     deadline:

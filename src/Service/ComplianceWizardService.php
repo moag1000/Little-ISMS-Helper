@@ -11,6 +11,7 @@ use App\Service\ComplianceWizard\CategoryProvider\EuRegulatoryFrameworkCategoryP
 use App\Service\ComplianceWizard\CategoryProvider\IsoFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\CategoryProvider\OtherFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\CoverageCheckService;
+use App\Service\ComplianceWizard\EntityPresenceChecker;
 
 /**
  * Compliance Wizard Service
@@ -44,6 +45,7 @@ final class ComplianceWizardService
         private readonly BsiFrameworkCategoryProvider $bsiProvider,
         private readonly OtherFrameworkCategoryProvider $otherProvider,
         private readonly \App\Service\Tisax\TisaxMaturityAssessmentService $tisaxMaturityAssessmentService,
+        private readonly EntityPresenceChecker $entityPresenceChecker,
         private readonly ?\App\Repository\WizardManualConfirmationRepository $manualConfirmationRepository = null,
     ) {
     }
@@ -557,7 +559,7 @@ final class ComplianceWizardService
             'consent_coverage' => $this->coverageCheckService->checkConsentCoverage($check, $tenant),
             'dsr_coverage' => $this->coverageCheckService->checkDsrCoverage($check, $tenant),
             'dpia_coverage' => $this->coverageCheckService->checkDpiaCoverage($check, $tenant),
-            'entity_presence' => $this->coverageCheckService->checkEntityPresence($check, $tenant),
+            'entity_presence' => $this->entityPresenceChecker->check($check, $tenant),
             'policy_wizard' => $this->coverageCheckService->dispatchPolicyWizardCheck($check, $tenant),
             default => $this->runManualCheck($check, $tenant, $wizardKey, $checkKey),
         };

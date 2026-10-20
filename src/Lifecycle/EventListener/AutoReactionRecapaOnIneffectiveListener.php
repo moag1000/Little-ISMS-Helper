@@ -106,7 +106,7 @@ final class AutoReactionRecapaOnIneffectiveListener
             // Re-CAPA failure must not block the verify_ineffective transition
             // itself — the AlvaHint rule will surface the gap on the next render.
             $this->logger->warning('Auto re-CAPA failed', [
-                'original_ca_id' => method_exists($subject, 'getId') ? $subject->getId() : null,
+                'original_ca_id' => $subject->getId(),
                 'error' => $e->getMessage(),
             ]);
         }

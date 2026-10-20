@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Enum\ChangeRequestStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\ChangeRequestRepository;
 use App\State\TenantAwareStateProcessor;
 use App\Entity\Tenant;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Tracks changes to the ISMS and related systems
  */
+#[RequiresModule('change_requests')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),
@@ -128,7 +130,7 @@ class ChangeRequest
         'scheduled', 'implemented', 'verified', 'closed', 'cancelled'
     ])]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?string $status = 'draft';
+    private string $status = 'draft';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -156,6 +158,8 @@ class ChangeRequest
 
     /**
      * Affected assets
+     *
+     * @var Collection<int, Asset>
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'change_request_asset')]
@@ -164,6 +168,8 @@ class ChangeRequest
 
     /**
      * Affected controls
+     *
+     * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'change_request_control')]
@@ -172,6 +178,8 @@ class ChangeRequest
 
     /**
      * Affected business processes
+     *
+     * @var Collection<int, BusinessProcess>
      */
     #[ORM\ManyToMany(targetEntity: BusinessProcess::class)]
     #[ORM\JoinTable(name: 'change_request_business_process')]
@@ -180,6 +188,8 @@ class ChangeRequest
 
     /**
      * Associated risks (new or updated)
+     *
+     * @var Collection<int, Risk>
      */
     #[ORM\ManyToMany(targetEntity: Risk::class)]
     #[ORM\JoinTable(name: 'change_request_risk')]
@@ -306,6 +316,8 @@ class ChangeRequest
 
     /**
      * Documents
+     *
+     * @var Collection<int, Document>
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'change_request_document')]
@@ -461,7 +473,7 @@ class ChangeRequest
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?ChangeRequestStatus
     {
-        return $this->status !== null ? ChangeRequestStatus::tryFrom($this->status) : null;
+        return ChangeRequestStatus::tryFrom($this->status);
     }
 
     public function getClauseReference(): ?string

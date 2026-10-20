@@ -21,6 +21,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\TrainingStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\TrainingRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -35,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_training_type', columns: ['training_type'])]
 #[ORM\Index(name: 'idx_training_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_training_scheduled_date', columns: ['scheduled_date'])]
+#[RequiresModule('training')]
 #[ApiResource(
     operations: [
         new Get(
@@ -149,7 +151,7 @@ class Training
         choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],
         message: 'training.validation.status_invalid'
     )]
-    private ?string $status = 'planned';
+    private string $status = 'planned';
 
     /**
      * Optimistic-locking version field for Symfony Workflow / LifecycleService.
@@ -185,7 +187,9 @@ class Training
      * flows through {@see FileUploadSecurityService::validateUploadedFile()}
      * (MIME / magic-byte / extension / size whitelist).
      *
-     * @var array<int, array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string}>|null
+     * Persisted JSON: legacy rows may lack keys, hence the optional shape keys.
+     *
+     * @var array<int, array{filename?: string, originalName?: string, mimeType?: string, size?: int, uploadedAt?: string}>|null
      */
     #[ORM\Column(name: 'material_files', type: Types::JSON, nullable: true)]
     #[Groups(['training:read'])]
@@ -314,7 +318,9 @@ public function __construct()
     public function getParticipations(): Collection
     {
         // Doctrine bypasses __construct() on hydration; lazy-init keeps
-        // reflection-based readers (AuditLogger, serializer) safe.
+        // reflection-based readers (AuditLogger, serializer) safe. PHPStan only
+        // sees the constructor initialising the property, hence the ignore.
+        // @phpstan-ignore nullCoalesce.initializedProperty (uninitialised when __construct() is bypassed)
         return $this->participations ??= new ArrayCollection();
     }
 
@@ -498,7 +504,7 @@ public function __construct()
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?TrainingStatus
     {
-        return $this->status === null ? null : TrainingStatus::tryFrom($this->status);
+        return TrainingStatus::tryFrom($this->status);
     }
 
     public function getDeliveryMethod(): ?string

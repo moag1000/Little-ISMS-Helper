@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Service\AuditLogger;
+use App\Service\BulkDeleteService;
 use App\Controller\DocumentController;
 use App\Entity\Document;
 use App\Entity\Tenant;
@@ -135,8 +137,11 @@ class DocumentControllerTest extends TestCase
             };
         });
 
-        // Default: grant all access unless overridden in specific test
-        $this->authorizationChecker->method('isGranted')->willReturn(true);
+        // Default: grant all access unless overridden in specific test — but
+        // not ROLE_SUPER_ADMIN, which is instance-wide in the bulk tenant scope.
+        $this->authorizationChecker->method('isGranted')->willReturnCallback(
+            static fn (mixed $attribute): bool => $attribute !== 'ROLE_SUPER_ADMIN',
+        );
 
         $this->controller = new DocumentController(
             $this->documentRepository,
@@ -727,7 +732,9 @@ class DocumentControllerTest extends TestCase
         $this->security->method('getUser')->willReturn($user);
         $this->documentService->method('canEditDocument')->willReturn(true);
 
-        $this->entityManager->expects($this->once())->method('flush');
+        // Soft delete via the lifecycle (DocumentService::softDelete), no remove().
+        $this->documentService->expects($this->once())->method('softDelete')->with($document, $user);
+        $this->entityManager->expects($this->never())->method('remove');
         $this->translator->method('trans')->willReturn('Deleted');
 
         $request = $this->createRequestWithSession([], ['_token' => 'valid_token']);
@@ -786,19 +793,28 @@ class DocumentControllerTest extends TestCase
                 [2, $document2],
             ]);
 
-        $this->entityManager->expects($this->exactly(2))->method('remove');
-        $this->entityManager->expects($this->once())->method('flush');
+        // Bulk delete is the same soft delete as the single delete — never
+        // a hard remove (it used to remove() the rows and unlink the files).
+        $softDeleted = [];
+        $this->documentService->expects($this->exactly(2))->method('softDelete')
+            ->willReturnCallback(function (Document $doc, ?User $by, string $reason) use (&$softDeleted): void {
+                $softDeleted[] = [$doc, $by, $reason];
+            });
+        $this->entityManager->expects($this->never())->method('remove');
 
-        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1, 2]]));
+        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1, 2], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $this->controller->bulkDelete($request);
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         $this->assertTrue($data['success']);
         $this->assertEquals(2, $data['deleted']);
+        $this->assertSame([$document1, $document2], array_column($softDeleted, 0));
+        $this->assertSame($user, $softDeleted[0][1]);
+        $this->assertNotSame('', $softDeleted[0][2], 'soft_delete requires a reason');
     }
 
     /**
@@ -807,10 +823,10 @@ class DocumentControllerTest extends TestCase
     #[Test]
     public function testBulkDeleteWithEmptyIds(): void
     {
-        $request = new Request([], [], [], [], [], [], json_encode(['ids' => []]));
+        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $this->controller->bulkDelete($request);
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
@@ -827,18 +843,18 @@ class DocumentControllerTest extends TestCase
         $userTenant = $this->createTenant(1);
         $otherTenant = $this->createTenant(2);
         $user = $this->createUser(1, $userTenant);
-        $document = $this->createDocument(1, 'active');
-        $document->setTenant($otherTenant);
+        // createDocument() pins tenant #1 on the mock; this row must belong to tenant #2.
+        $document = $this->createConfiguredMock(Document::class, ['getId' => 1, 'getTenant' => $otherTenant]);
 
         $this->security->method('getUser')->willReturn($user);
         $this->documentRepository->method('find')->willReturn($document);
 
         $this->entityManager->expects($this->never())->method('remove');
 
-        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1]]));
+        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [1], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $this->controller->bulkDelete($request);
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
@@ -860,10 +876,10 @@ class DocumentControllerTest extends TestCase
 
         $this->entityManager->expects($this->never())->method('remove');
 
-        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [999]]));
+        $request = new Request([], [], [], [], [], [], json_encode(['ids' => [999], '_token' => 'valid']));
         $request->setMethod('POST');
 
-        $response = $this->controller->bulkDelete($request);
+        $response = $this->controller->bulkDelete($request, $this->createBulkDeleteService());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
@@ -999,5 +1015,20 @@ class DocumentControllerTest extends TestCase
             ['id' => 'test', 'policy' => 'no_limit'],
             $storage
         );
+    }
+
+    private function createBulkDeleteService(): BulkDeleteService
+    {
+        $auditLogger = $this->createStub(AuditLogger::class);
+        $auditLogger->method('logBulk')->willReturn('batch');
+
+        // Acting tenant = tenant of the logged-in test user (what TenantContext resolves).
+        $tenantContext = $this->createStub(\App\Service\TenantContext::class);
+        $tenantContext->method('getCurrentTenant')->willReturnCallback(fn () => $this->security->getUser()?->getTenant());
+        $tenantContext->method('canAccessTenant')->willReturnCallback(
+            fn (\App\Entity\Tenant $t): bool => $this->security->getUser()?->getTenant()?->getId() === $t->getId(),
+        );
+
+        return new BulkDeleteService($this->entityManager, $auditLogger, $this->authorizationChecker, $this->translator, $tenantContext);
     }
 }

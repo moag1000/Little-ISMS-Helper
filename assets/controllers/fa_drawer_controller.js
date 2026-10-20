@@ -1,4 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
+import { faConfirm } from '../js/fa-alerts.js';
 
 /**
  * fa-drawer — generic slide-in side-sheet host driven by Turbo Frames.
@@ -199,10 +201,8 @@ export default class extends Controller {
     }
 
     #confirmDiscard() {
-        const msg = this.element.dataset.faDrawerDiscardMessage
-            || 'Ungespeicherte Änderungen verwerfen?';
-        if (window.faConfirm) return window.faConfirm(msg);
-        return Promise.resolve(window.confirm(msg)); // worst-case fallback
+        const msg = this.element.dataset.faDrawerDiscardMessage || faT('discard_changes');
+        return faConfirm(msg);
     }
 
     #mainContent() {

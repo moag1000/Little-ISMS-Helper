@@ -7,6 +7,7 @@ namespace App\Security;
 use DateTimeImmutable;
 use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 use App\Entity\User;
+use App\Repository\TenantRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -28,7 +29,8 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
         private readonly ClientRegistry $clientRegistry,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
-        private readonly RouterInterface $router
+        private readonly RouterInterface $router,
+        private readonly TenantRepository $tenantRepository,
     ) {
     }
 
@@ -68,6 +70,9 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
                     $user = new User();
                     $user->setEmail($email);
                     $user->setIsVerified(true);
+                    // Azure carries no organisation: on a single-organisation installation the
+                    // account belongs to the sole one (otherwise it sees no organisation's data).
+                    $user->setTenant($this->tenantRepository->findSoleTenant());
                 }
 
                 // Update user data from Azure

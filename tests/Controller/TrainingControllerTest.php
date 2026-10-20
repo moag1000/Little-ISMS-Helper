@@ -9,6 +9,7 @@ use App\Entity\Training;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\Attributes\Test;
@@ -25,6 +26,8 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class TrainingControllerTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
@@ -421,7 +424,7 @@ class TrainingControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/training/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->testTraining->getId()]]));
+        ], json_encode(['ids' => [$this->testTraining->getId()], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -447,7 +450,7 @@ class TrainingControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/training/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseIsSuccessful();
 
@@ -465,7 +468,7 @@ class TrainingControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/training/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => []]));
+        ], json_encode(['ids' => [], '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -502,7 +505,7 @@ class TrainingControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/training/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $this->assertResponseIsSuccessful();
 
@@ -512,9 +515,11 @@ class TrainingControllerTest extends WebTestCase
         $this->assertArrayHasKey('errors', $response);
 
         // Clean up
-        $this->entityManager->remove($otherTraining);
-        $this->entityManager->remove($otherTenant);
-        $this->entityManager->flush();
+        // Raw SQL: the CSRF warm-up request rebooted the kernel (EM cleared) and
+        // the tenant filter hides the foreign row from find().
+        $conn = $this->entityManager->getConnection();
+        $conn->executeStatement('DELETE FROM training WHERE id = ?', [$otherTraining->getId()]);
+        $conn->executeStatement('DELETE FROM tenant WHERE id = ?', [$otherTenant->getId()]);
 
         $this->testTraining = null; // Already deleted
     }
@@ -528,7 +533,7 @@ class TrainingControllerTest extends WebTestCase
 
         $this->client->request('POST', '/en/training/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $this->seedSessionCsrfToken($this->client, 'bulk_action')]));
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals(0, $response['deleted']);

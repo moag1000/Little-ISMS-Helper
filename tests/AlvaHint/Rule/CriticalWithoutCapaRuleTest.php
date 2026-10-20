@@ -23,9 +23,17 @@ class CriticalWithoutCapaRuleTest extends TestCase
     }
 
     #[Test]
-    public function appliesForMajorWithoutCapa(): void
+    public function appliesForHighSeverityWithoutCapa(): void
     {
-        $finding = $this->buildFinding('major', 0);
+        $finding = $this->buildFinding(AuditFinding::SEVERITY_HIGH, 0);
+        $this->assertTrue($this->rule->appliesTo($finding, $this->user));
+    }
+
+    #[Test]
+    public function appliesForMajorNonconformityWithoutCapa(): void
+    {
+        $finding = $this->buildFinding(AuditFinding::SEVERITY_MEDIUM, 0);
+        $finding->setType(AuditFinding::TYPE_MAJOR_NC);
         $this->assertTrue($this->rule->appliesTo($finding, $this->user));
     }
 
@@ -37,9 +45,10 @@ class CriticalWithoutCapaRuleTest extends TestCase
     }
 
     #[Test]
-    public function doesNotApplyForMinor(): void
+    public function doesNotApplyForMediumOrLowMinorFindings(): void
     {
-        $finding = $this->buildFinding('minor', 0);
+        $this->assertFalse($this->rule->appliesTo($this->buildFinding(AuditFinding::SEVERITY_LOW, 0), $this->user));
+        $finding = $this->buildFinding(AuditFinding::SEVERITY_MEDIUM, 0);
         $this->assertFalse($this->rule->appliesTo($finding, $this->user));
     }
 

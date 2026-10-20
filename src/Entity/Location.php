@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Attribute\RequiresModule;
 use App\Repository\LocationRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 #[ORM\Index(name: 'idx_location_type', columns: ['location_type'])]
 #[ORM\Index(name: 'idx_location_active', columns: ['active'])]
+#[RequiresModule('locations')]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
@@ -89,6 +91,7 @@ class Location
     #[Groups(['location:read', 'location:write'])]
     private ?self $parentLocation = null;
 
+    /** @var Collection<int, self> */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentLocation')]
     #[Groups(['location:read'])]
     private Collection $childLocations;
@@ -134,9 +137,11 @@ class Location
     #[Groups(['location:read', 'location:write'])]
     private ?string $notes = null;
 
+    /** @var Collection<int, PhysicalAccessLog> */
     #[ORM\OneToMany(targetEntity: PhysicalAccessLog::class, mappedBy: 'locationEntity')]
     private Collection $accessLogs;
 
+    /** @var Collection<int, Asset> */
     #[ORM\OneToMany(targetEntity: Asset::class, mappedBy: 'physicalLocation')]
     private Collection $assets;
 

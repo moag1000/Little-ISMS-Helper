@@ -64,6 +64,7 @@ use App\Service\Planning\Source\Adapter\TrainingParticipationAdapter;
 use App\Service\Planning\Source\Adapter\VulnerabilityAdapter;
 use App\Service\Planning\Source\Adapter\WorkflowInstanceAdapter;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -80,6 +81,7 @@ final class SourceAdaptersTest extends TestCase
     // CorrectiveActionAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testCorrectiveActionAdapterMeta(): void
     {
         $adapter = new CorrectiveActionAdapter(
@@ -92,6 +94,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testCorrectiveActionAdapterDueDateAndTitle(): void
     {
         $adapter = new CorrectiveActionAdapter(
@@ -108,6 +111,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('Fix logging gap', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testCorrectiveActionAdapterTitleFallback(): void
     {
         $adapter = new CorrectiveActionAdapter(
@@ -118,6 +122,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertStringStartsWith('#', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testCorrectiveActionAdapterIsCompletedFalseForOpenStatus(): void
     {
         $adapter = new CorrectiveActionAdapter(
@@ -137,6 +142,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCorrectiveActionAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new CorrectiveActionAdapter(
@@ -160,6 +166,7 @@ final class SourceAdaptersTest extends TestCase
     // AuditFindingAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testAuditFindingAdapterMeta(): void
     {
         $adapter = new AuditFindingAdapter(
@@ -172,6 +179,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testAuditFindingAdapterDueDateAndTitle(): void
     {
         $adapter = new AuditFindingAdapter(
@@ -188,6 +196,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('Missing access-log retention', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testAuditFindingAdapterIsCompletedFalseForOpenStatus(): void
     {
         $adapter = new AuditFindingAdapter(
@@ -203,6 +212,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testAuditFindingAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new AuditFindingAdapter(
@@ -226,6 +236,7 @@ final class SourceAdaptersTest extends TestCase
     // ManagementReviewAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testManagementReviewAdapterMeta(): void
     {
         $adapter = new ManagementReviewAdapter(
@@ -238,6 +249,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testManagementReviewAdapterDueDateAndTitle(): void
     {
         $adapter = new ManagementReviewAdapter(
@@ -254,6 +266,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('Q4 Management Review', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testManagementReviewAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new ManagementReviewAdapter(
@@ -272,6 +285,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testManagementReviewAdapterIsCompletedTrueForTerminalStatus(): void
     {
         $adapter = new ManagementReviewAdapter(
@@ -286,6 +300,7 @@ final class SourceAdaptersTest extends TestCase
     // InternalAuditAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testInternalAuditAdapterMeta(): void
     {
         $adapter = new InternalAuditAdapter(
@@ -298,6 +313,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testInternalAuditAdapterDueDateAndTitle(): void
     {
         $adapter = new InternalAuditAdapter(
@@ -315,6 +331,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('ISMS Full Audit 2026', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testInternalAuditAdapterIsCompletedFalseForNonTerminalStatuses(): void
     {
         $adapter = new InternalAuditAdapter(
@@ -342,6 +359,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testInternalAuditAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new InternalAuditAdapter(
@@ -366,6 +384,7 @@ final class SourceAdaptersTest extends TestCase
     // IncidentAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testIncidentAdapterMeta(): void
     {
         $adapter = new IncidentAdapter(
@@ -378,6 +397,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testIncidentAdapterDueDateAndTitle(): void
     {
         $adapter = new IncidentAdapter(
@@ -394,6 +414,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('Ransomware on file server', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testIncidentAdapterTitleFallback(): void
     {
         $adapter = new IncidentAdapter(
@@ -404,6 +425,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertStringStartsWith('#', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testIncidentAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new IncidentAdapter(
@@ -423,6 +445,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testIncidentAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new IncidentAdapter(
@@ -445,6 +468,7 @@ final class SourceAdaptersTest extends TestCase
     // VulnerabilityAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testVulnerabilityAdapterMeta(): void
     {
         $adapter = new VulnerabilityAdapter(
@@ -457,6 +481,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testVulnerabilityAdapterDueDateAndTitle(): void
     {
         $adapter = new VulnerabilityAdapter(
@@ -473,6 +498,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('CVE-2026-99999 — critical RCE', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testVulnerabilityAdapterTitleFallback(): void
     {
         $adapter = new VulnerabilityAdapter(
@@ -483,6 +509,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertStringStartsWith('#', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testVulnerabilityAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new VulnerabilityAdapter(
@@ -502,6 +529,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testVulnerabilityAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new VulnerabilityAdapter(
@@ -527,6 +555,7 @@ final class SourceAdaptersTest extends TestCase
     // ChangeRequestAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testChangeRequestAdapterMeta(): void
     {
         $adapter = new ChangeRequestAdapter(
@@ -539,6 +568,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testChangeRequestAdapterDueDateAndTitle(): void
     {
         $adapter = new ChangeRequestAdapter(
@@ -555,6 +585,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('Upgrade TLS 1.0 to TLS 1.3', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testChangeRequestAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new ChangeRequestAdapter(
@@ -578,6 +609,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testChangeRequestAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new ChangeRequestAdapter(
@@ -601,6 +633,7 @@ final class SourceAdaptersTest extends TestCase
     // DocumentReviewAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testDocumentReviewAdapterMeta(): void
     {
         $adapter = new DocumentReviewAdapter(
@@ -613,6 +646,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testDocumentReviewAdapterDueDateAndTitle(): void
     {
         $adapter = new DocumentReviewAdapter(
@@ -628,6 +662,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('ISMS-Leitlinie-v3.pdf', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testDocumentReviewAdapterDueDateNullWhenNotSet(): void
     {
         $adapter = new DocumentReviewAdapter(
@@ -638,6 +673,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNull($adapter->dueDateOf($item));
     }
 
+    #[Test]
     public function testDocumentReviewAdapterTitleFallback(): void
     {
         $adapter = new DocumentReviewAdapter(
@@ -648,6 +684,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertStringStartsWith('#', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testDocumentReviewAdapterIsCompletedAlwaysFalse(): void
     {
         $adapter = new DocumentReviewAdapter(
@@ -664,6 +701,7 @@ final class SourceAdaptersTest extends TestCase
     // RiskTreatmentAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testRiskTreatmentAdapterMeta(): void
     {
         $adapter = new RiskTreatmentAdapter(
@@ -675,6 +713,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testRiskTreatmentAdapterDueDateAndTitle(): void
     {
         $adapter = new RiskTreatmentAdapter(
@@ -692,6 +731,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('Outdated SaaS contract', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testRiskTreatmentAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new RiskTreatmentAdapter(
@@ -712,6 +752,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testRiskTreatmentAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new RiskTreatmentAdapter(
@@ -731,6 +772,7 @@ final class SourceAdaptersTest extends TestCase
     // DataSubjectRequestAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testDsrAdapterMeta(): void
     {
         $adapter = new DataSubjectRequestAdapter(
@@ -742,6 +784,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testDsrAdapterDueDateAndTitle(): void
     {
         $adapter = new DataSubjectRequestAdapter(
@@ -757,6 +800,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertStringContainsString('access', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testDsrAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new DataSubjectRequestAdapter(
@@ -772,6 +816,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDsrAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new DataSubjectRequestAdapter(
@@ -791,6 +836,7 @@ final class SourceAdaptersTest extends TestCase
     // DataBreachAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testDataBreachAdapterMeta(): void
     {
         $adapter = new DataBreachAdapter(
@@ -802,6 +848,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testDataBreachAdapterDueDateDerived72h(): void
     {
         $adapter = new DataBreachAdapter(
@@ -820,6 +867,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('2026-10-04 10:00:00', $due->format('Y-m-d H:i:s'));
     }
 
+    #[Test]
     public function testDataBreachAdapterDueDateIsSetOnFreshEntity(): void
     {
         $adapter = new DataBreachAdapter(
@@ -832,6 +880,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNotNull($adapter->dueDateOf($item));
     }
 
+    #[Test]
     public function testDataBreachAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new DataBreachAdapter(
@@ -847,6 +896,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDataBreachAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new DataBreachAdapter(
@@ -870,6 +920,7 @@ final class SourceAdaptersTest extends TestCase
     // PolicyAckAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testPolicyAckAdapterMeta(): void
     {
         $adapter = new PolicyAckAdapter(
@@ -881,6 +932,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testPolicyAckAdapterDueDateAlwaysNull(): void
     {
         $adapter = new PolicyAckAdapter(
@@ -891,6 +943,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNull($adapter->dueDateOf($item));
     }
 
+    #[Test]
     public function testPolicyAckAdapterIsCompletedFalseForPending(): void
     {
         $adapter = new PolicyAckAdapter(
@@ -901,6 +954,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->isCompleted($item));
     }
 
+    #[Test]
     public function testPolicyAckAdapterIsCompletedTrueForAcknowledged(): void
     {
         $adapter = new PolicyAckAdapter(
@@ -915,6 +969,7 @@ final class SourceAdaptersTest extends TestCase
     // TrainingParticipationAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testTrainingParticipationAdapterMeta(): void
     {
         $adapter = new TrainingParticipationAdapter(
@@ -926,6 +981,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertTrue($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testTrainingParticipationAdapterDueDateAndTitle(): void
     {
         $adapter = new TrainingParticipationAdapter(
@@ -937,6 +993,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame($assigned, $adapter->dueDateOf($item));
     }
 
+    #[Test]
     public function testTrainingParticipationAdapterIsCompletedFalseForOpen(): void
     {
         $adapter = new TrainingParticipationAdapter(
@@ -955,6 +1012,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testTrainingParticipationAdapterIsCompletedTrueForTerminal(): void
     {
         $adapter = new TrainingParticipationAdapter(
@@ -978,6 +1036,7 @@ final class SourceAdaptersTest extends TestCase
     // WorkflowInstanceAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testWorkflowInstanceAdapterMeta(): void
     {
         $adapter = new WorkflowInstanceAdapter(
@@ -989,6 +1048,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testWorkflowInstanceAdapterDueDateAndTitle(): void
     {
         $adapter = new WorkflowInstanceAdapter(
@@ -1004,6 +1064,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertStringStartsWith('Workflow #', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testWorkflowInstanceAdapterIsCompletedFalseForOpen(): void
     {
         $adapter = new WorkflowInstanceAdapter(
@@ -1022,6 +1083,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testWorkflowInstanceAdapterIsCompletedTrueForTerminal(): void
     {
         $adapter = new WorkflowInstanceAdapter(
@@ -1045,6 +1107,7 @@ final class SourceAdaptersTest extends TestCase
     // FourEyesAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testFourEyesAdapterMeta(): void
     {
         $adapter = new FourEyesAdapter(
@@ -1056,6 +1119,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testFourEyesAdapterDueDateAndTitle(): void
     {
         $adapter = new FourEyesAdapter(
@@ -1070,6 +1134,7 @@ final class SourceAdaptersTest extends TestCase
         ));
     }
 
+    #[Test]
     public function testFourEyesAdapterIsCompletedFalseForPending(): void
     {
         $adapter = new FourEyesAdapter(
@@ -1080,6 +1145,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertFalse($adapter->isCompleted($item));
     }
 
+    #[Test]
     public function testFourEyesAdapterIsCompletedTrueForNonPending(): void
     {
         $adapter = new FourEyesAdapter(
@@ -1103,6 +1169,7 @@ final class SourceAdaptersTest extends TestCase
     // DpiaAdapter
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testDpiaAdapterMeta(): void
     {
         $adapter = new DpiaAdapter(
@@ -1114,6 +1181,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertTrue($adapter->ownsRecurrence());
     }
 
+    #[Test]
     public function testDpiaAdapterDueDateAndTitle(): void
     {
         $adapter = new DpiaAdapter(
@@ -1130,6 +1198,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertSame('DPIA — Customer Analytics', $adapter->titleOf($item));
     }
 
+    #[Test]
     public function testDpiaAdapterIsCompletedFalseForOpenStatuses(): void
     {
         $adapter = new DpiaAdapter(
@@ -1151,6 +1220,7 @@ final class SourceAdaptersTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDpiaAdapterIsCompletedTrueForTerminalStatuses(): void
     {
         $adapter = new DpiaAdapter(
@@ -1172,6 +1242,7 @@ final class SourceAdaptersTest extends TestCase
     // findConvertible() delegation tests (new focused repo methods)
     // ──────────────────────────────────────────────────────────────────────────
 
+    #[Test]
     public function testDataBreachAdapterFindConvertibleDelegatesToFocusedMethod(): void
     {
         $tenant = new Tenant();
@@ -1191,6 +1262,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNotContains($closed, $result);
     }
 
+    #[Test]
     public function testDsrAdapterFindConvertibleDelegatesToFocusedMethod(): void
     {
         $tenant = new Tenant();
@@ -1210,6 +1282,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNotContains($done, $result);
     }
 
+    #[Test]
     public function testDpiaAdapterFindConvertibleDelegatesToFocusedMethod(): void
     {
         $tenant = new Tenant();
@@ -1233,6 +1306,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNotContains($done, $result);
     }
 
+    #[Test]
     public function testWorkflowInstanceAdapterFindConvertibleDelegatesToFindActiveForTenant(): void
     {
         $tenant  = new Tenant();
@@ -1252,6 +1326,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNotContains($done, $result);
     }
 
+    #[Test]
     public function testTrainingParticipationAdapterFindConvertibleDelegatesToFocusedMethod(): void
     {
         $tenant  = new Tenant();
@@ -1271,6 +1346,7 @@ final class SourceAdaptersTest extends TestCase
         self::assertNotContains($done, $result);
     }
 
+    #[Test]
     public function testRiskTreatmentAdapterFindConvertibleDelegatesToFocusedMethod(): void
     {
         $tenant    = new Tenant();

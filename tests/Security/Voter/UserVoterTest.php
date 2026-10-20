@@ -24,6 +24,7 @@ class UserVoterTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->tenant = $this->createMock(Tenant::class);
         $this->initialAdminService = $this->createMock(InitialAdminService::class);
         // All users below share one tenant; cross-tenant scope is covered by
         // UserVoterTenantScopeTest.
@@ -33,9 +34,15 @@ class UserVoterTest extends TestCase
         $this->voter = new UserVoter($this->initialAdminService, VoterTestHelper::createRoleHierarchy(), $tenantContext);
     }
 
-    private function createUser(int $id = 1, array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User
-    {
+    private function createUser(
+        int $id = 1,
+        array $roles = ['ROLE_USER'],
+        bool $isActive = true,
+        array $permissions = [],
+        ?Tenant $tenant = null,
+    ): User {
         $user = $this->createMock(User::class);
+        $user->method('getTenant')->willReturn($tenant ?? $this->tenant);
         $user->method('getId')->willReturn($id);
         $user->method('getRoles')->willReturn($roles);
         $user->method('isActive')->willReturn($isActive);
@@ -52,7 +59,7 @@ class UserVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyUser(): void
+    public function testAdminCanViewUserOfOwnTenant(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_ADMIN']);
         $targetUser = $this->createUser(2);
@@ -64,7 +71,7 @@ class UserVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanEditAnyUser(): void
+    public function testAdminCanEditUserOfOwnTenant(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_ADMIN']);
         $targetUser = $this->createUser(2);

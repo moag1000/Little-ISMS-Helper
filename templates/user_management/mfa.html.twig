@@ -102,7 +102,7 @@
                     {% endblock %}
                     {% block table_body %}
                         {% for token in mfa_tokens %}
-                            <tr class="{{ not token.isActive ? 'table-secondary' : '' }}">
+                            <tr class="{{ not token.isActive ? 'fa-table__row--muted' : '' }}">
                                 <td>
                                     {% if token.tokenType == 'totp' %}
                                         <i class="fa-icon fa-icon--asset-endpoint" aria-hidden="true"></i> {{ 'mfa.token_type.totp'|trans({}, 'mfa') }}

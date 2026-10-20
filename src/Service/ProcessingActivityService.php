@@ -7,12 +7,14 @@ namespace App\Service;
 use DateTime;
 use DateTimeInterface;
 use App\Entity\ProcessingActivity;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\ProcessingActivityStatus;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * CRITICAL-06: Processing Activity Service for GDPR Art. 30 VVT
@@ -307,9 +309,12 @@ final class ProcessingActivityService
      *
      * Returns array suitable for PDF/CSV export per Art. 30 requirements
      */
-    public function generateVVTExport(): array
+    public function generateVVTExport(?Tenant $tenant = null): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        // Async jobs pass their tenant explicitly; TenantContext is request-bound.
+        // The register is per organisation (Art. 30): no organisation, no export.
+        $tenant ??= $this->tenantContext->getCurrentTenant()
+            ?? throw new AccessDeniedException('The VVT export needs an organisation.');
         $processingActivities = $this->processingActivityRepository->findActiveByTenant($tenant);
 
         $export = [

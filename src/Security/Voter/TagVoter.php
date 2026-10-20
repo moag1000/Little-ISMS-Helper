@@ -21,12 +21,24 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *    The voter only confirms the role precondition; the controller must
  *    route bulk-remove requests through the 4-eyes workflow.
  *  - TAG_MANAGE      → ADMIN+ (CRUD on Tag master data).
+ *
+ * Tenant scope when a Tag subject is given: a tenant tag is usable and
+ * manageable only inside its own tenant (only ROLE_SUPER_ADMIN crosses
+ * tenants). A global tag (tenant NULL) may be applied/removed by every
+ * tenant, but only ROLE_SUPER_ADMIN may manage it.
  */
 final class TagVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     public const TAG_APPLY = 'TAG_APPLY';
@@ -54,6 +66,16 @@ final class TagVoter extends Voter
         $user = $token->getUser();
         if (!$user instanceof User) {
             return false;
+        }
+
+        if ($subject instanceof Tag) {
+            if ($this->hasReachableRole($user, 'ROLE_SUPER_ADMIN')) {
+                return true;
+            }
+            $isGlobalTag = $subject->getTenant() === null;
+            if ($isGlobalTag ? $attribute === self::TAG_MANAGE : !$this->isSameTenant($user, $subject->getTenant())) {
+                return false;
+            }
         }
 
         $roles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());

@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Attribute\RequiresModule;
 use App\Repository\ThreatIntelligenceRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_threat_severity', columns: ['severity'])]
 #[ORM\Index(name: 'idx_threat_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_threat_detection_date', columns: ['detection_date'])]
+#[RequiresModule('vulnerability_intel')]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
@@ -85,6 +87,7 @@ class ThreatIntelligence
     private ?array $affectedSystems = null;
 
     // New relationship for data reuse
+    /** @var Collection<int, Asset> */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'threat_intelligence_affected_assets')]
     #[Groups(['threat:read', 'threat:write'])]
@@ -101,7 +104,7 @@ class ThreatIntelligence
     #[ORM\Column(length: 50)]
     #[Groups(['threat:read', 'threat:write'])]
     #[Assert\Choice(choices: ['new', 'analyzing', 'mitigated', 'monitoring', 'closed'])]
-    private ?string $status = 'new';
+    private string $status = 'new';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -356,7 +359,7 @@ class ThreatIntelligence
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?ThreatIntelligenceStatus
     {
-        return $this->status === null ? null : ThreatIntelligenceStatus::tryFrom($this->status);
+        return ThreatIntelligenceStatus::tryFrom($this->status);
     }
 
     public function getDetectionDate(): ?DateTimeInterface

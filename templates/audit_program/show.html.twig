@@ -61,26 +61,28 @@
                     {% if program.internalAudits is empty %}
                         <div class="p-4 text-center text-muted small">{{ 'audit_program.show.no_audits'|trans }}</div>
                     {% else %}
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light">
+                        <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact">
+                            <thead class="fa-table__head">
                                 <tr>
-                                    <th>{{ 'audits.field.audit_number'|trans({}, 'audits') }}</th>
-                                    <th>{{ 'audits.field.title'|trans({}, 'audits') }}</th>
-                                    <th>{{ 'audits.field.planned_date'|trans({}, 'audits') }}</th>
-                                    <th>{{ 'audits.field.status'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.audit_number'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.title'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.planned_date'|trans({}, 'audits') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'audits.field.status'|trans({}, 'audits') }}</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                                 {% for audit in program.internalAudits %}
-                                <tr>
-                                    <td><a href="{{ path('app_audit_show', {_locale: app.request.locale, id: audit.id}) }}">{{ audit.auditNumber }}</a></td>
-                                    <td>{{ audit.title }}</td>
-                                    <td>{{ audit.plannedDate|date('d.m.Y') }}</td>
-                                    <td><span class="badge bg-secondary">{{ audit.status }}</span></td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell"><a href="{{ path('app_audit_show', {_locale: app.request.locale, id: audit.id}) }}">{{ audit.auditNumber }}</a></td>
+                                    <td class="fa-table__cell">{{ audit.title }}</td>
+                                    <td class="fa-table__cell">{{ audit.plannedDate|date('d.m.Y') }}</td>
+                                    <td class="fa-table__cell"><span class="badge bg-secondary">{{ audit.status }}</span></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -126,12 +128,14 @@
                     {% if program.status != 'archived' and is_granted('ROLE_MANAGER') %}
                     <form method="post" action="{{ path('app_audit_program_archive', {_locale: app.request.locale, id: program.id}) }}" class="mb-2">
                         <input type="hidden" name="_token" value="{{ csrf_token('archive-audit-program-' ~ program.id) }}">
-                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" onclick="return confirm('{{ 'audit_program.show.archive_confirm'|trans }}')">{{ 'audit_program.action.archive'|trans }}</button>
+                        <label for="audit-program-archive-reason" class="form-label small">{{ 'audit_program.show.archive_reason'|trans }}</label>
+                        <textarea id="audit-program-archive-reason" name="reason" class="form-control form-control-sm mb-2" rows="2" required maxlength="1000"></textarea>
+                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.archive_confirm'|trans({}, 'audit_program') }}">{{ 'audit_program.action.archive'|trans }}</button>
                     </form>
                     {% endif %}
                     <form method="post" action="{{ path('app_audit_program_delete', {_locale: app.request.locale, id: program.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete-audit-program-' ~ program.id) }}">
-                        <button type="submit" class="btn btn-sm btn-danger w-100" onclick="return confirm('{{ 'audit_program.show.delete_confirm'|trans }}')">{{ 'audit_program.action.delete'|trans }}</button>
+                        <button type="submit" class="btn btn-sm btn-danger w-100" data-controller="ui-actions" data-action="click->ui-actions#confirm" data-ui-actions-message-param="{{ 'audit_program.show.delete_confirm'|trans({}, 'audit_program') }}" data-ui-actions-tone-param="danger">{{ 'audit_program.action.delete'|trans }}</button>
                     </form>
                 </div>
             </div>

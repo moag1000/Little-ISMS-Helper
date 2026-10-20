@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Exception;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\AuditLogger;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ModuleConfigurationService;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Throwable;
 
 /**
  * Admin wrapper for Compliance Framework Management
@@ -36,7 +38,9 @@ class AdminComplianceController extends AbstractController
         private readonly ComplianceFrameworkLoaderService $complianceFrameworkLoaderService,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly ModuleConfigurationService $moduleConfigurationService,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AuditLogger $auditLogger,
     ) {
     }
     /**
@@ -117,8 +121,6 @@ class AdminComplianceController extends AbstractController
         }
 
         try {
-            $em = $this->complianceFrameworkRepository->getEntityManager();
-
             // Find the framework by code
             $framework = $this->complianceFrameworkRepository->findOneBy(['code' => $code]);
 
@@ -130,10 +132,18 @@ class AdminComplianceController extends AbstractController
             }
 
             $frameworkName = $framework->getName();
+            $frameworkId = $framework->getId();
 
             // Delete framework (cascade deletes requirements and mappings)
-            $em->remove($framework);
-            $em->flush();
+            $this->entityManager->remove($framework);
+            $this->entityManager->flush();
+
+            $this->auditLogger->logDelete(
+                'ComplianceFramework',
+                $frameworkId,
+                ['code' => $code, 'name' => $frameworkName],
+                sprintf('Compliance framework "%s" deleted via admin panel', $frameworkName),
+            );
 
             $this->addFlash('success', sprintf('Framework "%s" successfully deleted!', $frameworkName));
 
@@ -142,8 +152,9 @@ class AdminComplianceController extends AbstractController
                 'message' => sprintf('Framework "%s" successfully deleted!', $frameworkName)
             ]);
 
-        } catch (Exception $e) {
-            // Log full exception for debugging
+        } catch (Throwable $e) {
+            // \Throwable, not \Exception: an \Error (e.g. TypeError) must still
+            // produce the JSON envelope the admin UI expects, never an HTML 500.
             $this->logger->error('Framework deletion error', [
                 'code' => $code,
                 'exception' => $e->getMessage(),
@@ -153,11 +164,10 @@ class AdminComplianceController extends AbstractController
                 'trace' => $e->getTraceAsString()
             ]);
 
+            // Details stay in the log — no exception class / stack trace to the client.
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error deleting framework: ' . $e->getMessage(),
-                'error_details' => $e::class,
-                'trace' => $e->getTraceAsString()
+                'message' => 'Error deleting framework.',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

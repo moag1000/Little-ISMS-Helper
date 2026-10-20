@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Service\BulkDeleteService;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Asset;
 use App\Entity\DataProtectionImpactAssessment;
@@ -20,7 +21,6 @@ use App\Repository\CommentRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Service\AuditLogger;
 use App\Service\DataProtectionImpactAssessmentService;
-use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\PreFiller\DpiaPreFiller;
 use App\Service\PreFiller\SectoralDpiaPreFiller;
@@ -39,12 +39,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
+#[RequiresModule('privacy')]
 class DPIAController extends AbstractController
 {
     use CurrentUserTrait;
     use InPageFormTrait;
     use LocalizedFlashTrait;
-    use ModuleGatedControllerTrait;
     use BulkActionTrait;
 
     protected function getFlashDomain(): string
@@ -63,7 +63,6 @@ class DPIAController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
-        private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
         private readonly ?DataProtectionImpactAssessmentRepository $dpiaRepository = null,
         private readonly ?CommentRepository $commentRepository = null,
@@ -79,8 +78,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia', name: 'app_dpia_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // Get filter parameters
         $filter = $request->query->get('filter', 'all');
 
@@ -115,8 +112,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/new', name: 'app_dpia_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $dataProtectionImpactAssessment = new DataProtectionImpactAssessment();
         $dataProtectionImpactAssessment->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -214,8 +209,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/{id}/edit', name: 'app_dpia_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // Only draft and requires_revision can be edited
         if (!in_array($dataProtectionImpactAssessment->getStatus(), [DpiaStatus::Draft->value, DpiaStatus::RequiresRevision->value], true)) {
             $this->flashWarning('dpia.warning.cannot_edit_in_status');
@@ -269,8 +262,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if ($this->isCsrfTokenValid('delete' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->dataProtectionImpactAssessmentService->delete($dataProtectionImpactAssessment);
 
@@ -290,8 +281,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/{id}/submit-for-review', name: 'app_dpia_submit_for_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function submitForReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('submit' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -314,8 +303,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function approve(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('approve' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -340,8 +327,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function reject(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('reject' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -371,8 +356,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function requestRevision(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('revision' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -401,8 +384,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/{id}/reopen', name: 'app_dpia_reopen', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function reopen(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('reopen' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -429,8 +410,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function dpConsultation(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('dpo' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -456,8 +435,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function supervisoryConsultation(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('supervisory' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -486,8 +463,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/{id}/mark-for-review', name: 'app_dpia_mark_for_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function markForReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -516,8 +491,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_AUDITOR')]
     public function completeReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('complete-review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -539,8 +512,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/{id}/clone', name: 'app_dpia_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function clone(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         if (!$this->isCsrfTokenValid('clone' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -563,8 +534,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/dashboard', name: 'app_dpia_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $statistics = $this->dataProtectionImpactAssessmentService->getDashboardStatistics();
         $complianceScore = $this->dataProtectionImpactAssessmentService->calculateComplianceScore();
 
@@ -589,10 +558,8 @@ class DPIAController extends AbstractController
      * Search DPIAs (AJAX endpoint)
      */
     #[Route('/dpia/search', name: 'app_dpia_search', methods: ['GET'])]
-    public function search(Request $request): Response
+    public function search(Request $request): JsonResponse
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $query = $request->query->get('q', '');
 
         if (strlen($query) < 2) {
@@ -619,8 +586,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/{id}', name: 'app_dpia_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         // In-modal → condensed read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('dpia/_detail_modal.html.twig', [
@@ -657,8 +622,6 @@ class DPIAController extends AbstractController
     #[Route('/dpia/{id}/export/pdf', name: 'app_dpia_export_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportPdf(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
         // Close session to prevent blocking
@@ -691,10 +654,8 @@ class DPIAController extends AbstractController
      * Compliance report for a single DPIA (JSON API)
      */
     #[Route('/dpia/{id}/compliance-report', name: 'app_dpia_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function complianceReport(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
+    public function complianceReport(DataProtectionImpactAssessment $dataProtectionImpactAssessment): JsonResponse
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $report = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
         return $this->json($report);
@@ -704,10 +665,8 @@ class DPIAController extends AbstractController
      * Validate DPIA (AJAX endpoint)
      */
     #[Route('/dpia/{id}/validate', name: 'app_dpia_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
+    public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): JsonResponse
     {
-        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
-
         $errors = $this->dataProtectionImpactAssessmentService->validate($dataProtectionImpactAssessment);
         $isCompliant = $errors === [];
 
@@ -723,6 +682,7 @@ class DPIAController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * DPIAs have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/dpia/bulk-delete-check', name: 'app_dpia_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -734,47 +694,20 @@ class DPIAController extends AbstractController
 
     #[Route('/dpia/bulk-delete', name: 'app_dpia_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        if ($this->checkModuleActive('privacy') instanceof Response) {
-            return $this->json(['error' => 'Privacy module not active'], 403);
-        }
-
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $dpia = $this->dpiaRepository?->find($id);
-                if (!$dpia) {
-                    $errors[] = "DPIA ID $id not found";
-                    continue;
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'DataProtectionImpactAssessment',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->dpiaRepository?->find($id),
+            deleter: function (object $dpia): void {
+                if ($dpia instanceof DataProtectionImpactAssessment) {
+                    $this->dataProtectionImpactAssessmentService->delete($dpia);
                 }
-                if ($tenant && $dpia->getTenant() !== $tenant) {
-                    $errors[] = "DPIA ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->dataProtectionImpactAssessmentService->delete($dpia);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting DPIA ID $id: " . $e->getMessage();
-            }
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted DPIAs deleted successfully",
-        ]);
+            },
+        );
     }
 
     /**
@@ -785,10 +718,6 @@ class DPIAController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
-        if ($redirect = $this->checkModuleActive('privacy')) {
-            return $redirect;
-        }
-
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);
@@ -798,15 +727,13 @@ class DPIAController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $dpias = [];
         foreach ($ids as $rawId) {
             $dpia = $this->dpiaRepository?->find((int) $rawId);
             if ($dpia === null) {
                 continue;
             }
-            if ($tenant !== null && $dpia->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($dpia, $this->tenantContext)) {
                 continue;
             }
             $dpias[] = $dpia;

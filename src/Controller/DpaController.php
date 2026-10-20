@@ -12,6 +12,7 @@ use App\Entity\Supplier;
 use App\Repository\DocumentRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
+use App\Security\TenantOwnership;
 use App\Service\AuditLogger;
 use App\Service\Privacy\DpaGeneratorService;
 use App\Service\PolicyWizard\Export\PolicyPdfExporter;
@@ -175,12 +176,13 @@ final class DpaController extends AbstractController
     private function resolveAndGuard(int $supplierId, int $paId): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
+        $isSuperAdmin = $tenant === null && $this->isGranted('ROLE_SUPER_ADMIN');
 
         $supplier = $this->supplierRepository->find($supplierId);
         if (!$supplier instanceof Supplier) {
             throw $this->createNotFoundException(sprintf('Lieferant #%d nicht gefunden.', $supplierId));
         }
-        if ($tenant !== null && $supplier->getTenant()?->getId() !== $tenant->getId()) {
+        if (!TenantOwnership::isInScope($supplier, $tenant, $isSuperAdmin)) {
             throw $this->createAccessDeniedException('Lieferant gehört nicht zu Ihrer Organisation.');
         }
 
@@ -188,7 +190,7 @@ final class DpaController extends AbstractController
         if (!$pa instanceof ProcessingActivity) {
             throw $this->createNotFoundException(sprintf('Verarbeitungstätigkeit #%d nicht gefunden.', $paId));
         }
-        if ($tenant !== null && $pa->getTenant()?->getId() !== $tenant->getId()) {
+        if (!TenantOwnership::isInScope($pa, $tenant, $isSuperAdmin)) {
             throw $this->createAccessDeniedException('Verarbeitungstätigkeit gehört nicht zu Ihrer Organisation.');
         }
 

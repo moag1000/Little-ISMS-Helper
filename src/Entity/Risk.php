@@ -703,7 +703,7 @@ class Risk
      */
     public function getStatusValue(): string
     {
-        return $this->status?->value ?? RiskStatus::Identified->value;
+        return $this->status->value ?? RiskStatus::Identified->value;
     }
 
     public function setStatusValue(string $statusValue): static

@@ -8,6 +8,8 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\ComplianceFramework;
 use App\Entity\User;
+use App\Repository\ComplianceRequirementRepository;
+use WeakMap;
 
 /**
  * Tier-2 hint: ISO 27001 Cl. 9.1 — compliance frameworks with fewer
@@ -19,6 +21,25 @@ use App\Entity\User;
 final class LowRequirementCoverageRule extends AbstractAlvaHintRule
 {
     private const float COVERAGE_THRESHOLD = 50.0;
+
+    /** @var WeakMap<ComplianceFramework, float> */
+    private WeakMap $coverageCache;
+
+    public function __construct(private readonly ComplianceRequirementRepository $requirementRepository)
+    {
+        $this->coverageCache = new WeakMap();
+    }
+
+    /** Percentage computed once per framework, with bounded queries (preloaded). */
+    private function coverage(ComplianceFramework $framework): float
+    {
+        if (!isset($this->coverageCache[$framework])) {
+            $this->requirementRepository->preloadMappedControls($framework);
+            $this->coverageCache[$framework] = $framework->getCompliancePercentage();
+        }
+
+        return $this->coverageCache[$framework];
+    }
 
     public function key(): string
     {
@@ -49,7 +70,7 @@ final class LowRequirementCoverageRule extends AbstractAlvaHintRule
             return false;
         }
 
-        return $entity->getCompliancePercentage() < self::COVERAGE_THRESHOLD;
+        return $this->coverage($entity) < self::COVERAGE_THRESHOLD;
     }
 
     public function build(object $entity, User $user): AlvaHint
@@ -61,7 +82,7 @@ final class LowRequirementCoverageRule extends AbstractAlvaHintRule
             titleTranslationKey: 'compliance_framework.low_coverage.title',
             bodyTranslationKey: 'compliance_framework.low_coverage.body',
             bodyTranslationParams: [
-                '%coverage%' => number_format($entity->getCompliancePercentage(), 1),
+                '%coverage%' => number_format($this->coverage($entity), 1),
                 '%threshold%' => (int) self::COVERAGE_THRESHOLD,
                 '%name%' => (string) $entity->getName(),
             ],

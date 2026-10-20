@@ -186,7 +186,7 @@
    Buttons opt in via [data-alva-celebrate="<reason-suffix>"]. The handler is attached
    on `turbo:load` so it survives SPA-style navigation (same pattern as
    templates/import/wizard/preview.html.twig). #}
-<script>
+<script nonce="{{ csp_nonce() }}">
     document.addEventListener('turbo:load', function () {
         var buttons = document.querySelectorAll('[data-alva-celebrate]');
         buttons.forEach(function (btn) {

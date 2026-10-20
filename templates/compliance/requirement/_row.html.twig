@@ -27,15 +27,15 @@
     <td>
         {% if fulfillment %}
             <div class="d-flex align-items-center">
-                <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
-                    <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
-                         role="progressbar"
-                         style="width: {{ fulfillment.fulfillmentPercentage }}%"
-                         aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
-                         aria-valuemin="0"
-                         aria-valuemax="100">
-                        {{ fulfillment.fulfillmentPercentage }}%
-                    </div>
+                {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                {% set fp = fulfillment.fulfillmentPercentage %}
+                <div class="flex-grow-1 me-2" style="min-width: 100px;">
+                    {{ _fa_progress.render({
+                        value: fp,
+                        tone: fp >= 100 ? 'success' : (fp >= 75 ? 'info' : (fp >= 50 ? 'warning' : 'danger')),
+                        showText: true,
+                        class: 'progress-h-20',
+                    }) }}
                 </div>
                 <small class="text-muted">{{ fulfillment.status }}</small>
             </div>

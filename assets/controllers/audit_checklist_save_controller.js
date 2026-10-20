@@ -1,4 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
+import { faToast } from '../js/fa-alerts.js';
 
 /**
  * Audit Checklist Save Controller
@@ -24,7 +26,7 @@ export default class extends Controller {
         if (this.hasButtonTarget) {
             this.buttonTarget.disabled = true;
             this.originalText = this.buttonTarget.textContent;
-            this.buttonTarget.textContent = '⏳ ' + (this.buttonTarget.dataset.savingText || 'Saving...');
+            this.buttonTarget.textContent = '⏳ ' + (this.buttonTarget.dataset.savingText || faT('saving'));
         }
 
         const items = this.collectItems();
@@ -37,12 +39,12 @@ export default class extends Controller {
             });
             const payload = await response.json();
             if (response.ok) {
-                this.flash(payload.message || 'Saved.', 'success');
+                this.flash(payload.message || faT('saved'), 'success');
             } else {
-                this.flash(payload.error || 'Save failed.', 'danger');
+                this.flash(payload.error || faT('save_failed'), 'danger');
             }
         } catch (e) {
-            this.flash('Network error: ' + e.message, 'danger');
+            this.flash(`${faT('network_error')}: ${e.message}`, 'danger');
         } finally {
             if (this.hasButtonTarget) {
                 this.buttonTarget.disabled = false;
@@ -91,9 +93,10 @@ export default class extends Controller {
         const detail = { message, variant, tone: variant, type: variant };
         window.dispatchEvent(new CustomEvent('fa-toast:show', { detail }));
         document.dispatchEvent(new CustomEvent('toast:show', { detail }));
-        // Fallback: simple alert if no toast handler is mounted.
+        // No toast stack mounted (e.g. a page without base.html.twig): use the
+        // Aurora toast helper directly.
         if (!document.querySelector('.fa-toast-stack') && !document.querySelector('.toast-container')) {
-            alert(message);
+            faToast(message, variant);
         }
     }
 }

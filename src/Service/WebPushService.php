@@ -97,11 +97,18 @@ final class WebPushService
     /**
      * Unsubscribe from push notifications
      */
-    public function unsubscribe(string $endpoint): bool
+    /**
+     * Remove a push subscription. When $owner is given, only that user's own
+     * subscription can be removed (endpoint URLs are not secrets).
+     */
+    public function unsubscribe(string $endpoint, ?User $owner = null): bool
     {
         $subscription = $this->subscriptionRepository->findByEndpoint($endpoint);
 
         if (!$subscription) {
+            return false;
+        }
+        if ($owner !== null && $subscription->getUser()?->getId() !== $owner->getId()) {
             return false;
         }
 
@@ -169,7 +176,7 @@ final class WebPushService
                 }
 
                 $this->subscriptionRepository->save($subscription, true);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->error('Failed to send push notification', [
                     'subscription_id' => $subscription->getId(),
                     'error' => $e->getMessage(),
@@ -297,7 +304,7 @@ final class WebPushService
             $this->logger->info('Generated new VAPID keys');
 
             return $keys;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Failed to generate VAPID keys', ['error' => $e->getMessage()]);
             return null;
         }

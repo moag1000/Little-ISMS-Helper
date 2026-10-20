@@ -6,6 +6,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\Control;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -189,14 +190,42 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertSame(0.0, $framework->getCompliancePercentage());
     }
 
+    /**
+     * Regression — getCompliancePercentage() compared getStatus() against
+     * 'fulfilled'/'compliant', which ComplianceRequirement never returns, so a
+     * framework with fully implemented requirements reported 0 %.
+     */
+    #[Test]
+    public function testCompliancePercentageCountsRealImplementedRequirements(): void
+    {
+        $framework = new ComplianceFramework();
+
+        $control = new Control();
+        $control->setImplementationStatus('implemented');
+        $control->setImplementationPercentage(100);
+
+        $implemented = new ComplianceRequirement();
+        $implemented->setRequirementId('REAL-1')->setTitle('Implemented')->setRequirementType('core');
+        $implemented->addMappedControl($control);
+
+        $open = new ComplianceRequirement();
+        $open->setRequirementId('REAL-2')->setTitle('Open')->setRequirementType('core');
+
+        $framework->addRequirement($implemented);
+        $framework->addRequirement($open);
+
+        $this->assertSame('implemented', $implemented->getStatus());
+        $this->assertSame(50.0, $framework->getCompliancePercentage());
+    }
+
     private function fulfilledTopLevelRequirement(string $id): ComplianceRequirement
     {
-        // Anonymous subclass forces getStatus() into the "fulfilled" vocabulary
+        // Anonymous subclass forces getStatus() into the "implemented" vocabulary
         // that getCompliancePercentage() counts, without needing fulfillment rows.
         $req = new class extends ComplianceRequirement {
             public function getStatus(): string
             {
-                return 'compliant';
+                return 'implemented';
             }
         };
         $req->setRequirementId($id)->setTitle('Top-level ' . $id)->setRequirementType('core');
@@ -222,12 +251,12 @@ class ComplianceFrameworkTest extends TestCase
         $parent = new ComplianceRequirement();
         $parent->setRequirementType('core');
 
-        // Even if a sub-req reports 'compliant', it must be excluded by virtue of
+        // Even if a sub-req reports 'implemented', it must be excluded by virtue of
         // having a parent + requirementType='sub_requirement'.
         $req = new class extends ComplianceRequirement {
             public function getStatus(): string
             {
-                return 'compliant';
+                return 'implemented';
             }
         };
         $req->setRequirementId($id)

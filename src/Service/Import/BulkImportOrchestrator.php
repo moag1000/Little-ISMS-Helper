@@ -17,6 +17,7 @@ use App\Service\Import\Dto\DeltaConfig;
 use App\Service\Import\Dto\DeltaResult;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\FileUploadSecurityService;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -51,6 +52,7 @@ class BulkImportOrchestrator
         private readonly EntityManagerInterface $em,
         private readonly MessageBusInterface $bus,
         private readonly string $uploadDir,
+        private readonly FileUploadSecurityService $uploadSecurity,
         private readonly ?FteRecorderService $fteRecorder = null,
     ) {}
 
@@ -77,6 +79,13 @@ class BulkImportOrchestrator
         ?User $user,
         string $mode = BulkImportBatch::MODE_INITIAL,
     ): BulkImportBatch {
+        // Extension, server-detected MIME type, signature and size — before
+        // anything touches the disk.
+        $validation = $this->uploadSecurity->validateUpload($file, FileUploadSecurityService::PROFILE_TABULAR_IMPORT);
+        if (!$validation['valid']) {
+            throw ImportFailedException::forType($entityType, (string) $validation['error']);
+        }
+
         // Ensure the upload directory exists
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0750, true);
@@ -84,7 +93,8 @@ class BulkImportOrchestrator
 
         // Generate a unique filename to avoid collisions
         $originalName = $file->getClientOriginalName();
-        $extension    = $file->getClientOriginalExtension() ?: 'bin';
+        // Whitelisted by the PROFILE_TABULAR_IMPORT check above.
+        $extension    = strtolower($file->getClientOriginalExtension());
         $storedName   = sprintf('%s_%s.%s', date('Ymd_His'), bin2hex(random_bytes(6)), $extension);
         $storedPath   = $this->uploadDir . DIRECTORY_SEPARATOR . $storedName;
 

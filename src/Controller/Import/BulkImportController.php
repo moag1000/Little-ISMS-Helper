@@ -84,10 +84,9 @@ final class BulkImportController extends AbstractController
     // -------------------------------------------------------------------------
 
     #[Route('/', name: 'app_bulk_import_index', methods: ['GET'])]
+    #[IsGranted(BulkImportVoter::BULK_IMPORT_TRIGGER)]
     public function index(string $entityType): Response
     {
-        $this->denyAccessUnlessGranted(BulkImportVoter::BULK_IMPORT_TRIGGER, null);
-
         $tenant          = $this->tenantContext->getCurrentTenant();
         $entityTypePascal = $this->toPascalCase($entityType);
 
@@ -112,10 +111,9 @@ final class BulkImportController extends AbstractController
     // -------------------------------------------------------------------------
 
     #[Route('/upload', name: 'app_bulk_import_upload', methods: ['GET', 'POST'])]
+    #[IsGranted(BulkImportVoter::BULK_IMPORT_TRIGGER)]
     public function upload(string $entityType, Request $request): Response
     {
-        $this->denyAccessUnlessGranted(BulkImportVoter::BULK_IMPORT_TRIGGER, null);
-
         $entityTypePascal = $this->toPascalCase($entityType);
 
         if ($redirect = $this->assertEntityModule($entityTypePascal)) {

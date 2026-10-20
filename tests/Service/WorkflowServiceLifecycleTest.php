@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Workflow\Loader\RegulatoryWorkflowLoader;
 use App\Repository\WorkflowInstanceRepository;
@@ -95,6 +96,98 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $this->assertNull($result, 'Final step must return null from moveToNextStep');
         $this->assertNull($instance->getCurrentStep(), 'currentStep must be null after completion');
         $this->assertNotNull($instance->getCompletedAt(), 'completedAt must be set');
+    }
+
+    #[Test]
+    public function finalApprovalPassesInitiatorAndApproverForFourEyes(): void
+    {
+        $step = $this->buildStep(1, 'Final Review', 5);
+        $workflow = $this->buildWorkflow('Test', 'Risk', [$step]);
+        $instance = $this->buildRealInstance('in_progress', $step, $workflow);
+        $initiator = $this->buildUser(1, 'Ina', 'Initiator');
+        $approver = $this->buildUser(2, 'Al', 'Approver');
+        $instance->setInitiatedBy($initiator);
+
+        // workflow_instance_lifecycle.approve is four_eyes: FourEyesValidator
+        // needs the initiator as `user` and the final approver as
+        // `four_eyes_approver`, otherwise the transition always throws.
+        $this->lifecycleService->expects($this->once())
+            ->method('transition')
+            ->with($instance, 'workflow_instance_lifecycle', 'approve', $initiator, 'looks good', $approver);
+
+        $this->service->moveToNextStep($instance, $approver, 'looks good');
+    }
+
+    #[Test]
+    public function approveStepPassesStepAuthorityToClosingFourEyesTransition(): void
+    {
+        $step = $this->buildStep(1, 'Final Review', 5);
+        $step->method('getApproverRole')->willReturn('ROLE_AUDITOR');
+        $workflow = $this->buildWorkflow('Test', 'Control', [$step]);
+        $instance = $this->buildRealInstance('in_progress', $step, $workflow);
+        $initiator = $this->buildUser(1, 'Ina', 'Initiator');
+        $approver = $this->buildUser(2, 'Al', 'Auditor');
+        $instance->setInitiatedBy($initiator);
+        $this->security->method('isGranted')->willReturnCallback(static fn ($r) => $r === 'ROLE_AUDITOR');
+
+        // canUserApprove() verified the approver against the step — the
+        // closing transition must not re-check the transition's roles.
+        $this->lifecycleService->expects($this->once())
+            ->method('transition')
+            ->with($instance, 'workflow_instance_lifecycle', 'approve', $initiator, 'ok', $approver, true);
+
+        self::assertTrue($this->service->approveStep($instance, $approver, 'ok'));
+    }
+
+    #[Test]
+    public function approvalBeforeClosingNotificationStepGrantsTheClosingTransition(): void
+    {
+        $approvalStep = $this->buildStep(1, 'DPO Review', 5);
+        $approvalStep->method('getApproverRole')->willReturn('ROLE_DPO');
+        $notifyStep = $this->buildStep(2, 'Notify requester', 1);
+        $notifyStep->method('getStepType')->willReturn('notification');
+        $workflow = $this->buildWorkflow('Test', 'DataSubjectRequest', [$approvalStep, $notifyStep]);
+        $instance = $this->buildRealInstance('in_progress', $approvalStep, $workflow);
+        $initiator = $this->buildUser(1, 'Ina', 'Initiator');
+        $dpo = $this->buildUser(2, 'Dora', 'Dpo');
+        $instance->setInitiatedBy($initiator);
+        $this->security->method('isGranted')->willReturn(true);
+
+        $this->lifecycleService->expects($this->once())
+            ->method('transition')
+            ->with($instance, 'workflow_instance_lifecycle', 'approve', $initiator, null, $dpo, true);
+
+        self::assertTrue($this->service->approveStep($instance, $dpo));
+    }
+
+    #[Test]
+    public function refusedClosingApprovalLeavesNoPartialProgress(): void
+    {
+        $step = $this->buildStep(1, 'Final Review', 5);
+        $step->method('getApproverRole')->willReturn('ROLE_CISO');
+        $workflow = $this->buildWorkflow('Test', 'Risk', [$step]);
+        $instance = $this->buildRealInstance('in_progress', $step, $workflow);
+        $initiator = $this->buildUser(1, 'Ina', 'Initiator');
+        $instance->setInitiatedBy($initiator);
+        $this->security->method('isGranted')->willReturn(true);
+
+        $this->lifecycleService->method('transition')->willThrowException(
+            FourEyesRequiredException::sameUser('workflow_instance_lifecycle', 'approve'),
+        );
+        $this->entityManager->expects($this->never())->method('flush');
+
+        try {
+            $this->service->approveStep($instance, $initiator, 'self');
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('same_user', $e->reasonCode);
+        }
+
+        self::assertSame('in_progress', $instance->getStatus());
+        self::assertSame([], $instance->getApprovalHistory());
+        self::assertSame([], $instance->getCompletedSteps());
+        self::assertSame($step, $instance->getCurrentStep());
+        self::assertNull($instance->getCompletedAt());
     }
 
     #[Test]
@@ -222,7 +315,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $qb->method('expr')->willReturn(new \Doctrine\ORM\Query\Expr());
         $this->entityManager->method('createQueryBuilder')->willReturn($qb);
 
-        $this->userRepository->method('findByRole')->willReturn([]);
+        $this->userRepository->method('findByRoleInTenant')->willReturn([]);
 
         $this->lifecycleService->expects($this->once())
             ->method('transition')

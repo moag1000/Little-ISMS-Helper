@@ -49,7 +49,7 @@ class DocumentVoterTest extends TestCase
     }
 
     #[Test]
-    public function testAdminCanViewAnyDocument(): void
+    public function testAdminCannotViewOtherTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $otherUser = $this->createUser(['ROLE_USER'], $this->otherTenant);
@@ -58,11 +58,11 @@ class DocumentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $document, [DocumentVoter::VIEW]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanEditAnyDocument(): void
+    public function testAdminCannotEditOtherTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $otherUser = $this->createUser(['ROLE_USER'], $this->otherTenant);
@@ -71,11 +71,11 @@ class DocumentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $document, [DocumentVoter::EDIT]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
-    public function testAdminCanDeleteAnyDocument(): void
+    public function testAdminCannotDeleteOtherTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
         $otherUser = $this->createUser(['ROLE_USER'], $this->otherTenant);
@@ -84,7 +84,7 @@ class DocumentVoterTest extends TestCase
 
         $result = $this->voter->vote($token, $document, [DocumentVoter::DELETE]);
 
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
     #[Test]
@@ -245,5 +245,34 @@ class DocumentVoterTest extends TestCase
 
         $token = new UsernamePasswordToken($subUser, 'main', $subUser->getRoles());
         $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $document, [DocumentVoter::EDIT]));
+    }
+
+    #[Test]
+    public function testInheritableHoldingDocumentMatchesTheHoldingAsAnotherInstance(): void
+    {
+        // The document's tenant is a second instance (Doctrine proxy /
+        // detached copy) of the subsidiary user's parent: compared by id.
+        $holding = (new Tenant())->setCode('holding');
+        $holdingCopy = (new Tenant())->setCode('holding');
+        foreach ([$holding, $holdingCopy] as $tenant) {
+            (new \ReflectionProperty(Tenant::class, 'id'))->setValue($tenant, 501);
+        }
+        $sub = (new Tenant())->setCode('sub');
+        (new \ReflectionProperty(Tenant::class, 'id'))->setValue($sub, 502);
+        $holding->addSubsidiary($sub);
+
+        $document = $this->createMock(Document::class);
+        $document->method('getTenant')->willReturn($holdingCopy);
+        $document->method('isInheritable')->willReturn(true);
+
+        $user = $this->createUser(['ROLE_USER'], $sub);
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->createToken($user), $document, [DocumentVoter::VIEW]));
+        // Inheritance only flows down: the holding never "inherits" from itself.
+        $holdingUser = $this->createUser(['ROLE_USER'], $holding);
+        $subDocument = $this->createMock(Document::class);
+        $subDocument->method('getTenant')->willReturn($sub);
+        $subDocument->method('isInheritable')->willReturn(true);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->createToken($holdingUser), $subDocument, [DocumentVoter::VIEW]));
     }
 }

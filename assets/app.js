@@ -7,6 +7,18 @@ import './js/alva-bus.js';
 // FairyAurora v4.0 — Aurora-styled toast (window.faToast) + confirm dialog
 // (window.faConfirm) replacing native alert()/confirm() across templates.
 import './js/fa-alerts.js';
+
+// Route Turbo's `data-turbo-confirm` through the Aurora dialog instead of the
+// native window.confirm() Turbo uses by default (e.g. the delete item of
+// _floating_toolbar.html.twig).
+import * as Turbo from '@hotwired/turbo';
+import { auroraTurboConfirm } from './js/turbo-confirm.js';
+
+if (Turbo.config?.forms) {
+    Turbo.config.forms.confirm = auroraTurboConfirm;
+} else if (typeof Turbo.setConfirmMethod === 'function') {
+    Turbo.setConfirmMethod(auroraTurboConfirm);
+}
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -16,6 +28,9 @@ import './js/fa-alerts.js';
 
 // Extension Error Handler - Suppress browser extension errors
 import './extension_error_handler.js';
+
+// CSP nonce bridge: keeps nonce'd inline scripts working across Turbo visits.
+import './js/csp-nonce.js';
 
 // CSRF Protection - Global script (not a Stimulus controller)
 import './csrf_protection.js';

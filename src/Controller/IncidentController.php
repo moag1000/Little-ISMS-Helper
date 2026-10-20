@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Service\BulkDeleteService;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\IncidentSeverity;
@@ -34,6 +36,7 @@ use App\Service\AuditLogger;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -42,6 +45,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -50,6 +55,7 @@ class IncidentController extends AbstractController
     use BulkActionTrait;
     use CurrentUserTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
@@ -284,7 +290,7 @@ class IncidentController extends AbstractController
 
             // Send notification for high/critical severity incidents
             if (in_array($incident->getSeverity(), [IncidentSeverity::High, IncidentSeverity::Critical])) {
-                $admins = $this->userRepository->findByRole('ROLE_ADMIN');
+                $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $incident->getTenant());
                 $this->emailNotificationService->sendIncidentNotification($incident, $admins);
             }
 
@@ -321,9 +327,11 @@ class IncidentController extends AbstractController
      * JSON API endpoint for GDPR wizard to calculate breach risk
      * based on data types and affected count.
      */
+    // @csrf-exempt: pure computation, returns an assessment and persists nothing
     #[Route('/incident/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function gdprWizardResult(Request $request): Response
+    #[RequiresModule('privacy')]
+    public function gdprWizardResult(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -342,6 +350,7 @@ class IncidentController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if an Incident has linked DataBreach records or RiskIncidentLinks.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/incident/bulk-delete-check', name: 'app_incident_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -361,70 +370,26 @@ class IncidentController extends AbstractController
             fn (\App\Entity\Incident $incident): ?array => ($c = (int) $em->createQuery(
                 'SELECT COUNT(db.id) FROM App\Entity\DataBreach db WHERE db.incident = :incident'
             )->setParameter('incident', $incident)->getSingleScalarResult()) > 0
-                ? ['message' => sprintf('%d Datenpanne(n) verknüpft', $c), 'icon' => 'shield-x']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.data_breaches', ['%count%' => $c], 'bulk_delete'), 'icon' => 'breach']
                 : null,
             fn (\App\Entity\Incident $incident): ?array => ($c = $this->riskIncidentLinkRepository->count(['incident' => $incident])) > 0
-                ? ['message' => sprintf('%d Risiko-Vorfall-Verknüpfung(en)', $c), 'icon' => 'link-45deg']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.risk_links', ['%count%' => $c], 'bulk_delete'), 'icon' => 'ui-link']
                 : null,
         ]);
     }
 
     #[Route('/incident/bulk-delete', name: 'app_incident_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $incident = $this->incidentRepository->find($id);
-
-                if (!$incident) {
-                    $errors[] = "Incident ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's incidents
-                if ($tenant && $incident->getTenant() !== $tenant) {
-                    $errors[] = "Incident ID $id does not belong to your organization";
-                    continue;
-                }
-
-                $this->entityManager->remove($incident);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting incident ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted incidents deleted successfully"
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Incident',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->incidentRepository->find($id),
+            voterAttribute: 'delete',
+        );
     }
     #[Route('/incident/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -501,7 +466,7 @@ class IncidentController extends AbstractController
 
             // Send notification if status changed
             if ($originalStatus !== $incident->getStatus()) {
-                $admins = $this->userRepository->findByRole('ROLE_ADMIN');
+                $admins = $this->userRepository->findByRoleInTenant('ROLE_ADMIN', $incident->getTenant());
                 $changeDescription = "Status changed from {$originalStatus?->value} to {$incident->getStatus()?->value}";
                 $this->emailNotificationService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
             }
@@ -653,6 +618,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('nis2_dora')]
     public function downloadNis2Report(Request $request, Incident $incident): Response
     {
         // Check if NIS2 framework exists and is active
@@ -708,53 +674,13 @@ class IncidentController extends AbstractController
             'Content-Length' => (string) strlen($pdf),
         ]);
     }
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
-    }
     // CRITICAL-05: BCM Integration Actions
     /**
      * Display BCM impact analysis for an incident
      */
     #[Route('/incident/{id}/bcm-impact', name: 'app_incident_bcm_impact', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpact(Incident $incident): Response
     {
         $analysis = $this->incidentBCMImpactService->analyzeBusinessImpact($incident);
@@ -769,7 +695,8 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function bcmImpactApi(Incident $incident, Request $request): Response
+    #[RequiresModule('bcm')]
+    public function bcmImpactApi(Incident $incident, Request $request): JsonResponse
     {
         $downtimeHours = $request->query->get('downtime_hours');
 
@@ -785,6 +712,8 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
+    #[IsCsrfTokenValid(new Expression('"auto-detect" ~ args["incident"].getId()'))]
+    #[RequiresModule('bcm')]
     public function autoDetectProcesses(Incident $incident): Response
     {
         $detectedProcesses = $this->incidentBCMImpactService->identifyAffectedProcesses($incident);
@@ -862,6 +791,7 @@ class IncidentController extends AbstractController
      */
     #[Route('/incident/{id}/bcm-impact/report', name: 'app_incident_bcm_impact_report', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[RequiresModule('bcm')]
     public function bcmImpactReport(Incident $incident): Response
     {
         $reportData = $this->incidentBCMImpactService->generateImpactReport($incident);
@@ -885,6 +815,7 @@ class IncidentController extends AbstractController
      * Shows users what will happen BEFORE they create/update an incident.
      * Returns preview information without triggering actual workflows.
      */
+    // @csrf-exempt: pure computation preview, persists nothing
     #[Route('/incident/escalation-preview', name: 'app_incident_escalation_preview', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function escalationPreview(Request $request): Response
@@ -953,16 +884,13 @@ class IncidentController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $incidents = [];
         foreach ($ids as $rawId) {
             $incident = $this->incidentRepository->find((int) $rawId);
             if ($incident === null) {
                 continue;
             }
-            if ($tenant !== null && $incident->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($incident, $this->tenantContext)) {
                 continue;
             }
             $incidents[] = $incident;

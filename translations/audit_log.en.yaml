@@ -1,5 +1,6 @@
 audit_log:
     integrity:
+        verify_button: 'Verify HMAC chain'
         disabled: 'Audit-log integrity verification is disabled (APP_AUDIT_HMAC_KEY missing).'
         intact: 'Audit-log chain intact — no tampering detected.'
     page:
@@ -112,3 +113,11 @@ audit_log:
             gdpr: 'Storage limitation — personal data must not be kept longer than necessary.'
             nis2: 'Audit logs must be retained for at least 12 months.'
             iso: 'Event logging — verifiable retention required.'
+    action_code:
+        create: 'Created'
+        update: 'Updated'
+        delete: 'Deleted'
+        view: 'Viewed'
+        export: 'Exported'
+        import: 'Imported'
+        bulk: 'Bulk operation'

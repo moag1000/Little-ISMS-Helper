@@ -15,6 +15,8 @@ use App\Service\ModuleConfigurationService;
 use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -160,66 +162,7 @@ class PortfolioReportController extends AbstractController
             : null;
 
         $matrix = $this->portfolioReportService->buildMatrix($tenant, $stichtag, $vorperiode);
-        $thresholds = $this->thresholds();
-
-        $spreadsheet = $this->excelExportService->createSpreadsheet('Portfolio Compliance Report');
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Portfolio');
-
-        // Header block
-        $sheet->setCellValue('A1', 'Cross-Framework Portfolio Report');
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->setCellValue('A2', sprintf('Tenant: %s', (string) $tenant->getName()));
-        $sheet->setCellValue('A3', sprintf('Stichtag: %s', $stichtag->format('Y-m-d')));
-        if ($vorperiode !== null) {
-            $sheet->setCellValue('A4', sprintf('Vorperiode: %s', $vorperiode->format('Y-m-d')));
-        }
-
-        // Column headers: Kategorie + per-framework columns
-        $headerRow = 6;
-        $sheet->setCellValue('A' . $headerRow, 'Kategorie');
-        $col = 'B';
-        foreach ($matrix['frameworks'] as $framework) {
-            $sheet->setCellValue($col . $headerRow, $framework['name']);
-            $sheet->getStyle($col . $headerRow)->getFont()->setBold(true);
-            $col++;
-        }
-        $sheet->getStyle('A' . $headerRow . ':' . --$col . $headerRow)->getFill()
-            ->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('0D6EFD');
-        $sheet->getStyle('A' . $headerRow . ':' . $col . $headerRow)->getFont()
-            ->getColor()->setRGB('FFFFFF');
-
-        // Data rows
-        $row = $headerRow + 1;
-        foreach ($matrix['rows'] as $dataRow) {
-            $sheet->setCellValue('A' . $row, $dataRow['category']);
-            $col = 'B';
-            foreach ($matrix['frameworks'] as $framework) {
-                $cell = $dataRow['cells'][$framework['code']] ?? ['pct' => 0, 'count' => 0];
-                $label = $cell['count'] === 0
-                    ? 'n/a'
-                    : sprintf('%d%% (%d req)', $cell['pct'], $cell['count']);
-                $sheet->setCellValue($col . $row, $label);
-                if ($cell['count'] > 0) {
-                    $rgb = $cell['pct'] >= $thresholds['green'] ? '198754'
-                        : ($cell['pct'] >= $thresholds['yellow'] ? 'FFC107' : 'DC3545');
-                    $sheet->getStyle($col . $row)->getFill()
-                        ->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB($rgb);
-                    if ($rgb !== 'FFC107') {
-                        $sheet->getStyle($col . $row)->getFont()->getColor()->setRGB('FFFFFF');
-                    }
-                }
-                $col++;
-            }
-            $row++;
-        }
-
-        // Auto-size columns
-        foreach (range('A', $col) as $c) {
-            $sheet->getColumnDimension($c)->setAutoSize(true);
-        }
-        $sheet->getStyle('A' . $headerRow . ':' . $col . ($row - 1))
-            ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $spreadsheet = $this->buildWorkbook($matrix, (string) $tenant->getName(), $stichtag, $vorperiode);
 
         $filename = sprintf('portfolio-report-%s.xlsx', $stichtag->format('Y-m-d'));
         $response = new StreamedResponse(function () use ($spreadsheet) {
@@ -235,6 +178,81 @@ class PortfolioReportController extends AbstractController
         );
         $response->headers->set('Cache-Control', 'max-age=0');
         return $response;
+    }
+
+    /**
+     * @param array{frameworks: list<array{code: string, name: string}>, rows: list<array{category: string, cells: array<string, array{pct: int|float, count: int}>}>} $matrix
+     */
+    private function buildWorkbook(
+        array $matrix,
+        string $tenantName,
+        \DateTimeInterface $stichtag,
+        ?\DateTimeInterface $vorperiode,
+    ): Spreadsheet {
+        $thresholds = $this->thresholds();
+
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Portfolio Compliance Report');
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Portfolio');
+
+        // Header block
+        $sheet->setCellValue('A1', 'Cross-Framework Portfolio Report');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->setCellValue('A2', sprintf('Tenant: %s', $tenantName));
+        $sheet->setCellValue('A3', sprintf('Stichtag: %s', $stichtag->format('Y-m-d')));
+        if ($vorperiode !== null) {
+            $sheet->setCellValue('A4', sprintf('Vorperiode: %s', $vorperiode->format('Y-m-d')));
+        }
+
+        // Column headers: Kategorie + per-framework columns
+        $headerRow = 6;
+        $sheet->setCellValue('A' . $headerRow, 'Kategorie');
+        // Column A = Kategorie, one column per framework after it. `--$col`
+        // on a letter string is a no-op in PHP, so derive the last column
+        // from its index instead of stepping the letter back.
+        $lastCol = Coordinate::stringFromColumnIndex(1 + count($matrix['frameworks']));
+        foreach ($matrix['frameworks'] as $i => $framework) {
+            $col = Coordinate::stringFromColumnIndex(2 + $i);
+            $sheet->setCellValue($col . $headerRow, $framework['name']);
+            $sheet->getStyle($col . $headerRow)->getFont()->setBold(true);
+        }
+        $sheet->getStyle('A' . $headerRow . ':' . $lastCol . $headerRow)->getFill()
+            ->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('0D6EFD');
+        $sheet->getStyle('A' . $headerRow . ':' . $lastCol . $headerRow)->getFont()
+            ->getColor()->setRGB('FFFFFF');
+
+        // Data rows
+        $row = $headerRow + 1;
+        foreach ($matrix['rows'] as $dataRow) {
+            $sheet->setCellValue('A' . $row, $dataRow['category']);
+            foreach ($matrix['frameworks'] as $i => $framework) {
+                $col = Coordinate::stringFromColumnIndex(2 + $i);
+                $cell = $dataRow['cells'][$framework['code']] ?? ['pct' => 0, 'count' => 0];
+                $label = $cell['count'] === 0
+                    ? 'n/a'
+                    : sprintf('%d%% (%d req)', $cell['pct'], $cell['count']);
+                $sheet->setCellValue($col . $row, $label);
+                if ($cell['count'] > 0) {
+                    $rgb = $cell['pct'] >= $thresholds['green'] ? '198754'
+                        : ($cell['pct'] >= $thresholds['yellow'] ? 'FFC107' : 'DC3545');
+                    $sheet->getStyle($col . $row)->getFill()
+                        ->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB($rgb);
+                    if ($rgb !== 'FFC107') {
+                        $sheet->getStyle($col . $row)->getFont()->getColor()->setRGB('FFFFFF');
+                    }
+                }
+            }
+            $row++;
+        }
+
+        // Auto-size columns (range('A', 'AA') would stop at 'A', so iterate indices)
+        for ($i = 1, $last = Coordinate::columnIndexFromString($lastCol); $i <= $last; $i++) {
+            $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($i))->setAutoSize(true);
+        }
+        $sheet->getStyle('A' . $headerRow . ':' . $lastCol . max($headerRow, $row - 1))
+            ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        return $spreadsheet;
     }
 
     /**

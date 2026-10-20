@@ -464,4 +464,14 @@ class TrainingTest extends TestCase
         $training->setMaterialFiles([]);
         $this->assertSame([], $training->getMaterialFiles());
     }
+
+    #[Test]
+    public function testRemoveMaterialFileTolleratesLegacyEntryWithoutFilename(): void
+    {
+        $training = new Training();
+        $training->setMaterialFiles([['originalName' => 'legacy.pdf']]);
+
+        $this->assertNull($training->removeMaterialFileByFilename('a.pdf'));
+        $this->assertCount(1, $training->getMaterialFiles());
+    }
 }

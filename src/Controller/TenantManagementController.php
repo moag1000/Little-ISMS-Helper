@@ -14,6 +14,7 @@ use App\Enum\GovernanceModel;
 use App\Form\TenantType;
 use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
+use App\Service\TenantStatusService;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\CorporateStructureService;
@@ -30,13 +31,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class TenantManagementController extends AbstractController
 {
+    // Route guards: the TENANT_* permission AND the acting admin's organisation scope (or operator status).
+    // A subsidiary's governance model is decided by its parent organisation (GOVERNOR).
+    private const string IN_SCOPE = ' and is_granted("ADMIN_OWN_TENANT", subject)';
+    private const string OPERATOR = ' and is_granted("ADMIN_GLOBAL_OP")';
+    private const string GOVERNOR = 'args["tenant"].getParent() ?? args["tenant"]';
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
@@ -51,6 +60,9 @@ class TenantManagementController extends AbstractController
         private readonly ISMSContextService $ismsContextService,
         private readonly ISMSContextRepository $ismsContextRepository,
         private readonly \App\Service\AssetSubTypeSeeder $assetSubTypeSeeder,
+        private readonly \App\Service\TenantContext $tenantContext,
+        private readonly TenantStatusService $tenantStatusService,
+        private readonly TranslatorInterface $translator,
         private readonly UserAdministrationGuard $userAdministrationGuard,
         private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
@@ -60,55 +72,33 @@ class TenantManagementController extends AbstractController
     public function index(Request $request): Response
     {
         $filter = $request->query->get('filter', 'all'); // all, active, inactive
-
-        $queryBuilder = $this->tenantRepository->createQueryBuilder('t');
-
-        if ($filter === 'active') {
-            $queryBuilder->where('t.isActive = :active')
-                ->setParameter('active', true);
-        } elseif ($filter === 'inactive') {
-            $queryBuilder->where('t.isActive = :active')
-                ->setParameter('active', false);
-        }
-
-        $queryBuilder->orderBy('t.createdAt', 'DESC');
-
-        $tenants = $queryBuilder->getQuery()->getResult();
-        // Security hotfix (admin scope): tenant admins only see their own tree.
-        $isSuperAdmin = $this->isGranted('ROLE_SUPER_ADMIN');
-        $scopedTenants = $isSuperAdmin ? [] : array_values(array_filter(
-            $this->tenantRepository->findAll(),
-            fn (Tenant $t): bool => $this->isTenantInScope($t),
+        // An organisation's admin sees their own organisation and its subsidiaries only.
+        $isOperator = $this->isGranted('ROLE_SUPER_ADMIN');
+        $scope = array_values(array_filter(
+            $this->tenantRepository->findBy([], ['createdAt' => 'DESC']),
+            fn(Tenant $tenant): bool => $isOperator || $this->tenantContext->canAccessTenant($tenant),
         ));
-        if (!$isSuperAdmin) {
-            $tenants = array_values(array_filter($tenants, fn (Tenant $t): bool => $this->isTenantInScope($t)));
-        }
-
-        // Calculate statistics for each tenant
-        $tenantsWithStats = [];
-        foreach ($tenants as $tenant) {
-            $tenantsWithStats[] = [
-                'tenant' => $tenant,
-                'userCount' => $tenant->getUsers()->count(),
-            ];
-        }
+        $activeCount = count(array_filter($scope, fn(Tenant $tenant): bool => $tenant->isActive()));
+        $tenants = array_filter($scope, fn(Tenant $tenant): bool => match ($filter) {
+            'active' => $tenant->isActive(),
+            'inactive' => !$tenant->isActive(),
+            default => true,
+        });
 
         return $this->render('admin/tenants/index.html.twig', [
-            'tenants' => $tenantsWithStats,
+            'tenants' => array_map(
+                static fn(Tenant $tenant): array => ['tenant' => $tenant, 'userCount' => $tenant->getUsers()->count()],
+                array_values($tenants),
+            ),
             'filter' => $filter,
-            'totalCount' => $isSuperAdmin ? count($this->tenantRepository->findAll()) : count($scopedTenants),
-            'activeCount' => $isSuperAdmin
-                ? count($this->tenantRepository->findBy(['isActive' => true]))
-                : count(array_filter($scopedTenants, static fn (Tenant $t): bool => $t->isActive())),
-            'inactiveCount' => $isSuperAdmin
-                ? count($this->tenantRepository->findBy(['isActive' => false]))
-                : count(array_filter($scopedTenants, static fn (Tenant $t): bool => !$t->isActive())),
-            // Tenantless users are visible to SUPER_ADMIN only.
-            'orphanUserCount' => $isSuperAdmin ? $this->userRepository->countOrphan() : 0,
+            'totalCount' => count($scope),
+            'activeCount' => $activeCount,
+            'inactiveCount' => count($scope) - $activeCount,
+            'orphanUserCount' => $isOperator ? $this->userRepository->countOrphan() : 0,
         ]);
     }
     #[Route('/admin/tenants/new', name: 'tenant_management_new', methods: ['GET', 'POST'])]
-    #[IsGranted('TENANT_CREATE')]
+    #[IsGranted(new Expression('is_granted("TENANT_CREATE")' . self::OPERATOR))]
     public function new(Request $request): Response
     {
         $tenant = new Tenant();
@@ -117,7 +107,7 @@ class TenantManagementController extends AbstractController
         // operational from day one. Bypass the workflow on create because
         // the marking-store is not yet wired for an unpersisted entity;
         // setStatus() mirrors into isActive so legacy readers stay correct.
-        $tenant->setStatus(Tenant::STATUS_ACTIVE);
+        $tenant->setStatus(Tenant::STATUS_ACTIVE); // @phpstan-ignore lifecycle.directSetStatus (initial state on an unpersisted Tenant; equals tenant_lifecycle `activate` draft→active, which has no four-eyes/reason; creation is audit-logged as tenant_created)
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
         $parentViolation = $form->isSubmitted() && !$this->isParentChangeAllowed(null, $tenant->getParent());
@@ -138,10 +128,10 @@ class TenantManagementController extends AbstractController
                     }
                 }
 
-                // Settings are now mapped via App\Form\Type\JsonStructuredType —
-                // the JsonArrayTransformer round-trips array<->JSON and raises a
-                // user-friendly TransformationFailedException on invalid JSON
-                // instead of silently writing null (C-06).
+                // Tenant::$settings is deliberately not part of TenantType: it is
+                // an internal bag whose parts have dedicated editors (organisation
+                // context, MRIS KPI toggle, TISAX) and is shown read-only in the
+                // settings tab — no raw JSON editing (supersedes C-06).
 
                 $this->entityManager->persist($tenant);
                 $this->entityManager->flush();
@@ -203,19 +193,17 @@ class TenantManagementController extends AbstractController
         $isMultiTenant = $this->multiTenantCheckService->isMultiTenant();
 
         // Get all root tenants (corporate parents without parents)
-        $allTenants = $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']);
-        // Security hotfix (admin scope): tenant admins only see their own tree;
-        // the top of their visible subtree acts as the group root.
-        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-            $allTenants = array_values(array_filter($allTenants, fn (Tenant $t): bool => $this->isTenantInScope($t)));
-        }
+        $isOperator = $this->isGranted('ROLE_SUPER_ADMIN'); // others: own organisation + subsidiaries
+        $allTenants = array_values(array_filter(
+            $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']),
+            fn(Tenant $tenant): bool => $isOperator || $this->tenantContext->canAccessTenant($tenant),
+        ));
         $corporateGroups = [];
-
         foreach ($allTenants as $tenant) {
-            $parent = $tenant->getParent();
-            if ($tenant->isCorporateParent() && ($parent === null || !in_array($parent, $allTenants, true))) {
-                $tree = $this->corporateStructureService->getStructureTree($tenant);
-                $corporateGroups[] = $tree;
+            // A group root is a group member whose parent is out of view (none, or beyond the scope).
+            $inGroup = $tenant->isCorporateParent() || $tenant->isPartOfCorporateStructure();
+            if ($inGroup && !in_array($tenant->getParent(), $allTenants, true)) {
+                $corporateGroups[] = $this->corporateStructureService->getStructureTree($tenant);
             }
         }
 
@@ -232,7 +220,7 @@ class TenantManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/tenants/{id}', name: 'tenant_management_show', methods: ['GET'])]
-    #[IsGranted('TENANT_VIEW')]
+    #[IsGranted(new Expression('is_granted("TENANT_VIEW")' . self::IN_SCOPE), 'tenant')]
     public function show(Tenant $tenant): Response
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -262,10 +250,12 @@ class TenantManagementController extends AbstractController
             'inactiveUsers' => $users->count() - $activeUsers,
             'recentActivity' => $recentActivity,
             'defaultGovernance' => $defaultGovernance,
+            'statusTransition' => $this->tenantStatusService->nextTransition($tenant),
+            'fourEyesApprovers' => $this->tenantStatusService->fourEyesApprovers($this->getUser() instanceof User ? $this->getUser() : null),
         ]);
     }
     #[Route('/admin/tenants/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function edit(Request $request, Tenant $tenant): Response
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -281,7 +271,8 @@ class TenantManagementController extends AbstractController
         ];
 
         $oldLogoPath = $tenant->getLogoPath();
-        $form = $this->createForm(TenantType::class, $tenant);
+        $operatorFields = ['operator_fields' => $this->isGranted('ROLE_SUPER_ADMIN')];
+        $form = $this->createForm(TenantType::class, $tenant, $operatorFields);
         $form->handleRequest($request);
         $parentViolation = $form->isSubmitted() && !$this->isParentChangeAllowed($oldParent, $tenant->getParent());
         if ($parentViolation) {
@@ -306,9 +297,9 @@ class TenantManagementController extends AbstractController
                     }
                 }
 
-                // Settings are now mapped via App\Form\Type\JsonStructuredType
-                // (C-06). The JsonArrayTransformer has already deserialised the
-                // textarea content into $tenant->getSettings() by this point.
+                // Tenant::$settings is not part of TenantType (internal bag with
+                // dedicated editors) — only the MRIS toggle below touches it,
+                // merging into the existing keys.
 
                 // MRIS-KPI-Toggle (inline checkbox, gated to ROLE_ADMIN). Merge
                 // statt überschreiben, damit andere Settings-Keys erhalten bleiben.
@@ -374,55 +365,31 @@ class TenantManagementController extends AbstractController
             'isEdit' => true,
         ], new Response(status: $status));
     }
+    /** Suspend / reactivate / activate via tenant_lifecycle (TenantStatusService). */
     #[Route('/admin/tenants/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function toggle(Tenant $tenant, Request $request): Response
     {
         $this->denyUnlessTenantInScope($tenant);
-        if (!$this->isCsrfTokenValid('toggle_tenant_' . $tenant->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'common.csrf_error');
-            return $this->redirectToRoute('tenant_management_index');
-        }
+        $transition = $this->tenantStatusService->nextTransition($tenant);
+        $result = match (true) {
+            !$this->isCsrfTokenValid('toggle_tenant_' . $tenant->getId(), $request->request->get('_token'))
+                => ['ok' => false, 'message' => 'tenant.flash.csrf_error'],
+            $transition !== null && !$this->isGranted('lifecycle.' . TenantStatusService::WORKFLOW . '.' . $transition, $tenant)
+                => ['ok' => false, 'message' => 'tenant.flash.transition_forbidden'],
+            default => $this->tenantStatusService->toggle(
+                $tenant,
+                $this->getUser() instanceof User ? $this->getUser() : null,
+                (string) $request->request->get('reason', ''),
+                (int) $request->request->get('four_eyes_approver_id', 0),
+            ),
+        };
+        $this->addFlash($result['ok'] ? 'success' : 'danger', $this->translator->trans($result['message'], [], 'tenant'));
 
-        try {
-            $previousStatus = $tenant->isActive();
-            $tenant->setIsActive(!$previousStatus);
-            $this->entityManager->flush();
-
-            $this->logger->info('Tenant status toggled', [
-                'tenant_id' => $tenant->getId(),
-                'tenant_code' => $tenant->getCode(),
-                'previous_status' => $previousStatus,
-                'new_status' => $tenant->isActive(),
-                'user' => $this->getUser()?->getUserIdentifier(),
-            ]);
-
-            // Audit log
-            $this->auditLogger->logCustom(
-                'tenant_status_toggled',
-                'Tenant',
-                $tenant->getId(),
-                ['is_active' => $previousStatus],
-                ['is_active' => $tenant->isActive()],
-                sprintf('Tenant "%s" %s', $tenant->getName(), $tenant->isActive() ? 'activated' : 'deactivated')
-            );
-
-            $message = $tenant->isActive() ? 'tenant.flash.activated' : 'tenant.flash.deactivated';
-            $this->addFlash('success', $message);
-        } catch (Exception $e) {
-            $this->logger->error('Failed to toggle tenant status', [
-                'tenant_id' => $tenant->getId(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            $this->addFlash('danger', 'tenant.flash.error');
-        }
-
-        return $this->redirectToRoute('tenant_management_index');
+        return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
     }
     #[Route('/admin/tenants/{id}/delete', name: 'tenant_management_delete', methods: ['POST'])]
-    #[IsGranted('TENANT_DELETE')]
+    #[IsGranted(new Expression('is_granted("TENANT_DELETE")' . self::OPERATOR))]
     public function delete(Request $request, Tenant $tenant): Response
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -581,7 +548,7 @@ class TenantManagementController extends AbstractController
         }
     }
     #[Route('/admin/tenants/{id}/set-parent', name: 'tenant_management_set_parent', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function setParent(Request $request, Tenant $tenant): Response
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -650,13 +617,8 @@ class TenantManagementController extends AbstractController
                 // Remove parent and all governance rules
                 $tenant->setParent(null);
 
-                // Delete all governance rules for this tenant
-                $this->entityManager->createQueryBuilder()
-                    ->delete(CorporateGovernance::class, 'cg')
-                    ->where('cg.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()
-                    ->execute();
+                // Delete all governance rules for this tenant (audit-logged)
+                $this->corporateStructureService->removeAllGovernanceRules($tenant, 'parent_removed');
 
                 $this->logger->info('Tenant parent removed', [
                     'tenant_id' => $tenant->getId(),
@@ -679,7 +641,7 @@ class TenantManagementController extends AbstractController
         return $this->redirectToRoute('tenant_management_corporate_structure');
     }
     #[Route('/admin/tenants/{id}/update-governance', name: 'tenant_management_update_governance', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), new Expression(self::GOVERNOR))]
     public function updateGovernance(Request $request, Tenant $tenant): Response
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -727,7 +689,7 @@ class TenantManagementController extends AbstractController
      * Add a user to the tenant
      */
     #[Route('/admin/tenants/{id}/add-user', name: 'tenant_management_add_user', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::OPERATOR))]
     public function addUser(Request $request, Tenant $tenant): Response
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -805,7 +767,7 @@ class TenantManagementController extends AbstractController
      * Remove a user from the tenant
      */
     #[Route('/admin/tenants/{id}/remove-user/{userId}', name: 'tenant_management_remove_user', methods: ['POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function removeUser(Request $request, Tenant $tenant, int $userId): Response
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -877,7 +839,7 @@ class TenantManagementController extends AbstractController
      * API endpoint to get ISMS Context for a tenant
      */
     #[Route('/admin/tenants/api/tenants/{id}/isms-context', name: 'api_tenant_isms_context', methods: ['GET'])]
-    #[IsGranted('TENANT_VIEW')]
+    #[IsGranted(new Expression('is_granted("TENANT_VIEW")' . self::IN_SCOPE), 'tenant')]
     public function getISMSContext(Tenant $tenant): JsonResponse
     {
         $this->denyUnlessTenantInScope($tenant);
@@ -944,7 +906,7 @@ class TenantManagementController extends AbstractController
                 'editUrl' => $this->generateUrl('app_context_edit'),
             ]);
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to get ISMS context for tenant', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),
@@ -961,7 +923,7 @@ class TenantManagementController extends AbstractController
      * Edit organisation context settings (industries, size, country)
      */
     #[Route('/admin/tenants/{id}/organisation-context', name: 'tenant_management_organisation_context', methods: ['GET', 'POST'])]
-    #[IsGranted('TENANT_EDIT')]
+    #[IsGranted(new Expression('is_granted("TENANT_EDIT")' . self::IN_SCOPE), 'tenant')]
     public function editOrganisationContext(Request $request, Tenant $tenant): Response
     {
         $this->denyUnlessTenantInScope($tenant);

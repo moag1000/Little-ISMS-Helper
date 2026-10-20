@@ -25,10 +25,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class RoleManagementController extends AbstractController
 {
     #[Route('/admin/roles', name: 'role_management_index', methods: ['GET'])]
+    #[IsGranted(RoleVoter::VIEW)]
     public function index(RoleRepository $roleRepository): Response
     {
-        $this->denyAccessUnlessGranted(RoleVoter::VIEW, new Role());
-
         $roles = $roleRepository->getRolesWithUserCount();
 
         // Security hotfix: roles are global — count only holders the actor may see.
@@ -77,13 +76,12 @@ class RoleManagementController extends AbstractController
         ], new Response(status: $status));
     }
     #[Route('/admin/roles/compare', name: 'role_management_compare', methods: ['GET'])]
+    #[IsGranted(RoleVoter::VIEW)]
     public function compare(
         Request $request,
         RoleRepository $roleRepository,
         PermissionRepository $permissionRepository
     ): Response {
-        $this->denyAccessUnlessGranted(RoleVoter::VIEW, new Role());
-
         $roleIds = $request->query->all('roles') ?? [];
         $roles = [];
 

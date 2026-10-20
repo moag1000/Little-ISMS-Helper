@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
+use App\Service\BulkDeleteService;
 use App\Entity\User;
-use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
-use DateTime;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
-use Exception;
 use DomainException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Controller\Trait\TenantOriginStatsTrait;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\Vulnerability;
@@ -25,13 +25,11 @@ use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\VulnerabilityRepository;
-use App\Risk\RiskMatrixThresholds;
 use App\Service\InverseCoverageService;
 use App\Service\RiskMatrixService;
 use App\Service\RiskService;
 use App\Service\RiskAcceptanceWorkflowService;
-use App\Service\ExcelExportService;
-use App\Service\PdfExportService;
+use App\Service\Risk\RiskRegisterExporter;
 use App\Service\RoleDashboardService;
 use App\Service\TagFilterService;
 use App\Service\Risk\RiskIncidentLinkService;
@@ -39,6 +37,7 @@ use App\Repository\RiskIncidentLinkRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Clone\RiskCloner;
+use App\Service\TenantContext;
 use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,13 +49,13 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use App\Util\CsvSanitizer;
 
 class RiskController extends AbstractController
 {
     use LocalizedFlashTrait;
     use BulkActionTrait;
     use InPageFormTrait;
+    use TenantOriginStatsTrait;
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
@@ -66,13 +65,13 @@ class RiskController extends AbstractController
         private readonly RiskMatrixService $riskMatrixService,
         private readonly RiskAcceptanceWorkflowService $riskAcceptanceWorkflowService,
         private readonly TranslatorInterface $translator,
-        private readonly ExcelExportService $excelExportService,
-        private readonly PdfExportService $pdfExportService,
+        private readonly RiskRegisterExporter $riskRegisterExporter,
         private readonly Security $security,
         private readonly TagFilterService $tagFilterService,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
+        private readonly \App\Service\Job\JobTenantScope $jobTenantScope,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
@@ -82,6 +81,17 @@ class RiskController extends AbstractController
         private readonly ?UserRepository $userRepository = null,
         private readonly ?RiskCloner $riskCloner = null,
     ) {}
+
+    /**
+     * @return Risk[] the caller's organisation's risks; every risk only for a SUPER_ADMIN without one
+     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException for anyone else without one
+     */
+    private function exportableRisks(): array
+    {
+        $tenant = $this->jobTenantScope->currentUserScope();
+
+        return $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
+    }
 
     protected function getFlashDomain(): string
     {
@@ -140,8 +150,8 @@ class RiskController extends AbstractController
             $inheritanceInfo['currentView'] = $view;
             $inheritanceInfo['isAdmin'] = $isAdmin;
         } else {
-            // Fallback for users without tenant (e.g., super admins)
-            $risks = $this->riskRepository->findAll();
+            // No organisation: only a SUPER_ADMIN gets the instance-wide register
+            $risks = $this->isGranted('ROLE_SUPER_ADMIN') ? $this->riskRepository->findAll() : [];
             $highRisks = [];
             $detailedStats = ['own' => count($risks), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($risks)];
             $inheritanceInfo = [
@@ -154,27 +164,7 @@ class RiskController extends AbstractController
             ];
         }
 
-        // Apply filters
-        if ($level) {
-            $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
-                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
-            });
-        }
-
-        if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
-        }
-
-        if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
-        }
-
-        if ($owner) {
-            $risks = array_filter($risks, fn(Risk $risk): bool =>
-                $risk->getRiskOwner() instanceof User && stripos($risk->getRiskOwner()->getFullName(), $owner) !== false
-            );
-        }
+        $risks = $this->riskRegisterExporter->filter($risks, $level, $status, $treatment, $owner);
 
         // Filter to overdue reviews only (review date in the past or null)
         $reviewOverdue = $request->query->get('review_overdue');
@@ -239,155 +229,37 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function export(Request $request): Response
     {
-        // Get current user's tenant
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
+        $csvContent = $this->riskRegisterExporter->buildCsv($this->filteredRegister($request));
 
-        // Get filter parameters (same as index)
-        $level = $request->query->get('level');
-        $status = $request->query->get('status');
-        $treatment = $request->query->get('treatment');
-        $owner = $request->query->get('owner');
-
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
-
-        // Apply filters (same logic as index)
-        if ($level) {
-            $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
-                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
-            });
-        }
-
-        if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
-        }
-
-        if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
-        }
-
-        if ($owner) {
-            $risks = array_filter($risks, fn(Risk $risk): bool =>
-                $risk->getRiskOwner() instanceof User && stripos($risk->getRiskOwner()->getFullName(), $owner) !== false
-            );
-        }
-
-        // Re-index array after filtering
-        $risks = array_values($risks);
-
-        // Close session to prevent blocking other requests during CSV generation
-        $request->getSession()->save();
-
-        // Create CSV content
-        $csv = [];
-
-        $t = fn(string $key): string => $this->translator->trans('risk.export.' . $key, [], 'risk');
-
-        // CSV Header
-        $csv[] = [
-            $t('header.id'),
-            $t('header.title'),
-            $t('header.description'),
-            $t('header.threat'),
-            $t('header.vulnerability'),
-            $t('header.asset'),
-            $t('header.probability'),
-            $t('header.impact'),
-            $t('header.risk_score'),
-            $t('header.risk_level'),
-            $t('header.residual_probability'),
-            $t('header.residual_impact'),
-            $t('header.residual_score'),
-            $t('header.residual_level'),
-            $t('header.treatment_strategy'),
-            $t('header.status'),
-            $t('header.risk_owner'),
-            $t('header.created_at'),
-            $t('header.review_date'),
-        ];
-
-        // CSV Data
-        foreach ($risks as $risk) {
-            $riskScore = $risk->getRiskScore();
-            $residualScore = $risk->getResidualRiskLevel();
-
-            // Determine risk levels (locale-aware)
-            $riskLevel = match(true) {
-                $riskScore >= 15 => $t('level.critical'),
-                $riskScore >= 8 => $t('level.high'),
-                $riskScore >= 4 => $t('level.medium'),
-                default => $t('level.low'),
-            };
-
-            $residualRiskLevel = match(true) {
-                $residualScore >= 15 => $t('level.critical'),
-                $residualScore >= 8 => $t('level.high'),
-                $residualScore >= 4 => $t('level.medium'),
-                default => $t('level.low'),
-            };
-
-            // Translate treatment strategy (locale-aware; falls back to raw value for unknown strategies)
-            $treatmentValue = $risk->getTreatmentStrategy()?->value ?? '';
-            $treatmentKey = 'risk.export.treatment.' . $treatmentValue;
-            $treatmentTranslated = $this->translator->trans($treatmentKey, [], 'risk');
-            $treatmentLabel = ($treatmentTranslated !== $treatmentKey) ? $treatmentTranslated : $treatmentValue;
-
-            // Translate status (locale-aware; falls back to raw value for unknown statuses)
-            $statusValue = $risk->getStatus()?->value ?? '';
-            $statusKey = 'risk.export.status.' . $statusValue;
-            $statusTranslated = $this->translator->trans($statusKey, [], 'risk');
-            $statusLabel = ($statusTranslated !== $statusKey) ? $statusTranslated : $statusValue;
-
-            $csv[] = [
-                $risk->getId(),
-                $risk->getTitle(),
-                $risk->getDescription(),
-                $risk->getThreat() ?? '-',
-                $risk->getVulnerability() ?? '-',
-                $risk->getAsset() ? $risk->getAsset()->getName() : '-',
-                $risk->getProbability(),
-                $risk->getImpact(),
-                $riskScore,
-                $riskLevel,
-                $risk->getResidualProbability(),
-                $risk->getResidualImpact(),
-                $residualScore,
-                $residualRiskLevel,
-                $treatmentLabel,
-                $statusLabel,
-                $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
-                $risk->getCreatedAt() ? $risk->getCreatedAt()->format('Y-m-d H:i') : '-',
-                $risk->getReviewDate() ? $risk->getReviewDate()->format('Y-m-d') : '-',
-            ];
-        }
-
-        // Generate CSV file
-        $filename = sprintf(
-            'risk_export_%s.csv',
-            date('Y-m-d_His')
+        $response = new Response($csvContent);
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set(
+            'Content-Disposition',
+            'attachment; filename="' . sprintf('risk_export_%s.csv', date('Y-m-d_His')) . '"',
         );
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
-
-        // Add BOM for Excel UTF-8 support
-        $csvContent = "\xEF\xBB\xBF";
-
-        // Create CSV content
-        $handle = fopen('php://temp', 'r+');
-        foreach ($csv as $row) {
-            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
-        }
-        rewind($handle);
-        $csvContent .= stream_get_contents($handle);
-        fclose($handle);
-
-        $response->setContent($csvContent);
-
         return $response;
+    }
+
+    /**
+     * Register filtered by the list-page query filters (level / status /
+     * treatment / owner) for the sync exports. Releases the session lock so
+     * file generation does not block the user's other requests.
+     *
+     * @return list<Risk>
+     */
+    private function filteredRegister(Request $request): array
+    {
+        $risks = $this->riskRegisterExporter->filter(
+            $this->exportableRisks(),
+            $request->query->get('level'),
+            $request->query->get('status'),
+            $request->query->get('treatment'),
+            $request->query->get('owner'),
+        );
+        $request->getSession()->save();
+
+        return $risks;
     }
 
     /**
@@ -414,12 +286,9 @@ class RiskController extends AbstractController
             return $this->redirectToRoute('app_risk_index');
         }
 
-        $user = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
-        $args = [
-            'tenantId' => $tenant?->getId(),
-            'userId' => $user instanceof User ? $user->getId() : null,
+        // Tenant scope is captured here, while the request still exists; the
+        // job scopes its query explicitly and fails without a scope.
+        $args = $this->jobTenantScope->argsForCurrentUser() + [
             'level' => $request->request->get('level') ?? $request->query->get('level'),
             'status' => $request->request->get('status') ?? $request->query->get('status'),
             'treatment' => $request->request->get('treatment') ?? $request->query->get('treatment'),
@@ -463,6 +332,7 @@ class RiskController extends AbstractController
      */
     #[Route('/risk/export/download/{id}', name: 'app_risk_export_download', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,
@@ -507,235 +377,8 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function exportExcel(Request $request): Response
     {
-        // Get current user's tenant
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        // Get filter parameters (same as index)
-        $level = $request->query->get('level');
-        $status = $request->query->get('status');
-        $treatment = $request->query->get('treatment');
-        $owner = $request->query->get('owner');
-
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
-
-        // Apply filters (same logic as index)
-        if ($level) {
-            $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
-                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
-            });
-        }
-
-        if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
-        }
-
-        if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
-        }
-
-        if ($owner) {
-            $risks = array_filter($risks, fn(Risk $risk): bool =>
-                $risk->getRiskOwner() instanceof User && stripos($risk->getRiskOwner()->getFullName(), $owner) !== false
-            );
-        }
-
-        // Re-index array after filtering
-        $risks = array_values($risks);
-
-        // Calculate statistics
-        $totalRisks = count($risks);
-        $criticalRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 15));
-        $highRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 8 && $risk->getRiskScore() < 15));
-        $mediumRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 4 && $risk->getRiskScore() < 8));
-        $lowRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() < 4));
-
-        // Close session to prevent blocking other requests during Excel generation
-        $request->getSession()->save();
-
-        // Create spreadsheet
-        $spreadsheet = $this->excelExportService->createSpreadsheet('Risk Management Report');
-
-        // === TAB 1: Summary ===
-        $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->setTitle('Zusammenfassung');
-
-        $metrics = [
-            'Gesamt Risiken' => $totalRisks,
-            'Kritische Risiken' => $criticalRisks,
-            'Hohe Risiken' => $highRisks,
-            'Mittlere Risiken' => $mediumRisks,
-            'Niedrige Risiken' => $lowRisks,
-            'Export-Datum' => date('d.m.Y H:i'),
-        ];
-
-        $nextRow = $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Risk Management Übersicht');
-
-        // Add status breakdown
-        $statusMetrics = [
-            'Identifiziert' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Identified)),
-            'Bewertet' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Assessed)),
-            'Behandelt' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Treated)),
-            'Überwacht' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Monitored)),
-            'Geschlossen' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Closed)),
-            'Akzeptiert' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Accepted)),
-        ];
-
-        $this->excelExportService->addSummarySection($worksheet, $statusMetrics, $nextRow, 'Status-Verteilung');
-        $this->excelExportService->autoSizeColumns($worksheet);
-
-        // === TAB 2: All Risks ===
-        $allRisksSheet = $this->excelExportService->createSheet($spreadsheet, 'Alle Risiken');
-
-        $headers = [
-            'ID', 'Titel', 'Asset', 'Wkt.', 'Ausw.', 'Score', 'Level',
-            'Rest-Wkt.', 'Rest-Ausw.', 'Rest-Score', 'Rest-Level',
-            'Strategie', 'Status', 'Owner', 'Erstellt'
-        ];
-
-        $this->excelExportService->addFormattedHeaderRow($allRisksSheet, $headers, 1, true);
-
-        $data = [];
-        foreach ($risks as $risk) {
-            $riskScore = $risk->getRiskScore();
-            $residualScore = $risk->getResidualRiskLevel();
-
-            $riskLevel = match(true) {
-                $riskScore >= 15 => 'Kritisch',
-                $riskScore >= 8 => 'Hoch',
-                $riskScore >= 4 => 'Mittel',
-                default => 'Niedrig'
-            };
-
-            $residualLevel = match(true) {
-                $residualScore >= 15 => 'Kritisch',
-                $residualScore >= 8 => 'Hoch',
-                $residualScore >= 4 => 'Mittel',
-                default => 'Niedrig'
-            };
-
-            $data[] = [
-                $risk->getId(),
-                $risk->getTitle(),
-                $risk->getAsset() ? $risk->getAsset()->getName() : '-',
-                $risk->getProbability(),
-                $risk->getImpact(),
-                $riskScore,
-                $riskLevel,
-                $risk->getResidualProbability(),
-                $risk->getResidualImpact(),
-                $residualScore,
-                $residualLevel,
-                match($risk->getTreatmentStrategy()) {
-                    TreatmentStrategy::Accept => 'Akzeptieren',
-                    TreatmentStrategy::Mitigate => 'Mindern',
-                    TreatmentStrategy::Transfer => 'Übertragen',
-                    TreatmentStrategy::Avoid => 'Vermeiden',
-                    default => $risk->getTreatmentStrategy()?->value
-                },
-                match($risk->getStatus()) {
-                    RiskStatus::Identified => 'Identifiziert',
-                    RiskStatus::Assessed => 'Bewertet',
-                    RiskStatus::InTreatment => 'In Behandlung',
-                    RiskStatus::Treated => 'Behandelt',
-                    RiskStatus::Mitigated => 'Mitigiert',
-                    RiskStatus::Monitored => 'Überwacht',
-                    RiskStatus::Closed => 'Geschlossen',
-                    RiskStatus::Accepted => 'Akzeptiert',
-                    RiskStatus::Open => 'Offen',
-                    default => $risk->getStatus()?->value
-                },
-                $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
-                $risk->getCreatedAt() ? $risk->getCreatedAt()->format('d.m.Y') : '-',
-            ];
-        }
-
-        // Conditional formatting for risk level column (index 6) and residual level (index 10)
-        $conditionalFormatting = [
-            6 => [ // Risk Level
-                'Kritisch' => $this->excelExportService->getColor('critical'),
-                'Hoch' => $this->excelExportService->getColor('high'),
-                'Mittel' => $this->excelExportService->getColor('medium'),
-                'Niedrig' => $this->excelExportService->getColor('low'),
-            ],
-            10 => [ // Residual Level
-                'Kritisch' => $this->excelExportService->getColor('critical'),
-                'Hoch' => $this->excelExportService->getColor('high'),
-                'Mittel' => $this->excelExportService->getColor('medium'),
-                'Niedrig' => $this->excelExportService->getColor('low'),
-            ],
-        ];
-
-        $this->excelExportService->addFormattedDataRows($allRisksSheet, $data, 2, $conditionalFormatting);
-        $this->excelExportService->autoSizeColumns($allRisksSheet);
-
-        // === TAB 3: Critical & High Risks ===
-        $criticalHighRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 8);
-
-        if ($criticalHighRisks !== []) {
-            $criticalSheet = $this->excelExportService->createSheet($spreadsheet, 'Kritische & Hohe Risiken');
-
-            $this->excelExportService->addFormattedHeaderRow($criticalSheet, $headers, 1, true);
-
-            $criticalData = [];
-            foreach ($criticalHighRisks as $criticalHighRisk) {
-                $riskScore = $criticalHighRisk->getRiskScore();
-                $residualScore = $criticalHighRisk->getResidualRiskLevel();
-
-                $riskLevel = $riskScore >= 15 ? 'Kritisch' : 'Hoch';
-                $residualLevel = match(true) {
-                    $residualScore >= 15 => 'Kritisch',
-                    $residualScore >= 8 => 'Hoch',
-                    $residualScore >= 4 => 'Mittel',
-                    default => 'Niedrig'
-                };
-
-                $criticalData[] = [
-                    $criticalHighRisk->getId(),
-                    $criticalHighRisk->getTitle(),
-                    $criticalHighRisk->getAsset() ? $criticalHighRisk->getAsset()->getName() : '-',
-                    $criticalHighRisk->getProbability(),
-                    $criticalHighRisk->getImpact(),
-                    $riskScore,
-                    $riskLevel,
-                    $criticalHighRisk->getResidualProbability(),
-                    $criticalHighRisk->getResidualImpact(),
-                    $residualScore,
-                    $residualLevel,
-                    match($criticalHighRisk->getTreatmentStrategy()) {
-                        TreatmentStrategy::Accept => 'Akzeptieren',
-                        TreatmentStrategy::Mitigate => 'Mindern',
-                        TreatmentStrategy::Transfer => 'Übertragen',
-                        TreatmentStrategy::Avoid => 'Vermeiden',
-                        default => $criticalHighRisk->getTreatmentStrategy()?->value
-                    },
-                    match($criticalHighRisk->getStatus()) {
-                        RiskStatus::Identified => 'Identifiziert',
-                        RiskStatus::Assessed => 'Bewertet',
-                        RiskStatus::Treated => 'Behandelt',
-                        RiskStatus::Monitored => 'Überwacht',
-                        RiskStatus::Closed => 'Geschlossen',
-                        RiskStatus::Accepted => 'Akzeptiert',
-                        default => $criticalHighRisk->getStatus()?->value
-                    },
-                    $criticalHighRisk->getRiskOwner() ? $criticalHighRisk->getRiskOwner()->getFullName() : '-',
-                    $criticalHighRisk->getCreatedAt() ? $criticalHighRisk->getCreatedAt()->format('d.m.Y') : '-',
-                ];
-            }
-
-            $this->excelExportService->addFormattedDataRows($criticalSheet, $criticalData, 2, $conditionalFormatting);
-            $this->excelExportService->autoSizeColumns($criticalSheet);
-        }
-
-        // Generate Excel file
-        $content = $this->excelExportService->generateExcel($spreadsheet);
-
-        $filename = sprintf(
-            'risk_management_report_%s.xlsx',
-            date('Y-m-d_His')
-        );
+        $content = $this->riskRegisterExporter->buildExcel($this->filteredRegister($request));
+        $filename = sprintf('risk_management_report_%s.xlsx', date('Y-m-d_His'));
 
         $response = new Response($content);
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -748,98 +391,17 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function exportPdf(Request $request): Response
     {
-        // Get current user's tenant
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        // Get filter parameters (same as index)
-        $level = $request->query->get('level');
-        $status = $request->query->get('status');
-        $treatment = $request->query->get('treatment');
-        $owner = $request->query->get('owner');
-
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
-
-        // Build filter info string
         $filterParts = [];
-        if ($level) {
-            $filterParts[] = "Level: $level";
+        foreach (['level' => 'Level', 'status' => 'Status', 'treatment' => 'Behandlung', 'owner' => 'Owner'] as $param => $label) {
+            $value = $request->query->get($param);
+            if ($value) {
+                $filterParts[] = $label . ': ' . $value;
+            }
         }
-        if ($status) {
-            $filterParts[] = "Status: $status";
-        }
-        if ($treatment) {
-            $filterParts[] = "Behandlung: $treatment";
-        }
-        if ($owner) {
-            $filterParts[] = "Owner: $owner";
-        }
-        $filterInfo = $filterParts === [] ? null : implode(', ', $filterParts);
-
-        // Apply filters (same logic as index)
-        if ($level) {
-            $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
-                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
-            });
-        }
-
-        if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
-        }
-
-        if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
-        }
-
-        if ($owner) {
-            $risks = array_filter($risks, fn(Risk $risk): bool =>
-                $risk->getRiskOwner() instanceof User && stripos($risk->getRiskOwner()->getFullName(), $owner) !== false
-            );
-        }
-
-        // Re-index array after filtering
-        $risks = array_values($risks);
-
-        // Calculate statistics
-        $totalRisks = count($risks);
-        $criticalRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 15));
-        $highRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 8 && $risk->getRiskScore() < 15));
-        $mediumRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 4 && $risk->getRiskScore() < 8));
-        $lowRisks = count(array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() < 4));
-
-        // Status breakdown
-        $statusBreakdown = [
-            'identified' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Identified)),
-            'assessed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Assessed)),
-            'in_treatment' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::InTreatment)),
-            'treated' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Treated)),
-            'mitigated' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Mitigated)),
-            'monitored' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Monitored)),
-            'closed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Closed)),
-            'accepted' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Accepted)),
-            'open' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Open)),
-        ];
-        // Remove zero counts
-        $statusBreakdown = array_filter($statusBreakdown, fn(int $count): bool => $count > 0);
-
-        // Close session to prevent blocking other requests during PDF generation
-        $request->getSession()->save();
-
-        // Generate PDF
-        $pdfContent = $this->pdfExportService->generatePdf('pdf/risk_report.html.twig', [
-            'risks' => $risks,
-            'total_risks' => $totalRisks,
-            'critical_risks' => $criticalRisks,
-            'high_risks' => $highRisks,
-            'medium_risks' => $mediumRisks,
-            'low_risks' => $lowRisks,
-            'status_breakdown' => $statusBreakdown,
-            'filter_info' => $filterInfo,
-            'pdf_generation_date' => new DateTime(),
-        ]);
-
+        $pdfContent = $this->riskRegisterExporter->buildPdf(
+            $this->filteredRegister($request),
+            $filterParts === [] ? null : implode(', ', $filterParts),
+        );
         $filename = sprintf('risk_management_report_%s.pdf', date('Y-m-d_His'));
 
         $response = new Response($pdfContent);
@@ -1027,6 +589,7 @@ class RiskController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Warns if a Risk has linked Treatment Plans or Incidents before deletion.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/risk/bulk-delete-check', name: 'app_risk_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -1043,74 +606,33 @@ class RiskController extends AbstractController
 
         return $this->checkBulkDependencies($risks, 'getTitle', [
             fn (Risk $risk): ?array => count($this->riskTreatmentPlanRepository->findByRisk($risk)) > 0
-                ? ['message' => sprintf('%d Behandlungsplan/-pläne verknüpft', count($this->riskTreatmentPlanRepository->findByRisk($risk))), 'icon' => 'file-earmark-check']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.treatment_plans', ['%count%' => count($this->riskTreatmentPlanRepository->findByRisk($risk))], 'bulk_delete'), 'icon' => 'nav-file-check']
                 : null,
             fn (Risk $risk): ?array => ($c = $risk->getIncidents()->count()) > 0
-                ? ['message' => sprintf('%d Vorfall/Vorfälle verknüpft', $c), 'icon' => 'exclamation-triangle']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.incidents', ['%count%' => $c], 'bulk_delete'), 'icon' => 'exclamation-triangle']
                 : null,
             fn (Risk $risk): ?array => ($c = $risk->getControls()->count()) > 0
-                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'check-circle']
+                ? ['message' => $this->translator->trans('bulk_delete.dependency.controls', ['%count%' => $c], 'bulk_delete'), 'icon' => 'control']
                 : null,
         ]);
     }
 
     #[Route('/risk/bulk-delete', name: 'app_risk_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $risk = $this->riskRepository->find($id);
-
-                if (!$risk) {
-                    $errors[] = "Risk ID $id not found";
-                    continue;
-                }
-
-                // Security check: cannot delete inherited risks
-                if ($tenant && !$this->riskService->canEditRisk($risk, $tenant)) {
-                    $errors[] = "Risk ID $id is inherited and cannot be deleted";
-                    continue;
-                }
-
-                $this->entityManager->remove($risk);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting risk ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted risks deleted successfully"
-        ]);
+        // Tenant equality (enforced by BulkDeleteService) already excludes
+        // risks inherited from a parent organisation.
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'Risk',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->riskRepository->find($id),
+            voterAttribute: 'delete',
+        );
     }
+
     #[Route('/risk/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Request $request, Risk $risk): Response
@@ -1458,7 +980,7 @@ class RiskController extends AbstractController
         try {
             $result = $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $user, $comments);
             $this->flashSuccess('risk.acceptance.success.approved');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
@@ -1488,68 +1010,19 @@ class RiskController extends AbstractController
         try {
             $result = $this->riskAcceptanceWorkflowService->rejectAcceptance($risk, $user, $reason);
             $this->flashWarning('risk.acceptance.success.rejected');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
     /**
-     * Calculate detailed statistics showing breakdown by origin
-     *
-     * @param array $items Array of entities to analyze
-     * @param mixed $currentTenant Current tenant for comparison
-     * @return array Statistics with keys: own, inherited, subsidiaries, total
-     */
-    private function calculateDetailedStats(array $items, mixed $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                // Own record
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                // Inherited from parent/ancestor
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                // From subsidiary
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
-    }
-
-    /**
      * Bulk CSV export of selected risks.
      * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
      */
     #[Route('/risk/bulk-export', name: 'app_risk_bulk_export', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function bulkExport(Request $request): StreamedResponse|Response
+    public function bulkExport(Request $request, TenantContext $tenantContext): StreamedResponse|Response
     {
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
@@ -1560,16 +1033,13 @@ class RiskController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $risks = [];
         foreach ($ids as $rawId) {
             $risk = $this->riskRepository->find((int) $rawId);
             if ($risk === null) {
                 continue;
             }
-            if ($tenant !== null && $risk->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($risk, $tenantContext)) {
                 continue;
             }
             $risks[] = $risk;
@@ -1608,7 +1078,7 @@ class RiskController extends AbstractController
      */
     #[Route('/risk/bulk-assign', name: 'app_risk_bulk_assign', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkAssign(Request $request): Response
+    public function bulkAssign(Request $request, TenantContext $tenantContext): Response
     {
         $data     = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
@@ -1621,14 +1091,11 @@ class RiskController extends AbstractController
             return $this->json(['error' => 'No items selected or no assignee'], 400);
         }
 
-        $user   = $this->security->getUser();
-        $tenant = $user instanceof User ? $user->getTenant() : null;
-
         $assignee = $this->userRepository?->find($assignId);
         if (!$assignee instanceof User) {
             return $this->json(['error' => 'Assignee not found'], 404);
         }
-        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+        if (!$this->isInBulkContextScope($assignee, $tenantContext)) {
             return $this->json(['error' => 'Assignee tenant mismatch'], 403);
         }
 
@@ -1638,7 +1105,7 @@ class RiskController extends AbstractController
             if ($risk === null) {
                 continue;
             }
-            if ($tenant !== null && $risk->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($risk, $tenantContext)) {
                 continue;
             }
             $risks[] = $risk;

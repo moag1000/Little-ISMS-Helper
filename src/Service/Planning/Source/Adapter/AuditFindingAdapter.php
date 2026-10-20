@@ -61,11 +61,7 @@ final class AuditFindingAdapter implements SourceAdapter
     public function isCompleted(object $item): bool
     {
         assert($item instanceof AuditFinding);
-        return in_array($item->getStatus(), [
-            AuditFinding::STATUS_RESOLVED,
-            AuditFinding::STATUS_VERIFIED,
-            AuditFinding::STATUS_CLOSED,
-        ], true);
+        return $item->isDone();
     }
 
     public function ownsRecurrence(): bool

@@ -1,33 +1,38 @@
 import { Controller } from '@hotwired/stimulus';
+import { faToast } from '../js/fa-alerts.js';
 
 /**
- * diff-select — Compliance-Wizard history diff form.
+ * diff-select — Compliance-Wizard history: compare two snapshots.
  *
- * Auto-submits the GET form on select change so the URL reflects the
- * chosen "from" / "to" snapshot pair. Falls back to manual submit if the
- * form has a visible submit button (currently it does — keep both paths).
+ * Navigates to the diff route /compliance-wizard/{wizard}/diff/{from}/{to}
+ * once two different snapshots are chosen; otherwise shows a warning toast.
+ * Bound to the form's submit (button click and Enter key alike).
+ *
+ * Usage:
+ *   <form data-controller="diff-select"
+ *         data-action="submit->diff-select#compare"
+ *         data-diff-select-url-value="{{ path('app_compliance_wizard_diff', {wizard: w, fromId: 0, toId: 0}) }}"
+ *         data-diff-select-message-value="{{ 'diff.select_different'|trans({}, 'compliance_wizard') }}">
+ *     <select name="from">…</select> <select name="to">…</select>
+ *     <button type="submit">Compare</button>
+ *   </form>
  */
 export default class extends Controller {
-    connect() {
-        this.element
-            .querySelectorAll('select')
-            .forEach((sel) => sel.addEventListener('change', this.maybeSubmit));
-    }
-
-    disconnect() {
-        this.element
-            .querySelectorAll('select')
-            .forEach((sel) => sel.removeEventListener('change', this.maybeSubmit));
-    }
-
-    maybeSubmit = (event) => {
-        const form = event.target.closest('form');
-        if (!form) return;
-        const fromSel = form.querySelector('select[name="from"]');
-        const toSel = form.querySelector('select[name="to"]');
-        // Only auto-submit once BOTH dropdowns have a value AND they differ.
-        if (fromSel && toSel && fromSel.value && toSel.value && fromSel.value !== toSel.value) {
-            form.requestSubmit?.() ?? form.submit();
-        }
+    static values = {
+        // Diff URL rendered with the placeholder ids 0/0.
+        url: String,
+        message: String,
     };
+
+    compare(event) {
+        event.preventDefault();
+        const from = this.element.querySelector('select[name="from"]')?.value;
+        const to = this.element.querySelector('select[name="to"]')?.value;
+
+        if (from && to && from !== to) {
+            window.location.href = this.urlValue.replace(/\/0\/0(?=$|[?#])/, `/${from}/${to}`);
+        } else {
+            faToast(this.messageValue, 'warning');
+        }
+    }
 }

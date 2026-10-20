@@ -68,7 +68,7 @@ services:
     networks:
       - isms-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/de/health"]
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 5

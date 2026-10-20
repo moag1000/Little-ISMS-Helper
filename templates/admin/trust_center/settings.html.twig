@@ -55,7 +55,9 @@
                                        aria-label="{{ 'trust_center.admin.public_link_label'|trans({}, 'trust_center') }}">
                                 <button type="button"
                                         class="btn btn-outline-secondary"
-                                        onclick="navigator.clipboard.writeText(document.getElementById('posture-public-url').value)"
+                                        data-controller="ui-actions"
+                                        data-action="ui-actions#copyToClipboard"
+                                        data-ui-actions-source-param="#posture-public-url"
                                         title="{{ 'common.copy'|trans({}, 'messages')|default('Kopieren') }}">
                                     <span class="fa-icon fa-icon--ui-copy" aria-hidden="true"></span>
                                     <span class="visually-hidden">{{ 'common.copy'|trans({}, 'messages')|default('Kopieren') }}</span>
@@ -69,7 +71,9 @@
                         {# Regenerate token form #}
                         <form method="POST"
                               action="{{ path('admin_trust_center_regenerate') }}"
-                              onsubmit="return confirm('{{ 'trust_center.admin.confirm_regenerate'|trans({}, 'trust_center')|e('js') }}')">
+                              data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'trust_center.admin.confirm_regenerate'|trans({}, 'trust_center') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('trust_center_regenerate') }}">
                             <button type="submit" class="btn btn-warning me-2">
                                 <span class="fa-icon fa-icon--arrow-repeat me-1" aria-hidden="true"></span>
@@ -82,7 +86,10 @@
                         {# Disable sharing form #}
                         <form method="POST"
                               action="{{ path('admin_trust_center_disable') }}"
-                              onsubmit="return confirm('{{ 'trust_center.admin.confirm_disable'|trans({}, 'trust_center')|e('js') }}')">
+                              data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'trust_center.admin.confirm_disable'|trans({}, 'trust_center') }}"
+                      data-ui-actions-tone-param="danger">
                             <input type="hidden" name="_token" value="{{ csrf_token('trust_center_disable') }}">
                             <button type="submit" class="btn btn-outline-danger">
                                 <span class="fa-icon fa-icon--x-circle me-1" aria-hidden="true"></span>

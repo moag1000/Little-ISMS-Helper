@@ -29,27 +29,44 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *
  * Security Rules:
  * - Inactive users cannot perform any actions
- * - ROLE_ADMIN bypasses all permission checks (except initial admin protection)
+ * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN bypasses permission
+ *   checks only for users of its own tenant
  * - Users can always view and edit themselves
  * - Users cannot delete themselves
  * - Initial setup admin cannot be deleted or deactivated
  * - Permission checks via hasPermission() method
  *
- * Multi-tenancy / scope (security hotfix, admin scope):
+ * Multi-tenancy / scope (security hotfix 3.15.3 + record scope, #1048):
  * - ROLE_SUPER_ADMIN is global and may act on any user
- * - Every other actor (incl. ROLE_ADMIN) may VIEW/EDIT/DELETE only users whose
- *   tenant is accessible to it (TenantContext::canAccessTenant — own tenant +
- *   descendants); users without a tenant are visible to SUPER_ADMIN only
+ * - ROLE_ADMIN administers users of its organisation tree: VIEW/EDIT/DELETE
+ *   only users whose tenant is accessible to it (TenantContext::canAccessTenant
+ *   — own tenant + descendants, the TenantOwnership tree comparison)
+ * - Every other actor follows the record scope of HoldingTreeAccessTrait:
+ *   own tenant; ROLE_GROUP_CISO / ROLE_KONZERN_AUDITOR may additionally VIEW
+ *   (never edit/delete) users of descendant tenants
+ * - Users without a tenant are reachable by ROLE_SUPER_ADMIN only
  * - A non-SUPER_ADMIN actor can never EDIT/DELETE a ROLE_SUPER_ADMIN account
- * - Self VIEW/EDIT is always allowed (self-service)
+ * - Self VIEW/EDIT is always allowed (self-service); self DELETE stays in the
+ *   own-tenant record scope
+ * - UserTenantAssignment is an unmapped spec skeleton (no table, no writer);
+ *   when the multi-tenant assignment lands
+ *   (docs/superpowers/specs/2026-05-26-multi-tenant-user-assignment.md),
+ *   extend the scope check here.
  */
 final class UserVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly InitialAdminService $initialAdminService,
         private readonly RoleHierarchyInterface $roleHierarchy,
         private readonly TenantContext $tenantContext,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
     public const string VIEW = 'user.view';
     public const string CREATE = 'user.create';
@@ -97,20 +114,16 @@ final class UserVoter extends Voter
             return false;
         }
 
-        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        // Tenant / rank scope for every non-SUPER_ADMIN actor — applies
-        // before the ROLE_ADMIN bypass so tenant admins stay in their tree.
-        if (!in_array('ROLE_SUPER_ADMIN', $reachableRoles, true)
-            && $subject instanceof User
-            && in_array($attribute, [self::VIEW, self::EDIT, self::DELETE], true)
-            && !$this->isWithinActorScope($user, $subject, $attribute)
-        ) {
-            return false;
-        }
-
-        // Admins can do everything (within the scope checked above)
-        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
+        // Per-user attributes: the target must be in the actor's scope (see
+        // decideUserScope()). Subject-less attributes (create, manage roles,
+        // view all): ROLE_ADMIN passes — the controller scopes the result set
+        // to the admin's organisation tree.
+        if ($subject instanceof User) {
+            $scope = $this->decideUserScope($user, $subject, $attribute);
+            if ($scope !== null) {
+                return $scope;
+            }
+        } elseif ($this->hasReachableRole($user, 'ROLE_ADMIN')) {
             return true;
         }
 
@@ -127,17 +140,25 @@ final class UserVoter extends Voter
     }
 
     /**
-     * Scope rule for non-SUPER_ADMIN actors: self is always in scope; a
-     * SUPER_ADMIN target may only be viewed; otherwise the target's tenant
-     * must be accessible to the actor (own + descendants). Tenantless targets
-     * are out of scope.
+     * Scope pre-decision for a per-user attribute.
+     *
+     * @return bool|null true = grant, false = deny, null = in scope, apply the
+     *                   permission rules (canView/canEdit/canDelete)
      */
-    private function isWithinActorScope(User $actor, User $target, string $attribute): bool
+    private function decideUserScope(User $actor, User $target, string $attribute): ?bool
     {
-        if ($actor === $target || ($actor->getId() !== null && $actor->getId() === $target->getId())) {
+        if ($this->hasReachableRole($actor, 'ROLE_SUPER_ADMIN')) {
             return true;
         }
 
+        if ($actor === $target || ($actor->getId() !== null && $actor->getId() === $target->getId())) {
+            // Self-service view/edit; deleting oneself stays in the record scope.
+            return $attribute === self::DELETE
+                ? $this->decideTenantScope($actor, $target->getTenant(), false)
+                : null;
+        }
+
+        // A SUPER_ADMIN account may only be viewed by non-SUPER_ADMIN actors.
         if ($attribute !== self::VIEW && in_array('ROLE_SUPER_ADMIN', $target->getRoles(), true)) {
             return false;
         }
@@ -147,7 +168,15 @@ final class UserVoter extends Voter
             return false;
         }
 
-        return $this->tenantContext->canAccessTenant($targetTenant);
+        // User administration: ROLE_ADMIN acts on its own organisation and
+        // its subsidiaries (TenantContext::canAccessTenant →
+        // TenantOwnership::isSameOrDescendant).
+        if ($this->hasReachableRole($actor, 'ROLE_ADMIN')) {
+            return $this->tenantContext->canAccessTenant($targetTenant);
+        }
+
+        // Everyone else: record scope — own tenant, holding roles read below.
+        return $this->isInTenantScope($actor, $targetTenant, $attribute === self::VIEW) ? null : false;
     }
 
     private function canView(User $currentUser, User $targetUser): bool

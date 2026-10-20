@@ -86,20 +86,20 @@
             help_link: 'audit_finding.help.empty_link'|trans({}, 'audits')
         }) }}
     {% else %}
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+        <div class="fa-table-wrap">
+            <table class="fa-table fa-table--hover">
+                <thead class="fa-table__head">
                     <tr>
-                        <th>{{ 'audit_finding.field.title'|trans({}, 'audits') }}</th>
-                        <th>{{ 'audit_finding.field.type'|trans({}, 'audits') }}</th>
-                        <th class="text-center">{{ 'audit_finding.field.severity'|trans({}, 'audits') }}</th>
-                        <th class="text-center">{{ 'audit_finding.field.status'|trans({}, 'audits') }}</th>
-                        <th>{{ 'audit_finding.field.audit'|trans({}, 'audits') }}</th>
-                        <th>{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}</th>
-                        <th class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'audit_finding.field.title'|trans({}, 'audits') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'audit_finding.field.type'|trans({}, 'audits') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'audit_finding.field.severity'|trans({}, 'audits') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'audit_finding.field.status'|trans({}, 'audits') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'audit_finding.field.audit'|trans({}, 'audits') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 </thead>
-                <tbody id="audit-finding-rows">
+                <tbody class="fa-table__body" id="audit-finding-rows">
                     {% for f in findings %}
                         {% include 'audit_finding/_row.html.twig' with { finding: f } %}
                     {% endfor %}

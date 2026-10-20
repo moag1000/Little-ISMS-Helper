@@ -8,6 +8,7 @@ use App\Entity\IdentityProvider;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\RoleNames;
+use App\Security\TenantOwnership;
 use App\Security\UserAdministrationGuard;
 
 /**
@@ -43,17 +44,9 @@ final class SsoAccountLinkPolicy
         if (UserAdministrationGuard::privilegedRolesIn($target->getRoles()) !== []) {
             return false;
         }
-        $targetTenant = $target->getTenant();
-        if (!$targetTenant instanceof Tenant) {
-            return false;
-        }
-        if ($targetTenant === $providerTenant
-            || ($targetTenant->getId() !== null && $targetTenant->getId() === $providerTenant->getId())
-        ) {
-            return true;
-        }
-
-        return $targetTenant->isChildOf($providerTenant);
+        // Provider's organisation or below (id-safe tree comparison; a
+        // tenantless target fails closed).
+        return TenantOwnership::isSameOrDescendant($providerTenant, $target->getTenant());
     }
 
     /**

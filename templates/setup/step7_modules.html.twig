@@ -68,10 +68,10 @@
                         <div class="fa-toggle-card__body">
                             <div class="fa-toggle-card__title">
                                 <i class="fa-icon fa-icon--{{ _module_icon_map[module.icon] ?? 'nav-shield' }}" aria-hidden="true"></i>
-                                {{ module.name }}
+                                {{ module_name(key, module.name) }}
                                 <span class="fa-toggle-card__badge">{{ 'setup.step7.badge.required'|trans({}, 'setup') }}</span>
                             </div>
-                            <div class="fa-toggle-card__sub">{{ module.description }}</div>
+                            <div class="fa-toggle-card__sub">{{ module_description(key, module.description) }}</div>
                         </div>
                     </label>
                 {% endif %}
@@ -104,18 +104,18 @@
                     <div class="fa-toggle-card__body">
                         <div class="fa-toggle-card__title">
                             <i class="fa-icon fa-icon--{{ _module_icon_map[module.icon] ?? 'nav-shield' }}" aria-hidden="true"></i>
-                            {{ module.name }}
+                            {{ module_name(key, module.name) }}
                             {% if isRecommended %}
                                 <span class="fa-toggle-card__badge">{{ 'setup.step7.badge.recommended'|trans({}, 'setup') }}</span>
                             {% endif %}
                         </div>
-                        <div class="fa-toggle-card__sub">{{ module.description }}</div>
+                        <div class="fa-toggle-card__sub">{{ module_description(key, module.description) }}</div>
                         {% if module.dependencies|length > 0 %}
                             <div class="fa-toggle-card__meta">
                                 <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                                 <span style="color: var(--warning-text);">{{ 'setup.step7.dependencies'|trans({}, 'setup') }}</span>
                                 {% for dep in module.dependencies %}
-                                    {{ pill.render(all_modules[dep].name, 'warning', { size: 'sm', noDot: true })|raw }}
+                                    {{ pill.render(module_name(dep, all_modules[dep].name), 'warning', { size: 'sm', noDot: true })|raw }}
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -144,7 +144,7 @@
         </div>
     </form>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     (function() {
         function initModuleSelection() {
             const checkboxes = document.querySelectorAll('.module-checkbox');

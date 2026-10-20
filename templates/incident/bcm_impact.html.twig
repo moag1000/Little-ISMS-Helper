@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}BCM Impact Analysis - {{ incident.incidentNumber }}{% endblock %}
 
@@ -15,15 +16,15 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'BCM Impact Analysis',
         subtitle: incident.title,
-        icon: 'nav-workflow',
+        badge: { icon: 'nav-workflow', label: '' },
         actions: [
-            { label: 'Back to Incident', url: path('app_incident_show', {id: incident.id}), variant: 'secondary', icon: 'util-arrow-left' },
-            { label: 'Download PDF', url: path('app_incident_bcm_impact_report', {id: incident.id}), variant: 'primary', icon: 'nav-file-pdf' }
+            { label: 'Back to Incident', href: path('app_incident_show', {id: incident.id}), variant: 'secondary', icon: 'util-arrow-left', attrs: { 'data-turbo-action': 'advance' } },
+            { label: 'Download PDF', href: path('app_incident_bcm_impact_report', {id: incident.id}), variant: 'primary', icon: 'nav-file-pdf', attrs: { 'data-turbo-action': 'advance' } }
         ]
-    } %}
+    }) }}
 
     {# Executive Summary #}
     <div class="row mb-4">

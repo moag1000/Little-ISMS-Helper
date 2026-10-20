@@ -35,7 +35,8 @@ class CorporateStructureServiceTest extends TestCase
         $this->service = new CorporateStructureService(
             $this->entityManager,
             $this->ismsContextRepository,
-            $this->governanceRepository
+            $this->governanceRepository,
+            $this->createStub(\App\Service\AuditLogger::class),
         );
     }
 

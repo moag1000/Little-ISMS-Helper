@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Job;
 
+use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -13,6 +15,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * Uses atomic write (tmp + rename) to avoid poller reading partial JSON.
  * Detects stale 'running' jobs (worker died without writing terminal state).
  *
+ * Ownership: {@see self::create()} records the authenticated user and their
+ * tenant (`owner_user_id`, `owner_tenant_id`). Status polling and the export
+ * download endpoints check them via
+ * {@see \App\Security\Voter\AsyncJobVoter} — the job UUID alone is not an
+ * authorisation token. Jobs created without a logged-in user (QuickFix
+ * emergency UI, setup wizard) carry no owner and are only reachable through
+ * their own guarded endpoints (or by a SUPER_ADMIN).
+ *
  * @see \App\Service\Setup\SetupJobStatusService — setup-wizard-specific
  *   wrapper that delegates here (BC alias).
  */
@@ -21,15 +31,21 @@ final class JobStatusService
     /** 5 minutes without heartbeat → assume worker died */
     private const STALE_AFTER_SECONDS = 300;
 
-    public function __construct(private readonly KernelInterface $kernel)
-    {
+    public function __construct(
+        private readonly KernelInterface $kernel,
+        private readonly ?Security $security = null,
+    ) {
     }
 
     /**
-     * Create and persist a new job, returning its UUID.
+     * Create and persist a new job, returning its UUID. The calling user
+     * (and their tenant) is recorded as owner.
      */
     public function create(string $name, array $payload = []): string
     {
+        $user = $this->security?->getUser();
+        $owner = $user instanceof User ? $user : null;
+
         // UUID v4 — no external package needed
         $b = random_bytes(16);
         $b[6] = chr((ord($b[6]) & 0x0F) | 0x40);
@@ -47,6 +63,8 @@ final class JobStatusService
             'updated_at' => time(),
             'payload' => $payload,
             'error_trace' => null,
+            'owner_user_id' => $owner?->getId(),
+            'owner_tenant_id' => $owner?->getTenant()?->getId(),
         ]);
         return $id;
     }
@@ -126,7 +144,8 @@ final class JobStatusService
      * @return array{id: string, name: string, status: string, message: ?string,
      *               progress_current: int, progress_total: int,
      *               started_at: ?int, updated_at: ?int,
-     *               payload: array<string,mixed>, error_trace: ?string}
+     *               payload: array<string,mixed>, error_trace: ?string,
+     *               owner_user_id: ?int, owner_tenant_id: ?int}
      */
     public function read(string $id): array
     {
@@ -191,6 +210,8 @@ final class JobStatusService
             'updated_at' => null,
             'payload' => [],
             'error_trace' => null,
+            'owner_user_id' => null,
+            'owner_tenant_id' => null,
         ];
     }
 

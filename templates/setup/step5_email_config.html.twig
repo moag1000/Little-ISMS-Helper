@@ -169,7 +169,7 @@
     </div>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 // Toggle SMTP fields based on transport selection.
 // turbo:load (not DOMContentLoaded): under Turbo Drive the body is swapped on
 // navigation without firing DOMContentLoaded; turbo:load fires on initial load

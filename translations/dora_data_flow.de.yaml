@@ -6,6 +6,8 @@ dora_data_flow:
         show: "Datenfluss"
     description:
         overview: "Datenflüsse zwischen Finanzunternehmen und IKT-Drittanbietern gemäß DORA Art. 28 (RT_03)."
+    # Eyebrow over detail/form views (norm reference + register name).
+    eyebrow: "DORA Art. 28 · RT_03 · Informationsregister"
     action:
         create: "Neuer Datenfluss"
     field:

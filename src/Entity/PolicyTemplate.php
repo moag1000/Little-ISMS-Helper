@@ -547,7 +547,7 @@ class PolicyTemplate
     }
 
     /**
-     * @param array<int, string>|null $dpoGatedSectionKeys
+     * @param array<array-key, mixed>|null $dpoGatedSectionKeys non-string/empty entries are dropped
      */
     public function setDpoGatedSectionKeys(?array $dpoGatedSectionKeys): static
     {
@@ -562,7 +562,7 @@ class PolicyTemplate
                 }
                 $clean[$k] = true;
             }
-            $dpoGatedSectionKeys = array_values(array_keys($clean));
+            $dpoGatedSectionKeys = array_keys($clean);
             if ($dpoGatedSectionKeys === []) {
                 $dpoGatedSectionKeys = null;
             }

@@ -50,9 +50,8 @@ class SearchController extends AbstractController
     public function assetPreview(int $id): Response
     {
         $asset = $this->assetRepository->find($id);
-        $tenant = $this->getUser()?->getTenant();
-
-        if (!$asset || ($tenant && $asset->getTenant() !== $tenant)) {
+        // Voter = shared tenant scope (own tenant, holding read, fail closed).
+        if (!$asset || !$this->isGranted('view', $asset)) {
             return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
@@ -66,9 +65,8 @@ class SearchController extends AbstractController
     public function riskPreview(int $id): Response
     {
         $risk = $this->riskRepository->find($id);
-        $tenant = $this->getUser()?->getTenant();
-
-        if (!$risk || ($tenant && $risk->getTenant() !== $tenant)) {
+        // Voter = shared tenant scope (own tenant, holding read, fail closed).
+        if (!$risk || !$this->isGranted('view', $risk)) {
             return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
@@ -82,9 +80,8 @@ class SearchController extends AbstractController
     public function incidentPreview(int $id): Response
     {
         $incident = $this->incidentRepository->find($id);
-        $tenant = $this->getUser()?->getTenant();
-
-        if (!$incident || ($tenant && $incident->getTenant() !== $tenant)) {
+        // Voter = shared tenant scope (own tenant, holding read, fail closed).
+        if (!$incident || !$this->isGranted('view', $incident)) {
             return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 

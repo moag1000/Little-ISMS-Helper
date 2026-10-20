@@ -21,6 +21,7 @@ use App\Service\PolicyWizard\KonzernDefaultsWizardVariant;
 use App\Service\PolicyWizard\StepEvaluator;
 use App\Service\PolicyWizard\StepValidationException;
 use App\Service\PolicyWizard\WizardOrchestrator;
+use App\Service\PolicyWizard\WizardReferenceResolver;
 use App\Service\PolicyWizard\WizardStepKeys;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
@@ -64,6 +65,7 @@ final class PolicyWizardController extends AbstractController
         private readonly PersonRepository $personRepository,
         private readonly CrossCoverageCalculator $crossCoverageCalculator,
         private readonly \App\Service\PolicyWizard\TopicApproverRoleResolver $topicApproverRoleResolver,
+        private readonly WizardReferenceResolver $referenceResolver,
         private readonly ?AuditLogger $auditLogger = null,
     ) {
     }
@@ -173,7 +175,7 @@ final class PolicyWizardController extends AbstractController
 
         try {
             $resume = $this->orchestrator->resume($run);
-        } catch (\InvalidArgumentException) {
+        } catch (\InvalidArgumentException | \App\Exception\InvalidArgument\InvalidArgumentException) {
             $this->addFlash('warning', $this->translator->trans('policy_wizard.error.invalid_step', [], 'policy_wizard'));
             return $this->redirectToRoute('app_policy_wizard_index');
         }
@@ -283,7 +285,9 @@ final class PolicyWizardController extends AbstractController
                 'current_step_index' => $progress['current_step_index'],
                 'total_steps_in_mode' => $progress['total_steps_in_mode'],
             ], $stepExtras), new Response('', Response::HTTP_UNPROCESSABLE_ENTITY));
-        } catch (\InvalidArgumentException) {
+        } catch (\App\Exception\InvalidArgument\InvalidArgumentException) {
+            // processStep() throws the app exception (a \RuntimeException), not
+            // the SPL \InvalidArgumentException this used to catch.
             $this->addFlash('warning', $this->translator->trans('policy_wizard.error.invalid_step', [], 'policy_wizard'));
             return $this->redirectToRoute('app_policy_wizard_index');
         }
@@ -877,7 +881,7 @@ final class PolicyWizardController extends AbstractController
         if ($defaultApproverId !== null) {
             $userIds[] = $defaultApproverId;
         }
-        $userDisplay = $this->resolveUserDisplays(array_values(array_unique($userIds)));
+        $userDisplay = $this->referenceResolver->resolveUserDisplays(array_values(array_unique($userIds)));
 
         $approvers = [];
         foreach ($perTpl as $tplKey => $uid) {
@@ -954,11 +958,11 @@ final class PolicyWizardController extends AbstractController
         // Resolve every user-id-like value the summary references to a
         // `[id => "Full Name <email>"]` map in ONE round-trip so the
         // template never has to do per-row queries.
-        $userIds = $this->collectReferencedUserIds($inputs);
-        $userDisplay = $this->resolveUserDisplays($userIds);
+        $userIds = $this->referenceResolver->collectReferencedUserIds($inputs);
+        $userDisplay = $this->referenceResolver->resolveUserDisplays($userIds);
 
-        $personIds = $this->collectReferencedPersonIds($inputs);
-        $personDisplay = $this->resolvePersonDisplays($personIds);
+        $personIds = $this->referenceResolver->collectReferencedPersonIds($inputs);
+        $personDisplay = $this->referenceResolver->resolvePersonDisplays($personIds);
 
         $sections = [];
 
@@ -1300,133 +1304,6 @@ final class PolicyWizardController extends AbstractController
         }
 
         return $sections;
-    }
-
-    /**
-     * Walk the wizard inputs to collect every User.id reference that the
-     * review-summary will display. Returns DEDUPLICATED list of ints.
-     *
-     * @param array<string, mixed> $inputs
-     * @return list<int>
-     */
-    private function collectReferencedUserIds(array $inputs): array
-    {
-        $ids = [];
-
-        // RolesStep.approval_chain — list<int>
-        $roles = $inputs[WizardStepKeys::STEP_ROLES] ?? [];
-        if (is_array($roles)) {
-            $chain = $roles['approval_chain'] ?? [];
-            if (is_array($chain)) {
-                foreach ($chain as $id) {
-                    if (is_int($id) && $id > 0) {
-                        $ids[] = $id;
-                    }
-                }
-            }
-        }
-
-        // OperationalBaselinesStep.dpo_user_id + .bcm_officer_user_id
-        $op = $inputs[WizardStepKeys::STEP_OPERATIONAL_BASELINES] ?? [];
-        if (is_array($op)) {
-            foreach (['dpo_user_id', 'bcm_officer_user_id'] as $key) {
-                $val = $op[$key] ?? null;
-                if (is_int($val) && $val > 0) {
-                    $ids[] = $val;
-                }
-            }
-        }
-
-        // LifecycleStep.default_approver_user_id + .approver_per_template[*]
-        $lc = $inputs[WizardStepKeys::STEP_LIFECYCLE] ?? [];
-        if (is_array($lc)) {
-            $defApp = $lc['default_approver_user_id'] ?? null;
-            if (is_int($defApp) && $defApp > 0) {
-                $ids[] = $defApp;
-            }
-            $perTpl = $lc['approver_per_template'] ?? [];
-            if (is_array($perTpl)) {
-                foreach ($perTpl as $userId) {
-                    if (is_int($userId) && $userId > 0) {
-                        $ids[] = $userId;
-                    }
-                }
-            }
-        }
-
-        return array_values(array_unique($ids));
-    }
-
-    /**
-     * Walk the wizard inputs to collect every Person.id reference that
-     * the review-summary will display.
-     *
-     * @param array<string, mixed> $inputs
-     * @return list<int>
-     */
-    private function collectReferencedPersonIds(array $inputs): array
-    {
-        $ids = [];
-        $roles = $inputs[WizardStepKeys::STEP_ROLES] ?? [];
-        if (is_array($roles)) {
-            foreach (['roles', 'function_owners'] as $bucket) {
-                $map = $roles[$bucket] ?? [];
-                if (!is_array($map)) {
-                    continue;
-                }
-                foreach ($map as $personId) {
-                    if (is_int($personId) && $personId > 0) {
-                        $ids[] = $personId;
-                    }
-                }
-            }
-        }
-
-        return array_values(array_unique($ids));
-    }
-
-    /**
-     * Resolve User-ids to "Full Name <email>" display strings in ONE
-     * findBy() call. Missing ids fall back to the placeholder format
-     * "User #<id>" so the template can still render.
-     *
-     * @param list<int> $ids
-     * @return array<int, string>
-     */
-    private function resolveUserDisplays(array $ids): array
-    {
-        if ($ids === []) {
-            return [];
-        }
-        $map = [];
-        foreach ($this->userRepository->findBy(['id' => $ids]) as $u) {
-            $name = trim($u->getFullName());
-            $email = (string) ($u->getEmail() ?? '');
-            $display = $name !== '' && $email !== ''
-                ? sprintf('%s <%s>', $name, $email)
-                : ($name !== '' ? $name : $email);
-            $map[(int) $u->getId()] = $display !== '' ? $display : ('User #' . $u->getId());
-        }
-        return $map;
-    }
-
-    /**
-     * Resolve Person-ids to display strings.
-     *
-     * @param list<int> $ids
-     * @return array<int, string>
-     */
-    private function resolvePersonDisplays(array $ids): array
-    {
-        if ($ids === []) {
-            return [];
-        }
-        $map = [];
-        foreach ($this->personRepository->findBy(['id' => $ids]) as $p) {
-            $name = trim((string) $p->getFullName());
-            $map[(int) $p->getId()] = $name !== '' ? $name : ('Person #' . $p->getId());
-        }
-        return $map;
     }
 
     /**

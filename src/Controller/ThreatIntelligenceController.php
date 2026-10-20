@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkDeleteService;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
@@ -241,6 +242,7 @@ class ThreatIntelligenceController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * ThreatIntelligence entries have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/threat-intelligence/bulk-delete-check', name: 'app_threat_intelligence_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -256,51 +258,19 @@ class ThreatIntelligenceController extends AbstractController
 
     #[Route('/threat-intelligence/bulk-delete', name: 'app_threat_intelligence_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function bulkDelete(Request $request): JsonResponse
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
         if (!$this->moduleService->isModuleActive('vulnerability_intel')) {
             return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $threat = $this->repository->find($id);
-                if (!$threat) {
-                    $errors[] = "ThreatIntelligence ID $id not found";
-                    continue;
-                }
-                if ($tenant && $threat->getTenant() !== $tenant) {
-                    $errors[] = "ThreatIntelligence ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($threat);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting ThreatIntelligence ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        return $this->json([
-            'success' => $deleted > 0,
-            'deleted' => $deleted,
-            'errors' => $errors,
-            'message' => "$deleted threat intelligence items deleted successfully",
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'ThreatIntelligence',
+            $this->security->getUser(),
+            fn (int $id): ?object => $this->repository->find($id),
+        );
     }
 
     /**
@@ -324,15 +294,13 @@ class ThreatIntelligenceController extends AbstractController
             return $this->json(['error' => 'No items selected'], 400);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         $threats = [];
         foreach ($ids as $rawId) {
             $threat = $this->repository->find((int) $rawId);
             if ($threat === null) {
                 continue;
             }
-            if ($tenant !== null && $threat->getTenant() !== $tenant) {
+            if (!$this->isInBulkContextScope($threat, $this->tenantContext)) {
                 continue;
             }
             $threats[] = $threat;

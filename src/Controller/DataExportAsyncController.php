@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\AsyncJobVoter;
 use App\Job\ExportDataJob;
+use App\Service\DataExport\EntityDataExporter;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
+use App\Service\Job\JobTenantScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,6 +50,8 @@ final class DataExportAsyncController extends AbstractController
         private readonly JobDispatcher $jobDispatcher,
         private readonly TranslatorInterface $translator,
         private readonly KernelInterface $kernel,
+        private readonly JobTenantScope $jobTenantScope,
+        private readonly EntityDataExporter $exporter,
     ) {
     }
 
@@ -70,11 +75,18 @@ final class DataExportAsyncController extends AbstractController
             $format = 'json';
         }
 
-        // Whitelist defensively: anything not in the App\Entity namespace is
-        // dropped here so the job never sees attacker-controlled FQCNs.
+        // Capture the caller's organisation while the request still exists;
+        // the job scopes every query to it (instance-wide only for a
+        // SUPER_ADMIN without organisation).
+        $scopeArgs = $this->jobTenantScope->argsForCurrentUser();
+        $scope = $this->jobTenantScope->resolveArgs($scopeArgs);
+
+        // Whitelist: only classes the shared exporter allows for this scope
+        // (App\Entity, not a credential/session table, tenant-scopable unless
+        // instance-wide) reach the job.
         $selectedEntities = array_values(array_filter(
             $selectedEntities,
-            static fn(mixed $v): bool => is_string($v) && str_starts_with($v, 'App\\Entity\\'),
+            fn(mixed $v): bool => is_string($v) && $this->exporter->isExportable($v, $scope),
         ));
 
         if ($selectedEntities === []) {
@@ -111,7 +123,7 @@ final class DataExportAsyncController extends AbstractController
 
         return $this->jobDispatcher->dispatch(
             ExportDataJob::class,
-            ['entities' => $selectedEntities, 'format' => $format],
+            ['entities' => $selectedEntities, 'format' => $format] + $scopeArgs,
             $jobId,
             $response,
             $request->getSession(),
@@ -126,6 +138,7 @@ final class DataExportAsyncController extends AbstractController
      * canonical path without trusting any user input beyond the UUID v4 shape.
      */
     #[Route('/admin/exports/{id}/download', name: 'data_export_download', methods: ['GET'])]
+    #[IsGranted(AsyncJobVoter::ACCESS, subject: 'id')]
     public function download(string $id): Response
     {
         if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {

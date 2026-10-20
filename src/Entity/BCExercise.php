@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Enum\BCExerciseStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\BCExerciseRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Documents BC plan testing, exercises, and drills
  */
+#[RequiresModule('bcm')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('API_VIEW', object)"),
@@ -87,6 +89,8 @@ class BCExercise
 
     /**
      * BC Plan(s) being tested
+     *
+     * @var Collection<int, BusinessContinuityPlan>
      */
     #[ORM\ManyToMany(targetEntity: BusinessContinuityPlan::class)]
     #[ORM\JoinTable(name: 'bc_exercise_plan')]
@@ -229,7 +233,7 @@ class BCExercise
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['planned', 'in_progress', 'completed', 'cancelled'])]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
-    private ?string $status = 'planned';
+    private string $status = 'planned';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -350,6 +354,8 @@ class BCExercise
 
     /**
      * Documents related to this exercise
+     *
+     * @var Collection<int, Document>
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'bc_exercise_document')]
@@ -680,7 +686,7 @@ class BCExercise
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?BCExerciseStatus
     {
-        return $this->status !== null ? BCExerciseStatus::tryFrom($this->status) : null;
+        return BCExerciseStatus::tryFrom($this->status);
     }
 
     public function getResults(): ?string

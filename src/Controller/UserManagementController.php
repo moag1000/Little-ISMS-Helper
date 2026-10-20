@@ -342,23 +342,20 @@ class UserManagementController extends AbstractController
     #[Route('/admin/users/export', name: 'user_management_export', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
     public function export(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
     ): StreamedResponse {
-        // Scope export to current user's tenant (audit M-7: cross-tenant leak via findAll()).
-        // SUPER_ADMIN cross-tenant export requires a dedicated privileged endpoint.
-        $currentUser = $this->getUser();
-        $tenant = ($currentUser instanceof User) ? $currentUser->getTenant() : null;
-        // Security hotfix (admin scope): non-SUPER_ADMIN actors export their
-        // accessible tenant tree only — never all users when tenantless.
+        // Own organisation only (audit M-7); instance-wide solely for a SUPER_ADMIN
+        // without an organisation, denied for any other account without one.
+        $tenant = $jobTenantScope->currentUserScope();
+        $users = $tenant !== null ? $userRepository->findBy(['tenant' => $tenant]) : $userRepository->findAll();
+        // Security hotfix (admin scope): a non-SUPER_ADMIN actor additionally
+        // exports only users it may view (UserVoter — never SUPER-only rows).
         if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
             $users = array_values(array_filter(
-                $userRepository->findAll(),
+                $users,
                 fn (User $candidate): bool => $this->isGranted(UserVoter::VIEW, $candidate),
             ));
-        } else {
-            $users = $tenant !== null
-                ? $userRepository->findBy(['tenant' => $tenant])
-                : $userRepository->findAll();
         }
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
@@ -426,40 +423,24 @@ class UserManagementController extends AbstractController
     #[IsCsrfTokenValid('user_management_export_dispatch')]
     public function exportDispatch(
         Request $request,
-        \App\Service\Job\JobStatusService $jobStatusService,
-        \App\Service\Job\JobDispatcher $jobDispatcher,
+        \App\Service\Job\AsyncJobDispatcher $asyncJobDispatcher,
+        \App\Service\Job\JobTenantScope $jobTenantScope,
         TranslatorInterface $translator,
     ): Response {
-        $jobId = $jobStatusService->create('user_management.export', [
-            '_label' => $translator->trans('user.export.progress_title', [], 'user'),
-            '_subtitle' => $translator->trans('user.export.progress_subtitle', [], 'user'),
-            '_download_label' => $translator->trans('user.export.download_button', [], 'user'),
-            // Security hotfix: the download is bound to the user who started
-            // the export (read by exportDownload(); missing = not downloadable
-            // for non-SUPER_ADMIN).
-            '_actor_id' => $this->getUser() instanceof User ? $this->getUser()->getId() : null,
-        ]);
-        $jobStatusService->updatePayload($jobId, [
-            '_download_url' => $this->generateUrl('user_management_export_download', ['id' => $jobId]),
-        ]);
-
-        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
-            'id'     => $jobId,
-            'return' => $this->generateUrl('user_management_index'),
-        ], Response::HTTP_SEE_OTHER);
-
-        // Dispatch through the configured runner (in_request by default —
-        // runs in this request, no worker needed; messenger mode queues it).
-        return $jobDispatcher->dispatch(
-            \App\Job\ExportUsersJob::class,
-            // Security hotfix (admin scope): the job runs detached from the
-            // request, so the actor's scope travels as args (fail-closed).
-            $this->isGranted('ROLE_SUPER_ADMIN')
-                ? ['global' => true]
-                : ['tenantIds' => $this->userAdministrationGuard->assignableTenantIds()],
-            $jobId,
-            $progressResponse,
-            $request->getSession(),
+        return $asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: \App\Job\ExportUsersJob::class,
+            // The job runs detached from the request, so the actor's scope
+            // travels as args (fail-closed, JobTenantScope).
+            jobArgs: $jobTenantScope->argsForCurrentUser(),
+            jobName: 'user_management.export',
+            payload: [
+                '_label' => $translator->trans('user.export.progress_title', [], 'user'),
+                '_subtitle' => $translator->trans('user.export.progress_subtitle', [], 'user'),
+                '_download_label' => $translator->trans('user.export.download_button', [], 'user'),
+            ],
+            returnUrl: $this->generateUrl('user_management_index'),
+            downloadRoute: 'user_management_export_download',
         );
     }
 
@@ -470,6 +451,7 @@ class UserManagementController extends AbstractController
      */
     #[Route('/admin/users/export/download/{id}', name: 'user_management_export_download', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
+    #[IsGranted(\App\Security\Voter\AsyncJobVoter::ACCESS, subject: 'id')]
     public function exportDownload(
         string $id,
         \App\Service\Job\JobStatusService $jobStatusService,
@@ -484,18 +466,10 @@ class UserManagementController extends AbstractController
                 $translator->trans('user.export.file_not_found', [], 'user'),
             );
         }
+        // Only the user who started the export (or a SUPER_ADMIN) reaches this
+        // point: AsyncJobVoter::ACCESS checks the job's recorded owner
+        // (JobStatusService owner_user_id / owner_tenant_id).
         $record = $jobStatusService->read($id);
-        // Security hotfix: only the user who started the export (or a
-        // SUPER_ADMIN) may download it; 404 avoids an existence oracle.
-        $actor = $this->getUser();
-        $ownerId = $record['payload']['_actor_id'] ?? null;
-        if (!$this->isGranted('ROLE_SUPER_ADMIN')
-            && (!$actor instanceof User || $ownerId === null || (int) $ownerId !== $actor->getId())
-        ) {
-            throw $this->createNotFoundException(
-                $translator->trans('user.export.file_not_found', [], 'user'),
-            );
-        }
         if (($record['status'] ?? '') !== 'succeeded') {
             throw $this->createNotFoundException(
                 $translator->trans('user.export.file_not_found', [], 'user'),

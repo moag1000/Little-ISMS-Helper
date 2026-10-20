@@ -18,6 +18,10 @@ use Symfony\Component\HttpFoundation\Response;
  * roles. A tenant admin must not be able to create/rename a custom role to a
  * reserved Symfony role name (e.g. ROLE_ALLOWED_TO_SWITCH → impersonate any
  * user), flag roles as system roles, or edit the global system roles.
+ *
+ * Since the release after 3.15.3 a tenant admin cannot create or edit roles at
+ * all (RoleVoter: ROLE_SUPER_ADMIN only); the reserved-name validation still
+ * applies to the operator's own custom roles.
  */
 final class RoleManagementReservedNameTest extends WebTestCase
 {
@@ -68,11 +72,19 @@ final class RoleManagementReservedNameTest extends WebTestCase
     }
 
     #[Test]
-    public function adminCannotCreateRoleWithReservedName(): void
+    public function adminCannotCreateRoles(): void
+    {
+        $this->client->loginUser($this->admin);
+        $this->client->request('GET', '/en/admin/roles/new');
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function customRoleWithReservedNameIsRejectedEvenForSuperAdmin(): void
     {
         foreach (['ROLE_ALLOWED_TO_SWITCH', ' role_super_admin '] as $name) {
             $this->assertRoleAbsent(trim($name));
-            $this->submitNewRole($this->admin, $name, false);
+            $this->submitNewRole($this->super, $name, false);
 
             self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY, $name);
             $this->assertRoleAbsent(trim($name));
@@ -83,24 +95,13 @@ final class RoleManagementReservedNameTest extends WebTestCase
     public function adminCannotSmuggleReservedNameAsSystemRole(): void
     {
         $this->assertRoleAbsent('ROLE_ALLOWED_TO_SWITCH');
-        $this->submitNewRole($this->admin, 'ROLE_ALLOWED_TO_SWITCH', true);
+        $this->client->loginUser($this->admin);
+        $this->client->request('POST', '/en/admin/roles/new', [
+            'role' => ['name' => 'ROLE_ALLOWED_TO_SWITCH', 'isSystemRole' => '1'],
+        ]);
 
-        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->assertRoleAbsent('ROLE_ALLOWED_TO_SWITCH');
-    }
-
-    #[Test]
-    public function adminCannotFlagRoleAsSystemRole(): void
-    {
-        $name = 'Scoped Role ' . $this->uid;
-        $this->roleNamesToCleanUp[] = $name;
-        $this->submitNewRole($this->admin, $name, true);
-
-        self::assertResponseRedirects();
-        $this->em->clear();
-        $role = $this->em->getRepository(Role::class)->findOneBy(['name' => $name]);
-        self::assertNotNull($role);
-        self::assertFalse($role->isSystemRole());
     }
 
     #[Test]
@@ -122,10 +123,14 @@ final class RoleManagementReservedNameTest extends WebTestCase
     }
 
     #[Test]
-    public function templateRouteRejectsReservedCustomName(): void
+    public function templateRouteIsOperatorOnlyAndRejectsReservedCustomName(): void
     {
         $this->assertRoleAbsent('ROLE_ALLOWED_TO_SWITCH');
         $this->client->loginUser($this->admin);
+        $this->client->request('GET', '/en/admin/roles/templates');
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->client->loginUser($this->super);
         $crawler = $this->client->request('GET', '/en/admin/roles/templates');
         self::assertResponseIsSuccessful();
         $session = $this->client->getRequest()->getSession();

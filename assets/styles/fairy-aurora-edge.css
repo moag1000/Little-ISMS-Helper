@@ -121,7 +121,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.08), 0 0 0 1px var(--primary-glow); /* design-spec: dropdown panel composite with glow ring */
+    box-shadow: var(--shadow-md); /* Kanon H5: floating surfaces use the neutral shadow, no glow ring */
     overflow: hidden;
     animation: fa-dropdown-pop var(--t-base) var(--ease-out);
 }

@@ -13,13 +13,17 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 /**
  * Security hotfix (admin scope): a tenant admin (ROLE_ADMIN) may only manage
  * tenants of its own tree (TenantScopedAdminVoter::ADMIN_OWN_TENANT) and may
  * not move users across tenants via /admin/tenants/{id}/add-user|remove-user.
+ *
+ * Since the tenant-isolation release after 3.15.3, the route guards
+ * (#[IsGranted] with ADMIN_OWN_TENANT / ADMIN_GLOBAL_OP) answer an out-of-scope
+ * request with 403 before the controller's own 404 check runs, and add-user is
+ * an instance-operator action (ROLE_SUPER_ADMIN only).
  *
  * Fixture tree:  A (parent) ── A-child          B (unrelated)
  */
@@ -86,7 +90,7 @@ final class TenantManagementAdminScopeTest extends WebTestCase
             'user_email' => $this->adminA->getEmail(),
         ]);
 
-        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         self::assertSame($this->tenantA->getId(), $this->tenantIdOf($this->adminA));
     }
 
@@ -98,25 +102,34 @@ final class TenantManagementAdminScopeTest extends WebTestCase
             $this->postWithToken('/en/admin/tenants/' . $this->tenantA->getId() . '/add-user', 'add_user_' . $this->tenantA->getId(), [
                 'user_email' => $victim->getEmail(),
             ]);
-            // Rejected like an unknown user (no existence oracle), not moved.
-            self::assertResponseRedirects();
-            $session = $this->client->getRequest()->getSession();
-            self::assertInstanceOf(FlashBagAwareSessionInterface::class, $session);
-            self::assertContains('tenant.users.flash.user_not_found', $session->getFlashBag()->get('warning'));
+            self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
             self::assertSame($this->tenantB->getId(), $this->tenantIdOf($victim), (string) $victim->getEmail());
         }
     }
 
     #[Test]
-    public function adminCanMoveOwnUserIntoChildTenant(): void
+    public function adminCannotMoveOwnUserIntoChildTenant(): void
     {
+        // add-user is an instance-operator action, even inside the own tree.
         $this->client->loginUser($this->adminA);
         $this->postWithToken('/en/admin/tenants/' . $this->tenantAChild->getId() . '/add-user', 'add_user_' . $this->tenantAChild->getId(), [
             'user_email' => $this->userA->getEmail(),
         ]);
 
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        self::assertSame($this->tenantA->getId(), $this->tenantIdOf($this->userA));
+    }
+
+    #[Test]
+    public function superAdminCanMoveUserIntoTenant(): void
+    {
+        $this->client->loginUser($this->superA);
+        $this->postWithToken('/en/admin/tenants/' . $this->tenantAChild->getId() . '/add-user', 'add_user_' . $this->tenantAChild->getId(), [
+            'user_email' => $this->userB->getEmail(),
+        ]);
+
         self::assertResponseRedirects();
-        self::assertSame($this->tenantAChild->getId(), $this->tenantIdOf($this->userA));
+        self::assertSame($this->tenantAChild->getId(), $this->tenantIdOf($this->userB));
     }
 
     // ---------------------------------------------------------------- CRITICAL 2: remove-user
@@ -137,7 +150,7 @@ final class TenantManagementAdminScopeTest extends WebTestCase
             '/en/admin/tenants/' . $this->tenantB->getId() . '/remove-user/' . $this->userB->getId(),
             'remove_user_' . $this->tenantB->getId() . '_' . $this->userB->getId(),
         );
-        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         self::assertSame($this->tenantB->getId(), $this->tenantIdOf($this->userB));
     }
 
@@ -157,7 +170,7 @@ final class TenantManagementAdminScopeTest extends WebTestCase
     // ---------------------------------------------------------------- IMPORTANT 1: tenant scope
 
     #[Test]
-    public function foreignTenantEndpointsAre404ForTenantAdmin(): void
+    public function foreignTenantEndpointsAreDeniedForTenantAdmin(): void
     {
         $this->client->loginUser($this->adminA);
         $b = $this->tenantB->getId();
@@ -173,7 +186,7 @@ final class TenantManagementAdminScopeTest extends WebTestCase
             ['POST', "/en/admin/tenants/$b/update-governance"],
         ] as [$method, $url]) {
             $this->client->request($method, $url);
-            self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND, "$method $url");
+            self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, "$method $url");
         }
 
         $this->client->request('GET', '/en/admin/tenants/' . $this->tenantAChild->getId());

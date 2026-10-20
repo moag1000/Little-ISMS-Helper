@@ -88,6 +88,7 @@ volumes:
 | `APP_SECRET` | (generiert) | Symfony Secret Key |
 | `DATABASE_URL` | (embedded) | DB-Verbindung |
 | `MAILER_DSN` | `null://null` | E-Mail-Konfiguration |
+| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL für Links in E-Mails aus Cron-Jobs |
 
 ## ☕ Support
 

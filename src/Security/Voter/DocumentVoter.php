@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
-use App\Entity\Tenant;
 use App\Entity\Document;
 use App\Entity\User;
+use App\Security\TenantOwnership;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - DELETE: Remove documents (admin only)
  *
  * Security Rules:
- * - ROLE_ADMIN bypasses all checks
+ * - ROLE_SUPER_ADMIN bypasses all checks; ROLE_ADMIN only within its own tenant
  * - Users can view/download their own documents
  * - Users can view/download documents from their tenant
  * - Only the uploader can edit document metadata
@@ -79,58 +79,28 @@ final class DocumentVoter extends Voter
         /** @var Document $document */
         $document = $subject;
 
-        // Security: Admins can do everything
-        if ($this->hasRoleHierarchical($user, 'ROLE_ADMIN')) {
+        $docTenant = $document->getTenant() ?? $document->getUploadedBy()?->getTenant();
+        $isRead = in_array($attribute, [self::VIEW, self::DOWNLOAD], true);
+
+        // Phase 9.P2.1 — inheritable holding policy: a subsidiary user may
+        // read a document marked inheritable=true on any ancestor tenant.
+        if ($isRead && $document->isInheritable() && TenantOwnership::isDescendant($docTenant, $user->getTenant())) {
             return true;
         }
 
+        // Tenant scope first: SUPER_ADMIN everywhere, ROLE_ADMIN only inside
+        // its own tenant, holding roles read-only down the tree.
+        $scope = $this->decideTenantScope($user, $docTenant, $isRead);
+        if ($scope !== null) {
+            return $scope;
+        }
+
+        // In scope below ROLE_ADMIN: read; edit only by the uploader; delete
+        // stays admin-only.
         return match ($attribute) {
-            self::VIEW, self::DOWNLOAD => $this->canView($document, $user),
-            self::EDIT => $this->canEdit($document, $user),
-            self::DELETE => $this->canDelete($user),
+            self::VIEW, self::DOWNLOAD => true,
+            self::EDIT => $document->getUploadedBy() === $user,
             default => false,
         };
-    }
-
-    private function canView(Document $document, User $user): bool
-    {
-        // Security: Users can view documents they uploaded
-        if ($document->getUploadedBy() === $user) {
-            return true;
-        }
-        $userTenant = $user->getTenant();
-        $docTenant = $document->getTenant() ?? $document->getUploadedBy()?->getTenant();
-
-        // Security: Multi-tenancy - users can view documents from their tenant
-        if ($docTenant === $userTenant && $userTenant instanceof Tenant) {
-            return true;
-        }
-        // Phase 9.P2.1 — inheritable holding policy: a subsidiary user
-        // may see a document marked inheritable=true on any ancestor
-        // tenant, read-only.
-        if ($document->isInheritable() && $userTenant instanceof Tenant && $docTenant instanceof Tenant && $userTenant->isChildOf($docTenant)) {
-            return true;
-        }
-        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
-        return $this->canReadAcrossHoldingTree($user, $docTenant);
-    }
-
-    private function canEdit(Document $document, User $user): bool
-    {
-        // Security: Only the uploader or admin can edit
-        return $document->getUploadedBy() === $user;
-    }
-
-    private function canDelete(User $user): bool
-    {
-        // Security: Only admins can delete (enforced by IsGranted in controller)
-        return $this->hasRoleHierarchical($user, 'ROLE_ADMIN');
-    }
-
-    private function hasRoleHierarchical(User $user, string $role): bool
-    {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($role, $reachable, true);
     }
 }

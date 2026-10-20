@@ -10,12 +10,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 
 /**
  * Functional tests for HomeController
  */
 class HomeControllerTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
@@ -118,5 +121,27 @@ class HomeControllerTest extends WebTestCase
         $this->client->loginUser($this->testUser);
         $this->client->request('GET', '/de/dashboard');
         $this->assertResponseIsSuccessful();
+    }
+
+    #[Test]
+    public function restoreJourneyIsStateChangingSoPostWithCsrfOnly(): void
+    {
+        $this->testUser->setSkipWelcomePage(true);
+        $this->entityManager->flush();
+        $this->client->loginUser($this->testUser);
+
+        $this->client->request('GET', '/en/dashboard/restore-journey');
+        $this->assertResponseStatusCodeSame(405, 'a GET (link, prefetch) must not reset the preference');
+
+        $this->client->request('POST', '/en/dashboard/restore-journey');
+        $this->assertResponseStatusCodeSame(403, 'POST without a CSRF token is rejected');
+        $this->entityManager->clear();
+        self::assertTrue($this->entityManager->find(User::class, $this->testUser->getId())->isSkipWelcomePage());
+
+        $token = $this->seedSessionCsrfToken($this->client, 'restore_journey');
+        $this->client->request('POST', '/en/dashboard/restore-journey', ['_token' => $token]);
+        $this->assertResponseRedirects();
+        $this->entityManager->clear();
+        self::assertFalse($this->entityManager->find(User::class, $this->testUser->getId())->isSkipWelcomePage());
     }
 }

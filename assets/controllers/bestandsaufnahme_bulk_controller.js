@@ -1,4 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
+import { faConfirm } from '../js/fa-alerts.js';
 
 /**
  * Policy-Wizard Bestandsaufnahme — MUST #4: Bulk action bar.
@@ -96,14 +98,14 @@ export default class extends Controller {
     // ── Confirm gate (shared by all actions) ──────────────────────────────
     _gateAndApply(rows, body, runFn) {
         if (rows.length === 0) {
-            this._announce(this._dataset('noTargetsMessage') || 'No matching rows found.');
+            this._announce(this._dataset('noTargetsMessage') || faT('bestandsaufnahme_bulk.no_targets'));
             return;
         }
 
         const interpolated = (body || '').replace('%count%', String(rows.length));
         const commit = () => {
             const applied = runFn();
-            this._announce((this._dataset('appliedTemplate') || '%count% rows updated.').replace('%count%', String(applied)));
+            this._announce((this._dataset('appliedTemplate') || faT('bestandsaufnahme_bulk.applied')).replace('%count%', String(applied)));
         };
 
         if (this.hasConfirmModalTarget && this.hasConfirmApplyBtnTarget) {
@@ -115,13 +117,8 @@ export default class extends Controller {
             this.confirmApplyBtnTarget.parentNode.replaceChild(fresh, this.confirmApplyBtnTarget);
             fresh.addEventListener('click', () => { commit(); this._hideModal(); }, { once: true });
             this._showModal();
-        } else if (typeof window.faConfirm === 'function') {
-            window.faConfirm(interpolated, { tone: 'warn' }).then((ok) => { if (ok) { commit(); } });
         } else {
-            // eslint-disable-next-line no-alert
-            if (window.confirm(interpolated)) {
-                commit();
-            }
+            faConfirm(interpolated, { tone: 'warn' }).then((ok) => { if (ok) { commit(); } });
         }
     }
 
@@ -164,7 +161,7 @@ export default class extends Controller {
         };
         const datasetKey = map[kind] || 'keepBody';
         const fromParam = event && event.params ? event.params[datasetKey] : null;
-        return fromParam || this._dataset(datasetKey) || this._dataset('keepBody') || 'Apply to %count% row(s)?';
+        return fromParam || this._dataset(datasetKey) || this._dataset('keepBody') || faT('bestandsaufnahme_bulk.confirm');
     }
 
     _dataset(key) {

@@ -10,6 +10,7 @@ use DateTimeImmutable;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
@@ -23,6 +24,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -82,7 +85,7 @@ class WorkflowController extends AbstractController
             $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
             // Check if step has eligible approvers (for warning display)
             if ($currentStep && $instance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
-                $hasEligibleApprovers[$instance->getId()] = $this->workflowService->hasEligibleApprovers($currentStep);
+                $hasEligibleApprovers[$instance->getId()] = $this->workflowService->hasEligibleApprovers($currentStep, $instance->getTenant());
             } else {
                 $hasEligibleApprovers[$instance->getId()] = true;
             }
@@ -138,9 +141,9 @@ class WorkflowController extends AbstractController
         $hasEligibleApprovers = true;
         $eligibleApprovers = [];
         if ($currentStep instanceof WorkflowStep && $workflowInstance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
-            $hasEligibleApprovers = $this->workflowService->hasEligibleApprovers($currentStep);
+            $hasEligibleApprovers = $this->workflowService->hasEligibleApprovers($currentStep, $workflowInstance->getTenant());
             if (!$hasEligibleApprovers) {
-                $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep);
+                $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep, $workflowInstance->getTenant());
             }
         }
 
@@ -161,7 +164,19 @@ class WorkflowController extends AbstractController
         }
 
         $comments = $request->request->get('comments');
-        $success = $this->workflowService->approveStep($workflowInstance, $this->currentUser(), $comments);
+        try {
+            $success = $this->workflowService->approveStep($workflowInstance, $this->currentUser(), $comments);
+        } catch (FourEyesRequiredException $e) {
+            // Four-eyes refusal of the closing approval is a domain outcome,
+            // not a server error. approveStep() has already undone its
+            // in-memory progress.
+            $this->addFlash('error', $this->translator->trans(
+                'approval.error.four_eyes.' . $e->reasonCode,
+                [],
+                'workflows',
+            ));
+            return $this->getSmartRedirect($request, $workflowInstance);
+        }
 
         if ($success) {
             $this->addFlash('success', $this->translator->trans('workflow.success.approved', [], 'messages'));
@@ -374,6 +389,7 @@ class WorkflowController extends AbstractController
 
     #[Route('/workflow/start/{entityType}/{entityId}', name: 'app_workflow_start', requirements: ['entityId' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[IsCsrfTokenValid(new Expression('"workflow_start_" ~ args["entityType"] ~ "_" ~ args["entityId"]'))]
     public function start(Request $request, string $entityType, int $entityId): Response
     {
         $workflowName = $request->query->get('workflow');

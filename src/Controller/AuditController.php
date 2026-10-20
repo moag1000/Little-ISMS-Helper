@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\BulkActionTrait;
+use App\Service\BulkDeleteService;
 use DateTime;
 use DateTimeImmutable;
 use Exception;
@@ -33,6 +35,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuditController extends AbstractController
 {
+    use BulkActionTrait;
+
     use InPageFormTrait;
     public function __construct(
         private readonly InternalAuditRepository $internalAuditRepository,
@@ -130,13 +134,13 @@ class AuditController extends AbstractController
         ], new Response(status: $status));
     }
     #[Route('/audit/export/excel', name: 'app_audit_export_excel', methods: ['GET'])]
-    public function exportExcel(Request $request): Response
+    public function exportExcel(Request $request, \App\Service\Job\JobTenantScope $jobTenantScope): Response
     {
-        $audits = $this->internalAuditRepository->findAll();
+        $jobTenantScope->currentUserScope(); // no organisation: denied unless SUPER_ADMIN
+        $audits = $this->internalAuditRepository->findAll(); // scoped by the request's tenant filter
 
         $headers = ['ID', 'Title', 'Scope', 'Status', 'Planned Date', 'Actual Date'];
         $data = [];
-
         foreach ($audits as $audit) {
             $data[] = [
                 $audit->getId(),
@@ -163,6 +167,7 @@ class AuditController extends AbstractController
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * Audits have no blocking FK relations — returns empty dependencies.
      */
+    // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/audit/bulk-delete-check', name: 'app_audit_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
@@ -174,51 +179,15 @@ class AuditController extends AbstractController
 
     #[Route('/audit/bulk-delete', name: 'app_audit_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $audit = $this->internalAuditRepository->find($id);
-
-                if (!$audit) {
-                    $errors[] = "Audit ID $id not found";
-                    continue;
-                }
-
-                $this->entityManager->remove($audit);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting audit ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if ($errors !== []) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted audits deleted successfully"
-        ]);
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'InternalAudit',
+            $this->getUser(),
+            fn (int $id): ?object => $this->internalAuditRepository->find($id),
+        );
     }
     #[Route('/audit/{id}', name: 'app_audit_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Request $request, InternalAudit $internalAudit): Response

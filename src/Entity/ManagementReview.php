@@ -34,6 +34,7 @@ class ManagementReview
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?DateTimeInterface $reviewDate = null;
 
+    /** @var Collection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $participants;
 
@@ -87,7 +88,7 @@ class ManagementReview
     private ?string $actionItems = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $status = 'planned';
+    private string $status = 'planned';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -444,7 +445,7 @@ public function __construct()
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?ManagementReviewStatus
     {
-        return $this->status !== null ? ManagementReviewStatus::tryFrom($this->status) : null;
+        return ManagementReviewStatus::tryFrom($this->status);
     }
 
     public function getCreatedAt(): ?DateTimeInterface

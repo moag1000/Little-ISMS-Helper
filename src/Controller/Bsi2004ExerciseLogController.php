@@ -16,6 +16,7 @@ use App\Service\Bsi2004ExerciseLogService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -82,19 +83,22 @@ class Bsi2004ExerciseLogController extends AbstractController
 
     #[Route('/new/{exerciseId}', name: 'new', requirements: ['exerciseId' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function new(int $exerciseId, Request $request): Response
+    public function new(#[MapEntity(id: 'exerciseId')] BCExercise $exercise, Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) {
             return $redirect;
         }
 
-        /** @var BCExercise|null $exercise */
-        $exercise = $this->exerciseRepository->find($exerciseId);
-        if ($exercise === null) {
-            throw $this->createNotFoundException('BCExercise not found.');
+        // Same rule as editing the log it creates: the log inherits the
+        // exercise's tenant, so ask Bsi2004ExerciseLogVoter::EDIT for an
+        // unsaved log of that tenant (SUPER_ADMIN everywhere, everyone else
+        // inside the own organisation). An exercise without a tenant would
+        // yield an unscopable orphan log: fail closed for everyone.
+        $exerciseTenant = $exercise->getTenant();
+        $probe = (new Bsi2004ExerciseLog())->setTenant($exerciseTenant);
+        if ($exerciseTenant === null || !$this->isGranted(Bsi2004ExerciseLogVoter::EDIT, $probe)) {
+            throw $this->createAccessDeniedException('Cross-tenant access denied.');
         }
-
-        $this->denyAccessUnlessGranted('ROLE_MANAGER');
 
         if ($exercise->hasExerciseLog()) {
             $this->addFlash('warning', $this->translator->trans('bsi_200_4_exercise.error.log_already_exists', [], 'bsi_200_4_exercise'));
@@ -148,14 +152,12 @@ class Bsi2004ExerciseLogController extends AbstractController
     // -------------------------------------------------------------------------
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(int $id): Response
+    #[IsGranted(Bsi2004ExerciseLogVoter::VIEW, subject: 'log')]
+    public function show(#[MapEntity(id: 'id')] Bsi2004ExerciseLog $log): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) {
             return $redirect;
         }
-
-        $log = $this->findLogOr404($id);
-        $this->denyAccessUnlessGranted(Bsi2004ExerciseLogVoter::VIEW, $log);
 
         return $this->render('bcm/exercise_log/show.html.twig', [
             'log' => $log,
@@ -167,14 +169,12 @@ class Bsi2004ExerciseLogController extends AbstractController
     // -------------------------------------------------------------------------
 
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(int $id, Request $request): Response
+    #[IsGranted(Bsi2004ExerciseLogVoter::EDIT, subject: 'log')]
+    public function edit(#[MapEntity(id: 'id')] Bsi2004ExerciseLog $log, Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) {
             return $redirect;
         }
-
-        $log = $this->findLogOr404($id);
-        $this->denyAccessUnlessGranted(Bsi2004ExerciseLogVoter::EDIT, $log);
 
         $form = $this->createForm(Bsi2004ExerciseLogType::class, $log);
 
@@ -211,14 +211,12 @@ class Bsi2004ExerciseLogController extends AbstractController
 
     #[Route('/{id}/submit', name: 'submit', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function submit(int $id, Request $request): Response
+    #[IsGranted(Bsi2004ExerciseLogVoter::EDIT, subject: 'log')]
+    public function submit(#[MapEntity(id: 'id')] Bsi2004ExerciseLog $log, Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) {
             return $redirect;
         }
-
-        $log = $this->findLogOr404($id);
-        $this->denyAccessUnlessGranted(Bsi2004ExerciseLogVoter::EDIT, $log);
 
         if (!$this->isCsrfTokenValid('bsi_log_submit_' . $log->getId(), $request->request->getString('_token'))) {
             $this->addFlash('error', $this->translator->trans('bsi_200_4_exercise.error.invalid_token', [], 'bsi_200_4_exercise'));
@@ -242,14 +240,12 @@ class Bsi2004ExerciseLogController extends AbstractController
 
     #[Route('/{id}/confirm', name: 'confirm', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
-    public function confirm(int $id, Request $request): Response
+    #[IsGranted(Bsi2004ExerciseLogVoter::CONFIRM, subject: 'log')]
+    public function confirm(#[MapEntity(id: 'id')] Bsi2004ExerciseLog $log, Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) {
             return $redirect;
         }
-
-        $log = $this->findLogOr404($id);
-        $this->denyAccessUnlessGranted(Bsi2004ExerciseLogVoter::CONFIRM, $log);
 
         if (!$this->isCsrfTokenValid('bsi_log_confirm_' . $log->getId(), $request->request->getString('_token'))) {
             $this->addFlash('error', $this->translator->trans('bsi_200_4_exercise.error.invalid_token', [], 'bsi_200_4_exercise'));
@@ -285,8 +281,9 @@ class Bsi2004ExerciseLogController extends AbstractController
         $now  = new \DateTime();
         $end  = (new \DateTime())->modify('+12 months');
 
-        $allExercises = $tenant !== null
-            ? $this->exerciseRepository->findUpcoming()
+        // Own tenant only; a SUPER_ADMIN without tenant context sees all.
+        $allExercises = $tenant !== null || $this->isGranted('ROLE_SUPER_ADMIN')
+            ? $this->exerciseRepository->findUpcoming($tenant)
             : [];
 
         // Filter to max 12-month forward window
@@ -317,15 +314,6 @@ class Bsi2004ExerciseLogController extends AbstractController
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
-
-    private function findLogOr404(int $id): Bsi2004ExerciseLog
-    {
-        $log = $this->logRepository->find($id);
-        if ($log === null) {
-            throw $this->createNotFoundException('Bsi2004ExerciseLog not found.');
-        }
-        return $log;
-    }
 
     private function applyUnmappedFields(\Symfony\Component\Form\FormInterface $form, Bsi2004ExerciseLog $log): void
     {

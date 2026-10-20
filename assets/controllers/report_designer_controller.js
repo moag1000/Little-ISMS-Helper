@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { faT } from '../js/fa-i18n.js';
 
 /**
  * Report Designer Controller
@@ -26,7 +27,8 @@ export default class extends Controller {
         reportId: Number,
         saveUrl: String,
         widgetDataUrl: String,
-        shareUrl: String
+        shareUrl: String,
+        csrfToken: String
     };
 
     connect() {
@@ -93,9 +95,9 @@ export default class extends Controller {
 
             if (!response.ok) {
                 const msg = response.status === 403
-                    ? 'Keine Berechtigung'
-                    : `Fehler ${response.status}`;
-                contentEl.innerHTML = `<div class="alert alert-danger">${msg}</div>`;
+                    ? faT('forbidden')
+                    : faT('error_status', { '%status%': response.status });
+                this.renderMessage(contentEl, msg, 'danger');
                 window.faToast(msg, 'danger');
                 return;
             }
@@ -104,22 +106,24 @@ export default class extends Controller {
             this.renderWidgetContent(contentEl, widgetType, data);
         } catch (error) {
             console.error('Failed to load widget data:', error);
-            contentEl.innerHTML = `<div class="alert alert-danger">Failed to load widget</div>`;
+            this.renderMessage(contentEl, faT('report_designer.widget_load_failed'), 'danger');
         }
     }
 
     renderWidgetContent(container, widgetType, data) {
+        const esc = (v) => this.escapeHtml(v);
         if (data.error) {
-            container.innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+            this.renderMessage(container, data.error, 'warning');
             return;
         }
 
         // KPI Widgets
         if (widgetType.startsWith('kpi_')) {
+            const tone = ['primary', 'success', 'warning', 'danger', 'info'].includes(data.color) ? data.color : 'primary';
             container.innerHTML = `
                 <div class="text-center py-3">
-                    <div class="display-5 fw-bold text-${data.color || 'primary'}">${data.value}</div>
-                    <div class="text-muted small">${data.label}</div>
+                    <div class="display-5 fw-bold text-${tone}">${esc(data.value)}</div>
+                    <div class="text-muted small">${esc(data.label)}</div>
                 </div>
             `;
             return;
@@ -131,34 +135,35 @@ export default class extends Controller {
                                data.status === 'amber' ? 'warning' : 'danger';
             container.innerHTML = `
                 <div class="text-center py-3">
-                    <i class="fa-icon fa-icon--status-ok fs-1 text-${statusClass}"></i>
-                    <div class="mt-2 fw-bold">${data.label}</div>
+                    <i class="fa-icon fa-icon--status-ok fs-1 text-${statusClass}" aria-hidden="true"></i>
+                    <div class="mt-2 fw-bold">${esc(data.label)}</div>
                 </div>
             `;
             return;
         }
 
-        // Table Widgets
+        // Table Widgets — Aurora fa-table
         if (widgetType.startsWith('table_')) {
             if (data.rows && data.rows.length > 0) {
-                let html = `<div class="table-responsive"><table class="table table-sm table-hover"><thead><tr>`;
-                data.columns.forEach(col => {
-                    html += `<th>${col}</th>`;
+                let html = '<div class="fa-table-wrap"><table class="fa-table fa-table--compact fa-table--hover">'
+                    + '<thead class="fa-table__head"><tr>';
+                (data.columns || []).forEach(col => {
+                    html += `<th class="fa-table__th" scope="col">${esc(col)}</th>`;
                 });
-                html += `</tr></thead><tbody>`;
+                html += '</tr></thead><tbody class="fa-table__body">';
                 data.rows.slice(0, 5).forEach(row => {
-                    html += `<tr>`;
+                    html += '<tr class="fa-table__row">';
                     Object.entries(row).forEach(([key, value]) => {
                         if (key !== 'id') {
-                            html += `<td>${value || ''}</td>`;
+                            html += `<td class="fa-table__cell">${esc(value ?? '')}</td>`;
                         }
                     });
-                    html += `</tr>`;
+                    html += '</tr>';
                 });
-                html += `</tbody></table></div>`;
+                html += '</tbody></table></div>';
                 container.innerHTML = html;
             } else {
-                container.innerHTML = `<div class="text-center text-muted py-3">No data</div>`;
+                this.renderMessage(container, faT('report_designer.no_data'), 'muted');
             }
             return;
         }
@@ -166,9 +171,9 @@ export default class extends Controller {
         // Chart Widgets (placeholder in designer)
         if (widgetType.startsWith('chart_')) {
             container.innerHTML = `
-                <div class="text-center py-4 bg-light rounded">
-                    <i class="fa-icon fa-icon--nav-bar-chart fs-1 text-primary opacity-50"></i>
-                    <div class="small text-muted mt-2">${widgetType.replace('chart_', '').replace(/_/g, ' ')}</div>
+                <div class="text-center py-4 rounded">
+                    <i class="fa-icon fa-icon--nav-bar-chart fs-1 text-primary opacity-50" aria-hidden="true"></i>
+                    <div class="small text-muted mt-2">${esc(widgetType.replace('chart_', '').replace(/_/g, ' '))}</div>
                 </div>
             `;
             return;
@@ -176,12 +181,31 @@ export default class extends Controller {
 
         // Text Widgets
         if (widgetType.startsWith('text_')) {
-            container.innerHTML = `<div class="p-2">${data.text || 'Text content'}</div>`;
+            container.innerHTML = `<div class="p-2">${esc(data.text || faT('report_designer.text_placeholder'))}</div>`;
             return;
         }
 
         // Default
-        container.innerHTML = `<div class="text-muted text-center py-3">${widgetType}</div>`;
+        this.renderMessage(container, widgetType, 'muted');
+    }
+
+    /** Plain-text message inside a widget (Aurora alert for warning/danger). */
+    renderMessage(container, message, tone) {
+        const el = document.createElement('div');
+        if (tone === 'muted') {
+            el.className = 'text-center text-muted py-3';
+        } else {
+            el.className = `fa-alert fa-alert--${tone}`;
+            el.setAttribute('role', 'alert');
+        }
+        el.textContent = message;
+        container.replaceChildren(el);
+    }
+
+    escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
     }
 
     getFilters() {
@@ -261,21 +285,23 @@ export default class extends Controller {
 
         container.innerHTML = `
             <div class="widget-header d-flex justify-content-between align-items-center mb-2">
-                <span class="widget-title small text-muted">${widgetType.replace(/_/g, ' ')}</span>
+                <span class="widget-title small text-muted">${this.escapeHtml(widgetType.replace(/_/g, ' '))}</span>
                 <div class="widget-actions">
-                    <button type="button" class="btn btn-sm btn-link p-0 text-muted"
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            aria-label="${this.escapeHtml(faT('report_designer.configure'))}"
                             data-action="click->report-designer#configureWidget">
-                        <i class="fa-icon fa-icon--ui-settings"></i>
+                        <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-link p-0 text-danger"
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-cyber-btn--danger"
+                            aria-label="${this.escapeHtml(faT('report_designer.remove'))}"
                             data-action="click->report-designer#removeWidget">
-                        <i class="fa-icon fa-icon--ui-trash"></i>
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
             <div class="widget-content">
                 <div class="text-center py-4 text-muted">
-                    <i class="fa-icon fa-icon--ui-hourglass"></i> Loading...
+                    <i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i> ${this.escapeHtml(faT('loading'))}
                 </div>
             </div>
         `;
@@ -300,8 +326,8 @@ export default class extends Controller {
                 placeholder.className = 'drop-placeholder text-center py-5';
                 placeholder.dataset.reportDesignerTarget = 'placeholder';
                 placeholder.innerHTML = `
-                    <i class="fa-icon fa-icon--ui-plus display-4 text-muted"></i>
-                    <p class="mt-3 text-muted">Drag widgets here to build your report</p>
+                    <i class="fa-icon fa-icon--ui-plus display-4 text-muted" aria-hidden="true"></i>
+                    <p class="mt-3 text-muted">${this.escapeHtml(faT('report_designer.drop_here'))}</p>
                 `;
                 this.canvasTarget.appendChild(placeholder);
             }
@@ -320,13 +346,14 @@ export default class extends Controller {
         const form = document.getElementById('widget-config-form');
         if (!form) return;
 
-        let formHtml = `<input type="hidden" id="config-widget-id" value="${widgetId}">`;
+        const esc = (v) => this.escapeHtml(v);
+        let formHtml = `<input type="hidden" id="config-widget-id" value="${esc(widgetId)}">`;
 
         // Title input for all widgets
         formHtml += `
             <div class="mb-3">
-                <label class="form-label">Title</label>
-                <input type="text" class="form-control" id="config-title" value="${config.title || ''}">
+                <label class="form-label" for="config-title">${esc(faT('report_designer.config_title'))}</label>
+                <input type="text" class="form-control" id="config-title" value="${esc(config.title || '')}">
             </div>
         `;
 
@@ -334,8 +361,8 @@ export default class extends Controller {
         if (widgetType.startsWith('table_')) {
             formHtml += `
                 <div class="mb-3">
-                    <label class="form-label">Max Rows</label>
-                    <input type="number" class="form-control" id="config-limit" value="${config.limit || 10}" min="1" max="50">
+                    <label class="form-label" for="config-limit">${esc(faT('report_designer.config_limit'))}</label>
+                    <input type="number" class="form-control" id="config-limit" value="${esc(config.limit || 10)}" min="1" max="50">
                 </div>
             `;
         }
@@ -343,8 +370,8 @@ export default class extends Controller {
         if (widgetType.startsWith('text_')) {
             formHtml += `
                 <div class="mb-3">
-                    <label class="form-label">Content</label>
-                    <textarea class="form-control" id="config-text" rows="4">${config.text || ''}</textarea>
+                    <label class="form-label" for="config-text">${esc(faT('report_designer.config_text'))}</label>
+                    <textarea class="form-control" id="config-text" rows="4">${esc(config.text || '')}</textarea>
                 </div>
             `;
         }
@@ -428,6 +455,7 @@ export default class extends Controller {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-Token': this.csrfTokenValue,
                 },
                 body: JSON.stringify(data)
             });
@@ -436,13 +464,13 @@ export default class extends Controller {
 
             if (result.success) {
                 this.isDirty = false;
-                this.showNotification('Report saved successfully', 'success');
+                this.showNotification(faT('report_designer.saved'), 'success');
             } else {
-                this.showNotification(result.error || 'Failed to save', 'danger');
+                this.showNotification(result.error || faT('report_designer.save_failed'), 'danger');
             }
         } catch (error) {
             console.error('Save error:', error);
-            this.showNotification('Failed to save report', 'danger');
+            this.showNotification(faT('report_designer.save_failed'), 'danger');
         }
     }
 
@@ -458,14 +486,15 @@ export default class extends Controller {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-Token': this.csrfTokenValue,
                 },
                 body: JSON.stringify({ user_ids: selectedUsers })
             });
 
             if (!response.ok) {
                 const msg = response.status === 403
-                    ? 'Keine Berechtigung'
-                    : `Fehler ${response.status}`;
+                    ? faT('forbidden')
+                    : faT('error_status', { '%status%': response.status });
                 window.faToast(msg, 'danger');
                 return;
             }
@@ -473,34 +502,23 @@ export default class extends Controller {
             const result = await response.json();
 
             if (result.success) {
-                this.showNotification('Sharing settings saved', 'success');
+                this.showNotification(faT('report_designer.sharing_saved'), 'success');
                 const modal = document.getElementById('shareModal');
                 const faModal = modal ? this.application.getControllerForElementAndIdentifier(modal, 'fa-modal') : null;
                 faModal?.close();
             } else {
-                this.showNotification(result.error || 'Failed to save sharing settings', 'danger');
+                this.showNotification(result.error || faT('report_designer.sharing_failed'), 'danger');
             }
         } catch (error) {
             console.error('Share error:', error);
-            this.showNotification('Failed to save sharing settings', 'danger');
+            this.showNotification(faT('report_designer.sharing_failed'), 'danger');
         }
     }
 
     showNotification(message, type = 'info') {
-        // Create toast notification
-        const toast = document.createElement('div');
-        toast.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-        toast.style.cssText = 'top: 80px; right: 20px; z-index: 9999; min-width: 300px;';
-        toast.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-
-        document.body.appendChild(toast);
-
-        // Auto-remove after 3 seconds
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
+        // Aurora toast stack (fa-alerts.js)
+        if (typeof window.faToast === 'function') {
+            window.faToast(message, type);
+        }
     }
 }

@@ -585,9 +585,18 @@ class AuditFinding
         return $this;
     }
 
+    /**
+     * Finding is done (resolved, verified or closed) — single source:
+     * {@see AuditFindingStatus::isDone()}.
+     */
+    public function isDone(): bool
+    {
+        return AuditFindingStatus::tryFrom($this->status)?->isDone() ?? false;
+    }
+
     public function isOverdue(): bool
     {
-        if ($this->dueDate === null || in_array($this->status, [self::STATUS_RESOLVED, self::STATUS_VERIFIED, self::STATUS_CLOSED], true)) {
+        if ($this->dueDate === null || $this->isDone()) {
             return false;
         }
         return $this->dueDate < new DateTimeImmutable();

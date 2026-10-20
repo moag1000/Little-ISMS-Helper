@@ -76,6 +76,8 @@ class ComplianceMapping
 
     /**
      * Collection of gap items for this mapping
+     *
+     * @var Collection<int, MappingGapItem>
      */
     #[ORM\OneToMany(targetEntity: MappingGapItem::class, mappedBy: 'mapping', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $gapItems;
@@ -183,6 +185,11 @@ class ComplianceMapping
     #[ORM\Column(length: 20)]
     private string $lifecycleState = 'draft';
 
+    /** Optimistic lock for compliance_mapping_lifecycle (concurrent reviewers). */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: Types::INTEGER, options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /**
      * Primärquelle des Mappings (z.B. "ENISA Guidance v2024-09",
      * "BSI-Crosswalk-Tabelle 2024", "Eigene Recherche"). Pflichtfeld
@@ -248,6 +255,16 @@ class ComplianceMapping
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * The organisation that owns this mapping: the upload tenant of a
+     * tenant-uploaded source or target requirement, or NULL when both
+     * requirements are global catalogue rows (shared mapping).
+     */
+    public function getOwnerTenant(): ?Tenant
+    {
+        return $this->sourceRequirement?->getUploadTenant() ?? $this->targetRequirement?->getUploadTenant();
     }
 
     public function getSourceRequirement(): ?ComplianceRequirement
@@ -735,6 +752,16 @@ class ComplianceMapping
 
     public function getLifecycleState(): string { return $this->lifecycleState; }
     public function setLifecycleState(string $state): static { $this->lifecycleState = $state; return $this; }
+
+    /**
+     * Marking-store accessors for `compliance_mapping_lifecycle` (alias of
+     * lifecycleState) so LifecycleService can drive the mapping. Status
+     * changes from controllers go through LifecycleService::transition().
+     */
+    public function getStatus(): string { return $this->lifecycleState; }
+    public function setStatus(string $state): static { $this->lifecycleState = $state; return $this; }
+
+    public function getLockVersion(): int { return $this->lockVersion; }
 
     /**
      * True when this mapping is in an operational lifecycle state and may

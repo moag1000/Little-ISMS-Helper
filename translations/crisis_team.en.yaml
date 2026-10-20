@@ -68,7 +68,6 @@ crisis_team:
         decision_authority: 'Who can make which decisions?'
         communication_protocols: 'How does the crisis team communicate internally and externally?'
         training_schedule: 'When do trainings and exercises take place?'
-        escalation_matrix: '[{"trigger":"Cyberattack","externalPartner":"CERT-Bund","contactInfo":"https://www.bsi.bund.de","escalateAfter":"1h"}]'
     help:
         team_name: 'Name of the crisis team'
         team_type: 'Type of crisis team according to BSI 200-4'
@@ -88,7 +87,7 @@ crisis_team:
         business_continuity_plans: 'Assigned BCPs'
         meeting_location: 'Physical meeting point during crises'
         person_members: 'Structured roster — master-data Persons in addition to the JSON list with roles/contact details. External consultants or auditors can be tracked here without a system login.'
-        escalation_matrix_json: 'JSON array with external escalation partners per BSI 200-4 §6.2 and NIS2 Art. 23. Partners: BSI, Police, CERT-Bund, etc.'
+        escalation_matrix_json: 'External escalation partners per BSI 200-4 §6.2 and NIS2 Art. 23 (e.g. BSI, CERT-Bund, police) with trigger, contact and escalation time.'
         activation_count: 'Total number of real activations of this crisis team (BSI 200-4 §7.2). Typically auto-incremented on activation.'
         last_activated_at: 'Date and time of last real activation (BSI 200-4 §7.2 deployment tracking).'
     success:
@@ -99,3 +98,11 @@ crisis_team:
     error:
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
         deputy_required_user_or_person: 'Deputy: User or master-data Person required (free-text alone is not sufficient).'
+    json_builder:
+        escalation:
+            add: 'Add escalation partner'
+            trigger: 'Trigger'
+            external_partner: 'External partner'
+            contact_info: 'Contact'
+            escalate_after: 'Escalate after'
+            escalate_after_placeholder: 'e.g. 1h, 24h'

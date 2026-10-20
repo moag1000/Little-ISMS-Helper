@@ -41,8 +41,12 @@ final class ComplianceExtension
     #[AsTwigFunction('is_nis2_active')]
     public function isNis2Active(): bool
     {
-        // Return false if compliance module is not active
-        if (!$this->moduleConfigurationService->isModuleActive('compliance')) {
+        // NIS2 views need the compliance module (framework data) and the
+        // nis2_dora module (NIS2/DORA feature gate, MODULE_GATING_GUIDE).
+        if (
+            !$this->moduleConfigurationService->isModuleActive('compliance')
+            || !$this->moduleConfigurationService->isModuleActive('nis2_dora')
+        ) {
             return false;
         }
 

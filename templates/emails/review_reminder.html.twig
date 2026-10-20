@@ -109,7 +109,7 @@
 
     {% if route_name is defined and entity_id is defined %}
     <div style="text-align: center; margin: 30px 0;">
-        <a href="{{ app.request.schemeAndHttpHost }}/{{ app.request.locale }}/{{ route_name|replace({'app_': '', '_show': ''})|replace({'_': '-'}) }}/{{ entity_id }}"
+        <a href="{{ url(route_name, {id: entity_id, _locale: app.locale}) }}"
            style="display: inline-block; padding: 12px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
             Open {{ entity_type }}
         </a>

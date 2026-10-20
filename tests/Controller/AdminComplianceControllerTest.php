@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\AuditLog;
+use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -148,5 +150,50 @@ class AdminComplianceControllerTest extends WebTestCase
         $this->client->loginUser($this->adminUser);
         $this->client->request('GET', '/en/admin/compliance/statistics');
         $this->assertResponseIsSuccessful();
+    }
+
+    #[Test]
+    public function testDeleteFrameworkReturnsJsonAndAuditsTheDeletion(): void
+    {
+        // Regression: the action called the protected
+        // Repository::getEntityManager() — an \Error that escaped
+        // catch (Exception), so every delete answered with an HTML 500.
+        $code = 'DEL_' . strtoupper(substr(md5(uniqid('', true)), 0, 10));
+        $framework = (new ComplianceFramework())
+            ->setCode($code)
+            ->setName('Delete Me ' . $code)
+            ->setVersion('1.0')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('Test')
+            ->setMandatory(false)
+            ->setActive(true);
+        $this->entityManager->persist($framework);
+        $this->entityManager->flush();
+        $frameworkId = $framework->getId();
+
+        $this->client->loginUser($this->adminUser);
+        $this->client->request('GET', '/en/admin/compliance/statistics');
+        $session = $this->client->getRequest()->getSession();
+        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/delete_framework', $token);
+        \call_user_func([$session, 'save']);
+
+        $this->client->request(
+            'POST',
+            '/en/admin/compliance/frameworks/delete/' . $code,
+            server: ['HTTP_X_CSRF_TOKEN' => $token, 'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $payload = json_decode((string) $this->client->getResponse()->getContent(), true);
+        $this->assertTrue($payload['success'] ?? false);
+
+        $this->entityManager->clear();
+        $this->assertNull($this->entityManager->find(ComplianceFramework::class, $frameworkId));
+        $audit = $this->entityManager->getRepository(AuditLog::class)->findOneBy(
+            ['entityType' => 'ComplianceFramework', 'entityId' => $frameworkId],
+            ['id' => 'DESC'],
+        );
+        $this->assertNotNull($audit, 'framework deletion must be audit-logged');
     }
 }

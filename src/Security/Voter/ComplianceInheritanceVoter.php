@@ -17,9 +17,16 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  */
 final class ComplianceInheritanceVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     public const VIEW = 'compliance_inheritance.view';
@@ -50,6 +57,15 @@ final class ComplianceInheritanceVoter extends Voter
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
+            return false;
+        }
+
+        // A concrete log must be in the actor's tenant scope (SUPER_ADMIN
+        // everywhere, ROLE_ADMIN only in its own tenant, holding roles may
+        // view down the tree); the role rules below still apply.
+        if ($subject instanceof FulfillmentInheritanceLog
+            && !$this->hasReachableRole($user, 'ROLE_SUPER_ADMIN')
+            && !$this->isInTenantScope($user, $subject->getTenant(), $attribute === self::VIEW)) {
             return false;
         }
 

@@ -337,16 +337,15 @@ class ComplianceFramework
     }
 
     /**
-     * Compute an in-memory compliance percentage from already-loaded requirements.
+     * Compute the compliance percentage from the loaded requirements.
      *
-     * Each ComplianceRequirement is considered "fulfilled" when its status equals
-     * 'fulfilled' or 'compliant'. This avoids extra DB queries — the framework
-     * index controller eager-loads requirements via LEFT JOIN.
-     *
-     * @todo 2026-05-14 replace with a dedicated service query for large frameworks once
-     *       performance benchmarks flag this (N requirements × M tenants).
-     *       Track: open GitHub issue for ComplianceFramework N+1 optimisation.
-     *
+     * A top-level requirement is "fulfilled" when its derived status is
+     * 'implemented' (fulfilment from mapped controls >= 100 %). Deriving the
+     * status walks each requirement's `mappedControls` collection, which
+     * lazy-loads one query per requirement unless it is already initialised.
+     * Callers on large catalogues MUST first call
+     * {@see \App\Repository\ComplianceRequirementRepository::preloadMappedControls()}
+     * (one fetch-join query) so this method runs without further queries.
      */
     public function getCompliancePercentage(): float
     {
@@ -365,8 +364,11 @@ class ComplianceFramework
             }
             $total++;
 
-            $status = method_exists($req, 'getStatus') ? $req->getStatus() : null;
-            if (in_array($status, ['fulfilled', 'compliant'], true)) {
+            // ComplianceRequirement::getStatus() speaks the gap-analysis
+            // vocabulary (implemented / partially_implemented / not_implemented).
+            // The former check for 'fulfilled'/'compliant' never matched a real
+            // requirement, so the framework index always showed 0 %.
+            if ($req->getStatus() === 'implemented') {
                 $fulfilled++;
             }
         }

@@ -333,7 +333,7 @@ class AlvaHintService
 
         $tokens = $this->dismissalRepository->findActiveDismissedTokensForUser($user, $tenant);
 
-        return $this->dismissedTokensCache = array_flip($tokens);
+        return $this->dismissedTokensCache = array_fill_keys($tokens, true);
     }
 
     private function userHasRequiredRoles(AlvaHint $hint): bool

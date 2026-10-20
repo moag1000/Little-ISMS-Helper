@@ -148,7 +148,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">
+    <script nonce="{{ csp_nonce() }}" type="text/javascript">
         function initTenantForm() {
             if (window.tenantFormInitialized) return;
             window.tenantFormInitialized = true;

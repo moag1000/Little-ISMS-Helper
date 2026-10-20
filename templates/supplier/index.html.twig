@@ -19,15 +19,20 @@
 } %}
 
 {% set supplierActions = [
-    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } },
-    { label: 'supplier.ict_library.title'|trans({}, 'suppliers'), variant: 'ghost', icon: 'nav-building', href: path('ict_provider_library_index') }
+    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
 ] %}
+{% if is_module_active('nis2_dora') %}
+    {# DORA Art. 28 ICT third-party provider library #}
+    {% set supplierActions = supplierActions | merge([{ label: 'supplier.ict_library.title'|trans({}, 'suppliers'), variant: 'ghost', icon: 'nav-building', href: path('ict_provider_library_index') }]) %}
+{% endif %}
 {% if doraActive ?? false %}
     {# Async DORA ROI export — opens dispatch modal (Phase 3 async-jobs rollout) #}
     {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: '#', attrs: { 'data-controller': 'fa-modal-dispatcher', 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'doraRegisterExportModal' } }] | merge(supplierActions) %}
 {% endif %}
-{% if is_granted('ROLE_MANAGER') %}
+{% if is_granted('ROLE_MANAGER') and is_module_active('lksg') %}
     {% set supplierActions = [{ label: 'supplier.action.lksg_export'|trans({}, 'suppliers'), variant: 'ghost', icon: 'download', href: path('app_supplier_lksg_annual_report_csv') }] | merge(supplierActions) %}
+{% endif %}
+{% if is_granted('ROLE_MANAGER') %}
     {% set supplierActions = supplierActions | merge([{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'supplier', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }]) %}
 {% endif %}
 {{ _fa_page_header.render({
@@ -243,7 +248,6 @@
             {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             {% if suppliers|length > 0 %}
             {% embed '_components/_table.html.twig' with {
-                'wrapperClass': 'card-body',
                 'class': 'table-bulk-selectable',
                 'noMargin': true
             } %}

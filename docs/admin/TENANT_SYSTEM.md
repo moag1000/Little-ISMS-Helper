@@ -101,7 +101,15 @@ $filter->setParameter('tenant_id', $tenantId);
 
 Navigate to: `/admin/tenants`
 
-**Required Role:** `ROLE_ADMIN`
+**Required Role:** `ROLE_ADMIN` (the `TENANT_*` permissions), scoped to the organisation:
+
+| Action | Organisation admin (`ROLE_ADMIN`) | Instance operator (`ROLE_SUPER_ADMIN`) |
+|---|---|---|
+| List, corporate structure | Own organisation and its subsidiaries | All organisations |
+| Show, edit, organisation context, ISMS context, remove user | Own organisation and its subsidiaries | All organisations |
+| Edit code, active flag, parent, corporate-parent flag, Azure tenant ID, raw settings | Read-only | Yes |
+| Governance model of a subsidiary | Admin of the parent organisation | Yes |
+| Create, activate/deactivate, delete, set parent, add (move) a user | No | Yes |
 
 ### Features
 
@@ -241,10 +249,39 @@ $assets = $assetRepository->findAll(); // Only returns assets for selected tenan
    - Doctrine Filter ensures data separation
    - Users can only access their tenant's data
    - Cross-tenant queries blocked by default
+   - Accounts without an organisation: a `ROLE_SUPER_ADMIN` stays instance-wide;
+     any other account sees no organisation's data (`TenantFilter::NO_ORGANISATION`,
+     only rows with no tenant) and gets no default organisation context.
+     Anonymous requests (login, setup wizard, public share links) and CLI/jobs
+     are not affected. On a single-organisation installation accounts created
+     without one (setup-wizard admin, global SSO provider, `app:setup-permissions`)
+     join the sole organisation automatically; with several organisations an
+     operator assigns them.
+   - Record-level checks (voters) share one guard,
+     `HoldingTreeAccessTrait::decideTenantScope()`: `ROLE_SUPER_ADMIN` may act on
+     any record; everyone else, `ROLE_ADMIN` included, only on records of their own
+     organisation. `ROLE_GROUP_CISO` and `ROLE_KONZERN_AUDITOR` may additionally
+     *read* records of subsidiaries (never write). A missing tenant on the user or
+     the record denies access.
+   - Two scopes, one tree comparison: organisation *administration* (the table
+     under *Admin Portal Access*: settings, contexts, membership) covers the own
+     organisation and its subsidiaries; *records* (risks, assets, incidents …)
+     cover the own organisation only, plus the holding read above. Both decide
+     "own organisation or below" with `TenantOwnership::isSameOrDescendant()`.
+   - Bulk endpoints (export, assign incl. the assignee, status change, delete)
+     share one rule, `TenantOwnership::isInContextScope()`, which is the record
+     scope: `ROLE_SUPER_ADMIN` processes records of all organisations (also with
+     an organisation context set); everyone else, `ROLE_ADMIN` included, only
+     records of the organisation it is acting in (`TenantContext`) — never of
+     subsidiaries. Holding roles read subsidiary records one by one; they never
+     bulk-process them.
 
 2. **Admin Access:**
-   - ROLE_ADMIN manages only its own tenant tree; ROLE_SUPER_ADMIN is the
-     instance operator (see "Upgrade notes — 3.15.3 security release")
+   - Only ROLE_ADMIN can manage tenants, and only within their own organisation tree
+     (`TenantScopedAdminVoter::ADMIN_OWN_TENANT`); instance-wide operations need
+     ROLE_SUPER_ADMIN (`ADMIN_GLOBAL_OP`) — see the table under *Admin Portal Access*
+   - ROLE_SUPER_ADMIN is the instance operator (see "Upgrade notes — 3.15.3
+     security release")
    - Super admins can disable filter for cross-tenant operations
    - Audit log tracks all tenant changes
 
@@ -372,6 +409,112 @@ users to a global provider or a local login before or right after the
 upgrade.
 
 Global providers behave as before.
+
+## Upgrade notes — first release after 3.15.3
+
+Read this before deploying the release that follows 3.15.3 (tenant-isolation
+hardening). It builds on the 3.15.3 security release above — read that section
+too if you upgrade straight from 3.15.2 or older. Single-organisation
+installations need no action.
+
+### Changes to the 3.15.3 rules
+
+- **Roles are SUPER_ADMIN-only.** Creating, editing and deleting any role
+  (custom or system) now requires `ROLE_SUPER_ADMIN`; the 3.15.3 exception
+  "an organisation admin may edit a custom role if it may edit every holder"
+  is gone, because a role is global and changes what users of every
+  organisation may do. System roles can never be deleted.
+- **User CSV export and guided-tour report** cover the organisation the
+  admin belongs to (not its subsidiaries), and within it only users the admin
+  may view. Only a `ROLE_SUPER_ADMIN` without an organisation exports or lists
+  all users. A user export is still downloadable only by the user who started
+  it (or a `ROLE_SUPER_ADMIN`); a different user now gets **403** (job owner
+  check, see "Async job status" below) instead of 404.
+- **Holding roles** (`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) may *view*
+  users of subsidiaries but never edit or delete them, even with the
+  `user.edit` / `user.delete` permission. User administration by
+  `ROLE_ADMIN` stays own organisation + subsidiaries, as in 3.15.3.
+
+### Migration order with the 3.15.3 operator bootstrap
+
+Both `Version20261016150000` (this release) and
+`Version20261019120000_operator_bootstrap` (3.15.3) assign accounts without an
+organisation on a single-organisation installation. They are safe in either
+order and never assign twice:
+
+- `Version20261016150000` only assigns when an instance operator
+  (`ROLE_SUPER_ADMIN`) already exists, and never assigns an operator. Without
+  an operator it leaves the assignment to the operator bootstrap, which first
+  promotes the setup admin (keeping it instance-wide, without organisation)
+  and then assigns the remaining accounts itself.
+- If 3.15.3 is already installed, the operator bootstrap has run; this
+  release's migration then only picks up accounts created without an
+  organisation since then.
+
+### Accounts without an organisation see no data (multi-organisation installs)
+
+**Effect.** The tenant filter used to show an account without an organisation
+the data of *every* organisation. It now shows such an account *no*
+organisation's data — only a `ROLE_SUPER_ADMIN` without an organisation stays
+instance-wide. Migration `Version20261016150000` assigns accounts without an
+organisation to the sole organisation, but only when exactly one organisation
+exists (and an operator exists — see "Migration order" above); with two or more
+it leaves them untouched. Existing `ROLE_ADMIN`,
+`ROLE_MANAGER`, `ROLE_USER` … accounts without an organisation therefore go
+from "see everything" to "see nothing" after the upgrade.
+
+**Before the upgrade**, list the affected accounts:
+
+```sql
+SELECT id, email, roles FROM users
+WHERE tenant_id IS NULL AND roles NOT LIKE '%ROLE_SUPER_ADMIN%';
+```
+
+**Fix.** Log in as a `ROLE_SUPER_ADMIN` (an admin without an organisation can
+no longer see the accounts it would have to fix), open **`/admin/users`**,
+edit each listed account and pick its organisation in the *Organization*
+field (German UI: *Organisation*). `/quick-fix` does not help here: Data
+repair deliberately skips user accounts, because a SUPER_ADMIN may
+legitimately have no organisation.
+
+New accounts created by SSO (generic OIDC, Azure OAuth, Azure SAML) on a
+multi-organisation install without a provider-specific organisation also start
+without one and need the same assignment.
+
+### Async job status from before the deploy returns 403
+
+**Effect.** Job status files (`var/jobs/<uuid>.json`) now record their owner
+(`owner_user_id`, `owner_tenant_id`), and status polling plus export downloads
+are only served to that owner. Files written before the deploy have no owner,
+so polling a job started before the upgrade — and downloading its export —
+returns **403** for everyone except a `ROLE_SUPER_ADMIN`.
+
+**Fix.** Let running admin jobs/exports finish (and download their files)
+before deploying, or simply start them again after the deploy. Old status
+files are harmless and can be deleted from `var/jobs/` once no job is running.
+
+### Module switch now also guards `/api/...` and keeps pre-gate modules active
+
+**Effect.** The module switch (`#[RequiresModule]`) now also applies to API
+Platform: the operations of module-owned resources (business continuity plans
+and exercises -> `bcm`, persons -> `persons`, suppliers -> `suppliers`,
+training -> `training`, interested parties -> `interested_parties`, locations
+-> `locations`, change requests -> `change_requests`, threat intelligence ->
+`vulnerability_intel`) answer **403 JSON** (`module_not_active`) while the
+module is off for the organisation. Integrations that still call such
+endpoints with a module switched off will start failing after the upgrade.
+
+**Existing `config/active_modules.yaml`.** The pages of `persons`,
+`risk_appetite`, `risk_treatment_plans`, `portfolio_reports`,
+`scheduled_reports`, `corrective_actions` and `interested_parties` were
+reachable before they were gated. An instance file written by an older release
+does not list them, so they are treated as active as long as the file carries
+no `gating_baseline` marker. Nothing to do on upgrade. The marker is written
+the next time a module selection is saved (Admin -> Modules, setup wizard,
+industry preset); from then on a module missing from the file is really
+inactive. New installs get the marker from `config/active_modules.yaml.dist`.
+Organisations with their own module selection are not affected by this
+fallback.
 
 ## Migration
 

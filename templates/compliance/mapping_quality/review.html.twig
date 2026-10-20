@@ -14,15 +14,18 @@
             <a href="{{ path('app_mapping_quality_review_queue') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'mapping_review.action.back_to_queue'|trans({}, 'compliance') }}
             </a>
+            {% if is_granted('ROLE_MANAGER') %}
             <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
                     data-controller="ui-actions"
                     data-action="ui-actions#confirmAndFetch"
                     data-ui-actions-confirm-param="{{ 'mapping_review.action.reanalyze_confirm'|trans({}, 'compliance') }}"
                     data-ui-actions-url-param="{{ path('app_mapping_quality_analyze', {id: mapping.id}) }}"
                     data-ui-actions-method-param="POST"
+                    data-ui-actions-csrf-param="{{ csrf_token('mapping_quality') }}"
                     data-ui-actions-reload-param="true">
                 <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'mapping_review.action.reanalyze'|trans({}, 'compliance') }}
             </button>
+            {% endif %}
         </div>
     </div>
 
@@ -239,6 +242,7 @@
     {% endif %}
 
     {# Review Form #}
+    {% if is_granted('ROLE_MANAGER') %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
@@ -292,6 +296,7 @@
             <div id="reviewResult" class="mt-3"></div>
         {% endblock %}
     {% endembed %}
+    {% endif %}
 
     {# Metadata #}
     {% if mapping.reviewedBy or mapping.verifiedBy %}
@@ -315,8 +320,8 @@
     {% endif %}
 </div>
 
-<script>
-document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+<script nonce="{{ csp_nonce() }}">
+document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const data = {
@@ -330,6 +335,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-Token': '{{ csrf_token('mapping_quality')|e('js') }}',
             },
             body: JSON.stringify(data)
         });

@@ -13,6 +13,11 @@ use App\Entity\User;
  * Tier-2 hint: ISO 27001 Cl. 10.1 — every major / critical finding
  * must have a corresponding corrective action. Hint links straight
  * into the CAPA new form pre-targeted at this finding.
+ *
+ * "Major / critical" maps onto the AuditFinding model as a critical or high
+ * severity, or a finding typed as a major nonconformity. AuditFinding has
+ * no 'major' severity; the rule used to test for one and so missed every
+ * high-severity finding.
  */
 final class CriticalWithoutCapaRule extends AbstractAlvaHintRule
 {
@@ -36,7 +41,9 @@ final class CriticalWithoutCapaRule extends AbstractAlvaHintRule
         if (!$entity instanceof AuditFinding) {
             return false;
         }
-        if (!in_array($entity->getSeverity(), ['critical', 'major'], true)) {
+        $serious = in_array($entity->getSeverity(), [AuditFinding::SEVERITY_CRITICAL, AuditFinding::SEVERITY_HIGH], true)
+            || $entity->getType() === AuditFinding::TYPE_MAJOR_NC;
+        if (!$serious) {
             return false;
         }
         $actions = $entity->getCorrectiveActions();

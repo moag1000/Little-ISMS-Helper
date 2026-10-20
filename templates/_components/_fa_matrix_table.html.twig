@@ -230,41 +230,41 @@
 
         {%- if showLegend %}
             {% if isRag %}
-                <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="RAG legend">
+                <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="{{ 'ui.component.matrix_legend.rag'|trans({}, 'ui') }}">
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        Green (≥80%)
+                        {{ 'ui.component.matrix_legend.green'|trans({}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        Amber (40–79%)
+                        {{ 'ui.component.matrix_legend.amber'|trans({}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        Red (&lt;40%)
+                        {{ 'ui.component.matrix_legend.red'|trans({}, 'ui') }}
                     </span>
                 </div>
             {% else %}
-                <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="Severity legend">
+                <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="{{ 'ui.component.matrix_legend.severity'|trans({}, 'ui') }}">
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        Low (≤3)
+                        {{ 'ui.component.matrix_legend.low'|trans({}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--moderate">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        Moderate (≤6)
+                        {{ 'ui.component.matrix_legend.moderate'|trans({}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        Medium (≤9)
+                        {{ 'ui.component.matrix_legend.medium'|trans({}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--high">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        High (≤16)
+                        {{ 'ui.component.matrix_legend.high'|trans({}, 'ui') }}
                     </span>
                     <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
                         <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                        Critical (&gt;16)
+                        {{ 'ui.component.matrix_legend.critical'|trans({}, 'ui') }}
                     </span>
                 </div>
             {% endif %}

@@ -69,6 +69,7 @@
                 {# Entity Selection #}
                 <div class="mb-4">
                     <label class="form-label" id="entity-selection-label"><strong>{{ 'admin.data_export.select_entities'|trans({}, 'admin') }}</strong></label>
+                    <div class="form-text mb-2">{{ 'admin.data_export.scope_note'|trans({}, 'admin') }}</div>
 
                     <div class="mb-2" role="group" aria-labelledby="entity-selection-label" data-controller="ui-actions">
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-action="ui-actions#selectAll" data-ui-actions-container-param=".row">
@@ -123,7 +124,7 @@
     {% endembed %}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 function selectAllEntities() {
     document.querySelectorAll('.entity-checkbox').forEach(cb => cb.checked = true);
 }

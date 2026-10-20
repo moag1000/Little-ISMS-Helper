@@ -46,6 +46,7 @@ objective:
         responsible_for_measurement: 'ISO 27001 §6.2.b — who actually performs the measurement (may differ from the responsible person).'
         measurement_frequency: 'ISO 27001 §6.2.b — how often the value is measured / updated.'
         measurement_method: 'ISO 27001 §6.2.b — description of the measurement method (data source, tool, process).'
+        status_readonly: 'Status is driven by the lifecycle workflow (Not started → In progress → Achieved / Delayed / Cancelled). Direct editing is disabled; use the status actions on the detail page.'
     frequency:
         daily: Daily
         weekly: Weekly
@@ -90,3 +91,21 @@ objective:
     label:
         current: Current
         target: Target
+    category:
+        availability: 'Availability'
+        confidentiality: 'Confidentiality'
+        integrity: 'Integrity'
+        compliance: 'Compliance'
+        risk_management: 'Risk Management'
+        incident_response: 'Incident Response'
+        awareness: 'Awareness & Training'
+        continual_improvement: 'Continual Improvement'
+    unit:
+        percent: 'Percent (%)'
+        days: 'Days'
+        hours: 'Hours'
+        count: 'Count'
+        incidents: 'Incidents'
+        employees: 'Employees'
+        euro: 'Euro (€)'
+        points: 'Points'

@@ -6,10 +6,17 @@ namespace App\Tests\Controller;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceMapping;
+use App\Entity\ComplianceRequirement;
+use App\Entity\MappingGapItem;
+use App\Controller\MappingQualityController;
+use App\Tests\Controller\Trait\SessionCsrfTokenTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -26,11 +33,15 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class MappingQualityControllerTest extends WebTestCase
 {
+    use SessionCsrfTokenTrait;
+
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
     private ?User $testUser = null;
     private ?User $adminUser = null;
+    /** @var list<array{string, int}> [table, id] rows to delete, in order */
+    private array $fixtureRows = [];
 
     protected function setUp(): void
     {
@@ -43,6 +54,12 @@ class MappingQualityControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        foreach ($this->fixtureRows as [$table, $id]) {
+            try {
+                $this->entityManager->getConnection()->executeStatement('DELETE FROM ' . $table . ' WHERE id = ?', [$id]);
+            } catch (\Throwable) {
+            }
+        }
         if ($this->testUser) {
             try {
                 $user = $this->entityManager->find(User::class, $this->testUser->getId());
@@ -212,13 +229,13 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testUpdateReviewReturns404ForNonexistent(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/review/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
             json_encode(['review_status' => 'approved'])
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -244,8 +261,8 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testAnalyzeMappingReturns404ForNonexistent(): void
     {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('POST', '/en/compliance/mapping-quality/analyze/999999');
+        $this->loginAsUser($this->adminUser);
+        $this->client->request('POST', '/en/compliance/mapping-quality/analyze/999999', [], [], ['HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()]);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
@@ -290,13 +307,13 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testUpdateGapReturns404ForNonexistent(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/gap/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
             json_encode(['status' => 'resolved'])
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -320,15 +337,15 @@ class MappingQualityControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testBatchAnalyzeReturnsJsonForUser(): void
+    public function testBatchAnalyzeReturnsJsonForManager(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
             json_encode(['limit' => 5])
         );
         $this->assertResponseIsSuccessful();
@@ -338,13 +355,13 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testBatchAnalyzeValidatesLimit(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
             json_encode(['limit' => 500]) // Exceeds max of 100
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -353,13 +370,13 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testBatchAnalyzeValidatesJson(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
             'invalid json'
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -433,7 +450,7 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testUpdateReviewValidatesReviewStatus(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         // This would require a real mapping to test properly
         // For now, test that invalid mapping returns 404
         $this->client->request(
@@ -441,7 +458,7 @@ class MappingQualityControllerTest extends WebTestCase
             '/en/compliance/mapping-quality/review/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
             json_encode(['review_status' => 'invalid_status'])
         );
         // Returns 404 because mapping doesn't exist
@@ -451,16 +468,137 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testUpdateGapValidatesStatus(): void
     {
-        $this->loginAsUser($this->testUser);
+        $this->loginAsUser($this->adminUser);
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/gap/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken()],
             json_encode(['status' => 'invalid_status'])
         );
         // Returns 404 because gap doesn't exist
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    // ========== CSRF / RBAC / TRANSITION TESTS ==========
+
+    /** @return iterable<string, array{string}> */
+    public static function writeEndpoints(): iterable
+    {
+        yield 'review-update' => ['/en/compliance/mapping-quality/review/999999/update'];
+        yield 'analyze' => ['/en/compliance/mapping-quality/analyze/999999'];
+        yield 'gap-update' => ['/en/compliance/mapping-quality/gap/999999/update'];
+        yield 'batch-analyze' => ['/en/compliance/mapping-quality/batch-analyze'];
+    }
+
+    #[Test]
+    #[DataProvider('writeEndpoints')]
+    public function writeActionsRejectMissingAndWrongCsrfToken(string $url): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $this->client->request('POST', $url, [], [], ['CONTENT_TYPE' => 'application/json'], '{}');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->mappingQualityToken();
+        $this->client->request('POST', $url, [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_CSRF_TOKEN' => 'forged',
+        ], '{}');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    #[DataProvider('writeEndpoints')]
+    public function writeActionsAreReadOnlyForRoleUser(string $url): void
+    {
+        $this->loginAsUser($this->testUser);
+        $this->client->request('POST', $url, [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken(),
+        ], '{}');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function updateGapEnforcesStatusTransitions(): void
+    {
+        $gapId = $this->createGapItem('resolved');
+        $this->loginAsUser($this->adminUser);
+
+        // resolved → planned is not an allowed move (only reopen to in_progress).
+        $this->postGapUpdate($gapId, ['status' => 'planned']);
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        $body = json_decode((string) $this->client->getResponse()->getContent(), true);
+        $this->assertStringContainsString('resolved → planned is not allowed', $body['error']);
+
+        // Reopen is allowed.
+        $this->postGapUpdate($gapId, ['status' => 'in_progress']);
+        $this->assertResponseIsSuccessful();
+        $body = json_decode((string) $this->client->getResponse()->getContent(), true);
+        $this->assertSame('in_progress', $body['gap']['status']);
+    }
+
+    /** @param array<string, mixed> $payload */
+    private function postGapUpdate(int $gapId, array $payload): void
+    {
+        $this->client->request('POST', '/en/compliance/mapping-quality/gap/' . $gapId . '/update', [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_CSRF_TOKEN' => $this->mappingQualityToken(),
+        ], json_encode($payload));
+    }
+
+    private function createGapItem(string $status): int
+    {
+        $uid = strtoupper(substr(md5(uniqid('', true)), 0, 8));
+        $framework = (new ComplianceFramework())
+            ->setCode('MQ_' . $uid)->setName('MQ ' . $uid)->setVersion('1.0')
+            ->setApplicableIndustry('all')->setRegulatoryBody('test');
+        $this->entityManager->persist($framework);
+
+        $requirements = [];
+        foreach (['SRC', 'TGT'] as $kind) {
+            $req = new ComplianceRequirement();
+            $req->setFramework($framework);
+            $req->setRequirementId($kind . '-' . $uid);
+            $req->setTitle($kind);
+            $req->setCategory('test');
+            $req->setDescription('test');
+            $req->setPriority('medium');
+            $req->setRequirementType('control');
+            $this->entityManager->persist($req);
+            $requirements[] = $req;
+        }
+
+        $mapping = new ComplianceMapping();
+        $mapping->setSourceRequirement($requirements[0]);
+        $mapping->setTargetRequirement($requirements[1]);
+        $mapping->setMappingType('partial');
+        $mapping->setMappingPercentage(50);
+        $mapping->setConfidence('medium');
+        $this->entityManager->persist($mapping);
+
+        $gap = new MappingGapItem();
+        $gap->setMapping($mapping);
+        $gap->setGapType('missing_control');
+        $gap->setDescription('test gap');
+        $gap->setStatus($status);
+        $this->entityManager->persist($gap);
+        $this->entityManager->flush();
+
+        $this->fixtureRows = [
+            ['mapping_gap_item', (int) $gap->getId()],
+            ['compliance_mapping', (int) $mapping->getId()],
+            ['compliance_requirement', (int) $requirements[0]->getId()],
+            ['compliance_requirement', (int) $requirements[1]->getId()],
+            ['compliance_framework', (int) $framework->getId()],
+        ];
+
+        return (int) $gap->getId();
+    }
+
+    private function mappingQualityToken(): string
+    {
+        return $this->seedSessionCsrfToken($this->client, MappingQualityController::CSRF_ID);
     }
 }

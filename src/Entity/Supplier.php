@@ -18,10 +18,9 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Enum\SupplierStatus;
+use App\Attribute\RequiresModule;
 use App\Repository\SupplierRepository;
 use App\State\TenantAwareStateProcessor;
-use App\Entity\Document;
-use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -39,6 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_supplier_next_assessment', columns: ['next_assessment_date'])]
 #[ORM\Index(name: 'idx_supplier_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_supplier_tenant', columns: ['tenant_id'])]
+#[RequiresModule('suppliers')]
 #[ApiResource(
     operations: [
         new Get(
@@ -135,7 +135,7 @@ class Supplier
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['active', 'inactive', 'evaluation', 'terminated'])]
     #[Groups(['supplier:read', 'supplier:write'])]
-    private ?string $status = 'evaluation';
+    private string $status = 'evaluation';
 
     /**
      * Optimistic-locking version for Symfony Workflow / LifecycleService.
@@ -393,7 +393,7 @@ class Supplier
     /** Typed status surface for enum-aware code. */
     public function getStatusEnum(): ?SupplierStatus
     {
-        return $this->status === null ? null : SupplierStatus::tryFrom($this->status);
+        return SupplierStatus::tryFrom($this->status);
     }
 
     /**

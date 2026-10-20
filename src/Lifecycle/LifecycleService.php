@@ -28,6 +28,8 @@ final class LifecycleService implements LifecycleTransitionInterface
 
     /**
      * @throws InvalidTransitionException
+     * @throws \App\Lifecycle\Exception\ReasonRequiredException
+     * @throws \App\Lifecycle\Exception\FourEyesRequiredException
      */
     public function transition(
         object $entity,
@@ -36,6 +38,9 @@ final class LifecycleService implements LifecycleTransitionInterface
         ?User $user = null,
         ?string $reason = null,
         ?User $fourEyesApprover = null,
+        bool $approverAuthorityVerified = false,
+        ?\Closure $isEligibleApprover = null,
+        bool $allowSelfApprovalEscape = true,
     ): void {
         if (!method_exists($entity, 'getStatus') || !method_exists($entity, 'setStatus')) {
             // @intentional-assertion: programmer-error guard — entity wired into a workflow without getStatus()/setStatus() is a config-time mistake, not a runtime domain failure.
@@ -53,6 +58,9 @@ final class LifecycleService implements LifecycleTransitionInterface
                 'user' => $user,
                 'reason' => $reason,
                 'four_eyes_approver' => $fourEyesApprover,
+                'four_eyes_approver_authorized' => $approverAuthorityVerified,
+                'four_eyes_eligible_approver' => $isEligibleApprover,
+                'four_eyes_self_approval_escape' => $allowSelfApprovalEscape,
             ]);
         } catch (NotEnabledTransitionException $e) {
             $allowed = array_map(
