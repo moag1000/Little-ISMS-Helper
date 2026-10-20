@@ -9,6 +9,7 @@ use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\RiskAppetite;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\AutomaticCloseRefusal;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
@@ -413,15 +414,18 @@ class WorkflowAutoProgressionService
         try {
             $this->workflowService->assertAutomaticApprovalAllowed($workflowInstance, $step);
             $this->applyAutoApproval($workflowInstance, $step, $user, $entity, $depth);
-        } catch (FourEyesRequiredException $e) {
-            // Automatic progression may not grant the closing four-eyes
-            // approval. Undo this attempt; the step waits for a manual
-            // approval.
+        } catch (\Throwable $e) {
+            // Automatic progression may not grant the closing approval
+            // (four-eyes, or a lifecycle guard without tenant context). Undo
+            // this attempt; the step waits for a manual approval.
+            if (!AutomaticCloseRefusal::isRefusal($e)) {
+                throw $e;
+            }
             $workflowInstance->restoreProgress($snapshot);
-            $this->logger->info('[WAPS legacy] Closing approval refused (four-eyes) — step left for manual approval', [
+            $this->logger->info('[WAPS legacy] Closing approval refused — step left for manual approval', [
                 'workflow_instance_id' => $workflowInstance->getId(),
                 'step_id'              => $step->getId(),
-                'reason_code'          => $e->reasonCode,
+                'reason_code'          => $e instanceof FourEyesRequiredException ? $e->reasonCode : 'guard_blocked',
             ]);
             if ($depth > 0 && $step->getStepType() !== 'notification') {
                 // Reached via auto-progression: the step was never assigned.

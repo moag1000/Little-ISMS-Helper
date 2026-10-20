@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\AutomaticCloseRefusal;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\Notification\SlaDeadlineWatcher;
@@ -215,10 +216,13 @@ HELP
                     $this->approveByTime($workflowInstance, $currentStep, $user);
 
                     $processed++;
-                } catch (FourEyesRequiredException) {
-                    // Refused at transition time (rolled back in approveByTime).
-                    $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep);
                 } catch (\Throwable $e) {
+                    // Refused at transition time (rolled back in approveByTime):
+                    // four-eyes or a lifecycle guard → waits for a human (notice).
+                    if (AutomaticCloseRefusal::isRefusal($e)) {
+                        $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep);
+                        continue;
+                    }
                     $errors[] = sprintf(
                         'Error processing workflow #%d: %s',
                         $workflowInstance->getId(),

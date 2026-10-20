@@ -10,6 +10,7 @@ use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\InvalidTransitionException;
 use App\Repository\Notification\NotificationRuleRepository;
 use App\Repository\Notification\SlaDeadlineMonitorRepository;
 use App\Repository\TenantRepository;
@@ -26,6 +27,11 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
+use Symfony\Component\Workflow\Marking;
+use Symfony\Component\Workflow\TransitionBlocker;
+use Symfony\Component\Workflow\TransitionBlockerList;
+use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
  * Time-based steps (`autoProgressConditions.type = time_based`) used to be
@@ -122,6 +128,51 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         $display = $tester->getDisplay();
         self::assertStringContainsString('needs a human approver', $display);
         self::assertStringNotContainsString('Errors encountered', $display);
+    }
+
+    /**
+     * In the cron there is no tenant context, so TenantGuard blocks the
+     * closing `approve` (e.g. when a tenant override turned four-eyes off).
+     * That is the same waiting state as a pending four-eyes approval: a
+     * notice, exit 0, nothing written — not an error repeated every run.
+     */
+    #[Test]
+    public function closeBlockedByALifecycleGuardIsANotice(): void
+    {
+        [$instance, $first] = $this->instance('1 hours', new DateTimeImmutable('-2 hours'));
+        $this->workflowService->expects(self::once())->method('moveToNextStep')
+            ->willThrowException($this->notEnabled(new TransitionBlocker('Lifecycle transition requires tenant context.', 'tenant')));
+
+        $tester = $this->runCommand($instance);
+
+        self::assertSame(Command::SUCCESS, $tester->getStatusCode());
+        self::assertStringContainsString('needs a human approver', $tester->getDisplay());
+        self::assertSame([], $instance->getApprovalHistory());
+        self::assertSame($first, $instance->getCurrentStep());
+    }
+
+    #[Test]
+    public function transitionNotEnabledByTheMarkingIsStillAnError(): void
+    {
+        [$instance] = $this->instance('1 hours', new DateTimeImmutable('-2 hours'));
+        $this->workflowService->expects(self::once())->method('moveToNextStep')
+            ->willThrowException($this->notEnabled(TransitionBlocker::createBlockedByMarking(new Marking())));
+
+        self::assertSame(Command::FAILURE, $this->runCommand($instance)->getStatusCode());
+    }
+
+    private function notEnabled(TransitionBlocker $blocker): InvalidTransitionException
+    {
+        $workflow = $this->createStub(WorkflowInterface::class);
+        $workflow->method('getName')->willReturn('workflow_instance_lifecycle');
+
+        return new InvalidTransitionException(
+            message: 'Transition "approve" not enabled.',
+            entityClass: WorkflowInstance::class,
+            fromStatus: 'in_progress',
+            toStatus: '<unknown>',
+            previous: new NotEnabledTransitionException(new \stdClass(), 'approve', $workflow, new TransitionBlockerList([$blocker])),
+        );
     }
 
     #[Test]
