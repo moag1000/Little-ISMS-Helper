@@ -123,18 +123,42 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertContains($overdueRisk, $result);
     }
 
+    /**
+     * Accepted risks are re-assessed at planned intervals (ISO 27001 8.2,
+     * ISO 27005) — they get review reminders; only closed risks do not.
+     */
     #[Test]
-    public function testGetOverdueRiskReviewsExcludesAcceptedRisks(): void
+    public function testGetOverdueRiskReviewsIncludesAcceptedRisks(): void
     {
         $acceptedRisk = $this->createMock(Risk::class);
         $acceptedRisk->method('getReviewDate')->willReturn(new DateTime('-1 week'));
-        $acceptedRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('accepted'));
+        $acceptedRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::Accepted);
 
         $this->riskRepository->method('findBy')->willReturn([$acceptedRisk]);
 
         $result = $this->service->getOverdueRiskReviews($this->tenant);
 
-        $this->assertCount(0, $result);
+        $this->assertSame([$acceptedRisk], array_values($result));
+    }
+
+    #[Test]
+    public function testGetUpcomingReviewsIncludesAcceptedButNotClosedRisks(): void
+    {
+        $accepted = $this->createMock(Risk::class);
+        $accepted->method('getReviewDate')->willReturn(new DateTime('+7 days'));
+        $accepted->method('getStatus')->willReturn(\App\Enum\RiskStatus::Accepted);
+        $closed = $this->createMock(Risk::class);
+        $closed->method('getReviewDate')->willReturn(new DateTime('+7 days'));
+        $closed->method('getStatus')->willReturn(\App\Enum\RiskStatus::Closed);
+
+        $this->riskRepository->method('findBy')->willReturn([$accepted, $closed]);
+        $this->bcPlanRepository->method('findBy')->willReturn([]);
+        $this->processingActivityRepository->method('findBy')->willReturn([]);
+        $this->dpiaRepository->method('findBy')->willReturn([]);
+
+        $result = $this->service->getUpcomingReviews($this->tenant, 14);
+
+        $this->assertSame([$accepted], array_values($result['risks']));
     }
 
     // ========== getOverdueBcPlanReviews TESTS ==========

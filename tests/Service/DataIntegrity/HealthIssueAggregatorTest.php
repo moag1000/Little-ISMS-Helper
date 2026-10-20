@@ -140,6 +140,39 @@ final class HealthIssueAggregatorTest extends TestCase
         self::assertArrayNotHasKey('risks_past_review_date', $result);
     }
 
+    /**
+     * Final = handled (RiskStatus::isHandled()): accepted, mitigated, treated
+     * and monitored risks are skipped like closed ones; in-treatment is not.
+     *
+     * @return iterable<string, array{RiskStatus, bool}>
+     */
+    public static function handledStatuses(): iterable
+    {
+        foreach (RiskStatus::cases() as $status) {
+            yield $status->value => [$status, $status->isHandled()];
+        }
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('handledStatuses')]
+    public function find_risk_health_issues_skips_handled_risks(RiskStatus $status, bool $handled): void
+    {
+        $risk = $this->createMock(Risk::class);
+        $risk->method('getStatus')->willReturn($status);
+        $risk->method('getTreatmentStrategy')->willReturn(TreatmentStrategy::Mitigate);
+        $risk->method('getResidualRiskLevel')->willReturn(3);
+        $risk->method('getInherentRiskLevel')->willReturn(5);
+        $risk->method('getTreatmentDescription')->willReturn(null);
+        $risk->method('getControls')->willReturn(new ArrayCollection());
+        $risk->method('getReviewDate')->willReturn(new \DateTimeImmutable('-30 days'));
+
+        $this->riskRepository->method('findAll')->willReturn([$risk]);
+
+        $result = $this->aggregator->findRiskHealthIssues();
+
+        self::assertSame(!$handled, array_key_exists('risks_past_review_date', $result));
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // findComplianceHealthIssues — query-builder heavy, so we test
     // that each check wraps its DB call in a try/catch and returns empty
