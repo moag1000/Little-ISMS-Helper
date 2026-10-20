@@ -14,6 +14,7 @@ use DateTimeImmutable;
 use App\Entity\Risk;
 use App\Entity\Control;
 use App\Entity\Incident;
+use App\Entity\Tenant;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\ControlRepository;
@@ -433,14 +434,10 @@ final class ManagementReportService
 
     // ===================== AUDIT REPORTS =====================
 
-    /**
-     * Get audit management report data
-     *
-     * @return array Audit management data
-     */
-    public function getAuditManagementReport(): array
+    /** Audit management report data — an explicit $tenant scopes it (management-review auto-collect). */
+    public function getAuditManagementReport(?Tenant $tenant = null): array
     {
-        $audits = $this->auditRepository->findAll();
+        $audits = TenantRecords::all($this->auditRepository, $tenant);
 
         // Group by status
         $byStatus = ['planned' => [], 'in_progress' => [], 'completed' => [], 'cancelled' => []];
@@ -469,8 +466,9 @@ final class ManagementReportService
 
         return [
             'generated_at' => new DateTime(),
-            // total_findings / open_findings — read by ManagementReviewAutoCollector
+            // total/open findings + planned/completed audits (this year) — read by ManagementReviewAutoCollector
             ...\App\Service\Audit\AuditFindingBacklog::count($audits),
+            ...\App\Service\Audit\AuditProgramFigures::calendarYear($audits),
             'audits' => [
                 'total' => count($audits),
                 'this_year' => count($auditsThisYear),
@@ -807,11 +805,11 @@ final class ManagementReportService
      * @param string $locale The locale for KPI translations
      * @return array Complete management review output data
      */
-    public function getManagementReviewReport(string $locale = 'en'): array
+    public function getManagementReviewReport(string $locale = 'en', ?Tenant $tenant = null): array
     {
         $executiveSummary = $this->getExecutiveSummary();
         $riskReport = $this->getRiskManagementReport();
-        $auditReport = $this->getAuditManagementReport();
+        $auditReport = $this->getAuditManagementReport($tenant);
         $complianceReport = $this->getComplianceStatusReport();
         $kpiSummary = $this->getKPISummaryForReport($locale);
 

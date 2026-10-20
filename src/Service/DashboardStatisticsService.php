@@ -1432,27 +1432,20 @@ class DashboardStatisticsService
         if ($this->auditRepository === null) {
             return [];
         }
-        $allAudits = $tenant instanceof Tenant
-            ? $this->auditRepository->findBy(['tenant' => $tenant])
-            : $this->auditRepository->findAll();
-        $thisYear = (new \DateTime())->format('Y');
-        $auditsThisYear = array_filter(
-            $allAudits,
-            fn($a): bool => $a->getPlannedDate() !== null && $a->getPlannedDate()->format('Y') === $thisYear
-        );
-        $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
-        // Open = not done, all audits of every year (shared definition).
+        $allAudits = TenantRecords::all($this->auditRepository, $tenant);
+        // Shared definitions with the management-review report (Service\Audit).
+        $year = \App\Service\Audit\AuditProgramFigures::calendarYear($allAudits);
         $openFindings = \App\Service\Audit\AuditFindingBacklog::count($allAudits)['open_findings'];
         return [
             'audits_completed_ytd' => [
                 'label' => 'kpi.audits_completed_ytd',
-                'value' => count($completedAudits),
+                'value' => $year['completed_audits'],
                 'unit' => '',
                 'status' => 'info',
             ],
             'planned_audits' => [
                 'label' => 'kpi.planned_audits',
-                'value' => count($auditsThisYear),
+                'value' => $year['planned_audits'],
                 'unit' => '',
                 'status' => 'info',
             ],
