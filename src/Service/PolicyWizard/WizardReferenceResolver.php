@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard;
 
+use App\Entity\Tenant;
 use App\Repository\PersonRepository;
 use App\Repository\UserRepository;
 
@@ -111,16 +112,20 @@ final class WizardReferenceResolver
      * findBy() call. Missing ids fall back to the placeholder format
      * "User #<id>" so the template can still render.
      *
+     * Only users of the run's organisation are resolved (User is not covered
+     * by the TenantFilter): a foreign id stays "User #<id>" and never shows a
+     * name or e-mail. No organisation = nothing is resolved.
+     *
      * @param list<int> $ids
      * @return array<int, string>
      */
-    public function resolveUserDisplays(array $ids): array
+    public function resolveUserDisplays(array $ids, ?Tenant $tenant): array
     {
-        if ($ids === []) {
+        if ($ids === [] || $tenant === null) {
             return [];
         }
         $map = [];
-        foreach ($this->userRepository->findBy(['id' => $ids]) as $u) {
+        foreach ($this->userRepository->findBy(['id' => $ids, 'tenant' => $tenant]) as $u) {
             $name = trim($u->getFullName());
             $email = (string) ($u->getEmail() ?? '');
             $display = $name !== '' && $email !== ''
@@ -132,18 +137,19 @@ final class WizardReferenceResolver
     }
 
     /**
-     * Resolve Person-ids to display strings.
+     * Resolve Person-ids to display strings — only Persons of the run's
+     * organisation (explicit, not just via the TenantFilter).
      *
      * @param list<int> $ids
      * @return array<int, string>
      */
-    public function resolvePersonDisplays(array $ids): array
+    public function resolvePersonDisplays(array $ids, ?Tenant $tenant): array
     {
-        if ($ids === []) {
+        if ($ids === [] || $tenant === null) {
             return [];
         }
         $map = [];
-        foreach ($this->personRepository->findBy(['id' => $ids]) as $p) {
+        foreach ($this->personRepository->findBy(['id' => $ids, 'tenant' => $tenant]) as $p) {
             $name = trim((string) $p->getFullName());
             $map[(int) $p->getId()] = $name !== '' ? $name : ('Person #' . $p->getId());
         }

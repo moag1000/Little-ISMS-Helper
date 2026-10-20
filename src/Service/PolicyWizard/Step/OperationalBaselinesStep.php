@@ -6,6 +6,7 @@ namespace App\Service\PolicyWizard\Step;
 
 use App\Entity\WizardRun;
 use App\Service\PolicyWizard\WizardStepKeys;
+use App\Service\PolicyWizard\WizardUserGuard;
 
 /**
  * Step 5 — Operational Baselines.
@@ -24,6 +25,11 @@ use App\Service\PolicyWizard\WizardStepKeys;
  */
 final class OperationalBaselinesStep extends AbstractStep
 {
+    /** Optional so unit tests can build the step without a container. */
+    public function __construct(private readonly ?WizardUserGuard $userGuard = null)
+    {
+    }
+
     public const ALLOWED_CRYPTO_ALGOS = ['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305', 'RSA-3072', 'RSA-4096', 'ECDSA-P256', 'ECDSA-P384'];
 
     /**
@@ -360,6 +366,16 @@ final class OperationalBaselinesStep extends AbstractStep
         $bcmOfficerUserId = is_numeric($bcmOfficerUserId) && (int) $bcmOfficerUserId > 0
             ? (int) $bcmOfficerUserId
             : null;
+
+        // Only users of the run's organisation (User skips the TenantFilter).
+        if ($dpoUserId !== null && $this->userGuard !== null && !$this->userGuard->isRunUser($run, $dpoUserId)) {
+            $errors['dpo_user_id'][] = WizardUserGuard::ERROR;
+            $dpoUserId = null;
+        }
+        if ($bcmOfficerUserId !== null && $this->userGuard !== null && !$this->userGuard->isRunUser($run, $bcmOfficerUserId)) {
+            $errors['bcm_officer_user_id'][] = WizardUserGuard::ERROR;
+            $bcmOfficerUserId = null;
+        }
 
         // ── New baselines (plan spec: 6 missing fields) ─────────────────────
 

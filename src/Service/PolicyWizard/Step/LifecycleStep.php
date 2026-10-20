@@ -6,6 +6,7 @@ namespace App\Service\PolicyWizard\Step;
 
 use App\Entity\WizardRun;
 use App\Service\PolicyWizard\WizardStepKeys;
+use App\Service\PolicyWizard\WizardUserGuard;
 
 /**
  * Step 6 — Lifecycle & Cadence.
@@ -18,6 +19,11 @@ use App\Service\PolicyWizard\WizardStepKeys;
 final class LifecycleStep extends AbstractStep
 {
     public const REVIEW_INTERVAL_HARD_CAP_MONTHS = 24;
+
+    /** Optional so unit tests can build the step without a container. */
+    public function __construct(private readonly ?WizardUserGuard $userGuard = null)
+    {
+    }
 
     public function key(): string
     {
@@ -109,6 +115,10 @@ final class LifecycleStep extends AbstractStep
             if ($userId <= 0) {
                 continue;
             }
+            if ($this->userGuard !== null && !$this->userGuard->isRunApprover($run, $userId)) {
+                $errors['approver_per_template'][] = WizardUserGuard::ERROR;
+                continue;
+            }
             $normalisedApprovers[$templateKey] = $userId;
         }
 
@@ -122,6 +132,9 @@ final class LifecycleStep extends AbstractStep
         } elseif (is_numeric($defaultApproverUserId)) {
             $defaultApproverUserId = (int) $defaultApproverUserId;
             if ($defaultApproverUserId <= 0) {
+                $defaultApproverUserId = null;
+            } elseif ($this->userGuard !== null && !$this->userGuard->isRunApprover($run, $defaultApproverUserId)) {
+                $errors['default_approver_user_id'][] = WizardUserGuard::ERROR;
                 $defaultApproverUserId = null;
             }
         } else {

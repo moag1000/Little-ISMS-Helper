@@ -7,6 +7,7 @@ namespace App\Service\PolicyWizard\Step;
 use App\Entity\WizardRun;
 use App\Repository\PersonRepository;
 use App\Service\PolicyWizard\WizardStepKeys;
+use App\Service\PolicyWizard\WizardUserGuard;
 
 /**
  * Step 3 — Roles & Responsibilities.
@@ -56,6 +57,7 @@ final class RolesStep extends AbstractStep
     public function __construct(
         private readonly ?PersonRepository $personRepository = null,
         private readonly ?\App\Repository\UserRepository $userRepository = null,
+        private readonly ?WizardUserGuard $userGuard = null,
     ) {
     }
 
@@ -130,6 +132,12 @@ final class RolesStep extends AbstractStep
             }
             $id = (int) $approverId;
             if ($id <= 0) {
+                continue;
+            }
+            // Only approvers of the run's organisation (same predicate as the
+            // picker) — User is not covered by the TenantFilter.
+            if ($this->userGuard !== null && !$this->userGuard->isRunApprover($run, $id)) {
+                $errors['approval_chain'][] = WizardUserGuard::ERROR;
                 continue;
             }
             $normalisedChain[] = $id;

@@ -1256,6 +1256,7 @@ policy_wizard:
         review_interval_max: 'Das Review-Intervall darf 24 Monate nicht überschreiten (ISO 27001 + Audit-Defang).'
         approver_must_be_user_id: 'Approver muss eine konkrete Person (User-ID) sein, kein Rollen-String.'
         approver_must_have_login: 'Approver muss ein Benutzer mit System-Login sein. Bitte zuerst eine Person mit Login verknüpfen.'
+        user_other_tenant: 'Diese Person gehört nicht zu Ihrer Organisation oder ist keine zulässige freigebende Person. Bitte aus der Liste wählen.'
         roles_invalid: 'Das Rollen-Mapping ist ungültig.'
         role_required:
             ciso: 'CISO ist eine Pflicht-Rolle.'
