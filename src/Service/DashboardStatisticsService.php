@@ -623,11 +623,11 @@ class DashboardStatisticsService
         }
 
         if (in_array('bcm', $activeModules, true)) {
-            $kpis['business_continuity'] = $this->getBusinessContinuityKPIs();
+            $kpis['business_continuity'] = $this->getBusinessContinuityKPIs($tenant);
         }
 
         if (in_array('training', $activeModules, true)) {
-            $kpis['training'] = $this->getTrainingKPIs();
+            $kpis['training'] = $this->getTrainingKPIs($tenant);
         }
 
         if (in_array('audits', $activeModules, true)) {
@@ -635,11 +635,11 @@ class DashboardStatisticsService
         }
 
         if (in_array('suppliers', $activeModules, true)) {
-            $kpis['supplier_management'] = $this->getSupplierKPIs();
+            $kpis['supplier_management'] = $this->getSupplierKPIs($tenant);
         }
 
         if (in_array('documents', $activeModules, true)) {
-            $kpis['documentation'] = $this->getDocumentationKPIs();
+            $kpis['documentation'] = $this->getDocumentationKPIs($tenant);
         }
 
         return $kpis;
@@ -788,7 +788,7 @@ class DashboardStatisticsService
         // A7: oldest overdue item across risk reviews and treatment plans
         $oldestOverdueDays = 0;
         if ($tenant !== null && $this->treatmentPlanRepository !== null) {
-            foreach ($this->treatmentPlanRepository->findAll() as $plan) {
+            foreach (TenantRecords::all($this->treatmentPlanRepository, $tenant) as $plan) {
                 if ($plan->getStatus() === RiskTreatmentPlanStatus::Completed->value) {
                     continue;
                 }
@@ -825,7 +825,7 @@ class DashboardStatisticsService
                 }
             }
             if ($this->bcPlanRepository !== null) {
-                foreach ($this->bcPlanRepository->findAll() as $plan) {
+                foreach (TenantRecords::all($this->bcPlanRepository, $tenant) as $plan) {
                     $due = $plan->getNextReviewDate();
                     if ($due === null) { continue; }
                     if ($due < $now) { $overdue++; } elseif ($due <= $horizon) { $upcoming++; }
@@ -835,7 +835,7 @@ class DashboardStatisticsService
                 }
             }
             if ($this->treatmentPlanRepository !== null) {
-                foreach ($this->treatmentPlanRepository->findAll() as $plan) {
+                foreach (TenantRecords::all($this->treatmentPlanRepository, $tenant) as $plan) {
                     $due = $plan->getTargetCompletionDate();
                     if ($due === null || $plan->getStatus() === RiskTreatmentPlanStatus::Completed->value) { continue; }
                     if ($due < $now) { $overdue++; } elseif ($due <= $horizon) { $upcoming++; }
@@ -1136,7 +1136,7 @@ class DashboardStatisticsService
         // Check for overdue treatment plans
         $overdueTreatments = 0;
         if ($this->treatmentPlanRepository !== null) {
-            $allPlans = $this->treatmentPlanRepository->findAll();
+            $allPlans = TenantRecords::all($this->treatmentPlanRepository, $tenant);
             $overdueTreatments = count(array_filter($allPlans, fn($p): bool => $p->getTargetCompletionDate() !== null && $p->getTargetCompletionDate() < new \DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value
             ));
         }
@@ -1337,12 +1337,12 @@ class DashboardStatisticsService
     /**
      * Get business continuity KPIs
      */
-    private function getBusinessContinuityKPIs(): array
+    private function getBusinessContinuityKPIs(?Tenant $tenant = null): array
     {
         $kpis = [];
         // Business processes with BIA
         if ($this->businessProcessRepository !== null) {
-            $allProcesses = $this->businessProcessRepository->findAll();
+            $allProcesses = TenantRecords::all($this->businessProcessRepository, $tenant);
             $criticalProcesses = array_filter($allProcesses, fn($p): bool => $p->getCriticality() === 'critical' || $p->getCriticality() === 'high');
             $processesWithBia = array_filter($criticalProcesses, fn($p): bool => $p->getRto() !== null || $p->getRpo() !== null);
             $biaCoverage = count($criticalProcesses) > 0
@@ -1364,7 +1364,7 @@ class DashboardStatisticsService
         }
         // BC Plans
         if ($this->bcPlanRepository !== null) {
-            $allPlans = $this->bcPlanRepository->findAll();
+            $allPlans = TenantRecords::all($this->bcPlanRepository, $tenant);
             $activePlans = array_filter($allPlans, fn($p): bool => $p->getStatus() === 'approved' || $p->getStatus() === 'active');
 
             $kpis['active_bc_plans'] = [
@@ -1376,7 +1376,7 @@ class DashboardStatisticsService
         }
         // BC Exercises
         if ($this->bcExerciseRepository !== null) {
-            $allExercises = $this->bcExerciseRepository->findAll();
+            $allExercises = TenantRecords::all($this->bcExerciseRepository, $tenant);
             $thisYear = (new \DateTime())->format('Y');
             $exercisesThisYear = array_filter(
                 $allExercises,
@@ -1396,12 +1396,12 @@ class DashboardStatisticsService
     /**
      * Get training KPIs
      */
-    private function getTrainingKPIs(): array
+    private function getTrainingKPIs(?Tenant $tenant = null): array
     {
         if ($this->trainingRepository === null) {
             return [];
         }
-        $allTrainings = $this->trainingRepository->findAll();
+        $allTrainings = TenantRecords::all($this->trainingRepository, $tenant);
         $completedTrainings = array_filter($allTrainings, fn($t): bool => $t->getStatus() === TrainingStatus::Completed->value);
         $overdueTrainings = array_filter(
             $allTrainings,
@@ -1468,12 +1468,12 @@ class DashboardStatisticsService
     /**
      * Get supplier management KPIs
      */
-    private function getSupplierKPIs(): array
+    private function getSupplierKPIs(?Tenant $tenant = null): array
     {
         if ($this->supplierRepository === null) {
             return [];
         }
-        $allSuppliers = $this->supplierRepository->findAll();
+        $allSuppliers = TenantRecords::all($this->supplierRepository, $tenant);
         $criticalSuppliers = array_filter(
             $allSuppliers,
             fn($s): bool => method_exists($s, 'getCriticality') && ($s->getCriticality() === 'critical' || $s->getCriticality() === 'high')
@@ -1527,12 +1527,12 @@ class DashboardStatisticsService
     /**
      * Get documentation KPIs
      */
-    private function getDocumentationKPIs(): array
+    private function getDocumentationKPIs(?Tenant $tenant = null): array
     {
         if ($this->documentRepository === null) {
             return [];
         }
-        $allDocuments = $this->documentRepository->findAll();
+        $allDocuments = TenantRecords::all($this->documentRepository, $tenant);
         $activeDocuments = array_filter(
             $allDocuments,
             // 'active' is a legacy/pre-migration value kept for backward-compat; not a DocumentStatus enum case.
