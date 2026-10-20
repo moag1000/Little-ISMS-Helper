@@ -2,7 +2,7 @@
 # Format: <relative-path>:<line>  <signature>
 src/Entity/AlvaHintDismissal.php:54  ?string $hintKey
 src/Entity/AlvaHintRenderCount.php:39  ?string $hintKey
-src/Entity/AuditFinding.php:71  ?string $findingNumber
+src/Entity/AuditFinding.php:72  ?string $findingNumber
 src/Entity/AuditLog.php:36  ?string $entityType
 src/Entity/AuditLog.php:42  ?string $action
 src/Entity/AuditLog.php:45  ?string $userName
