@@ -441,8 +441,9 @@ Workflows can auto-progress after a time delay:
   as acting user; the approval history records `auto_approved` with
   `trigger: time_based`.
 - **Automatic approvals never satisfy four-eyes.** The cron, the
-  field-completion auto-progression and the `FieldCompletionAutoTransition`
-  listener act as automatic actors (`automatic: true` on
+  field-completion auto-progression, the `FieldCompletionAutoTransition`
+  listener and the `WorkflowAutoProgressionBridge` (approved chain → parent
+  entity transition) act as automatic actors (`automatic: true` on
   `LifecycleService::transition()`); `FourEyesValidator` refuses every
   four-eyes transition for them (reason code `automatic_actor`) — the
   single-approver escape included. A time-based step whose approval would

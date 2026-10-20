@@ -119,6 +119,40 @@ final class WorkflowAutoProgressionBridgeTest extends TestCase
         self::assertTrue(true); // no exception propagated
     }
 
+    /**
+     * The bridge is an automatic actor (review M-1): it declares so, and a
+     * refused parent transition is logged as a notice, never thrown.
+     */
+    #[Test]
+    public function parentTransitionIsRequestedAsAutomaticAndRefusalIsLogged(): void
+    {
+        $instance = $this->makeInstance('approved', self::ENTITY_CLASS, 3);
+
+        $lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
+        $lifecycleService->expects(self::once())->method('transition')->willReturnCallback(
+            static function (object $e, string $wf, string $tr, ...$rest): void {
+                if (($rest['automatic'] ?? ($rest[6] ?? false)) !== true) {
+                    throw new \LogicException('bridge transition was not requested as automatic');
+                }
+                throw \App\Lifecycle\Exception\FourEyesRequiredException::automaticActor($wf, $tr);
+            },
+        );
+        $em = $this->createStub(EntityManagerInterface::class);
+        $em->method('find')->willReturn(new \stdClass());
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects(self::once())->method('notice')->with(
+            self::stringContains('Bridged'),
+            self::callback(static fn (array $ctx): bool => $ctx['reason_code'] === 'automatic_actor'),
+        );
+
+        $bridge = new WorkflowAutoProgressionBridge(
+            lifecycleService: $lifecycleService,
+            bridges: [self::ENTITY_CLASS => ['workflow' => self::BRIDGE_WORKFLOW, 'transition' => self::BRIDGE_TRANSITION]],
+            logger: $logger,
+        );
+        $bridge->postUpdate(new PostUpdateEventArgs($instance, $em));
+    }
+
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private function makeInstance(string $status, string $entityType, int $entityId): WorkflowInstance
