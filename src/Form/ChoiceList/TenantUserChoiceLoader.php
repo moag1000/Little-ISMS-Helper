@@ -23,11 +23,18 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
  * the current tenant → none (empty list, never "all users"). The submitted
  * ids are resolved through the same scoped query, so a user of another
  * organisation is rejected as an invalid choice.
+ *
+ * Exception: the field's CURRENT value(s) stay selectable even when they
+ * belong to another organisation (legacy data), so re-saving a record never
+ * drops an existing link silently. SameTenantOwner accepts such an unchanged
+ * value but rejects any NEW foreign assignment.
  */
 final class TenantUserChoiceLoader implements ChoiceLoaderInterface
 {
     private Tenant|int|null $recordTenant = null;
     private ?ChoiceLoaderInterface $inner = null;
+    /** @var list<int> ids of the field's current value(s) */
+    private array $currentIds = [];
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -45,6 +52,20 @@ final class TenantUserChoiceLoader implements ChoiceLoaderInterface
     {
         if ($tenant !== $this->recordTenant) {
             $this->recordTenant = $tenant;
+            $this->inner = null;
+        }
+    }
+
+    /**
+     * Called with the field's current value(s) before the choices are loaded.
+     *
+     * @param list<int> $ids
+     */
+    public function setCurrentIds(array $ids): void
+    {
+        sort($ids);
+        if ($ids !== $this->currentIds) {
+            $this->currentIds = $ids;
             $this->inner = null;
         }
     }
@@ -76,11 +97,16 @@ final class TenantUserChoiceLoader implements ChoiceLoaderInterface
                 ->orderBy('u.lastName')
                 ->addOrderBy('u.firstName');
             $tenant = $this->getScopeTenant();
-            if ($tenant === null) {
-                $qb->andWhere('1 = 0');
-            } else {
-                $qb->andWhere('u.tenant = :ownerTenant')->setParameter('ownerTenant', $tenant);
+            $scope = [];
+            if ($tenant !== null) {
+                $scope[] = 'u.tenant = :ownerTenant';
+                $qb->setParameter('ownerTenant', $tenant);
             }
+            if ($this->currentIds !== []) {
+                $scope[] = 'u.id IN (:currentIds)';
+                $qb->setParameter('currentIds', $this->currentIds);
+            }
+            $qb->andWhere($scope === [] ? '1 = 0' : '(' . implode(' OR ', $scope) . ')');
             $this->inner = new DoctrineChoiceLoader($this->em, User::class, $this->idReader, new ORMQueryBuilderLoader($qb));
         }
 

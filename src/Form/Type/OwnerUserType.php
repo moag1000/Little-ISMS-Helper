@@ -30,6 +30,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * has getTenant()/getTenantId()); for a record without tenant (new record) the current
  * tenant; without either the list is empty, never "all users". A tenantless
  * super-admin editing a record of tenant B therefore sees tenant-B users.
+ * The field's current value(s) always stay selectable (legacy cross-tenant
+ * links survive a re-save; SameTenantOwner rejects only NEW foreign users).
  *
  * Options: everything EntityType takes (`multiple` included) except
  * class / query_builder / choice_loader, plus `tenant` to pin the scope.
@@ -57,6 +59,7 @@ final class OwnerUserType extends AbstractType
             FormEvents::PRE_SET_DATA,
             static function (FormEvent $event) use ($loader): void {
                 $loader->setRecordTenant(self::recordTenant($event->getForm()));
+                $loader->setCurrentIds(self::userIds($event->getData()));
             },
         );
     }
@@ -81,6 +84,23 @@ final class OwnerUserType extends AbstractType
     public function getParent(): string
     {
         return EntityType::class;
+    }
+
+    /**
+     * Ids of the field's current value(s) — a User or a collection of Users.
+     *
+     * @return list<int>
+     */
+    private static function userIds(mixed $value): array
+    {
+        $ids = [];
+        foreach (is_iterable($value) ? $value : [$value] as $user) {
+            if ($user instanceof User && $user->getId() !== null) {
+                $ids[] = $user->getId();
+            }
+        }
+
+        return $ids;
     }
 
     /**
