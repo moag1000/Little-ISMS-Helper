@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\ComplianceFramework;
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\User;
+use App\Exception\AppException;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\FulfillmentInheritanceLogRepository;
 use App\Repository\UserRepository;
@@ -160,7 +161,10 @@ final class ComplianceInheritanceController extends AbstractController
                 $result['confirmed'],
                 $result['skipped'],
             ));
-        } catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException|AppException $e) {
+            // AppException covers BusinessRuleException (self-approval, approver of
+            // another organisation) and the app's InvalidArgumentException — both
+            // \RuntimeException, so they used to escape as HTTP 500.
             $this->addFlash('danger', $e->getMessage());
         }
 
@@ -192,7 +196,10 @@ final class ComplianceInheritanceController extends AbstractController
         try {
             $this->inheritanceService->confirmInheritance($log, $user, $comment, $requestImplement, $approver);
             $this->addFlash('success', $this->trans('compliance_inheritance.flash.confirmed'));
-        } catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException|AppException $e) {
+            // AppException covers BusinessRuleException (self-approval, approver of
+            // another organisation) and the app's InvalidArgumentException — both
+            // \RuntimeException, so they used to escape as HTTP 500.
             $this->addFlash('danger', $e->getMessage());
         }
 
@@ -216,7 +223,10 @@ final class ComplianceInheritanceController extends AbstractController
         try {
             $this->inheritanceService->rejectInheritance($log, $user, (string) $request->request->get('reason', ''));
             $this->addFlash('success', $this->trans('compliance_inheritance.flash.rejected'));
-        } catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException|AppException $e) {
+            // AppException covers BusinessRuleException (self-approval, approver of
+            // another organisation) and the app's InvalidArgumentException — both
+            // \RuntimeException, so they used to escape as HTTP 500.
             $this->addFlash('danger', $e->getMessage());
         }
 
@@ -249,7 +259,10 @@ final class ComplianceInheritanceController extends AbstractController
                 $approver,
             );
             $this->addFlash('success', $this->trans('compliance_inheritance.flash.overridden'));
-        } catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException|AppException $e) {
+            // AppException covers BusinessRuleException (self-approval, approver of
+            // another organisation) and the app's InvalidArgumentException — both
+            // \RuntimeException, so they used to escape as HTTP 500.
             $this->addFlash('danger', $e->getMessage());
         }
 

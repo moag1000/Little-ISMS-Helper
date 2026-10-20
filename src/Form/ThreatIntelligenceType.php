@@ -12,6 +12,7 @@ use App\Form\Entry\IocEntryType;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonTagsType;
+use App\Form\Type\OwnerUserType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -186,9 +187,8 @@ final class ThreatIntelligenceType extends AbstractType implements SectionMapInt
                 'help' => 'help.affected_assets',
             ])
             // Tri-State assignee fields
-            ->add('assignedTo', EntityType::class, [
+            ->add('assignedTo', OwnerUserType::class, [
                 'label' => 'field.assigned_to_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'placeholder.assigned_to_user',

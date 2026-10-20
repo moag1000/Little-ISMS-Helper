@@ -24,6 +24,7 @@ use App\Enum\TrainingStatus;
 use App\Attribute\RequiresModule;
 use App\Repository\TrainingRepository;
 use App\State\TenantAwareStateProcessor;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -286,6 +287,7 @@ class Training
      *
      * @var Collection<int, User>
      */
+    #[SameTenantOwner]
     private ?Collection $participantUsers = null;
 
     /**
@@ -810,11 +812,13 @@ public function __construct()
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'trainer_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['training:read', 'training:write'])]
+    #[SameTenantOwner]
     private ?User $trainerUser = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['training:read', 'training:write'])]
+    #[SameTenantOwner]
     private ?Person $trainerPerson = null;
 
     /** @var Collection<int, Person> */
@@ -823,6 +827,7 @@ public function __construct()
     #[ORM\JoinTable(name: 'training_trainer_deputies')]
     #[ORM\JoinColumn(name: 'training_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $trainerDeputyPersons;
 
     public function getTrainerUser(): ?User

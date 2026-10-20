@@ -27,6 +27,14 @@ $loadEntityProps = static function (string $entityFile): array {
         return [];
     }
     $entityContent = file_get_contents($entityFile);
+    // Fields moved into entity traits (src/Entity/Trait/) still belong to the entity.
+    preg_match_all('/^\s+use\s+([A-Za-z0-9_]+);/m', $entityContent, $traits);
+    foreach ($traits[1] as $trait) {
+        $traitFile = dirname($entityFile) . '/Trait/' . $trait . '.php';
+        if (file_exists($traitFile)) {
+            $entityContent .= "\n" . file_get_contents($traitFile);
+        }
+    }
     preg_match_all('/(?:private|protected|public)\s+(?:\??\w+[\s|&\w]*\s+)?\$(\w+)/', $entityContent, $props);
 
     return array_values(array_unique($props[1]));

@@ -15,6 +15,7 @@ use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -268,9 +269,8 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'help' => 'audit_finding.help.nc_verified_at',
             ])
-            ->add('ncVerifiedBy', EntityType::class, [
+            ->add('ncVerifiedBy', OwnerUserType::class, [
                 'label' => 'audit_finding.field.nc_verified_by',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getEmail() ?? (string) $u->getId(),
                 'placeholder' => 'audit_finding.placeholder.nc_verified_by',
                 'required' => false,

@@ -183,11 +183,11 @@ src/Controller/ComplianceMappingController.php:330
 src/Controller/ComplianceMappingController.php:503
 src/Controller/ComplianceRequirementController.php:149
 src/Controller/ComplianceRequirementController.php:150
-src/Controller/ComplianceRequirementController.php:293
-src/Controller/ComplianceRequirementController.php:339
-src/Controller/ComplianceRequirementController.php:340
-src/Controller/ComplianceRequirementController.php:447
-src/Controller/ComplianceRequirementController.php:450
+src/Controller/ComplianceRequirementController.php:295
+src/Controller/ComplianceRequirementController.php:341
+src/Controller/ComplianceRequirementController.php:342
+src/Controller/ComplianceRequirementController.php:453
+src/Controller/ComplianceRequirementController.php:456
 src/Controller/ComplianceWizardController.php:486
 src/Controller/ComplianceWizardController.php:677
 src/Controller/ComplianceWizardController.php:678

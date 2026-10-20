@@ -9,6 +9,7 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -282,10 +283,9 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             // ============================================================================
             // Stakeholder Consultation (Art. 35(4), 35(9))
             // ============================================================================
-            ->add('dataProtectionOfficer', EntityType::class, [
+            ->add('dataProtectionOfficer', OwnerUserType::class, [
                 'label' => 'dpia.form.data_protection_officer',
                 'help' => 'dpia.help.data_protection_officer',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.data_protection_officer',
@@ -371,10 +371,9 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             // ============================================================================
             // Workflow
             // ============================================================================
-            ->add('conductor', EntityType::class, [
+            ->add('conductor', OwnerUserType::class, [
                 'label' => 'dpia.form.conductor',
                 'help' => 'dpia.help.conductor',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.conductor',

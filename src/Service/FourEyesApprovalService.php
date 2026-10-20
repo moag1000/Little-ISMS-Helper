@@ -53,6 +53,11 @@ class FourEyesApprovalService
         if ($tenant === null) {
             throw new TenantOrphanException(null, 'No tenant context when requesting four-eyes approval.');
         }
+        // `User` is not covered by the Doctrine TenantFilter — a designated
+        // approver of another organisation must never be accepted.
+        if ($specificApprover !== null && $specificApprover->getTenant()?->getId() !== $tenant->getId()) {
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Approver must belong to the same organisation.', 'approver_other_tenant');
+        }
 
         $request = (new FourEyesApprovalRequest())
             ->setTenant($tenant)

@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Repository\PhysicalAccessLogRepository;
 use App\State\TenantAwareStateProcessor;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -44,6 +45,7 @@ class PhysicalAccessLog
     #[ORM\ManyToOne(targetEntity: Person::class, inversedBy: 'accessLogs')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['physical_access:read', 'physical_access:write'])]
+    #[SameTenantOwner]
     private ?Person $person = null;
 
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'accessLogs')]

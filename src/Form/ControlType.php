@@ -11,6 +11,7 @@ use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Asset;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Type\OwnerUserType;
 use App\Repository\RiskRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -161,9 +162,8 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'control.help.implementation_notes',
             ])
-            ->add('responsiblePersonUser', EntityType::class, [
+            ->add('responsiblePersonUser', OwnerUserType::class, [
                 'label' => 'control.field.responsible_person',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'control.placeholder.responsible_person_user',

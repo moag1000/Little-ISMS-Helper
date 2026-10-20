@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\CustomReport;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -67,9 +68,8 @@ final class CustomReportType extends AbstractType implements SectionMapInterface
                 'choice_translation_domain' => 'report_builder',
             ])
             // Tri-State owner fields
-            ->add('owner', EntityType::class, [
+            ->add('owner', OwnerUserType::class, [
                 'label' => 'report_builder.field.owner_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'report_builder.placeholder.owner_user',

@@ -881,7 +881,7 @@ final class PolicyWizardController extends AbstractController
         if ($defaultApproverId !== null) {
             $userIds[] = $defaultApproverId;
         }
-        $userDisplay = $this->referenceResolver->resolveUserDisplays(array_values(array_unique($userIds)));
+        $userDisplay = $this->referenceResolver->resolveUserDisplays(array_values(array_unique($userIds)), $run->getTenant());
 
         $approvers = [];
         foreach ($perTpl as $tplKey => $uid) {
@@ -959,10 +959,10 @@ final class PolicyWizardController extends AbstractController
         // `[id => "Full Name <email>"]` map in ONE round-trip so the
         // template never has to do per-row queries.
         $userIds = $this->referenceResolver->collectReferencedUserIds($inputs);
-        $userDisplay = $this->referenceResolver->resolveUserDisplays($userIds);
+        $userDisplay = $this->referenceResolver->resolveUserDisplays($userIds, $run->getTenant());
 
         $personIds = $this->referenceResolver->collectReferencedPersonIds($inputs);
-        $personDisplay = $this->referenceResolver->resolvePersonDisplays($personIds);
+        $personDisplay = $this->referenceResolver->resolvePersonDisplays($personIds, $run->getTenant());
 
         $sections = [];
 

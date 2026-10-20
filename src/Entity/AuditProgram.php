@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\AuditProgramRepository;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -80,6 +81,7 @@ class AuditProgram
     /** ISO 19011 §5.4.4 — programme manager */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'programme_owner_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $programmeOwner = null;
 
     /**

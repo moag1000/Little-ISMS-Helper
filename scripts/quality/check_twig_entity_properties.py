@@ -56,6 +56,16 @@ def accessors_for_entity(php: str) -> set[str]:
     return members
 
 
+def with_entity_traits(php: str) -> str:
+    """Append the source of `use <Trait>;` entity traits (src/Entity/Trait/)
+    so members and associations moved into a trait still count."""
+    for m in re.finditer(r"^\s+use\s+([A-Za-z0-9_]+);", php, re.M):
+        path = os.path.join(ENTITY_DIR, "Trait", m.group(1) + ".php")
+        if os.path.isfile(path):
+            php += "\n" + open(path, encoding="utf-8", errors="ignore").read()
+    return php
+
+
 def main() -> int:
     entity_files = glob.glob(os.path.join(ENTITY_DIR, "*.php"))
     entity_names = {os.path.basename(f)[:-4] for f in entity_files}
@@ -66,7 +76,7 @@ def main() -> int:
 
     for f in entity_files:
         name = os.path.basename(f)[:-4]
-        php = open(f, encoding="utf-8", errors="ignore").read()
+        php = with_entity_traits(open(f, encoding="utf-8", errors="ignore").read())
         accessors[name] = accessors_for_entity(php)
         # to-one associations: `private ?Supplier $supplier`, `private Tenant $tenant`
         for m in re.finditer(r"(?:private|protected)\s+\??\\?([A-Za-z0-9_]+)\s+\$([a-zA-Z0-9_]+)\s*(?:=|;)", php):

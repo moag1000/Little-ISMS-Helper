@@ -181,6 +181,7 @@ class Patch
     #[ORM\JoinTable(name: 'patch_responsible_deputy')]
     #[ORM\JoinColumn(name: 'patch_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $responsibleDeputyPersons;
 
     /**

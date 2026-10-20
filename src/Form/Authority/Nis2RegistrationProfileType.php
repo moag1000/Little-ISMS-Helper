@@ -7,6 +7,7 @@ namespace App\Form\Authority;
 use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\User;
 use App\Form\SectionMapInterface;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -130,24 +131,21 @@ final class Nis2RegistrationProfileType extends AbstractType implements SectionM
                 'attr' => ['rows' => 5],
                 'translation_domain' => 'eu_authorities',
             ])
-            ->add('incidentReportingContact', EntityType::class, [
-                'class' => User::class,
+            ->add('incidentReportingContact', OwnerUserType::class, [
                 'label' => 'eu_authorities.nis2_registration.field.incident_contact',
                 'required' => true,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'constraints' => [new NotBlank()],
                 'translation_domain' => 'eu_authorities',
             ])
-            ->add('securityResponsibleContact', EntityType::class, [
-                'class' => User::class,
+            ->add('securityResponsibleContact', OwnerUserType::class, [
                 'label' => 'eu_authorities.nis2_registration.field.security_contact',
                 'required' => true,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'constraints' => [new NotBlank()],
                 'translation_domain' => 'eu_authorities',
             ])
-            ->add('backupSecurityContact', EntityType::class, [
-                'class' => User::class,
+            ->add('backupSecurityContact', OwnerUserType::class, [
                 'label' => 'eu_authorities.nis2_registration.field.backup_contact',
                 'required' => false,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',

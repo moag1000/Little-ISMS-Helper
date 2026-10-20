@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use App\Entity\Person;
 use App\Repository\CustomReportRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -146,10 +147,12 @@ class CustomReport
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'owner_id', nullable: false)]
+    #[SameTenantOwner]
     private ?User $owner = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $ownerPerson = null;
 
     /** @var Collection<int, Person> */
@@ -157,6 +160,7 @@ class CustomReport
     #[ORM\JoinTable(name: 'custom_report_owner_deputies')]
     #[ORM\JoinColumn(name: 'custom_report_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $ownerDeputyPersons;
 
     /**

@@ -9,6 +9,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessContinuityPlan;
 use App\Form\Entry\EvidenceArtifactEntryType;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -108,10 +109,9 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
             ])
             // P-15 DataReuse: facilitator now Pattern-A dual-state.
             // facilitator textfield kept for legacy migration display only.
-            ->add('facilitatorUser', EntityType::class, [
+            ->add('facilitatorUser', OwnerUserType::class, [
                 'label' => 'bc_exercises.field.facilitator_user',
                 'help' => 'bc_exercises.help.facilitator_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => trim(($u->getFirstName() ?? '') . ' ' . ($u->getLastName() ?? '')) ?: ($u->getEmail() ?? ''),
                 'placeholder' => 'bc_exercises.placeholder.facilitator_user',
                 'required' => false,
@@ -130,10 +130,9 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
-            ->add('exerciseLeaderUser', EntityType::class, [
+            ->add('exerciseLeaderUser', OwnerUserType::class, [
                 'label' => 'bc_exercises.field.exercise_leader_user',
                 'help' => 'bc_exercises.help.exercise_leader_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => trim(($u->getFirstName() ?? '') . ' ' . ($u->getLastName() ?? '')) ?: ($u->getEmail() ?? ''),
                 'placeholder' => 'bc_exercises.placeholder.exercise_leader_user',
                 'required' => false,

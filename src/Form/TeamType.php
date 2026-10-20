@@ -6,8 +6,8 @@ namespace App\Form;
 
 use App\Entity\Person;
 use App\Entity\Team;
-use App\Entity\User;
 use App\Form\SectionMapInterface;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -60,9 +60,8 @@ final class TeamType extends AbstractType implements SectionMapInterface
                 'label'    => 'planning.team.field.is_active',
                 'required' => false,
             ])
-            ->add('teamLead', EntityType::class, [
+            ->add('teamLead', OwnerUserType::class, [
                 'label'        => 'planning.team.field.team_lead',
-                'class'        => User::class,
                 'choice_label' => 'email',
                 'required'     => false,
                 'placeholder'  => 'planning.team.field.team_lead_placeholder',

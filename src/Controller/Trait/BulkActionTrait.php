@@ -6,6 +6,7 @@ namespace App\Controller\Trait;
 
 use App\Entity\User;
 use App\Lifecycle\LifecycleService;
+use App\Security\RecordTenant;
 use App\Security\TenantOwnership;
 use App\Service\AuditLogger;
 use App\Service\BulkDeleteService;
@@ -283,6 +284,17 @@ trait BulkActionTrait
                 $rejected[] = [
                     'id' => method_exists($entity, 'getId') ? $entity->getId() : null,
                     'reason' => 'access_denied',
+                ];
+                continue;
+            }
+            // Record rule: the assignee must belong to THIS record's organisation
+            // (also for an instance-wide SUPER_ADMIN, whose context scope spans
+            // all organisations). User is not covered by the TenantFilter.
+            $recordTenant = RecordTenant::of($entity);
+            if ($recordTenant === null || !RecordTenant::matches($assignee->getTenant(), $recordTenant)) {
+                $rejected[] = [
+                    'id' => method_exists($entity, 'getId') ? $entity->getId() : null,
+                    'reason' => 'assignee_other_tenant',
                 ];
                 continue;
             }

@@ -10,6 +10,7 @@ use App\Entity\Person;
 use App\Enum\DataSubjectRequestStatus;
 use App\Repository\DataSubjectRequestRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -265,10 +266,12 @@ class DataSubjectRequest
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
+    #[SameTenantOwner]
     private ?User $assignedTo = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $assignedPerson = null;
 
     /** @var Collection<int, Person> */
@@ -276,6 +279,7 @@ class DataSubjectRequest
     #[ORM\JoinTable(name: 'dsr_assigned_deputies')]
     #[ORM\JoinColumn(name: 'data_subject_request_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $assignedDeputyPersons;
 
     /**

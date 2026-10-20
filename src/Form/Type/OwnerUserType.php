@@ -6,53 +6,125 @@ namespace App\Form\Type;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Form\ChoiceList\TenantUserChoiceLoader;
+use App\Form\ChoiceList\TenantUserDirectory;
+use App\Security\RecordTenant;
 use App\Service\TenantContext;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * User select for the owner-picker cluster, scoped to the CURRENT tenant.
+ * Tenant-scoped User select — the ONE place that decides which users a
+ * record's user field (owner, assignee, approver, contact, participants ...)
+ * offers and accepts. Use it instead of `EntityType` + `User::class`.
  *
  * The Doctrine TenantFilter deliberately skips `User`, so a plain EntityType
- * would list (and accept) users of every organisation. This type restricts
- * the choices to users of the current tenant; with no current tenant the list
- * is empty (never "all users").
+ * lists (and accepts) users of every organisation. This type offers only the
+ * users of the bound RECORD's organisation (the nearest parent form whose data
+ * has getTenant()/getTenantId()); for a record without tenant (new record) the current
+ * tenant; without either the list is empty, never "all users". A tenantless
+ * super-admin editing a record of tenant B therefore sees tenant-B users.
+ * The field's current value(s) always stay selectable (legacy cross-tenant
+ * links survive a re-save; SameTenantOwner rejects only NEW foreign users).
+ *
+ * Options: everything EntityType takes (`multiple` included) except
+ * class / query_builder / choice_loader, plus `tenant` to pin the scope.
+ * Note: `expanded => true` loads the choices while the form is built, i.e.
+ * before the record is known — then only the `tenant` option or the current
+ * tenant applies.
  */
 final class OwnerUserType extends AbstractType
 {
-    public function __construct(private readonly TenantContext $tenantContext)
+    public function __construct(
+        private readonly TenantContext $tenantContext,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TenantUserDirectory $directory,
+    ) {
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var TenantUserChoiceLoader $loader enforced in configureOptions() */
+        $loader = $options['choice_loader'];
+        // The parent record is already set when a child receives its data
+        // (Form::setData maps children after storing its own model data).
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            static function (FormEvent $event) use ($loader): void {
+                $loader->setRecordTenant(self::recordTenant($event->getForm()));
+                $loader->setCurrentIds(self::userIds($event->getData()));
+            },
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'class' => User::class,
-            // Tenant of the bound record; null = use the current tenant.
+            // Pins the scope to this tenant; null = the bound record's tenant.
             'tenant' => null,
-            'query_builder' => function (Options $options): \Closure {
-                $recordTenant = $options['tenant'];
-
-                return function (EntityRepository $repository) use ($recordTenant): QueryBuilder {
-                    $qb = $repository->createQueryBuilder('u')->orderBy('u.lastName')->addOrderBy('u.firstName');
-                    $tenant = $recordTenant ?? $this->tenantContext->getCurrentTenant();
-                    if ($tenant === null) {
-                        return $qb->andWhere('1 = 0');
-                    }
-
-                    return $qb->andWhere('u.tenant = :ownerTenant')->setParameter('ownerTenant', $tenant);
-                };
-            },
+            'choice_loader' => fn (Options $options): TenantUserChoiceLoader => new TenantUserChoiceLoader(
+                $this->entityManager,
+                $options['id_reader'],
+                $this->tenantContext,
+                $this->directory,
+                $options['tenant'],
+            ),
         ]);
         $resolver->setAllowedTypes('tenant', ['null', Tenant::class]);
+        // The scoping must not be switched off by a caller: a custom loader or
+        // query builder (or a lazy loader wrapper) would bypass it.
+        $resolver->setAllowedValues('class', [User::class]);
+        $resolver->setAllowedValues(
+            'choice_loader',
+            static fn (mixed $loader): bool => $loader instanceof TenantUserChoiceLoader,
+        );
+        $resolver->setAllowedValues('query_builder', [null]);
+        $resolver->setAllowedValues('choice_lazy', [false]);
     }
 
     public function getParent(): string
     {
         return EntityType::class;
+    }
+
+    /**
+     * Ids of the field's current value(s) — a User or a collection of Users.
+     *
+     * @return list<int>
+     */
+    private static function userIds(mixed $value): array
+    {
+        $ids = [];
+        foreach (is_iterable($value) ? $value : [$value] as $user) {
+            if ($user instanceof User && $user->getId() !== null) {
+                $ids[] = $user->getId();
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Organisation of the nearest ancestor form whose data is a tenant-owned
+     * record (null for a record without tenant yet, e.g. a new one).
+     */
+    private static function recordTenant(FormInterface $form): Tenant|int|null
+    {
+        for ($parent = $form->getParent(); $parent !== null; $parent = $parent->getParent()) {
+            $data = $parent->getData();
+            if (RecordTenant::isTenantOwned($data)) {
+                return RecordTenant::of($data);
+            }
+        }
+
+        return null;
     }
 }

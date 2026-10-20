@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Asset;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -68,9 +69,8 @@ final class RiskQuickType extends AbstractType implements SectionMapInterface
                 'required' => true,
                 'attr' => ['min' => 1, 'max' => 5],
             ])
-            ->add('riskOwner', EntityType::class, [
+            ->add('riskOwner', OwnerUserType::class, [
                 'label' => 'risk.field.risk_owner',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk.placeholder.risk_owner',
                 'required' => true,

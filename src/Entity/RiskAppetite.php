@@ -7,6 +7,7 @@ namespace App\Entity;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Repository\RiskAppetiteRepository;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -85,6 +86,7 @@ class RiskAppetite
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'approved_by_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
+    #[SameTenantOwner]
     private ?User $approvedBy = null;
 
     /**

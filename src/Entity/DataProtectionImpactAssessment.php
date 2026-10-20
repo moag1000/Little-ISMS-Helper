@@ -6,9 +6,12 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Trait\DpiaApproverTrait;
+use App\Entity\Trait\DpiaConductorTrait;
 use App\Enum\DpiaStatus;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -38,6 +41,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class DataProtectionImpactAssessment
 {
+    use DpiaConductorTrait;
+    use DpiaApproverTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -310,6 +316,7 @@ class DataProtectionImpactAssessment
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
+    #[SameTenantOwner]
     private ?User $dataProtectionOfficer = null;
 
     /**
@@ -317,6 +324,7 @@ class DataProtectionImpactAssessment
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'data_protection_officer_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $dataProtectionOfficerPerson = null;
 
     /**
@@ -328,6 +336,7 @@ class DataProtectionImpactAssessment
     #[ORM\JoinTable(name: 'dpia_dpo_deputy')]
     #[ORM\JoinColumn(name: 'dpia_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $dataProtectionOfficerDeputyPersons;
 
     /**
@@ -396,56 +405,6 @@ class DataProtectionImpactAssessment
     #[ORM\Version]
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
     private int $lockVersion = 0;
-
-    /**
-     * Person responsible for conducting the DPIA
-     */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?User $conductor = null;
-
-    /**
-     * Tri-State Person slot: conductor as Person master-data record.
-     */
-    #[ORM\ManyToOne(targetEntity: Person::class)]
-    #[ORM\JoinColumn(name: 'conductor_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Person $conductorPerson = null;
-
-    /**
-     * Deputy Persons for the conductor slot.
-     *
-     * @var Collection<int, Person>
-     */
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    #[ORM\JoinTable(name: 'dpia_conductor_deputy')]
-    #[ORM\JoinColumn(name: 'dpia_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Collection $conductorDeputyPersons;
-
-    /**
-     * Approver (e.g., Data Protection Officer, Management)
-     */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?User $approver = null;
-
-    /**
-     * Tri-State Person slot: approver as Person master-data record.
-     */
-    #[ORM\ManyToOne(targetEntity: Person::class)]
-    #[ORM\JoinColumn(name: 'approver_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Person $approverPerson = null;
-
-    /**
-     * Deputy Persons for the approver slot.
-     *
-     * @var Collection<int, Person>
-     */
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    #[ORM\JoinTable(name: 'dpia_approver_deputy')]
-    #[ORM\JoinColumn(name: 'dpia_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Collection $approverDeputyPersons;
 
     /**
      * Date of approval
@@ -1169,144 +1128,6 @@ class DataProtectionImpactAssessment
     public function getLockVersion(): int
     {
         return $this->lockVersion;
-    }
-
-    public function getConductor(): ?User
-    {
-        return $this->conductor;
-    }
-
-    public function setConductor(?User $user): static
-    {
-        $this->conductor = $user;
-        return $this;
-    }
-
-    public function getConductorPerson(): ?Person
-    {
-        return $this->conductorPerson;
-    }
-
-    public function setConductorPerson(?Person $conductorPerson): static
-    {
-        $this->conductorPerson = $conductorPerson;
-        return $this;
-    }
-
-    /** @return Collection<int, Person> */
-    public function getConductorDeputyPersons(): Collection
-    {
-        return $this->conductorDeputyPersons;
-    }
-
-    public function addConductorDeputyPerson(Person $person): static
-    {
-        if (!$this->conductorDeputyPersons->contains($person)) {
-            $this->conductorDeputyPersons->add($person);
-        }
-        return $this;
-    }
-
-    public function removeConductorDeputyPerson(Person $person): static
-    {
-        $this->conductorDeputyPersons->removeElement($person);
-        return $this;
-    }
-
-    /**
-     * Effective conductor: prefer conductor (User), then conductorPerson, then null.
-     */
-    public function getEffectiveConductor(): ?string
-    {
-        return OwnerResolver::resolveEffective(
-            $this->conductor,
-            $this->conductorPerson,
-            null,
-        );
-    }
-
-    /**
-     * Full conductor roster: primary + every deputy.
-     *
-     * @return list<string>
-     */
-    public function getAllConductors(): array
-    {
-        return OwnerResolver::resolveAll(
-            $this->conductor,
-            $this->conductorPerson,
-            null,
-            $this->conductorDeputyPersons,
-        );
-    }
-
-    public function getApprover(): ?User
-    {
-        return $this->approver;
-    }
-
-    public function setApprover(?User $user): static
-    {
-        $this->approver = $user;
-        return $this;
-    }
-
-    public function getApproverPerson(): ?Person
-    {
-        return $this->approverPerson;
-    }
-
-    public function setApproverPerson(?Person $approverPerson): static
-    {
-        $this->approverPerson = $approverPerson;
-        return $this;
-    }
-
-    /** @return Collection<int, Person> */
-    public function getApproverDeputyPersons(): Collection
-    {
-        return $this->approverDeputyPersons;
-    }
-
-    public function addApproverDeputyPerson(Person $person): static
-    {
-        if (!$this->approverDeputyPersons->contains($person)) {
-            $this->approverDeputyPersons->add($person);
-        }
-        return $this;
-    }
-
-    public function removeApproverDeputyPerson(Person $person): static
-    {
-        $this->approverDeputyPersons->removeElement($person);
-        return $this;
-    }
-
-    /**
-     * Effective approver: prefer approver (User), then approverPerson, then null.
-     */
-    public function getEffectiveApprover(): ?string
-    {
-        return OwnerResolver::resolveEffective(
-            $this->approver,
-            $this->approverPerson,
-            null,
-        );
-    }
-
-    /**
-     * Full approver roster: primary + every deputy.
-     *
-     * @return list<string>
-     */
-    public function getAllApprovers(): array
-    {
-        return OwnerResolver::resolveAll(
-            $this->approver,
-            $this->approverPerson,
-            null,
-            $this->approverDeputyPersons,
-        );
     }
 
     public function getApprovalDate(): ?DateTimeInterface

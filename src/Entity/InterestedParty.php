@@ -123,6 +123,7 @@ class InterestedParty
     #[ORM\JoinTable(name: 'interested_party_contact_deputy')]
     #[ORM\JoinColumn(name: 'interested_party_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $contactDeputyPersons;
 
     #[ORM\Column(length: 255, nullable: true)]

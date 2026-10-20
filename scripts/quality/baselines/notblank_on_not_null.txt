@@ -2,18 +2,18 @@
 # Format: <relative-path>:<line>  <signature>
 src/Entity/AlvaHintDismissal.php:54  ?string $hintKey
 src/Entity/AlvaHintRenderCount.php:39  ?string $hintKey
-src/Entity/AuditFinding.php:71  ?string $findingNumber
+src/Entity/AuditFinding.php:72  ?string $findingNumber
 src/Entity/AuditLog.php:36  ?string $entityType
 src/Entity/AuditLog.php:42  ?string $action
 src/Entity/AuditLog.php:45  ?string $userName
 src/Entity/Authority/DoraRegisterOfInformation.php:55  ?int $id
-src/Entity/Authority/Nis2RegistrationProfile.php:92  ?int $id
+src/Entity/Authority/Nis2RegistrationProfile.php:93  ?int $id
 src/Entity/CorporateGovernance.php:46  ?string $scope
-src/Entity/Document.php:32  ?string $filename
-src/Entity/Document.php:35  ?string $originalFilename
-src/Entity/Document.php:38  ?string $mimeType
-src/Entity/Document.php:41  ?int $fileSize
-src/Entity/Document.php:44  ?string $filePath
+src/Entity/Document.php:33  ?string $filename
+src/Entity/Document.php:36  ?string $originalFilename
+src/Entity/Document.php:39  ?string $mimeType
+src/Entity/Document.php:42  ?int $fileSize
+src/Entity/Document.php:45  ?string $filePath
 src/Entity/DocumentSection.php:91  ?string $sectionKey
 src/Entity/MappingGapItem.php:55  ?string $gapType
 src/Entity/MappingGapItem.php:61  ?string $description

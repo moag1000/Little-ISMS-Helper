@@ -6,7 +6,7 @@ namespace App\Form;
 
 use App\Entity\RiskAppetite;
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -91,9 +91,8 @@ final class RiskAppetiteType extends AbstractType implements SectionMapInterface
                     ),
                 ],
             ])
-            ->add('approvedBy', EntityType::class, [
+            ->add('approvedBy', OwnerUserType::class, [
                 'label' => 'risk_appetite.field.approved_by',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk_appetite.placeholder.approved_by',
                 'required' => false,

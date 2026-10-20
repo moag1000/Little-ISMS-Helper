@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -75,9 +75,8 @@ final class WorkflowInstanceType extends AbstractType implements SectionMapInter
                 'mapped' => false,
                 'choice_translation_domain' => 'workflows',
             ])
-            ->add('initiatedBy', EntityType::class, [
+            ->add('initiatedBy', OwnerUserType::class, [
                 'label' => 'workflow_instance.field.initiated_by',
-                'class' => User::class,
                 'choice_label' => 'email',
                 'required' => false,
                                 'help' => 'workflow_instance.help.initiated_by'

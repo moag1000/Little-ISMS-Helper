@@ -7,6 +7,7 @@ namespace App\Entity;
 use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Enum\WorkflowInstanceStatus;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -39,6 +40,7 @@ class WorkflowInstance
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'initiated_by_id', nullable: true)]
+    #[SameTenantOwner]
     private ?User $initiatedBy = null;
 
     #[ORM\ManyToOne(targetEntity: WorkflowStep::class)]

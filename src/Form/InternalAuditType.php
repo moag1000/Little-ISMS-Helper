@@ -12,6 +12,7 @@ use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\InternalAuditStatus;
+use App\Form\Type\OwnerUserType;
 use App\Repository\TenantRepository;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -157,9 +158,8 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
             // P-15 DataReuse: Pattern A dual-state lead auditor — structured
             // User/Person preferred over legacy `leadAuditor` free-text. Legacy
             // field kept as optional textfield for migration window.
-            ->add('leadAuditorUser', EntityType::class, [
+            ->add('leadAuditorUser', OwnerUserType::class, [
                 'label' => 'audit.field.lead_auditor_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'placeholder' => 'audit.placeholder.lead_auditor_user',
                 'required' => false,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\EntityTypeRegistry;
@@ -26,6 +27,10 @@ use Symfony\Component\Workflow\Registry;
 
 class LifecycleController extends AbstractController
 {
+    private const string APPROVER_INVALID = 'four_eyes_approver_invalid';
+    private const string APPROVER_INVALID_MESSAGE =
+        'Approver ungültig: unbekannt oder nicht aus der Organisation des Datensatzes.';
+
     public function __construct(
         private readonly EntityTypeRegistry $entityRegistry,
         private readonly EntityManagerInterface $em,
@@ -37,7 +42,8 @@ class LifecycleController extends AbstractController
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
-    #[IsCsrfTokenValid('lifecycle_transition')]
+    // fetch() callers (lifecycle_dropdown_controller.js) send the token as X-CSRF-Token header.
+    #[IsCsrfTokenValid('lifecycle_transition', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function transition(string $entityType, int $id, Request $request): JsonResponse
     {
         $mapping = $this->entityRegistry->lookup($entityType);
@@ -71,8 +77,10 @@ class LifecycleController extends AbstractController
         $approver = null;
         if ($fourEyesApproverId !== null) {
             $approver = $this->userRepository->find((int) $fourEyesApproverId);
-            if (!$approver instanceof User) {
-                return $this->jsonError(422, 'four_eyes_approver_not_found', sprintf('Approver-User #%s nicht gefunden.', (string) $fourEyesApproverId));
+            // Unknown id and user of another organisation answer identically, so
+            // the endpoint does not reveal which user ids exist elsewhere.
+            if (!$approver instanceof User || $this->isApproverOutsideRecordTenant($approver, $entity)) {
+                return $this->jsonError(422, self::APPROVER_INVALID, self::APPROVER_INVALID_MESSAGE);
             }
         }
 
@@ -108,7 +116,7 @@ class LifecycleController extends AbstractController
     }
 
     #[Route('/lifecycle/{entityType}/bulk-transition', name: 'app_lifecycle_bulk_transition', methods: ['POST'])]
-    #[IsCsrfTokenValid('lifecycle_bulk_transition')]
+    #[IsCsrfTokenValid('lifecycle_bulk_transition', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function bulkTransition(string $entityType, Request $request): JsonResponse
     {
         $mapping = $this->entityRegistry->lookup($entityType);
@@ -127,11 +135,12 @@ class LifecycleController extends AbstractController
         }
 
         $approver = null;
+        $approverInvalid = false;
         if ($fourEyesApproverId !== null) {
             $approver = $this->userRepository->find((int) $fourEyesApproverId);
-            if (!$approver instanceof User) {
-                return $this->jsonError(422, 'four_eyes_approver_not_found', sprintf('Approver-User #%s nicht gefunden.', (string) $fourEyesApproverId));
-            }
+            // Reported per record like an approver of another organisation, so
+            // an unknown id is indistinguishable from a foreign one.
+            $approverInvalid = !$approver instanceof User;
         }
 
         $succeeded = [];
@@ -146,6 +155,11 @@ class LifecycleController extends AbstractController
             }
             if (!$this->isGranted(sprintf('lifecycle.%s.%s', $mapping['workflow'], $transitionName), $entity)) {
                 $failed[(string) $id] = 'forbidden';
+                continue;
+            }
+            $foreignApprover = $approver instanceof User && $this->isApproverOutsideRecordTenant($approver, $entity);
+            if ($approverInvalid || $foreignApprover) {
+                $failed[(string) $id] = self::APPROVER_INVALID;
                 continue;
             }
             try {
@@ -255,6 +269,21 @@ class LifecycleController extends AbstractController
             'entity_id'   => $id,
             'entries'     => array_values($statusEntries),
         ]);
+    }
+
+    /**
+     * The four-eyes approver comes from the request body (user id), and `User`
+     * is not covered by the Doctrine TenantFilter: an approver of another
+     * organisation than the record's must be refused.
+     */
+    private function isApproverOutsideRecordTenant(User $approver, object $entity): bool
+    {
+        $recordTenant = method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
+        if (!$recordTenant instanceof Tenant) {
+            return false;
+        }
+
+        return $approver->getTenant()?->getId() !== $recordTenant->getId();
     }
 
     private function jsonError(int $code, string $errorCode, string $message, array $details = []): JsonResponse

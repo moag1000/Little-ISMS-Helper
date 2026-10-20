@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard;
 
+use App\Entity\Person;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WizardRun;
+use App\Repository\PersonRepository;
 use App\Repository\TenantPolicySettingRepository;
 use App\Repository\UserRepository;
+use App\Security\TenantOwnership;
 
 /**
  * Policy-Wizard W3 — VariableCollector.
@@ -35,6 +39,9 @@ class VariableCollector
         private readonly ?\App\Repository\OrganizationSecurityProfileRepository $profileRepository = null,
         private readonly ?\App\Service\PolicyParameter\PolicyProfileManager $profileManager = null,
         private readonly ?\App\Service\PolicyParameter\PolicyParameterVariables $parameterVariables = null,
+        // Role slots store Person ids (RolesStep). Nullable for legacy test
+        // construction; autowired in production.
+        private readonly ?PersonRepository $personRepository = null,
     ) {
     }
 
@@ -69,10 +76,10 @@ class VariableCollector
             ? $rolesSlot['roles']
             : [];
 
-        $vars['roles.ciso.fullName'] = $this->resolveUserFullName($rolesMap['ciso'] ?? null);
-        $vars['roles.dpo.fullName'] = $this->resolveUserFullName($rolesMap['dpo'] ?? null);
-        $vars['roles.bcm_officer.fullName'] = $this->resolveUserFullName($rolesMap['bcm_officer'] ?? null);
-        $vars['roles.it_operations.fullName'] = $this->resolveUserFullName($rolesMap['it_operations'] ?? null);
+        $vars['roles.ciso.fullName'] = $this->resolveRoleHolderName($rolesMap['ciso'] ?? null, $tenant);
+        $vars['roles.dpo.fullName'] = $this->resolveRoleHolderName($rolesMap['dpo'] ?? null, $tenant);
+        $vars['roles.bcm_officer.fullName'] = $this->resolveRoleHolderName($rolesMap['bcm_officer'] ?? null, $tenant);
+        $vars['roles.it_operations.fullName'] = $this->resolveRoleHolderName($rolesMap['it_operations'] ?? null, $tenant);
 
         // ── Risk + classification slot ──────────────────────────────
         $riskSlot = $inputs[WizardStepKeys::STEP_RISK_CLASSIFICATION] ?? [];
@@ -225,17 +232,35 @@ class VariableCollector
         return null;
     }
 
-    private function resolveUserFullName(mixed $userId): ?string
+    /**
+     * Name of a role holder. RolesStep stores Person ids (Person-Rollout);
+     * runs from before that stored User ids, kept as a legacy fallback when
+     * no Person carries the id. Either way only a holder of the run's
+     * organisation is resolved — a foreign id renders as empty, so a
+     * generated policy never shows another organisation's people.
+     */
+    private function resolveRoleHolderName(mixed $rawId, ?Tenant $tenant): ?string
     {
-        if (!is_int($userId) && !(is_string($userId) && ctype_digit($userId))) {
+        if (!is_int($rawId) && !(is_string($rawId) && ctype_digit($rawId))) {
             return null;
         }
-        $id = (int) $userId;
-        if ($id <= 0) {
+        $id = (int) $rawId;
+        if ($id <= 0 || $tenant === null) {
             return null;
         }
+
+        $person = $this->personRepository?->find($id);
+        if ($person instanceof Person) {
+            if (!TenantOwnership::isSameTenant($person->getTenant(), $tenant)) {
+                return null;
+            }
+            $name = trim((string) $person->getFullName());
+
+            return $name !== '' ? $name : null;
+        }
+
         $user = $this->userRepository->find($id);
-        if (!$user instanceof User) {
+        if (!$user instanceof User || !TenantOwnership::isSameTenant($user->getTenant(), $tenant)) {
             return null;
         }
         $candidate = trim($user->getFullName());

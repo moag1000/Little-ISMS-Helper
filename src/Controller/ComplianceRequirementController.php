@@ -239,9 +239,11 @@ class ComplianceRequirementController extends AbstractController
             'transitive_coverage' => $this->transitiveCoverageService->computeForRequirement($complianceRequirement),
             'is_mris' => $isMris,
             'mris' => $mrisData,
+            // Users of the current organisation only — never all users of
+            // the instance (User is not covered by the TenantFilter).
             'available_users' => ($tenant instanceof \App\Entity\Tenant)
                 ? $this->userRepository->findBy(['tenant' => $tenant])
-                : $this->userRepository->findAll(),
+                : [],
             'available_persons' => $this->personRepository->findAll(),
         ]);
     }
@@ -402,11 +404,15 @@ class ComplianceRequirementController extends AbstractController
 
         // Person fields (Tri-State responsible owner)
         $responsiblePersonUserId = $request->request->get('responsiblePersonUserId');
-        if ($responsiblePersonUserId !== null) {
-            $responsibleUser = $responsiblePersonUserId !== ''
-                ? $this->userRepository->find((int) $responsiblePersonUserId)
-                : null;
-            $fulfillment->setResponsiblePersonUser($responsibleUser instanceof User ? $responsibleUser : null);
+        if ($responsiblePersonUserId === '') {
+            $fulfillment->setResponsiblePersonUser(null);
+        } elseif ($responsiblePersonUserId !== null) {
+            // Only a user of the fulfillment's organisation is accepted (User is
+            // not covered by the TenantFilter); anything else leaves it unchanged.
+            $responsibleUser = $this->userRepository->find((int) $responsiblePersonUserId);
+            if ($responsibleUser instanceof User && $responsibleUser->getTenant()?->getId() === $tenant->getId()) {
+                $fulfillment->setResponsiblePersonUser($responsibleUser);
+            }
         }
 
         $responsiblePersonId = $request->request->get('responsiblePersonId');

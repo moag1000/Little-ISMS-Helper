@@ -7,6 +7,7 @@ namespace App\Entity\Authority;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\Authority\Nis2RegistrationProfileRepository;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -131,14 +132,17 @@ class Nis2RegistrationProfile
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'incident_reporting_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $incidentReportingContact = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'security_responsible_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $securityResponsibleContact = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'backup_security_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $backupSecurityContact = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]

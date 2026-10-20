@@ -21,6 +21,7 @@ use App\State\TenantAwareStateProcessor;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -157,6 +158,7 @@ class BCExercise
     #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?Collection $participantPersons = null;
 
     /**
@@ -176,6 +178,7 @@ class BCExercise
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'facilitator_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?User $facilitatorUser = null;
 
     /**
@@ -184,6 +187,7 @@ class BCExercise
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'facilitator_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?Person $facilitatorPerson = null;
 
     /**
@@ -194,6 +198,7 @@ class BCExercise
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'exercise_leader_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?User $exerciseLeaderUser = null;
 
     /**
@@ -203,6 +208,7 @@ class BCExercise
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'exercise_leader_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?Person $exerciseLeaderPerson = null;
 
     /**
@@ -225,6 +231,7 @@ class BCExercise
     #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?Collection $observerPersons = null;
 
     /**

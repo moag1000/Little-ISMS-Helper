@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Delete;
 use App\Attribute\RequiresModule;
 use App\Repository\ThreatIntelligenceRepository;
 use App\State\TenantAwareStateProcessor;
+use App\Validator\Constraint\SameTenantOwner;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -129,10 +130,12 @@ class ThreatIntelligence
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'assigned_to_id', nullable: true)]
     #[Groups(['threat:read'])]
+    #[SameTenantOwner]
     private ?User $assignedTo = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $assignedPerson = null;
 
     /** @var Collection<int, Person> */
@@ -140,6 +143,7 @@ class ThreatIntelligence
     #[ORM\JoinTable(name: 'threat_intelligence_assigned_deputies')]
     #[ORM\JoinColumn(name: 'threat_intelligence_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $assignedDeputyPersons;
 
     #[ORM\Column(type: Types::BOOLEAN)]

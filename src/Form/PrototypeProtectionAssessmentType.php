@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Enum\PrototypeProtectionAssessmentStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -121,9 +122,8 @@ final class PrototypeProtectionAssessmentType extends AbstractType implements Se
                 'required' => false,
                 'placeholder' => 'prototype_protection.value.na',
             ])
-            ->add('assessor', EntityType::class, [
+            ->add('assessor', OwnerUserType::class, [
                 'label' => 'prototype_protection.field.assessor',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => (string) ($u->getFullName() ?: $u->getEmail()),
                 'required' => false,
                 'placeholder' => 'prototype_protection.value.na',

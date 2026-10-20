@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
+use App\Validator\Constraint\SameTenantOwner;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ManagementReviewRepository::class)]
@@ -36,6 +37,7 @@ class ManagementReview
 
     /** @var Collection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class)]
+    #[SameTenantOwner]
     private Collection $participants;
 
     /**
@@ -51,6 +53,7 @@ class ManagementReview
     #[ORM\JoinTable(name: 'management_review_person_participants')]
     #[ORM\JoinColumn(name: 'management_review_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $personParticipants;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -113,10 +116,12 @@ class ManagementReview
     // Neue, formularkompatible Felder (Option B)
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'reviewed_by_id', nullable: true)]
+    #[SameTenantOwner]
     private ?User $reviewedBy = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $reviewedByPerson = null;
 
     /** @var Collection<int, Person> */
@@ -124,6 +129,7 @@ class ManagementReview
     #[ORM\JoinTable(name: 'management_review_reviewed_by_deputies')]
     #[ORM\JoinColumn(name: 'management_review_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $reviewedByDeputyPersons;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

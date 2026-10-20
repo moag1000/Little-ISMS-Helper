@@ -53,6 +53,7 @@ trait SupplierContactPersonTrait
     #[ORM\JoinTable(name: 'supplier_contact_deputy')]
     #[ORM\JoinColumn(name: 'supplier_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $contactDeputyPersons;
 
     private function initContactDeputyPersons(): void

@@ -9,6 +9,7 @@ use App\Enum\AuditFindingStatus;
 use App\Repository\AuditFindingRepository;
 use App\Entity\ComplianceRequirement;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -143,14 +144,17 @@ class AuditFinding
     #[ORM\JoinTable(name: 'audit_finding_reported_by_deputies')]
     #[ORM\JoinColumn(name: 'audit_finding_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $reportedByDeputyPersons;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
+    #[SameTenantOwner]
     private ?User $assignedTo = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $assignedPerson = null;
 
     /** @var Collection<int, Person> */
@@ -158,6 +162,7 @@ class AuditFinding
     #[ORM\JoinTable(name: 'audit_finding_assigned_deputies')]
     #[ORM\JoinColumn(name: 'audit_finding_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $assignedDeputyPersons;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
@@ -215,6 +220,7 @@ class AuditFinding
     /** Verifier (auditor or independent reviewer). */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'nc_verified_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $ncVerifiedBy = null;
 
     public const RCA_METHOD_5_WHY = '5-why';
