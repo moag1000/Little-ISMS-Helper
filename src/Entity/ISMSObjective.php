@@ -143,6 +143,7 @@ class ISMSObjective
     #[ORM\JoinTable(name: 'isms_objective_responsible_deputy')]
     #[ORM\JoinColumn(name: 'objective_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $responsibleDeputyPersons;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

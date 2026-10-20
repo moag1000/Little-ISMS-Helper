@@ -154,6 +154,7 @@ class RiskTreatmentPlan
     #[ORM\JoinColumn(name: 'risk_treatment_plan_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['treatment_plan:read'])]
+    #[SameTenantOwner]
     private Collection $responsibleDeputyPersons;
 
     /**

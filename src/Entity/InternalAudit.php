@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\Trait\InternalAuditLeadAuditorTrait;
+use App\Entity\Trait\InternalAuditTeamTrait;
 use App\Entity\User;
 use App\Enum\InternalAuditStatus;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
@@ -69,6 +70,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class InternalAudit
 {
     use InternalAuditLeadAuditorTrait;
+    use InternalAuditTeamTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -174,29 +176,6 @@ class InternalAudit
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     private ?DateTimeInterface $actualDate = null;
-
-    /**
-     * Legacy free-text audit team list ("Names, comma-separated"). P-15
-     * DataReuse: kept read-only for migration display once the typed
-     * `auditTeamMembers` collection is populated.
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['audit:read', 'audit:write'])]
-    private ?string $auditTeam = null;
-
-    /**
-     * Pattern A dual-state (P-15 DataReuse): typed audit-team roster as a
-     * Collection<Person>. Replaces the legacy comma-separated `auditTeam`
-     * textarea.
-     *
-     * @var Collection<int, Person>
-     */
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    #[ORM\JoinTable(name: 'internal_audit_team_member')]
-    #[ORM\JoinColumn(name: 'internal_audit_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[Groups(['audit:read', 'audit:write'])]
-    private ?Collection $auditTeamMembers = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
@@ -559,37 +538,6 @@ public function __construct()
         $diff = (new \DateTime())->diff($this->actualDate);
 
         return $diff->invert ? $diff->days : -$diff->days;
-    }
-
-    public function getAuditTeam(): ?string
-    {
-        return $this->auditTeam;
-    }
-
-    public function setAuditTeam(?string $auditTeam): static
-    {
-        $this->auditTeam = $auditTeam;
-        return $this;
-    }
-
-    /** @return Collection<int, Person> */
-    public function getAuditTeamMembers(): Collection
-    {
-        return $this->auditTeamMembers ??= new ArrayCollection();
-    }
-
-    public function addAuditTeamMember(Person $person): static
-    {
-        if (!$this->getAuditTeamMembers()->contains($person)) {
-            $this->getAuditTeamMembers()->add($person);
-        }
-        return $this;
-    }
-
-    public function removeAuditTeamMember(Person $person): static
-    {
-        $this->getAuditTeamMembers()->removeElement($person);
-        return $this;
     }
 
     public function getAuditedDepartments(): ?string

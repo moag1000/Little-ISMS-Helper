@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Enum\ComplianceRequirementFulfillmentStatus;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -117,6 +118,7 @@ class ComplianceRequirementFulfillment
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'responsible_person_id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $responsiblePersonUser = null;
 
     /**
@@ -124,6 +126,7 @@ class ComplianceRequirementFulfillment
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $responsiblePerson = null;
 
     /**
@@ -135,6 +138,7 @@ class ComplianceRequirementFulfillment
     #[ORM\JoinTable(name: 'crf_responsible_deputy')]
     #[ORM\JoinColumn(name: 'fulfillment_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $responsibleDeputyPersons;
 
     /**

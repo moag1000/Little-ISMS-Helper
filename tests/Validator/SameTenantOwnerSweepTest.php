@@ -12,6 +12,7 @@ use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\BCExercise;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
+use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Control;
 use App\Entity\CorrectiveAction;
 use App\Entity\CrisisTeam;
@@ -21,20 +22,27 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\DataSubjectRequest;
 use App\Entity\Document;
 use App\Entity\FourEyesApprovalRequest;
+use App\Entity\ISMSObjective;
 use App\Entity\Incident;
+use App\Entity\InterestedParty;
 use App\Entity\InternalAudit;
+use App\Entity\Location;
 use App\Entity\ManagementReview;
+use App\Entity\Patch;
 use App\Entity\Person;
+use App\Entity\PhysicalAccessLog;
 use App\Entity\ProcessingActivity;
 use App\Entity\PrototypeProtectionAssessment;
 use App\Entity\Risk;
 use App\Entity\RiskAppetite;
 use App\Entity\RiskTreatmentPlan;
+use App\Entity\Supplier;
 use App\Entity\Team;
 use App\Entity\Tenant;
 use App\Entity\ThreatIntelligence;
 use App\Entity\Training;
 use App\Entity\User;
+use App\Entity\Vulnerability;
 use App\Entity\WorkflowInstance;
 use App\Service\TenantContext;
 use App\Validator\Constraint\SameTenantOwner;
@@ -130,6 +138,50 @@ final class SameTenantOwnerSweepTest extends KernelTestCase
             [ProcessingActivity::class, 'contactPerson', Person::class, false],
             [ProcessingActivity::class, 'dataProtectionOfficer', User::class, false],
             [ProcessingActivity::class, 'dataProtectionOfficerPerson', Person::class, false],
+            // Fix round 2 (M-4 / M-5): Person collections + remaining Person / User FKs
+            [ComplianceRequirementFulfillment::class, 'responsiblePersonUser', User::class, false],
+            [ComplianceRequirementFulfillment::class, 'responsiblePerson', Person::class, false],
+            [ComplianceRequirementFulfillment::class, 'responsibleDeputyPersons', Person::class, true],
+            [Incident::class, 'responsiblePerson', Person::class, false],
+            [Incident::class, 'reportedByDeputyPersons', Person::class, true],
+            [PhysicalAccessLog::class, 'person', Person::class, false],
+            [InternalAudit::class, 'auditTeamMembers', Person::class, true],
+            [BCExercise::class, 'participantPersons', Person::class, true],
+            [BCExercise::class, 'observerPersons', Person::class, true],
+            [ManagementReview::class, 'personParticipants', Person::class, true],
+            [ManagementReview::class, 'reviewedByDeputyPersons', Person::class, true],
+            [CrisisTeam::class, 'personMembers', Person::class, true],
+            [CrisisTeam::class, 'teamLeaderDeputyPersons', Person::class, true],
+            [CrisisTeam::class, 'deputyLeaderDeputyPersons', Person::class, true],
+            [Team::class, 'members', Person::class, true],
+            [ISMSObjective::class, 'responsibleDeputyPersons', Person::class, true],
+            [InterestedParty::class, 'contactDeputyPersons', Person::class, true],
+            [Location::class, 'responsibleDeputyPersons', Person::class, true],
+            [Patch::class, 'responsibleDeputyPersons', Person::class, true],
+            [Vulnerability::class, 'responsibleDeputyPersons', Person::class, true],
+            [Supplier::class, 'contactDeputyPersons', Person::class, true],
+            [ProcessingActivity::class, 'contactDeputyPersons', Person::class, true],
+            [ProcessingActivity::class, 'dataProtectionOfficerDeputyPersons', Person::class, true],
+            [ThreatIntelligence::class, 'assignedDeputyPersons', Person::class, true],
+            [DataBreach::class, 'assessorDeputyPersons', Person::class, true],
+            [DataBreach::class, 'dataProtectionOfficerDeputyPersons', Person::class, true],
+            [PrototypeProtectionAssessment::class, 'assessorDeputyPersons', Person::class, true],
+            [DataProtectionImpactAssessment::class, 'dataProtectionOfficerDeputyPersons', Person::class, true],
+            [DataProtectionImpactAssessment::class, 'approverDeputyPersons', Person::class, true],
+            [DataProtectionImpactAssessment::class, 'conductorDeputyPersons', Person::class, true],
+            [CorrectiveAction::class, 'responsibleDeputyPersons', Person::class, true],
+            [FourEyesApprovalRequest::class, 'requestedApproverDeputyPersons', Person::class, true],
+            [DataSubjectRequest::class, 'assignedDeputyPersons', Person::class, true],
+            [Training::class, 'trainerDeputyPersons', Person::class, true],
+            [RiskTreatmentPlan::class, 'responsibleDeputyPersons', Person::class, true],
+            [AuditFinding::class, 'reportedByDeputyPersons', Person::class, true],
+            [AuditFinding::class, 'assignedDeputyPersons', Person::class, true],
+            [CustomReport::class, 'ownerDeputyPersons', Person::class, true],
+            [Asset::class, 'ownerDeputyPersons', Person::class, true],
+            [Risk::class, 'riskOwnerDeputyPersons', Person::class, true],
+            [Control::class, 'responsibleDeputyPersons', Person::class, true],
+            [BusinessProcess::class, 'processOwnerDeputyPersons', Person::class, true],
+            [BusinessContinuityPlan::class, 'planOwnerDeputyPersons', Person::class, true],
         ];
         foreach ($rows as $row) {
             $short = substr((string) strrchr($row[0], '\\'), 1);

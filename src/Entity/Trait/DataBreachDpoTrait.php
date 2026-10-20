@@ -42,6 +42,7 @@ trait DataBreachDpoTrait
     #[ORM\JoinTable(name: 'data_breach_dpo_deputy')]
     #[ORM\JoinColumn(name: 'data_breach_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $dataProtectionOfficerDeputyPersons;
 
     public function getDataProtectionOfficer(): ?User

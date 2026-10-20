@@ -53,6 +53,7 @@ class ManagementReview
     #[ORM\JoinTable(name: 'management_review_person_participants')]
     #[ORM\JoinColumn(name: 'management_review_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $personParticipants;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -128,6 +129,7 @@ class ManagementReview
     #[ORM\JoinTable(name: 'management_review_reviewed_by_deputies')]
     #[ORM\JoinColumn(name: 'management_review_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $reviewedByDeputyPersons;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

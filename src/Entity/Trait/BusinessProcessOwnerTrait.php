@@ -70,6 +70,7 @@ trait BusinessProcessOwnerTrait
     #[ORM\JoinTable(name: 'business_process_owner_deputy')]
     #[ORM\JoinColumn(name: 'business_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $processOwnerDeputyPersons;
 
     /** @return Collection<int, Person> */

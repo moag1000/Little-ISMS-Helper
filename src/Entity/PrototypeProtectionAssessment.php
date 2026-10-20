@@ -133,6 +133,7 @@ class PrototypeProtectionAssessment
     /** @var Collection<int, Person> */
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'ppa_assessor_deputies')]
+    #[SameTenantOwner]
     private Collection $assessorDeputyPersons;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]

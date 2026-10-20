@@ -151,6 +151,7 @@ class Location
     #[ORM\JoinTable(name: 'location_responsible_deputy')]
     #[ORM\JoinColumn(name: 'location_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $responsibleDeputyPersons;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]

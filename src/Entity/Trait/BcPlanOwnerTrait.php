@@ -68,6 +68,7 @@ trait BcPlanOwnerTrait
     #[ORM\JoinTable(name: 'bc_plan_owner_deputy')]
     #[ORM\JoinColumn(name: 'bc_plan_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $planOwnerDeputyPersons;
 
     /** @return Collection<int, Person> */

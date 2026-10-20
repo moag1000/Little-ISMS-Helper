@@ -75,6 +75,7 @@ class Team
     #[ORM\JoinTable(name: 'team_members')]
     #[ORM\JoinColumn(name: 'team_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $members;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]

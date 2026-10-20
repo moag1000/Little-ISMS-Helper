@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Trait\DpiaApproverTrait;
 use App\Entity\Trait\DpiaConductorTrait;
 use App\Enum\DpiaStatus;
 use App\Repository\DataProtectionImpactAssessmentRepository;
@@ -41,6 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class DataProtectionImpactAssessment
 {
     use DpiaConductorTrait;
+    use DpiaApproverTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -334,6 +336,7 @@ class DataProtectionImpactAssessment
     #[ORM\JoinTable(name: 'dpia_dpo_deputy')]
     #[ORM\JoinColumn(name: 'dpia_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $dataProtectionOfficerDeputyPersons;
 
     /**
@@ -402,31 +405,6 @@ class DataProtectionImpactAssessment
     #[ORM\Version]
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
     private int $lockVersion = 0;
-
-    /**
-     * Approver (e.g., Data Protection Officer, Management)
-     */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?User $approver = null;
-
-    /**
-     * Tri-State Person slot: approver as Person master-data record.
-     */
-    #[ORM\ManyToOne(targetEntity: Person::class)]
-    #[ORM\JoinColumn(name: 'approver_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Person $approverPerson = null;
-
-    /**
-     * Deputy Persons for the approver slot.
-     *
-     * @var Collection<int, Person>
-     */
-    #[ORM\ManyToMany(targetEntity: Person::class)]
-    #[ORM\JoinTable(name: 'dpia_approver_deputy')]
-    #[ORM\JoinColumn(name: 'dpia_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Collection $approverDeputyPersons;
 
     /**
      * Date of approval
@@ -1150,75 +1128,6 @@ class DataProtectionImpactAssessment
     public function getLockVersion(): int
     {
         return $this->lockVersion;
-    }
-
-    public function getApprover(): ?User
-    {
-        return $this->approver;
-    }
-
-    public function setApprover(?User $user): static
-    {
-        $this->approver = $user;
-        return $this;
-    }
-
-    public function getApproverPerson(): ?Person
-    {
-        return $this->approverPerson;
-    }
-
-    public function setApproverPerson(?Person $approverPerson): static
-    {
-        $this->approverPerson = $approverPerson;
-        return $this;
-    }
-
-    /** @return Collection<int, Person> */
-    public function getApproverDeputyPersons(): Collection
-    {
-        return $this->approverDeputyPersons;
-    }
-
-    public function addApproverDeputyPerson(Person $person): static
-    {
-        if (!$this->approverDeputyPersons->contains($person)) {
-            $this->approverDeputyPersons->add($person);
-        }
-        return $this;
-    }
-
-    public function removeApproverDeputyPerson(Person $person): static
-    {
-        $this->approverDeputyPersons->removeElement($person);
-        return $this;
-    }
-
-    /**
-     * Effective approver: prefer approver (User), then approverPerson, then null.
-     */
-    public function getEffectiveApprover(): ?string
-    {
-        return OwnerResolver::resolveEffective(
-            $this->approver,
-            $this->approverPerson,
-            null,
-        );
-    }
-
-    /**
-     * Full approver roster: primary + every deputy.
-     *
-     * @return list<string>
-     */
-    public function getAllApprovers(): array
-    {
-        return OwnerResolver::resolveAll(
-            $this->approver,
-            $this->approverPerson,
-            null,
-            $this->approverDeputyPersons,
-        );
     }
 
     public function getApprovalDate(): ?DateTimeInterface

@@ -827,6 +827,7 @@ public function __construct()
     #[ORM\JoinTable(name: 'training_trainer_deputies')]
     #[ORM\JoinColumn(name: 'training_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $trainerDeputyPersons;
 
     public function getTrainerUser(): ?User

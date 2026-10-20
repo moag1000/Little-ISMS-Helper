@@ -153,6 +153,7 @@ class CorrectiveAction
     #[ORM\JoinTable(name: 'ca_responsible_deputy')]
     #[ORM\JoinColumn(name: 'corrective_action_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $responsibleDeputyPersons;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]

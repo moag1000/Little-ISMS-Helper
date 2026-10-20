@@ -78,6 +78,7 @@ class CrisisTeam
     #[ORM\JoinTable(name: 'crisis_team_leader_deputies')]
     #[ORM\JoinColumn(name: 'crisis_team_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $teamLeaderDeputyPersons;
 
     /**
@@ -98,6 +99,7 @@ class CrisisTeam
     #[ORM\JoinTable(name: 'crisis_team_deputy_leader_deputies')]
     #[ORM\JoinColumn(name: 'crisis_team_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $deputyLeaderDeputyPersons;
 
     /**
@@ -119,6 +121,7 @@ class CrisisTeam
     #[ORM\JoinTable(name: 'crisis_team_persons')]
     #[ORM\JoinColumn(name: 'crisis_team_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $personMembers;
 
     /**

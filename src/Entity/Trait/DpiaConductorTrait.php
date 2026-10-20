@@ -42,6 +42,7 @@ trait DpiaConductorTrait
     #[ORM\JoinTable(name: 'dpia_conductor_deputy')]
     #[ORM\JoinColumn(name: 'dpia_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $conductorDeputyPersons;
 
     public function getConductor(): ?User

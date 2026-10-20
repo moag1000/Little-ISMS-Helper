@@ -143,6 +143,7 @@ class ThreatIntelligence
     #[ORM\JoinTable(name: 'threat_intelligence_assigned_deputies')]
     #[ORM\JoinColumn(name: 'threat_intelligence_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $assignedDeputyPersons;
 
     #[ORM\Column(type: Types::BOOLEAN)]

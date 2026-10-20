@@ -52,6 +52,7 @@ trait RiskOwnerPersonTrait
     #[ORM\JoinTable(name: 'risk_owner_deputy')]
     #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $riskOwnerDeputyPersons;
 
     /** @return Collection<int, Person> */

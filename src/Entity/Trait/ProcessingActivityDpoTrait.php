@@ -42,6 +42,7 @@ trait ProcessingActivityDpoTrait
     #[ORM\JoinTable(name: 'processing_activity_dpo_deputy')]
     #[ORM\JoinColumn(name: 'processing_activity_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $dataProtectionOfficerDeputyPersons;
 
     public function getDataProtectionOfficer(): ?User

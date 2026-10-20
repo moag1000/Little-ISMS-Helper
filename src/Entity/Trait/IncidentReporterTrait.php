@@ -68,6 +68,7 @@ trait IncidentReporterTrait
     #[ORM\JoinTable(name: 'incident_reporter_deputy')]
     #[ORM\JoinColumn(name: 'incident_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $reportedByDeputyPersons;
 
     /** @return Collection<int, Person> */

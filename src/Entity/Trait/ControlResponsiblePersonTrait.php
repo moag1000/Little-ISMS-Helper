@@ -71,6 +71,7 @@ trait ControlResponsiblePersonTrait
     #[ORM\JoinTable(name: 'control_responsible_deputy')]
     #[ORM\JoinColumn(name: 'control_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $responsibleDeputyPersons;
 
     /** @return Collection<int, Person> */

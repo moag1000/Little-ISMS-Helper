@@ -67,6 +67,7 @@ class FourEyesApprovalRequest
     #[ORM\JoinTable(name: 'four_eyes_approver_deputies')]
     #[ORM\JoinColumn(name: 'four_eyes_approval_request_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $requestedApproverDeputyPersons;
 
     #[ORM\Column(length: 20)]

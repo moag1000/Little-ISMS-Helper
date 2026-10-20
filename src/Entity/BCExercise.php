@@ -158,6 +158,7 @@ class BCExercise
     #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?Collection $participantPersons = null;
 
     /**
@@ -230,6 +231,7 @@ class BCExercise
     #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    #[SameTenantOwner]
     private ?Collection $observerPersons = null;
 
     /**

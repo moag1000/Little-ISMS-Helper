@@ -144,6 +144,7 @@ class AuditFinding
     #[ORM\JoinTable(name: 'audit_finding_reported_by_deputies')]
     #[ORM\JoinColumn(name: 'audit_finding_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $reportedByDeputyPersons;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -161,6 +162,7 @@ class AuditFinding
     #[ORM\JoinTable(name: 'audit_finding_assigned_deputies')]
     #[ORM\JoinColumn(name: 'audit_finding_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $assignedDeputyPersons;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]

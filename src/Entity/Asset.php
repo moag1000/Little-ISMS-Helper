@@ -863,6 +863,7 @@ class Asset
     #[ORM\JoinTable(name: 'asset_owner_deputy')]
     #[ORM\JoinColumn(name: 'asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $ownerDeputyPersons;
 
     /** @return Collection<int, Person> */

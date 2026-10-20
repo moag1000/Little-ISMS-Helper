@@ -279,6 +279,7 @@ class DataSubjectRequest
     #[ORM\JoinTable(name: 'dsr_assigned_deputies')]
     #[ORM\JoinColumn(name: 'data_subject_request_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[SameTenantOwner]
     private Collection $assignedDeputyPersons;
 
     /**
