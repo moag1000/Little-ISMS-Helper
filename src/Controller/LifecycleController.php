@@ -38,7 +38,8 @@ class LifecycleController extends AbstractController
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
-    #[IsCsrfTokenValid('lifecycle_transition')]
+    // fetch() callers (lifecycle_dropdown_controller.js) send the token as X-CSRF-Token header.
+    #[IsCsrfTokenValid('lifecycle_transition', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function transition(string $entityType, int $id, Request $request): JsonResponse
     {
         $mapping = $this->entityRegistry->lookup($entityType);
@@ -112,7 +113,7 @@ class LifecycleController extends AbstractController
     }
 
     #[Route('/lifecycle/{entityType}/bulk-transition', name: 'app_lifecycle_bulk_transition', methods: ['POST'])]
-    #[IsCsrfTokenValid('lifecycle_bulk_transition')]
+    #[IsCsrfTokenValid('lifecycle_bulk_transition', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function bulkTransition(string $entityType, Request $request): JsonResponse
     {
         $mapping = $this->entityRegistry->lookup($entityType);
