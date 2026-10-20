@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use App\Validator\Constraint\SameTenantOwner;
 
 /**
  * Supplier contact person: legacy free text + Pattern A dual-state owner cluster
@@ -30,6 +31,7 @@ trait SupplierContactPersonTrait
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'contact_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['supplier:read', 'supplier:write'])]
+    #[SameTenantOwner]
     private ?User $contactPersonUser = null;
 
     /**
@@ -38,6 +40,7 @@ trait SupplierContactPersonTrait
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'contact_person_ref_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['supplier:read', 'supplier:write'])]
+    #[SameTenantOwner]
     private ?Person $contactPersonRef = null;
 
     /**

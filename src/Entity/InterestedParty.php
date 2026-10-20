@@ -25,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Validator\Constraint\SameTenantOwner;
 
 /**
  * Interested Party Entity for ISO 27001 Chapter 4.2
@@ -100,6 +101,7 @@ class InterestedParty
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'contact_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['interested_party:read', 'interested_party:write'])]
+    #[SameTenantOwner]
     private ?User $contactPersonUser = null;
 
     /**
@@ -108,6 +110,7 @@ class InterestedParty
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'contact_person_ref_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['interested_party:read', 'interested_party:write'])]
+    #[SameTenantOwner]
     private ?Person $contactPersonRef = null;
 
     /**

@@ -16,8 +16,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class ISMSObjectiveType extends AbstractType implements SectionMapInterface
 {
@@ -221,23 +219,6 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
         $resolver->setDefaults([
             'data_class' => ISMSObjective::class,
             'translation_domain' => 'objective',
-            'constraints' => [
-                new Callback([$this, 'validateResponsibleSlot']),
-            ],
         ]);
-    }
-
-    public function validateResponsibleSlot(?ISMSObjective $entity, ExecutionContextInterface $context): void
-    {
-        if ($entity === null) {
-            return;
-        }
-        if ($entity->getResponsiblePersonUser() === null
-            && $entity->getResponsiblePersonRef() === null
-            && trim((string) $entity->getResponsiblePerson()) === '') {
-            $context->buildViolation('objective.error.owner_required')
-                ->atPath('responsiblePersonUser')
-                ->addViolation();
-        }
     }
 }

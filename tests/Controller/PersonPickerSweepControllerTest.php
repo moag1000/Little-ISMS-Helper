@@ -32,6 +32,7 @@ final class PersonPickerSweepControllerTest extends WebTestCase
     private User $actor;
     private User $owner;
     private Person $deputy;
+    private User $foreignUser;
     private string $uid;
 
     protected function setUp(): void
@@ -48,6 +49,10 @@ final class PersonPickerSweepControllerTest extends WebTestCase
 
         $this->deputy = (new Person())->setFullName('Dora Deputypick' . $this->uid)->setTenant($this->tenant);
         $this->em->persist($this->deputy);
+        $foreignTenant = (new Tenant())->setName('PP Foreign ' . $this->uid)->setCode('ppf_' . $this->uid);
+        $this->em->persist($foreignTenant);
+        $this->foreignUser = $this->makeUser('Foreigner', 'Foreignuser' . $this->uid, ['ROLE_USER']);
+        $this->foreignUser->setTenant($foreignTenant);
         $this->em->flush();
     }
 
@@ -159,7 +164,62 @@ final class PersonPickerSweepControllerTest extends WebTestCase
         self::assertStringContainsString(
             (string) $this->owner->getFullName(),
             (string) $this->client->getResponse()->getContent(),
-            'show page displays the structured owner, not the legacy text',
+            'show page displays the structured owner',
         );
+        self::assertStringNotContainsString(
+            'Legacy Freetext ' . $this->uid,
+            (string) $this->client->getResponse()->getContent(),
+            'show page prefers the structured owner over the legacy text',
+        );
+    }
+
+    /**
+     * @param class-string $class
+     */
+    #[Test]
+    #[DataProvider('entityProvider')]
+    public function foreignTenantUserIsNeitherListedNorAccepted(
+        string $class,
+        string $slug,
+        string $base,
+        string $deputies,
+    ): void {
+        $entity = $this->seed($class);
+        $id = $entity->getId();
+
+        $this->client->loginUser($this->actor);
+        $crawler = $this->client->request('GET', sprintf('/en/%s/%d/edit', $slug, $id));
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('Foreignuser' . $this->uid, $html, 'foreign user name leaked into picker');
+        self::assertStringContainsString('Ownerpick' . $this->uid, $html, 'same-tenant user is listed');
+
+        $userSelect = $crawler->filter(sprintf('select[name$="[%sUser]"]', $base));
+        $form = $userSelect->closest('form')->form();
+        $name = $userSelect->attr('name');
+        $form[$name]->disableValidation()->select((string) $this->foreignUser->getId());
+        $this->client->submit($form);
+        self::assertResponseStatusCodeSame(422);
+
+        $this->em->clear();
+        self::assertNull($this->em->find($class, $id)->{'get' . ucfirst($base) . 'User'}(), 'foreign user was persisted');
+    }
+
+    #[Test]
+    public function objectiveWithoutAnyOwnerShowsTranslatedError(): void
+    {
+        $objective = $this->seed(ISMSObjective::class);
+        $this->client->loginUser($this->actor);
+        $crawler = $this->client->request('GET', '/en/objective/' . $objective->getId() . '/edit');
+        $userSelect = $crawler->filter('select[name$="[responsiblePersonUser]"]');
+        $form = $userSelect->closest('form')->form();
+        $prefix = preg_replace('/\[responsiblePersonUser\]$/', '', $userSelect->attr('name'));
+        $form[$prefix . '[responsiblePerson]'] = '';
+
+        $this->client->submit($form);
+        self::assertResponseStatusCodeSame(422);
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Please specify a responsible person', $html);
+        self::assertStringNotContainsString('objective.validation.owner_required', $html, 'raw translation key shown');
     }
 }

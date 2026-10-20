@@ -21,9 +21,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Validator\Constraint\SameTenantOwner;
 
 #[ORM\Entity(repositoryClass: ISMSObjectiveRepository::class)]
 #[ApiResource(
@@ -110,6 +112,7 @@ class ISMSObjective
      */
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')]
     private ?string $responsiblePerson = null;
 
     /**
@@ -118,6 +121,7 @@ class ISMSObjective
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'responsible_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[SameTenantOwner]
     private ?User $responsiblePersonUser = null;
 
     /**
@@ -126,6 +130,7 @@ class ISMSObjective
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_ref_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[SameTenantOwner]
     private ?Person $responsiblePersonRef = null;
 
     /**
@@ -478,5 +483,23 @@ public function __construct()
             $this->responsiblePerson,
             $this->responsibleDeputyPersons,
         );
+    }
+
+    /**
+     * ISO 27001 6.2: an objective needs a responsible party. Structured owner
+     * (user or person) or, for legacy data, free text. Enforced here (not only
+     * in the form) so API / service writes are covered too.
+     */
+    #[Assert\Callback]
+    public function validateResponsibleParty(ExecutionContextInterface $context): void
+    {
+        if ($this->responsiblePersonUser === null
+            && $this->responsiblePersonRef === null
+            && trim((string) $this->responsiblePerson) === ''
+        ) {
+            $context->buildViolation('objective.validation.owner_required')
+                ->atPath('responsiblePersonUser')
+                ->addViolation();
+        }
     }
 }

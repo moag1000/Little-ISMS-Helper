@@ -137,7 +137,7 @@
 
                         {% if patch.effectiveResponsiblePerson %}
                             <dt class="col-sm-4">{{ 'patch.field.responsible_person'|trans({}, 'patches') }}</dt>
-                            <dd class="col-sm-8">{{ patch.effectiveResponsiblePerson ?? '—' }}</dd>
+                            <dd class="col-sm-8">{{ patch.effectiveResponsiblePerson }}</dd>
                         {% endif %}
 
                         <dt class="col-sm-4">{{ 'patch.field.requires_downtime'|trans({}, 'patches') }}</dt>

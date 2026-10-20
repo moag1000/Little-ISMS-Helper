@@ -830,11 +830,11 @@ final class MyDayAggregator
         if (in_array('ROLE_ADMIN', $roles, true)
             || in_array('ROLE_SUPER_ADMIN', $roles, true)
             || in_array('ROLE_MANAGER', $roles, true)
-            || in_array('ROLE_GROUP_CISO', $roles, true)) {
+            || in_array('ROLE_GROUP_CISO', $roles, true)
+            || ($user->getId() !== null && $vuln->getResponsiblePersonUser()?->getId() === $user->getId())) {
             return true;
         }
-        // Best-effort string-match on responsiblePerson (legacy free-text col).
-        $responsible = $vuln->getResponsiblePerson();
+        $responsible = $vuln->getResponsiblePerson(); // legacy free-text, best-effort match
         if ($responsible !== null && $responsible !== '') {
             $needle = strtolower($user->getUserIdentifier());
             $email = method_exists($user, 'getEmail') ? strtolower((string) $user->getEmail()) : '';

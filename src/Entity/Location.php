@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 
 /**
  * Location Entity
@@ -128,6 +129,7 @@ class Location
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'responsible_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['location:read', 'location:write'])]
+    #[SameTenantOwner]
     private ?User $responsiblePersonUser = null;
 
     /**
@@ -136,6 +138,7 @@ class Location
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_ref_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['location:read', 'location:write'])]
+    #[SameTenantOwner]
     private ?Person $responsiblePersonRef = null;
 
     /**

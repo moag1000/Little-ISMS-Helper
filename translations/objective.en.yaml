@@ -118,5 +118,3 @@ objective:
         employees: 'Employees'
         euro: 'Euro (€)'
         points: 'Points'
-    error:
-        owner_required: 'Please specify a responsible person (user, person, or free text).'

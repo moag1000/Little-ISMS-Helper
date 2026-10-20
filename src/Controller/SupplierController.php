@@ -473,7 +473,7 @@ class SupplierController extends AbstractController
                     (string) $s->getId(),
                     (string) $s->getName(),
                     (string) $s->getStatus(),
-                    (string) $s->getContactPerson(),
+                    (string) $s->getEffectiveContactPerson(),
                     (string) $s->getCountryOfHeadOffice(),
                 ];
             },

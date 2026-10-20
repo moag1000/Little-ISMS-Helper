@@ -14,6 +14,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Service\OwnerResolver;
+use App\Validator\Constraint\SameTenantOwner;
 
 /**
  * Patch Entity for NIS2 Compliance (Art. 21.2.e — security in development, acquisition, maintenance incl. vulnerability handling)
@@ -160,6 +161,7 @@ class Patch
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'responsible_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?User $responsiblePersonUser = null;
 
     /**
@@ -167,6 +169,7 @@ class Patch
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_ref_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[SameTenantOwner]
     private ?Person $responsiblePersonRef = null;
 
     /**

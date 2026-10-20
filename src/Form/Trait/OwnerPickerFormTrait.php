@@ -6,6 +6,7 @@ namespace App\Form\Trait;
 
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -102,10 +103,9 @@ trait OwnerPickerFormTrait
         $required      = $config['required'] ?? false;
         $defaultToCurrentUser = $config['default_to_current_user'] ?? false;
 
-        $builder->add($userField, EntityType::class, [
+        $builder->add($userField, OwnerUserType::class, [
             'label'        => $config['user_label']       ?? $prefix . '.field.owner_user',
                 'translation_domain' => $domain,
-            'class'        => User::class,
             'choice_label' => static fn (User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
             'required'     => $required,
             'placeholder'  => $config['user_placeholder'] ?? $prefix . '.placeholder.owner_user',

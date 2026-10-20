@@ -570,6 +570,31 @@ final class MyDayAggregatorTest extends TestCase
     }
 
     #[Test]
+    public function testVulnerabilityVisibleToStructuredOwnerButNotToOtherUser(): void
+    {
+        $tenant = $this->createTenant(1);
+        $owner = $this->createUser(11, $tenant, ['ROLE_USER']);
+        $other = $this->createUser(12, $tenant, ['ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllExceptVuln();
+
+        $vuln = $this->createMock(Vulnerability::class);
+        $vuln->method('getId')->willReturn(99);
+        $vuln->method('getCveId')->willReturn('CVE-2026-1234');
+        $vuln->method('getTitle')->willReturn('Critical RCE in dependency');
+        $vuln->method('getSeverity')->willReturn('critical');
+        $vuln->method('getCvssScore')->willReturn('9.8');
+        $vuln->method('getRemediationDeadline')->willReturn(new DateTimeImmutable('+3 days'));
+        $vuln->method('getResponsiblePerson')->willReturn(null);
+        $vuln->method('getResponsiblePersonUser')->willReturn($owner);
+        $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([$vuln]);
+        $this->urls->method('generate')->willReturn('/vulnerability/99');
+
+        self::assertSame(1, $this->aggregator->aggregate($owner)['summary']['vulnerabilities_critical_unpatched']);
+        self::assertSame(0, $this->aggregator->aggregate($other)['summary']['vulnerabilities_critical_unpatched']);
+    }
+
+    #[Test]
     public function testAuditChecklistDuePassesUserAndTenant(): void
     {
         $tenant = $this->createTenant(1);
