@@ -42,7 +42,7 @@ final class DashboardAuditFindingKpiTest extends TestCase
         }
 
         $audits = $this->createStub(InternalAuditRepository::class);
-        $audits->method('findAll')->willReturn([$audit]);
+        $audits->method('findBy')->willReturn([$audit]);
 
         $service = new DashboardStatisticsService(
             $this->createStub(AssetRepository::class),
@@ -54,7 +54,7 @@ final class DashboardAuditFindingKpiTest extends TestCase
             auditRepository: $audits,
         );
 
-        $kpis = (new \ReflectionMethod($service, 'getAuditKPIs'))->invoke($service);
+        $kpis = (new \ReflectionMethod($service, 'getAuditKPIs'))->invoke($service, new \App\Entity\Tenant());
 
         // open + in_progress
         self::assertSame(2, $kpis['open_audit_findings']['value']);
@@ -106,10 +106,10 @@ final class DashboardAuditFindingKpiTest extends TestCase
     private function auditKpis(array $list): array
     {
         $audits = $this->createStub(InternalAuditRepository::class);
-        $audits->method('findAll')->willReturn($list);
+        $audits->method('findBy')->willReturn($list);
         $service = $this->service($audits);
 
-        return (new \ReflectionMethod($service, 'getAuditKPIs'))->invoke($service);
+        return (new \ReflectionMethod($service, 'getAuditKPIs'))->invoke($service, new \App\Entity\Tenant());
     }
 
     private function service(InternalAuditRepository $audits): DashboardStatisticsService

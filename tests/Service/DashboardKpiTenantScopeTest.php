@@ -93,6 +93,51 @@ final class DashboardKpiTenantScopeTest extends TestCase
         self::assertSame(1, $this->invoke($service, 'getDocumentationKPIs')['total_documents']['value']);
     }
 
+    /**
+     * Same two-tenant setup through the public entry point the snapshot
+     * cron uses — proves getManagementKPIs($tenant) threads the tenant into
+     * every block, including the treatment-plan counts of the management
+     * and risk blocks.
+     */
+    #[Test]
+    public function getManagementKpisThreadsTheTenantIntoEveryBlock(): void
+    {
+        $overdueB = new \App\Entity\RiskTreatmentPlan();
+        $overdueB->setTargetCompletionDate(new \DateTime('-40 days'));
+        $overdueB->setStatus(\App\Enum\RiskTreatmentPlanStatus::InProgress->value); // @phpstan-ignore lifecycle.directSetStatus (test fixture)
+
+        $modules = $this->createStub(ModuleConfigurationService::class);
+        $modules->method('getActiveModules')->willReturn(['risks', 'bcm', 'training', 'suppliers', 'documents']);
+        $trainingA = new Training();
+        $trainingA->setStatus(TrainingStatus::Completed->value); // @phpstan-ignore lifecycle.directSetStatus (test fixture)
+        $supplierA = (new Supplier())->setCriticality('critical')->setLastSecurityAssessment(new \DateTime('-1 month'));
+
+        $service = new DashboardStatisticsService(
+            $this->createStub(AssetRepository::class),
+            $this->createStub(RiskRepository::class),
+            $this->createStub(IncidentRepository::class),
+            $this->createStub(ControlRepository::class),
+            $this->createStub(Security::class),
+            $modules,
+            trainingRepository: $this->repo(TrainingRepository::class, [$trainingA], [new Training()]),
+            businessProcessRepository: $this->repo(BusinessProcessRepository::class, [], [(new BusinessProcess())->setCriticality('high')]),
+            bcPlanRepository: $this->repo(BusinessContinuityPlanRepository::class, [], [new BusinessContinuityPlan()]),
+            bcExerciseRepository: $this->repo(BCExerciseRepository::class, [], []),
+            supplierRepository: $this->repo(SupplierRepository::class, [$supplierA], [(new Supplier())->setCriticality('high')]),
+            documentRepository: $this->repo(DocumentRepository::class, [$this->document()], [$this->document()]),
+            treatmentPlanRepository: $this->repo(\App\Repository\RiskTreatmentPlanRepository::class, [], [$overdueB]),
+        );
+
+        $kpis = $service->getManagementKPIs($this->tenantA);
+
+        self::assertSame(100, $kpis['training']['training_completion_rate']['value']);
+        self::assertSame(0, $kpis['business_continuity']['critical_processes']['value']);
+        self::assertSame(100, $kpis['supplier_management']['supplier_assessment_rate']['value']);
+        self::assertSame(1, $kpis['documentation']['total_documents']['value']);
+        self::assertSame(0, $kpis['risk_management']['overdue_treatments']['value']);
+        self::assertSame(0, $kpis['management']['oldest_overdue_item_age']['value']);
+    }
+
     private function document(): Document
     {
         $document = new Document();

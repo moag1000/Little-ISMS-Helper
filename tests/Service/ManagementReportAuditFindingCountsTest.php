@@ -16,7 +16,6 @@ use App\Repository\ControlRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
-use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\TrainingRepository;
@@ -49,34 +48,33 @@ final class ManagementReportAuditFindingCountsTest extends TestCase
             $thisYear->addStructuredFinding((new AuditFinding())->setStatus($status));
         }
 
-        $audits = $this->createStub(InternalAuditRepository::class);
-        $audits->method('findAll')->willReturn([$lastYear, $thisYear]);
-        $reviews = $this->createStub(ManagementReviewRepository::class);
-        $reviews->method('findAll')->willReturn([]);
+        $tenant = new \App\Entity\Tenant();
+        $dashboard = $this->createMock(DashboardStatisticsService::class);
+        $dashboard->expects(self::once())->method('auditsFor')->with($tenant)->willReturn([$lastYear, $thisYear]);
+        $dashboard->method('managementReviewsFor')->willReturn([]);
 
-        $report = $this->service($audits, $reviews)->getAuditManagementReport();
+        $report = $this->service($dashboard)->getAuditManagementReport($tenant);
 
         self::assertSame(5, $report['total_findings']);
         self::assertSame(2, $report['open_findings'], 'open + in_progress, all years');
     }
 
-    private function service(InternalAuditRepository $audits, ManagementReviewRepository $reviews): ManagementReportService
+    private function service(DashboardStatisticsService $dashboard): ManagementReportService
     {
         return new ManagementReportService(
             $this->createStub(AssetRepository::class),
             $this->createStub(RiskRepository::class),
             $this->createStub(ControlRepository::class),
             $this->createStub(IncidentRepository::class),
-            $audits,
+            $this->createStub(InternalAuditRepository::class),
             $this->createStub(TrainingRepository::class),
-            $reviews,
             $this->createStub(BusinessContinuityPlanRepository::class),
             $this->createStub(BCExerciseRepository::class),
             $this->createStub(BusinessProcessRepository::class),
             $this->createStub(ComplianceFrameworkRepository::class),
             $this->createStub(DataBreachRepository::class),
             $this->createStub(RiskTreatmentPlanRepository::class),
-            $this->createStub(DashboardStatisticsService::class),
+            $dashboard,
             $this->createStub(TranslatorInterface::class),
         );
     }

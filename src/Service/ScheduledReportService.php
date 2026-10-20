@@ -307,7 +307,7 @@ final class ScheduledReportService
                 'report' => $this->reportService->getComplianceStatusReport(),
             ],
             ScheduledReport::TYPE_AUDIT => [
-                'report' => $this->reportService->getAuditManagementReport(),
+                'report' => $this->reportService->getAuditManagementReport($this->tenantContext->getCurrentTenant()),
             ],
             ScheduledReport::TYPE_ASSETS => [
                 'report' => $this->reportService->getAssetManagementReport(),
@@ -348,13 +348,13 @@ final class ScheduledReportService
      */
     private function getBoardReportData(): array
     {
-        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
-        $boardData = $this->roleDashboardService->getBoardDashboard();
-
-        // Top 5 risks sorted by inherent risk level
         $tenant = $this->security->getUser()?->getTenant()
-            ?? $this->tenantContext->getCurrentTenant();
-        $allRisks = $tenant ? $this->riskRepository->findByTenant($tenant) : [];
+            ?? $this->tenantContext->getCurrentTenant()
+            ?? throw new TenantOrphanException(null, 'Board report requires a tenant context.');
+        $kpis = $this->dashboardStatisticsService->getManagementKPIs($tenant); // explicit tenant (cron: no user)
+        $boardData = $this->roleDashboardService->getBoardDashboard();
+        // Top 5 risks sorted by inherent risk level
+        $allRisks = $this->riskRepository->findByTenant($tenant);
         usort($allRisks, fn($a, $b) => $b->getInherentRiskLevel() - $a->getInherentRiskLevel());
         $topRiskEntities = array_slice($allRisks, 0, 5);
 
