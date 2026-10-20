@@ -227,9 +227,9 @@ translations/incident.en.yaml:1:incident_management
 translations/incident.en.yaml:7:deadline_counter
 translations/incident.en.yaml:434:iso_9001_bridge
 translations/interested_parties.de.yaml:1:interested_party
-translations/interested_parties.de.yaml:113:iso_9001_bridge
+translations/interested_parties.de.yaml:124:iso_9001_bridge
 translations/interested_parties.en.yaml:1:interested_party
-translations/interested_parties.en.yaml:113:iso_9001_bridge
+translations/interested_parties.en.yaml:124:iso_9001_bridge
 translations/journey.de.yaml:46:first_hour
 translations/journey.en.yaml:46:first_hour
 translations/locations.de.yaml:1:location
@@ -333,11 +333,11 @@ translations/security.en.yaml:23:reauth
 translations/setup_wizard.de.yaml:1:existing_frameworks
 translations/setup_wizard.en.yaml:1:existing_frameworks
 translations/suppliers.de.yaml:1:supplier
-translations/suppliers.de.yaml:404:corporate
-translations/suppliers.de.yaml:417:iso_9001_bridge
+translations/suppliers.de.yaml:413:corporate
+translations/suppliers.de.yaml:426:iso_9001_bridge
 translations/suppliers.en.yaml:1:supplier
-translations/suppliers.en.yaml:403:corporate
-translations/suppliers.en.yaml:416:iso_9001_bridge
+translations/suppliers.en.yaml:412:corporate
+translations/suppliers.en.yaml:425:iso_9001_bridge
 translations/tenant.de.yaml:238:corporate
 translations/tenant.en.yaml:238:corporate
 translations/threat.de.yaml:125:field
