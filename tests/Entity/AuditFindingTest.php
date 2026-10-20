@@ -104,4 +104,26 @@ final class AuditFindingTest extends TestCase
         self::assertSame('test', AuditFinding::VERIFICATION_TEST);
         self::assertSame('metrics-monitoring', AuditFinding::VERIFICATION_METRICS_MONITORING);
     }
+
+    /**
+     * Review M-5: a finding belongs to its audit's organisation — the
+     * finding backlog counted via the audit (AuditFindingBacklog) and via
+     * finding.tenant (AuditFindingRepository::findOpenByTenant()) only agree
+     * while this holds, so the entity enforces it.
+     */
+    #[Test]
+    public function findingTakesItsAuditsTenant(): void
+    {
+        $tenant = new \App\Entity\Tenant();
+        $other = new \App\Entity\Tenant();
+        $audit = (new \App\Entity\InternalAudit())->setTenant($tenant);
+
+        $finding = (new AuditFinding())->setTenant($other);
+        $finding->setAudit($audit);
+        self::assertSame($tenant, $finding->getTenant(), 'setAudit aligns the tenant');
+
+        $finding->setTenant($other);
+        $finding->syncTenantFromAudit();
+        self::assertSame($tenant, $finding->getTenant(), 'persist/update hook realigns a diverging tenant');
+    }
 }

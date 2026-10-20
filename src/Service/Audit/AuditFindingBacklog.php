@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Audit;
 
+use App\Entity\AuditFinding;
 use App\Entity\InternalAudit;
 
 /**
@@ -15,6 +16,10 @@ use App\Entity\InternalAudit;
  * deprecated free-text field). Open = not done
  * ({@see \App\Enum\AuditFindingStatus::isDone()}: resolved / verified /
  * closed), whatever year the audit belongs to — a backlog, not a period.
+ *
+ * Counting via the audit equals AuditFindingRepository::findOpenByTenant()
+ * (via finding.tenant) because AuditFinding keeps its tenant equal to its
+ * audit's ({@see AuditFinding::syncTenantFromAudit()}).
  */
 final class AuditFindingBacklog
 {
