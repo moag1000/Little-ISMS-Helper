@@ -394,6 +394,9 @@ class StatementOfApplicabilityController extends AbstractController
      * Accept an A2 auto-mapping suggestion — creates the M:M link between
      * the Control and the suggested ComplianceRequirement and records the
      * acceptance in the audit log so the decision is reviewable later.
+     *
+     * Same rule as app_soa_edit: linking a requirement changes the control,
+     * so read-only roles (users, auditors, holding roles) are refused.
      */
     #[Route(
         '/soa/{id}/accept-suggestion/{requirementId}',
@@ -401,6 +404,7 @@ class StatementOfApplicabilityController extends AbstractController
         requirements: ['id' => '\d+', 'requirementId' => '\d+'],
         methods: ['POST']
     )]
+    #[IsGranted(ControlVoter::EDIT, subject: 'control')]
     public function acceptSuggestion(Request $request, Control $control, int $requirementId): Response
     {
         if (!$this->isCsrfTokenValid('accept_suggestion_' . $control->getId() . '_' . $requirementId, (string) $request->request->get('_token'))) {

@@ -3,7 +3,7 @@
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
 {% trans_default_domain 'audits' %}
 {% set _statusVariant = finding.status == 'open' ? 'warning'
-    : (finding.status in ['verified', 'closed', 'resolved'] ? 'success'
+    : (finding.done ? 'success'
     : (finding.status == 'in_progress' ? 'info' : 'secondary')) %}
 {% set _findingNumber = finding.findingNumber ?? ('#' ~ finding.id) %}
 <tr class="fa-table__row" id="audit-finding-row-{{ finding.id }}"

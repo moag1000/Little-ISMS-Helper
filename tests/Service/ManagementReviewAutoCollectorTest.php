@@ -60,4 +60,64 @@ final class ManagementReviewAutoCollectorTest extends KernelTestCase
         self::assertStringStartsWith('Context changes', (string) $review->getChangesRelevantToISMS());
         self::assertInstanceOf(ManagementReview::class, $this->em->find(ManagementReview::class, $review->getId()));
     }
+
+    /**
+     * The "audit results" and "non-conformities" narratives read
+     * audit_data keys the report never produced (always 0). They now carry
+     * the audit KPI's figures — planned / completed audits of this calendar
+     * year, open findings as backlog — for the review's organisation only.
+     */
+    #[Test]
+    public function auditNarrativesShowTheOrganisationsAuditFigures(): void
+    {
+        $tenant = $this->tenant('own');
+        $other = $this->tenant('other');
+        $this->audit($tenant, 'completed', [\App\Enum\AuditFindingStatus::Open, \App\Enum\AuditFindingStatus::Closed]);
+        $this->audit($tenant, 'planned', []);
+        $this->audit($other, 'completed', [\App\Enum\AuditFindingStatus::Open]);
+        $this->em->flush();
+
+        $collector = self::getContainer()->get(ManagementReviewAutoCollector::class);
+        $review = $collector->createManagementReviewFromReport($tenant, new \DateTimeImmutable('today'), 'en');
+
+        $auditResults = (string) $review->getAuditResults();
+        self::assertStringContainsString('Completed audits (this year): 1', $auditResults);
+        self::assertStringContainsString('Planned audits (this year): 2', $auditResults);
+        $nc = (string) $review->getNonConformitiesStatus();
+        self::assertStringContainsString('Total: 2 findings', $nc);
+        self::assertStringContainsString('Open: 1', $nc);
+    }
+
+    private function tenant(string $label): Tenant
+    {
+        $suffix = substr(uniqid(), -6);
+        $tenant = (new Tenant())->setName('Audit ' . $label . ' ' . $suffix)->setCode('aud_' . $label . '_' . $suffix);
+        $tenant->setIsActive(true);
+        $this->em->persist($tenant);
+
+        return $tenant;
+    }
+
+    /**
+     * @param list<\App\Enum\AuditFindingStatus> $findingStatuses
+     */
+    private function audit(Tenant $tenant, string $status, array $findingStatuses): void
+    {
+        $audit = new \App\Entity\InternalAudit();
+        $audit->setTenant($tenant);
+        $audit->setAuditNumber('A-' . substr(uniqid(), -8));
+        $audit->setTitle('Audit ' . $status);
+        $audit->setPlannedDate(new \DateTime());
+        $audit->setStatus($status); // @phpstan-ignore lifecycle.directSetStatus (test fixture)
+        $this->em->persist($audit);
+        foreach ($findingStatuses as $i => $findingStatus) {
+            $finding = (new \App\Entity\AuditFinding())->setStatus($findingStatus);
+            $finding->setTenant($tenant);
+            $finding->setTitle('F' . $i);
+            $finding->setFindingNumber('F-' . substr(uniqid(), -8) . $i);
+            $finding->setDescription('Finding ' . $i);
+            $audit->addStructuredFinding($finding);
+            $this->em->persist($finding);
+        }
+    }
 }

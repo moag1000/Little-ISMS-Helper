@@ -216,14 +216,17 @@ class RiskRepository extends ServiceEntityRepository
      * ISO 27001:2022 Clause 6.1.3.d - Risks should be reviewed periodically
      *
      * @param DateTimeInterface $asOf Date to check against (default: today)
-     * @return Risk[] Array of risks with nextReviewDate <= asOf
+     * @return Risk[] Array of risks with nextReviewDate <= asOf that require
+     *                periodic review ({@see \App\Enum\RiskStatus::requiresPeriodicReview()})
      */
     public function findDueForReview(?Tenant $tenant = null, DateTimeInterface $asOf = new DateTime()): array
     {
         $qb = $this->createQueryBuilder('r')
             ->where('r.reviewDate IS NOT NULL')
             ->andWhere('r.reviewDate <= :asOf')
-            ->setParameter('asOf', $asOf);
+            ->andWhere('r.status IN (:reviewable)')
+            ->setParameter('asOf', $asOf)
+            ->setParameter('reviewable', \App\Enum\RiskStatus::periodicReviewValues());
 
         if ($tenant !== null) {
             $qb->andWhere('r.tenant = :tenant')

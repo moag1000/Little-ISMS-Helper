@@ -9,6 +9,7 @@ use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\RiskAppetite;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\AutomaticCloseRefusal;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
@@ -385,10 +386,13 @@ class WorkflowAutoProgressionService
 
     /**
      * Auto-approves $step (and, recursively, following auto-progressable
-     * steps). Returns false when $step itself could not be completed because
-     * the closing four-eyes approval was refused — the step then stays
-     * current, awaiting a manual approval by a second person, and nothing
-     * of this attempt is left in memory or written.
+     * steps) as an automatic actor. An automatic approval never satisfies
+     * four-eyes: when approving $step would close the workflow through the
+     * four-eyes `approve` transition, FourEyesValidator refuses it
+     * (`automatic_actor`) — even if the user who saved the fields could have
+     * approved by hand. Returns false then; the step stays current, awaiting
+     * a manual approval, and nothing of this attempt is left in memory or
+     * written.
      */
     private function autoApproveStep(
         WorkflowInstance $workflowInstance,
@@ -408,16 +412,20 @@ class WorkflowAutoProgressionService
 
         $snapshot = $workflowInstance->captureProgress();
         try {
+            $this->workflowService->assertAutomaticApprovalAllowed($workflowInstance, $step);
             $this->applyAutoApproval($workflowInstance, $step, $user, $entity, $depth);
-        } catch (FourEyesRequiredException $e) {
-            // The user who saved the fields may not grant the closing
-            // four-eyes approval (e.g. they initiated the workflow). Undo this
-            // attempt; the step waits for a manual approval by someone else.
+        } catch (\Throwable $e) {
+            // Automatic progression may not grant the closing approval
+            // (four-eyes, or a lifecycle guard without tenant context). Undo
+            // this attempt; the step waits for a manual approval.
+            if (!AutomaticCloseRefusal::isRefusal($e)) {
+                throw $e;
+            }
             $workflowInstance->restoreProgress($snapshot);
-            $this->logger->info('[WAPS legacy] Closing approval refused (four-eyes) — step left for manual approval', [
+            $this->logger->info('[WAPS legacy] Closing approval refused — step left for manual approval', [
                 'workflow_instance_id' => $workflowInstance->getId(),
                 'step_id'              => $step->getId(),
-                'reason_code'          => $e->reasonCode,
+                'reason_code'          => $e instanceof FourEyesRequiredException ? $e->reasonCode : 'guard_blocked',
             ]);
             if ($depth > 0 && $step->getStepType() !== 'notification') {
                 // Reached via auto-progression: the step was never assigned.
@@ -456,13 +464,14 @@ class WorkflowAutoProgressionService
             $workflowInstance,
             $user,
             'Step automatically approved based on field completion',
+            automatic: true,
         );
 
         if ($nextStep instanceof WorkflowStep) {
             if ($this->canAutoProgress($nextStep, $entity)) {
                 $this->autoApproveStep($workflowInstance, $nextStep, $user, $entity, $depth + 1);
             } else {
-                $this->workflowService->handleStepAssignment($workflowInstance, $nextStep, $user);
+                $this->workflowService->handleStepAssignment($workflowInstance, $nextStep, $user, automatic: true);
             }
         } else {
             $this->handleWorkflowCompletion($workflowInstance, $entity, $user);

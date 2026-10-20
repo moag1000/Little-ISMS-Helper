@@ -17,6 +17,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\MfaTokenRepository;
 use App\Security\UserAdministrationGuard;
 use App\Security\Voter\UserVoter;
+use App\Service\User\UserListScope;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\InitialAdminService;
@@ -53,23 +54,14 @@ class UserManagementController extends AbstractController
     }
     #[Route('/admin/users', name: 'user_management_index', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
-    public function index(UserRepository $userRepository): Response
+    public function index(UserRepository $userRepository, UserListScope $userListScope): Response
     {
-
-        // findAllWithRoles() eager-loads customRoles via LEFT JOIN, eliminating
-        // the N+1 pattern (before: 1+N queries, after: 2 queries).
-        $users = $userRepository->findAllWithRoles();
-        $statistics = $userRepository->getUserStatistics();
-
-        // Security hotfix (admin scope): non-SUPER_ADMIN actors only see users
-        // of their accessible tenant tree (TenantFilter skips User).
-        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-            $users = array_values(array_filter(
-                $users,
-                fn (User $candidate): bool => $this->isGranted(UserVoter::VIEW, $candidate),
-            ));
-            $statistics = $userRepository->computeStatistics($users);
-        }
+        // Users the actor may view (UserListScope — shared with the exports
+        // and the tour report; TenantFilter skips User).
+        $users = $userListScope->visibleUsers();
+        $statistics = $this->isGranted('ROLE_SUPER_ADMIN')
+            ? $userRepository->getUserStatistics()
+            : $userRepository->computeStatistics($users);
 
         // Identify the initial admin for UI display
         $initialAdmin = $this->initialAdminService->getInitialAdmin();
@@ -341,22 +333,11 @@ class UserManagementController extends AbstractController
     }
     #[Route('/admin/users/export', name: 'user_management_export', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
-    public function export(
-        UserRepository $userRepository,
-        \App\Service\Job\JobTenantScope $jobTenantScope,
-    ): StreamedResponse {
-        // Own organisation only (audit M-7); instance-wide solely for a SUPER_ADMIN
-        // without an organisation, denied for any other account without one.
-        $tenant = $jobTenantScope->currentUserScope();
-        $users = $tenant !== null ? $userRepository->findBy(['tenant' => $tenant]) : $userRepository->findAll();
-        // Security hotfix (admin scope): a non-SUPER_ADMIN actor additionally
-        // exports only users it may view (UserVoter — never SUPER-only rows).
-        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-            $users = array_values(array_filter(
-                $users,
-                fn (User $candidate): bool => $this->isGranted(UserVoter::VIEW, $candidate),
-            ));
-        }
+    public function export(UserListScope $userListScope): StreamedResponse
+    {
+        // Exactly the user list's set (UserListScope); same fail-closed gate as
+        // the async export (403 for an account that sees no organisation).
+        [$users] = $userListScope->exportScopeForCurrentUser();
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');
@@ -424,15 +405,15 @@ class UserManagementController extends AbstractController
     public function exportDispatch(
         Request $request,
         \App\Service\Job\AsyncJobDispatcher $asyncJobDispatcher,
-        \App\Service\Job\JobTenantScope $jobTenantScope,
+        UserListScope $userListScope,
         TranslatorInterface $translator,
     ): Response {
         return $asyncJobDispatcher->dispatchWithProgress(
             request: $request,
             jobClass: \App\Job\ExportUsersJob::class,
-            // The job runs detached from the request, so the actor's scope
-            // travels as args (fail-closed, JobTenantScope).
-            jobArgs: $jobTenantScope->argsForCurrentUser(),
+            // The job runs detached from the request, so the actor's user-list
+            // scope travels as args (fail-closed, UserListScope).
+            jobArgs: $userListScope->exportArgsForCurrentUser(),
             jobName: 'user_management.export',
             payload: [
                 '_label' => $translator->trans('user.export.progress_title', [], 'user'),

@@ -166,13 +166,13 @@ class RiskController extends AbstractController
 
         $risks = $this->riskRegisterExporter->filter($risks, $level, $status, $treatment, $owner);
 
-        // Filter to overdue reviews only (review date in the past or null)
+        // Overdue reviews only (date passed or null) of risks requiring review (RiskStatus — never closed)
         $reviewOverdue = $request->query->get('review_overdue');
         if ($reviewOverdue === '1') {
             $now = new \DateTime();
             $risks = array_filter($risks, function (Risk $risk) use ($now): bool {
-                $reviewDate = $risk->getReviewDate();
-                return $reviewDate === null || $reviewDate < $now;
+                $due = $risk->getReviewDate() === null || $risk->getReviewDate() < $now;
+                return $due && $risk->getStatus()?->requiresPeriodicReview() !== false;
             });
         }
 

@@ -450,7 +450,7 @@ management_reports:
         inputs_title: 'Eingaben der Managementbewertung'
         previous_actions: 'Status der Maßnahmen aus vorherigen Bewertungen'
         previous_reviews_count: 'Bisherige Managementbewertungen'
-        completed_audits: 'Abgeschlossene Audits'
+        completed_audits: 'Abgeschlossene Audits (gesamt)'
         changes_title: 'Änderungen interner/externer Themen'
         total_risks: 'Identifizierte Risiken gesamt'
         new_risks: 'Neue/geänderte Risiken'

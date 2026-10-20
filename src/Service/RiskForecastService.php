@@ -76,8 +76,8 @@ class RiskForecastService
             $high = count(array_filter($monthRisks, fn(Risk $r) => $r->getInherentRiskLevel() >= 12 && $r->getInherentRiskLevel() < 20));
             $critical = count(array_filter($monthRisks, fn(Risk $r) => $r->getInherentRiskLevel() >= 20));
 
-            // Count open vs closed
-            $open = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus() !== RiskStatus::Closed));
+            // open = not handled, closed = state Closed; handled-but-not-closed is in neither (open+closed ≠ total)
+            $open = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus()?->isHandled() !== true));
             $closed = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus() === RiskStatus::Closed));
 
             $data[] = [

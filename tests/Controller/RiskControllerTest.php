@@ -241,6 +241,28 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * review_overdue=1 follows RiskStatus::requiresPeriodicReview(): a closed
+     * risk is never review-due, an accepted one is.
+     */
+    #[Test]
+    public function testReviewOverdueFilterSkipsClosedRisks(): void
+    {
+        $this->testRisk->setReviewDate(new \DateTime('-10 days'));
+        $this->testRisk->setStatus(\App\Enum\RiskStatus::Closed);
+        $this->entityManager->flush();
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request('GET', '/en/risk', ['review_overdue' => '1']);
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString((string) $this->testRisk->getTitle(), (string) $this->client->getResponse()->getContent());
+
+        $this->testRisk->setStatus(\App\Enum\RiskStatus::Accepted);
+        $this->entityManager->flush();
+        $this->client->request('GET', '/en/risk', ['review_overdue' => '1']);
+        $this->assertStringContainsString((string) $this->testRisk->getTitle(), (string) $this->client->getResponse()->getContent());
+    }
+
     #[Test]
     public function testIndexFiltersRisksByTreatment(): void
     {

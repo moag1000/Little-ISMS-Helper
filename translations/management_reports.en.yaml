@@ -450,7 +450,7 @@ management_reports:
         inputs_title: 'Management Review Inputs'
         previous_actions: 'Status of Actions from Previous Reviews'
         previous_reviews_count: 'Previous Management Reviews'
-        completed_audits: 'Completed Audits'
+        completed_audits: 'Completed Audits (all)'
         changes_title: 'Changes in Internal/External Issues'
         total_risks: 'Total Risks Identified'
         new_risks: 'New/Changed Risks'

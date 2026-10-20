@@ -31,6 +31,15 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
  * Otherwise throws FourEyesRequiredException (caught by LifecycleService
  * + translated to 422 in LifecycleController).
  *
+ * ── Automatic actors ────────────────────────────────────────────────────
+ * When the caller is automatic (`four_eyes_automatic: true` — the
+ * time-based cron, the field-completion listener, the deprecated
+ * auto-progression service) a four-eyes transition is always refused
+ * (reason code `automatic_actor`), before any approver or escape logic.
+ * Automatic progression never satisfies the two-person rule; the step
+ * stays pending for a human approval. This is the single place that
+ * decides it — callers only declare that they are automatic.
+ *
  * ── Single-user-tenant escape (KMU pragma) ──────────────────────────────
  * Many KMU run their ISMS as a one-person operation (ISB == Geschäftsführer).
  * Hard-blocking 4-eyes would make the tool unusable for them. So if nobody
@@ -95,6 +104,10 @@ final class FourEyesValidator
 
         if (($effective['four_eyes'] ?? false) !== true) {
             return;
+        }
+
+        if (($context['four_eyes_automatic'] ?? false) === true) {
+            throw FourEyesRequiredException::automaticActor($workflowName, $transitionName);
         }
 
         $initiator = $context['user'] ?? null;

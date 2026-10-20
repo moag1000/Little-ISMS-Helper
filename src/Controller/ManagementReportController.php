@@ -750,7 +750,7 @@ class ManagementReportController extends AbstractController
         $headers = ['Metric', 'Value'];
         $data = [
             ['Total Audits', $auditReport['audits']['total']],
-            ['Audits This Year', $auditReport['audits']['this_year']],
+            ['Audits With Activity This Year', $auditReport['audits']['with_activity_this_year']],
             ['Planned', $auditReport['audits']['by_status']['planned']],
             ['In Progress', $auditReport['audits']['by_status']['in_progress']],
             ['Completed', $auditReport['audits']['by_status']['completed']],

@@ -6,10 +6,13 @@ namespace App\Lifecycle\EventListener;
 
 use App\Entity\WorkflowInstance;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\LifecycleTransitionInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * When a WorkflowInstance reaches status 'approved', fires the parent
@@ -38,6 +41,7 @@ final class WorkflowAutoProgressionBridge
     public function __construct(
         private readonly LifecycleTransitionInterface $lifecycleService,
         private readonly array $bridges = [],
+        private readonly LoggerInterface $logger = new NullLogger(),
     ) {}
 
     public function postUpdate(PostUpdateEventArgs $event): void
@@ -73,9 +77,24 @@ final class WorkflowAutoProgressionBridge
                 $bridge['transition'],
                 null,
                 'Bridged from approval-chain (WorkflowInstance#' . $entity->getId() . ')',
+                automatic: true,
             );
-        } catch (\Throwable) {
+        } catch (FourEyesRequiredException $e) {
+            // Automatic actor: a four-eyes parent transition waits for a human.
+            $this->logger->notice('[WorkflowAutoProgressionBridge] Bridged transition left for a human approval', [
+                'entity' => $entityClass,
+                'workflow' => $bridge['workflow'],
+                'transition' => $bridge['transition'],
+                'reason_code' => $e->reasonCode,
+            ]);
+        } catch (\Throwable $e) {
             // Best-effort: never abort the WorkflowInstance update
+            $this->logger->warning('[WorkflowAutoProgressionBridge] Bridged transition failed', [
+                'entity' => $entityClass,
+                'workflow' => $bridge['workflow'],
+                'transition' => $bridge['transition'],
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }

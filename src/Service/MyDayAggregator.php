@@ -1247,7 +1247,7 @@ final class MyDayAggregator
         $today = new DateTimeImmutable('today');
         foreach ($this->riskRepo->findBy(['tenant' => $tenant]) as $risk) {
             $next = $risk->getReviewDate();
-            if ($next === null || $next >= $today) {
+            if ($next === null || $next >= $today || $risk->getStatus()?->requiresPeriodicReview() === false) {
                 continue;
             }
             $items[] = [

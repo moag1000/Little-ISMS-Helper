@@ -29,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_af_audit', columns: ['audit_id'])]
 #[ORM\Index(name: 'idx_af_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_af_severity', columns: ['severity'])]
+#[ORM\HasLifecycleCallbacks]
 class AuditFinding
 {
     public const TYPE_MAJOR_NC = 'major_nc';
@@ -264,7 +265,24 @@ class AuditFinding
     public function setAudit(?InternalAudit $audit): static
     {
         $this->audit = $audit;
+        $this->syncTenantFromAudit();
         return $this;
+    }
+
+    /**
+     * Invariant: a finding belongs to its audit's organisation. The finding
+     * backlog is counted via the audit (AuditFindingBacklog) and via
+     * finding.tenant (AuditFindingRepository::findOpenByTenant()); both
+     * agree only while this holds.
+     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function syncTenantFromAudit(): void
+    {
+        $auditTenant = $this->audit?->getTenant();
+        if ($auditTenant !== null) {
+            $this->tenant = $auditTenant;
+        }
     }
 
     public function getFindingNumber(): ?string

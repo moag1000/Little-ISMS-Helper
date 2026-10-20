@@ -8,6 +8,8 @@ use App\Entity\User;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\AutomaticCloseRefusal;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\Notification\SlaDeadlineWatcher;
 use App\Service\WorkflowService;
@@ -36,9 +38,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *    approaching-deadline and missed-deadline notifications across all tenants.
  *
  * Time-based steps are approved through {@see WorkflowService::moveToNextStep()} with the
- * workflow initiator as acting user. A time-based step that is the last step of its workflow
- * is never auto-approved: the final approval of a workflow instance is four-eyes
- * (workflow_instance_lifecycle `approve`) and needs a human approver.
+ * workflow initiator as acting user, flagged as automatic. An automatic approval never
+ * satisfies four-eyes (FourEyesValidator, reason code `automatic_actor`): when approving the
+ * step would close the workflow through the four-eyes `approve` transition (last step, or only
+ * notification steps follow), the step stays pending for a human approver. That is reported
+ * as a notice, not as an error — it is the expected state until someone approves.
  *
  * Example workflow step metadata:
  * {
@@ -61,6 +65,7 @@ class ProcessTimedWorkflowsCommand extends Command
         private readonly WorkflowService $workflowService,
         private readonly EntityManagerInterface $entityManager,
         private readonly SlaDeadlineWatcher $slaDeadlineWatcher,
+        private readonly ?\App\Service\TenantContext $tenantContext = null,
     ) {
         parent::__construct();
     }
@@ -106,8 +111,9 @@ Add to crontab to run every 15 minutes:
     "delay": "24 hours"
   }
 }
-A time-based last step is not auto-approved: the final approval of a
-workflow is four-eyes and needs a human approver.
+A time-based step whose approval would close the workflow (last step, or
+only notification steps follow) is not auto-approved when the final approval
+is four-eyes: it stays pending for a human approver and is listed as a notice.
 HELP
             );
     }
@@ -137,11 +143,14 @@ HELP
         $io->text(sprintf('Found %d active workflow(s)', count($activeWorkflows)));
 
         $processed = 0;
+        $awaitingFourEyes = [];
         $skipped = 0;
         $escalated = 0;
         $errors = [];
 
         foreach ($activeWorkflows as $workflowInstance) {
+            // No request: pin the instance's organisation (lifecycle guards, tenant filter).
+            $this->tenantContext?->setCurrentTenant($workflowInstance->getTenant());
             $currentStep = $workflowInstance->getCurrentStep();
 
             if (!$currentStep) {
@@ -180,6 +189,15 @@ HELP
                 continue;
             }
 
+            // Automatic approval never satisfies four-eyes: a step whose
+            // approval would close the workflow stays pending (notice, not error).
+            try {
+                $this->workflowService->assertAutomaticApprovalAllowed($workflowInstance, $currentStep);
+            } catch (FourEyesRequiredException $e) {
+                $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
+                continue;
+            }
+
             $io->text(sprintf(
                 '  ✓ Auto-progressing: %s (Step: %s)',
                 $workflowInstance->getWorkflow()->getName(),
@@ -202,6 +220,12 @@ HELP
 
                     $processed++;
                 } catch (\Throwable $e) {
+                    // Refused at transition time (rolled back in approveByTime):
+                    // four-eyes or a lifecycle guard → waits for a human (notice).
+                    if (AutomaticCloseRefusal::isRefusal($e)) {
+                        $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
+                        continue;
+                    }
                     $errors[] = sprintf(
                         'Error processing workflow #%d: %s',
                         $workflowInstance->getId(),
@@ -213,17 +237,25 @@ HELP
             }
         }
 
+        $this->tenantContext?->setCurrentTenant(null);
+
         $io->newLine();
         $io->horizontalTable(
             ['Metric', 'Count'],
             [
                 ['Total Active Workflows', count($activeWorkflows)],
                 ['Auto-Progressed', $processed],
+                ['Awaiting human approval', count($awaitingFourEyes)],
                 ['Escalated (SLA Breach)', $escalated],
                 ['Skipped', $skipped],
                 ['Errors', count($errors)],
             ]
         );
+
+        if ($awaitingFourEyes !== []) {
+            $io->note('Not approved automatically — needs a human approver:');
+            $io->listing($awaitingFourEyes);
+        }
 
         if (!empty($errors)) {
             $io->error('Errors encountered:');
@@ -293,10 +325,6 @@ HELP
             return false; // No delay specified
         }
 
-        if ($this->isLastStep($workflowInstance, $step)) {
-            return false; // Final approval is four-eyes — never automatic
-        }
-
         // Check if step has been active long enough
         $stepStartTime = $this->getStepStartTime($workflowInstance, $step);
 
@@ -362,9 +390,24 @@ HELP
         return null;
     }
 
+    private function awaitingFourEyesLine(
+        WorkflowInstance $workflowInstance,
+        WorkflowStep $step,
+        \Throwable $cause,
+    ): string {
+        return sprintf(
+            'Workflow #%d %s (Step: %s) — %s',
+            (int) $workflowInstance->getId(),
+            (string) $workflowInstance->getWorkflow()?->getName(),
+            (string) $step->getName(),
+            AutomaticCloseRefusal::describe($cause),
+        );
+    }
+
     /**
-     * Approve a time-based step and activate the next one. Never called for
-     * the last step (see shouldAutoProgressByTime()).
+     * Approve a time-based step and activate the next one, as an automatic
+     * actor: a closing four-eyes approval is refused (FourEyesRequiredException)
+     * and the attempt is rolled back.
      */
     private function approveByTime(WorkflowInstance $workflowInstance, WorkflowStep $step, User $user): void
     {
@@ -408,18 +451,10 @@ HELP
         ]);
         $workflowInstance->addCompletedStep($step->getId());
 
-        $nextStep = $this->workflowService->moveToNextStep($workflowInstance, $user, $comment);
+        $nextStep = $this->workflowService->moveToNextStep($workflowInstance, $user, $comment, automatic: true);
         if ($nextStep instanceof WorkflowStep) {
-            $this->workflowService->handleStepAssignment($workflowInstance, $nextStep);
+            $this->workflowService->handleStepAssignment($workflowInstance, $nextStep, automatic: true);
         }
-    }
-
-    private function isLastStep(WorkflowInstance $workflowInstance, WorkflowStep $step): bool
-    {
-        $steps = $workflowInstance->getWorkflow()->getSteps()->toArray();
-        $index = array_search($step, $steps, true);
-
-        return $index === false || !isset($steps[$index + 1]);
     }
 
     /**

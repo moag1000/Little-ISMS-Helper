@@ -8,7 +8,7 @@ src/Entity/Incident.php:LOC=1816 deps=0
 src/Repository/ComplianceMappingRepository.php:LOC=1815 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1815 deps=17
 src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
-src/Service/DashboardStatisticsService.php:LOC=1750 deps=25
+src/Service/DashboardStatisticsService.php:LOC=1731 deps=24
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1573 deps=18
 src/Entity/ProcessingActivity.php:LOC=1512 deps=0
@@ -20,8 +20,8 @@ src/Controller/Admin/DataRepairController.php:LOC=1278 deps=0
 src/Controller/ManagementReportController.php:LOC=1266 deps=0
 src/Entity/Supplier.php:LOC=1242 deps=0
 src/Controller/RiskController.php:LOC=1128 deps=0
-src/Controller/UserManagementController.php:LOC=1084 deps=0
 src/Entity/DataBreach.php:LOC=1080 deps=0
+src/Controller/UserManagementController.php:LOC=1065 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1027 deps=0
 src/Entity/InternalAudit.php:LOC=1013 deps=0
 src/Entity/Tenant.php:LOC=1012 deps=0
@@ -30,7 +30,6 @@ src/Service/ComplianceWizard/CoverageCheckService.php:LOC=995 deps=17
 src/Service/Search/SearchService.php:LOC=968 deps=32
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
 src/Controller/IncidentController.php:LOC=924 deps=0
-src/Service/ManagementReportService.php:LOC=923 deps=16
 src/Command/TisaxConsolidateCommand.php:LOC=886 deps=0
 src/Command/GenerateIsoProceduresCommand.php:LOC=834 deps=0
 src/Form/ProcessingActivityType.php:LOC=820 deps=0
@@ -47,7 +46,7 @@ src/Controller/MonitoringController.php:LOC=646 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=625 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=21
 src/Controller/DataBreachController.php:LOC=614 deps=0
-src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=16
+src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=453 deps=16
 src/Service/DataIntegrityService.php:LOC=438 deps=33
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=17
 src/Service/Tisax/Dto/VdaIsaControlRow.php:LOC=125 deps=20

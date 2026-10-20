@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Bulk;
 
+use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -28,6 +30,8 @@ class SoaBulkActionTest extends WebTestCase
     private ?Control $otherControl = null;
     /** @var list<User> */
     private array $extraUsers = [];
+    /** @var list<ComplianceFramework> */
+    private array $frameworks = [];
 
     protected function setUp(): void
     {
@@ -54,6 +58,13 @@ class SoaBulkActionTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        foreach ($this->frameworks as $f) {
+            try {
+                $conn = $this->em->getConnection();
+                $conn->executeStatement('DELETE r FROM compliance_requirement r WHERE r.framework_id = ?', [$f->getId()]);
+                $conn->executeStatement('DELETE FROM compliance_framework WHERE id = ?', [$f->getId()]);
+            } catch (\Exception) {}
+        }
         foreach ([$this->control, $this->otherControl] as $e) {
             if ($e) { try { $x = $this->em->find(Control::class, $e->getId()); if ($x) $this->em->remove($x); } catch (\Exception) {} }
         }
@@ -225,6 +236,81 @@ class SoaBulkActionTest extends WebTestCase
         $this->assertStringNotContainsString(
             '/soa/' . $this->control->getId() . '/edit',
             (string) $this->client->getResponse()->getContent(),
+        );
+    }
+
+    /**
+     * app_soa_accept_suggestion only checked CSRF: any account of the
+     * organisation could link a requirement to a control.
+     *
+     * @param list<string> $roles
+     */
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('readOnlyRoles')]
+    public function acceptSuggestionIsDeniedForReadOnlyRoles(array $roles): void
+    {
+        $requirement = $this->makeRequirement();
+        $actor = $this->makeUser('ro_' . uniqid() . '@x.test', $this->tenant, $roles);
+        $this->em->flush();
+
+        $this->client->loginUser($actor);
+        $this->postAcceptSuggestion($requirement);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertSame(0, $this->countMapping($requirement));
+    }
+
+    #[Test]
+    public function managerAcceptsSuggestion(): void
+    {
+        $requirement = $this->makeRequirement();
+        $manager = $this->makeUser('mgr_' . uniqid() . '@x.test', $this->tenant, ['ROLE_MANAGER']);
+        $this->em->flush();
+
+        $this->client->loginUser($manager);
+        $this->postAcceptSuggestion($requirement);
+
+        $this->assertResponseRedirects();
+        $this->assertSame(1, $this->countMapping($requirement));
+    }
+
+    private function makeRequirement(): ComplianceRequirement
+    {
+        $uid = substr(uniqid('', true), -10);
+        $framework = (new ComplianceFramework())
+            ->setCode('SOAFW_' . $uid)->setName('FW ' . $uid)->setVersion('1')
+            ->setApplicableIndustry('all')->setRegulatoryBody('test');
+        $this->em->persist($framework);
+        $requirement = (new ComplianceRequirement())
+            ->setFramework($framework)->setRequirementId('R-' . $uid)->setTitle('Req ' . $uid)
+            ->setDescription('Requirement description')->setPriority('medium');
+        $this->em->persist($requirement);
+        $this->frameworks[] = $framework;
+
+        return $requirement;
+    }
+
+    private function postAcceptSuggestion(ComplianceRequirement $requirement): void
+    {
+        $tokenId = 'accept_suggestion_' . $this->control->getId() . '_' . $requirement->getId();
+        $this->client->request('GET', '/');
+        $session = $this->client->getRequest()->getSession();
+        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/' . $tokenId, $token);
+        $session->save();
+
+        $this->client->request(
+            'POST',
+            '/en/soa/' . $this->control->getId() . '/accept-suggestion/' . $requirement->getId(),
+            ['_token' => $token, 'confidence' => '0.8'],
+        );
+    }
+
+    private function countMapping(ComplianceRequirement $requirement): int
+    {
+        return (int) $this->em->getConnection()->fetchOne(
+            'SELECT COUNT(*) FROM compliance_requirement_control WHERE compliance_requirement_id = ? AND control_id = ?',
+            [$requirement->getId(), $this->control->getId()],
         );
     }
 
