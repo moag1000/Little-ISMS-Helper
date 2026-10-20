@@ -93,15 +93,19 @@ class WorkflowService
      * overrides included); this only runs that check BEFORE anything is
      * mutated, so a refused attempt writes nothing and sends no
      * notification-step e-mail. The transition itself is checked again
-     * when applied (moveToNextStep(automatic: true)).
+     * when applied (moveToNextStep(automatic: true)). Without a wired
+     * validator it cannot decide and refuses the closing approval (fail
+     * closed) rather than letting the attempt mutate and roll back.
      *
      * @throws FourEyesRequiredException with reason code `automatic_actor`
      */
     public function assertAutomaticApprovalAllowed(WorkflowInstance $workflowInstance, WorkflowStep $step): void
     {
-        if (!$this->fourEyesValidator instanceof FourEyesValidator
-            || !$this->approvalWouldCloseWorkflow($workflowInstance, $step)) {
+        if (!$this->approvalWouldCloseWorkflow($workflowInstance, $step)) {
             return;
+        }
+        if (!$this->fourEyesValidator instanceof FourEyesValidator) {
+            throw FourEyesRequiredException::automaticActor(self::WORKFLOW_NAME, 'approve');
         }
 
         $this->fourEyesValidator->assertSatisfied($workflowInstance, self::WORKFLOW_NAME, 'approve', [

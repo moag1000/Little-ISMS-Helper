@@ -98,6 +98,25 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $this->assertNotNull($instance->getCompletedAt(), 'completedAt must be set');
     }
 
+    /**
+     * Without the FourEyesValidator wired the automatic pre-check cannot
+     * decide — it refuses a closing automatic approval instead of passing
+     * silently (review M-3). Intermediate steps are unaffected.
+     */
+    #[Test]
+    public function automaticPreCheckFailsClosedWithoutValidator(): void
+    {
+        $first = $this->buildStep(1, 'First', 5);
+        $last = $this->buildStep(2, 'Last', 5);
+        $workflow = $this->buildWorkflow('Test', 'Risk', [$first, $last]);
+        $instance = $this->buildRealInstance('in_progress', $first, $workflow);
+
+        $this->service->assertAutomaticApprovalAllowed($instance, $first); // not closing: passes
+
+        $this->expectException(\App\Lifecycle\Exception\FourEyesRequiredException::class);
+        $this->service->assertAutomaticApprovalAllowed($instance, $last);
+    }
+
     #[Test]
     public function finalApprovalPassesInitiatorAndApproverForFourEyes(): void
     {
