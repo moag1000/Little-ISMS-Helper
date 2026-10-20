@@ -137,6 +137,31 @@ final class BulkAssignTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
+    public function superAdminMayOnlyAssignAUserOfEachRecordsOrganisation(): void
+    {
+        $operator = $this->keep((new User())->setEmail('op_' . substr(uniqid('', true), -8) . '@x.test')
+            ->setFirstName('Op')->setLastName('Erator')->setRoles(['ROLE_SUPER_ADMIN'])->setPassword('hashed')
+            ->setTenant(null)->setIsActive(true));
+        $this->em->flush();
+        $this->client->loginUser($operator);
+
+        $this->post(['ids' => [$this->risk->getId()], 'assignee_id' => $this->foreigner->getId()]);
+        $body = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertSame(0, $body['changed'] ?? -1);
+        self::assertSame(
+            [['id' => $this->risk->getId(), 'reason' => 'assignee_other_tenant']],
+            $body['rejected'] ?? null,
+        );
+        $this->em->clear();
+        $owner = $this->em->find(Risk::class, $this->risk->getId())?->getRiskOwner();
+        self::assertNotSame($this->foreigner->getId(), $owner?->getId());
+
+        $this->post(['ids' => [$this->risk->getId()], 'assignee_id' => $this->member->getId()]);
+        $body = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertSame(1, $body['changed'] ?? -1, 'a user of the record\'s organisation is assigned');
+    }
+
     /** @param array<string, mixed> $payload */
     private function post(array $payload): void
     {
