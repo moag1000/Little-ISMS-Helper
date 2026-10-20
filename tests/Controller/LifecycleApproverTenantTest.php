@@ -116,4 +116,28 @@ final class LifecycleApproverTenantTest extends KernelTestCase
 
         self::assertNotSame('four_eyes_approver_other_tenant', $body['error'] ?? null);
     }
+
+    #[Test]
+    public function bulkTransitionRefusesAnApproverOfAnotherOrganisationPerRecord(): void
+    {
+        $foreignTenant = (new Tenant())->setName('LAT B ' . $this->uid)->setCode('latb_' . $this->uid);
+        $this->em->persist($foreignTenant);
+        $foreign = $this->makeUser('bulkforeign', $foreignTenant);
+        $first = $this->approvedDocument();
+        $second = $this->approvedDocument();
+
+        $request = Request::create('/lifecycle/document/bulk-transition', 'POST', content: (string) json_encode([
+            'transition' => 'publish',
+            'ids' => [$first->getId(), $second->getId()],
+            'four_eyes_approver_id' => $foreign->getId(),
+        ]));
+        $response = static::getContainer()->get(LifecycleController::class)->bulkTransition('document', $request);
+        $body = json_decode((string) $response->getContent(), true);
+
+        self::assertSame([], $body['succeeded']);
+        self::assertSame('four_eyes_approver_other_tenant', $body['failed'][(string) $first->getId()] ?? null);
+        self::assertSame('four_eyes_approver_other_tenant', $body['failed'][(string) $second->getId()] ?? null);
+        $this->em->refresh($first);
+        self::assertSame('approved', $first->getStatus());
+    }
 }

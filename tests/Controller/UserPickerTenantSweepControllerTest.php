@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Asset;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\CrisisTeam;
+use App\Entity\DataBreach;
+use App\Entity\Document;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\ManagementReview;
 use App\Entity\Person;
+use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -160,6 +164,81 @@ final class UserPickerTenantSweepControllerTest extends WebTestCase
 
         $this->em->clear();
         self::assertSame($this->colleague->getId(), $this->em->find(FourEyesApprovalRequest::class, $id)->getRequestedApprover()?->getId());
+    }
+
+    #[Test]
+    public function riskOwnerOfAnotherOrganisationIsRejected(): void
+    {
+        $asset = (new Asset())->setName('Asset ' . $this->uid)->setAssetType('hardware')->setOwner('IT')
+            ->setStatus('active')->setTenant($this->tenant)->setConfidentialityValue(3)
+            ->setIntegrityValue(3)->setAvailabilityValue(3);
+        $this->em->persist($asset);
+        $risk = (new Risk())->setTitle('Risk ' . $this->uid)->setCategory('security')->setDescription('d')
+            ->setThreat('t')->setVulnerability('v')->setAsset($asset)->setProbability(3)
+            ->setLikelihoodJustification('likelihood justification')->setImpact(4)
+            ->setImpactJustification('impact justification')->setResidualProbability(2)->setResidualImpact(2)
+            ->setTreatmentStrategy(\App\Enum\TreatmentStrategy::Mitigate)->setStatus(\App\Enum\RiskStatus::Identified)
+            ->setRiskOwner($this->admin)->setTenant($this->tenant);
+        $id = $this->persist($risk)->getId();
+
+        $this->assertTamperedPostRejected(sprintf('/en/risk/%d/edit', $id), 'riskOwner', false);
+
+        $this->em->clear();
+        self::assertSame($this->colleague->getId(), $this->em->find(Risk::class, $id)->getRiskOwner()?->getId());
+    }
+
+    #[Test]
+    public function dataBreachDpoOfAnotherOrganisationIsRejected(): void
+    {
+        $breach = (new DataBreach())->setTenant($this->tenant)->setReferenceNumber('BR-' . $this->uid)
+            ->setTitle('Breach ' . $this->uid)->setStatus('draft')->setSeverity('high')
+            ->setDetectedAt(new \DateTimeImmutable())->setDataCategories(['personal_identification'])
+            ->setDataSubjectCategories(['customers'])->setBreachNature('nature')->setLikelyConsequences('consequences')
+            ->setMeasuresTaken('measures')->setAffectedDataSubjects(10)->setRequiresAuthorityNotification(true)
+            ->setRequiresSubjectNotification(false)->setRiskLevel('high')
+            ->setAssessor($this->admin);
+        $id = $this->persist($breach)->getId();
+
+        $this->assertTamperedPostRejected(sprintf('/en/data-breach/%d/edit', $id), 'dataProtectionOfficer', false);
+
+        $this->em->clear();
+        self::assertSame($this->colleague->getId(), $this->em->find(DataBreach::class, $id)->getDataProtectionOfficer()?->getId());
+    }
+
+    #[Test]
+    public function documentAudienceMemberOfAnotherOrganisationIsRejected(): void
+    {
+        $doc = (new Document())->setTenant($this->tenant)->setFilename('d.md')->setOriginalFilename('d.md')
+            ->setMimeType('text/markdown')->setFileSize(1)->setFilePath('virtual:test')->setCategory('policy')
+            ->setUploadedAt(new \DateTimeImmutable());
+        $doc->setStatus('draft');
+        $id = $this->persist($doc)->getId();
+
+        $this->assertTamperedPostRejected(sprintf('/en/document/%d/edit', $id), 'acknowledgementAudience', true);
+
+        $this->em->clear();
+        $ids = $this->em->find(Document::class, $id)->getAcknowledgementAudience()->map(static fn (User $u): ?int => $u->getId())->toArray();
+        self::assertSame([$this->colleague->getId()], array_values($ids));
+    }
+
+    #[Test]
+    public function existingForeignLeaderSurvivesAReSave(): void
+    {
+        $team = (new CrisisTeam())->setTenant($this->tenant)->setTeamName('Legacy ' . $this->uid)->setTeamType('primary')
+            ->setIsActive(true)->setTeamLeader($this->foreigner)->setDeputyLeader($this->admin);
+        $id = $this->persist($team)->getId();
+
+        $this->client->loginUser($this->admin);
+        $crawler = $this->client->request('GET', sprintf('/en/crisis-team/%d/edit', $id));
+        self::assertResponseIsSuccessful();
+        $select = $crawler->filter('select[name$="[teamLeader]"]');
+        self::assertSame((string) $this->foreigner->getId(), $select->filter('option[selected]')->attr('value'), 'current value shown');
+
+        $this->client->submit($select->closest('form')->form());
+        self::assertResponseRedirects();
+
+        $this->em->clear();
+        self::assertSame($this->foreigner->getId(), $this->em->find(CrisisTeam::class, $id)->getTeamLeader()?->getId());
     }
 
     #[Test]

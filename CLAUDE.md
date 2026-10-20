@@ -617,6 +617,9 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
       `'x_delete_{id}'` is never interpolated and always fails (Gate 65 flags
       it as `#literal-id`). A failed attribute check answers 403
       (`ReauthEntryPoint`), not a redirect to /login.
+- [ ] User choice fields use `OwnerUserType` (users of the record's
+      organisation; never `EntityType` + `User::class`), and owner/assignee
+      User/Person FKs carry `#[SameTenantOwner]` — the TenantFilter skips `User`.
 - [ ] Input sanitized via `InputValidationService`
 - [ ] File uploads checked via `FileUploadSecurityService`
 - [ ] Sensitive data excluded from audit logs
