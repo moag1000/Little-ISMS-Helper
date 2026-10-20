@@ -39,6 +39,10 @@ vulnerability:
         actively_exploited: 'Actively Exploited'
         remediation_notes: 'Remediation Notes'
         source: 'Source'
+        responsible_person_user: 'Responsible Person (User)'
+        responsible_person_ref: 'Responsible Person (Contact)'
+        responsible_deputies: 'Deputies'
+        responsible_person_legacy: 'Responsible Person (Free Text)'
     placeholder:
         cvss_score: '7.5'
         cve_id: 'e.g. CVE-2024-12345'
@@ -46,6 +50,8 @@ vulnerability:
         description: 'Description of the vulnerability and its impact...'
         responsible_person: 'Name of the responsible person'
         remediation_notes: 'Remediation steps and notes...'
+        responsible_person_user: 'Select user…'
+        responsible_person_ref: 'Select contact…'
     severity:
         critical: Critical
         high: High
@@ -82,6 +88,9 @@ vulnerability:
         exploit_availability: 'Availability of exploit code'
         actively_exploited: 'Is the vulnerability being actively exploited in the wild?'
         status_readonly: 'Status is driven by the lifecycle workflow (Open → In triage → In remediation → Patched / Mitigated / Accepted → Closed). Direct editing is disabled; use the status actions on the detail page.'
+        responsible_person_user: 'Responsible person with system access (preferred)'
+        responsible_person_ref: 'Responsible contact without system access'
+        responsible_deputies: 'Additional persons sharing responsibility'
     source:
         nist: 'NIST NVD'
         mitre: 'MITRE CVE'

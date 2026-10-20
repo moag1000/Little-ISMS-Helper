@@ -34,6 +34,10 @@ location:
         notes: Notes
         description: Description
         status: Status
+        responsible_person_user: 'Responsible person (user account)'
+        responsible_person_ref: 'Responsible person (contact)'
+        responsible_deputies: 'Deputies'
+        responsible_person_legacy: 'Responsible person (free text, legacy)'
     section:
         basic_info: 'Basic Information'
         address: Address
@@ -56,12 +60,17 @@ location:
         capacity: 'e.g. 50'
         square_meters: 'e.g. 120.50'
         notes: 'Additional notes and remarks...'
+        responsible_person_user: '-- Select user account --'
+        responsible_person_ref: '-- Select person --'
     help:
         type: 'Select the appropriate location type (building, room, data center, …)'
         code: 'Internal location code for unique reference (optional)'
         parent: 'Optional – assign the location to a parent location'
         parent_location: 'Assign this location to a parent location (e.g. room to building)'
         capacity: 'Maximum person capacity of this location'
+        responsible_person_user: 'Responsible person with system access (preferred)'
+        responsible_person_ref: 'Responsible person without system access (contact)'
+        responsible_deputies: 'Optional deputies who share responsibility'
     type:
         building: Building
         floor: Floor

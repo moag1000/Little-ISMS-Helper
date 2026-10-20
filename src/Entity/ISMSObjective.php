@@ -21,6 +21,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Service\OwnerResolver;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Validator\Constraint\SameTenantOwner;
 
 #[ORM\Entity(repositoryClass: ISMSObjectiveRepository::class)]
 #[ApiResource(
@@ -101,10 +106,44 @@ class ISMSObjective
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $measurementMethod = null;
 
-    #[ORM\Column(length: 100)]
+    /**
+     * Legacy free-text owner. Optional since the person-picker sweep — the
+     * form requires at least one of user / person / free text.
+     */
+    #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
-    #[Assert\NotBlank]
+    #[Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')]
     private ?string $responsiblePerson = null;
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string responsiblePerson.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[SameTenantOwner]
+    private ?User $responsiblePersonUser = null;
+
+    /**
+     * Person-based responsible person: for contacts without a system login.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_ref_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[SameTenantOwner]
+    private ?Person $responsiblePersonRef = null;
+
+    /**
+     * Deputies / Vertretung — n additional Persons sharing responsibility.
+     *
+     * @var Collection<int, Person>
+     */
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'isms_objective_responsible_deputy')]
+    #[ORM\JoinColumn(name: 'objective_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $responsibleDeputyPersons;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
@@ -147,6 +186,7 @@ class ISMSObjective
 
 public function __construct()
     {
+        $this->responsibleDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -373,5 +413,93 @@ public function __construct()
     public function getLockVersion(): int
     {
         return $this->lockVersion;
+    }
+
+    public function getResponsiblePersonUser(): ?User
+    {
+        return $this->responsiblePersonUser;
+    }
+
+    public function setResponsiblePersonUser(?User $responsiblePersonUser): static
+    {
+        $this->responsiblePersonUser = $responsiblePersonUser;
+        return $this;
+    }
+
+    public function getResponsiblePersonRef(): ?Person
+    {
+        return $this->responsiblePersonRef;
+    }
+
+    public function setResponsiblePersonRef(?Person $responsiblePersonRef): static
+    {
+        $this->responsiblePersonRef = $responsiblePersonRef;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getResponsibleDeputyPersons(): Collection
+    {
+        return $this->responsibleDeputyPersons;
+    }
+
+    public function addResponsibleDeputyPerson(Person $person): static
+    {
+        if (!$this->responsibleDeputyPersons->contains($person)) {
+            $this->responsibleDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeResponsibleDeputyPerson(Person $person): static
+    {
+        $this->responsibleDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
+     * then responsiblePersonRef (Person), fall back to legacy string.
+     */
+    public function getEffectiveResponsiblePerson(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->responsiblePersonUser,
+            $this->responsiblePersonRef,
+            $this->responsiblePerson,
+        );
+    }
+
+    /**
+     * Full responsible-person roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllResponsiblePersons(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->responsiblePersonUser,
+            $this->responsiblePersonRef,
+            $this->responsiblePerson,
+            $this->responsibleDeputyPersons,
+        );
+    }
+
+    /**
+     * ISO 27001 6.2: an objective needs a responsible party. Structured owner
+     * (user or person) or, for legacy data, free text. Enforced here (not only
+     * in the form) so API / service writes are covered too.
+     */
+    #[Assert\Callback]
+    public function validateResponsibleParty(ExecutionContextInterface $context): void
+    {
+        if ($this->responsiblePersonUser === null
+            && $this->responsiblePersonRef === null
+            && trim((string) $this->responsiblePerson) === ''
+        ) {
+            $context->buildViolation('objective.validation.owner_required')
+                ->atPath('responsiblePersonUser')
+                ->addViolation();
+        }
     }
 }

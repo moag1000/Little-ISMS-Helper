@@ -318,6 +318,7 @@ objective:
         description_required: 'Description is required'
         category_required: 'Category is required'
         responsible_person_required: 'Responsible person is required'
+        owner_required: 'Please specify a responsible person (user, person or free text).'
         name_max_length: 'Name cannot exceed {{ limit }} characters'
         target_date_required: 'Target date is required'
         status_required: 'Status is required'
@@ -345,6 +346,7 @@ tenant:
         code_format: 'Organization code must match the required format'
         azure_tenant_id_format: 'Azure Tenant ID must be a valid GUID'
         logo_format: 'The logo must be in JPG, PNG, GIF or WebP format'
+        owner_other_tenant: 'The selection belongs to a different organization.'
         nace_code_format: 'NACE code must match format A.NN.NN (NACE Rev.2 classification).'
     email:
         logo_url:

@@ -25,7 +25,7 @@
     },
     'rollout': {
         'label': 'patch.section.rollout'|trans({}, 'patches'),
-        'fields': ['releaseDate', 'deploymentDeadline', 'deployedDate', 'responsiblePerson', 'deploymentNotes']
+        'fields': ['releaseDate', 'deploymentDeadline', 'deployedDate', 'responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'deploymentNotes']
     },
     'verification': {
         'label': 'patch.section.verification'|trans({}, 'patches'),
@@ -62,6 +62,9 @@
         'releaseDate': 6,
         'deploymentDeadline': 6,
         'deployedDate': 6,
+        'responsiblePersonUser': 6,
+        'responsiblePersonRef': 6,
+        'responsibleDeputyPersons': 12,
         'responsiblePerson': 6,
         'deploymentNotes': 12,
         'rollbackPlan': 12

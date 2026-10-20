@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Location;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,6 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class LocationType extends AbstractType implements SectionMapInterface
 {
+    use OwnerPickerFormTrait;
+
     public static function getSectionMap(): array
     {
         return [
@@ -27,7 +30,7 @@ final class LocationType extends AbstractType implements SectionMapInterface
             'security_zone' => ['securityLevel'],
             'access_control'=> ['requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem'],
             'environmental' => ['capacity', 'squareMeters'],
-            'audit_metadata'=> ['responsiblePerson', 'active', 'notes'],
+            'audit_metadata'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'active', 'notes'],
         ];
     }
 
@@ -150,9 +153,28 @@ final class LocationType extends AbstractType implements SectionMapInterface
                     'maxlength' => 255,
                     'placeholder' => 'location.placeholder.access_control_system',
                 ],
-            ])
+            ]);
+
+        // Pattern A dual-state owner cluster (User + Person + deputies) via the
+        // shared trait; the legacy free-text field below keeps round-tripping.
+        $this->addOwnerPicker($builder, [
+            'translation_prefix' => 'location',
+            'user_field'         => 'responsiblePersonUser',
+            'person_field'       => 'responsiblePersonRef',
+            'deputies_field'     => 'responsibleDeputyPersons',
+            'user_label'         => 'location.field.responsible_person_user',
+            'person_label'       => 'location.field.responsible_person_ref',
+            'deputies_label'     => 'location.field.responsible_deputies',
+            'user_placeholder'   => 'location.placeholder.responsible_person_user',
+            'person_placeholder' => 'location.placeholder.responsible_person_ref',
+            'user_help'          => 'location.help.responsible_person_user',
+            'person_help'        => 'location.help.responsible_person_ref',
+            'deputies_help'      => 'location.help.responsible_deputies',
+        ]);
+
+        $builder
             ->add('responsiblePerson', TextType::class, [
-                'label' => 'location.field.responsible_person',
+                'label' => 'location.field.responsible_person_legacy',
                 'required' => false,
                 'attr' => [
                     'maxlength' => 255,

@@ -161,6 +161,10 @@ supplier:
         # S14 Cluster A C1-05 — Asset-Verlinkung (ISO 27001 A.5.21)
         supported_assets: 'Unterstützte Assets'
         exit_strategy_document: 'Exit-Strategie-Dokument'
+        contact_person_user: 'Ansprechpartner (Benutzer)'
+        contact_person_ref: 'Ansprechpartner (Person)'
+        contact_deputies: 'Stellvertreter'
+        contact_person_legacy: 'Ansprechpartner (Freitext, veraltet)'
     lksg_risk:
         low: 'Niedrig'
         medium: 'Mittel'
@@ -235,6 +239,9 @@ supplier:
         lksg_prevention_measures: 'Beschreibung der Präventions- und Abhilfemaßnahmen (§ 6/7 LkSG); ergänzende Belege als Documents verlinken.'
         supported_assets: 'Welche internen Assets (Daten, Systeme, Standorte) werden durch diesen Lieferanten unterstützt? (ISO 27001 A.5.21)'
         status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Bewertung → Aktiv → Inaktiv → Beendet). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
+        contact_person_user: 'Ansprechpartner aus den System-Benutzern wählen (bevorzugt).'
+        contact_person_ref: 'Ansprechpartner aus dem Personenverzeichnis wählen (für Kontakte ohne System-Login).'
+        contact_deputies: 'Optionale Stellvertreter, die die Ansprechpartner-Rolle mittragen.'
     placeholder:
         name: 'z.B. Acme IT Services GmbH'
         description: 'Beschreiben Sie den Lieferanten und seine Dienste...'
@@ -256,6 +263,8 @@ supplier:
         ict_function_type: 'z.B. Cloud / SaaS / Managed Service'
         subcontractor_chain: "Anbieter A\nAnbieter B\nAnbieter C"
         processing_locations: 'DE, IE, US'
+        contact_person_user: 'Benutzer auswählen…'
+        contact_person_ref: 'Person auswählen…'
     criticality:
         critical: Kritisch
         high: Hoch

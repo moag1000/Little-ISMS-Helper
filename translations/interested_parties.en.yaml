@@ -64,6 +64,10 @@ interested_party:
         issues: Issues/Concerns
         created_at: 'Created at'
         updated_at: 'Updated at'
+        contact_person_user: 'Contact person (user)'
+        contact_person_ref: 'Contact person (person)'
+        contact_deputies: 'Deputies'
+        contact_person_legacy: 'Contact person (free text, legacy)'
     empty:
         message: 'No interested parties found.'
         add_first: 'Add first party'
@@ -74,6 +78,9 @@ interested_party:
         last_communication: 'When you last actively communicated with this party (meeting, call, email). Empty = never documented.'
         next_communication: 'Planned next contact. Empty = no follow-up scheduled — risk of stakeholder drift.'
         feedback: 'Latest written feedback from the party (content, sentiment, trend). Supports the satisfaction estimate (1-5 below).'
+        contact_person_user: 'Registered user with a system login as the contact person.'
+        contact_person_ref: 'Person from the master-data list without a system login.'
+        contact_deputies: 'Additional persons sharing the contact role (deputies).'
     confirm:
         delete: 'Are you sure you want to delete this interested party?'
     hint:
@@ -110,6 +117,10 @@ interested_party:
         quarterly: 'Quarterly'
         annually: 'Annually'
         as_needed: 'As Needed'
+    placeholder:
+        contact_person_user: 'Select a user …'
+        contact_person_ref: 'Select a person …'
+        contact_person: 'Contact person name'
 iso_9001_bridge:
     party: 'Identical to ISO 9001 Clause 4.2 "Understanding the needs and expectations of interested parties". The 9001 terms "interested party" and "stakeholder" are used synonymously.'
     expectation: 'In ISO 9001 these are the "needs and expectations of relevant interested parties" (Clause 4.2.b).'

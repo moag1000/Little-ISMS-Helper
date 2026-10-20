@@ -16,6 +16,7 @@ use App\Repository\AssetRepository;
 use App\Repository\SupplierCriticalityLevelRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -30,6 +31,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class SupplierType extends AbstractType implements SectionMapInterface
 {
+    use OwnerPickerFormTrait;
+
     use ModuleAwareFormTrait;
 
     public function __construct(
@@ -62,9 +65,28 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                     'rows' => 3,
                     'placeholder' => 'supplier.placeholder.description',
                 ],
-            ])
+            ]);
+
+        // Pattern A dual-state owner cluster (User + Person + deputies) via the
+        // shared trait; the legacy free-text field below keeps round-tripping.
+        $this->addOwnerPicker($builder, [
+            'translation_prefix' => 'supplier',
+            'user_field'         => 'contactPersonUser',
+            'person_field'       => 'contactPersonRef',
+            'deputies_field'     => 'contactDeputyPersons',
+            'user_label'         => 'supplier.field.contact_person_user',
+            'person_label'       => 'supplier.field.contact_person_ref',
+            'deputies_label'     => 'supplier.field.contact_deputies',
+            'user_placeholder'   => 'supplier.placeholder.contact_person_user',
+            'person_placeholder' => 'supplier.placeholder.contact_person_ref',
+            'user_help'          => 'supplier.help.contact_person_user',
+            'person_help'        => 'supplier.help.contact_person_ref',
+            'deputies_help'      => 'supplier.help.contact_deputies',
+        ]);
+
+        $builder
             ->add('contactPerson', TextType::class, [
-                'label' => 'supplier.field.contact_person',
+                'label' => 'supplier.field.contact_person_legacy',
                 'help' => 'supplier.help.contact_person',
                 'required' => false,
                 'attr' => [
@@ -629,6 +651,9 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'serviceProvided',
             ],
             'contact' => [
+                'contactPersonUser',
+                'contactPersonRef',
+                'contactDeputyPersons',
                 'contactPerson',
                 'email',
                 'phone',

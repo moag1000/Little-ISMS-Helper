@@ -27,6 +27,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Trait\SupplierContactPersonTrait;
 
 /**
  * Supplier/Vendor Entity for ISO 27001 A.15 Supplier Relationships
@@ -72,6 +73,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Supplier
 {
+    use SupplierContactPersonTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -91,10 +94,6 @@ class Supplier
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $description = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['supplier:read', 'supplier:write'])]
-    private ?string $contactPerson = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Email(message: 'supplier.validation.email_invalid')]
@@ -257,6 +256,7 @@ class Supplier
 
     public function __construct()
     {
+        $this->initContactDeputyPersons();
         $this->supportedAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
         $this->documents = new ArrayCollection();
@@ -308,17 +308,6 @@ class Supplier
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-        return $this;
-    }
-
-    public function getContactPerson(): ?string
-    {
-        return $this->contactPerson;
-    }
-
-    public function setContactPerson(?string $contactPerson): static
-    {
-        $this->contactPerson = $contactPerson;
         return $this;
     }
 

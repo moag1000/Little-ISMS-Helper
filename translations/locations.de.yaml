@@ -34,6 +34,10 @@ location:
         notes: Notizen
         description: Beschreibung
         status: Status
+        responsible_person_user: 'Verantwortliche/r (Benutzerkonto)'
+        responsible_person_ref: 'Verantwortliche/r (Person)'
+        responsible_deputies: 'Vertretung'
+        responsible_person_legacy: 'Verantwortliche Person (Freitext, veraltet)'
     section:
         basic_info: Grundinformationen
         address: Adresse
@@ -56,12 +60,17 @@ location:
         capacity: 'z. B. 50'
         square_meters: 'z. B. 120.50'
         notes: 'Zusätzliche Hinweise und Bemerkungen...'
+        responsible_person_user: '-- Benutzerkonto wählen --'
+        responsible_person_ref: '-- Person wählen --'
     help:
         type: 'Wählen Sie den passenden Standorttyp (Gebäude, Raum, Rechenzentrum, …)'
         code: 'Interner Standort‑Code für eindeutige Referenz (optional)'
         parent: 'Optional – ordnen Sie den Standort einem übergeordneten Standort zu'
         parent_location: 'Ordnen Sie diesen Standort einem übergeordneten Standort zu (z.B. Raum zu Gebäude)'
         capacity: 'Maximale Personenkapazität dieses Standorts'
+        responsible_person_user: 'Verantwortliche Person mit Systemzugang (bevorzugt)'
+        responsible_person_ref: 'Verantwortliche Person ohne Systemzugang (Kontakt)'
+        responsible_deputies: 'Optionale Vertretungen, die die Verantwortung mittragen'
     type:
         building: Gebäude
         floor: Etage
