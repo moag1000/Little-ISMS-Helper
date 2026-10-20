@@ -65,6 +65,7 @@ class ProcessTimedWorkflowsCommand extends Command
         private readonly WorkflowService $workflowService,
         private readonly EntityManagerInterface $entityManager,
         private readonly SlaDeadlineWatcher $slaDeadlineWatcher,
+        private readonly ?\App\Service\TenantContext $tenantContext = null,
     ) {
         parent::__construct();
     }
@@ -148,6 +149,8 @@ HELP
         $errors = [];
 
         foreach ($activeWorkflows as $workflowInstance) {
+            // No request: pin the instance's organisation (lifecycle guards, tenant filter).
+            $this->tenantContext?->setCurrentTenant($workflowInstance->getTenant());
             $currentStep = $workflowInstance->getCurrentStep();
 
             if (!$currentStep) {
@@ -190,8 +193,8 @@ HELP
             // approval would close the workflow stays pending (notice, not error).
             try {
                 $this->workflowService->assertAutomaticApprovalAllowed($workflowInstance, $currentStep);
-            } catch (FourEyesRequiredException) {
-                $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep);
+            } catch (FourEyesRequiredException $e) {
+                $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
                 continue;
             }
 
@@ -220,7 +223,7 @@ HELP
                     // Refused at transition time (rolled back in approveByTime):
                     // four-eyes or a lifecycle guard → waits for a human (notice).
                     if (AutomaticCloseRefusal::isRefusal($e)) {
-                        $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep);
+                        $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
                         continue;
                     }
                     $errors[] = sprintf(
@@ -234,13 +237,15 @@ HELP
             }
         }
 
+        $this->tenantContext?->setCurrentTenant(null);
+
         $io->newLine();
         $io->horizontalTable(
             ['Metric', 'Count'],
             [
                 ['Total Active Workflows', count($activeWorkflows)],
                 ['Auto-Progressed', $processed],
-                ['Awaiting four-eyes approval', count($awaitingFourEyes)],
+                ['Awaiting human approval', count($awaitingFourEyes)],
                 ['Escalated (SLA Breach)', $escalated],
                 ['Skipped', $skipped],
                 ['Errors', count($errors)],
@@ -248,7 +253,7 @@ HELP
         );
 
         if ($awaitingFourEyes !== []) {
-            $io->note('Not approved automatically — the closing approval is four-eyes and needs a human approver:');
+            $io->note('Not approved automatically — needs a human approver:');
             $io->listing($awaitingFourEyes);
         }
 
@@ -385,13 +390,17 @@ HELP
         return null;
     }
 
-    private function awaitingFourEyesLine(WorkflowInstance $workflowInstance, WorkflowStep $step): string
-    {
+    private function awaitingFourEyesLine(
+        WorkflowInstance $workflowInstance,
+        WorkflowStep $step,
+        \Throwable $cause,
+    ): string {
         return sprintf(
-            'Workflow #%d %s (Step: %s)',
+            'Workflow #%d %s (Step: %s) — %s',
             (int) $workflowInstance->getId(),
             (string) $workflowInstance->getWorkflow()?->getName(),
             (string) $step->getName(),
+            AutomaticCloseRefusal::describe($cause),
         );
     }
 

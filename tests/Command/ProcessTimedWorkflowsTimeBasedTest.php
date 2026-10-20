@@ -147,8 +147,39 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
 
         self::assertSame(Command::SUCCESS, $tester->getStatusCode());
         self::assertStringContainsString('needs a human approver', $tester->getDisplay());
+        // The guard's own message, not the four-eyes text (review M-2).
+        self::assertStringContainsString('blocked: Lifecycle transition requires tenant context.', $tester->getDisplay());
         self::assertSame([], $instance->getApprovalHistory());
         self::assertSame($first, $instance->getCurrentStep());
+    }
+
+    /**
+     * The cron pins each instance's organisation in TenantContext before
+     * processing it (review M-2), so lifecycle guards and tenant-scoped
+     * reads see the right organisation; it is cleared afterwards.
+     */
+    #[Test]
+    public function eachInstanceIsProcessedInItsOwnTenantContext(): void
+    {
+        [$a] = $this->instance('3 hours', new DateTimeImmutable('-1 hours'));
+        [$b] = $this->instance('3 hours', new DateTimeImmutable('-1 hours'));
+        $tenantA = new \App\Entity\Tenant();
+        $tenantB = new \App\Entity\Tenant();
+        $a->setTenant($tenantA);
+        $b->setTenant($tenantB);
+
+        $seen = [];
+        $context = $this->createMock(\App\Service\TenantContext::class);
+        $context->expects(self::atLeast(3))->method('setCurrentTenant')->willReturnCallback(
+            static function (?\App\Entity\Tenant $t) use (&$seen): void {
+                $seen[] = $t;
+            },
+        );
+        $this->workflowService->expects(self::never())->method('moveToNextStep');
+
+        $this->runCommandWith([$a, $b], $context);
+
+        self::assertSame([$tenantA, $tenantB, null], $seen);
     }
 
     #[Test]
@@ -262,7 +293,15 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         return $step;
     }
 
-    private function runCommand(WorkflowInstance ...$instances): CommandTester
+    private function runCommand(WorkflowInstance $first, WorkflowInstance ...$more): CommandTester
+    {
+        return $this->runCommandWith([$first, ...$more]);
+    }
+
+    /**
+     * @param list<WorkflowInstance> $instances
+     */
+    private function runCommandWith(array $instances, ?\App\Service\TenantContext $tenantContext = null): CommandTester
     {
         $repository = $this->createStub(WorkflowInstanceRepository::class);
         $repository->method('findBy')->willReturn($instances);
@@ -280,7 +319,7 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
             new NullLogger(),
         );
 
-        $tester = new CommandTester(new ProcessTimedWorkflowsCommand($repository, $this->workflowService, $em, $watcher));
+        $tester = new CommandTester(new ProcessTimedWorkflowsCommand($repository, $this->workflowService, $em, $watcher, $tenantContext));
         $tester->execute([]);
 
         return $tester;

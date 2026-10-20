@@ -45,4 +45,22 @@ final class AutomaticCloseRefusal
 
         return $blockers !== [];
     }
+
+    /**
+     * Human-readable cause of a refusal for logs / the cron notice:
+     * "four-eyes" or "blocked: <guard message(s)>".
+     */
+    public static function describe(\Throwable $e): string
+    {
+        $notEnabled = $e->getPrevious();
+        if (!$notEnabled instanceof NotEnabledTransitionException) {
+            return 'four-eyes';
+        }
+        $messages = [];
+        foreach ($notEnabled->getTransitionBlockerList() as $blocker) {
+            $messages[] = $blocker->getMessage();
+        }
+
+        return 'blocked: ' . implode('; ', $messages);
+    }
 }

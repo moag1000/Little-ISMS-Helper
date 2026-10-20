@@ -449,13 +449,14 @@ Workflows can auto-progress after a time delay:
   single-approver escape included. A time-based step whose approval would
   close the workflow (it is the last step, or only notification steps
   follow) therefore stays pending for a human approver. The cron lists such
-  instances under "Awaiting four-eyes approval" as a notice, writes nothing
-  and still exits 0; only real failures are errors. The same applies when a
-  lifecycle guard blocks the automatic close (e.g. the tenant guard — the
-  cron has no tenant context — when an organisation turned four-eyes off for
-  `approve`): one rule, `AutomaticCloseRefusal`, treats both as "waits for a
-  human approver". A transition the current status does not allow stays an
-  error.
+  instances under "Awaiting human approval" as a notice (with the cause:
+  `four-eyes` or `blocked: <guard message>`), writes nothing and still exits
+  0; only real failures are errors. The cron pins each instance's
+  organisation in `TenantContext` before processing it, so an organisation
+  that turned four-eyes off for `approve` gets its time-based close; if a
+  lifecycle guard still blocks the close (e.g. the module is inactive), one
+  rule, `AutomaticCloseRefusal`, treats it like four-eyes: "waits for a human
+  approver". A transition the current status does not allow stays an error.
 - Final approval (four-eyes): whoever may approve the final step (its
   `approver_role`, resolved through the role hierarchy, or its
   `approver_users`) may give it — the transition's own `roles` are not
