@@ -173,4 +173,60 @@ class Nis2ComplianceServiceTest extends TestCase
         $this->assertArrayHasKey('letter', $payload['article23']);
         $this->assertSame('23', $payload['article23']['letter']);
     }
+
+    #[Test]
+    public function userAndMfaMetricsAreScopedToTheCurrentTenant(): void
+    {
+        $tenant = new \App\Entity\Tenant();
+        $context = $this->createStub(\App\Service\TenantContext::class);
+        $context->method('getCurrentTenant')->willReturn($tenant);
+
+        $criteria = [];
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepo->method('count')->willReturnCallback(static function (array $c) use (&$criteria): int {
+            $criteria[] = $c;
+
+            return 0;
+        });
+        $userRepo->method('findBy')->willReturnCallback(static function (array $c) use (&$criteria): array {
+            $criteria[] = $c;
+
+            return [];
+        });
+
+        $joined = [];
+        $qb = $this->createStub(\Doctrine\ORM\QueryBuilder::class);
+        $query = $this->createStub(\Doctrine\ORM\Query::class);
+        $query->method('getSingleScalarResult')->willReturn(0);
+        $qb->method('select')->willReturnSelf();
+        $qb->method('where')->willReturnSelf();
+        $qb->method('andWhere')->willReturnSelf();
+        $qb->method('join')->willReturnCallback(static function (string $join) use (&$joined, $qb) {
+            $joined[] = $join;
+
+            return $qb;
+        });
+        $qb->method('setParameter')->willReturnSelf();
+        $qb->method('getQuery')->willReturn($query);
+        $mfaRepo = $this->createStub(MfaTokenRepository::class);
+        $mfaRepo->method('createQueryBuilder')->willReturn($qb);
+
+        $incidentRepo = $this->createStub(IncidentRepository::class);
+        $incidentRepo->method('findBy')->willReturn([]);
+        $service = new Nis2ComplianceService(
+            incidentRepository: $incidentRepo,
+            mfaTokenRepository: $mfaRepo,
+            userRepository: $userRepo,
+            vulnerabilityRepository: $this->createStub(VulnerabilityRepository::class),
+            patchRepository: $this->createStub(PatchRepository::class),
+            tenantContext: $context,
+        );
+        $service->getDashboardPayload();
+
+        $this->assertNotEmpty($criteria);
+        foreach ($criteria as $c) {
+            $this->assertSame($tenant, $c['tenant'] ?? null, 'user metric not scoped to the tenant');
+        }
+        $this->assertContains('m.user', $joined, 'MFA metric not scoped through the user');
+    }
 }

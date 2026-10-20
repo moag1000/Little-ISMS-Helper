@@ -69,7 +69,26 @@ final class Nis2ComplianceService
         private readonly ?TrainingRepository $trainingRepository = null,
         private readonly ?BusinessContinuityPlanRepository $bcPlanRepository = null,
         private readonly ?ManagementReviewRepository $managementReviewRepository = null,
+        private readonly ?TenantContext $tenantContext = null,
     ) {
+    }
+
+    /**
+     * User criteria of the current organisation. `User` is not covered by the
+     * Doctrine TenantFilter, so it is scoped here explicitly; without a tenant
+     * (instance operator) the metric stays instance-wide like the filtered ones.
+     *
+     * @return array<string, mixed>
+     */
+    private function activeUserCriteria(): array
+    {
+        $criteria = ['isActive' => true];
+        $tenant = $this->tenantContext?->getCurrentTenant();
+        if ($tenant !== null) {
+            $criteria['tenant'] = $tenant;
+        }
+
+        return $criteria;
     }
 
     /**
@@ -285,9 +304,9 @@ final class Nis2ComplianceService
     private function accessControlAndAssetMgmt(): array
     {
         // Access control sub-metric
-        $totalActive = $this->userRepository->count(['isActive' => true]);
+        $totalActive = $this->userRepository->count($this->activeUserCriteria());
         $withRoles = 0;
-        $users = $this->userRepository->findBy(['isActive' => true]);
+        $users = $this->userRepository->findBy($this->activeUserCriteria());
         foreach ($users as $user) {
             $roles = array_diff($user->getRoles(), ['ROLE_USER']); // drop default ROLE_USER
             if ($roles !== []) {
@@ -339,12 +358,16 @@ final class Nis2ComplianceService
      */
     private function authentication(): array
     {
-        $total = $this->userRepository->count(['isActive' => true]);
-        $withMfa = $this->mfaTokenRepository->createQueryBuilder('m')
+        $total = $this->userRepository->count($this->activeUserCriteria());
+        $mfa = $this->mfaTokenRepository->createQueryBuilder('m')
             ->select('COUNT(DISTINCT m.user)')
-            ->where('m.isActive = true')
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->where('m.isActive = true');
+        $tenant = $this->tenantContext?->getCurrentTenant();
+        if ($tenant !== null) {
+            // MfaToken carries no tenant — scope through its user.
+            $mfa->join('m.user', 'mu')->andWhere('mu.tenant = :tenant')->setParameter('tenant', $tenant);
+        }
+        $withMfa = $mfa->getQuery()->getSingleScalarResult();
         $rate = $total > 0 ? round(((int) $withMfa / $total) * 100, 1) : null;
         return $this->metric(
             '21.2.j', 'MFA / secured communications',
