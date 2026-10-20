@@ -6,6 +6,7 @@ namespace App\Form\Trait;
 
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -102,10 +103,9 @@ trait OwnerPickerFormTrait
         $required      = $config['required'] ?? false;
         $defaultToCurrentUser = $config['default_to_current_user'] ?? false;
 
-        $builder->add($userField, EntityType::class, [
+        $userOptions = [
             'label'        => $config['user_label']       ?? $prefix . '.field.owner_user',
                 'translation_domain' => $domain,
-            'class'        => User::class,
             'choice_label' => static fn (User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
             'required'     => $required,
             'placeholder'  => $config['user_placeholder'] ?? $prefix . '.placeholder.owner_user',
@@ -115,7 +115,23 @@ trait OwnerPickerFormTrait
                 'data-owner-picker-target' => 'user',
                 'data-action'              => 'change->owner-picker#toggle',
             ],
-        ]);
+        ];
+        $builder->add($userField, OwnerUserType::class, $userOptions);
+
+        // Scope the user choices to the RECORD's tenant once the bound entity is
+        // known (a tenantless super-admin editing another tenant's record must
+        // still see that tenant's owner). New records without a tenant keep the
+        // current-tenant default of OwnerUserType.
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            static function (FormEvent $event) use ($userField, $userOptions): void {
+                $entity = $event->getData();
+                $tenant = is_object($entity) && method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
+                if ($tenant !== null) {
+                    $event->getForm()->add($userField, OwnerUserType::class, $userOptions + ['tenant' => $tenant]);
+                }
+            },
+        );
 
         $builder->add($personField, EntityType::class, [
             'label'        => $config['person_label']       ?? $prefix . '.field.owner_person',

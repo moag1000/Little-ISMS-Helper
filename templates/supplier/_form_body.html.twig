@@ -16,7 +16,7 @@
     },
     'contact': {
         'label': 'supplier.section.contact'|trans({}, 'suppliers'),
-        'fields': ['contactPerson', 'email', 'phone', 'address']
+        'fields': ['contactPersonUser', 'contactPersonRef', 'contactDeputyPersons', 'contactPerson', 'email', 'phone', 'address']
     },
     'risk_assessment': {
         'label': 'supplier.section.risk_assessment'|trans({}, 'suppliers'),
@@ -77,6 +77,9 @@
         'criticality': 6,
         'status': 6,
         'serviceProvided': 12,
+        'contactPersonUser': 6,
+        'contactPersonRef': 6,
+        'contactDeputyPersons': 12,
         'contactPerson': 6,
         'email': 6,
         'phone': 6,

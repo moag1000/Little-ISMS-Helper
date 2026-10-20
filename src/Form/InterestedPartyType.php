@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\InterestedParty;
 use App\Form\SectionMapInterface;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -18,11 +19,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class InterestedPartyType extends AbstractType implements SectionMapInterface
 {
+    use OwnerPickerFormTrait;
+
     public static function getSectionMap(): array
     {
         return [
             'overview'      => ['name', 'partyType', 'importance', 'description'],
-            'contact'       => ['contactPerson', 'email', 'phone'],
+            'contact'       => ['contactPersonUser', 'contactPersonRef', 'contactDeputyPersons', 'contactPerson', 'email', 'phone'],
             'requirements'  => ['requirements', 'howAddressed'],
             'communication' => ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication'],
             'monitoring'    => ['feedback', 'satisfactionLevel', 'issues'],
@@ -65,11 +68,33 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
                 'label' => 'interested_party.field.description',
                 'required' => false,
                 'attr' => ['rows' => 3],
-            ])
+            ]);
+
+        // Pattern A dual-state owner cluster (User + Person + deputies) via the
+        // shared trait; the legacy free-text field below keeps round-tripping.
+        $this->addOwnerPicker($builder, [
+            'translation_prefix' => 'interested_party',
+            'user_field'         => 'contactPersonUser',
+            'person_field'       => 'contactPersonRef',
+            'deputies_field'     => 'contactDeputyPersons',
+            'user_label'         => 'interested_party.field.contact_person_user',
+            'person_label'       => 'interested_party.field.contact_person_ref',
+            'deputies_label'     => 'interested_party.field.contact_deputies',
+            'user_placeholder'   => 'interested_party.placeholder.contact_person_user',
+            'person_placeholder' => 'interested_party.placeholder.contact_person_ref',
+            'user_help'          => 'interested_party.help.contact_person_user',
+            'person_help'        => 'interested_party.help.contact_person_ref',
+            'deputies_help'      => 'interested_party.help.contact_deputies',
+        ]);
+
+        $builder
             ->add('contactPerson', TextType::class, [
-                'label' => 'interested_party.field.contact_person',
+                'label' => 'interested_party.field.contact_person_legacy',
                 'required' => false,
-                'attr' => ['maxlength' => 100],
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'interested_party.placeholder.contact_person',
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'interested_party.field.email',

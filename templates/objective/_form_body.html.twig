@@ -21,7 +21,7 @@
     },
     'responsibility': {
         'label': 'objective.section.responsibility'|trans({}, 'objective'),
-        'fields': ['responsiblePerson', 'responsibleForMeasurement', 'targetDate']
+        'fields': ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'responsibleForMeasurement', 'targetDate']
     },
     'audit_metadata': {
         'label': 'objective.section.status_progress'|trans({}, 'objective'),
@@ -46,6 +46,9 @@
         'unit': 4,
         'measurementFrequency': 6,
         'measurementMethod': 12,
+        'responsiblePersonUser': 6,
+        'responsiblePersonRef': 6,
+        'responsibleDeputyPersons': 12,
         'responsiblePerson': 6,
         'responsibleForMeasurement': 6,
         'targetDate': 6,

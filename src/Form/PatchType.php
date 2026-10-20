@@ -8,6 +8,7 @@ use App\Entity\Asset;
 use App\Entity\Patch;
 use App\Form\SectionMapInterface;
 use App\Entity\Vulnerability;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,6 +23,8 @@ use Symfony\Component\Validator\Constraints\Url;
 
 final class PatchType extends AbstractType implements SectionMapInterface
 {
+    use OwnerPickerFormTrait;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -155,9 +158,28 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 'label' => 'patch.field.deployed_date',
                 'required' => false,
                 'widget' => 'single_text',
-            ])
+            ]);
+
+        // Pattern A dual-state owner cluster (User + Person + deputies) via the
+        // shared trait; the legacy free-text field below keeps round-tripping.
+        $this->addOwnerPicker($builder, [
+            'translation_prefix' => 'patch',
+            'user_field'         => 'responsiblePersonUser',
+            'person_field'       => 'responsiblePersonRef',
+            'deputies_field'     => 'responsibleDeputyPersons',
+            'user_label'         => 'patch.field.responsible_person_user',
+            'person_label'       => 'patch.field.responsible_person_ref',
+            'deputies_label'     => 'patch.field.responsible_deputies',
+            'user_placeholder'   => 'patch.placeholder.responsible_person_user',
+            'person_placeholder' => 'patch.placeholder.responsible_person_ref',
+            'user_help'          => 'patch.help.responsible_person_user',
+            'person_help'        => 'patch.help.responsible_person_ref',
+            'deputies_help'      => 'patch.help.responsible_deputies',
+        ]);
+
+        $builder
             ->add('responsiblePerson', TextType::class, [
-                'label' => 'patch.field.responsible_person',
+                'label' => 'patch.field.responsible_person_legacy',
                 'required' => false,
                 'attr' => [
                     'maxlength' => 100,
@@ -293,6 +315,9 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 'releaseDate',
                 'deploymentDeadline',
                 'deployedDate',
+                'responsiblePersonUser',
+                'responsiblePersonRef',
+                'responsibleDeputyPersons',
                 'responsiblePerson',
                 'deploymentNotes',
             ],

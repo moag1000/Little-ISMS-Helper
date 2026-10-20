@@ -62,10 +62,10 @@
                 <span>{{ patch.vulnerability.title }}</span>
             </div>
         {% endif %}
-        {% if patch.responsiblePerson %}
+        {% if patch.effectiveResponsiblePerson %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'patch.field.responsible_person'|trans({}, 'patches') }}</span>
-                <span>{{ patch.responsiblePerson }}</span>
+                <span>{{ patch.effectiveResponsiblePerson }}</span>
             </div>
         {% endif %}
         {% if patch.description %}

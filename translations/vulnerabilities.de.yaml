@@ -40,6 +40,10 @@ vulnerability:
         responsible_person: 'Verantwortliche Person'
         remediation_notes: Behebungshinweise
         source: Quelle
+        responsible_person_user: 'Verantwortliche Person (Benutzer)'
+        responsible_person_ref: 'Verantwortliche Person (Kontakt)'
+        responsible_deputies: 'Vertretungen'
+        responsible_person_legacy: 'Verantwortliche Person (Freitext)'
     placeholder:
         cve_id: 'z.B. CVE-2024-12345'
         title: 'z.B. Remote Code Execution in Apache Log4j'
@@ -47,6 +51,8 @@ vulnerability:
         cvss_score: '7.5'
         responsible_person: 'Name der verantwortlichen Person'
         remediation_notes: 'Schritte zur Behebung und Notizen...'
+        responsible_person_user: 'Benutzer auswählen…'
+        responsible_person_ref: 'Kontakt auswählen…'
     help:
         cve_id: 'Offizielle CVE-Kennung (Common Vulnerabilities and Exposures)'
         severity: 'Schweregrad basierend auf CVSS-Score oder manueller Bewertung'
@@ -59,6 +65,9 @@ vulnerability:
         exploit_availability: 'Verfügbarkeit von Exploit-Code'
         actively_exploited: 'Wird die Schwachstelle aktiv in freier Wildbahn ausgenutzt?'
         status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Offen → Triage → In Behebung → Gepatcht / Gemindert / Akzeptiert → Geschlossen). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
+        responsible_person_user: 'Verantwortliche Person mit Systemzugang (bevorzugt)'
+        responsible_person_ref: 'Verantwortlicher Kontakt ohne Systemzugang'
+        responsible_deputies: 'Weitere Personen, die die Verantwortung teilen'
     severity:
         critical: Kritisch
         high: Hoch

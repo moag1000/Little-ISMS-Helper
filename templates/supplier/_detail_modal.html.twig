@@ -52,10 +52,10 @@
             <span>{{ supplier.lastSecurityAssessment|date('Y-m-d') }}</span>
         </div>
         {% endif %}
-        {% if supplier.contactPerson %}
+        {% if supplier.effectiveContactPerson %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'supplier.field.contact_person'|trans({}, 'suppliers') }}</span>
-            <span>{{ supplier.contactPerson }}</span>
+            <span>{{ supplier.effectiveContactPerson }}</span>
         </div>
         {% endif %}
         {% if supplier.email %}
