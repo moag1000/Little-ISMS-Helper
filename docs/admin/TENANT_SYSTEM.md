@@ -534,7 +534,16 @@ sees B's users. The same rule is enforced on the entity (`#[SameTenantOwner]`),
 so API Platform writes and hand-crafted posts that link a user of another
 organisation are rejected (422). Four-eyes approvers (lifecycle transitions,
 compliance inheritance) must also belong to the record's organisation. The
-MFA-token form only offers users the admin may edit.
+MFA-token form only offers users the admin may edit. Bulk "assign" (risks,
+assets, trainings) skips every record whose organisation differs from the
+assignee's (`assignee_other_tenant`), also for a `ROLE_SUPER_ADMIN`.
+
+The policy wizard accepts only users of the run's organisation (approval
+chain, DPO / BCM officer, approvers; approvers must be eligible approvers of
+that organisation). Wizard runs that already stored a user of another
+organisation show it as `User #<id>`, and generated policies leave such a role
+holder empty instead of printing a foreign name — re-run the affected step and
+pick a person of your organisation.
 
 **Holding users.** Records belong to exactly one organisation and holding
 roles (`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) are read-only on
@@ -555,6 +564,8 @@ php bin/console app:data:cross-tenant-user-links
 ```
 
 It prints entity, id, field, the linked user/person and both organisation ids.
+It covers every user/person relation the rule guards, including deputies,
+team members and participants.
 Open each record and pick a user or person of the record's own organisation.
 Rows whose linked tenant is `(none)` point to an account without an
 organisation (usually the instance operator) — reassign them too.
