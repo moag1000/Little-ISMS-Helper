@@ -57,6 +57,11 @@ final class ManagementReportAuditFindingCountsTest extends TestCase
 
         self::assertSame(5, $report['total_findings']);
         self::assertSame(2, $report['open_findings'], 'open + in_progress, all years');
+        // Review M-4: the activity count is named for what it is; "this year"
+        // (planned date) lives in planned_audits / completed_audits.
+        self::assertArrayHasKey('with_activity_this_year', $report['audits']);
+        self::assertArrayNotHasKey('this_year', $report['audits']);
+        self::assertSame(1, $report['planned_audits']);
     }
 
     private function service(DashboardStatisticsService $dashboard): ManagementReportService

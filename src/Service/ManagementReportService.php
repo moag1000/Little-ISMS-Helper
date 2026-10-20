@@ -468,7 +468,7 @@ final class ManagementReportService
             ...\App\Service\Audit\AuditProgramFigures::calendarYear($audits),
             'audits' => [
                 'total' => count($audits),
-                'this_year' => count($auditsThisYear),
+                'with_activity_this_year' => count($auditsThisYear), // conducted (else planned) this year
                 'by_status' => [
                     'planned' => count($byStatus['planned']),
                     'in_progress' => count($byStatus['in_progress']),

@@ -45,7 +45,7 @@
             {{ _fa_feature_card.render({
                 icon: 'nav-calendar-check',
                 label: 'management_reports.audit.this_year'|trans({}, 'management_reports'),
-                value: report.audits.this_year,
+                value: report.audits.with_activity_this_year,
                 variant: 'success'
             }) }}
         </div>
@@ -131,7 +131,7 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ 'management_reports.audit.internal_audits'|trans({}, 'management_reports') }}
-                            {% include '_components/_badge.html.twig' with { variant: report.audits.this_year >= 1 ? 'success' : 'warning', content: report.audits.this_year >= 1 ? 'management_reports.audit.compliant'|trans({}, 'management_reports') : 'management_reports.audit.pending'|trans({}, 'management_reports') } %}
+                            {% include '_components/_badge.html.twig' with { variant: report.audits.with_activity_this_year >= 1 ? 'success' : 'warning', content: report.audits.with_activity_this_year >= 1 ? 'management_reports.audit.compliant'|trans({}, 'management_reports') : 'management_reports.audit.pending'|trans({}, 'management_reports') } %}
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ 'management_reports.audit.management_review'|trans({}, 'management_reports') }}
