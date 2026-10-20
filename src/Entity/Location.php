@@ -21,6 +21,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Service\OwnerResolver;
 
 /**
  * Location Entity
@@ -121,6 +122,34 @@ class Location
     #[Groups(['location:read', 'location:write'])]
     private ?string $responsiblePerson = null;
 
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string responsiblePerson.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['location:read', 'location:write'])]
+    private ?User $responsiblePersonUser = null;
+
+    /**
+     * Person-based responsible person: for contacts without a system login.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_ref_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['location:read', 'location:write'])]
+    private ?Person $responsiblePersonRef = null;
+
+    /**
+     * Deputies / Vertretung — n additional Persons sharing responsibility.
+     *
+     * @var Collection<int, Person>
+     */
+    #[Groups(['location:read', 'location:write'])]
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'location_responsible_deputy')]
+    #[ORM\JoinColumn(name: 'location_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $responsibleDeputyPersons;
+
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['location:read', 'location:write'])]
     private ?int $capacity = null;
@@ -159,6 +188,7 @@ class Location
 
     public function __construct()
     {
+        $this->responsibleDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->childLocations = new ArrayCollection();
         $this->accessLogs = new ArrayCollection();
@@ -489,5 +519,75 @@ class Location
     public function isHighSecurity(): bool
     {
         return in_array($this->securityLevel, ['secure', 'high_security'], true);
+    }
+
+    public function getResponsiblePersonUser(): ?User
+    {
+        return $this->responsiblePersonUser;
+    }
+
+    public function setResponsiblePersonUser(?User $responsiblePersonUser): static
+    {
+        $this->responsiblePersonUser = $responsiblePersonUser;
+        return $this;
+    }
+
+    public function getResponsiblePersonRef(): ?Person
+    {
+        return $this->responsiblePersonRef;
+    }
+
+    public function setResponsiblePersonRef(?Person $responsiblePersonRef): static
+    {
+        $this->responsiblePersonRef = $responsiblePersonRef;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getResponsibleDeputyPersons(): Collection
+    {
+        return $this->responsibleDeputyPersons;
+    }
+
+    public function addResponsibleDeputyPerson(Person $person): static
+    {
+        if (!$this->responsibleDeputyPersons->contains($person)) {
+            $this->responsibleDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeResponsibleDeputyPerson(Person $person): static
+    {
+        $this->responsibleDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
+     * then responsiblePersonRef (Person), fall back to legacy string.
+     */
+    public function getEffectiveResponsiblePerson(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->responsiblePersonUser,
+            $this->responsiblePersonRef,
+            $this->responsiblePerson,
+        );
+    }
+
+    /**
+     * Full responsible-person roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllResponsiblePersons(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->responsiblePersonUser,
+            $this->responsiblePersonRef,
+            $this->responsiblePerson,
+            $this->responsibleDeputyPersons,
+        );
     }
 }
