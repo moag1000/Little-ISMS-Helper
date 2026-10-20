@@ -28,4 +28,15 @@ enum RiskStatus: string
             self::Identified, self::Assessed, self::InTreatment, self::Open => false,
         };
     }
+
+    /**
+     * Single source for "is re-assessed at planned intervals": every risk
+     * except a closed one — handled risks too, accepted risks in particular
+     * (ISO 27001 8.2, ISO 27005). Review reminders and the data-integrity
+     * "review date passed" check both use it.
+     */
+    public function requiresPeriodicReview(): bool
+    {
+        return $this !== self::Closed;
+    }
 }

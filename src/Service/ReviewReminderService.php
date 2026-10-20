@@ -145,8 +145,8 @@ final class ReviewReminderService
             if (!$reviewDate instanceof DateTimeInterface) {
                 return false;
             }
-            // Closed risks only — accepted risks are re-assessed at planned intervals (ISO 27001 8.2, ISO 27005)
-            return $reviewDate < $now && $risk->getStatus() !== \App\Enum\RiskStatus::Closed;
+            // RiskStatus::requiresPeriodicReview(): all but closed — accepted risks included
+            return $reviewDate < $now && $risk->getStatus()?->requiresPeriodicReview() !== false;
         });
     }
 
@@ -459,7 +459,7 @@ final class ReviewReminderService
             if (!$reviewDate instanceof DateTimeInterface) {
                 return false;
             }
-            return $reviewDate >= $now && $reviewDate <= $threshold && $risk->getStatus() !== \App\Enum\RiskStatus::Closed;
+            return $reviewDate >= $now && $reviewDate <= $threshold && $risk->getStatus()?->requiresPeriodicReview() !== false;
         });
     }
 

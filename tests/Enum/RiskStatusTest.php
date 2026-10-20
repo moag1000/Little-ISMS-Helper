@@ -33,4 +33,16 @@ final class RiskStatusTest extends TestCase
             self::assertFalse($status->isHandled(), $status->value);
         }
     }
+
+    /**
+     * Every risk but a closed one is re-assessed at planned intervals —
+     * accepted (handled) risks included (ISO 27001 8.2, ISO 27005).
+     */
+    #[Test]
+    public function everyStatusButClosedRequiresPeriodicReview(): void
+    {
+        foreach (RiskStatus::cases() as $status) {
+            self::assertSame($status !== RiskStatus::Closed, $status->requiresPeriodicReview(), $status->value);
+        }
+    }
 }

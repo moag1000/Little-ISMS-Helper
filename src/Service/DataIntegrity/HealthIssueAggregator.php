@@ -60,14 +60,14 @@ final class HealthIssueAggregator
      *   - 'risks_missing_treatment_strategy': status not 'identified' but no treatment strategy set
      *   - 'risks_residual_exceeds_inherent': residual risk level > inherent (mathematically impossible)
      *   - 'risks_treatment_plan_without_controls': treatmentDescription filled but no controls linked
-     *   - 'risks_past_review_date': reviewDate is in the past and risk is not handled
+     *   - 'risks_past_review_date': reviewDate is in the past and the risk requires periodic review
      */
     public function findRiskHealthIssues(): array
     {
         $issues = [];
         $now = new \DateTimeImmutable();
 
-        // Handled risks (RiskStatus::isHandled()) skip the review/treatment checks below.
+        // Handled risks skip the treatment checks; the review check follows requiresPeriodicReview().
 
         $risks = $this->riskRepository->findAll();
 
@@ -107,7 +107,7 @@ final class HealthIssueAggregator
             if (
                 $reviewDate !== null
                 && $reviewDate < $now
-                && $status?->isHandled() !== true
+                && $status?->requiresPeriodicReview() !== false
             ) {
                 $pastReviewDate[] = $risk;
             }

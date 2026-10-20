@@ -141,28 +141,30 @@ final class HealthIssueAggregatorTest extends TestCase
     }
 
     /**
-     * Final = handled (RiskStatus::isHandled()): accepted, mitigated, treated
-     * and monitored risks are skipped like closed ones; in-treatment is not.
+     * Treatment checks skip handled risks (RiskStatus::isHandled()); the
+     * review-date check follows RiskStatus::requiresPeriodicReview(): every
+     * risk but a closed one — an accepted risk with an overdue review is an
+     * issue (ISO 27001 8.2, ISO 27005), same rule as the review reminders.
      *
-     * @return iterable<string, array{RiskStatus, bool}>
+     * @return iterable<string, array{RiskStatus}>
      */
-    public static function handledStatuses(): iterable
+    public static function allStatuses(): iterable
     {
         foreach (RiskStatus::cases() as $status) {
-            yield $status->value => [$status, $status->isHandled()];
+            yield $status->value => [$status];
         }
     }
 
     #[Test]
-    #[\PHPUnit\Framework\Attributes\DataProvider('handledStatuses')]
-    public function find_risk_health_issues_skips_handled_risks(RiskStatus $status, bool $handled): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('allStatuses')]
+    public function find_risk_health_issues_review_and_treatment_rules(RiskStatus $status): void
     {
         $risk = $this->createMock(Risk::class);
         $risk->method('getStatus')->willReturn($status);
         $risk->method('getTreatmentStrategy')->willReturn(TreatmentStrategy::Mitigate);
         $risk->method('getResidualRiskLevel')->willReturn(3);
         $risk->method('getInherentRiskLevel')->willReturn(5);
-        $risk->method('getTreatmentDescription')->willReturn(null);
+        $risk->method('getTreatmentDescription')->willReturn('Planned measures');
         $risk->method('getControls')->willReturn(new ArrayCollection());
         $risk->method('getReviewDate')->willReturn(new \DateTimeImmutable('-30 days'));
 
@@ -170,7 +172,8 @@ final class HealthIssueAggregatorTest extends TestCase
 
         $result = $this->aggregator->findRiskHealthIssues();
 
-        self::assertSame(!$handled, array_key_exists('risks_past_review_date', $result));
+        self::assertSame($status !== RiskStatus::Closed, array_key_exists('risks_past_review_date', $result), 'review rule');
+        self::assertSame(!$status->isHandled(), array_key_exists('risks_treatment_plan_without_controls', $result), 'treatment rule');
     }
 
     // ────────────────────────────────────────────────────────────────────────
