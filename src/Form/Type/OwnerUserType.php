@@ -7,6 +7,7 @@ namespace App\Form\Type;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\ChoiceList\TenantUserChoiceLoader;
+use App\Form\ChoiceList\TenantUserDirectory;
 use App\Security\RecordTenant;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,15 +45,14 @@ final class OwnerUserType extends AbstractType
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly EntityManagerInterface $entityManager,
+        private readonly TenantUserDirectory $directory,
     ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var TenantUserChoiceLoader $loader enforced in configureOptions() */
         $loader = $options['choice_loader'];
-        if (!$loader instanceof TenantUserChoiceLoader) {
-            return;
-        }
         // The parent record is already set when a child receives its data
         // (Form::setData maps children after storing its own model data).
         $builder->addEventListener(
@@ -74,11 +74,20 @@ final class OwnerUserType extends AbstractType
                 $this->entityManager,
                 $options['id_reader'],
                 $this->tenantContext,
+                $this->directory,
                 $options['tenant'],
             ),
         ]);
         $resolver->setAllowedTypes('tenant', ['null', Tenant::class]);
+        // The scoping must not be switched off by a caller: a custom loader or
+        // query builder (or a lazy loader wrapper) would bypass it.
         $resolver->setAllowedValues('class', [User::class]);
+        $resolver->setAllowedValues(
+            'choice_loader',
+            static fn (mixed $loader): bool => $loader instanceof TenantUserChoiceLoader,
+        );
+        $resolver->setAllowedValues('query_builder', [null]);
+        $resolver->setAllowedValues('choice_lazy', [false]);
     }
 
     public function getParent(): string

@@ -315,4 +315,52 @@ final class UserPickerTenantScopeTest extends KernelTestCase
 
         self::assertSame((string) $this->userA->getId(), $form->createView()['teamLeader']->vars['value']);
     }
+
+    #[Test]
+    public function scopingCannotBeSwitchedOffByOptions(): void
+    {
+        foreach ([
+            'query_builder' => static fn ($repo) => $repo->createQueryBuilder('u'),
+            'choice_loader' => new \Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader(
+                static fn (): array => [],
+            ),
+            'choice_lazy' => true,
+        ] as $option => $value) {
+            try {
+                $this->factory->createBuilder(FormType::class, null, ['csrf_protection' => false])
+                    ->add('u', OwnerUserType::class, [$option => $value, 'choice_label' => 'email'])
+                    ->getForm();
+                self::fail(sprintf('option "%s" was accepted', $option));
+            } catch (\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException) {
+                $this->addToAssertionCount(1);
+            }
+        }
+    }
+
+    #[Test]
+    public function fieldsOfOneFormShareTheOrganisationUserList(): void
+    {
+        $directory = static::getContainer()->get(\App\Form\ChoiceList\TenantUserDirectory::class);
+        $first = $directory->usersOf($this->tenantA);
+
+        self::assertSame($first, $directory->usersOf($this->tenantA), 'second lookup must hit the cache');
+        self::assertSame([$this->userA->getId()], array_map(static fn (User $u): ?int => $u->getId(), $first));
+
+        // Two user fields of one form render the same (shared) list.
+        $form = $this->factory->create(
+            CrisisTeamType::class,
+            $this->record(CrisisTeam::class, $this->tenantA),
+            ['csrf_protection' => false],
+        );
+        $view = $form->createView();
+        self::assertSame(self::choiceValues($view['teamLeader']), self::choiceValues($view['deputyLeader']));
+
+        // A cleared EntityManager detaches the cached users → reloaded, managed again.
+        $this->em->clear();
+        $reloaded = $directory->usersOf($this->tenantA->getId());
+        self::assertTrue($this->em->contains($reloaded[0]));
+
+        $directory->reset();
+        self::assertSame([], (fn (): array => $this->byTenant)->call($directory), 'reset() empties the cache');
+    }
 }

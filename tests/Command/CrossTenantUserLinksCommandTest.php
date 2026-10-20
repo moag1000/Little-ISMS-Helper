@@ -43,6 +43,24 @@ final class CrossTenantUserLinksCommandTest extends KernelTestCase
         self::assertMatchesRegularExpression('/CrisisTeam\s+' . $team->getId() . '\s+teamLeader/', $display);
     }
 
+    #[Test]
+    public function finderKeepsAnEnabledTenantFilterAndItsParameter(): void
+    {
+        self::bootKernel();
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $filters = $em->getFilters();
+        $filter = $filters->isEnabled('tenant_filter')
+            ? $filters->getFilter('tenant_filter')
+            : $filters->enable('tenant_filter');
+        $filter->setParameter('tenant_id', '987654');
+
+        static::getContainer()->get(\App\Service\DataIntegrity\CrossTenantUserLinkFinder::class)->find();
+
+        self::assertTrue($filters->isEnabled('tenant_filter'));
+        self::assertSame($filter, $filters->getFilter('tenant_filter'), 'filter instance replaced');
+        self::assertSame("'987654'", $filters->getFilter('tenant_filter')->getParameter('tenant_id'));
+    }
+
     private function user(EntityManagerInterface $em, string $name, Tenant $tenant): User
     {
         $user = (new User())->setEmail($name . '@example.com')->setFirstName('F')->setLastName($name)

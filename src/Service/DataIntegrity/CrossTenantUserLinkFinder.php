@@ -35,7 +35,10 @@ final class CrossTenantUserLinkFinder
         $filters = $this->em->getFilters();
         $suspended = [];
         foreach (array_keys($filters->getEnabledFilters()) as $name) {
-            $filters->disable($name);
+            // suspend()/restore() keep the filter instance and its parameters
+            // (disable()/enable() would re-create the TenantFilter without its
+            // tenant id when reused from an HTTP or job context).
+            $filters->suspend($name);
             $suspended[] = $name;
         }
 
@@ -50,7 +53,7 @@ final class CrossTenantUserLinkFinder
             return $rows;
         } finally {
             foreach ($suspended as $name) {
-                $filters->enable($name);
+                $filters->restore($name);
             }
         }
     }

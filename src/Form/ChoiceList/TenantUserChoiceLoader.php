@@ -9,8 +9,8 @@ use App\Entity\User;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\DoctrineChoiceLoader;
+use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\IdReader;
-use Symfony\Bridge\Doctrine\Form\ChoiceList\ORMQueryBuilderLoader;
 use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
@@ -21,8 +21,9 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
  *
  * Tenant precedence: explicit `tenant` option → the bound record's tenant →
  * the current tenant → none (empty list, never "all users"). The submitted
- * ids are resolved through the same scoped query, so a user of another
- * organisation is rejected as an invalid choice.
+ * ids are resolved against the same scoped list, so a user of another
+ * organisation is rejected as an invalid choice. The organisation's user list
+ * is shared per request ({@see TenantUserDirectory}).
  *
  * Exception: the field's CURRENT value(s) stay selectable even when they
  * belong to another organisation (legacy data), so re-saving a record never
@@ -40,6 +41,7 @@ final class TenantUserChoiceLoader implements ChoiceLoaderInterface
         private readonly EntityManagerInterface $em,
         private readonly ?IdReader $idReader,
         private readonly TenantContext $tenantContext,
+        private readonly TenantUserDirectory $directory,
         private readonly ?Tenant $fixedTenant = null,
     ) {
     }
@@ -92,24 +94,53 @@ final class TenantUserChoiceLoader implements ChoiceLoaderInterface
 
     private function inner(): ChoiceLoaderInterface
     {
-        if ($this->inner === null) {
-            $qb = $this->em->getRepository(User::class)->createQueryBuilder('u')
-                ->orderBy('u.lastName')
-                ->addOrderBy('u.firstName');
-            $tenant = $this->getScopeTenant();
-            $scope = [];
-            if ($tenant !== null) {
-                $scope[] = 'u.tenant = :ownerTenant';
-                $qb->setParameter('ownerTenant', $tenant);
+        return $this->inner ??= new DoctrineChoiceLoader(
+            $this->em,
+            User::class,
+            $this->idReader,
+            new class ($this->choices(...)) implements EntityLoaderInterface {
+                /** @param \Closure(): list<User> $choices */
+                public function __construct(private readonly \Closure $choices)
+                {
+                }
+
+                public function getEntities(): array
+                {
+                    return ($this->choices)();
+                }
+
+                public function getEntitiesByIds(string $identifier, array $values): array
+                {
+                    $wanted = array_flip(array_map('strval', $values));
+
+                    return array_values(array_filter(
+                        ($this->choices)(),
+                        static fn (User $u): bool => isset($wanted[(string) $u->getId()]),
+                    ));
+                }
+            },
+        );
+    }
+
+    /**
+     * The organisation's users (shared per request via TenantUserDirectory)
+     * plus the field's current value(s) not among them.
+     *
+     * @return list<User>
+     */
+    private function choices(): array
+    {
+        $tenant = $this->getScopeTenant();
+        $users = $tenant !== null ? $this->directory->usersOf($tenant) : [];
+
+        $loadedIds = array_map(static fn (User $u): ?int => $u->getId(), $users);
+        $missing = array_values(array_diff($this->currentIds, $loadedIds));
+        if ($missing !== []) {
+            foreach ($this->em->getRepository(User::class)->findBy(['id' => $missing]) as $user) {
+                $users[] = $user;
             }
-            if ($this->currentIds !== []) {
-                $scope[] = 'u.id IN (:currentIds)';
-                $qb->setParameter('currentIds', $this->currentIds);
-            }
-            $qb->andWhere($scope === [] ? '1 = 0' : '(' . implode(' OR ', $scope) . ')');
-            $this->inner = new DoctrineChoiceLoader($this->em, User::class, $this->idReader, new ORMQueryBuilderLoader($qb));
         }
 
-        return $this->inner;
+        return $users;
     }
 }
