@@ -360,7 +360,7 @@ final class UserPickerTenantScopeTest extends KernelTestCase
         $reloaded = $directory->usersOf($this->tenantA->getId());
         self::assertTrue($this->em->contains($reloaded[0]));
 
-        $directory->reset();
+        call_user_func([$directory, 'reset']); // ResetInterface (kernel.reset)
         self::assertSame([], (fn (): array => $this->byTenant)->call($directory), 'reset() empties the cache');
     }
 }
