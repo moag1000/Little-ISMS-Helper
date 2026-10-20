@@ -41,6 +41,10 @@ patch:
         known_issues: 'Known Issues'
         download_url: 'Download URL'
         documentation_url: 'Documentation URL'
+        responsible_person_user: 'Responsible Person (User)'
+        responsible_person_ref: 'Responsible Person (Contact)'
+        responsible_deputies: 'Deputies'
+        responsible_person_legacy: 'Responsible Person (Free Text)'
     type:
         security: 'Security Patch'
         critical: 'Critical Patch'
@@ -72,6 +76,8 @@ patch:
         testing_notes: 'Test results and observations...'
         rollback_plan: 'Steps to roll back the patch...'
         known_issues: 'Known issues or limitations...'
+        responsible_person_user: 'Select user'
+        responsible_person_ref: 'Select contact'
     help:
         patch_id: 'Unique identifier of the patch (KB number, CVE fix, etc.)'
         patch_type: 'Type of patch'
@@ -84,6 +90,9 @@ patch:
         rollback_plan: 'Instructions in case the patch needs to be rolled back'
         estimated_downtime_minutes: 'Expected downtime in minutes'
         status_readonly: 'Status is driven by the lifecycle workflow (Pending → Testing → Approved → Deployed; if needed Failed / Rolled back). Direct editing is disabled; use the status actions on the detail page.'
+        responsible_person_user: 'Registered user with system access as responsible person'
+        responsible_person_ref: 'Contact without system access as responsible person'
+        responsible_deputies: 'Additional persons sharing responsibility (deputies)'
     kpi:
         pending: Pending
         deployed: Deployed

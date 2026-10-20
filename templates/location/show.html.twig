@@ -86,6 +86,11 @@
             </strong>
             <span>{{ 'location.field.badge_access'|trans({}, 'locations') }}</span>
         </div>
+
+        <div class="stat-item">
+            <strong>{{ location.effectiveResponsiblePerson ?? '—' }}</strong>
+            <span>{{ 'location.field.responsible_person'|trans({}, 'locations') }}</span>
+        </div>
     </div>
     {% endblock %}
 {% endembed %}

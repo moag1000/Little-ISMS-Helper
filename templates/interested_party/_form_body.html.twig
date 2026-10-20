@@ -13,7 +13,7 @@
     },
     'contact': {
         'label': 'interested_party.section.contact_info'|trans({}, 'interested_parties'),
-        'fields': ['contactPerson', 'email', 'phone']
+        'fields': ['contactPersonUser', 'contactPersonRef', 'contactDeputyPersons', 'contactPerson', 'email', 'phone']
     },
     'requirements': {
         'label': 'interested_party.section.requirements'|trans({}, 'interested_parties'),
@@ -41,6 +41,9 @@
         'partyType': 6,
         'importance': 6,
         'description': 12,
+        'contactPersonUser': 6,
+        'contactPersonRef': 6,
+        'contactDeputyPersons': 12,
         'contactPerson': 12,
         'email': 6,
         'phone': 6,

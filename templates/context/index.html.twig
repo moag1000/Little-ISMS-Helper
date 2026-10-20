@@ -442,7 +442,7 @@
                         <td>
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}
                         </td>
-                        <td>{{ objective.responsiblePerson }}</td>
+                        <td>{{ objective.effectiveResponsiblePerson }}</td>
                         <td>
                             <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                             {{ objective.targetDate|date('d.m.Y') }}

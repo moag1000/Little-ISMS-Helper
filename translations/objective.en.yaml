@@ -30,6 +30,10 @@ objective:
         status: Status
         progress_notes: 'Progress notes'
         achieved_date: 'Achieved Date'
+        responsible_person_user: 'Responsible person from user management'
+        responsible_person_ref: 'Responsible person from person directory'
+        responsible_deputies: 'Deputies'
+        responsible_person_legacy: 'Responsible person (free text, legacy)'
     placeholder:
         title: 'e.g. Improvement of information security'
         description: 'Detailed description of the objective'
@@ -41,12 +45,17 @@ objective:
         progress_notes: 'Notes on current progress, obstacles, etc.'
         measurement_frequency: 'Select frequency'
         measurement_method: 'e.g. Audit log analysis, KPI dashboard, quarterly review'
+        responsible_person_user: 'Select user…'
+        responsible_person_ref: 'Select person…'
     help:
         target_date: 'Target date for achieving the objective'
         responsible_for_measurement: 'ISO 27001 §6.2.b — who actually performs the measurement (may differ from the responsible person).'
         measurement_frequency: 'ISO 27001 §6.2.b — how often the value is measured / updated.'
         measurement_method: 'ISO 27001 §6.2.b — description of the measurement method (data source, tool, process).'
         status_readonly: 'Status is driven by the lifecycle workflow (Not started → In progress → Achieved / Delayed / Cancelled). Direct editing is disabled; use the status actions on the detail page.'
+        responsible_person_user: 'Responsible person with a system login (from user management). Preferred over the free-text field.'
+        responsible_person_ref: 'Responsible person without a system login (from the person directory).'
+        responsible_deputies: 'Optional deputies who share the responsibility.'
     frequency:
         daily: Daily
         weekly: Weekly
@@ -109,3 +118,5 @@ objective:
         employees: 'Employees'
         euro: 'Euro (€)'
         points: 'Points'
+    error:
+        owner_required: 'Please specify a responsible person (user, person, or free text).'

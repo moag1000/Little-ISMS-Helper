@@ -41,7 +41,7 @@
         {% endfor %}
 
         {% set _sup_rows = _sup_rows|merge([[
-            '<strong>' ~ rep.name ~ '</strong>' ~ (rep.contactPerson ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ rep.contactPerson ~ '</span>' : ''),
+            '<strong>' ~ rep.name ~ '</strong>' ~ (rep.effectiveContactPerson ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ rep.effectiveContactPerson ~ '</span>' : ''),
             _id_cell,
             crit ? '<span class="report-doc__chip report-doc__chip--status-' ~ _cchip ~ '">' ~ crit ~ '</span>' : '<span style="color:var(--fg-3);">—</span>',
             _tenants_cell,
