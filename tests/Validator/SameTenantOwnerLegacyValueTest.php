@@ -175,4 +175,50 @@ final class SameTenantOwnerLegacyValueTest extends KernelTestCase
         self::assertCount(2, $review->getParticipants());
         self::assertNotContains(self::MESSAGE, $this->messages($review, 'participants'));
     }
+
+    #[Test]
+    public function legacyForeignUserOnAnotherRecordThatNeverHadItIsRejected(): void
+    {
+        $this->legacyTeam(); // record #1 legitimately holds the legacy link (clears the EM)
+        $own = $this->em->find(User::class, $this->own->getId());
+        $other = (new CrisisTeam())->setTenant($this->em->find(Tenant::class, $this->tenant->getId()))
+            ->setTeamName('Other')->setTeamType('primary')->setIsActive(true)
+            ->setTeamLeader($own)->setDeputyLeader($own);
+        $this->em->persist($other);
+        $this->em->flush();
+        $id = $other->getId();
+        $this->em->clear();
+
+        $other = $this->em->find(CrisisTeam::class, $id);
+        $other->setTeamLeader($this->em->find(User::class, $this->legacyForeign->getId()));
+
+        self::assertContains(self::MESSAGE, $this->messages($other, 'teamLeader'));
+    }
+
+    #[Test]
+    public function movingALegacyValueToAnotherPropertyIsRejected(): void
+    {
+        $team = $this->legacyTeam();
+        $team->setDeputyLeader($team->getTeamLeader());
+
+        self::assertNotContains(self::MESSAGE, $this->messages($team, 'teamLeader'), 'unchanged slot still passes');
+        self::assertContains(self::MESSAGE, $this->messages($team, 'deputyLeader'));
+    }
+
+    #[Test]
+    public function replacedCollectionComparesAgainstTheLoadedSnapshot(): void
+    {
+        $review = $this->legacyReview();
+        $legacy = $this->em->find(User::class, $this->legacyForeign->getId());
+        $participants = new \ReflectionProperty($review, 'participants');
+
+        $participants->setValue($review, new \Doctrine\Common\Collections\ArrayCollection([$legacy]));
+        self::assertNotContains(self::MESSAGE, $this->messages($review, 'participants'), 'legacy element kept');
+
+        $participants->setValue($review, new \Doctrine\Common\Collections\ArrayCollection([
+            $legacy,
+            $this->em->find(User::class, $this->otherForeign->getId()),
+        ]));
+        self::assertContains(self::MESSAGE, $this->messages($review, 'participants'), 'new foreign element');
+    }
 }

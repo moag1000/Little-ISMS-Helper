@@ -104,13 +104,16 @@ final class SameTenantOwnerValidator extends ConstraintValidator
             return []; // new (or detached) record: every value is a new assignment
         }
 
-        if ($value instanceof PersistentCollection) {
-            $original = $value->getSnapshot();
-        } else {
-            $original = $uow->getOriginalEntityData($object)[$property] ?? null;
-            if ($original instanceof PersistentCollection) {
-                $original = $original->getSnapshot();
+        $original = $value instanceof PersistentCollection
+            ? $value
+            : ($uow->getOriginalEntityData($object)[$property] ?? null);
+        if ($original instanceof PersistentCollection) {
+            // The snapshot is only taken when the collection loads; a replaced
+            // (never iterated) original collection must load first.
+            if (!$original->isInitialized()) {
+                $original->initialize();
             }
+            $original = $original->getSnapshot();
         }
 
         $ids = [];

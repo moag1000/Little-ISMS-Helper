@@ -140,4 +140,25 @@ class LifecycleControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(403);
     }
+
+    #[Test]
+    public function bulkTransitionWithTheCsrfHeaderIsAccepted(): void
+    {
+        [$client, $doc] = $this->documentWithRenderedToken();
+        // No page renders the bulk token yet — seed it into the session like a
+        // future caller would get it from csrf_token('lifecycle_bulk_transition').
+        $session = $client->getRequest()->getSession();
+        $token = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/lifecycle_bulk_transition', $token);
+        $session->save();
+
+        $client->request('POST', '/lifecycle/document/bulk-transition',
+            server: ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => $token],
+            content: (string) json_encode(['transition' => 'submit_for_review', 'ids' => [$doc->getId()]]),
+        );
+
+        $this->assertResponseIsSuccessful();
+        $body = json_decode((string) $client->getResponse()->getContent(), true);
+        $this->assertSame([$doc->getId()], $body['succeeded'] ?? null);
+    }
 }
