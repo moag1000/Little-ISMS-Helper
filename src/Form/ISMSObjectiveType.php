@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\ISMSObjective;
 use App\Form\SectionMapInterface;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -15,16 +16,20 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class ISMSObjectiveType extends AbstractType implements SectionMapInterface
 {
+    use OwnerPickerFormTrait;
+
     public static function getSectionMap(): array
     {
         return [
             'overview'      => ['title', 'description', 'category'],
             'target_metric' => ['measurableIndicators', 'targetValue', 'currentValue', 'unit'],
             'monitoring'    => ['measurementFrequency', 'measurementMethod'],
-            'responsibility'=> ['responsiblePerson', 'responsibleForMeasurement', 'targetDate'],
+            'responsibility'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'responsibleForMeasurement', 'targetDate'],
             'audit_metadata'=> ['status', 'progressNotes'],
         ];
     }
@@ -112,16 +117,33 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
                 ],
                 'placeholder' => 'objective.placeholder.unit',
                                 'choice_translation_domain' => 'objective',
-            ])
+            ]);
+
+        // Pattern A dual-state owner cluster (User + Person + deputies) via the
+        // shared trait; the legacy free-text field below keeps round-tripping.
+        $this->addOwnerPicker($builder, [
+            'translation_prefix' => 'objective',
+            'user_field'         => 'responsiblePersonUser',
+            'person_field'       => 'responsiblePersonRef',
+            'deputies_field'     => 'responsibleDeputyPersons',
+            'user_label'         => 'objective.field.responsible_person_user',
+            'person_label'       => 'objective.field.responsible_person_ref',
+            'deputies_label'     => 'objective.field.responsible_deputies',
+            'user_placeholder'   => 'objective.placeholder.responsible_person_user',
+            'person_placeholder' => 'objective.placeholder.responsible_person_ref',
+            'user_help'          => 'objective.help.responsible_person_user',
+            'person_help'        => 'objective.help.responsible_person_ref',
+            'deputies_help'      => 'objective.help.responsible_deputies',
+        ]);
+
+        $builder
             ->add('responsiblePerson', TextType::class, [
-                'label' => 'objective.field.responsible_person',
+                'label' => 'objective.field.responsible_person_legacy',
+                'required' => false,
                 'attr' => [
-                    'placeholder' => 'objective.placeholder.responsible_person'
+                    'maxlength' => 100,
+                    'placeholder' => 'objective.placeholder.responsible_person',
                 ],
-                'constraints' => [
-                    new Assert\NotBlank(message: 'objective.validation.responsible_person_required'),
-                    new Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')
-                ]
             ])
             ->add('responsibleForMeasurement', TextType::class, [
                 'label' => 'objective.field.responsible_for_measurement',
@@ -199,6 +221,23 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
         $resolver->setDefaults([
             'data_class' => ISMSObjective::class,
             'translation_domain' => 'objective',
+            'constraints' => [
+                new Callback([$this, 'validateResponsibleSlot']),
+            ],
         ]);
+    }
+
+    public function validateResponsibleSlot(?ISMSObjective $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getResponsiblePersonUser() === null
+            && $entity->getResponsiblePersonRef() === null
+            && trim((string) $entity->getResponsiblePerson()) === '') {
+            $context->buildViolation('objective.error.owner_required')
+                ->atPath('responsiblePersonUser')
+                ->addViolation();
+        }
     }
 }
