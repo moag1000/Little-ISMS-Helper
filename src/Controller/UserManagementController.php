@@ -337,8 +337,7 @@ class UserManagementController extends AbstractController
     {
         // Exactly the user list's set (UserListScope); same fail-closed gate as
         // the async export (403 for an account that sees no organisation).
-        $userListScope->exportArgsForCurrentUser();
-        $users = $userListScope->visibleUsers();
+        [$users] = $userListScope->exportScopeForCurrentUser();
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');

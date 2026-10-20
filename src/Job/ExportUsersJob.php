@@ -24,6 +24,8 @@ use App\Util\CsvSanitizer;
  * SUPER_ADMIN), so the file holds exactly the index's user set. A job without
  * scope fails instead of exporting every tenant's users — the Doctrine tenant
  * filter is not relied upon because it is unarmed outside the HTTP request.
+ * A legacy single `tenantId` of a since-deleted organisation yields an empty
+ * file (no matching users) instead of a TenantNotFoundException.
  *
  * Phase 3 of the async admin-jobs rollout.
  */

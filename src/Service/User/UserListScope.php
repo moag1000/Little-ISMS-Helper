@@ -67,12 +67,26 @@ final readonly class UserListScope
      */
     public function exportArgsForCurrentUser(): array
     {
+        return $this->exportScopeForCurrentUser()[1];
+    }
+
+    /**
+     * The visible users AND the export args from ONE voter pass — the sync
+     * export writes the users, the args are its gate.
+     *
+     * @return array{0: list<User>, 1: array{allTenants: true}|array{tenantIds: list<int>}}
+     *
+     * @throws AccessDeniedException when the actor sees no organisation's users
+     */
+    public function exportScopeForCurrentUser(): array
+    {
+        $visible = $this->visibleUsers();
         if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
-            return [JobTenantScope::ARG_ALL_TENANTS => true];
+            return [$visible, [JobTenantScope::ARG_ALL_TENANTS => true]];
         }
 
         $tenantIds = [];
-        foreach ($this->visibleUsers() as $user) {
+        foreach ($visible as $user) {
             $id = $user->getTenant()?->getId();
             if ($id !== null) {
                 $tenantIds[$id] = $id;
@@ -83,7 +97,7 @@ final readonly class UserListScope
         }
         sort($tenantIds);
 
-        return [self::ARG_TENANT_IDS => $tenantIds];
+        return [$visible, [self::ARG_TENANT_IDS => $tenantIds]];
     }
 
     /**
@@ -101,7 +115,9 @@ final readonly class UserListScope
             return $this->userRepository->findAllWithRoles();
         }
 
-        // Jobs queued before tenantIds existed carry a single tenantId.
+        // Jobs queued before tenantIds existed carry a single tenantId. A
+        // tenant deleted since then simply matches no user (empty export —
+        // fail closed), where the old path threw TenantNotFoundException.
         $raw = $args[self::ARG_TENANT_IDS] ?? null;
         if ($raw === null && isset($args[JobTenantScope::ARG_TENANT_ID])) {
             $raw = [$args[JobTenantScope::ARG_TENANT_ID]];
