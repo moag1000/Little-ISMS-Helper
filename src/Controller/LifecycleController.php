@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\EntityTypeRegistry;
@@ -73,6 +74,9 @@ class LifecycleController extends AbstractController
             $approver = $this->userRepository->find((int) $fourEyesApproverId);
             if (!$approver instanceof User) {
                 return $this->jsonError(422, 'four_eyes_approver_not_found', sprintf('Approver-User #%s nicht gefunden.', (string) $fourEyesApproverId));
+            }
+            if ($this->isApproverOutsideRecordTenant($approver, $entity)) {
+                return $this->jsonError(422, 'four_eyes_approver_other_tenant', 'Approver gehört nicht zur Organisation des Datensatzes.');
             }
         }
 
@@ -146,6 +150,10 @@ class LifecycleController extends AbstractController
             }
             if (!$this->isGranted(sprintf('lifecycle.%s.%s', $mapping['workflow'], $transitionName), $entity)) {
                 $failed[(string) $id] = 'forbidden';
+                continue;
+            }
+            if ($approver instanceof User && $this->isApproverOutsideRecordTenant($approver, $entity)) {
+                $failed[(string) $id] = 'four_eyes_approver_other_tenant';
                 continue;
             }
             try {
@@ -255,6 +263,21 @@ class LifecycleController extends AbstractController
             'entity_id'   => $id,
             'entries'     => array_values($statusEntries),
         ]);
+    }
+
+    /**
+     * The four-eyes approver comes from the request body (user id), and `User`
+     * is not covered by the Doctrine TenantFilter: an approver of another
+     * organisation than the record's must be refused.
+     */
+    private function isApproverOutsideRecordTenant(User $approver, object $entity): bool
+    {
+        $recordTenant = method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
+        if (!$recordTenant instanceof Tenant) {
+            return false;
+        }
+
+        return $approver->getTenant()?->getId() !== $recordTenant->getId();
     }
 
     private function jsonError(int $code, string $errorCode, string $message, array $details = []): JsonResponse

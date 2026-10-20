@@ -55,6 +55,59 @@ final class FourEyesApprovalServiceTest extends TestCase
         );
     }
 
+    private static function tenant(int $id): \App\Entity\Tenant
+    {
+        $tenant = new \App\Entity\Tenant();
+        (new ReflectionProperty(\App\Entity\Tenant::class, 'id'))->setValue($tenant, $id);
+
+        return $tenant;
+    }
+
+    private function serviceInTenant(\App\Entity\Tenant $tenant): FourEyesApprovalService
+    {
+        $service = $this->createPartialService();
+        $context = $this->createStub(\App\Service\TenantContext::class);
+        $context->method('getCurrentTenant')->willReturn($tenant);
+        (new ReflectionProperty(FourEyesApprovalService::class, 'tenantContext'))->setValue($service, $context);
+        (new ReflectionProperty(FourEyesApprovalService::class, 'entityManager'))
+            ->setValue($service, $this->createStub(\Doctrine\ORM\EntityManagerInterface::class));
+        (new ReflectionProperty(FourEyesApprovalService::class, 'auditLogger'))
+            ->setValue($service, $this->createStub(\App\Service\AuditLogger::class));
+
+        return $service;
+    }
+
+    #[Test]
+    public function designatedApproverOfAnotherTenantIsRejected(): void
+    {
+        $service = $this->serviceInTenant(self::tenant(1));
+        $requester = (new User())->setTenant(self::tenant(1));
+        (new ReflectionProperty(User::class, 'id'))->setValue($requester, 1);
+        $foreign = (new User())->setTenant(self::tenant(2));
+        (new ReflectionProperty(User::class, 'id'))->setValue($foreign, 2);
+
+        try {
+            $service->requestApproval(FourEyesApprovalRequest::ACTION_MAPPING_OVERRIDE, [], $requester, $foreign);
+            self::fail('approver of another organisation was accepted');
+        } catch (BusinessRuleException $e) {
+            self::assertSame('approver_other_tenant', $e->getRuleCode());
+        }
+    }
+
+    #[Test]
+    public function designatedApproverOfTheSameTenantIsAccepted(): void
+    {
+        $service = $this->serviceInTenant(self::tenant(1));
+        $requester = (new User())->setTenant(self::tenant(1));
+        (new ReflectionProperty(User::class, 'id'))->setValue($requester, 1);
+        $approver = (new User())->setTenant(self::tenant(1));
+        (new ReflectionProperty(User::class, 'id'))->setValue($approver, 2);
+
+        $request = $service->requestApproval(FourEyesApprovalRequest::ACTION_MAPPING_OVERRIDE, [], $requester, $approver);
+
+        self::assertSame($approver, $request->getRequestedApprover());
+    }
+
     #[Test]
     public function testRejectRequiresMinLength(): void
     {
