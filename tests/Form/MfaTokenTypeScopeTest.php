@@ -96,4 +96,16 @@ final class MfaTokenTypeScopeTest extends KernelTestCase
         self::assertFalse($form->get('user')->isValid());
         self::assertNull($form->getData()->getUser());
     }
+
+    #[Test]
+    public function theQueryIsPreRestrictedToTheActorsOrganisationTree(): void
+    {
+        $qb = $this->form()->get('user')->getConfig()->getOption('query_builder');
+        self::assertInstanceOf(\Doctrine\ORM\QueryBuilder::class, $qb);
+        $ids = $qb->getParameter('mfaTenantIds')?->getValue();
+
+        self::assertIsArray($ids, 'admin query must be restricted to its organisation tree');
+        self::assertContains($this->tenantA->getId(), $ids);
+        self::assertNotContains($this->foreigner->getTenant()?->getId(), $ids);
+    }
 }

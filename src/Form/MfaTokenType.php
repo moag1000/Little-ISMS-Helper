@@ -6,7 +6,10 @@ namespace App\Form;
 
 use App\Entity\MfaToken;
 use App\Entity\User;
+use App\Security\UserAdministrationGuard;
 use App\Security\Voter\UserVoter;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,17 +21,36 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class MfaTokenType extends AbstractType implements SectionMapInterface
 {
-    public function __construct(private readonly AuthorizationCheckerInterface $authorizationChecker)
-    {
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly UserAdministrationGuard $userAdministrationGuard,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Pre-restrict the query to the actor's organisation tree (same source
+        // as UserType) so the voter below only runs over plausible candidates
+        // instead of every user of the instance. SUPER_ADMIN: unrestricted.
+        $tenantIds = $this->userAdministrationGuard->canManagePrivilegedRoles()
+            ? null
+            : ($this->userAdministrationGuard->assignableTenantIds() ?: [0]);
+
         $builder
             ->add('user', EntityType::class, [
                 'label' => 'mfa_token.field.user',
                 'class' => User::class,
                 'choice_label' => 'email',
+                'query_builder' => static function (EntityRepository $repository) use ($tenantIds): QueryBuilder {
+                    $qb = $repository->createQueryBuilder('u')->orderBy('u.email');
+
+                    if ($tenantIds !== null) {
+                        $qb->andWhere('IDENTITY(u.tenant) IN (:mfaTenantIds)')
+                            ->setParameter('mfaTenantIds', $tenantIds);
+                    }
+
+                    return $qb;
+                },
                 // Only users the actor may administer (UserVoter::EDIT — own
                 // organisation tree for ROLE_ADMIN, never other organisations).
                 // choice_filter also rejects a tampered submit of another user.
