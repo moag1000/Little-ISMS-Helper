@@ -163,10 +163,10 @@ class DashboardStatisticsService
             }
         }
 
-        // Audit findings resolved — no open AuditFinding
-        $openFindings = $this->entityManager()->getRepository(\App\Entity\AuditFinding::class)
-            ->count(['tenant' => $tenant, 'status' => \App\Entity\AuditFinding::STATUS_OPEN]);
-        if ($openFindings === 0) {
+        // Audit findings resolved — no finding that is not done (AuditFindingStatus::isDone())
+        /** @var \App\Repository\AuditFindingRepository $findingRepository */
+        $findingRepository = $this->entityManager()->getRepository(AuditFinding::class);
+        if ($findingRepository->findOpenByTenant($tenant) === []) {
             $checklist['audit_findings_resolved'] = 1;
         }
 

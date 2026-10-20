@@ -284,14 +284,14 @@ final class HealthIssueAggregator
         } catch (\Throwable) {
         }
 
-        // Check 3: Audit findings overdue (open/in_progress past dueDate)
+        // Check 3: Audit findings overdue (not done — AuditFindingStatus::isDone() — past dueDate)
         if ($this->auditFindingRepository !== null) {
             try {
                 $overdueFindings = $this->auditFindingRepository->createQueryBuilder('af')
-                    ->where('af.status IN (:open)')
+                    ->where('af.status NOT IN (:done)')
                     ->andWhere('af.dueDate IS NOT NULL')
                     ->andWhere('af.dueDate < :now')
-                    ->setParameter('open', ['open', 'in_progress'])
+                    ->setParameter('done', \App\Enum\AuditFindingStatus::doneValues())
                     ->setParameter('now', $now)
                     ->getQuery()
                     ->getResult();

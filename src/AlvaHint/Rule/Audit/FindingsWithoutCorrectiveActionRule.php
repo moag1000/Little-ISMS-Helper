@@ -8,7 +8,6 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\InternalAudit;
 use App\Entity\User;
-use App\Enum\AuditFindingStatus;
 
 /**
  * Tier-2 hint: ISO 27001 Cl. 10.1 — internal audits with open
@@ -49,7 +48,7 @@ final class FindingsWithoutCorrectiveActionRule extends AbstractAlvaHintRule
             $status = $finding->getStatusEnum();
             if (
                 $status !== null
-                && in_array($status, [AuditFindingStatus::Open, AuditFindingStatus::InProgress], true)
+                && !$status->isDone()
                 && $finding->getAssignedTo() === null
                 && $finding->getAssignedPerson() === null
             ) {
@@ -69,7 +68,7 @@ final class FindingsWithoutCorrectiveActionRule extends AbstractAlvaHintRule
             $status = $finding->getStatusEnum();
             if (
                 $status !== null
-                && in_array($status, [AuditFindingStatus::Open, AuditFindingStatus::InProgress], true)
+                && !$status->isDone()
                 && $finding->getAssignedTo() === null
                 && $finding->getAssignedPerson() === null
             ) {

@@ -124,4 +124,59 @@ final class DashboardAuditFindingKpiTest extends TestCase
             auditRepository: $audits,
         );
     }
+
+    /**
+     * Readiness checklist "audit findings resolved" counted only `open`
+     * findings — an in-progress finding passed as resolved. It now uses the
+     * single source (AuditFindingRepository::findOpenByTenant(), i.e.
+     * AuditFindingStatus::isDone()).
+     *
+     * @return iterable<string, array{list<AuditFinding>, int}>
+     */
+    public static function checklistFindings(): iterable
+    {
+        yield 'in progress is not resolved' => [[(new AuditFinding())->setStatus(AuditFindingStatus::InProgress)], 0];
+        yield 'nothing open is resolved' => [[], 1];
+    }
+
+    /**
+     * @param list<AuditFinding> $open
+     */
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('checklistFindings')]
+    public function readinessChecklistUsesTheOpenFindingsSingleSource(array $open, int $expected): void
+    {
+        $tenant = new \App\Entity\Tenant();
+
+        $findings = $this->createStub(\App\Repository\AuditFindingRepository::class);
+        $findings->method('findOpenByTenant')->willReturn($open);
+        $findings->method('count')->willReturn(0);
+        $other = $this->createStub(\Doctrine\ORM\EntityRepository::class);
+        $other->method('count')->willReturn(0);
+
+        $em = $this->createStub(\Doctrine\ORM\EntityManagerInterface::class);
+        $em->method('getRepository')->willReturnCallback(
+            static fn (string $class): object => $class === AuditFinding::class ? $findings : $other,
+        );
+        $qb = $this->createStub(\Doctrine\ORM\QueryBuilder::class);
+        $qb->method('getEntityManager')->willReturn($em);
+        $controls = $this->createStub(ControlRepository::class);
+        $controls->method('createQueryBuilder')->willReturn($qb);
+        $controls->method('findApplicableControls')->willReturn([]);
+        $risks = $this->createStub(RiskRepository::class);
+        $risks->method('findByTenant')->willReturn([]);
+
+        $service = new DashboardStatisticsService(
+            $this->createStub(AssetRepository::class),
+            $risks,
+            $this->createStub(IncidentRepository::class),
+            $controls,
+            $this->createStub(Security::class),
+            $this->createStub(ModuleConfigurationService::class),
+        );
+
+        $checklist = (new \ReflectionMethod($service, 'buildReadinessChecklist'))->invoke($service, $tenant);
+
+        self::assertSame($expected, $checklist['audit_findings_resolved']);
+    }
 }
