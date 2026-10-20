@@ -200,7 +200,12 @@ class Nis2ComplianceServiceTest extends TestCase
         $query->method('getSingleScalarResult')->willReturn(0);
         $qb->method('select')->willReturnSelf();
         $qb->method('where')->willReturnSelf();
-        $qb->method('andWhere')->willReturnSelf();
+        $conditions = [];
+        $qb->method('andWhere')->willReturnCallback(static function (string $c) use (&$conditions, $qb) {
+            $conditions[] = $c;
+
+            return $qb;
+        });
         $qb->method('join')->willReturnCallback(static function (string $join) use (&$joined, $qb) {
             $joined[] = $join;
 
@@ -228,5 +233,7 @@ class Nis2ComplianceServiceTest extends TestCase
             $this->assertSame($tenant, $c['tenant'] ?? null, 'user metric not scoped to the tenant');
         }
         $this->assertContains('m.user', $joined, 'MFA metric not scoped through the user');
+        $this->assertContains('mu.tenant = :tenant', $conditions);
+        $this->assertContains('mu.isActive = true', $conditions, 'inactive users would push the MFA rate above 100 %');
     }
 }

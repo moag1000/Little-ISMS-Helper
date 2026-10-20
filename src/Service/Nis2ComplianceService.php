@@ -359,13 +359,18 @@ final class Nis2ComplianceService
     private function authentication(): array
     {
         $total = $this->userRepository->count($this->activeUserCriteria());
+        // Numerator counts the same population as the denominator: ACTIVE
+        // users (of the organisation) with an active token — otherwise the
+        // rate could exceed 100 %. MfaToken carries no tenant, so the scope
+        // goes through its user.
         $mfa = $this->mfaTokenRepository->createQueryBuilder('m')
             ->select('COUNT(DISTINCT m.user)')
-            ->where('m.isActive = true');
+            ->where('m.isActive = true')
+            ->join('m.user', 'mu')
+            ->andWhere('mu.isActive = true');
         $tenant = $this->tenantContext?->getCurrentTenant();
         if ($tenant !== null) {
-            // MfaToken carries no tenant — scope through its user.
-            $mfa->join('m.user', 'mu')->andWhere('mu.tenant = :tenant')->setParameter('tenant', $tenant);
+            $mfa->andWhere('mu.tenant = :tenant')->setParameter('tenant', $tenant);
         }
         $withMfa = $mfa->getQuery()->getSingleScalarResult();
         $rate = $total > 0 ? round(((int) $withMfa / $total) * 100, 1) : null;
