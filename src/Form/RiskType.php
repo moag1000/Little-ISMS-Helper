@@ -16,6 +16,7 @@ use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Form\Type\OwnerUserType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -212,9 +213,8 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'risk.help.treatment_description',
             ])
-            ->add('acceptanceApprovedByUser', EntityType::class, [
+            ->add('acceptanceApprovedByUser', OwnerUserType::class, [
                 'label' => 'risk.field.acceptance_approved_by',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'risk.placeholder.acceptance_approved_by_user',
@@ -277,9 +277,8 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'help' => 'risk.help.decision_rationale',
                 'attr' => ['rows' => 3],
             ])
-            ->add('decisionApprovedByUser', EntityType::class, [
+            ->add('decisionApprovedByUser', OwnerUserType::class, [
                 'label' => 'risk.field.decision_approved_by_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u) => $u->getFullName() ?: $u->getEmail(),
                 'required' => false,
                 'help' => 'risk.help.decision_approved_by_user',

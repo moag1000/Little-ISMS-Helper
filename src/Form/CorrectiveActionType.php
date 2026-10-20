@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Enum\CorrectiveActionStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -106,9 +107,8 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
                 'choice_translation_domain' => 'audits',
                 'help' => 'audits.help.action_type',
             ])
-            ->add('responsiblePersonUser', EntityType::class, [
+            ->add('responsiblePersonUser', OwnerUserType::class, [
                 'label' => 'corrective_action.field.responsible_person_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'placeholder' => 'corrective_action.placeholder.responsible_person_user',
                 'required' => false,

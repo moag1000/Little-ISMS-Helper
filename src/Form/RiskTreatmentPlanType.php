@@ -11,6 +11,7 @@ use App\Entity\RiskTreatmentPlan;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -143,9 +144,8 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
                     new Assert\PositiveOrZero(message: 'risk_treatment_plan.validation.budget_positive')
                 ]
             ])
-            ->add('responsiblePersonUser', EntityType::class, [
+            ->add('responsiblePersonUser', OwnerUserType::class, [
                 'label' => 'risk_treatment_plan.field.responsible_person_user',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk_treatment_plan.placeholder.responsible_person_user',
                 'required' => false,

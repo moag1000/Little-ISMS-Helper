@@ -7,9 +7,9 @@ namespace App\Form;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\CrisisTeam;
 use App\Entity\Person;
-use App\Entity\User;
 use App\Form\SectionMapInterface;
 use App\Form\Type\JsonBuilderType;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -70,9 +70,8 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
                 'required' => true,
                     'choice_translation_domain' => 'messages',
             ])
-            ->add('teamLeader', EntityType::class, [
+            ->add('teamLeader', OwnerUserType::class, [
                 'label' => 'crisis_team.field.team_leader',
-                'class' => User::class,
                 'choice_label' => 'email',
                 'placeholder' => 'crisis_team.placeholder.team_leader',
                 'required' => false,
@@ -98,9 +97,8 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'crisis_team.help.team_leader_deputy_persons',
             ])
-            ->add('deputyLeader', EntityType::class, [
+            ->add('deputyLeader', OwnerUserType::class, [
                 'label' => 'crisis_team.field.deputy_leader',
-                'class' => User::class,
                 'choice_label' => 'email',
                 'placeholder' => 'crisis_team.placeholder.deputy_leader',
                 'required' => false,

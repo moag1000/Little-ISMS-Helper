@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonBuilderType;
+use App\Form\Type\OwnerUserType;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityRepository;
@@ -69,9 +70,8 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                     new NotBlank(),
                 ],
             ])
-            ->add('reviewedBy', EntityType::class, [
+            ->add('reviewedBy', OwnerUserType::class, [
                 'label' => 'management_review.field.reviewed_by',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'placeholder' => 'common.please_select',
                 'required' => false,
@@ -97,9 +97,8 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                 ],
                 'help' => 'management_review.help.reviewed_by_deputy_persons',
             ])
-            ->add('participants', EntityType::class, [
+            ->add('participants', OwnerUserType::class, [
                 'label' => 'management_review.field.participants',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'multiple' => true,
                 // wichtig für ManyToMany-Collections, damit add/remove-Methoden genutzt werden

@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Enum\DocumentStatus;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Type\OwnerUserType;
 use App\Repository\ControlRepository;
 use App\Repository\DocumentControlLinkRepository;
 use App\Repository\SystemSettingsRepository;
@@ -169,9 +170,8 @@ final class DocumentType extends AbstractType implements SectionMapInterface
             // (every active tenant user). Hidden via Stimulus
             // conditional-fields controller when
             // `requiresAcknowledgement = false`.
-            ->add('acknowledgementAudience', EntityType::class, [
+            ->add('acknowledgementAudience', OwnerUserType::class, [
                 'label' => 'document.field.acknowledgement_audience',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'multiple' => true,
                 'expanded' => false,

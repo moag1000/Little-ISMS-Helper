@@ -8,6 +8,7 @@ use App\Entity\DataSubjectRequest;
 use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -114,9 +115,8 @@ final class DataSubjectRequestType extends AbstractType implements SectionMapInt
             // ================================================================
             // SECTION 4: Assignment & Links
             // ================================================================
-            ->add('assignedTo', EntityType::class, [
+            ->add('assignedTo', OwnerUserType::class, [
                 'label' => 'dsr.form.assigned_to',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => sprintf(
                     '%s %s (%s)',
                     $user->getFirstName(),

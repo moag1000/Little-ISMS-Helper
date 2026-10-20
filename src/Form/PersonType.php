@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Person;
-use App\Entity\User;
 use App\Form\SectionMapInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -105,9 +104,8 @@ final class PersonType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'person.placeholder.job_title',
                 ],
             ])
-            ->add('linkedUser', EntityType::class, [
+            ->add('linkedUser', OwnerUserType::class, [
                 'label' => 'person.field.linked_user',
-                'class' => User::class,
                 'choice_label' => 'email',
                 'required' => false,
                 'placeholder' => 'person.placeholder.linked_user',

@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Asset;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -44,9 +45,8 @@ final class AssetQuickType extends AbstractType implements SectionMapInterface
                 'required' => true,
                 'choice_translation_domain' => 'asset',
             ])
-            ->add('ownerUser', EntityType::class, [
+            ->add('ownerUser', OwnerUserType::class, [
                 'label' => 'asset.field.owner',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'asset.placeholder.owner_user',

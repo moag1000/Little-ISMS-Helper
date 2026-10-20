@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,9 +28,8 @@ final class FourEyesApprovalRequestType extends AbstractType
     {
         $builder
             // Tri-State approver fields
-            ->add('requestedApprover', EntityType::class, [
+            ->add('requestedApprover', OwnerUserType::class, [
                 'label' => 'four_eyes.field.requested_approver_user',
-                'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'four_eyes.placeholder.requested_approver_user',

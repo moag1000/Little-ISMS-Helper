@@ -9,7 +9,7 @@ use App\Entity\Document;
 use App\Entity\Person;
 use App\Entity\RoadmapTask;
 use App\Entity\Team;
-use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use App\Repository\PlanningSettingsRepository;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -72,9 +72,8 @@ final class ActionItemType extends AbstractType implements SectionMapInterface
                 'required'     => false,
                 'placeholder'  => 'planning.action_item.field.roadmap_task_placeholder',
             ])
-            ->add('responsibleUser', EntityType::class, [
+            ->add('responsibleUser', OwnerUserType::class, [
                 'label'        => 'planning.action_item.field.responsible_user',
-                'class'        => User::class,
                 'choice_label' => 'email',
                 'required'     => false,
                 'placeholder'  => 'planning.action_item.field.responsible_user_placeholder',

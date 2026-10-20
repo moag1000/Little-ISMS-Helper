@@ -10,6 +10,7 @@ use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Form\Type\OwnerUserType;
 use App\Repository\IncidentRepository;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -296,9 +297,8 @@ final class DataBreachType extends AbstractType implements SectionMapInterface
             // ================================================================
             // SECTION 6: Responsible Persons
             // ================================================================
-            ->add('dataProtectionOfficer', EntityType::class, [
+            ->add('dataProtectionOfficer', OwnerUserType::class, [
                 'label' => 'data_breach.form.data_protection_officer',
-                'class' => User::class,
                 'choice_label' => fn(User $user): string => sprintf('%s %s (%s)', $user->getFirstName(), $user->getLastName(), $user->getEmail()),
                 'placeholder' => 'data_breach.placeholder.data_protection_officer',
                 'required' => false,

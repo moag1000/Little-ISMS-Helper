@@ -7,7 +7,7 @@ namespace App\Form;
 use App\Entity\AuditProgram;
 use App\Entity\User;
 use App\Form\SectionMapInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\Type\OwnerUserType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -85,9 +85,8 @@ final class AuditProgramType extends AbstractType implements SectionMapInterface
                 'input'  => 'datetime_immutable',
                 'help'   => 'audit_program.help.end_date',
             ])
-            ->add('programmeOwner', EntityType::class, [
+            ->add('programmeOwner', OwnerUserType::class, [
                 'label'        => 'audit_program.field.programme_owner',
-                'class'        => User::class,
                 'choice_label' => fn (User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'placeholder'  => 'audit_program.placeholder.programme_owner',
                 'required'     => false,
