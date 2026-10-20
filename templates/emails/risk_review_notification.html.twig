@@ -64,7 +64,7 @@
     </ol>
 
     <div style="text-align: center; margin: 30px 0;">
-        <a href="{{ app.request.schemeAndHttpHost }}/{{ app.request.locale }}/risk/{{ risk.id }}"
+        <a href="{{ url('app_risk_show', {id: risk.id, _locale: app.locale}) }}"
            style="display: inline-block; padding: 12px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
             Review Risk Now
         </a>

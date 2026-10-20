@@ -211,11 +211,10 @@ class PortfolioReportController extends AbstractController
         // on a letter string is a no-op in PHP, so derive the last column
         // from its index instead of stepping the letter back.
         $lastCol = Coordinate::stringFromColumnIndex(1 + count($matrix['frameworks']));
-        $col = 'B';
-        foreach ($matrix['frameworks'] as $framework) {
+        foreach ($matrix['frameworks'] as $i => $framework) {
+            $col = Coordinate::stringFromColumnIndex(2 + $i);
             $sheet->setCellValue($col . $headerRow, $framework['name']);
             $sheet->getStyle($col . $headerRow)->getFont()->setBold(true);
-            $col++;
         }
         $sheet->getStyle('A' . $headerRow . ':' . $lastCol . $headerRow)->getFill()
             ->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('0D6EFD');
@@ -226,8 +225,8 @@ class PortfolioReportController extends AbstractController
         $row = $headerRow + 1;
         foreach ($matrix['rows'] as $dataRow) {
             $sheet->setCellValue('A' . $row, $dataRow['category']);
-            $col = 'B';
-            foreach ($matrix['frameworks'] as $framework) {
+            foreach ($matrix['frameworks'] as $i => $framework) {
+                $col = Coordinate::stringFromColumnIndex(2 + $i);
                 $cell = $dataRow['cells'][$framework['code']] ?? ['pct' => 0, 'count' => 0];
                 $label = $cell['count'] === 0
                     ? 'n/a'
@@ -242,7 +241,6 @@ class PortfolioReportController extends AbstractController
                         $sheet->getStyle($col . $row)->getFont()->getColor()->setRGB('FFFFFF');
                     }
                 }
-                $col++;
             }
             $row++;
         }

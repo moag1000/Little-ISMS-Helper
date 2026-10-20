@@ -64,6 +64,7 @@ Der Wizard führt dich durch:
 | `MYSQL_USER` | `isms` | DB-Benutzer |
 | `MYSQL_PASSWORD` | (auto) | DB-Passwort (leer = auto-generiert) |
 | `MAILER_DSN` | (leer) | SMTP-Konfiguration |
+| `DEFAULT_URI` | `http://localhost` | Öffentliche Basis-URL, z. B. `https://isms.example.com` — Links in E-Mails aus Cron-Jobs (Erinnerungen) werden damit gebaut |
 
 ### Automatisches DB-Passwort
 
