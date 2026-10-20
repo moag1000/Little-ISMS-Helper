@@ -337,7 +337,7 @@ class FileUploadSecurityServiceTest extends TestCase
     public function testBackupProfileRejectsDisguisedFiles(): void
     {
         foreach ([
-            'evil.json' => "<?php system('id'); ?>",
+            'evil.json' => "<?php echo 'php, not json'; ?>",
             'fake.gz' => 'plain text pretending to be gzip',
             'backup.pdf' => $this->getPdfContent(),
         ] as $name => $content) {
