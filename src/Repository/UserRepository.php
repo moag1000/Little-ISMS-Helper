@@ -73,6 +73,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Users of the given organisations, roles eager-loaded, same order as
+     * {@see findAllWithRoles()} (async user export, {@see \App\Service\User\UserListScope}).
+     *
+     * @param list<int> $tenantIds
+     * @return list<User>
+     */
+    public function findByTenantIdsWithRoles(array $tenantIds): array
+    {
+        if ($tenantIds === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.customRoles', 'cr')
+            ->addSelect('cr')
+            ->where('IDENTITY(u.tenant) IN (:tenantIds)')
+            ->setParameter('tenantIds', $tenantIds)
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find user by Azure Object ID
      */
     public function findByAzureObjectId(string $azureObjectId): ?User

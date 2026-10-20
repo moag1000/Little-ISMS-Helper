@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Lifecycle\EventListener;
 
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Lifecycle\LifecycleTransitionInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Workflow\Registry;
 
@@ -50,7 +53,11 @@ use Symfony\Component\Workflow\Registry;
  * value_from: reads the comparison target from another field on the same entity.
  *
  * Rules that reference workflows not yet registered are silently skipped.
- * Auto-transitions fire best-effort: any exception is swallowed.
+ * Auto-transitions fire best-effort: any exception is caught and logged,
+ * never thrown out of postUpdate.
+ *
+ * Transitions are applied as an automatic actor: a four-eyes transition is
+ * refused by FourEyesValidator (`automatic_actor`) and stays for a human.
  */
 #[AsDoctrineListener(event: Events::postUpdate)]
 final class FieldCompletionAutoTransition implements FieldCompletionAutoTransitionInterface
@@ -70,6 +77,7 @@ final class FieldCompletionAutoTransition implements FieldCompletionAutoTransiti
         private readonly LifecycleTransitionInterface $lifecycleService,
         private readonly PropertyAccessorInterface $propertyAccessor,
         private readonly array $rules = [],
+        private readonly LoggerInterface $logger = new NullLogger(),
     ) {}
 
     public function postUpdate(PostUpdateEventArgs $event): void
@@ -104,9 +112,25 @@ final class FieldCompletionAutoTransition implements FieldCompletionAutoTransiti
                     $rule['transition'],
                     null,
                     'Auto-transition: ' . $ruleName,
+                    automatic: true,
                 );
-            } catch (\Throwable) {
+            } catch (FourEyesRequiredException $e) {
+                $this->logger->notice('[FieldCompletionAutoTransition] Four-eyes transition left for a human approval', [
+                    'entity' => $entityClass,
+                    'rule' => $ruleName,
+                    'workflow' => $rule['workflow'],
+                    'transition' => $rule['transition'],
+                    'reason_code' => $e->reasonCode,
+                ]);
+            } catch (\Throwable $e) {
                 // Auto-transition is best-effort; never break the original write
+                $this->logger->warning('[FieldCompletionAutoTransition] Auto-transition failed', [
+                    'entity' => $entityClass,
+                    'rule' => $ruleName,
+                    'workflow' => $rule['workflow'],
+                    'transition' => $rule['transition'],
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
     }

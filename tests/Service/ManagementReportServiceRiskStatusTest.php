@@ -15,7 +15,6 @@ use App\Repository\ControlRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
-use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\TrainingRepository;
@@ -49,7 +48,6 @@ final class ManagementReportServiceRiskStatusTest extends TestCase
             $this->createMock(IncidentRepository::class),
             $this->createMock(InternalAuditRepository::class),
             $this->createMock(TrainingRepository::class),
-            $this->createMock(ManagementReviewRepository::class),
             $this->createMock(BusinessContinuityPlanRepository::class),
             $this->createMock(BCExerciseRepository::class),
             $this->createMock(BusinessProcessRepository::class),

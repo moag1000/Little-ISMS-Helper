@@ -105,8 +105,8 @@
 
 {% set _iso9_rows = [
     [ 'management_reports.audit.internal_audits'|trans({}, 'management_reports'), 'Clause 9.2',
-      '<span class="badge ' ~ (report.audits.this_year >= 1 ? 'badge-success' : 'badge-warning') ~ '">'
-      ~ (report.audits.this_year >= 1 ? ('management_reports.audit.compliant'|trans({}, 'management_reports')) : ('management_reports.audit.pending'|trans({}, 'management_reports')))
+      '<span class="badge ' ~ (report.audits.with_activity_this_year >= 1 ? 'badge-success' : 'badge-warning') ~ '">'
+      ~ (report.audits.with_activity_this_year >= 1 ? ('management_reports.audit.compliant'|trans({}, 'management_reports')) : ('management_reports.audit.pending'|trans({}, 'management_reports')))
       ~ '</span>' ],
     [ 'management_reports.audit.management_review'|trans({}, 'management_reports'), 'Clause 9.3',
       '<span class="badge ' ~ (report.management_reviews.this_year >= 1 ? 'badge-success' : 'badge-warning') ~ '">'
@@ -135,15 +135,15 @@
     brand_name: 'Little ISMS Helper',
     key_findings: [
         { label: ('management_reports.audit.total_audits'|trans({}, 'management_reports')) ~ ': ' ~ report.audits.total, tone: 'ok' },
-        { label: ('management_reports.audit.this_year'|trans({}, 'management_reports')) ~ ': ' ~ report.audits.this_year,
-          tone: report.audits.this_year >= 1 ? 'ok' : 'warn' },
+        { label: ('management_reports.audit.this_year'|trans({}, 'management_reports')) ~ ': ' ~ report.audits.with_activity_this_year,
+          tone: report.audits.with_activity_this_year >= 1 ? 'ok' : 'warn' },
         { label: ('management_reports.audit.total_reviews'|trans({}, 'management_reports')) ~ ': ' ~ report.management_reviews.total, tone: 'ok' },
         { label: ('management_reports.audit.reviews_this_year'|trans({}, 'management_reports')) ~ ': ' ~ report.management_reviews.this_year,
           tone: report.management_reviews.this_year >= 1 ? 'ok' : 'warn' },
     ],
     kpis: [
         { label: 'management_reports.audit.total_audits'|trans({}, 'management_reports'),    value: report.audits.total,                tone: 'neutral' },
-        { label: 'management_reports.audit.this_year'|trans({}, 'management_reports'),       value: report.audits.this_year,            tone: report.audits.this_year >= 1 ? 'success' : 'warning' },
+        { label: 'management_reports.audit.this_year'|trans({}, 'management_reports'),       value: report.audits.with_activity_this_year,            tone: report.audits.with_activity_this_year >= 1 ? 'success' : 'warning' },
         { label: 'management_reports.audit.total_reviews'|trans({}, 'management_reports'),   value: report.management_reviews.total,    tone: 'neutral' },
         { label: 'management_reports.audit.reviews_this_year'|trans({}, 'management_reports'), value: report.management_reviews.this_year, tone: report.management_reviews.this_year >= 1 ? 'success' : 'warning' },
     ],

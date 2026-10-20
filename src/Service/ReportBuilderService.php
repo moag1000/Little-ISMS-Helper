@@ -7,7 +7,6 @@ namespace App\Service;
 use App\Entity\CustomReport;
 use App\Entity\User;
 use App\Enum\IncidentStatus;
-use App\Enum\RiskStatus;
 use App\Repository\CustomReportRepository;
 use App\Repository\RiskRepository;
 use App\Repository\ControlRepository;
@@ -650,7 +649,8 @@ final class ReportBuilderService
         $now = new DateTimeImmutable();
         $overdue = 0;
         foreach ($risks as $risk) {
-            if ($risk->getStatus() !== RiskStatus::Closed && $risk->getReviewDate() && $risk->getReviewDate() < $now) {
+            $reviewDue = $risk->getReviewDate() !== null && $risk->getReviewDate() < $now;
+            if ($reviewDue && $risk->getStatus()?->requiresPeriodicReview() !== false) {
                 $overdue++;
             }
         }

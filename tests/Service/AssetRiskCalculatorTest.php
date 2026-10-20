@@ -282,4 +282,40 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertGreaterThanOrEqual(0.0, $score);
         $this->assertEquals(0.0, $score);
     }
+
+    /**
+     * "Active" risks are the not-handled ones (RiskStatus::isHandled() is the
+     * single source). Counting only `open` missed identified / assessed /
+     * in-treatment risks — new risks start as `identified`.
+     */
+    #[Test]
+    public function activeRisksAreAllNotHandledStatuses(): void
+    {
+        $asset = new Asset();
+        $asset->setConfidentialityValue(1);
+        $asset->setIntegrityValue(1);
+        $asset->setAvailabilityValue(1);
+        foreach (\App\Enum\RiskStatus::cases() as $status) {
+            $risk = new Risk();
+            $risk->setStatus($status);
+            $asset->addRisk($risk);
+        }
+
+        // Base 1 * 10 = 10; not handled: identified, assessed, in_treatment, open = 4 * 5 = 20.
+        $this->assertSame(30.0, (float) $this->calculator->calculateRiskScore($asset));
+        $this->assertSame('unprotected', $this->calculator->getProtectionStatus($asset));
+    }
+
+    #[Test]
+    public function handledRisksAloneLeaveAnUnprotectedAssetUnknown(): void
+    {
+        $asset = new Asset();
+        foreach ([\App\Enum\RiskStatus::Mitigated, \App\Enum\RiskStatus::Accepted] as $status) {
+            $risk = new Risk();
+            $risk->setStatus($status);
+            $asset->addRisk($risk);
+        }
+
+        $this->assertNotSame('unprotected', $this->calculator->getProtectionStatus($asset));
+    }
 }

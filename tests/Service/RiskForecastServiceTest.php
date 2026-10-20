@@ -147,6 +147,27 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('closed', $historical);
     }
 
+    /**
+     * "Open" = not handled (RiskStatus::isHandled()): accepted / mitigated /
+     * treated / monitored risks are no longer open; `closed` stays the
+     * lifecycle state Closed.
+     */
+    #[Test]
+    public function testHistoricalOpenCountsOnlyNotHandledRisks(): void
+    {
+        $risks = [];
+        foreach (\App\Enum\RiskStatus::cases() as $i => $status) {
+            $risks[] = $this->createRisk($i + 1, 'R ' . $status->value, 10, $status->value, new \DateTime('-1 month'));
+        }
+        $this->riskRepository->method('findAll')->willReturn($risks);
+
+        $latest = $this->service->getRiskForecast()['historical'][11];
+
+        // not handled: identified, assessed, in_treatment, open
+        $this->assertSame(4, $latest['open']);
+        $this->assertSame(1, $latest['closed']);
+    }
+
     #[Test]
     public function testGetRiskForecastRiskLevelClassification(): void
     {

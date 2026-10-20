@@ -102,4 +102,30 @@ class AssetTest extends TestCase
         $this->assertEquals(0, $asset->getProtectingControls()->count());
         $this->assertFalse($asset->getProtectingControls()->contains($control));
     }
+
+    /**
+     * Active = not handled (RiskStatus::isHandled()): an in-treatment risk is
+     * active, a treated one is not.
+     */
+    #[Test]
+    public function isHighRiskCountsNotHandledRisksOnly(): void
+    {
+        $inTreatment = new Asset();
+        $inTreatment->setConfidentialityValue(1);
+        $inTreatment->setIntegrityValue(1);
+        $inTreatment->setAvailabilityValue(1);
+        $risk = new Risk();
+        $risk->setStatus(\App\Enum\RiskStatus::InTreatment);
+        $inTreatment->addRisk($risk);
+        $this->assertTrue($inTreatment->isHighRisk());
+
+        $treated = new Asset();
+        $treated->setConfidentialityValue(1);
+        $treated->setIntegrityValue(1);
+        $treated->setAvailabilityValue(1);
+        $handled = new Risk();
+        $handled->setStatus(\App\Enum\RiskStatus::Treated);
+        $treated->addRisk($handled);
+        $this->assertFalse($treated->isHighRisk());
+    }
 }

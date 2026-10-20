@@ -14,13 +14,13 @@ use DateTimeImmutable;
 use App\Entity\Risk;
 use App\Entity\Control;
 use App\Entity\Incident;
+use App\Entity\Tenant;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\TrainingRepository;
-use App\Repository\ManagementReviewRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessProcessRepository;
@@ -52,7 +52,6 @@ final class ManagementReportService
         private readonly IncidentRepository $incidentRepository,
         private readonly InternalAuditRepository $auditRepository,
         private readonly TrainingRepository $trainingRepository,
-        private readonly ManagementReviewRepository $managementReviewRepository,
         private readonly BusinessContinuityPlanRepository $bcPlanRepository,
         private readonly BCExerciseRepository $bcExerciseRepository,
         private readonly BusinessProcessRepository $businessProcessRepository,
@@ -433,22 +432,13 @@ final class ManagementReportService
 
     // ===================== AUDIT REPORTS =====================
 
-    /**
-     * Get audit management report data
-     *
-     * @return array Audit management data
-     */
-    public function getAuditManagementReport(): array
+    /** Audit management report data — an explicit $tenant scopes it (management-review auto-collect). */
+    public function getAuditManagementReport(?Tenant $tenant = null): array
     {
-        $audits = $this->auditRepository->findAll();
+        $audits = $this->dashboardStatisticsService->auditsFor($tenant); // same tenant-scoped source as the audit KPI
 
         // Group by status
-        $byStatus = [
-            'planned' => [],
-            'in_progress' => [],
-            'completed' => [],
-            'cancelled' => [],
-        ];
+        $byStatus = ['planned' => [], 'in_progress' => [], 'completed' => [], 'cancelled' => []];
 
         foreach ($audits as $audit) {
             $status = $audit->getStatus() ?? 'planned';
@@ -457,16 +447,15 @@ final class ManagementReportService
             }
         }
 
-        // This year's audits
+        // Audits with activity this year: actual date (conducted), else planned date
         $thisYear = (new DateTime())->format('Y');
         $auditsThisYear = array_filter($audits, function ($a) use ($thisYear): bool {
-            // Vorzugsweise tatsächliches Datum (durchgeführt), sonst geplantes Datum.
             $date = $a->getActualDate() ?? $a->getPlannedDate();
             return $date !== null && $date->format('Y') === $thisYear;
         });
 
         // Management reviews
-        $reviews = $this->managementReviewRepository->findAll();
+        $reviews = $this->dashboardStatisticsService->managementReviewsFor($tenant);
         $thisYearReviews = array_filter($reviews, function ($r) use ($thisYear): bool {
             $date = $r->getReviewDate();
             return $date !== null && $date->format('Y') === $thisYear;
@@ -474,9 +463,12 @@ final class ManagementReportService
 
         return [
             'generated_at' => new DateTime(),
+            // total/open findings + planned/completed audits (this year) — read by ManagementReviewAutoCollector
+            ...\App\Service\Audit\AuditFindingBacklog::count($audits),
+            ...\App\Service\Audit\AuditProgramFigures::calendarYear($audits),
             'audits' => [
                 'total' => count($audits),
-                'this_year' => count($auditsThisYear),
+                'with_activity_this_year' => count($auditsThisYear), // conducted (else planned) this year
                 'by_status' => [
                     'planned' => count($byStatus['planned']),
                     'in_progress' => count($byStatus['in_progress']),
@@ -810,11 +802,11 @@ final class ManagementReportService
      * @param string $locale The locale for KPI translations
      * @return array Complete management review output data
      */
-    public function getManagementReviewReport(string $locale = 'en'): array
+    public function getManagementReviewReport(string $locale = 'en', ?Tenant $tenant = null): array
     {
         $executiveSummary = $this->getExecutiveSummary();
         $riskReport = $this->getRiskManagementReport();
-        $auditReport = $this->getAuditManagementReport();
+        $auditReport = $this->getAuditManagementReport($tenant);
         $complianceReport = $this->getComplianceStatusReport();
         $kpiSummary = $this->getKPISummaryForReport($locale);
 

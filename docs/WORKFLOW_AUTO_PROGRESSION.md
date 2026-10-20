@@ -440,10 +440,23 @@ Workflows can auto-progress after a time delay:
 - The step is approved through `WorkflowService` with the workflow initiator
   as acting user; the approval history records `auto_approved` with
   `trigger: time_based`.
-- A time-based step that is the **last** step of its workflow is never
-  approved automatically: the final approval of a workflow instance is
-  four-eyes (`workflow_instance_lifecycle` `approve`) and needs a human
-  approver.
+- **Automatic approvals never satisfy four-eyes.** The cron, the
+  field-completion auto-progression, the `FieldCompletionAutoTransition`
+  listener and the `WorkflowAutoProgressionBridge` (approved chain → parent
+  entity transition) act as automatic actors (`automatic: true` on
+  `LifecycleService::transition()`); `FourEyesValidator` refuses every
+  four-eyes transition for them (reason code `automatic_actor`) — the
+  single-approver escape included. A time-based step whose approval would
+  close the workflow (it is the last step, or only notification steps
+  follow) therefore stays pending for a human approver. The cron lists such
+  instances under "Awaiting human approval" as a notice (with the cause:
+  `four-eyes` or `blocked: <guard message>`), writes nothing and still exits
+  0; only real failures are errors. The cron pins each instance's
+  organisation in `TenantContext` before processing it, so an organisation
+  that turned four-eyes off for `approve` gets its time-based close; if a
+  lifecycle guard still blocks the close (e.g. the module is inactive), one
+  rule, `AutomaticCloseRefusal`, treats it like four-eyes: "waits for a human
+  approver". A transition the current status does not allow stays an error.
 - Final approval (four-eyes): whoever may approve the final step (its
   `approver_role`, resolved through the role hierarchy, or its
   `approver_users`) may give it — the transition's own `roles` are not
@@ -451,8 +464,8 @@ Workflows can auto-progress after a time delay:
   final approver (unless they are the only eligible approver and document
   the offline counter-signature in the comment). A refused final approval
   shows an error message and changes nothing; a field-completion
-  auto-approval that would close the workflow for its initiator stops at
-  the final step and waits for a manual approval. If the last step is a
+  auto-approval that would close the workflow stops at the final step and
+  waits for a manual approval, whoever saved the fields. If the last step is a
   notification step, the approver of the preceding step grants the final
   approval.
 - There is no extra field condition; use `field_completion` steps for

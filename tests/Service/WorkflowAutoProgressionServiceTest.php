@@ -198,6 +198,51 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         self::assertSame($step, $instance->getCurrentStep());
     }
 
+    /**
+     * An automatic close blocked by a lifecycle guard (no tenant context
+     * outside a request) waits for a manual approval like a four-eyes
+     * refusal — it is not thrown out of the auto-progression.
+     */
+    #[Test]
+    public function closeBlockedByALifecycleGuardLeavesStepForManualApproval(): void
+    {
+        $entity = new TestEntity();
+        $entity->setId(1);
+        $entity->setName('Test Name');
+        $entity->setDescription('Test Description');
+
+        $step = $this->createStepWithFieldCompletion(['name', 'description'], 'TestEntity');
+        $workflow = $this->createMock(Workflow::class);
+        $workflow->method('getSteps')->willReturn(new ArrayCollection([$step]));
+        $instance = new WorkflowInstance(); // @lifecycle-initial-state
+        $instance->setWorkflow($workflow);
+        $instance->setStatus('in_progress');
+        $instance->setCurrentStep($step);
+
+        $symfonyWorkflow = $this->createStub(\Symfony\Component\Workflow\WorkflowInterface::class);
+        $symfonyWorkflow->method('getName')->willReturn('workflow_instance_lifecycle');
+        $this->workflowService->method('getWorkflowInstance')->willReturn($instance);
+        $this->workflowService->method('moveToNextStep')->willThrowException(new \App\Lifecycle\InvalidTransitionException(
+            message: 'Transition "approve" not enabled.',
+            entityClass: WorkflowInstance::class,
+            fromStatus: 'in_progress',
+            toStatus: '<unknown>',
+            previous: new \Symfony\Component\Workflow\Exception\NotEnabledTransitionException(
+                $instance,
+                'approve',
+                $symfonyWorkflow,
+                new \Symfony\Component\Workflow\TransitionBlockerList([
+                    new \Symfony\Component\Workflow\TransitionBlocker('Lifecycle transition requires tenant context.', 'tenant'),
+                ]),
+            ),
+        ));
+        $this->entityManager->expects($this->never())->method('flush');
+
+        self::assertFalse($this->service->checkAndProgressWorkflow($entity, $this->createUser()));
+        self::assertSame([], $instance->getApprovalHistory());
+        self::assertSame($step, $instance->getCurrentStep());
+    }
+
     #[Test]
     public function testFieldCompletionReturnsFalseWhenFieldEmpty(): void
     {

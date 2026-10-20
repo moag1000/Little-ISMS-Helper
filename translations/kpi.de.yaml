@@ -41,8 +41,8 @@ kpi:
 
     # Audit KPIs
     audits_completed_ytd: "Abgeschlossene Audits (YTD)"
-    planned_audits: "Geplante Audits"
-    open_audit_findings: "Offene Audit-Findings"
+    planned_audits: "Geplante Audits (dieses Jahr)"
+    open_audit_findings: "Offene Audit-Findings (gesamt)"
 
     # Supplier KPIs
     total_suppliers: "Lieferanten gesamt"

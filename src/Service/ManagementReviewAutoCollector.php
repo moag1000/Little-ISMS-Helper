@@ -46,7 +46,8 @@ final class ManagementReviewAutoCollector
         \DateTimeInterface $referenceDate,
         string $locale = 'de'
     ): ManagementReview {
-        $report = $this->managementReportService->getManagementReviewReport($locale);
+        // Explicit tenant: audit figures must not depend on the request's tenant filter.
+        $report = $this->managementReportService->getManagementReviewReport($locale, $tenant);
 
         $review = new ManagementReview();
         $review->setTenant($tenant);
@@ -168,20 +169,23 @@ final class ManagementReviewAutoCollector
     private function buildAuditResultsNarrative(array $report, string $locale): string
     {
         $audit = $report['audit_data'];
+        // Same figures as the audit KPI (AuditProgramFigures): this calendar year.
         $completed = $audit['completed_audits'] ?? 0;
-        $upcoming = $audit['upcoming_audits'] ?? 0;
+        $planned = $audit['planned_audits'] ?? 0;
 
         if ($locale === 'de') {
             return sprintf(
-                "Audit-Ergebnisse\n\nDurchgeführte Audits: %d\nGeplante Audits: %d\n\nAusführliche Berichte im Audit-Modul.",
+                "Audit-Ergebnisse\n\nAbgeschlossene Audits (dieses Jahr): %d\nGeplante Audits (dieses Jahr): %d\n\n"
+                . "Ausführliche Berichte im Audit-Modul.",
                 $completed,
-                $upcoming
+                $planned
             );
         }
         return sprintf(
-            "Audit results\n\nCompleted audits: %d\nPlanned audits: %d\n\nDetailed reports in Audits module.",
+            "Audit results\n\nCompleted audits (this year): %d\nPlanned audits (this year): %d\n\n"
+            . "Detailed reports in Audits module.",
             $completed,
-            $upcoming
+            $planned
         );
     }
 

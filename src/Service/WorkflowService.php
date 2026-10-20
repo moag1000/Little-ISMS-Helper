@@ -11,6 +11,7 @@ use App\Entity\WorkflowStep;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\EventListener\FourEyesValidator;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\WorkflowRepository;
@@ -80,7 +81,59 @@ class WorkflowService
         private readonly LifecycleTransitionInterface $lifecycleService,
         private readonly RegulatoryWorkflowLoader $regulatoryWorkflowLoader,
         private readonly ?RoleHierarchyInterface $roleHierarchy = null,
+        private readonly ?FourEyesValidator $fourEyesValidator = null,
     ) {}
+
+    /**
+     * Pre-check for automatic progression (time-based cron, auto-progression
+     * service): throws when approving $step automatically would close the
+     * workflow through a four-eyes `approve` — i.e. $step is the last step
+     * or only notification steps follow it. FourEyesValidator decides (it
+     * refuses every automatic actor on a four-eyes transition, tenant
+     * overrides included); this only runs that check BEFORE anything is
+     * mutated, so a refused attempt writes nothing and sends no
+     * notification-step e-mail. The transition itself is checked again
+     * when applied (moveToNextStep(automatic: true)). Without a wired
+     * validator it cannot decide and refuses the closing approval (fail
+     * closed) rather than letting the attempt mutate and roll back.
+     *
+     * @throws FourEyesRequiredException with reason code `automatic_actor`
+     */
+    public function assertAutomaticApprovalAllowed(WorkflowInstance $workflowInstance, WorkflowStep $step): void
+    {
+        if (!$this->approvalWouldCloseWorkflow($workflowInstance, $step)) {
+            return;
+        }
+        if (!$this->fourEyesValidator instanceof FourEyesValidator) {
+            throw FourEyesRequiredException::automaticActor(self::WORKFLOW_NAME, 'approve');
+        }
+
+        $this->fourEyesValidator->assertSatisfied($workflowInstance, self::WORKFLOW_NAME, 'approve', [
+            'user' => $workflowInstance->getInitiatedBy(),
+            'four_eyes_automatic' => true,
+        ]);
+    }
+
+    /**
+     * True when approving $step completes the workflow: it is the last step,
+     * or every following step is a notification step (those auto-progress).
+     */
+    private function approvalWouldCloseWorkflow(WorkflowInstance $workflowInstance, WorkflowStep $step): bool
+    {
+        $steps = array_values($workflowInstance->getWorkflow()->getSteps()->toArray());
+        $index = array_search($step, $steps, true);
+        if ($index === false) {
+            return false;
+        }
+
+        foreach (array_slice($steps, $index + 1) as $following) {
+            if ($following->getStepType() !== 'notification') {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Start a workflow for an entity.
@@ -360,6 +413,11 @@ class WorkflowService
      *                                        not re-check the transition's roles,
      *                                        and its single-approver escape counts
      *                                        the users eligible for THIS step.
+     * @param bool $automatic                 true for automatic progression (cron,
+     *                                        auto-progression service): a closing
+     *                                        four-eyes `approve` is then refused with
+     *                                        reason code `automatic_actor` and the
+     *                                        workflow waits for a human approval.
      *
      * @return WorkflowStep|null The next step, or null if workflow is complete
      * @throws DateMalformedStringException
@@ -370,6 +428,7 @@ class WorkflowService
         ?User $approver = null,
         ?string $reason = null,
         ?WorkflowStep $authorizedForStep = null,
+        bool $automatic = false,
     ): ?WorkflowStep
     {
         $workflow = $workflowInstance->getWorkflow();
@@ -413,6 +472,7 @@ class WorkflowService
             $authorizedForStep instanceof WorkflowStep
                 ? fn (User $candidate): bool => $this->isEligibleStepApprover($candidate, $authorizedForStep)
                 : null,
+            automatic: $automatic,
         );
 
         return null;
@@ -424,7 +484,8 @@ class WorkflowService
      * $actingApprover is the user whose approval led to this step. When a
      * notification step closes the workflow, that user grants the closing
      * four-eyes `approve` transition (authorised for $authorizedForStep as
-     * established by the caller, see moveToNextStep()).
+     * established by the caller, see moveToNextStep()). $automatic marks an
+     * automatic caller (see moveToNextStep()).
      */
     public function handleStepAssignment(
         WorkflowInstance $workflowInstance,
@@ -432,10 +493,11 @@ class WorkflowService
         ?User $actingApprover = null,
         ?string $reason = null,
         ?WorkflowStep $authorizedForStep = null,
+        bool $automatic = false,
     ): void {
         if ($workflowStep->getStepType() === 'notification') {
             // Auto-progress notification steps
-            $this->autoProgressNotificationStep($workflowInstance, $workflowStep, $actingApprover, $reason, $authorizedForStep);
+            $this->autoProgressNotificationStep($workflowInstance, $workflowStep, $actingApprover, $reason, $authorizedForStep, $automatic);
         } else {
             // Send assignment notification for approval steps
             $this->sendStepAssignmentNotification($workflowInstance, $workflowStep);
@@ -451,6 +513,7 @@ class WorkflowService
         ?User $actingApprover = null,
         ?string $reason = null,
         ?WorkflowStep $authorizedForStep = null,
+        bool $automatic = false,
     ): void {
         // Add to history
         $workflowInstance->addApprovalHistoryEntry([
@@ -468,7 +531,7 @@ class WorkflowService
 
         // Move to next step first: if this notification closes the workflow
         // and the closing approval is refused, no notification goes out.
-        $nextStep = $this->moveToNextStep($workflowInstance, $actingApprover, $reason, $authorizedForStep);
+        $nextStep = $this->moveToNextStep($workflowInstance, $actingApprover, $reason, $authorizedForStep, $automatic);
 
         // Send notification to assigned users
         $recipients = $this->getStepApprovers($workflowStep, $workflowInstance->getTenant());
@@ -478,7 +541,7 @@ class WorkflowService
 
         // Handle next step recursively (in case of consecutive notification steps)
         if ($nextStep instanceof WorkflowStep) {
-            $this->handleStepAssignment($workflowInstance, $nextStep, $actingApprover, $reason, $authorizedForStep);
+            $this->handleStepAssignment($workflowInstance, $nextStep, $actingApprover, $reason, $authorizedForStep, $automatic);
         }
     }
 

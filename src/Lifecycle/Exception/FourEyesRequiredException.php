@@ -45,6 +45,26 @@ class FourEyesRequiredException extends \RuntimeException
         );
     }
 
+    /**
+     * An automatic actor (cron, Doctrine listener, auto-progression) asked
+     * for a four-eyes transition. Automatic progression never satisfies the
+     * two-person rule — not even through the single-approver escape — so
+     * the transition waits for a human approval.
+     */
+    public static function automaticActor(string $workflowName, string $transitionName): self
+    {
+        return new self(
+            $workflowName,
+            $transitionName,
+            'automatic_actor',
+            sprintf(
+                'Four-eyes transition "%s" in workflow "%s" cannot be applied automatically — it needs a human approval.',
+                $transitionName,
+                $workflowName,
+            ),
+        );
+    }
+
     public static function sameUser(string $workflowName, string $transitionName): self
     {
         return new self(

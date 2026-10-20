@@ -22,18 +22,12 @@ use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\KpiSnapshotRepository;
-use App\Repository\KpiThresholdConfigRepository;
-use App\Service\KpiThresholdConfigResolver;
 use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskAppetiteRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
-use App\Service\AssetService;
-use App\Service\BsiGrundschutzCheckService;
-use App\Service\ComplianceAnalyticsService;
-use App\Service\RiskService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -80,12 +74,11 @@ class DashboardStatisticsService
         private readonly ?ManagementReviewRepository $managementReviewRepository = null,
         private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
         private readonly ?RiskAppetiteRepository $riskAppetiteRepository = null,
-        private readonly ?KpiThresholdConfigRepository $thresholdConfigRepository = null,
         private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
-        private readonly ?KpiThresholdConfigResolver $kpiThresholdConfigResolver = null,
         private readonly ?CacheInterface $cache = null,
         private readonly ?BsiGrundschutzCheckService $bsiGrundschutzCheckService = null,
         private readonly ?\Psr\Log\LoggerInterface $logger = null,
+        private readonly TenantRecords $tenantRecords = new TenantRecords(),
     ) {
     }
 
@@ -163,10 +156,10 @@ class DashboardStatisticsService
             }
         }
 
-        // Audit findings resolved — no open AuditFinding
-        $openFindings = $this->entityManager()->getRepository(\App\Entity\AuditFinding::class)
-            ->count(['tenant' => $tenant, 'status' => \App\Entity\AuditFinding::STATUS_OPEN]);
-        if ($openFindings === 0) {
+        // Audit findings resolved — no finding that is not done (AuditFindingStatus::isDone())
+        /** @var \App\Repository\AuditFindingRepository $findingRepository */
+        $findingRepository = $this->entityManager()->getRepository(AuditFinding::class);
+        if ($findingRepository->findOpenByTenant($tenant) === []) {
             $checklist['audit_findings_resolved'] = 1;
         }
 
@@ -554,8 +547,12 @@ class DashboardStatisticsService
      */
     public function getManagementKPIs(?Tenant $tenant = null): array
     {
-        $tenant ??= $this->security->getUser()?->getTenant();
-        $cacheKey = 'management_kpis_' . ($tenant?->getId() ?? 'global');
+        // Explicit / user / TenantContext tenant; else only an instance-wide SUPER_ADMIN, others fail closed.
+        $tenant = $this->tenantRecords->resolve($tenant ?? $this->security->getUser()?->getTenant());
+        if (!$tenant instanceof Tenant && !$this->tenantRecords->isInstanceWide()) {
+            return [];
+        }
+        $cacheKey = 'management_kpis_' . ($tenant?->getId() ?? 'instance');
 
         if ($this->cache !== null) {
             return $this->cache->get($cacheKey, function (ItemInterface $item) use ($tenant) {
@@ -623,23 +620,23 @@ class DashboardStatisticsService
         }
 
         if (in_array('bcm', $activeModules, true)) {
-            $kpis['business_continuity'] = $this->getBusinessContinuityKPIs();
+            $kpis['business_continuity'] = $this->getBusinessContinuityKPIs($tenant);
         }
 
         if (in_array('training', $activeModules, true)) {
-            $kpis['training'] = $this->getTrainingKPIs();
+            $kpis['training'] = $this->getTrainingKPIs($tenant);
         }
 
         if (in_array('audits', $activeModules, true)) {
-            $kpis['audits'] = $this->getAuditKPIs();
+            $kpis['audits'] = $this->getAuditKPIs($tenant);
         }
 
         if (in_array('suppliers', $activeModules, true)) {
-            $kpis['supplier_management'] = $this->getSupplierKPIs();
+            $kpis['supplier_management'] = $this->getSupplierKPIs($tenant);
         }
 
         if (in_array('documents', $activeModules, true)) {
-            $kpis['documentation'] = $this->getDocumentationKPIs();
+            $kpis['documentation'] = $this->getDocumentationKPIs($tenant);
         }
 
         return $kpis;
@@ -788,7 +785,7 @@ class DashboardStatisticsService
         // A7: oldest overdue item across risk reviews and treatment plans
         $oldestOverdueDays = 0;
         if ($tenant !== null && $this->treatmentPlanRepository !== null) {
-            foreach ($this->treatmentPlanRepository->findAll() as $plan) {
+            foreach ($this->tenantRecords->all($this->treatmentPlanRepository, $tenant) as $plan) {
                 if ($plan->getStatus() === RiskTreatmentPlanStatus::Completed->value) {
                     continue;
                 }
@@ -825,7 +822,7 @@ class DashboardStatisticsService
                 }
             }
             if ($this->bcPlanRepository !== null) {
-                foreach ($this->bcPlanRepository->findAll() as $plan) {
+                foreach ($this->tenantRecords->all($this->bcPlanRepository, $tenant) as $plan) {
                     $due = $plan->getNextReviewDate();
                     if ($due === null) { continue; }
                     if ($due < $now) { $overdue++; } elseif ($due <= $horizon) { $upcoming++; }
@@ -835,7 +832,7 @@ class DashboardStatisticsService
                 }
             }
             if ($this->treatmentPlanRepository !== null) {
-                foreach ($this->treatmentPlanRepository->findAll() as $plan) {
+                foreach ($this->tenantRecords->all($this->treatmentPlanRepository, $tenant) as $plan) {
                     $due = $plan->getTargetCompletionDate();
                     if ($due === null || $plan->getStatus() === RiskTreatmentPlanStatus::Completed->value) { continue; }
                     if ($due < $now) { $overdue++; } elseif ($due <= $horizon) { $upcoming++; }
@@ -1090,9 +1087,7 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get risk management KPIs
-     */
+    /** Get risk management KPIs */
     private function getRiskManagementKPIs(?Tenant $tenant): array
     {
         $allRisks = $tenant
@@ -1136,7 +1131,7 @@ class DashboardStatisticsService
         // Check for overdue treatment plans
         $overdueTreatments = 0;
         if ($this->treatmentPlanRepository !== null) {
-            $allPlans = $this->treatmentPlanRepository->findAll();
+            $allPlans = $this->tenantRecords->all($this->treatmentPlanRepository, $tenant);
             $overdueTreatments = count(array_filter($allPlans, fn($p): bool => $p->getTargetCompletionDate() !== null && $p->getTargetCompletionDate() < new \DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value
             ));
         }
@@ -1194,9 +1189,7 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get asset management KPIs
-     */
+    /** Get asset management KPIs */
     private function getAssetManagementKPIs(?Tenant $tenant): array
     {
         $allAssets = $tenant
@@ -1235,9 +1228,7 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get incident management KPIs
-     */
+    /** Get incident management KPIs */
     private function getIncidentManagementKPIs(?Tenant $tenant): array
     {
         $allIncidents = $tenant
@@ -1334,15 +1325,13 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get business continuity KPIs
-     */
-    private function getBusinessContinuityKPIs(): array
+    /** Get business continuity KPIs */
+    private function getBusinessContinuityKPIs(?Tenant $tenant = null): array
     {
         $kpis = [];
         // Business processes with BIA
         if ($this->businessProcessRepository !== null) {
-            $allProcesses = $this->businessProcessRepository->findAll();
+            $allProcesses = $this->tenantRecords->all($this->businessProcessRepository, $tenant);
             $criticalProcesses = array_filter($allProcesses, fn($p): bool => $p->getCriticality() === 'critical' || $p->getCriticality() === 'high');
             $processesWithBia = array_filter($criticalProcesses, fn($p): bool => $p->getRto() !== null || $p->getRpo() !== null);
             $biaCoverage = count($criticalProcesses) > 0
@@ -1364,7 +1353,7 @@ class DashboardStatisticsService
         }
         // BC Plans
         if ($this->bcPlanRepository !== null) {
-            $allPlans = $this->bcPlanRepository->findAll();
+            $allPlans = $this->tenantRecords->all($this->bcPlanRepository, $tenant);
             $activePlans = array_filter($allPlans, fn($p): bool => $p->getStatus() === 'approved' || $p->getStatus() === 'active');
 
             $kpis['active_bc_plans'] = [
@@ -1376,7 +1365,7 @@ class DashboardStatisticsService
         }
         // BC Exercises
         if ($this->bcExerciseRepository !== null) {
-            $allExercises = $this->bcExerciseRepository->findAll();
+            $allExercises = $this->tenantRecords->all($this->bcExerciseRepository, $tenant);
             $thisYear = (new \DateTime())->format('Y');
             $exercisesThisYear = array_filter(
                 $allExercises,
@@ -1393,15 +1382,13 @@ class DashboardStatisticsService
         return $kpis;
     }
 
-    /**
-     * Get training KPIs
-     */
-    private function getTrainingKPIs(): array
+    /** Get training KPIs */
+    private function getTrainingKPIs(?Tenant $tenant = null): array
     {
         if ($this->trainingRepository === null) {
             return [];
         }
-        $allTrainings = $this->trainingRepository->findAll();
+        $allTrainings = $this->tenantRecords->all($this->trainingRepository, $tenant);
         $completedTrainings = array_filter($allTrainings, fn($t): bool => $t->getStatus() === TrainingStatus::Completed->value);
         $overdueTrainings = array_filter(
             $allTrainings,
@@ -1426,40 +1413,40 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get audit KPIs
-     */
-    private function getAuditKPIs(): array
+    /** @return list<\App\Entity\InternalAudit> audits of the KPI tenant scope (also the management-review report) */
+    public function auditsFor(?Tenant $tenant): array
+    {
+        $repository = $this->auditRepository;
+        return $repository === null ? [] : array_values($this->tenantRecords->all($repository, $tenant));
+    }
+
+    /** @return list<\App\Entity\ManagementReview> management reviews of the same tenant scope */
+    public function managementReviewsFor(?Tenant $tenant): array
+    {
+        $repository = $this->managementReviewRepository;
+        return $repository === null ? [] : array_values($this->tenantRecords->all($repository, $tenant));
+    }
+
+    /** Audit KPIs (explicit tenant for the cron): completed/planned = this calendar year; open findings = backlog. */
+    private function getAuditKPIs(?Tenant $tenant = null): array
     {
         if ($this->auditRepository === null) {
             return [];
         }
-        $allAudits = $this->auditRepository->findAll();
-        $thisYear = (new \DateTime())->format('Y');
-        $auditsThisYear = array_filter(
-            $allAudits,
-            fn($a): bool => $a->getPlannedDate() !== null && $a->getPlannedDate()->format('Y') === $thisYear
-        );
-        $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
-        // Open = not done (AuditFinding::isDone(): resolved/verified/closed).
-        // getFindings() is the deprecated free-text field — count the
-        // structured AuditFinding records.
-        $openFindings = 0;
-        foreach ($auditsThisYear as $audit) {
-            $openFindings += $audit->getStructuredFindings()
-                ->filter(static fn (AuditFinding $f): bool => !$f->isDone())
-                ->count();
-        }
+        $allAudits = $this->auditsFor($tenant);
+        // Shared definitions with the management-review report (Service\Audit).
+        $year = \App\Service\Audit\AuditProgramFigures::calendarYear($allAudits);
+        $openFindings = \App\Service\Audit\AuditFindingBacklog::count($allAudits)['open_findings'];
         return [
             'audits_completed_ytd' => [
                 'label' => 'kpi.audits_completed_ytd',
-                'value' => count($completedAudits),
+                'value' => $year['completed_audits'],
                 'unit' => '',
                 'status' => 'info',
             ],
             'planned_audits' => [
                 'label' => 'kpi.planned_audits',
-                'value' => count($auditsThisYear),
+                'value' => $year['planned_audits'],
                 'unit' => '',
                 'status' => 'info',
             ],
@@ -1472,15 +1459,13 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get supplier management KPIs
-     */
-    private function getSupplierKPIs(): array
+    /** Get supplier management KPIs */
+    private function getSupplierKPIs(?Tenant $tenant = null): array
     {
         if ($this->supplierRepository === null) {
             return [];
         }
-        $allSuppliers = $this->supplierRepository->findAll();
+        $allSuppliers = $this->tenantRecords->all($this->supplierRepository, $tenant);
         $criticalSuppliers = array_filter(
             $allSuppliers,
             fn($s): bool => method_exists($s, 'getCriticality') && ($s->getCriticality() === 'critical' || $s->getCriticality() === 'high')
@@ -1531,15 +1516,13 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get documentation KPIs
-     */
-    private function getDocumentationKPIs(): array
+    /** Get documentation KPIs */
+    private function getDocumentationKPIs(?Tenant $tenant = null): array
     {
         if ($this->documentRepository === null) {
             return [];
         }
-        $allDocuments = $this->documentRepository->findAll();
+        $allDocuments = $this->tenantRecords->all($this->documentRepository, $tenant);
         $activeDocuments = array_filter(
             $allDocuments,
             // 'active' is a legacy/pre-migration value kept for backward-compat; not a DocumentStatus enum case.
@@ -1644,9 +1627,7 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get DORA Incident Reporting KPIs
-     */
+    /** Get DORA Incident Reporting KPIs */
     private function getDoraIncidentKPIs(?Tenant $tenant): array
     {
         $allIncidents = $tenant

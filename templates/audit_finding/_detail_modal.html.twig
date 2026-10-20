@@ -3,7 +3,7 @@
    flex column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'audits' %}
 {% set _statusVariant = finding.status == 'open' ? 'warning'
-    : (finding.status in ['verified', 'closed', 'resolved'] ? 'success'
+    : (finding.done ? 'success'
     : (finding.status == 'in_progress' ? 'info' : 'secondary')) %}
 {% set _sevVariant = finding.severity == 'critical' ? 'danger'
     : (finding.severity == 'high' ? 'warning'

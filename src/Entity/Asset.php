@@ -720,8 +720,8 @@ class Asset
             return true;
         }
 
-        // Assets with active (identified/assessed/treated) risks are high-risk
-        $activeRisks = $this->risks->filter(fn($r): bool => in_array($r->getStatus(), [\App\Enum\RiskStatus::Identified, \App\Enum\RiskStatus::Assessed, \App\Enum\RiskStatus::Treated], true))->count();
+        // Assets with active (not handled — RiskStatus::isHandled()) risks are high-risk
+        $activeRisks = $this->risks->filter(fn($r): bool => $r->getStatus()?->isHandled() !== true)->count();
         return $activeRisks > 0;
     }
 

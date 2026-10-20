@@ -60,18 +60,14 @@ final class HealthIssueAggregator
      *   - 'risks_missing_treatment_strategy': status not 'identified' but no treatment strategy set
      *   - 'risks_residual_exceeds_inherent': residual risk level > inherent (mathematically impossible)
      *   - 'risks_treatment_plan_without_controls': treatmentDescription filled but no controls linked
-     *   - 'risks_past_review_date': reviewDate is in the past and risk is not closed/treated
+     *   - 'risks_past_review_date': reviewDate is in the past and the risk requires periodic review
      */
     public function findRiskHealthIssues(): array
     {
         $issues = [];
         $now = new \DateTimeImmutable();
 
-        // Terminal statuses where review/treatment checks no longer apply
-        $terminalStatuses = [
-            \App\Enum\RiskStatus::Closed,
-            \App\Enum\RiskStatus::Treated,
-        ];
+        // Handled risks skip the treatment checks; the review check follows requiresPeriodicReview().
 
         $risks = $this->riskRepository->findAll();
 
@@ -87,7 +83,7 @@ final class HealthIssueAggregator
             if (
                 $status !== \App\Enum\RiskStatus::Identified
                 && $risk->getTreatmentStrategy() === null
-                && !in_array($status, $terminalStatuses, true)
+                && $status?->isHandled() !== true
             ) {
                 $missingStrategy[] = $risk;
             }
@@ -101,7 +97,7 @@ final class HealthIssueAggregator
             if (
                 !empty($risk->getTreatmentDescription())
                 && $risk->getControls()->isEmpty()
-                && !in_array($status, $terminalStatuses, true)
+                && $status?->isHandled() !== true
             ) {
                 $treatmentWithoutControls[] = $risk;
             }
@@ -111,7 +107,7 @@ final class HealthIssueAggregator
             if (
                 $reviewDate !== null
                 && $reviewDate < $now
-                && !in_array($status, $terminalStatuses, true)
+                && $status?->requiresPeriodicReview() !== false
             ) {
                 $pastReviewDate[] = $risk;
             }
@@ -284,14 +280,14 @@ final class HealthIssueAggregator
         } catch (\Throwable) {
         }
 
-        // Check 3: Audit findings overdue (open/in_progress past dueDate)
+        // Check 3: Audit findings overdue (not done — AuditFindingStatus::isDone() — past dueDate)
         if ($this->auditFindingRepository !== null) {
             try {
                 $overdueFindings = $this->auditFindingRepository->createQueryBuilder('af')
-                    ->where('af.status IN (:open)')
+                    ->where('af.status NOT IN (:done)')
                     ->andWhere('af.dueDate IS NOT NULL')
                     ->andWhere('af.dueDate < :now')
-                    ->setParameter('open', ['open', 'in_progress'])
+                    ->setParameter('done', \App\Enum\AuditFindingStatus::doneValues())
                     ->setParameter('now', $now)
                     ->getQuery()
                     ->getResult();

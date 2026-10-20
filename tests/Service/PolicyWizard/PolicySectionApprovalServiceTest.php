@@ -372,6 +372,7 @@ class PolicySectionApprovalServiceTest extends TestCase
                 bool $approverAuthorityVerified = false,
                 ?\Closure $isEligibleApprover = null,
                 bool $allowSelfApprovalEscape = true,
+                bool $automatic = false,
             ): void {
                 if ($workflowName === 'workflow_instance_lifecycle'
                     && $user !== null && $user->getId() === $fourEyesApprover?->getId()) {

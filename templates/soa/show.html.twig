@@ -456,6 +456,7 @@
                                 </div>
                                 <div class="ms-2 d-flex align-items-center gap-2">
                                     {{ pill.render(conf_label, conf_variant == 'secondary' ? 'neutral' : conf_variant, {size: 'sm', title: 'control.mapping_suggestions.confidence.tooltip'|trans({'%pct%': conf_pct}, 'control')}) }}
+                                    {% if is_granted('edit', control) %}
                                     <form method="post"
                                           action="{{ path('app_soa_accept_suggestion', { id: control.id, requirementId: row.requirement.id }) }}"
                                           class="d-inline">
@@ -467,6 +468,7 @@
                                             {{ 'control.mapping_suggestions.accept'|trans({}, 'control') }}
                                         </button>
                                     </form>
+                                    {% endif %}
                                 </div>
                             </li>
                         {% endfor %}

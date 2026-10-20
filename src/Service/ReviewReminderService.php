@@ -145,8 +145,8 @@ final class ReviewReminderService
             if (!$reviewDate instanceof DateTimeInterface) {
                 return false;
             }
-            // Only check non-closed risks
-            return $reviewDate < $now && !in_array($risk->getStatus(), [\App\Enum\RiskStatus::Closed, \App\Enum\RiskStatus::Accepted], true);
+            // RiskStatus::requiresPeriodicReview(): all but closed — accepted risks included
+            return $reviewDate < $now && $risk->getStatus()?->requiresPeriodicReview() !== false;
         });
     }
 
@@ -459,7 +459,7 @@ final class ReviewReminderService
             if (!$reviewDate instanceof DateTimeInterface) {
                 return false;
             }
-            return $reviewDate >= $now && $reviewDate <= $threshold && !in_array($risk->getStatus(), [\App\Enum\RiskStatus::Closed, \App\Enum\RiskStatus::Accepted], true);
+            return $reviewDate >= $now && $reviewDate <= $threshold && $risk->getStatus()?->requiresPeriodicReview() !== false;
         });
     }
 

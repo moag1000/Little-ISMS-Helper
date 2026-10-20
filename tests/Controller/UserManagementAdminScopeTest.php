@@ -317,11 +317,81 @@ final class UserManagementAdminScopeTest extends WebTestCase
         $this->client->request('GET', '/en/admin/users/export');
         $csv = (string) ob_get_clean() . (string) $this->client->getInternalResponse()->getContent();
         self::assertResponseIsSuccessful();
-        // The CSV export is narrower than the list: own organisation only
-        // (audit M-7, JobTenantScope), never subsidiaries or foreign tenants.
+        // The CSV export returns exactly the list's user set (UserListScope):
+        // own organisation + subsidiaries, never foreign tenants.
         self::assertStringContainsString((string) $this->userA->getEmail(), $csv);
-        self::assertStringNotContainsString((string) $this->userAChild->getEmail(), $csv);
+        self::assertStringContainsString((string) $this->userAChild->getEmail(), $csv);
         self::assertStringNotContainsString((string) $this->userB->getEmail(), $csv);
+    }
+
+    #[Test]
+    public function asyncExportReturnsTheIndexUserSet(): void
+    {
+        $csv = $this->asyncExportAs($this->adminA);
+
+        self::assertStringContainsString((string) $this->userA->getEmail(), $csv);
+        self::assertStringContainsString((string) $this->userAChild->getEmail(), $csv);
+        self::assertStringNotContainsString((string) $this->userB->getEmail(), $csv);
+    }
+
+    #[Test]
+    public function tourReportReturnsTheIndexUserSet(): void
+    {
+        $this->client->loginUser($this->adminA);
+        ob_start();
+        $this->client->request('GET', '/en/admin/tours/completion/export.csv');
+        $csv = (string) ob_get_clean() . (string) $this->client->getInternalResponse()->getContent();
+        self::assertResponseIsSuccessful();
+
+        self::assertStringContainsString((string) $this->userA->getEmail(), $csv);
+        self::assertStringContainsString((string) $this->userAChild->getEmail(), $csv);
+        self::assertStringNotContainsString((string) $this->userB->getEmail(), $csv);
+    }
+
+    /**
+     * The index shows a SUPER_ADMIN every user — also when the operator
+     * account belongs to an organisation; the exports must match.
+     */
+    #[Test]
+    public function superAdminWithOrganisationExportsAllUsers(): void
+    {
+        $this->client->loginUser($this->superA);
+        ob_start();
+        $this->client->request('GET', '/en/admin/users/export');
+        $csv = (string) ob_get_clean() . (string) $this->client->getInternalResponse()->getContent();
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString((string) $this->userB->getEmail(), $csv);
+
+        $async = $this->asyncExportAs($this->superA);
+        self::assertStringContainsString((string) $this->userB->getEmail(), $async);
+        self::assertStringContainsString((string) $this->userAChild->getEmail(), $async);
+    }
+
+    private function asyncExportAs(User $actor): string
+    {
+        $this->client->loginUser($actor);
+        $this->client->request('GET', '/en/admin/users');
+        $session = $this->client->getRequest()->getSession();
+        $token = bin2hex(random_bytes(16));
+        $session->set('_csrf/user_management_export_dispatch', $token);
+        $session->save();
+
+        $this->client->request('POST', '/en/admin/users/export/dispatch', ['_token' => $token]);
+        self::assertResponseRedirects();
+        preg_match(
+            '/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/',
+            (string) $this->client->getResponse()->headers->get('Location'),
+            $m,
+        );
+        self::assertNotEmpty($m, 'dispatch redirects to the job');
+        $jobs = static::getContainer()->get(\App\Service\Job\JobStatusService::class);
+        $path = static::getContainer()->getParameter('kernel.project_dir') . '/var/exports/' . $m[0] . '.csv';
+        $csv = is_file($path) ? (string) file_get_contents($path) : '';
+        @unlink($path);
+        $jobs->delete($m[0]);
+        self::assertNotSame('', $csv, 'the job wrote the export');
+
+        return $csv;
     }
 
     // ---------------------------------------------------------------- (g)
