@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\PolicyWizard;
 
+use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\TenantPolicySetting;
 use App\Entity\User;
 use App\Entity\WizardRun;
 use App\Entity\OrganizationSecurityProfile;
 use App\Repository\OrganizationSecurityProfileRepository;
+use App\Repository\PersonRepository;
 use App\Repository\TenantPolicySettingRepository;
 use App\Repository\UserRepository;
 use App\Service\PolicyParameter\FrameworkConstraintChecker;
@@ -45,10 +47,17 @@ final class VariableCollectorTest extends TestCase
         return $stub;
     }
 
-    private function makeUser(int $id, string $first, string $last, string $email = 'user@example.com'): User
+    private function makeUser(
+        int $id,
+        string $first,
+        string $last,
+        string $email = 'user@example.com',
+        ?Tenant $tenant = null,
+    ): User
     {
         $user = $this->createStub(User::class);
         $user->method('getId')->willReturn($id);
+        $user->method('getTenant')->willReturn($tenant);
         $user->method('getFullName')->willReturn(trim($first . ' ' . $last));
         $user->method('getEmail')->willReturn($email);
         return $user;
@@ -63,13 +72,23 @@ final class VariableCollectorTest extends TestCase
         return $run;
     }
 
+    private function makePerson(int $id, string $name, ?Tenant $tenant): Person
+    {
+        $person = $this->createStub(Person::class);
+        $person->method('getId')->willReturn($id);
+        $person->method('getFullName')->willReturn($name);
+        $person->method('getTenant')->willReturn($tenant);
+        return $person;
+    }
+
     private function makeCollector(
         ?TenantPolicySettingRepository $settingRepo = null,
         ?UserRepository $userRepo = null,
+        ?PersonRepository $personRepo = null,
     ): VariableCollector {
         $settingRepo ??= $this->createStub(TenantPolicySettingRepository::class);
         $userRepo ??= $this->createStub(UserRepository::class);
-        return new VariableCollector($settingRepo, $userRepo);
+        return new VariableCollector($settingRepo, $userRepo, personRepository: $personRepo);
     }
 
     #[Test]
@@ -158,32 +177,64 @@ final class VariableCollectorTest extends TestCase
     }
 
     #[Test]
-    public function resolvesRoleUserNamesViaUserRepository(): void
+    public function resolvesRoleHolderNamesFromPersonIds(): void
     {
         $tenant = $this->makeTenant();
-        $ciso = $this->makeUser(101, 'Anna', 'Lieber', 'anna@example.com');
-        $dpo = $this->makeUser(202, 'Bernd', 'Klee', 'bernd@example.com');
-
-        $userRepo = $this->createMock(UserRepository::class);
-        $userRepo->method('find')->willReturnMap([
-            [101, $ciso],
-            [202, $dpo],
-        ]);
+        $personRepo = $this->createStub(PersonRepository::class);
+        $personRepoMap = [
+            101 => $this->makePerson(101, 'Anna Lieber', $tenant),
+            202 => $this->makePerson(202, 'Bernd Klee', $tenant),
+        ];
+        $personRepo->method('find')->willReturnCallback(static fn (mixed $id): ?object => $personRepoMap[$id] ?? null);
+        // A User that happens to carry the same id must NOT win over the Person.
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepo->method('find')->willReturn($this->makeUser(101, 'Wrong', 'User', 'w@example.com', $tenant));
 
         $run = $this->makeRun($tenant, [
-            WizardStepKeys::STEP_ROLES => [
-                'roles' => [
-                    'ciso' => 101,
-                    'dpo' => 202,
-                ],
-            ],
+            WizardStepKeys::STEP_ROLES => ['roles' => ['ciso' => 101, 'dpo' => 202]],
         ]);
-        $collector = $this->makeCollector(userRepo: $userRepo);
-
-        $vars = $collector->collectFor($run);
+        $vars = $this->makeCollector(userRepo: $userRepo, personRepo: $personRepo)->collectFor($run);
 
         self::assertSame('Anna Lieber', $vars['roles.ciso.fullName']);
         self::assertSame('Bernd Klee', $vars['roles.dpo.fullName']);
+    }
+
+    #[Test]
+    public function roleHolderOfAnotherOrganisationIsNeverRendered(): void
+    {
+        $tenant = $this->makeTenant(7);
+        $foreign = $this->makeTenant(8);
+        $personRepo = $this->createStub(PersonRepository::class);
+        $personRepoMap = [101 => $this->makePerson(101, 'Foreign Person', $foreign)];
+        $personRepo->method('find')->willReturnCallback(static fn (mixed $id): ?object => $personRepoMap[$id] ?? null);
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepoMap = [303 => $this->makeUser(303, 'Foreign', 'User', 'f@example.com', $foreign)];
+        $userRepo->method('find')->willReturnCallback(static fn (mixed $id): ?object => $userRepoMap[$id] ?? null);
+
+        $run = $this->makeRun($tenant, [
+            WizardStepKeys::STEP_ROLES => ['roles' => ['ciso' => 101, 'dpo' => 303]],
+        ]);
+        $vars = $this->makeCollector(userRepo: $userRepo, personRepo: $personRepo)->collectFor($run);
+
+        self::assertNull($vars['roles.ciso.fullName'], 'foreign Person rendered into a policy');
+        self::assertNull($vars['roles.dpo.fullName'], 'foreign legacy User rendered into a policy');
+    }
+
+    #[Test]
+    public function legacyUserIdFallsBackOnlyWithinTheRunOrganisation(): void
+    {
+        $tenant = $this->makeTenant();
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepoMap = [404 => $this->makeUser(404, 'Legacy', 'Owner', 'l@example.com', $tenant)];
+        $userRepo->method('find')->willReturnCallback(static fn (mixed $id): ?object => $userRepoMap[$id] ?? null);
+
+        $run = $this->makeRun($tenant, [
+            WizardStepKeys::STEP_ROLES => ['roles' => ['ciso' => 404]],
+        ]);
+        $vars = $this->makeCollector(userRepo: $userRepo, personRepo: $this->createStub(PersonRepository::class))
+            ->collectFor($run);
+
+        self::assertSame('Legacy Owner', $vars['roles.ciso.fullName']);
     }
 
     #[Test]
