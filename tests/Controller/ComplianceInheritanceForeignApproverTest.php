@@ -33,6 +33,8 @@ final class ComplianceInheritanceForeignApproverTest extends WebTestCase
     private User $foreignManager;
     private int $logId;
     private string $uid;
+    /** @var list<object> created rows, removed in tearDown (other tests purge frameworks) */
+    private array $created = [];
 
     protected function setUp(): void
     {
@@ -63,6 +65,23 @@ final class ComplianceInheritanceForeignApproverTest extends WebTestCase
         $this->em->persist($log);
         $this->em->flush();
         $this->logId = (int) $log->getId();
+        $this->created = [$framework, $source, $target, $mapping, $fulfillment, $log];
+    }
+
+    protected function tearDown(): void
+    {
+        foreach (array_reverse($this->created) as $entity) {
+            try {
+                $managed = $this->em->find($entity::class, $entity->getId());
+                if ($managed !== null) {
+                    $this->em->remove($managed);
+                    $this->em->flush();
+                }
+            } catch (\Throwable) {
+                // best effort
+            }
+        }
+        parent::tearDown();
     }
 
     private function user(string $name, Tenant $tenant): User
