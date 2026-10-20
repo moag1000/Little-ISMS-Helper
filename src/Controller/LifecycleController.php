@@ -27,6 +27,10 @@ use Symfony\Component\Workflow\Registry;
 
 class LifecycleController extends AbstractController
 {
+    private const string APPROVER_INVALID = 'four_eyes_approver_invalid';
+    private const string APPROVER_INVALID_MESSAGE =
+        'Approver ungültig: unbekannt oder nicht aus der Organisation des Datensatzes.';
+
     public function __construct(
         private readonly EntityTypeRegistry $entityRegistry,
         private readonly EntityManagerInterface $em,
@@ -73,11 +77,10 @@ class LifecycleController extends AbstractController
         $approver = null;
         if ($fourEyesApproverId !== null) {
             $approver = $this->userRepository->find((int) $fourEyesApproverId);
-            if (!$approver instanceof User) {
-                return $this->jsonError(422, 'four_eyes_approver_not_found', sprintf('Approver-User #%s nicht gefunden.', (string) $fourEyesApproverId));
-            }
-            if ($this->isApproverOutsideRecordTenant($approver, $entity)) {
-                return $this->jsonError(422, 'four_eyes_approver_other_tenant', 'Approver gehört nicht zur Organisation des Datensatzes.');
+            // Unknown id and user of another organisation answer identically, so
+            // the endpoint does not reveal which user ids exist elsewhere.
+            if (!$approver instanceof User || $this->isApproverOutsideRecordTenant($approver, $entity)) {
+                return $this->jsonError(422, self::APPROVER_INVALID, self::APPROVER_INVALID_MESSAGE);
             }
         }
 
@@ -132,11 +135,12 @@ class LifecycleController extends AbstractController
         }
 
         $approver = null;
+        $approverInvalid = false;
         if ($fourEyesApproverId !== null) {
             $approver = $this->userRepository->find((int) $fourEyesApproverId);
-            if (!$approver instanceof User) {
-                return $this->jsonError(422, 'four_eyes_approver_not_found', sprintf('Approver-User #%s nicht gefunden.', (string) $fourEyesApproverId));
-            }
+            // Reported per record like an approver of another organisation, so
+            // an unknown id is indistinguishable from a foreign one.
+            $approverInvalid = !$approver instanceof User;
         }
 
         $succeeded = [];
@@ -153,8 +157,9 @@ class LifecycleController extends AbstractController
                 $failed[(string) $id] = 'forbidden';
                 continue;
             }
-            if ($approver instanceof User && $this->isApproverOutsideRecordTenant($approver, $entity)) {
-                $failed[(string) $id] = 'four_eyes_approver_other_tenant';
+            $foreignApprover = $approver instanceof User && $this->isApproverOutsideRecordTenant($approver, $entity);
+            if ($approverInvalid || $foreignApprover) {
+                $failed[(string) $id] = self::APPROVER_INVALID;
                 continue;
             }
             try {

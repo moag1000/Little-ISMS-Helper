@@ -101,7 +101,7 @@ final class LifecycleApproverTenantTest extends KernelTestCase
         [$status, $body] = $this->postTransition($doc, $foreign);
 
         self::assertSame(422, $status);
-        self::assertSame('four_eyes_approver_other_tenant', $body['error'] ?? null);
+        self::assertSame('four_eyes_approver_invalid', $body['error'] ?? null);
         $this->em->refresh($doc);
         self::assertSame('approved', $doc->getStatus());
     }
@@ -114,7 +114,7 @@ final class LifecycleApproverTenantTest extends KernelTestCase
 
         [, $body] = $this->postTransition($doc, $colleague);
 
-        self::assertNotSame('four_eyes_approver_other_tenant', $body['error'] ?? null);
+        self::assertNotSame('four_eyes_approver_invalid', $body['error'] ?? null);
     }
 
     #[Test]
@@ -135,9 +135,39 @@ final class LifecycleApproverTenantTest extends KernelTestCase
         $body = json_decode((string) $response->getContent(), true);
 
         self::assertSame([], $body['succeeded']);
-        self::assertSame('four_eyes_approver_other_tenant', $body['failed'][(string) $first->getId()] ?? null);
-        self::assertSame('four_eyes_approver_other_tenant', $body['failed'][(string) $second->getId()] ?? null);
+        self::assertSame('four_eyes_approver_invalid', $body['failed'][(string) $first->getId()] ?? null);
+        self::assertSame('four_eyes_approver_invalid', $body['failed'][(string) $second->getId()] ?? null);
         $this->em->refresh($first);
         self::assertSame('approved', $first->getStatus());
+    }
+
+    #[Test]
+    public function unknownApproverIdAnswersExactlyLikeAForeignOne(): void
+    {
+        $foreignTenant = (new Tenant())->setName('LAT U ' . $this->uid)->setCode('latu_' . $this->uid);
+        $this->em->persist($foreignTenant);
+        $foreign = $this->makeUser('unknowncheck', $foreignTenant);
+        $doc = $this->approvedDocument();
+        [$foreignStatus, $foreignBody] = $this->postTransition($doc, $foreign);
+
+        $url = '/lifecycle/document/' . $doc->getId() . '/transition';
+        $request = Request::create($url, 'POST', content: (string) json_encode([
+            'transition' => 'publish',
+            'four_eyes_approver_id' => 999999999,
+        ]));
+        $response = static::getContainer()->get(LifecycleController::class)
+            ->transition('document', (int) $doc->getId(), $request);
+
+        self::assertSame($foreignStatus, $response->getStatusCode());
+        self::assertSame($foreignBody, json_decode((string) $response->getContent(), true));
+
+        $bulk = Request::create('/lifecycle/document/bulk-transition', 'POST', content: (string) json_encode([
+            'transition' => 'publish',
+            'ids' => [$doc->getId()],
+            'four_eyes_approver_id' => 999999999,
+        ]));
+        $bulkBody = json_decode((string) static::getContainer()->get(LifecycleController::class)
+            ->bulkTransition('document', $bulk)->getContent(), true);
+        self::assertSame('four_eyes_approver_invalid', $bulkBody['failed'][(string) $doc->getId()] ?? null);
     }
 }
