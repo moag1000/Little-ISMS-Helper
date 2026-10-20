@@ -31,8 +31,9 @@ use Symfony\Component\Console\Tester\CommandTester;
  * Time-based steps (`autoProgressConditions.type = time_based`) used to be
  * handed to the deprecated WorkflowAutoProgressionService, which has no
  * time_based branch — the command reported them as progressed while nothing
- * moved. They are now approved through WorkflowService; the last step is
- * never approved automatically (final approval is four-eyes).
+ * moved. They are now approved through WorkflowService as an automatic
+ * actor; an approval that would close the workflow through the four-eyes
+ * `approve` is refused and reported as a notice, not as an error.
  */
 final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
 {
@@ -51,9 +52,10 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         [$instance, $first, $second] = $this->instance('1 hours', new DateTimeImmutable('-2 hours'));
 
         $this->workflowService->expects(self::once())->method('moveToNextStep')
-            ->with($instance, $this->initiator, 'Step automatically approved after time delay of 1 hours')
+            ->with($instance, $this->initiator, 'Step automatically approved after time delay of 1 hours', null, true)
             ->willReturn($second);
-        $this->workflowService->expects(self::once())->method('handleStepAssignment')->with($instance, $second);
+        $this->workflowService->expects(self::once())->method('handleStepAssignment')
+            ->with($instance, $second, null, null, null, true);
 
         $tester = $this->runCommand($instance);
 
@@ -96,18 +98,42 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         self::assertNotNull($third);
     }
 
+    /**
+     * The four-eyes decision is FourEyesValidator's (via
+     * WorkflowService::assertAutomaticApprovalAllowed); a refusal leaves the
+     * step pending and is a notice, not an error.
+     */
     #[Test]
-    public function lastStepIsNeverApprovedAutomatically(): void
+    public function stepWhoseApprovalWouldCloseTheWorkflowStaysPendingAsNotice(): void
     {
         [$instance, , $second] = $this->instance(null, new DateTimeImmutable('-5 days'));
         $second->setMetadata(['autoProgressConditions' => ['type' => 'time_based', 'delay' => '1 hours']]);
         $instance->setCurrentStep($second);
 
+        $this->workflowService->expects(self::once())->method('assertAutomaticApprovalAllowed')
+            ->with($instance, $second)
+            ->willThrowException(\App\Lifecycle\Exception\FourEyesRequiredException::automaticActor('workflow_instance_lifecycle', 'approve'));
         $this->workflowService->expects(self::never())->method('moveToNextStep');
 
         $tester = $this->runCommand($instance);
         self::assertSame(Command::SUCCESS, $tester->getStatusCode());
         self::assertSame([], $instance->getApprovalHistory());
+        self::assertSame($second, $instance->getCurrentStep());
+        $display = $tester->getDisplay();
+        self::assertStringContainsString('needs a human approver', $display);
+        self::assertStringNotContainsString('Errors encountered', $display);
+    }
+
+    #[Test]
+    public function otherFailuresAreStillReportedAsErrors(): void
+    {
+        [$instance] = $this->instance('1 hours', new DateTimeImmutable('-2 hours'));
+        $this->workflowService->expects(self::once())->method('moveToNextStep')->willThrowException(new \RuntimeException('boom'));
+
+        $tester = $this->runCommand($instance);
+
+        self::assertSame(Command::FAILURE, $tester->getStatusCode());
+        self::assertStringContainsString('boom', $tester->getDisplay());
     }
 
     /**
@@ -141,7 +167,9 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
 
         $tester = $this->runCommand($refused, $ok);
 
-        self::assertSame(Command::FAILURE, $tester->getStatusCode());
+        // A four-eyes refusal is the expected waiting state: notice, exit 0.
+        self::assertSame(Command::SUCCESS, $tester->getStatusCode());
+        self::assertStringContainsString('needs a human approver', $tester->getDisplay());
         self::assertSame([], $refused->getApprovalHistory(), 'no history for the refused instance');
         self::assertNotContains($refusedFirst->getId(), $refused->getCompletedSteps() ?? []);
         self::assertSame($refusedFirst, $refused->getCurrentStep());

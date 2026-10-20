@@ -331,6 +331,67 @@ class FourEyesValidatorTest extends TestCase
     }
 
     /**
+     * Automatic actors (cron, field-completion listener, auto-progression)
+     * never satisfy four-eyes — not even with a distinct, authorised
+     * approver in the context.
+     */
+    #[Test]
+    public function automaticActorIsRefusedEvenWithADistinctAuthorisedApprover(): void
+    {
+        $initiator = $this->makeUser(1, ['ROLE_MANAGER']);
+        $approver = $this->makeUser(2, ['ROLE_MANAGER']);
+        $validator = $this->makeValidator(['four_eyes' => true, 'roles' => ['ROLE_MANAGER']]);
+
+        try {
+            $validator->onTransition($this->makeEvent(context: [
+                'user' => $initiator,
+                'four_eyes_approver' => $approver,
+                'four_eyes_approver_authorized' => true,
+                'four_eyes_automatic' => true,
+            ]));
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('automatic_actor', $e->reasonCode);
+        }
+    }
+
+    /**
+     * The single-approver escape (one eligible user + a reason) is never
+     * available to an automatic actor: its fixed reason is no offline
+     * counter-signature.
+     */
+    #[Test]
+    public function automaticActorNeverUsesTheSingleApproverEscape(): void
+    {
+        $u = $this->makeUser(1, ['ROLE_MANAGER']);
+        $validator = $this->makeValidator(
+            metadata: ['four_eyes' => true, 'roles' => ['ROLE_MANAGER']],
+            tenantUserCount: 1,
+        );
+
+        try {
+            $validator->onTransition($this->makeEvent(context: [
+                'user' => $u,
+                'four_eyes_approver' => $u,
+                'reason' => 'Step automatically approved after time delay of 24 hours',
+                'four_eyes_automatic' => true,
+            ]));
+            self::fail('Expected FourEyesRequiredException');
+        } catch (FourEyesRequiredException $e) {
+            self::assertSame('automatic_actor', $e->reasonCode);
+        }
+    }
+
+    #[Test]
+    public function automaticActorPassesWhenFourEyesIsNotRequired(): void
+    {
+        $validator = $this->makeValidator(['four_eyes' => false]);
+
+        $validator->onTransition($this->makeEvent(context: ['user' => null, 'four_eyes_automatic' => true]));
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
      * @param list<User> $users active users of the tenant
      */
     private function validatorWithTenantUsers(array $users): FourEyesValidator

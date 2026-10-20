@@ -133,6 +133,55 @@ final class FieldCompletionAutoTransitionTest extends TestCase
         self::assertTrue(true); // reached without throw
     }
 
+    /**
+     * The listener is an automatic actor: it declares so on every
+     * transition, and a refused four-eyes transition is logged as a notice
+     * instead of being thrown out of postUpdate.
+     */
+    #[Test]
+    public function fourEyesTransitionIsRequestedAsAutomaticAndRefusalIsLoggedNotThrown(): void
+    {
+        $entity = $this->makeEntity('high', 100, ['PII']);
+
+        $workflow = $this->createStub(WorkflowInterface::class);
+        $workflow->method('can')->willReturn(true);
+        $registry = $this->createStub(Registry::class);
+        $registry->method('get')->willReturn($workflow);
+
+        $lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
+        $lifecycleService->expects(self::once())->method('transition')->willReturnCallback(
+            static function (object $e, string $wf, string $tr, ...$rest): void {
+                // positional args after $reason: approver, authorised, eligible, escape, automatic
+                $automatic = $rest['automatic'] ?? ($rest[6] ?? false);
+                if ($automatic !== true) {
+                    throw new \LogicException('transition was not requested as automatic');
+                }
+                throw \App\Lifecycle\Exception\FourEyesRequiredException::automaticActor($wf, $tr);
+            },
+        );
+
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects(self::once())->method('notice')->with(
+            self::stringContains('Four-eyes'),
+            self::callback(static fn (array $ctx): bool => $ctx['reason_code'] === 'automatic_actor'),
+        );
+        $logger->expects(self::never())->method('warning');
+
+        $listener = new FieldCompletionAutoTransition(
+            workflowRegistry: $registry,
+            lifecycleService: $lifecycleService,
+            propertyAccessor: PropertyAccess::createPropertyAccessor(),
+            rules: [$entity::class => ['assess_when_complete' => [
+                'workflow' => 'data_breach_lifecycle',
+                'transition' => 'assess',
+                'required_fields' => ['severity', 'affectedDataSubjectsCount', 'dataCategories'],
+            ]]],
+            logger: $logger,
+        );
+
+        $listener->postUpdate($this->makeEvent($entity));
+    }
+
     #[Test]
     public function implementsFieldCompletionAutoTransitionInterface(): void
     {

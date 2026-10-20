@@ -37,6 +37,12 @@ interface LifecycleTransitionInterface
      *                                     system-generated reason: the single-approver
      *                                     escape needs a reason the user typed (the
      *                                     offline counter-signature), so it is refused.
+     * @param  bool      $automatic True when no human triggers this transition
+     *                                     (cron, Doctrine listener, auto-progression).
+     *                                     A four-eyes transition is then always refused
+     *                                     with reason code `automatic_actor` — automatic
+     *                                     progression never satisfies the two-person
+     *                                     rule, the single-approver escape included.
      *
      * @throws InvalidTransitionException
      * @throws \App\Lifecycle\Exception\ReasonRequiredException
@@ -52,5 +58,6 @@ interface LifecycleTransitionInterface
         bool $approverAuthorityVerified = false,
         ?\Closure $isEligibleApprover = null,
         bool $allowSelfApprovalEscape = true,
+        bool $automatic = false,
     ): void;
 }
