@@ -116,22 +116,9 @@ trait OwnerPickerFormTrait
                 'data-action'              => 'change->owner-picker#toggle',
             ],
         ];
+        // OwnerUserType scopes the choices to the bound record's tenant
+        // (current tenant for new records) — see OwnerUserType.
         $builder->add($userField, OwnerUserType::class, $userOptions);
-
-        // Scope the user choices to the RECORD's tenant once the bound entity is
-        // known (a tenantless super-admin editing another tenant's record must
-        // still see that tenant's owner). New records without a tenant keep the
-        // current-tenant default of OwnerUserType.
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            static function (FormEvent $event) use ($userField, $userOptions): void {
-                $entity = $event->getData();
-                $tenant = is_object($entity) && method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
-                if ($tenant !== null) {
-                    $event->getForm()->add($userField, OwnerUserType::class, $userOptions + ['tenant' => $tenant]);
-                }
-            },
-        );
 
         $builder->add($personField, EntityType::class, [
             'label'        => $config['person_label']       ?? $prefix . '.field.owner_person',

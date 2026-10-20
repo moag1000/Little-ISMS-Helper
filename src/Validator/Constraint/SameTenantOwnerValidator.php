@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Validator\Constraint;
 
 use App\Entity\Tenant;
+use App\Security\RecordTenant;
 use App\Service\TenantContext;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -21,23 +22,39 @@ final class SameTenantOwnerValidator extends ConstraintValidator
         if (!$constraint instanceof SameTenantOwner) {
             throw new UnexpectedTypeException($constraint, SameTenantOwner::class);
         }
-        if ($value === null || !method_exists($value, 'getTenant')) {
+        if ($value === null) {
             return;
         }
 
-        // The entity's own tenant wins; on create it may not be stamped yet
-        // (API processors set it after validation), so fall back to the
-        // current tenant. No tenant at all (CLI/jobs) = nothing to compare.
-        $object = $this->context->getObject();
-        $expected = (is_object($object) && method_exists($object, 'getTenant') ? $object->getTenant() : null)
-            ?? $this->tenantContext->getCurrentTenant();
-        if (!$expected instanceof Tenant) {
-            return;
-        }
+        // Collection (ManyToMany / array): every element must match.
+        $elements = is_iterable($value) ? $value : [$value];
 
-        $actual = $value->getTenant();
-        if (!$actual instanceof Tenant || $actual->getId() !== $expected->getId()) {
-            $this->context->buildViolation($constraint->message)->addViolation();
+        $expected = null;
+        foreach ($elements as $element) {
+            if (!is_object($element) || !method_exists($element, 'getTenant')) {
+                continue;
+            }
+            $expected ??= $this->expectedTenant();
+            if ($expected === null) {
+                return;
+            }
+
+            $actual = $element->getTenant();
+            if (!RecordTenant::matches($actual instanceof Tenant ? $actual : null, $expected)) {
+                $this->context->buildViolation($constraint->message)->addViolation();
+
+                return;
+            }
         }
+    }
+
+    /**
+     * The entity's own tenant wins; on create it may not be stamped yet (API
+     * processors set it after validation), so fall back to the current
+     * tenant. No tenant at all (CLI/jobs) = nothing to compare.
+     */
+    private function expectedTenant(): Tenant|int|null
+    {
+        return RecordTenant::of($this->context->getObject()) ?? $this->tenantContext->getCurrentTenant();
     }
 }
