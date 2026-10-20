@@ -382,7 +382,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->loginAsUser($this->adminUser);
         $tmp = sys_get_temp_dir() . '/backup_upload_' . uniqid();
         mkdir($tmp);
-        file_put_contents($tmp . '/evil.json', "<?php system(\$_GET['c']); ?>\n");
+        file_put_contents($tmp . '/evil.json', "<?php echo 'php, not json'; ?>\n");
         file_put_contents($tmp . '/fake.gz', 'not gzip at all');
         file_put_contents($tmp . '/real.json', (string) json_encode(['metadata' => ['version' => '1.0'], 'data' => []]));
         $backupDir = static::getContainer()->getParameter('kernel.project_dir') . '/var/backups';
