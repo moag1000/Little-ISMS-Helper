@@ -172,8 +172,8 @@ dashboard:
     training_completion_rate: Completion Rate
     overdue_trainings: Overdue Trainings
     audits_completed_ytd: Audits Completed (YTD)
-    planned_audits: Planned Audits
-    open_audit_findings: Open Findings
+    planned_audits: Planned Audits (this year)
+    open_audit_findings: Open Findings (all)
     total_suppliers: Total Suppliers
     critical_suppliers: Critical Suppliers
     supplier_assessment_rate: Assessment Rate
@@ -211,8 +211,8 @@ dashboard:
     training_completion_rate: Completion Rate
     overdue_trainings: Overdue Trainings
     audits_completed_ytd: Audits Completed (YTD)
-    planned_audits: Planned Audits
-    open_audit_findings: Open Findings
+    planned_audits: Planned Audits (this year)
+    open_audit_findings: Open Findings (all)
     total_suppliers: Total Suppliers
     critical_suppliers: Critical Suppliers
     supplier_assessment_rate: Assessment Rate

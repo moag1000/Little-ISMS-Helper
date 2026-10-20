@@ -631,7 +631,7 @@ class DashboardStatisticsService
         }
 
         if (in_array('audits', $activeModules, true)) {
-            $kpis['audits'] = $this->getAuditKPIs();
+            $kpis['audits'] = $this->getAuditKPIs($tenant);
         }
 
         if (in_array('suppliers', $activeModules, true)) {
@@ -1426,15 +1426,15 @@ class DashboardStatisticsService
         ];
     }
 
-    /**
-     * Get audit KPIs
-     */
-    private function getAuditKPIs(): array
+    /** Audit KPIs (explicit tenant for the cron): completed/planned = this calendar year; open findings = backlog. */
+    private function getAuditKPIs(?Tenant $tenant = null): array
     {
         if ($this->auditRepository === null) {
             return [];
         }
-        $allAudits = $this->auditRepository->findAll();
+        $allAudits = $tenant instanceof Tenant
+            ? $this->auditRepository->findBy(['tenant' => $tenant])
+            : $this->auditRepository->findAll();
         $thisYear = (new \DateTime())->format('Y');
         $auditsThisYear = array_filter(
             $allAudits,
@@ -1443,9 +1443,9 @@ class DashboardStatisticsService
         $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
         // Open = not done (AuditFinding::isDone(): resolved/verified/closed).
         // getFindings() is the deprecated free-text field — count the
-        // structured AuditFinding records.
+        // structured AuditFinding records. Backlog: all audits, all years.
         $openFindings = 0;
-        foreach ($auditsThisYear as $audit) {
+        foreach ($allAudits as $audit) {
             $openFindings += $audit->getStructuredFindings()
                 ->filter(static fn (AuditFinding $f): bool => !$f->isDone())
                 ->count();
