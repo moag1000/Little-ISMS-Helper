@@ -443,12 +443,7 @@ final class ManagementReportService
         $audits = $this->auditRepository->findAll();
 
         // Group by status
-        $byStatus = [
-            'planned' => [],
-            'in_progress' => [],
-            'completed' => [],
-            'cancelled' => [],
-        ];
+        $byStatus = ['planned' => [], 'in_progress' => [], 'completed' => [], 'cancelled' => []];
 
         foreach ($audits as $audit) {
             $status = $audit->getStatus() ?? 'planned';
@@ -474,6 +469,8 @@ final class ManagementReportService
 
         return [
             'generated_at' => new DateTime(),
+            // total_findings / open_findings — read by ManagementReviewAutoCollector
+            ...\App\Service\Audit\AuditFindingBacklog::count($audits),
             'audits' => [
                 'total' => count($audits),
                 'this_year' => count($auditsThisYear),

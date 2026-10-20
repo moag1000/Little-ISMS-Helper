@@ -1441,15 +1441,8 @@ class DashboardStatisticsService
             fn($a): bool => $a->getPlannedDate() !== null && $a->getPlannedDate()->format('Y') === $thisYear
         );
         $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
-        // Open = not done (AuditFinding::isDone(): resolved/verified/closed).
-        // getFindings() is the deprecated free-text field — count the
-        // structured AuditFinding records. Backlog: all audits, all years.
-        $openFindings = 0;
-        foreach ($allAudits as $audit) {
-            $openFindings += $audit->getStructuredFindings()
-                ->filter(static fn (AuditFinding $f): bool => !$f->isDone())
-                ->count();
-        }
+        // Open = not done, all audits of every year (shared definition).
+        $openFindings = \App\Service\Audit\AuditFindingBacklog::count($allAudits)['open_findings'];
         return [
             'audits_completed_ytd' => [
                 'label' => 'kpi.audits_completed_ytd',
