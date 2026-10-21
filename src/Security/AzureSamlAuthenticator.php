@@ -122,7 +122,7 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
                     // Store all SAML attributes as metadata
                     $user->setAzureMetadata([
                         'saml_attributes' => $attributes,
-                        'saml_nameid' => $nameId !== null && $nameId !== '' ? $nameId : $email,
+                        'saml_nameid' => $nameId !== '' ? $nameId : $email,
                     ]);
 
                     $user->setLastLoginAt(new DateTimeImmutable());
