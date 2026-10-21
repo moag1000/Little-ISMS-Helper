@@ -12,7 +12,6 @@ use App\Enum\IncidentStatus;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
-use App\Repository\InternalAuditRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\ControlRepository;
 use App\Repository\ManagementReviewRepository;
@@ -34,7 +33,7 @@ class ReportController extends AbstractController
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly InternalAuditRepository $internalAuditRepository,
+        private readonly \App\Service\DashboardStatisticsService $dashboardStatisticsService,
         private readonly TrainingRepository $trainingRepository,
         private readonly ControlRepository $controlRepository,
         private readonly ManagementReviewRepository $managementReviewRepository,
@@ -405,7 +404,7 @@ class ReportController extends AbstractController
             'compliance_percentage' => count($applicableControls) > 0 ? round((count($implementedControls) / count($applicableControls)) * 100) : 0,
             'open_incidents' => count($this->incidentRepository->findBy(['status' => [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution]])),
             'total_trainings' => $this->trainingRepository->count([]),
-            'audits_this_year' => \App\Service\Audit\AuditProgramFigures::calendarYear($this->internalAuditRepository->findAll())['completed_audits'],
+            'audits_this_year' => \App\Service\Audit\AuditProgramFigures::completedInYear($this->dashboardStatisticsService->auditsFor(null)),
         ];
     }
 }

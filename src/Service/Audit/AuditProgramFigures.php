@@ -38,4 +38,30 @@ final class AuditProgramFigures
 
         return ['planned_audits' => $planned, 'completed_audits' => $completed];
     }
+
+    /**
+     * Audits completed in the current calendar year: status "completed" and the
+     * year of the completion date. InternalAudit records no completion
+     * timestamp; `actualDate` (the date the audit was conducted) is the
+     * completion date, falling back to the planned date when it is unset.
+     *
+     * @param iterable<InternalAudit> $audits
+     * @param \DateTimeInterface|null $now clock (default: now)
+     */
+    public static function completedInYear(iterable $audits, ?\DateTimeInterface $now = null): int
+    {
+        $thisYear = ($now ?? new \DateTimeImmutable())->format('Y');
+        $count = 0;
+        foreach ($audits as $audit) {
+            if ($audit->getStatus() !== 'completed') {
+                continue;
+            }
+            $date = $audit->getActualDate() ?? $audit->getPlannedDate();
+            if ($date?->format('Y') === $thisYear) {
+                ++$count;
+            }
+        }
+
+        return $count;
+    }
 }

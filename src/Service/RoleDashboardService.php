@@ -717,11 +717,11 @@ class RoleDashboardService
             ];
         }
 
-        $audits = $this->auditRepository->findAll();
+        // Tenant-scoped like the audit KPI (follows TenantContext, no unscoped read).
+        $audits = $this->dashboardStatisticsService->auditsFor(null);
         $now = new \DateTime();
 
-        // One definition of "this year" shared with the audit KPI / management report.
-        $completedThisYear = \App\Service\Audit\AuditProgramFigures::calendarYear($audits, $now)['completed_audits'];
+        $completedThisYear = \App\Service\Audit\AuditProgramFigures::completedInYear($audits, $now);
 
         $upcoming = array_filter($audits, fn($a) => $a->getPlannedDate() !== null
             && $a->getPlannedDate() > $now

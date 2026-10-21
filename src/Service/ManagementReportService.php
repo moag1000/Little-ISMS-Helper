@@ -134,7 +134,7 @@ final class ManagementReportService
             ],
             'audit_summary' => [
                 'total_audits' => count($audits),
-                'completed_this_year' => \App\Service\Audit\AuditProgramFigures::calendarYear($audits)['completed_audits'],
+                'completed_this_year' => \App\Service\Audit\AuditProgramFigures::completedInYear($audits),
             ],
             'training_summary' => [
                 'total_trainings' => $this->trainingRepository->count([]),
