@@ -134,4 +134,35 @@ final class DashboardKpiTenantScopeTest extends TestCase
         self::assertSame(0, $dora['third_party']['ict_providers']['value']);
         self::assertSame(0, $dora['ict_risk']['ict_risks_total']['value']);
     }
+
+    #[Test]
+    public function dashboardStatisticsAndHealthNeverReadUnscopedWithoutTenant(): void
+    {
+        $risks = $this->createMock(RiskRepository::class);
+        $risks->expects(self::never())->method('findAll');
+        $incidents = $this->createMock(IncidentRepository::class);
+        $incidents->expects(self::never())->method('findAll');
+        $assets = $this->createMock(AssetRepository::class);
+        $assets->expects(self::never())->method('findAll');
+        $user = $this->createStub(User::class);
+        $user->method('getTenant')->willReturn(null);
+        $security = $this->createStub(Security::class);
+        $security->method('getUser')->willReturn($user);
+        $context = $this->createStub(TenantContext::class);
+        $context->method('getCurrentTenant')->willReturn(null);
+        $service = new DashboardStatisticsService(
+            $assets,
+            $risks,
+            $incidents,
+            $this->createStub(ControlRepository::class),
+            $security,
+            $this->createStub(ModuleConfigurationService::class),
+            tenantRecords: new TenantRecords($context),
+        );
+
+        $stats = $service->getDashboardStatistics();
+
+        self::assertSame(0, $stats['risks_high']);
+        self::assertSame(0, $stats['assets_critical']);
+    }
 }
