@@ -67,7 +67,7 @@ class IdentityProviderRepository extends ServiceEntityRepository
      */
     public function findEnabledBySlug(string $slug): array
     {
-        return array_values($this->findBy(['slug' => $slug, 'enabled' => true]));
+        return $this->findBy(['slug' => $slug, 'enabled' => true]);
     }
 
     /**

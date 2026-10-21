@@ -9,7 +9,6 @@ use App\Entity\SsoUserApproval;
 use App\Entity\User;
 use App\Repository\IdentityProviderRepository;
 use App\Service\Sso\OidcAuthenticationFlow;
-use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -47,7 +46,6 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
         private readonly OidcAuthenticationFlow $flow,
         private readonly EntityManagerInterface $em,
         private readonly RouterInterface $router,
-        private readonly TenantContext $tenantContext,
         private readonly LoggerInterface $logger,
     ) {
     }
