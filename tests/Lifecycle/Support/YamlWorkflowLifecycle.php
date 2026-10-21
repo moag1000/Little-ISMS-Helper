@@ -42,7 +42,7 @@ final class YamlWorkflowLifecycle implements LifecycleTransitionInterface
         ?string $reason = null,
         ?User $fourEyesApprover = null,
         bool $approverAuthorityVerified = false,
-        ?\Closure $isEligibleApprover = null,
+        ?\App\Lifecycle\EligibleApprovers $eligibleApprovers = null,
         bool $allowSelfApprovalEscape = true,
         bool $automatic = false,
     ): void {

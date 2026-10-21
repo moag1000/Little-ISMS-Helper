@@ -437,6 +437,74 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Count the active users of $tenant that hold any of $roleNames — stored
+     * directly or through a custom Role entity that may contribute the name
+     * ({@see \App\Security\RoleNames::isGrantedByCustomRole()}, the same rule
+     * as User::getRoles()) — or whose id is in $userIds. $excludeUserId is not
+     * counted. One COUNT query: no user is hydrated.
+     *
+     * $roleNames are matched literally; the caller expands them through the
+     * role hierarchy first (FourEyesValidator: every role that REACHES the
+     * required one).
+     *
+     * @param list<string> $roleNames
+     * @param list<int>    $userIds
+     */
+    public function countActiveInTenantHoldingAny(
+        \App\Entity\Tenant $tenant,
+        array $roleNames,
+        array $userIds = [],
+        ?int $excludeUserId = null,
+    ): int {
+        $roleNames = array_values(array_unique(array_filter($roleNames, static fn (string $r): bool => $r !== '')));
+        $userIds = array_values(array_unique(array_filter($userIds, static fn (int $id): bool => $id > 0)));
+        if ($roleNames === [] && $userIds === []) {
+            return 0;
+        }
+
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(DISTINCT u.id)')
+            ->leftJoin('u.customRoles', 'cr')
+            ->andWhere('u.tenant = :tenant')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true);
+
+        $matches = $qb->expr()->orX();
+        $plainCustom = [];
+        $systemOnlyCustom = [];
+        foreach ($roleNames as $i => $role) {
+            $matches->add('u.roles LIKE :role' . $i);
+            $qb->setParameter('role' . $i, '%"' . $role . '"%');
+            if (!\App\Security\RoleNames::isReserved($role)) {
+                $plainCustom[] = $role;
+            } elseif (\App\Security\RoleNames::isGrantedByCustomRole($role, true)) {
+                $systemOnlyCustom[] = $role;
+            }
+        }
+        if ($plainCustom !== []) {
+            $matches->add('cr.name IN (:plainCustom)');
+            $qb->setParameter('plainCustom', $plainCustom);
+        }
+        if ($systemOnlyCustom !== []) {
+            $matches->add('(cr.name IN (:systemCustom) AND cr.isSystemRole = :systemRole)');
+            $qb->setParameter('systemCustom', $systemOnlyCustom);
+            $qb->setParameter('systemRole', true);
+        }
+        if ($userIds !== []) {
+            $matches->add('u.id IN (:userIds)');
+            $qb->setParameter('userIds', $userIds);
+        }
+        $qb->andWhere($matches);
+
+        if ($excludeUserId !== null) {
+            $qb->andWhere('u.id <> :excludeUserId')->setParameter('excludeUserId', $excludeUserId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
      * Active users of one tenant, sorted by name — the assignee choices of the
      * bulk "assign" action.
      *

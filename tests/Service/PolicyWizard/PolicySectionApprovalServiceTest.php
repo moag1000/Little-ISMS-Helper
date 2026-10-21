@@ -269,7 +269,7 @@ class PolicySectionApprovalServiceTest extends TestCase
         $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
         $resolver->method('resolve')->willReturn(['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']]);
         $userRepo = $this->createStub(UserRepository::class);
-        $userRepo->method('findBy')->willReturn([$initiatorAndApprover]);
+        $userRepo->method('countActiveInTenantHoldingAny')->willReturn(1);
         $validator = new FourEyesValidator($resolver, $userRepo, new RoleHierarchy([]));
 
         $inner = new YamlWorkflowLifecycle();
@@ -324,7 +324,7 @@ class PolicySectionApprovalServiceTest extends TestCase
         $service->approve($this->makeSection(), $this->makeUser(9));
 
         self::assertIsArray($hostCall, 'host approve transition applied');
-        // [user, reason, approver, authorised, isEligibleApprover, allowSelfApprovalEscape]
+        // [user, reason, approver, authorised, eligibleApprovers, allowSelfApprovalEscape]
         self::assertFalse($hostCall[5]);
     }
 
@@ -370,7 +370,7 @@ class PolicySectionApprovalServiceTest extends TestCase
                 ?string $reason = null,
                 ?User $fourEyesApprover = null,
                 bool $approverAuthorityVerified = false,
-                ?\Closure $isEligibleApprover = null,
+                ?\App\Lifecycle\EligibleApprovers $eligibleApprovers = null,
                 bool $allowSelfApprovalEscape = true,
                 bool $automatic = false,
             ): void {

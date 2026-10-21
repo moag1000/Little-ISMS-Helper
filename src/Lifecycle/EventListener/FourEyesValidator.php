@@ -6,8 +6,10 @@ namespace App\Lifecycle\EventListener;
 
 use App\Entity\User;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
+use App\Lifecycle\EligibleApprovers;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\UserRepository;
+use App\Security\RoleNames;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
@@ -45,10 +47,11 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
  * Hard-blocking 4-eyes would make the tool unusable for them. So if nobody
  * else in the tenant could act as the second approver, self-approval is
  * permitted. "Nobody else" means: when the caller passes
- * `four_eyes_eligible_approver` (a Closure(User): bool — WorkflowService:
+ * `four_eyes_eligible_approvers` ({@see EligibleApprovers} — WorkflowService:
  * users eligible for the authorising step), no OTHER active tenant user
- * satisfies it; otherwise at most one active user carries any of the
- * transition's required roles. Conditions:
+ * matches it; otherwise at most one active user carries any of the
+ * transition's required roles. Both are counted with one query over the
+ * roles reaching the required ones through the role hierarchy. Conditions:
  *   - the caller has not disabled the escape
  *     (`four_eyes_self_approval_escape: false` — used when the only reason
  *     available is system-generated, e.g. the policy-section host release)
@@ -133,10 +136,10 @@ final class FourEyesValidator
             && $initiator->getId() === $approver->getId();
         $approverOmitted = !($approver instanceof User);
         $escapeAllowed = ($context['four_eyes_self_approval_escape'] ?? true) !== false;
-        $isEligible = $context['four_eyes_eligible_approver'] ?? null;
+        $eligible = $context['four_eyes_eligible_approvers'] ?? null;
         if (($approverOmitted || $approverIsInitiator)
             && $escapeAllowed
-            && $this->isSingleApproverTenant($initiator, $requiredRoles, $isEligible instanceof \Closure ? $isEligible : null)) {
+            && $this->isSingleApproverTenant($initiator, $requiredRoles, $eligible instanceof EligibleApprovers ? $eligible : null)) {
             $reason = $context['reason'] ?? null;
             if (!is_string($reason) || trim($reason) === '') {
                 // Force the user to document the offline-sign-off in the reason.
@@ -192,15 +195,16 @@ final class FourEyesValidator
      * True when nobody in the initiator's tenant besides the initiator could
      * act as the second approver. KMU-pragma documented in class doc-block.
      *
-     * With $isEligible (the caller's own approver rule, e.g. the workflow
-     * step's approver_role / approver_users) every other active tenant user
-     * is tested against it; otherwise the transition's required roles are
-     * counted.
+     * With $eligible (the caller's own approver rule, e.g. the workflow
+     * step's approver_role / approver_users) the OTHER active tenant users
+     * matching it are counted; otherwise the holders of the transition's
+     * required roles. Both are single COUNT queries over the roles that
+     * REACH the required ones through the role hierarchy — no user is
+     * loaded, however large the organisation.
      *
-     * @param array<int, string>        $requiredRoles
-     * @param (\Closure(User): bool)|null $isEligible
+     * @param array<int, string> $requiredRoles
      */
-    private function isSingleApproverTenant(mixed $initiator, array $requiredRoles, ?\Closure $isEligible = null): bool
+    private function isSingleApproverTenant(mixed $initiator, array $requiredRoles, ?EligibleApprovers $eligible = null): bool
     {
         if (!$initiator instanceof User) {
             return false;
@@ -209,35 +213,50 @@ final class FourEyesValidator
         if ($tenant === null) {
             return false;
         }
-        if ($isEligible !== null) {
-            foreach ($this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true]) as $u) {
-                if ($u->getId() !== $initiator->getId() && $isEligible($u) === true) {
-                    return false;
-                }
-            }
-
-            return true;
+        if ($eligible !== null) {
+            return $this->userRepository->countActiveInTenantHoldingAny(
+                $tenant,
+                $this->rolesReaching($eligible->roles),
+                $eligible->userIds,
+                $initiator->getId(),
+            ) === 0;
         }
         if ($requiredRoles === []) {
             // No role-gating on the transition — fall back to counting any
             // active tenant-user. If only one exists, escape applies.
-            $allActive = $this->userRepository->findBy([
-                'tenant' => $tenant,
-                'isActive' => true,
-            ]);
-            return count($allActive) <= 1;
+            return $this->userRepository->countActiveByTenant($tenant) <= 1;
         }
 
         // Count with the same predicate the approver check uses (role
         // hierarchy + SUPER_ADMIN), so a DPO who inherits ROLE_MANAGER
         // counts as a second eligible approver.
-        $approvers = [];
-        foreach ($this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true]) as $u) {
-            if ($this->approverHasAnyRole($u, $requiredRoles)) {
-                $approvers[$u->getId()] = true;
+        return $this->userRepository->countActiveInTenantHoldingAny(
+            $tenant,
+            $this->rolesReaching([...array_values($requiredRoles), 'ROLE_SUPER_ADMIN']),
+        ) <= 1;
+    }
+
+    /**
+     * Every role name whose reachable roles (security.yaml role_hierarchy)
+     * include one of $targets — the targets themselves included. Only the
+     * known Symfony roles ({@see RoleNames::RESERVED}, kept in sync with the
+     * hierarchy by RoleNamesTest) can reach other roles; any other name
+     * reaches only itself.
+     *
+     * @param list<string> $targets
+     *
+     * @return list<string>
+     */
+    private function rolesReaching(array $targets): array
+    {
+        $holders = $targets;
+        foreach (RoleNames::RESERVED as $role) {
+            if (array_intersect($targets, $this->roleHierarchy->getReachableRoleNames([$role])) !== []) {
+                $holders[] = $role;
             }
         }
-        return count($approvers) <= 1;
+
+        return array_values(array_unique($holders));
     }
 
     /**

@@ -58,23 +58,26 @@ final class WorkflowInstanceFourEyesApprovalTest extends WebTestCase
         $this->em->flush();
     }
 
+    /**
+     * Deterministic cleanup over the raw connection (independent of the
+     * entity manager's state), children before parents. A failing DELETE is
+     * NOT swallowed: it means the fixture leaked rows and must surface.
+     */
     protected function tearDown(): void
     {
-        try {
+        $tenantId = $this->tenant?->getId();
+        if ($tenantId !== null) {
             $conn = $this->em->getConnection();
-            $tenantId = $this->tenant?->getId();
-            if ($tenantId !== null) {
-                $conn->executeStatement('DELETE FROM workflow_instances WHERE tenant_id = ?', [$tenantId]);
-                $conn->executeStatement(
-                    'DELETE FROM workflow_steps WHERE workflow_id IN (SELECT id FROM workflows WHERE tenant_id = ?)',
-                    [$tenantId],
-                );
-                $conn->executeStatement('DELETE FROM workflows WHERE tenant_id = ?', [$tenantId]);
-                $conn->executeStatement('DELETE FROM users WHERE tenant_id = ?', [$tenantId]);
-                $conn->executeStatement('DELETE FROM tenant WHERE id = ?', [$tenantId]);
-            }
-        } catch (\Throwable) {
+            $conn->executeStatement('DELETE FROM workflow_instances WHERE tenant_id = ?', [$tenantId]);
+            $conn->executeStatement(
+                'DELETE FROM workflow_steps WHERE workflow_id IN (SELECT id FROM workflows WHERE tenant_id = ?)',
+                [$tenantId],
+            );
+            $conn->executeStatement('DELETE FROM workflows WHERE tenant_id = ?', [$tenantId]);
+            $conn->executeStatement('DELETE FROM users WHERE tenant_id = ?', [$tenantId]);
+            $conn->executeStatement('DELETE FROM tenant WHERE id = ?', [$tenantId]);
         }
+        $this->tenant = null;
 
         parent::tearDown();
     }
@@ -163,8 +166,67 @@ final class WorkflowInstanceFourEyesApprovalTest extends WebTestCase
         self::assertNull($reloaded->getCompletedAt());
     }
 
+    /**
+     * Role hierarchy, approver side: the step requires ROLE_MANAGER and the
+     * approver holds only ROLE_DPO, which reaches ROLE_MANAGER through
+     * security.yaml — canUserApprove() and the closing four-eyes check must
+     * both resolve it.
+     */
+    #[Test]
+    public function approverReachingTheStepRoleThroughTheHierarchyCompletesFinalStep(): void
+    {
+        $initiator = $this->user('initiator', ['ROLE_AUDITOR']);
+        $dpo = $this->user('dpo', ['ROLE_DPO']);
+        $instance = $this->instance($initiator, [['approval', 'ROLE_MANAGER']]);
+
+        $this->approveAs($dpo, $instance);
+
+        self::assertNotSame(500, $this->client->getResponse()->getStatusCode());
+        self::assertSame('approved', $this->reload($instance)->getStatus());
+    }
+
+    /**
+     * Role hierarchy, escape side: the initiator is a step-eligible MANAGER
+     * and documents a reason, but a DPO — eligible only through the
+     * hierarchy — could act as the second approver. The single-approver
+     * escape must count the DPO and refuse the self-approval.
+     */
+    #[Test]
+    public function selfApprovalIsRefusedWhenAUserReachingTheStepRoleThroughTheHierarchyExists(): void
+    {
+        $initiator = $this->user('initiator', ['ROLE_MANAGER']);
+        $this->user('dpo', ['ROLE_DPO']);
+        $instance = $this->instance($initiator, [['approval', 'ROLE_MANAGER']]);
+
+        $this->approveAs($initiator, $instance, 'Offline counter-signature by the managing director');
+
+        self::assertTrue($this->client->getResponse()->isRedirection());
+        $reloaded = $this->reload($instance);
+        self::assertSame('in_progress', $reloaded->getStatus());
+        self::assertNull($reloaded->getCompletedAt());
+    }
+
+    /**
+     * The escape applies when nobody else is eligible: the AUDITOR does not
+     * reach ROLE_MANAGER and the inactive DPO is not counted. The initiator
+     * self-approves with the documented offline counter-signature.
+     */
+    #[Test]
+    public function selfApprovalWithReasonPassesWhenNoOtherActiveUserIsEligible(): void
+    {
+        $initiator = $this->user('initiator', ['ROLE_MANAGER']);
+        $this->user('auditor', ['ROLE_AUDITOR']);
+        $this->user('inactive_dpo', ['ROLE_DPO'], active: false);
+        $instance = $this->instance($initiator, [['approval', 'ROLE_MANAGER']]);
+
+        $this->approveAs($initiator, $instance, 'Offline counter-signature by the managing director');
+
+        self::assertNotSame(500, $this->client->getResponse()->getStatusCode());
+        self::assertSame('approved', $this->reload($instance)->getStatus());
+    }
+
     /** @param list<string> $roles */
-    private function user(string $name, array $roles): User
+    private function user(string $name, array $roles, bool $active = true): User
     {
         $user = new User();
         $user->setEmail($name . '_' . uniqid('', true) . '@example.com');
@@ -173,7 +235,7 @@ final class WorkflowInstanceFourEyesApprovalTest extends WebTestCase
         $user->setRoles($roles);
         $user->setPassword('hashed_password');
         $user->setTenant($this->tenant);
-        $user->setIsActive(true);
+        $user->setIsActive($active);
         $this->em->persist($user);
         $this->em->flush();
 
@@ -217,7 +279,7 @@ final class WorkflowInstanceFourEyesApprovalTest extends WebTestCase
         return $instance;
     }
 
-    private function approveAs(User $user, WorkflowInstance $instance): void
+    private function approveAs(User $user, WorkflowInstance $instance, ?string $comments = null): void
     {
         $this->client->loginUser($user);
         $crawler = $this->client->request('GET', $this->urlGenerator->generate(
@@ -227,6 +289,9 @@ final class WorkflowInstanceFourEyesApprovalTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         $form = $crawler->filter('#approveModal form')->form();
+        if ($comments !== null) {
+            $form['comments'] = $comments;
+        }
         $this->client->submit($form);
     }
 

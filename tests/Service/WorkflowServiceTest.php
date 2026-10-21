@@ -380,7 +380,6 @@ class WorkflowServiceTest extends TestCase
                 $captured = $args;
             });
 
-        $config = \Symfony\Component\Yaml\Yaml::parseFile(\dirname(__DIR__, 2) . '/config/packages/security.yaml');
         $service = new WorkflowService(
             $this->entityManager,
             $this->workflowRepository,
@@ -390,30 +389,20 @@ class WorkflowServiceTest extends TestCase
             $this->security,
             $this->lifecycleService,
             $this->regulatoryWorkflowLoader,
-            new \Symfony\Component\Security\Core\Role\RoleHierarchy(array_map(
-                static fn (string|array $r): array => (array) $r,
-                $config['security']['role_hierarchy'],
-            )),
         );
 
         self::assertTrue($service->approveStep($instance, $approver, 'ok'));
         self::assertIsArray($captured);
         self::assertSame('approve', $captured[2]);
         self::assertTrue($captured[6], 'approver authority verified against the step');
-        $isEligible = $captured[7];
-        self::assertInstanceOf(\Closure::class, $isEligible);
-
-        $candidate = function (int $id, array $roles): User {
-            $u = $this->createUser($id, 'C', 'U');
-            $u->method('getRoles')->willReturn($roles);
-
-            return $u;
-        };
-        self::assertTrue($isEligible($candidate(7, ['ROLE_USER'])), 'named in approver_users');
-        self::assertTrue($isEligible($candidate(8, ['ROLE_DPO'])), 'holds the step role');
-        self::assertTrue($isEligible($candidate(9, ['ROLE_ADMIN'])), 'admin may approve any step');
-        self::assertFalse($isEligible($candidate(10, ['ROLE_MANAGER'])), 'transition role alone is not enough');
-        self::assertFalse($isEligible($candidate(11, ['ROLE_AUDITOR'])));
+        $eligible = $captured[7];
+        self::assertInstanceOf(\App\Lifecycle\EligibleApprovers::class, $eligible);
+        // ROLE_ADMIN may approve any step, the step role qualifies (the
+        // validator resolves both through the role hierarchy), and so does
+        // every user named in approver_users. The transition role
+        // (ROLE_MANAGER) alone is not enough.
+        self::assertSame(['ROLE_ADMIN', 'ROLE_DPO'], $eligible->roles);
+        self::assertSame([7], $eligible->userIds);
     }
 
     private function createUser(int $id, string $firstName, string $lastName): MockObject
