@@ -718,12 +718,10 @@ class RoleDashboardService
         }
 
         $audits = $this->auditRepository->findAll();
-        $thisYear = (new \DateTime())->format('Y');
         $now = new \DateTime();
 
-        $completedThisYear = count(array_filter($audits, fn($a) => $a->getStatus() === 'completed'
-            && $a->getPlannedDate()?->format('Y') === $thisYear
-        ));
+        // One definition of "this year" shared with the audit KPI / management report.
+        $completedThisYear = \App\Service\Audit\AuditProgramFigures::calendarYear($audits, $now)['completed_audits'];
 
         $upcoming = array_filter($audits, fn($a) => $a->getPlannedDate() !== null
             && $a->getPlannedDate() > $now

@@ -107,6 +107,9 @@ final class ManagementReportService
             ? round((count($implementedControls) / count($applicableControls)) * 100, 1)
             : 0;
 
+        // Same tenant-scoped source and calendar-year definition as the audit KPI.
+        $audits = $this->dashboardStatisticsService->auditsFor(null);
+
         return [
             'generated_at' => new DateTime(),
             'summary' => [
@@ -132,8 +135,8 @@ final class ManagementReportService
                 'resolved' => count($recentIncidents) - count($openIncidents),
             ],
             'audit_summary' => [
-                'total_audits' => $this->auditRepository->count([]),
-                'completed_this_year' => count($this->auditRepository->findBy(['status' => 'completed'])),
+                'total_audits' => count($audits),
+                'completed_this_year' => \App\Service\Audit\AuditProgramFigures::calendarYear($audits)['completed_audits'],
             ],
             'training_summary' => [
                 'total_trainings' => $this->trainingRepository->count([]),

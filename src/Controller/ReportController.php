@@ -9,7 +9,6 @@ use DateTime;
 use App\Entity\Risk;
 use App\Entity\Control;
 use App\Enum\IncidentStatus;
-use App\Enum\InternalAuditStatus;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -406,7 +405,7 @@ class ReportController extends AbstractController
             'compliance_percentage' => count($applicableControls) > 0 ? round((count($implementedControls) / count($applicableControls)) * 100) : 0,
             'open_incidents' => count($this->incidentRepository->findBy(['status' => [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution]])),
             'total_trainings' => $this->trainingRepository->count([]),
-            'audits_this_year' => count($this->internalAuditRepository->findBy(['status' => InternalAuditStatus::Completed->value])),
+            'audits_this_year' => \App\Service\Audit\AuditProgramFigures::calendarYear($this->internalAuditRepository->findAll())['completed_audits'],
         ];
     }
 }

@@ -17,12 +17,13 @@ final class AuditProgramFigures
 {
     /**
      * @param iterable<InternalAudit> $audits
+     * @param \DateTimeInterface|null $now Clock for the year window (default: now); injectable for tests
      *
      * @return array{planned_audits: int, completed_audits: int}
      */
-    public static function calendarYear(iterable $audits): array
+    public static function calendarYear(iterable $audits, ?\DateTimeInterface $now = null): array
     {
-        $thisYear = (new \DateTimeImmutable())->format('Y');
+        $thisYear = ($now ?? new \DateTimeImmutable())->format('Y');
         $planned = 0;
         $completed = 0;
         foreach ($audits as $audit) {
