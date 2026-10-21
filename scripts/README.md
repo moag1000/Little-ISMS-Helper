@@ -183,7 +183,12 @@ Reset und stellt ihn danach wieder her — auch "Filter deaktiviert" bei
 Operator-Pfaden (Restore, Schema-Wartung, Sample-Purge).
 
 **Verwendung:** `python3 scripts/quality/check_entity_manager_reset.py`
-(Kommentare werden ignoriert; einzige erlaubte Stelle ist der Helper selbst.)
+(einzige erlaubte Stelle ist der Helper selbst). Erkannt werden
+`resetManager(` — auch über Zeilen umbrochen — und `->reset(` auf der
+Doctrine-Registry (Variable/Property/Getter mit `registry`/`doctrine` im Namen
+oder `->get('doctrine')`). String-Literale und Kommentare werden vorher
+ausgeblendet. Grenzen: Heredoc-Inhalte gelten als Code; eine Registry in einer
+Variablen mit fremdem Namen wird nicht erkannt.
 
 **CI-Integration:** Gate 68 im `code-quality`-Job, keine Baseline.
 Selbsttest: `scripts/quality/tests/test_check_entity_manager_reset.py`.

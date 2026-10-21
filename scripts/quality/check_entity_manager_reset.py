@@ -7,10 +7,18 @@ ManagerRegistry::resetManager() gives the EntityManager a fresh state: the
 tenant filter loses its tenant_id parameter (every later query reads across
 all organisations) and TenantContext's cached tenant is no longer managed
 (later audit rows fail). EntityManagerRecovery::recover() captures the filter
-and context state first and restores both. Any other `resetManager(` call in
-src/ fails this gate.
+and context state first and restores both. Any other reset in src/ fails:
 
-Comments (`//`, `#`, `/* … */`, docblock lines) are ignored.
+  * `resetManager(` — also split across lines (`->resetManager` ⏎ `(`);
+  * `->reset(` on the Doctrine registry (doctrine-bundle Registry::reset()
+    resets a closed manager the same way): a variable / property / getter
+    whose name contains `registry` or `doctrine`, or `->get('doctrine')`.
+
+String literals and comments (`//`, `#` except `#[`, `/* … */`) are blanked
+before matching (line numbers kept), so a `#` or `//` inside a string does
+not hide the code after it and a string that mentions resetManager() is not
+flagged. Limits: heredoc / nowdoc bodies are scanned as code; a registry
+held in a variable with an unrelated name is not recognised as such.
 
 Exit-codes: 0 clean / baselined, 1 violations.
 """
@@ -23,28 +31,60 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ALLOWED = {"src/Doctrine/EntityManagerRecovery.php"}
-RE_CALL = re.compile(r"\bresetManager\s*\(")
-RE_BLOCK_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+KEEP_STRINGS = {"doctrine"}  # ->get('doctrine')->reset() must stay recognisable
+RE_RESET_MANAGER = re.compile(r"\bresetManager\s*\(")
+RE_REGISTRY_RESET = re.compile(
+    r"(?:\$\w*(?:registry|doctrine)\w*|\??->\s*\w*(?:registry|doctrine)\w*(?:\s*\(\s*\))?"
+    r"|\??->\s*get\s*\(\s*['\"]doctrine['\"]\s*\)|::\s*\w*(?:registry|doctrine)\w*\s*\(\s*\))"
+    r"\s*\??->\s*reset\s*\(",
+    re.IGNORECASE,
+)
 
 
-def strip_comments(source: str) -> str:
-    """Blank out comments, keeping line numbers."""
-    source = RE_BLOCK_COMMENT.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), source)
-    out = []
-    for line in source.split("\n"):
-        # line comments (naive: not inside strings, good enough for PHP here)
-        for marker in ("//", "#"):
-            idx = line.find(marker)
-            if idx != -1 and not (marker == "#" and line[idx:idx + 2] == "#["):
-                line = line[:idx]
-        out.append(line)
-    return "\n".join(out)
+def strip_code(source: str) -> str:
+    """Blank out string literals and comments, keeping offsets and newlines."""
+    out = list(source)
+    i, n = 0, len(source)
+
+    def blank(start: int, end: int) -> None:
+        for k in range(start, end):
+            if out[k] != "\n":
+                out[k] = " "
+
+    while i < n:
+        ch = source[i]
+        nxt = source[i + 1] if i + 1 < n else ""
+        if ch in ("'", '"'):
+            j = i + 1
+            while j < n and source[j] != ch:
+                j += 2 if source[j] == "\\" else 1
+            end = min(j + 1, n)
+            if source[i + 1:j].lower() not in KEEP_STRINGS:
+                blank(i + 1, j if j < n else n)
+            i = end
+        elif ch == "/" and nxt == "*":
+            j = source.find("*/", i + 2)
+            j = n if j == -1 else j + 2
+            blank(i, j)
+            i = j
+        elif (ch == "/" and nxt == "/") or (ch == "#" and nxt != "["):
+            j = source.find("\n", i)
+            j = n if j == -1 else j
+            blank(i, j)
+            i = j
+        else:
+            i += 1
+    return "".join(out)
 
 
 def scan_text(source: str) -> list[int]:
-    """Line numbers with a resetManager( call outside comments."""
-    clean = strip_comments(source)
-    return [i for i, line in enumerate(clean.split("\n"), 1) if RE_CALL.search(line)]
+    """Line numbers of bare EntityManager resets (sorted, unique)."""
+    clean = strip_code(source)
+    lines: set[int] = set()
+    for regex in (RE_RESET_MANAGER, RE_REGISTRY_RESET):
+        for m in regex.finditer(clean):
+            lines.add(clean.count("\n", 0, m.start()) + 1)
+    return sorted(lines)
 
 
 def scan(root: Path) -> list[tuple[str, int, str]]:
@@ -54,7 +94,7 @@ def scan(root: Path) -> list[tuple[str, int, str]]:
         if rel in ALLOWED:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if "resetManager" not in text:
+        if "resetManager" not in text and "reset" not in text:
             continue
         lines = text.split("\n")
         for ln in scan_text(text):
@@ -86,7 +126,7 @@ def main() -> int:
 
     print("check_entity_manager_reset: VIOLATIONS\n")
     for rel, ln, snippet in new:
-        print(f"FAIL {rel}:{ln}: bare resetManager() — {snippet}")
+        print(f"FAIL {rel}:{ln}: bare EntityManager reset — {snippet}")
     print(
         "\nFix: inject App\\Doctrine\\EntityManagerRecovery and call recover() / recoverIfClosed() —"
         " it restores the tenant filter and TenantContext after the reset."
