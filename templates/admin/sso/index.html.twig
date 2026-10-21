@@ -20,6 +20,19 @@
         ]
     }) }}
 
+    {# #1059: SSO-enforced accounts that keep the password login (anti-lockout). #}
+    {% if enforcement_exempt|default([]) is not empty %}
+        {% from '_components/_fa_alert.html.twig' import render as fa_alert %}
+        {% set exempt_names = enforcement_exempt|slice(0, 20)|map(u => u.email)|join(', ') %}
+        {{ fa_alert({
+            variant: 'warning',
+            title: 'sso.enforcement_exempt.title'|trans({'%count%': enforcement_exempt|length}, 'sso'),
+            body: ('sso.enforcement_exempt.body'|trans({'%names%': exempt_names}, 'sso')
+                ~ (enforcement_exempt|length > 20 ? ' ' ~ 'sso.enforcement_exempt.more'|trans({'%count%': enforcement_exempt|length - 20}, 'sso') : ''))|e,
+            class: 'mb-3',
+        }) }}
+    {% endif %}
+
     {% if providers|length == 0 %}
         {{ _fa_empty_state.render({
             mood: 'thinking',

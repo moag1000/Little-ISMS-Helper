@@ -186,3 +186,7 @@ sso:
     email_linking:
         label: 'Link existing accounts by e-mail'
         help: 'When on, an SSO login whose e-mail matches an existing local account links that account automatically. Only enable this if the identity provider guarantees the e-mail claim (e.g. users cannot set or change their own mail attribute) — otherwise whoever controls a matching e-mail in the identity provider takes over the local account. When off, such logins are refused and an administrator links the account. Accounts outside this provider''s organisation tree and privileged accounts are never linked by an organisation-owned provider.'
+    enforcement_exempt:
+        title: '%count% account(s) can still use the password login despite SSO enforcement'
+        body: 'SSO enforcement applies to these accounts, but no enabled SSO provider can sign them in yet (not linked and linking by e-mail is off, bound to a disabled provider, or a privileged account under an organisation-owned provider). They keep the password login so they are not locked out: %names%'
+        more: '… and %count% more.'

@@ -186,3 +186,7 @@ sso:
     email_linking:
         label: 'Bestehende Konten per E-Mail verknüpfen'
         help: 'Wenn aktiv, wird eine SSO-Anmeldung, deren E-Mail zu einem bestehenden lokalen Konto passt, automatisch mit diesem Konto verknüpft. Nur aktivieren, wenn der Identity Provider den E-Mail-Claim garantiert (z. B. Benutzer können ihr Mail-Attribut nicht selbst setzen oder ändern) — sonst übernimmt, wer im Identity Provider eine passende E-Mail kontrolliert, das lokale Konto. Wenn aus, werden solche Anmeldungen abgelehnt und eine Administratorin oder ein Administrator verknüpft das Konto. Konten außerhalb des Organisationsbaums dieses Providers und privilegierte Konten verknüpft ein organisationseigener Provider nie.'
+    enforcement_exempt:
+        title: '%count% Konto/Konten können trotz SSO-Pflicht noch die Passwort-Anmeldung nutzen'
+        body: 'Für diese Konten gilt die SSO-Pflicht, aber noch kein aktiver SSO-Provider kann sie anmelden (nicht verknüpft und Verknüpfung per E-Mail aus, an einen deaktivierten Provider gebunden oder ein privilegiertes Konto unter einem organisationseigenen Provider). Damit sie nicht ausgesperrt werden, bleibt die Passwort-Anmeldung möglich: %names%'
+        more: '… und %count% weitere.'

@@ -357,6 +357,38 @@ final class SsoAccountTakeoverTest extends WebTestCase
     }
 
     #[Test]
+    public function ssoPageListsEnforcementExemptAccountsTheAdminMayView(): void
+    {
+        // #1059 M-d: organisation A enforces SSO through its own provider.
+        // adminA is linked (enforced, not exempt); the SUPER_ADMIN of A cannot
+        // be signed in by an organisation-owned provider (exempt, visible);
+        // userB of the enforced organisation B is exempt but not visible.
+        $this->tenantA->setSsoEnforced(true);
+        $this->tenantB->setSsoEnforced(true);
+        $this->tenantProvider->setEnabled(true);
+        $this->adminA->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-admin-a');
+        $this->em->flush();
+
+        try {
+            $this->client->loginUser($this->adminA);
+            $crawler = $this->client->request('GET', '/en/admin/sso');
+            self::assertResponseIsSuccessful();
+            $alert = $crawler->filter('.fa-alert--warning');
+            self::assertGreaterThan(0, $alert->count(), 'exemption notice missing');
+            $text = $alert->text();
+            self::assertStringContainsString($this->email('super'), $text);
+            self::assertStringNotContainsString($this->email('admina'), $text);
+            self::assertStringNotContainsString($this->email('userb'), $text);
+        } finally {
+            $this->em->clear();
+            foreach ([$this->tenantA->getId(), $this->tenantB->getId()] as $id) {
+                $this->em->find(Tenant::class, $id)?->setSsoEnforced(false);
+            }
+            $this->em->flush();
+        }
+    }
+
+    #[Test]
     public function newProviderDoesNotLinkByEmailByDefault(): void
     {
         self::assertFalse((new IdentityProvider())->isAllowEmailLinking());
