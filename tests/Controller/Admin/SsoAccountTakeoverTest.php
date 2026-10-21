@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 /**
  * Security hotfix (C1): a tenant admin controls the issuer/JWKS of a
@@ -279,6 +280,48 @@ final class SsoAccountTakeoverTest extends WebTestCase
         self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$privileged]));
     }
 
+    #[Test]
+    public function providerWithoutEmailLinkingRefusesLoginToExistingUnlinkedAccount(): void
+    {
+        foreach ([$this->tenantProvider, $this->globalProvider] as $provider) {
+            $provider->setAllowEmailLinking(false);
+        }
+        $this->em->flush();
+
+        foreach ([$this->tenantProvider, $this->globalProvider] as $provider) {
+            try {
+                $this->resolve($provider, $this->email('userchilda'), 'sub-nolink', []);
+                self::fail('Login must be refused when link by e-mail is disabled.');
+            } catch (CustomUserMessageAuthenticationException $e) {
+                self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+            }
+        }
+        $reloaded = $this->reload($this->userChildA);
+        self::assertNull($reloaded->getSsoProvider(), 'account must not be linked');
+        self::assertNull($reloaded->getSsoExternalId());
+    }
+
+    #[Test]
+    public function providerWithoutEmailLinkingKeepsExistingBindingAndJit(): void
+    {
+        $this->tenantProvider->setAllowEmailLinking(false)->setAutoApprove(true);
+        $this->userChildA->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-bound');
+        $this->em->flush();
+
+        $bound = $this->resolve($this->tenantProvider, $this->email('userchilda'), 'sub-bound', []);
+        self::assertInstanceOf(User::class, $bound);
+        self::assertSame($this->userChildA->getId(), $bound->getId());
+
+        $jit = $this->resolve($this->tenantProvider, $this->email('jit'), 'sub-jit-nolink', []);
+        self::assertInstanceOf(User::class, $jit, 'new e-mail addresses are still provisioned');
+    }
+
+    #[Test]
+    public function newProviderDoesNotLinkByEmailByDefault(): void
+    {
+        self::assertFalse((new IdentityProvider())->isAllowEmailLinking());
+    }
+
     // -------------------------------------------------------------- helpers
 
     private function expectLoginRejected(IdentityProvider $provider, string $email, string $sub): void
@@ -344,6 +387,9 @@ final class SsoAccountTakeoverTest extends WebTestCase
             ->setTenant($tenant)
             ->setJitProvisioning(true)
             ->setAutoApprove(false)
+            // Providers that predate the option keep linking by e-mail
+            // (migration default); the opt-out is tested separately.
+            ->setAllowEmailLinking(true)
             ->setAttributeMap(['email' => 'email']);
         $this->em->persist($provider);
 

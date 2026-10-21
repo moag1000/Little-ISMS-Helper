@@ -416,6 +416,22 @@ upgrade.
 
 Global providers behave as before.
 
+**Link existing accounts by e-mail** (provider option `allowEmailLinking`,
+added after 3.15.3): an SSO login whose e-mail claim matches an existing,
+not yet linked local account is only linked when this option is on. The
+e-mail claim is only as trustworthy as the identity provider's control over
+it (Entra ID single-tenant registrations, for example, let directory admins
+set arbitrary mail attributes). Providers that existed before the upgrade
+keep linking (migration `Version20261021143100_sso_allow_email_linking`
+sets the option); **new providers start with it off**. With the option off
+such a login is refused with a message asking the user to contact an
+administrator; already linked accounts and new (JIT) accounts are not
+affected. To link an account deliberately, enable the option, let the user
+sign in once, then disable it again. The organisation-tree and
+never-privileged rules above apply whether the option is on or off. The
+env-configured Azure OAuth/SAML login (`AZURE_*` variables) has no provider
+record and is not affected by this option.
+
 ## Upgrade notes — first release after 3.15.3
 
 Read this before deploying the release that follows 3.15.3 (tenant-isolation

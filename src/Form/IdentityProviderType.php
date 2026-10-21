@@ -163,6 +163,11 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
                 'required' => false,
                 'help' => 'sso.help.auto_approve',
             ])
+            ->add('allowEmailLinking', CheckboxType::class, [
+                'label' => 'sso.email_linking.label',
+                'required' => false,
+                'help' => 'sso.email_linking.help',
+            ])
             ->add('defaultRole', ChoiceType::class, [
                 'label' => 'sso.field.default_role',
                 'choices' => [
@@ -208,7 +213,7 @@ final class IdentityProviderType extends AbstractType implements SectionMapInter
             'identity'     => ['clientId', 'clientSecretPlain'],
             'details'      => ['discoveryUrl', 'issuer', 'authorizationEndpoint', 'tokenEndpoint', 'userinfoEndpoint', 'jwksUri', 'scopesCsv'],
             'branding'     => ['buttonLabel', 'buttonIcon', 'buttonColor'],
-            'registration' => ['domainBindingsCsv', 'domainBindingMode', 'jitProvisioning', 'autoApprove', 'defaultRole'],
+            'registration' => ['domainBindingsCsv', 'domainBindingMode', 'jitProvisioning', 'autoApprove', 'allowEmailLinking', 'defaultRole'],
             'advanced'     => ['attributeMapJson'],
         ];
     }

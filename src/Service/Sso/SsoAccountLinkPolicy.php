@@ -11,6 +11,8 @@ use App\Entity\User;
 use App\Security\RoleNames;
 use App\Security\TenantOwnership;
 use App\Security\UserAdministrationGuard;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 /**
  * Trust boundary for SSO logins (security hotfix, admin scope).
@@ -28,6 +30,10 @@ use App\Security\UserAdministrationGuard;
  */
 final class SsoAccountLinkPolicy
 {
+    public const string EMAIL_LINKING_DISABLED_MESSAGE = 'An account with this e-mail address already exists, but this'
+        . ' SSO provider does not link existing accounts automatically. Ask an administrator to link your account'
+        . ' to the provider, or sign in with your password.';
+
     private function __construct()
     {
     }
@@ -48,6 +54,28 @@ final class SsoAccountLinkPolicy
         // Provider's organisation or below (id-safe tree comparison; a
         // tenantless target fails closed).
         return TenantOwnership::isSameOrDescendant($providerTenant, $target->getTenant());
+    }
+
+    /**
+     * Link-by-email gate: an SSO login whose e-mail matches an existing
+     * local account that is not yet bound to this provider+subject is only
+     * linked when the provider allows it ({@see IdentityProvider::isAllowEmailLinking()}).
+     * Otherwise the login is refused; an administrator links the account
+     * manually. Runs in addition to {@see mayAuthenticateAs()}, never instead.
+     *
+     * @throws CustomUserMessageAuthenticationException when linking is disabled
+     */
+    public static function assertMayLinkByEmail(IdentityProvider $provider, User $target, ?LoggerInterface $logger = null): void
+    {
+        if ($provider->isAllowEmailLinking()) {
+            return;
+        }
+        $logger?->warning('SSO: login refused, automatic link by e-mail is disabled for this provider', [
+            'provider' => $provider->getSlug(),
+            'target_user_id' => $target->getId(),
+        ]);
+
+        throw new CustomUserMessageAuthenticationException(self::EMAIL_LINKING_DISABLED_MESSAGE);
     }
 
     /**

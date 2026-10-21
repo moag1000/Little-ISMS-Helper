@@ -19,10 +19,12 @@ use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 /**
  * Symfony Authenticator for `/sso/{slug}/callback`.
@@ -125,6 +127,11 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $this->logger->warning('SSO authentication failure', ['error' => $exception->getMessage()]);
+        // Messages meant for the user (e.g. "link by e-mail is disabled")
+        // are shown on the login page via AuthenticationUtils.
+        if ($exception instanceof CustomUserMessageAuthenticationException && $request->hasSession()) {
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
+        }
         $loginUrl = $this->router->generate('app_login', ['error' => $exception->getMessage()]);
 
         return new RedirectResponse($loginUrl);

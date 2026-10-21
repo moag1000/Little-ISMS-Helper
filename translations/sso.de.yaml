@@ -183,3 +183,6 @@ sso:
     privileged_roles_ignored:
         title: 'Privilegierte Rollen werden bei diesem Provider ignoriert'
         body: 'Dieser Provider gehört zu einer Organisation und kann die privilegierten Rollen %roles% bei der Anmeldung nie vergeben — solche Mappings und Standardrollen fallen auf die normale Rolle (ROLE_USER) zurück. Nur ein Provider ohne Organisation (instanzweit, von einem Instanz-Administrator eingerichtet) darf privilegierte Rollen vergeben.'
+    email_linking:
+        label: 'Bestehende Konten per E-Mail verknüpfen'
+        help: 'Wenn aktiv, wird eine SSO-Anmeldung, deren E-Mail zu einem bestehenden lokalen Konto passt, automatisch mit diesem Konto verknüpft. Nur aktivieren, wenn der Identity Provider den E-Mail-Claim garantiert (z. B. Benutzer können ihr Mail-Attribut nicht selbst setzen oder ändern) — sonst übernimmt, wer im Identity Provider eine passende E-Mail kontrolliert, das lokale Konto. Wenn aus, werden solche Anmeldungen abgelehnt und eine Administratorin oder ein Administrator verknüpft das Konto. Konten außerhalb des Organisationsbaums dieses Providers und privilegierte Konten verknüpft ein organisationseigener Provider nie.'

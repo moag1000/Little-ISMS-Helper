@@ -174,6 +174,7 @@ final class OidcAuthenticationFlow
             // Never link a tenant-owned provider to an account outside its
             // tenant tree or to a privileged account (account takeover).
             $this->assertMayAuthenticateAs($provider, $byEmail);
+            SsoAccountLinkPolicy::assertMayLinkByEmail($provider, $byEmail, $this->logger);
             $byEmail->setSsoProvider($provider);
             $byEmail->setSsoExternalId($externalId);
             $byEmail->setAuthProvider('sso:' . $provider->getSlug());
