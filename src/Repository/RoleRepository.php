@@ -88,20 +88,32 @@ class RoleRepository extends ServiceEntityRepository
     /**
      * Get all roles with eager-loaded users and permissions for role overview.
      *
+     * Two queries on purpose: fetch-joining both collections in one query
+     * returns users × permissions rows per role (#1059). The second query
+     * hydrates the permissions into the same managed Role instances.
+     *
      * @return Role[] Array of Role entities with users and permissions loaded
      */
     public function getRolesWithUserCount(): array
     {
-        return $this->createQueryBuilder('r')
+        $roles = $this->createQueryBuilder('r')
             ->leftJoin('r.users', 'u')
-            ->leftJoin('r.permissions', 'p')
             ->addSelect('u')
-            ->addSelect('p')
-            // No GROUP BY: with fetch-joins it collapsed rows and hydrated only
-            // one holder/permission per role (wrong counts, and the role voter
-            // judged the holder scope on a partial collection).
             ->orderBy('r.name', 'ASC')
             ->getQuery()
             ->getResult();
+        if ($roles === []) {
+            return [];
+        }
+
+        $this->createQueryBuilder('r')
+            ->leftJoin('r.permissions', 'p')
+            ->addSelect('p')
+            ->where('r IN (:roles)')
+            ->setParameter('roles', $roles)
+            ->getQuery()
+            ->getResult();
+
+        return $roles;
     }
 }

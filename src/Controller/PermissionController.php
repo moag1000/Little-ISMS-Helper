@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Permission;
+use App\Entity\Role;
+use App\Entity\User;
 use App\Repository\PermissionRepository;
+use App\Repository\UserRepository;
+use App\Security\Voter\UserVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,21 +56,46 @@ class PermissionController extends AbstractController
     }
     #[Route('/admin/permissions/{id}', name: 'permission_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_VIEW')]
-    public function show(Permission $permission): Response
+    public function show(Permission $permission, UserRepository $userRepository): Response
     {
         // Load roles that have this permission
         $roles = $permission->getRoles();
 
-        // Count users indirectly through roles (would need UserRepository method)
-        $affectedUsersCount = 0;
-        foreach ($roles as $role) {
-            $affectedUsersCount += $role->getUsers()->count();
-        }
+        $affectedUsersCount = $this->countAffectedUsers($roles->toArray(), $userRepository);
 
         return $this->render('permission/show.html.twig', [
             'permission' => $permission,
             'roles' => $roles,
             'affected_users_count' => $affectedUsersCount,
         ]);
+    }
+
+    /**
+     * Distinct holders of any of $roles. Roles are global, so a non-SUPER_ADMIN
+     * actor counts only the holders it may VIEW (UserVoter scope) — never a
+     * cross-organisation total (#1059). Users holding several of the roles are
+     * counted once.
+     *
+     * @param list<Role> $roles
+     */
+    private function countAffectedUsers(array $roles, UserRepository $userRepository): int
+    {
+        if ($roles === []) {
+            return 0;
+        }
+
+        $queryBuilder = $userRepository->createQueryBuilder('u')
+            ->innerJoin('u.customRoles', 'r')
+            ->where('r IN (:roles)')
+            ->setParameter('roles', $roles);
+
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return (int) $queryBuilder->select('COUNT(DISTINCT u.id)')->getQuery()->getSingleScalarResult();
+        }
+
+        /** @var list<User> $holders */
+        $holders = $queryBuilder->select('DISTINCT u')->getQuery()->getResult();
+
+        return count(array_filter($holders, fn (User $holder): bool => $this->isGranted(UserVoter::VIEW, $holder)));
     }
 }
