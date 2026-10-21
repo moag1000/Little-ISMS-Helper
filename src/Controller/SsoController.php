@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\IdentityProvider;
+use App\Entity\User;
+use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Security\GenericOidcAuthenticator;
 use App\Repository\IdentityProviderRepository;
 use App\Service\Sso\OidcAuthenticationFlow;
@@ -43,15 +45,24 @@ final class SsoController extends AbstractController
     #[Route('/sso/{slug}/start', name: 'app_sso_start', methods: ['GET'])]
     public function start(string $slug, Request $request): Response
     {
+        // Looked up without the tenant filter: a logged-in user re-authenticating
+        // through a global or parent-organisation provider must find it (#1059
+        // m-6); a signed-in user then only gets a provider allowed for them.
         $providerId = $request->query->get('provider');
         if (is_string($providerId) && ctype_digit($providerId)) {
-            $provider = $this->providerRepo->find((int) $providerId);
+            $provider = $this->providerRepo->findUnfiltered((int) $providerId);
             if ($provider instanceof IdentityProvider && $provider->getSlug() !== $slug) {
                 $provider = null;
             }
         } else {
             $candidates = $this->providerRepo->findEnabledBySlug($slug);
             $provider = count($candidates) === 1 ? $candidates[0] : null;
+        }
+        $user = $this->getUser();
+        if ($provider instanceof IdentityProvider && $user instanceof User
+            && !SsoAccountLinkPolicy::mayAuthenticateAs($provider, $user)
+        ) {
+            $provider = null;
         }
         if (!$provider instanceof IdentityProvider || !$provider->isEnabled()) {
             $this->addFlash('error', 'SSO-Provider not found or disabled.');
@@ -66,8 +77,11 @@ final class SsoController extends AbstractController
         $session->set(GenericOidcAuthenticator::SESSION_VERIFIER_KEY, $authReq['codeVerifier']);
         $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_KEY, $slug);
         $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_ID_KEY, $provider->getId());
+        // A new start never inherits an old target; only a same-origin
+        // relative path is accepted (#1059 m-4).
+        $session->remove(GenericOidcAuthenticator::SESSION_TARGET_KEY);
         $target = $request->query->get('target');
-        if (is_string($target) && $target !== '') {
+        if (is_string($target) && GenericOidcAuthenticator::isSafeTarget($target)) {
             $session->set(GenericOidcAuthenticator::SESSION_TARGET_KEY, $target);
         }
 

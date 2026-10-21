@@ -93,7 +93,7 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
 
         // The provider chosen at start (by id), not a fresh slug lookup that
         // could hit another organisation's provider with the same slug.
-        $provider = $this->providerRepo->find($providerId);
+        $provider = $this->providerRepo->findUnfiltered($providerId);
         if (!$provider instanceof IdentityProvider || !$provider->isEnabled() || $provider->getSlug() !== $slug) {
             throw new AuthenticationException('SSO provider not found or disabled.');
         }
@@ -120,14 +120,31 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $target = (string) $request->getSession()->remove(self::SESSION_TARGET_KEY);
-        if ($target === '') {
+        if (!self::isSafeTarget($target)) {
             $target = $this->router->generate('app_home');
         }
         return new RedirectResponse($target);
     }
 
+    /**
+     * Post-login target from `?target=`: only a same-origin relative path —
+     * one leading slash, no `//` or `\\` prefix (protocol-relative), no
+     * control characters (#1059 m-4, no open redirect).
+     */
+    public static function isSafeTarget(string $target): bool
+    {
+        return $target !== ''
+            && $target[0] === '/'
+            && !str_starts_with($target, '//')
+            && !str_starts_with($target, '/\\')
+            && preg_match('/[\x00-\x1f\x7f]/', $target) !== 1;
+    }
+
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
+        if ($request->hasSession()) {
+            $request->getSession()->remove(self::SESSION_TARGET_KEY);
+        }
         $this->logger->warning('SSO authentication failure', ['error' => $exception->getMessage()]);
         // Messages meant for the user (e.g. "link by e-mail is disabled")
         // are shown on the login page via AuthenticationUtils.

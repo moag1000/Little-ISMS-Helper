@@ -7,6 +7,7 @@ namespace App\Tests\Controller;
 use App\Entity\IdentityProvider;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Security\GenericOidcAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -155,6 +156,60 @@ final class SsoSlugCollisionTest extends WebTestCase
         foreach ($validator->validate($ok) as $violation) {
             self::assertNotSame('sso.slug_used_by_global_provider', $violation->getMessageTemplate());
         }
+    }
+
+    #[Test]
+    public function startStoresOnlySameOriginRelativeTargets(): void
+    {
+        // #1059 m-4: no open redirect through ?target=, and a new start never
+        // inherits an older target.
+        $base = '/sso/' . $this->slug . '/start?provider=' . $this->providerA->getId();
+        $cases = [
+            'https://evil.example/x' => null,
+            '//evil.example/x' => null,
+            '/\\evil.example/x' => null,
+            'javascript:alert(1)' => null,
+            '/en/dashboard?tab=1' => '/en/dashboard?tab=1',
+        ];
+        foreach ($cases as $target => $expected) {
+            $this->client->request('GET', $base . '&target=' . rawurlencode($target));
+            self::assertSame(
+                $expected,
+                $this->client->getRequest()->getSession()->get(GenericOidcAuthenticator::SESSION_TARGET_KEY),
+                'target ' . $target,
+            );
+        }
+
+        // Valid target stored above; a start without target clears it.
+        $this->client->request('GET', $base);
+        self::assertNull($this->client->getRequest()->getSession()->get(GenericOidcAuthenticator::SESSION_TARGET_KEY));
+    }
+
+    #[Test]
+    public function loggedInUserReauthenticatesThroughGlobalButNotForeignProvider(): void
+    {
+        // #1059 m-6: the tenant filter hid global / parent providers from a
+        // logged-in user; foreign organisations' providers stay refused.
+        $global = (new IdentityProvider())
+            ->setSlug('glob-' . $this->uid)->setName('Glob ' . $this->uid)->setClientId('c')->setEnabled(true)
+            ->setAuthorizationEndpoint('https://idp-global.example/authorize')
+            ->setTokenEndpoint('https://idp-global.example/token');
+        $this->em->persist($global);
+        $this->em->flush();
+        $this->em->clear(); // the request must load the provider through the filtered EM
+
+        $this->client->loginUser($this->userA);
+        $this->client->request('GET', '/sso/glob-' . $this->uid . '/start?provider=' . $global->getId());
+        self::assertStringStartsWith(
+            'https://idp-global.example/authorize',
+            (string) $this->client->getResponse()->headers->get('Location'),
+        );
+
+        $this->client->request('GET', '/sso/' . $this->slug . '/start?provider=' . $this->providerB->getId());
+        self::assertStringNotContainsString(
+            'idp-b.example',
+            (string) $this->client->getResponse()->headers->get('Location'),
+        );
     }
 
     private function provider(Tenant $tenant, string $authorizeUrl): IdentityProvider

@@ -45,6 +45,34 @@ final class GenericOidcAuthenticatorFailureTest extends KernelTestCase
         self::assertFalse($request->getSession()->has(SecurityRequestAttributes::AUTHENTICATION_ERROR));
     }
 
+    #[Test]
+    public function unsafeStoredTargetIsNotUsedAfterLogin(): void
+    {
+        $request = $this->request();
+        $request->getSession()->set(GenericOidcAuthenticator::SESSION_TARGET_KEY, 'https://evil.example/');
+
+        $response = $this->authenticator()->onAuthenticationSuccess(
+            $request,
+            $this->createStub(\Symfony\Component\Security\Core\Authentication\Token\TokenInterface::class),
+            'main',
+        );
+
+        self::assertNotNull($response);
+        self::assertStringNotContainsString('evil.example', (string) $response->headers->get('Location'));
+        self::assertFalse($request->getSession()->has(GenericOidcAuthenticator::SESSION_TARGET_KEY));
+    }
+
+    #[Test]
+    public function failedLoginClearsTheStoredTarget(): void
+    {
+        $request = $this->request();
+        $request->getSession()->set(GenericOidcAuthenticator::SESSION_TARGET_KEY, '/en/dashboard');
+
+        $this->authenticator()->onAuthenticationFailure($request, new AuthenticationException('x'));
+
+        self::assertFalse($request->getSession()->has(GenericOidcAuthenticator::SESSION_TARGET_KEY));
+    }
+
     private function authenticator(): GenericOidcAuthenticator
     {
         self::bootKernel();

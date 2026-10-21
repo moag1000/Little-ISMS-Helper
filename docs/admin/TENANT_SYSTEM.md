@@ -443,6 +443,14 @@ login page with a neutral message. An organisation-owned provider cannot take
 the slug of an instance-wide provider (validation on create/edit). Callback
 URLs registered at the identity providers (`/sso/<slug>/callback`) are
 unchanged.
+Accepted limitation: two organisations may still choose the same slug (only
+an instance-wide provider's slug is reserved), which makes legacy slug-only
+links for that slug ambiguous — they are refused neutrally; id links keep
+working. Re-authentication of a signed-in user resolves the provider without
+the organisation filter (global and parent-organisation providers work) and
+then applies the usual allowed-for-user check. The post-login `target` of an
+SSO start is accepted only as a same-origin relative path and never carried
+over to a later start.
 
 **Link existing accounts by e-mail** (provider option `allowEmailLinking`,
 added after 3.15.3): an SSO login whose e-mail claim matches an existing,

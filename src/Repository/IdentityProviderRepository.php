@@ -67,7 +67,36 @@ class IdentityProviderRepository extends ServiceEntityRepository
      */
     public function findEnabledBySlug(string $slug): array
     {
-        return $this->findBy(['slug' => $slug, 'enabled' => true]);
+        return $this->withoutTenantFilter(fn (): array => $this->findBy(['slug' => $slug, 'enabled' => true]));
+    }
+
+    /**
+     * Provider by id regardless of the request's tenant filter (SSO start /
+     * callback: global and parent-organisation providers must resolve for a
+     * logged-in user; callers apply the allowed-for-user rules, #1059 m-6).
+     */
+    public function findUnfiltered(int $id): ?IdentityProvider
+    {
+        return $this->withoutTenantFilter(fn (): ?IdentityProvider => $this->find($id));
+    }
+
+    /**
+     * @template T
+     * @param callable(): T $fn
+     * @return T
+     */
+    private function withoutTenantFilter(callable $fn): mixed
+    {
+        $filters = $this->getEntityManager()->getFilters();
+        if (!$filters->isEnabled('tenant_filter')) {
+            return $fn();
+        }
+        $filters->suspend('tenant_filter');
+        try {
+            return $fn();
+        } finally {
+            $filters->restore('tenant_filter');
+        }
     }
 
     /**
@@ -86,11 +115,6 @@ class IdentityProviderRepository extends ServiceEntityRepository
         }
 
         return (int) $qb->getQuery()->getSingleScalarResult() > 0;
-    }
-
-    public function findOneBySlugAnywhere(string $slug): ?IdentityProvider
-    {
-        return $this->findOneBy(['slug' => $slug]);
     }
 
     /**
