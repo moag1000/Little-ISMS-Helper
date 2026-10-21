@@ -205,6 +205,46 @@ final class PersonPickerSweepControllerTest extends WebTestCase
         self::assertNull($this->em->find($class, $id)->{'get' . ucfirst($base) . 'User'}(), 'foreign user was persisted');
     }
 
+    /**
+     * @param class-string $class
+     */
+    #[Test]
+    #[DataProvider('entityProvider')]
+    public function showPageListsTheDeputyPersons(string $class, string $slug, string $base, string $deputies): void
+    {
+        $entity = $this->seed($class);
+        $role = str_starts_with($base, 'contact') ? 'Contact' : 'Responsible';
+        $entity->{'set' . ucfirst($base) . 'User'}($this->owner);
+        $entity->{'add' . $role . 'DeputyPerson'}($this->deputy);
+        $this->em->flush();
+
+        $this->client->loginUser($this->actor);
+        $this->client->request('GET', sprintf('/en/%s/%d', $slug, $entity->getId()));
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString(
+            'Dora Deputypick' . $this->uid,
+            (string) $this->client->getResponse()->getContent(),
+            'show page lists the deputy person',
+        );
+    }
+
+    #[Test]
+    public function assetShowPageListsTheOwnerDeputyPersons(): void
+    {
+        $asset = (new \App\Entity\Asset())
+            ->setName('Asset ' . $this->uid)->setAssetType('software')
+            ->setConfidentialityValue(3)->setIntegrityValue(3)->setAvailabilityValue(3)
+            ->setTenant($this->tenant);
+        $asset->addOwnerDeputyPerson($this->deputy);
+        $this->em->persist($asset);
+        $this->em->flush();
+
+        $this->client->loginUser($this->actor);
+        $this->client->request('GET', '/en/asset/' . $asset->getId());
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Dora Deputypick' . $this->uid, (string) $this->client->getResponse()->getContent());
+    }
+
     #[Test]
     public function objectiveWithoutAnyOwnerShowsTranslatedError(): void
     {

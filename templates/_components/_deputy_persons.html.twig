@@ -1,0 +1,13 @@
+{#
+ # Deputy persons (Stellvertretungen) of a dual-state owner, for show pages.
+ #
+ # Usage: {% include '_components/_deputy_persons.html.twig' with { deputies: location.responsibleDeputyPersons } only %}
+ #
+ # Renders nothing when there are no deputies.
+ #}
+{% if deputies is defined and deputies is not null and deputies|length > 0 %}
+    <span class="text-muted small d-block" data-role="deputy-persons">
+        {{ 'field.owner_deputies'|trans({}, 'messages') }}:
+        {{ deputies|map(p => p.displayName)|join(', ') }}
+    </span>
+{% endif %}

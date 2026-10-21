@@ -236,6 +236,7 @@
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.contact_person'|trans({}, 'suppliers') }}:</span>
                                 <span class="value">{{ supplier.effectiveContactPerson ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                                {% include '_components/_deputy_persons.html.twig' with { deputies: supplier.contactDeputyPersons } only %}
                             </div>
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.email'|trans({}, 'suppliers') }}:</span>
