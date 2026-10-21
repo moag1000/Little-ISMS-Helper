@@ -320,8 +320,10 @@ Liste `DATA_CATALOGUE_FILES` im Skript). Dateien darüber stehen in
 - Push → der vorherige Stand des Branches (`github.event.before`). Ein Push auf
   `main` gegen `origin/main` zu vergleichen hieße, den Commit mit sich selbst zu
   vergleichen — ein direkt gepushter Baseline-Bump käme durch.
-- Neuer Branch / Tag (`before` = lauter Nullen) oder ein nicht mehr erreichbares
-  `before` (Force-Push) → Fallback auf `main`.
+- Force-Push (`github.event.forced`) → `main`: der alte Stand ist verworfen
+  (GitHub liefert ihn oft trotzdem noch aus — er wäre eine falsche Basis).
+- Neuer Branch / Tag (`before` = lauter Nullen) oder ein nicht erreichbares
+  `before` → Fallback auf `main`.
 
 **Umbenennen/Kopieren (`git diff --find-renames --find-copies`):** Welche Datei
 einen Basis-Eintrag übernehmen darf, entscheidet allein Git's Rename-/Copy-Erkennung

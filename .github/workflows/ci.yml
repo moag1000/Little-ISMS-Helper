@@ -445,16 +445,19 @@ jobs:
         # (--ratchet-ref), so "bump the baseline" no longer gets past the gate.
         # Ratchet base: the PR base branch; for a push the previous tip
         # (github.event.before) — comparing a push to main with origin/main
-        # would compare the commit with itself. A new branch / tag (all-zero
-        # before) or an unreachable before (force push) falls back to main.
+        # would compare the commit with itself. A force push (the old tip is
+        # discarded, GitHub may still serve it), a new branch / tag (all-zero
+        # before) or an unreachable before fall back to main.
         # See scripts/README.md.
         env:
           EVENT_NAME: ${{ github.event_name }}
           BEFORE_SHA: ${{ github.event.before }}
+          FORCED: ${{ github.event.forced }}
           BASE_REF: ${{ github.base_ref }}
         run: |
           set -euo pipefail
-          if [ "$EVENT_NAME" = "push" ] && [[ -n "$BEFORE_SHA" && ! "$BEFORE_SHA" =~ ^0+$ ]] \
+          if [ "$EVENT_NAME" = "push" ] && [ "$FORCED" != "true" ] \
+             && [[ -n "$BEFORE_SHA" && ! "$BEFORE_SHA" =~ ^0+$ ]] \
              && git fetch --no-tags --depth=1 origin "$BEFORE_SHA"; then
             echo "Gate 25 ratchet base: previous tip $BEFORE_SHA (push)"
           else
