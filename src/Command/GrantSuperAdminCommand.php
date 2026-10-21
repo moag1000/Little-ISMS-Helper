@@ -9,7 +9,9 @@ use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -21,6 +23,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * promotes the initial setup admin; this command covers installs where that
  * was the wrong account or none existed. Shell access = operator, so no
  * in-app authorisation applies; every grant is written to the audit log.
+ *
+ * The grant needs an explicit confirmation that shows e-mail, organisation
+ * and current roles. `--yes` skips it (scripted operator runs); a
+ * non-interactive run without `--yes` is refused so a stray script can never
+ * promote an account silently.
  */
 #[AsCommand(
     name: 'app:user:grant-super-admin',
@@ -39,6 +46,9 @@ final class GrantSuperAdminCommand
         #[Argument(description: 'E-mail address of the existing user')]
         string $email,
         SymfonyStyle $io,
+        InputInterface $input,
+        #[Option(description: 'Skip the interactive confirmation (required for non-interactive runs)', shortcut: 'y')]
+        bool $yes = false,
     ): int {
         $user = $this->userRepository->findOneBy(['email' => $email]);
         if ($user === null) {
@@ -54,14 +64,34 @@ final class GrantSuperAdminCommand
             return Command::SUCCESS;
         }
 
+        $tenant = $user->getTenant();
         $io->warning([
             'ROLE_SUPER_ADMIN is the instance operator role: access to ALL organisations,',
             'users, instance-wide backups and system roles.',
         ]);
-        if (!$io->confirm(sprintf('Grant ROLE_SUPER_ADMIN to %s (#%d)?', $email, (int) $user->getId()), false)) {
-            $io->note('Cancelled — nothing changed.');
+        $io->definitionList(
+            ['E-mail' => $email],
+            ['User ID' => (string) $user->getId()],
+            ['Organisation' => $tenant !== null
+                ? sprintf('%s (#%d)', (string) $tenant->getName(), (int) $tenant->getId())
+                : '(none)'],
+            ['Current roles' => $storedRoles === [] ? '(none)' : implode(', ', $storedRoles)],
+        );
 
-            return Command::FAILURE;
+        if (!$yes) {
+            if (!$input->isInteractive()) {
+                $io->error([
+                    'Refusing to grant ROLE_SUPER_ADMIN in a non-interactive run without confirmation.',
+                    sprintf('Re-run with --yes to confirm: php bin/console app:user:grant-super-admin %s --yes', $email),
+                ]);
+
+                return Command::FAILURE;
+            }
+            if (!$io->confirm(sprintf('Grant ROLE_SUPER_ADMIN to %s (#%d)?', $email, (int) $user->getId()), false)) {
+                $io->note('Cancelled — nothing changed.');
+
+                return Command::FAILURE;
+            }
         }
 
         $newRoles = [...$storedRoles, 'ROLE_SUPER_ADMIN'];
