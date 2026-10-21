@@ -118,13 +118,6 @@ class UserManagementController extends AbstractController
                 }
             }
 
-            // Ensure ROLE_USER is always included
-            $roles = $user->getRoles();
-            if (!in_array('ROLE_USER', $roles)) {
-                $roles[] = 'ROLE_USER';
-                $user->setRoles($roles);
-            }
-
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -709,13 +702,6 @@ class UserManagementController extends AbstractController
                 if ($avatarPath) {
                     $user->setProfilePicture($avatarPath);
                 }
-            }
-
-            // Ensure ROLE_USER is always included
-            $roles = $user->getRoles();
-            if (!in_array('ROLE_USER', $roles)) {
-                $roles[] = 'ROLE_USER';
-                $user->setRoles($roles);
             }
 
             $user->setUpdatedAt(new DateTimeImmutable());
