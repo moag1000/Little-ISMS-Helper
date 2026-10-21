@@ -334,6 +334,14 @@ logs every change in the `doctrine:migrations:migrate` output):
    are listed in the migration output and a `ROLE_SUPER_ADMIN` must assign
    them under *Admin → Users*.
 
+**Phantom-repaired installs:** if migrations were marked as executed
+without running them (`/quick-fix` phantom repair, `doctrine:migrations:version
+--add`), the data migration above never ran and no operator was promoted.
+Check after the upgrade: if no active account holds `ROLE_SUPER_ADMIN`, run
+`php bin/console app:user:grant-super-admin <email>`. `/quick-fix` shows a
+"No active instance operator" notice in its data-integrity section while
+that is the case (see `docs/user-guide/QUICK_FIX.md` §5).
+
 Migration `Version20261019120100_reserved_custom_role_names` changes no
 data; it lists custom roles affected by the reserved-name rule below.
 
