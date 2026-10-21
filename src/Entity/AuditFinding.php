@@ -256,6 +256,7 @@ class AuditFinding
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        $this->syncTenantFromAudit();
         return $this;
     }
 
@@ -276,9 +277,16 @@ class AuditFinding
      * backlog is counted via the audit (AuditFindingBacklog) and via
      * finding.tenant (AuditFindingRepository::findOpenByTenant()); both
      * agree only while this holds.
+     *
+     * Enforced where it can actually be persisted: setAudit() and setTenant()
+     * (in-memory, so a flush after any setter order writes the audit's
+     * organisation) and PrePersist (safety net for new rows). There is
+     * deliberately NO PreUpdate hook: Doctrine does not pick up a changed
+     * association from a PreUpdate callback (it would need a manual
+     * changeset recompute), so such a hook looked like a guard but never
+     * wrote anything.
      */
     #[ORM\PrePersist]
-    #[ORM\PreUpdate]
     public function syncTenantFromAudit(): void
     {
         $auditTenant = $this->audit?->getTenant();
