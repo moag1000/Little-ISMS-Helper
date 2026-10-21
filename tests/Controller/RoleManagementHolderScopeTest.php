@@ -265,15 +265,15 @@ final class RoleManagementHolderScopeTest extends WebTestCase
 
         try {
             $debug = static::getContainer()->get('doctrine.debug_data_holder');
-            $debug->reset();
+            $seen = array_map('count', $debug->getData());
             $roles = $this->em->getRepository(Role::class)->getRolesWithUserCount();
 
             $probe = array_values(array_filter($roles, fn (Role $r): bool => $r->getId() === $this->role->getId()))[0] ?? null;
             self::assertInstanceOf(Role::class, $probe);
             self::assertCount(2, $probe->getUsers());
             self::assertCount(3, $probe->getPermissions());
-            foreach ($debug->getData() as $queries) {
-                foreach ($queries as $query) {
+            foreach ($debug->getData() as $connection => $queries) {
+                foreach (array_slice($queries, $seen[$connection] ?? 0) as $query) {
                     $sql = strtolower((string) $query['sql']);
                     self::assertFalse(
                         str_contains($sql, 'user_roles') && str_contains($sql, 'role_permissions'),

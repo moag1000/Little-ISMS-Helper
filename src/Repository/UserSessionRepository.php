@@ -96,7 +96,7 @@ class UserSessionRepository extends ServiceEntityRepository
             if ($tenants === [] && !$self instanceof User) {
                 return [];
             }
-            $this->applyAdministrableUserScope($queryBuilder, 'u', $tenants, $self);
+            $this->applyAdministrableUserScope($queryBuilder, $tenants, $self);
         }
 
         if ($userEmail) {
@@ -164,8 +164,8 @@ class UserSessionRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('s');
         if ($tenants !== null) {
-            $queryBuilder->innerJoin('s.user', 'su');
-            $this->applyAdministrableUserScope($queryBuilder, 'su', $tenants, $self);
+            $queryBuilder->innerJoin('s.user', 'u');
+            $this->applyAdministrableUserScope($queryBuilder, $tenants, $self);
         }
 
         return $queryBuilder;
@@ -181,18 +181,18 @@ class UserSessionRepository extends ServiceEntityRepository
      */
     private function applyAdministrableUserScope(
         \Doctrine\ORM\QueryBuilder $queryBuilder,
-        string $userAlias,
         array $tenants,
         ?User $self,
     ): void {
+        // Expects the session's user joined as alias "u".
         $conditions = [];
         if ($tenants !== []) {
-            $conditions[] = sprintf('(%1$s.tenant IN (:scope_tenants) AND %1$s.roles NOT LIKE :scope_super)', $userAlias);
+            $conditions[] = '(u.tenant IN (:scope_tenants) AND u.roles NOT LIKE :scope_super)';
             $queryBuilder->setParameter('scope_tenants', $tenants)
                 ->setParameter('scope_super', \App\Service\InitialAdminService::ROLE_SUPER_ADMIN_LIKE);
         }
         if ($self instanceof User) {
-            $conditions[] = sprintf('%s = :scope_self', $userAlias);
+            $conditions[] = 'u = :scope_self';
             $queryBuilder->setParameter('scope_self', $self);
         }
         $queryBuilder->andWhere(implode(' OR ', $conditions));
