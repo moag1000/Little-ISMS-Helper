@@ -3,14 +3,16 @@
 check_nested_forms.py — Detect nested literal `<form>` tags in Twig templates.
 
 HTML5 forbids nested forms; nesting causes silent submit-loss in the inner
-form and confusing browser behavior. Symfony's `form_start()` / `form_end()`
-emits a literal opening/closing tag, but we cannot inspect dynamic output —
-this gate only scans literal `<form …>` … `</form>` pairs in templates.
+form and confusing browser behavior. A form scope is opened by a literal
+`<form …>` or by Symfony's Twig `form_start(…)` and closed by `</form>` or
+`form_end(…)`; `form(…)` renders a complete form (open + close). The gate
+cannot inspect other dynamic output (included templates, macros).
 
 Algorithm (per file):
   1. Walk tokens left-to-right; maintain depth counter `d`.
-  2. On `<form` opening (not `<form>`-in-attribute) → if d>0 FAIL, then d+=1.
-  3. On `</form>` → d=max(0, d-1).
+  2. On a scope opening (`<form`, `form_start(`, `form(`) → if d>0 FAIL,
+     then d+=1 (`form(` closes again immediately).
+  3. On a scope closing (`</form>`, `form_end(`) → d=max(0, d-1).
   4. `{% include %}` / `{% embed %}` / `{% block %}` boundaries reset depth
      for the included region (we don't recurse).
 
@@ -33,6 +35,10 @@ SKIP_DIRS = {"vendor", "node_modules", "var", ".claude", "migrations", "tests/Fi
 
 RE_FORM_OPEN = re.compile(r"<form\b", re.IGNORECASE)
 RE_FORM_CLOSE = re.compile(r"</form\s*>", re.IGNORECASE)
+# Twig form helpers, only inside an output / tag delimiter ({{ … }} / {% … %}).
+RE_TWIG_FORM_START = re.compile(r"\{[{%]-?\s*form_start\s*\(")
+RE_TWIG_FORM_END = re.compile(r"\{[{%]-?\s*form_end\s*\(")
+RE_TWIG_FORM_FULL = re.compile(r"\{[{%]-?\s*form\s*\(")
 RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)
 RE_VERBATIM_OPEN = re.compile(r"\{%\s*verbatim\s*%\}")
 RE_VERBATIM_CLOSE = re.compile(r"\{%\s*endverbatim\s*%\}")
@@ -77,7 +83,13 @@ def scan(path: Path) -> list[tuple[int, str]]:
         text = path.read_text(encoding="utf-8", errors="ignore")
     except OSError:
         return []
-    if "<form" not in text.lower():
+    return scan_text(text)
+
+
+def scan_text(text: str) -> list[tuple[int, str]]:
+    """Nested form scopes in one template's source: [(line, snippet)]."""
+    lowered = text.lower()
+    if "<form" not in lowered and "form_start" not in text and "form(" not in text:
         return []
     # Mask comments + verbatim
     text_clean = RE_TWIG_COMMENT.sub(lambda m: " " * (m.end() - m.start()), text)
@@ -87,7 +99,13 @@ def scan(path: Path) -> list[tuple[int, str]]:
     events: list[tuple[int, str]] = []
     for m in RE_FORM_OPEN.finditer(text_clean):
         events.append((m.start(), "open"))
+    for m in RE_TWIG_FORM_START.finditer(text_clean):
+        events.append((m.start(), "open"))
+    for m in RE_TWIG_FORM_FULL.finditer(text_clean):
+        events.append((m.start(), "full"))
     for m in RE_FORM_CLOSE.finditer(text_clean):
+        events.append((m.start(), "close"))
+    for m in RE_TWIG_FORM_END.finditer(text_clean):
         events.append((m.start(), "close"))
     events.sort()
 
@@ -95,12 +113,13 @@ def scan(path: Path) -> list[tuple[int, str]]:
     out: list[tuple[int, str]] = []
     lines = text.splitlines()
     for offset, kind in events:
-        if kind == "open":
+        if kind in ("open", "full"):
             if depth > 0:
                 ln = line_of(text, offset)
                 snippet = lines[ln - 1].strip()[:160] if 0 < ln <= len(lines) else "<form>"
                 out.append((ln, snippet))
-            depth += 1
+            if kind == "open":
+                depth += 1
         else:
             depth = max(0, depth - 1)
     return out
