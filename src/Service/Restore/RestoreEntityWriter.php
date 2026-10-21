@@ -27,6 +27,16 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class RestoreEntityWriter
 {
+    /**
+     * Fields added after older backups were taken: a row without the key gets
+     * the value the upgrade migration gave existing rows (not the property
+     * default meant for newly created records).
+     */
+    private const array LEGACY_FIELD_DEFAULTS = [
+        // Version20261021143100_sso_allow_email_linking: existing providers keep linking (#1059).
+        'IdentityProvider' => ['allowEmailLinking' => true],
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
@@ -768,6 +778,10 @@ class RestoreEntityWriter
                         'entity_index' => null, 'default' => $value,
                     ]);
                 }
+            }
+
+            if ($value === null && !array_key_exists($fieldName, $data)) {
+                $value = self::LEGACY_FIELD_DEFAULTS[$entityName][$fieldName] ?? null;
             }
 
             $type = $meta->getTypeOfField($fieldName);

@@ -145,11 +145,15 @@ class IdentityProvider
      * single-tenant registrations let directory admins set arbitrary mail
      * attributes). When off, such a login is refused and an administrator
      * links the account manually. Providers that existed before the option
-     * keep linking (migration Version20261021143100_sso_allow_email_linking).
+     * keep linking (migration Version20261021143100_sso_allow_email_linking,
+     * column default true; restores of older backups likewise).
      * The tenant-tree / never-privileged rules of SsoAccountLinkPolicy apply
      * either way.
      */
-    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    // Column default true: rows written outside the entity (schema reconcile of
+    // existing rows, restores of older backups) keep linking; a provider
+    // created through the entity/form starts with the property default false.
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $allowEmailLinking = false;
 
     /** Preset type used by the wizard to pre-fill discovery URL and attribute map. */

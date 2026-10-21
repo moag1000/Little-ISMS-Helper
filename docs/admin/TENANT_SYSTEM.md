@@ -437,8 +437,10 @@ not yet linked local account is only linked when this option is on. The
 e-mail claim is only as trustworthy as the identity provider's control over
 it (Entra ID single-tenant registrations, for example, let directory admins
 set arbitrary mail attributes). Providers that existed before the upgrade
-keep linking (migration `Version20261021143100_sso_allow_email_linking`
-sets the option); **new providers start with it off**. With the option off
+keep linking (migration `Version20261021143100_sso_allow_email_linking`,
+column default on — the same applies to providers restored from an older
+backup and to a schema reconcile); **new providers created in the UI start
+with it off**. With the option off
 such a login is refused with a message pointing to the password login or an
 administrator; already linked accounts and new (JIT) accounts are not
 affected. An account already bound to *another* provider is never re-bound
