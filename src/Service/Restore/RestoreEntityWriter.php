@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Restore;
 
+use App\Doctrine\EntityManagerRecovery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -180,7 +181,7 @@ class RestoreEntityWriter
      * @param array                       $failures        Reference to the facade's failures array (mutated)
      * @param array                       $statistics      Reference to the facade's statistics array (mutated)
      * @param array                       $warnings        Reference to the facade's warnings array (mutated)
-     * @param \Doctrine\Persistence\ManagerRegistry|null $registry Optional manager registry for EM reset
+     * @param EntityManagerRecovery|null $registry Optional recovery for a closed EntityManager
      * @param RestoreSecretsHandler|null  $secretsHandler  When set, handles admin_password for User rows
      */
     public function restoreEntity(
@@ -191,7 +192,7 @@ class RestoreEntityWriter
         array &$failures,
         array &$statistics,
         array &$warnings,
-        ?\Doctrine\Persistence\ManagerRegistry $registry = null,
+        ?EntityManagerRecovery $registry = null,
         ?RestoreSecretsHandler $secretsHandler = null,
     ): void {
         $this->logger->info('Restoring entity', [
@@ -444,7 +445,9 @@ class RestoreEntityWriter
 
                     if (!$this->entityManager->isOpen() && $registry !== null) {
                         try {
-                            $registry->resetManager();
+                            // Restores the filter state that existed before
+                            // (restore runs with the tenant filter disabled).
+                            $registry->recover();
                         } catch (\Throwable) {
                         }
                     }
@@ -991,7 +994,7 @@ class RestoreEntityWriter
      *  - RestoreService::restoreFromBackup() — entity-type error path (public call-site)
      */
     public function safeResetManager(
-        ?\Doctrine\Persistence\ManagerRegistry $registry,
+        ?EntityManagerRecovery $registry,
         string $context,
         int|string|null $index,
         array &$warnings,
@@ -1002,7 +1005,10 @@ class RestoreEntityWriter
         }
 
         try {
-            $registry->resetManager();
+            // EntityManagerRecovery restores whatever filter / tenant state
+            // existed before the reset (restore: filter disabled) — no tenant
+            // is forced onto the operator's run.
+            $registry->recover();
             $this->logger->info('Best-effort: EntityManager reset after row failure', [
                 'entity' => $context, 'index' => $index,
             ]);

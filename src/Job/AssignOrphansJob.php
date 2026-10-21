@@ -63,6 +63,7 @@ final class AssignOrphansJob implements AsyncJobInterface
         private readonly SectionScanResultCache $sectionScanCache,
         private readonly EntityManagerInterface $entityManager,
         private readonly ManagerRegistry $managerRegistry,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -146,7 +147,7 @@ final class AssignOrphansJob implements AsyncJobInterface
                     // violation, savepoint after DDL etc.). Reset before
                     // touching another entity — CLAUDE.md Common-Pitfalls #1.
                     if (!$this->entityManager->isOpen()) {
-                        $this->managerRegistry->resetManager();
+                        $this->entityManagerRecovery?->recover();
                         /** @var EntityManagerInterface $freshEm */
                         $freshEm = $this->managerRegistry->getManager();
                         $tenant = $this->tenantRepository->find($tenant->getId());
@@ -300,7 +301,7 @@ final class AssignOrphansJob implements AsyncJobInterface
     private function flushBatch(): void
     {
         if (!$this->entityManager->isOpen()) {
-            $this->managerRegistry->resetManager();
+            $this->entityManagerRecovery?->recover();
             /** @var EntityManagerInterface $freshEm */
             $freshEm = $this->managerRegistry->getManager();
             // After a reset the previously-mutated entities are detached;

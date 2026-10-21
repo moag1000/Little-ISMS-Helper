@@ -56,7 +56,7 @@ class RestoreService
         private readonly LoggerInterface $logger,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly ?BackupEncryptionService $backupEncryption = null,
-        private readonly ?ManagerRegistry $registry = null,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $registry = null,
         private readonly ?RestoreValidator $validator = null,
         private readonly ?RestoreDataPurger $purger = null,
         private readonly ?RestoreEntityWriter $entityWriter = null,

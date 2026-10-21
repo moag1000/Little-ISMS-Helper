@@ -100,6 +100,42 @@ final class EntityManagerRecoveryTest extends KernelTestCase
         );
     }
 
+    /**
+     * Operator / global paths (restore, schema maintenance, sample purge) run
+     * with the tenant filter disabled. Recovery restores exactly that — it
+     * never forces a tenant onto them.
+     */
+    #[Test]
+    public function aDisabledTenantFilterStaysDisabled(): void
+    {
+        $own = $this->tenant('own');
+        $foreign = $this->tenant('foreign');
+        $ownActivity = $this->activity($own);
+        $foreignActivity = $this->activity($foreign);
+        self::getContainer()->get(TenantContext::class)->setCurrentTenant($own);
+        $this->em->getFilters()->disable('tenant_filter');
+
+        $broken = new ProcessingActivity();
+        $broken->setName('broken');
+        $broken->setPurposes(['x']);
+        $broken->setDataSubjectCategories(['customers']);
+        $broken->setPersonalDataCategories(['contact_data']);
+        $broken->setLegalBasis(str_repeat('x', 80));
+        $broken->setTenant($own);
+        $this->em->persist($broken);
+        try {
+            $this->em->flush();
+            self::fail('the insert must be rejected by the database');
+        } catch (\Doctrine\DBAL\Exception) {
+        }
+
+        self::getContainer()->get(EntityManagerRecovery::class)->recover();
+
+        self::assertTrue($this->em->isOpen());
+        self::assertFalse($this->em->getFilters()->isEnabled('tenant_filter'), 'the filter state is restored as it was: disabled');
+        self::assertCount(2, $this->em->getRepository(ProcessingActivity::class)->findBy(['id' => [$ownActivity, $foreignActivity]]));
+    }
+
     #[Test]
     public function aManagerThatIsStillOpenIsLeftAlone(): void
     {

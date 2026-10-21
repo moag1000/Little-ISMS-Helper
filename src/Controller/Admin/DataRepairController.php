@@ -75,6 +75,7 @@ class DataRepairController extends AbstractController
         private readonly DataIntegrityResultCache $integrityResultCache,
         private readonly SectionScanResultCache $sectionScanCache,
         private readonly AsyncJobDispatcher $asyncJobDispatcher,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -85,7 +86,8 @@ class DataRepairController extends AbstractController
     private function resetEntityManagerIfClosed(): void
     {
         if (!$this->entityManager->isOpen()) {
-            $this->managerRegistry->resetManager();
+            // Restores tenant filter + TenantContext exactly as before the reset.
+            $this->entityManagerRecovery?->recover();
             $em = $this->managerRegistry->getManager();
             if ($em instanceof EntityManagerInterface) {
                 $this->entityManager = $em;

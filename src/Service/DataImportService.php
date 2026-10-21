@@ -100,7 +100,8 @@ final class DataImportService
         private readonly SampleDataImportRepository $sampleImportRepository,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
-        private readonly ?ManagerRegistry $managerRegistry = null
+        private readonly ?ManagerRegistry $managerRegistry = null,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -115,7 +116,9 @@ final class DataImportService
         if ($this->entityManager->isOpen() || $this->managerRegistry === null) {
             return;
         }
-        $this->managerRegistry->resetManager();
+        // Tenant request: the recovery re-arms the tenant filter and re-loads
+        // the TenantContext tenant, so the following imports stay scoped.
+        $this->entityManagerRecovery?->recover();
         $fresh = $this->managerRegistry->getManager();
         if ($fresh instanceof EntityManagerInterface) {
             $this->entityManager = $fresh;

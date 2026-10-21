@@ -37,6 +37,7 @@ final class SampleDataPurgeCommand
         private readonly TenantRepository $tenantRepository,
         private readonly DataImportService $importer,
         private readonly ?ManagerRegistry $managerRegistry = null,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -181,7 +182,8 @@ final class SampleDataPurgeCommand
                 return true;
             } catch (\Throwable $e) {
                 if (!$this->entityManager->isOpen() && $this->managerRegistry !== null) {
-                    $this->managerRegistry->resetManager();
+                    // Restores the filter state that existed before (none / disabled for this CLI run).
+                    $this->entityManagerRecovery?->recover();
                     $this->entityManager = $this->managerRegistry->getManager();
                 }
                 // Parse "table `db`.`childtable`, CONSTRAINT … FOREIGN KEY (`col`)"

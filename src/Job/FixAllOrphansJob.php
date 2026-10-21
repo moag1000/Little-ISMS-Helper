@@ -35,6 +35,7 @@ final class FixAllOrphansJob implements AsyncJobInterface
         private readonly AuditLogger $auditLogger,
         private readonly EntityManagerInterface $entityManager,
         private readonly ManagerRegistry $managerRegistry,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -103,7 +104,7 @@ final class FixAllOrphansJob implements AsyncJobInterface
 
                     // CLAUDE.md Common-Pitfalls #1: EM-reset on constraint violation
                     if (!$this->entityManager->isOpen()) {
-                        $this->managerRegistry->resetManager();
+                        $this->entityManagerRecovery?->recover();
                         /** @var EntityManagerInterface $freshEm */
                         $freshEm = $this->managerRegistry->getManager();
                         // Re-fetch tenant via the (possibly reset) EM
