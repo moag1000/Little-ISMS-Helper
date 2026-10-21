@@ -121,6 +121,22 @@ final class GrantSuperAdminCommandTest extends KernelTestCase
     }
 
     #[Test]
+    public function deactivatedAccountIsFlaggedBeforeConfirmation(): void
+    {
+        $user = $this->reload();
+        $user->setIsActive(false);
+        $this->em->flush();
+        $tester = $this->tester();
+        $tester->setInputs(['no']);
+
+        self::assertSame(Command::FAILURE, $tester->execute(['email' => $this->email]));
+        $display = $tester->getDisplay();
+        self::assertMatchesRegularExpression('/Active\s+no/', $display);
+        self::assertStringContainsString('DEACTIVATED', $display);
+        self::assertNotContains('ROLE_SUPER_ADMIN', $this->reload()->getStoredRoles());
+    }
+
+    #[Test]
     public function unknownEmailFails(): void
     {
         self::assertSame(Command::FAILURE, $this->tester()->execute(['email' => 'nobody_' . $this->email]));

@@ -76,7 +76,14 @@ final class GrantSuperAdminCommand
                 ? sprintf('%s (#%d)', (string) $tenant->getName(), (int) $tenant->getId())
                 : '(none)'],
             ['Current roles' => $storedRoles === [] ? '(none)' : implode(', ', $storedRoles)],
+            ['Active' => $user->isActive() ? 'yes' : 'no'],
         );
+        if (!$user->isActive()) {
+            $io->caution([
+                'This account is DEACTIVATED. Re-activating it later hands out instance-wide operator rights',
+                'without a further confirmation. Prefer an active account.',
+            ]);
+        }
 
         if (!$yes) {
             if (!$input->isInteractive()) {
