@@ -95,6 +95,7 @@ class AutoReactionDpiaSuggestListenerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('isOpen')->willReturn(true);
+        $em->method('contains')->willReturn(true);
         $em->expects($this->never())->method('persist');
 
         $args = new PostPersistEventArgs($activity, $em);
@@ -142,6 +143,7 @@ class AutoReactionDpiaSuggestListenerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('isOpen')->willReturn(true);
+        $em->method('contains')->willReturn(true);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
         $em->expects($this->once())->method('flush');
 
@@ -164,8 +166,32 @@ class AutoReactionDpiaSuggestListenerTest extends TestCase
         $this->assertSame('draft', $dpiaInstances[0]->getStatus());
         $this->assertStringContainsString('GDPR-VVT Marketing-Newsletter', (string) $dpiaInstances[0]->getTitle());
         $this->assertSame('DPIA-2026-007', $dpiaInstances[0]->getReferenceNumber(), 'same generator as the create path');
-        $this->assertSame('high', $dpiaInstances[0]->getRiskLevel());
-        $this->assertNotEmpty($dpiaInstances[0]->getLegalBasis());
+        $this->assertSame('', $dpiaInstances[0]->getRiskLevel(), 'the assessment is left to the DPO');
+        $this->assertFalse($dpiaInstances[0]->isComplete());
+    }
+
+    /**
+     * #1059 re-review m-N4: a failed outer flush never reaches postFlush; the
+     * collected activity must not survive into the next flush (clear / reset).
+     */
+    #[Test]
+    public function clearAndResetDropCollectedActivities(): void
+    {
+        $this->reactions->method('isEnabled')->willReturn(true);
+        $activity = $this->createActivity(8, $this->createTenant(2));
+        $activity->setProcessesSpecialCategories(true);
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->method('contains')->willReturn(true);
+        $em->expects($this->never())->method('persist');
+
+        $this->listener->postPersist($activity, new PostPersistEventArgs($activity, $em));
+        $this->listener->onClear(new \Doctrine\ORM\Event\OnClearEventArgs($em));
+        $this->listener->postFlush(new PostFlushEventArgs($em));
+
+        $this->listener->postPersist($activity, new PostPersistEventArgs($activity, $em));
+        $this->listener->reset();
+        $this->listener->postFlush(new PostFlushEventArgs($em));
     }
 
     private function createTenant(int $id): Tenant

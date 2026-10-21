@@ -103,4 +103,51 @@ final class AutoReactionDpiaSuggestListenerDbTest extends KernelTestCase
         self::assertInstanceOf(DataProtectionImpactAssessment::class, $dpia);
         self::assertSame($this->tenant?->getId(), $dpia->getTenant()?->getId());
     }
+
+    /**
+     * #1059 re-review N-2: the skeleton holds only what the activity states;
+     * the assessment is empty, so it is honestly incomplete — listed as
+     * incomplete, refused by the submit gate, not counted as complete.
+     */
+    #[Test]
+    public function autoSuggestedSkeletonIsIncompleteEverywhere(): void
+    {
+        $container = self::getContainer();
+        $activity = new ProcessingActivity();
+        $activity->setName(substr('Payroll ' . uniqid() . ' ' . str_repeat('n', 255), 0, 255)); // DPIA title would exceed 255
+        $activity->setPurposes(['Payroll processing']);
+        $activity->setDataSubjectCategories(['employees']);
+        $activity->setPersonalDataCategories(['bank_data']);
+        $activity->setLegalBasis(''); // NOT NULL column, NotBlank only in forms (imports / API)
+        $container->get(ProcessingActivityService::class)->create($activity);
+
+        $repository = $container->get(\App\Repository\DataProtectionImpactAssessmentRepository::class);
+        $dpia = $repository->findOneBy(['processingActivity' => $activity]);
+        self::assertInstanceOf(DataProtectionImpactAssessment::class, $dpia, 'an over-long title / empty legal basis does not break the insert');
+        self::assertSame(255, mb_strlen((string) $dpia->getTitle()));
+        self::assertSame('', $dpia->getLegalBasis());
+        self::assertSame('Payroll processing', $dpia->getProcessingPurposes(), 'derived from the activity');
+        self::assertSame('', $dpia->getNecessityAssessment(), 'no placeholder text');
+        self::assertSame('', $dpia->getRiskLevel());
+
+        self::assertFalse($dpia->isComplete());
+        self::assertLessThan(100, $dpia->getCompletenessPercentage());
+        self::assertContains(
+            $dpia->getId(),
+            array_map(static fn (DataProtectionImpactAssessment $d): ?int => $d->getId(), $repository->findIncomplete($this->tenant)),
+        );
+
+        $dpiaService = $container->get(\App\Service\DataProtectionImpactAssessmentService::class);
+        $score = $dpiaService->calculateComplianceScore();
+        self::assertSame(0, $score['complete_dpias'], 'the skeleton does not count as complete');
+        self::assertSame(0, $repository->getStatistics($this->tenant)['completeness_rate']);
+
+        try {
+            $dpiaService->submitForReview($dpia);
+            self::fail('an untouched skeleton must not pass the submit gate');
+        } catch (\App\Exception\BusinessRule\BusinessRuleException $e) {
+            self::assertStringContainsString('complete', $e->getMessage());
+        }
+        self::assertSame('draft', $dpia->getStatus());
+    }
 }

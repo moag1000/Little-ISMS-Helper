@@ -15,12 +15,14 @@ use App\Service\EmailNotificationService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\OnClearEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Doctrine\EntityManagerRecovery;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Audit V3 C3 — Auto-DPIA-Suggestion.
@@ -40,19 +42,28 @@ use Psr\Log\LoggerInterface;
  *
  * The skeleton gets its reference number from the same generator as the
  * normal create path (DataProtectionImpactAssessmentRepository::
- * getNextReferenceNumber) and every NOT NULL field prefilled from the
- * activity, so its flush cannot fail on missing data. Each skeleton is
- * flushed on its own (the next reference number sees the previous one); a
- * failing flush is logged and a closed EntityManager reset.
+ * getNextReferenceNumber) and only what the activity states; the assessment
+ * fields stay empty, so the skeleton is incomplete until the DPO works on it
+ * (see buildSkeleton()). Each skeleton is flushed on its own (the next
+ * reference number sees the previous one); a failing flush is logged and a
+ * closed EntityManager recovered (EntityManagerRecovery: tenant scope and
+ * context restored, so the activity's own audit entry still gets written).
+ *
+ * Pending activities are dropped on onClear and kernel.reset (ResetInterface):
+ * when the outer flush fails, postFlush never runs, and a long-running worker
+ * must not process an activity whose insert was rolled back.
  *
  * Toggle: AutoReactionService::KEY_DPIA_SUGGEST (default true).
  */
 #[AsEntityListener(event: Events::postPersist, entity: ProcessingActivity::class)]
 #[AsEntityListener(event: Events::postUpdate, entity: ProcessingActivity::class)]
 #[AsDoctrineListener(event: Events::postFlush)]
-final class AutoReactionDpiaSuggestListener
+#[AsDoctrineListener(event: Events::onClear)]
+final class AutoReactionDpiaSuggestListener implements ResetInterface
 {
-    private const string PLACEHOLDER = 'To be completed — auto-suggested DPIA skeleton (Art. 35 (7) GDPR).';
+    /** Column lengths of data_protection_impact_assessment.title / .legal_basis. */
+    private const int TITLE_MAX = 255;
+    private const int LEGAL_BASIS_MAX = 50;
 
     /** @var array<int, ProcessingActivity> activities waiting for postFlush, keyed by object id */
     private array $pending = [];
@@ -67,7 +78,7 @@ final class AutoReactionDpiaSuggestListener
         private readonly ?UserRepository $userRepository = null,
         private readonly ?DataProtectionImpactAssessmentRepository $dpiaRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
-        private readonly ?ManagerRegistry $managerRegistry = null,
+        private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -101,7 +112,24 @@ final class AutoReactionDpiaSuggestListener
             }
         } finally {
             $this->creating = false;
+            $this->pending = [];
         }
+    }
+
+    /**
+     * EntityManager::clear() — e.g. after a rolled-back flush — invalidates
+     * the collected activities.
+     */
+    public function onClear(OnClearEventArgs $args): void
+    {
+        $this->pending = [];
+    }
+
+    /** kernel.reset between requests / worker messages. */
+    public function reset(): void
+    {
+        $this->pending = [];
+        $this->creating = false;
     }
 
     private function collect(ProcessingActivity $activity): void
@@ -122,7 +150,9 @@ final class AutoReactionDpiaSuggestListener
     {
         $dpia = null;
         try {
-            if ($activity->getId() === null || $activity->getTenant() === null) {
+            // Not managed (any more): its insert was rolled back or the
+            // manager was reset — nothing to suggest for.
+            if ($activity->getId() === null || $activity->getTenant() === null || !$em->contains($activity)) {
                 return;
             }
             // Already linked DPIA?
@@ -141,7 +171,7 @@ final class AutoReactionDpiaSuggestListener
                 'error' => $e->getMessage(),
             ]);
             if (!$em->isOpen()) {
-                $this->managerRegistry?->resetManager();
+                $this->entityManagerRecovery?->reset();
             } elseif ($dpia !== null && $em->contains($dpia)) {
                 $em->detach($dpia);
             }
@@ -170,7 +200,14 @@ final class AutoReactionDpiaSuggestListener
     }
 
     /**
-     * Draft DPIA prefilled from the activity; every NOT NULL column is set.
+     * Draft DPIA prefilled ONLY with what the activity already states. The
+     * assessment itself (necessity, proportionality, risk level, measures) is
+     * left empty ('' / []) — the NOT NULL columns accept that — so the
+     * skeleton is honestly incomplete: isComplete() is false, it is listed by
+     * findIncomplete(), submitForReview() refuses it and it does not count as
+     * complete in the DPIA compliance figures. No placeholder text is stored
+     * (it would also be untranslated data). Values are cut to their column
+     * lengths so the insert cannot fail on an over-long activity value.
      */
     private function buildSkeleton(ProcessingActivity $activity, EntityManagerInterface $em): DataProtectionImpactAssessment
     {
@@ -182,31 +219,31 @@ final class AutoReactionDpiaSuggestListener
         $dpia->setTenant($tenant);
         $dpia->setProcessingActivity($activity);
         $dpia->setReferenceNumber($repository->getNextReferenceNumber($tenant));
-        $dpia->setTitle(sprintf(
-            'DPIA Auto-Suggestion: %s (%s)',
-            $activity->getName() ?? 'Processing-Activity',
+        $dpia->setTitle(mb_substr(sprintf(
+            'DPIA: %s (%s)',
+            $activity->getName() ?? (string) $activity->getId(),
             (new \DateTimeImmutable())->format('Y-m-d'),
-        ));
+        ), 0, self::TITLE_MAX));
         $dpia->setStatus(DpiaStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist DPIA skeleton)
-        $dpia->setProcessingDescription(
-            'Auto-generated DPIA skeleton based on high-risk indicators: '
-            . implode('; ', $this->highRiskReasons($activity))
-            . '. Review and complete required sections (Art. 35 (7) GDPR).'
-        );
+
+        // Derived from the activity.
+        $dpia->setProcessingDescription(trim((string) $activity->getDescription()));
         $purposes = array_filter(array_map(
             static fn (mixed $p): string => is_scalar($p) ? trim((string) $p) : '',
             $activity->getPurposes(),
         ));
-        $dpia->setProcessingPurposes($purposes !== [] ? implode('; ', $purposes) : self::PLACEHOLDER);
-        $dpia->setDataCategories($activity->getPersonalDataCategories() !== [] ? $activity->getPersonalDataCategories() : ['to_be_assessed']);
-        $dpia->setDataSubjectCategories($activity->getDataSubjectCategories() !== [] ? $activity->getDataSubjectCategories() : ['to_be_assessed']);
-        $dpia->setLegalBasis($activity->getLegalBasis() ?: self::PLACEHOLDER);
-        $dpia->setNecessityAssessment(self::PLACEHOLDER);
-        $dpia->setProportionalityAssessment(self::PLACEHOLDER);
+        $dpia->setProcessingPurposes(implode('; ', $purposes));
+        $dpia->setDataCategories(array_values($activity->getPersonalDataCategories()));
+        $dpia->setDataSubjectCategories(array_values($activity->getDataSubjectCategories()));
+        $dpia->setLegalBasis(mb_substr(trim((string) $activity->getLegalBasis()), 0, self::LEGAL_BASIS_MAX));
+
+        // The assessment is the DPO's work: left empty.
+        $dpia->setNecessityAssessment('');
+        $dpia->setProportionalityAssessment('');
         $dpia->setIdentifiedRisks([]);
-        $dpia->setRiskLevel('high');
-        $dpia->setTechnicalMeasures(self::PLACEHOLDER);
-        $dpia->setOrganizationalMeasures(self::PLACEHOLDER);
+        $dpia->setRiskLevel('');
+        $dpia->setTechnicalMeasures('');
+        $dpia->setOrganizationalMeasures('');
 
         return $dpia;
     }
