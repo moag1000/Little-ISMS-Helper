@@ -1587,14 +1587,14 @@ class DashboardStatisticsService
      */
     public function getDoraKPIs(): array
     {
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
+        // Same scope as getManagementKPIs(): the user's tenant, else the TenantContext tenant.
+        $tenant = $this->tenantRecords->resolve($this->security->getUser()?->getTenant());
 
         return [
             'ict_risk' => $this->getIctRiskKPIs($tenant),
             'incident_reporting' => $this->getDoraIncidentKPIs($tenant),
-            'resilience_testing' => $this->getResilienceTestingKPIs(),
-            'third_party' => $this->getThirdPartyRiskKPIs(),
+            'resilience_testing' => $this->getResilienceTestingKPIs($tenant),
+            'third_party' => $this->getThirdPartyRiskKPIs($tenant),
         ];
     }
 
@@ -1603,9 +1603,7 @@ class DashboardStatisticsService
      */
     private function getIctRiskKPIs(?Tenant $tenant): array
     {
-        $allRisks = $tenant
-            ? $this->getAllAccessibleRisks($tenant)
-            : $this->riskRepository->findAll();
+        $allRisks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
 
         // Filter for ICT-related risks (assuming category or tag)
         $ictRisks = array_filter(
@@ -1632,9 +1630,7 @@ class DashboardStatisticsService
     /** Get DORA Incident Reporting KPIs */
     private function getDoraIncidentKPIs(?Tenant $tenant): array
     {
-        $allIncidents = $tenant
-            ? $this->getAllAccessibleIncidents($tenant)
-            : $this->incidentRepository->findAll();
+        $allIncidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : []; // no tenant: fail closed
 
         // Major ICT incidents (high severity)
         $majorIncidents = array_filter(
@@ -1675,12 +1671,12 @@ class DashboardStatisticsService
     /**
      * Get Resilience Testing KPIs for DORA
      */
-    private function getResilienceTestingKPIs(): array
+    private function getResilienceTestingKPIs(?Tenant $tenant): array
     {
         $kpis = [];
         // BC Exercises as resilience tests
         if ($this->bcExerciseRepository !== null) {
-            $allExercises = $this->bcExerciseRepository->findAll();
+            $allExercises = $this->tenantRecords->all($this->bcExerciseRepository, $tenant);
             $thisYear = (new \DateTime())->format('Y');
             $exercisesThisYear = array_filter(
                 $allExercises,
@@ -1700,12 +1696,12 @@ class DashboardStatisticsService
     /**
      * Get Third-Party Risk KPIs for DORA
      */
-    private function getThirdPartyRiskKPIs(): array
+    private function getThirdPartyRiskKPIs(?Tenant $tenant): array
     {
         if ($this->supplierRepository === null) {
             return [];
         }
-        $allSuppliers = $this->supplierRepository->findAll();
+        $allSuppliers = $this->tenantRecords->all($this->supplierRepository, $tenant);
         // ICT Third-party providers (assuming type or category)
         $ictProviders = array_filter(
             $allSuppliers,

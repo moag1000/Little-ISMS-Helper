@@ -7,9 +7,11 @@ namespace App\Tests\Service;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\AssetRepository;
+use App\Repository\BCExerciseRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Repository\SupplierRepository;
 use App\Service\DashboardStatisticsService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -69,5 +71,67 @@ final class DashboardKpiTenantScopeTest extends TestCase
         $kpis = $this->service(null, $tenant)->getManagementKPIs();
 
         self::assertArrayHasKey('core', $kpis, 'scoped to the context tenant, not refused');
+    }
+
+    private function doraService(?Tenant $tenant, BCExerciseRepository $exercises, SupplierRepository $suppliers): DashboardStatisticsService
+    {
+        $user = $this->createStub(User::class);
+        $user->method('getTenant')->willReturn($tenant);
+        $security = $this->createStub(Security::class);
+        $security->method('getUser')->willReturn($user);
+        $context = $this->createStub(TenantContext::class);
+        $context->method('getCurrentTenant')->willReturn(null);
+        $modules = $this->createStub(ModuleConfigurationService::class);
+
+        return new DashboardStatisticsService(
+            $this->createStub(AssetRepository::class),
+            $this->createStub(RiskRepository::class),
+            $this->createStub(IncidentRepository::class),
+            $this->createStub(ControlRepository::class),
+            $security,
+            $modules,
+            supplierRepository: $suppliers,
+            bcExerciseRepository: $exercises,
+            tenantRecords: new TenantRecords($context),
+        );
+    }
+
+    #[Test]
+    public function doraResilienceAndThirdPartyBlocksReadOnlyTheTenantsRecords(): void
+    {
+        $tenant = $this->createStub(Tenant::class);
+        $tenant->method('getParent')->willReturn(null);
+        $tenant->method('getSubsidiaries')->willReturn(new \Doctrine\Common\Collections\ArrayCollection());
+
+        $exercise = $this->createStub(\App\Entity\BCExercise::class);
+        $exercise->method('getExerciseDate')->willReturn(new \DateTime());
+        $exercises = $this->createMock(BCExerciseRepository::class);
+        $exercises->expects(self::once())->method('findBy')->with(['tenant' => $tenant])->willReturn([$exercise]);
+        $exercises->expects(self::never())->method('findAll');
+        $suppliers = $this->createMock(SupplierRepository::class);
+        $suppliers->expects(self::once())->method('findBy')->with(['tenant' => $tenant])->willReturn([]);
+        $suppliers->expects(self::never())->method('findAll');
+
+        $dora = $this->doraService($tenant, $exercises, $suppliers)->getDoraKPIs();
+
+        self::assertSame(1, $dora['resilience_testing']['resilience_tests_ytd']['value']);
+        self::assertSame(0, $dora['third_party']['ict_providers']['value']);
+    }
+
+    #[Test]
+    public function doraBlocksFailClosedWithoutAnyTenant(): void
+    {
+        $exercises = $this->createMock(BCExerciseRepository::class);
+        $exercises->expects(self::never())->method('findAll');
+        $exercises->expects(self::never())->method('findBy');
+        $suppliers = $this->createMock(SupplierRepository::class);
+        $suppliers->expects(self::never())->method('findAll');
+        $suppliers->expects(self::never())->method('findBy');
+
+        $dora = $this->doraService(null, $exercises, $suppliers)->getDoraKPIs();
+
+        self::assertSame(0, $dora['resilience_testing']['resilience_tests_ytd']['value']);
+        self::assertSame(0, $dora['third_party']['ict_providers']['value']);
+        self::assertSame(0, $dora['ict_risk']['ict_risks_total']['value']);
     }
 }
