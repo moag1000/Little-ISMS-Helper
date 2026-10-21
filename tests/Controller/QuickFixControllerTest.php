@@ -159,6 +159,15 @@ class QuickFixControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testAnonymousVisitorDoesNotLearnThatNoOperatorExists(): void
+    {
+        $this->stubSuperAdminCheck(false);
+        $this->client->request('GET', '/quick-fix');
+
+        $this->assertSelectorNotExists('[data-testid="quick-fix-no-super-admin"]');
+    }
+
+    #[Test]
     public function testIndexHasNoSuperAdminWarningWhenOperatorExists(): void
     {
         $this->stubSuperAdminCheck(true);

@@ -116,7 +116,9 @@ Restructuring through the corporate-structure view
 *subsidiary* of its tree under another organisation of the same tree — never
 its own organisation, never to the top level (detaching a subsidiary makes it a
 root outside the tree) and never under a foreign organisation. Detaching is an
-instance-operator action.
+instance-operator action. There is no UI for this move for organisation admins —
+the corporate-structure page offers set-parent / detach to instance operators
+only; organisation admins use the API endpoint.
 
 ### Features
 

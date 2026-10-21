@@ -120,6 +120,7 @@ verwalten kann.
 `/quick-fix` zeigt im Abschnitt Datenintegritaet einen roten Hinweis
 **"Kein aktiver Instanz-Betreiber"**, sobald kein *aktives* Konto
 `ROLE_SUPER_ADMIN` hat (auch wenn das Betreiber-Konto deaktiviert wurde).
+Der Hinweis erscheint nur angemeldeten Besuchern (`/quick-fix` ist öffentlich).
 Eine Web-Reparatur gibt es bewusst nicht (Shell-Zugriff = Betreiber).
 Auf der Server-Shell:
 
