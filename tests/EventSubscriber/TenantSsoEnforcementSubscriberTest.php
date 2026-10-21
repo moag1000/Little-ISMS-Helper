@@ -120,9 +120,9 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
     #[Test]
     public function userLinkedToDisabledProviderIsRedirectedToEnforcedProvider(): void
     {
-        // #1059 I-4: a binding to a disabled provider counts as no binding —
-        // the enforced provider may replace it, even with its linking off.
-        $enforced = (new IdentityProvider())->setSlug('primary')->setEnabled(true)->setAllowEmailLinking(false);
+        // #1059 I-4/I-6: a binding to a disabled provider counts as no binding —
+        // the enforced provider (linking on) may replace it.
+        $enforced = (new IdentityProvider())->setSlug('primary')->setEnabled(true)->setAllowEmailLinking(true);
         $disabled = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(false);
 
         $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
@@ -134,11 +134,25 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function unusableBindingFailsOpenWhenEnforcedProviderDoesNotLinkByEmail(): void
+    {
+        // #1059 I-6: unusable binding = no binding; with the enforced
+        // provider's linking off it cannot sign the user in → password + MFA.
+        $enforced = (new IdentityProvider())->setSlug('primary')->setEnabled(true)->setAllowEmailLinking(false);
+        $disabled = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(false);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$enforced], userLinked: false, boundTo: $disabled);
+
+        self::assertNull($event->getResponse());
+    }
+
+    #[Test]
     public function tenantAdminDisablingOwnProviderSendsUsersToOperatorProvider(): void
     {
         // Users signed in through the organisation's own provider; its admin
         // switches it off. They end at the operator's provider, never password.
-        $operator = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        $operator = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)->setAllowEmailLinking(true);
         $tenantOwn = (new IdentityProvider())->setSlug('tenant-own')->setEnabled(false)->setAllowEmailLinking(true);
 
         $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
@@ -155,7 +169,7 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
     {
         // Bound to the OLD organisation's provider (enabled, but no longer in
         // the user's tree) → counts as no binding.
-        $operator = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        $operator = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)->setAllowEmailLinking(true);
         $oldOrg = (new Tenant())->setName('Old')->setCode('old');
         $oldOrgProvider = (new IdentityProvider())->setSlug('old-org')->setEnabled(true)->setTenant($oldOrg);
 

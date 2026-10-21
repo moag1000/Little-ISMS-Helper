@@ -81,8 +81,8 @@ final class SsoEnforcementSubscriberTest extends TestCase
     #[Test]
     public function userLinkedToDisabledProviderIsRedirectedToEnforcedProvider(): void
     {
-        // #1059 I-4: a binding to a disabled provider counts as no binding.
-        $enforced = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        // #1059 I-4/I-6: a binding to a disabled provider counts as no binding.
+        $enforced = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(true);
         $disabled = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(false);
 
         $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $enforced,
@@ -94,11 +94,22 @@ final class SsoEnforcementSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function unusableBindingFailsOpenWhenEnforcedProviderDoesNotLinkByEmail(): void
+    {
+        $enforced = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        $disabled = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(false);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $enforced,
+            userLinked: false, boundTo: $disabled);
+        self::assertNull($event->getResponse());
+    }
+
+    #[Test]
     public function tenantAdminDisablingOwnProviderSendsUsersToOperatorProvider(): void
     {
         $tenant = (new \App\Entity\Tenant())->setName('Acme')->setCode('acme');
         $operatorEnforced = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)
-            ->setDomainBindingMode(IdentityProvider::DOMAIN_MODE_ENFORCE)->setAllowEmailLinking(false);
+            ->setDomainBindingMode(IdentityProvider::DOMAIN_MODE_ENFORCE)->setAllowEmailLinking(true);
         $tenantOwn = (new IdentityProvider())->setSlug('tenant-own')->setEnabled(false)->setTenant($tenant);
         $user = (new User())->setTenant($tenant);
 
@@ -116,7 +127,7 @@ final class SsoEnforcementSubscriberTest extends TestCase
         $oldOrg = (new \App\Entity\Tenant())->setName('Old')->setCode('old');
         $newOrg = (new \App\Entity\Tenant())->setName('New')->setCode('new');
         $operatorEnforced = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)
-            ->setDomainBindingMode(IdentityProvider::DOMAIN_MODE_ENFORCE)->setAllowEmailLinking(false);
+            ->setDomainBindingMode(IdentityProvider::DOMAIN_MODE_ENFORCE)->setAllowEmailLinking(true);
         $oldOrgProvider = (new IdentityProvider())->setSlug('old-org')->setEnabled(true)->setTenant($oldOrg);
         $user = (new User())->setTenant($newOrg);
 

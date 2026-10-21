@@ -90,15 +90,19 @@ final class SsoAccountLinkPolicy
      */
     public static function mayLinkByEmail(IdentityProvider $provider, User $target, ?string $externalId = null): bool
     {
+        // Never link a privileged account by e-mail — through ANY provider,
+        // global ones included (same rule as the env Azure path, #1059 I-6).
+        if (UserAdministrationGuard::privilegedRolesIn($target->getRoles()) !== []) {
+            return false;
+        }
         $boundProvider = $target->getSsoProvider();
         // A binding to an unusable provider (disabled, or no longer global /
-        // in the user's tree) counts as no binding; replacing it is allowed —
-        // the e-mail match of this login is the same proof a first link uses,
-        // and the tree / never-privileged rules still run first (#1059 I-4).
+        // in the user's tree) is treated exactly like no binding: the
+        // provider's own allowEmailLinking decides (#1059 I-4/I-6).
         if ($boundProvider !== null && !self::isSameProvider($boundProvider, $provider)
             && !self::isUsableBinding($boundProvider, $target)
         ) {
-            return true;
+            $boundProvider = null;
         }
 
         return $provider->isAllowEmailLinking()

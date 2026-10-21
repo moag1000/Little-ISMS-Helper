@@ -480,11 +480,23 @@ not lock such users out. A password login is redirected to
 
 A binding to an *unusable* provider — disabled, or no longer global / in the
 user's current organisation tree (e.g. after a move to another organisation) —
-counts as no binding, for enforcement and for linking: the enforcing provider
-may replace it on the next login (still never for privileged accounts of an
-organisation-owned provider, still within the tree rules). So an organisation
-admin cannot switch off operator-level enforcement by disabling the own
-provider. Only when no enabled, allowed provider can sign the user in does the
+counts exactly as no binding, for enforcement and for linking: another
+provider may replace it on the next login **only if that provider links
+existing accounts by e-mail** (`allowEmailLinking`), within the tree rules.
+So an organisation admin cannot switch off operator-level enforcement by
+disabling the own provider — **provided the operator's enforcing provider has
+e-mail linking on**. If it is off, such users fall back to password + MFA
+(listed on *Admin → SSO*): enable e-mail linking on the enforcing provider or
+link the users manually (let them sign in once while linking is on).
+
+**Privileged accounts are never linked by e-mail** — through any provider,
+global ones included (`ROLE_SUPER_ADMIN`, `ROLE_GROUP_CISO`,
+`ROLE_KONZERN_AUDITOR`, `ROLE_ALLOWED_TO_SWITCH`). An existing binding keeps
+working; a new one for such an account needs a binding made while the account
+was not privileged, or an operator. Under SSO enforcement an unbound
+privileged account keeps password + MFA.
+
+Only when no enabled, allowed provider can sign the user in does the
 password login proceed; once the account is linked, enforcement applies. The SSO admin page
 (*Admin → SSO*) lists these exempted accounts (count and names, limited to
 the accounts the viewer may see).

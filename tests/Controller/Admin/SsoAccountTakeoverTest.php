@@ -171,9 +171,18 @@ final class SsoAccountTakeoverTest extends WebTestCase
         self::assertSame($this->globalProvider->getId(), $reloaded->getSsoProvider()?->getId());
         self::assertContains('ROLE_SUPER_ADMIN', $reloaded->getRoles());
 
-        $super = $this->resolve($this->globalProvider, $this->email('super'), 'sub-super-global', []);
-        self::assertInstanceOf(User::class, $super);
-        self::assertSame($this->super->getId(), $super->getId());
+        // #1059 I-6 ruling: a privileged account is never linked by e-mail,
+        // not even by a global provider; an existing binding keeps working.
+        $this->expectLoginRejected($this->globalProvider, $this->email('super'), 'sub-super-global');
+        self::assertNull($this->reload($this->super)->getSsoProvider());
+
+        $super = $this->reload($this->super)->setSsoProvider(
+            $this->em->find(IdentityProvider::class, $this->globalProvider->getId()),
+        )->setSsoExternalId('sub-super-bound');
+        $this->em->flush();
+        $resolved = $this->resolve($this->globalProvider, $this->email('super'), 'sub-super-bound', []);
+        self::assertInstanceOf(User::class, $resolved);
+        self::assertSame($this->super->getId(), $resolved->getId());
     }
 
     #[Test]
@@ -389,21 +398,60 @@ final class SsoAccountTakeoverTest extends WebTestCase
     }
 
     #[Test]
-    public function bindingToUnusableProviderIsReplacedByEnforcingProvider(): void
+    public function bindingToUnusableProviderIsReplacedOnlyWhenLinkingIsOn(): void
     {
-        // #1059 I-4: userB (organisation B) is bound to organisation A's
+        // #1059 I-4/I-6: userB (organisation B) is bound to organisation A's
         // provider — not in B's tree, so the binding is unusable and counts as
-        // none. The global provider replaces it even with its linking off.
+        // none. The global provider's own allowEmailLinking decides.
         $this->userB->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-in-a');
         $this->globalProvider->setAllowEmailLinking(false);
         $this->em->flush();
 
+        $this->expectLoginRejected($this->globalProvider, $this->email('userb'), 'sub-global-b');
+        self::assertSame($this->tenantProvider->getId(), $this->reload($this->userB)->getSsoProvider()?->getId());
+
+        $this->em->find(IdentityProvider::class, $this->globalProvider->getId())?->setAllowEmailLinking(true);
+        $this->em->flush();
         $user = $this->resolve($this->globalProvider, $this->email('userb'), 'sub-global-b', []);
 
         self::assertInstanceOf(User::class, $user);
         $reloaded = $this->reload($this->userB);
         self::assertSame($this->globalProvider->getId(), $reloaded->getSsoProvider()?->getId());
         self::assertSame('sub-global-b', $reloaded->getSsoExternalId());
+    }
+
+    #[Test]
+    public function superAdminWithDisabledGlobalIdpIsNotLinkableViaAnotherGlobalProvider(): void
+    {
+        // #1059 I-6: the operator's old global IdP is disabled; another global
+        // provider must not take over the SUPER_ADMIN by e-mail — linking on or off.
+        $old = $this->provider('oldglobal', null)->setEnabled(false);
+        $this->em->flush();
+        $this->super->setSsoProvider($old)->setSsoExternalId('sub-super-old');
+        $this->em->flush();
+
+        try {
+            foreach ([false, true] as $linking) {
+                $this->em->find(IdentityProvider::class, $this->globalProvider->getId())?->setAllowEmailLinking($linking);
+                $this->em->flush();
+                $this->expectLoginRejected($this->globalProvider, $this->email('super'), 'sub-super-new');
+                self::assertSame($old->getId(), $this->reload($this->super)->getSsoProvider()?->getId(), 'linking ' . var_export($linking, true));
+            }
+
+            // Same with a legacy (pre-hotfix) binding to a tenant provider.
+            $this->reload($this->super)->setSsoProvider($this->em->find(IdentityProvider::class, $this->tenantProvider->getId()));
+            $this->em->flush();
+            $this->expectLoginRejected($this->globalProvider, $this->email('super'), 'sub-super-new');
+            self::assertSame($this->tenantProvider->getId(), $this->reload($this->super)->getSsoProvider()?->getId());
+        } finally {
+            $this->em->clear();
+            $this->em->find(User::class, $this->super->getId())?->setSsoProvider(null);
+            $this->em->flush();
+            if (($p = $this->em->find(IdentityProvider::class, $old->getId())) !== null) {
+                $this->em->remove($p);
+                $this->em->flush();
+            }
+        }
     }
 
     #[Test]
