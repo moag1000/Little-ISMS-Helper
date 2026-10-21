@@ -180,3 +180,6 @@ sso:
             last_name: 'Last name'
             job_title: 'Job title'
             department: 'Department'
+    privileged_roles_ignored:
+        title: 'Privileged roles are ignored for this provider'
+        body: 'This provider belongs to an organisation, so it can never assign the privileged roles %roles% at login — such mappings and default roles fall back to the regular role (ROLE_USER). Only a provider without an organisation (instance-wide, configured by an instance administrator) may assign privileged roles.'

@@ -405,6 +405,8 @@ organisation-owned identity provider. Such a provider now:
 - never assigns a privileged role, whether through a claim→role mapping, the
   default role or the fallback role — such mappings are ignored at login.
   Saving a role mapping with a privileged role requires `ROLE_SUPER_ADMIN`.
+  The provider's detail and edit pages show a warning listing every
+  privileged role that is configured but ignored.
 
 **Action required:** existing SSO links of holding-level users
 (`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) or operators through an

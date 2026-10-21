@@ -10,6 +10,7 @@ use App\Entity\IdentityProviderRoleMapping;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\Sso\OidcAuthenticationFlow;
+use App\Service\Sso\SsoAccountLinkPolicy;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -241,6 +242,41 @@ final class SsoAccountTakeoverTest extends WebTestCase
             ->findBy(['identityProvider' => $this->globalProvider->getId()]);
         self::assertCount(1, $mappings);
         self::assertSame('ROLE_SUPER_ADMIN', $mappings[0]->getAssignedRole());
+    }
+
+    #[Test]
+    public function providerPagesWarnAboutIgnoredPrivilegedRolesOfTenantProvider(): void
+    {
+        // Legacy / operator-created privileged mapping on a tenant-owned provider.
+        $this->mapping($this->tenantProvider, 'ROLE_GROUP_CISO');
+        $this->tenantProvider->setDefaultFallbackRole('ROLE_SUPER_ADMIN');
+        $this->em->flush();
+        $this->client->loginUser($this->adminA);
+
+        foreach (['', '/edit'] as $suffix) {
+            $crawler = $this->client->request('GET', '/en/admin/sso/' . $this->tenantProvider->getId() . $suffix);
+            self::assertResponseIsSuccessful();
+            $alert = $crawler->filter('.fa-alert--warning');
+            self::assertGreaterThan(0, $alert->count(), 'warning missing on ' . ($suffix ?: 'show'));
+            self::assertStringContainsString('ROLE_GROUP_CISO', $alert->text());
+            self::assertStringContainsString('ROLE_SUPER_ADMIN', $alert->text());
+        }
+    }
+
+    #[Test]
+    public function ignoredPrivilegedRolesIsEmptyForGlobalProviderAndOrdinaryRoles(): void
+    {
+        $privileged = $this->mapping($this->globalProvider, 'ROLE_SUPER_ADMIN');
+        $ordinary = $this->mapping($this->tenantProvider, 'ROLE_MANAGER');
+
+        self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->globalProvider, [$privileged]));
+        self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$ordinary]));
+        self::assertSame(
+            ['ROLE_SUPER_ADMIN'],
+            SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$privileged]),
+        );
+        $privileged->setIsActive(false);
+        self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$privileged]));
     }
 
     // -------------------------------------------------------------- helpers

@@ -18,6 +18,8 @@
         title: (is_new ? 'sso.admin.new_provider' : 'sso.admin.edit_provider')|trans,
     }) }}
 
+    {% include 'admin/sso/_privileged_roles_ignored.html.twig' with { roles: ignored_privileged_roles } only %}
+
     {{ form_start(form) }}
     <div class="row g-3">
         <div class="col-md-6">

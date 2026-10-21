@@ -23,6 +23,7 @@ use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\Sso\OidcAuthenticationFlow;
 use App\Service\Sso\OidcDiscoveryService;
+use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Service\Sso\SsoSecretEncryption;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -260,6 +261,10 @@ final class SsoProviderController extends AbstractController
             'form' => $form->createView(),
             'provider' => $provider,
             'is_new' => $isNew,
+            'ignored_privileged_roles' => $isNew ? [] : SsoAccountLinkPolicy::ignoredPrivilegedRoles(
+                $provider,
+                $this->roleMappingRepo->findActiveByProvider($provider),
+            ),
         ], new Response(status: $status));
     }
 
@@ -279,6 +284,7 @@ final class SsoProviderController extends AbstractController
             'provider'    => $provider,
             'mappings'    => $mappings,
             'audit_trail' => $last50,
+            'ignored_privileged_roles' => SsoAccountLinkPolicy::ignoredPrivilegedRoles($provider, $mappings),
         ]);
     }
 

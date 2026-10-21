@@ -21,6 +21,8 @@
         ]
     }) }}
 
+    {% include 'admin/sso/_privileged_roles_ignored.html.twig' with { roles: ignored_privileged_roles } only %}
+
     <div class="row g-3">
         <div class="col-md-6">
             <section class="fa-section">

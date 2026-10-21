@@ -180,3 +180,6 @@ sso:
             last_name: 'Nachname'
             job_title: 'Funktion'
             department: 'Abteilung'
+    privileged_roles_ignored:
+        title: 'Privilegierte Rollen werden bei diesem Provider ignoriert'
+        body: 'Dieser Provider gehört zu einer Organisation und kann die privilegierten Rollen %roles% bei der Anmeldung nie vergeben — solche Mappings und Standardrollen fallen auf die normale Rolle (ROLE_USER) zurück. Nur ein Provider ohne Organisation (instanzweit, von einem Instanz-Administrator eingerichtet) darf privilegierte Rollen vergeben.'
