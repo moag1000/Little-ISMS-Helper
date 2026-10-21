@@ -78,10 +78,11 @@ class UserSessionRepository extends ServiceEntityRepository
     /**
      * Get active sessions with optional filters
      *
-     * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
+     * @param \App\Entity\Tenant[]|null $tenants restrict to administrable users of these tenants (null = all)
+     * @param User|null $self the acting user, whose own sessions stay visible in a restricted scope
      * @return UserSession[]
      */
-    public function getActiveSessions(?int $limit = null, ?string $userEmail = null, ?array $tenants = null): array
+    public function getActiveSessions(?int $limit = null, ?string $userEmail = null, ?array $tenants = null, ?User $self = null): array
     {
         $queryBuilder = $this->createQueryBuilder('s')
             ->leftJoin('s.user', 'u')
@@ -89,13 +90,13 @@ class UserSessionRepository extends ServiceEntityRepository
             ->where('s.isActive = :active')
             ->setParameter('active', true);
 
-        // Tenant scope (null = unrestricted, e.g. SUPER_ADMIN; [] = nothing)
+        // Scope (null = unrestricted, SUPER_ADMIN). Applied in the query so
+        // LIMIT and the statistics see the same row set (#1059).
         if ($tenants !== null) {
-            if ($tenants === []) {
+            if ($tenants === [] && !$self instanceof User) {
                 return [];
             }
-            $queryBuilder->andWhere('u.tenant IN (:tenants)')
-                ->setParameter('tenants', $tenants);
+            $this->applyAdministrableUserScope($queryBuilder, 'u', $tenants, $self);
         }
 
         if ($userEmail) {
@@ -115,15 +116,16 @@ class UserSessionRepository extends ServiceEntityRepository
     /**
      * Get session statistics
      *
-     * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
+     * @param \App\Entity\Tenant[]|null $tenants restrict to administrable users of these tenants (null = all)
+     * @param User|null $self the acting user (counted in a restricted scope)
      */
-    public function getStatistics(?array $tenants = null): array
+    public function getStatistics(?array $tenants = null, ?User $self = null): array
     {
-        if ($tenants === []) {
+        if ($tenants === [] && !$self instanceof User) {
             return ['total_active' => 0, 'total_last_24h' => 0, 'unique_users' => 0];
         }
 
-        $queryBuilder = $this->scopedQueryBuilder($tenants);
+        $queryBuilder = $this->scopedQueryBuilder($tenants, $self);
 
         $totalActive = (int) $queryBuilder->select('COUNT(s.id)')
             ->andWhere('s.isActive = :active')
@@ -133,7 +135,7 @@ class UserSessionRepository extends ServiceEntityRepository
 
         // Get sessions from last 24 hours
         $yesterday = new DateTimeImmutable('-24 hours');
-        $totalLast24h = (int) $this->scopedQueryBuilder($tenants)
+        $totalLast24h = (int) $this->scopedQueryBuilder($tenants, $self)
             ->select('COUNT(s.id)')
             ->andWhere('s.createdAt >= :since')
             ->setParameter('since', $yesterday)
@@ -141,7 +143,7 @@ class UserSessionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         // Get unique users with active sessions
-        $uniqueUsers = (int) $this->scopedQueryBuilder($tenants)
+        $uniqueUsers = (int) $this->scopedQueryBuilder($tenants, $self)
             ->select('COUNT(DISTINCT s.user)')
             ->andWhere('s.isActive = :active')
             ->setParameter('active', true)
@@ -158,16 +160,42 @@ class UserSessionRepository extends ServiceEntityRepository
     /**
      * @param \App\Entity\Tenant[]|null $tenants
      */
-    private function scopedQueryBuilder(?array $tenants): \Doctrine\ORM\QueryBuilder
+    private function scopedQueryBuilder(?array $tenants, ?User $self = null): \Doctrine\ORM\QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('s');
         if ($tenants !== null) {
-            $queryBuilder->innerJoin('s.user', 'su')
-                ->andWhere('su.tenant IN (:tenants)')
-                ->setParameter('tenants', $tenants);
+            $queryBuilder->innerJoin('s.user', 'su');
+            $this->applyAdministrableUserScope($queryBuilder, 'su', $tenants, $self);
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * Sessions of users a non-SUPER_ADMIN actor may administer — the query
+     * form of UserVoter::EDIT: users of the given tenants that are not
+     * ROLE_SUPER_ADMIN, plus the actor itself. Users without a tenant never
+     * match (instance operator only).
+     *
+     * @param \App\Entity\Tenant[] $tenants
+     */
+    private function applyAdministrableUserScope(
+        \Doctrine\ORM\QueryBuilder $queryBuilder,
+        string $userAlias,
+        array $tenants,
+        ?User $self,
+    ): void {
+        $conditions = [];
+        if ($tenants !== []) {
+            $conditions[] = sprintf('(%1$s.tenant IN (:scope_tenants) AND %1$s.roles NOT LIKE :scope_super)', $userAlias);
+            $queryBuilder->setParameter('scope_tenants', $tenants)
+                ->setParameter('scope_super', \App\Service\InitialAdminService::ROLE_SUPER_ADMIN_LIKE);
+        }
+        if ($self instanceof User) {
+            $conditions[] = sprintf('%s = :scope_self', $userAlias);
+            $queryBuilder->setParameter('scope_self', $self);
+        }
+        $queryBuilder->andWhere(implode(' OR ', $conditions));
     }
 
     /**

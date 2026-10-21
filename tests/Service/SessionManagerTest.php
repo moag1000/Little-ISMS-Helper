@@ -424,18 +424,16 @@ class SessionManagerTest extends TestCase
         $this->mockTableExists();
 
         $stats = [
-            'total_sessions' => 100,
-            'active_sessions' => 25,
-            'inactive_sessions' => 75,
+            'total_active' => 25,
+            'total_last_24h' => 100,
+            'unique_users' => 7,
         ];
 
         $this->sessionRepository->method('getStatistics')->willReturn($stats);
 
         $result = $this->service->getStatistics();
 
-        $this->assertEquals(100, $result['total_sessions']);
-        $this->assertEquals(25, $result['active_sessions']);
-        $this->assertEquals(75, $result['inactive_sessions']);
+        $this->assertSame($stats, $result);
     }
 
     #[Test]
@@ -445,9 +443,8 @@ class SessionManagerTest extends TestCase
 
         $result = $this->service->getStatistics();
 
-        $this->assertEquals(0, $result['total_sessions']);
-        $this->assertEquals(0, $result['active_sessions']);
-        $this->assertEquals(0, $result['inactive_sessions']);
+        // Same keys as the repository result — the session index reads them.
+        $this->assertSame(['total_active' => 0, 'total_last_24h' => 0, 'unique_users' => 0], $result);
     }
 
     #[Test]
