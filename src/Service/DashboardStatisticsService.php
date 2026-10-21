@@ -542,17 +542,19 @@ class DashboardStatisticsService
      * Each KPI includes value, status (good/warning/danger), and trend data.
      *
      * @param Tenant|null $tenant Explicit tenant for callers without a logged-in
-     *                           user (KPI snapshot cron); defaults to the user's tenant.
+     *                           user (KPI snapshot cron); defaults to the user's tenant, then the TenantContext
+     *                           tenant (as on record pages). Without any tenant: empty array.
      * @return array Module-aware KPIs grouped by category
      */
     public function getManagementKPIs(?Tenant $tenant = null): array
     {
-        // Explicit / user / TenantContext tenant; else only an instance-wide SUPER_ADMIN, others fail closed.
+        // Explicit / user / TenantContext tenant — the same scope as the record pages; no tenant fails closed
+        // (no hidden instance-wide mode, not even for SUPER_ADMIN).
         $tenant = $this->tenantRecords->resolve($tenant ?? $this->security->getUser()?->getTenant());
-        if (!$tenant instanceof Tenant && !$this->tenantRecords->isInstanceWide()) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
-        $cacheKey = 'management_kpis_' . ($tenant?->getId() ?? 'instance');
+        $cacheKey = 'management_kpis_' . $tenant->getId();
 
         if ($this->cache !== null) {
             return $this->cache->get($cacheKey, function (ItemInterface $item) use ($tenant) {
