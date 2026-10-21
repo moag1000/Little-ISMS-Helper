@@ -8,7 +8,7 @@ src/Repository/ComplianceMappingRepository.php:LOC=1815 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1815 deps=17
 src/Entity/Incident.php:LOC=1785 deps=0
 src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
-src/Service/DashboardStatisticsService.php:LOC=1729 deps=24
+src/Service/DashboardStatisticsService.php:LOC=1682 deps=24
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1573 deps=18
 src/Entity/ProcessingActivity.php:LOC=1415 deps=0
