@@ -9,6 +9,7 @@ use App\Entity\IdentityProvider;
 use App\Entity\IdentityProviderRoleMapping;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\AuditLogger;
 use App\Service\Sso\OidcAuthenticationFlow;
 use App\Service\Sso\SsoAccountLinkPolicy;
 use Doctrine\ORM\EntityManagerInterface;
@@ -331,6 +332,28 @@ final class SsoAccountTakeoverTest extends WebTestCase
             self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
         }
         self::assertSame($this->globalProvider->getId(), $this->reload($this->userChildA)->getSsoProvider()?->getId());
+    }
+
+    #[Test]
+    public function sameProviderNewSubjectIsNeverRelinkedAndIsAudited(): void
+    {
+        // #1059 M-b: same provider, same e-mail claim, different subject id →
+        // refused (admin action needed), security event logged.
+        $this->userChildA->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-original');
+        $this->em->flush();
+
+        try {
+            $this->resolve($this->tenantProvider, $this->email('userchilda'), 'sub-new', []);
+            self::fail('a subject change must be refused');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertSame('sub-original', $this->reload($this->userChildA)->getSsoExternalId());
+        $events = (int) $this->em->getConnection()->fetchOne(
+            'SELECT COUNT(*) FROM audit_log WHERE action = ? AND entity_type = ? AND entity_id = ? AND new_values LIKE ?',
+            [AuditLogger::ACTION_SSO_LOGIN_FAILURE, 'IdentityProvider', $this->tenantProvider->getId(), '%subject_changed%'],
+        );
+        self::assertSame(1, $events, 'security event for the subject change');
     }
 
     #[Test]

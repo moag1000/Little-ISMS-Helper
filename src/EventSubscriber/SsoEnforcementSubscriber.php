@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\IdentityProvider;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Service\Sso\SsoProviderRegistry;
@@ -73,29 +74,36 @@ final class SsoEnforcementSubscriber
             return;
         }
 
-        // Resolve the user's tenant so tenant-scoped IdPs are considered too.
-        // Unknown email → null tenant → only global IdPs are checked (fail-open).
+        // Unknown email → null tenant → only global IdPs are checked.
         $user = $this->userRepository->findOneBy(['email' => $email]);
-        $tenant = $user?->getTenant();
-
-        $provider = $this->ssoProviderRegistry->findEnforcedProviderForEmail($tenant, $email);
-        if (!$provider instanceof IdentityProvider || !$provider->isEnabled()) {
-            return; // no enforcement — password login proceeds
-        }
-
-        $slug = $provider->getSlug();
-        if ($slug === null || $slug === '') {
-            return; // misconfigured provider — do not trap the user
-        }
-
-        // The provider would refuse this existing account (not linked yet and
-        // linking by e-mail refused, …) — do not trap the user (#1059).
-        if ($user !== null && !SsoAccountLinkPolicy::canSsoLoginReach($provider, $user)) {
-            return;
+        $target = $this->enforcementTarget($user, $email);
+        if (!$target instanceof IdentityProvider) {
+            return; // not enforced, or exempt (anti-lockout) — password login proceeds
         }
 
         $event->setResponse(new RedirectResponse(
-            $this->urlGenerator->generate('app_sso_start', ['slug' => $slug])
+            $this->urlGenerator->generate('app_sso_start', ['slug' => $target->getSlug()])
         ));
+    }
+
+    /**
+     * Domain-enforcement decision: null = no enabled enforced provider with a
+     * slug for this e-mail; IdentityProvider = redirect target (the enforced
+     * provider, or the provider an existing user is bound to —
+     * {@see SsoAccountLinkPolicy::resolveLoginProvider()}); false = enforced
+     * but no enabled provider can sign the user in (fail open, #1059). Also
+     * read by the SSO admin page.
+     */
+    public function enforcementTarget(?User $user, string $email): IdentityProvider|false|null
+    {
+        $provider = $this->ssoProviderRegistry->findEnforcedProviderForEmail($user?->getTenant(), $email);
+        if (!$provider instanceof IdentityProvider || !$provider->isEnabled() || (string) $provider->getSlug() === '') {
+            return null; // no enforcement, or a misconfigured provider — do not trap the user
+        }
+        if ($user === null) {
+            return $provider;
+        }
+
+        return SsoAccountLinkPolicy::resolveLoginProvider($provider, $user) ?? false;
     }
 }

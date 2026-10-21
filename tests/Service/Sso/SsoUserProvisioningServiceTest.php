@@ -169,6 +169,27 @@ final class SsoUserProvisioningServiceTest extends TestCase
     }
 
     #[Test]
+    public function sameProviderNewSubjectIsRefusedAndLogged(): void
+    {
+        $this->provider->setAllowEmailLinking(true);
+        $existing = (new User())->setEmail('alice@acme.com')
+            ->setSsoProvider($this->provider)->setSsoExternalId('sub-original');
+        $this->userRepo->method('findOneBy')
+            ->willReturnCallback(static fn (array $c): ?User => isset($c['email']) ? $existing : null);
+        $this->ssoLogger->expects(self::once())->method('logLoginFailure')
+            ->with($this->provider, 'alice@acme.com', 'subject_changed');
+        $this->em->expects(self::never())->method('flush');
+
+        try {
+            $this->makeService()->provision($this->provider, ['sub' => 'sub-new', 'email' => 'alice@acme.com']);
+            self::fail('a subject change must be refused');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertSame('sub-original', $existing->getSsoExternalId());
+    }
+
+    #[Test]
     public function createsNewUserWhenJitEnabled(): void
     {
         $this->userRepo->method('findOneBy')->willReturn(null);

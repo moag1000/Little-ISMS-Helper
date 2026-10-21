@@ -65,6 +65,52 @@ final class SsoEnforcementSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function userLinkedToAnotherEnabledProviderIsRedirectedThere(): void
+    {
+        $enforced = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        $other = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(true);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $enforced,
+            userLinked: false, boundTo: $other);
+
+        $response = $event->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame('/sso/legacy-idp/start', $response->getTargetUrl());
+    }
+
+    #[Test]
+    public function userLinkedToDisabledProviderFailsOpenWhenEnforcedProviderRefuses(): void
+    {
+        $enforced = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(true);
+        $disabled = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(false);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $enforced,
+            userLinked: false, boundTo: $disabled);
+        self::assertNull($event->getResponse());
+    }
+
+    #[Test]
+    public function tenantOwnedProviderCannotSwitchOffOperatorDomainEnforcement(): void
+    {
+        // Operator: global provider enforces the domain. A tenant admin adds an
+        // own provider (linking on) and its users sign in through it once. The
+        // users must still end at an SSO provider, never at the password login.
+        $tenant = (new \App\Entity\Tenant())->setName('Acme')->setCode('acme');
+        $operatorEnforced = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)
+            ->setDomainBindingMode(IdentityProvider::DOMAIN_MODE_ENFORCE);
+        $tenantOwn = (new IdentityProvider())->setSlug('tenant-own')->setEnabled(true)
+            ->setAllowEmailLinking(true)->setTenant($tenant);
+        $user = (new User())->setTenant($tenant);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $operatorEnforced,
+            userLinked: false, boundTo: $tenantOwn, user: $user);
+
+        $response = $event->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response, 'password login must not be reachable');
+        self::assertStringStartsWith('/sso/', $response->getTargetUrl());
+    }
+
+    #[Test]
     public function noEnforcedProviderFallsThroughToPassword(): void
     {
         $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@nowhere.de'], null);
@@ -120,10 +166,15 @@ final class SsoEnforcementSubscriberTest extends TestCase
         array $params,
         ?IdentityProvider $enforcedProvider,
         bool $userLinked = true,
+        ?IdentityProvider $boundTo = null,
+        ?User $user = null,
     ): RequestEvent {
-        $user = new User();
+        $user ??= new User();
         if ($userLinked && $enforcedProvider !== null) {
             $user->setSsoProvider($enforcedProvider);
+        }
+        if ($boundTo !== null) {
+            $user->setSsoProvider($boundTo);
         }
         $userRepository = $this->createMock(UserRepository::class);
         $userRepository->method('findOneBy')->willReturn($user);

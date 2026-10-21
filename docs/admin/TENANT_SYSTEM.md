@@ -451,12 +451,26 @@ enable the option, let the user sign in once, then disable it again. The
 organisation-tree and never-privileged rules above apply whether the option
 is on or off.
 
+A login through the *same* provider with a *different* subject id (`sub`)
+for an already linked account is never re-linked either — it is refused and
+recorded as an `sso.login_failure` audit event with reason `subject_changed`;
+an IdP subject change needs admin action.
+
 SSO enforcement (`Tenant::ssoEnforced`, `domainBindingMode = enforce`) does
-not lock such users out: a password login is only redirected to the provider
-when that provider can actually sign the user in (account already bound to
-it, or linking allowed and the account not bound elsewhere, and not refused
-by the organisation-tree / never-privileged rules). Otherwise the password
-login proceeds; once the account is linked, enforcement applies.
+not lock such users out. A password login is redirected to
+
+1. the enforced provider, when it can sign the user in (account bound to it,
+   or linking allowed and the account not bound elsewhere, and not refused by
+   the organisation-tree / never-privileged rules); otherwise
+2. the provider the account is already bound to, when that provider is
+   enabled and may act for the user (global, or the user's own organisation
+   tree) — so an organisation's own provider cannot switch off an operator's
+   domain enforcement for its users.
+
+Only when no enabled provider can sign the user in does the password login
+proceed; once the account is linked, enforcement applies. The SSO admin page
+(*Admin → SSO*) lists these exempted accounts (count and names, limited to
+the accounts the viewer may see).
 
 **Env-configured Azure OAuth/SAML login** (`AZURE_*` variables, no provider
 record): when an Azure object id is not yet known, the login used to link any
@@ -465,7 +479,10 @@ local account with the same e-mail — including `ROLE_SUPER_ADMIN`. Now:
 - a privileged account (`ROLE_SUPER_ADMIN`, `ROLE_GROUP_CISO`,
   `ROLE_KONZERN_AUDITOR`, `ROLE_ALLOWED_TO_SWITCH`) is **never** linked by
   e-mail; an existing object-id binding keeps working;
-- an account already bound to another Azure object id is not re-bound;
+- an account already bound to another Azure object id, or to an SSO
+  provider record, is not re-bound;
+- the privileged exclusion does **not** cover organisation admins
+  (`ROLE_ADMIN`): with the default `true` they stay linkable by e-mail;
 - `AZURE_ALLOW_EMAIL_LINKING` (default `true` for backward compatibility of
   existing single-tenant setups) switches linking of ordinary accounts by
   e-mail off. **Recommendation:** set `AZURE_ALLOW_EMAIL_LINKING=false` once

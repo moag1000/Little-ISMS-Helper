@@ -66,9 +66,13 @@ final class SsoAccountLinkPolicy
      *
      * @throws CustomUserMessageAuthenticationException when linking is disabled
      */
-    public static function assertMayLinkByEmail(IdentityProvider $provider, User $target, ?LoggerInterface $logger = null): void
-    {
-        if (self::mayLinkByEmail($provider, $target)) {
+    public static function assertMayLinkByEmail(
+        IdentityProvider $provider,
+        User $target,
+        ?LoggerInterface $logger = null,
+        ?string $externalId = null,
+    ): void {
+        if (self::mayLinkByEmail($provider, $target, $externalId)) {
             return;
         }
         $logger?->warning('SSO: login refused, automatic link by e-mail is not allowed for this account', [
@@ -84,12 +88,55 @@ final class SsoAccountLinkPolicy
      * the provider allows e-mail linking and the account is not bound to a
      * different provider (an existing binding is never moved silently).
      */
-    public static function mayLinkByEmail(IdentityProvider $provider, User $target): bool
+    public static function mayLinkByEmail(IdentityProvider $provider, User $target, ?string $externalId = null): bool
     {
         $boundProvider = $target->getSsoProvider();
 
         return $provider->isAllowEmailLinking()
-            && ($boundProvider === null || self::isSameProvider($boundProvider, $provider));
+            && ($boundProvider === null || self::isSameProvider($boundProvider, $provider))
+            && !self::isSubjectChange($provider, $target, $externalId);
+    }
+
+    /**
+     * $target is bound to $provider under a DIFFERENT subject id than the one
+     * now presented with the same e-mail claim. Never re-linked silently — an
+     * IdP subject change needs admin action; callers log a security event (#1059).
+     */
+    public static function isSubjectChange(IdentityProvider $provider, User $target, ?string $externalId): bool
+    {
+        $boundProvider = $target->getSsoProvider();
+        $boundSubject = $target->getSsoExternalId();
+
+        return $externalId !== null && $boundProvider !== null && self::isSameProvider($boundProvider, $provider)
+            && $boundSubject !== null && $boundSubject !== $externalId;
+    }
+
+    /**
+     * The provider an SSO-enforced password login is redirected to, or null
+     * when no enabled provider can sign $user in (then the password login
+     * stays available — anti-lockout, #1059):
+     *  1. the enforced provider, when it can reach the user;
+     *  2. otherwise the provider the user is already bound to, when it is
+     *     enabled, has a slug and may act for the user (global, or the user's
+     *     own organisation tree) — a binding to another provider must not
+     *     turn enforcement into a password login.
+     */
+    public static function resolveLoginProvider(IdentityProvider $enforced, User $user): ?IdentityProvider
+    {
+        if (self::canSsoLoginReach($enforced, $user)) {
+            return $enforced;
+        }
+        $bound = $user->getSsoProvider();
+        if ($bound instanceof IdentityProvider
+            && !self::isSameProvider($bound, $enforced)
+            && $bound->isEnabled()
+            && (string) $bound->getSlug() !== ''
+            && self::mayAuthenticateAs($bound, $user)
+        ) {
+            return $bound;
+        }
+
+        return null;
     }
 
     /**
@@ -125,8 +172,8 @@ final class SsoAccountLinkPolicy
      *    e-mail, whatever the setting — the e-mail claim of the directory is
      *    not proof of identity for the instance operator (#1059);
      *  - with AZURE_ALLOW_EMAIL_LINKING=false, or when $target is already
-     *    bound to another Azure object id, the login is refused with the same
-     *    message as provider-record logins.
+     *    bound to another Azure object id or to an IdentityProvider record,
+     *    the login is refused with the same message as provider-record logins.
      */
     public static function assertMayLinkAzureByEmail(User $target, bool $allowEmailLinking, ?LoggerInterface $logger = null): void
     {
@@ -136,7 +183,8 @@ final class SsoAccountLinkPolicy
 
             throw new AuthenticationException('SSO login is not permitted for this account.');
         }
-        if (!$allowEmailLinking || $target->getAzureObjectId() !== null) {
+        // Bound to another Azure object id or to a provider record: never re-bound.
+        if (!$allowEmailLinking || $target->getAzureObjectId() !== null || $target->getSsoProvider() !== null) {
             $logger?->warning('SSO: login refused, automatic link by e-mail is not allowed', $context);
 
             throw new CustomUserMessageAuthenticationException(self::EMAIL_LINKING_DISABLED_MESSAGE);

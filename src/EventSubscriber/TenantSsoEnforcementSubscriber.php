@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\IdentityProvider;
+use App\Entity\User;
 use App\Repository\IdentityProviderRepository;
 use App\Repository\UserRepository;
 use App\Service\Sso\SsoAccountLinkPolicy;
@@ -87,37 +88,51 @@ final class TenantSsoEnforcementSubscriber
         }
 
         $user = $this->userRepository->findOneBy(['email' => $email]);
-        $tenant = $user?->getTenant();
-        if ($tenant === null || !$tenant->isSsoEnforced()) {
-            return; // not enforced — password login proceeds
+        if ($user === null) {
+            return;
         }
 
-        // Pick the tenant's SSO provider to redirect to. Prefer a tenant-scoped
-        // provider over a global one (the tenant policy is about THIS tenant's
-        // IdP), then the first deterministically-ordered enabled provider with a
-        // usable slug.
-        $provider = $this->resolveEnforcedProvider($tenant);
-
-        // ANTI-LOCKOUT: SSO-enforced but no usable provider → fail open.
-        if ($provider === null) {
+        $target = $this->enforcementTarget($user);
+        if ($target === null) {
+            return; // not enforced — password login proceeds
+        }
+        if ($target === false) {
+            // ANTI-LOCKOUT: no usable provider, or no enabled provider can sign
+            // this account in (not linked + linking refused, never-privileged /
+            // tree rule) → fail open.
             $this->logger?->warning(
-                'Tenant has ssoEnforced=true but no enabled SSO provider with a slug; '
+                'Tenant has ssoEnforced=true but no enabled SSO provider can sign this user in; '
                 . 'falling back to password login to avoid lockout.',
-                ['tenant' => $tenant->getId(), 'email' => $email],
+                ['tenant' => $user->getTenant()?->getId(), 'email' => $email],
             );
 
             return;
         }
 
-        // ANTI-LOCKOUT: the provider would refuse this account (not linked and
-        // linking by e-mail refused, or never-privileged / tree rule) → fail open.
-        if (!SsoAccountLinkPolicy::canSsoLoginReach($provider, $user)) {
-            return;
+        $event->setResponse(new RedirectResponse(
+            $this->urlGenerator->generate('app_sso_start', ['slug' => $target->getSlug()])
+        ));
+    }
+
+    /**
+     * Tenant-level enforcement decision for $user: null = not enforced;
+     * IdentityProvider = redirect target (the enforced provider, or the
+     * provider the user is bound to — {@see SsoAccountLinkPolicy::resolveLoginProvider()});
+     * false = enforced but exempt (fail open). Also read by the SSO admin page.
+     */
+    public function enforcementTarget(User $user): IdentityProvider|false|null
+    {
+        $tenant = $user->getTenant();
+        if ($tenant === null || !$tenant->isSsoEnforced()) {
+            return null;
+        }
+        // Tenant-scoped provider first, then global (see resolveEnforcedProvider()).
+        $provider = $this->resolveEnforcedProvider($tenant);
+        if ($provider === null) {
+            return false;
         }
 
-        $event->setResponse(new RedirectResponse(
-            $this->urlGenerator->generate('app_sso_start', ['slug' => $provider->getSlug()])
-        ));
+        return SsoAccountLinkPolicy::resolveLoginProvider($provider, $user) ?? false;
     }
 
     /**

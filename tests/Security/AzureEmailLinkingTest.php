@@ -87,6 +87,22 @@ final class AzureEmailLinkingTest extends TestCase
 
     #[Test]
     #[DataProvider('flows')]
+    public function accountBoundToAProviderRecordIsNotRebound(string $flow): void
+    {
+        $target = (new User())->setEmail('jane@example.com')->setRoles(['ROLE_USER'])
+            ->setSsoProvider(new \App\Entity\IdentityProvider());
+
+        try {
+            $this->login($flow, null, $target, allowEmailLinking: true);
+            self::fail('an account bound to a provider record must not be re-bound');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertNull($target->getAzureObjectId());
+    }
+
+    #[Test]
+    #[DataProvider('flows')]
     public function enabledSettingLinksOrdinaryAccount(string $flow): void
     {
         $target = (new User())->setEmail('jane@example.com')->setRoles(['ROLE_USER']);

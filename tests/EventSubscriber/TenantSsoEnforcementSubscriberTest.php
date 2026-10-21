@@ -84,6 +84,53 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function userLinkedToAnotherEnabledProviderIsRedirectedThere(): void
+    {
+        // #1059 I-3: a binding to another provider must not turn enforcement
+        // into a password login.
+        $enforced = (new IdentityProvider())->setSlug('primary')->setEnabled(true)->setAllowEmailLinking(false);
+        $other = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(true);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$enforced], userLinked: false, boundTo: $other);
+
+        $response = $event->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame('/sso/legacy-idp/start', $response->getTargetUrl());
+    }
+
+    #[Test]
+    public function tenantOwnedProviderCannotSwitchOffOperatorLevelEnforcement(): void
+    {
+        // The organisation is enforced through an operator (global) provider; a
+        // tenant admin adds an own provider and users sign in through it once.
+        // Those users must end at an SSO provider, never at the password login.
+        $operator = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        $tenantOwn = (new IdentityProvider())->setSlug('tenant-own')->setEnabled(true)->setAllowEmailLinking(true);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$operator], userLinked: false, boundTo: $tenantOwn,
+            globalProviders: true);
+
+        $response = $event->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response, 'password login must not be reachable');
+        self::assertStringStartsWith('/sso/', $response->getTargetUrl());
+    }
+
+    #[Test]
+    public function userLinkedToDisabledProviderFailsOpenWhenEnforcedProviderRefuses(): void
+    {
+        $enforced = (new IdentityProvider())->setSlug('primary')->setEnabled(true)->setAllowEmailLinking(true);
+        $disabled = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(false);
+
+        // Enforced provider refuses (account bound elsewhere), the bound one is off → password.
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$enforced], userLinked: false, boundTo: $disabled);
+
+        self::assertNull($event->getResponse());
+    }
+
+    #[Test]
     public function enforcedTenantWithoutProviderFailsOpen(): void
     {
         // Anti-lockout: SSO enforced but no enabled provider → password login proceeds.
@@ -211,6 +258,8 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
         array $tenantProviders,
         bool $userExists = true,
         bool $userLinked = true,
+        ?IdentityProvider $boundTo = null,
+        bool $globalProviders = false,
     ): RequestEvent {
         $userRepository = $this->createMock(UserRepository::class);
         if ($userExists) {
@@ -218,11 +267,15 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
             $tenant->setSsoEnforced($tenantEnforced);
             $resolvedUser = new User();
             $resolvedUser->setTenant($tenant);
-            foreach ($tenantProviders as $tenantProvider) {
+            foreach ($globalProviders ? [] : $tenantProviders as $tenantProvider) {
                 $tenantProvider->setTenant($tenantProvider->getTenant() ?? $tenant);
             }
             if ($userLinked && $tenantProviders !== []) {
                 $resolvedUser->setSsoProvider($tenantProviders[0]);
+            }
+            if ($boundTo !== null) {
+                $boundTo->setTenant($boundTo->getTenant() ?? $tenant);
+                $resolvedUser->setSsoProvider($boundTo);
             }
             $userRepository->method('findOneBy')->willReturn($resolvedUser);
         } else {
