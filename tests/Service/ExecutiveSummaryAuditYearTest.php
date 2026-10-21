@@ -72,6 +72,23 @@ final class ExecutiveSummaryAuditYearTest extends TestCase
     }
 
     #[Test]
+    public function calendarYearCompletedFigureUsesTheSameCompletionDateRule(): void
+    {
+        $audits = [
+            $this->audit('2025-11-01', 'completed', '2026-01-02'), // planned last year, done this year
+            $this->audit('2026-02-01', 'completed', '2025-12-31'), // planned this year, done last year
+            $this->audit('2026-03-01', 'planned'),
+        ];
+        $now = new \DateTimeImmutable('2026-06-01');
+
+        $figures = AuditProgramFigures::calendarYear($audits, $now);
+
+        self::assertSame(AuditProgramFigures::completedInYear($audits, $now), $figures['completed_audits']);
+        self::assertSame(1, $figures['completed_audits']);
+        self::assertSame(2, $figures['planned_audits'], 'planned stays on the planned date');
+    }
+
+    #[Test]
     public function executiveSummaryCountsOnlyCompletedAuditsOfThisYear(): void
     {
         $year = (int) (new \DateTimeImmutable())->format('Y');
