@@ -28,6 +28,9 @@ use Doctrine\ORM\EntityManagerInterface;
  *   - contract dates cleared (per-supplier negotiation)
  *   - dpaSignedDate cleared
  *
+ * Kept: the contact (free text + structured user/person + deputies, same
+ * organisation only — see copyStructuredContact()).
+ *
  * Cascade omissions:
  *   - supportedAssets, identifiedRisks, documents M2M — supplier-instance
  *     specific evidence; cloning would attach the new supplier to
@@ -76,6 +79,7 @@ final class SupplierCloner implements EntityClonerInterface
 
         $clone->setDescription($source->getDescription());
         $clone->setContactPerson($source->getContactPerson());
+        $this->copyStructuredContact($source, $clone, $tenant);
         $clone->setEmail($source->getEmail());
         $clone->setPhone($source->getPhone());
         $clone->setAddress($source->getAddress());
@@ -108,5 +112,28 @@ final class SupplierCloner implements EntityClonerInterface
         $this->entityManager->persist($clone);
 
         return $clone;
+    }
+
+    /**
+     * Structured contact (user, person, deputies) is master data of the source
+     * organisation: copied when the clone stays in it, left empty when cloning
+     * into another organisation (the free-text contact still travels along).
+     */
+    private function copyStructuredContact(Supplier $source, Supplier $clone, ?Tenant $target): void
+    {
+        $sourceTenant = $source->getTenant();
+        $sameOrganisation = !$target instanceof Tenant
+            || !$sourceTenant instanceof Tenant
+            || $target === $sourceTenant
+            || ($target->getId() !== null && $target->getId() === $sourceTenant->getId());
+        if (!$sameOrganisation) {
+            return;
+        }
+
+        $clone->setContactPersonUser($source->getContactPersonUser());
+        $clone->setContactPersonRef($source->getContactPersonRef());
+        foreach ($source->getContactDeputyPersons() as $deputy) {
+            $clone->addContactDeputyPerson($deputy);
+        }
     }
 }
