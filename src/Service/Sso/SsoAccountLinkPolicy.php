@@ -91,6 +91,15 @@ final class SsoAccountLinkPolicy
     public static function mayLinkByEmail(IdentityProvider $provider, User $target, ?string $externalId = null): bool
     {
         $boundProvider = $target->getSsoProvider();
+        // A binding to an unusable provider (disabled, or no longer global /
+        // in the user's tree) counts as no binding; replacing it is allowed —
+        // the e-mail match of this login is the same proof a first link uses,
+        // and the tree / never-privileged rules still run first (#1059 I-4).
+        if ($boundProvider !== null && !self::isSameProvider($boundProvider, $provider)
+            && !self::isUsableBinding($boundProvider, $target)
+        ) {
+            return true;
+        }
 
         return $provider->isAllowEmailLinking()
             && ($boundProvider === null || self::isSameProvider($boundProvider, $provider))
@@ -116,10 +125,11 @@ final class SsoAccountLinkPolicy
      * when no enabled provider can sign $user in (then the password login
      * stays available — anti-lockout, #1059):
      *  1. the enforced provider, when it can reach the user;
-     *  2. otherwise the provider the user is already bound to, when it is
-     *     enabled, has a slug and may act for the user (global, or the user's
-     *     own organisation tree) — a binding to another provider must not
-     *     turn enforcement into a password login.
+     *  2. otherwise the provider the user is already bound to, when that
+     *     binding is usable ({@see isUsableBinding()}) — a binding to another
+     *     provider must not turn enforcement into a password login.
+     * A binding to an unusable provider counts as none, so the enforced
+     * provider may replace it (step 1 via {@see mayLinkByEmail()}).
      */
     public static function resolveLoginProvider(IdentityProvider $enforced, User $user): ?IdentityProvider
     {
@@ -129,14 +139,23 @@ final class SsoAccountLinkPolicy
         $bound = $user->getSsoProvider();
         if ($bound instanceof IdentityProvider
             && !self::isSameProvider($bound, $enforced)
-            && $bound->isEnabled()
+            && self::isUsableBinding($bound, $user)
             && (string) $bound->getSlug() !== ''
-            && self::mayAuthenticateAs($bound, $user)
         ) {
             return $bound;
         }
 
         return null;
+    }
+
+    /**
+     * Can the provider $user is bound to still sign the user in — enabled and
+     * global or in the user's CURRENT organisation tree? A binding that fails
+     * this counts as no binding for enforcement and for linking (#1059 I-4).
+     */
+    public static function isUsableBinding(IdentityProvider $bound, User $user): bool
+    {
+        return $bound->isEnabled() && self::mayAuthenticateAs($bound, $user);
     }
 
     /**
@@ -184,7 +203,9 @@ final class SsoAccountLinkPolicy
             throw new AuthenticationException('SSO login is not permitted for this account.');
         }
         // Bound to another Azure object id or to a provider record: never re-bound.
-        if (!$allowEmailLinking || $target->getAzureObjectId() !== null || $target->getSsoProvider() !== null) {
+        $boundProvider = $target->getSsoProvider();
+        $boundToProvider = $boundProvider !== null && self::isUsableBinding($boundProvider, $target);
+        if (!$allowEmailLinking || $target->getAzureObjectId() !== null || $boundToProvider) {
             $logger?->warning('SSO: login refused, automatic link by e-mail is not allowed', $context);
 
             throw new CustomUserMessageAuthenticationException(self::EMAIL_LINKING_DISABLED_MESSAGE);

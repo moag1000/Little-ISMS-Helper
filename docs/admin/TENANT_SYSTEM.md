@@ -467,8 +467,14 @@ not lock such users out. A password login is redirected to
    tree) — so an organisation's own provider cannot switch off an operator's
    domain enforcement for its users.
 
-Only when no enabled provider can sign the user in does the password login
-proceed; once the account is linked, enforcement applies. The SSO admin page
+A binding to an *unusable* provider — disabled, or no longer global / in the
+user's current organisation tree (e.g. after a move to another organisation) —
+counts as no binding, for enforcement and for linking: the enforcing provider
+may replace it on the next login (still never for privileged accounts of an
+organisation-owned provider, still within the tree rules). So an organisation
+admin cannot switch off operator-level enforcement by disabling the own
+provider. Only when no enabled, allowed provider can sign the user in does the
+password login proceed; once the account is linked, enforcement applies. The SSO admin page
 (*Admin → SSO*) lists these exempted accounts (count and names, limited to
 the accounts the viewer may see).
 

@@ -389,6 +389,45 @@ final class SsoAccountTakeoverTest extends WebTestCase
     }
 
     #[Test]
+    public function bindingToUnusableProviderIsReplacedByEnforcingProvider(): void
+    {
+        // #1059 I-4: userB (organisation B) is bound to organisation A's
+        // provider — not in B's tree, so the binding is unusable and counts as
+        // none. The global provider replaces it even with its linking off.
+        $this->userB->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-in-a');
+        $this->globalProvider->setAllowEmailLinking(false);
+        $this->em->flush();
+
+        $user = $this->resolve($this->globalProvider, $this->email('userb'), 'sub-global-b', []);
+
+        self::assertInstanceOf(User::class, $user);
+        $reloaded = $this->reload($this->userB);
+        self::assertSame($this->globalProvider->getId(), $reloaded->getSsoProvider()?->getId());
+        self::assertSame('sub-global-b', $reloaded->getSsoExternalId());
+    }
+
+    #[Test]
+    public function bindingToDisabledProviderIsNoLicenceForPrivilegedTakeover(): void
+    {
+        // Replacing an unusable binding still runs the never-privileged rule.
+        $this->tenantProvider->setEnabled(false);
+        $other = $this->provider('other', $this->tenantA)->setEnabled(true);
+        $this->super->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-super-old');
+        $this->em->flush();
+
+        try {
+            $this->expectLoginRejected($other, $this->email('super'), 'sub-super-new');
+        } finally {
+            $this->em->clear();
+            if (($p = $this->em->find(IdentityProvider::class, $other->getId())) !== null) {
+                $this->em->remove($p);
+                $this->em->flush();
+            }
+        }
+        self::assertSame($this->tenantProvider->getId(), $this->reload($this->super)->getSsoProvider()?->getId());
+    }
+
+    #[Test]
     public function newProviderDoesNotLinkByEmailByDefault(): void
     {
         self::assertFalse((new IdentityProvider())->isAllowEmailLinking());

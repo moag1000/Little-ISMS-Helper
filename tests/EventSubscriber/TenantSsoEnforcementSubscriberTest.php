@@ -114,20 +114,58 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
 
         $response = $event->getResponse();
         self::assertInstanceOf(RedirectResponse::class, $response, 'password login must not be reachable');
-        self::assertStringStartsWith('/sso/', $response->getTargetUrl());
+        self::assertSame('/sso/tenant-own/start', $response->getTargetUrl());
     }
 
     #[Test]
-    public function userLinkedToDisabledProviderFailsOpenWhenEnforcedProviderRefuses(): void
+    public function userLinkedToDisabledProviderIsRedirectedToEnforcedProvider(): void
     {
-        $enforced = (new IdentityProvider())->setSlug('primary')->setEnabled(true)->setAllowEmailLinking(true);
+        // #1059 I-4: a binding to a disabled provider counts as no binding —
+        // the enforced provider may replace it, even with its linking off.
+        $enforced = (new IdentityProvider())->setSlug('primary')->setEnabled(true)->setAllowEmailLinking(false);
         $disabled = (new IdentityProvider())->setSlug('legacy-idp')->setEnabled(false);
 
-        // Enforced provider refuses (account bound elsewhere), the bound one is off → password.
         $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
             tenantEnforced: true, tenantProviders: [$enforced], userLinked: false, boundTo: $disabled);
 
-        self::assertNull($event->getResponse());
+        $response = $event->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        self::assertSame('/sso/primary/start', $response->getTargetUrl());
+    }
+
+    #[Test]
+    public function tenantAdminDisablingOwnProviderSendsUsersToOperatorProvider(): void
+    {
+        // Users signed in through the organisation's own provider; its admin
+        // switches it off. They end at the operator's provider, never password.
+        $operator = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        $tenantOwn = (new IdentityProvider())->setSlug('tenant-own')->setEnabled(false)->setAllowEmailLinking(true);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$operator], userLinked: false, boundTo: $tenantOwn,
+            globalProviders: true);
+
+        $response = $event->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response, 'password login must not be reachable');
+        self::assertSame('/sso/operator-entra/start', $response->getTargetUrl());
+    }
+
+    #[Test]
+    public function userMovedToAnotherOrganisationIsSentToOperatorProvider(): void
+    {
+        // Bound to the OLD organisation's provider (enabled, but no longer in
+        // the user's tree) → counts as no binding.
+        $operator = (new IdentityProvider())->setSlug('operator-entra')->setEnabled(true)->setAllowEmailLinking(false);
+        $oldOrg = (new Tenant())->setName('Old')->setCode('old');
+        $oldOrgProvider = (new IdentityProvider())->setSlug('old-org')->setEnabled(true)->setTenant($oldOrg);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$operator], userLinked: false, boundTo: $oldOrgProvider,
+            globalProviders: true);
+
+        $response = $event->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response, 'password login must not be reachable');
+        self::assertSame('/sso/operator-entra/start', $response->getTargetUrl());
     }
 
     #[Test]
