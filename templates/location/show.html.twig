@@ -90,6 +90,7 @@
         <div class="stat-item">
             <strong>{{ location.effectiveResponsiblePerson ?? '—' }}</strong>
             <span>{{ 'location.field.responsible_person'|trans({}, 'locations') }}</span>
+            {% include '_components/_deputy_persons.html.twig' with { deputies: location.responsibleDeputyPersons } only %}
         </div>
     </div>
     {% endblock %}

@@ -15,7 +15,6 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ControlRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\IncidentRepository;
-use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\TrainingRepository;
@@ -71,7 +70,6 @@ final class ManagementReportAuditFindingCountsTest extends TestCase
             $this->createStub(RiskRepository::class),
             $this->createStub(ControlRepository::class),
             $this->createStub(IncidentRepository::class),
-            $this->createStub(InternalAuditRepository::class),
             $this->createStub(TrainingRepository::class),
             $this->createStub(BusinessContinuityPlanRepository::class),
             $this->createStub(BCExerciseRepository::class),

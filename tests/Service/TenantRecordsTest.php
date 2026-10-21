@@ -10,12 +10,11 @@ use App\Service\TenantContext;
 use App\Service\TenantRecords;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * No silent unscoped fallback: without an explicit or TenantContext tenant
- * only an instance-wide SUPER_ADMIN reads every record; everyone else (a
- * cron that set no tenant) gets nothing.
+ * nothing is returned — no role (SUPER_ADMIN included) reads every record
+ * implicitly; instance-wide reads need the explicit `instanceWide` argument.
  */
 final class TenantRecordsTest extends TestCase
 {
@@ -44,30 +43,41 @@ final class TenantRecordsTest extends TestCase
     }
 
     #[Test]
-    public function noTenantAndNoInstanceWideActorFailsClosed(): void
+    public function noTenantFailsClosedEvenForASuperAdmin(): void
     {
         $context = $this->createStub(TenantContext::class);
         $context->method('getCurrentTenant')->willReturn(null);
-        $security = $this->createStub(Security::class);
-        $security->method('isGranted')->willReturn(false);
         $repo = $this->createMock(TrainingRepository::class);
         $repo->expects(self::never())->method('findAll');
         $repo->expects(self::never())->method('findBy');
 
-        self::assertSame([], (new TenantRecords($context, $security))->all($repo, null));
+        self::assertSame([], (new TenantRecords($context))->all($repo, null));
         self::assertSame([], (new TenantRecords())->all($repo, null), 'unwired: fails closed too');
+        self::assertFalse(
+            method_exists(TenantRecords::class, 'isInstanceWide'),
+            'no role-derived hidden instance-wide mode',
+        );
     }
 
     #[Test]
-    public function onlyAnInstanceWideSuperAdminReadsEverything(): void
+    public function onlyAnExplicitInstanceWideCallerReadsEverything(): void
     {
         $context = $this->createStub(TenantContext::class);
         $context->method('getCurrentTenant')->willReturn(null);
-        $security = $this->createStub(Security::class);
-        $security->method('isGranted')->willReturnCallback(static fn (string $a): bool => $a === 'ROLE_SUPER_ADMIN');
         $repo = $this->createMock(TrainingRepository::class);
         $repo->expects(self::once())->method('findAll')->willReturn([]);
 
-        (new TenantRecords($context, $security))->all($repo, null);
+        (new TenantRecords($context))->all($repo, null, instanceWide: true);
+    }
+
+    #[Test]
+    public function instanceWideFlagNeverWidensAnExistingTenantScope(): void
+    {
+        $tenant = new Tenant();
+        $repo = $this->createMock(TrainingRepository::class);
+        $repo->expects(self::once())->method('findBy')->with(['tenant' => $tenant])->willReturn([]);
+        $repo->expects(self::never())->method('findAll');
+
+        (new TenantRecords())->all($repo, $tenant, true);
     }
 }

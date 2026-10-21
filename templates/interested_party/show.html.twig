@@ -72,6 +72,7 @@
                     <div class="detail-item">
                         <span class="label">{{ 'interested_party.field.contact_person'|trans({}, 'interested_parties') }}:</span>
                         <span class="value">{{ interested_party.effectiveContactPerson ?? 'common.not_available'|trans({}, 'messages') }}</span>
+                        {% include '_components/_deputy_persons.html.twig' with { deputies: interested_party.contactDeputyPersons } only %}
                     </div>
                     <div class="detail-item">
                         <span class="label">{{ 'interested_party.field.email'|trans({}, 'interested_parties') }}:</span>
