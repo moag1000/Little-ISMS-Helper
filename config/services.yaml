@@ -451,10 +451,12 @@ services:
             $fromEmail: '%app.backup_notifier.from_email%'
             $subjectPrefix: '%app.backup_notifier.subject_prefix%'
 
-    # Configure Restore Service — inject ManagerRegistry for best-effort EM reset
+    # Configure Restore Service — inject EntityManagerRecovery for best-effort EM reset
     App\Service\RestoreService:
         arguments:
-            $registry: '@doctrine'
+            # Recovery for a closed EntityManager (restores the filter state
+            # that existed before the reset — restore runs unscoped).
+            $registry: '@App\Doctrine\EntityManagerRecovery'
 
     # ISB MINOR-4: Mailer TLS pre-flight check. DSN must be injected
     # explicitly because %env()% cannot be autowired into a scalar arg.
