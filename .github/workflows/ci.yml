@@ -465,7 +465,7 @@ jobs:
             echo "Gate 25 ratchet base: origin/${BASE_REF:-main}"
           fi
           python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --ratchet-ref FETCH_HEAD --strict-shrink --quiet
-      - name: "Quality-gate self-tests (scripts/quality/tests: god-class ratchet, nested forms, translations, design tokens)"
+      - name: "Quality-gate self-tests (scripts/quality/tests: god-class ratchet, nested forms, translations, design tokens, EM reset)"
         run: python3 -m unittest discover -s scripts/quality/tests
       - name: "Gate 26: Translation top-level keys match domain"
         run: python3 scripts/quality/check_translation_nesting.py --baseline scripts/quality/baselines/translation_nesting.txt --quiet
@@ -653,6 +653,11 @@ jobs:
         # javascript: URLs, inline <script> only with nonce="{{ csp_nonce() }}",
         # no CSS imports in JS modules. No baseline: the codebase is clean.
         run: python3 scripts/quality/check_native_dialogs.py --quiet
+      - name: "Gate 68: closed EntityManager recovered only via EntityManagerRecovery"
+        # ManagerRegistry::resetManager() drops the tenant filter parameter and
+        # TenantContext's managed tenant; App\Doctrine\EntityManagerRecovery
+        # restores both. No other resetManager( call in src/. Empty baseline.
+        run: python3 scripts/quality/check_entity_manager_reset.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

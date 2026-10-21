@@ -171,6 +171,25 @@ python3 verify_translations_v2.py
 
 ---
 
+### quality/check_entity_manager_reset.py (Gate 68)
+
+**Zweck:** Ein geschlossener EntityManager wird ausschließlich über
+`App\Doctrine\EntityManagerRecovery::recover()` / `recoverIfClosed()` wieder
+geöffnet. Ein nacktes `ManagerRegistry::resetManager()` verliert den
+`tenant_id`-Parameter des Tenant-Filters (alle folgenden Queries lesen über alle
+Organisationen) und den verwalteten Tenant im `TenantContext` (folgende
+Audit-Zeilen scheitern). Der Helper sichert Filter- und Kontext-Zustand vor dem
+Reset und stellt ihn danach wieder her — auch "Filter deaktiviert" bei
+Operator-Pfaden (Restore, Schema-Wartung, Sample-Purge).
+
+**Verwendung:** `python3 scripts/quality/check_entity_manager_reset.py`
+(Kommentare werden ignoriert; einzige erlaubte Stelle ist der Helper selbst.)
+
+**CI-Integration:** Gate 68 im `code-quality`-Job, keine Baseline.
+Selbsttest: `scripts/quality/tests/test_check_entity_manager_reset.py`.
+
+---
+
 ### quality/check_yaml_duplicates.py
 
 **Zweck:** Doppelte Schlüssel in derselben Mapping-Ebene aller
