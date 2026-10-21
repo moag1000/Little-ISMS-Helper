@@ -310,10 +310,33 @@ Liste `DATA_CATALOGUE_FILES` im Skript). Dateien darüber stehen in
 - gelistete Datei wächst über ihren Eintrag (LOC, bei Services auch Deps) → FAIL
 - `--strict-shrink`: Datei ist geschrumpft, Eintrag aber nicht gesenkt → FAIL
   (der Gewinn wird festgeschrieben, statt später wieder verbraucht zu werden)
-- `--ratchet-ref <ref>`: Die Baseline selbst darf gegenüber `<ref>` (CI: PR-Basis)
-  nicht wachsen — angehobene oder neue Einträge → FAIL. "Baseline hochsetzen"
+- `--ratchet-ref <ref>`: Die Baseline selbst darf gegenüber `<ref>` nicht
+  wachsen — angehobene oder neue Einträge → FAIL. "Baseline hochsetzen"
   ist damit kein Weg mehr am Gate vorbei. Eine umbenannte Datei darf den Eintrag
   einer im selben Change verschwundenen Datei übernehmen, wenn sie nicht größer ist.
+
+**Ratchet-Basis in CI** (Gate 25 in `.github/workflows/ci.yml`):
+- Pull Request → die PR-Basis (`github.base_ref`).
+- Push → der vorherige Stand des Branches (`github.event.before`). Ein Push auf
+  `main` gegen `origin/main` zu vergleichen hieße, den Commit mit sich selbst zu
+  vergleichen — ein direkt gepushter Baseline-Bump käme durch.
+- Neuer Branch / Tag (`before` = lauter Nullen) oder ein nicht mehr erreichbares
+  `before` (Force-Push) → Fallback auf `main`.
+
+**Umbenennen/Kopieren (`git diff --find-renames --find-copies`):** Welche Datei
+einen Basis-Eintrag übernehmen darf, entscheidet allein Git's Rename-/Copy-Erkennung
+zwischen Ratchet-Basis und `HEAD` (zwei Punkte, Baum gegen Baum — funktioniert mit
+dem flachen `--depth=1`-Fetch der CI).
+- `--find-renames`: `R<score>`-Paare — die neue Datei übernimmt den Eintrag der
+  alten, wenn deren Eintrag wegfällt und die neue nicht größer ist.
+- `--find-copies`: zusätzlich `C<score>`-Paare. Eine Kopie darf einen Eintrag nur
+  übernehmen, wenn die Quelldatei ihren Eintrag im selben Change verliert (jeder
+  Basis-Eintrag kann höchstens einmal übernommen werden). Kopie + Original
+  bleibt bestehen → FAIL (`ADDED`). Ohne `--find-copies-harder` betrachtet Git
+  nur im selben Change geänderte Dateien als Kopierquelle; wird eine
+  unveränderte Datei kopiert, gibt es also gar kein Paar und die Kopie scheitert
+  als `ADDED` (fail closed).
+- Löschen + nicht verwandte neue Datei ist kein Rename → kein Erbe von Headroom.
 
 **Wenn das Gate fehlschlägt:**
 ```bash
