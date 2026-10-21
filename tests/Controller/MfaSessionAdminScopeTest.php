@@ -303,6 +303,9 @@ final class MfaSessionAdminScopeTest extends WebTestCase
     {
         $this->auditLogin($this->userA, $this->tenantA);
         $this->auditLogin($this->userB, $this->tenantB);
+        // #1059: an operator inside the tree is not administrable by the
+        // tenant admin — same scope as the session list.
+        $this->auditLogin($this->superA, $this->tenantA);
         $this->em->flush();
 
         $this->client->loginUser($this->adminA);

@@ -70,16 +70,16 @@ class SessionController extends AbstractController
         $thirtyDaysAgo = new DateTime('-30 days');
         $now = new DateTime();
 
-        // Tenant-scoped for non-SUPER_ADMIN (explicit — the Doctrine
-        // tenant_filter is bypassed for tenantless actors)
-        $loginEvents = $auditLogRepository->findByDateRange(
+        // Same scope as the session index (#1059): logins of users the actor
+        // may administer; the action filter runs in the query.
+        $userScope = $this->resolveAdministrableUserScope($tenantContext);
+        $logins = $auditLogRepository->findLoginEvents(
             $thirtyDaysAgo,
             $now,
-            $this->resolveTenantScope($tenantContext),
+            ['login', 'login_success', 'authentication'],
+            $userScope,
+            $userScope !== null && $this->getUser() instanceof User ? $this->getUser() : null,
         );
-
-        // Filter for login events
-        $logins = array_filter($loginEvents, fn($log): bool => in_array($log->getAction(), ['login', 'login_success', 'authentication']));
 
         // Group by date
         $loginsByDate = [];
@@ -227,18 +227,6 @@ class SessionController extends AbstractController
         }
 
         return $this->redirectToRoute('session_index');
-    }
-
-    /**
-     * Tenant scope for listings / statistics: null (instance-wide) for
-     * SUPER_ADMIN, otherwise the actor's accessible tenant tree ([] when the
-     * actor has no tenant — yields nothing).
-     *
-     * @return \App\Entity\Tenant[]|null
-     */
-    private function resolveTenantScope(TenantContext $tenantContext): ?array
-    {
-        return $this->isGranted('ROLE_SUPER_ADMIN') ? null : $tenantContext->getAccessibleTenants();
     }
 
     /**
