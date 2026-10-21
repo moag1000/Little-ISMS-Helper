@@ -86,12 +86,9 @@ class DataRepairController extends AbstractController
     private function resetEntityManagerIfClosed(): void
     {
         if (!$this->entityManager->isOpen()) {
-            // Restores tenant filter + TenantContext exactly as before the reset.
-            $this->entityManagerRecovery?->recover();
+            $this->entityManagerRecovery?->recover(); // restores tenant filter + TenantContext
             $em = $this->managerRegistry->getManager();
-            if ($em instanceof EntityManagerInterface) {
-                $this->entityManager = $em;
-            }
+            $this->entityManager = $em instanceof EntityManagerInterface ? $em : $this->entityManager;
         }
     }
 
