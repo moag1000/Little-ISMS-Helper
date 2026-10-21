@@ -544,11 +544,8 @@ class ProcessingActivityController extends AbstractController
             'ProcessingActivity',
             $this->security?->getUser(),
             fn (int $id): ?object => $this->processingActivityRepository?->find($id),
-            deleter: function (object $pa): void {
-                if ($pa instanceof ProcessingActivity) {
-                    $this->processingActivityService->delete($pa);
-                }
-            },
+            deleter: fn (ProcessingActivity $pa) => $this->processingActivityService->delete($pa, flush: false),
+            auditValues: fn (ProcessingActivity $pa): array => $this->processingActivityService->deletionAuditValues($pa),
         );
     }
 

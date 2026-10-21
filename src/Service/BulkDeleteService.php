@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Security\TenantOwnership;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Doctrine\EntityManagerRecovery;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -20,10 +21,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *     see TenantOwnership::isInContextScope()),
  *   - an optional voter attribute (entities with a dedicated voter),
  *   - an optional domain guard (e.g. inherited records are read-only),
- * then removes the accepted entities atomically (one explicit transaction —
- * domain-service deleters that flush internally join it; any failure rolls
- * the whole batch back) and writes one AuditLogger::logBulk() batch (ISO 27001 Cl. 7.5.3): 1 batch entry +
- * N per-entity entries correlated by batch_id.
+ * then removes the accepted entities atomically and writes one
+ * AuditLogger::logBulk() batch (ISO 27001 Cl. 7.5.3): 1 batch entry + N
+ * per-entity entries correlated by batch_id.
+ *
+ * Atomicity: one explicit transaction. Domain deleters use their service's
+ * no-flush path (`delete($e, flush: false)` — schedule the removal only), so
+ * the removals are flushed together after every entity was accepted. A
+ * lifecycle-based deleter (Document soft delete) applies its transition —
+ * flush included — mid-batch; that flush also writes the removals scheduled
+ * so far, still inside the transaction. The audit batch (AuditLogger::logBulk,
+ * strict) is written after the batch flush and BEFORE the commit, so the
+ * deletions and their trail commit together. Any failure — a delete, the
+ * flush or an audit row — rolls the whole batch back, audit rows included,
+ * clears the unit of work and resets a closed EntityManager.
  */
 class BulkDeleteService
 {
@@ -33,6 +44,7 @@ class BulkDeleteService
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
+        private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -40,12 +52,16 @@ class BulkDeleteService
      * @param string                          $entityType     Short entity name for audit + error messages (e.g. "Risk").
      * @param list<int>                       $ids            Requested entity ids (already sanitised).
      * @param callable(int): ?object          $finder         Loads one entity by id.
-     * @param (callable(object): void)|null   $deleter        Domain delete (e.g. a service that cascades/flushes);
-     *                                                        null → EntityManager::remove().
+     * @param (callable(object): void)|null   $deleter        Domain delete that does NOT flush (the service's
+     *                                                        no-flush path); null → EntityManager::remove().
      * @param (callable(object): ?string)|null $guard         Returns a rejection reason, or null when deletable.
      * @param string|null                     $voterAttribute Voter attribute checked per entity (null = skip).
-     * @param (callable(object): void)|null   $afterFlush     Side effect after the removal is persisted
-     *                                                        (e.g. unlink a stored file).
+     * @param (callable(object): void)|null   $afterFlush     Side effect after the commit (e.g. unlink a
+     *                                                        stored file).
+     * @param (callable(object): array<string, mixed>)|null $auditValues Domain snapshot of the entity for its
+     *                                                        per-entity audit row (e.g. reference number),
+     *                                                        taken before the delete — the service's
+     *                                                        deletionAuditValues().
      *
      * @return array{success: bool, deleted: int, errors: list<string>, message: string, batch_id: ?string}
      */
@@ -57,10 +73,12 @@ class BulkDeleteService
         ?callable $guard = null,
         ?string $voterAttribute = null,
         ?callable $afterFlush = null,
+        ?callable $auditValues = null,
     ): array {
         $errors = [];
         $removed = [];
         $perEntityData = [];
+        $batchId = null;
 
         $this->entityManager->beginTransaction();
         try {
@@ -85,8 +103,11 @@ class BulkDeleteService
                 }
 
                 $label = $this->labelOf($entity);
+                $oldValues = ($label !== null ? ['label' => $label] : [])
+                    + ($auditValues !== null ? $auditValues($entity) : []);
                 if ($deleter !== null) {
-                    // May flush internally; it joins this transaction.
+                    // Schedules the removal (no-flush path); a lifecycle
+                    // transition flushes inside this transaction.
                     $deleter($entity);
                 } else {
                     $this->entityManager->remove($entity);
@@ -95,35 +116,14 @@ class BulkDeleteService
                 $perEntityData[] = [
                     'action' => 'delete',
                     'entity_id' => $id,
-                    'old_values' => $label !== null ? ['label' => $label] : null,
+                    'old_values' => $oldValues !== [] ? $oldValues : null,
                     'new_values' => ['deleted' => true],
                 ];
             }
             if ($removed !== []) {
                 $this->entityManager->flush();
-            }
-            $this->entityManager->commit();
-        } catch (\Throwable $e) {
-            // Atomic: undo everything, including flushes done by domain deleters.
-            $this->rollbackQuietly();
-
-            return $this->result(0, [sprintf('Error deleting %s records, nothing was deleted: %s', $entityType, $e->getMessage())], null);
-        }
-
-        $batchId = null;
-        if ($removed !== []) {
-            if ($afterFlush !== null) {
-                foreach ($removed as $entity) {
-                    try {
-                        $afterFlush($entity);
-                    } catch (\Throwable $e) {
-                        $errors[] = sprintf('%s post-delete cleanup failed: %s', $entityType, $e->getMessage());
-                    }
-                }
-            }
-
-            // The deletions are committed — always leave the trail (ISO 27001 Cl. 7.5.3).
-            try {
+                // Inside the transaction: the trail commits with the deletions,
+                // and a row that cannot be written aborts the batch (strict).
                 $batchId = $this->auditLogger->logBulk(
                     eventType: 'bulk_delete',
                     entityType: $entityType,
@@ -134,9 +134,24 @@ class BulkDeleteService
                     ],
                     perEntityData: $perEntityData,
                     description: sprintf('Bulk delete of %d %s records', count($removed), $entityType),
+                    strict: true,
                 );
-            } catch (\Throwable $e) {
-                $errors[] = sprintf('%s audit log failed after deletion: %s', $entityType, $e->getMessage());
+            }
+            $this->entityManager->commit();
+        } catch (\Throwable $e) {
+            // Atomic: undo everything — removals, mid-batch lifecycle flushes, audit rows.
+            $this->rollbackQuietly();
+
+            return $this->result(0, [sprintf('Error deleting %s records, nothing was deleted: %s', $entityType, $e->getMessage())], null);
+        }
+
+        if ($afterFlush !== null) {
+            foreach ($removed as $entity) {
+                try {
+                    $afterFlush($entity);
+                } catch (\Throwable $e) {
+                    $errors[] = sprintf('%s post-delete cleanup failed: %s', $entityType, $e->getMessage());
+                }
             }
         }
 
@@ -171,6 +186,12 @@ class BulkDeleteService
             // Drop scheduled removals of the rolled-back batch so a later flush cannot replay them.
             $this->entityManager->clear();
         } catch (\Throwable) {
+        }
+        // A failed flush closes the EntityManager. The operation ends with an
+        // error, but nothing later in the request may run on a closed — or
+        // on a reset but unscoped — manager: recover tenant scope + context.
+        if (!$this->entityManager->isOpen()) {
+            $this->entityManagerRecovery?->recover();
         }
     }
 

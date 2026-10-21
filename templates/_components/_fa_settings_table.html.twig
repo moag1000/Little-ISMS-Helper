@@ -85,7 +85,7 @@
                    name="{{ name }}"
                    value="1"
                    {% if value %}checked{% endif %}
-                   {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+                   {%- for k, v in attrs %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}>
             <label class="form-check-label visually-hidden" for="{{ fieldId }}">{{ row.label|default('') }}</label>
         </div>
 
@@ -100,7 +100,7 @@
                         name="{{ name }}"
                         class="fa-cyber-input__field"
                         aria-label="{{ row.label|default('') }}"
-                        {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+                        {%- for k, v in attrs %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}>
                     {% for opt in row.options|default([]) %}
                         {%- set optVal   = opt.value is defined ? opt.value : opt -%}
                         {%- set optLabel = opt.label is defined ? opt.label : opt -%}
@@ -123,7 +123,7 @@
                           class="fa-cyber-input__field"
                           rows="{{ row.rows|default(3) }}"
                           aria-label="{{ row.label|default('') }}"
-                          {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>{{ value }}</textarea>
+                          {%- for k, v in attrs %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}>{{ value }}</textarea>
             </div>
         </div>
 
@@ -140,7 +140,7 @@
                            id="{{ chipId }}"
                            value="{{ optVal }}"
                            {% if row.values|default([])|length > 0 and optVal in row.values %}checked{% endif %}
-                           {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+                           {%- for k, v in attrs %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}>
                     <span class="fa-filter-chip {% if row.values|default([])|length > 0 and optVal in row.values %}fa-filter-chip--active{% endif %}">
                         {{ optLabel }}
                     </span>
@@ -164,7 +164,7 @@
                        {%- if row.min is defined %} min="{{ row.min }}"{% endif %}
                        {%- if row.max is defined %} max="{{ row.max }}"{% endif %}
                        {%- if row.step is defined %} step="{{ row.step }}"{% endif %}
-                       {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+                       {%- for k, v in attrs %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}>
             </div>
         </div>
 
@@ -182,7 +182,7 @@
                        value="{{ value }}"
                        aria-label="{{ row.label|default('') }}"
                        {%- if row.placeholder is defined %} placeholder="{{ row.placeholder }}"{% endif %}
-                       {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+                       {%- for k, v in attrs %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}>
             </div>
         </div>
     {% endif %}

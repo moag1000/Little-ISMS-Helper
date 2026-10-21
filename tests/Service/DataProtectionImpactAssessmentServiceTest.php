@@ -929,4 +929,17 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
 
         return $dpia;
     }
+
+    #[Test]
+    public function deleteWithoutFlushOnlySchedulesTheRemoval(): void
+    {
+        // Bulk path: BulkDeleteService owns the single flush and the audit batch.
+        $entity = $this->createMock(DataProtectionImpactAssessment::class);
+
+        $this->entityManager->expects($this->once())->method('remove')->with($entity);
+        $this->entityManager->expects($this->never())->method('flush');
+        $this->auditLogger->expects($this->never())->method($this->anything());
+
+        $this->service->delete($entity, flush: false);
+    }
 }

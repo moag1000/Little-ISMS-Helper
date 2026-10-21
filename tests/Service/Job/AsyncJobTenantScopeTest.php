@@ -166,7 +166,101 @@ final class AsyncJobTenantScopeTest extends KernelTestCase
         ));
 
         self::assertInstanceOf(ExecuteJobMessage::class, $legacy);
-        self::assertNull($legacy->tenantId ?? null, 'legacy payloads must degrade to unscoped, not fatal');
+        self::assertNull($legacy->tenantId ?? null, 'legacy payloads must deserialise, not fatal');
+    }
+
+    /**
+     * #1059: without a tenant the worker must not fall back to the unscoped
+     * filter unless the message says so explicitly. An account without an
+     * organisation (and a legacy payload without the marker) gets the
+     * NO_ORGANISATION scope — the same as the in-request runner's request
+     * filter.
+     */
+    #[Test]
+    public function messageWithoutTenantRunsInTheNoOrganisationScopeUnlessMarkedUnscoped(): void
+    {
+        self::bootKernel();
+        $container = static::getContainer();
+        $em = $container->get(EntityManagerInterface::class);
+
+        self::assertSame(
+            \App\Doctrine\TenantFilter::NO_ORGANISATION,
+            $this->filterSeenByJob($em, new ExecuteJobMessage(jobClass: 'X', args: [], jobId: '', tenantId: null)),
+        );
+        self::assertSame(
+            \App\Doctrine\TenantFilter::UNSCOPED,
+            $this->filterSeenByJob($em, new ExecuteJobMessage(jobClass: 'X', args: [], jobId: '', tenantId: null, unscoped: true)),
+        );
+
+        $legacy = unserialize(sprintf(
+            'O:%d:"%s":3:{s:8:"jobClass";s:1:"X";s:4:"args";a:0:{}s:5:"jobId";s:0:"";}',
+            strlen(ExecuteJobMessage::class),
+            ExecuteJobMessage::class,
+        ));
+        self::assertInstanceOf(ExecuteJobMessage::class, $legacy);
+        self::assertSame(
+            \App\Doctrine\TenantFilter::NO_ORGANISATION,
+            $this->filterSeenByJob($em, $legacy),
+            'a payload queued before the marker existed fails closed',
+        );
+    }
+
+    private function filterSeenByJob(EntityManagerInterface $em, ExecuteJobMessage $template): ?string
+    {
+        $container = static::getContainer();
+        $jobStatusService = $container->get(JobStatusService::class);
+
+        $job = new class implements AsyncJobInterface {
+            public ?string $seenTenantParameter = null;
+            public ?EntityManagerInterface $em = null;
+
+            public function run(JobContext $ctx): void
+            {
+                $this->seenTenantParameter = AsyncJobTenantScopeTest::rawTenantParameter($this->em);
+            }
+        };
+        $job->em = $em;
+
+        $handler = new ExecuteJobHandler(
+            $jobStatusService,
+            $container->get(TenantContext::class),
+            new class ($job) implements ContainerInterface {
+                public function __construct(private readonly AsyncJobInterface $job)
+                {
+                }
+
+                public function get(string $id): AsyncJobInterface
+                {
+                    return $this->job;
+                }
+
+                public function has(string $id): bool
+                {
+                    return true;
+                }
+            },
+        );
+
+        $jobId = $jobStatusService->create('test.tenant_scope_none', []);
+        $message = new \ReflectionClass(ExecuteJobMessage::class)->newInstanceWithoutConstructor();
+        foreach (['jobClass' => $job::class, 'args' => [], 'jobId' => $jobId] as $name => $value) {
+            new \ReflectionProperty(ExecuteJobMessage::class, $name)->setValue($message, $value);
+        }
+        foreach (['tenantId', 'unscoped'] as $name) {
+            $property = new \ReflectionProperty(ExecuteJobMessage::class, $name);
+            if ($property->isInitialized($template)) {
+                $property->setValue($message, $property->getValue($template));
+            }
+        }
+
+        try {
+            $handler($message);
+            self::assertSame('succeeded', $jobStatusService->read($jobId)['status'] ?? null);
+        } finally {
+            $jobStatusService->delete($jobId);
+        }
+
+        return $job->seenTenantParameter;
     }
 
     /**

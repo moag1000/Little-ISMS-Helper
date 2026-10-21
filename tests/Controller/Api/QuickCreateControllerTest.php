@@ -200,6 +200,43 @@ final class QuickCreateControllerTest extends WebTestCase
         self::assertSame(48, $bp->getMtpd());
     }
 
+    /**
+     * #1059: a custom /api endpoint is not covered by the API Platform module
+     * gate, so it gates itself — a BCM stub cannot be created while the bcm
+     * module is off.
+     */
+    #[Test]
+    public function refusesEntityTypeOfAnInactiveModule(): void
+    {
+        $client = static::createClient();
+        $client->disableReboot();
+        $modules = $this->createStub(\App\Service\ModuleConfigurationService::class);
+        $modules->method('isModuleActive')->willReturnCallback(static fn (string $key): bool => $key !== 'bcm');
+        $modules->method('getActiveModules')->willReturn(['core', 'assets']);
+        static::getContainer()->set(\App\Service\ModuleConfigurationService::class, $modules);
+
+        $user = $this->getOrCreateUser($client);
+        $client->loginUser($user);
+        $token = $this->csrfToken($client, 'quick_create');
+
+        $name = 'QC-Gated-' . uniqid();
+        $client->request(
+            'POST',
+            '/de/api/quick-create/crisis-team',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['name' => $name, '_token' => $token])
+        );
+
+        self::assertResponseStatusCodeSame(403);
+        $data = json_decode((string) $client->getResponse()->getContent(), true);
+        self::assertSame('module_not_active', $data['error']);
+        self::assertSame('bcm', $data['module']);
+        $em = $client->getContainer()->get(EntityManagerInterface::class);
+        self::assertNull($em->getRepository(CrisisTeam::class)->findOneBy(['teamName' => $name]));
+    }
+
     private function csrfToken(KernelBrowser $client, string $tokenId): string
     {
         // Generate token directly into the session (pattern from RiskControllerTest):

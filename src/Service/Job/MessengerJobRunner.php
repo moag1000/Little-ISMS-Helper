@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Service\Job;
 
 use App\Job\AsyncJobInterface;
+use App\Entity\User;
 use App\Message\Job\ExecuteJobMessage;
+use App\Repository\UserRepository;
 use App\Service\TenantContext;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -35,6 +38,8 @@ class MessengerJobRunner
         private readonly MessageBusInterface $messageBus,
         private readonly JobStatusService $jobStatusService,
         private readonly TenantContext $tenantContext,
+        private readonly Security $security,
+        private readonly ?UserRepository $userRepository = null,
     ) {
     }
 
@@ -73,35 +78,56 @@ class MessengerJobRunner
 
         // Capture the tenant NOW, while the HTTP request context still exists.
         // The worker has no request, so it cannot resolve this itself.
+        $instanceWide = $this->isHonouredInstanceWideJob($args, $jobId);
+        $tenantId = $instanceWide ? null : $this->tenantContext->getCurrentTenantId();
         $this->messageBus->dispatch(new ExecuteJobMessage(
             jobClass: $jobClass,
             args: $args,
             jobId: $jobId,
-            tenantId: $this->workerTenantId($args),
+            tenantId: $tenantId,
+            unscoped: $tenantId === null && ($instanceWide || $this->mayRunUnscoped()),
         ));
 
         return $response;
     }
 
     /**
-     * Tenant the worker arms its tenant filter with.
-     *
-     * An instance-wide job ({@see JobTenantScope::ARG_ALL_TENANTS}, captured only
-     * for a SUPER_ADMIN without an organisation) runs unscoped, exactly as in the
-     * in-request runner, whose request filter is unscoped for that account.
-     * TenantContext would instead hand that account a default organisation, and
-     * the worker would silently export only that organisation's data.
+     * An instance-wide job ({@see JobTenantScope::ARG_ALL_TENANTS} without a
+     * tenant id) runs unscoped — exactly as in the in-request runner, whose
+     * request filter is unscoped for an instance operator; TenantContext would
+     * instead hand that account a default organisation and truncate the
+     * export. The flag is honoured ONLY when the job's recorded owner
+     * (JobStatusService `owner_user_id`) is a ROLE_SUPER_ADMIN — defence in
+     * depth against a flag smuggled into the args. Otherwise it is ignored and
+     * the job keeps the dispatching tenant scope (fail closed).
      *
      * @param array<string, mixed> $args
      */
-    private function workerTenantId(array $args): ?int
+    private function isHonouredInstanceWideJob(array $args, string $jobId): bool
     {
-        if (($args[JobTenantScope::ARG_ALL_TENANTS] ?? null) === true
-            && ($args[JobTenantScope::ARG_TENANT_ID] ?? null) === null
+        if (($args[JobTenantScope::ARG_ALL_TENANTS] ?? null) !== true
+            || ($args[JobTenantScope::ARG_TENANT_ID] ?? null) !== null
         ) {
-            return null;
+            return false;
         }
 
-        return $this->tenantContext->getCurrentTenantId();
+        $ownerId = $this->jobStatusService->read($jobId)['owner_user_id'] ?? null;
+        if (!is_int($ownerId) || $this->userRepository === null) {
+            return false;
+        }
+        $owner = $this->userRepository->find($ownerId);
+
+        return $owner instanceof User && in_array('ROLE_SUPER_ADMIN', $owner->getRoles(), true);
+    }
+
+    /**
+     * Whether a job without a tenant may run unscoped — the same decision
+     * TenantFilterSubscriber takes for the in-request runner: an anonymous
+     * request or an instance operator. Every other account without an
+     * organisation is queued for the no-organisation scope (fail closed).
+     */
+    private function mayRunUnscoped(): bool
+    {
+        return $this->security->getUser() === null || $this->security->isGranted('ROLE_SUPER_ADMIN');
     }
 }

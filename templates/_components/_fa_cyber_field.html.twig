@@ -93,7 +93,7 @@
                 {% if props.min is defined %}minlength="{{ props.min }}"{% endif %}
                 {% if props.pattern is defined %}pattern="{{ props.pattern }}"{% endif %}
                 {% if props.help is defined and props.help %}aria-describedby="{{ props.id|default('field-' ~ name) }}_help"{% endif %}
-                {%- for k, v in props.extra_attrs|default({}) %} {{ k }}="{{ v }}"{% endfor -%}
+                {%- for k, v in props.extra_attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor -%}
             >
     {{ _self._frame_close(props) }}
 {% endmacro %}
@@ -112,7 +112,7 @@
                 {% if props.disabled|default(false) %}disabled{% endif %}
                 {% if props.max is defined %}maxlength="{{ props.max }}"{% endif %}
                 {% if props.help is defined and props.help %}aria-describedby="{{ props.id|default('field-' ~ name) }}_help"{% endif %}
-                {%- for k, v in props.extra_attrs|default({}) %} {{ k }}="{{ v }}"{% endfor -%}
+                {%- for k, v in props.extra_attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor -%}
             >{{ props.value|default('') }}</textarea>
     {{ _self._frame_close(props) }}
 {% endmacro %}
@@ -127,7 +127,7 @@
                 class="fa-cyber-input__field {{ props.extra_class|default('') }}"
                 {% if props.required|default(false) %}required{% endif %}
                 {% if props.disabled|default(false) %}disabled{% endif %}
-                {%- for k, v in props.extra_attrs|default({}) %} {{ k }}="{{ v }}"{% endfor -%}
+                {%- for k, v in props.extra_attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor -%}
             >
                 {% if props.placeholder is defined %}<option value="">{{ props.placeholder }}</option>{% endif %}
                 {% for opt in options %}

@@ -6,6 +6,7 @@ namespace App\Form\Notification;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -71,10 +72,13 @@ final class ConditionRowType extends AbstractType
                     'placeholder' => 'notification.condition.value_placeholder',
                     'class'       => 'fa-condition-chip__control',
                 ],
-            ]);
+            ])
+            // Stable key of the row's original array value (see ConditionRowOriginals).
+            ->add(ConditionRowTransformer::ROW_KEY, HiddenType::class, ['required' => false]);
 
-        // One transformer instance per row form (it remembers the row's original value).
-        $builder->addModelTransformer(new ConditionRowTransformer());
+        $builder->addModelTransformer(new ConditionRowTransformer(
+            $options['originals'] ?? new ConditionRowOriginals(),
+        ));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -82,6 +86,10 @@ final class ConditionRowType extends AbstractType
         $resolver->setDefaults([
             'data_class'         => null,
             'translation_domain' => 'notification',
+            // Shared by every row of one collection (NotificationRuleType), so a
+            // row's original value is found by its key, not by its index.
+            'originals'          => null,
         ]);
+        $resolver->setAllowedTypes('originals', ['null', ConditionRowOriginals::class]);
     }
 }

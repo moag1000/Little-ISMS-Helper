@@ -203,10 +203,38 @@ final class DataBreachService
     }
 
     /**
-     * Delete data breach
+     * What the audit trail keeps of a deleted breach — the one snapshot the
+     * single delete and the bulk delete (BulkDeleteService) both record. The
+     * reference number is the key of the Art. 33(5) breach register.
+     *
+     * @return array<string, mixed>
      */
-    public function delete(DataBreach $dataBreach): void
+    public function deletionAuditValues(DataBreach $dataBreach): array
     {
+        return [
+            'reference_number' => $dataBreach->getReferenceNumber(),
+            'title' => $dataBreach->getTitle(),
+        ];
+    }
+
+    /**
+     * Delete data breach
+     *
+     * @param bool $flush false: only schedule the removal — the caller flushes and
+     *                   audits (BulkDeleteService, one transaction for the batch)
+     */
+    public function delete(DataBreach $dataBreach, bool $flush = true): void
+    {
+        if (!$flush) {
+            // Bulk path (BulkDeleteService): only schedule the removal. The caller
+            // owns the one flush + commit of the batch and writes the per-entity
+            // audit row (with deletionAuditValues()) inside its transaction; an
+            // AuditLogger call here would flush the whole unit of work mid-batch.
+            $this->entityManager->remove($dataBreach);
+
+            return;
+        }
+
         $referenceNumber = $dataBreach->getReferenceNumber();
 
         $this->auditLogger->logCustom(
@@ -214,7 +242,7 @@ final class DataBreachService
             DataBreach::class,
             $dataBreach->getId(),
             null,
-            ['reference_number' => $referenceNumber]
+            $this->deletionAuditValues($dataBreach)
         );
 
         $this->entityManager->remove($dataBreach);

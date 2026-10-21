@@ -26,13 +26,13 @@ interface LifecycleTransitionInterface
      *                                     the step's approver_role / approver_users).
      *                                     FourEyesValidator then skips its role
      *                                     check; the distinct-user rule still applies.
-     * @param  (\Closure(User): bool)|null $isEligibleApprover Who else could grant this
+     * @param  EligibleApprovers|null $eligibleApprovers Who else could grant this
      *                                     four-eyes transition (WorkflowService: users
      *                                     eligible for the authorising step). The
      *                                     single-approver escape then applies only when
      *                                     no OTHER active user of the organisation is
-     *                                     eligible; without it the transition `roles`
-     *                                     are counted.
+     *                                     eligible (one count query); without it the
+     *                                     transition `roles` are counted.
      * @param  bool      $allowSelfApprovalEscape False when the caller passes a
      *                                     system-generated reason: the single-approver
      *                                     escape needs a reason the user typed (the
@@ -56,7 +56,7 @@ interface LifecycleTransitionInterface
         ?string $reason = null,
         ?User $fourEyesApprover = null,
         bool $approverAuthorityVerified = false,
-        ?\Closure $isEligibleApprover = null,
+        ?EligibleApprovers $eligibleApprovers = null,
         bool $allowSelfApprovalEscape = true,
         bool $automatic = false,
     ): void;

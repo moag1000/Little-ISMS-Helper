@@ -22,6 +22,8 @@ class TenantContext
 {
     private ?Tenant $currentTenant = null;
     private bool $initialized = false;
+    /** Set by setNoOrganisation(): arm TenantFilter::NO_ORGANISATION instead of UNSCOPED. */
+    private bool $noOrganisation = false;
 
     public function __construct(
         private readonly Security $security,
@@ -67,6 +69,7 @@ class TenantContext
     public function setCurrentTenant(?Tenant $tenant): void
     {
         $this->currentTenant = $tenant;
+        $this->noOrganisation = false;
         $this->initialized = true;
         $this->syncDoctrineFilter();
     }
@@ -78,6 +81,23 @@ class TenantContext
     public function setCurrentTenantById(?int $id): void
     {
         $this->currentTenant = $id !== null ? $this->tenantRepository->find($id) : null;
+        $this->noOrganisation = false;
+        $this->initialized = true;
+        $this->syncDoctrineFilter();
+    }
+
+    /**
+     * No organisation context, and NOT the instance-wide scope: the tenant
+     * filter is armed with {@see \App\Doctrine\TenantFilter::NO_ORGANISATION}
+     * (only rows that belong to no organisation), as TenantFilterSubscriber
+     * does for an account without an organisation that is no instance
+     * operator. Used by background workers that run a job for such an
+     * account (ExecuteJobHandler), so the job never becomes unscoped.
+     */
+    public function setNoOrganisation(): void
+    {
+        $this->currentTenant = null;
+        $this->noOrganisation = true;
         $this->initialized = true;
         $this->syncDoctrineFilter();
     }
@@ -92,21 +112,35 @@ class TenantContext
      * must therefore also arm the filter, not just remember the entity.
      *
      * The 'null' sentinel mirrors TenantFilterSubscriber: no tenant means
-     * unscoped (instance-admin), not "hide everything".
+     * unscoped (instance-admin), not "hide everything" — unless
+     * {@see setNoOrganisation()} asked for the no-organisation scope.
      */
     private function syncDoctrineFilter(): void
     {
         $filters = $this->entityManager->getFilters();
 
-        if (!$filters->isEnabled('tenant_filter')) {
+        // A caller that suspended the filter (operator scans, orphan repair)
+        // restores it itself — leave it suspended.
+        if ($filters->isSuspended('tenant_filter')) {
             return;
+        }
+        // Fail safe = scoped: a filter that is neither enabled nor suspended
+        // (lost, e.g. after an EntityManager reset) is enabled again before it
+        // is armed. A worker must never start a message with it disabled.
+        if (!$filters->isEnabled('tenant_filter')) {
+            if (!$filters->has('tenant_filter')) {
+                return;
+            }
+            $filters->enable('tenant_filter');
         }
 
         $filters->getFilter('tenant_filter')->setParameter(
             'tenant_id',
-            $this->currentTenant?->getId() !== null
-                ? (string) $this->currentTenant->getId()
-                : \App\Doctrine\TenantFilter::UNSCOPED,
+            match (true) {
+                $this->currentTenant?->getId() !== null => (string) $this->currentTenant->getId(),
+                $this->noOrganisation => \App\Doctrine\TenantFilter::NO_ORGANISATION,
+                default => \App\Doctrine\TenantFilter::UNSCOPED,
+            },
         );
     }
 
@@ -221,11 +255,28 @@ class TenantContext
     }
 
     /**
+     * The context's state without initialising it — for
+     * {@see \App\Doctrine\EntityManagerRecovery}, which restores it on a
+     * fresh EntityManager after a reset.
+     *
+     * @return array{initialized: bool, tenantId: ?int, noOrganisation: bool}
+     */
+    public function snapshot(): array
+    {
+        return [
+            'initialized' => $this->initialized,
+            'tenantId' => $this->currentTenant?->getId(),
+            'noOrganisation' => $this->noOrganisation,
+        ];
+    }
+
+    /**
      * Reset the tenant context (useful for testing)
      */
     public function reset(): void
     {
         $this->currentTenant = null;
+        $this->noOrganisation = false;
         $this->initialized = false;
     }
 

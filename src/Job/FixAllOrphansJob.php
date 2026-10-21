@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Repository\TenantRepository;
-use App\Service\AuditLogger;
+use App\Service\DataRepair\OrphanReassigner;
 use App\Service\DataIntegrityService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Async admin job: assign all orphaned entities to a target tenant.
@@ -23,8 +22,9 @@ use Doctrine\Persistence\ManagerRegistry;
  *   - Blocks in multi-tenant deployments (count > 1) — same guard as controller
  *   - Disables the tenant_filter Doctrine filter to find tenant=NULL rows
  *   - Iterates all orphan categories from DataIntegrityService
- *   - Per-entity: setTenant() + AuditLogger::logCustom() + flush()
- *   - EM-reset on constraint violation (same resilience as the controller)
+ *   - Per-entity: OrphanReassigner — setTenant() + flush + audit row in one
+ *     transaction (no audit row for an unstored change); a closed
+ *     EntityManager is recovered (same resilience as the controller)
  *   - Reports progress via JobContext::progress()
  */
 final class FixAllOrphansJob implements AsyncJobInterface
@@ -32,9 +32,8 @@ final class FixAllOrphansJob implements AsyncJobInterface
     public function __construct(
         private readonly DataIntegrityService $dataIntegrityService,
         private readonly TenantRepository $tenantRepository,
-        private readonly AuditLogger $auditLogger,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ManagerRegistry $managerRegistry,
+        private readonly OrphanReassigner $orphanReassigner,
     ) {
     }
 
@@ -101,36 +100,12 @@ final class FixAllOrphansJob implements AsyncJobInterface
                         continue;
                     }
 
-                    // CLAUDE.md Common-Pitfalls #1: EM-reset on constraint violation
-                    if (!$this->entityManager->isOpen()) {
-                        $this->managerRegistry->resetManager();
-                        /** @var EntityManagerInterface $freshEm */
-                        $freshEm = $this->managerRegistry->getManager();
-                        // Re-fetch tenant via the (possibly reset) EM
-                        $tenant = $this->tenantRepository->find($tenant->getId());
-                        if ($tenant === null) {
-                            break 2;
-                        }
-                    }
-
-                    try {
-                        $entity->setTenant($tenant);
-                        $this->auditLogger->logCustom(
-                            'admin.data_repair.orphan_reassigned',
-                            $className,
-                            (int) $entity->getId(),
-                            ['tenant_id' => null],
-                            ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-                            sprintf(
-                                'Orphan %s#%d reassigned to tenant %s (async job)',
-                                $className,
-                                (int) $entity->getId(),
-                                $tenant->getName(),
-                            ),
-                        );
-                        $this->entityManager->flush();
+                    // One transaction per entity: change + audit row commit
+                    // together; a failure rolls back both and recovers a closed
+                    // EntityManager — no audit row for an unstored change.
+                    if ($this->orphanReassigner->reassign($entity, $tenant, null, ' (async job)')) {
                         $totalFixed++;
-                    } catch (\Throwable) {
+                    } else {
                         $totalSkipped++;
                     }
 

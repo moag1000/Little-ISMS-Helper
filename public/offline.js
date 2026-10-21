@@ -1,5 +1,11 @@
-/* Offline fallback page behaviour. Static file so offline.html needs no inline script (CSP-safe). */
+/* Offline fallback page behaviour. Static file so offline.html needs no inline
+   script or event-handler attribute — and therefore no per-request CSP nonce,
+   which a page served from the service-worker cache could only carry stale. */
 window.addEventListener('online', () => {
+    window.location.reload();
+});
+
+document.getElementById('offlineRetry')?.addEventListener('click', () => {
     window.location.reload();
 });
 
@@ -22,7 +28,7 @@ if ('caches' in window) {
             const container = document.getElementById('cachedPages');
             const list = document.getElementById('cachedPagesList');
             if (!container || !list) return;
-            container.style.display = 'block';
+            container.hidden = false;
 
             htmlRequests.slice(0, 5).forEach(req => {
                 const url = new URL(req.url);

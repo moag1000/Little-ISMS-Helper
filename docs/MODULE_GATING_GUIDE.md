@@ -316,6 +316,49 @@ constructor injection).
 
 `check_module_gating.py` is the authoritative inventory — this table lists examples.
 
+### API Platform resources and custom `/api` endpoints
+
+**API Platform resources** run through API Platform's own placeholder
+controller, which `RequiresModuleListener` never sees. The module key is
+declared once, **on the entity class** (`#[RequiresModule('bcm')] class
+BusinessContinuityPlan`), and `App\EventListener\ApiResourceModuleListener`
+denies every operation of that resource (`403 {"error": "module_not_active"}`)
+via the `_api_resource_class` attribute API Platform puts on each route. An
+entity gets the attribute exactly when its HTML controllers are module-gated;
+the ISO 27001 backbone entities (Asset, Risk, Control, Incident,
+InternalAudit) stay ungated, as their HTML controllers are.
+
+- **Embedded relations follow the parent resource.** A relation serialised
+  inside a response (embedded object or IRI) is decided by the gate of the
+  resource that was requested, not by the related entity's module. If a
+  module-owned entity must never appear inside another resource while its
+  module is off, gate it in that resource's serialisation groups / provider —
+  the listener does not filter payloads.
+- **Custom controllers under `/api` gate themselves.** Routes under `/api` or
+  `/{_locale}/api` that are plain Symfony controllers carry no
+  `_api_resource_class`, so `ApiResourceModuleListener` ignores them. Use
+  `#[RequiresModule]` on the action (or, when the module depends on the
+  request — `QuickCreateController` per entity type — an
+  `isModuleActive()` check returning `403 module_not_active`).
+
+`tests/Api/ApiRouteModuleGateTest.php` walks the real route collection: every
+API Platform operation must carry an existing `_api_resource_class`, every
+module-owned resource must be denied while its module is off, and every custom
+`/api` controller must be listed in its `CUSTOM_API_CONTROLLERS` inventory with
+its module decision (`core`, per-request `self`, or the action's
+`#[RequiresModule]` key). A new `/api` controller fails that test until it is
+classified.
+
+Current custom `/api` controllers: `AlvaHintFormController` (core — hints are
+module-filtered by the evaluator), `LiveCountsController`,
+`PushSubscriptionController`, `SsoDiscoveryApiController` (authentication),
+`WorkflowStepApiController` (workflows), `CorporateStructureController`,
+`GlossaryApiController` (all core), `QuickCreateController` (per entity type:
+`asset` → `assets`, `crisis-team` / `business-process` → `bcm`) and
+`SearchController` (search results are module-filtered by `SearchService`;
+the asset / risk / incident previews require `assets` / `risks` /
+`incidents`).
+
 ---
 
 ## Pattern 3: Twig Template Conditionals

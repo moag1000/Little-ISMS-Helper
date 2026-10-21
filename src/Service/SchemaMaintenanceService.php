@@ -36,6 +36,7 @@ class SchemaMaintenanceService
         private readonly DependencyFactory $migrationsDependencyFactory,
         private readonly AuditLogger $auditLogger,
         private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -77,7 +78,9 @@ class SchemaMaintenanceService
     {
         $em = $this->managerRegistry->getManager();
         if ($em instanceof \Doctrine\ORM\EntityManagerInterface && !$em->isOpen()) {
-            $this->managerRegistry->resetManager();
+            // Restores the tenant-filter state that existed before verbatim
+            // (operator path: usually unscoped) — no tenant is forced.
+            $this->entityManagerRecovery?->recover();
         }
     }
 

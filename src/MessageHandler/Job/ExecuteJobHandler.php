@@ -52,7 +52,14 @@ final class ExecuteJobHandler
         // across all tenants. TenantContext::setCurrentTenantById() arms it.
         // ?? keeps messages queued before this field existed deserialisable.
         $tenantId = $message->tenantId ?? null;
-        $this->tenantContext->setCurrentTenantById($tenantId);
+        if ($tenantId !== null || $this->isUnscoped($message)) {
+            $this->tenantContext->setCurrentTenantById($tenantId);
+        } else {
+            // Dispatched by an account without an organisation that is no
+            // instance operator: same NO_ORGANISATION scope as the request
+            // filter of the in-request runner, never unscoped.
+            $this->tenantContext->setNoOrganisation();
+        }
 
         $this->jobStatusService->markRunning($id);
 
@@ -89,6 +96,18 @@ final class ExecuteJobHandler
 
             $this->jobStatusService->markFailed($id, $e->getMessage(), $trace);
         }
+    }
+
+    /**
+     * The explicit instance-wide marker. A payload queued before the field
+     * existed has it uninitialised and is treated as NOT unscoped (fail
+     * closed: no organisation rather than every organisation).
+     */
+    private function isUnscoped(ExecuteJobMessage $message): bool
+    {
+        $property = new \ReflectionProperty(ExecuteJobMessage::class, 'unscoped');
+
+        return $property->isInitialized($message) && $message->unscoped;
     }
 
     private function resolveJob(string $jobClass): AsyncJobInterface

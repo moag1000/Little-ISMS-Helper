@@ -39,7 +39,7 @@ fa-cyber-btn fa-cyber-btn--{{ variant|default('primary') }} fa-cyber-btn--{{ siz
 {% endmacro %}
 
 {% macro attrs(attrs) %}
-    {% for k, v in attrs|default({}) %} {{ k }}="{{ v|e('html_attr') }}"{% endfor %}
+    {% for k, v in attrs|default({}) %} {{ k|e('html_attr') }}="{{ v|e('html_attr') }}"{% endfor %}
 {% endmacro %}
 
 {% macro render(label, props = {}) %}

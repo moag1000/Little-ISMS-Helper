@@ -97,12 +97,40 @@ final class DataProtectionImpactAssessmentService
     }
 
     /**
-     * Delete a DPIA
+     * What the audit trail keeps of a deleted DPIA — the one snapshot the
+     * single delete and the bulk delete (BulkDeleteService) both record.
+     *
+     * @return array<string, mixed>
      */
-    public function delete(DataProtectionImpactAssessment $dataProtectionImpactAssessment): void
+    public function deletionAuditValues(DataProtectionImpactAssessment $dataProtectionImpactAssessment): array
     {
+        return [
+            'reference_number' => $dataProtectionImpactAssessment->getReferenceNumber(),
+            'title' => $dataProtectionImpactAssessment->getTitle(),
+        ];
+    }
+
+    /**
+     * Delete a DPIA
+     *
+     * @param bool $flush false: only schedule the removal — the caller flushes and
+     *                   audits (BulkDeleteService, one transaction for the batch)
+     */
+    public function delete(DataProtectionImpactAssessment $dataProtectionImpactAssessment, bool $flush = true): void
+    {
+        if (!$flush) {
+            // Bulk path (BulkDeleteService): only schedule the removal. The caller
+            // owns the one flush + commit of the batch and writes the per-entity
+            // audit row (with deletionAuditValues()) inside its transaction; an
+            // AuditLogger call here would flush the whole unit of work mid-batch.
+            $this->entityManager->remove($dataProtectionImpactAssessment);
+
+            return;
+        }
+
         $id = $dataProtectionImpactAssessment->getId();
         $referenceNumber = $dataProtectionImpactAssessment->getReferenceNumber();
+        $auditValues = $this->deletionAuditValues($dataProtectionImpactAssessment);
 
         $this->entityManager->remove($dataProtectionImpactAssessment);
         $this->entityManager->flush();
@@ -110,7 +138,7 @@ final class DataProtectionImpactAssessmentService
         $this->auditLogger->logDelete(
             'DataProtectionImpactAssessment',
             $id,
-            ['reference_number' => $referenceNumber],
+            $auditValues,
             'DPIA deleted: ' . $referenceNumber
         );
     }

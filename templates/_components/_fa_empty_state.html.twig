@@ -83,7 +83,7 @@
                     <a href="{{ action.href|default('#') }}"
                        class="fa-cyber-btn fa-cyber-btn--{{ variant }}"
                        {%- if action.attrs is defined and action.attrs -%}
-                           {%- for attr_name, attr_value in action.attrs %} {{ attr_name }}="{{ attr_value }}"{% endfor -%}
+                           {%- for attr_name, attr_value in action.attrs %} {{ attr_name|e('html_attr') }}="{{ attr_value }}"{% endfor -%}
                        {%- endif -%}>
                         {% if action.icon is defined and action.icon %}
                             <i class="fa-icon fa-icon--{{ action.icon }}" aria-hidden="true"></i>

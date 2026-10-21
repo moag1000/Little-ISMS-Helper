@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\EventListener\FourEyesValidator;
 use App\Lifecycle\Exception\FourEyesRequiredException;
+use App\Lifecycle\EligibleApprovers;
 use App\Repository\UserRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Role\RoleHierarchy;
@@ -239,12 +240,10 @@ class FourEyesValidatorTest extends TestCase
 
         $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
         $resolver->method('resolve')->willReturn(['four_eyes' => true, 'roles' => ['ROLE_MANAGER']]);
-        $userRepo = $this->createStub(UserRepository::class);
-        // Raw role LIKE-query only finds the literal ROLE_MANAGER holder.
-        $userRepo->method('findByRoleInTenant')->willReturnCallback(
-            static fn (string $role): array => $role === 'ROLE_MANAGER' ? [$initiator] : [],
-        );
-        $userRepo->method('findBy')->willReturn([$initiator, $dpo]);
+        // The count matches stored role names literally — the DPO is only
+        // found because the validator expands ROLE_MANAGER to every role
+        // reaching it.
+        $userRepo = $this->userRepoOver([$initiator, $dpo]);
         $validator = new FourEyesValidator($resolver, $userRepo, $this->roleHierarchy());
 
         try {
@@ -277,7 +276,7 @@ class FourEyesValidatorTest extends TestCase
                 'user' => $initiator,
                 'four_eyes_approver' => $initiator,
                 'four_eyes_approver_authorized' => true,
-                'four_eyes_eligible_approver' => static fn (User $u): bool => in_array($u->getId(), [1, 2], true),
+                'four_eyes_eligible_approvers' => new EligibleApprovers(['ROLE_ADMIN'], [2]),
                 'reason' => 'self-approval attempt',
             ]));
             self::fail('Expected FourEyesRequiredException');
@@ -297,7 +296,7 @@ class FourEyesValidatorTest extends TestCase
             'user' => $initiator,
             'four_eyes_approver' => $initiator,
             'four_eyes_approver_authorized' => true,
-            'four_eyes_eligible_approver' => static fn (User $u): bool => $u->getId() === 1,
+            'four_eyes_eligible_approvers' => new EligibleApprovers(['ROLE_DPO']),
             'reason' => 'Offline counter-signature by the managing director, mail of 12 May',
         ]));
         $this->expectNotToPerformAssertions();
@@ -398,10 +397,7 @@ class FourEyesValidatorTest extends TestCase
     {
         $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
         $resolver->method('resolve')->willReturn(['four_eyes' => true, 'roles' => ['ROLE_MANAGER', 'ROLE_CISO']]);
-        $userRepo = $this->createStub(UserRepository::class);
-        $userRepo->method('findBy')->willReturn($users);
-
-        return new FourEyesValidator($resolver, $userRepo, $this->roleHierarchy());
+        return new FourEyesValidator($resolver, $this->userRepoOver($users), $this->roleHierarchy());
     }
 
     /**
@@ -412,17 +408,48 @@ class FourEyesValidatorTest extends TestCase
         $resolver = $this->createStub(LifecycleConfigResolverInterface::class);
         $resolver->method('resolve')->willReturn($metadata);
 
-        $userRepo = $this->createStub(UserRepository::class);
-        // Build the user list that findByRoleInTenant returns.
+        // The active users of the tenant.
         // tenantUserCount=1 → exactly the initiator. >1 → initiator + N stand-ins.
         $users = [];
         for ($i = 1; $i <= $tenantUserCount; $i++) {
             $users[] = $this->makeUser($i, $metadata['roles'] ?? ['ROLE_MANAGER']);
         }
-        $userRepo->method('findByRoleInTenant')->willReturn($users);
-        $userRepo->method('findBy')->willReturn($users);
 
-        return new FourEyesValidator($resolver, $userRepo, $this->roleHierarchy());
+        return new FourEyesValidator($resolver, $this->userRepoOver($users), $this->roleHierarchy());
+    }
+
+    /**
+     * UserRepository stub whose count queries evaluate the same predicate as
+     * the real DQL over an in-memory list of active tenant users: stored
+     * role names matched literally, ids, excluded id. findBy() fails the test
+     * — the escape must not load the organisation's users.
+     *
+     * @param list<User> $users
+     */
+    private function userRepoOver(array $users): UserRepository
+    {
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepo->method('countActiveByTenant')->willReturn(count($users));
+        $userRepo->method('countActiveInTenantHoldingAny')->willReturnCallback(
+            static function (Tenant $tenant, array $roleNames, array $userIds = [], ?int $excludeUserId = null) use ($users): int {
+                $n = 0;
+                foreach ($users as $u) {
+                    if ($u->getId() === $excludeUserId) {
+                        continue;
+                    }
+                    if (in_array($u->getId(), $userIds, true) || array_intersect($u->getStoredRoles(), $roleNames) !== []) {
+                        ++$n;
+                    }
+                }
+
+                return $n;
+            },
+        );
+        $userRepo->method('findBy')->willReturnCallback(static function (): never {
+            self::fail('The single-approver escape must count, not load the users.');
+        });
+
+        return $userRepo;
     }
 
     /** Real role hierarchy from config/packages/security.yaml. */

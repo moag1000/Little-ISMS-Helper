@@ -200,6 +200,20 @@ Faustregel: nicht mehr Worker als der Host an PHP-CLI-Prozessen erlaubt
 - Im Job-Datensatz (`var/jobs/<uuid>.json`) stehen Payloads — die
   Datei-Permissions auf `var/jobs/` sind bereits restriktiv
   (`0775` für Schreiben durch FPM + Cron)
+- **Mandanten-Scope im Worker (fail closed):** Jede Job-Nachricht trägt die
+  Organisation des Auftraggebers. Ohne Organisation läuft ein Job nur dann
+  organisationsübergreifend, wenn die Nachricht das ausdrücklich erlaubt
+  (Instanz-Operator `ROLE_SUPER_ADMIN`; ein `allTenants`-Export nur, wenn der im
+  Job-Datensatz eingetragene Auftraggeber Instanz-Operator ist). Sonst sieht der
+  Job nur Datensätze ohne Organisation.
+
+**Upgrade-Hinweis (#1059):** Nachrichten, die *vor* dem Update in die Queue
+gestellt wurden, kennen diese Freigabe noch nicht und laufen deshalb im
+Scope "keine Organisation". Ein vor dem Update eingereihter instanzweiter Job
+eines Instanz-Operators (z.B. ein Export über alle Organisationen) endet dann
+ohne Fehlermeldung mit (fast) leerem Ergebnis. Vor dem Update die Queue
+leeren lassen (`messenger:consume async` bis "keine Nachrichten") oder solche
+Jobs nach dem Update neu anstoßen.
 
 ## Troubleshooting
 

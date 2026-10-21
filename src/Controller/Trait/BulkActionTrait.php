@@ -20,7 +20,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * Shared bulk-action helpers for controllers.
  *
- * Callers pass pre-tenant-scoped entity collections and field extractors.
+ * Tenant scope: handleBulkDelete() checks it per entity (BulkDeleteService);
+ * for export / assign / status change the route method filters the loaded
+ * entities with {@see isInBulkContextScope()} before calling the helper.
  * RBAC + module-gates are enforced by the individual route methods.
  * CSRF: handleBulkDelete() validates the token itself; the other helpers
  * expect the route method to call isBulkCsrfTokenValid() first.
@@ -65,15 +67,21 @@ trait BulkActionTrait
 
     /**
      * Canonical bulk-delete endpoint body (CSRF + id sanitising + tenant /
-     * voter / guard checks + one flush + AuditLogger::logBulk()).
+     * voter / guard checks + one transaction incl. AuditLogger::logBulk()).
      *
      * Route methods keep their own #[IsGranted] role and module gate, then
-     * delegate here. See BulkDeleteService for the per-entity rules.
+     * delegate here. See BulkDeleteService for the per-entity rules and the
+     * transaction.
      *
      * @param callable(int): ?object           $finder
-     * @param (callable(object): void)|null    $deleter
+     * @param (callable(object): void)|null    $deleter Domain delete; must NOT flush — use the
+     *                                                  service's no-flush path (`flush: false`).
+     *                                                  null → EntityManager::remove().
      * @param (callable(object): ?string)|null $guard
-     * @param (callable(object): void)|null    $afterFlush
+     * @param (callable(object): void)|null    $afterFlush Runs after the commit (e.g. unlink a file).
+     * @param (callable(object): array<string, mixed>)|null $auditValues Domain snapshot for the
+     *                                                  per-entity audit row (the service's
+     *                                                  deletionAuditValues()).
      */
     protected function handleBulkDelete(
         Request $request,
@@ -85,6 +93,7 @@ trait BulkActionTrait
         ?callable $guard = null,
         ?string $voterAttribute = null,
         ?callable $afterFlush = null,
+        ?callable $auditValues = null,
     ): JsonResponse {
         try {
             $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -119,6 +128,7 @@ trait BulkActionTrait
                 $guard,
                 $voterAttribute,
                 $afterFlush,
+                $auditValues,
             );
         } catch (\Throwable $e) {
             return new JsonResponse(
@@ -250,17 +260,23 @@ trait BulkActionTrait
     }
 
     /**
-     * Apply a per-entity owner-assignment callback in a transaction and
-     * return a result array suitable for a JSON response.
+     * Apply a per-entity owner-assignment callback and return a result array
+     * suitable for a JSON response.
      *
-     * @param iterable<object>  $entities   Pre-tenant-scoped entities.
-     * @param callable          $assigner   fn(object $entity, User $assignee): void — mutates the entity.
-     * @param User              $assignee   The User being assigned.
-     * @param string            $entityType Short entity class name for audit-log.
+     * No transaction of its own and no flush: the callback only mutates the
+     * entities, the caller flushes (AuditLogger::logBulk() flushes the unit of
+     * work as well). Entities the current user may not edit (voter attribute
+     * `edit`) are rejected with reason `access_denied`, an assignee outside the
+     * record's organisation with `assignee_other_tenant`; an inactive assignee
+     * rejects the whole batch (`assignee_inactive`), as nobody could act on
+     * the records.
+     *
+     * @param iterable<object>  $entities    Entities the caller already checked with
+     *                                       {@see isInBulkContextScope()}.
+     * @param callable          $assigner    fn(object $entity, User $assignee): void — mutates the entity.
+     * @param User              $assignee    The User being assigned.
+     * @param string            $entityType  Short entity class name for audit-log.
      * @param AuditLogger|null  $auditLogger Optional.
-     * Entities the current user may not edit (voter attribute `edit`) are
-     * rejected with reason `access_denied`; an inactive assignee rejects the
-     * whole batch (`assignee_inactive`), as nobody could act on the records.
      *
      * @return array{ok: bool, changed: int, rejected: list<array{id: mixed, reason: string}>, error?: string}
      */

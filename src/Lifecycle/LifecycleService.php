@@ -39,7 +39,7 @@ final class LifecycleService implements LifecycleTransitionInterface
         ?string $reason = null,
         ?User $fourEyesApprover = null,
         bool $approverAuthorityVerified = false,
-        ?\Closure $isEligibleApprover = null,
+        ?EligibleApprovers $eligibleApprovers = null,
         bool $allowSelfApprovalEscape = true,
         bool $automatic = false,
     ): void {
@@ -60,7 +60,7 @@ final class LifecycleService implements LifecycleTransitionInterface
                 'reason' => $reason,
                 'four_eyes_approver' => $fourEyesApprover,
                 'four_eyes_approver_authorized' => $approverAuthorityVerified,
-                'four_eyes_eligible_approver' => $isEligibleApprover,
+                'four_eyes_eligible_approvers' => $eligibleApprovers,
                 'four_eyes_self_approval_escape' => $allowSelfApprovalEscape,
                 'four_eyes_automatic' => $automatic,
             ]);

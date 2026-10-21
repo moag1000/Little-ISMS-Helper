@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
 use App\Repository\AssetRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
@@ -46,6 +47,7 @@ class SearchController extends AbstractController
     /**
      * Quick-view endpoint for assets.
      */
+    #[RequiresModule('assets')]
     #[Route('/api/asset/{id}/preview', name: 'app_api_asset_preview', methods: ['GET'])]
     public function assetPreview(int $id): Response
     {
@@ -61,6 +63,7 @@ class SearchController extends AbstractController
     /**
      * Quick-view endpoint for risks.
      */
+    #[RequiresModule('risks')]
     #[Route('/api/risk/{id}/preview', name: 'app_api_risk_preview', methods: ['GET'])]
     public function riskPreview(int $id): Response
     {
@@ -76,6 +79,7 @@ class SearchController extends AbstractController
     /**
      * Quick-view endpoint for incidents.
      */
+    #[RequiresModule('incidents')]
     #[Route('/api/incident/{id}/preview', name: 'app_api_incident_preview', methods: ['GET'])]
     public function incidentPreview(int $id): Response
     {

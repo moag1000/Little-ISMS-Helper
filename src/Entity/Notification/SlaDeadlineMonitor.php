@@ -30,6 +30,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_sla_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_sla_status_deadline', columns: ['status', 'deadline_at'])]
 #[ORM\Index(name: 'idx_sla_entity', columns: ['entity_type', 'entity_id'])]
+// One clock per record and deadline type (spawner vs. cron retry race), #1059.
+#[ORM\UniqueConstraint(name: 'uniq_sla_entity_deadline', columns: ['entity_type', 'entity_id', 'deadline_type'])]
 class SlaDeadlineMonitor
 {
     #[ORM\Id]

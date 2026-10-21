@@ -135,6 +135,43 @@ final class BulkDeleteCsrfTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    /**
+     * #1059: smoke test of a GDPR bulk endpoint's wiring — the typed deleter
+     * and the deletionAuditValues() snapshot reach the per-entity audit row
+     * (request type, no data-subject name).
+     */
+    #[Test]
+    public function dataSubjectRequestBulkDeleteAuditsTheRequestType(): void
+    {
+        $dsr = new \App\Entity\DataSubjectRequest();
+        $dsr->setTenant($this->tenant);
+        $dsr->setRequestType('erasure');
+        $dsr->setDataSubjectName('Erika Mustermann');
+        $dsr->setDescription('smoke');
+        $dsr->setReceivedAt(new \DateTimeImmutable('-1 day'));
+        $dsr->setDeadlineAt(new \DateTimeImmutable('+29 days'));
+        $this->em->persist($dsr);
+        $this->em->flush();
+        $id = (int) $dsr->getId();
+        $this->cleanup[] = $dsr;
+
+        $this->client->loginUser($this->admin);
+        $token = $this->seedSessionCsrfToken($this->client, 'bulk_action');
+        $this->postJson('/en/data-subject-request/bulk-delete', ['ids' => [$id], '_token' => $token]);
+
+        self::assertResponseIsSuccessful();
+        $body = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertSame(1, $body['deleted'], (string) json_encode($body));
+        $oldValues = $this->em->getConnection()->fetchOne(
+            "SELECT old_values FROM audit_log WHERE entity_type = 'DataSubjectRequest' AND entity_id = ? AND action = 'delete' ORDER BY id DESC LIMIT 1",
+            [$id],
+        );
+        self::assertIsString($oldValues);
+        $values = (array) json_decode($oldValues, true);
+        self::assertSame('erasure', $values['request_type'] ?? null);
+        self::assertStringNotContainsString('Mustermann', $oldValues);
+    }
+
     #[Test]
     public function deletesOwnTenantRowsRejectsForeignRowsAndWritesOneAuditBatch(): void
     {

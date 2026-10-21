@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Restore;
 
+use App\Doctrine\EntityManagerRecovery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -180,7 +181,7 @@ class RestoreEntityWriter
      * @param array                       $failures        Reference to the facade's failures array (mutated)
      * @param array                       $statistics      Reference to the facade's statistics array (mutated)
      * @param array                       $warnings        Reference to the facade's warnings array (mutated)
-     * @param \Doctrine\Persistence\ManagerRegistry|null $registry Optional manager registry for EM reset
+     * @param EntityManagerRecovery|null $entityManagerRecovery Optional recovery for a closed EntityManager
      * @param RestoreSecretsHandler|null  $secretsHandler  When set, handles admin_password for User rows
      */
     public function restoreEntity(
@@ -191,7 +192,7 @@ class RestoreEntityWriter
         array &$failures,
         array &$statistics,
         array &$warnings,
-        ?\Doctrine\Persistence\ManagerRegistry $registry = null,
+        ?EntityManagerRecovery $entityManagerRecovery = null,
         ?RestoreSecretsHandler $secretsHandler = null,
     ): void {
         $this->logger->info('Restoring entity', [
@@ -362,7 +363,7 @@ class RestoreEntityWriter
                     }
 
                     if (!$this->entityManager->isOpen()) {
-                        $shouldBreak = $this->safeResetManager($registry, $entityName, $index, $warnings);
+                        $shouldBreak = $this->safeResetManager($entityManagerRecovery, $entityName, $index, $warnings);
                         if ($shouldBreak) {
                             break;
                         }
@@ -442,9 +443,12 @@ class RestoreEntityWriter
                         }
                     }
 
-                    if (!$this->entityManager->isOpen() && $registry !== null) {
+                    if (!$this->entityManager->isOpen() && $entityManagerRecovery !== null) {
                         try {
-                            $registry->resetManager();
+                            // Restores the tenant-filter state that existed
+                            // before verbatim (a tenant ADMIN's restore stays
+                            // scoped, a SUPER_ADMIN's stays unscoped).
+                            $entityManagerRecovery->recover();
                         } catch (\Throwable) {
                         }
                     }
@@ -983,7 +987,7 @@ class RestoreEntityWriter
     /**
      * Attempt to reset the EntityManager after a fatal row / entity-type failure.
      *
-     * Returns true when the caller should abort (no registry available, or reset failed).
+     * Returns true when the caller should abort (no recovery available, or the reset failed).
      * Returns false when the reset succeeded and processing may continue.
      *
      * Called from:
@@ -991,18 +995,21 @@ class RestoreEntityWriter
      *  - RestoreService::restoreFromBackup() — entity-type error path (public call-site)
      */
     public function safeResetManager(
-        ?\Doctrine\Persistence\ManagerRegistry $registry,
+        ?EntityManagerRecovery $entityManagerRecovery,
         string $context,
         int|string|null $index,
         array &$warnings,
     ): bool {
-        if ($registry === null) {
+        if ($entityManagerRecovery === null) {
             $warnings[] = 'EntityManager closed due to database error. Restore aborted.';
             return true;
         }
 
         try {
-            $registry->resetManager();
+            // EntityManagerRecovery restores the tenant-filter / context state
+            // that existed before the reset verbatim — a tenant ADMIN's restore
+            // stays scoped, a SUPER_ADMIN's stays unscoped; nothing is forced.
+            $entityManagerRecovery->recover();
             $this->logger->info('Best-effort: EntityManager reset after row failure', [
                 'entity' => $context, 'index' => $index,
             ]);

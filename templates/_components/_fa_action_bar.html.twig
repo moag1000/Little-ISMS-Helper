@@ -64,7 +64,7 @@
 {% macro _emitAttrs(attrs) -%}
     {%- if attrs is defined and attrs -%}
         {%- for k, v in attrs -%}
-            {{ ' ' }}{{ k }}="{{ v }}"
+            {{ ' ' }}{{ k|e('html_attr') }}="{{ v }}"
         {%- endfor -%}
     {%- endif -%}
 {%- endmacro %}

@@ -20,22 +20,29 @@ use Symfony\Component\Form\DataTransformerInterface;
  *  2. Text edited -> each cell that matches the text form of an original item
  *     keeps that item's type; any other cell is a string, except a canonical
  *     integer/decimal ("12", "1.5"), which becomes int/float.
- * Stateful on purpose: Symfony builds one transformer per row form.
+ *
+ * The original is found through the row's hidden `rowKey` (registered in the
+ * form-wide {@see ConditionRowOriginals}), not through the collection index,
+ * so it survives rows removed in the middle and re-indexed submissions. The
+ * key never reaches the stored condition.
  *
  * @implements DataTransformerInterface<mixed, mixed>
  */
 final class ConditionRowTransformer implements DataTransformerInterface
 {
-    /** @var list<mixed>|null */
-    private ?array $original = null;
-    private ?string $rendered = null;
+    public const string ROW_KEY = 'rowKey';
+
+    public function __construct(
+        private readonly ConditionRowOriginals $originals,
+    ) {
+    }
 
     public function transform(mixed $row): mixed
     {
         if (is_array($row) && is_array($row['value'] ?? null)) {
-            $this->original = array_values($row['value']);
-            $this->rendered = self::render($this->original);
-            $row['value'] = $this->rendered;
+            $original = array_values($row['value']);
+            $row[self::ROW_KEY] = $this->originals->register($original);
+            $row['value'] = self::render($original);
         }
 
         return $row;
@@ -43,12 +50,17 @@ final class ConditionRowTransformer implements DataTransformerInterface
 
     public function reverseTransform(mixed $row): mixed
     {
-        if (!is_array($row) || !is_string($row['value'] ?? null)) {
+        if (!is_array($row)) {
+            return $row;
+        }
+        $original = $this->originals->get($row[self::ROW_KEY] ?? null);
+        unset($row[self::ROW_KEY]);
+        if (!is_string($row['value'] ?? null)) {
             return $row;
         }
         $text = $row['value'];
-        if ($this->original !== null && $text === $this->rendered) {
-            $row['value'] = $this->original;
+        if ($original !== null && $text === self::render($original)) {
+            $row['value'] = $original;
 
             return $row;
         }
@@ -57,7 +69,7 @@ final class ConditionRowTransformer implements DataTransformerInterface
         }
 
         $known = [];
-        foreach ($this->original ?? [] as $item) {
+        foreach ($original ?? [] as $item) {
             $known[self::repr($item)] ??= $item;
         }
         $items = [];

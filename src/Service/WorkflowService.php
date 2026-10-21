@@ -11,6 +11,7 @@ use App\Entity\WorkflowStep;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\WorkflowInstanceStatus;
+use App\Lifecycle\EligibleApprovers;
 use App\Lifecycle\EventListener\FourEyesValidator;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\LifecycleTransitionInterface;
@@ -20,7 +21,6 @@ use App\Repository\UserRepository;
 use App\Workflow\Loader\RegulatoryWorkflowLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Workflow Management Service — public API facade (Sprint Y.0 / Y.2).
@@ -80,7 +80,6 @@ class WorkflowService
         private readonly Security $security,
         private readonly LifecycleTransitionInterface $lifecycleService,
         private readonly RegulatoryWorkflowLoader $regulatoryWorkflowLoader,
-        private readonly ?RoleHierarchyInterface $roleHierarchy = null,
         private readonly ?FourEyesValidator $fourEyesValidator = null,
     ) {}
 
@@ -470,7 +469,7 @@ class WorkflowService
             $approver,
             $authorizedForStep instanceof WorkflowStep,
             $authorizedForStep instanceof WorkflowStep
-                ? fn (User $candidate): bool => $this->isEligibleStepApprover($candidate, $authorizedForStep)
+                ? $this->eligibleStepApprovers($authorizedForStep)
                 : null,
             automatic: $automatic,
         );
@@ -665,25 +664,24 @@ class WorkflowService
     }
 
     /**
-     * Whether $candidate (not necessarily the logged-in user) may approve
-     * $workflowStep — the same rule as {@see canUserApprove()}: ROLE_ADMIN
-     * (role hierarchy), an explicit approver_users entry, or the step's
-     * approver_role reached through the role hierarchy. Used to decide
-     * whether a second approver exists for the closing four-eyes check.
+     * Who may approve $workflowStep — the same rule as {@see canUserApprove()}:
+     * ROLE_ADMIN, the step's approver_role (both through the role hierarchy)
+     * or an explicit approver_users entry. FourEyesValidator counts the OTHER
+     * active users matching it to decide whether a second approver exists for
+     * the closing four-eyes check.
      */
-    private function isEligibleStepApprover(User $candidate, WorkflowStep $workflowStep): bool
+    private function eligibleStepApprovers(WorkflowStep $workflowStep): EligibleApprovers
     {
-        $roles = $this->roleHierarchy?->getReachableRoleNames($candidate->getRoles()) ?? $candidate->getRoles();
-        if (in_array('ROLE_ADMIN', $roles, true)) {
-            return true;
-        }
-        $approverUserIds = array_map(intval(...), $workflowStep->getApproverUsers() ?? []);
-        if ($candidate->getId() !== null && in_array($candidate->getId(), $approverUserIds, true)) {
-            return true;
-        }
+        $roles = ['ROLE_ADMIN'];
         $approverRole = $workflowStep->getApproverRole();
+        if ($approverRole !== null && $approverRole !== '') {
+            $roles[] = $approverRole;
+        }
 
-        return $approverRole !== null && $approverRole !== '' && in_array($approverRole, $roles, true);
+        return new EligibleApprovers(
+            $roles,
+            array_values(array_map(intval(...), $workflowStep->getApproverUsers() ?? [])),
+        );
     }
 
     /**

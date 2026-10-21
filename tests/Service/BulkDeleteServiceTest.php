@@ -293,17 +293,25 @@ final class BulkDeleteServiceTest extends TestCase
         self::assertNull($result['batch_id']);
     }
 
+    /**
+     * #1059 fix round 1: the audit batch is part of the transaction — written
+     * after the batch flush, before the commit — so deletions and their trail
+     * commit together.
+     */
     #[Test]
-    public function commitHappensBeforeTheAuditBatchIsWritten(): void
+    public function auditBatchIsWrittenAfterTheFlushAndBeforeTheCommit(): void
     {
         $tenant = $this->tenant(1);
         $asset = $this->asset(3, $tenant, 'C');
         $order = [];
+        $this->em->method('flush')->willReturnCallback(static function () use (&$order): void {
+            $order[] = 'flush';
+        });
         $this->em->method('commit')->willReturnCallback(static function () use (&$order): void {
             $order[] = 'commit';
         });
-        $this->auditLogger->method('logBulk')->willReturnCallback(static function () use (&$order): string {
-            $order[] = 'audit';
+        $this->auditLogger->method('logBulk')->willReturnCallback(static function (...$args) use (&$order): string {
+            $order[] = 'audit' . (($args['strict'] ?? $args[5] ?? false) === true ? ':strict' : '');
 
             return 'b';
         });
@@ -311,20 +319,47 @@ final class BulkDeleteServiceTest extends TestCase
         $result = $this->actingIn($tenant)->delete('Asset', [3], static fn (): object => $asset);
 
         self::assertSame(1, $result['deleted']);
-        self::assertSame(['commit', 'audit'], $order);
+        self::assertSame('b', $result['batch_id']);
+        self::assertSame(['flush', 'audit:strict', 'commit'], $order);
     }
 
     #[Test]
-    public function auditFailureAfterCommitStillReportsTheCommittedDeletion(): void
+    public function auditFailureRollsTheBatchBack(): void
     {
         $tenant = $this->tenant(1);
         $asset = $this->asset(3, $tenant, 'C');
         $this->auditLogger->method('logBulk')->willThrowException(new \RuntimeException('audit down'));
+        $this->em->expects(self::never())->method('commit');
+        $this->em->expects(self::once())->method('rollback');
 
         $result = $this->actingIn($tenant)->delete('Asset', [3], static fn (): object => $asset);
 
-        self::assertSame(1, $result['deleted']);
-        self::assertStringContainsString('audit log failed', $result['errors'][0]);
+        self::assertSame(0, $result['deleted']);
+        self::assertFalse($result['success']);
+        self::assertStringContainsString('nothing was deleted', $result['errors'][0]);
+        self::assertStringContainsString('audit down', $result['errors'][0]);
+    }
+
+    #[Test]
+    public function domainAuditValuesAreMergedIntoThePerEntityRow(): void
+    {
+        $tenant = $this->tenant(1);
+        $asset = $this->asset(3, $tenant, 'C');
+        $captured = null;
+        $this->auditLogger->method('logBulk')->willReturnCallback(static function (...$args) use (&$captured): string {
+            $captured = $args['perEntityData'] ?? $args[3];
+
+            return 'b';
+        });
+
+        $this->actingIn($tenant)->delete(
+            'Asset',
+            [3],
+            static fn (): object => $asset,
+            auditValues: static fn (object $e): array => ['reference_number' => 'REF-3'],
+        );
+
+        self::assertSame(['label' => 'C', 'reference_number' => 'REF-3'], $captured[0]['old_values']);
     }
 
     private function tenant(int $id): Tenant
