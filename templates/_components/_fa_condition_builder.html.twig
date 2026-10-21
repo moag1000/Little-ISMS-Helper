@@ -21,6 +21,7 @@
  #
  # Parameters:
  #   collection         - CollectionType FormView; entries need `field`, `op`, `value` children
+ #                        (an optional hidden `rowKey` child is rendered too)
  #                        and allow_add + prototype enabled
  #   props.logic        - optional choice FormView ('and' | 'or') that switches the AND/OR keyword
  #   props.suggestions  - optional list of field keys for the <datalist> the field inputs point at
@@ -112,6 +113,8 @@
                     {{ form_widget(row[part]) }}
                 </span>
             {% endfor %}
+            {# Stable key of the row's original value (ConditionRowOriginals) — survives removal / re-index. #}
+            {% if row.rowKey is defined %}{{ form_widget(row.rowKey) }}{% endif %}
             <button type="button"
                     class="fa-condition-chip__remove"
                     data-action="click->condition-builder#remove"

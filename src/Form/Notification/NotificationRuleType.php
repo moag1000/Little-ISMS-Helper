@@ -115,7 +115,7 @@ final class NotificationRuleType extends AbstractType implements SectionMapInter
                 'label'          => 'notification.rule.field.conditions',
                 'required'       => false,
                 'entry_type'     => ConditionRowType::class,
-                'entry_options'  => ['label' => false],
+                'entry_options'  => ['label' => false, 'originals' => new ConditionRowOriginals()],
                 'allow_add'      => true,
                 'allow_delete'   => true,
                 'by_reference'   => false,

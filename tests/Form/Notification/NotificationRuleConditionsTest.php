@@ -128,10 +128,15 @@ final class NotificationRuleConditionsTest extends KernelTestCase
         $rule = (new NotificationRule())->setName('r')->setEventType('incident.created')
             ->setConditions([['field' => 'f', 'op' => $op, 'value' => $stored]]);
         $form = $this->form($rule);
-        $text = $form->createView()['conditionRows'][0]['value']->vars['value'];
+        $row = $form->createView()['conditionRows'][0];
+        $text = $row['value']->vars['value'];
         $form->submit([
             'name' => 'r', 'eventType' => 'incident.created', 'conditionLogic' => 'and',
-            'conditionRows' => [['field' => 'f', 'op' => $op, 'value' => $editedText ?? $text]],
+            // The browser posts the hidden row key with the visible fields.
+            'conditionRows' => [[
+                'field' => 'f', 'op' => $op, 'value' => $editedText ?? $text,
+                'rowKey' => $row['rowKey']->vars['value'],
+            ]],
         ]);
         self::assertTrue($form->isValid(), (string) $form->getErrors(true));
 
@@ -192,6 +197,60 @@ final class NotificationRuleConditionsTest extends KernelTestCase
         self::assertSame([true, 5], $rule->getConditions()[0]['value']);
     }
 
+    /**
+     * #1059: the original array value is keyed by a stable row key, not by the
+     * collection index. Removing the middle row and submitting the remaining
+     * rows re-indexed (0, 1) must not hand the last row the removed row's
+     * original — its untouched "1, 2" stays the stored strings.
+     */
+    #[Test]
+    public function removingAMiddleRowKeepsEachRowsOriginalAcrossReindexing(): void
+    {
+        $stored = [
+            ['field' => 'score', 'op' => 'in', 'value' => [1, 2]],
+            ['field' => 'category', 'op' => 'in', 'value' => ['a']],
+            ['field' => 'level', 'op' => 'in', 'value' => ['1', '2']],
+        ];
+
+        foreach (['re-indexed' => [0, 1], 'sparse' => [0, 2]] as $label => [$firstIndex, $lastIndex]) {
+            $rule = (new NotificationRule())->setName('r')->setEventType('risk.created')->setConditions($stored);
+            $form = $this->form($rule);
+            $rows = $form->createView()['conditionRows'];
+            $posted = static fn (int $i): array => [
+                'field' => $rows[$i]['field']->vars['value'],
+                'op' => $rows[$i]['op']->vars['value'],
+                'value' => $rows[$i]['value']->vars['value'],
+                'rowKey' => $rows[$i]['rowKey']->vars['value'],
+            ];
+
+            $form->submit([
+                'name' => 'r', 'eventType' => 'risk.created', 'conditionLogic' => 'and',
+                'conditionRows' => [$firstIndex => $posted(0), $lastIndex => $posted(2)],
+            ]);
+
+            self::assertTrue($form->isValid(), (string) $form->getErrors(true));
+            self::assertSame(
+                [$stored[0], $stored[2]],
+                $rule->getConditions(),
+                $label . ': each remaining row keeps its own original, the row key is not stored',
+            );
+        }
+    }
+
+    #[Test]
+    public function aForeignRowKeyCannotInjectAnOriginal(): void
+    {
+        $rule = (new NotificationRule())->setName('r')->setEventType('risk.created');
+        $form = $this->form($rule);
+        $form->submit([
+            'name' => 'r', 'eventType' => 'risk.created', 'conditionLogic' => 'and',
+            'conditionRows' => [['field' => 'score', 'op' => 'in', 'value' => '1, 2', 'rowKey' => 'forged']],
+        ]);
+
+        self::assertTrue($form->isValid(), (string) $form->getErrors(true));
+        self::assertSame([['field' => 'score', 'op' => 'in', 'value' => [1, 2]]], $rule->getConditions());
+    }
+
     #[Test]
     public function incompleteRowIsRejected(): void
     {
@@ -230,6 +289,7 @@ final class NotificationRuleConditionsTest extends KernelTestCase
         self::assertMatchesRegularExpression('/keyword--and"\s+data-condition-builder-target="keyword">AND</', $html);
         self::assertStringContainsString('name="notification_rule[conditionRows][1][op]"', $html);
         self::assertStringContainsString('name="notification_rule[conditionRows][__condition_index__][field]"', $html);
+        self::assertStringContainsString('name="notification_rule[conditionRows][1][rowKey]"', $html);
         self::assertMatchesRegularExpression('#<datalist id="fa-condition-fields">\s*<option value="severity"></option>\s*</datalist>#', $html);
         self::assertStringNotContainsString('ui.condition_builder', $html, 'all keys translated');
         self::assertTrue($view['conditionRows']->isRendered());
