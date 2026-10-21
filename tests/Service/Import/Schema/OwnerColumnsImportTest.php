@@ -7,6 +7,7 @@ namespace App\Tests\Service\Import\Schema;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\EntityMapperRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -98,15 +99,30 @@ final class OwnerColumnsImportTest extends KernelTestCase
 
     #[Test]
     #[DataProvider('entities')]
-    public function aUserOfAnotherOrganisationNeverResolves(string $type, string $base): void
+    public function aUserOfAnotherOrganisationRefusesTheRowEvenWithFreeText(string $type, string $base): void
     {
-        $data = $this->registry->getMapperFor($type)->toEntityData(
-            [$base . 'User' => $this->foreignUser->getEmail(), 'responsiblePerson' => 'free text'],
+        $this->expectException(ImportRowInvalidException::class);
+        $this->expectExceptionMessage('could not be resolved in this organisation');
+
+        $this->registry->getMapperFor($type)->toEntityData(
+            [$base . 'User' => $this->foreignUser->getEmail(), 'responsiblePerson' => 'free text', 'contactPerson' => 'free text'],
             null,
             $this->own,
         );
+    }
 
-        self::assertArrayNotHasKey($base . 'User', $data);
+    #[Test]
+    #[DataProvider('entities')]
+    public function anUnknownPersonRefusesTheRowAndFreeTextAloneIsAccepted(string $type, string $base): void
+    {
+        $mapper = $this->registry->getMapperFor($type);
+
+        $accepted = $mapper->toEntityData(['responsiblePerson' => 'free text', 'contactPerson' => 'free text'], null, $this->own);
+        self::assertArrayNotHasKey($base . 'User', $accepted);
+        self::assertArrayNotHasKey($base . 'Ref', $accepted);
+
+        $this->expectException(ImportRowInvalidException::class);
+        $mapper->toEntityData([$base . 'Ref' => 'Nobody Known ' . $this->uid], null, $this->own);
     }
 
     #[Test]
@@ -132,7 +148,7 @@ final class OwnerColumnsImportTest extends KernelTestCase
         self::assertSame($this->ownUser, $ok['responsiblePersonUser']);
 
         // A user of another organisation does not resolve → the row would be ownerless.
-        $this->expectException(\App\Exception\Import\ImportRowInvalidException::class);
+        $this->expectException(ImportRowInvalidException::class);
         $mapper->toEntityData($row + ['responsiblePersonUser' => $this->foreignUser->getEmail()], null, $this->own);
     }
 }

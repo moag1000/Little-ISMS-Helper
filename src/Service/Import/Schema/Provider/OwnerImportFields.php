@@ -13,7 +13,8 @@ use App\Service\Import\Schema\ImportFieldSpec;
  * free-text column) as import fields — one definition for every import
  * provider of an entity with a `<base>User` / `<base>Ref` owner pair.
  *
- * Both lookups are tenant-scoped by SchemaDrivenMapper::resolveRelation(), so
+ * A given user/person that does not resolve refuses the row (never silently
+ * dropped, also when free text is present). Both lookups are tenant-scoped by SchemaDrivenMapper::resolveRelation(), so
  * a user or person of another organisation never resolves.
  */
 final class OwnerImportFields
@@ -32,6 +33,7 @@ final class OwnerImportFields
                 type: ImportFieldSpec::TYPE_RELATION,
                 relationClass: User::class,
                 relationLookup: 'email',
+                refuseIfUnresolved: true,
             ),
             new ImportFieldSpec(
                 name: $base . 'Ref',
@@ -40,6 +42,7 @@ final class OwnerImportFields
                 relationClass: Person::class,
                 relationLookup: 'fullName',
                 relationFallbackLookup: 'email',
+                refuseIfUnresolved: true,
             ),
         ];
     }

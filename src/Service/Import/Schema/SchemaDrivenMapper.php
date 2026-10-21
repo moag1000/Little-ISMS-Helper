@@ -134,39 +134,23 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
                 default                        => trim((string) $raw),
             };
 
+            if ($value === null && $tenant !== null && $field->refuseIfUnresolved && trim((string) $raw) !== '') {
+                // Commit path: a given owner that does not resolve in this organisation
+                // (unknown, or belonging to another one) must not be dropped silently.
+                $message = sprintf(
+                    'Field "%s": "%s" could not be resolved in this organisation.',
+                    $field->label ?? $field->name,
+                    trim((string) $raw),
+                );
+
+                // The orchestrator records the message against its own row number.
+                throw new ImportRowInvalidException(0, [$message], $message);
+            }
+
             if ($value !== null) {
                 // Map the canonical field name to the entity property (setter without "set").
                 $property = lcfirst(substr($field->setter, 3));
                 $data[$property] = $value;
-            }
-        }
-
-        // With a tenant (commit path) a "required unless any" alternative that was
-        // supplied but resolved to nothing (unknown e-mail / name, or a user of
-        // another organisation) would silently drop the owner: refuse the row.
-        if ($tenant !== null) {
-            foreach ($this->activeFields() as $field) {
-                // Alternatives are named like the entity property they set.
-                if ($field->required && $field->requiredUnlessAny !== []
-                    && !array_key_exists(lcfirst(substr($field->setter, 3)), $data)
-                    && array_intersect($field->requiredUnlessAny, array_keys($data)) === []
-                ) {
-                    $given = array_filter(
-                        $field->requiredUnlessAny,
-                        fn(string $n): bool => $this->anyGiven($row, [$n]),
-                    );
-                    if ($given !== []) {
-                        $message = sprintf(
-                            'Field "%s": "%s" could not be resolved in this organisation and no "%s" was given.',
-                            $field->label ?? $field->name,
-                            implode('", "', $given),
-                            $field->name,
-                        );
-
-                        // The row number is unknown here; the orchestrator records the message per row.
-                        throw new ImportRowInvalidException(0, [$message], $message);
-                    }
-                }
             }
         }
 
