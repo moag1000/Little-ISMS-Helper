@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Service\Import\Schema\Provider;
 
 use App\Entity\Control;
-use App\Entity\Person;
-use App\Entity\User;
 use App\Service\Import\Schema\EntityImportSchema;
 use App\Service\Import\Schema\ImportFieldSpec;
 use App\Service\Import\Schema\ImportSchemaProviderInterface;
@@ -181,20 +179,7 @@ final class ControlImportSchemaProvider implements ImportSchemaProviderInterface
                 ),
 
                 // ── Responsibility (Person / User master-data FKs) ──────────────
-                new ImportFieldSpec(
-                    name: 'responsiblePersonUser',
-                    setter: 'setResponsiblePersonUser',
-                    type: ImportFieldSpec::TYPE_RELATION,
-                    relationClass: User::class,
-                    relationLookup: 'email',
-                ),
-                new ImportFieldSpec(
-                    name: 'responsiblePersonRef',
-                    setter: 'setResponsiblePersonRef',
-                    type: ImportFieldSpec::TYPE_RELATION,
-                    relationClass: Person::class,
-                    relationLookup: 'fullName',
-                ),
+                ...OwnerImportFields::specs('responsiblePerson'),
                 new ImportFieldSpec(
                     name: 'responsiblePerson',
                     setter: 'setResponsiblePerson',

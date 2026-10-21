@@ -163,7 +163,8 @@ final class RiskReviewService
      * - overdue: Number of overdue reviews
      * - upcoming_30: Reviews due in next 30 days
      * - upcoming_7: Reviews due in next 7 days
-     * - never_reviewed: Risks without review date
+     * - never_reviewed: Risks without review date that require periodic review
+     *   (closed risks are not counted)
      *
      * @return array<string, int>
      * @throws DateMalformedStringException
@@ -179,6 +180,8 @@ final class RiskReviewService
             ->select('COUNT(r.id)')
             ->where('r.tenant = :tenant')
             ->andWhere('r.reviewDate IS NULL')
+            ->andWhere('r.status IN (:reviewable)')
+            ->setParameter('reviewable', RiskStatus::periodicReviewValues())
             ->setParameter('tenant', $tenant)
             ->getQuery()
             ->getSingleScalarResult();
@@ -193,7 +196,8 @@ final class RiskReviewService
     }
 
     /**
-     * Bulk schedule reviews for all risks without review date
+     * Bulk schedule reviews for all risks without review date that require periodic
+     * review (RiskStatus::requiresPeriodicReview() — closed risks are left alone)
      *
      * Useful for initial setup or after importing risks
      *
@@ -205,6 +209,8 @@ final class RiskReviewService
         $risks = $this->riskRepository->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->andWhere('r.reviewDate IS NULL')
+            ->andWhere('r.status IN (:reviewable)')
+            ->setParameter('reviewable', RiskStatus::periodicReviewValues())
             ->setParameter('tenant', $tenant)
             ->getQuery()
             ->getResult();

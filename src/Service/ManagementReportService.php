@@ -19,7 +19,6 @@ use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
-use App\Repository\InternalAuditRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\BCExerciseRepository;
@@ -50,7 +49,6 @@ final class ManagementReportService
         private readonly RiskRepository $riskRepository,
         private readonly ControlRepository $controlRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly InternalAuditRepository $auditRepository,
         private readonly TrainingRepository $trainingRepository,
         private readonly BusinessContinuityPlanRepository $bcPlanRepository,
         private readonly BCExerciseRepository $bcExerciseRepository,
@@ -107,6 +105,9 @@ final class ManagementReportService
             ? round((count($implementedControls) / count($applicableControls)) * 100, 1)
             : 0;
 
+        // Same tenant-scoped source and calendar-year definition as the audit KPI.
+        $audits = $this->dashboardStatisticsService->auditsFor(null);
+
         return [
             'generated_at' => new DateTime(),
             'summary' => [
@@ -132,8 +133,8 @@ final class ManagementReportService
                 'resolved' => count($recentIncidents) - count($openIncidents),
             ],
             'audit_summary' => [
-                'total_audits' => $this->auditRepository->count([]),
-                'completed_this_year' => count($this->auditRepository->findBy(['status' => 'completed'])),
+                'total_audits' => count($audits),
+                'completed_this_year' => \App\Service\Audit\AuditProgramFigures::completedInYear($audits),
             ],
             'training_summary' => [
                 'total_trainings' => $this->trainingRepository->count([]),

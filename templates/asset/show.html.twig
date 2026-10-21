@@ -100,6 +100,7 @@
                     { label: 'asset.label.status'|trans({}, 'asset'), value: asset.status|upper }
                 ]
             } only %}
+            {% include '_components/_deputy_persons.html.twig' with { deputies: asset.ownerDeputyPersons } only %}
 
             {% if is_module_active('nis2_dora') and asset.isDoraRelevant %}
                 <div class="detail-section">

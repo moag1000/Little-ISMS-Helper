@@ -153,6 +153,34 @@ final class ProcessTimedWorkflowsTimeBasedTest extends TestCase
         self::assertSame($first, $instance->getCurrentStep());
     }
 
+    /** An exception escaping the loop must never leave a tenant pinned in the process. */
+    #[Test]
+    public function tenantContextIsResetEvenWhenProcessingThrows(): void
+    {
+        [$a] = $this->instance('1 hours', new DateTimeImmutable('-2 hours'));
+        $tenant = new \App\Entity\Tenant();
+        $a->setTenant($tenant);
+
+        $seen = [];
+        $context = $this->createMock(\App\Service\TenantContext::class);
+        $context->method('setCurrentTenant')->willReturnCallback(
+            static function (?\App\Entity\Tenant $t) use (&$seen): void {
+                $seen[] = $t;
+            },
+        );
+        // Not a FourEyesRequiredException: nothing in the command catches it.
+        $this->workflowService->method('assertAutomaticApprovalAllowed')
+            ->willThrowException(new \RuntimeException('boom'));
+
+        try {
+            $this->runCommandWith([$a], $context);
+            self::fail('the exception must propagate');
+        } catch (\RuntimeException) {
+        }
+
+        self::assertSame([$tenant, null], $seen, 'pinned for the instance, then reset');
+    }
+
     /**
      * The cron pins each instance's organisation in TenantContext before
      * processing it (review M-2), so lifecycle guards and tenant-scoped

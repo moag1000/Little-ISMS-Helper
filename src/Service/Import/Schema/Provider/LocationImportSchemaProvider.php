@@ -166,6 +166,7 @@ final class LocationImportSchemaProvider implements ImportSchemaProviderInterfac
                     setter: 'setResponsiblePerson',
                     type: ImportFieldSpec::TYPE_STRING,
                 ),
+                ...OwnerImportFields::specs('responsiblePerson'),
                 new ImportFieldSpec(
                     name: 'active',
                     setter: 'setActive',

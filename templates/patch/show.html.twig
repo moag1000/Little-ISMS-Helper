@@ -135,9 +135,10 @@
                             <dd class="col-sm-8">{{ patch.deployedDate|date('Y-m-d') }}</dd>
                         {% endif %}
 
-                        {% if patch.effectiveResponsiblePerson %}
+                        {% if patch.effectiveResponsiblePerson or patch.responsibleDeputyPersons|length > 0 %}
                             <dt class="col-sm-4">{{ 'patch.field.responsible_person'|trans({}, 'patches') }}</dt>
-                            <dd class="col-sm-8">{{ patch.effectiveResponsiblePerson }}</dd>
+                            <dd class="col-sm-8">{{ patch.effectiveResponsiblePerson }}
+                                {% include '_components/_deputy_persons.html.twig' with { deputies: patch.responsibleDeputyPersons } only %}</dd>
                         {% endif %}
 
                         <dt class="col-sm-4">{{ 'patch.field.requires_downtime'|trans({}, 'patches') }}</dt>

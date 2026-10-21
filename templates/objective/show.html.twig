@@ -50,7 +50,7 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.category'|trans({}, 'objective') }}</div><p>{{ objective.category }}</p></div>
-                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.responsible_person'|trans({}, 'objective') }}</div><p>{{ objective.effectiveResponsiblePerson ?? '—' }}</p></div>
+                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.responsible_person'|trans({}, 'objective') }}</div><p>{{ objective.effectiveResponsiblePerson ?? '—' }}{% include '_components/_deputy_persons.html.twig' with { deputies: objective.responsibleDeputyPersons } only %}</p></div>
                     </div>
 
                     <div class="row mb-3">
