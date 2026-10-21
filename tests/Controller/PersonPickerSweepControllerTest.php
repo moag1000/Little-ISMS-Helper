@@ -205,6 +205,48 @@ final class PersonPickerSweepControllerTest extends WebTestCase
         self::assertNull($this->em->find($class, $id)->{'get' . ucfirst($base) . 'User'}(), 'foreign user was persisted');
     }
 
+    /**
+     * @param class-string $class
+     */
+    #[Test]
+    #[DataProvider('entityProvider')]
+    public function showPageListsTheDeputyPersons(string $class, string $slug, string $base, string $deputies): void
+    {
+        $entity = $this->seed($class);
+        $role = str_starts_with($base, 'contact') ? 'Contact' : 'Responsible';
+        // Deliberately no owner: deputies are shown independent of the owner.
+        $entity->{'add' . $role . 'DeputyPerson'}($this->deputy);
+        $this->em->flush();
+
+        $this->client->loginUser($this->actor);
+        $this->client->request('GET', sprintf('/en/%s/%d', $slug, $entity->getId()));
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Dora Deputypick' . $this->uid, $html, 'show page lists the deputy person');
+        self::assertStringContainsString('Deputies:', $html, 'translated label');
+        self::assertStringNotContainsString('owner_deputies', $html, 'no raw translation key');
+    }
+
+    #[Test]
+    public function assetShowPageListsTheOwnerDeputyPersons(): void
+    {
+        $asset = (new \App\Entity\Asset())
+            ->setName('Asset ' . $this->uid)->setAssetType('software')
+            ->setConfidentialityValue(3)->setIntegrityValue(3)->setAvailabilityValue(3)
+            ->setTenant($this->tenant);
+        $asset->addOwnerDeputyPerson($this->deputy);
+        $this->em->persist($asset);
+        $this->em->flush();
+
+        $this->client->loginUser($this->actor);
+        $this->client->request('GET', '/en/asset/' . $asset->getId());
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Dora Deputypick' . $this->uid, $html);
+        self::assertStringContainsString('Deputies:', $html);
+        self::assertStringNotContainsString('owner_deputies', $html);
+    }
+
     #[Test]
     public function objectiveWithoutAnyOwnerShowsTranslatedError(): void
     {

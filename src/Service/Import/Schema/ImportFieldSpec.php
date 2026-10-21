@@ -34,6 +34,12 @@ final class ImportFieldSpec
     /**
      * @param list<string> $enumValues   allowed values when type = enum
      * @param list<string> $aliases       alternative source-column header names
+     * @param ?string      $relationFallbackLookup second lookup field tried when the primary one finds nothing
+     *                                    (e.g. Person: fullName, then e-mail for an "@" value)
+     * @param list<string> $requiredUnlessAny names of sibling fields; a `required` field stays empty
+     *                                    without error when any of them is given (user OR person OR text)
+     * @param bool         $refuseIfUnresolved a given, non-empty value that does not resolve (relation) refuses
+     *                                    the row instead of silently dropping it (owner columns)
      */
     public function __construct(
         public readonly string $name,
@@ -47,6 +53,9 @@ final class ImportFieldSpec
         public readonly array $aliases = [],
         public readonly bool $unique = false,
         public readonly ?string $label = null,
+        public readonly ?string $relationFallbackLookup = null,
+        public readonly array $requiredUnlessAny = [],
+        public readonly bool $refuseIfUnresolved = false,
     ) {
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Import\Schema;
 
 use App\Entity\Tenant;
+use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\Mapper\AbstractEntityMapper;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,6 +61,10 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
             $raw = $this->resolveField($row, $field->name, null);
             $isEmpty = $raw === null || $raw === '';
 
+            if ($field->required && $isEmpty && $this->anyGiven($row, $field->requiredUnlessAny)) {
+                continue; // satisfied by an alternative (user OR person OR free text)
+            }
+
             if ($field->required && $isEmpty) {
                 $errors[] = sprintf('Field "%s" is required.', $field->label ?? $field->name);
                 continue;
@@ -95,6 +100,19 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         return ['errors' => $errors, 'warnings' => $warnings];
     }
 
+    /** @param list<string> $fieldNames */
+    private function anyGiven(array $row, array $fieldNames): bool
+    {
+        foreach ($fieldNames as $name) {
+            $value = $this->resolveField($row, $name, null);
+            if ($value !== null && trim((string) $value) !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function toEntityData(array $row, ?array $columnMapping = null, ?Tenant $tenant = null): array
     {
         $data = [];
@@ -115,6 +133,19 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
                 ImportFieldSpec::TYPE_RELATION => $this->resolveRelation($field, $raw, $tenant),
                 default                        => trim((string) $raw),
             };
+
+            if ($value === null && $tenant !== null && $field->refuseIfUnresolved && trim((string) $raw) !== '') {
+                // Commit path: a given owner that does not resolve in this organisation
+                // (unknown, or belonging to another one) must not be dropped silently.
+                $message = sprintf(
+                    'Field "%s": "%s" could not be resolved in this organisation.',
+                    $field->label ?? $field->name,
+                    trim((string) $raw),
+                );
+
+                // The orchestrator records the message against its own row number.
+                throw new ImportRowInvalidException(0, [$message], $message);
+            }
 
             if ($value !== null) {
                 // Map the canonical field name to the entity property (setter without "set").
@@ -169,9 +200,14 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
             return null;
         }
 
-        return $this->em->getRepository($field->relationClass)->findOneBy([
-            $field->relationLookup => trim((string) $raw),
-            'tenant'               => $tenant,
-        ]);
+        $value      = trim((string) $raw);
+        $repository = $this->em->getRepository($field->relationClass);
+        $found      = $repository->findOneBy([$field->relationLookup => $value, 'tenant' => $tenant]);
+
+        if ($found === null && $field->relationFallbackLookup !== null && str_contains($value, '@')) {
+            $found = $repository->findOneBy([$field->relationFallbackLookup => $value, 'tenant' => $tenant]);
+        }
+
+        return $found;
     }
 }

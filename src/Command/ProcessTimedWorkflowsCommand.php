@@ -148,96 +148,100 @@ HELP
         $escalated = 0;
         $errors = [];
 
-        foreach ($activeWorkflows as $workflowInstance) {
-            // No request: pin the instance's organisation (lifecycle guards, tenant filter).
-            $this->tenantContext?->setCurrentTenant($workflowInstance->getTenant());
-            $currentStep = $workflowInstance->getCurrentStep();
+        // The loop pins each instance's organisation; an exception must never
+        // leave a tenant pinned for the SLA watcher or the next caller in this process.
+        try {
+            foreach ($activeWorkflows as $workflowInstance) {
+                // No request: pin the instance's organisation (lifecycle guards, tenant filter).
+                $this->tenantContext?->setCurrentTenant($workflowInstance->getTenant());
+                $currentStep = $workflowInstance->getCurrentStep();
 
-            if (!$currentStep) {
-                continue; // No current step
-            }
+                if (!$currentStep) {
+                    continue; // No current step
+                }
 
-            // Check for SLA breaches and escalation (GDPR 72h deadline)
-            $slaStatus = $this->checkSLAStatus($workflowInstance);
-            if ($slaStatus === 'escalate') {
+                // Check for SLA breaches and escalation (GDPR 72h deadline)
+                $slaStatus = $this->checkSLAStatus($workflowInstance);
+                if ($slaStatus === 'escalate') {
+                    $io->text(sprintf(
+                        '  ⚠️  ESCALATING: %s (Step: %s) - SLA threshold reached',
+                        $workflowInstance->getWorkflow()->getName(),
+                        $currentStep->getName()
+                    ));
+
+                    if (!$dryRun) {
+                        try {
+                            $this->escalateWorkflow($workflowInstance, $currentStep);
+                            $escalated++;
+                        } catch (Exception $e) {
+                            $errors[] = sprintf(
+                                'Error escalating workflow #%d: %s',
+                                $workflowInstance->getId(),
+                                $e->getMessage()
+                            );
+                        }
+                    } else {
+                        $escalated++;
+                    }
+                    continue; // Don't auto-progress, escalation takes priority
+                }
+
+                // Check if step has time-based auto-progression
+                if (!$this->shouldAutoProgressByTime($workflowInstance, $currentStep)) {
+                    $skipped++;
+                    continue;
+                }
+
+                // Automatic approval never satisfies four-eyes: a step whose
+                // approval would close the workflow stays pending (notice, not error).
+                try {
+                    $this->workflowService->assertAutomaticApprovalAllowed($workflowInstance, $currentStep);
+                } catch (FourEyesRequiredException $e) {
+                    $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
+                    continue;
+                }
+
                 $io->text(sprintf(
-                    '  ⚠️  ESCALATING: %s (Step: %s) - SLA threshold reached',
+                    '  ✓ Auto-progressing: %s (Step: %s)',
                     $workflowInstance->getWorkflow()->getName(),
                     $currentStep->getName()
                 ));
 
                 if (!$dryRun) {
                     try {
-                        $this->escalateWorkflow($workflowInstance, $currentStep);
-                        $escalated++;
-                    } catch (Exception $e) {
+                        $user = $workflowInstance->getInitiatedBy();
+
+                        if (!$user) {
+                            $errors[] = sprintf(
+                                'Workflow #%d has no initiator - cannot auto-progress',
+                                $workflowInstance->getId()
+                            );
+                            continue;
+                        }
+
+                        $this->approveByTime($workflowInstance, $currentStep, $user);
+
+                        $processed++;
+                    } catch (\Throwable $e) {
+                        // Refused at transition time (rolled back in approveByTime):
+                        // four-eyes or a lifecycle guard → waits for a human (notice).
+                        if (AutomaticCloseRefusal::isRefusal($e)) {
+                            $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
+                            continue;
+                        }
                         $errors[] = sprintf(
-                            'Error escalating workflow #%d: %s',
+                            'Error processing workflow #%d: %s',
                             $workflowInstance->getId(),
                             $e->getMessage()
                         );
                     }
                 } else {
-                    $escalated++;
-                }
-                continue; // Don't auto-progress, escalation takes priority
-            }
-
-            // Check if step has time-based auto-progression
-            if (!$this->shouldAutoProgressByTime($workflowInstance, $currentStep)) {
-                $skipped++;
-                continue;
-            }
-
-            // Automatic approval never satisfies four-eyes: a step whose
-            // approval would close the workflow stays pending (notice, not error).
-            try {
-                $this->workflowService->assertAutomaticApprovalAllowed($workflowInstance, $currentStep);
-            } catch (FourEyesRequiredException $e) {
-                $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
-                continue;
-            }
-
-            $io->text(sprintf(
-                '  ✓ Auto-progressing: %s (Step: %s)',
-                $workflowInstance->getWorkflow()->getName(),
-                $currentStep->getName()
-            ));
-
-            if (!$dryRun) {
-                try {
-                    $user = $workflowInstance->getInitiatedBy();
-
-                    if (!$user) {
-                        $errors[] = sprintf(
-                            'Workflow #%d has no initiator - cannot auto-progress',
-                            $workflowInstance->getId()
-                        );
-                        continue;
-                    }
-
-                    $this->approveByTime($workflowInstance, $currentStep, $user);
-
                     $processed++;
-                } catch (\Throwable $e) {
-                    // Refused at transition time (rolled back in approveByTime):
-                    // four-eyes or a lifecycle guard → waits for a human (notice).
-                    if (AutomaticCloseRefusal::isRefusal($e)) {
-                        $awaitingFourEyes[] = $this->awaitingFourEyesLine($workflowInstance, $currentStep, $e);
-                        continue;
-                    }
-                    $errors[] = sprintf(
-                        'Error processing workflow #%d: %s',
-                        $workflowInstance->getId(),
-                        $e->getMessage()
-                    );
                 }
-            } else {
-                $processed++;
             }
+        } finally {
+            $this->tenantContext?->setCurrentTenant(null);
         }
-
-        $this->tenantContext?->setCurrentTenant(null);
 
         $io->newLine();
         $io->horizontalTable(

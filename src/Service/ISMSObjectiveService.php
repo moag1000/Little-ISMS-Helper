@@ -194,36 +194,6 @@ final class ISMSObjectiveService
     }
 
     /**
-     * Validate objective data
-     */
-    public function validateObjective(ISMSObjective $ismsObjective): array
-    {
-        $errors = [];
-
-        if (in_array($ismsObjective->getTitle(), [null, '', '0'], true)) {
-            $errors[] = 'Titel ist erforderlich.';
-        }
-
-        if (in_array($ismsObjective->getDescription(), [null, '', '0'], true)) {
-            $errors[] = 'Beschreibung ist erforderlich.';
-        }
-
-        if (in_array($ismsObjective->getCategory(), [null, '', '0'], true)) {
-            $errors[] = 'Kategorie ist erforderlich.';
-        }
-
-        if (in_array($ismsObjective->getResponsiblePerson(), [null, '', '0'], true)) {
-            $errors[] = 'Verantwortliche Person ist erforderlich.';
-        }
-
-        if (!$ismsObjective->getTargetDate() instanceof DateTimeInterface) {
-            $errors[] = 'Zieldatum ist erforderlich.';
-        }
-
-        return $errors;
-    }
-
-    /**
      * Generate recommendations for an objective
      */
     public function generateRecommendations(ISMSObjective $ismsObjective): array

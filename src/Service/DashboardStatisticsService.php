@@ -229,8 +229,8 @@ class DashboardStatisticsService
      */
     public function getDashboardStatistics(): array
     {
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
+        // Same scope as getManagementKPIs(): user's tenant, else the TenantContext tenant.
+        $tenant = $this->tenantRecords->resolve($this->security->getUser()?->getTenant());
         $cacheKey = 'dashboard_stats_' . ($tenant?->getId() ?? 'global');
 
         if ($this->cache !== null) {
@@ -268,11 +268,7 @@ class DashboardStatisticsService
             ], true));
             $openIncidentCount = count($openIncidents);
         } else {
-            // Fallback for users without tenant (admin view).
-            // Super admin: no tenant context, no scoped data. Return zeros
-            // consistently — the previous mix (assets=0, risks=findAll(),
-            // incidents=0) leaked cross-tenant counts into the risk KPI
-            // and made the dashboard inconsistent.
+            // No tenant (no instance-wide view): zeros, consistently.
             $activeAssets = [];
             $assetCount = 0;
             $allAccessibleRisks = [];
@@ -291,12 +287,8 @@ class DashboardStatisticsService
         );
 
         // Critical/High items - using all accessible data
-        $criticalAssetCount = $tenant
-            ? $this->countCriticalAssetsAccessible($tenant)
-            : $this->countCriticalAssets();
-        $highRiskCount = $tenant
-            ? $this->countHighRisksAccessible($tenant)
-            : $this->countHighRisks();
+        $criticalAssetCount = $tenant ? $this->countCriticalAssetsAccessible($tenant) : 0;
+        $highRiskCount = $tenant ? $this->countHighRisksAccessible($tenant) : 0;
 
         return [
             // Basic KPIs
@@ -314,41 +306,6 @@ class DashboardStatisticsService
             'controls_implemented' => $implementedControls,
             'incidents_open' => $openIncidentCount,
         ];
-    }
-
-    /**
-     * Count critical assets (confidentiality value >= 4) across all tenants.
-     * Tenant-less fallback for super-admin view; pairs with countHighRisks().
-     *
-     * @return int Number of critical assets
-     */
-    private function countCriticalAssets(): int
-    {
-        $activeAssets = array_filter(
-            $this->assetRepository->findAll(),
-            fn(Asset $asset): bool => $asset->isOperational()
-        );
-
-        return count(array_filter(
-            $activeAssets,
-            fn(Asset $asset): bool => $asset->getConfidentialityValue() >= 4
-        ));
-    }
-
-    /**
-     * Count high-risk items (inherent risk level >= 12) across all tenants.
-     * Tenant-less fallback for super-admin view; pairs with countCriticalAssets().
-     *
-     * @return int Number of high risks
-     */
-    private function countHighRisks(): int
-    {
-        $allRisks = $this->riskRepository->findAll();
-
-        return count(array_filter(
-            $allRisks,
-            fn(Risk $risk): bool => $risk->getInherentRiskLevel() >= 12
-        ));
     }
 
     /**
@@ -542,17 +499,19 @@ class DashboardStatisticsService
      * Each KPI includes value, status (good/warning/danger), and trend data.
      *
      * @param Tenant|null $tenant Explicit tenant for callers without a logged-in
-     *                           user (KPI snapshot cron); defaults to the user's tenant.
+     *                           user (KPI snapshot cron); defaults to the user's tenant, then the TenantContext
+     *                           tenant (as on record pages). Without any tenant: empty array.
      * @return array Module-aware KPIs grouped by category
      */
     public function getManagementKPIs(?Tenant $tenant = null): array
     {
-        // Explicit / user / TenantContext tenant; else only an instance-wide SUPER_ADMIN, others fail closed.
+        // Explicit / user / TenantContext tenant — the same scope as the record pages; no tenant fails closed
+        // (no hidden instance-wide mode, not even for SUPER_ADMIN).
         $tenant = $this->tenantRecords->resolve($tenant ?? $this->security->getUser()?->getTenant());
-        if (!$tenant instanceof Tenant && !$this->tenantRecords->isInstanceWide()) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
-        $cacheKey = 'management_kpis_' . ($tenant?->getId() ?? 'instance');
+        $cacheKey = 'management_kpis_' . $tenant->getId();
 
         if ($this->cache !== null) {
             return $this->cache->get($cacheKey, function (ItemInterface $item) use ($tenant) {
@@ -905,7 +864,7 @@ class DashboardStatisticsService
         // Risk exposure component (invert; more critical = lower score)
         $riskScore = 100.0;
         if (in_array('risks', $activeModules, true)) {
-            $risks = $tenant ? $this->getAllAccessibleRisks($tenant) : $this->riskRepository->findAll();
+            $risks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
             $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 16));
             $high = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 12 && $r->getResidualRiskLevel() < 16));
             $riskScore = max(0.0, 100.0 - ($critical * 15.0) - ($high * 5.0));
@@ -914,7 +873,7 @@ class DashboardStatisticsService
         // Incident backlog component (open/total)
         $incidentScore = 100.0;
         if (in_array('incidents', $activeModules, true)) {
-            $incidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : $this->incidentRepository->findAll();
+            $incidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : []; // no tenant: fail closed
             $total = count($incidents);
             $open = count(array_filter($incidents, fn($i): bool => in_array($i->getStatus(), [
                 \App\Enum\IncidentStatus::Reported,
@@ -1090,9 +1049,7 @@ class DashboardStatisticsService
     /** Get risk management KPIs */
     private function getRiskManagementKPIs(?Tenant $tenant): array
     {
-        $allRisks = $tenant
-            ? $this->getAllAccessibleRisks($tenant)
-            : $this->riskRepository->findAll();
+        $allRisks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
 
         $totalRisks = count($allRisks);
         $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 12));
@@ -1231,9 +1188,7 @@ class DashboardStatisticsService
     /** Get incident management KPIs */
     private function getIncidentManagementKPIs(?Tenant $tenant): array
     {
-        $allIncidents = $tenant
-            ? $this->getAllAccessibleIncidents($tenant)
-            : $this->incidentRepository->findAll();
+        $allIncidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : []; // no tenant: fail closed
 
         $openIncidents = array_filter($allIncidents, fn($i): bool => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
         $resolvedIncidents = array_filter($allIncidents, fn($i): bool => $i->getStatus() === IncidentStatus::Resolved || $i->getStatus() === IncidentStatus::Closed);
@@ -1585,14 +1540,14 @@ class DashboardStatisticsService
      */
     public function getDoraKPIs(): array
     {
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
+        // Same scope as getManagementKPIs(): the user's tenant, else the TenantContext tenant.
+        $tenant = $this->tenantRecords->resolve($this->security->getUser()?->getTenant());
 
         return [
             'ict_risk' => $this->getIctRiskKPIs($tenant),
             'incident_reporting' => $this->getDoraIncidentKPIs($tenant),
-            'resilience_testing' => $this->getResilienceTestingKPIs(),
-            'third_party' => $this->getThirdPartyRiskKPIs(),
+            'resilience_testing' => $this->getResilienceTestingKPIs($tenant),
+            'third_party' => $this->getThirdPartyRiskKPIs($tenant),
         ];
     }
 
@@ -1601,9 +1556,7 @@ class DashboardStatisticsService
      */
     private function getIctRiskKPIs(?Tenant $tenant): array
     {
-        $allRisks = $tenant
-            ? $this->getAllAccessibleRisks($tenant)
-            : $this->riskRepository->findAll();
+        $allRisks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
 
         // Filter for ICT-related risks (assuming category or tag)
         $ictRisks = array_filter(
@@ -1630,9 +1583,7 @@ class DashboardStatisticsService
     /** Get DORA Incident Reporting KPIs */
     private function getDoraIncidentKPIs(?Tenant $tenant): array
     {
-        $allIncidents = $tenant
-            ? $this->getAllAccessibleIncidents($tenant)
-            : $this->incidentRepository->findAll();
+        $allIncidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : []; // no tenant: fail closed
 
         // Major ICT incidents (high severity)
         $majorIncidents = array_filter(
@@ -1673,12 +1624,12 @@ class DashboardStatisticsService
     /**
      * Get Resilience Testing KPIs for DORA
      */
-    private function getResilienceTestingKPIs(): array
+    private function getResilienceTestingKPIs(?Tenant $tenant): array
     {
         $kpis = [];
         // BC Exercises as resilience tests
         if ($this->bcExerciseRepository !== null) {
-            $allExercises = $this->bcExerciseRepository->findAll();
+            $allExercises = $this->tenantRecords->all($this->bcExerciseRepository, $tenant);
             $thisYear = (new \DateTime())->format('Y');
             $exercisesThisYear = array_filter(
                 $allExercises,
@@ -1698,12 +1649,12 @@ class DashboardStatisticsService
     /**
      * Get Third-Party Risk KPIs for DORA
      */
-    private function getThirdPartyRiskKPIs(): array
+    private function getThirdPartyRiskKPIs(?Tenant $tenant): array
     {
         if ($this->supplierRepository === null) {
             return [];
         }
-        $allSuppliers = $this->supplierRepository->findAll();
+        $allSuppliers = $this->tenantRecords->all($this->supplierRepository, $tenant);
         // ICT Third-party providers (assuming type or category)
         $ictProviders = array_filter(
             $allSuppliers,
