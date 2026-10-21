@@ -25,14 +25,25 @@ readonly final class ExecuteJobMessage
      * @param string               $jobId    UUID v4 pre-created by JobStatusService
      * @param int|null             $tenantId Tenant owning the dispatching request,
      *                                       captured while the HTTP context still
-     *                                       exists. null = unscoped (instance admin),
-     *                                       mirroring TenantFilterSubscriber.
+     *                                       exists.
+     * @param bool                 $unscoped Only with $tenantId null: true = run
+     *                                       unscoped (an instance-wide job of an
+     *                                       instance operator / anonymous request,
+     *                                       TenantFilter::UNSCOPED). false = the
+     *                                       dispatcher had no organisation and is
+     *                                       no instance operator → the worker arms
+     *                                       TenantFilter::NO_ORGANISATION, exactly
+     *                                       like TenantFilterSubscriber in the
+     *                                       in-request runner. Fail closed: a
+     *                                       payload without this field (queued
+     *                                       before it existed) is never unscoped.
      */
     public function __construct(
         public string $jobClass,
         public array $args,
         public string $jobId,
         public ?int $tenantId = null,
+        public bool $unscoped = false,
     ) {
     }
 }

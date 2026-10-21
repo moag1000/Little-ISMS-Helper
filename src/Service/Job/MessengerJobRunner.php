@@ -7,6 +7,7 @@ namespace App\Service\Job;
 use App\Job\AsyncJobInterface;
 use App\Message\Job\ExecuteJobMessage;
 use App\Service\TenantContext;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -35,6 +36,7 @@ class MessengerJobRunner
         private readonly MessageBusInterface $messageBus,
         private readonly JobStatusService $jobStatusService,
         private readonly TenantContext $tenantContext,
+        private readonly Security $security,
     ) {
     }
 
@@ -73,11 +75,13 @@ class MessengerJobRunner
 
         // Capture the tenant NOW, while the HTTP request context still exists.
         // The worker has no request, so it cannot resolve this itself.
+        $tenantId = $this->workerTenantId($args);
         $this->messageBus->dispatch(new ExecuteJobMessage(
             jobClass: $jobClass,
             args: $args,
             jobId: $jobId,
-            tenantId: $this->workerTenantId($args),
+            tenantId: $tenantId,
+            unscoped: $tenantId === null && $this->mayRunUnscoped($args),
         ));
 
         return $response;
@@ -103,5 +107,23 @@ class MessengerJobRunner
         }
 
         return $this->tenantContext->getCurrentTenantId();
+    }
+
+    /**
+     * Whether a job without a tenant may run unscoped — the same decision
+     * TenantFilterSubscriber takes for the in-request runner: an explicit
+     * instance-wide job, an anonymous request or an instance operator.
+     * Every other account without an organisation is queued for the
+     * no-organisation scope (fail closed), never unscoped.
+     *
+     * @param array<string, mixed> $args
+     */
+    private function mayRunUnscoped(array $args): bool
+    {
+        if (($args[JobTenantScope::ARG_ALL_TENANTS] ?? null) === true) {
+            return true;
+        }
+
+        return $this->security->getUser() === null || $this->security->isGranted('ROLE_SUPER_ADMIN');
     }
 }

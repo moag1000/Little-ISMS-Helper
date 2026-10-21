@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Job;
 
+use App\Entity\User;
 use App\Message\Job\ExecuteJobMessage;
 use App\Service\Job\JobStatusService;
 use App\Service\Job\JobTenantScope;
@@ -11,6 +12,7 @@ use App\Service\Job\MessengerJobRunner;
 use App\Service\TenantContext;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -30,6 +32,30 @@ final class MessengerJobRunnerTenantScopeTest extends KernelTestCase
         $message = $this->dispatch([JobTenantScope::ARG_ALL_TENANTS => true], defaultTenantId: 7);
 
         self::assertNull($message->tenantId);
+        self::assertTrue($message->unscoped);
+    }
+
+    /**
+     * #1059: an account without an organisation that is no instance operator
+     * gets the NO_ORGANISATION request filter in the in-request runner. The
+     * queued message must carry the same fail-closed scope — never unscoped.
+     */
+    #[Test]
+    public function accountWithoutOrganisationIsQueuedForTheNoOrganisationScope(): void
+    {
+        $message = $this->dispatch([], defaultTenantId: null, superAdmin: false);
+
+        self::assertNull($message->tenantId);
+        self::assertFalse($message->unscoped);
+    }
+
+    #[Test]
+    public function instanceOperatorWithoutTenantContextIsQueuedUnscoped(): void
+    {
+        $message = $this->dispatch([], defaultTenantId: null, superAdmin: true);
+
+        self::assertNull($message->tenantId);
+        self::assertTrue($message->unscoped);
     }
 
     #[Test]
@@ -38,6 +64,7 @@ final class MessengerJobRunnerTenantScopeTest extends KernelTestCase
         $message = $this->dispatch([JobTenantScope::ARG_TENANT_ID => 7], defaultTenantId: 7);
 
         self::assertSame(7, $message->tenantId);
+        self::assertFalse($message->unscoped);
     }
 
     #[Test]
@@ -62,7 +89,7 @@ final class MessengerJobRunnerTenantScopeTest extends KernelTestCase
     /**
      * @param array<string, mixed> $args
      */
-    private function dispatch(array $args, int $defaultTenantId): ExecuteJobMessage
+    private function dispatch(array $args, ?int $defaultTenantId, bool $superAdmin = false): ExecuteJobMessage
     {
         self::bootKernel();
         $jobStatusService = static::getContainer()->get(JobStatusService::class);
@@ -70,6 +97,12 @@ final class MessengerJobRunnerTenantScopeTest extends KernelTestCase
 
         $tenantContext = $this->createStub(TenantContext::class);
         $tenantContext->method('getCurrentTenantId')->willReturn($defaultTenantId);
+
+        $security = $this->createStub(Security::class);
+        $security->method('getUser')->willReturn(new User());
+        $security->method('isGranted')->willReturnCallback(
+            static fn (mixed $attribute): bool => $superAdmin && $attribute === 'ROLE_SUPER_ADMIN',
+        );
 
         $captured = null;
         $bus = $this->createStub(MessageBusInterface::class);
@@ -80,7 +113,7 @@ final class MessengerJobRunnerTenantScopeTest extends KernelTestCase
         });
 
         try {
-            (new MessengerJobRunner($bus, $jobStatusService, $tenantContext))
+            (new MessengerJobRunner($bus, $jobStatusService, $tenantContext, $security))
                 ->dispatch('App\\Job\\ExportAnalyticsJob', $args, $jobId, new Response());
         } finally {
             $jobStatusService->delete($jobId);
