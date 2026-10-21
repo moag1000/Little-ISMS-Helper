@@ -919,6 +919,16 @@ class RestoreServiceTest extends TestCase
         $this->assertArrayHasKey('User', $result['statistics']);
         $this->assertEquals(1, $result['statistics']['User']['created'],
             'Only User A (in scope) must be created; User B must be skipped');
+
+        // #1059: the password hint must not point to app:setup-permissions,
+        // which only creates new admins and ignores restored accounts.
+        $passwordHints = array_values(array_filter(
+            $result['warnings'],
+            static fn (string $w): bool => str_contains($w, 'Passwörter'),
+        ));
+        $this->assertCount(1, $passwordHints);
+        $this->assertStringNotContainsString('app:setup-permissions', $passwordHints[0]);
+        $this->assertStringContainsString('Admin-Passwort', $passwordHints[0]);
     }
 
     /**
