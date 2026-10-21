@@ -6,8 +6,8 @@
 {% if roles|default([]) is not empty %}
     {{ fa_alert({
         variant: 'warning',
-        title: 'sso.privileged_roles_ignored.title'|trans,
-        body: 'sso.privileged_roles_ignored.body'|trans({'%roles%': roles|join(', ')})|e,
+        title: 'sso.privileged_roles_ignored.title'|trans({}, 'sso'),
+        body: 'sso.privileged_roles_ignored.body'|trans({'%roles%': roles|join(', ')}, 'sso')|e,
         class: 'mb-3',
     }) }}
 {% endif %}
