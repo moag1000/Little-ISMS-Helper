@@ -21,6 +21,8 @@
         ]
     }) }}
 
+    {% include 'admin/sso/_privileged_roles_ignored.html.twig' with { roles: ignored_privileged_roles } only %}
+
     <div class="row g-3">
         <div class="col-md-6">
             <section class="fa-section">
@@ -61,6 +63,8 @@
                         <dd class="col-sm-6">{{ provider.jitProvisioning ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</dd>
                         <dt class="col-sm-6">{{ 'sso.field.auto_approve'|trans }}</dt>
                         <dd class="col-sm-6">{{ provider.autoApprove ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</dd>
+                        <dt class="col-sm-6">{{ 'sso.email_linking.label'|trans }}</dt>
+                        <dd class="col-sm-6">{{ provider.allowEmailLinking ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</dd>
                         <dt class="col-sm-6">{{ 'sso.field.default_fallback_role'|trans }}</dt>
                         <dd class="col-sm-6">{{ provider.defaultFallbackRole ?: provider.defaultRole }}</dd>
                         {% if provider.mfaInheritance %}

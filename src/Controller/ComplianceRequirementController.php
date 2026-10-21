@@ -244,7 +244,13 @@ class ComplianceRequirementController extends AbstractController
             'available_users' => ($tenant instanceof \App\Entity\Tenant)
                 ? $this->userRepository->findBy(['tenant' => $tenant])
                 : [],
-            'available_persons' => $this->personRepository->findAll(),
+            // Persons of the fulfillment's organisation only (#1059). findAll()
+            // relied on the TenantFilter, which is unscoped for an instance
+            // operator — who works in a default organisation here and was
+            // offered every organisation's persons.
+            'available_persons' => ($tenant instanceof \App\Entity\Tenant)
+                ? $this->personRepository->findBy(['tenant' => $tenant], ['fullName' => 'ASC'])
+                : [],
         ]);
     }
 
@@ -416,11 +422,13 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $responsiblePersonId = $request->request->get('responsiblePersonId');
-        if ($responsiblePersonId !== null) {
-            $responsiblePerson = $responsiblePersonId !== ''
-                ? $this->personRepository->find((int) $responsiblePersonId)
-                : null;
-            $fulfillment->setResponsiblePerson($responsiblePerson instanceof Person ? $responsiblePerson : null);
+        if ($responsiblePersonId === '') {
+            $fulfillment->setResponsiblePerson(null);
+        } elseif ($responsiblePersonId !== null
+            && ($responsiblePerson = $this->findTenantPerson((int) $responsiblePersonId, $tenant)) !== null
+        ) {
+            // Foreign / unknown ids leave the value unchanged (same as the user picker).
+            $fulfillment->setResponsiblePerson($responsiblePerson);
         }
 
         $deputyIds = $request->request->all('responsibleDeputyPersonIds');
@@ -429,7 +437,7 @@ class ComplianceRequirementController extends AbstractController
             $fulfillment->removeResponsibleDeputyPerson($deputy);
         }
         foreach ($deputyIds as $deputyId) {
-            $deputy = $this->personRepository->find((int) $deputyId);
+            $deputy = $this->findTenantPerson((int) $deputyId, $tenant);
             if ($deputy instanceof Person) {
                 $fulfillment->addResponsibleDeputyPerson($deputy);
             }
@@ -438,11 +446,12 @@ class ComplianceRequirementController extends AbstractController
         // Person-Rollout Phase B2 — yearly attestation owner (governance
         // role-holder, distinct from day-to-day responsible_person_*).
         $attestationOwnerPersonId = $request->request->get('attestationOwnerPersonId');
-        if ($attestationOwnerPersonId !== null) {
-            $attestationOwner = $attestationOwnerPersonId !== ''
-                ? $this->personRepository->find((int) $attestationOwnerPersonId)
-                : null;
-            $fulfillment->setAttestationOwnerPerson($attestationOwner instanceof Person ? $attestationOwner : null);
+        if ($attestationOwnerPersonId === '') {
+            $fulfillment->setAttestationOwnerPerson(null);
+        } elseif ($attestationOwnerPersonId !== null
+            && ($attestationOwner = $this->findTenantPerson((int) $attestationOwnerPersonId, $tenant)) !== null
+        ) {
+            $fulfillment->setAttestationOwnerPerson($attestationOwner);
         }
 
         $fulfillment->setUpdatedAt(new DateTimeImmutable());
@@ -458,5 +467,17 @@ class ComplianceRequirementController extends AbstractController
         $this->flashSuccess('compliance.requirement.success.fulfillment_updated');
 
         return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
+    }
+
+    /**
+     * A person of the fulfillment's organisation, or null. Person lookups by
+     * id must not rely on the TenantFilter (unscoped for an instance
+     * operator) — #1059.
+     */
+    private function findTenantPerson(int $id, Tenant $tenant): ?Person
+    {
+        $person = $this->personRepository->find($id);
+
+        return $person instanceof Person && $person->getTenant()?->getId() === $tenant->getId() ? $person : null;
     }
 }

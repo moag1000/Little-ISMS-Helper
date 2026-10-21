@@ -111,6 +111,15 @@ Navigate to: `/admin/tenants`
 | Governance model of a subsidiary | Admin of the parent organisation | Yes |
 | Create, activate/deactivate, delete, set parent, add (move) a user | No | Yes |
 
+Restructuring through the corporate-structure view
+(`POST /api/corporate-structure/set-parent`): an organisation admin may move a
+*subsidiary* of its tree under another organisation of the same tree — never
+its own organisation, never to the top level (detaching a subsidiary makes it a
+root outside the tree) and never under a foreign organisation. Detaching is an
+instance-operator action. There is no UI for this move for organisation admins —
+the corporate-structure page offers set-parent / detach to instance operators
+only; organisation admins use the API endpoint.
+
 ### Features
 
 1. **Tenant List** (`/admin/tenants`)
@@ -316,7 +325,9 @@ logs every change in the `doctrine:migrations:migrate` output):
    user with the lowest id holding `ROLE_ADMIN`, the same rule the app uses
    to protect that account) is promoted to `ROLE_SUPER_ADMIN` — **but only
    if that admin has no organisation (default setup) or the instance has
-   exactly one organisation.** Default installs never had an operator
+   exactly one organisation, and only if that admin account is active.**
+   A deactivated setup admin is never promoted (output: `WARNING … is
+   deactivated — nobody was promoted`). Default installs never had an operator
    account — the setup admin effectively acted as one through the
    escalation this release closes.
    **Otherwise nobody is promoted** (the lowest-id admin of a
@@ -332,6 +343,14 @@ logs every change in the `doctrine:migrations:migrate` output):
    are listed in the migration output and a `ROLE_SUPER_ADMIN` must assign
    them under *Admin → Users*.
 
+**Phantom-repaired installs:** if migrations were marked as executed
+without running them (`/quick-fix` phantom repair, `doctrine:migrations:version
+--add`), the data migration above never ran and no operator was promoted.
+Check after the upgrade: if no active account holds `ROLE_SUPER_ADMIN`, run
+`php bin/console app:user:grant-super-admin <email>`. `/quick-fix` shows a
+"No active instance operator" notice in its data-integrity section while
+that is the case (see `docs/user-guide/QUICK_FIX.md` §5).
+
 Migration `Version20261019120100_reserved_custom_role_names` changes no
 data; it lists custom roles affected by the reserved-name rule below.
 
@@ -344,8 +363,10 @@ creates the initial admin with `ROLE_SUPER_ADMIN` when no operator exists.
 php bin/console app:user:grant-super-admin admin@example.com
 ```
 
-The command asks for confirmation and writes an audit-log entry
-(`user.super_admin.granted`). Shell access is the authorisation; there is no
+The command shows e-mail, organisation and current roles, asks for
+confirmation and writes an audit-log entry (`user.super_admin.granted`).
+For scripted runs pass `--yes`; a non-interactive run without `--yes` is
+refused (exit code 1). Shell access is the authorisation; there is no
 web UI for this.
 
 ### Behaviour changes for organisation admins
@@ -401,6 +422,8 @@ organisation-owned identity provider. Such a provider now:
 - never assigns a privileged role, whether through a claim→role mapping, the
   default role or the fallback role — such mappings are ignored at login.
   Saving a role mapping with a privileged role requires `ROLE_SUPER_ADMIN`.
+  The provider's detail and edit pages show a warning listing every
+  privileged role that is configured but ignored.
 
 **Action required:** existing SSO links of holding-level users
 (`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) or operators through an
@@ -409,6 +432,118 @@ users to a global provider or a local login before or right after the
 upgrade.
 
 Global providers behave as before.
+
+**Unambiguous provider selection.** Provider slugs are unique per
+organisation only. SSO start links now carry the provider id
+(`/sso/<slug>/start?provider=<id>` — login buttons, enforcement redirects,
+re-authentication), and the callback uses the provider chosen at start, not a
+fresh slug lookup. A legacy link without `provider` works only while exactly
+one enabled provider uses that slug; otherwise the visitor is sent back to the
+login page with a neutral message. An organisation-owned provider cannot take
+the slug of an instance-wide provider (validation on create/edit). Callback
+URLs registered at the identity providers (`/sso/<slug>/callback`) are
+unchanged.
+Accepted limitation: two organisations may still choose the same slug (only
+an instance-wide provider's slug is reserved), which makes legacy slug-only
+links for that slug ambiguous — they are refused neutrally; id links keep
+working. Re-authentication of a signed-in user resolves the provider without
+the organisation filter (global and parent-organisation providers work) and
+then applies the usual allowed-for-user check. Known limitation: such a re-authentication
+does not apply the provider's claim→role mappings (they are loaded under the
+user's organisation filter); roles are synchronised on the next regular SSO
+login. This never grants a role, it only defers an IdP-side change. The post-login `target` of an
+SSO start and the `return_to` of the re-authentication page follow one rule
+(same-origin relative path; `//…` and `/\…` are refused), the target is never
+carried over to a later start, and the password / MFA login re-checks any
+stored target before redirecting.
+
+**Link existing accounts by e-mail** (provider option `allowEmailLinking`,
+added after 3.15.3): an SSO login whose e-mail claim matches an existing,
+not yet linked local account is only linked when this option is on. The
+e-mail claim is only as trustworthy as the identity provider's control over
+it (Entra ID single-tenant registrations, for example, let directory admins
+set arbitrary mail attributes). Providers that existed before the upgrade
+keep linking (migration `Version20261021143100_sso_allow_email_linking`,
+column default on — the same applies to providers restored from an older
+backup and to a schema reconcile); **new providers created in the UI start
+with it off**. With the option off
+such a login is refused with a message pointing to the password login or an
+administrator; already linked accounts and new (JIT) accounts are not
+affected. An account already bound to *another* provider is never re-bound
+by e-mail, whatever the option says. To link an account deliberately,
+enable the option, let the user sign in once, then disable it again. The
+organisation-tree and never-privileged rules above apply whether the option
+is on or off.
+
+A login through the *same* provider with a *different* subject id (`sub`)
+for an already linked account is never re-linked either — it is refused and
+recorded as an `sso.login_failure` audit event with reason `subject_changed`;
+an IdP subject change needs admin action.
+
+SSO enforcement (`Tenant::ssoEnforced`, `domainBindingMode = enforce`) does
+not lock such users out. A password login is redirected to
+
+1. the enforced provider, when it can sign the user in (account bound to it,
+   or linking allowed and the account not bound elsewhere, and not refused by
+   the organisation-tree / never-privileged rules); otherwise
+2. the provider the account is already bound to, when that provider is
+   enabled and may act for the user (global, or the user's own organisation
+   tree) — so an organisation's own provider cannot switch off an operator's
+   domain enforcement for its users.
+
+A binding to an *unusable* provider — disabled, or no longer global / in the
+user's current organisation tree (e.g. after a move to another organisation) —
+counts exactly as no binding, for enforcement and for linking: another
+provider may replace it on the next login **only if that provider links
+existing accounts by e-mail** (`allowEmailLinking`), within the tree rules.
+So an organisation admin cannot switch off operator-level enforcement by
+disabling the own provider — **provided the operator's enforcing provider has
+e-mail linking on**. If it is off, such users fall back to password + MFA
+(listed on *Admin → SSO*): enable e-mail linking on the enforcing provider or
+link the users manually (let them sign in once while linking is on).
+
+**Privileged accounts are never linked by e-mail** — through any provider,
+global ones included (`ROLE_SUPER_ADMIN`, `ROLE_GROUP_CISO`,
+`ROLE_KONZERN_AUDITOR`, `ROLE_ALLOWED_TO_SWITCH`). An existing binding keeps
+working; a new one for such an account needs a binding made while the account
+was not privileged, or an operator. Under SSO enforcement an unbound
+privileged account keeps password + MFA.
+
+Only when no enabled, allowed provider can sign the user in does the
+password login proceed; once the account is linked, enforcement applies. The SSO admin page
+(*Admin → SSO*) lists these exempted accounts (count and names, limited to
+the accounts the viewer may see).
+
+**Env-configured Azure OAuth/SAML login** (`AZURE_*` variables, no provider
+record): when an Azure object id is not yet known, the login used to link any
+local account with the same e-mail — including `ROLE_SUPER_ADMIN`. Now:
+
+- a privileged account (`ROLE_SUPER_ADMIN`, `ROLE_GROUP_CISO`,
+  `ROLE_KONZERN_AUDITOR`, `ROLE_ALLOWED_TO_SWITCH`) is **never** linked by
+  e-mail; an existing object-id binding keeps working;
+- an account already bound to another Azure object id, or to an SSO
+  provider record, is not re-bound;
+- the privileged exclusion does **not** cover organisation admins
+  (`ROLE_ADMIN`): with the default `true` they stay linkable by e-mail;
+- `AZURE_ALLOW_EMAIL_LINKING` (default `true` for backward compatibility of
+  existing single-tenant setups) switches linking of ordinary accounts by
+  e-mail off. **Recommendation:** set `AZURE_ALLOW_EMAIL_LINKING=false` once
+  your accounts are linked (every user has signed in via Azure at least
+  once). With `false` a first Azure login of an existing, unlinked account is
+  refused with the same message as above; the password login stays
+  available.
+- **SAML without the `objectidentifier` claim:** no Azure object id is ever
+  stored, so the link is the SAML NameID stored on the account's last SAML
+  login (`azureMetadata.saml_nameid`). With `AZURE_ALLOW_EMAIL_LINKING=false`
+  an account signs in via SAML only if it has signed in via SAML before with
+  the same NameID; every other existing account is refused, and privileged
+  accounts can only use SAML once they have such a stored binding. Configure
+  the Entra app to emit `objectidentifier` (default) before switching to
+  `false`.
+  The NameID fallback is only as strong as the NameID: use an immutable one
+  (UPN or persistent NameID, the Entra default) — if NameID is mapped to
+  `user.mail`, the "binding" is an e-mail match again. Rows written before
+  this release stored the e-mail claim as `saml_nameid`.
 
 ## Upgrade notes — first release after 3.15.3
 

@@ -72,6 +72,10 @@ final class GrantSuperAdminCommandTest extends KernelTestCase
         $tester->setInputs(['yes']);
 
         self::assertSame(Command::SUCCESS, $tester->execute(['email' => $this->email]));
+        $display = $tester->getDisplay();
+        self::assertStringContainsString($this->email, $display);
+        self::assertStringContainsString('Organisation', $display);
+        self::assertStringContainsString('ROLE_ADMIN', $display, 'current roles must be shown before confirming');
 
         $user = $this->reload();
         self::assertContains('ROLE_SUPER_ADMIN', $user->getStoredRoles());
@@ -91,6 +95,44 @@ final class GrantSuperAdminCommandTest extends KernelTestCase
         $tester->setInputs(['no']);
 
         self::assertSame(Command::FAILURE, $tester->execute(['email' => $this->email]));
+        self::assertNotContains('ROLE_SUPER_ADMIN', $this->reload()->getStoredRoles());
+    }
+
+    #[Test]
+    public function nonInteractiveRunWithoutYesIsRefusedWithHint(): void
+    {
+        $tester = $this->tester();
+
+        self::assertSame(Command::FAILURE, $tester->execute(['email' => $this->email], ['interactive' => false]));
+        self::assertStringContainsString('--yes', $tester->getDisplay());
+        self::assertNotContains('ROLE_SUPER_ADMIN', $this->reload()->getStoredRoles());
+    }
+
+    #[Test]
+    public function yesOptionSkipsConfirmationInNonInteractiveRun(): void
+    {
+        $tester = $this->tester();
+
+        self::assertSame(
+            Command::SUCCESS,
+            $tester->execute(['email' => $this->email, '--yes' => true], ['interactive' => false]),
+        );
+        self::assertContains('ROLE_SUPER_ADMIN', $this->reload()->getStoredRoles());
+    }
+
+    #[Test]
+    public function deactivatedAccountIsFlaggedBeforeConfirmation(): void
+    {
+        $user = $this->reload();
+        $user->setIsActive(false);
+        $this->em->flush();
+        $tester = $this->tester();
+        $tester->setInputs(['no']);
+
+        self::assertSame(Command::FAILURE, $tester->execute(['email' => $this->email]));
+        $display = $tester->getDisplay();
+        self::assertMatchesRegularExpression('/Active\s+no/', $display);
+        self::assertStringContainsString('DEACTIVATED', $display);
         self::assertNotContains('ROLE_SUPER_ADMIN', $this->reload()->getStoredRoles());
     }
 

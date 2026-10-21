@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\IdentityProvider;
+use App\Entity\User;
 use App\Repository\IdentityProviderRepository;
 use App\Repository\UserRepository;
+use App\Service\Sso\SsoAccountLinkPolicy;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -44,7 +46,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * its own application. The password login proceeds untouched if:
  *  - the email is empty / resolves to no user,
  *  - the user has no tenant, or the tenant is not SSO-enforced,
- *  - the tenant has NO enabled SSO provider, or none with a usable slug.
+ *  - the tenant has NO enabled SSO provider, or none with a usable slug,
+ *  - the provider would refuse this account (not linked yet and linking by
+ *    e-mail refused, or a privileged / out-of-tree account) — #1059.
  * The listener only acts on POST, so GET /login always renders — no redirect loop.
  *
  * NIS2 Art. 21.2(b) / ISO 27001:2022 A.5.16 (Identity management).
@@ -84,31 +88,51 @@ final class TenantSsoEnforcementSubscriber
         }
 
         $user = $this->userRepository->findOneBy(['email' => $email]);
-        $tenant = $user?->getTenant();
-        if ($tenant === null || !$tenant->isSsoEnforced()) {
-            return; // not enforced — password login proceeds
+        if ($user === null) {
+            return;
         }
 
-        // Pick the tenant's SSO provider to redirect to. Prefer a tenant-scoped
-        // provider over a global one (the tenant policy is about THIS tenant's
-        // IdP), then the first deterministically-ordered enabled provider with a
-        // usable slug.
-        $slug = $this->resolveEnforcedSlug($tenant);
-
-        // ANTI-LOCKOUT: SSO-enforced but no usable provider → fail open.
-        if ($slug === null) {
+        $target = $this->enforcementTarget($user);
+        if ($target === null) {
+            return; // not enforced — password login proceeds
+        }
+        if ($target === false) {
+            // ANTI-LOCKOUT: no usable provider, or no enabled provider can sign
+            // this account in (not linked + linking refused, never-privileged /
+            // tree rule) → fail open.
             $this->logger?->warning(
-                'Tenant has ssoEnforced=true but no enabled SSO provider with a slug; '
+                'Tenant has ssoEnforced=true but no enabled SSO provider can sign this user in; '
                 . 'falling back to password login to avoid lockout.',
-                ['tenant' => $tenant->getId(), 'email' => $email],
+                ['tenant' => $user->getTenant()?->getId(), 'email' => $email],
             );
 
             return;
         }
 
         $event->setResponse(new RedirectResponse(
-            $this->urlGenerator->generate('app_sso_start', ['slug' => $slug])
+            $this->urlGenerator->generate('app_sso_start', ['slug' => $target->getSlug(), 'provider' => $target->getId()])
         ));
+    }
+
+    /**
+     * Tenant-level enforcement decision for $user: null = not enforced;
+     * IdentityProvider = redirect target (the enforced provider, or the
+     * provider the user is bound to — {@see SsoAccountLinkPolicy::resolveLoginProvider()});
+     * false = enforced but exempt (fail open). Also read by the SSO admin page.
+     */
+    public function enforcementTarget(User $user): IdentityProvider|false|null
+    {
+        $tenant = $user->getTenant();
+        if ($tenant === null || !$tenant->isSsoEnforced()) {
+            return null;
+        }
+        // Tenant-scoped provider first, then global (see resolveEnforcedProvider()).
+        $provider = $this->resolveEnforcedProvider($tenant);
+        if ($provider === null) {
+            return false;
+        }
+
+        return SsoAccountLinkPolicy::resolveLoginProvider($provider, $user) ?? false;
     }
 
     /**
@@ -116,7 +140,7 @@ final class TenantSsoEnforcementSubscriber
      * should be redirected to. Tenant-scoped providers win over global ones;
      * the first candidate with a non-empty slug is used. Null = no usable IdP.
      */
-    private function resolveEnforcedSlug(\App\Entity\Tenant $tenant): ?string
+    private function resolveEnforcedProvider(\App\Entity\Tenant $tenant): ?IdentityProvider
     {
         $providers = $this->identityProviderRepository->findEnabledForTenant($tenant);
 
@@ -132,7 +156,7 @@ final class TenantSsoEnforcementSubscriber
             }
             $slug = $provider->getSlug();
             if ($slug !== null && $slug !== '') {
-                return $slug;
+                return $provider;
             }
         }
 

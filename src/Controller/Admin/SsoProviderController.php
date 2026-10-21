@@ -23,6 +23,8 @@ use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\Sso\OidcAuthenticationFlow;
 use App\Service\Sso\OidcDiscoveryService;
+use App\Service\Sso\SsoAccountLinkPolicy;
+use App\Service\Sso\SsoEnforcementExemptions;
 use App\Service\Sso\SsoSecretEncryption;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -84,6 +86,7 @@ final class SsoProviderController extends AbstractController
         private readonly AuditLogRepository $auditLogRepo,
         private readonly TranslatorInterface $translator,
         private readonly UserAdministrationGuard $userAdministrationGuard,
+        private readonly SsoEnforcementExemptions $enforcementExemptions,
     ) {
     }
 
@@ -103,6 +106,7 @@ final class SsoProviderController extends AbstractController
         return $this->render('admin/sso/index.html.twig', [
             'providers' => $providers,
             'pending_count' => $pendingCount,
+            'enforcement_exempt' => $this->enforcementExemptions->findVisible(),
         ]);
     }
 
@@ -260,6 +264,10 @@ final class SsoProviderController extends AbstractController
             'form' => $form->createView(),
             'provider' => $provider,
             'is_new' => $isNew,
+            'ignored_privileged_roles' => $isNew ? [] : SsoAccountLinkPolicy::ignoredPrivilegedRoles(
+                $provider,
+                $this->roleMappingRepo->findActiveByProvider($provider),
+            ),
         ], new Response(status: $status));
     }
 
@@ -279,6 +287,7 @@ final class SsoProviderController extends AbstractController
             'provider'    => $provider,
             'mappings'    => $mappings,
             'audit_trail' => $last50,
+            'ignored_privileged_roles' => SsoAccountLinkPolicy::ignoredPrivilegedRoles($provider, $mappings),
         ]);
     }
 

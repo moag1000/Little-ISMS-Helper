@@ -9,7 +9,6 @@ use App\Entity\SsoUserApproval;
 use App\Entity\User;
 use App\Repository\IdentityProviderRepository;
 use App\Service\Sso\OidcAuthenticationFlow;
-use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,10 +18,12 @@ use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 /**
  * Symfony Authenticator for `/sso/{slug}/callback`.
@@ -36,6 +37,8 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
     public const SESSION_STATE_KEY = '_sso_oidc_state';
     public const SESSION_VERIFIER_KEY = '_sso_oidc_verifier';
     public const SESSION_PROVIDER_KEY = '_sso_oidc_provider';
+    /** Provider id chosen at start — the callback never re-resolves the slug (#1059 I-5). */
+    public const SESSION_PROVIDER_ID_KEY = '_sso_oidc_provider_id';
     public const SESSION_TARGET_KEY = '_sso_oidc_target';
 
     public function __construct(
@@ -43,7 +46,6 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
         private readonly OidcAuthenticationFlow $flow,
         private readonly EntityManagerInterface $em,
         private readonly RouterInterface $router,
-        private readonly TenantContext $tenantContext,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -72,25 +74,27 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
         $expectedState = (string) $session->get(self::SESSION_STATE_KEY, '');
         $verifier = (string) $session->get(self::SESSION_VERIFIER_KEY, '');
         $providerSlug = (string) $session->get(self::SESSION_PROVIDER_KEY, '');
+        $providerId = (int) $session->get(self::SESSION_PROVIDER_ID_KEY, 0);
         if ($expectedState === '' || !hash_equals($expectedState, $state)) {
             throw new AuthenticationException('SSO state mismatch.');
         }
-        if ($verifier === '' || $providerSlug === '') {
+        if ($verifier === '' || $providerSlug === '' || $providerId <= 0) {
             throw new AuthenticationException('SSO session lost.');
         }
         $session->remove(self::SESSION_STATE_KEY);
         $session->remove(self::SESSION_VERIFIER_KEY);
         $session->remove(self::SESSION_PROVIDER_KEY);
+        $session->remove(self::SESSION_PROVIDER_ID_KEY);
 
         $slug = (string) $request->attributes->get('slug', '');
         if ($slug !== $providerSlug) {
             throw new AuthenticationException('SSO provider slug mismatch.');
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-        $provider = $this->providerRepo->findOneBySlugForTenant($slug, $tenant)
-            ?? $this->providerRepo->findOneBySlugAnywhere($slug);
-        if (!$provider instanceof IdentityProvider || !$provider->isEnabled()) {
+        // The provider chosen at start (by id), not a fresh slug lookup that
+        // could hit another organisation's provider with the same slug.
+        $provider = $this->providerRepo->findUnfiltered($providerId);
+        if (!$provider instanceof IdentityProvider || !$provider->isEnabled() || $provider->getSlug() !== $slug) {
             throw new AuthenticationException('SSO provider not found or disabled.');
         }
 
@@ -116,15 +120,31 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $target = (string) $request->getSession()->remove(self::SESSION_TARGET_KEY);
-        if ($target === '') {
+        if (!self::isSafeTarget($target)) {
             $target = $this->router->generate('app_home');
         }
         return new RedirectResponse($target);
     }
 
+    /**
+     * Post-login target from `?target=` — see {@see SafeRedirectTarget}.
+     */
+    public static function isSafeTarget(string $target): bool
+    {
+        return SafeRedirectTarget::isSafe($target);
+    }
+
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
+        if ($request->hasSession()) {
+            $request->getSession()->remove(self::SESSION_TARGET_KEY);
+        }
         $this->logger->warning('SSO authentication failure', ['error' => $exception->getMessage()]);
+        // Messages meant for the user (e.g. "link by e-mail is disabled")
+        // are shown on the login page via AuthenticationUtils.
+        if ($exception instanceof CustomUserMessageAuthenticationException && $request->hasSession()) {
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
+        }
         $loginUrl = $this->router->generate('app_login', ['error' => $exception->getMessage()]);
 
         return new RedirectResponse($loginUrl);

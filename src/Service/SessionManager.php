@@ -342,14 +342,14 @@ class SessionManager
      * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
      * @return UserSession[]
      */
-    public function getAllActiveSessions(?string $userEmail = null, ?int $limit = null, ?array $tenants = null): array
+    public function getAllActiveSessions(?string $userEmail = null, ?int $limit = null, ?array $tenants = null, ?User $self = null): array
     {
         if (!$this->isTableAvailable()) {
             return [];
         }
 
         try {
-            return $this->userSessionRepository->getActiveSessions($limit, $userEmail, $tenants);
+            return $this->userSessionRepository->getActiveSessions($limit, $userEmail, $tenants, $self);
         } catch (Exception $e) {
             $this->logger->error('Failed to get all active sessions', [
                 'error' => $e->getMessage(),
@@ -363,27 +363,21 @@ class SessionManager
      *
      * @param \App\Entity\Tenant[]|null $tenants restrict to users of these tenants (null = all)
      */
-    public function getStatistics(?array $tenants = null): array
+    public function getStatistics(?array $tenants = null, ?User $self = null): array
     {
+        // Same keys as UserSessionRepository::getStatistics() (the template reads them).
+        $empty = ['total_active' => 0, 'total_last_24h' => 0, 'unique_users' => 0];
         if (!$this->isTableAvailable()) {
-            return [
-                'total_sessions' => 0,
-                'active_sessions' => 0,
-                'inactive_sessions' => 0,
-            ];
+            return $empty;
         }
 
         try {
-            return $this->userSessionRepository->getStatistics($tenants);
+            return $this->userSessionRepository->getStatistics($tenants, $self);
         } catch (Exception $e) {
             $this->logger->error('Failed to get session statistics', [
                 'error' => $e->getMessage(),
             ]);
-            return [
-                'total_sessions' => 0,
-                'active_sessions' => 0,
-                'inactive_sessions' => 0,
-            ];
+            return $empty;
         }
     }
 

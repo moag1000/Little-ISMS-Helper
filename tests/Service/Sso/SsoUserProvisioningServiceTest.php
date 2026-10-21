@@ -14,6 +14,7 @@ use App\Service\Sso\ClaimToRoleResolver;
 use App\Service\Sso\ClaimToRoleResolverResult;
 use App\Service\Fte\FteRecorderService;
 use App\Service\Sso\SsoEventLogger;
+use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Service\Sso\SsoUserProvisioningService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,6 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 /**
  * Unit tests for SsoUserProvisioningService.
@@ -129,6 +131,7 @@ final class SsoUserProvisioningServiceTest extends TestCase
     {
         $existing = new User();
         $existing->setEmail('alice@acme.com');
+        $this->provider->setAllowEmailLinking(true);
 
         $this->userRepo->method('findOneBy')
             ->willReturnCallback(function (array $criteria) use ($existing) {
@@ -144,6 +147,46 @@ final class SsoUserProvisioningServiceTest extends TestCase
         $result = $this->makeService()->provision($this->provider, $claims);
         self::assertSame($existing, $result);
         self::assertSame('sub-new', $result->getSsoExternalId());
+    }
+
+    #[Test]
+    public function refusesLinkByEmailWhenProviderDisallowsIt(): void
+    {
+        $existing = (new User())->setEmail('alice@acme.com');
+        $this->provider->setAllowEmailLinking(false);
+        $this->userRepo->method('findOneBy')
+            ->willReturnCallback(static fn (array $c): ?User => isset($c['email']) ? $existing : null);
+        $this->em->expects(self::never())->method('flush');
+
+        try {
+            $this->makeService()->provision($this->provider, ['sub' => 'sub-new', 'email' => 'alice@acme.com']);
+            self::fail('Link by e-mail must be refused.');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertNull($existing->getSsoExternalId());
+        self::assertNull($existing->getSsoProvider());
+    }
+
+    #[Test]
+    public function sameProviderNewSubjectIsRefusedAndLogged(): void
+    {
+        $this->provider->setAllowEmailLinking(true);
+        $existing = (new User())->setEmail('alice@acme.com')
+            ->setSsoProvider($this->provider)->setSsoExternalId('sub-original');
+        $this->userRepo->method('findOneBy')
+            ->willReturnCallback(static fn (array $c): ?User => isset($c['email']) ? $existing : null);
+        $this->ssoLogger->expects(self::once())->method('logLoginFailure')
+            ->with($this->provider, 'alice@acme.com', 'subject_changed');
+        $this->em->expects(self::never())->method('flush');
+
+        try {
+            $this->makeService()->provision($this->provider, ['sub' => 'sub-new', 'email' => 'alice@acme.com']);
+            self::fail('a subject change must be refused');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertSame('sub-original', $existing->getSsoExternalId());
     }
 
     #[Test]
@@ -229,7 +272,8 @@ final class SsoUserProvisioningServiceTest extends TestCase
     {
         $tenantA = (new \App\Entity\Tenant())->setName('A')->setCode('a');
         $tenantB = (new \App\Entity\Tenant())->setName('B')->setCode('b');
-        $this->provider->setTenant($tenantA);
+        // Linking enabled: the tree / privileged rules must still refuse.
+        $this->provider->setTenant($tenantA)->setAllowEmailLinking(true);
 
         $foreign = (new User())->setEmail('alice@acme.com')->setTenant($tenantB);
         $super = (new User())->setEmail('root@acme.com')->setTenant($tenantA)->setRoles(['ROLE_SUPER_ADMIN']);

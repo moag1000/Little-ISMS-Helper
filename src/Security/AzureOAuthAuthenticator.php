@@ -7,6 +7,11 @@ namespace App\Security;
 use DateTimeImmutable;
 use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 use App\Entity\User;
+use App\Service\Sso\SsoAccountLinkPolicy;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use App\Repository\TenantRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,6 +36,9 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
         private readonly UserRepository $userRepository,
         private readonly RouterInterface $router,
         private readonly TenantRepository $tenantRepository,
+        #[Autowire('%env(bool:default:app.azure_allow_email_linking_default:AZURE_ALLOW_EMAIL_LINKING)%')]
+        private readonly bool $allowEmailLinking = true,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -63,6 +71,9 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
 
                 if (!$user instanceof User) {
                     $user = $this->userRepository->findOneBy(['email' => $email]);
+                    if ($user instanceof User) {
+                        SsoAccountLinkPolicy::assertMayLinkAzureByEmail($user, $this->allowEmailLinking, $this->logger);
+                    }
                 }
 
                 if (!$user) {
@@ -119,6 +130,9 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
+        if ($exception instanceof CustomUserMessageAuthenticationException && $request->hasSession()) {
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
+        }
 
         return new RedirectResponse(
             $this->router->generate('app_login', ['error' => $message])

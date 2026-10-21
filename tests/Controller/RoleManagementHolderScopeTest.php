@@ -242,6 +242,95 @@ final class RoleManagementHolderScopeTest extends WebTestCase
      *
      * @return array<string, mixed>
      */
+    #[Test]
+    public function roleOverviewDoesNotFetchUsersTimesPermissions(): void
+    {
+        // #1059: one query fetch-joining users AND permissions returned
+        // users × permissions rows per role.
+        $this->assignToUserB();
+        $extra = [];
+        foreach (['edit', 'delete'] as $action) {
+            $extra[] = $permission = (new Permission())
+                ->setName('holder_probe.' . $action . '_' . $this->uid)
+                ->setDescription('Holder probe')
+                ->setCategory('holder_probe')
+                ->setAction($action);
+            $this->em->persist($permission);
+        }
+        foreach ([$this->permission, ...$extra] as $permission) {
+            $this->role->addPermission($permission);
+        }
+        $this->em->flush();
+        $this->em->clear();
+
+        try {
+            $debug = static::getContainer()->get('doctrine.debug_data_holder');
+            $seen = array_map('count', $debug->getData());
+            $roles = $this->em->getRepository(Role::class)->getRolesWithUserCount();
+
+            $probe = array_values(array_filter($roles, fn (Role $r): bool => $r->getId() === $this->role->getId()))[0] ?? null;
+            self::assertInstanceOf(Role::class, $probe);
+            self::assertCount(2, $probe->getUsers());
+            self::assertCount(3, $probe->getPermissions());
+            foreach ($debug->getData() as $connection => $queries) {
+                foreach (array_slice($queries, $seen[$connection] ?? 0) as $query) {
+                    $sql = strtolower((string) $query['sql']);
+                    self::assertFalse(
+                        str_contains($sql, 'user_roles') && str_contains($sql, 'role_permissions'),
+                        'users and permissions must not be fetch-joined in one query: ' . $sql,
+                    );
+                }
+            }
+        } finally {
+            $this->em->clear();
+            foreach ($extra as $permission) {
+                if (($managed = $this->em->find(Permission::class, $permission->getId())) !== null) {
+                    foreach ($managed->getRoles() as $role) {
+                        $role->removePermission($managed);
+                    }
+                    $this->em->remove($managed);
+                }
+            }
+            $this->em->flush();
+        }
+    }
+
+    #[Test]
+    public function permissionShowCountsOnlyHoldersTheActorMayView(): void
+    {
+        // #1059: the affected-users count summed every holder instance-wide
+        // (and counted a holder of two roles twice).
+        $this->assignToUserB();
+        $second = (new Role())->setName('Holder Probe 2 ' . $this->uid)->setDescription('second')->setIsSystemRole(false);
+        $this->em->persist($second);
+        $second->addUser($this->userA);
+        $this->role->addPermission($this->permission);
+        $second->addPermission($this->permission);
+        $this->em->flush();
+        $this->em->clear(); // the inverse Permission::roles side is only populated from the DB
+        $url = '/en/admin/permissions/' . $this->permission->getId();
+
+        try {
+            $this->client->loginUser($this->adminA);
+            $this->client->request('GET', $url);
+            self::assertResponseIsSuccessful();
+            self::assertStringContainsString('insgesamt 1 Benutzer', (string) $this->client->getResponse()->getContent());
+
+            $this->client->loginUser($this->super);
+            $this->client->request('GET', $url);
+            self::assertStringContainsString('insgesamt 2 Benutzer', (string) $this->client->getResponse()->getContent());
+        } finally {
+            $this->em->clear();
+            if (($managed = $this->em->find(Role::class, $second->getId())) !== null) {
+                foreach ($managed->getUsers()->toArray() as $holder) {
+                    $managed->removeUser($holder);
+                }
+                $this->em->remove($managed);
+                $this->em->flush();
+            }
+        }
+    }
+
     private function formValues(User $actor, string $description): array
     {
         $this->client->loginUser($actor);

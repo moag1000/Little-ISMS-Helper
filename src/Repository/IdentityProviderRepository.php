@@ -58,9 +58,63 @@ class IdentityProviderRepository extends ServiceEntityRepository
         return $qb->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
 
-    public function findOneBySlugAnywhere(string $slug): ?IdentityProvider
+    /**
+     * Every ENABLED provider with this slug, whatever its organisation. The
+     * legacy start URL (slug only) is served only when this returns exactly
+     * one provider (#1059 I-5).
+     *
+     * @return list<IdentityProvider>
+     */
+    public function findEnabledBySlug(string $slug): array
     {
-        return $this->findOneBy(['slug' => $slug]);
+        return $this->withoutTenantFilter(fn (): array => $this->findBy(['slug' => $slug, 'enabled' => true]));
+    }
+
+    /**
+     * Provider by id regardless of the request's tenant filter (SSO start /
+     * callback: global and parent-organisation providers must resolve for a
+     * logged-in user; callers apply the allowed-for-user rules, #1059 m-6).
+     */
+    public function findUnfiltered(int $id): ?IdentityProvider
+    {
+        return $this->withoutTenantFilter(fn (): ?IdentityProvider => $this->find($id));
+    }
+
+    /**
+     * @template T
+     * @param callable(): T $fn
+     * @return T
+     */
+    private function withoutTenantFilter(callable $fn): mixed
+    {
+        $filters = $this->getEntityManager()->getFilters();
+        if (!$filters->isEnabled('tenant_filter')) {
+            return $fn();
+        }
+        $filters->suspend('tenant_filter');
+        try {
+            return $fn();
+        } finally {
+            $filters->restore('tenant_filter');
+        }
+    }
+
+    /**
+     * Is $slug used by a GLOBAL provider other than $exceptId? A tenant-owned
+     * provider must not take such a slug (#1059 I-5).
+     */
+    public function isSlugUsedByGlobalProvider(string $slug, ?int $exceptId): bool
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.slug = :slug')
+            ->andWhere('p.tenant IS NULL')
+            ->setParameter('slug', $slug);
+        if ($exceptId !== null) {
+            $qb->andWhere('p.id <> :id')->setParameter('id', $exceptId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult() > 0;
     }
 
     /**

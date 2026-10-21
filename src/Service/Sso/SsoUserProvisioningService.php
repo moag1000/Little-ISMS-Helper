@@ -70,6 +70,11 @@ final class SsoUserProvisioningService
             // Never link a tenant-owned provider to an account outside its
             // tenant tree or to a privileged account (account takeover).
             $this->assertMayAuthenticateAs($provider, $byEmail);
+            if (SsoAccountLinkPolicy::isSubjectChange($provider, $byEmail, $externalId)) {
+                // Security event: same provider, new subject id for a linked account.
+                $this->ssoEventLogger->logLoginFailure($provider, $email, 'subject_changed');
+            }
+            SsoAccountLinkPolicy::assertMayLinkByEmail($provider, $byEmail, $this->logger, $externalId);
             $byEmail->setSsoProvider($provider);
             $byEmail->setSsoExternalId($externalId);
             $byEmail->setAuthProvider('sso:' . $provider->getSlug());

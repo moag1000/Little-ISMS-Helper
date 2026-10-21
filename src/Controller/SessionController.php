@@ -8,7 +8,6 @@ use DateTime;
 use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
 use App\Entity\User;
-use App\Entity\UserSession;
 use App\Repository\UserRepository;
 use App\Repository\UserSessionRepository;
 use App\Security\Voter\UserVoter;
@@ -40,19 +39,19 @@ class SessionController extends AbstractController
         $userEmail = $request->query->get('email');
         $limit = $request->query->get('limit', 100);
 
-        // Get active sessions from SessionManager (tenant-scoped for non-SUPER_ADMIN)
-        $tenantScope = $this->resolveTenantScope($tenantContext);
-        $activeSessions = $sessionManager->getAllActiveSessions($userEmail, $limit, $tenantScope);
-        if ($tenantScope !== null) {
-            $activeSessions = array_values(array_filter(
-                $activeSessions,
-                fn(UserSession $session): bool => $session->getUser() instanceof User
-                    && $this->isGranted(UserVoter::EDIT, $session->getUser()),
-            ));
-        }
+        // List and statistics share one query-level scope (#1059): the users
+        // the actor may administer (UserVoter::EDIT) — filtering in PHP after
+        // LIMIT produced short lists and statistics that counted other rows.
+        $userScope = $this->resolveAdministrableUserScope($tenantContext);
+        $self = $this->getUser() instanceof User ? $this->getUser() : null;
+        $activeSessions = $sessionManager->getAllActiveSessions(
+            $userEmail,
+            max(1, min(1000, (int) $limit)),
+            $userScope,
+            $userScope !== null ? $self : null,
+        );
 
-        // Get statistics (same tenant scope)
-        $statistics = $sessionManager->getStatistics($tenantScope);
+        $statistics = $sessionManager->getStatistics($userScope, $userScope !== null ? $self : null);
         $statistics['max_concurrent'] = $sessionManager->getMaxConcurrentSessions();
 
         return $this->render('session/index.html.twig', [
@@ -71,16 +70,16 @@ class SessionController extends AbstractController
         $thirtyDaysAgo = new DateTime('-30 days');
         $now = new DateTime();
 
-        // Tenant-scoped for non-SUPER_ADMIN (explicit — the Doctrine
-        // tenant_filter is bypassed for tenantless actors)
-        $loginEvents = $auditLogRepository->findByDateRange(
+        // Same scope as the session index (#1059): logins of users the actor
+        // may administer; the action filter runs in the query.
+        $userScope = $this->resolveAdministrableUserScope($tenantContext);
+        $logins = $auditLogRepository->findLoginEvents(
             $thirtyDaysAgo,
             $now,
-            $this->resolveTenantScope($tenantContext),
+            ['login', 'login_success', 'authentication'],
+            $userScope,
+            $userScope !== null && $this->getUser() instanceof User ? $this->getUser() : null,
         );
-
-        // Filter for login events
-        $logins = array_filter($loginEvents, fn($log): bool => in_array($log->getAction(), ['login', 'login_success', 'authentication']));
 
         // Group by date
         $loginsByDate = [];
@@ -231,14 +230,25 @@ class SessionController extends AbstractController
     }
 
     /**
-     * Tenant scope for listings / statistics: null (instance-wide) for
-     * SUPER_ADMIN, otherwise the actor's accessible tenant tree ([] when the
-     * actor has no tenant — yields nothing).
+     * Tenants whose (non-SUPER_ADMIN) users the actor may administer — the
+     * query form of UserVoter::EDIT: null for SUPER_ADMIN (everything, incl.
+     * users without organisation); a ROLE_ADMIN its accessible tree; any other
+     * actor with the user.edit permission its own organisation; otherwise
+     * none (the actor's own sessions are added by the repository).
      *
      * @return \App\Entity\Tenant[]|null
      */
-    private function resolveTenantScope(TenantContext $tenantContext): ?array
+    private function resolveAdministrableUserScope(TenantContext $tenantContext): ?array
     {
-        return $this->isGranted('ROLE_SUPER_ADMIN') ? null : $tenantContext->getAccessibleTenants();
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return null;
+        }
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $tenantContext->getAccessibleTenants();
+        }
+        $actor = $this->getUser();
+        $tenant = $tenantContext->getCurrentTenant();
+
+        return $actor instanceof User && $tenant !== null && $actor->hasPermission('user.edit') ? [$tenant] : [];
     }
 }

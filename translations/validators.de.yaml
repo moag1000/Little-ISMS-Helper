@@ -839,3 +839,4 @@ gstool_import:
 'json_builder.required': 'Eintrag %row%: „%field%“ ist ein Pflichtfeld.'
 'json_builder.invalid_value': 'Eintrag %row%: „%field%“ enthält einen ungültigen Wert.'
 'json_builder.empty_key': 'Eintrag %row%: Der Schlüssel darf nicht leer sein.'
+'sso.slug_used_by_global_provider': 'Dieser Slug wird von einem instanzweiten SSO-Provider verwendet. Bitte einen anderen Slug für den Provider Ihrer Organisation wählen.'

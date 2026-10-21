@@ -194,6 +194,23 @@ final class TenantManagementAdminScopeTest extends WebTestCase
     }
 
     #[Test]
+    public function tenantAdminCannotCreateOrganisations(): void
+    {
+        // #1059: "new" would create a root organisation outside the admin's
+        // tree. Creating organisations is an instance-operator action.
+        $this->client->loginUser($this->adminA);
+        $code = 'root_probe_' . substr(md5(uniqid('', true)), 0, 10);
+
+        $this->client->request('GET', '/en/admin/tenants/new');
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->client->request('POST', '/en/admin/tenants/new', ['tenant' => ['code' => $code, 'name' => $code]]);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->em->clear();
+        self::assertNull($this->em->getRepository(Tenant::class)->findOneBy(['code' => $code]));
+    }
+
+    #[Test]
     public function indexAndCorporateStructureOnlyListAccessibleTenants(): void
     {
         $this->client->loginUser($this->adminA);

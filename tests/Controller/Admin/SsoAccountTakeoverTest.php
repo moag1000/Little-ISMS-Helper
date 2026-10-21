@@ -9,13 +9,16 @@ use App\Entity\IdentityProvider;
 use App\Entity\IdentityProviderRoleMapping;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\AuditLogger;
 use App\Service\Sso\OidcAuthenticationFlow;
+use App\Service\Sso\SsoAccountLinkPolicy;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 /**
  * Security hotfix (C1): a tenant admin controls the issuer/JWKS of a
@@ -168,9 +171,18 @@ final class SsoAccountTakeoverTest extends WebTestCase
         self::assertSame($this->globalProvider->getId(), $reloaded->getSsoProvider()?->getId());
         self::assertContains('ROLE_SUPER_ADMIN', $reloaded->getRoles());
 
-        $super = $this->resolve($this->globalProvider, $this->email('super'), 'sub-super-global', []);
-        self::assertInstanceOf(User::class, $super);
-        self::assertSame($this->super->getId(), $super->getId());
+        // #1059 I-6 ruling: a privileged account is never linked by e-mail,
+        // not even by a global provider; an existing binding keeps working.
+        $this->expectLoginRejected($this->globalProvider, $this->email('super'), 'sub-super-global');
+        self::assertNull($this->reload($this->super)->getSsoProvider());
+
+        $super = $this->reload($this->super)->setSsoProvider(
+            $this->em->find(IdentityProvider::class, $this->globalProvider->getId()),
+        )->setSsoExternalId('sub-super-bound');
+        $this->em->flush();
+        $resolved = $this->resolve($this->globalProvider, $this->email('super'), 'sub-super-bound', []);
+        self::assertInstanceOf(User::class, $resolved);
+        self::assertSame($this->super->getId(), $resolved->getId());
     }
 
     #[Test]
@@ -243,6 +255,232 @@ final class SsoAccountTakeoverTest extends WebTestCase
         self::assertSame('ROLE_SUPER_ADMIN', $mappings[0]->getAssignedRole());
     }
 
+    #[Test]
+    public function providerPagesWarnAboutIgnoredPrivilegedRolesOfTenantProvider(): void
+    {
+        // Legacy / operator-created privileged mapping on a tenant-owned provider.
+        $this->mapping($this->tenantProvider, 'ROLE_GROUP_CISO');
+        $this->tenantProvider->setDefaultFallbackRole('ROLE_SUPER_ADMIN');
+        $this->em->flush();
+        $this->client->loginUser($this->adminA);
+
+        foreach (['', '/edit'] as $suffix) {
+            $crawler = $this->client->request('GET', '/en/admin/sso/' . $this->tenantProvider->getId() . $suffix);
+            self::assertResponseIsSuccessful();
+            $alert = $crawler->filter('.fa-alert--warning');
+            self::assertGreaterThan(0, $alert->count(), 'warning missing on ' . ($suffix ?: 'show'));
+            self::assertStringContainsString('ROLE_GROUP_CISO', $alert->text());
+            self::assertStringContainsString('ROLE_SUPER_ADMIN', $alert->text());
+        }
+    }
+
+    #[Test]
+    public function ignoredPrivilegedRolesIsEmptyForGlobalProviderAndOrdinaryRoles(): void
+    {
+        $privileged = $this->mapping($this->globalProvider, 'ROLE_SUPER_ADMIN');
+        $ordinary = $this->mapping($this->tenantProvider, 'ROLE_MANAGER');
+
+        self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->globalProvider, [$privileged]));
+        self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$ordinary]));
+        self::assertSame(
+            ['ROLE_SUPER_ADMIN'],
+            SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$privileged]),
+        );
+        $privileged->setIsActive(false);
+        self::assertSame([], SsoAccountLinkPolicy::ignoredPrivilegedRoles($this->tenantProvider, [$privileged]));
+    }
+
+    #[Test]
+    public function providerWithoutEmailLinkingRefusesLoginToExistingUnlinkedAccount(): void
+    {
+        foreach ([$this->tenantProvider, $this->globalProvider] as $provider) {
+            $provider->setAllowEmailLinking(false);
+        }
+        $this->em->flush();
+
+        foreach ([$this->tenantProvider, $this->globalProvider] as $provider) {
+            try {
+                $this->resolve($provider, $this->email('userchilda'), 'sub-nolink', []);
+                self::fail('Login must be refused when link by e-mail is disabled.');
+            } catch (CustomUserMessageAuthenticationException $e) {
+                self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+            }
+        }
+        $reloaded = $this->reload($this->userChildA);
+        self::assertNull($reloaded->getSsoProvider(), 'account must not be linked');
+        self::assertNull($reloaded->getSsoExternalId());
+    }
+
+    #[Test]
+    public function providerWithoutEmailLinkingKeepsExistingBindingAndJit(): void
+    {
+        $this->tenantProvider->setAllowEmailLinking(false)->setAutoApprove(true);
+        $this->userChildA->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-bound');
+        $this->em->flush();
+
+        $bound = $this->resolve($this->tenantProvider, $this->email('userchilda'), 'sub-bound', []);
+        self::assertInstanceOf(User::class, $bound);
+        self::assertSame($this->userChildA->getId(), $bound->getId());
+
+        $jit = $this->resolve($this->tenantProvider, $this->email('jit'), 'sub-jit-nolink', []);
+        self::assertInstanceOf(User::class, $jit, 'new e-mail addresses are still provisioned');
+    }
+
+    #[Test]
+    public function accountBoundToAnotherProviderIsNotReboundByEmail(): void
+    {
+        // #1059 review: linking by e-mail only takes unlinked accounts; an
+        // existing binding to another provider is never moved silently.
+        $this->userChildA->setSsoProvider($this->globalProvider)->setSsoExternalId('sub-global');
+        $this->em->flush();
+
+        try {
+            $this->resolve($this->tenantProvider, $this->email('userchilda'), 'sub-other', []);
+            self::fail('re-binding to another provider must be refused');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertSame($this->globalProvider->getId(), $this->reload($this->userChildA)->getSsoProvider()?->getId());
+    }
+
+    #[Test]
+    public function sameProviderNewSubjectIsNeverRelinkedAndIsAudited(): void
+    {
+        // #1059 M-b: same provider, same e-mail claim, different subject id →
+        // refused (admin action needed), security event logged.
+        $this->userChildA->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-original');
+        $this->em->flush();
+
+        try {
+            $this->resolve($this->tenantProvider, $this->email('userchilda'), 'sub-new', []);
+            self::fail('a subject change must be refused');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertSame('sub-original', $this->reload($this->userChildA)->getSsoExternalId());
+        $events = (int) $this->em->getConnection()->fetchOne(
+            'SELECT COUNT(*) FROM audit_log WHERE action = ? AND entity_type = ? AND entity_id = ? AND new_values LIKE ?',
+            [AuditLogger::ACTION_SSO_LOGIN_FAILURE, 'IdentityProvider', $this->tenantProvider->getId(), '%subject_changed%'],
+        );
+        self::assertSame(1, $events, 'security event for the subject change');
+    }
+
+    #[Test]
+    public function ssoPageListsEnforcementExemptAccountsTheAdminMayView(): void
+    {
+        // #1059 M-d: organisation A enforces SSO through its own provider.
+        // adminA is linked (enforced, not exempt); the SUPER_ADMIN of A cannot
+        // be signed in by an organisation-owned provider (exempt, visible);
+        // userB of the enforced organisation B is exempt but not visible.
+        $this->tenantA->setSsoEnforced(true);
+        $this->tenantB->setSsoEnforced(true);
+        $this->tenantProvider->setEnabled(true);
+        $this->adminA->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-admin-a');
+        $this->em->flush();
+
+        try {
+            $this->client->loginUser($this->adminA);
+            $crawler = $this->client->request('GET', '/en/admin/sso');
+            self::assertResponseIsSuccessful();
+            $alert = $crawler->filter('.fa-alert--warning');
+            self::assertGreaterThan(0, $alert->count(), 'exemption notice missing');
+            $text = $alert->text();
+            self::assertStringContainsString($this->email('super'), $text);
+            self::assertStringNotContainsString($this->email('admina'), $text);
+            self::assertStringNotContainsString($this->email('userb'), $text);
+        } finally {
+            $this->em->clear();
+            foreach ([$this->tenantA->getId(), $this->tenantB->getId()] as $id) {
+                $this->em->find(Tenant::class, $id)?->setSsoEnforced(false);
+            }
+            $this->em->flush();
+        }
+    }
+
+    #[Test]
+    public function bindingToUnusableProviderIsReplacedOnlyWhenLinkingIsOn(): void
+    {
+        // #1059 I-4/I-6: userB (organisation B) is bound to organisation A's
+        // provider — not in B's tree, so the binding is unusable and counts as
+        // none. The global provider's own allowEmailLinking decides.
+        $this->userB->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-in-a');
+        $this->globalProvider->setAllowEmailLinking(false);
+        $this->em->flush();
+
+        $this->expectLoginRejected($this->globalProvider, $this->email('userb'), 'sub-global-b');
+        self::assertSame($this->tenantProvider->getId(), $this->reload($this->userB)->getSsoProvider()?->getId());
+
+        $this->em->find(IdentityProvider::class, $this->globalProvider->getId())?->setAllowEmailLinking(true);
+        $this->em->flush();
+        $user = $this->resolve($this->globalProvider, $this->email('userb'), 'sub-global-b', []);
+
+        self::assertInstanceOf(User::class, $user);
+        $reloaded = $this->reload($this->userB);
+        self::assertSame($this->globalProvider->getId(), $reloaded->getSsoProvider()?->getId());
+        self::assertSame('sub-global-b', $reloaded->getSsoExternalId());
+    }
+
+    #[Test]
+    public function superAdminWithDisabledGlobalIdpIsNotLinkableViaAnotherGlobalProvider(): void
+    {
+        // #1059 I-6: the operator's old global IdP is disabled; another global
+        // provider must not take over the SUPER_ADMIN by e-mail — linking on or off.
+        $old = $this->provider('oldglobal', null)->setEnabled(false);
+        $this->em->flush();
+        $this->super->setSsoProvider($old)->setSsoExternalId('sub-super-old');
+        $this->em->flush();
+
+        try {
+            foreach ([false, true] as $linking) {
+                $this->em->find(IdentityProvider::class, $this->globalProvider->getId())?->setAllowEmailLinking($linking);
+                $this->em->flush();
+                $this->expectLoginRejected($this->globalProvider, $this->email('super'), 'sub-super-new');
+                self::assertSame($old->getId(), $this->reload($this->super)->getSsoProvider()?->getId(), 'linking ' . var_export($linking, true));
+            }
+
+            // Same with a legacy (pre-hotfix) binding to a tenant provider.
+            $this->reload($this->super)->setSsoProvider($this->em->find(IdentityProvider::class, $this->tenantProvider->getId()));
+            $this->em->flush();
+            $this->expectLoginRejected($this->globalProvider, $this->email('super'), 'sub-super-new');
+            self::assertSame($this->tenantProvider->getId(), $this->reload($this->super)->getSsoProvider()?->getId());
+        } finally {
+            $this->em->clear();
+            $this->em->find(User::class, $this->super->getId())?->setSsoProvider(null);
+            $this->em->flush();
+            if (($p = $this->em->find(IdentityProvider::class, $old->getId())) !== null) {
+                $this->em->remove($p);
+                $this->em->flush();
+            }
+        }
+    }
+
+    #[Test]
+    public function bindingToDisabledProviderIsNoLicenceForPrivilegedTakeover(): void
+    {
+        // Replacing an unusable binding still runs the never-privileged rule.
+        $this->tenantProvider->setEnabled(false);
+        $other = $this->provider('other', $this->tenantA)->setEnabled(true);
+        $this->super->setSsoProvider($this->tenantProvider)->setSsoExternalId('sub-super-old');
+        $this->em->flush();
+
+        try {
+            $this->expectLoginRejected($other, $this->email('super'), 'sub-super-new');
+        } finally {
+            $this->em->clear();
+            if (($p = $this->em->find(IdentityProvider::class, $other->getId())) !== null) {
+                $this->em->remove($p);
+                $this->em->flush();
+            }
+        }
+        self::assertSame($this->tenantProvider->getId(), $this->reload($this->super)->getSsoProvider()?->getId());
+    }
+
+    #[Test]
+    public function newProviderDoesNotLinkByEmailByDefault(): void
+    {
+        self::assertFalse((new IdentityProvider())->isAllowEmailLinking());
+    }
+
     // -------------------------------------------------------------- helpers
 
     private function expectLoginRejected(IdentityProvider $provider, string $email, string $sub): void
@@ -308,6 +546,9 @@ final class SsoAccountTakeoverTest extends WebTestCase
             ->setTenant($tenant)
             ->setJitProvisioning(true)
             ->setAutoApprove(false)
+            // Providers that predate the option keep linking by e-mail
+            // (migration default); the opt-out is tested separately.
+            ->setAllowEmailLinking(true)
             ->setAttributeMap(['email' => 'email']);
         $this->em->persist($provider);
 

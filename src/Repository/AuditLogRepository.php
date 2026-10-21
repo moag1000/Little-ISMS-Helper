@@ -153,6 +153,52 @@ class AuditLogRepository extends ServiceEntityRepository
     }
 
     /**
+     * Login audit rows (newest first) in a date range — action filtered in the
+     * query. $tenants = null: all rows (SUPER_ADMIN). Otherwise only logins of
+     * users the actor may administer, the same scope as the session index:
+     * users of $tenants that are not ROLE_SUPER_ADMIN, plus $self (#1059).
+     *
+     * @param list<string> $actions
+     * @param Tenant[]|null $tenants
+     * @return AuditLog[]
+     */
+    public function findLoginEvents(
+        DateTimeInterface $start,
+        DateTimeInterface $end,
+        array $actions,
+        ?array $tenants = null,
+        ?User $self = null,
+    ): array {
+        $queryBuilder = $this->createQueryBuilder('a')
+            ->where('a.createdAt >= :start')
+            ->andWhere('a.createdAt <= :end')
+            ->andWhere('a.action IN (:actions)')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->setParameter('actions', $actions);
+
+        if ($tenants !== null) {
+            $conditions = [];
+            if ($tenants !== []) {
+                $conditions[] = '(u.tenant IN (:scope_tenants) AND u.roles NOT LIKE :scope_super)';
+                $queryBuilder->setParameter('scope_tenants', $tenants)
+                    ->setParameter('scope_super', \App\Service\InitialAdminService::ROLE_SUPER_ADMIN_LIKE);
+            }
+            if ($self instanceof User) {
+                $conditions[] = 'u = :scope_self';
+                $queryBuilder->setParameter('scope_self', $self);
+            }
+            if ($conditions === []) {
+                return [];
+            }
+            $queryBuilder->innerJoin(User::class, 'u', 'WITH', 'u.email = a.userName')
+                ->andWhere(implode(' OR ', $conditions));
+        }
+
+        return $queryBuilder->orderBy('a.createdAt', 'DESC')->getQuery()->getResult();
+    }
+
+    /**
      * Count total audit logs
      */
     public function countAll(): int

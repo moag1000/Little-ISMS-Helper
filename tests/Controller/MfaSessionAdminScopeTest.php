@@ -303,6 +303,9 @@ final class MfaSessionAdminScopeTest extends WebTestCase
     {
         $this->auditLogin($this->userA, $this->tenantA);
         $this->auditLogin($this->userB, $this->tenantB);
+        // #1059: an operator inside the tree is not administrable by the
+        // tenant admin — same scope as the session list.
+        $this->auditLogin($this->superA, $this->tenantA);
         $this->em->flush();
 
         $this->client->loginUser($this->adminA);
@@ -358,6 +361,35 @@ final class MfaSessionAdminScopeTest extends WebTestCase
         $crawler = $this->client->request('GET', '/en/admin/sessions');
         self::assertResponseIsSuccessful();
         self::assertSame('1', trim($crawler->filter('p.display-6.text-primary')->first()->text()));
+    }
+
+    #[Test]
+    public function sessionListAndStatisticsShareOneQueryScope(): void
+    {
+        // #1059: the list was filtered in PHP after LIMIT (short pages) and
+        // the statistics counted sessions the list hides (a SUPER_ADMIN of
+        // the own tree cannot be administered by a tenant admin).
+        $own = $this->session($this->userA);
+        $own->setLastActivityAt(new \DateTimeImmutable('-10 minutes'));
+        $super = $this->session($this->superA);
+        $super->setLastActivityAt(new \DateTimeImmutable('-1 minute'));
+        $this->em->flush();
+
+        $this->client->loginUser($this->adminA);
+        $crawler = $this->client->request('GET', '/en/admin/sessions?limit=1');
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString((string) $this->userA->getEmail(), $html, 'LIMIT must apply after scoping');
+        self::assertStringNotContainsString((string) $this->superA->getEmail(), $html);
+        self::assertSame('1', trim($crawler->filter('p.display-6.text-primary')->first()->text()), 'statistics = listable sessions');
+        self::assertSame('1', trim($crawler->filter('p.display-6.text-info')->first()->text()));
+
+        // The instance operator still sees both (and tenantless users' sessions).
+        $this->client->loginUser($this->superA);
+        $this->client->request('GET', '/en/admin/sessions');
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString((string) $this->userA->getEmail(), $html);
+        self::assertStringContainsString((string) $this->superA->getEmail(), $html);
     }
 
     private function auditLogin(User $user, Tenant $tenant): void

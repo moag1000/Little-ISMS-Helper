@@ -107,6 +107,32 @@ anwendungsspezifisch geprueft werden sollte.
 
 ---
 
+### 5. Kein aktiver Instanz-Betreiber (`ROLE_SUPER_ADMIN`)
+
+Phantom-Reparaturen ("Migration als ausgefuehrt markieren", "Alle
+Phantom-Diffs markieren") tragen Migrationen in `migration_versions` ein,
+**ohne sie auszufuehren**. Trifft das die reine Daten-Migration
+`Version20261019120000_operator_bootstrap` aus 3.15.3, wird der
+Setup-Admin nie zum Instanz-Betreiber befoerdert — dann gibt es kein Konto,
+das Benutzer ohne Organisation, instanzweite Backups oder Systemrollen
+verwalten kann.
+
+`/quick-fix` zeigt im Abschnitt Datenintegritaet einen roten Hinweis
+**"Kein aktiver Instanz-Betreiber"**, sobald kein *aktives* Konto
+`ROLE_SUPER_ADMIN` hat (auch wenn das Betreiber-Konto deaktiviert wurde).
+Der Hinweis erscheint nur angemeldeten Besuchern (`/quick-fix` ist öffentlich).
+Eine Web-Reparatur gibt es bewusst nicht (Shell-Zugriff = Betreiber).
+Auf der Server-Shell:
+
+```bash
+php bin/console app:user:grant-super-admin admin@example.com
+```
+
+Der Befehl zeigt E-Mail, Organisation und aktuelle Rollen, fragt nach einer
+Bestaetigung (`--yes` fuer Skripte) und schreibt einen Audit-Log-Eintrag.
+
+---
+
 ## Wann brauche ich stattdessen die CLI?
 
 Die Quick-Fix-UI deckt 95 % der Betriebsfaelle ab. Die CLI ist vorzuziehen, wenn:

@@ -586,12 +586,12 @@ class TenantManagementController extends AbstractController
                 if (!$governance instanceof CorporateGovernance) {
                     $governance = new CorporateGovernance();
                     $governance->setTenant($tenant);
-                    $governance->setParent($parent);
                     $governance->setScope('default');
                     $governance->setScopeId(null);
                     $governance->setCreatedBy($this->getUser());
                 }
                 $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+                $this->corporateStructureService->reparentGovernanceRules($tenant, $parent, $governance);
                 $this->entityManager->persist($governance);
 
                 // Validate structure

@@ -1,0 +1,13 @@
+{# Tenant-owned provider: privileged roles in mappings / default / fallback
+ # role are dropped at login (SsoAccountLinkPolicy::mayAssignRole). Make that
+ # visible instead of letting the configuration look effective. #}
+{% trans_default_domain 'sso' %}
+{% from '_components/_fa_alert.html.twig' import render as fa_alert %}
+{% if roles|default([]) is not empty %}
+    {{ fa_alert({
+        variant: 'warning',
+        title: 'sso.privileged_roles_ignored.title'|trans({}, 'sso'),
+        body: 'sso.privileged_roles_ignored.body'|trans({'%roles%': roles|join(', ')}, 'sso')|e,
+        class: 'mb-3',
+    }) }}
+{% endif %}

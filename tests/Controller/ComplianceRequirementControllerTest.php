@@ -6,6 +6,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -172,6 +173,69 @@ class ComplianceRequirementControllerTest extends WebTestCase
         $this->client->request('GET', '/en/compliance/requirement/new');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
+    }
+
+    #[Test]
+    public function testTenantlessOperatorGetsNoForeignPersons(): void
+    {
+        // #1059: an instance operator without organisation works in a default
+        // organisation, but the TenantFilter is unscoped for it — the person
+        // pickers used findAll() and offered (and accepted) persons of every
+        // organisation. Only persons of the fulfillment's organisation count.
+        $uid = uniqid('', true);
+        $foreignTenant = (new Tenant())->setName('Foreign ' . $uid)->setCode('crq_foreign_' . substr(md5($uid), 0, 12));
+        $this->entityManager->persist($foreignTenant);
+        $operator = (new User())
+            ->setEmail('operator_' . $uid . '@example.com')
+            ->setFirstName('Op')
+            ->setLastName('Erator')
+            ->setRoles(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'])
+            ->setPassword('hashed_password')
+            ->setIsActive(true);
+        $this->entityManager->persist($operator);
+        $person = (new Person())->setFullName('Foreign Person ' . $uid)->setTenant($foreignTenant);
+        $this->entityManager->persist($person);
+        $this->entityManager->flush();
+        $personId = (string) $person->getId();
+        $requirementId = $this->testRequirement->getId();
+
+        try {
+            $this->client->loginUser($operator);
+            $crawler = $this->client->request('GET', '/en/compliance/requirement/' . $requirementId);
+            $this->assertResponseIsSuccessful();
+            foreach (['responsiblePersonId', 'attestationOwnerPersonId'] as $field) {
+                self::assertCount(
+                    0,
+                    $crawler->filter(sprintf('select[name="%s"] option[value="%s"]', $field, $personId)),
+                    $field . ' offers a person of another organisation',
+                );
+            }
+
+            $form = $crawler->filter('select[name="responsiblePersonId"]')->closest('form')->form();
+            $form['responsiblePersonId']->disableValidation()->select($personId);
+            $form['attestationOwnerPersonId']->disableValidation()->select($personId);
+            $this->client->submit($form);
+            self::assertResponseRedirects();
+
+            $linked = (int) $this->entityManager->getConnection()->fetchOne(
+                'SELECT COUNT(*) FROM compliance_requirement_fulfillment WHERE requirement_id = ?'
+                . ' AND (responsible_person_person_id = ? OR attestation_owner_person_id = ?)',
+                [$requirementId, $personId, $personId],
+            );
+            self::assertSame(0, $linked, 'a person of another organisation was linked');
+        } finally {
+            $this->entityManager->clear();
+            $this->entityManager->getConnection()->executeStatement(
+                'DELETE FROM compliance_requirement_fulfillment WHERE requirement_id = ?',
+                [$requirementId],
+            );
+            foreach ([[User::class, $operator->getId()], [Person::class, $person->getId()], [Tenant::class, $foreignTenant->getId()]] as [$class, $id]) {
+                if (($entity = $this->entityManager->find($class, $id)) !== null) {
+                    $this->entityManager->remove($entity);
+                    $this->entityManager->flush();
+                }
+            }
+        }
     }
 
     // ========== IN-PAGE FORM-MODAL (Turbo Frame) TESTS ==========

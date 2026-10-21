@@ -547,7 +547,12 @@ class RestoreService
                 if (!empty($options['admin_password'])) {
                     $secretsHandler->setAdminPassword($options['admin_password'], $this->warnings);
                 } else {
-                    $this->warnings[] = 'WICHTIG: Benutzer-Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert. Alle wiederhergestellten Benutzer müssen ihr Passwort zurücksetzen oder neu setzen lassen. Nutzen Sie: php bin/console app:setup-permissions --admin-email=EMAIL --admin-password=PASSWORT';
+                    // app:setup-permissions only CREATES a new admin and leaves an
+                    // existing (restored) account untouched — never point to it here.
+                    $this->warnings[] = 'WICHTIG: Benutzer-Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert.'
+                        . ' Wiederhergestellte Benutzer mit lokaler Anmeldung können sich erst nach dem Setzen eines neuen Passworts anmelden'
+                        . ' (SSO-Anmeldungen sind nicht betroffen). Für den Admin-Zugang die Wiederherstellung mit dem Feld'
+                        . ' "Admin-Passwort setzen" wiederholen; die übrigen Passwörter setzt ein Administrator unter Admin → Benutzer → Bearbeiten.';
                 }
             }
 

@@ -6,6 +6,11 @@ namespace App\Security;
 
 use DateTimeImmutable;
 use App\Entity\User;
+use App\Service\Sso\SsoAccountLinkPolicy;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use App\Repository\TenantRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,6 +36,9 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
         private readonly UserRepository $userRepository,
         private readonly RouterInterface $router,
         private readonly TenantRepository $tenantRepository,
+        #[Autowire('%env(bool:default:app.azure_allow_email_linking_default:AZURE_ALLOW_EMAIL_LINKING)%')]
+        private readonly bool $allowEmailLinking = true,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -63,7 +71,7 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
             $department = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department');
 
             return new SelfValidatingPassport(
-                new UserBadge($email, function() use ($email, $firstName, $lastName, $objectId, $tenantId, $jobTitle, $department, $attributes) {
+                new UserBadge($email, function() use ($email, $nameId, $firstName, $lastName, $objectId, $tenantId, $jobTitle, $department, $attributes) {
                     // Find or create user
                     $user = null;
 
@@ -73,6 +81,13 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
 
                     if (!$user && $email) {
                         $user = $this->userRepository->findOneBy(['email' => $email]);
+                        // Without an objectidentifier claim no object id is ever
+                        // stored; an account already bound via SAML to this very
+                        // NameID counts as linked (#1059). Anything else is a
+                        // link by e-mail and goes through the policy.
+                        if ($user instanceof User && !$this->isBoundToNameId($user, $objectId, $nameId)) {
+                            SsoAccountLinkPolicy::assertMayLinkAzureByEmail($user, $this->allowEmailLinking, $this->logger);
+                        }
                     }
 
                     if (!$user) {
@@ -107,7 +122,7 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
                     // Store all SAML attributes as metadata
                     $user->setAzureMetadata([
                         'saml_attributes' => $attributes,
-                        'saml_nameid' => $email,
+                        'saml_nameid' => $nameId !== '' ? $nameId : $email,
                     ]);
 
                     $user->setLastLoginAt(new DateTimeImmutable());
@@ -134,6 +149,9 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
+        if ($exception instanceof CustomUserMessageAuthenticationException && $request->hasSession()) {
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
+        }
 
         return new RedirectResponse(
             $this->router->generate('app_login', ['error' => $message])
@@ -198,6 +216,19 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
                 'requestedAuthnContext' => false,
             ],
         ];
+    }
+
+    /**
+     * Account already bound to this SAML NameID (stored on an earlier SAML
+     * login) — only used when the assertion carries no objectidentifier.
+     */
+    private function isBoundToNameId(User $user, mixed $objectId, ?string $nameId): bool
+    {
+        if ($objectId || $nameId === null || $nameId === '' || $user->getAuthProvider() !== 'azure_saml') {
+            return false;
+        }
+
+        return ($user->getAzureMetadata()['saml_nameid'] ?? null) === $nameId;
     }
 
     private function getSamlAttribute(array $attributes, string $key, mixed $default = null): mixed

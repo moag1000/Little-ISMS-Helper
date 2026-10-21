@@ -129,3 +129,6 @@ quick_fix:
             help: 'Comma-separated list of permitted client IPs or CIDR ranges (e.g. 10.0.0.5, 192.168.1.0/24, ::1). Empty = disabled.'
         ip_allowlist_invalid: 'IP allowlist not saved: invalid entries. Only exact IPs (IPv4/IPv6) or CIDR ranges are allowed, e.g. 10.0.0.5, 192.168.1.0/24.'
         save: 'Save'
+    super_admin_missing:
+        title: 'No active instance operator (ROLE_SUPER_ADMIN)'
+        body: 'No active account holds ROLE_SUPER_ADMIN. Without one nobody can manage users without an organisation, instance-wide backups or system roles. This happens when migrations were marked as executed (phantom repair) and the 3.15.3 operator-bootstrap migration never ran, or when the operator account was deactivated. Grant the role on the server shell:'

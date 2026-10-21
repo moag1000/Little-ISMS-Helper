@@ -195,6 +195,32 @@ class CorporateStructureService
     }
 
     /**
+     * After a move: point every governance rule of $tenant (the given default
+     * rule, possibly not flushed yet, and all stored default/scoped rules) at
+     * the new $parent — otherwise the rules keep naming the old parent (#1059).
+     * The stored rules belong to $tenant, so the caller's tenant filter is
+     * suspended for the lookup (callers authorise $tenant first).
+     */
+    public function reparentGovernanceRules(Tenant $tenant, Tenant $parent, CorporateGovernance $defaultRule): void
+    {
+        $defaultRule->setParent($parent);
+        $filters = $this->entityManager->getFilters();
+        $suspend = $filters->isEnabled('tenant_filter');
+        if ($suspend) {
+            $filters->suspend('tenant_filter');
+        }
+        try {
+            foreach ($this->corporateGovernanceRepository->findAllForTenant($tenant) as $rule) {
+                $rule->setParent($parent);
+            }
+        } finally {
+            if ($suspend) {
+                $filters->restore('tenant_filter');
+            }
+        }
+    }
+
+    /**
      * Get all tenants in the corporate group (parent + all subsidiaries)
      */
     public function getCorporateGroup(Tenant $tenant): array
@@ -217,7 +243,7 @@ class CorporateStructureService
 
         // Validate governance model requirements
         if ($tenant->getParent() instanceof Tenant) {
-            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->findDefaultGovernanceForValidation($tenant);
             if (!$governance instanceof CorporateGovernance) {
                 $errors[] = 'Subsidiaries must have a default governance model defined';
             }
@@ -229,6 +255,39 @@ class CorporateStructureService
         }
 
         return $errors;
+    }
+
+    /**
+     * The subsidiary's default governance rule as validation must see it:
+     *  - a rule persisted in this unit of work but not flushed yet (set-parent
+     *    creates it right before validating), and
+     *  - a stored rule regardless of the caller's tenant filter — the rule
+     *    belongs to the SUBSIDIARY's tenant, so a holding admin's filter
+     *    would hide it and set-parent could never complete (#1059). Callers
+     *    authorise the tenant before validating; the lookup names its tenant.
+     */
+    private function findDefaultGovernanceForValidation(Tenant $tenant): ?CorporateGovernance
+    {
+        foreach ($this->entityManager->getUnitOfWork()->getScheduledEntityInsertions() as $entity) {
+            if ($entity instanceof CorporateGovernance
+                && $entity->getTenant() === $tenant
+                && $entity->getScope() === 'default'
+                && $entity->getScopeId() === null
+            ) {
+                return $entity;
+            }
+        }
+
+        $filters = $this->entityManager->getFilters();
+        if (!$filters->isEnabled('tenant_filter')) {
+            return $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        }
+        $filters->suspend('tenant_filter');
+        try {
+            return $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        } finally {
+            $filters->restore('tenant_filter');
+        }
     }
 
     /**

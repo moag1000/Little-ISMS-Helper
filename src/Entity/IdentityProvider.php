@@ -10,12 +10,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\Constraint\IdentityProviderSlugAvailable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IdentityProviderRepository::class)]
 #[ORM\Table(name: 'identity_provider')]
 #[ORM\UniqueConstraint(name: 'uniq_idp_slug_tenant', columns: ['slug', 'tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
+#[IdentityProviderSlugAvailable]
 class IdentityProvider
 {
     public const TYPE_OIDC = 'oidc';
@@ -138,6 +140,24 @@ class IdentityProvider
     #[ORM\Column(length: 32, options: ['default' => 'ROLE_USER'])]
     private string $defaultRole = 'ROLE_USER';
 
+    /**
+     * Link an SSO login to an existing, not yet linked local account whose
+     * e-mail matches the IdP's e-mail claim. Off by default: the e-mail claim
+     * is only as trustworthy as the IdP's control over it (e.g. Entra ID
+     * single-tenant registrations let directory admins set arbitrary mail
+     * attributes). When off, such a login is refused and an administrator
+     * links the account manually. Providers that existed before the option
+     * keep linking (migration Version20261021143100_sso_allow_email_linking,
+     * column default true; restores of older backups likewise).
+     * The tenant-tree / never-privileged rules of SsoAccountLinkPolicy apply
+     * either way.
+     */
+    // Column default true: rows written outside the entity (schema reconcile of
+    // existing rows, restores of older backups) keep linking; a provider
+    // created through the entity/form starts with the property default false.
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $allowEmailLinking = false;
+
     /** Preset type used by the wizard to pre-fill discovery URL and attribute map. */
     #[ORM\Column(length: 32, nullable: true)]
     #[Assert\Choice(choices: self::VALID_PRESETS)]
@@ -256,6 +276,9 @@ class IdentityProvider
 
     public function isAutoApprove(): bool { return $this->autoApprove; }
     public function setAutoApprove(bool $v): self { $this->autoApprove = $v; return $this; }
+
+    public function isAllowEmailLinking(): bool { return $this->allowEmailLinking; }
+    public function setAllowEmailLinking(bool $v): self { $this->allowEmailLinking = $v; return $this; }
 
     public function getDefaultRole(): string { return $this->defaultRole; }
     public function setDefaultRole(string $v): self { $this->defaultRole = $v; return $this; }

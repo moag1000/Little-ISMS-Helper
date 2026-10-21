@@ -7,6 +7,7 @@ namespace App\Tests\Controller;
 use App\Entity\Notification\NotificationTemplate;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\InstanceOperatorCheck;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -143,6 +144,64 @@ class QuickFixControllerTest extends WebTestCase
         $this->assertIsString($content);
         // Template variable rendered — section is always present (even 0 counts)
         $this->assertStringContainsString('repair-row', $content);
+    }
+
+    #[Test]
+    public function testIndexWarnsWhenNoActiveSuperAdminExists(): void
+    {
+        $this->stubSuperAdminCheck(false);
+        $this->client->loginUser($this->testUser);
+        $this->client->request('GET', '/quick-fix');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-testid="quick-fix-no-super-admin"]');
+        $this->assertSelectorTextContains('[data-testid="quick-fix-no-super-admin"]', 'app:user:grant-super-admin');
+    }
+
+    #[Test]
+    public function testAnonymousVisitorDoesNotLearnThatNoOperatorExists(): void
+    {
+        $this->stubSuperAdminCheck(false);
+        $this->client->request('GET', '/quick-fix');
+
+        $this->assertSelectorNotExists('[data-testid="quick-fix-no-super-admin"]');
+    }
+
+    #[Test]
+    public function testIndexHasNoSuperAdminWarningWhenOperatorExists(): void
+    {
+        $this->stubSuperAdminCheck(true);
+        $this->client->loginUser($this->testUser);
+        $this->client->request('GET', '/quick-fix');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-testid="quick-fix-no-super-admin"]');
+    }
+
+    #[Test]
+    public function testActiveSuperAdminIsDetectedAndInactiveIgnored(): void
+    {
+        $check = static::getContainer()->get(InstanceOperatorCheck::class);
+        // The fixture user is an active ROLE_SUPER_ADMIN.
+        self::assertTrue($check->hasActiveSuperAdmin());
+
+        $connection = $this->entityManager->getConnection();
+        $count = static fn (): int => (int) $connection->fetchOne(
+            'SELECT COUNT(*) FROM users WHERE is_active = 1 AND roles LIKE ?',
+            ['%"ROLE_SUPER_ADMIN"%'],
+        );
+        $before = $count();
+        $this->testUser->setIsActive(false);
+        $this->entityManager->flush();
+        self::assertSame($before - 1, $count(), 'a deactivated operator must not count');
+        self::assertSame($count() > 0, $check->hasActiveSuperAdmin());
+    }
+
+    private function stubSuperAdminCheck(bool $exists): void
+    {
+        $check = $this->createStub(InstanceOperatorCheck::class);
+        $check->method('hasActiveSuperAdmin')->willReturn($exists);
+        static::getContainer()->set(InstanceOperatorCheck::class, $check);
     }
 
     // =========================================================================
