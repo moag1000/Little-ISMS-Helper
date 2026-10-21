@@ -13,7 +13,8 @@ use App\Service\TenantContext;
  * organisation or below ({@see isSameOrDescendant()}, holding read and
  * {@see TenantContext::canAccessTenant()}). Every bulk endpoint
  * ({@see \App\Controller\Trait\BulkActionTrait::isInBulkContextScope()},
- * {@see \App\Service\BulkDeleteService}) uses {@see isInContextScope()}.
+ * {@see \App\Service\BulkDeleteService}) uses {@see isInContextScope()};
+ * single-record controllers without a voter use {@see isInScope()}.
  *
  * Fails closed: a missing tenant on either side never matches, and two
  * unsaved (id-less) tenants are never treated as equal. Identity first; the
@@ -93,14 +94,18 @@ final class TenantOwnership
 
     /**
      * Scope check for bulk operations (export, assign incl. the assignee,
-     * status change, delete) — the documented *record* scope, same as the
-     * voters ({@see Voter\HoldingTreeAccessTrait::decideTenantScope()}):
+     * status change, delete) — the documented *record* scope for writes. It
+     * matches the write side of the voters
+     * ({@see Voter\HoldingTreeAccessTrait::decideTenantScope()}); the
+     * voters' holding read of subsidiaries does not apply here:
      *
      *  - ROLE_SUPER_ADMIN is instance-wide, even with a tenant context set.
-     *  - Everyone else (ROLE_ADMIN included): the entity must belong to the
-     *    tenant the actor is acting in ({@see TenantContext::getCurrentTenant()},
-     *    NOT the user's tenant column). Never subsidiaries — holding roles
-     *    only read records one by one, they never bulk-process them.
+     *  - Everyone else (ROLE_ADMIN and holding roles included): the entity
+     *    must belong to the tenant the actor is acting in
+     *    ({@see TenantContext::getCurrentTenant()}, NOT the user's tenant
+     *    column — the voters compare the user's tenant). Never subsidiaries:
+     *    holding roles only read records one by one, they never
+     *    bulk-process them.
      *  - No tenant context, or an entity without a tenant: out of scope.
      */
     public static function isInContextScope(object $entity, ?TenantContext $tenantContext, bool|\Closure $actorIsSuperAdmin): bool

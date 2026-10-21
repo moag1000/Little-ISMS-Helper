@@ -704,7 +704,7 @@ class DPIAController extends AbstractController
             fn (int $id): ?object => $this->dpiaRepository?->find($id),
             deleter: function (object $dpia): void {
                 if ($dpia instanceof DataProtectionImpactAssessment) {
-                    $this->dataProtectionImpactAssessmentService->delete($dpia);
+                    $this->dataProtectionImpactAssessmentService->delete($dpia, flush: false);
                 }
             },
         );

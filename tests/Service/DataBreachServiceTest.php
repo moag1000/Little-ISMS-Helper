@@ -552,4 +552,17 @@ class DataBreachServiceTest extends TestCase
 
         $this->assertSame([], $result);
     }
+
+    #[Test]
+    public function deleteWithoutFlushOnlySchedulesTheRemoval(): void
+    {
+        // Bulk path: BulkDeleteService owns the single flush and the audit batch.
+        $entity = $this->createMock(DataBreach::class);
+
+        $this->entityManager->expects($this->once())->method('remove')->with($entity);
+        $this->entityManager->expects($this->never())->method('flush');
+        $this->auditLogger->expects($this->never())->method($this->anything());
+
+        $this->service->delete($entity, flush: false);
+    }
 }

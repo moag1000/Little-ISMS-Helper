@@ -399,7 +399,7 @@ class DataSubjectRequestController extends AbstractController
             fn (int $id): ?object => $this->dataSubjectRequestService->findById($id),
             deleter: function (object $dsr): void {
                 if ($dsr instanceof DataSubjectRequest) {
-                    $this->dataSubjectRequestService->delete($dsr);
+                    $this->dataSubjectRequestService->delete($dsr, flush: false);
                 }
             },
         );

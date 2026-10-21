@@ -98,9 +98,22 @@ final class DataProtectionImpactAssessmentService
 
     /**
      * Delete a DPIA
+     *
+     * @param bool $flush false: only schedule the removal — the caller flushes and
+     *                   audits (BulkDeleteService, one transaction for the batch)
      */
-    public function delete(DataProtectionImpactAssessment $dataProtectionImpactAssessment): void
+    public function delete(DataProtectionImpactAssessment $dataProtectionImpactAssessment, bool $flush = true): void
     {
+        if (!$flush) {
+            // Bulk path (BulkDeleteService): only schedule the removal. The caller
+            // owns the one flush + commit of the batch, and its AuditLogger::logBulk()
+            // per-entity entry is the audit record (an AuditLogger call here would
+            // flush the whole unit of work mid-batch).
+            $this->entityManager->remove($dataProtectionImpactAssessment);
+
+            return;
+        }
+
         $id = $dataProtectionImpactAssessment->getId();
         $referenceNumber = $dataProtectionImpactAssessment->getReferenceNumber();
 

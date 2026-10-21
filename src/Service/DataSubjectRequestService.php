@@ -304,9 +304,22 @@ final class DataSubjectRequestService
 
     /**
      * Delete a data subject request
+     *
+     * @param bool $flush false: only schedule the removal — the caller flushes and
+     *                   audits (BulkDeleteService, one transaction for the batch)
      */
-    public function delete(DataSubjectRequest $request): void
+    public function delete(DataSubjectRequest $request, bool $flush = true): void
     {
+        if (!$flush) {
+            // Bulk path (BulkDeleteService): only schedule the removal. The caller
+            // owns the one flush + commit of the batch, and its AuditLogger::logBulk()
+            // per-entity entry is the audit record (an AuditLogger call here would
+            // flush the whole unit of work mid-batch).
+            $this->entityManager->remove($request);
+
+            return;
+        }
+
         $id = $request->getId();
 
         $this->auditLogger->logCustom(

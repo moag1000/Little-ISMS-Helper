@@ -546,7 +546,7 @@ class ProcessingActivityController extends AbstractController
             fn (int $id): ?object => $this->processingActivityRepository?->find($id),
             deleter: function (object $pa): void {
                 if ($pa instanceof ProcessingActivity) {
-                    $this->processingActivityService->delete($pa);
+                    $this->processingActivityService->delete($pa, flush: false);
                 }
             },
         );

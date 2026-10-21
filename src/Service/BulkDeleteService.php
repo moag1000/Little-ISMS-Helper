@@ -20,10 +20,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *     see TenantOwnership::isInContextScope()),
  *   - an optional voter attribute (entities with a dedicated voter),
  *   - an optional domain guard (e.g. inherited records are read-only),
- * then removes the accepted entities atomically (one explicit transaction —
- * domain-service deleters that flush internally join it; any failure rolls
- * the whole batch back) and writes one AuditLogger::logBulk() batch (ISO 27001 Cl. 7.5.3): 1 batch entry +
- * N per-entity entries correlated by batch_id.
+ * then removes the accepted entities atomically and writes one
+ * AuditLogger::logBulk() batch (ISO 27001 Cl. 7.5.3): 1 batch entry + N
+ * per-entity entries correlated by batch_id.
+ *
+ * Atomicity: one explicit transaction with ONE flush and commit at the end.
+ * Domain deleters use their service's no-flush path (`delete($e, flush:
+ * false)` — schedule the removal only), so nothing reaches the database
+ * before every entity of the batch was accepted. A lifecycle-based deleter
+ * (Document soft delete) applies its transition — flush and HMAC-chained
+ * status audit row included — inside the same transaction. Any failure rolls
+ * the whole batch back, audit rows written inside the transaction included,
+ * and clears the unit of work.
  */
 class BulkDeleteService
 {
@@ -40,8 +48,8 @@ class BulkDeleteService
      * @param string                          $entityType     Short entity name for audit + error messages (e.g. "Risk").
      * @param list<int>                       $ids            Requested entity ids (already sanitised).
      * @param callable(int): ?object          $finder         Loads one entity by id.
-     * @param (callable(object): void)|null   $deleter        Domain delete (e.g. a service that cascades/flushes);
-     *                                                        null → EntityManager::remove().
+     * @param (callable(object): void)|null   $deleter        Domain delete that does NOT flush (the service's
+     *                                                        no-flush path); null → EntityManager::remove().
      * @param (callable(object): ?string)|null $guard         Returns a rejection reason, or null when deletable.
      * @param string|null                     $voterAttribute Voter attribute checked per entity (null = skip).
      * @param (callable(object): void)|null   $afterFlush     Side effect after the removal is persisted
@@ -86,7 +94,8 @@ class BulkDeleteService
 
                 $label = $this->labelOf($entity);
                 if ($deleter !== null) {
-                    // May flush internally; it joins this transaction.
+                    // Schedules the removal (no-flush path); a lifecycle
+                    // transition flushes inside this transaction.
                     $deleter($entity);
                 } else {
                     $this->entityManager->remove($entity);
