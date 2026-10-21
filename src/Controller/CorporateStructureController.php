@@ -92,15 +92,10 @@ class CorporateStructureController extends AbstractController
     }
 
     /**
-     * Run $fn with the Doctrine tenant filter suspended.
-     *
-     * Governance rules and ISMS contexts belong to the SUBSIDIARY's tenant,
-     * while the request filter is armed with the caller's (holding) tenant —
-     * without suspension a holding admin could never see or change the rules
-     * of their own subsidiaries, and a subsidiary could never read the
-     * context it inherits. Only called AFTER the explicit per-tenant
-     * authorization above, and every query inside names its tenant.
-     * suspend()/restore() keeps the filter instance and its parameter.
+     * Run $fn with the Doctrine tenant filter suspended: governance rules and ISMS
+     * contexts belong to the SUBSIDIARY's tenant, the request filter to the
+     * caller's. Only called AFTER the per-tenant authorization above; every
+     * query inside names its tenant. suspend()/restore() keeps the parameter.
      *
      * @template T
      * @param callable(): T $fn
@@ -215,6 +210,10 @@ class CorporateStructureController extends AbstractController
                 return $this->json(['error' => 'Valid governance model is required'], Response::HTTP_BAD_REQUEST);
             }
 
+            if ($parent === $tenant || $parent->isChildOf($tenant)) {
+                $cycle = ['errors' => ['Circular reference detected in corporate structure']];
+                return $this->json($cycle, Response::HTTP_BAD_REQUEST);
+            }
             $tenant->setParent($parent);
             $parent->setIsCorporateParent(true);
 
@@ -225,12 +224,12 @@ class CorporateStructureController extends AbstractController
             if (!$governance instanceof CorporateGovernance) {
                 $governance = new CorporateGovernance();
                 $governance->setTenant($tenant);
-                $governance->setParent($parent);
                 $governance->setScope('default');
                 $governance->setScopeId(null);
                 $governance->setCreatedBy($this->getUser());
             }
             $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+            $this->corporateStructureService->reparentGovernanceRules($tenant, $parent, $governance);
             $this->entityManager->persist($governance);
         }
 

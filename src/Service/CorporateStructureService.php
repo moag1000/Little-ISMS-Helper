@@ -195,6 +195,32 @@ class CorporateStructureService
     }
 
     /**
+     * After a move: point every governance rule of $tenant (the given default
+     * rule, possibly not flushed yet, and all stored default/scoped rules) at
+     * the new $parent — otherwise the rules keep naming the old parent (#1059).
+     * The stored rules belong to $tenant, so the caller's tenant filter is
+     * suspended for the lookup (callers authorise $tenant first).
+     */
+    public function reparentGovernanceRules(Tenant $tenant, Tenant $parent, CorporateGovernance $defaultRule): void
+    {
+        $defaultRule->setParent($parent);
+        $filters = $this->entityManager->getFilters();
+        $suspend = $filters->isEnabled('tenant_filter');
+        if ($suspend) {
+            $filters->suspend('tenant_filter');
+        }
+        try {
+            foreach ($this->corporateGovernanceRepository->findAllForTenant($tenant) as $rule) {
+                $rule->setParent($parent);
+            }
+        } finally {
+            if ($suspend) {
+                $filters->restore('tenant_filter');
+            }
+        }
+    }
+
+    /**
      * Get all tenants in the corporate group (parent + all subsidiaries)
      */
     public function getCorporateGroup(Tenant $tenant): array

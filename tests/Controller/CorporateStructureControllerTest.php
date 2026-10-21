@@ -417,6 +417,32 @@ class CorporateStructureControllerTest extends WebTestCase
                 [$freshId],
             ));
 
+            // The existing default rule follows the move (it named the old parent).
+            self::assertSame($siblingId, (int) $this->entityManager->getConnection()->fetchOne(
+                "SELECT parent_id FROM corporate_governance WHERE tenant_id = ? AND scope = 'default'",
+                [$this->testTenant->getId()],
+            ));
+
+            // A cycle (sibling under its own child) is refused before anything is written.
+            $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+                'tenantId' => $siblingId,
+                'parentId' => $freshId,
+                'governanceModel' => 'hierarchical',
+            ]);
+            $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+            $this->entityManager->clear();
+            self::assertSame($this->parentTenant->getId(), $this->entityManager->find(Tenant::class, $siblingId)?->getParent()?->getId());
+
+            // The admin's own organisation cannot be moved (only its subsidiaries).
+            $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+                'tenantId' => $this->parentTenant->getId(),
+                'parentId' => $siblingId,
+                'governanceModel' => 'hierarchical',
+            ]);
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+            $this->entityManager->clear();
+            self::assertNull($this->entityManager->find(Tenant::class, $this->parentTenant->getId())?->getParent());
+
             // Never outside the tree.
             $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
                 'tenantId' => $freshId,
