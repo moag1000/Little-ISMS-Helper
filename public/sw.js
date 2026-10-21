@@ -8,7 +8,7 @@
  * - HTML Pages: Network First with Offline Fallback
  */
 
-const CACHE_VERSION = 'v3.0.0-fa';
+const CACHE_VERSION = 'v3.0.1-fa';
 const STATIC_CACHE = `isms-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `isms-dynamic-${CACHE_VERSION}`;
 const API_CACHE = `isms-api-${CACHE_VERSION}`;
@@ -16,7 +16,11 @@ const API_CACHE = `isms-api-${CACHE_VERSION}`;
 // Assets to cache immediately on install
 const STATIC_ASSETS = [
     '/',
+    // The offline fallback is fully static (no inline script/style), so it
+    // never depends on a per-request CSP nonce that a cached copy would carry
+    // stale. Its assets are cached with it.
     '/offline.html',
+    '/offline.css',
     '/offline.js',
     '/manifest.json',
     '/favicon.svg',
