@@ -430,7 +430,7 @@
 
             {# No active instance operator (e.g. phantom-repaired install that
                skipped the 3.15.3 operator-bootstrap migration). CLI only. #}
-            {% if no_active_super_admin|default(false) %}
+            {% if instance_operator_missing() %}
                 <div class="flash error" data-testid="quick-fix-no-super-admin">
                     <strong>{{ 'quick_fix.super_admin_missing.title'|trans({}, 'quick_fix') }}</strong><br>
                     {{ 'quick_fix.super_admin_missing.body'|trans({}, 'quick_fix') }}

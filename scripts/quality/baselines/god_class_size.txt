@@ -20,7 +20,7 @@ src/Controller/ManagementReportController.php:LOC=1266 deps=0
 src/Entity/DataProtectionImpactAssessment.php:LOC=1264 deps=0
 src/Entity/Supplier.php:LOC=1242 deps=0
 src/Controller/RiskController.php:LOC=1128 deps=0
-src/Controller/UserManagementController.php:LOC=1065 deps=0
+src/Controller/UserManagementController.php:LOC=1051 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1027 deps=0
 src/Entity/Tenant.php:LOC=1012 deps=0
 src/Controller/TenantManagementController.php:LOC=1000 deps=0

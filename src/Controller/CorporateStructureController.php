@@ -87,8 +87,7 @@ class CorporateStructureController extends AbstractController
             return false;
         }
 
-        // A tenant admin moves subsidiaries only within the own tree: never to
-        // root (a detached subsidiary leaves the tree) and never outside (#1059).
+        // Tenant admin: only within the own tree — never to root, never outside (#1059).
         return $newParent instanceof Tenant && $this->isGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $newParent);
     }
 

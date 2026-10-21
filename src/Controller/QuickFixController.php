@@ -13,7 +13,6 @@ use App\Job\QuickFixRepairOrphansJob;
 use App\Job\QuickFixRepairTenantMismatchesJob;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
-use App\Service\InstanceOperatorCheck;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\QuickFixGuard;
@@ -45,7 +44,6 @@ class QuickFixController extends AbstractController
         SchemaMaintenanceService $maintenance,
         DataIntegrityService $dataIntegrity,
         JobStatusService $jobStatusService,
-        InstanceOperatorCheck $operatorCheck,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -129,16 +127,6 @@ class QuickFixController extends AbstractController
             }
         } catch (\Throwable $e) {
             $dataIntegrityErrors[] = 'duplicates: ' . $e->getMessage();
-        }
-
-        // Installs that marked migrations as executed (phantom repair) skip
-        // the 3.15.3 operator-bootstrap data migration and may end up without
-        // any instance operator. null = could not be determined (broken schema).
-        $noActiveSuperAdmin = null;
-        try {
-            $noActiveSuperAdmin = !$operatorCheck->hasActiveSuperAdmin();
-        } catch (\Throwable $e) {
-            $dataIntegrityErrors[] = 'super_admin: ' . $e->getMessage();
         }
 
         // Read recovery payload(s) stored by apply() on failure.
@@ -237,7 +225,6 @@ class QuickFixController extends AbstractController
             'mismatch_count' => $mismatchCount,
             'duplicate_counts' => $duplicateCounts,
             'data_integrity_errors' => $dataIntegrityErrors,
-            'no_active_super_admin' => $noActiveSuperAdmin === true,
         ]);
 
         if ($cookieToSet !== null) {
