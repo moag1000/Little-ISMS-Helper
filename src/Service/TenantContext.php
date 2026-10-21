@@ -119,8 +119,19 @@ class TenantContext
     {
         $filters = $this->entityManager->getFilters();
 
-        if (!$filters->isEnabled('tenant_filter')) {
+        // A caller that suspended the filter (operator scans, orphan repair)
+        // restores it itself — leave it suspended.
+        if ($filters->isSuspended('tenant_filter')) {
             return;
+        }
+        // Fail safe = scoped: a filter that is neither enabled nor suspended
+        // (lost, e.g. after an EntityManager reset) is enabled again before it
+        // is armed. A worker must never start a message with it disabled.
+        if (!$filters->isEnabled('tenant_filter')) {
+            if (!$filters->has('tenant_filter')) {
+                return;
+            }
+            $filters->enable('tenant_filter');
         }
 
         $filters->getFilter('tenant_filter')->setParameter(

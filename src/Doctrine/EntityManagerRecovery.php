@@ -24,7 +24,8 @@ use Doctrine\Persistence\ManagerRegistry;
  *    audit flush fail ("new entity found through relationship") and the
  *    non-strict logger would drop every later audit row silently.
  *
- * So the filter state is captured BEFORE the reset and restored after it,
+ * So the filter state — enabled, suspended or disabled, with its tenant
+ * parameter — is captured BEFORE the reset and restored after it,
  * and TenantContext is restored onto the new unit of work (its tenant is
  * re-loaded by id; an uninitialised context is reset so it initialises
  * lazily again). AuditLogger's other inputs (the security user's name and
@@ -58,6 +59,12 @@ readonly class EntityManagerRecovery
 
     /**
      * Reset the default EntityManager and restore tenant scope + context.
+     *
+     * The tenant filter is restored exactly as it was — enabled, SUSPENDED
+     * (operator jobs suspend it and restore() it in their finally) or
+     * disabled — with its tenant parameter. The filter restore runs in a
+     * finally: even if re-loading the context tenant fails (the connection
+     * just failed), the filter never stays without its parameter (unscoped).
      */
     public function recover(): void
     {
@@ -66,50 +73,59 @@ readonly class EntityManagerRecovery
 
         $this->managerRegistry->resetManager();
 
-        // TenantContext first: re-loading the tenant also re-arms the filter
-        // (TenantContext::syncDoctrineFilter); the captured filter value is
-        // then restored verbatim, so the scope is exactly what it was.
-        if ($context['tenantId'] !== null) {
-            $this->tenantContext->setCurrentTenantById($context['tenantId']);
-        } elseif ($context['noOrganisation']) {
-            $this->tenantContext->setNoOrganisation();
-        } else {
-            $this->tenantContext->reset();
+        try {
+            // Re-loading the tenant also re-arms the filter
+            // (TenantContext::syncDoctrineFilter); the captured state is then
+            // restored verbatim below, so the scope is exactly what it was.
+            if ($context['tenantId'] !== null) {
+                $this->tenantContext->setCurrentTenantById($context['tenantId']);
+            } elseif ($context['noOrganisation']) {
+                $this->tenantContext->setNoOrganisation();
+            } else {
+                $this->tenantContext->reset();
+            }
+        } finally {
+            $this->restoreTenantFilter($filter);
         }
-
-        $this->restoreTenantFilter($filter);
     }
 
     /**
-     * @return array{enabled: bool, parameter: ?array{value: mixed, type: mixed}}
+     * @return array{state: 'enabled'|'suspended'|'disabled', parameter: ?array{value: mixed, type: mixed}}
      */
     private function captureTenantFilter(): array
     {
         $em = $this->managerRegistry->getManager();
         if (!$em instanceof EntityManagerInterface) {
-            return ['enabled' => false, 'parameter' => null];
+            return ['state' => 'disabled', 'parameter' => null];
         }
         $filters = $em->getFilters();
-        if (!$filters->isEnabled('tenant_filter')) {
-            return ['enabled' => false, 'parameter' => null];
+        if ($filters->isEnabled('tenant_filter')) {
+            $state = 'enabled';
+            $filter = $filters->getFilter('tenant_filter');
+        } elseif ($filters->isSuspended('tenant_filter')) {
+            // In ORM 3 a suspended filter is NOT "enabled" — it must not be
+            // mistaken for a disabled one.
+            $state = 'suspended';
+            $filter = $filters->getSuspendedFilters()['tenant_filter'];
+        } else {
+            return ['state' => 'disabled', 'parameter' => null];
         }
 
         // SQLFilter::getParameter() quotes through the connection, which may
         // be in a failed state here — read the stored value instead.
-        $stored = (new \ReflectionProperty(SQLFilter::class, 'parameters'))
-            ->getValue($filters->getFilter('tenant_filter'))['tenant_id'] ?? null;
+        $stored = (new \ReflectionProperty(SQLFilter::class, 'parameters'))->getValue($filter)['tenant_id'] ?? null;
         if ($stored === null) {
-            return ['enabled' => true, 'parameter' => null];
+            return ['state' => $state, 'parameter' => null];
         }
 
         // ORM 3 stores Query\Filter\Parameter objects; ORM 2 stored arrays.
-        return ['enabled' => true, 'parameter' => is_object($stored)
+        return ['state' => $state, 'parameter' => is_object($stored)
             ? ['value' => $stored->value, 'type' => $stored->type]
             : ['value' => $stored['value'] ?? null, 'type' => $stored['type'] ?? null]];
     }
 
     /**
-     * @param array{enabled: bool, parameter: ?array{value: mixed, type: mixed}} $filter
+     * @param array{state: 'enabled'|'suspended'|'disabled', parameter: ?array{value: mixed, type: mixed}} $filter
      */
     private function restoreTenantFilter(array $filter): void
     {
@@ -118,17 +134,25 @@ readonly class EntityManagerRecovery
             return;
         }
         $filters = $em->getFilters();
-        if (!$filter['enabled']) {
+        if ($filter['state'] === 'disabled') {
             if ($filters->isEnabled('tenant_filter')) {
                 $filters->disable('tenant_filter');
             }
 
             return;
         }
-        $tenantFilter = $filters->enable('tenant_filter');
+
+        $tenantFilter = $filters->isSuspended('tenant_filter')
+            ? $filters->restore('tenant_filter')
+            : $filters->enable('tenant_filter');
         if ($filter['parameter'] !== null) {
             $type = $filter['parameter']['type'];
             $tenantFilter->setParameter('tenant_id', $filter['parameter']['value'], is_string($type) ? $type : null);
+        }
+        if ($filter['state'] === 'suspended') {
+            // Suspended again, with its parameter: the caller's later
+            // restore('tenant_filter') brings the tenant scope back.
+            $filters->suspend('tenant_filter');
         }
     }
 }

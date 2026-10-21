@@ -136,11 +136,89 @@ final class EntityManagerRecoveryTest extends KernelTestCase
         self::assertCount(2, $this->em->getRepository(ProcessingActivity::class)->findBy(['id' => [$ownActivity, $foreignActivity]]));
     }
 
+    /**
+     * #1059 re-review 2, R-1 — the real production sequence of an operator
+     * job (AssignOrphansJob): the tenant filter is SUSPENDED, a flush the
+     * database rejects closes the manager, the job recovers, and its finally
+     * calls restore('tenant_filter'). That restore must work (the filter is
+     * suspended again, with its parameter), and the next query is scoped.
+     */
+    #[Test]
+    public function aSuspendedFilterIsSuspendedAgainWithItsParameterAndTheCallersRestoreWorks(): void
+    {
+        $own = $this->tenant('own');
+        $foreign = $this->tenant('foreign');
+        $ownActivity = $this->activity($own);
+        $foreignActivity = $this->activity($foreign);
+        self::getContainer()->get(TenantContext::class)->setCurrentTenant($own); // ExecuteJobHandler
+        $this->em->getFilters()->suspend('tenant_filter');                          // the operator job
+
+        $this->failAFlush($own);
+        self::getContainer()->get(EntityManagerRecovery::class)->recover();
+
+        $filters = $this->em->getFilters();
+        self::assertTrue($filters->isSuspended('tenant_filter'), 'suspended again, not disabled');
+        $filters->restore('tenant_filter'); // the job's finally — must not throw
+        self::assertTrue($filters->isEnabled('tenant_filter'));
+
+        $visible = array_map(
+            static fn (ProcessingActivity $pa): ?int => $pa->getId(),
+            $this->em->getRepository(ProcessingActivity::class)->findBy(['id' => [$ownActivity, $foreignActivity]]),
+        );
+        self::assertSame([$ownActivity], $visible, 'the restored filter carries the tenant parameter');
+    }
+
+    /**
+     * Defence in depth: TenantContext never arms a disabled filter as a no-op
+     * — it enables it (fail safe = scoped). A suspended filter stays
+     * suspended (its owner restores it).
+     */
+    #[Test]
+    public function settingTheTenantReEnablesALostFilterButLeavesASuspendedOneAlone(): void
+    {
+        $own = $this->tenant('own');
+        $foreign = $this->tenant('foreign');
+        $ownActivity = $this->activity($own);
+        $foreignActivity = $this->activity($foreign);
+        $context = self::getContainer()->get(TenantContext::class);
+        $filters = $this->em->getFilters();
+
+        if ($filters->isEnabled('tenant_filter')) {
+            $filters->disable('tenant_filter');
+        }
+        $context->setCurrentTenant($own);
+        self::assertTrue($filters->isEnabled('tenant_filter'), 'a lost filter is enabled again');
+        self::assertCount(1, $this->em->getRepository(ProcessingActivity::class)->findBy(['id' => [$ownActivity, $foreignActivity]]));
+
+        $filters->suspend('tenant_filter');
+        $context->setCurrentTenant($foreign);
+        self::assertTrue($filters->isSuspended('tenant_filter'), 'a suspended filter is left to its owner');
+        $filters->restore('tenant_filter');
+    }
+
     #[Test]
     public function aManagerThatIsStillOpenIsLeftAlone(): void
     {
         self::assertFalse(self::getContainer()->get(EntityManagerRecovery::class)->recoverIfClosed());
         self::assertTrue($this->em->isOpen());
+    }
+
+    private function failAFlush(Tenant $tenant): void
+    {
+        $broken = new ProcessingActivity();
+        $broken->setName('broken');
+        $broken->setPurposes(['x']);
+        $broken->setDataSubjectCategories(['customers']);
+        $broken->setPersonalDataCategories(['contact_data']);
+        $broken->setLegalBasis(str_repeat('x', 80)); // VARCHAR(50): rejected by the database
+        $broken->setTenant($tenant);
+        $this->em->persist($broken);
+        try {
+            $this->em->flush();
+            self::fail('the insert must be rejected by the database');
+        } catch (\Doctrine\DBAL\Exception) {
+        }
+        self::assertFalse($this->em->isOpen());
     }
 
     private function tenant(string $label): Tenant
