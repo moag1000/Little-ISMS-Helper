@@ -397,14 +397,8 @@ class DataSubjectRequestController extends AbstractController
             'DataSubjectRequest',
             $this->security->getUser(),
             fn (int $id): ?object => $this->dataSubjectRequestService->findById($id),
-            deleter: function (object $dsr): void {
-                if ($dsr instanceof DataSubjectRequest) {
-                    $this->dataSubjectRequestService->delete($dsr, flush: false);
-                }
-            },
-            auditValues: fn (object $dsr): array => $dsr instanceof DataSubjectRequest
-                ? $this->dataSubjectRequestService->deletionAuditValues($dsr)
-                : [],
+            deleter: fn (DataSubjectRequest $dsr) => $this->dataSubjectRequestService->delete($dsr, flush: false),
+            auditValues: fn (DataSubjectRequest $dsr): array => $this->dataSubjectRequestService->deletionAuditValues($dsr),
         );
     }
 

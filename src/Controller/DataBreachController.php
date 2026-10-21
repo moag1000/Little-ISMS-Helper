@@ -549,14 +549,8 @@ class DataBreachController extends AbstractController
             'DataBreach',
             $this->security->getUser(),
             fn (int $id): ?object => $this->dataBreachService->findById($id),
-            deleter: function (object $breach): void {
-                if ($breach instanceof DataBreach) {
-                    $this->dataBreachService->delete($breach, flush: false);
-                }
-            },
-            auditValues: fn (object $breach): array => $breach instanceof DataBreach
-                ? $this->dataBreachService->deletionAuditValues($breach)
-                : [],
+            deleter: fn (DataBreach $breach) => $this->dataBreachService->delete($breach, flush: false),
+            auditValues: fn (DataBreach $breach): array => $this->dataBreachService->deletionAuditValues($breach),
         );
     }
 
