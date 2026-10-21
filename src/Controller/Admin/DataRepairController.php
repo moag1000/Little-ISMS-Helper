@@ -69,27 +69,13 @@ class DataRepairController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly AuditLogger $auditLogger,
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
-        private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
         private readonly JobDispatcher $jobDispatcher,
         private readonly JobStatusService $jobStatusService,
         private readonly DataIntegrityResultCache $integrityResultCache,
         private readonly SectionScanResultCache $sectionScanCache,
         private readonly AsyncJobDispatcher $asyncJobDispatcher,
-        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
+        private readonly \App\Service\DataRepair\OrphanReassigner $orphanReassigner,
     ) {
-    }
-
-    /**
-     * Reset the EM if a prior flush closed it. Used between bulk-repair
-     * iterations so a single constraint violation doesn't kill the whole loop.
-     */
-    private function resetEntityManagerIfClosed(): void
-    {
-        if (!$this->entityManager->isOpen()) {
-            $this->entityManagerRecovery?->recover(); // restores tenant filter + TenantContext
-            $em = $this->managerRegistry->getManager();
-            $this->entityManager = $em instanceof EntityManagerInterface ? $em : $this->entityManager;
-        }
     }
 
     /**
@@ -853,38 +839,17 @@ class DataRepairController extends AbstractController
         $this->withoutTenantFilter(function () use ($tenant, &$totalFixed, &$totalSkipped): void {
             $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();
 
-            foreach ($orphaned as $className => $entities) {
+            foreach ($orphaned as $entities) {
                 foreach ($entities as $entity) {
                     if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
                         continue;
                     }
-                    // Guard: if a previous iteration's flush closed the EM
-                    // (e.g. constraint violation), reset before continuing so
-                    // remaining orphans can still be processed.
-                    $this->resetEntityManagerIfClosed();
-                    // Re-fetch tenant via repository so the entity attaches to
-                    // the (possibly reset) EM. tenantRepository is autowired
-                    // and resolves via the active EM.
-                    $tenant = $this->tenantRepository->find($tenant->getId());
-                    if (!$tenant) {
-                        return;
-                    }
-                    try {
-                        $entity->setTenant($tenant);
-                        $this->auditLogger->logCustom(
-                            'admin.data_repair.orphan_reassigned',
-                            $className,
-                            (int) $entity->getId(),
-                            ['tenant_id' => null],
-                            ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-                            sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
-                        );
-                        $this->entityManager->flush();
+                    // One transaction per entity (change + audit row), closed
+                    // EntityManager recovered — no audit row for an unstored change.
+                    if ($this->orphanReassigner->reassign($entity, $tenant)) {
                         $totalFixed++;
-                    } catch (\Throwable $e) {
+                    } else {
                         $totalSkipped++;
-                        // EM may be closed after constraint violation; next
-                        // iteration's guard above will reset it.
                     }
                 }
             }

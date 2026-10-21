@@ -6,11 +6,10 @@ namespace App\Job;
 
 use App\Repository\TenantRepository;
 use App\Repository\UserRepository;
-use App\Service\AuditLogger;
+use App\Service\DataRepair\OrphanReassigner;
 use App\Service\DataIntegrityService;
 use App\Service\SectionScanResultCache;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Async admin job: bulk-assign orphaned entities (tenant_id IS NULL) to a
@@ -40,30 +39,22 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * Side effects:
  *   - Mutates `tenant_id` on every matching orphan.
- *   - Writes one AuditLog row per entity (ISB MAJOR-1 granularity).
+ *   - Writes one AuditLog row per entity (ISB MAJOR-1 granularity), in the
+ *     same transaction as the change (OrphanReassigner) — only for
+ *     reassignments that were actually stored.
  *   - At the end, re-runs the orphan scan and overwrites
  *     `var/data_integrity/orphans.json` so the index page reflects the
  *     post-repair state without the operator having to click "Refresh".
  */
 final class AssignOrphansJob implements AsyncJobInterface
 {
-    /**
-     * Flush batch size: balances DB-roundtrip overhead vs UOW memory.
-     * 50 was chosen because AuditLog rows are small (~1 KB) and Doctrine's
-     * IdentityMap holds ~100 entities cheaply — going bigger triggers heap
-     * pressure on shared-hosting PHP-FPM workers.
-     */
-    private const FLUSH_BATCH_SIZE = 50;
-
     public function __construct(
         private readonly DataIntegrityService $dataIntegrityService,
         private readonly TenantRepository $tenantRepository,
         private readonly UserRepository $userRepository,
-        private readonly AuditLogger $auditLogger,
         private readonly SectionScanResultCache $sectionScanCache,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ManagerRegistry $managerRegistry,
-        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
+        private readonly OrphanReassigner $orphanReassigner,
     ) {
     }
 
@@ -132,7 +123,6 @@ final class AssignOrphansJob implements AsyncJobInterface
             }
 
             $processed = 0;
-            $sinceLastFlush = 0;
 
             foreach ($allOrphans as $bucket => $entities) {
                 foreach ($entities as $entity) {
@@ -143,54 +133,13 @@ final class AssignOrphansJob implements AsyncJobInterface
                         continue;
                     }
 
-                    // EM may have closed on a prior batch's flush (constraint
-                    // violation, savepoint after DDL etc.). Reset before
-                    // touching another entity — CLAUDE.md Common-Pitfalls #1.
-                    if (!$this->entityManager->isOpen()) {
-                        $this->entityManagerRecovery?->recover();
-                        /** @var EntityManagerInterface $freshEm */
-                        $freshEm = $this->managerRegistry->getManager();
-                        $tenant = $this->tenantRepository->find($tenant->getId());
-                        if ($tenant === null) {
-                            // Tenant disappeared mid-job — abort, the partial
-                            // batch is already persisted from previous flushes.
-                            break 2;
-                        }
-                    }
-
-                    $className = (new \ReflectionClass($entity))->getShortName();
-
-                    try {
-                        $entity->setTenant($tenant);
-                        // logCustom flushes per call by default. To batch we
-                        // call it AFTER setting the tenant — the audit-log
-                        // row + the orphan UPDATE land in the same flush.
-                        $this->auditLogger->logCustom(
-                            'admin.data_repair.orphan_reassigned',
-                            $className,
-                            (int) $entity->getId(),
-                            ['tenant_id' => null],
-                            ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-                            sprintf(
-                                'Orphan %s#%d reassigned to tenant %s (async job)',
-                                $className,
-                                (int) $entity->getId(),
-                                $tenant->getName(),
-                            ),
-                            $actorName,
-                        );
+                    // One transaction per entity: change + audit row commit
+                    // together, a failure rolls back both (and recovers a
+                    // closed EntityManager) — no audit row for an unstored change.
+                    if ($this->orphanReassigner->reassign($entity, $tenant, $actorName, ' (async job)')) {
                         $assigned++;
-                        $sinceLastFlush++;
-                    } catch (\Throwable) {
-                        // Constraint violation, FK orphan, anything — count it
-                        // and move on. The next iteration's EM-open check resets
-                        // the manager if needed.
+                    } else {
                         $skipped++;
-                    }
-
-                    if ($sinceLastFlush >= self::FLUSH_BATCH_SIZE) {
-                        $this->flushBatch();
-                        $sinceLastFlush = 0;
                     }
 
                     if ($processed % 25 === 0) {
@@ -202,11 +151,6 @@ final class AssignOrphansJob implements AsyncJobInterface
                         ));
                     }
                 }
-            }
-
-            // Final flush — picks up the tail of the last partial batch.
-            if ($sinceLastFlush > 0) {
-                $this->flushBatch();
             }
         } finally {
             if ($wasEnabled && $this->entityManager->isOpen()) {
@@ -295,25 +239,6 @@ final class AssignOrphansJob implements AsyncJobInterface
         } catch (\Throwable) {
             // Best-effort: the repair completed, just the post-cache refresh
             // failed. The operator can hit "Refresh now" manually.
-        }
-    }
-
-    private function flushBatch(): void
-    {
-        if (!$this->entityManager->isOpen()) {
-            $this->entityManagerRecovery?->recover();
-            /** @var EntityManagerInterface $freshEm */
-            $freshEm = $this->managerRegistry->getManager();
-            // After a reset the previously-mutated entities are detached;
-            // their UPDATEs were already flushed in the prior batch where
-            // the failure occurred. Nothing to flush here.
-            return;
-        }
-        try {
-            $this->entityManager->flush();
-        } catch (\Throwable) {
-            // Swallow — the per-entity try-catch above already accounted
-            // for "skipped" rows. EM will be reset on the next iteration.
         }
     }
 
