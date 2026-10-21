@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\SafeRedirectTarget;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Repository\MfaTokenRepository;
 use App\Repository\UserRepository;
@@ -155,7 +156,10 @@ class MfaLoginController extends AbstractController
 
             if ($targetPath) {
                 $session->remove('_security.main.target_path');
-                return new RedirectResponse($targetPath);
+                // Re-validate: the stored target may come from a crafted re-auth link (#1059 m-7).
+                if (SafeRedirectTarget::isSafe((string) $targetPath, $request)) {
+                    return new RedirectResponse($targetPath);
+                }
             }
 
             return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);

@@ -448,9 +448,14 @@ an instance-wide provider's slug is reserved), which makes legacy slug-only
 links for that slug ambiguous — they are refused neutrally; id links keep
 working. Re-authentication of a signed-in user resolves the provider without
 the organisation filter (global and parent-organisation providers work) and
-then applies the usual allowed-for-user check. The post-login `target` of an
-SSO start is accepted only as a same-origin relative path and never carried
-over to a later start.
+then applies the usual allowed-for-user check. Known limitation: such a re-authentication
+does not apply the provider's claim→role mappings (they are loaded under the
+user's organisation filter); roles are synchronised on the next regular SSO
+login. This never grants a role, it only defers an IdP-side change. The post-login `target` of an
+SSO start and the `return_to` of the re-authentication page follow one rule
+(same-origin relative path; `//…` and `/\…` are refused), the target is never
+carried over to a later start, and the password / MFA login re-checks any
+stored target before redirecting.
 
 **Link existing accounts by e-mail** (provider option `allowEmailLinking`,
 added after 3.15.3): an SSO login whose e-mail claim matches an existing,

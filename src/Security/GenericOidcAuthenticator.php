@@ -127,17 +127,11 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Post-login target from `?target=`: only a same-origin relative path —
-     * one leading slash, no `//` or `\\` prefix (protocol-relative), no
-     * control characters (#1059 m-4, no open redirect).
+     * Post-login target from `?target=` — see {@see SafeRedirectTarget}.
      */
     public static function isSafeTarget(string $target): bool
     {
-        return $target !== ''
-            && $target[0] === '/'
-            && !str_starts_with($target, '//')
-            && !str_starts_with($target, '/\\')
-            && preg_match('/[\x00-\x1f\x7f]/', $target) !== 1;
+        return SafeRedirectTarget::isSafe($target);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

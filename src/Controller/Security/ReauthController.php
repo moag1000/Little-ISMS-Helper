@@ -180,17 +180,7 @@ final class ReauthController extends AbstractController
      */
     private function sanitizeReturnTo(string $raw): string
     {
-        if ($raw === '' || $raw === '/') {
-            return '/';
-        }
-        // Strip scheme/host: any path that starts with // or contains :// is rejected.
-        if (str_starts_with($raw, '//') || str_contains($raw, '://')) {
-            return '/';
-        }
-        // Must start with a single slash.
-        if (!str_starts_with($raw, '/')) {
-            return '/';
-        }
-        return $raw;
+        // One shared rule with the SSO start (#1059 m-7): `/\evil.com` etc. are refused.
+        return \App\Security\SafeRedirectTarget::isSafe($raw) ? $raw : '/';
     }
 }
