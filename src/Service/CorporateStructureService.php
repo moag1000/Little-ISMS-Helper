@@ -217,7 +217,7 @@ class CorporateStructureService
 
         // Validate governance model requirements
         if ($tenant->getParent() instanceof Tenant) {
-            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->findDefaultGovernanceForValidation($tenant);
             if (!$governance instanceof CorporateGovernance) {
                 $errors[] = 'Subsidiaries must have a default governance model defined';
             }
@@ -229,6 +229,39 @@ class CorporateStructureService
         }
 
         return $errors;
+    }
+
+    /**
+     * The subsidiary's default governance rule as validation must see it:
+     *  - a rule persisted in this unit of work but not flushed yet (set-parent
+     *    creates it right before validating), and
+     *  - a stored rule regardless of the caller's tenant filter — the rule
+     *    belongs to the SUBSIDIARY's tenant, so a holding admin's filter
+     *    would hide it and set-parent could never complete (#1059). Callers
+     *    authorise the tenant before validating; the lookup names its tenant.
+     */
+    private function findDefaultGovernanceForValidation(Tenant $tenant): ?CorporateGovernance
+    {
+        foreach ($this->entityManager->getUnitOfWork()->getScheduledEntityInsertions() as $entity) {
+            if ($entity instanceof CorporateGovernance
+                && $entity->getTenant() === $tenant
+                && $entity->getScope() === 'default'
+                && $entity->getScopeId() === null
+            ) {
+                return $entity;
+            }
+        }
+
+        $filters = $this->entityManager->getFilters();
+        if (!$filters->isEnabled('tenant_filter')) {
+            return $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        }
+        $filters->suspend('tenant_filter');
+        try {
+            return $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
+        } finally {
+            $filters->restore('tenant_filter');
+        }
     }
 
     /**

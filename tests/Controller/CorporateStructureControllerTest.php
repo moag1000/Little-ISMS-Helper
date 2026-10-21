@@ -334,12 +334,11 @@ class CorporateStructureControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testHoldingAdminCanDetachOwnSubsidiaryAndRemovalIsAudited(): void
+    public function testOperatorCanDetachSubsidiaryAndRemovalIsAudited(): void
     {
         $this->attachTestTenantToParent();
-        $holdingAdmin = $this->extraUser('ROLE_ADMIN', $this->parentTenant);
 
-        $this->loginAsUser($holdingAdmin);
+        $this->loginAsUser($this->extraUser('ROLE_SUPER_ADMIN', $this->parentTenant));
         $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
             'tenantId' => $this->testTenant->getId(),
             'parentId' => null,
@@ -351,6 +350,116 @@ class CorporateStructureControllerTest extends WebTestCase
             'action' => 'delete',
         ]);
         self::assertNotEmpty($auditRows, 'bulk DQL delete of governance rules must be audit-logged');
+    }
+
+    #[Test]
+    public function testHoldingAdminCannotDetachSubsidiaryToRoot(): void
+    {
+        // #1059: a detached subsidiary becomes a root organisation outside the
+        // holding admin's tree — instance operator only.
+        $this->attachTestTenantToParent();
+
+        $this->loginAsUser($this->extraUser('ROLE_ADMIN', $this->parentTenant));
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+            'tenantId' => $this->testTenant->getId(),
+            'parentId' => null,
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->entityManager->clear();
+        self::assertSame(
+            $this->parentTenant->getId(),
+            $this->entityManager->find(Tenant::class, $this->testTenant->getId())?->getParent()?->getId(),
+        );
+    }
+
+    #[Test]
+    public function testHoldingAdminCanMoveSubsidiaryWithinOwnTree(): void
+    {
+        // #1059: set-parent never completed for tenant admins — the default
+        // governance of the subsidiary was looked up under the caller's
+        // tenant filter (and a freshly created one was not flushed yet).
+        $this->attachTestTenantToParent();
+        $sibling = (new Tenant())->setName('Sibling ' . uniqid('', true))->setCode('sib_' . substr(md5(uniqid('', true)), 0, 12))
+            ->setParent($this->parentTenant);
+        $fresh = (new Tenant())->setName('Fresh ' . uniqid('', true))->setCode('frs_' . substr(md5(uniqid('', true)), 0, 12))
+            ->setParent($this->parentTenant);
+        $this->entityManager->persist($sibling);
+        $this->entityManager->persist($fresh);
+        $this->entityManager->flush();
+        $siblingId = $sibling->getId();
+        $freshId = $fresh->getId();
+        $holdingAdmin = $this->extraUser('ROLE_ADMIN', $this->parentTenant);
+
+        try {
+            $this->loginAsUser($holdingAdmin);
+            // Existing governance row (belongs to the subsidiary's tenant).
+            $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+                'tenantId' => $this->testTenant->getId(),
+                'parentId' => $siblingId,
+                'governanceModel' => 'shared',
+            ]);
+            $this->assertResponseIsSuccessful();
+            // No governance row yet (created in the same request).
+            $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+                'tenantId' => $freshId,
+                'parentId' => $siblingId,
+                'governanceModel' => 'hierarchical',
+            ]);
+            $this->assertResponseIsSuccessful();
+
+            $this->entityManager->clear();
+            self::assertSame($siblingId, $this->entityManager->find(Tenant::class, $this->testTenant->getId())?->getParent()?->getId());
+            self::assertSame($siblingId, $this->entityManager->find(Tenant::class, $freshId)?->getParent()?->getId());
+            // DBAL: the test EM still carries the last request's tenant filter.
+            self::assertSame('hierarchical', $this->entityManager->getConnection()->fetchOne(
+                "SELECT governance_model FROM corporate_governance WHERE tenant_id = ? AND scope = 'default'",
+                [$freshId],
+            ));
+
+            // Never outside the tree.
+            $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+                'tenantId' => $freshId,
+                'parentId' => $this->createForeignTenant()->getId(),
+                'governanceModel' => 'hierarchical',
+            ]);
+            $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        } finally {
+            $this->entityManager->clear();
+            $this->entityManager->getConnection()->executeStatement(
+                'DELETE FROM corporate_governance WHERE tenant_id IN (?, ?)',
+                [$freshId, $siblingId],
+            );
+            $this->entityManager->getConnection()->executeStatement(
+                'UPDATE tenant SET parent_id = ? WHERE id IN (?, ?)',
+                [$this->parentTenant->getId(), $this->testTenant->getId(), $freshId],
+            );
+            foreach ([$freshId, $siblingId] as $id) {
+                if (($tenant = $this->entityManager->find(Tenant::class, $id)) !== null) {
+                    $this->entityManager->remove($tenant);
+                    $this->entityManager->flush();
+                }
+            }
+            foreach ($this->foreignTenants as $foreign) {
+                if (($tenant = $this->entityManager->find(Tenant::class, $foreign->getId())) !== null) {
+                    $this->entityManager->remove($tenant);
+                    $this->entityManager->flush();
+                }
+            }
+        }
+    }
+
+    /** @var list<Tenant> */
+    private array $foreignTenants = [];
+
+    private function createForeignTenant(): Tenant
+    {
+        $tenant = (new Tenant())->setName('Foreign ' . uniqid('', true))->setCode('frn_' . substr(md5(uniqid('', true)), 0, 12));
+        $this->entityManager->persist($tenant);
+        $this->entityManager->flush();
+        $this->foreignTenants[] = $tenant;
+
+        return $tenant;
     }
 
     #[Test]

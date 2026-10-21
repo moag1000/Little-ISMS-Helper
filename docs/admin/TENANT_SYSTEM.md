@@ -111,6 +111,13 @@ Navigate to: `/admin/tenants`
 | Governance model of a subsidiary | Admin of the parent organisation | Yes |
 | Create, activate/deactivate, delete, set parent, add (move) a user | No | Yes |
 
+Restructuring through the corporate-structure view
+(`POST /api/corporate-structure/set-parent`): an organisation admin may move a
+*subsidiary* of its tree under another organisation of the same tree — never
+its own organisation, never to the top level (detaching a subsidiary makes it a
+root outside the tree) and never under a foreign organisation. Detaching is an
+instance-operator action.
+
 ### Features
 
 1. **Tenant List** (`/admin/tenants`)
