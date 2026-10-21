@@ -45,7 +45,7 @@
 {% macro render(label, props = {}) %}
     {% set isActive = props.active|default(false) %}
     {% set chipClass = 'fa-filter-chip' ~ (isActive ? ' fa-filter-chip--active' : '') ~ (props.class is defined ? ' ' ~ props.class : '') %}
-    {% set chipAttrs %}{% for k, v in props.attrs|default({}) %} {{ k }}="{{ v }}"{% endfor %}{% endset %}
+    {% set chipAttrs %}{% for k, v in props.attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}{% endset %}
 
     {% if props.href is defined and props.href %}
         <a href="{{ props.href }}" class="{{ chipClass }}"{{ chipAttrs|raw }}>
@@ -84,7 +84,7 @@
             {# Per-item attrs pass-through (data-* / Stimulus wiring), same
                convention as _fa_action_bar — without it a chip group cannot be
                hooked up to any filter behaviour. #}
-            {% set itemAttrs %}{% for k, v in item.attrs|default({}) %} {{ k }}="{{ v }}"{% endfor %}{% endset %}
+            {% set itemAttrs %}{% for k, v in item.attrs|default({}) %} {{ k|e('html_attr') }}="{{ v }}"{% endfor %}{% endset %}
 
             {% if item.href is defined and item.href %}
                 <a href="{{ item.href }}" class="{{ chipClass }}"

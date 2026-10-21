@@ -43,7 +43,7 @@
         {% if tag == 'button' %}type="{{ props.type|default('button') }}"{% endif %}
         {% if props.href is defined and props.href %}href="{{ props.href }}"{% endif %}
         {% if props.disabled is defined and props.disabled %}disabled aria-disabled="true"{% endif %}
-        {% for k, v in props.attrs|default({}) %} {{ k }}="{{ v|e('html_attr') }}"{% endfor %}
+        {% for k, v in props.attrs|default({}) %} {{ k|e('html_attr') }}="{{ v|e('html_attr') }}"{% endfor %}
     >
         {% if props.icon is defined and props.icon %}
             {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}

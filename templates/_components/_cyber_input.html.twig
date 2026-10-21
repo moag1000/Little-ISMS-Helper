@@ -55,7 +55,7 @@
                    {% if p.disabled|default(false) %}disabled{% endif %}
                    {% if p.autocomplete is defined %}autocomplete="{{ p.autocomplete }}"{% endif %}
                    {% if hasError %}aria-invalid="true" aria-describedby="{{ id }}-err"{% endif %}
-                   {% for k, v in p.attrs|default({}) %} {{ k }}="{{ v|e('html_attr') }}"{% endfor %}>
+                   {% for k, v in p.attrs|default({}) %} {{ k|e('html_attr') }}="{{ v|e('html_attr') }}"{% endfor %}>
         </div>
         {% if hasError %}
             <div id="{{ id }}-err" class="fa-cyber-input__error" role="alert">{{ p.error }}</div>
