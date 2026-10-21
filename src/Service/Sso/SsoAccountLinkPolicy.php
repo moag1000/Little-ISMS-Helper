@@ -31,9 +31,8 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
  */
 final class SsoAccountLinkPolicy
 {
-    public const string EMAIL_LINKING_DISABLED_MESSAGE = 'An account with this e-mail address already exists, but this'
-        . ' SSO provider does not link existing accounts automatically. Ask an administrator to link your account'
-        . ' to the provider, or sign in with your password.';
+    public const string EMAIL_LINKING_DISABLED_MESSAGE = 'This sign-in could not be linked to an existing account'
+        . ' automatically. Sign in with your password if your account has one, or contact an administrator.';
 
     private function __construct()
     {
@@ -60,23 +59,62 @@ final class SsoAccountLinkPolicy
     /**
      * Link-by-email gate: an SSO login whose e-mail matches an existing
      * local account that is not yet bound to this provider+subject is only
-     * linked when the provider allows it ({@see IdentityProvider::isAllowEmailLinking()}).
-     * Otherwise the login is refused; an administrator links the account
-     * manually. Runs in addition to {@see mayAuthenticateAs()}, never instead.
+     * linked when {@see mayLinkByEmail()} allows it (provider option on, account
+     * not bound to another provider). Otherwise the login is refused; the
+     * password login stays available (the enforcement subscribers fail open,
+     * {@see canSsoLoginReach()}). Runs in addition to {@see mayAuthenticateAs()}.
      *
      * @throws CustomUserMessageAuthenticationException when linking is disabled
      */
     public static function assertMayLinkByEmail(IdentityProvider $provider, User $target, ?LoggerInterface $logger = null): void
     {
-        if ($provider->isAllowEmailLinking()) {
+        if (self::mayLinkByEmail($provider, $target)) {
             return;
         }
-        $logger?->warning('SSO: login refused, automatic link by e-mail is disabled for this provider', [
+        $logger?->warning('SSO: login refused, automatic link by e-mail is not allowed for this account', [
             'provider' => $provider->getSlug(),
             'target_user_id' => $target->getId(),
         ]);
 
         throw new CustomUserMessageAuthenticationException(self::EMAIL_LINKING_DISABLED_MESSAGE);
+    }
+
+    /**
+     * Would {@see assertMayLinkByEmail()} accept linking $target? Only when
+     * the provider allows e-mail linking and the account is not bound to a
+     * different provider (an existing binding is never moved silently).
+     */
+    public static function mayLinkByEmail(IdentityProvider $provider, User $target): bool
+    {
+        $boundProvider = $target->getSsoProvider();
+
+        return $provider->isAllowEmailLinking()
+            && ($boundProvider === null || self::isSameProvider($boundProvider, $provider));
+    }
+
+    /**
+     * Can an SSO login through $provider end up as $user at all? Used by the
+     * SSO-enforcement subscribers: when it cannot (account not bound to this
+     * provider and linking refused, or a privileged / out-of-tree account of a
+     * tenant-owned provider), redirecting the password login to the provider
+     * would lock the user out, so the password login stays available (#1059).
+     */
+    public static function canSsoLoginReach(IdentityProvider $provider, User $user): bool
+    {
+        if (!self::mayAuthenticateAs($provider, $user)) {
+            return false;
+        }
+        $boundProvider = $user->getSsoProvider();
+        if ($boundProvider !== null && self::isSameProvider($boundProvider, $provider)) {
+            return true;
+        }
+
+        return self::mayLinkByEmail($provider, $user);
+    }
+
+    private static function isSameProvider(IdentityProvider $a, IdentityProvider $b): bool
+    {
+        return $a === $b || ($a->getId() !== null && $a->getId() === $b->getId());
     }
 
     /**

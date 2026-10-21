@@ -48,4 +48,4 @@ reauth:
         invalid_password: 'Das Passwort ist nicht korrekt. Bitte erneut versuchen.'
         generic: 'Authentifizierung fehlgeschlagen. Bitte erneut versuchen.'
         network: 'Verbindungsfehler. Bitte Seite neu laden und erneut versuchen.'
-'An account with this e-mail address already exists, but this SSO provider does not link existing accounts automatically. Ask an administrator to link your account to the provider, or sign in with your password.': 'Zu dieser E-Mail-Adresse gibt es bereits ein Konto, aber dieser SSO-Provider verknüpft bestehende Konten nicht automatisch. Bitte eine Administratorin oder einen Administrator, Ihr Konto mit dem Provider zu verknüpfen, oder melden Sie sich mit Ihrem Passwort an.'
+'This sign-in could not be linked to an existing account automatically. Sign in with your password if your account has one, or contact an administrator.': 'Diese Anmeldung konnte nicht automatisch mit einem bestehenden Konto verknüpft werden. Melden Sie sich mit Ihrem Passwort an, falls Ihr Konto eines hat, oder wenden Sie sich an eine Administratorin oder einen Administrator.'

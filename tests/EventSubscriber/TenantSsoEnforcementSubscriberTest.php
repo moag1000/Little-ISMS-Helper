@@ -49,6 +49,41 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function unlinkedUserFailsOpenWhenProviderDoesNotLinkByEmail(): void
+    {
+        // #1059 anti-lockout: the provider would refuse this not-yet-linked
+        // account, so the password login must stay available.
+        $provider = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(false);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$provider], userLinked: false);
+
+        self::assertNull($event->getResponse());
+    }
+
+    #[Test]
+    public function unlinkedUserIsRedirectedWhenProviderLinksByEmail(): void
+    {
+        $provider = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(true);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$provider], userLinked: false);
+
+        self::assertInstanceOf(RedirectResponse::class, $event->getResponse());
+    }
+
+    #[Test]
+    public function linkedUserIsRedirectedEvenWhenProviderDoesNotLinkByEmail(): void
+    {
+        $provider = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(false);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'],
+            tenantEnforced: true, tenantProviders: [$provider], userLinked: true);
+
+        self::assertInstanceOf(RedirectResponse::class, $event->getResponse());
+    }
+
+    #[Test]
     public function enforcedTenantWithoutProviderFailsOpen(): void
     {
         // Anti-lockout: SSO enforced but no enabled provider → password login proceeds.
@@ -175,6 +210,7 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
         bool $tenantEnforced,
         array $tenantProviders,
         bool $userExists = true,
+        bool $userLinked = true,
     ): RequestEvent {
         $userRepository = $this->createMock(UserRepository::class);
         if ($userExists) {
@@ -182,6 +218,12 @@ final class TenantSsoEnforcementSubscriberTest extends TestCase
             $tenant->setSsoEnforced($tenantEnforced);
             $resolvedUser = new User();
             $resolvedUser->setTenant($tenant);
+            foreach ($tenantProviders as $tenantProvider) {
+                $tenantProvider->setTenant($tenantProvider->getTenant() ?? $tenant);
+            }
+            if ($userLinked && $tenantProviders !== []) {
+                $resolvedUser->setSsoProvider($tenantProviders[0]);
+            }
             $userRepository->method('findOneBy')->willReturn($resolvedUser);
         } else {
             $userRepository->method('findOneBy')->willReturn(null);

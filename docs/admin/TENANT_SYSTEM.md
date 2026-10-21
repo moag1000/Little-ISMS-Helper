@@ -439,11 +439,20 @@ it (Entra ID single-tenant registrations, for example, let directory admins
 set arbitrary mail attributes). Providers that existed before the upgrade
 keep linking (migration `Version20261021143100_sso_allow_email_linking`
 sets the option); **new providers start with it off**. With the option off
-such a login is refused with a message asking the user to contact an
+such a login is refused with a message pointing to the password login or an
 administrator; already linked accounts and new (JIT) accounts are not
-affected. To link an account deliberately, enable the option, let the user
-sign in once, then disable it again. The organisation-tree and
-never-privileged rules above apply whether the option is on or off.
+affected. An account already bound to *another* provider is never re-bound
+by e-mail, whatever the option says. To link an account deliberately,
+enable the option, let the user sign in once, then disable it again. The
+organisation-tree and never-privileged rules above apply whether the option
+is on or off.
+
+SSO enforcement (`Tenant::ssoEnforced`, `domainBindingMode = enforce`) does
+not lock such users out: a password login is only redirected to the provider
+when that provider can actually sign the user in (account already bound to
+it, or linking allowed and the account not bound elsewhere, and not refused
+by the organisation-tree / never-privileged rules). Otherwise the password
+login proceeds; once the account is linked, enforcement applies.
 
 **Env-configured Azure OAuth/SAML login** (`AZURE_*` variables, no provider
 record): when an Azure object id is not yet known, the login used to link any

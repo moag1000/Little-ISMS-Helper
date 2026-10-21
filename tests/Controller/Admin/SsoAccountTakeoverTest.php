@@ -317,6 +317,23 @@ final class SsoAccountTakeoverTest extends WebTestCase
     }
 
     #[Test]
+    public function accountBoundToAnotherProviderIsNotReboundByEmail(): void
+    {
+        // #1059 review: linking by e-mail only takes unlinked accounts; an
+        // existing binding to another provider is never moved silently.
+        $this->userChildA->setSsoProvider($this->globalProvider)->setSsoExternalId('sub-global');
+        $this->em->flush();
+
+        try {
+            $this->resolve($this->tenantProvider, $this->email('userchilda'), 'sub-other', []);
+            self::fail('re-binding to another provider must be refused');
+        } catch (CustomUserMessageAuthenticationException $e) {
+            self::assertSame(SsoAccountLinkPolicy::EMAIL_LINKING_DISABLED_MESSAGE, $e->getMessageKey());
+        }
+        self::assertSame($this->globalProvider->getId(), $this->reload($this->userChildA)->getSsoProvider()?->getId());
+    }
+
+    #[Test]
     public function newProviderDoesNotLinkByEmailByDefault(): void
     {
         self::assertFalse((new IdentityProvider())->isAllowEmailLinking());

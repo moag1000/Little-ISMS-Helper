@@ -41,6 +41,30 @@ final class SsoEnforcementSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function unlinkedUserFailsOpenWhenProviderDoesNotLinkByEmail(): void
+    {
+        // #1059 anti-lockout: the provider would refuse this not-yet-linked
+        // account, so the password login must stay available.
+        $provider = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(false);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $provider, userLinked: false);
+        self::assertNull($event->getResponse());
+
+        $provider->setAllowEmailLinking(true);
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $provider, userLinked: false);
+        self::assertInstanceOf(RedirectResponse::class, $event->getResponse());
+    }
+
+    #[Test]
+    public function linkedUserIsRedirectedEvenWhenProviderDoesNotLinkByEmail(): void
+    {
+        $provider = (new IdentityProvider())->setSlug('acme-entra')->setEnabled(true)->setAllowEmailLinking(false);
+
+        $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@acme.de'], $provider, userLinked: true);
+        self::assertInstanceOf(RedirectResponse::class, $event->getResponse());
+    }
+
+    #[Test]
     public function noEnforcedProviderFallsThroughToPassword(): void
     {
         $event = $this->dispatch('/de/login', 'POST', ['_username' => 'bob@nowhere.de'], null);
@@ -95,9 +119,14 @@ final class SsoEnforcementSubscriberTest extends TestCase
         string $method,
         array $params,
         ?IdentityProvider $enforcedProvider,
+        bool $userLinked = true,
     ): RequestEvent {
+        $user = new User();
+        if ($userLinked && $enforcedProvider !== null) {
+            $user->setSsoProvider($enforcedProvider);
+        }
         $userRepository = $this->createMock(UserRepository::class);
-        $userRepository->method('findOneBy')->willReturn(new User());
+        $userRepository->method('findOneBy')->willReturn($user);
 
         $registry = $this->createMock(SsoProviderRegistry::class);
         $registry->method('findEnforcedProviderForEmail')->willReturn($enforcedProvider);

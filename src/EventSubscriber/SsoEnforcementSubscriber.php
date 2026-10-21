@@ -6,6 +6,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\IdentityProvider;
 use App\Repository\UserRepository;
+use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Service\Sso\SsoProviderRegistry;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -85,6 +86,12 @@ final class SsoEnforcementSubscriber
         $slug = $provider->getSlug();
         if ($slug === null || $slug === '') {
             return; // misconfigured provider — do not trap the user
+        }
+
+        // The provider would refuse this existing account (not linked yet and
+        // linking by e-mail refused, …) — do not trap the user (#1059).
+        if ($user !== null && !SsoAccountLinkPolicy::canSsoLoginReach($provider, $user)) {
+            return;
         }
 
         $event->setResponse(new RedirectResponse(
