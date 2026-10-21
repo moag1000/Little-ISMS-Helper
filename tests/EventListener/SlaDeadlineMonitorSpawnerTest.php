@@ -122,6 +122,35 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
         self::assertSame(0, $this->flushes);
     }
 
+    /**
+     * The triggering change is committed before postFlush: a failing follow-up
+     * flush must not fail the caller's request — the cron retry
+     * (SlaDeadlineMonitorRetry) starts the clock instead.
+     */
+    #[Test]
+    public function failingMonitorFlushIsLoggedNotThrown(): void
+    {
+        $em = $this->createStub(EntityManagerInterface::class);
+        $em->method('flush')->willThrowException(new \RuntimeException('deadlock'));
+        $logger = new class extends \Psr\Log\AbstractLogger {
+            /** @var list<string> */
+            public array $errors = [];
+
+            public function log($level, string|\Stringable $message, array $context = []): void
+            {
+                $this->errors[] = (string) $message;
+            }
+        };
+        $repository = $this->createStub(SlaDeadlineMonitorRepository::class);
+        $spawner = new SlaDeadlineMonitorSpawner(new SlaDeadlineFactory($em), $repository, $logger);
+
+        $spawner->postPersist(new PostPersistEventArgs($this->entity(new DataBreach(), 5), $em));
+        $spawner->postFlush(new PostFlushEventArgs($em));
+
+        self::assertCount(1, $logger->errors);
+        self::assertStringContainsString('next cron run retries', $logger->errors[0]);
+    }
+
     private function spawner(?SlaDeadlineMonitor $existing = null): SlaDeadlineMonitorSpawner
     {
         $repository = $this->createStub(SlaDeadlineMonitorRepository::class);

@@ -34,8 +34,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *    automatically by {@see \App\Lifecycle\EventListener\FieldCompletionAutoTransition} on every
  *    flush(); this command is only needed for the time-delay variant.
  *
- * 2. SLA deadline monitoring: ticks {@see \App\Service\Notification\SlaDeadlineWatcher} to fire
- *    approaching-deadline and missed-deadline notifications across all tenants.
+ * 2. SLA deadline monitoring: first retries SLA clocks the flush-time spawner could not
+ *    start ({@see \App\Service\Notification\SlaDeadlineMonitorRetry}, idempotent), then
+ *    ticks {@see \App\Service\Notification\SlaDeadlineWatcher} to fire approaching-deadline
+ *    and missed-deadline notifications across all tenants.
  *
  * Time-based steps are approved through {@see WorkflowService::moveToNextStep()} with the
  * workflow initiator as acting user, flagged as automatic. An automatic approval never
@@ -66,6 +68,7 @@ class ProcessTimedWorkflowsCommand extends Command
         private readonly EntityManagerInterface $entityManager,
         private readonly SlaDeadlineWatcher $slaDeadlineWatcher,
         private readonly ?\App\Service\TenantContext $tenantContext = null,
+        private readonly ?\App\Service\Notification\SlaDeadlineMonitorRetry $slaMonitorRetry = null,
     ) {
         parent::__construct();
     }
@@ -86,8 +89,9 @@ This is useful for:
   • Compliance steps with mandatory waiting periods
 
 <info>SLA Deadline Monitoring (Sprint 7A — F3 Wave 2):</info>
-In addition to workflow progression, this command ticks the SlaDeadlineWatcher
-for every active tenant. The watcher:
+In addition to workflow progression, this command first starts SLA clocks whose
+creation failed when the record was saved (idempotent retry, only for deadlines
+still ahead), then ticks the SlaDeadlineWatcher for every active tenant. The watcher:
   • Fires approaching-deadline notifications at configured checkpoints (hours before deadline)
   • Marks overdue SlaDeadlineMonitor records as 'missed' and emits critical notifications
   • Covers GDPR Art. 33 (72h), DORA Art. 19 (4h/24h/1mo), NIS2 Art. 23 (24h/72h/1mo),
@@ -278,6 +282,13 @@ HELP
             $io->section('SLA Deadline Monitor');
 
             try {
+                // Retry SLA clocks the flush-time spawner could not start
+                // (idempotent; only deadlines still ahead).
+                $retried = $this->slaMonitorRetry?->spawnMissing() ?? 0;
+                if ($retried > 0) {
+                    $io->note(sprintf('Started %d missing SLA monitor(s) (spawn retry)', $retried));
+                }
+
                 $slaResult = $this->slaDeadlineWatcher->tickAll();
 
                 $io->horizontalTable(

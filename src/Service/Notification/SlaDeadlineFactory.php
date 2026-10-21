@@ -44,12 +44,72 @@ final class SlaDeadlineFactory
     ) {}
 
     /**
+     * Whether $entity needs a regulatory SLA monitor — the one rule the
+     * spawner (on flush) and the cron retry ({@see SlaDeadlineMonitorRetry})
+     * share:
+     *  - every DataBreach,
+     *  - an Incident with notificationRequired or a NIS2 category,
+     *  - an AuditFinding of type major / minor nonconformity.
+     */
+    public static function isRelevant(object $entity): bool
+    {
+        return match (true) {
+            $entity instanceof DataBreach => true,
+            $entity instanceof Incident => $entity->isNotificationRequired() === true
+                || $entity->getNis2Category() !== null,
+            $entity instanceof AuditFinding => in_array(
+                $entity->getType(),
+                [AuditFinding::TYPE_MAJOR_NC, AuditFinding::TYPE_MINOR_NC],
+                true,
+            ),
+            default => false,
+        };
+    }
+
+    /**
+     * Monitor entity-type key of $entity ('DataBreach' / 'Incident' /
+     * 'AuditFinding'), null for any other object.
+     */
+    public static function entityTypeOf(object $entity): ?string
+    {
+        return match (true) {
+            $entity instanceof DataBreach => 'DataBreach',
+            $entity instanceof Incident => 'Incident',
+            $entity instanceof AuditFinding => 'AuditFinding',
+            default => null,
+        };
+    }
+
+    /**
+     * Build — without persisting — the monitor $entity needs (see
+     * {@see isRelevant()} for who needs one), or null for an unsupported
+     * object.
+     */
+    public function buildFor(object $entity): ?SlaDeadlineMonitor
+    {
+        return match (true) {
+            $entity instanceof DataBreach => $this->buildForDataBreach($entity),
+            $entity instanceof Incident => $this->buildForIncident($entity, $entity->getSeverity()->value ?? 'low'),
+            $entity instanceof AuditFinding => $this->buildForCorrectiveAction($entity),
+            default => null,
+        };
+    }
+
+    /**
      * Create a GDPR Art. 33 72h notification deadline for a DataBreach.
      *
      * Checkpoints: 48h, 24h, 12h, 4h, 1h before deadline.
      * triggeredAt = breach.createdAt (or now if unavailable).
      */
     public function createForDataBreach(DataBreach $breach): SlaDeadlineMonitor
+    {
+        $monitor = $this->buildForDataBreach($breach);
+        $this->entityManager->persist($monitor);
+
+        return $monitor;
+    }
+
+    private function buildForDataBreach(DataBreach $breach): SlaDeadlineMonitor
     {
         $triggeredAt = $breach->getCreatedAt() !== null
             ? DateTimeImmutable::createFromInterface($breach->getCreatedAt())
@@ -67,8 +127,6 @@ final class SlaDeadlineFactory
         $monitor->setDeadlineAt($deadlineAt);
         $monitor->setNotifyAtCheckpoints(self::CHECKPOINTS_GDPR_72H);
 
-        $this->entityManager->persist($monitor);
-
         return $monitor;
     }
 
@@ -84,6 +142,14 @@ final class SlaDeadlineFactory
      * @param string $criticality  'critical'|'high'|'medium'|'low'
      */
     public function createForIncident(Incident $incident, string $criticality): SlaDeadlineMonitor
+    {
+        $monitor = $this->buildForIncident($incident, $criticality);
+        $this->entityManager->persist($monitor);
+
+        return $monitor;
+    }
+
+    private function buildForIncident(Incident $incident, string $criticality): SlaDeadlineMonitor
     {
         $detectedAt = $incident->getDetectedAt() !== null
             ? DateTimeImmutable::createFromInterface($incident->getDetectedAt())
@@ -110,8 +176,6 @@ final class SlaDeadlineFactory
         $monitor->setDeadlineAt($deadlineAt);
         $monitor->setNotifyAtCheckpoints($checkpoints);
 
-        $this->entityManager->persist($monitor);
-
         return $monitor;
     }
 
@@ -122,6 +186,14 @@ final class SlaDeadlineFactory
      * triggeredAt = finding.createdAt (or now if unavailable).
      */
     public function createForCorrectiveAction(AuditFinding $finding): SlaDeadlineMonitor
+    {
+        $monitor = $this->buildForCorrectiveAction($finding);
+        $this->entityManager->persist($monitor);
+
+        return $monitor;
+    }
+
+    private function buildForCorrectiveAction(AuditFinding $finding): SlaDeadlineMonitor
     {
         $createdAt = $finding->getCreatedAt() !== null
             ? DateTimeImmutable::createFromInterface($finding->getCreatedAt())
@@ -138,8 +210,6 @@ final class SlaDeadlineFactory
         $monitor->setTriggeredAt($createdAt);
         $monitor->setDeadlineAt($deadlineAt);
         $monitor->setNotifyAtCheckpoints(self::CHECKPOINTS_ISO_30D);
-
-        $this->entityManager->persist($monitor);
 
         return $monitor;
     }

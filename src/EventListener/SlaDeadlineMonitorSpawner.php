@@ -27,7 +27,10 @@ use Psr\Log\LoggerInterface;
  *
  * At most one monitor per entity. Monitors are persisted in postFlush with a
  * second flush, because entities persisted during a flush are not written by
- * that same flush.
+ * that same flush. A spawn that fails here (factory error, failed second
+ * flush) is logged and retried idempotently by
+ * {@see \App\Service\Notification\SlaDeadlineMonitorRetry} on the next run
+ * of `app:process-timed-workflows`.
  */
 #[AsDoctrineListener(event: Events::postPersist)]
 #[AsDoctrineListener(event: Events::postUpdate)]
@@ -65,34 +68,27 @@ final class SlaDeadlineMonitorSpawner
         $pending = $this->pending;
         $this->pending = [];
         $created = false;
+        $em = $args->getObjectManager();
 
         foreach ($pending as $entity) {
             try {
                 $tenant = $entity->getTenant();
                 $id = $entity->getId();
-                if ($tenant === null || $id === null) {
+                $type = SlaDeadlineFactory::entityTypeOf($entity);
+                if ($tenant === null || $id === null || $type === null) {
                     continue;
                 }
-                $type = match (true) {
-                    $entity instanceof DataBreach => 'DataBreach',
-                    $entity instanceof Incident => 'Incident',
-                    $entity instanceof AuditFinding => 'AuditFinding',
-                };
                 if ($this->monitorRepository->findForEntity($type, $id, $tenant) !== null) {
                     continue;
                 }
 
-                match (true) {
-                    $entity instanceof DataBreach => $this->factory->createForDataBreach($entity),
-                    $entity instanceof Incident => $this->factory->createForIncident(
-                        $entity,
-                        $entity->getSeverity()->value ?? 'low',
-                    ),
-                    $entity instanceof AuditFinding => $this->factory->createForCorrectiveAction($entity),
-                };
-                $created = true;
+                $monitor = $this->factory->buildFor($entity);
+                if ($monitor !== null) {
+                    $em->persist($monitor);
+                    $created = true;
+                }
             } catch (\Throwable $e) {
-                $this->logger->error('SlaDeadlineMonitorSpawner: could not start SLA monitor', [
+                $this->logger->error('SlaDeadlineMonitorSpawner: could not start SLA monitor — the next cron run retries', [
                     'entity' => $entity::class,
                     'id' => $entity->getId(),
                     'error' => $e->getMessage(),
@@ -100,26 +96,27 @@ final class SlaDeadlineMonitorSpawner
             }
         }
 
-        if ($created) {
-            $args->getObjectManager()->flush();
+        if (!$created) {
+            return;
+        }
+
+        try {
+            $em->flush();
+        } catch (\Throwable $e) {
+            // The triggering change is already committed; do not fail the
+            // caller's request over the follow-up. SlaDeadlineMonitorRetry
+            // (app:process-timed-workflows) starts the missing clock on its
+            // next run.
+            $this->logger->error('SlaDeadlineMonitorSpawner: could not store SLA monitors — the next cron run retries', [
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
     private function queue(object $entity): void
     {
-        $relevant = match (true) {
-            $entity instanceof DataBreach => true,
-            $entity instanceof Incident => $entity->isNotificationRequired() === true
-                || $entity->getNis2Category() !== null,
-            $entity instanceof AuditFinding => in_array(
-                $entity->getType(),
-                [AuditFinding::TYPE_MAJOR_NC, AuditFinding::TYPE_MINOR_NC],
-                true,
-            ),
-            default => false,
-        };
-
-        if ($relevant) {
+        if (SlaDeadlineFactory::isRelevant($entity)) {
+            /** @var DataBreach|Incident|AuditFinding $entity */
             $this->pending[$entity::class . '#' . spl_object_id($entity)] = $entity;
         }
     }
