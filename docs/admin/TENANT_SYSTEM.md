@@ -443,9 +443,23 @@ such a login is refused with a message asking the user to contact an
 administrator; already linked accounts and new (JIT) accounts are not
 affected. To link an account deliberately, enable the option, let the user
 sign in once, then disable it again. The organisation-tree and
-never-privileged rules above apply whether the option is on or off. The
-env-configured Azure OAuth/SAML login (`AZURE_*` variables) has no provider
-record and is not affected by this option.
+never-privileged rules above apply whether the option is on or off.
+
+**Env-configured Azure OAuth/SAML login** (`AZURE_*` variables, no provider
+record): when an Azure object id is not yet known, the login used to link any
+local account with the same e-mail — including `ROLE_SUPER_ADMIN`. Now:
+
+- a privileged account (`ROLE_SUPER_ADMIN`, `ROLE_GROUP_CISO`,
+  `ROLE_KONZERN_AUDITOR`, `ROLE_ALLOWED_TO_SWITCH`) is **never** linked by
+  e-mail; an existing object-id binding keeps working;
+- an account already bound to another Azure object id is not re-bound;
+- `AZURE_ALLOW_EMAIL_LINKING` (default `true` for backward compatibility of
+  existing single-tenant setups) switches linking of ordinary accounts by
+  e-mail off. **Recommendation:** set `AZURE_ALLOW_EMAIL_LINKING=false` once
+  your accounts are linked (every user has signed in via Azure at least
+  once). With `false` a first Azure login of an existing, unlinked account is
+  refused with the same message as above; the password login stays
+  available.
 
 ## Upgrade notes — first release after 3.15.3
 

@@ -12,6 +12,7 @@ use App\Security\RoleNames;
 use App\Security\TenantOwnership;
 use App\Security\UserAdministrationGuard;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 /**
@@ -76,6 +77,32 @@ final class SsoAccountLinkPolicy
         ]);
 
         throw new CustomUserMessageAuthenticationException(self::EMAIL_LINKING_DISABLED_MESSAGE);
+    }
+
+    /**
+     * Link-by-email gate for the env-configured Azure OAuth / SAML logins
+     * (no IdentityProvider record; AZURE_* variables). The object-id lookup
+     * missed and the e-mail claim matches $target:
+     *  - a privileged account (RoleNames::PRIVILEGED) is NEVER linked by
+     *    e-mail, whatever the setting — the e-mail claim of the directory is
+     *    not proof of identity for the instance operator (#1059);
+     *  - with AZURE_ALLOW_EMAIL_LINKING=false, or when $target is already
+     *    bound to another Azure object id, the login is refused with the same
+     *    message as provider-record logins.
+     */
+    public static function assertMayLinkAzureByEmail(User $target, bool $allowEmailLinking, ?LoggerInterface $logger = null): void
+    {
+        $context = ['target_user_id' => $target->getId(), 'provider' => 'azure_env'];
+        if (UserAdministrationGuard::privilegedRolesIn($target->getRoles()) !== []) {
+            $logger?->warning('SSO: login refused, privileged account is never linked by e-mail', $context);
+
+            throw new AuthenticationException('SSO login is not permitted for this account.');
+        }
+        if (!$allowEmailLinking || $target->getAzureObjectId() !== null) {
+            $logger?->warning('SSO: login refused, automatic link by e-mail is not allowed', $context);
+
+            throw new CustomUserMessageAuthenticationException(self::EMAIL_LINKING_DISABLED_MESSAGE);
+        }
     }
 
     /**
