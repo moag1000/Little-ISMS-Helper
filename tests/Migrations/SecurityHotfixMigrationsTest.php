@@ -31,7 +31,7 @@ final class SecurityHotfixMigrationsTest extends TestCase
         $this->connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
         $this->connection->executeStatement('CREATE TABLE tenant (id INTEGER PRIMARY KEY)');
         $this->connection->executeStatement(
-            'CREATE TABLE users (id INTEGER PRIMARY KEY, email VARCHAR(180), roles TEXT, tenant_id INTEGER NULL)',
+            'CREATE TABLE users (id INTEGER PRIMARY KEY, email VARCHAR(180), roles TEXT, tenant_id INTEGER NULL, is_active BOOLEAN NOT NULL DEFAULT 1)',
         );
         $this->connection->executeStatement(
             'CREATE TABLE roles (id INTEGER PRIMARY KEY, name VARCHAR(100), is_system_role BOOLEAN)',
@@ -127,6 +127,22 @@ final class SecurityHotfixMigrationsTest extends TestCase
     }
 
     #[Test]
+    public function doesNotPromoteDeactivatedSetupAdmin(): void
+    {
+        $this->tenant(1);
+        $this->user(1, 'old-setup-admin@example.com', ['ROLE_ADMIN'], null, active: false);
+        $this->user(2, 'current-admin@example.com', ['ROLE_ADMIN'], 1);
+
+        $this->migrate(Version20261019120000_operator_bootstrap::class);
+
+        self::assertSame(['ROLE_ADMIN'], $this->roles(1), 'a deactivated admin never becomes instance operator');
+        self::assertSame(['ROLE_ADMIN'], $this->roles(2), 'no silent fallback to another account');
+        $log = implode("\n", $this->log);
+        self::assertStringContainsString('deactivated', $log);
+        self::assertStringContainsString('app:user:grant-super-admin', $log);
+    }
+
+    #[Test]
     public function reservedCustomRoleNamesAreReportedNotChanged(): void
     {
         $this->connection->insert('roles', ['id' => 1, 'name' => 'ROLE_ADMIN', 'is_system_role' => 0]);
@@ -183,13 +199,14 @@ final class SecurityHotfixMigrationsTest extends TestCase
     /**
      * @param list<string> $roles
      */
-    private function user(int $id, string $email, array $roles, ?int $tenantId): void
+    private function user(int $id, string $email, array $roles, ?int $tenantId, bool $active = true): void
     {
         $this->connection->insert('users', [
             'id' => $id,
             'email' => $email,
             'roles' => json_encode($roles),
             'tenant_id' => $tenantId,
+            'is_active' => $active ? 1 : 0,
         ]);
     }
 

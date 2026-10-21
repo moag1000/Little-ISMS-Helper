@@ -316,7 +316,9 @@ logs every change in the `doctrine:migrations:migrate` output):
    user with the lowest id holding `ROLE_ADMIN`, the same rule the app uses
    to protect that account) is promoted to `ROLE_SUPER_ADMIN` — **but only
    if that admin has no organisation (default setup) or the instance has
-   exactly one organisation.** Default installs never had an operator
+   exactly one organisation, and only if that admin account is active.**
+   A deactivated setup admin is never promoted (output: `WARNING … is
+   deactivated — nobody was promoted`). Default installs never had an operator
    account — the setup admin effectively acted as one through the
    escalation this release closes.
    **Otherwise nobody is promoted** (the lowest-id admin of a
@@ -344,8 +346,10 @@ creates the initial admin with `ROLE_SUPER_ADMIN` when no operator exists.
 php bin/console app:user:grant-super-admin admin@example.com
 ```
 
-The command asks for confirmation and writes an audit-log entry
-(`user.super_admin.granted`). Shell access is the authorisation; there is no
+The command shows e-mail, organisation and current roles, asks for
+confirmation and writes an audit-log entry (`user.super_admin.granted`).
+For scripted runs pass `--yes`; a non-interactive run without `--yes` is
+refused (exit code 1). Shell access is the authorisation; there is no
 web UI for this.
 
 ### Behaviour changes for organisation admins

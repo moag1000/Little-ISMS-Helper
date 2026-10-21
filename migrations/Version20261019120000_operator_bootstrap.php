@@ -21,8 +21,10 @@ use Doctrine\Migrations\AbstractMigration;
  *  (a) No ROLE_SUPER_ADMIN user exists → promote the initial setup admin
  *      (rule of {@see InitialAdminService}: lowest id with ROLE_ADMIN or
  *      ROLE_SUPER_ADMIN) to ROLE_SUPER_ADMIN — only if that admin has no
- *      tenant or exactly one tenant exists; otherwise nobody is promoted and
- *      a warning asks for app:user:grant-super-admin.
+ *      tenant or exactly one tenant exists, and only if that admin account
+ *      is active (a deactivated setup admin must never become the instance
+ *      operator); otherwise nobody is promoted and a warning asks for
+ *      app:user:grant-super-admin.
  *  (b) Exactly one tenant exists → assign tenantless users to it. Instance
  *      operators (ROLE_SUPER_ADMIN) stay tenantless/instance-wide. With more
  *      than one tenant, tenantless users are only listed (a SUPER_ADMIN must
@@ -67,11 +69,25 @@ final class Version20261019120000_operator_bootstrap extends AbstractMigration
         }
 
         $initialAdmin = $this->connection->fetchAssociative(
-            'SELECT id, email, roles, tenant_id FROM users WHERE roles LIKE ? OR roles LIKE ? ORDER BY id ASC LIMIT 1',
+            'SELECT id, email, roles, tenant_id, is_active FROM users WHERE roles LIKE ? OR roles LIKE ? ORDER BY id ASC LIMIT 1',
             [InitialAdminService::ROLE_ADMIN_LIKE, InitialAdminService::ROLE_SUPER_ADMIN_LIKE],
         );
         if ($initialAdmin === false) {
             $this->write('[security] WARNING: no admin user found — nobody promoted. Run "php bin/console app:user:grant-super-admin <email>" after creating one.');
+
+            return null;
+        }
+
+        // A deactivated account must never become the instance operator:
+        // re-activating it later would silently hand out instance-wide rights.
+        if (!(bool) $initialAdmin['is_active']) {
+            $this->write(sprintf(
+                '[security] WARNING: no ROLE_SUPER_ADMIN exists and the initial admin #%d (%s) is deactivated'
+                . ' — nobody was promoted. Run "php bin/console app:user:grant-super-admin <email>"'
+                . ' for an active instance operator account.',
+                (int) $initialAdmin['id'],
+                (string) $initialAdmin['email'],
+            ));
 
             return null;
         }
