@@ -178,6 +178,7 @@ final class PatchImportSchemaProvider implements ImportSchemaProviderInterface
                     setter: 'setResponsiblePerson',
                     type: ImportFieldSpec::TYPE_STRING,
                 ),
+                ...OwnerImportFields::specs('responsiblePerson'),
                 new ImportFieldSpec(
                     name: 'deploymentNotes',
                     setter: 'setDeploymentNotes',

@@ -26,8 +26,10 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  * `title` is the unique upsert key (NotBlank on the entity). Other NotBlank
  * fields (description, category, responsiblePerson, targetDate) are flagged required.
  *
- * `responsiblePerson` is a plain string column on the entity (not a Person FK),
- * so it is imported as TYPE_STRING rather than a relation lookup.
+ * Owner (entity rule: user OR person OR free text): `responsiblePersonUser` (by
+ * e-mail) and `responsiblePersonRef` (by name, else e-mail) resolve tenant-scoped
+ * via {@see OwnerImportFields}; the legacy free-text `responsiblePerson` is
+ * required only while neither is given (`requiredUnlessAny`).
  *
  * Excluded by design: id, tenant, timestamps (createdAt/updatedAt), lockVersion,
  * lifecycle-owned `status` (workflow `isms_objective_lifecycle`, mapped=false in
@@ -137,8 +139,11 @@ final class ISMSObjectiveImportSchemaProvider implements ImportSchemaProviderInt
                     name: 'responsiblePerson',
                     setter: 'setResponsiblePerson',
                     type: ImportFieldSpec::TYPE_STRING,
+                    // Owner rule of the entity: user OR person OR free text.
                     required: true,
+                    requiredUnlessAny: ['responsiblePersonUser', 'responsiblePersonRef'],
                 ),
+                ...OwnerImportFields::specs('responsiblePerson'),
                 new ImportFieldSpec(
                     name: 'responsibleForMeasurement',
                     setter: 'setResponsibleForMeasurement',

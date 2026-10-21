@@ -60,6 +60,10 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
             $raw = $this->resolveField($row, $field->name, null);
             $isEmpty = $raw === null || $raw === '';
 
+            if ($field->required && $isEmpty && $this->anyGiven($row, $field->requiredUnlessAny)) {
+                continue; // satisfied by an alternative (user OR person OR free text)
+            }
+
             if ($field->required && $isEmpty) {
                 $errors[] = sprintf('Field "%s" is required.', $field->label ?? $field->name);
                 continue;
@@ -95,6 +99,19 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         return ['errors' => $errors, 'warnings' => $warnings];
     }
 
+    /** @param list<string> $fieldNames */
+    private function anyGiven(array $row, array $fieldNames): bool
+    {
+        foreach ($fieldNames as $name) {
+            $value = $this->resolveField($row, $name, null);
+            if ($value !== null && trim((string) $value) !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function toEntityData(array $row, ?array $columnMapping = null, ?Tenant $tenant = null): array
     {
         $data = [];
@@ -120,6 +137,32 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
                 // Map the canonical field name to the entity property (setter without "set").
                 $property = lcfirst(substr($field->setter, 3));
                 $data[$property] = $value;
+            }
+        }
+
+        // With a tenant (commit path) a "required unless any" alternative that was
+        // supplied but resolved to nothing (unknown e-mail / name, or a user of
+        // another organisation) would silently drop the owner: refuse the row.
+        if ($tenant !== null) {
+            foreach ($this->activeFields() as $field) {
+                // Alternatives are named like the entity property they set.
+                if ($field->required && $field->requiredUnlessAny !== []
+                    && !array_key_exists(lcfirst(substr($field->setter, 3)), $data)
+                    && array_intersect($field->requiredUnlessAny, array_keys($data)) === []
+                ) {
+                    $given = array_filter(
+                        $field->requiredUnlessAny,
+                        fn(string $n): bool => $this->anyGiven($row, [$n]),
+                    );
+                    if ($given !== []) {
+                        throw new \InvalidArgumentException(sprintf(
+                            'Field "%s": "%s" could not be resolved in this organisation and no "%s" was given.',
+                            $field->label ?? $field->name,
+                            implode('", "', $given),
+                            $field->name,
+                        ));
+                    }
+                }
             }
         }
 
@@ -169,9 +212,14 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
             return null;
         }
 
-        return $this->em->getRepository($field->relationClass)->findOneBy([
-            $field->relationLookup => trim((string) $raw),
-            'tenant'               => $tenant,
-        ]);
+        $value      = trim((string) $raw);
+        $repository = $this->em->getRepository($field->relationClass);
+        $found      = $repository->findOneBy([$field->relationLookup => $value, 'tenant' => $tenant]);
+
+        if ($found === null && $field->relationFallbackLookup !== null && str_contains($value, '@')) {
+            $found = $repository->findOneBy([$field->relationFallbackLookup => $value, 'tenant' => $tenant]);
+        }
+
+        return $found;
     }
 }
