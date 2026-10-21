@@ -120,7 +120,22 @@ final class AzureEmailLinkingTest extends TestCase
         self::assertSame($operator, $this->login($flow, $operator, null, allowEmailLinking: false));
     }
 
-    private function login(string $flow, ?User $byObjectId, ?User $byEmail, bool $allowEmailLinking): User
+    #[Test]
+    public function samlWithoutObjectIdMatchesTheStoredNameIdBinding(): void
+    {
+        // #1059 M-c: no objectidentifier claim → no object id is ever stored.
+        // An account bound via SAML to this NameID still signs in with
+        // AZURE_ALLOW_EMAIL_LINKING=false; an unbound account is refused.
+        $bound = (new User())->setEmail('jane@example.com')->setRoles(['ROLE_USER'])
+            ->setAuthProvider('azure_saml')->setAzureMetadata(['saml_nameid' => 'jane@example.com']);
+        self::assertSame($bound, $this->login('saml', null, $bound, allowEmailLinking: false, withObjectId: false));
+
+        $unbound = (new User())->setEmail('jane@example.com')->setRoles(['ROLE_USER']);
+        $this->expectException(CustomUserMessageAuthenticationException::class);
+        $this->login('saml', null, $unbound, allowEmailLinking: false, withObjectId: false);
+    }
+
+    private function login(string $flow, ?User $byObjectId, ?User $byEmail, bool $allowEmailLinking, bool $withObjectId = true): User
     {
         $users = $this->createStub(UserRepository::class);
         $users->method('findByAzureObjectId')->willReturn($byObjectId);
@@ -145,9 +160,9 @@ final class AzureEmailLinkingTest extends TestCase
             $auth = $this->createStub(Auth::class);
             $auth->method('isAuthenticated')->willReturn(true);
             $auth->method('getNameId')->willReturn('jane@example.com');
-            $auth->method('getAttributes')->willReturn([
+            $auth->method('getAttributes')->willReturn($withObjectId ? [
                 'http://schemas.microsoft.com/identity/claims/objectidentifier' => ['object-1'],
-            ]);
+            ] : []);
             $authenticator = new AzureSamlAuthenticator($em, $users, $router, $tenants, $allowEmailLinking);
             (new \ReflectionProperty(AzureSamlAuthenticator::class, 'samlAuth'))->setValue($authenticator, $auth);
         }

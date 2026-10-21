@@ -490,6 +490,14 @@ local account with the same e-mail — including `ROLE_SUPER_ADMIN`. Now:
   once). With `false` a first Azure login of an existing, unlinked account is
   refused with the same message as above; the password login stays
   available.
+- **SAML without the `objectidentifier` claim:** no Azure object id is ever
+  stored, so the link is the SAML NameID stored on the account's last SAML
+  login (`azureMetadata.saml_nameid`). With `AZURE_ALLOW_EMAIL_LINKING=false`
+  an account signs in via SAML only if it has signed in via SAML before with
+  the same NameID; every other existing account is refused, and privileged
+  accounts can only use SAML once they have such a stored binding. Configure
+  the Entra app to emit `objectidentifier` (default) before switching to
+  `false`.
 
 ## Upgrade notes — first release after 3.15.3
 
