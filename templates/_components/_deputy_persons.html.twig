@@ -7,7 +7,7 @@
  #}
 {% if deputies is defined and deputies is not null and deputies|length > 0 %}
     <span class="text-muted small d-block" data-role="deputy-persons">
-        {{ 'field.owner_deputies'|trans({}, 'messages') }}:
+        {{ 'common.field.owner_deputies'|trans({}, 'messages') }}:
         {{ deputies|map(p => p.displayName)|join(', ') }}
     </span>
 {% endif %}

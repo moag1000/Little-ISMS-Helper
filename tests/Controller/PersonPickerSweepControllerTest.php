@@ -214,18 +214,17 @@ final class PersonPickerSweepControllerTest extends WebTestCase
     {
         $entity = $this->seed($class);
         $role = str_starts_with($base, 'contact') ? 'Contact' : 'Responsible';
-        $entity->{'set' . ucfirst($base) . 'User'}($this->owner);
+        // Deliberately no owner: deputies are shown independent of the owner.
         $entity->{'add' . $role . 'DeputyPerson'}($this->deputy);
         $this->em->flush();
 
         $this->client->loginUser($this->actor);
         $this->client->request('GET', sprintf('/en/%s/%d', $slug, $entity->getId()));
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString(
-            'Dora Deputypick' . $this->uid,
-            (string) $this->client->getResponse()->getContent(),
-            'show page lists the deputy person',
-        );
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Dora Deputypick' . $this->uid, $html, 'show page lists the deputy person');
+        self::assertStringContainsString('Deputies:', $html, 'translated label');
+        self::assertStringNotContainsString('owner_deputies', $html, 'no raw translation key');
     }
 
     #[Test]
@@ -242,7 +241,10 @@ final class PersonPickerSweepControllerTest extends WebTestCase
         $this->client->loginUser($this->actor);
         $this->client->request('GET', '/en/asset/' . $asset->getId());
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Dora Deputypick' . $this->uid, (string) $this->client->getResponse()->getContent());
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Dora Deputypick' . $this->uid, $html);
+        self::assertStringContainsString('Deputies:', $html);
+        self::assertStringNotContainsString('owner_deputies', $html);
     }
 
     #[Test]
