@@ -244,6 +244,22 @@ class TenantContext
     }
 
     /**
+     * The context's state without initialising it — for
+     * {@see \App\Doctrine\EntityManagerRecovery}, which restores it on a
+     * fresh EntityManager after a reset.
+     *
+     * @return array{initialized: bool, tenantId: ?int, noOrganisation: bool}
+     */
+    public function snapshot(): array
+    {
+        return [
+            'initialized' => $this->initialized,
+            'tenantId' => $this->currentTenant?->getId(),
+            'noOrganisation' => $this->noOrganisation,
+        ];
+    }
+
+    /**
      * Reset the tenant context (useful for testing)
      */
     public function reset(): void

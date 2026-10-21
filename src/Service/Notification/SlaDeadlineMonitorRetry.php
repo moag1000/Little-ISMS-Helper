@@ -12,7 +12,7 @@ use App\Enum\SlaDeadlineType;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Doctrine\EntityManagerRecovery;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -31,8 +31,9 @@ use Psr\Log\LoggerInterface;
  * records are never back-filled (no burst of historic "missed" alerts).
  *
  * Each monitor is flushed on its own, so one bad row cannot take the others
- * down; a flush that closes the EntityManager resets it and ends the run
- * (the rest follows next run). The command runs this in its own try/catch
+ * down; a flush that closes the EntityManager is recovered
+ * (EntityManagerRecovery), the failed record is skipped for the rest of the
+ * run and the candidates are queried again. The command runs this in its own try/catch
  * before the watcher, so a failure here never stops the deadline watcher.
  *
  * Runs across all organisations on purpose (cron, no tenant context); every
@@ -49,9 +50,12 @@ readonly class SlaDeadlineMonitorRetry
         private EntityManagerInterface $entityManager,
         private SlaDeadlineFactory $factory,
         private LoggerInterface $logger,
-        private ?ManagerRegistry $managerRegistry = null,
+        private ?EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
+
+    /** Safety net: maximum number of manager resets (each skips one record) per run. */
+    private const int MAX_RECOVERIES = 50;
 
     /**
      * @return int number of SLA monitors started
@@ -60,53 +64,71 @@ readonly class SlaDeadlineMonitorRetry
     {
         $now ??= new DateTimeImmutable();
         $created = 0;
+        /** @var array<string, true> $skip records whose monitor failed in this run, "<class>#<id>" */
+        $skip = [];
+        $recoveries = 0;
 
-        foreach ($this->candidates($now) as $entity) {
-            $monitor = null;
-            try {
-                if ($entity->getTenant() === null || $entity->getId() === null || !SlaDeadlineFactory::isRelevant($entity)) {
+        // A failed flush closes the EntityManager; the loaded candidates then
+        // belong to the dead unit of work. Recover, skip the failed record for
+        // the rest of the run and query again — one bad record must not block
+        // the ones after it.
+        do {
+            $restart = false;
+            foreach ($this->candidates($now) as $entity) {
+                $key = $entity::class . '#' . $entity->getId();
+                if (isset($skip[$key])) {
                     continue;
                 }
-                $monitor = $this->factory->buildFor($entity);
-                if ($monitor === null) {
-                    continue;
-                }
-                $this->entityManager->persist($monitor);
-                $this->entityManager->flush();
-                ++$created;
-            } catch (UniqueConstraintViolationException) {
-                // A concurrent spawn (web request) started this clock first.
-                $this->logger->info('SlaDeadlineMonitorRetry: monitor already started concurrently', [
-                    'entity' => $entity::class,
-                    'id' => $entity->getId(),
-                ]);
-                if ($this->recover($monitor)) {
-                    break;
-                }
-            } catch (\Throwable $e) {
-                $this->logger->error('SlaDeadlineMonitorRetry: could not start SLA monitor', [
-                    'entity' => $entity::class,
-                    'id' => $entity->getId(),
-                    'error' => $e->getMessage(),
-                ]);
-                if ($this->recover($monitor)) {
-                    break;
+                $monitor = null;
+                try {
+                    if ($entity->getTenant() === null || $entity->getId() === null || !SlaDeadlineFactory::isRelevant($entity)) {
+                        continue;
+                    }
+                    $monitor = $this->factory->buildFor($entity);
+                    if ($monitor === null) {
+                        continue;
+                    }
+                    $this->entityManager->persist($monitor);
+                    $this->entityManager->flush();
+                    ++$created;
+                } catch (UniqueConstraintViolationException) {
+                    // A concurrent spawn (web request) started this clock first.
+                    $this->logger->info('SlaDeadlineMonitorRetry: monitor already started concurrently', [
+                        'entity' => $entity::class,
+                        'id' => $entity->getId(),
+                    ]);
+                    $skip[$key] = true;
+                    if ($this->recover($monitor)) {
+                        $restart = ++$recoveries <= self::MAX_RECOVERIES;
+                        break;
+                    }
+                } catch (\Throwable $e) {
+                    $this->logger->error('SlaDeadlineMonitorRetry: could not start SLA monitor', [
+                        'entity' => $entity::class,
+                        'id' => $entity->getId(),
+                        'error' => $e->getMessage(),
+                    ]);
+                    $skip[$key] = true;
+                    if ($this->recover($monitor)) {
+                        $restart = ++$recoveries <= self::MAX_RECOVERIES;
+                        break;
+                    }
                 }
             }
-        }
+        } while ($restart);
 
         return $created;
     }
 
     /**
      * Drop the failed monitor from the unit of work; a closed EntityManager
-     * is reset instead. Returns true when the run has to stop (the loaded
-     * candidates belong to the closed manager).
+     * is recovered instead (EntityManagerRecovery). Returns true when the
+     * candidates have to be queried again (they belong to the closed manager).
      */
     private function recover(?SlaDeadlineMonitor $monitor): bool
     {
         if (!$this->entityManager->isOpen()) {
-            $this->managerRegistry?->resetManager();
+            $this->entityManagerRecovery?->reset();
 
             return true;
         }

@@ -69,7 +69,7 @@ class ProcessTimedWorkflowsCommand extends Command
         private readonly SlaDeadlineWatcher $slaDeadlineWatcher,
         private readonly ?\App\Service\TenantContext $tenantContext = null,
         private readonly ?\App\Service\Notification\SlaDeadlineMonitorRetry $slaMonitorRetry = null,
-        private readonly ?\Doctrine\Persistence\ManagerRegistry $managerRegistry = null,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
     ) {
         parent::__construct();
     }
@@ -307,7 +307,7 @@ HELP
             }
             // A failed flush closes the EntityManager; the watcher needs a usable one.
             if (!$this->entityManager->isOpen()) {
-                $this->managerRegistry?->resetManager();
+                $this->entityManagerRecovery?->reset();
             }
 
             try {

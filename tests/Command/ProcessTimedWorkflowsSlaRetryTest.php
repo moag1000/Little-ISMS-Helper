@@ -15,7 +15,7 @@ use App\Service\Notification\SlaDeadlineMonitorRetry;
 use App\Service\Notification\SlaDeadlineWatcher;
 use App\Service\WorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Doctrine\EntityManagerRecovery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -40,8 +40,8 @@ final class ProcessTimedWorkflowsSlaRetryTest extends TestCase
         $em = $this->createStub(EntityManagerInterface::class);
         $em->method('isOpen')->willReturn(false); // the failed flush closed it
 
-        $registry = $this->createMock(ManagerRegistry::class);
-        $registry->expects(self::once())->method('resetManager');
+        $registry = $this->createMock(EntityManagerRecovery::class);
+        $registry->expects(self::once())->method('reset');
 
         $tenants = $this->createMock(TenantRepository::class);
         $tenants->expects(self::once())->method('findActive')->willReturn([]); // = tickAll() ran

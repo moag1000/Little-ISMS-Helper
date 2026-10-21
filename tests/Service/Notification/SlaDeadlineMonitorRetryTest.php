@@ -118,6 +118,52 @@ final class SlaDeadlineMonitorRetryTest extends KernelTestCase
         );
     }
 
+    /**
+     * #1059 re-review m-N1: a record whose monitor the database really
+     * rejects (closing the EntityManager) is skipped; the records after it
+     * still get their clocks in the same run.
+     */
+    #[Test]
+    public function oneUnstorableRecordDoesNotBlockTheOnesAfterIt(): void
+    {
+        $now = new DateTimeImmutable();
+        $bad = $this->incident(notificationRequired: true, detectedAt: $now->modify('-1 hour'));
+        $after = $this->incident(notificationRequired: true, detectedAt: $now->modify('-1 hour'));
+        self::assertGreaterThan($bad, $after, 'candidates are processed in id order');
+        $this->conn->executeStatement(
+            "DELETE FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id IN (?, ?)",
+            [$bad, $after],
+        );
+
+        // Make the database reject exactly the bad record's monitor:
+        // entity_type is VARCHAR(80).
+        $this->em->getEventManager()->addEventListener(\Doctrine\ORM\Events::onFlush, new class ($bad) {
+            public function __construct(private readonly int $badId)
+            {
+            }
+
+            public function onFlush(\Doctrine\ORM\Event\OnFlushEventArgs $args): void
+            {
+                $uow = $args->getObjectManager()->getUnitOfWork();
+                foreach ($uow->getScheduledEntityInsertions() as $entity) {
+                    if ($entity instanceof \App\Entity\Notification\SlaDeadlineMonitor && $entity->getEntityId() === $this->badId) {
+                        $entity->setEntityType(str_repeat('X', 120));
+                        $uow->recomputeSingleEntityChangeSet(
+                            $args->getObjectManager()->getClassMetadata($entity::class),
+                            $entity,
+                        );
+                    }
+                }
+            }
+        });
+
+        $this->retry->spawnMissing($now);
+
+        self::assertTrue($this->em->isOpen(), 'the closed manager was recovered');
+        self::assertSame(0, $this->monitorsFor($bad));
+        self::assertSame(1, $this->monitorsFor($after), 'the record after the bad one still got its clock');
+    }
+
     private function incident(bool $notificationRequired, DateTimeImmutable $detectedAt): int
     {
         $incident = new Incident();

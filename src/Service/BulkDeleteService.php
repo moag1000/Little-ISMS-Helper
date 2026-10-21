@@ -6,7 +6,7 @@ namespace App\Service;
 
 use App\Security\TenantOwnership;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Doctrine\EntityManagerRecovery;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -44,7 +44,7 @@ class BulkDeleteService
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
-        private readonly ?ManagerRegistry $managerRegistry = null,
+        private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -187,10 +187,11 @@ class BulkDeleteService
             $this->entityManager->clear();
         } catch (\Throwable) {
         }
-        // A failed flush closes the EntityManager; give the rest of the
-        // request a usable one.
+        // A failed flush closes the EntityManager. The operation ends with an
+        // error, but nothing later in the request may run on a closed — or
+        // on a reset but unscoped — manager: recover tenant scope + context.
         if (!$this->entityManager->isOpen()) {
-            $this->managerRegistry?->resetManager();
+            $this->entityManagerRecovery?->reset();
         }
     }
 

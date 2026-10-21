@@ -185,7 +185,7 @@ final class BulkDeleteServiceTransactionTest extends KernelTestCase
             $container->get(\Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface::class),
             $container->get(\Symfony\Contracts\Translation\TranslatorInterface::class),
             $container->get(TenantContext::class),
-            $container->get('doctrine'),
+            $container->get(\App\Doctrine\EntityManagerRecovery::class),
         );
 
         $ids = [$this->activity('First'), $this->activity('Second'), $this->activity('Third')];
@@ -217,6 +217,65 @@ final class BulkDeleteServiceTransactionTest extends KernelTestCase
         $em = $container->get('doctrine')->getManager();
         self::assertTrue($em->isOpen());
         self::assertNotNull($em->find(\App\Entity\ProcessingActivity::class, $ids[0]), 'the EntityManager is usable afterwards');
+    }
+
+    /**
+     * #1059 re-review N-1: the batch flush really fails on the database (an
+     * over-long column scheduled by the deleter), which closes the
+     * EntityManager. Nothing is deleted, and the rest of the request runs on
+     * a recovered manager that is still tenant-scoped.
+     */
+    #[Test]
+    public function realFlushFailureRollsBackAndLeavesARecoveredTenantScopedManager(): void
+    {
+        $foreignTenant = new Tenant();
+        $foreignTenant->setName('Bulk delete foreign ' . uniqid());
+        $foreignTenant->setCode('bdf_' . uniqid());
+        $this->em->persist($foreignTenant);
+        $this->em->flush();
+        $foreign = new ProcessingActivity();
+        $foreign->setName('Foreign');
+        $foreign->setPurposes(['x']);
+        $foreign->setDataSubjectCategories(['customers']);
+        $foreign->setPersonalDataCategories(['contact_data']);
+        $foreign->setLegalBasis('contract');
+        $foreign->setTenant($foreignTenant);
+        $this->em->persist($foreign);
+        $this->em->flush();
+        $foreignId = (int) $foreign->getId();
+        self::getContainer()->get(TenantContext::class)->setCurrentTenant($this->tenant);
+
+        $ids = [$this->activity('First'), $this->activity('Second'), $this->activity('Third')];
+        $victim = $this->paRepository->find($ids[2]);
+
+        try {
+            $result = $this->bulkDelete->delete(
+                'ProcessingActivity',
+                [$ids[0], $ids[1]],
+                fn (int $id): ?object => $this->paRepository->find($id),
+                deleter: function (object $pa) use ($victim): void {
+                    $this->paService->delete($pa, flush: false);
+                    $victim?->setLegalBasis(str_repeat('x', 80)); // VARCHAR(50): the flush fails
+                },
+            );
+
+            self::assertSame(0, $result['deleted']);
+            self::assertStringContainsString('nothing was deleted', $result['errors'][0]);
+            self::assertSame(3, $this->countActivities($ids), 'rolled back');
+            self::assertSame(0, $this->countNewAuditRows());
+
+            $em = self::getContainer()->get('doctrine')->getManager();
+            self::assertTrue($em->isOpen(), 'recovered');
+            $visible = array_map(
+                static fn (ProcessingActivity $pa): ?int => $pa->getId(),
+                $em->getRepository(ProcessingActivity::class)->findBy(['id' => [...$ids, $foreignId]]),
+            );
+            sort($visible);
+            self::assertSame($ids, $visible, 'still tenant-scoped: the foreign row stays invisible');
+        } finally {
+            $this->conn->executeStatement('DELETE FROM processing_activity WHERE id = ?', [$foreignId]);
+            $this->conn->executeStatement('DELETE FROM tenant WHERE id = ?', [$foreignTenant->getId()]);
+        }
     }
 
     /** @param list<int> $ids */

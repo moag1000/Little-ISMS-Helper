@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Doctrine\EntityManagerRecovery;
 use App\Entity\AuditFinding;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
@@ -45,6 +46,7 @@ final class SlaDeadlineMonitorSpawner
         private readonly SlaDeadlineFactory $factory,
         private readonly SlaDeadlineMonitorRepository $monitorRepository,
         private readonly LoggerInterface $logger,
+        private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
     ) {}
 
     public function postPersist(PostPersistEventArgs $args): void
@@ -107,6 +109,7 @@ final class SlaDeadlineMonitorSpawner
             // The unique key (entity_type, entity_id, deadline_type) caught a
             // concurrent spawn (cron retry): the clock is running already.
             $this->logger->info('SlaDeadlineMonitorSpawner: SLA monitor already started concurrently');
+            $this->entityManagerRecovery?->resetIfClosed();
         } catch (\Throwable $e) {
             // The triggering change is already committed; do not fail the
             // caller's request over the follow-up. SlaDeadlineMonitorRetry
@@ -115,6 +118,9 @@ final class SlaDeadlineMonitorSpawner
             $this->logger->error('SlaDeadlineMonitorSpawner: could not store SLA monitors — the next cron run retries', [
                 'error' => $e->getMessage(),
             ]);
+            // The failed flush closed the manager; later writes of the request
+            // need it open, tenant-scoped and with a managed tenant.
+            $this->entityManagerRecovery?->resetIfClosed();
         }
     }
 
