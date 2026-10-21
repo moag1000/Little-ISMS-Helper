@@ -321,7 +321,7 @@ class AuditLogger
         // audit log is best-effort in this recovery context.
         if (!$this->entityManager->isOpen()) {
             if ($strict) {
-                throw new \RuntimeException('Audit log cannot be written: the EntityManager is closed.');
+                throw new \App\Exception\Io\IoException('Audit log cannot be written: the EntityManager is closed.');
             }
 
             return;

@@ -295,7 +295,7 @@ src/Controller/PersonController.php:157
 src/Controller/PlanningAdminController.php:168
 src/Controller/PlanningSettingsController.php:115
 src/Controller/PlanningSettingsController.php:117
-src/Controller/ProcessingActivityController.php:646
+src/Controller/ProcessingActivityController.php:643
 src/Controller/ProfileController.php:106
 src/Controller/ProfileController.php:174
 src/Controller/ProfileController.php:197
