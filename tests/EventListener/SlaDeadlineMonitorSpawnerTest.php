@@ -151,6 +151,34 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
         self::assertStringContainsString('next cron run retries', $logger->errors[0]);
     }
 
+    /**
+     * A concurrent spawn rejected by the unique key is "already started",
+     * not an error.
+     */
+    #[Test]
+    public function uniqueViolationIsTreatedAsAlreadyStarted(): void
+    {
+        $em = $this->createStub(EntityManagerInterface::class);
+        $em->method('flush')->willThrowException(
+            (new \ReflectionClass(\Doctrine\DBAL\Exception\UniqueConstraintViolationException::class))->newInstanceWithoutConstructor(),
+        );
+        $logger = new class extends \Psr\Log\AbstractLogger {
+            /** @var list<string> */
+            public array $levels = [];
+
+            public function log($level, string|\Stringable $message, array $context = []): void
+            {
+                $this->levels[] = (string) $level;
+            }
+        };
+        $spawner = new SlaDeadlineMonitorSpawner(new SlaDeadlineFactory($em), $this->createStub(SlaDeadlineMonitorRepository::class), $logger);
+
+        $spawner->postPersist(new PostPersistEventArgs($this->entity(new DataBreach(), 5), $em));
+        $spawner->postFlush(new PostFlushEventArgs($em));
+
+        self::assertSame(['info'], $logger->levels);
+    }
+
     private function spawner(?SlaDeadlineMonitor $existing = null): SlaDeadlineMonitorSpawner
     {
         $repository = $this->createStub(SlaDeadlineMonitorRepository::class);

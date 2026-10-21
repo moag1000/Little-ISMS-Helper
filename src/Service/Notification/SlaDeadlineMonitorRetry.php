@@ -10,7 +10,9 @@ use App\Entity\Incident;
 use App\Entity\Notification\SlaDeadlineMonitor;
 use App\Enum\SlaDeadlineType;
 use DateTimeImmutable;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -20,20 +22,34 @@ use Psr\Log\LoggerInterface;
  * first, so a failed spawn is retried on the next cron run.
  *
  * Idempotent: only relevant entities ({@see SlaDeadlineFactory::isRelevant()})
- * WITHOUT a monitor are considered, so a second run creates nothing. Only
- * clocks whose deadline still lies ahead are started — the retry closes
- * spawn gaps, it never back-fills historic records with already-missed
- * deadlines (which would fire a burst of "missed" notifications).
+ * WITHOUT a monitor are considered, and the unique key
+ * (entity_type, entity_id, deadline_type) rejects a concurrent duplicate —
+ * treated as "already started". Candidates are records triggered within
+ * their deadline plus {@see self::MISSED_GRACE_HOURS}: a clock missed while
+ * the spawn was failing (short DORA / NIS2 clocks, cron down) still gets its
+ * monitor, which the watcher then marks missed and alerts on once. Older
+ * records are never back-filled (no burst of historic "missed" alerts).
+ *
+ * Each monitor is flushed on its own, so one bad row cannot take the others
+ * down; a flush that closes the EntityManager resets it and ends the run
+ * (the rest follows next run). The command runs this in its own try/catch
+ * before the watcher, so a failure here never stops the deadline watcher.
  *
  * Runs across all organisations on purpose (cron, no tenant context); every
  * monitor takes the tenant of its own entity.
+ *
+ * Not final — command tests stub it.
  */
-final readonly class SlaDeadlineMonitorRetry
+readonly class SlaDeadlineMonitorRetry
 {
+    /** How long after a missed deadline the retry still starts (and so alerts on) the clock. */
+    public const int MISSED_GRACE_HOURS = 48;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private SlaDeadlineFactory $factory,
         private LoggerInterface $logger,
+        private ?ManagerRegistry $managerRegistry = null,
     ) {
     }
 
@@ -46,35 +62,64 @@ final readonly class SlaDeadlineMonitorRetry
         $created = 0;
 
         foreach ($this->candidates($now) as $entity) {
+            $monitor = null;
             try {
                 if ($entity->getTenant() === null || $entity->getId() === null || !SlaDeadlineFactory::isRelevant($entity)) {
                     continue;
                 }
                 $monitor = $this->factory->buildFor($entity);
-                if ($monitor === null || $monitor->getDeadlineAt() <= $now) {
+                if ($monitor === null) {
                     continue;
                 }
                 $this->entityManager->persist($monitor);
+                $this->entityManager->flush();
                 ++$created;
+            } catch (UniqueConstraintViolationException) {
+                // A concurrent spawn (web request) started this clock first.
+                $this->logger->info('SlaDeadlineMonitorRetry: monitor already started concurrently', [
+                    'entity' => $entity::class,
+                    'id' => $entity->getId(),
+                ]);
+                if ($this->recover($monitor)) {
+                    break;
+                }
             } catch (\Throwable $e) {
                 $this->logger->error('SlaDeadlineMonitorRetry: could not start SLA monitor', [
                     'entity' => $entity::class,
                     'id' => $entity->getId(),
                     'error' => $e->getMessage(),
                 ]);
+                if ($this->recover($monitor)) {
+                    break;
+                }
             }
-        }
-
-        if ($created > 0) {
-            $this->entityManager->flush();
         }
 
         return $created;
     }
 
     /**
+     * Drop the failed monitor from the unit of work; a closed EntityManager
+     * is reset instead. Returns true when the run has to stop (the loaded
+     * candidates belong to the closed manager).
+     */
+    private function recover(?SlaDeadlineMonitor $monitor): bool
+    {
+        if (!$this->entityManager->isOpen()) {
+            $this->managerRegistry?->resetManager();
+
+            return true;
+        }
+        if ($monitor !== null && $this->entityManager->contains($monitor)) {
+            $this->entityManager->detach($monitor);
+        }
+
+        return false;
+    }
+
+    /**
      * Entities of each monitored type without a monitor, triggered within
-     * the longest deadline of that type (older ones are past their deadline).
+     * the longest deadline of that type plus the missed-deadline grace.
      *
      * @return iterable<DataBreach|Incident|AuditFinding>
      */
@@ -84,20 +129,20 @@ final readonly class SlaDeadlineMonitorRetry
             DataBreach::class,
             'DataBreach',
             'e.createdAt >= :since',
-            $now->modify('-' . SlaDeadlineType::GdprNotification72h->durationHours() . ' hours'),
+            $now->modify('-' . (SlaDeadlineType::GdprNotification72h->durationHours() + self::MISSED_GRACE_HOURS) . ' hours'),
         );
         // The factory starts an incident clock at detectedAt (createdAt when unset).
         yield from $this->withoutMonitor(
             Incident::class,
             'Incident',
             '(e.detectedAt >= :since OR (e.detectedAt IS NULL AND e.createdAt >= :since))',
-            $now->modify('-' . SlaDeadlineType::Nis2Notification72h->durationHours() . ' hours'),
+            $now->modify('-' . (SlaDeadlineType::Nis2Notification72h->durationHours() + self::MISSED_GRACE_HOURS) . ' hours'),
         );
         yield from $this->withoutMonitor(
             AuditFinding::class,
             'AuditFinding',
             'e.createdAt >= :since',
-            $now->modify('-' . SlaDeadlineType::IsoCorrectiveAction30d->durationHours() . ' hours'),
+            $now->modify('-' . (SlaDeadlineType::IsoCorrectiveAction30d->durationHours() + self::MISSED_GRACE_HOURS) . ' hours'),
         );
     }
 

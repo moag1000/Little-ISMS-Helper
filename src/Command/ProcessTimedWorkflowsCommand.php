@@ -69,6 +69,7 @@ class ProcessTimedWorkflowsCommand extends Command
         private readonly SlaDeadlineWatcher $slaDeadlineWatcher,
         private readonly ?\App\Service\TenantContext $tenantContext = null,
         private readonly ?\App\Service\Notification\SlaDeadlineMonitorRetry $slaMonitorRetry = null,
+        private readonly ?\Doctrine\Persistence\ManagerRegistry $managerRegistry = null,
     ) {
         parent::__construct();
     }
@@ -141,7 +142,9 @@ HELP
 
         if (empty($activeWorkflows)) {
             $io->success('No active workflows to process');
-            return Command::SUCCESS;
+
+            // The SLA clocks do not depend on workflows: tick them anyway.
+            return $this->runSlaMonitoring($io, (bool) $dryRun);
         }
 
         $io->text(sprintf('Found %d active workflow(s)', count($activeWorkflows)));
@@ -275,20 +278,39 @@ HELP
             $io->success('No workflows needed time-based auto-progression');
         }
 
+        return $this->runSlaMonitoring($io, (bool) $dryRun);
+    }
+
+    /**
+     * SLA part of the run: spawn retry (best effort), then the deadline
+     * watcher. Runs on every invocation — also when no workflow is active —
+     * because the regulatory clocks do not depend on workflows.
+     */
+    private function runSlaMonitoring(SymfonyStyle $io, bool $dryRun): int
+    {
         // --- SLA Deadline Watcher (Sprint 7A — F3 Wave 2) --------------------------------
         if ($dryRun) {
             $io->note('SLA Deadline Watcher: skipped in dry-run mode');
         } else {
             $io->section('SLA Deadline Monitor');
 
+            // Retry SLA clocks the flush-time spawner could not start. Best
+            // effort: its failure must never switch off the deadline watcher
+            // below (GDPR 72h, NIS2, DORA notifications for every tenant).
             try {
-                // Retry SLA clocks the flush-time spawner could not start
-                // (idempotent; only deadlines still ahead).
                 $retried = $this->slaMonitorRetry?->spawnMissing() ?? 0;
                 if ($retried > 0) {
                     $io->note(sprintf('Started %d missing SLA monitor(s) (spawn retry)', $retried));
                 }
+            } catch (\Throwable $e) {
+                $io->warning(sprintf('SLA monitor spawn retry failed (watcher continues): %s', $e->getMessage()));
+            }
+            // A failed flush closes the EntityManager; the watcher needs a usable one.
+            if (!$this->entityManager->isOpen()) {
+                $this->managerRegistry?->resetManager();
+            }
 
+            try {
                 $slaResult = $this->slaDeadlineWatcher->tickAll();
 
                 $io->horizontalTable(

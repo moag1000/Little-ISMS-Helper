@@ -10,6 +10,7 @@ use App\Entity\Incident;
 use App\Repository\Notification\SlaDeadlineMonitorRepository;
 use App\Service\Notification\SlaDeadlineFactory;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -102,6 +103,10 @@ final class SlaDeadlineMonitorSpawner
 
         try {
             $em->flush();
+        } catch (UniqueConstraintViolationException) {
+            // The unique key (entity_type, entity_id, deadline_type) caught a
+            // concurrent spawn (cron retry): the clock is running already.
+            $this->logger->info('SlaDeadlineMonitorSpawner: SLA monitor already started concurrently');
         } catch (\Throwable $e) {
             // The triggering change is already committed; do not fail the
             // caller's request over the follow-up. SlaDeadlineMonitorRetry

@@ -148,9 +148,13 @@ GDPR-72h-Frist; ebenso NIS2 24h/72h fuer meldepflichtige Incidents
 (`notificationRequired` oder NIS2-Kategorie) und 30 Tage nach ISO 27001 Kap. 10.1
 fuer Haupt-/Nebenabweichungen aus Audits. Scheitert das Anlegen beim Speichern,
 holt der naechste Lauf des Cron-Jobs `app:process-timed-workflows` es nach
-(`SlaDeadlineMonitorRetry`, idempotent, nur fuer Fristen, die noch nicht abgelaufen
-sind). Danach tickt der Cron-Job den `SlaDeadlineWatcher`: Erinnerungen an den
-Checkpoints, verpasste Fristen werden als `missed` markiert und kritisch gemeldet.
+(`SlaDeadlineMonitorRetry`, idempotent; eine eindeutige Kennung je Datensatz und
+Fristtyp verhindert doppelte Uhren). Auch eine in den letzten 48 Stunden verpasste
+Frist bekommt so noch ihre Uhr und damit genau eine "verpasst"-Meldung; aeltere
+Datensaetze werden nicht nachgetragen. Danach tickt der Cron-Job den
+`SlaDeadlineWatcher` — immer, auch wenn kein Workflow aktiv ist oder das
+Nachholen scheitert: Erinnerungen an den Checkpoints, verpasste Fristen werden
+als `missed` markiert und kritisch gemeldet.
 
 ### 5.3 BSI-MUS Export (Art. 33 DSGVO / Art. 23 NIS2-Cross-Reporting)
 
