@@ -433,6 +433,17 @@ upgrade.
 
 Global providers behave as before.
 
+**Unambiguous provider selection.** Provider slugs are unique per
+organisation only. SSO start links now carry the provider id
+(`/sso/<slug>/start?provider=<id>` — login buttons, enforcement redirects,
+re-authentication), and the callback uses the provider chosen at start, not a
+fresh slug lookup. A legacy link without `provider` works only while exactly
+one enabled provider uses that slug; otherwise the visitor is sent back to the
+login page with a neutral message. An organisation-owned provider cannot take
+the slug of an instance-wide provider (validation on create/edit). Callback
+URLs registered at the identity providers (`/sso/<slug>/callback`) are
+unchanged.
+
 **Link existing accounts by e-mail** (provider option `allowEmailLinking`,
 added after 3.15.3): an SSO login whose e-mail claim matches an existing,
 not yet linked local account is only linked when this option is on. The
@@ -504,6 +515,10 @@ local account with the same e-mail — including `ROLE_SUPER_ADMIN`. Now:
   accounts can only use SAML once they have such a stored binding. Configure
   the Entra app to emit `objectidentifier` (default) before switching to
   `false`.
+  The NameID fallback is only as strong as the NameID: use an immutable one
+  (UPN or persistent NameID, the Entra default) — if NameID is mapped to
+  `user.mail`, the "binding" is an e-mail match again. Rows written before
+  this release stored the e-mail claim as `saml_nameid`.
 
 ## Upgrade notes — first release after 3.15.3
 

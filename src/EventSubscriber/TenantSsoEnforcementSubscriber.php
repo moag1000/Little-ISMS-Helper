@@ -110,7 +110,7 @@ final class TenantSsoEnforcementSubscriber
         }
 
         $event->setResponse(new RedirectResponse(
-            $this->urlGenerator->generate('app_sso_start', ['slug' => $target->getSlug()])
+            $this->urlGenerator->generate('app_sso_start', ['slug' => $target->getSlug(), 'provider' => $target->getId()])
         ));
     }
 

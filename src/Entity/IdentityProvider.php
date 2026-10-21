@@ -10,12 +10,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\Constraint\IdentityProviderSlugAvailable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IdentityProviderRepository::class)]
 #[ORM\Table(name: 'identity_provider')]
 #[ORM\UniqueConstraint(name: 'uniq_idp_slug_tenant', columns: ['slug', 'tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
+#[IdentityProviderSlugAvailable]
 class IdentityProvider
 {
     public const TYPE_OIDC = 'oidc';

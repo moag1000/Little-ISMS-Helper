@@ -77,7 +77,7 @@
 
             <div class="fa-auth-form__oauth">
                 {% for p in sso_providers %}
-                    <a href="{{ path('app_sso_start', {slug: p.slug}) }}" class="fa-auth-oauth-btn"
+                    <a href="{{ path('app_sso_start', {slug: p.slug, provider: p.id}) }}" class="fa-auth-oauth-btn"
                        {% if p.buttonColor %}style="border-color: {{ p.buttonColor }};"{% endif %}>
                         {% if p.buttonIcon %}
                             {# Auto-strip legacy bi-* prefix so DB-stored values still render under Aurora. #}

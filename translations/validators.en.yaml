@@ -834,3 +834,4 @@ gstool_import:
 'json_builder.required': 'Entry %row%: "%field%" is required.'
 'json_builder.invalid_value': 'Entry %row%: "%field%" contains an invalid value.'
 'json_builder.empty_key': 'Entry %row%: the key must not be empty.'
+'sso.slug_used_by_global_provider': 'This slug is used by an instance-wide SSO provider. Choose another slug for your organisation''s provider.'

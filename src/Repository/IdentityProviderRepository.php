@@ -58,6 +58,36 @@ class IdentityProviderRepository extends ServiceEntityRepository
         return $qb->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Every ENABLED provider with this slug, whatever its organisation. The
+     * legacy start URL (slug only) is served only when this returns exactly
+     * one provider (#1059 I-5).
+     *
+     * @return list<IdentityProvider>
+     */
+    public function findEnabledBySlug(string $slug): array
+    {
+        return array_values($this->findBy(['slug' => $slug, 'enabled' => true]));
+    }
+
+    /**
+     * Is $slug used by a GLOBAL provider other than $exceptId? A tenant-owned
+     * provider must not take such a slug (#1059 I-5).
+     */
+    public function isSlugUsedByGlobalProvider(string $slug, ?int $exceptId): bool
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.slug = :slug')
+            ->andWhere('p.tenant IS NULL')
+            ->setParameter('slug', $slug);
+        if ($exceptId !== null) {
+            $qb->andWhere('p.id <> :id')->setParameter('id', $exceptId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+    }
+
     public function findOneBySlugAnywhere(string $slug): ?IdentityProvider
     {
         return $this->findOneBy(['slug' => $slug]);

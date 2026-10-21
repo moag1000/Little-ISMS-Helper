@@ -163,10 +163,15 @@ final class ReauthController extends AbstractController
         }
         // Use the existing SsoController start route (locale-free path), pass
         // `target` so GenericOidcAuthenticator can store it (SESSION_TARGET_KEY).
-        $url = $this->urlGenerator->generate('app_sso_start', [
-            'slug'   => $slug,
-            'target' => $returnTo,
-        ]);
+        $params = ['slug' => $slug, 'target' => $returnTo];
+        // Re-auth through the provider the account is bound to: carry its id
+        // so a colliding slug of another organisation cannot be chosen (#1059 I-5).
+        $user = $this->getUser();
+        $bound = $user instanceof \App\Entity\User ? $user->getSsoProvider() : null;
+        if ($bound !== null && $bound->getSlug() === $slug) {
+            $params['provider'] = $bound->getId();
+        }
+        $url = $this->urlGenerator->generate('app_sso_start', $params);
         return new RedirectResponse($url);
     }
 

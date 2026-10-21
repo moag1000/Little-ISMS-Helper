@@ -35,17 +35,27 @@ final class SsoController extends AbstractController
     ) {
     }
 
+    /**
+     * `?provider=<id>` identifies the provider unambiguously (enforcement
+     * redirects, login buttons, re-auth); the slug must match it. Without it
+     * (legacy links) the slug is served only when exactly one enabled
+     * provider carries it — slugs are unique per organisation only, and a
+     * colliding slug of another organisation must never steer the visitor to
+     * that organisation's IdP (#1059 I-5). Every failure gets the same
+     * neutral message.
+     */
     #[Route('/sso/{slug}/start', name: 'app_sso_start', methods: ['GET'])]
     public function start(string $slug, Request $request): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
-        $provider = $this->registry->findOneBySlugForTenant($slug, $tenant);
-        if (!$provider instanceof IdentityProvider) {
-            // Anonymous visitors have tenant=null and therefore can only see
-            // global IdPs through findOneBySlugForTenant. Fall back to the
-            // global slug index so a tenant-scoped IdP that the visitor
-            // discovered via email-domain binding still resolves.
-            $provider = $this->providerRepo->findOneBySlugAnywhere($slug);
+        $providerId = $request->query->get('provider');
+        if (is_string($providerId) && ctype_digit($providerId)) {
+            $provider = $this->providerRepo->find((int) $providerId);
+            if ($provider instanceof IdentityProvider && $provider->getSlug() !== $slug) {
+                $provider = null;
+            }
+        } else {
+            $candidates = $this->providerRepo->findEnabledBySlug($slug);
+            $provider = count($candidates) === 1 ? $candidates[0] : null;
         }
         if (!$provider instanceof IdentityProvider || !$provider->isEnabled()) {
             $this->addFlash('error', 'SSO-Provider not found or disabled.');
@@ -59,6 +69,7 @@ final class SsoController extends AbstractController
         $session->set(GenericOidcAuthenticator::SESSION_STATE_KEY, $authReq['state']);
         $session->set(GenericOidcAuthenticator::SESSION_VERIFIER_KEY, $authReq['codeVerifier']);
         $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_KEY, $slug);
+        $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_ID_KEY, $provider->getId());
         $target = $request->query->get('target');
         if (is_string($target) && $target !== '') {
             $session->set(GenericOidcAuthenticator::SESSION_TARGET_KEY, $target);
