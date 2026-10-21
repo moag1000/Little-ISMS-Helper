@@ -128,7 +128,7 @@ readonly class SlaDeadlineMonitorRetry
     private function recover(?SlaDeadlineMonitor $monitor): bool
     {
         if (!$this->entityManager->isOpen()) {
-            $this->entityManagerRecovery?->reset();
+            $this->entityManagerRecovery?->recover();
 
             return true;
         }

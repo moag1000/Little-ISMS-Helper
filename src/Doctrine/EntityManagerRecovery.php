@@ -12,7 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * The one place that recovers a closed EntityManager (a failed flush closes
  * it). Every caller that needs a usable manager afterwards goes through
- * {@see self::reset()} — never through ManagerRegistry::resetManager()
+ * {@see self::recover()} — never through ManagerRegistry::resetManager()
  * directly.
  *
  * `resetManager()` gives the same EntityManager object a FRESH state:
@@ -45,13 +45,13 @@ readonly class EntityManagerRecovery
      *
      * @return bool true when a reset happened
      */
-    public function resetIfClosed(): bool
+    public function recoverIfClosed(): bool
     {
         $em = $this->managerRegistry->getManager();
         if ($em instanceof EntityManagerInterface && $em->isOpen()) {
             return false;
         }
-        $this->reset();
+        $this->recover();
 
         return true;
     }
@@ -59,7 +59,7 @@ readonly class EntityManagerRecovery
     /**
      * Reset the default EntityManager and restore tenant scope + context.
      */
-    public function reset(): void
+    public function recover(): void
     {
         $filter = $this->captureTenantFilter();
         $context = $this->tenantContext->snapshot();

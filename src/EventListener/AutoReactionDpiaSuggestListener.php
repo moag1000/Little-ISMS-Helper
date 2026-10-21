@@ -171,7 +171,7 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
                 'error' => $e->getMessage(),
             ]);
             if (!$em->isOpen()) {
-                $this->entityManagerRecovery?->reset();
+                $this->entityManagerRecovery?->recover();
             } elseif ($dpia !== null && $em->contains($dpia)) {
                 $em->detach($dpia);
             }

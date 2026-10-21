@@ -78,7 +78,7 @@ final class EntityManagerRecoveryTest extends KernelTestCase
         }
         self::assertFalse($this->em->isOpen(), 'the failed flush closed the EntityManager');
 
-        self::getContainer()->get(EntityManagerRecovery::class)->reset();
+        self::getContainer()->get(EntityManagerRecovery::class)->recover();
 
         self::assertTrue($this->em->isOpen());
         $found = $this->em->getRepository(ProcessingActivity::class)->findBy(['id' => [$ownActivity, $foreignActivity]]);
@@ -103,7 +103,7 @@ final class EntityManagerRecoveryTest extends KernelTestCase
     #[Test]
     public function aManagerThatIsStillOpenIsLeftAlone(): void
     {
-        self::assertFalse(self::getContainer()->get(EntityManagerRecovery::class)->resetIfClosed());
+        self::assertFalse(self::getContainer()->get(EntityManagerRecovery::class)->recoverIfClosed());
         self::assertTrue($this->em->isOpen());
     }
 

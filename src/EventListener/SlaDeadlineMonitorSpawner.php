@@ -109,7 +109,7 @@ final class SlaDeadlineMonitorSpawner
             // The unique key (entity_type, entity_id, deadline_type) caught a
             // concurrent spawn (cron retry): the clock is running already.
             $this->logger->info('SlaDeadlineMonitorSpawner: SLA monitor already started concurrently');
-            $this->entityManagerRecovery?->resetIfClosed();
+            $this->entityManagerRecovery?->recoverIfClosed();
         } catch (\Throwable $e) {
             // The triggering change is already committed; do not fail the
             // caller's request over the follow-up. SlaDeadlineMonitorRetry
@@ -120,7 +120,7 @@ final class SlaDeadlineMonitorSpawner
             ]);
             // The failed flush closed the manager; later writes of the request
             // need it open, tenant-scoped and with a managed tenant.
-            $this->entityManagerRecovery?->resetIfClosed();
+            $this->entityManagerRecovery?->recoverIfClosed();
         }
     }
 

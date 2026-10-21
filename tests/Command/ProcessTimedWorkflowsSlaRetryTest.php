@@ -41,7 +41,7 @@ final class ProcessTimedWorkflowsSlaRetryTest extends TestCase
         $em->method('isOpen')->willReturn(false); // the failed flush closed it
 
         $registry = $this->createMock(EntityManagerRecovery::class);
-        $registry->expects(self::once())->method('reset');
+        $registry->expects(self::once())->method('recover');
 
         $tenants = $this->createMock(TenantRepository::class);
         $tenants->expects(self::once())->method('findActive')->willReturn([]); // = tickAll() ran

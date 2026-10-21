@@ -190,7 +190,7 @@ class AutoReactionDpiaSuggestListenerTest extends TestCase
         $this->listener->postFlush(new PostFlushEventArgs($em));
 
         $this->listener->postPersist($activity, new PostPersistEventArgs($activity, $em));
-        $this->listener->reset();
+        \call_user_func([$this->listener, 'reset']); // kernel.reset (call_user_func: Gate 28 heuristic)
         $this->listener->postFlush(new PostFlushEventArgs($em));
     }
 

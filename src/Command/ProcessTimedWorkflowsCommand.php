@@ -311,7 +311,7 @@ HELP
             }
             // A failed flush closes the EntityManager; the watcher needs a usable one.
             if (!$this->entityManager->isOpen()) {
-                $this->entityManagerRecovery?->reset();
+                $this->entityManagerRecovery?->recover();
             }
 
             try {

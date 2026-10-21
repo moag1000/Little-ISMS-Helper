@@ -191,7 +191,7 @@ class BulkDeleteService
         // error, but nothing later in the request may run on a closed — or
         // on a reset but unscoped — manager: recover tenant scope + context.
         if (!$this->entityManager->isOpen()) {
-            $this->entityManagerRecovery?->reset();
+            $this->entityManagerRecovery?->recover();
         }
     }
 
