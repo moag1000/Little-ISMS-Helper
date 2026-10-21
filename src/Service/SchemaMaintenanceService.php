@@ -78,8 +78,8 @@ class SchemaMaintenanceService
     {
         $em = $this->managerRegistry->getManager();
         if ($em instanceof \Doctrine\ORM\EntityManagerInterface && !$em->isOpen()) {
-            // Restores the filter state that existed before (operator path:
-            // possibly disabled / unscoped) — no tenant is forced.
+            // Restores the tenant-filter state that existed before verbatim
+            // (operator path: usually unscoped) — no tenant is forced.
             $this->entityManagerRecovery?->recover();
         }
     }

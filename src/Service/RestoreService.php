@@ -10,7 +10,6 @@ use App\Service\Restore\RestoreEntityWriter;
 use App\Service\Restore\RestoreOptions;
 use App\Service\Restore\RestoreSecretsHandler;
 use App\Service\Restore\RestoreValidator;
-use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Doctrine\ORM\Events;
 use App\Entity\Tenant;
@@ -56,7 +55,7 @@ class RestoreService
         private readonly LoggerInterface $logger,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly ?BackupEncryptionService $backupEncryption = null,
-        private readonly ?\App\Doctrine\EntityManagerRecovery $registry = null,
+        private readonly ?\App\Doctrine\EntityManagerRecovery $entityManagerRecovery = null,
         private readonly ?RestoreValidator $validator = null,
         private readonly ?RestoreDataPurger $purger = null,
         private readonly ?RestoreEntityWriter $entityWriter = null,
@@ -389,7 +388,7 @@ class RestoreService
                         $entityWriter->restoreEntity(
                             $entityClass, $orderedEntity, $entities, $options,
                             $this->failures, $this->statistics, $this->warnings,
-                            $this->registry, $secretsHandler,
+                            $this->entityManagerRecovery, $secretsHandler,
                         );
                         if ($savepointCreated) {
                             try {
@@ -422,14 +421,14 @@ class RestoreService
                             // Delegate to the shared recovery helper on RestoreEntityWriter.
                             // We ignore the return value here — entity-type loop continues
                             // to the next entity regardless (failures already recorded above).
-                            $entityWriter->safeResetManager($this->registry, $orderedEntity, null, $this->warnings);
+                            $entityWriter->safeResetManager($this->entityManagerRecovery, $orderedEntity, null, $this->warnings);
                         }
                     }
                 } else {
                     $entityWriter->restoreEntity(
                         $entityClass, $orderedEntity, $entities, $options,
                         $this->failures, $this->statistics, $this->warnings,
-                        $this->registry, $secretsHandler,
+                        $this->entityManagerRecovery, $secretsHandler,
                     );
                 }
             }

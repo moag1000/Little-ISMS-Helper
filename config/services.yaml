@@ -454,9 +454,10 @@ services:
     # Configure Restore Service — inject EntityManagerRecovery for best-effort EM reset
     App\Service\RestoreService:
         arguments:
-            # Recovery for a closed EntityManager (restores the filter state
-            # that existed before the reset — restore runs unscoped).
-            $registry: '@App\Doctrine\EntityManagerRecovery'
+            # Recovery for a closed EntityManager: restores the tenant-filter
+            # state that existed before the reset verbatim (a tenant ADMIN's
+            # restore stays scoped, a SUPER_ADMIN's stays unscoped).
+            $entityManagerRecovery: '@App\Doctrine\EntityManagerRecovery'
 
     # ISB MINOR-4: Mailer TLS pre-flight check. DSN must be injected
     # explicitly because %env()% cannot be autowired into a scalar arg.

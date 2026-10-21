@@ -182,7 +182,7 @@ final class SampleDataPurgeCommand
                 return true;
             } catch (\Throwable $e) {
                 if (!$this->entityManager->isOpen() && $this->managerRegistry !== null) {
-                    // Restores the filter state that existed before (none / disabled for this CLI run).
+                    // Restores the tenant-filter state that existed before verbatim (CLI: unscoped).
                     $this->entityManagerRecovery?->recover();
                     $this->entityManager = $this->managerRegistry->getManager();
                 }
