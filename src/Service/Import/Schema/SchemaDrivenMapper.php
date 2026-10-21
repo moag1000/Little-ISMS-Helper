@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Import\Schema;
 
 use App\Entity\Tenant;
+use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\Mapper\AbstractEntityMapper;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -155,12 +156,15 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
                         fn(string $n): bool => $this->anyGiven($row, [$n]),
                     );
                     if ($given !== []) {
-                        throw new \InvalidArgumentException(sprintf(
+                        $message = sprintf(
                             'Field "%s": "%s" could not be resolved in this organisation and no "%s" was given.',
                             $field->label ?? $field->name,
                             implode('", "', $given),
                             $field->name,
-                        ));
+                        );
+
+                        // The row number is unknown here; the orchestrator records the message per row.
+                        throw new ImportRowInvalidException(0, [$message], $message);
                     }
                 }
             }

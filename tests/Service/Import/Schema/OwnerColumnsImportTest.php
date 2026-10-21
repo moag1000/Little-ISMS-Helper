@@ -132,7 +132,7 @@ final class OwnerColumnsImportTest extends KernelTestCase
         self::assertSame($this->ownUser, $ok['responsiblePersonUser']);
 
         // A user of another organisation does not resolve → the row would be ownerless.
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\App\Exception\Import\ImportRowInvalidException::class);
         $mapper->toEntityData($row + ['responsiblePersonUser' => $this->foreignUser->getEmail()], null, $this->own);
     }
 }
