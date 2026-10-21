@@ -160,6 +160,10 @@ class AuditLogger
      *                              ['entity_id' => int|null, 'action' => 'create'|'update'|'delete',
      *                               'old_values' => array|null, 'new_values' => array|null]
      * @param string|null $description Optional human-readable description
+     * @param bool        $strict      true: a row that cannot be written throws instead of
+     *                                 being skipped silently — for callers that write the
+     *                                 trail inside their own transaction and must roll back
+     *                                 the change with it (BulkDeleteService)
      *
      * @return string The generated batch_id (UUIDv4) — referenced from per-entity entries
      */
@@ -169,6 +173,7 @@ class AuditLogger
         array $batchData,
         array $perEntityData,
         ?string $description = null,
+        bool $strict = false,
     ): string {
         $batchId = $this->generateBatchId();
         $batchEnvelope = array_merge($batchData, [
@@ -185,6 +190,7 @@ class AuditLogger
             null,
             $batchEnvelope,
             $description ?? sprintf('Bulk %s: %d rows', $eventType, count($perEntityData)),
+            strict: $strict,
         );
 
         // N per-entity-entries: each references batch_id for traceability
@@ -203,6 +209,7 @@ class AuditLogger
                 $oldValues,
                 $newValues,
                 sprintf('Bulk-row of batch %s', $batchId),
+                strict: $strict,
             );
         }
 
@@ -249,7 +256,8 @@ class AuditLogger
         ?array $oldValues,
         ?array $newValues,
         ?string $description,
-        ?string $userName = null
+        ?string $userName = null,
+        bool $strict = false,
     ): void {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -312,6 +320,10 @@ class AuditLogger
         // closed EM throws EntityManagerClosed. Skip silently if so — the
         // audit log is best-effort in this recovery context.
         if (!$this->entityManager->isOpen()) {
+            if ($strict) {
+                throw new \RuntimeException('Audit log cannot be written: the EntityManager is closed.');
+            }
+
             return;
         }
 
@@ -322,7 +334,12 @@ class AuditLogger
         try {
             $this->entityManager->persist($auditLog);
             $this->entityManager->flush();
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            // Strict callers (bulk delete inside its transaction) must abort
+            // and roll back: the trail is part of the change.
+            if ($strict) {
+                throw $e;
+            }
             // Silent skip — audit log will be missing this row but the
             // calling operation (mark-all-phantom-diff, etc.) must not abort.
         }

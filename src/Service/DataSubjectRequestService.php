@@ -303,6 +303,22 @@ final class DataSubjectRequestService
     }
 
     /**
+     * What the audit trail keeps of a deleted request — the one snapshot the
+     * single delete and the bulk delete (BulkDeleteService) both record: which
+     * Art. 15–22 right was exercised and when it was received. No personal
+     * data of the data subject (the request is being erased).
+     *
+     * @return array<string, mixed>
+     */
+    public function deletionAuditValues(DataSubjectRequest $request): array
+    {
+        return [
+            'request_type' => $request->getRequestType(),
+            'received_at' => $request->getReceivedAt()?->format('Y-m-d'),
+        ];
+    }
+
+    /**
      * Delete a data subject request
      *
      * @param bool $flush false: only schedule the removal — the caller flushes and
@@ -312,9 +328,9 @@ final class DataSubjectRequestService
     {
         if (!$flush) {
             // Bulk path (BulkDeleteService): only schedule the removal. The caller
-            // owns the one flush + commit of the batch, and its AuditLogger::logBulk()
-            // per-entity entry is the audit record (an AuditLogger call here would
-            // flush the whole unit of work mid-batch).
+            // owns the one flush + commit of the batch and writes the per-entity
+            // audit row (with deletionAuditValues()) inside its transaction; an
+            // AuditLogger call here would flush the whole unit of work mid-batch.
             $this->entityManager->remove($request);
 
             return;
@@ -326,10 +342,7 @@ final class DataSubjectRequestService
             'data_subject_request.deleted',
             DataSubjectRequest::class,
             $id,
-            [
-                'request_type' => $request->getRequestType(),
-                'data_subject_name' => $request->getDataSubjectName(),
-            ],
+            $this->deletionAuditValues($request),
             null
         );
 

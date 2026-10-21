@@ -554,6 +554,9 @@ class DataBreachController extends AbstractController
                     $this->dataBreachService->delete($breach, flush: false);
                 }
             },
+            auditValues: fn (object $breach): array => $breach instanceof DataBreach
+                ? $this->dataBreachService->deletionAuditValues($breach)
+                : [],
         );
     }
 

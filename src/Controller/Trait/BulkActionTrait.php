@@ -67,7 +67,7 @@ trait BulkActionTrait
 
     /**
      * Canonical bulk-delete endpoint body (CSRF + id sanitising + tenant /
-     * voter / guard checks + one transaction + AuditLogger::logBulk()).
+     * voter / guard checks + one transaction incl. AuditLogger::logBulk()).
      *
      * Route methods keep their own #[IsGranted] role and module gate, then
      * delegate here. See BulkDeleteService for the per-entity rules and the
@@ -79,6 +79,9 @@ trait BulkActionTrait
      *                                                  null → EntityManager::remove().
      * @param (callable(object): ?string)|null $guard
      * @param (callable(object): void)|null    $afterFlush Runs after the commit (e.g. unlink a file).
+     * @param (callable(object): array<string, mixed>)|null $auditValues Domain snapshot for the
+     *                                                  per-entity audit row (the service's
+     *                                                  deletionAuditValues()).
      */
     protected function handleBulkDelete(
         Request $request,
@@ -90,6 +93,7 @@ trait BulkActionTrait
         ?callable $guard = null,
         ?string $voterAttribute = null,
         ?callable $afterFlush = null,
+        ?callable $auditValues = null,
     ): JsonResponse {
         try {
             $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -124,6 +128,7 @@ trait BulkActionTrait
                 $guard,
                 $voterAttribute,
                 $afterFlush,
+                $auditValues,
             );
         } catch (\Throwable $e) {
             return new JsonResponse(

@@ -86,6 +86,18 @@ final class ProcessingActivityService
     }
 
     /**
+     * What the audit trail keeps of a deleted processing activity — the one
+     * snapshot the single delete and the bulk delete (BulkDeleteService) both
+     * record.
+     *
+     * @return array<string, mixed>
+     */
+    public function deletionAuditValues(ProcessingActivity $processingActivity): array
+    {
+        return ['name' => $processingActivity->getName()];
+    }
+
+    /**
      * Delete a processing activity
      *
      * @param bool $flush false: only schedule the removal — the caller flushes and
@@ -95,16 +107,16 @@ final class ProcessingActivityService
     {
         if (!$flush) {
             // Bulk path (BulkDeleteService): only schedule the removal. The caller
-            // owns the one flush + commit of the batch, and its AuditLogger::logBulk()
-            // per-entity entry is the audit record (an AuditLogger call here would
-            // flush the whole unit of work mid-batch).
+            // owns the one flush + commit of the batch and writes the per-entity
+            // audit row (with deletionAuditValues()) inside its transaction; an
+            // AuditLogger call here would flush the whole unit of work mid-batch.
             $this->entityManager->remove($processingActivity);
 
             return;
         }
 
         $id = $processingActivity->getId();
-        $name = $processingActivity->getName();
+        $auditValues = $this->deletionAuditValues($processingActivity);
 
         $this->entityManager->remove($processingActivity);
         $this->entityManager->flush();
@@ -112,7 +124,7 @@ final class ProcessingActivityService
         $this->auditLogger->logDelete(
             'ProcessingActivity',
             $id,
-            ['name' => $name],
+            $auditValues,
             'processing_activity.deleted'
         );
     }

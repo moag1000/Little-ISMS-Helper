@@ -402,6 +402,9 @@ class DataSubjectRequestController extends AbstractController
                     $this->dataSubjectRequestService->delete($dsr, flush: false);
                 }
             },
+            auditValues: fn (object $dsr): array => $dsr instanceof DataSubjectRequest
+                ? $this->dataSubjectRequestService->deletionAuditValues($dsr)
+                : [],
         );
     }
 

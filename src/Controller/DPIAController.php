@@ -707,6 +707,9 @@ class DPIAController extends AbstractController
                     $this->dataProtectionImpactAssessmentService->delete($dpia, flush: false);
                 }
             },
+            auditValues: fn (object $dpia): array => $dpia instanceof DataProtectionImpactAssessment
+                ? $this->dataProtectionImpactAssessmentService->deletionAuditValues($dpia)
+                : [],
         );
     }
 

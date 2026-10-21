@@ -549,6 +549,9 @@ class ProcessingActivityController extends AbstractController
                     $this->processingActivityService->delete($pa, flush: false);
                 }
             },
+            auditValues: fn (object $pa): array => $pa instanceof ProcessingActivity
+                ? $this->processingActivityService->deletionAuditValues($pa)
+                : [],
         );
     }
 
