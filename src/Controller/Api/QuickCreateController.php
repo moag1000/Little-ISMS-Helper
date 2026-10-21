@@ -11,6 +11,7 @@ namespace App\Controller\Api;
 use App\Entity\Asset;
 use App\Entity\BusinessProcess;
 use App\Entity\CrisisTeam;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +35,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * later via the normal CRUD UI; the stub created here is just enough to
  * satisfy the parent form's FK constraint.
  *
- * Whitelisted entity types (slug => FQCN + factory):
+ * Whitelisted entity types (slug => FQCN + owning module + factory); the
+ * owning module must be active (module gate, see docs/MODULE_GATING_GUIDE.md):
  *   - asset           → Asset (BusinessProcess.supportingAssets, BC plan critical_assets, Supplier.supportedAssets)
  *   - crisis-team     → CrisisTeam (BC plan crisisTeams)
  *   - business-process → BusinessProcess (BC plan businessProcess — though for C1-03 we use a CRUD link)
@@ -48,7 +50,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 final class QuickCreateController extends AbstractController
 {
     /**
-     * @var array<string, array{class: class-string, factory: callable, label: callable}>
+     * @var array<string, array{class: class-string, module: string, factory: callable, label: callable}>
      */
     private array $registry;
 
@@ -56,21 +58,25 @@ final class QuickCreateController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly TenantContext $tenantContext,
         private readonly ValidatorInterface $validator,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
         // Build registry lazily so PHPStan sees the closures with proper types.
         $this->registry = [
             'asset' => [
                 'class'   => Asset::class,
+                'module'  => 'assets',
                 'factory' => $this->buildAsset(...),
                 'label'   => static fn (Asset $a): string => (string) $a->getName(),
             ],
             'crisis-team' => [
                 'class'   => CrisisTeam::class,
+                'module'  => 'bcm',
                 'factory' => $this->buildCrisisTeam(...),
                 'label'   => static fn (CrisisTeam $t): string => (string) $t->getTeamName(),
             ],
             'business-process' => [
                 'class'   => BusinessProcess::class,
+                'module'  => 'bcm',
                 'factory' => $this->buildBusinessProcess(...),
                 'label'   => static fn (BusinessProcess $p): string => (string) $p->getName(),
             ],
@@ -84,6 +90,7 @@ final class QuickCreateController extends AbstractController
      * Returns: 201 { "ok": true, "id": 42, "label": "Foo" }
      *      or 422 { "ok": false, "errors": ["..."] }
      *      or 400 { "ok": false, "error": "Unknown entity type" }
+     *      or 403 { "ok": false, "error": "module_not_active", "module": "bcm" }
      *      or 403 (no tenant context)
      */
     #[Route('/{entityType}', name: 'create', methods: ['POST'])]
@@ -94,6 +101,17 @@ final class QuickCreateController extends AbstractController
                 'ok'    => false,
                 'error' => 'Unknown entity type: ' . $entityType,
             ], 400);
+        }
+
+        // Custom /api endpoint: API Platform's module gate does not cover it,
+        // so the owning module of each entity type is checked here.
+        $module = $this->registry[$entityType]['module'];
+        if (!$this->moduleConfiguration->isModuleActive($module)) {
+            return $this->json([
+                'ok'     => false,
+                'error'  => 'module_not_active',
+                'module' => $module,
+            ], 403);
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
