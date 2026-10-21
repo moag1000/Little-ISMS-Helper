@@ -7,59 +7,124 @@ namespace App\EventListener;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Enum\DpiaStatus;
+use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\UserRepository;
+use App\Service\AuditLogger;
 use App\Service\AutoReactionService;
 use App\Service\EmailNotificationService;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
 /**
  * Audit V3 C3 — Auto-DPIA-Suggestion.
  *
  * On ProcessingActivity create/update: when high-risk indicators are present
- * (special categories, automated decision-making, large scale) and no DPIA
- * is yet linked, create a draft DPIA skeleton in status='draft'.
+ * (special categories, automated decision-making, large scale, confidential
+ * assets, vulnerable data subjects) and no DPIA is yet linked, create a draft
+ * DPIA skeleton.
+ *
+ * Collect, then create (same pattern as SlaDeadlineMonitorSpawner): postPersist
+ * / postUpdate only remember the activity — no query, no persist, no flush
+ * inside the running commit. The skeleton is built and flushed in postFlush,
+ * after the activity is committed. It used to be flushed from postPersist:
+ * that re-entrant commit failed on the missing reference number, CLOSED the
+ * EntityManager and was swallowed — no DPIA, the activity's own audit entry
+ * lost, and every later write of the request failed (#1059).
+ *
+ * The skeleton gets its reference number from the same generator as the
+ * normal create path (DataProtectionImpactAssessmentRepository::
+ * getNextReferenceNumber) and every NOT NULL field prefilled from the
+ * activity, so its flush cannot fail on missing data. Each skeleton is
+ * flushed on its own (the next reference number sees the previous one); a
+ * failing flush is logged and a closed EntityManager reset.
  *
  * Toggle: AutoReactionService::KEY_DPIA_SUGGEST (default true).
  */
 #[AsEntityListener(event: Events::postPersist, entity: ProcessingActivity::class)]
 #[AsEntityListener(event: Events::postUpdate, entity: ProcessingActivity::class)]
+#[AsDoctrineListener(event: Events::postFlush)]
 final class AutoReactionDpiaSuggestListener
 {
+    private const string PLACEHOLDER = 'To be completed — auto-suggested DPIA skeleton (Art. 35 (7) GDPR).';
+
+    /** @var array<int, ProcessingActivity> activities waiting for postFlush, keyed by object id */
+    private array $pending = [];
+
+    /** Re-entrancy guard: the skeleton flush must not process its own postFlush. */
+    private bool $creating = false;
+
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
         private readonly ?EmailNotificationService $emailNotifier = null,
         private readonly ?UserRepository $userRepository = null,
+        private readonly ?DataProtectionImpactAssessmentRepository $dpiaRepository = null,
+        private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?ManagerRegistry $managerRegistry = null,
     ) {
     }
 
     public function postPersist(ProcessingActivity $activity, PostPersistEventArgs $args): void
     {
-        $this->maybeSuggestDpia($activity, $args);
+        $this->collect($activity);
     }
 
     public function postUpdate(ProcessingActivity $activity, PostUpdateEventArgs $args): void
     {
-        $this->maybeSuggestDpia($activity, $args);
+        $this->collect($activity);
     }
 
-    private function maybeSuggestDpia(ProcessingActivity $activity, mixed $args): void
+    public function postFlush(PostFlushEventArgs $args): void
     {
+        if ($this->creating || $this->pending === []) {
+            return;
+        }
+
+        $pending = $this->pending;
+        $this->pending = [];
+        $em = $args->getObjectManager();
+        $this->creating = true;
+
+        try {
+            foreach ($pending as $activity) {
+                if (!$em->isOpen()) {
+                    break;
+                }
+                $this->suggestFor($activity, $em);
+            }
+        } finally {
+            $this->creating = false;
+        }
+    }
+
+    private function collect(ProcessingActivity $activity): void
+    {
+        if ($this->creating) {
+            return;
+        }
         if (!$this->reactions->isEnabled(AutoReactionService::KEY_DPIA_SUGGEST)) {
             return;
         }
-
         if (!$this->isHighRisk($activity)) {
             return;
         }
+        $this->pending[spl_object_id($activity)] = $activity;
+    }
 
+    private function suggestFor(ProcessingActivity $activity, EntityManagerInterface $em): void
+    {
+        $dpia = null;
         try {
-            $em = $args->getObjectManager();
-
+            if ($activity->getId() === null || $activity->getTenant() === null) {
+                return;
+            }
             // Already linked DPIA?
             $existing = $em->getRepository(DataProtectionImpactAssessment::class)
                 ->findOneBy(['processingActivity' => $activity]);
@@ -67,41 +132,83 @@ final class AutoReactionDpiaSuggestListener
                 return;
             }
 
-            $dpia = new DataProtectionImpactAssessment();
-            $dpia->setTenant($activity->getTenant());
-            $dpia->setProcessingActivity($activity);
-            // ProcessingActivity exposes the human-readable label via getName();
-            // earlier versions of this listener mistakenly called getTitle()
-            // which silently threw and was caught + logged as a warning, so the
-            // DPIA skeleton was never persisted. V3 W2-Bug1 fixes the call.
-            $dpia->setTitle(sprintf(
-                'DPIA Auto-Suggestion: %s (%s)',
-                $activity->getName() ?? 'Processing-Activity',
-                (new \DateTimeImmutable())->format('Y-m-d'),
-            ));
-            $dpia->setStatus(DpiaStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist DPIA skeleton)
-            if (method_exists($dpia, 'setProcessingDescription')) {
-                $dpia->setProcessingDescription(
-                    'Auto-generated DPIA skeleton based on high-risk indicators (special categories / automated decision-making / large scale). Review and complete required sections (Art. 35 (7) GDPR).'
-                );
-            }
+            $dpia = $this->buildSkeleton($activity, $em);
             $em->persist($dpia);
             $em->flush();
-
-            $this->logger->info('Auto-DPIA suggestion created', [
-                'processing_activity_id' => $activity->getId(),
-                'dpia_id' => $dpia->getId(),
-            ]);
-
-            // V3 W2-H4 (ISO 27001 Cl.7.4 / GDPR Art.35): Notify DPO so the
-            // auto-suggested skeleton enters the DPO's queue immediately.
-            $this->notifyDpo($activity, $dpia);
         } catch (\Throwable $e) {
-            $this->logger->warning('Auto-DPIA suggestion failed', [
+            $this->logger->error('Auto-DPIA suggestion failed', [
                 'processing_activity_id' => $activity->getId(),
                 'error' => $e->getMessage(),
             ]);
+            if (!$em->isOpen()) {
+                $this->managerRegistry?->resetManager();
+            } elseif ($dpia !== null && $em->contains($dpia)) {
+                $em->detach($dpia);
+            }
+
+            return;
         }
+
+        $this->logger->info('Auto-DPIA suggestion created', [
+            'processing_activity_id' => $activity->getId(),
+            'dpia_id' => $dpia->getId(),
+        ]);
+        $this->auditLogger?->logCreate(
+            'DataProtectionImpactAssessment',
+            $dpia->getId(),
+            [
+                'reference_number' => $dpia->getReferenceNumber(),
+                'title' => $dpia->getTitle(),
+                'processing_activity_id' => $activity->getId(),
+            ],
+            'DPIA auto-suggested: ' . $dpia->getReferenceNumber(),
+        );
+
+        // V3 W2-H4 (ISO 27001 Cl.7.4 / GDPR Art.35): Notify DPO so the
+        // auto-suggested skeleton enters the DPO's queue immediately.
+        $this->notifyDpo($activity, $dpia);
+    }
+
+    /**
+     * Draft DPIA prefilled from the activity; every NOT NULL column is set.
+     */
+    private function buildSkeleton(ProcessingActivity $activity, EntityManagerInterface $em): DataProtectionImpactAssessment
+    {
+        $tenant = $activity->getTenant();
+        $repository = $this->dpiaRepository ?? $em->getRepository(DataProtectionImpactAssessment::class);
+        \assert($repository instanceof DataProtectionImpactAssessmentRepository && $tenant !== null);
+
+        $dpia = new DataProtectionImpactAssessment();
+        $dpia->setTenant($tenant);
+        $dpia->setProcessingActivity($activity);
+        $dpia->setReferenceNumber($repository->getNextReferenceNumber($tenant));
+        $dpia->setTitle(sprintf(
+            'DPIA Auto-Suggestion: %s (%s)',
+            $activity->getName() ?? 'Processing-Activity',
+            (new \DateTimeImmutable())->format('Y-m-d'),
+        ));
+        $dpia->setStatus(DpiaStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist DPIA skeleton)
+        $dpia->setProcessingDescription(
+            'Auto-generated DPIA skeleton based on high-risk indicators: '
+            . implode('; ', $this->highRiskReasons($activity))
+            . '. Review and complete required sections (Art. 35 (7) GDPR).'
+        );
+        $purposes = array_filter(array_map(
+            static fn (mixed $p): string => is_scalar($p) ? trim((string) $p) : '',
+            $activity->getPurposes(),
+        ));
+        $dpia->setProcessingPurposes($purposes !== [] ? implode('; ', $purposes) : self::PLACEHOLDER);
+        $dpia->setDataCategories($activity->getPersonalDataCategories() !== [] ? $activity->getPersonalDataCategories() : ['to_be_assessed']);
+        $dpia->setDataSubjectCategories($activity->getDataSubjectCategories() !== [] ? $activity->getDataSubjectCategories() : ['to_be_assessed']);
+        $dpia->setLegalBasis($activity->getLegalBasis() ?: self::PLACEHOLDER);
+        $dpia->setNecessityAssessment(self::PLACEHOLDER);
+        $dpia->setProportionalityAssessment(self::PLACEHOLDER);
+        $dpia->setIdentifiedRisks([]);
+        $dpia->setRiskLevel('high');
+        $dpia->setTechnicalMeasures(self::PLACEHOLDER);
+        $dpia->setOrganizationalMeasures(self::PLACEHOLDER);
+
+        return $dpia;
     }
 
     /**
