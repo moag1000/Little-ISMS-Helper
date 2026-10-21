@@ -19,7 +19,6 @@ use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
-use App\Repository\InternalAuditRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\BCExerciseRepository;
@@ -50,7 +49,6 @@ final class ManagementReportService
         private readonly RiskRepository $riskRepository,
         private readonly ControlRepository $controlRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly InternalAuditRepository $auditRepository,
         private readonly TrainingRepository $trainingRepository,
         private readonly BusinessContinuityPlanRepository $bcPlanRepository,
         private readonly BCExerciseRepository $bcExerciseRepository,
