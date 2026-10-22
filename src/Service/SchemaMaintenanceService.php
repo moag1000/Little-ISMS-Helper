@@ -64,7 +64,11 @@ class SchemaMaintenanceService
         try {
             return $operation();
         } finally {
-            try { $conn->executeStatement('SELECT RELEASE_LOCK(' . $conn->quote(self::SCHEMA_LOCK_NAME) . ')'); } catch (\Throwable) {}
+            try {
+                $conn->executeStatement('SELECT RELEASE_LOCK(' . $conn->quote(self::SCHEMA_LOCK_NAME) . ')');
+            } catch (\Throwable) {
+                // MySQL frees the named lock when the connection closes, so a failed explicit release is harmless.
+            }
         }
     }
 
@@ -765,7 +769,7 @@ class SchemaMaintenanceService
         // Identify the offending version from the executed-delta: the FIRST
         // planned version that did NOT land in doctrine_migration_versions is
         // the one that failed. Under partial failure this is more accurate
-        // than blindly blaming the last planned version (QF-10).
+        // than blindly blaming the last planned version.
         $executedAfter = [];
         try {
             foreach ($this->migrationsDependencyFactory->getMetadataStorage()->getExecutedMigrations()->getItems() as $m) {

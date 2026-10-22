@@ -194,7 +194,7 @@ class SchemaHealthService
             ];
         }
 
-        // Belt-and-suspenders: NEVER drop infrastructure tables (QF B2), even
+        // Belt-and-suspenders: NEVER drop infrastructure tables, even
         // with allowDestructive=true. The dbal schema_filter already excludes
         // them from introspection; this guard covers a missing/misconfigured
         // filter or raw SQL reaching this path. Dropping doctrine_migration_versions
@@ -316,7 +316,11 @@ class SchemaHealthService
         } catch (\Throwable $e) {
             // Restore FK checks even on failure
             if ($fkChecksWereEnabled) {
-                try { $conn->executeStatement('SET SESSION foreign_key_checks = 1'); } catch (\Throwable) {}
+                try {
+                    $conn->executeStatement('SET SESSION foreign_key_checks = 1');
+                } catch (\Throwable) {
+                    // Session-scoped setting: when the connection is already gone there is nothing left to restore.
+                }
             }
             $this->auditLogger->logCustom(
                 'admin.schema.update.failed',
@@ -344,7 +348,11 @@ class SchemaHealthService
 
         // Re-enable FK checks after successful batch
         if ($fkChecksWereEnabled) {
-            try { $conn->executeStatement('SET SESSION foreign_key_checks = 1'); } catch (\Throwable) {}
+            try {
+                $conn->executeStatement('SET SESSION foreign_key_checks = 1');
+            } catch (\Throwable) {
+                // Session-scoped setting: when the connection is already gone there is nothing left to restore.
+            }
         }
 
         $this->auditLogger->logCustom(
