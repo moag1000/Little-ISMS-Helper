@@ -3,10 +3,10 @@
 # Format: <relative-path>:LOC=NNN deps=MMM
 # Entries may only be lowered or removed; CI rejects new or raised entries
 # (--ratchet-ref) and stale ones (--strict-shrink). See scripts/README.md.
-src/Entity/Risk.php:LOC=1896 deps=0
+src/Entity/Risk.php:LOC=1895 deps=0
 src/Repository/ComplianceMappingRepository.php:LOC=1815 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1815 deps=17
-src/Entity/Incident.php:LOC=1785 deps=0
+src/Entity/Incident.php:LOC=1784 deps=0
 src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
 src/Service/DashboardStatisticsService.php:LOC=1682 deps=24
 src/Controller/ComplianceExportController.php:LOC=1591 deps=0
@@ -19,8 +19,8 @@ src/Controller/ManagementReportController.php:LOC=1266 deps=0
 src/Entity/DataProtectionImpactAssessment.php:LOC=1264 deps=0
 src/Controller/Admin/DataRepairController.php:LOC=1242 deps=0
 src/Entity/Supplier.php:LOC=1242 deps=0
-src/Controller/RiskController.php:LOC=1128 deps=0
-src/Controller/UserManagementController.php:LOC=1051 deps=0
+src/Controller/RiskController.php:LOC=1126 deps=0
+src/Controller/UserManagementController.php:LOC=1049 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1027 deps=0
 src/Entity/Tenant.php:LOC=1012 deps=0
 src/Controller/TenantManagementController.php:LOC=1000 deps=0
@@ -32,14 +32,14 @@ src/Command/TisaxConsolidateCommand.php:LOC=886 deps=0
 src/Command/GenerateIsoProceduresCommand.php:LOC=834 deps=0
 src/Form/ProcessingActivityType.php:LOC=820 deps=0
 src/Controller/ComplianceWizardController.php:LOC=814 deps=0
-src/Controller/ProcessingActivityController.php:LOC=796 deps=0
+src/Controller/ProcessingActivityController.php:LOC=794 deps=0
 src/Controller/AdminBackupController.php:LOC=778 deps=0
 src/Controller/DPIAController.php:LOC=762 deps=0
 src/Controller/AssetController.php:LOC=761 deps=0
 src/Controller/QuickFixController.php:LOC=733 deps=0
 src/Controller/AuditController.php:LOC=691 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
-src/Controller/AnalyticsController.php:LOC=673 deps=0
+src/Controller/AnalyticsController.php:LOC=671 deps=0
 src/Controller/MonitoringController.php:LOC=646 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=625 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=21
