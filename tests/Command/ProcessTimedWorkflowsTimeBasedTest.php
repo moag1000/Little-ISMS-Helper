@@ -34,11 +34,8 @@ use Symfony\Component\Workflow\TransitionBlockerList;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
- * Time-based steps (`autoProgressConditions.type = time_based`) used to be
- * handed to the deprecated WorkflowAutoProgressionService, which has no
- * time_based branch — the command reported them as progressed while nothing
- * moved. They are now approved through WorkflowService as an automatic
- * actor; an approval that would close the workflow through the four-eyes
+ * Time-based steps (`autoProgressConditions.type = time_based`) are approved
+ * through WorkflowService as an automatic actor; an approval that would close the workflow through the four-eyes
  * `approve` is refused and reported as a notice, not as an error.
  */
 final class ProcessTimedWorkflowsTimeBasedTest extends TestCase

@@ -235,7 +235,6 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `TenantContext` - Multi-tenant scoping
 - `WorkflowService` - Workflow instance management (facade — stable public API)
 - `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
-- ~~`WorkflowAutoProgressionService`~~ - @deprecated since Y.1; bridges to FieldCompletionAutoTransition
 - `ModuleConfigurationService` - Module activation check (per tenant)
 
 **Core Entities:** Asset, Risk, Control (93 ISO 27001 controls), Incident, Document, ComplianceFramework, User, Tenant, Role, Permission, Workflow, WorkflowInstance, WorkflowStep, DataBreach
@@ -475,7 +474,6 @@ php bin/console app:migrate-legacy-workflows --archive
 
 **Do NOT:**
 - Create `new Workflow()` or `new WorkflowStep()` in `src/` outside Repository/Command (PHPStan blocks this)
-- Inject `WorkflowAutoProgressionService` in new code (deprecated — use listener pattern)
 - Edit DB `workflow_steps` rows directly (read-only since Y.4)
 
 **Documentation:**

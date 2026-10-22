@@ -189,9 +189,6 @@ final class MappingCorroborationService
 
     /**
      * True when the mapping goes from the source framework to the target framework.
-     *
-     * Generalised replacement for the former `isIsoBsiMapping()` method.
-     * The old name is kept as a BC alias for external callers.
      */
     public function isFrameworkPairMapping(
         ComplianceMapping $mapping,
@@ -204,19 +201,6 @@ final class MappingCorroborationService
         return $srcFw !== null && $tgtFw !== null
             && $srcFw->getId() === $source->getId()
             && $tgtFw->getId() === $target->getId();
-    }
-
-    /**
-     * BC alias — delegates to `isFrameworkPairMapping()`.
-     *
-     * @deprecated Use isFrameworkPairMapping() instead.
-     */
-    public function isIsoBsiMapping(
-        ComplianceMapping $mapping,
-        ComplianceFramework $iso,
-        ComplianceFramework $bsi,
-    ): bool {
-        return $this->isFrameworkPairMapping($mapping, $iso, $bsi);
     }
 
     /**

@@ -24,8 +24,7 @@ use Psr\Log\NullLogger;
 
 /**
  * SLA monitors (GDPR 72h, NIS2 24h/72h, ISO 10.1 30d) must be started by a
- * live path: they used to be created only from the deprecated
- * WorkflowAutoProgressionService, behind a metadata key no step carried.
+ * live path.
  */
 final class SlaDeadlineMonitorSpawnerTest extends TestCase
 {

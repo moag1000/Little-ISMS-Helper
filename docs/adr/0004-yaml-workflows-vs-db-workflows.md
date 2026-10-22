@@ -43,7 +43,7 @@ Key mechanics:
 - A PHPStan custom rule (`tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php`) prevents new
   instantiations of `Workflow` or `WorkflowStep` in `src/` outside Repository/Command namespaces.
 - `WorkflowService` (the public facade) is stable and reads YAML definitions via a loader service.
-- Legacy `WorkflowAutoProgressionService` is deprecated; auto-progression fires through
+- Auto-progression fires through
   `FieldCompletionAutoTransition` Doctrine `postUpdate` listener (no explicit service calls in
   controllers or entity services).
 - `php bin/console app:migrate-legacy-workflows` verifies all 15 DB rows have YAML equivalents
@@ -107,9 +107,6 @@ php bin/console app:migrate-legacy-workflows
 
 # Step 2: Archive DB rows that have YAML equivalents (irreversible)
 php bin/console app:migrate-legacy-workflows --archive
-
-# Step 3: Remove WorkflowAutoProgressionService injections (PHPStan will flag remaining ones)
-php bin/phpstan analyse src/ --level 8
 ```
 
 ---

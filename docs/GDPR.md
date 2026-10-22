@@ -236,7 +236,7 @@ src/Entity/Asset.php — $dataClassification (Zeile ~205)
 Aenderungen am BSI-Schutzbedarf eines Assets koennen eine DPIA-Pruefung
 ausloesen, wenn der Asset personenbezogene Daten verarbeitet.
 
-Beide Trigger setzen auf den `WorkflowAutoProgressionService`:
+Beide Trigger setzen auf den `FieldCompletionAutoTransition`-Listener:
 
 ```bash
 # DPIA-Workflow generieren

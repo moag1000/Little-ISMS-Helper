@@ -27,8 +27,7 @@ use PHPUnit\Framework\TestCase;
  *  1. MappingCorroborationService::corroborate() produces the same corroboration
  *     counts for both pairs (matching by Baustein for BSI target).
  *  2. PanelVerdictApplier::apply() produces the same verdict counts for both pairs.
- *  3. The isFrameworkPairMapping() / isIsoBsiMapping() BC alias both return the
- *     same result.
+ *  3. isFrameworkPairMapping() respects the source → target direction.
  */
 #[AllowMockObjectsWithoutExpectations]
 final class MappingPipelineRegressionTest extends TestCase
@@ -78,14 +77,14 @@ final class MappingPipelineRegressionTest extends TestCase
         self::assertSame(1, $result['residual'],        'ISO↔BSI: 1 heuristic residual');
         self::assertSame(1, $result['already_official'], 'ISO↔BSI: 1 official CRT row');
 
-        // BC alias: isIsoBsiMapping() must behave identically to isFrameworkPairMapping()
+        // Direction matters: the pair only matches source → target
         self::assertTrue(
-            $service->isIsoBsiMapping($heuristic1, $iso, $bsi),
-            'BC alias isIsoBsiMapping() must still work',
+            $service->isFrameworkPairMapping($heuristic1, $iso, $bsi),
+            'source → target pair matches',
         );
         self::assertFalse(
-            $service->isIsoBsiMapping($heuristic1, $bsi, $iso),
-            'BC alias must respect direction (src/tgt swap → false)',
+            $service->isFrameworkPairMapping($heuristic1, $bsi, $iso),
+            'swapped source/target does not match',
         );
     }
 
