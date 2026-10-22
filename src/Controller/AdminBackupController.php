@@ -36,7 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Backup / Restore / Export / Import admin controller.
  *
- * Reference implementation of the Role-Scope Architecture (Phase 3, spec
+ * Reference implementation of the Role-Scope Architecture (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  *
  * Authorization model:
@@ -49,7 +49,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *    (Tenant-Admin) can operate inside their own tenant tree, and SUPER_ADMIN
  *    transparently across any tenant.
  *  - `data_backup_index` lists backups under the class-level `ROLE_ADMIN`
- *    baseline — tenant-scoped filtering of the listing is deferred to Phase 5
+ *    baseline — tenant-scoped filtering of the listing is deferred
  *    (service-layer `BackupService::listBackups(?Tenant)` filter).
  *  - Generic data export (`data_export_index`, `data_export_execute`, and the
  *    async {@see DataExportAsyncController}) exports the caller's own
@@ -105,7 +105,7 @@ class AdminBackupController extends AbstractController
     #[Route('/admin/data/backup', name: 'data_backup_index', methods: ['GET'])]
     public function index(): Response
     {
-        // Phase 5: service-layer tenant filtering — SUPER_ADMIN sees all backups,
+        // Service-layer tenant filtering — SUPER_ADMIN sees all backups,
         // ROLE_ADMIN sees only backups whose embedded tenant_scope intersects with
         // their own tenant tree. Pass null for SUPER to bypass the filter.
         $scope = $this->backupVisibilityScope();
@@ -362,7 +362,7 @@ class AdminBackupController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'Backup file not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // Phase 5: resolve caller scope so validateBackup() can reject cross-tenant
+        // Resolve caller scope so validateBackup() can reject cross-tenant
         // attempts with AccessDeniedException (Symfony maps to 403).
         $callerScope = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
 

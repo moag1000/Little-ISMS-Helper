@@ -271,8 +271,6 @@ class RiskController extends AbstractController
      * The legacy sync GET route is kept for browser bookmarks and any
      * integration that already targets it; new UI traffic should use this
      * dispatch endpoint to avoid PHP-FPM timeout on large registers.
-     *
-     * Phase 2.5 of the async admin-jobs rollout.
      */
     #[Route('/risk/export/dispatch', name: 'app_risk_export_dispatch', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -425,7 +423,7 @@ class RiskController extends AbstractController
             $risk->setTenant($tenant);
         }
 
-        // Pre-fill from Vulnerability (Junior-Finding #8 / Data-Reuse: one-click derivation)
+        // Pre-fill from Vulnerability (Data-Reuse: one-click derivation)
         $fromVulnerabilityId = $request->query->get('fromVulnerability');
         if ($fromVulnerabilityId !== null && $fromVulnerabilityId !== '') {
             $vulnerability = $this->vulnerabilityRepository->find($fromVulnerabilityId);
@@ -457,7 +455,7 @@ class RiskController extends AbstractController
             }
         }
 
-        // Pre-fill from Incident (Junior-Finding #8 / Data-Reuse)
+        // Pre-fill from Incident (Data-Reuse)
         $fromIncidentId = $request->query->get('fromIncident');
         if ($fromIncidentId !== null && $fromIncidentId !== '') {
             $incident = $this->incidentRepository->find($fromIncidentId);
@@ -490,7 +488,7 @@ class RiskController extends AbstractController
             $this->entityManager->flush();
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $this->flashSuccess('risk.success.created');
 
@@ -536,7 +534,7 @@ class RiskController extends AbstractController
             $this->entityManager->flush();
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $this->flashSuccess('risk.success.created');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
@@ -559,7 +557,7 @@ class RiskController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        // C-01 fix: tenant-scoped query only. Previously this route fell back
+        // Tenant-scoped query only. This route must never fall back
         // to $riskRepository->findAll() when $tenant was null, leaking
         // cross-tenant data. With #[IsGranted('ROLE_USER')] above the user is
         // always authenticated; if they have no tenant assigned, return an
@@ -677,16 +675,16 @@ class RiskController extends AbstractController
         // Risk Treatment Plans linked to this risk (ISO 27001 Cl.6.1.3)
         $treatmentPlans = $this->riskTreatmentPlanRepository->findByRisk($risk);
 
-        // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+        // Inverse-Coverage Impact-Analyse
         $impactCoverage = $this->inverseCoverageService?->forRisk($risk) ?? ['total' => 0, 'frameworks' => []];
 
-        // V3 W2-H3: Comment-Thread (C7) — load thread for this Risk.
+        // Comment-Thread (C7) — load thread for this Risk.
         $comments = [];
         if ($this->commentRepository !== null && $tenant !== null && $risk->getId() !== null) {
             $comments = $this->commentRepository->findThread($tenant, 'Risk', $risk->getId());
         }
 
-        // F16: structured incident cross-links
+        // Structured incident cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository?->findByRisk($risk) ?? [];
 
         // Z.0 — Workflow transparency: pre-compute pending banner for this entity
@@ -702,20 +700,20 @@ class RiskController extends AbstractController
             // Data-Reuse: one-click link matrix
             'linkedVulnerabilities' => $linkedVulnerabilities,
             'linkedIncidents' => $risk->getIncidents(),
-            // V3 B3: Treatment plans collection on Risk show
+            // Treatment plans collection on Risk show
             'treatmentPlans' => $treatmentPlans,
-            // V3 B6: Impact analysis (which frameworks break if this risk changes?)
+            // Impact analysis (which frameworks break if this risk changes?)
             'impact_coverage' => $impactCoverage,
-            // V3 W2-H3: Comments thread + form action
+            // Comments thread + form action
             'comments' => $comments,
-            // F16: structured incident cross-links
+            // Structured incident cross-links
             'riskIncidentLinks' => $riskIncidentLinks,
             // Z.0: lifecycle pending banner data (no N+1)
             'workflow_info' => $workflowInfo,
         ]);
     }
     /**
-     * F16: Link an Incident to this Risk.
+     * Link an Incident to this Risk.
      */
     #[Route('/risk/{id}/link-incident', name: 'app_risk_link_incident', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -751,7 +749,7 @@ class RiskController extends AbstractController
     }
 
     /**
-     * F16: Unlink an Incident from this Risk by link ID.
+     * Unlink an Incident from this Risk by link ID.
      */
     #[Route('/risk/{id}/unlink-incident/{linkId}', name: 'app_risk_unlink_incident', requirements: ['id' => '\d+', 'linkId' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -778,7 +776,7 @@ class RiskController extends AbstractController
     }
 
     /**
-     * Clone a Risk (C4-C1 — Klon-Funktionen). Open to any ROLE_USER so
+     * Clone a Risk. Open to any ROLE_USER so
      * every ISMS-user can template their own risks. The clone preserves
      * the assessment scaffolding and resets lifecycle state.
      */
@@ -832,7 +830,7 @@ class RiskController extends AbstractController
             $this->entityManager->flush();
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $this->flashSuccess('risk.success.updated');
 

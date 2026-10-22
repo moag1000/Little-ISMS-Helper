@@ -17,7 +17,7 @@ namespace App\Lifecycle;
  * class AuditFinding { ... }
  * </code>
  *
- * Foundation pattern P-4 (audit-s3). See
+ * See
  * {@see \App\Lifecycle\LifecycleRegistry} for available presets and the
  * stage-array contract.
  */

@@ -8,7 +8,7 @@ use App\Entity\WizardRun;
 use App\Service\PolicyWizard\WizardStepKeys;
 
 /**
- * Policy-Wizard W2-A — shared scaffolding for step evaluators.
+ * Policy-Wizard — shared scaffolding for step evaluators.
  *
  * Provides the common `persist()` implementation (write into the
  * `WizardRun.inputs[$stepKey]` slot) plus the default `isApplicable()`

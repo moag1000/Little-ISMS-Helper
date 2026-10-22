@@ -19,7 +19,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[UniqueEntity(fields: ['name'], message: 'permission.validation.name_unique')]
 class Permission implements Stringable
 {
-    // Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+    // RBAC core entities.
     // 4-stage lifecycle for a permission: drafted → activated → deprecated → archived.
     // Deprecation flags a permission "discouraged from new assignments" without
     // breaking existing role bindings — archival removes it from operational use.
@@ -55,7 +55,7 @@ class Permission implements Stringable
     private bool $isSystemPermission = false;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      * Owned by `permission_lifecycle` — never call setStatus() directly outside
      * the initial-marking bootstrap; route transitions through LifecycleService::transition().
      */
@@ -63,7 +63,7 @@ class Permission implements Stringable
     private string $status = self::STATUS_DRAFT;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      * Optimistic-lock guard for concurrent lifecycle transitions.
      */
     #[ORM\Version]
@@ -206,7 +206,7 @@ class Permission implements Stringable
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      */
     public function getStatus(): string
     {
@@ -214,7 +214,7 @@ class Permission implements Stringable
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      * Do NOT call directly outside the initial-marking bootstrap; route
      * transitions through LifecycleService::transition().
      */
@@ -225,7 +225,7 @@ class Permission implements Stringable
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      */
     public function getLockVersion(): int
     {

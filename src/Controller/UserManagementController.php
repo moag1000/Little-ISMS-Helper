@@ -389,8 +389,6 @@ class UserManagementController extends AbstractController
      * The legacy sync GET route is kept for back-compat (bookmarks, external
      * automation, tests); new UI traffic should use this dispatch endpoint
      * to avoid PHP-FPM timeouts on large user lists (10k+).
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/admin/users/export/dispatch', name: 'user_management_export_dispatch', methods: ['POST'])]
     #[IsGranted(UserVoter::VIEW_ALL)]

@@ -103,7 +103,7 @@ class LifecycleConfigRepository extends ServiceEntityRepository
     }
 
     // -------------------------------------------------------------------------
-    // Workflow-step overlay (Y.3 — WorkflowOverlayController)
+    // Workflow-step overlay (WorkflowOverlayController)
     // Key shape: workflowName = 'workflow:{name}', transitionName = 'step:{index}'
     // -------------------------------------------------------------------------
 

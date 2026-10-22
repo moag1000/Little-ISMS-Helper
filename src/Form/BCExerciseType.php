@@ -89,7 +89,7 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 168],
             ])
-            // P-15 DataReuse: typed participantPersons Multi-Select replaces
+            // Typed participantPersons Multi-Select replaces
             // free-text participants textarea (kept read-only for legacy).
             ->add('participantPersons', EntityType::class, [
                 'label' => 'bc_exercises.field.participant_persons',
@@ -107,7 +107,7 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
-            // P-15 DataReuse: facilitator now Pattern-A dual-state.
+            // Facilitator now Pattern-A dual-state.
             // facilitator textfield kept for legacy migration display only.
             ->add('facilitatorUser', OwnerUserType::class, [
                 'label' => 'bc_exercises.field.facilitator_user',
@@ -145,7 +145,7 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'placeholder' => 'bc_exercises.placeholder.exercise_leader_person',
                 'required' => false,
             ])
-            // P-15 DataReuse: typed observerPersons Multi-Select.
+            // Typed observerPersons Multi-Select.
             ->add('observerPersons', EntityType::class, [
                 'label' => 'bc_exercises.field.observer_persons',
                 'help' => 'bc_exercises.help.observer_persons',
@@ -162,7 +162,7 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `bc_exercise_lifecycle`. ISO 22301 Cl. 8.5 — 4-eyes
             // auf `complete` (Audit-Evidenz). Transitions via LifecycleService.
             ->add('status', ChoiceType::class, [

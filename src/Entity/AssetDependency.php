@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * AssetDependency — enriched directed Asset → Asset edge (DORA RT_05).
  *
- * Bucket-6 / DORA RoI Sprint 9 (RT_05 asset-dependency-graph): this join
+ * DORA RoI RT_05 (asset-dependency-graph): this join
  * entity sits alongside the legacy {@see Asset::$dependsOn} ManyToMany
  * (kept intact for BSI 3.6 Schutzbedarfsvererbung / GstoolXmlImporter
  * backward-compatibility) and carries the per-edge attributes that the

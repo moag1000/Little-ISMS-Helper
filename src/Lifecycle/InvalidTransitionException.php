@@ -7,7 +7,7 @@ namespace App\Lifecycle;
 /**
  * Thrown when a {@see LifecycleService::transition()} call requests a
  * status target that is not allowed for the entity's current status
- * by its registered lifecycle (audit-s3 foundation pattern P-4).
+ * by its registered lifecycle.
  *
  * Domain-level exception — callers should translate this to a
  * 4xx HTTP response or a user-facing form-error, never to a 500.

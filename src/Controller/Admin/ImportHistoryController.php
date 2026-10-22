@@ -16,14 +16,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * ISB-Review Sprint-2 gate MINOR-1: auditor-facing UI for the per-row import
- * audit trail (see docs/DATA_REUSE_PLAN_REVIEW_ISB.md).
+ * Auditor-facing UI for the per-row import audit trail.
  *
  * Uses {@see ImportSessionRepository} for the session list and
  * {@see ImportRowEventRepository} for the per-session row detail view
  * (filterable by decision / target entity type).
  *
- * RBAC: Role-Scope Phase 4 follow-up — migrated to
+ * RBAC: Role-Scope: migrated to
  * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}. Auditors review their
  * own tenant's import audit trail; SUPER_ADMIN sees any (handled by voter
  * inheritance). Application-wide firewall still requires ROLE_ADMIN on

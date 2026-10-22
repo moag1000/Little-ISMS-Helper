@@ -244,7 +244,7 @@ class ComplianceRequirementController extends AbstractController
             'available_users' => ($tenant instanceof \App\Entity\Tenant)
                 ? $this->userRepository->findBy(['tenant' => $tenant])
                 : [],
-            // Persons of the fulfillment's organisation only (#1059). findAll()
+            // Persons of the fulfillment's organisation only. findAll()
             // relied on the TenantFilter, which is unscoped for an instance
             // operator — who works in a default organisation here and was
             // offered every organisation's persons.
@@ -443,7 +443,7 @@ class ComplianceRequirementController extends AbstractController
             }
         }
 
-        // Person-Rollout Phase B2 — yearly attestation owner (governance
+        // Yearly attestation owner (governance
         // role-holder, distinct from day-to-day responsible_person_*).
         $attestationOwnerPersonId = $request->request->get('attestationOwnerPersonId');
         if ($attestationOwnerPersonId === '') {
@@ -472,7 +472,7 @@ class ComplianceRequirementController extends AbstractController
     /**
      * A person of the fulfillment's organisation, or null. Person lookups by
      * id must not rely on the TenantFilter (unscoped for an instance
-     * operator) — #1059.
+     * operator)
      */
     private function findTenantPerson(int $id, Tenant $tenant): ?Person
     {

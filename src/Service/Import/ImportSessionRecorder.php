@@ -15,8 +15,7 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
- * ISB-Review Sprint-2 gate MINOR-1 (docs/DATA_REUSE_PLAN_REVIEW_ISB.md):
- * persists per-row audit events for every compliance-mapping import.
+ * Persists per-row audit events for every compliance-mapping import.
  *
  * Lifecycle:
  *   - openSession()  : hashes the file, stores header, status=preview.

@@ -12,7 +12,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use DateTimeImmutable;
 
 /**
- * W4-D / DORA Art. 24-27 — confirms tenants flagged as significant
+ * DORA Art. 24-27 — confirms tenants flagged as significant
  * scheduled or executed a Threat-Led Penetration Test (TLPT) within
  * the last 36 months.
  *
@@ -20,7 +20,7 @@ use DateTimeImmutable;
  * financial entities MUST run a TLPT at least every three years on
  * their critical or important functions. The wizard signals
  * "significant" via the `dora.is_significant` tenant-policy-setting
- * (W1-A) — non-significant tenants pass automatically (the obligation
+ *  — non-significant tenants pass automatically (the obligation
  * does not apply).
  *
  * Detection heuristic: any {@see \App\Entity\BCExercise} row whose

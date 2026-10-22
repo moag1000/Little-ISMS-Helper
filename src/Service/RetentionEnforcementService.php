@@ -21,9 +21,8 @@ use Psr\Log\LoggerInterface;
  * Enforces the per-tenant data-retention policies configured in the
  * /admin/settings/data-retention UI (Tenant.dataRetentionPolicies).
  *
- * Until now that UI was a pure stub ("auto-delete cron is NOT implemented —
- * Wave 2"): retention periods were documented but never enforced, so data
- * stayed forever (GDPR Art. 5(1)(e) storage-limitation gap, audit finding M-4).
+ * Until now that UI was a pure stub ("auto-delete cron is NOT implemented"): retention periods were documented but never enforced, so data
+ * stayed forever (GDPR Art. 5(1)(e) storage-limitation gap).
  *
  * This service only ever touches entity types the admin has explicitly opted
  * into (auto_delete = true); the GDPR maximum caps are already applied at save

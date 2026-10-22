@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / ISO 22301 Cl. 8.2.2 — confirms the tenant has a published
+ * ISO 22301 Cl. 8.2.2 — confirms the tenant has a published
  * Business-Impact-Analysis Methodology document.
  *
  * A document qualifies when ALL of the following hold:

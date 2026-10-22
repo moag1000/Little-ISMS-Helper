@@ -7,13 +7,11 @@ namespace App\Lifecycle;
 /**
  * Maps URL slugs (e.g. "document") to entity FQCN + workflow name.
  *
- * Foundation pilot (X.0) shipped the Document mapping.
- * Sprint X.1 adds ProcessingActivity and ISMSObjective.
- * Lifecycle unblock adds PolicyTemplate (previously deferred — lacked status field).
- * Sprint X.2 adds Asset — custom physical lifecycle (7 places, 9 transitions).
- * Sprint X.2 batch adds 10 custom-stage entities (AuditFinding, Consent,
- * CorrectiveAction, DataBreach, DataSubjectRequest, DPIA, Incident,
- * InternalAudit, Risk, Vulnerability).
+ * Registered entities include Document, ProcessingActivity, ISMSObjective,
+ * PolicyTemplate, Asset (custom physical lifecycle: 7 places, 9 transitions)
+ * and custom-stage entities such as AuditFinding, Consent, CorrectiveAction,
+ * DataBreach, DataSubjectRequest, DPIA, Incident, InternalAudit, Risk and
+ * Vulnerability. The MAP constant below is the authoritative list.
  */
 final class EntityTypeRegistry
 {
@@ -44,7 +42,7 @@ final class EntityTypeRegistry
             'workflow' => 'audit_finding_lifecycle',
         ],
 
-        // Phase 2.5 — AuditProgram ISO 19011 §5.4 programme lifecycle.
+        // AuditProgram ISO 19011 §5.4 programme lifecycle.
         'audit-program' => [
             'class' => \App\Entity\AuditProgram::class,
             'workflow' => 'audit_program_lifecycle',
@@ -85,12 +83,12 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Vulnerability::class,
             'workflow' => 'vulnerability_lifecycle',
         ],
-        // Sprint Y.0 — WorkflowInstance approval-chain state-machine
+        // WorkflowInstance approval-chain state-machine
         'workflow-instance' => [
             'class' => \App\Entity\WorkflowInstance::class,
             'workflow' => 'workflow_instance_lifecycle',
         ],
-        // Sprint Y.5 — 10 additional entity lifecycles closing the FormType-bypass surface.
+        // 10 additional entity lifecycles closing the FormType-bypass surface.
         // See ADR 2026-05-18-formtype-status-hijack-and-lifecycle-extension.
         'training' => [
             'class' => \App\Entity\Training::class,
@@ -132,19 +130,19 @@ final class EntityTypeRegistry
             'class' => \App\Entity\BCExercise::class,
             'workflow' => 'bc_exercise_lifecycle',
         ],
-        // Junior-ISB-Audit-2026-05-22 S-01 — InterestedParty lifecycle
+        // InterestedParty lifecycle
         // (ISO 27001 Cl. 4.2 + 9.3.2 c — Mgmt-Review-Input demands versioning).
         'interested-party' => [
             'class' => \App\Entity\InterestedParty::class,
             'workflow' => 'interested_party_lifecycle',
         ],
-        // Junior-ISB-Audit Phase-2 Lifecycle — NotificationDelivery 6-stage
+        // NotificationDelivery 6-stage
         // delivery pipeline (ISO 27001 Cl. 7.4 + DORA Art. 19).
         'notification-delivery' => [
             'class' => \App\Entity\Notification\NotificationDelivery::class,
             'workflow' => 'notification_delivery_lifecycle',
         ],
-        // Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+        // RBAC core entities.
         // Permission catalog (ISO 27001 A.5.15-A.5.16) — 4 stages.
         'permission' => [
             'class' => \App\Entity\Permission::class,
@@ -156,7 +154,7 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Role::class,
             'workflow' => 'role_lifecycle',
         ],
-        // Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical,
+        // Tenant (security-critical,
         // 30+ isActive callsites preserved via wrapper). 5-stage lifecycle:
         // draft → active ⇄ suspended → terminated → archived.
         'tenant' => [

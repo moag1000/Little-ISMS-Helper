@@ -241,7 +241,7 @@ class HomeController extends AbstractController
             }
         }
 
-        // Sprint 13: Guided-Tour-Banner-Vorschlag. Zeigt pro Nutzer die
+        // Guided-Tour-Banner-Vorschlag. Zeigt pro Nutzer die
         // noch nicht abgeschlossene, rollen-passende Tour. Null = kein Banner.
         $suggestedTour = null;
         $autoRole = null;

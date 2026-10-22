@@ -14,7 +14,7 @@ use Twig\TwigFilter;
  * {@see \App\Command\GenerateRegulatoryWorkflowsCommand}) into plain-language
  * labels and descriptions for the approval-screen and approver-emails.
  *
- * Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH) — German
+ * German
  * Fachbereichsleiter:in saw raw `ciso_review` / `top_mgmt_signoff` step
  * identifiers in the approval UI. Without humanisation, the approver could
  * not tell what the step actually meant. This filter reads `workflow.step_label.*`

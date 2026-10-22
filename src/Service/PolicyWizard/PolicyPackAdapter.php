@@ -8,7 +8,7 @@ use App\Entity\PolicyTemplate;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F38 — Policy-Pack format adapter.
+ * Policy-Pack format adapter.
  *
  * Serialises a set of curated {@see PolicyTemplate}s into a portable, versioned
  * "policy pack" (a JSON manifest + per-template entries with resolved

@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * F20 — DOCX + Markdown export for ISMS Documents.
+ * DOCX + Markdown export for ISMS Documents.
  *
  * Split out of the (already large) DocumentController so the export endpoints
  * live in a focused, single-responsibility controller. Both routes are gated by

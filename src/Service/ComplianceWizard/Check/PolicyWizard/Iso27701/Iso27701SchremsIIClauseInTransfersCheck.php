@@ -13,7 +13,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use App\Service\TenantSettingResolver\PolicySettingProvider;
 
 /**
- * W6-D / ISO 27701:2025 Cl. 7.5 + GDPR Art. 44-49 — confirms the
+ * ISO 27701:2025 Cl. 7.5 + GDPR Art. 44-49 — confirms the
  * International Transfers Policy contains "Schrems II" and
  * "supplementary measures" wording.
  *
@@ -37,7 +37,7 @@ use App\Service\TenantSettingResolver\PolicySettingProvider;
  *
  * Falls back to scanning the host Document description /
  * substitution-variables when no DocumentSection row exists, so the
- * check works with both the W6-A split-state machine and pre-W6-A
+ * check works with both the split-state machine and
  * monolithic privacy documents.
  */
 final class Iso27701SchremsIIClauseInTransfersCheck implements PolicyWizardCheckInterface

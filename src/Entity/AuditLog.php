@@ -45,7 +45,7 @@ class AuditLog
     private ?string $userName = null;
 
     /**
-     * ISB-Review Sprint-2 gate: actor's highest role at time of action.
+     * Actor's highest role at time of action.
      * Values: ROLE_SUPER_ADMIN | ROLE_ADMIN | ROLE_MANAGER | ROLE_AUDITOR |
      * ROLE_USER | null (pre-migration rows, or system actions).
      */

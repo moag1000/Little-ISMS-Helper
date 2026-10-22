@@ -10,7 +10,7 @@ use App\Entity\CorrectiveAction;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — CorrectiveAction form: effectiveness
+ * Form-Step-Inline-Hint — CorrectiveAction form: effectiveness
  * review overdue.
  *
  * Fires when the user is editing a CorrectiveAction whose

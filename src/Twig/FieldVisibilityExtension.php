@@ -9,7 +9,7 @@ use Twig\Attribute\AsTwigFunction;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
- * F7 Twig helper — exposes can_view_field('EntityClass', 'fieldKey').
+ * Twig helper — exposes can_view_field('EntityClass', 'fieldKey').
  *
  * Usage in templates:
  *   {% if can_view_field('Risk', 'owner') %}

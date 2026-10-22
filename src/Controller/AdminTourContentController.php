@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Sprint 13 / P5 — Admin-UI für Tenant-spezifische Tour-Content-Overrides.
+ * Admin-UI für Tenant-spezifische Tour-Content-Overrides.
  *
  *   GET  /admin/tours/content                 Übersicht aller Touren
  *   GET  /admin/tours/content/{tourId}        Step-Liste einer Tour mit Edit-Form

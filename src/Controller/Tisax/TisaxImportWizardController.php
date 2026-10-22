@@ -373,7 +373,7 @@ final class TisaxImportWizardController extends AbstractController
             $applyIds    = array_map('strval', (array) $request->request->all('apply_maturity'));
             $overwritten = $this->importSupport->applyMaturityOverwrites($applyIds, $controls, $framework, $tenant, $user);
 
-            // B3 — evidence linkage: resolve the imported "Referenz Dokumentation"
+            // Evidence linkage: resolve the imported "Referenz Dokumentation"
             // free-text citations to real Document evidence (exact/normalised
             // filename match only). Unmatched citations land in the typed
             // dataSourceMapping.unlinked_citations review list, never dropped.

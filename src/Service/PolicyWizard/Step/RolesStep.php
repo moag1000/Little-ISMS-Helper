@@ -13,8 +13,8 @@ use App\Service\PolicyWizard\WizardUserGuard;
  * Step 3 — Roles & Responsibilities.
  *
  * Collects role assignments (CISO/ISB, DPO, BCM-Officer, IT Operations
- * Lead) and the per-business-function owner slots (P1 Risk-Owner — see
- * `07-phase4-sprint-reconciliation.md` §1.5 + §3 W2 line 196).
+ * Lead) and the per-business-function owner slots (see
+ * `docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md` §1.5).
  *
  * Person-Rollout (2026-05-08): the four governance roles + the six
  * function-owner slots store **Person.id** (not User.id) — long-term
@@ -31,8 +31,7 @@ use App\Service\PolicyWizard\WizardUserGuard;
  * does NOT auto-create Persons (would silently mutate tenant data).
  *
  * Self-approval guard: refuses to accept the same user-id as both the
- * author (run starter) and any approver in the chain. Junior P1 guard
- * rail.
+ * author (run starter) and any approver in the chain (guard rail).
  */
 final class RolesStep extends AbstractStep
 {
@@ -182,7 +181,7 @@ final class RolesStep extends AbstractStep
         parent::persist($run, $input);
 
         // Hoist the keys of populated function-owner slots onto
-        // WizardRun.affectedFunctions (P1 Risk-Owner — see W1 entity
+        // WizardRun.affectedFunctions (see the WizardRun entity
         // field). Slot=null means "no owner assigned" so the function
         // is NOT in the affected list.
         $owners = $input['function_owners'] ?? [];

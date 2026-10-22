@@ -9,7 +9,7 @@ use App\Service\ModuleConfigurationService;
 /**
  * Central registry for SystemTemplates supplied by `TemplateProviderInterface`.
  *
- * Foundation P-14 (S5 Junior-ISB-Audit). Providers are tagged services,
+ * Providers are tagged services,
  * collected via tagged_iterator and lazily harvested on first lookup. The
  * registry is stateless beyond its own indexed cache; tenant-isolation +
  * Apply-Permissions live in the controller, not here.

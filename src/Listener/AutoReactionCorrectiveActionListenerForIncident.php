@@ -18,10 +18,10 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Junior-ISB-Audit-2026-05-22 C2-05 — CAPA-Canonical-Process: Incident path.
+ * CAPA-Canonical-Process: Incident path.
  *
  * Mirrors {@see \App\EventListener\AutoReactionCorrectiveActionListener} (the
- * AuditFinding-path, in production since H-01). ISO 27001 Cl. 10.1
+ * AuditFinding-path, in production). ISO 27001 Cl. 10.1
  * closure-loop: every high/critical Incident with a documented root-cause
  * gets a structured CorrectiveAction skeleton so that due-date, owner, and
  * effectiveness-review can be tracked — no longer just freetext in

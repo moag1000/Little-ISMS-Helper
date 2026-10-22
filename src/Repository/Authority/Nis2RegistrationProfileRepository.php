@@ -11,7 +11,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * F29 — Repository for Nis2RegistrationProfile.
+ * Repository for Nis2RegistrationProfile.
  *
  * @extends ServiceEntityRepository<Nis2RegistrationProfile>
  */

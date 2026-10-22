@@ -28,7 +28,7 @@ class LocationRepository extends ServiceEntityRepository
      * attribute on the calling controller; this query only applies the
      * tenant boundary so cross-tenant rows are never returned.
      *
-     * Used by the Policy-Wizard W2 organisation_scope step to populate
+     * Used by the Policy-Wizard organisation_scope step to populate
      * the "in-scope sites" multi-select. Sorted by name for predictable
      * picker UX.
      *

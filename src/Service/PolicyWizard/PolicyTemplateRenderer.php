@@ -25,11 +25,10 @@ use BadMethodCallException;
  *   is hardcoded ON — there is no UI toggle and the renderer always
  *   includes the section.
  *
- * IMPLEMENTATION NOTE: this class is a stub for sprint W1. The
- * actual rendering pipeline (Twig + variable manifest + random
- * sampler validator) ships in W3. The stub throws
- * `BadMethodCallException` so the W1-D fixture can `markTestSkipped()`
- * cleanly.
+ * IMPLEMENTATION NOTE: this class is a stub. The actual rendering
+ * pipeline (Twig + variable manifest + random sampler validator) is
+ * not implemented here. The stub throws `BadMethodCallException` so
+ * fixtures can `markTestSkipped()` cleanly.
  *
  * @phpstan-type RenderResult array{
  *   body: string,

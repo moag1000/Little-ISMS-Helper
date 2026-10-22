@@ -8,7 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
 
 /**
- * L-02: Validates that every active ComplianceFramework has all of its
+ * Validates that every active ComplianceFramework has all of its
  * required modules enabled in the current tenant/configuration.
  *
  * Surfaces a warning list that the admin-UI and dashboards can render,

@@ -7,7 +7,7 @@ namespace App\Enum;
 /**
  * Criticality-cascade behaviour for an Asset → Asset edge (DORA RT_05).
  *
- * Bucket-6 (DORA RoI Sprint 9, RT_05 asset-dependency-graph) — declares
+ * Declares
  * how the criticality of the upstream asset cascades into the dependent
  * one. ESA RoI per-edge sub-elements distinguish whether an outage of
  * the upstream takes the dependent fully (cascade), partially (partial),

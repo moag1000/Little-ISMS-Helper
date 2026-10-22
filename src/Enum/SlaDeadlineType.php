@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enum;
 
 /**
- * SLA Deadline Type Enum — Sprint 7A F3 Wave 2
+ * SLA Deadline Type Enum
  *
  * Enumerates all regulatory and custom SLA deadline categories
  * tracked by SlaDeadlineMonitor.

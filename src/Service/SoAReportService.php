@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Includes all 93 Annex A controls with implementation status, justifications,
  * linked risks, and responsibilities.
  *
- * Phase 6F-C: SoA PDF Generator for ISO 27001 compliance reporting
+ * SoA PDF Generator for ISO 27001 compliance reporting
  */
 class SoAReportService
 {
@@ -239,7 +239,7 @@ class SoAReportService
     }
 
     /**
-     * M-02: SoA completeness validation. Returns a structured list of
+     * SoA completeness validation. Returns a structured list of
      * violations; empty array means the SoA is ready for export.
      *
      * Rules:

@@ -19,7 +19,7 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * V3 W2-M3 — Admin UI for Industry-Preset application.
+ * Admin UI for Industry-Preset application.
  *
  * Surfaces the 4 curated presets from `fixtures/library/presets/` so
  * tenant-admins can apply them without dropping to the CLI. Each preset
@@ -27,7 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * and persists initial Control / Document skeletons — via the
  * {@see IndustryPresetApplier} shared with app:load-industry-preset.
  *
- * Phase 4c role-scope migration: ROLE_ADMIN applies presets in their own
+ * ROLE_ADMIN applies presets in their own
  * tenant, SUPER_ADMIN may target any via the `tenant_id` POST param.
  * Tenant scope resolves via {@see TenantContext::resolveAdminScope()}.
  */

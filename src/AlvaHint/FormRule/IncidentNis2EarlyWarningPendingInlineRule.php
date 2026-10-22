@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Incident form: NIS2 24h early-warning pending.
+ * Form-Step-Inline-Hint — Incident form: NIS2 24h early-warning pending.
  *
  * Fires when the tenant has the NIS2/DORA module on, the user enters
  * an Incident with severity `high` or `critical`, and the

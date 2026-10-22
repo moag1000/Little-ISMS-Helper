@@ -753,7 +753,7 @@ class Control
         return $this;
     }
 
-    // ── Sprint 6: Effectiveness & Cloud fields ────────────────────────────────
+    // ── Effectiveness & Cloud fields ────────────────────────────────
 
     /**
      * Control effectiveness rating (ISO 27001 §9.1).
@@ -973,10 +973,10 @@ class Control
         return $this;
     }
 
-    // ── F4 Evidence-Versioning ────────────────────────────────────────────────
+    // ── Evidence-Versioning ────────────────────────────────────────────────
 
     /**
-     * F4 — set to true by EvidenceCascadeInvalidationService when a linked
+     * Set to true by EvidenceCascadeInvalidationService when a linked
      * DocumentVersion is superseded by a newer upload. Signals the reviewer
      * queue that this control's evidence needs re-verification.
      * Reset to false when the reviewer marks the reverification task as completed.

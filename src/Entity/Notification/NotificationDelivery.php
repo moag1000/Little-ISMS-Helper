@@ -21,17 +21,17 @@ class NotificationDelivery
 {
     public const STATUS_PENDING   = 'pending';
     public const STATUS_SENT      = 'sent';
-    // Junior-ISB-Audit Phase-2 Lifecycle — `delivered` records the positive
+    // `delivered` records the positive
     // end-to-end ACK from the receiver (read-receipt, webhook ACK body, SMTP
     // 250). Distinct from `sent` which only means "handed off to transport".
     public const STATUS_DELIVERED = 'delivered';
     public const STATUS_FAILED    = 'failed';
     public const STATUS_RETRYING  = 'retrying';
-    // Junior-ISB-Audit Phase-2 Lifecycle — `archived` is the post-retention
+    // `archived` is the post-retention
     // terminal state (kept for forensic audit, hidden from dashboards).
     public const STATUS_ARCHIVED       = 'archived';
     /**
-     * F3 digest mode — delivery is queued for batching; the
+     * Digest mode — delivery is queued for batching; the
      * `app:notification:send-digests` command collects all rows
      * with this status per channel and sends ONE batched email.
      */
@@ -84,7 +84,7 @@ class NotificationDelivery
     private ?string $errorMessage = null;
 
     /**
-     * F3 digest mode — snapshot of the entity state at dispatch time.
+     * Digest mode — snapshot of the entity state at dispatch time.
      * Stored so that the digest command can reconstruct the notification body
      * without needing the original Messenger message (which is gone by then).
      * Only populated when `status = pending_digest`; null for immediate sends.
@@ -95,7 +95,7 @@ class NotificationDelivery
     private ?array $payload = null;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — optimistic-lock guard for concurrent
+     * Optimistic-lock guard for concurrent
      * lifecycle transitions (e.g. retry-scheduler racing the read-receipt
      * webhook). Surfaces as HTTP 409 via OptimisticLockException in the
      * LifecycleService HTTP path.
@@ -120,7 +120,7 @@ class NotificationDelivery
     /**
      * Marking-store mutator for the `notification_delivery_lifecycle`.
      *
-     * Junior-ISB-Audit Phase-2 Lifecycle — direct setStatus() is acceptable
+     * Direct setStatus() is acceptable
      * on the hot path (channel adapters call markSent/markFailed which delegate
      * here) because the channel-bound dispatch loop is a single-actor flow,
      * not a multi-stage approval chain. The `LifecycleService::transition()`
@@ -138,7 +138,7 @@ class NotificationDelivery
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — optimistic-lock version exposed
+     * Optimistic-lock version exposed
      * for the LifecycleService HTTP 409 path.
      */
     public function getLockVersion(): int
@@ -194,7 +194,7 @@ class NotificationDelivery
     public function setPayload(?array $payload): static { $this->payload = $payload; return $this; }
 
     /**
-     * F3 digest mode — mark this delivery as queued for batching.
+     * Digest mode — mark this delivery as queued for batching.
      * Stores the entityState snapshot so the digest command can render the body.
      *
      * @param array<string, mixed> $entityState

@@ -26,11 +26,10 @@ use BadMethodCallException;
  *      wizard runs split into multiple batches.
  *   5. Mandatory rationale ≥200 characters on submit.
  *
- * IMPLEMENTATION NOTE: this class is a stub for sprint W1. The actual
- * grouping logic ships in W2/W3 once Document↔PolicyTemplate linking
- * exists. The stub throws `BadMethodCallException` so the W1-D
- * `BulkApprovalDefangTest` fixture can `markTestSkipped()` cleanly
- * until the implementation lands.
+ * IMPLEMENTATION NOTE: this class is a stub. The actual grouping
+ * logic is not implemented yet. The stub throws
+ * `BadMethodCallException` so the `BulkApprovalDefangTest` fixture
+ * can `markTestSkipped()` cleanly until the implementation lands.
  *
  * @phpstan-type BatchEntry array{
  *   document_id: int|null,

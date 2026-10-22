@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Document form: acknowledgement required
+ * Form-Step-Inline-Hint — Document form: acknowledgement required
  * but no audience selected.
  *
  * Fires when the user ticks `requiresAcknowledgement = true` without

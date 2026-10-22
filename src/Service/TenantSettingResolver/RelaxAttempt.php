@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Service\TenantSettingResolver;
 
 /**
- * Policy-Wizard W1 — descriptor for a single blocked relax attempt
+ * Policy-Wizard — descriptor for a single blocked relax attempt
  * detected during a resolution walk.
  *
  * Emitted by TenantSettingResolver and forwarded to the
  * ChangeAttemptLoggerInterface for persistence (e.g. into the
- * `TenantPolicySettingChangeAttempt` table introduced by W1-A).
+ * `TenantPolicySettingChangeAttempt` table).
  *
  * The §7.4 drift detection scenario:
  * Konzern raises crypto floor 128 → 256. A subsidiary still has 192

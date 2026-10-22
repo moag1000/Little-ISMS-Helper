@@ -9,7 +9,7 @@ use App\Entity\User;
 use RuntimeException;
 
 /**
- * W6-A §0.A.4 — thrown by
+ * thrown by
  * {@see PolicySectionApprovalService::assertSectionEditable} when a CISO
  * (or any non-DPO actor) attempts to edit a privacy section that has
  * already received DPO sign-off and is therefore locked. The DPO MAY

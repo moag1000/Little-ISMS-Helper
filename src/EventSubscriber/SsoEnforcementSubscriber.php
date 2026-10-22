@@ -91,7 +91,7 @@ final class SsoEnforcementSubscriber
      * slug for this e-mail; IdentityProvider = redirect target (the enforced
      * provider, or the provider an existing user is bound to —
      * {@see SsoAccountLinkPolicy::resolveLoginProvider()}); false = enforced
-     * but no enabled provider can sign the user in (fail open, #1059). Also
+     * but no enabled provider can sign the user in (fail open). Also
      * read by the SSO admin page.
      */
     public function enforcementTarget(?User $user, string $email): IdentityProvider|false|null

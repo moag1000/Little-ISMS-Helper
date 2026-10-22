@@ -163,7 +163,7 @@ class IdentityProvider
     #[Assert\Choice(choices: self::VALID_PRESETS)]
     private ?string $presetType = null;
 
-    /** Fallback role assigned to JIT-provisioned users when no role-mapping matches (Wave 2). */
+    /** Fallback role assigned to JIT-provisioned users when no role-mapping matches. */
     #[ORM\Column(length: 64, nullable: true, options: ['default' => 'ROLE_USER'])]
     private ?string $defaultFallbackRole = 'ROLE_USER';
 

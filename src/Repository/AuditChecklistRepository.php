@@ -223,7 +223,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Audit-checklist items that are due within
+     * Audit-checklist items that are due within
      * the given window (default 7d) and not yet verified. Surface to ISB /
      * Auditor for ISO 27001 Clause 9.2 Internal-Audit programme tracking.
      *

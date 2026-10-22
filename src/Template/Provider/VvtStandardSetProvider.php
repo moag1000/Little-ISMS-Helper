@@ -11,14 +11,14 @@ use App\Template\TemplateProviderInterface;
 /**
  * GDPR Art. 30 standard VVT starter set.
  *
- * Foundation P-14. Six everyday processing activities every German SMB has:
+ * Six everyday processing activities every German SMB has:
  * Bewerbermanagement, Lohnbuchhaltung, Kundenstamm, Marketing-Newsletter,
  * Vertragspartner, HR-Personalakte. Each template is a single ProcessingActivity
  * prefilled with `dataSubjectCategories`, `personalDataCategories`, `legalBasis`,
  * `retentionPeriodDays`, `technicalOrganizationalMeasures` so the DPO can
  * adopt and refine instead of starting from a blank form.
  *
- * Junior-ISB-Audit-2026-05-22 M-05: HR-Personalakte added as 6th template.
+ * HR-Personalakte added as 6th template.
  */
 final class VvtStandardSetProvider implements TemplateProviderInterface
 {
@@ -95,7 +95,7 @@ final class VvtStandardSetProvider implements TemplateProviderInterface
                 'retention_days' => 3650,
                 'department' => 'Procurement',
             ],
-            // Junior-ISB-Audit-2026-05-22 M-05: HR-Personalakte — full employee
+            // HR-Personalakte — full employee
             // lifecycle records (contract, appraisals, absences, training, exit).
             // Legal basis: GDPR Art. 6(1)(b) + Art. 88, BDSG § 26.
             [

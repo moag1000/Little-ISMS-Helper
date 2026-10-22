@@ -7,7 +7,7 @@ namespace App\Enum;
 /**
  * Dependency-type classifier for an Asset → Asset edge (DORA RT_05).
  *
- * Bucket-6 (DORA RoI Sprint 9, RT_05 asset-dependency-graph) — labels each
+ * Labels each
  * edge in the dependency graph with the nature of the relation so the ESA
  * RoI XBRL exporter can emit the per-edge sub-elements that Art. 28(3)(c)
  * mandates (which asset supports which business process, which asset

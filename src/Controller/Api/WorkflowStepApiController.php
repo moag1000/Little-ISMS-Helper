@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * Read-only view of the legacy DB workflow steps.
  *
- * Since Sprint Y.4 the canonical workflow definitions are
+ * Since the canonical workflow definitions are
  * `config/workflows/regulatory/*.yaml`; the `workflows` / `workflow_steps`
  * rows stay read-only for historical WorkflowInstance display. Per-organisation
  * changes (approver role, SLA days, auto-progress conditions, module gate) go

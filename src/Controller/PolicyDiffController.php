@@ -22,7 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Policy-Wizard W7-C — Re-generation diff viewer.
+ * Policy-Wizard — Re-generation diff viewer.
  *
  * Renders the doc-level + variable-level diff between an old (superseded)
  * Document and the new (superseding) Document produced by a wizard re-run.

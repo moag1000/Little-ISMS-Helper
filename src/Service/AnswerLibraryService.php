@@ -13,10 +13,10 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F44 — Answer Library Service.
+ * Answer Library Service.
  *
  * Manages security-questionnaire answer entries and records reuse events
- * through FteRecorderService so every reuse contributes to the FTE/ROI counter (F11).
+ * through FteRecorderService so every reuse contributes to the FTE/ROI counter.
  *
  * Audit logging uses AuditLogger::logCustom() — one entry per action,
  * no duplicate audit rows for analytics side-effects.
@@ -51,7 +51,7 @@ final class AnswerLibraryService
 
         $this->entityManager->flush();
 
-        // F11 FTE tracking — reuse feeds the ROI counter (must NOT throw)
+        // FTE tracking — reuse feeds the ROI counter (must NOT throw)
         $this->fteRecorder->recordAnswerReuse($entry, $user);
 
         // Single audit entry (ISO 27001 Cl. 7.5.3)

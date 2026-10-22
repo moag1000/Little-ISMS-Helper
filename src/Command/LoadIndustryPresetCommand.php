@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Audit V3 C4 — Industry-Preset Loader.
+ * Industry-Preset Loader.
  *
  * Loads pre-curated module-activation + framework-subset + risk-categories +
  * initial controls + initial documents from a preset YAML.

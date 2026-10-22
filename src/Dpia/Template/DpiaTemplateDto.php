@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Dpia\Template;
 
 /**
- * F31 — Curated sectoral DPIA template value-object.
+ * Curated sectoral DPIA template value-object.
  *
  * Immutable once constructed. Fields map 1:1 onto
  * DataProtectionImpactAssessment setters used by SectoralDpiaPreFiller.

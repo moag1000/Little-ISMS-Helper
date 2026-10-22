@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 /**
- * FrameworkApplicabilityService — Sprint 9 Wizard-Integration.
+ * FrameworkApplicabilityService — wizard integration.
  *
  * Klassifiziert für einen gegebenen Tenant-Kontext (Branche, Größe,
  * Land, optional AI-High-Risk-Flag) jedes der 23 Frameworks in einen

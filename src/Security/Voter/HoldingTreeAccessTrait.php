@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *  - Otherwise the record must be in scope: same tenant (compared by
  *    identity or id), or — for read attributes only — a descendant tenant
  *    when the user holds ROLE_GROUP_CISO or ROLE_KONZERN_AUDITOR
- *    (Phase 9.P1.6 holding read; lateral/sibling access is never granted).
+ *    (holding read; lateral/sibling access is never granted).
  *  - ROLE_ADMIN passes for records of its own organisation only. This is
  *    deliberately narrower than organisation administration
  *    (TenantScopedAdminVoter::ADMIN_OWN_TENANT / TenantContext::canAdminister:

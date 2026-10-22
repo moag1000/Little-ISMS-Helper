@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / BSI 200-1 Kap. 6.2 + ISMS.1.A4 — confirms the tenant has an
+ * BSI 200-1 Kap. 6.2 + ISMS.1.A4 — confirms the tenant has an
  * approved IT-Sicherheitsleitlinie (Top-Level Information Security
  * Policy) generated from a BSI-flagged template.
  *

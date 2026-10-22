@@ -28,8 +28,6 @@ use App\Util\CsvSanitizer;
  *   + the tenant scope from {@see JobTenantScope::argsForCurrentUser()}.
  *     Every query is scoped to that tenant explicitly (the Doctrine tenant
  *     filter is unarmed outside the HTTP request); a job without scope fails.
- *
- * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportAnalyticsJob implements AsyncJobInterface
 {

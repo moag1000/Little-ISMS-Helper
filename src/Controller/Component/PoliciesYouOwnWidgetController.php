@@ -13,12 +13,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Policy-Wizard W7-E — "Policies you own" dashboard widget.
+ * Policy-Wizard — "Policies you own" dashboard widget.
  *
  * Lists Documents the current user is responsible for, either as
  *   - {@see Document::getUploadedBy()} (direct ownership), or
  *   - function-owner per the source PolicyTemplate's affectedFunctions
- *     metadata (the W2 Risk-Owner slot — the user's `roles` are matched
+ *     metadata (the Risk-Owner slot — the user's `roles` are matched
  *     against that template's affectedFunctions list).
  *
  * The controller is intended to be embedded into the dashboard via

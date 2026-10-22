@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Sprint 13 — Guided Tour Endpoints.
+ * Guided Tour Endpoints.
  *
  *  - GET  /tour/steps/{role}    Step-Liste als JSON (mit übersetzten Title/Body)
  *  - POST /tour/complete/{id}   markiert Tour als durchlaufen

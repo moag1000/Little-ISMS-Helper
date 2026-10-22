@@ -11,7 +11,7 @@ use App\Service\Fte\FteRecorderService;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F4 Evidence-Versioning — document reuse analytics.
+ * Evidence-Versioning — document reuse analytics.
  *
  * Calculates how many Controls and compliance frameworks reference a given
  * document as evidence. The reuse factor is surfaced as a badge on the
@@ -49,7 +49,7 @@ final class DocumentReuseAnalyticsService
             $parts[] = $frameworkCount . ' framework' . ($frameworkCount !== 1 ? 's' : '');
         }
 
-        // F11 FTE-Tracking: record reuse savings when document spans ≥ 2 frameworks
+        // FTE-Tracking: record reuse savings when document spans ≥ 2 frameworks
         if ($frameworkCount >= 2 && $this->fteRecorder !== null) {
             $this->fteRecorder->recordEvidenceReuse($document, $frameworkCount);
         }
@@ -156,12 +156,11 @@ final class DocumentReuseAnalyticsService
     /**
      * Count distinct compliance frameworks that have at least one requirement
      * fulfillment linked to the document.
-     * Currently CRF has no direct document FK — returns 0 until Sprint 5B.
+     * Currently CRF has no direct document FK — returns 0.
      */
     private function countFrameworksUsingDocument(Document $document): int
     {
-        // Sprint 5B will add direct evidence document link on CRF.
-        // For now, count frameworks via control's framework_references metadata.
+        // CRF has no direct evidence document link, so count frameworks via control's framework_references metadata.
         try {
             // Each control that uses the document may reference frameworks.
             // We count distinct framework slugs via a sub-select on control_evidence.

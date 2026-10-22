@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Wizard Session Entity
  *
- * Phase 7E: Stores compliance wizard progress for users.
+ * Stores compliance wizard progress for users.
  * Allows users to pause and resume wizard assessments.
  * Tracks assessment results and recommendations.
  */
@@ -37,7 +37,7 @@ class WizardSession
     public const WIZARD_TISAX = 'tisax';
     public const WIZARD_GDPR = 'gdpr';
     public const WIZARD_BSI = 'bsi_grundschutz';
-    // V3 W2-M1: Per-wizard slots so History/Trend doesn't collapse 16 of 22
+    // Per-wizard slots so History/Trend doesn't collapse 16 of 22
     // wizards into the ISO27001 bucket. Each wizard has its own snapshot lane.
     public const WIZARD_BSI_C5 = 'bsi_c5';
     public const WIZARD_BSI_C5_2026 = 'bsi_c5_2026';
@@ -57,7 +57,7 @@ class WizardSession
     public const WIZARD_CRA = 'cra';
 
     /**
-     * V3 W2-M1: Full list of supported wizard slots. Used by Choice-Validator
+     * Full list of supported wizard slots. Used by Choice-Validator
      * and ComplianceWizardController::mapWizardCodeToSessionType().
      */
     public const ALL_WIZARDS = [

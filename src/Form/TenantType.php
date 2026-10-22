@@ -144,7 +144,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'corporate.placeholder.corporate_notes',
                 ],
             ])
-            // Phase 9.P1.7 — NIS2 / legal-entity identification. Per BSIG §28
+            // NIS2 / legal-entity identification. Per BSIG §28
             // each Rechtsperson carries its own regulatory classification.
             ->add('legalName', TextType::class, [
                 'label' => 'corporate.field.legal_name',
@@ -158,7 +158,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['maxlength' => 50, 'placeholder' => 'GmbH / AG / SE / ...'],
             ])
-            // Bucket-6a (DORA RoI Sprint 9) — ISO 17442 Legal Entity Identifier.
+            // ISO 17442 Legal Entity Identifier.
             //
             // @no-module-gate-required: LEI is used by multiple regulations beyond
             //   DORA (NIS2 supplier register, MiFID II, etc.) and several auditors
@@ -183,7 +183,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
                     ),
                 ],
             ])
-            // Bucket-6a — ISO 4217 reporting currency for DORA RoI XBRL.
+            // ISO 4217 reporting currency for DORA RoI XBRL.
             ->add('reportingCurrency', ChoiceType::class, [
                 'label' => 'tenant.field.reporting_currency',
                 'help' => 'tenant.field.reporting_currency_help',
@@ -209,7 +209,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
                 'help' => 'corporate.field.nace_code_help',
                 'required' => false,
                 'attr' => ['maxlength' => 20, 'placeholder' => '62.03'],
-                // Junior-ISB-Audit-2026-05-22 S14: NACE Rev. 2 format check.
+                // NACE Rev. 2 format check.
                 // EU 1893/2006 — section letter + 2 digits + optional .NN[.N].
                 // Optional letter prefix to accept legacy "62.01" entries without breaking BC.
                 'constraints' => [

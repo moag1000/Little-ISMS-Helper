@@ -11,7 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * F39 — ENISA EU Vulnerability Database (EUVD) feed sync.
+ * ENISA EU Vulnerability Database (EUVD) feed sync.
  *
  * Enrichment-only by design: the EUVD is a GLOBAL feed and vulnerabilities are
  * tenant-scoped, so this command does NOT invent tenant-scoped rows from the

@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Audit V3 C7 — Generic ISMS Comment.
+ * Generic ISMS Comment.
  *
  * Polymorphic comment-thread entity attachable to any ISMS object via
  * (entity_type, entity_id). Drives the isms-comment Aurora pattern.

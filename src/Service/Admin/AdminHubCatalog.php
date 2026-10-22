@@ -16,10 +16,10 @@ namespace App\Service\Admin;
  *
  * Service ist read-only und stateless — keine Counts werden hier
  * abgefragt, dafür ist eine separate Aggregation in der Controller-
- * Schicht zuständig (Sprint 2).
+ * Schicht zuständig.
  *
  * Icon-values are full Aurora CSS class names (fa-icon--<name>).
- * Bootstrap-icons were removed in PR #368; all icons reference Aurora only.
+ * Bootstrap-icons are not used; all icons reference Aurora only.
  */
 final class AdminHubCatalog
 {
@@ -46,7 +46,7 @@ final class AdminHubCatalog
      *     }>,
      * }>
      *
-     * Visibility annotations (Role-Scope Architecture Phase 2,
+     * Visibility annotations (Role-Scope Architecture,
      * spec `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
      *
      *  - `requiredAttribute` — TenantScopedAdminVoter attribute. Most
@@ -114,7 +114,7 @@ final class AdminHubCatalog
                         'route' => 'admin_tenant_compliance_settings_current',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
-                    // F43 Trust-Center — public compliance-posture sharing (opt-in)
+                    // Trust-Center — public compliance-posture sharing (opt-in)
                     [
                         'key' => 'trust_center',
                         'icon' => 'fa-icon--shield-check',
@@ -366,7 +366,7 @@ final class AdminHubCatalog
                         'route' => 'app_scheduled_report_index',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
-                    // Sprint 8 — EU Authority reporting
+                    // EU Authority reporting
                     // scope: own-tenant authority reporting
                     [
                         'key' => 'authority_hub',
@@ -399,7 +399,7 @@ final class AdminHubCatalog
                     ],
                 ],
             ],
-            // Sprint 6b — Notifications: Rules, Channels, Templates, Preferences
+            // Notifications: Rules, Channels, Templates, Preferences
             [
                 'key' => 'notifications',
                 'tone' => 'pink',
@@ -561,7 +561,7 @@ final class AdminHubCatalog
                         'route' => 'admin_kpi_threshold_index',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
-                    // Sprint 9A — F11 FTE-Tracking
+                    // FTE-Tracking
                     // scope: own-tenant FTE / capacity analytics
                     [
                         'key' => 'fte_tracking',
@@ -608,7 +608,7 @@ final class AdminHubCatalog
                         'route' => 'admin_settings_index',
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
-                    // Sprint 6 deferred system-settings sub-pages
+                    // Deferred system-settings sub-pages
                     // scope: GLOBAL — API rate-limit defaults (instance-wide)
                     [
                         'key' => 'api_rate_limits',
@@ -663,7 +663,7 @@ final class AdminHubCatalog
                         'route' => 'admin_lifecycle_overrides_index',
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
-                    // scope: own-tenant backups (tenant admins manage their own subtree per Phase 5)
+                    // scope: own-tenant backups (tenant admins manage their own subtree)
                     [
                         'key' => 'data_backup',
                         'icon' => 'fa-icon--nav-hdd',

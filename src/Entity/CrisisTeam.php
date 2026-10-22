@@ -110,7 +110,7 @@ class CrisisTeam
     private array $members = [];
 
     /**
-     * Person-Rollout Phase B1 — typed Person roster, twin of the
+     * Typed Person roster, twin of the
      * legacy JSON `members` blob. Used for governance reports + future
      * cross-linking to PhysicalAccessLog/Training. JSON `members`
      * stays as the authoritative role/contact descriptor for now.
@@ -459,7 +459,7 @@ public function __construct()
     }
 
     /**
-     * Typed Person roster — Phase B1. Independent of the legacy JSON
+     * Typed Person roster. Independent of the legacy JSON
      * `members` blob; combine via {@see getEffectiveMemberCount()}
      * when reporting total roster size.
      *

@@ -14,7 +14,7 @@ use DateTimeImmutable;
  * not overdue for review. The effective `nextReviewDate` is computed as
  * `uploadedAt + PolicyTemplate.reviewIntervalMonths` because the Document
  * entity does not carry an explicit `nextReviewDate` field (provenance lives
- * on the linked PolicyTemplate, see W3 architecture §10).
+ * on the linked PolicyTemplate, see architecture §10).
  *
  * Reference: ISO 27001 Cl. 7.5.3 documented-information control + ISO 27002
  * §5.1 (every topic-specific policy "shall be regularly reviewed").

@@ -136,7 +136,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'choice_translation_domain' => false, // Labels already translated via getLabel()
                 'required' => true,
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `supplier_lifecycle`. ISO 27001 A.5.19-A.5.22, 4-eyes
             // on `terminate`. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
@@ -286,7 +286,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
             $this->addMariskFields($builder);
         }
 
-        // C-06: subcontractorChain + processingLocations are now mapped JSON
+        // SubcontractorChain + processingLocations are now mapped JSON
         // fields with dedicated DataTransformers. The previous POST_SUBMIT
         // listener + finishView() hydration is no longer needed — the
         // transformers handle both directions (array<->textarea) and surface
@@ -465,7 +465,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'help' => 'supplier.help.has_subcontractors',
                 'required' => false,
             ])
-            // C-06: mapped JSON field — SubcontractorChainTransformer (attached
+            // Mapped JSON field — SubcontractorChainTransformer (attached
             // in buildForm tail) handles both JSON-array and newline-delimited
             // input shapes and raises TransformationFailedException on invalid
             // JSON instead of silently writing null.
@@ -475,7 +475,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['rows' => 3, 'placeholder' => 'supplier.placeholder.subcontractor_chain'],
             ])
-            // C-06: mapped JSON field — CommaOrLinesListTransformer handles
+            // Mapped JSON field — CommaOrLinesListTransformer handles
             // comma/semicolon/newline-delimited input.
             ->add('processingLocations', JsonOrLinesTextareaType::class, [
                 'label' => 'supplier.field.processing_locations',
@@ -623,7 +623,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * S4 Foundation P-2 SectionPolicy — covers ALL fields including module-gated ones.
+     * SectionPolicy — covers ALL fields including module-gated ones.
      * Module-gated fields (privacy, nis2_dora, lksg, marisk) are listed here so the
      * section-map is always complete. Fields not built by buildForm() are silently
      * ignored by _auto_form.html.twig.

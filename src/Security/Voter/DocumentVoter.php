@@ -82,7 +82,7 @@ final class DocumentVoter extends Voter
         $docTenant = $document->getTenant() ?? $document->getUploadedBy()?->getTenant();
         $isRead = in_array($attribute, [self::VIEW, self::DOWNLOAD], true);
 
-        // Phase 9.P2.1 — inheritable holding policy: a subsidiary user may
+        // Inheritable holding policy: a subsidiary user may
         // read a document marked inheritable=true on any ancestor tenant.
         if ($isRead && $document->isInheritable() && TenantOwnership::isDescendant($docTenant, $user->getTenant())) {
             return true;

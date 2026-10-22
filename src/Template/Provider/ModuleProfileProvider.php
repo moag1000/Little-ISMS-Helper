@@ -11,7 +11,7 @@ use App\Template\TemplateProviderInterface;
 /**
  * Industry / size profiles that map to a curated `active_modules` set.
  *
- * Foundation P-14. Five typical organisational shapes:
+ * Five typical organisational shapes:
  *  - `kmu`               — small/medium business
  *  - `konzern`           — group / holding
  *  - `verein`            — small association / not-for-profit
@@ -23,7 +23,7 @@ use App\Template\TemplateProviderInterface;
  * passes this list to `ModuleConfigurationService::setActiveModules()` (or
  * the equivalent migration path) rather than creating a new entity row.
  *
- * Junior-ISB-Audit-2026-05-22 M-04: Auto-Zulieferer (automotive_supplier)
+ * Auto-Zulieferer (automotive_supplier)
  * added as 5th profile to address TISAX/Prototype-Protection scope.
  */
 final class ModuleProfileProvider implements TemplateProviderInterface
@@ -118,7 +118,7 @@ final class ModuleProfileProvider implements TemplateProviderInterface
                     'notifications',
                 ],
             ],
-            // Junior-ISB-Audit-2026-05-22 M-04: Automotive supplier profile.
+            // Automotive supplier profile.
             // Driven by OEM-mandated TISAX assessment + Prototype-Protection
             // requirements. Suppliers in this segment carry NIS2 / DORA exposure
             // through their banking + IT-services value chain, but their core

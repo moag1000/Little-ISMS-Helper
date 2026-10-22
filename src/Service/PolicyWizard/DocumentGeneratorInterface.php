@@ -7,11 +7,11 @@ namespace App\Service\PolicyWizard;
 use App\Entity\WizardRun;
 
 /**
- * Policy-Wizard W2-A — contract for document generation.
+ * Policy-Wizard — contract for document generation.
  *
  * config/services.yaml aliases this interface to the real
- * {@see DocumentGenerator} (W3: variable substitution + SoA link +
- * approval workflow kick-off). The W2 `DocumentGeneratorStub`, which
+ * {@see DocumentGenerator} (variable substitution + SoA link +
+ * approval workflow kick-off). The `DocumentGeneratorStub`, which
  * throws `BadMethodCallException`, remains for unit tests that
  * instantiate it directly.
  *

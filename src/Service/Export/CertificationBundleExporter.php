@@ -50,7 +50,7 @@ use App\Util\CsvSanitizer;
  * The ZIP is tamper-evident: SHA-256 hash is computed over the final archive
  * and recorded in the audit log.
  *
- * Audit-V3 task #122: INDEX.csv enriched with approver identity (auditor MINOR-NC)
+ * INDEX.csv enriched with approver identity (auditor MINOR-NC)
  * and multi-framework bundles (compliance-manager request — `frameworkCode` no
  * longer hardcoded; `addFrameworkBundle()` aggregates ISO27001/DORA/NIS2/BSI/GDPR).
  */
@@ -104,7 +104,7 @@ final class CertificationBundleExporter
     /**
      * Generate a complete certification bundle ZIP.
      *
-     * Audit-V3 EF-3 + task #122: `frameworks` may be a single code (legacy
+     * `frameworks` may be a single code (legacy
      * back-compat — keeps existing controllers working) OR a list of codes
      * for multi-framework bundles. Frameworks accumulated via
      * {@see addFrameworkBundle()} are merged in. Each framework contributes
@@ -298,7 +298,7 @@ final class CertificationBundleExporter
             $dateStr
         );
 
-        // Log the export — task #122: action key flipped to
+        // Log the export — action key
         // `cert_bundle_exported` with `frameworks` array so dashboards can
         // group by framework portfolio. AuditLogger remains the only path
         // (CLAUDE.md ISO 27001 Clause 7.5.3 requirement).
@@ -990,7 +990,7 @@ final class CertificationBundleExporter
 
     /**
      * Render every Policy-Wizard generated Document for this tenant via
-     * {@see PolicyPdfExporter} (W7-A) and pack into
+     * {@see PolicyPdfExporter} and pack into
      * `01_POLICIES/<standard>/<safe-filename>.pdf`. Emits an
      * `01_POLICIES/INDEX.csv` enriched with approver identity, wizard-run
      * id, template version and SHA-256 of the rendered body.
@@ -1004,7 +1004,7 @@ final class CertificationBundleExporter
     {
         $policiesDir = $rootDir . '/01_POLICIES';
         $documentCount = 0;
-        // Task #122: extra columns for Auditor evidence chain.
+        // Extra columns for Auditor evidence chain.
         $indexRows = [
             [
                 'standard',
@@ -1194,7 +1194,7 @@ final class CertificationBundleExporter
         ];
     }
 
-    // ─── Approver Resolution (task #122 — Auditor MINOR-NC) ────────────
+    // ─── Approver Resolution (task — Auditor MINOR-NC) ────────────
 
     /**
      * Resolve approver identity for a document.
@@ -1320,7 +1320,7 @@ final class CertificationBundleExporter
         return '';
     }
 
-    // ─── Framework Coverage (task #122) ────────────────────────────────
+    // ─── Framework Coverage ────────────────────────────────
 
     /**
      * Per-framework coverage CSV — one row per requirement with the

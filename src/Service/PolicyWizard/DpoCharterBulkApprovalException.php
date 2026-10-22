@@ -8,13 +8,13 @@ use App\Entity\Document;
 use RuntimeException;
 
 /**
- * W6 Gap-E — raised when a DPO Charter (or Privacy Policy) is offered to
+ * Raised when a DPO Charter (or Privacy Policy) is offered to
  * the bulk-approval batch builder. GDPR Art. 38(3) requires the DPO
  * appointment to be approved standalone so the independence of the DPO
  * is positively documented.
  *
  * Spec: `docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md`
- * line 285 (Auditor "Open questions for Phase 4" #1, lines 291-293).
+ * (Auditor "Open questions" #1).
  */
 final class DpoCharterBulkApprovalException extends RuntimeException
 {

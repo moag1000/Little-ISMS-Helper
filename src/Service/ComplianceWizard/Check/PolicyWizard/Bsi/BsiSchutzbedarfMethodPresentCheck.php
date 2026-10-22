@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / BSI 200-2 Kap. 6 — confirms the tenant has a published
+ * BSI 200-2 Kap. 6 — confirms the tenant has a published
  * Schutzbedarfsfeststellungs-Methodik (Protection-Needs Assessment
  * Methodology) document.
  *
@@ -25,7 +25,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
  * - `isArchived` is false
  * - `generatedFromTemplate` has `standard='bsi'` and
  *   `topic='protection_needs_methodology'` (the topic-key emitted by
- *   the W5-A seed command for the §4 methodology row)
+ *   the BSI seed command for the §4 methodology row)
  */
 final class BsiSchutzbedarfMethodPresentCheck implements PolicyWizardCheckInterface
 {

@@ -11,7 +11,7 @@ namespace App\Enum;
  * values mirror the legacy `CorrectiveAction::STATUS_*` constants. No data
  * migration required: enum cases share string literals with prior code.
  *
- * Phase 1 status-enum rollout — typed surface for application code while
+ * typed surface for application code while
  * the storage column and setStatus(string) accessor stay backward-compatible.
  */
 enum CorrectiveActionStatus: string
@@ -19,7 +19,7 @@ enum CorrectiveActionStatus: string
     case Planned = 'planned';
     case InProgress = 'in_progress';
     case Completed = 'completed';
-    // Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: NEW intermediate `verified`
+    // NEW intermediate `verified`
     // state forces the reviewer through a `completed → verified` step
     // (ISO 27001 Cl. 10.1 d). See config/workflows/corrective_action.yaml.
     case Verified = 'verified';

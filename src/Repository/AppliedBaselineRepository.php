@@ -36,7 +36,7 @@ class AppliedBaselineRepository extends ServiceEntityRepository
      * Baselines applied to any ancestor of $tenant but not directly to
      * the tenant itself. Keyed by baseline code so a child can display
      * "inherited from Holding X" without loading the full ancestor chain
-     * repeatedly. Phase 9.P1.4 read-only inheritance view.
+     * repeatedly. Read-only inheritance view.
      *
      * If several ancestors applied the same baseline, the immediate
      * parent's record wins (closest origin).

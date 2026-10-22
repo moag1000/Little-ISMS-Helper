@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints\File as FileConstraint;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Upload form for the GSTOOL XML import (Phase 1 + Phase 2).
+ * Upload form for the GSTOOL XML import.
  *
  * The XML file must conform to the gstool_xml_v1 schema (see
  * docs/features/GSTOOL_IMPORT.md).

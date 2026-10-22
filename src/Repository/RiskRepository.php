@@ -240,7 +240,7 @@ class RiskRepository extends ServiceEntityRepository
 
     /**
      * Find risks whose formal acceptance is about to expire (or has already
-     * expired) — for ISB My-Day surfacing per Audit V4 V4-LB-1.
+     * expired) — for ISB My-Day surfacing.
      *
      * Filter: treatmentStrategy = 'accept' AND status != 'closed' AND
      * acceptanceExpiryDate IS NOT NULL AND acceptanceExpiryDate <= asOf+window.

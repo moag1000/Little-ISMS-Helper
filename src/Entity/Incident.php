@@ -87,7 +87,7 @@ class Incident
     private ?Tenant $tenant = null;
 
     /**
-     * Phase 9.P2.3 — Cross-posting opt-out flag for holding structures.
+     * Cross-posting opt-out flag for holding structures.
      * Default true: when a tenant sits in a corporate subtree, incidents
      * are visible to the Group-CISO / Konzern-Krisenstab by default so
      * the group can coordinate response. A Tochter can flip this to
@@ -100,7 +100,6 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     private bool $visibleToHolding = true;
 
-    // New relationship for threat tracking
     #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class, inversedBy: 'resultingIncidents')]
     #[ORM\JoinColumn(name: 'originating_threat_id', nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
@@ -163,7 +162,7 @@ class Incident
     private ?string $assignedTo = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation — use $affectedAssets.
+     * Doppelpflege-Deprecation — use $affectedAssets.
      *
      * Freetext catalogue of affected systems. Superseded by the structured
      * {@see self::$affectedAssets} ManyToMany collection (Asset entity) which
@@ -191,7 +190,7 @@ class Incident
     private ?string $rootCause = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — Legacy freetext column.
+     * Legacy freetext column.
      *
      * @deprecated since 2026-05-23 (ADR docs/decisions/2026-05-23-capa-canonical-process.md).
      *             Structured corrective actions now live in {@see \App\Entity\CorrectiveAction}
@@ -206,7 +205,7 @@ class Incident
     private ?string $correctiveActions = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — Legacy freetext column.
+     * Legacy freetext column.
      *
      * @deprecated since 2026-05-23 (ADR docs/decisions/2026-05-23-capa-canonical-process.md).
      *             Preventive measures should be tracked as a CorrectiveAction with
@@ -385,7 +384,7 @@ class Incident
         $this->reportedByDeputyPersons = new ArrayCollection();
         $this->criticalServicesAffected = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
-        // Junior-ISB-Audit-2026-05-22 K-01: SLA-Countdown anchor needs an unambiguous start time.
+        // SLA-Countdown anchor needs an unambiguous start time.
         // GDPR Art. 33 (1) / NIS2 Art. 23 (4) 72h notification deadlines are measured from
         // detectedAt; Doctrine never calls __construct on hydration, so editing an existing
         // incident does NOT overwrite the persisted value.
@@ -552,7 +551,7 @@ class Incident
 
     /**
      * @deprecated since S13 (2026-05-23) — use {@see self::getAffectedAssets()}.
-     *             Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation.
+     *             Doppelpflege-Deprecation.
      */
     public function getAffectedSystems(): ?string
     {
@@ -561,7 +560,7 @@ class Incident
 
     /**
      * @deprecated since S13 (2026-05-23) — use {@see self::addAffectedAsset()}.
-     *             Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation.
+     *             Doppelpflege-Deprecation.
      *             Retained for fixture/seed compatibility only — the Form
      *             input is disabled and Show-pages render the value
      *             read-only inside a "Legacy"-info alert.

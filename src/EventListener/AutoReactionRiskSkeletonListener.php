@@ -16,7 +16,7 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Audit V3 C3 / V4-LB-3 — Auto-Risk-Skeleton on high-CVSS Vulnerability.
+ * Auto-Risk-Skeleton on high-CVSS Vulnerability.
  *
  * Whenever a Vulnerability with CVSS >= 7.0 is persisted/updated and no
  * Risk is yet linked, create a Risk skeleton with title "Vulnerability {CVE}"
@@ -115,7 +115,7 @@ final class AutoReactionRiskSkeletonListener
                 'risk_id' => $risk->getId(),
             ]);
 
-            // V3 W2-H4 (ISO 27001 Cl.7.4): Notify Risk-Owner candidates so the
+            // (ISO 27001 Cl.7.4): Notify Risk-Owner candidates so the
             // skeleton lands in someone's inbox instead of waiting silently.
             $this->notifyRiskOwner($risk, $vuln, $cve, $cvss);
         } catch (\Throwable $e) {
@@ -127,7 +127,7 @@ final class AutoReactionRiskSkeletonListener
     }
 
     /**
-     * V3 W2-H4 — Notify Risk-Owner / Risk-Manager about the auto-created
+     * Notify Risk-Owner / Risk-Manager about the auto-created
      * skeleton. The skeleton has no owner yet, so we fall back to ROLE_RISK_MANAGER
      * then ROLE_CISO (tenant-scoped). Best-effort.
      */

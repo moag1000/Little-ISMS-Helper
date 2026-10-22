@@ -10,7 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * Audit V3 C7 — Comment repository.
+ * Comment repository.
  *
  * @extends ServiceEntityRepository<Comment>
  */

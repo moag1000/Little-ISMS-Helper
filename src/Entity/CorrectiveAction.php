@@ -16,11 +16,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// Junior-ISB-Audit C4-02 — Control linkage is intentionally multi-valued
+// Control linkage is intentionally multi-valued
 // (ISO 27001 Cl. 10.1; A.8.15 + A.8.16 findings frequently touch >1 control).
 
 /**
- * H-01: Corrective Action for an AuditFinding (ISO 27001 Clause 10.1).
+ * Corrective Action for an AuditFinding (ISO 27001 Clause 10.1).
  * Tracks the plan, execution and effectiveness review of a countermeasure.
  */
 #[ORM\Entity(repositoryClass: CorrectiveActionRepository::class)]
@@ -36,7 +36,7 @@ class CorrectiveAction
     public const STATUS_PLANNED = 'planned';
     public const STATUS_IN_PROGRESS = 'in_progress';
     public const STATUS_COMPLETED = 'completed';
-    // Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: forced `completed → verified`
+    // Forced `completed → verified`
     // intermediate state — ISO 27001 Cl. 10.1 d.
     public const STATUS_VERIFIED = 'verified';
     public const STATUS_VERIFIED_EFFECTIVE = 'verified_effective';
@@ -47,7 +47,7 @@ class CorrectiveAction
     public const ACTION_TYPE_IMPROVEMENT = 'improvement';
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-07 / C2-05 — CAPA-Canonical-Process trigger source.
+     * CAPA-Canonical-Process trigger source.
      * Identifies which closure-loop produced this CA (per ADR 2026-05-23).
      */
     public const SOURCE_TYPE_AUDIT_FINDING = 'audit_finding';
@@ -65,7 +65,7 @@ class CorrectiveAction
     private ?Tenant $tenant = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-07 / C2-05: now nullable. Was `nullable: false`
+     * Now nullable. Was `nullable: false`
      * before CAPA-Canonical-Process (ADR 2026-05-23). A CorrectiveAction may now
      * be sourced from an Incident, manual entry, or change-request — see
      * `sourceType` + `sourceIncident`.
@@ -75,7 +75,7 @@ class CorrectiveAction
     private ?AuditFinding $finding = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 C2-05 — Incident source link.
+     * Incident source link.
      * Set when this CA was auto-materialised from a high/critical Incident
      * with a non-empty root-cause by
      * {@see \App\Listener\AutoReactionCorrectiveActionListenerForIncident}.
@@ -85,7 +85,7 @@ class CorrectiveAction
     private ?Incident $sourceIncident = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — ChangeRequest source link.
+     * ChangeRequest source link.
      * Set when this CA was opened *because of* a routine ChangeRequest that
      * surfaced a nonconformity. Inverse direction of ChangeRequest.relatedCorrectiveAction
      * (which links operational executions back to a triggering CA).
@@ -95,7 +95,7 @@ class CorrectiveAction
     private ?ChangeRequest $sourceChangeRequest = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 C2-05 — Source / trigger type.
+     * Source / trigger type.
      * One of {@see SOURCE_TYPE_AUDIT_FINDING}, {@see SOURCE_TYPE_INCIDENT},
      * {@see SOURCE_TYPE_MANUAL}, {@see SOURCE_TYPE_CHANGE_REQUEST}.
      */
@@ -169,27 +169,27 @@ class CorrectiveAction
     private ?string $effectivenessNotes = null;
 
     /**
-     * S3 P0-32 — Pflicht-Beleg der Wirksamkeitsbewertung (ISO 27001 Cl. 10.1).
+     * Pflicht-Beleg der Wirksamkeitsbewertung (ISO 27001 Cl. 10.1).
      * Wird beim Transition completed → verified_* zwingend gefordert.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $effectivenessEvidence = null;
 
     /**
-     * S3 P0-32 — Verifier (Benutzer, der die Wirksamkeit bestätigt/widerlegt hat).
+     * Verifier (Benutzer, der die Wirksamkeit bestätigt/widerlegt hat).
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'verified_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?User $verifiedBy = null;
 
     /**
-     * S3 P0-32 — Timestamp der Wirksamkeitsbewertung (immutable).
+     * Timestamp der Wirksamkeitsbewertung (immutable).
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $verifiedAt = null;
 
     /**
-     * S3 P0-30 — Selbstreferenz zur unwirksamen Vorgänger-CAPA.
+     * Selbstreferenz zur unwirksamen Vorgänger-CAPA.
      * Bildet die Maßnahmen-Kette für den Audit-Trail (Cl. 10.1 b).
      */
     #[ORM\ManyToOne(targetEntity: CorrectiveAction::class)]
@@ -197,7 +197,7 @@ class CorrectiveAction
     private ?CorrectiveAction $previousCapa = null;
 
     /**
-     * Junior-ISB-Audit C4-02 — multi-control linkage.
+     * Multi-control linkage.
      *
      * ISO 27001 Cl. 10.1: A finding (and the corrective action that
      * remediates it) frequently spans multiple Annex-A controls — a
@@ -272,13 +272,11 @@ class CorrectiveAction
         return $this;
     }
 
-    // Junior-ISB-Audit-2026-05-22 M-07 Phase-1
     public function getSourceChangeRequest(): ?ChangeRequest
     {
         return $this->sourceChangeRequest;
     }
 
-    // Junior-ISB-Audit-2026-05-22 M-07 Phase-1
     public function setSourceChangeRequest(?ChangeRequest $changeRequest): static
     {
         $this->sourceChangeRequest = $changeRequest;
@@ -469,7 +467,7 @@ class CorrectiveAction
 
     public function isOverdue(): bool
     {
-        // Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: `verified` joins the
+        // `verified` joins the
         // post-completion set — once verification has opened, the operational
         // due-date is irrelevant (Cl. 10.1 d evidence-review owns the SLA).
         if ($this->plannedCompletionDate === null
@@ -527,7 +525,7 @@ class CorrectiveAction
     }
 
     /**
-     * S3 P0-30 — Convenience accessor: did Cl. 10.1 b kick in for this CAPA?
+     * Convenience accessor: did Cl. 10.1 b kick in for this CAPA?
      * If true, the show-view surfaces a banner offering to create a Folge-CAPA.
      */
     public function isVerifiedIneffective(): bool
@@ -536,7 +534,7 @@ class CorrectiveAction
     }
 
     /**
-     * Junior-ISB-Audit C4-02 — related controls (M2M, ISO 27001 Cl. 10.1).
+     * Related controls (M2M, ISO 27001 Cl. 10.1).
      *
      * @return Collection<int, Control>
      */
@@ -560,7 +558,7 @@ class CorrectiveAction
     }
 
     /**
-     * S3 P0-31 — Cl. 9.1 reminder window check.
+     * Cl. 9.1 reminder window check.
      * True if the entity has an effectivenessReviewDate within the next $days
      * and is still in `completed` (i.e. not yet verified).
      */

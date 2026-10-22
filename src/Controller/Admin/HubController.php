@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * existierende Admin-Routes; Module mit nicht-existenter Route werden
  * automatisch als Coming-Soon gerendert.
  *
- * Role-Scope Architecture Phase 2 (spec
+ * Role-Scope Architecture (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
  * Modules carry optional `requiredAttribute` / `requiredRole` /
  * `requiredModule` annotations. The hub filters them at render time so
@@ -56,7 +56,7 @@ class HubController extends AbstractController
         }
         unset($group);
 
-        // Role-Scope Phase 2 — drop modules the user has no access to (or
+        // Role-Scope — drop modules the user has no access to (or
         // whose feature-flag module is inactive). Groups with zero remaining
         // modules are dropped entirely so the hub doesn't render empty
         // section headers.

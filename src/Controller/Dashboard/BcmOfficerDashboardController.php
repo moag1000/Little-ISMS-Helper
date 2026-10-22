@@ -29,7 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Role gate: PERSONA_BCM (resolves to ROLE_BCM_OFFICER via TenantScopedAdminVoter).
  * Module gate: 'bcm' — controller is only meaningful when BCM module is active.
  *
- * Wave 5 / Part 2 — placeholder release: full KPI widgets planned in follow-up sprint.
+ * placeholder release: full KPI widgets planned in follow-up sprint.
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards/bcm', name: 'app_dashboard_bcm')]

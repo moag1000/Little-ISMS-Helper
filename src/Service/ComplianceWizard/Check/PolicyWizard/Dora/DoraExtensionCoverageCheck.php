@@ -13,11 +13,11 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use App\Service\PolicyWizard\DoraExtensionCatalogue;
 
 /**
- * W4-D / DORA §10 — confirms every ISO 27001 topic listed in the
+ * DORA §10 — confirms every ISO 27001 topic listed in the
  * {@see DoraExtensionCatalogue} has its DORA extension applied to the
  * corresponding tenant Document.
  *
- * The DocumentGenerator (W4-A/B) appends a `dora-extension:applied`
+ * The DocumentGenerator appends a `dora-extension:applied`
  * EntityTag to an ISO topic Document the moment its DORA extension
  * section is rendered into the body. This check verifies coverage:
  * for every catalogue topic where the tenant has a published ISO

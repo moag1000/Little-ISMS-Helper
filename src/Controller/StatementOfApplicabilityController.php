@@ -175,7 +175,7 @@ class StatementOfApplicabilityController extends AbstractController
             }
         }
 
-        // Junior-ISB-Audit-2026-05-22 S14 §14: MRIS-Filter is gated by the
+        // MRIS-Filter is gated by the
         // `mris` module AND the tenant-level kpis_enabled toggle. Both must
         // be true for the filter/column to render. Defaults to OFF — MRIS is
         // a niche custom framework (Peddi 2026, MRIS v1.5), most tenants
@@ -260,7 +260,7 @@ class StatementOfApplicabilityController extends AbstractController
     public function show(Control $control): Response
     {
         $suggestions = $this->mappingSuggestionService->suggestForControl($control);
-        // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+        // Inverse-Coverage Impact-Analyse
         $impactCoverage = $this->inverseCoverageService?->forControl($control) ?? ['total' => 0, 'frameworks' => []];
 
         // V4 LB-4: Comment-Thread adoption — load thread for this Control.
@@ -311,7 +311,7 @@ class StatementOfApplicabilityController extends AbstractController
     }
 
     /**
-     * Bulk update applicability for a set of Controls (Sprint 3 / C3).
+     * Bulk update applicability for a set of Controls.
      * Accepts selected control IDs + new applicable status + reason.
      * Every row change is recorded in the audit log with actor + reason.
      *

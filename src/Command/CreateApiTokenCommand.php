@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * F6 — mint a read-only API Bearer token for a user. The plaintext is shown
+ * Mint a read-only API Bearer token for a user. The plaintext is shown
  * ONCE; only its SHA-256 hash is persisted.
  */
 #[AsCommand(

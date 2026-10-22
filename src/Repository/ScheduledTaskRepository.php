@@ -36,7 +36,6 @@ class ScheduledTaskRepository extends ServiceEntityRepository
     /**
      * Find enabled scheduled tasks for a specific tenant
      *
-     * @param int $tenantId
      * @return ScheduledTask[]
      */
     public function findEnabledByTenant(int $tenantId): array

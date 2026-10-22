@@ -26,8 +26,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Serverless) and therefore extends beyond 27001. The overlap is strongest
  * in the Supply-Chain-Security (SCS), Organisation (ORP) and ISO-tagged
  * categories — this seed covers those.
- *
- * Sprint 3 / B5 (ship the C5 seed that was missing from Sprint 1).
  */
 #[AsCommand(
     name: 'app:seed-c52026-iso27001-mappings',

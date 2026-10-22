@@ -13,12 +13,12 @@ use Dompdf\Options;
 use Twig\Environment as TwigEnvironment;
 
 /**
- * Policy-Wizard W7-A — PDF export with TenantBranding letterhead.
+ * Policy-Wizard — PDF export with TenantBranding letterhead.
  *
  * Renders a {@see Document} (cover page + body + footer) into a
  * single-PDF binary using {@see Dompdf} (already in `composer.json` —
  * no new dependency). Letterhead colors, logo path and footer prose
- * come from the per-tenant {@see TenantBranding} row that W1-A seeds;
+ * come from the per-tenant {@see TenantBranding} row;
  * tenants without a branding row fall back to neutral defaults.
  *
  * The body is treated as Markdown. Line-breaks become paragraphs;
@@ -235,8 +235,7 @@ class PolicyPdfExporter
      * paragraph.
      *
      * Body resolution chain (first non-empty wins):
-     *   1. `Document.policyBody` — persisted rendered body (post-W7-X
-     *      writes from {@see \App\Service\PolicyWizard\DocumentGenerator}
+     *   1. `Document.policyBody` — persisted rendered body (written by {@see \App\Service\PolicyWizard\DocumentGenerator}
      *      OR a tenant's manual customisation).
      *   2. `substitutionVariables._body` — legacy snapshot path used
      *      by older runs that did not persist `policyBody`.

@@ -75,7 +75,7 @@ final class LifecycleRegistry
     /**
      * Corrective Action lifecycle (ISO 27001 Cl. 10.1).
      *
-     * Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: inserted intermediate
+     * Inserted intermediate
      * `verified` place between `completed` and the two terminal verdicts
      * (`verified_effective` / `verified_ineffective`). Reviewer must open
      * verification explicitly before recording a verdict — splits the

@@ -11,7 +11,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W6-D / GDPR Art. 35 + Art. 36 — confirms a published Data-Protection
+ * GDPR Art. 35 + Art. 36 — confirms a published Data-Protection
  * Impact-Assessment (DPIA) methodology document exists for the tenant.
  *
  * Evidence: at least one published-or-approved {@see \App\Entity\Document}

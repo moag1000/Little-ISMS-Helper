@@ -10,7 +10,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Document Cloner (C4-C1 — Klon-Funktionen).
+ * Document Cloner.
  *
  * Use case: copy a policy template across departments, fork a published
  * document to draft a successor, replicate a control-evidence document

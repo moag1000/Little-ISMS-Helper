@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard;
 use RuntimeException;
 
 /**
- * W1 audit-defang gap #3 — thrown by
+ * audit-defang gap #3 — thrown by
  * {@see SubstitutionLeakageDetector::assertNoLeaks} when the rendered
  * Document body still contains unresolved Twig markers (`{{ … }}`,
  * `{% … %}` or `{# … #}`). Per the External-Auditor persona-review

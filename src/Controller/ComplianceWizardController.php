@@ -258,7 +258,7 @@ class ComplianceWizardController extends AbstractController
     }
 
     /**
-     * Export assessment as PDF — V3 W2-M6: real PDF via PdfExportService (DomPDF).
+     * Export assessment as PDF — real PDF via PdfExportService (DomPDF).
      */
     #[Route('/{wizard}/export/pdf', name: 'app_compliance_wizard_export_pdf', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -286,7 +286,7 @@ class ComplianceWizardController extends AbstractController
             'generated_at' => new \DateTimeImmutable(),
         ];
 
-        // V3 W2-M6: Real PDF via DomPDF if service available; HTML fallback
+        // Real PDF via DomPDF if service available; HTML fallback
         // for environments where PdfExportService isn't wired (test bench).
         if ($this->pdfExportService !== null) {
             $pdf = $this->pdfExportService->generatePdf('compliance_wizard/pdf/report.html.twig', $payload);
@@ -501,15 +501,15 @@ class ComplianceWizardController extends AbstractController
     /**
      * WS-7: Compare-PDF export — renders multi-framework comparison.
      *
-     * V3 W2-M7: dynamic allow-list = all currently available wizards
+     * Dynamic allow-list = all currently available wizards
      * (capped at 10 frameworks for PDF readability), no longer hardcoded
-     * to 5. V3 W2-M6: real PDF via DomPDF when PdfExportService present.
+     * to 5. real PDF via DomPDF when PdfExportService present.
      */
     #[Route('/compare/export/pdf', name: 'app_compliance_wizard_compare_export_pdf', priority: 10, methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function compareExportPdf(Request $request): Response
     {
-        // V3 W2-M7: derive allow-list from available wizards rather than
+        // Derive allow-list from available wizards rather than
         // hardcoded 5. ComplianceWizardService::getAvailableWizards() returns
         // an associative array keyed by wizard code.
         $availableKeys = array_keys($this->wizardService->getAvailableWizards());
@@ -624,7 +624,7 @@ class ComplianceWizardController extends AbstractController
     }
 
     /**
-     * V3 B5 / EF-2: Persist a snapshot of the current assessment.
+     * Persist a snapshot of the current assessment.
      *
      * Compliance-Wizard rechnet bisher jeden Aufruf neu. Ein Snapshot speichert
      * Coverage + Gaps + KPIs als WizardSession, sodass Trend-Charts und
@@ -695,7 +695,7 @@ class ComplianceWizardController extends AbstractController
     }
 
     /**
-     * V3 B5 / EF-2: Snapshot history with trend chart.
+     * Snapshot history with trend chart.
      */
     #[Route('/{wizard}/history', name: 'app_compliance_wizard_history', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function history(string $wizard): Response
@@ -800,7 +800,7 @@ class ComplianceWizardController extends AbstractController
     }
 
     /**
-     * Map wizard codes 1:1 to WizardSession slot. V3 W2-M1: Each of the 22
+     * Map wizard codes 1:1 to WizardSession slot. Each of the 22
      * supported wizards now has its own slot — History/Trend no longer
      * collapse 16 wizards into the ISO27001 bucket. Falls back to ISO27001
      * for unknown codes (defensive default).

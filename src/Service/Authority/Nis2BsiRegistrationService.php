@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F29 — Business logic for NIS-2 BSI-Portal Yearly Re-Registration.
+ * Business logic for NIS-2 BSI-Portal Yearly Re-Registration.
  *
  * Provides:
  *  - getOrCreateProfile(): auto-derives defaults from Tenant fields.

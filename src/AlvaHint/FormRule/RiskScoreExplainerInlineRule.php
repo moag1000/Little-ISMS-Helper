@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * Onboarding info-hint — Form-Step-Inline-Hint (P-19).
+ * Onboarding info-hint — Form-Step-Inline-Hint.
  *
  * A junior ISB filling the Risk form enters a probability and an impact but
  * frequently does not realise the tool derives a single risk SCORE from their

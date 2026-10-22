@@ -11,8 +11,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Per-tenant branding for PDF export of generated policy documents
- * (Sprint W7). Carries letterhead HTML, logo path, primary/secondary
+ * Per-tenant branding for PDF export of generated policy documents.
+ * Carries letterhead HTML, logo path, primary/secondary
  * colors, and font family. 1:1 with Tenant.
  */
 #[ORM\Entity(repositoryClass: TenantBrandingRepository::class)]
@@ -48,7 +48,7 @@ class TenantBranding
     private string $fontFamily = 'Inter';
 
     // ------------------------------------------------------------------
-    // Policy-Doc Style Configuration (Sprint policy-style-admin)
+    // Policy-Doc Style Configuration
     //
     // Per-tenant overrides for the `_fa_policy_doc.html.twig` macro that
     // renders generated policy documents (cover / TOC / history / body /
@@ -105,17 +105,16 @@ class TenantBranding
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $policyDocCustomCss = null;
-    // Report-Doc Style Configuration (Sprint report-style-admin)
+    // Report-Doc Style Configuration
     //
     // Per-tenant overrides for the `_fa_report_doc.html.twig` macro
-    // (sister-agent W7-parallel) that renders generated reports using
+    // that renders generated reports using
     // a 5-slot template (cover / exec-summary / data / appendix /
     // footer) with audience-aware layouts (Vorstand / Auditor /
     // Aufsicht / internal). Defaults match the design-system reference;
     // tenants can re-skin without touching code via /admin/report-style.
     //
-    // Independent from the policyDoc* fields (sister-agent
-    // policy-style-admin) so the two configurators don't clash.
+    // Independent from the policyDoc* fields so the two configurators don't clash.
     // ------------------------------------------------------------------
 
     /** "minimal" | "branded" | "board-formal" | "auditor-formal" */
@@ -281,7 +280,7 @@ class TenantBranding
     }
 
     // ------------------------------------------------------------------
-    // Policy-Doc style accessors (Sprint policy-style-admin)
+    // Policy-Doc style accessors
     // ------------------------------------------------------------------
 
     public const POLICY_DOC_COVER_PATTERNS = ['minimal', 'branded', 'auditor-formal', 'engineering'];
@@ -443,7 +442,7 @@ class TenantBranding
     }
 
     // ------------------------------------------------------------------
-    // Report-Doc style accessors (Sprint report-style-admin)
+    // Report-Doc style accessors
     // ------------------------------------------------------------------
 
     public const REPORT_DOC_COVER_PATTERNS = ['minimal', 'branded', 'board-formal', 'auditor-formal'];

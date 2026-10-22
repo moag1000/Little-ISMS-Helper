@@ -33,8 +33,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * EDPB Guidelines 2/2023 + ENISA „Pseudonymisation Techniques".
  *
  * Idempotent: bestehende Quell/Ziel-Paare werden übersprungen.
- *
- * Sprint 8 / S8-1.
  */
 #[AsCommand(
     name: 'app:seed-gdpr-iso27701-mappings',

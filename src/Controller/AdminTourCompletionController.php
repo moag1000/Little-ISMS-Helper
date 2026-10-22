@@ -20,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
 
 /**
- * Sprint 13 / P3 — Admin-Report: Tour-Completion pro User.
+ * Admin-Report: Tour-Completion pro User.
  *
  * ISO 27001 A.6.3 Awareness-Training Audit-Nachweis: welche User haben
  * welche Tour durchlaufen? Plus Bulk-Reset-Action für Admins.

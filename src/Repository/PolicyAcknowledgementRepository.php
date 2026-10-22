@@ -39,7 +39,7 @@ class PolicyAcknowledgementRepository extends ServiceEntityRepository
     /**
      * @return PolicyAcknowledgement[]
      *
-     * Audit V3 W2-C4: returns only completed ACKNOWLEDGED rows for
+     * Returns only completed ACKNOWLEDGED rows for
      * coverage-style queries. Pending campaign rows are tracked
      * separately via {@see findPendingByDocument()}.
      */

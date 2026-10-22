@@ -30,8 +30,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * without manual mapping work.
  *
  * Idempotent: existing source/target pairs are skipped.
- *
- * Sprint 3 / B5 (ship the SOC 2 seed that was missing from Sprint 1).
  */
 #[AsCommand(
     name: 'app:seed-soc2-iso27001-mappings',

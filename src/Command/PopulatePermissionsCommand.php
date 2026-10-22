@@ -72,7 +72,6 @@ class PopulatePermissionsCommand
             }
         }
 
-        // Flush all changes
         $this->entityManager->flush();
 
         $symfonyStyle->newLine();

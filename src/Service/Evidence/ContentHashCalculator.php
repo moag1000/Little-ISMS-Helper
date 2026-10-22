@@ -7,7 +7,7 @@ namespace App\Service\Evidence;
 use SplFileInfo;
 
 /**
- * F4 Evidence-Versioning — SHA-256 streaming hash calculator.
+ * Evidence-Versioning — SHA-256 streaming hash calculator.
  *
  * Calculates SHA-256 digests in a streaming fashion so that large
  * evidence files (PDF, XLSX, etc.) do not exhaust PHP memory.

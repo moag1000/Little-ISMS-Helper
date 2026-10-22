@@ -28,7 +28,7 @@ use Throwable;
  * Admin UI for MFA-Token management (TOTP / WebAuthn / Backup codes).
  *
  * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}
- * (Phase 4e — system-settings cluster). Tenant admins manage MFA tokens for
+ *. Tenant admins manage MFA tokens for
  * their own users; SUPER_ADMIN passes through transparently. Existing
  * method-level `MFA_VIEW`/`MFA_SETUP`/`MFA_MANAGE`/`MFA_DELETE` permission
  * attributes stay authoritative for fine-grained access.

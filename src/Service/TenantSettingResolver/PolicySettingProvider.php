@@ -19,8 +19,8 @@ use Throwable;
  * should land here so consumers can refer to a single source of truth
  * instead of stringly-typed lookups.
  *
- * W5-A: introduces `bsi.tier_filter` — see {@see SETTING_BSI_TIER_FILTER}.
- * W6-B: introduces `iso27701.enabled` + `iso27701.version` — see
+ * Introduces `bsi.tier_filter` — see {@see SETTING_BSI_TIER_FILTER}.
+ * Introduces `iso27701.enabled` + `iso27701.version` — see
  *       {@see SETTING_ISO27701_ENABLED} and
  *       {@see SETTING_ISO27701_VERSION}.
  */

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard Sprint W4-B — seed the IndustryPresetBundles.
+ * Policy-Wizard — seed the IndustryPresetBundles.
  *
  * Idempotent: existing bundles (matched by `key`) are updated in place;
  * new ones are inserted. Bundles seeded:
@@ -25,7 +25,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   4. OT / IEC 62443       — ISO 27001 + IEC 62443, very conservative,
  *                             physical-heavy A.7.1-A.7.14 applicable.
  *   5. Custom / Generic     — ISO 27001 only, balanced, no industry
- *                             assumptions (Junior-ISB fallback).
+ *                             assumptions (beginner fallback).
  *   6. DE Mittelstand NIS2  — ISO 27001 + NIS2 + GDPR, conservative.
  *                             Industrial / B2B mid-market firms now
  *                             in scope of the NIS2UmsuCG thresholds.
@@ -35,7 +35,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *                             + BCM, very conservative; BSI-KritisV +
  *                             EnWG § 11 Abs. 1b cybersecurity baseline.
  *
- * Spec: docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3 W4.
+ * Spec: docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3.
  */
 #[AsCommand(
     name: 'app:policy-wizard:seed-bundles',

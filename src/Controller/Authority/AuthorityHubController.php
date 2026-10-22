@@ -16,16 +16,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F36 — EU-Behörden-Reporting-Hub Controller.
+ * EU-Behörden-Reporting-Hub Controller.
  *
  * Aggregates all EU authority reporting obligations for the current tenant
  * and presents them on a single overview page with status per authority.
  *
  * Sources aggregated:
- *  - F25 VVT-BfDI Export (DSGVO Art. 30)
- *  - F26 Behörden-Templates (BSI/BfDI/LfDI)
- *  - F29 NIS-2 BSI-Portal yearly registration
- *  - F30 DORA RoI XBRL yearly submission
+ *  - VVT-BfDI Export (DSGVO Art. 30)
+ *  - Behörden-Templates (BSI/BfDI/LfDI)
+ *  - NIS-2 BSI-Portal yearly registration
+ *  - DORA RoI XBRL yearly submission
  *
  * Module gate: eu_authority_reporting
  * RBAC: ROLE_MANAGER

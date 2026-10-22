@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Framework-Version-Migration-Assistent (Sprint 2 / B6).
+ * Framework-Version-Migration-Assistent.
  *
  * Löst das Problem von Framework-Versions-Übergängen (ISO 27001:2013 →
  * 2022, BSI C5:2020 → 2026, NIS2-Überarbeitungen) für den CM:
@@ -32,13 +32,13 @@ use Doctrine\ORM\EntityManagerInterface;
  *      angelegt (old.req → new.req, type=full, percentage=100,
  *      confidence=high, verified_by='app:migrate-framework-version').
  *   4. Indirect-Hinweis für den Auditor: die Bridge hat eine klare
- *      `rationale`, sodass transitive Coverage (Service B1) aus dem
+ *      `rationale`, sodass transitive Coverage (TransitiveCoverageService) aus dem
  *      alten Framework auch im neuen zählt.
  *
  * Keine bestehende Mapping wird überschrieben. Alle Änderungen sind
  * idempotent: Re-Run legt nur fehlende Bridges an.
  *
- * UI-Wizard folgt im Sprint 3 — diese Service-Ebene liefert das
+ * UI-Wizard folgt im — diese Service-Ebene liefert das
  * Preview/Accept-Protokoll, das der Wizard dann rendern kann.
  */
 final class FrameworkVersionMigrator

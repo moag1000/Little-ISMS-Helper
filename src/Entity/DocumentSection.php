@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Per-section approval state machine for privacy sections inside a Policy
- * Document — Phase 4-C / Sprint W3-C ("DPO Veto Mechanic").
+ * Document ("DPO Veto Mechanic").
  *
  * Implements the section-level sub-workflow described in
  * `docs/plans/policy-wizard/06-dpo-input.md` §0.A. Each row represents
@@ -53,10 +53,10 @@ class DocumentSection
     ];
 
     /**
-     * W6-A §0.A.2 — split-state approval role for the section.
+     * split-state approval role for the section.
      *
      *  - `ciso`  : standard CISO-owned approval (default for legacy rows
-     *              created before W6-A — preserves existing behaviour).
+     *              created before — preserves existing behaviour).
      *  - `dpo`   : DPO-only sign-off; CISO is locked out via
      *              {@see PolicySectionApprovalService::assertSectionEditable}.
      *  - `joint` : both CISO and DPO must sign — the host workflow waits
@@ -127,8 +127,8 @@ class DocumentSection
     private ?string $rejectionReason = null;
 
     /**
-     * W6-A §0.A.2 — split-state approval role. Null on legacy rows; the
-     * W6-A migration backfills NULL → `ciso` so existing behaviour
+     * split-state approval role. Null on legacy rows; the
+     * migration backfills NULL → `ciso` so existing behaviour
      * (CISO-only approval) is preserved. New rows must set this
      * explicitly via {@see setApprovalRole}.
      */
@@ -136,7 +136,7 @@ class DocumentSection
     private ?string $approvalRole = null;
 
     /**
-     * W6-A §0.A.4 — once the DPO approves a `dpo`-roled section, this
+     * once the DPO approves a `dpo`-roled section, this
      * flag is set so {@see PolicySectionApprovalService::assertSectionEditable}
      * blocks any further CISO edits. The DPO can always re-edit (which
      * re-opens the section back to `pending_dpo` and clears the lock).
@@ -145,7 +145,7 @@ class DocumentSection
     private bool $editLocked = false;
 
     /**
-     * W6-A §0.A.5 — author of the section content, used to enforce the
+     * author of the section content, used to enforce the
      * self-approval prohibition (Art. 38(3) — DPO independence carve-out).
      * Set when content is first authored / edited; checked at approve()
      * + reject() time against the acting user.

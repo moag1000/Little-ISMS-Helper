@@ -33,8 +33,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * SOC 2 was added to the Compliance-Wizard standard picker in commit
  * 8e286cbc but had zero policy templates seeded. This command closes
- * that gap and mirrors {@see SeedBsiPolicyTemplatesCommand} (W5-A) and
- * {@see SeedDoraPolicyTemplatesCommand} (W4-A) in shape so downstream
+ * that gap and mirrors {@see SeedBsiPolicyTemplatesCommand} and
+ * {@see SeedDoraPolicyTemplatesCommand} in shape so downstream
  * wizard tooling treats SOC 2 uniformly with the other standards.
  *
  * The 10 templates cover the AICPA Trust Services Criteria 2017 + 2022

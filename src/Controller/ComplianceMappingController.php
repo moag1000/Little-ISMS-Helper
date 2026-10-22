@@ -59,7 +59,7 @@ class ComplianceMappingController extends AbstractController
     ) {}
 
     /**
-     * Sprint 5 / M4 — Mapping-Hub (Landing-Page).
+     * Mapping-Hub (Landing-Page).
      *
      * Junior-Consultant-Walkthrough: Wer zum ersten Mal auf /compliance/mapping
      * landet, sieht eine Tabelle mit tausenden Einträgen — keine Orientierung.
@@ -116,7 +116,7 @@ class ComplianceMappingController extends AbstractController
     }
 
     /**
-     * Sprint 4 / M1 — Mapping-Wizard (Junior-tauglich).
+     * Mapping-Wizard (Junior-tauglich).
      *
      * 4-Schritt-Flow, server-side gerendert, JS-client-side filtert:
      *   1. Framework-Paar wählen (aktive Frameworks als Dropdown)

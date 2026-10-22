@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * (locale, TZ, financial year, DPO contact, TLP) and global security
  * defaults (MFA, password, session) on a single admin page.
  *
- * Phase 4c role-scope migration (spec
+ * Role-Scope migration (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
  * class-level `ADMIN_OWN_TENANT` enforces "ROLE_ADMIN configures own
  * tenant; SUPER_ADMIN configures any". The edit action resolves the

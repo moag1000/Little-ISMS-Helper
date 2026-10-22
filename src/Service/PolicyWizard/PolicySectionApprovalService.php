@@ -25,7 +25,7 @@ use Psr\Log\NullLogger;
 use Throwable;
 
 /**
- * PolicySectionApprovalService — Phase 4-C / Sprint W3-C.
+ * PolicySectionApprovalService
  *
  * Drives the privacy-section sub-workflow `privacy-section-approval`
  * defined in `docs/plans/policy-wizard/06-dpo-input.md` §0.A.
@@ -52,7 +52,7 @@ final class PolicySectionApprovalService
     private const string HOST_RELEASE_REASON = 'All gated policy sections approved';
 
     /**
-     * W6-A §0.A.7 — tenant-setting key holding the org-level GDPR-scope
+     * tenant-setting key holding the org-level GDPR-scope
      * marker. When `true` the tenant processes personal data of natural
      * persons and the DPO role MUST be in the approval chain. When
      * `false`/missing, BSI-pure tenants still load `dpo`-roled templates
@@ -79,7 +79,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * Task #126 — Approver-Role Validation per Topic.
+     * Approver-Role Validation per Topic.
      *
      * Validates that $approver carries a role recommended for the
      * Document's topic (resolved via the host
@@ -216,7 +216,7 @@ final class PolicySectionApprovalService
             );
         }
 
-        // W6-A §0.A.5 — Art. 38(3) self-approval prohibition: the user
+        // Art. 38(3) self-approval prohibition: the user
         // who authored the section content MUST NOT be the user who
         // signs it off. Throws InvalidArgumentException on violation.
         $this->assertNotSelfApproval($section, $approver);
@@ -244,13 +244,13 @@ final class PolicySectionApprovalService
             );
         }
 
-        // Task #126 — Approver-Role Validation per Topic. NON-blocking:
+        // Approver-Role Validation per Topic. NON-blocking:
         // emits one of three audit-events (match / weak-match / mismatch
         // warning) so the external auditor can answer "warum DIESER
         // Approver fuer DIESES Topic" without a runtime block.
         $this->assertApproverRoleMatch($section, $approver);
 
-        // W1 audit-defang gap #2 — generation-to-approval min-elapsed
+        // audit-defang gap #2 — generation-to-approval min-elapsed
         // gate. Blocks the same-second approval anti-pattern by
         // requiring a plausible reading window between Document
         // generation and DPO sign-off (`docs/plans/policy-wizard/
@@ -273,7 +273,7 @@ final class PolicySectionApprovalService
         $section->setRejectedByUser(null);
         $section->setRejectionReason(null);
 
-        // W6-A §0.A.4 — once a `dpo`-roled section receives sign-off the
+        // once a `dpo`-roled section receives sign-off the
         // CISO must be locked out of further edits. `joint`/`ciso` rows
         // also lock so a re-edit can never silently mutate signed-off
         // evidence.
@@ -325,7 +325,7 @@ final class PolicySectionApprovalService
             return;
         }
 
-        // W6-A §0.A.5 — same self-approval prohibition applies to vetoes.
+        // same self-approval prohibition applies to vetoes.
         // An author cannot use their own veto power on the same section.
         $this->assertNotSelfApproval($section, $approver);
 
@@ -336,7 +336,7 @@ final class PolicySectionApprovalService
         // Clear any approved-flags so the row reflects the latest state.
         $section->setApprovedAt(null);
         $section->setApprovedByUser(null);
-        // W6-A §0.A.4 — DPO veto reverts the section to a re-editable
+        // DPO veto reverts the section to a re-editable
         // state; the author / CISO must rework the content before another
         // sign-off attempt.
         $section->setEditLocked(false);
@@ -366,7 +366,7 @@ final class PolicySectionApprovalService
             ),
         );
 
-        // W3 Gap-B — notify the Document owner (or wizard-run starter as
+        // Notify the Document owner (or wizard-run starter as
         // fallback) of the rejection so the rework cycle starts immediately
         // instead of waiting for the next inbox poll. ISB review
         // "Bulk-approval ergonomics" #2 (07-phase4-sprint-reconciliation.md
@@ -375,7 +375,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W7-B — record a witness/co-signature on the host WorkflowInstance
+     * Record a witness/co-signature on the host WorkflowInstance
      * of the given section. Used when DPO + CISO jointly sign off a
      * privacy section: the primary approver runs through {@see approve()},
      * the co-signatory is recorded here against the host workflow.
@@ -581,7 +581,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.4 — once a section is signed off, set the `editLocked`
+     * once a section is signed off, set the `editLocked`
      * flag so the CISO can no longer rework it. Idempotent on already-
      * locked rows. The DPO is exempt: {@see assertSectionEditable} treats
      * ROLE_DPO actors as authorised regardless of the flag, and the same
@@ -600,7 +600,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.4 — guard called by the section editor controller before
+     * guard called by the section editor controller before
      * accepting any save from a non-DPO actor. CISO/Top-Mgmt edits raise
      * {@see LockedSectionException}; DPO edits pass through (and the
      * caller is expected to {@see reopenForDpoEdit} the section so the
@@ -644,7 +644,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.4 — DPO re-edits an already-signed-off section. Resets
+     * DPO re-edits an already-signed-off section. Resets
      * status to `dpo_sign_off` (per §0.A.2 the section sub-state goes
      * back into the pending pool), clears the edit-lock so the
      * subsequent flow can re-approve, and emits a `dpo_section_reopened`
@@ -688,7 +688,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.5 — Art. 38(3) self-approval prohibition with single-
+     * Art. 38(3) self-approval prohibition with single-
      * user-tenant graceful degradation.
      *
      * Logic:
@@ -837,7 +837,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.7 — BSI-tenant graceful degradation. Resolve which role
+     * BSI-tenant graceful degradation. Resolve which role
      * actually owns the approval for ($tenant, $sectionKey).
      *
      * Logic:
@@ -931,7 +931,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.7 helper — does the tenant have at least one user
+     * Does the tenant have at least one user
      * carrying ROLE_DPO? Defensive: when no UserRepository is wired (DI
      * graphs missing it in legacy tests) we return false so the
      * fallback path runs and never hangs the gate.
@@ -947,7 +947,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.7 helper — read the `org.is_gdpr_subject` flag out of
+     * Read the `org.is_gdpr_subject` flag out of
      * the tenant settings JSON. Returns false on missing / non-boolean
      * values so a misconfigured tenant defaults to the safe fallback.
      */
@@ -965,7 +965,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W3 Gap-B — pick the User to notify when a DocumentSection is
+     * Pick the User to notify when a DocumentSection is
      * rejected. Spec: ISB review "Bulk-approval ergonomics" #2 — the
      * Document.owner (modelled here as `Document.uploadedBy`) is the
      * primary recipient; when missing, fall back to
@@ -989,7 +989,7 @@ final class PolicySectionApprovalService
     }
 
     /**
-     * W3 Gap-B — wraps the notify-target resolution + email dispatch so
+     * Wraps the notify-target resolution + email dispatch so
      * the rejection path stays single-purpose. Failures (no target, no
      * mailer wired, transport error) degrade silently to an audit-log
      * entry — rejection persistence MUST never be blocked by a notify

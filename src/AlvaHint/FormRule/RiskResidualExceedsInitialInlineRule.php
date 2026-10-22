@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Risk form: residual score exceeds initial.
+ * Form-Step-Inline-Hint — Risk form: residual score exceeds initial.
  *
  * Fires when the user enters a residual (probability x impact) product
  * STRICTLY greater than the initial (probability x impact) product.

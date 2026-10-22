@@ -22,7 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:migrate-framework-version \
  *        --from=ISO27001-2013 --to=ISO27001 --strategy=id
  *
- *   # Use the ComplianceFramework.successor relation (M-04)
+ *   # Use the ComplianceFramework.successor relation
  *   php bin/console app:migrate-framework-version --from=ISO27001-2013
  *
  *   # Dry-run shows matched/unmatched without touching the DB

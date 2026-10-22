@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * TIA form — GDPR Art. 46/49 Transfer Impact Assessment.
  *
- * SectionPolicy (P-2): implements SectionMapInterface because the form has > 6 fields
+ * SectionPolicy: implements SectionMapInterface because the form has > 6 fields
  * and several fields are regulatorily critical (Art. 46 / 49 compliance).
  *
  * Sections:
@@ -102,7 +102,7 @@ final class TransferImpactAssessmentType extends AbstractType implements Section
     }
 
     /**
-     * SectionMapInterface — P-2 SectionPolicy.
+     * SectionMapInterface — SectionPolicy.
      *
      * @return array<string, list<string>>
      */

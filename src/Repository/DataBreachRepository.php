@@ -374,7 +374,7 @@ class DataBreachRepository extends ServiceEntityRepository
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Data breaches whose 72h supervisory-authority
+     * Data breaches whose 72h supervisory-authority
      * notification clock is still ticking (GDPR Art. 33 (1)).
      *
      * Returns breaches that:

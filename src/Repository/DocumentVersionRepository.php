@@ -11,7 +11,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * F4 Evidence-Versioning — DocumentVersion repository.
+ * Evidence-Versioning — DocumentVersion repository.
  *
  * @extends ServiceEntityRepository<DocumentVersion>
  *

@@ -21,12 +21,12 @@ use DOMDocument;
 use DOMElement;
 
 /**
- * F30 — DORA Register of Information (RoI) XBRL Exporter.
+ * DORA Register of Information (RoI) XBRL Exporter.
  *
  * Generates an XBRL XML document conforming to the ESA Joint RoI taxonomy
  * for Article 28 DORA obligations (register of ICT third-party service providers).
  *
- * IMPORTANT: Sprint-9 expansion (Bucket-6) wires the full mandatory ESA-RoI
+ * IMPORTANT: this exporter wires the full mandatory ESA-RoI
  * surface — B_01 (reporting entity), B_02 (providers + sub-elements 0010–
  * 0180), B_03 (ICT assets with RT_05 dependency graph), and the four RT_xx
  * sub-tables (RT_03 data-flow / RT_04 subcontractor-chain / RT_05 asset-
@@ -87,7 +87,7 @@ final class DoraRoiXbrlExporter
     public function generate(Tenant $tenant): string
     {
         $reportingDate = new DateTimeImmutable();
-        // DORA Phase 1: filter to isDoraRelevant=true only (Art. 28 RoI scope).
+        // Filter to isDoraRelevant=true only (Art. 28 RoI scope).
         // Operators flag entities explicitly; untagged entries are NOT exported.
         $suppliers = $this->supplierRepository->findByTenantAndDoraRelevant($tenant);
         $assets = $this->assetRepository->findByTenantAndDoraRelevant($tenant);
@@ -159,7 +159,7 @@ final class DoraRoiXbrlExporter
         $root->appendChild($entityContext);
 
         // ─── Element 3: Unit (monetary — tenant reporting currency) ───────────
-        // Sprint-9 Bucket-6b: wire Tenant.reportingCurrency (defaults to EUR
+        // Wire Tenant.reportingCurrency (defaults to EUR
         // when unset). The xbrli:unit id MUST equal the unitRef on monetary
         // facts (B_01.01.0040 below).
         $currency = strtoupper((string) ($tenant->getReportingCurrency() ?? 'EUR'));
@@ -182,7 +182,7 @@ final class DoraRoiXbrlExporter
         $root->appendChild($dom->createComment(' B_01.01.0010: Reporting entity legal name — ESA RoI Art. 28(3)(a) '));
 
         // ─── Element 5: Reporting entity LEI (B_01.01.0020) ───────────────────
-        // Sprint-9 Bucket-6b: wired to Tenant.leiCode (ISO 17442 — 20 char).
+        // Wired to Tenant.leiCode (ISO 17442 — 20 char).
         // When the operator has not yet entered a LEI the element carries the
         // ESA-defined sentinel "N/A" so the document still validates.
         $el = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_01.01.0020');
@@ -199,7 +199,7 @@ final class DoraRoiXbrlExporter
         $root->appendChild($dom->createComment(' B_01.01.0030: Report reference date — end of reporting year '));
 
         // ─── Element 7: Currency (B_01.01.0040) ───────────────────────────────
-        // Sprint-9 Bucket-6b: wired to Tenant.reportingCurrency (ISO 4217).
+        // Wired to Tenant.reportingCurrency (ISO 4217).
         // The `$currency` variable was already validated and uppercase-folded
         // when the xbrli:unit was emitted above.
         $el = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_01.01.0040');
@@ -228,7 +228,7 @@ final class DoraRoiXbrlExporter
             $providerEl->appendChild($nameEl);
 
             // B_02.02.0020: Provider LEI (ISO 17442) — wired to Supplier.leiCode
-            // (Sprint-9 Bucket-6b). Sentinel "N/A" when the operator has not
+            // . Sentinel "N/A" when the operator has not
             // yet captured the GLEIF LEI for this provider.
             $leiEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_02.02.0020');
             $leiEl->setAttribute('contextRef', 'ctx_period');
@@ -253,7 +253,7 @@ final class DoraRoiXbrlExporter
             $svcEl->textContent = $supplier->getServiceProvided() ?? $supplier->getDescription() ?? '';
             $providerEl->appendChild($svcEl);
 
-            // ─── B_02.02.0060–0130 (Sprint-9 Bucket-6c) ───────────────────────
+            // ─── B_02.02.0060–0130 ───────────────────────
             // Provider-Details: contract dates, substitutability, exit strategy,
             // processing locations, certifications, audit rights, jurisdiction.
             //
@@ -348,7 +348,7 @@ final class DoraRoiXbrlExporter
                 $providerEl->appendChild($this->buildDataFlowElement($dom, $flow, $i + 1, $k + 1));
             }
 
-            // ─── RT_04 — Subcontractor-chain (Bucket-6 close, 2026-05-26) ─────
+            // ─── RT_04 — Subcontractor-chain ─────
             // Walks the DoraSubcontractor tree rooted at this prime supplier
             // and emits one <roi:RT_04_subcontractor> wrapper per node,
             // recursively. Each node carries the mandatory chain-row fields
@@ -448,7 +448,7 @@ final class DoraRoiXbrlExporter
             ' B_03.01.0010: Total ICT assets in inventory — sourced from Asset entity '
         ));
 
-        // ─── B_03.02 — ICT asset detail table (Sprint-9 Bucket-6c) ───────────
+        // ─── B_03.02 — ICT asset detail table ───────────
         // One <roi:B_03.02_asset> wrapper per DORA-relevant Asset, carrying
         // the mandatory ESA per-asset fields: identifier, name, type,
         // classification, CIA scoring, owner. RT_05 sub-table
@@ -524,7 +524,7 @@ final class DoraRoiXbrlExporter
             $root->appendChild($assetEl);
         }
 
-        // ─── B_03.03 — RT_05 asset-dependency-graph (Bucket-6 close, PR #724) ──
+        // ─── B_03.03 — RT_05 asset-dependency-graph ──
         // DORA Art. 28(3)(c) requires a register of dependencies between
         // ICT assets — which support which business processes, which back
         // up which, etc. We walk the Asset.dependsOn adjacency list (BSI
@@ -538,7 +538,7 @@ final class DoraRoiXbrlExporter
         // adjacency list still gets a valid export.
         $this->emitAssetDependencyGraph($dom, $root, $assets, $tenant);
 
-        // ─── RT_06 — Decommission / Exit-Plan table (Bucket-6 close, PR #727) ──
+        // ─── RT_06 — Decommission / Exit-Plan table ──
         // One <roi:RT_06_exit_plan> wrapper per critical-Supplier exit plan.
         // Carries the mandatory ESA RT_06 fields: provider-link, trigger,
         // data-return + deletion confirmation, migration path, rehearsal

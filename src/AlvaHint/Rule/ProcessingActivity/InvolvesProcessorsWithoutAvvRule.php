@@ -10,7 +10,7 @@ use App\Entity\ProcessingActivity;
 use App\Entity\User;
 
 /**
- * Sprint-2 P-7 Wave-2 trigger-2: ProcessingActivity.involvesProcessors = true
+ * ProcessingActivity.involvesProcessors = true
  * → AVV (Auftragsverarbeitungs-Vertrag) supplier picker.
  *
  * GDPR Art. 28(1)/(3) — when a processor (Auftragsverarbeiter) is
@@ -19,14 +19,14 @@ use App\Entity\User;
  * `$processors` and a boolean flag — there is no structured FK
  * into the Supplier register, so AVV-tracking is impossible.
  *
- * P-7 Wave-2 introduces ProcessingActivity::$processorSuppliers
- * (Many2Many → Supplier) and this rule fires when:
+ * This rule uses ProcessingActivity::$processorSuppliers
+ * (Many2Many → Supplier) and fires when:
  *   - involvesProcessors = true AND
  *   - processorSuppliers collection is empty
  *
  * The legacy `processors` JSON blob is NOT counted as resolution —
  * it must be migrated to the FK relation for the AVV register to be
- * audit-ready (P0-15).
+ * audit-ready.
  *
  * Module-gated: `privacy` (Art. 28 GDPR).
  * Role-gated: ROLE_DPO (the DPO maintains the AVV register).

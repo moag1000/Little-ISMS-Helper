@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 /**
  * JIT (Just-In-Time) user provisioning for SSO logins.
  *
- * Wave 2: ClaimToRoleResolver is consulted first to apply IdentityProviderRoleMapping rules.
+ * ClaimToRoleResolver is consulted first to apply IdentityProviderRoleMapping rules.
  * Falls back to defaultFallbackRole when no mapping matches.
  * Emits ACTION_SSO_JIT_PROVISIONED via SsoEventLogger on new user creation.
  */
@@ -94,7 +94,7 @@ final class SsoUserProvisioningService
         $this->em->flush();
 
         $this->ssoEventLogger->logJitProvisioned($provider, $user, $email);
-        $this->fteRecorder->recordSsoJit($user); // F11 FTE-Tracking
+        $this->fteRecorder->recordSsoJit($user); // FTE-Tracking
         $this->logger->info('SSO JIT: provisioned new user', ['email' => $email, 'provider' => $provider->getSlug()]);
 
         return $user;

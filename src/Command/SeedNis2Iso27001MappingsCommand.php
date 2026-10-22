@@ -33,8 +33,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * macht das im Transitive-Coverage-Service sichtbar.
  *
  * Idempotent: bestehende Quell/Ziel-Paare werden übersprungen.
- *
- * Sprint 7 / S7-1.
  */
 #[AsCommand(
     name: 'app:seed-nis2-iso27001-mappings',

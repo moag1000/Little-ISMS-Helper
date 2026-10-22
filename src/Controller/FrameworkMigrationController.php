@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Sprint 5 / M5 — Versions-Migrations-UI.
+ * Versions-Migrations-UI.
  *
  * UI für den FrameworkVersionMigrator — löst das CLI-Only-Problem
  * für ISO 27001:2013 → 2022, C5:2020 → 2026, NIS2-Updates.

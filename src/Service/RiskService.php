@@ -164,7 +164,7 @@ final class RiskService implements RiskQuantSummaryInterface
     }
 
     /**
-     * F46: Aggregate ALE (Annual Loss Expectancy) across all risks for a tenant.
+     * Aggregate ALE (Annual Loss Expectancy) across all risks for a tenant.
      *
      * Returns total ALE sum + count of risks with quantitative data.
      * Only meaningful when 'risk_quant' module is active; callers should

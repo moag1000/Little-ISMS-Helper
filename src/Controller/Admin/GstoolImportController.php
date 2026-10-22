@@ -28,9 +28,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * The actual parsing and persistence is delegated to GstoolXmlImporter.
  * See docs/features/GSTOOL_IMPORT.md for the supported schema and the
- * roadmap to Phase 3+ (Bausteine, Maßnahmen, Risikoanalyse).
+ * roadmap to the later import phases (Bausteine, Maßnahmen, Risikoanalyse).
  *
- * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * Authorization (Role-Scope Architecture, spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
  *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} —
  *    ROLE_ADMIN imports into their own tenant; ROLE_SUPER_ADMIN passes

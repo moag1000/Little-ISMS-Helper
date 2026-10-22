@@ -76,7 +76,6 @@ class Asset
     #[Groups(['asset:read'])]
     private ?Tenant $tenant = null;
 
-    // New relationship for data reuse
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'assets')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
@@ -99,7 +98,7 @@ class Asset
     private ?string $assetType = null;
 
     /**
-     * Tenant-konfigurierbarer Sub-Type (S18 B2). Additiv zu $assetType (Top-Level)
+     * Tenant-konfigurierbarer Sub-Type. Additiv zu $assetType (Top-Level)
      * — bestehende Daten bleiben unverändert, sub_type ist nullable.
      */
     #[ORM\ManyToOne(targetEntity: AssetSubType::class)]
@@ -191,9 +190,9 @@ class Asset
     #[Assert\Range(notInRangeMessage: 'asset.validation.availability_range', min: 1, max: 5)]
     private ?int $availabilityValue = null;
 
-    // Phase 6F: ISO 27001 Compliance Fields
+    // ISO 27001 Compliance Fields
     //
-    // Junior-ISB-Audit S14+ #15 (2026-05): the legacy `monetaryValue` /
+    // The legacy `monetaryValue` /
     // `monetary_value` column was removed. Asset valuation now lives in the
     // canonical `acquisitionValue` + `currentValue` fields. Legacy column
     // data was backfilled into `current_value` during
@@ -326,7 +325,7 @@ class Asset
     private Collection $dependentAssets;
 
     /**
-     * V3 W2-Bug3: GDPR Art. 30 / DPIA-trigger feedback loop.
+     * GDPR Art. 30 / DPIA-trigger feedback loop.
      *
      * Inverse side of the M:N relation between processing activities
      * and the assets they touch. The owning side is on
@@ -726,8 +725,8 @@ class Asset
         return $activeRisks > 0;
     }
 
-    // Getter/Setter for Phase 6F ISO 27001 Compliance Fields
-    // (Junior-ISB-Audit S14+ #15: getMonetaryValue/setMonetaryValue removed —
+    // Getter/Setter for ISO 27001 Compliance Fields
+    // (getMonetaryValue/setMonetaryValue removed —
     // see Asset valuation block above.)
 
     public function getDataClassification(): ?string
@@ -941,7 +940,7 @@ class Asset
     }
 
     /**
-     * V3 W2-Bug3 — Linked processing activities (inverse side).
+     * Linked processing activities (inverse side).
      *
      * @return Collection<int, ProcessingActivity>
      */

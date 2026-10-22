@@ -31,7 +31,7 @@ use Symfony\Component\Workflow\Registry;
  *           transition: assess
  *           required_fields: [severity, affectedDataSubjects, dataCategories]
  *
- * --- Extended format (AND/OR condition tree, Y.1) ---
+ * --- Extended format (AND/OR condition tree) ---
  *     lifecycle.auto_transition_rules:
  *       App\Entity\DataBreach:
  *         assess_high_severity:

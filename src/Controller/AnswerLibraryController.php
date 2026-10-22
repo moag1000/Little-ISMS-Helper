@@ -23,7 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F44 — Inbound Security-Questionnaire Answer Library controller.
+ * Inbound Security-Questionnaire Answer Library controller.
  *
  * Routes are locale-prefixed (/{_locale}/answer-library/…) via the
  * `app_routes` group in config/routes.yaml.

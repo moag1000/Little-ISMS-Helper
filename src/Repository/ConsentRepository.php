@@ -66,7 +66,6 @@ class ConsentRepository extends ServiceEntityRepository
     /**
      * Find consents expiring within specified days
      *
-     * @param int $daysAhead
      * @param Tenant|null $tenant
      * @return Consent[]
      * @throws \DateMalformedStringException

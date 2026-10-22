@@ -63,7 +63,7 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
                 'attr' => ['rows' => 4],
                 'help' => 'corrective_action.help.root_cause_analysis',
             ])
-            // Junior-ISB-Audit C4-02 — multi-control linkage.
+            // Multi-control linkage.
             // ISO 27001 Cl. 10.1 + A.8.15/A.8.16: a corrective action
             // routinely touches >1 control. Multiple-EntityType keeps
             // the user from silently dropping context.
@@ -152,7 +152,7 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
                 'attr' => ['rows' => 3],
                 'help' => 'corrective_action.help.effectiveness_notes',
             ])
-            // S3 P0-32: Pflicht-Beleg der Wirksamkeitsbewertung. Form-required wird
+            // Pflicht-Beleg der Wirksamkeitsbewertung. Form-required wird
             // server-side im Lifecycle-Service erzwungen; auf dem Form selbst bleibt
             // das Feld optional, damit Draft-States ohne Evidence speicherbar sind.
             ->add('effectivenessEvidence', TextareaType::class, [
@@ -188,7 +188,7 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
                 ->addViolation();
         }
 
-        // S3 P0-32 — when the form is saved with a verified_* status, the
+        // When the form is saved with a verified_* status, the
         // effectiveness evidence becomes mandatory (Cl. 10.1). The
         // LifecycleService also enforces this on programmatic transitions;
         // duplicating the guard at the form level makes the error visible

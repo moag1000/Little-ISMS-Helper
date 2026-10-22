@@ -12,12 +12,12 @@ use App\Service\PolicyWizard\WizardStepKeys;
  *
  * Inputs:
  * - Risk-appetite tier (1=very conservative, 5=aggressive — explicit
- *   direction per Junior-Implementer P1 guard rail).
+ *   direction as a guard rail).
  * - Data-classification scheme (3 vs 4 levels).
  * - Schutzbedarf scheme (BSI default — 3 levels, only when BSI is
  *   adopted).
  * - Annex A applicability map (control_ref => bool).
- * - Review interval months — HARD CAPPED at 24 (Junior P1 guard rail;
+ * - Review interval months — HARD CAPPED at 24 (guard rail;
  *   architecture §6 Step 4).
  */
 final class RiskClassificationStep extends AbstractStep

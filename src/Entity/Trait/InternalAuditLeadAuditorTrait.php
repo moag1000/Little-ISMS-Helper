@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait InternalAuditLeadAuditorTrait
 {
     /**
-     * Legacy free-text lead auditor name. P-15 DataReuse: kept read-only for
+     * Legacy free-text lead auditor name. kept read-only for
      * migration display once `leadAuditorUser` or `leadAuditorPerson` is set.
      * No longer NotBlank — the Pattern-A validator on the form enforces that
      * at least one of legacy/user/person is provided.
@@ -30,7 +30,7 @@ trait InternalAuditLeadAuditorTrait
     private ?string $leadAuditor = null;
 
     /**
-     * Pattern A dual-state (P-15 DataReuse): preferred structured lead auditor
+     * Pattern A dual-state: preferred structured lead auditor
      * as an application User. Falls back to leadAuditorPerson, then legacy
      * `leadAuditor` string.
      */
@@ -41,7 +41,7 @@ trait InternalAuditLeadAuditorTrait
     private ?User $leadAuditorUser = null;
 
     /**
-     * Pattern A dual-state (P-15 DataReuse): preferred structured lead auditor
+     * Pattern A dual-state: preferred structured lead auditor
      * as a Stammdaten Person (external auditor without app login).
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
@@ -84,7 +84,7 @@ trait InternalAuditLeadAuditorTrait
     }
 
     /**
-     * P-15 DataReuse Tri-State resolver — prefer structured User name, then
+     * DataReuse Tri-State resolver — prefer structured User name, then
      * Person, fall back to legacy `leadAuditor` free-text. Templates should
      * read this instead of accessing the raw fields directly.
      */

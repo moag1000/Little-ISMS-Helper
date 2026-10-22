@@ -12,7 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * F29 — NIS-2 BSI-Portal Registration Reminder Cron Command.
+ * NIS-2 BSI-Portal Registration Reminder Cron Command.
  *
  * Scans all Nis2RegistrationProfile rows for upcoming and overdue
  * yearly re-registration deadlines and emits structured log events

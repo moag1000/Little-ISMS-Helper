@@ -14,7 +14,7 @@ use DateInterval;
 use DateTimeImmutable;
 
 /**
- * Policy-Wizard W7-D — BCM Exercise-Due hint (Tier-1 overdue / Tier-2 upcoming).
+ * Policy-Wizard — BCM Exercise-Due hint (Tier-1 overdue / Tier-2 upcoming).
  *
  * Fires on a Tenant when at least one planned {@see BCExercise} is
  * either overdue (planned date in the past, status still `planned`)
@@ -24,7 +24,7 @@ use DateTimeImmutable;
  * upcoming exercises stay Tier-2 and dismissible (snooze).
  *
  * Spec: `04-bcm-input.md` §9.6 + `07-phase4-sprint-reconciliation.md`
- * lines 309-311 (W7-D Alva-Hints catalogue, BCM exercise-due item).
+ * (Alva-Hints catalogue, BCM exercise-due item).
  */
 final class BcmExerciseDueRule extends AbstractAlvaHintRule
 {

@@ -12,7 +12,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use DateTimeImmutable;
 
 /**
- * W5-C / ISO 22301 Cl. 8.6 — confirms the tenant has at least one
+ * ISO 22301 Cl. 8.6 — confirms the tenant has at least one
  * BCExercise within the last 12 months OR scheduled for the next 12.
  *
  * Per `docs/plans/policy-wizard/04-bcm-input.md` §7.2 BCMS without

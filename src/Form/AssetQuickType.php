@@ -51,7 +51,7 @@ final class AssetQuickType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'placeholder' => 'asset.placeholder.owner_user',
             ])
-            // Junior-ISB-Audit-2026-05-22 S13: Quick-Path Validation-Gap parity with full AssetType.
+            // Quick-Path Validation-Gap parity with full AssetType.
             // Owner Either-Or constraint requires Person as second slot — otherwise users
             // could only ever satisfy it via ownerUser, which contradicts the dual-state design.
             ->add('ownerPerson', EntityType::class, [
@@ -93,7 +93,7 @@ final class AssetQuickType extends AbstractType implements SectionMapInterface
         $resolver->setDefaults([
             'data_class' => Asset::class,
             'translation_domain' => 'asset',
-            // Junior-ISB-Audit-2026-05-22 S13: Quick-Path Validation-Gap parity with full AssetType.
+            // Quick-Path Validation-Gap parity with full AssetType.
             // Mirrors AssetType::validateOwnerSlot so quick-add cannot bypass the
             // "either ownerUser OR ownerPerson is required" rule (audit-classic data-quality drift).
             'constraints' => [
@@ -103,7 +103,7 @@ final class AssetQuickType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 S13: mirrors {@see AssetType::validateOwnerSlot()}.
+     * Mirrors {@see AssetType::validateOwnerSlot()}.
      *
      * Enforces the dual-state Owner contract from the entity layer at the
      * quick-add Form layer. Without this, Asset rows can be persisted with

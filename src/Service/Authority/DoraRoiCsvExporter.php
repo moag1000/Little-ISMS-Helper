@@ -12,7 +12,7 @@ use DateTimeImmutable;
 use ZipArchive;
 
 /**
- * F30 — DORA Register of Information (RoI) xBRL-CSV (OIM) Exporter.
+ * DORA Register of Information (RoI) xBRL-CSV (OIM) Exporter.
  *
  * The ESAs mandate the **xBRL-CSV (OIM plain-csv)** submission format for the
  * Register of Information, NOT XBRL-XML ({@see DoraRoiXbrlExporter} produces the

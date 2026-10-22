@@ -86,7 +86,7 @@ class TenantRepository extends ServiceEntityRepository
     }
 
     /**
-     * F43 Trust-Center — locate a tenant by its public posture token.
+     * Trust-Center — locate a tenant by its public posture token.
      *
      * The controller performs constant-time `hash_equals()` validation and
      * checks `publicPostureEnabled` before rendering any data.

@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 /**
- * V3 W2-WS-12 — Compliance-Framework activation → Auto-Coverage-Check.
+ * Compliance-Framework activation → Auto-Coverage-Check.
  *
  * When a framework is freshly activated for a tenant we want to know
  * upfront how many of its requirements are already covered by existing

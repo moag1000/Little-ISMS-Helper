@@ -246,7 +246,6 @@ class DocumentApprovalService
     /**
      * Send notification email to a specific user.
      *
-     * Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH):
      * passes Approval-Screen + Reject + Clarify deep-links plus a 1-sentence
      * "what is it about?" heuristic, so the Business-Summary-Block in
      * `templates/emails/document_approval_notification.html.twig` can render

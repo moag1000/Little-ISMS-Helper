@@ -283,7 +283,7 @@ class DataSubjectRequest
     private Collection $assignedDeputyPersons;
 
     /**
-     * Person-Rollout Phase B2 — governance-side DPO accountable for the
+     * Governance-side DPO accountable for the
      * Data Subject Request, distinct from `assignedTo` (action handler).
      * Often an external Data Protection Officer.
      */

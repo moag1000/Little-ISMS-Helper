@@ -23,7 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Per-tenant Policy-Doc Style Configurator (Sprint policy-style-admin).
+ * Per-tenant Policy-Doc Style Configurator.
  *
  * Lets ROLE_ADMIN / Konzern-CISO re-skin generated policy documents
  * (font, cover pattern, watermark, signature lines, TOC/history toggles,

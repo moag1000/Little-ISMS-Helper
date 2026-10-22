@@ -48,7 +48,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *  - the user has no tenant, or the tenant is not SSO-enforced,
  *  - the tenant has NO enabled SSO provider, or none with a usable slug,
  *  - the provider would refuse this account (not linked yet and linking by
- *    e-mail refused, or a privileged / out-of-tree account) — #1059.
+ *    e-mail refused, or a privileged / out-of-tree account)
  * The listener only acts on POST, so GET /login always renders — no redirect loop.
  *
  * NIS2 Art. 21.2(b) / ISO 27001:2022 A.5.16 (Identity management).

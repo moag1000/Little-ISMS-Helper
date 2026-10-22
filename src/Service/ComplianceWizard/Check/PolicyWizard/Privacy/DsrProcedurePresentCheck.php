@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W6-D / GDPR Art. 12-22 — confirms a published Data-Subject-Rights
+ * GDPR Art. 12-22 — confirms a published Data-Subject-Rights
  * (DSR) procedure document exists for the tenant.
  *
  * Evidence: at least one published-or-approved {@see \App\Entity\Document}

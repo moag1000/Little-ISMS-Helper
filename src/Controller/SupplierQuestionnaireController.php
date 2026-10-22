@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * F23 — admin side of the outbound supplier questionnaire: list sent
+ * Admin side of the outbound supplier questionnaire: list sent
  * questionnaires + their responses, and send a new one to a supplier.
  */
 #[IsGranted('ROLE_MANAGER')]

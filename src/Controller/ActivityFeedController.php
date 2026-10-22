@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Audit V3 C6 — Activity-Feed Controller.
+ * Activity-Feed Controller.
  */
 class ActivityFeedController extends AbstractController
 {

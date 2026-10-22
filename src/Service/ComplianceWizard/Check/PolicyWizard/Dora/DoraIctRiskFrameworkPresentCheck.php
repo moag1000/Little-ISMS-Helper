@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W4-D / DORA Art. 6 — confirms the tenant has a published ICT Risk
+ * DORA Art. 6 — confirms the tenant has a published ICT Risk
  * Management Framework Policy generated from a DORA-flagged template.
  *
  * A document qualifies when ALL of the following hold:

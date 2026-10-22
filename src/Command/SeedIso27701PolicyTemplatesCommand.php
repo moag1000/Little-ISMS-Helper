@@ -48,8 +48,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:policy-wizard:seed-iso27701 --force
  *   php bin/console app:policy-wizard:seed-iso27701 --dry-run
  *
- * Mirrors {@see SeedPrivacyPolicyTemplatesCommand} (W6-B) and
- * {@see SeedDoraPolicyTemplatesCommand} (W4-A) in shape so downstream
+ * Mirrors {@see SeedPrivacyPolicyTemplatesCommand} and
+ * {@see SeedDoraPolicyTemplatesCommand} in shape so downstream
  * wizard tooling can treat all standards uniformly.
  */
 #[AsCommand(
@@ -350,7 +350,7 @@ final class SeedIso27701PolicyTemplatesCommand extends Command
         $template->setLinkedBsiBausteine(null);
         $template->setBsiTier(null);
         $template->setLinkedDoraArticles(null);
-        // Surface every PIMS doc to the DPO inbox via the W3
+        // Surface every PIMS doc to the DPO inbox via the
         // function-owner-review workflow gate.
         $template->setAffectedFunctions(['dpo']);
         $template->setReviewIntervalMonths($row['review_interval_months']);

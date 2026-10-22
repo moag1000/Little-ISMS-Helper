@@ -7,7 +7,7 @@ namespace App\Template;
 /**
  * Immutable description of a system-supplied data template.
  *
- * Foundation P-14 (Junior-ISB-Audit S5). Each template represents one
+ * Each template represents one
  * pre-fabricated starter record — or a coherent batch of records — that a
  * tenant can adopt to skip the 3-5 day "starting from zero" workshop.
  *

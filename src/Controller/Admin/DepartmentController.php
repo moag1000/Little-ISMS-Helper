@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Admin CRUD for Department master data (S18 B3).
+ * Admin CRUD for Department master data.
  *
  * Routes: NOT prefixed with `/{_locale<...>}` because the global routing config
  * already handles locale prefixing (see TagController pattern).

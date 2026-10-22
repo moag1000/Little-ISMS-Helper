@@ -39,8 +39,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * The sync endpoint is intentionally left in place because external automation
  * (e.g. periodic cron exports) and tests still rely on its semantics. New UI
  * traffic SHOULD use this controller — see templates/data_management/export.html.twig.
- *
- * Phase 2.5 of the async admin-jobs rollout.
  */
 #[IsGranted('ROLE_ADMIN')]
 final class DataExportAsyncController extends AbstractController

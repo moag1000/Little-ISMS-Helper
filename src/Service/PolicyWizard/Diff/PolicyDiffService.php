@@ -9,7 +9,7 @@ use App\Entity\DocumentSection;
 use App\Repository\DocumentSectionRepository;
 
 /**
- * Policy-Wizard W7-C — Re-generation diff service.
+ * Policy-Wizard — Re-generation diff service.
  *
  * Computes a doc-level + variable-level diff between two Document
  * versions linked by `Document.supersedes`. Strictly **NOT** a
@@ -116,7 +116,7 @@ final class PolicyDiffService
         // wizard-output Document was edited post-generation by a
         // tenant user, the re-generation path preserves the edited
         // body on the previous Document and forks a fresh wizard
-        // baseline as `current`. Surface that signal so the W7-C
+        // baseline as `current`. Surface that signal so the
         // diff UI can prompt for a manual merge.
         $policyBodyDrift = $previous->hasPostGenerationEdits();
 
@@ -276,7 +276,7 @@ final class PolicyDiffService
      * generatedFromTemplate relation (auditor-stable), fall back to the
      * `_standard` key in substitutionVariables (set by older runs), then
      * to null. The fallback chain matters for documents generated before
-     * the W3 supersession path was wired.
+     * the supersession path existed.
      */
     private static function extractStandard(Document $document): ?string
     {

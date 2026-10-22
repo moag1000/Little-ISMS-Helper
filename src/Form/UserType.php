@@ -151,7 +151,7 @@ final class UserType extends AbstractType implements SectionMapInterface
                 'ROLE_MANAGER' => $this->translator->trans('user.role_description.manager', [], 'user'),
                 'ROLE_ADMIN' => $this->translator->trans('user.role_description.admin', [], 'user'),
                 'ROLE_SUPER_ADMIN' => $this->translator->trans('user.role_description.super_admin', [], 'user'),
-                // Audit V3 W2-C5 — persona-roles for dashboard gating.
+                // Persona-roles for dashboard gating.
                 'ROLE_CISO' => $this->translator->trans('user.role_description.ciso', [], 'user'),
                 'ROLE_RISK_MANAGER' => $this->translator->trans('user.role_description.risk_manager', [], 'user'),
                 'ROLE_DPO' => $this->translator->trans('user.role_description.dpo', [], 'user'),
@@ -166,7 +166,7 @@ final class UserType extends AbstractType implements SectionMapInterface
                     'user.role.manager' => 'ROLE_MANAGER',
                     'user.role.admin' => 'ROLE_ADMIN',
                     'user.role.super_admin' => 'ROLE_SUPER_ADMIN',
-                    // Audit V3 W2-C5 persona-roles
+                    // persona-roles
                     'user.role.ciso' => 'ROLE_CISO',
                     'user.role.risk_manager' => 'ROLE_RISK_MANAGER',
                     'user.role.dpo' => 'ROLE_DPO',
@@ -289,7 +289,7 @@ final class UserType extends AbstractType implements SectionMapInterface
             'help' => 'user.help.competencies',
         ]);
 
-        // Audit-S5 P-12 — Previous QM-System background (drives Norm-Bridge visibility).
+        // Previous QM-System background (drives Norm-Bridge visibility).
         // Available in every edit mode so an admin can set this for a user during
         // onboarding without forcing the user to revisit their profile-edit screen.
         $builder->add('previousQmsBackground', ChoiceType::class, [

@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F11 FTE-Tracking — per-event savings record.
+ * FTE-Tracking — per-event savings record.
  *
  * Each row captures one automation event (SSO JIT provisioning, Bulk-Import
  * commit, Evidence-Reuse count-tick) and stores the estimated manual effort

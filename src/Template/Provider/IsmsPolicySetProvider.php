@@ -11,7 +11,7 @@ use App\Template\TemplateProviderInterface;
 /**
  * ISO 27001 baseline policy set (6 documents).
  *
- * Foundation P-14. Six policies every ISO 27001 ISMS needs on day one:
+ * Six policies every ISO 27001 ISMS needs on day one:
  *  - ISMS-Leitlinie (Information Security Policy)
  *  - AUP (Acceptable Use Policy)
  *  - Access Control Policy

@@ -14,7 +14,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * SLA Deadline Monitor — Sprint 7A F3 Wave 2
+ * SLA Deadline Monitor
  *
  * Tracks a single SLA deadline for an entity (DataBreach, Incident,
  * AuditFinding, etc.) and records which checkpoints have already fired.
@@ -30,7 +30,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_sla_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_sla_status_deadline', columns: ['status', 'deadline_at'])]
 #[ORM\Index(name: 'idx_sla_entity', columns: ['entity_type', 'entity_id'])]
-// One clock per record and deadline type (spawner vs. cron retry race), #1059.
+// One clock per record and deadline type (spawner vs. cron retry race)
 #[ORM\UniqueConstraint(name: 'uniq_sla_entity_deadline', columns: ['entity_type', 'entity_id', 'deadline_type'])]
 class SlaDeadlineMonitor
 {

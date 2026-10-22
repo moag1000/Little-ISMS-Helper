@@ -39,7 +39,7 @@ class SessionController extends AbstractController
         $userEmail = $request->query->get('email');
         $limit = $request->query->get('limit', 100);
 
-        // List and statistics share one query-level scope (#1059): the users
+        // List and statistics share one query-level scope: the users
         // the actor may administer (UserVoter::EDIT) — filtering in PHP after
         // LIMIT produced short lists and statistics that counted other rows.
         $userScope = $this->resolveAdministrableUserScope($tenantContext);
@@ -70,7 +70,7 @@ class SessionController extends AbstractController
         $thirtyDaysAgo = new DateTime('-30 days');
         $now = new DateTime();
 
-        // Same scope as the session index (#1059): logins of users the actor
+        // Same scope as the session index: logins of users the actor
         // may administer; the action filter runs in the query.
         $userScope = $this->resolveAdministrableUserScope($tenantContext);
         $logins = $auditLogRepository->findLoginEvents(

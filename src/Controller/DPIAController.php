@@ -126,7 +126,7 @@ class DPIAController extends AbstractController
             }
         }
 
-        // Sprint-2 P-7 Wave-2 Trigger-1: pre-fill from Risk via AlvaHint
+        // Pre-fill from Risk via AlvaHint
         // action "DPIA anlegen mit Vorbefüllung" — copies title, description,
         // necessity placeholder, and linked Asset from the Risk so the DPO
         // does not retype context. Tenant-isolated.
@@ -139,7 +139,7 @@ class DPIAController extends AbstractController
             }
         }
 
-        // F31 — Sectoral DPIA template pre-fill.
+        // Sectoral DPIA template pre-fill.
         // Reads the curated template key from ?sector_template=<key> query param.
         // No free-authoring: key must exist in DpiaTemplateCatalogue (read-only curated library).
         $appliedTemplate = null;
@@ -157,7 +157,7 @@ class DPIAController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dataProtectionImpactAssessmentService->create($dataProtectionImpactAssessment);
 
-            // F31 — Audit log: template used at DPIA creation.
+            // Audit log: template used at DPIA creation.
             if ($appliedTemplate !== null) {
                 $this->auditLogger?->logCustom(
                     action: AuditLogger::ACTION_DPIA_CREATED_FROM_TEMPLATE,
@@ -595,7 +595,7 @@ class DPIAController extends AbstractController
 
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
-        // V3 W3-Aurora: Comment-Thread (C7) — load thread for this DPIA.
+        // Comment-Thread (C7) — load thread for this DPIA.
         $comments = [];
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($this->commentRepository !== null && $tenant !== null && $dataProtectionImpactAssessment->getId() !== null) {

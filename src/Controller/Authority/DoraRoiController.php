@@ -31,7 +31,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F30 — DORA Register of Information (RoI) Controller.
+ * DORA Register of Information (RoI) Controller.
  *
  * Routes:
  *  GET  /authority/dora-roi          — index: list past submissions + generate button

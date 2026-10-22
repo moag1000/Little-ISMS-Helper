@@ -10,9 +10,9 @@ use App\Entity\WizardRun;
 use App\Service\AuditLogger;
 
 /**
- * PerDocumentAuditLogger — Phase 4-C / Sprint W3-C.
+ * PerDocumentAuditLogger
  *
- * Closes Phase 4-C ISB-review item §7-#1 from
+ * Implements the ISB-review item §7-#1 from
  * `docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md`:
  *   "Per-document audit-log entries guaranteed in addition to batch
  *    reference."

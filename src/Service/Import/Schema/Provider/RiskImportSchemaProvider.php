@@ -283,7 +283,7 @@ final class RiskImportSchemaProvider implements ImportSchemaProviderInterface
                     relationLookup: 'cveId',
                 ),
 
-                // ── Quantitative risk SLE/ARO (risk_quant module, F46) ──────────
+                // ── Quantitative risk SLE/ARO (risk_quant module) ──────────
                 // ALE = SLE × ARO is computed on the entity. Aliases accept the
                 // common shorthand spreadsheet columns.
                 new ImportFieldSpec(

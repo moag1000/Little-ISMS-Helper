@@ -38,7 +38,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             'classification'   => ['type', 'severity', 'status', 'source', 'clauseReference'],
             'root_cause'       => ['evidence', 'relatedControls'],
             'corrective_action'=> ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dueDate'],
-            // S17 B4 — CAPA Hybrid JSON fields (ISO 27001 Cl. 10.2 b) + d)).
+            // CAPA Hybrid JSON fields (ISO 27001 Cl. 10.2 b) + d)).
             // `nonconformityDetails` carries the structured CAPA sub-schema
             // (rootCauseAnalysisMethod + correctiveActions[] + verification*)
             // and is rendered via the `_fa_capa_builder` Stimulus controller,
@@ -51,7 +51,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // F14 — when invoked with `audit_locked: true` (pre-linked from audit show-page),
+        // When invoked with `audit_locked: true` (pre-linked from audit show-page),
         // render the audit field as disabled so the parent audit is locked and cannot
         // be changed by the user. `mapped: false` on the disabled variant keeps the
         // EntityType out of the form-data bind path; the controller pre-sets the entity
@@ -170,7 +170,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'help' => 'audit_finding.help.evidence',
             ])
             // Plural M:N — Findings can hit multiple controls (e.g. logging
-            // finding A.8.15 + A.8.16). Junior-ISB-audit P0-NEW.
+            // finding A.8.15 + A.8.16).
             ->add('relatedControls', EntityType::class, [
                 'label' => 'audit_finding.field.related_controls',
                 'class' => Control::class,
@@ -183,11 +183,11 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             ])
         ;
 
-        // ── Assigned Owner cluster (audit-s4 P-1) ───────────────────────────
+        // ── Assigned Owner cluster ───────────────────────────
         // Replaces assignedTo / assignedPerson / assignedDeputyPersons. The
         // separate "reportedByPerson" + "reportedByDeputyPersons" slot stays
         // hand-rolled below — it is a different governance role (Reporter,
-        // not Owner) per SOLUTIONS_FOUNDATION.md P-1 exception list.
+        // not Owner), so it is not covered by the owner picker.
         $this->addOwnerPicker($builder, [
             'user_field'         => 'assignedTo',
             'person_field'       => 'assignedPerson',
@@ -245,7 +245,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'audit_finding.help.linked_requirements',
             ])
-            // ── S17 B4 — CAPA / NC details (ISO 27001 Cl. 10.2 b) + d)) ─────
+            // ── CAPA / NC details (ISO 27001 Cl. 10.2 b) + d)) ─────
             // Required for NC types but enforced server-side via validateNcSlot()
             // so non-NC finding types stay lean. Frontend `data-ui-show-if`
             // gating left to a future polish pass.
@@ -276,7 +276,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'help' => 'audit_finding.help.nc_verified_by',
             ])
-            // S17 B4 follow-up — CAPA Hybrid JSON field. Wired via
+            // CAPA Hybrid JSON field. Wired via
             // JsonStructuredType (TextareaType parent w/ JsonArrayTransformer)
             // and rendered by `_fa_capa_builder` macro + Stimulus controller.
             // The form-theme override in
@@ -302,7 +302,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 new Callback([$this, 'validateAssignedSlot']),
                 new Callback([$this, 'validateNcSlot']),
             ],
-            // F14 — when true the audit field is rendered read-only (pre-linked context).
+            // When true the audit field is rendered read-only (pre-linked context).
             'audit_locked' => false,
         ]);
         $resolver->setAllowedTypes('audit_locked', 'bool');
@@ -321,7 +321,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * S17 B4 — NC findings (ISO 27001 Cl. 10.2) MUST have a root-cause summary
+     * NC findings (ISO 27001 Cl. 10.2) MUST have a root-cause summary
      * and a correction deadline. We do NOT validate observations / opportunities
      * — those are awareness-only.
      */

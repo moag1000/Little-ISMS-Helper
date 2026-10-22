@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard W6-B — seed the 5 standalone Privacy / DPO documents
+ * Policy-Wizard — seed the 5 standalone Privacy / DPO documents
  * plus the thin A.5.34 cross-reference host = 6 PolicyTemplate rows.
  *
  * Source of truth: `docs/plans/policy-wizard/06-dpo-input.md` Decision
@@ -37,7 +37,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   • `iso27701_clauses_2025` + `iso27701_clauses_2019` — PIMS mapping
  *   • `dpo_section_required=true` for the 5 standalone docs; `false`
  *     for the thin A.5.34 host (it carries no own privacy section)
- *   • `affected_functions=['dpo']` — the W3 function-owner-review
+ *   • `affected_functions=['dpo']` — the function-owner-review
  *     workflow gate
  *
  * Idempotent: re-running without `--force` is a no-op for rows that
@@ -49,8 +49,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:policy-wizard:seed-privacy --force
  *   php bin/console app:policy-wizard:seed-privacy --dry-run
  *
- * Mirrors {@see SeedDoraPolicyTemplatesCommand} (W4-A) and
- * {@see SeedBsiPolicyTemplatesCommand} (W5-A) in shape so downstream
+ * Mirrors {@see SeedDoraPolicyTemplatesCommand} and
+ * {@see SeedBsiPolicyTemplatesCommand} in shape so downstream
  * wizard tooling can treat all standards uniformly.
  */
 #[AsCommand(
@@ -64,10 +64,10 @@ final class SeedPrivacyPolicyTemplatesCommand extends Command
     /**
      * Canonical 6-row catalogue. Body / title translation keys follow
      * the §8.7 versioning scheme (`policy.gdpr.<topic>.v1.body`); real
-     * translation content is authored in W6-E.
+     * translation content lives in the policy translation files.
      *
      * ISO 27701 clause mapping per `06-dpo-input.md` §3.1 — both 2025
-     * and 2019 stored so the W6-B `iso27701.version` setting can pick
+     * and 2019 stored so the `iso27701.version` setting can pick
      * the right clause set without re-querying the source-of-truth doc.
      *
      * @var list<array{
@@ -296,7 +296,7 @@ final class SeedPrivacyPolicyTemplatesCommand extends Command
         $template->setBsiTier(null);
         $template->setLinkedDoraArticles(null);
         // Per §0.A of the DPO spec — every privacy template carries the
-        // DPO function so the W3 function-owner-review workflow surfaces
+        // DPO function so the function-owner-review workflow surfaces
         // the doc to the DPO inbox even when it sits inside an ISO host.
         $template->setAffectedFunctions(['dpo']);
         $template->setReviewIntervalMonths($row['review_interval_months']);

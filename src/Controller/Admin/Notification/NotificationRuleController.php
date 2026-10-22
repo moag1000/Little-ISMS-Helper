@@ -33,7 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *              (own-tenant) + ROLE_SUPER_ADMIN (any tenant). ROLE_MANAGER has
  *              dashboard-read access elsewhere but cannot configure rules.
  *
- * Migrated from `ROLE_MANAGER` in Phase 4d of the Role-Scope Architecture
+ * Migrated from `ROLE_MANAGER` in the Role-Scope Architecture
  * rollout (spec: `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  */
 // @no-methods-required — class-level path prefix, methods declared per action

@@ -135,7 +135,7 @@ class AdminDashboardController extends AbstractController
             ->getQuery()
             ->getSingleScalarResult();
 
-        // Sprint 11: Compliance-Health Metriken (Framework-Ladezustand, Mapping-Counts,
+        // Compliance-Health Metriken (Framework-Ladezustand, Mapping-Counts,
         // Unreviewed-Seeds) — ersetzen die Ops-lastigen Total-Records-/DB-Size-Cards.
         $complianceStats = $this->getComplianceHealthStats();
         $workflowStats = $this->getWorkflowStats();

@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * F43 Trust-Center — admin UI for managing public compliance-posture sharing.
+ * Trust-Center — admin UI for managing public compliance-posture sharing.
  *
  * ROLE_ADMIN-gated. Allows the tenant admin to:
  *  - Enable/disable public posture sharing (generates a token on first enable).

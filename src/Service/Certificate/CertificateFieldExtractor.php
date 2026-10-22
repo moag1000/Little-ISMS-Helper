@@ -36,7 +36,7 @@ namespace App\Service\Certificate;
  *   PCI DSS / PCI-DSS                 → PCI_DSS
  *   NIST CSF / NIST 800               → NIST_CSF
  *
- * LLM extraction deferred (Phase 3): a future strategy could send $text to an
+ * LLM extraction deferred: a future strategy could send $text to an
  * LLM for higher-accuracy field extraction. Intentionally not implemented.
  * Seam: swap or extend the extract() body with an LLM-backed strategy that
  * returns the same array shape, keeping this method as the public API.
@@ -153,7 +153,7 @@ final class CertificateFieldExtractor
      */
     public function extract(string $text): array
     {
-        // LLM extraction deferred (Phase 3): a future strategy could send $text to an
+        // LLM extraction deferred: a future strategy could send $text to an
         // LLM for higher-accuracy field extraction. Intentionally not implemented.
         // Seam: replace the heuristic calls below with an LLM strategy object that
         // returns the same $draft array shape.

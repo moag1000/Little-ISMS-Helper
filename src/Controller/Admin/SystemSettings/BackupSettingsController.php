@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * Backup settings UI.
  * Persists in Tenant.settings['backup'] JSON sub-key.
- * Note: "Run now" button and actual Messenger dispatch are Wave 2.
+ * Note: "Run now" button and actual Messenger dispatch are not implemented yet.
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/backups')]

@@ -11,7 +11,7 @@ use Doctrine\DBAL\Connection;
  *
  * Installs that marked migrations as executed (phantom repair) skip the
  * 3.15.3 operator-bootstrap data migration and can end up without one;
- * /quick-fix shows a notice then (#1059).
+ * /quick-fix shows a notice then.
  *
  * Plain SQL on purpose: bypasses the ORM tenant filter (an operator is
  * usually tenantless) and keeps working while entity metadata and schema

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Dpia\Template;
 
 /**
- * F31 — Curated library of 3 sectoral DPIA templates.
+ * Curated library of 3 sectoral DPIA templates.
  *
  * Content is IMMUTABLE application code — tenants CANNOT author or edit templates.
  * Norm references: §22 BDSG (Healthcare), DORA Art. 9-14 (Financial Services),

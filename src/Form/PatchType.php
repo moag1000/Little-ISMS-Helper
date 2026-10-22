@@ -121,7 +121,7 @@ final class PatchType extends AbstractType implements SectionMapInterface
                     'size' => 5,
                 ],
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `patch_lifecycle`. ISO 27001 A.8.32 + A.8.8, 4-eyes auf
             // `approve`, `deploy`, `rollback`. Transitions via LifecycleService.
             ->add('status', ChoiceType::class, [
@@ -277,7 +277,7 @@ final class PatchType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.8.8 · Vulnerability Management / Patch.
+     * SectionPolicy — ISO 27001 A.8.8 · Vulnerability Management / Patch.
      * Sections: overview · vulnerability_link · affected_systems · testing · rollout · verification
      *
      * @return array<string, list<string>>

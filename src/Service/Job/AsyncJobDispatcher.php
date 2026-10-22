@@ -16,7 +16,7 @@ use Twig\Environment;
  * {@see JobDispatcher} for the canonical "create-status → render-progress →
  * dispatch" pattern used by ~30 async-admin endpoints.
  *
- * Junior-ISB-Audit-2026-05-22 P-16: Boilerplate-reduction facade.
+ * Boilerplate-reduction facade.
  *
  * Replaces the 5-step ritual:
  *   1. $jobStatusService->create($name, $payload)

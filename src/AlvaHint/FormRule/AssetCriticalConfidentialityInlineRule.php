@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Asset form: critical confidentiality value.
+ * Form-Step-Inline-Hint — Asset form: critical confidentiality value.
  *
  * Fires while the user is filling out the Asset form and selects the
  * maximum confidentiality value (5 on the 1-5 scale, "critical" / "very

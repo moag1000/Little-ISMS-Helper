@@ -33,7 +33,7 @@ final class OperationalBaselinesStep extends AbstractStep
     public const ALLOWED_CRYPTO_ALGOS = ['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305', 'RSA-3072', 'RSA-4096', 'ECDSA-P256', 'ECDSA-P384'];
 
     /**
-     * Junior-ISB-friendly default crypto allow-list per BSI TR-02102-1
+     * Beginner-friendly default crypto allow-list per BSI TR-02102-1
      * (2024-1 edition) plus modern AEAD/EdDSA suites widely accepted by
      * NIST SP 800-131A. Used by {@see self::defaults()} when the user
      * lands on Step 5 with an empty `crypto_allowlist` slot — the user
@@ -123,9 +123,9 @@ final class OperationalBaselinesStep extends AbstractStep
     /**
      * Pre-fill helpers for Junior ISB. Currently:
      *   - BSI-TR-02102-2024 conformant `crypto_allowlist` when the slot
-     *     is empty (Wish #1 from Junior-Implementer-Persona feedback).
+     *     is empty.
      *   - `dora.not_applicable_hint` flag when DORA is in scope but the
-     *     tenant picked a non-financial industry-preset bundle (Wish #4).
+     *     tenant picked a non-financial industry-preset bundle.
      *
      * Existing user input always wins — this method only fills empty
      * slots, never overrides explicit choices.
@@ -303,7 +303,7 @@ final class OperationalBaselinesStep extends AbstractStep
                 $dora = [];
             }
 
-            // Junior-ISB Self-Check (DORA Art. 16 + RTS) — derive
+            // Beginner self-check (DORA Art. 16 + RTS) — derive
             // `is_significant` server-side from three guided questions
             // when the user filled the Self-Check. Threshold: ≥ 2 yes
             // out of 3 → significant. The raw answers are persisted so

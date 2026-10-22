@@ -14,7 +14,7 @@ use App\Service\AuditLogger;
 use App\Service\PdfExportService;
 
 /**
- * F26.2 — Authority Notification Generator
+ * Authority Notification Generator
  *
  * Generates pre-filled notification exports for EU/DE supervisory authorities:
  *  - BSI-Meldestelle (NIS-2 Art. 23 incidents)

@@ -117,10 +117,10 @@ class Training
     private ?string $participants = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+     * AttendeeCount derived from participants Collection.
      *
      * Legacy stored column kept for backwards compatibility with historical
-     * imports (pre-P-15 free-text trainings carry a manually-set integer
+     * imports (pre-structured free-text trainings carry a manually-set integer
      * here). New code MUST NOT rely on this directly — use
      * {@see Training::getAttendeeCount()} which returns the canonical
      * derived value (count of {@see TrainingParticipation} rows for this
@@ -163,7 +163,7 @@ class Training
     private int $lockVersion = 0;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     * File-Upload statt Freitext-Pfade.
      *
      * Legacy free-text column retained for already-migrated data (URLs /
      * descriptive paragraphs). New uploads land in {@see $materialFiles}
@@ -175,7 +175,7 @@ class Training
     private ?string $materials = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     * File-Upload statt Freitext-Pfade.
      *
      * Structured list of uploaded training material files. Each entry is
      * an associative array with the keys:
@@ -223,7 +223,7 @@ class Training
 
     /**
      * @var Collection<int, ComplianceRequirement>
-     * Phase 6J: Training ↔ ComplianceRequirement relationship for compliance training tracking
+     * Training ↔ ComplianceRequirement relationship for compliance training tracking
      */
     #[ORM\ManyToMany(targetEntity: ComplianceRequirement::class, inversedBy: 'trainings')]
     #[ORM\JoinTable(name: 'training_compliance_requirement')]
@@ -241,7 +241,7 @@ class Training
     private ?string $programType = null;
 
     /**
-     * Junior-ISB-Audit C3-02 (S14, 2026-05-23) — Awareness-Recurrence.
+     * Awareness-Recurrence.
      *
      * ISO 27001 A.6.3 expects awareness training to recur on a defined
      * cadence (typically annually). This integer holds the cadence in
@@ -256,7 +256,7 @@ class Training
     private ?int $recurrenceMonths = null;
 
     /**
-     * Junior-ISB-Audit C3-02 (S14, 2026-05-23) — last reminder timestamp.
+     * Last reminder timestamp.
      *
      * Updated by `app:training-send-reminders` on every successful run.
      * The cron computes `lastReminderSentAt + recurrenceMonths` and re-
@@ -273,7 +273,7 @@ class Training
     private ?Tenant $tenant = null;
 
     /**
-     * Pattern A dual-state (P-15 DataReuse): structured participants as
+     * Pattern A dual-state: structured participants as
      * application Users. Persisting Users here triggers TrainingParticipation
      * row creation in TrainingController so the audit-trail (ISO 27001 §7.3)
      * stays intact. Legacy `participants` Textarea remains for migration
@@ -291,7 +291,7 @@ class Training
     private ?Collection $participantUsers = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+     * AttendeeCount derived from participants Collection.
      *
      * Doctrine-managed inverse-side OneToMany to TrainingParticipation. This
      * is the canonical M:N link Training x User (the transient
@@ -454,11 +454,11 @@ public function __construct()
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+     * AttendeeCount derived from participants Collection.
      *
      * Canonical attendee count = number of {@see TrainingParticipation}
      * rows for this training. Falls back to the legacy stored column when
-     * no structured rows exist (pre-P-15 import data). Doctrine's
+     * no structured rows exist (pre-structured import data). Doctrine's
      * EXTRA_LAZY fetch on $participations makes `->count()` a single
      * COUNT(*) query, so this getter is safe for use in list templates.
      *
@@ -478,11 +478,11 @@ public function __construct()
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.7: kept for migration backfills only.
+     * Kept for migration backfills only.
      *
      * @internal Production code MUST derive the value from
      * {@see Training::$participations}. This setter survives only so
-     * fixtures / data-import commands can hydrate pre-P-15 records.
+     * fixtures / data-import commands can hydrate pre-structured records.
      */
     public function setAttendeeCount(?int $attendeeCount): static
     {
@@ -543,7 +543,7 @@ public function __construct()
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     * File-Upload statt Freitext-Pfade.
      *
      * @return array<int, array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string}>
      */

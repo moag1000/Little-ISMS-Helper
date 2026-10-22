@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Training form: mandatory training without
+ * Form-Step-Inline-Hint — Training form: mandatory training without
  * defined audience.
  *
  * Fires when the user marks a Training `mandatory = true` but leaves

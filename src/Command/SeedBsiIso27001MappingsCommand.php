@@ -27,7 +27,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * same source/target pair are skipped so the command can be re-run after
  * each Kompendium-Delta import.
  *
- * Scope (Sprint 1 / B2): ~40 high-frequency Bausteine-Anforderungen ↔
+ * Scope: ~40 high-frequency Bausteine-Anforderungen ↔
  * 27001 Annex A controls. Broader coverage (~400 mappings) can be added
  * incrementally as the Kompendium-Delta-Loader grows.
  *

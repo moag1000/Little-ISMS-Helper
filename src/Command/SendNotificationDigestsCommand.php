@@ -19,7 +19,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 /**
- * F3 email-digest command — collects pending_digest deliveries per email channel,
+ * Email-digest command — collects pending_digest deliveries per email channel,
  * renders ONE batched email per channel, sends it via the existing Mailer, and
  * marks all collected deliveries as `sent`.
  *

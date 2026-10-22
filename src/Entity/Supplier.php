@@ -118,7 +118,7 @@ class Supplier
 
     /**
      * Criticality code — references SupplierCriticalityLevel.code for this tenant.
-     * Phase 8QW-5: Assert\Choice removed; validation is now via tenant-specific
+     * Assert\Choice removed; validation is now via tenant-specific
      * SupplierCriticalityLevel lookup (FK-style). Existing canonical codes
      * (critical/high/medium/low) remain valid via seeded default records.
      */
@@ -1051,7 +1051,7 @@ class Supplier
         return $this;
     }
 
-    // ── Sprint 7-B: MaRisk outsourcing fields (gated 'marisk' module) ─────────
+    // ── MaRisk outsourcing fields (gated 'marisk' module) ─────────
 
     /**
      * Outsourcing classification (MaRisk AT 9.1).

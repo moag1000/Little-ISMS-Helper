@@ -18,7 +18,7 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * V3 W2-LB-8 + WS-9 + multi-framework evidence attachment.
+ * + WS-9 + multi-framework evidence attachment.
  *
  *  LB-8 (review-cycle auto-set):
  *    On status transition → 'approved' AND nextReviewDate is null,
@@ -32,7 +32,7 @@ use Psr\Log\LoggerInterface;
  *    notify the tenant CSIRT-team (ROLE_CISO + ROLE_DPO) so they can
  *    review the policy before circulation.
  *
- *  Multi-framework evidence attachment (Phase 1):
+ *  Multi-framework evidence attachment:
  *    On status → 'approved', collect newly-approved Documents into
  *    a deferred queue during `preUpdate`. After the outer flush
  *    completes (postFlush), the queue is drained: DocumentControlLink
@@ -132,7 +132,7 @@ final class DocumentApprovalListener
     }
 
     /**
-     * V3 W2-LB-8 — populate nextReviewDate when missing.
+     * Populate nextReviewDate when missing.
      *
      * Runs in preUpdate so the new value is part of the same flush.
      * Uses PreUpdateEventArgs::setNewValue() to register the change
@@ -167,7 +167,7 @@ final class DocumentApprovalListener
     }
 
     /**
-     * V3 W2-WS-9 — Notify CSIRT-team for approved ICT-policy documents.
+     * Notify CSIRT-team for approved ICT-policy documents.
      * Falls back gracefully when neither emailNotifier nor userRepository
      * is wired (test contexts).
      */

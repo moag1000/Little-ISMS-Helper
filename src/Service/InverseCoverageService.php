@@ -14,7 +14,7 @@ use App\Entity\Supplier;
 use App\Repository\ComplianceRequirementRepository;
 
 /**
- * Inverse-Coverage Service (Sprint 3 / A1).
+ * Inverse-Coverage Service.
  *
  * Dreht die Standard-Sicht *"Requirement → Evidence"* um. Der CM öffnet
  * ein Document/Asset/Supplier und sieht sofort *"wo wird das eigentlich
@@ -166,7 +166,7 @@ final class InverseCoverageService
     }
 
     /**
-     * V3 B6 / EF-4: Inverse-Coverage für ein Control.
+     * Inverse-Coverage für ein Control.
      *
      * Liefert alle Requirements (in welchen Frameworks), die dieses Control
      * als gemapptes Control referenzieren — d.h. wenn dieses Control geändert
@@ -188,7 +188,7 @@ final class InverseCoverageService
     }
 
     /**
-     * V3 B6 / EF-4: Inverse-Coverage für ein Asset.
+     * Inverse-Coverage für ein Asset.
      *
      * Liefert Requirements, die dieses Asset entweder direkt via Asset-Bezug
      * (dataSourceMapping.entity='Asset' / .entities-Liste enthält 'Asset')
@@ -215,7 +215,7 @@ final class InverseCoverageService
     }
 
     /**
-     * V3 B6 / EF-4: Inverse-Coverage für ein Risk.
+     * Inverse-Coverage für ein Risk.
      *
      * Liefert Requirements die dieses Risk via mappedRisks (falls vorhanden) oder
      * via mappedControls die das Risk in ihrer Relevanz haben referenzieren.

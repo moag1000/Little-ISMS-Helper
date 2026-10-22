@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Training Participation — structured M:N Training x User assignment.
  *
- * Audit V3 W2-C3: replaces the legacy free-text "[user:N:Name]" marker
+ * Replaces the legacy free-text "[user:N:Name]" marker
  * pattern in {@see Training::$participants} with a real entity. Every
  * mandatory-training auto-assignment for a new user (see
  * {@see App\EventListener\AutoReactionTrainingAssignListener}) creates one

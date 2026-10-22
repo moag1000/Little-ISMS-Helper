@@ -81,7 +81,7 @@ final class ISMSContextType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'context.help.internal_issues'
             ])
-            // Junior-Finding #5 / CM-Blocker: Interessierte Parteien werden
+            // Interessierte Parteien werden
             // ausschließlich im strukturierten Modul (/interested-party)
             // gepflegt. Der frühere Freitext im Kontext-Formular führte zu
             // Doppelpflege und wurde entfernt. Bestehende Daten im DB-Feld

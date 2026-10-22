@@ -28,7 +28,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Status is intentionally excluded — status transitions are managed exclusively
  * via ActionItemStatusService::transition(). Origin is system-managed. The scope
  * (Geltungsbereich) choices are drawn from the tenant's PlanningSettings list.
- * Implements SectionMapInterface per S4 Foundation P-2.
+ * Implements SectionMapInterface per S4 
  */
 final class ActionItemType extends AbstractType implements SectionMapInterface
 {

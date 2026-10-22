@@ -13,9 +13,9 @@ use Twig\Attribute\AsTwigFunction;
  *
  * Exposes the band-thresholds from {@see RiskMatrixThresholds} (SSoT)
  * to templates so views never have to hard-code "20-25" / "12-19" etc.
- * — those strings used to drift between yaml/twig/service (Audit P-11).
+ * — those strings used to drift between yaml/twig/service.
  *
- * Junior-ISB-Audit-2026-05-22 M-03: Risk-Schwellen single-source-of-truth
+ * Risk-Schwellen single-source-of-truth
  * via RiskMatrixThresholds. The legacy `risk.filter.level_*` and
  * `risk.index.risk_level.*` translation blocks duplicated the canonical
  * `risk.level.<band>` labels — kept the canonical block, drove templates
@@ -47,7 +47,7 @@ final class RiskExtension
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-03: return the localised label for a
+     * Return the localised label for a
      * risk band (`critical|high|medium|low`). All template call-sites that
      * previously read `risk.filter.level_<band>` or
      * `risk.index.risk_level.<band>` now funnel through this helper, so
@@ -65,7 +65,7 @@ final class RiskExtension
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-03: classify a numeric score into a band
+     * Classify a numeric score into a band
      * via the SSoT and return the band identifier. Convenience for templates
      * that need to colour a value but only have the score in hand.
      */

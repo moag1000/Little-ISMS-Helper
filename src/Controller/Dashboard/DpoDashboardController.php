@@ -30,7 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *   - Processing activities with third-country transfers
  *   - Quick actions (VVT export, DPIA list, data breaches)
  *
- * Module gate: 'privacy'. Role gate: PERSONA_DPO (Role-Scope Phase 6 —
+ * Module gate: 'privacy'. Role gate: PERSONA_DPO (Role-Scope —
  * resolves to ROLE_DPO via TenantScopedAdminVoter).
  */
 // @no-methods-required — class-level path prefix, methods declared per action

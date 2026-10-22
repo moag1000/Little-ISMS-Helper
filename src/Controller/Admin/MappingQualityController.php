@@ -26,7 +26,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Übersicht aller Cross-Framework-Mappings mit MQS-Score, Lifecycle-State,
  * Coverage und Confidence-Verteilung. Filter nach State, Score-Range, Framework.
  *
- * Phase 4c role-scope migration:
  *  - Class-level `ADMIN_OWN_TENANT` lets tenant-admins inspect mappings.
  *  - {@see self::recompute()} bumps to `ADMIN_GLOBAL_OP` because it
  *    iterates EVERY mapping row in the DB (cross-tenant), which only

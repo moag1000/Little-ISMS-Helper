@@ -51,7 +51,7 @@ class CertificationBundleController extends AbstractController
     /**
      * Preview page showing bundle contents and counts before generation.
      *
-     * Audit-V3 EF-3: framework-aware. `?framework=BSI_GRUNDSCHUTZ` selects
+     * Framework-aware. `?framework=BSI_GRUNDSCHUTZ` selects
      * a non-default framework for the bundle metadata. Only active
      * frameworks are accepted; unknown codes fall back to ISO27001.
      */
@@ -109,7 +109,7 @@ class CertificationBundleController extends AbstractController
     /**
      * Generate and download the certification bundle ZIP.
      *
-     * Task #122: accepts `frameworks[]` (multi-checkbox form) in addition
+     * Accepts `frameworks[]` (multi-checkbox form) in addition
      * to the legacy single `framework` field. When `frameworks[]` is
      * present, every selected code is added via {@see CertificationBundleExporter::addFrameworkBundle()}
      * so the resulting ZIP carries `02_FRAMEWORK_MAPPING/<code>_coverage.csv`
@@ -132,7 +132,7 @@ class CertificationBundleController extends AbstractController
         $activeFrameworks = $this->frameworkRepository->findActiveFrameworks();
         $selectedCodes = $this->resolveFrameworkCodes($request, $activeFrameworks);
 
-        // Task #128 — optional point-in-time freeze. When the form
+        // Optional point-in-time freeze. When the form
         // posts an `as_of_date` (YYYY-MM-DD), the bundle includes the
         // SoA snapshot section (00_SOA_SNAPSHOT/) instead of the live
         // SoA only. Future dates and bad inputs fall back to live.
@@ -173,8 +173,6 @@ class CertificationBundleController extends AbstractController
      * automation + the integrationless certification_bundle/preflight
      * green-path); new UI traffic should use this dispatch endpoint to
      * avoid PHP-FPM timeouts on big document trees.
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/export/dispatch', name: 'export_dispatch', methods: ['POST'])]
     public function exportDispatch(
@@ -356,7 +354,7 @@ class CertificationBundleController extends AbstractController
     /**
      * Generate and download a Konzern-scoped certification bundle ZIP.
      *
-     * Task #129: aggregates per-subsidiary bundles (root + all
+     * Aggregates per-subsidiary bundles (root + all
      * descendants) into one holding-level archive with an aggregated
      * INDEX.csv (`tenant_*` columns prepended), a 00_KONZERN_OVERVIEW.csv
      * showing per-subsidiary coverage %, and a 00_KONZERN_RACI.md
@@ -448,8 +446,6 @@ class CertificationBundleController extends AbstractController
      * Holding-level bundles aggregate per-subsidiary ZIPs and are the
      * largest export the application produces — most likely to trip
      * PHP-FPM 30s timeout in the sync path.
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/konzern-export/dispatch', name: 'konzern_export_dispatch', methods: ['POST'])]
     #[IsGranted(new \Symfony\Component\ExpressionLanguage\Expression(

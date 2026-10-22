@@ -11,7 +11,7 @@ use App\Entity\User;
 use DateTimeImmutable;
 
 /**
- * Junior-ISB-Audit C4-03 — Tier-2 hint:
+ * Tier-2 hint:
  * ISO 27001 Cl. 10.1 d + Cl. 9.1.1 — Wirksamkeitsprüfung der CAPA.
  *
  * Service-Layer kennt `effectivenessReviewDate` schon (Field auf der

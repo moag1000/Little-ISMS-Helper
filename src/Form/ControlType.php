@@ -87,7 +87,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
                     new NotBlank(),
                 ],
             ])
-            // Junior-ISB-Audit-2026-05-22 S-07: the radios are discovered by
+            // The radios are discovered by
             // name-pattern (`[applicable]`) inside the `applicability-toggle`
             // Stimulus controller (see `configureOptions` form-root
             // data-controller below); no per-radio attrs needed.
@@ -105,7 +105,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'control.help.applicable_explained',
             ])
-            // Junior-ISB-Audit-2026-05-22 S-07: declared as Stimulus target so
+            // Declared as Stimulus target so
             // the controller can toggle aria-required + visible `*` marker
             // when `applicable=false` (ISO 27001 6.1.3 d / 8.3 b).
             ->add('justification', TextareaType::class, [
@@ -118,7 +118,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'control.help.justification',
             ])
-            // F12 — per-option descriptions live on each choice via
+            // Per-option descriptions live on each choice via
             // choice_attr (title + data-description), so the wall-of-text help
             // is broken up; only the "only applicable controls count" caveat
             // remains as field-level help.
@@ -226,7 +226,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'control.help.protected_assets',
             ])
-            // ── Sprint 6: Always-visible effectiveness + classification fields ──
+            // ── Always-visible effectiveness + classification fields ──
             ->add('effectiveness', ChoiceType::class, [
                 'choices' => [
                     'control.effectiveness.not_assessed' => 'not_assessed',
@@ -287,7 +287,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 'label' => 'control.field.next_effectiveness_test',
                 'required' => false,
             ])
-            // F8 — evidence documents (ISO 27001 Cl. 7.5). Multiple-select
+            // Evidence documents (ISO 27001 Cl. 7.5). Multiple-select
             // backed by the control_evidence join table; TomSelect autocomplete.
             ->add('evidenceDocuments', EntityType::class, [
                 'class' => Document::class,
@@ -371,7 +371,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 ]);
         }
 
-        // F10 — derive `category` from the ISO 27001:2022 Annex A control-id
+        // Derive `category` from the ISO 27001:2022 Annex A control-id
         // prefix when the field is still empty. Soft pre-fill only: the user
         // can override the selection. No DB migration — the value lands on the
         // entity through the normal form-mapping when category was blank.
@@ -391,7 +391,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * F10 — map an ISO 27001:2022 Annex A control-id to its theme/category.
+     * Map an ISO 27001:2022 Annex A control-id to its theme/category.
      *
      * A.5.* → organizational, A.6.* → people, A.7.* → physical,
      * A.8.* → technological. Returns null for non-Annex-A ids so custom
@@ -421,7 +421,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
             'data_class' => Control::class,
             'allow_control_id_edit' => false, // Default: Control ID kann nicht geändert werden
             'translation_domain' => 'control',
-            // Junior-ISB-Audit-2026-05-22 S-07: wire the form root into the
+            // Wire the form root into the
             // `applicability-toggle` Stimulus controller so the visible
             // required-marker on `justification` follows the `applicable`
             // radio state (mirrors validateJustificationWhenNotApplicable).
@@ -443,7 +443,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * SectionPolicy (S4 Foundation P-2) — groups the ~30 Control fields into
+     * SectionPolicy — groups the ~30 Control fields into
      * regulatorily-meaningful sections so the SoA edit form never dumps a
      * field into the generic catch-all. Section keys resolve to
      * `form.section.<key>` in the `messages` domain.
@@ -504,7 +504,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
 
     /**
      * ISO 27001 6.1.3 d / 8.3 b — SoA must document a justification for every
-     * non-applicable control. Junior-ISB-audit P0-01: the help-text says the
+     * non-applicable control. The help-text says the
      * field is mandatory but the form previously allowed empty submissions.
      * This callback closes the help-vs-code gap.
      */
@@ -521,7 +521,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * F4 + C — when a control is marked `verified` it must carry evidence of
+     * When a control is marked `verified` it must carry evidence of
      * verification:
      *   - a verification/review date (lastEffectivenessTest OR lastReviewDate),
      *   - an effectiveness rating other than `not_assessed`, AND
@@ -555,7 +555,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * F5 — an effectiveness rating other than `not_assessed` requires a
+     * An effectiveness rating other than `not_assessed` requires a
      * documented last-effectiveness-test date (ISO 27001 Cl. 9.1 — you cannot
      * rate effectiveness without having measured it).
      */
@@ -576,7 +576,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * F11 — cross-field date sanity: a "next" date must be strictly after its
+     * Cross-field date sanity: a "next" date must be strictly after its
      * "last" counterpart (review schedule + effectiveness-test schedule).
      */
     public function validateReviewDateOrder(?Control $entity, ExecutionContextInterface $context): void

@@ -9,7 +9,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Twig\Attribute\AsTwigFunction;
 
 /**
- * Twig glue for the LifecycleRegistry (audit-s3 foundation pattern P-4).
+ * Twig glue for the LifecycleRegistry.
  *
  * Exposes three functions:
  *  - `lifecycle_tone(entityClass, statusKey)` — Aurora-v4 status-pill

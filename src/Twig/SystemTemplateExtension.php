@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Attribute\AsTwigFunction;
 
 /**
- * Twig bindings for SystemTemplateRegistry (Foundation P-14).
+ * Twig bindings for SystemTemplateRegistry.
  *
  *  - system_templates(entityClass)   → list<SystemTemplate>
  *  - system_template_count(entityClass) → int (cheap check for empty-state CTAs)

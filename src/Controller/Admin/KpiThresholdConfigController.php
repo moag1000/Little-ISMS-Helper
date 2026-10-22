@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * ROLE_ADMIN configures own tenant,
  * SUPER_ADMIN any. Tenant scope resolves via
  * {@see TenantContext::resolveAdminScope()} — replaces the inline
  * SUPER-vs-ADMIN branch in {@see self::denyIfWrongTenant()}.

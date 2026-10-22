@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard\Diff;
 
 /**
- * Policy-Wizard W7-C — variable-level diff helper.
+ * Policy-Wizard — variable-level diff helper.
  *
  * Flattens nested substitution-variable maps into dot-notation paths
  * (e.g. `tenant.legal_name`, `roles.dpo.fullName`) and compares the

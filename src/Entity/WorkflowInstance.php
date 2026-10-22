@@ -71,7 +71,7 @@ class WorkflowInstance
 
     /**
      * Optimistic-locking version column — guards concurrent status transitions
-     * via Symfony Workflow (Sprint Y.0). Doctrine @Version increments this on
+     * via Symfony Workflow. Doctrine @Version increments this on
      * every flush so parallel approve/reject calls are serialised safely.
      */
     #[ORM\Version]
@@ -89,7 +89,7 @@ class WorkflowInstance
     private int $currentStepIndex = 0;
 
     /**
-     * Policy-Wizard W7-B — co-signature / witness on the approval-trail.
+     * Policy-Wizard — co-signature / witness on the approval-trail.
      *
      * GDPR DPO/CISO joint sign-offs (Art. 38(3), DPO independence) and
      * BSI-aligned 4-eyes ceremonies use this slot to record the second

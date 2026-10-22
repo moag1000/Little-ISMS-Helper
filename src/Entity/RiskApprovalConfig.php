@@ -13,19 +13,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * Phase 8L.F1 — Per-tenant Approval-Schwellwerte für Risikoakzeptanz.
+ * Per-tenant Approval-Schwellwerte für Risikoakzeptanz.
  *
  * Ersetzt die hardcoded private const APPROVAL_AUTOMATIC / MANAGER / EXECUTIVE
  * aus RiskAcceptanceWorkflowService. Werte beziehen sich auf den Risk-Score
  * (Likelihood × Impact, aktuell 5×5-Matrix → max. 25).
  *
- * Holding-Readiness (Phase 8M): genau ein Record pro Tenant via UNIQUE. Ein
+ * Holding-Readiness: genau ein Record pro Tenant via UNIQUE. Ein
  * späterer Ceiling-Resolver kann parent+child-Configs mergen (min-Regel:
  * child darf nicht lascher sein als holding).
  *
- * @todo 2026-05-14 (9B) Bei dynamischer Matrix-Größe (RiskMatrixConfig) muss
+ * @todo Bei dynamischer Matrix-Größe (RiskMatrixConfig) muss
  * threshold_executive gegen matrix.getMaxScore() validiert werden statt
- * hardcoded 25. Blocked by: RiskMatrixConfig entity (Sprint 9+).
+ * hardcoded 25. Blocked by: RiskMatrixConfig entity.
  */
 #[ORM\Entity(repositoryClass: RiskApprovalConfigRepository::class)]
 #[ORM\Table(name: 'risk_approval_config')]

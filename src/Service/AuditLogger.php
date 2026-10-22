@@ -26,7 +26,7 @@ class AuditLogger
     private const string ACTION_IMPORT = 'import';
     private const string ACTION_BULK = 'bulk';
 
-    // Notification audit events (Sprint 6a — F3)
+    // Notification audit events
     public const string ACTION_NOTIFICATION_RULE_CREATED    = 'notification.rule.created';
     public const string ACTION_NOTIFICATION_RULE_UPDATED    = 'notification.rule.updated';
     public const string ACTION_NOTIFICATION_RULE_DELETED    = 'notification.rule.deleted';
@@ -39,23 +39,23 @@ class AuditLogger
     public const string ACTION_NOTIFICATION_DELIVERY_FAILED    = 'notification.delivery.failed';
     public const string ACTION_NOTIFICATION_DELIVERY_RETRIED   = 'notification.delivery.retried';
 
-    // SLA Deadline audit events (Sprint 7A — F3 Wave 2)
+    // SLA Deadline audit events
     public const string ACTION_SLA_DEADLINE_APPROACHING = 'notification.sla.deadline_approaching';
     public const string ACTION_SLA_DEADLINE_MISSED      = 'notification.sla.deadline_missed';
 
-    // NIS-2 BSI-Portal registration audit events (Sprint 7B — F29)
+    // NIS-2 BSI-Portal registration audit events
     public const string ACTION_NIS2_REGISTRATION_EXPORTED = 'nis2.registration.exported';
     public const string ACTION_NIS2_REGISTRATION_UPDATED  = 'nis2.registration.updated';
 
-    // DORA Register of Information audit events (Sprint 8 — F30)
+    // DORA Register of Information audit events
     public const string ACTION_DORA_ROI_EXPORTED  = 'dora.roi.exported';
     public const string ACTION_DORA_ROI_SUBMITTED = 'dora.roi.submitted';
 
-    // F11 FTE-Tracking audit events (Sprint 9A)
+    // FTE-Tracking audit events
     public const string ACTION_FTE_METRIC_RECORDED     = 'fte.metric.recorded';     // low-priority telemetry
     public const string ACTION_FTE_CALIBRATION_CHANGED = 'fte.calibration.changed'; // high-priority admin action
 
-    // SSO-specific audit events (Wave 2) — used by SsoEventLogger
+    // SSO-specific audit events — used by SsoEventLogger
     public const string ACTION_SSO_LOGIN_SUCCESS       = 'sso.login.success';
     public const string ACTION_SSO_LOGIN_FAILURE       = 'sso.login.failure';
     public const string ACTION_SSO_JIT_PROVISIONED     = 'sso.jit.provisioned';
@@ -63,24 +63,24 @@ class AuditLogger
     public const string ACTION_SSO_CONFIG_CHANGED      = 'sso.config.changed';
     public const string ACTION_SSO_ENFORCEMENT_CHANGED = 'sso.enforcement.changed';
 
-    // Risk-Incident cross-link audit events (Sprint 9B — F16)
+    // Risk-Incident cross-link audit events
     public const string ACTION_RISK_INCIDENT_LINKED                  = 'risk_incident.linked';
     public const string ACTION_RISK_INCIDENT_UNLINKED                = 'risk_incident.unlinked';
     public const string ACTION_RISK_REVIEW_SUGGESTED_FROM_INCIDENT   = 'risk_incident.review_suggested';
 
-    // BSI-200-4 Übungs-Logbuch events (Sprint 10B — F27)
+    // BSI-200-4 Übungs-Logbuch events
     public const string ACTION_BSI_2004_LOG_CREATED                  = 'bsi_2004_log.created';
     public const string ACTION_BSI_2004_LOG_SUBMITTED                = 'bsi_2004_log.submitted';
     public const string ACTION_BSI_2004_LOG_CONFIRMED                = 'bsi_2004_log.confirmed';
     public const string ACTION_BSI_2004_IMPROVEMENT_ACTION_OVERDUE   = 'bsi_2004_log.improvement_action_overdue';
 
-    // Library Import/Export events (Sprint 10A — F5b)
+    // Library Import/Export events
     public const string ACTION_LIBRARY_FRAMEWORK_IMPORTED       = 'library.framework.imported';
     public const string ACTION_LIBRARY_FRAMEWORK_EXPORTED_YAML  = 'library.framework.exported_yaml';
     public const string ACTION_LIBRARY_FRAMEWORK_EXPORTED_CSV   = 'library.framework.exported_csv';
     public const string ACTION_LIBRARY_MAPPING_IMPORTED         = 'library.mapping.imported';
 
-    // F31 DPIA sectoral template events
+    // DPIA sectoral template events
     public const string ACTION_DPIA_CREATED_FROM_TEMPLATE = 'dpia.created_from_template';
 
     public function __construct(
@@ -283,7 +283,7 @@ class AuditLogger
         }
         $auditLog->setTenant($tenant);
 
-        // ISB Sprint-2 gate: capture actor's highest role at time of action.
+        // Capture actor's highest role at time of action.
         $auditLog->setActorRole($this->getCurrentActorRole());
 
         // Set request information if available.
@@ -362,7 +362,7 @@ class AuditLogger
 
     /**
      * Highest-priority RBAC role held by the current user.
-     * Used as the actor_role column in AuditLog (ISB Sprint-2 gate).
+     * Used as the actor_role column in AuditLog.
      * Returns null for system / CLI / unauthenticated contexts.
      */
     public function getCurrentActorRole(): ?string

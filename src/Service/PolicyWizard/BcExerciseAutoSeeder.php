@@ -18,7 +18,7 @@ use Psr\Log\NullLogger;
 use Throwable;
 
 /**
- * Policy-Wizard W5-B — auto-seed BCExercise placeholder records.
+ * Policy-Wizard — auto-seed BCExercise placeholder records.
  *
  * Per BCM specialist input
  * (`docs/plans/policy-wizard/04-bcm-input.md` §2.9 + §7.2 + §9.4):

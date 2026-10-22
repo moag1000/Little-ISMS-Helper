@@ -12,7 +12,7 @@ use App\Entity\Tenant;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * AuditFinding Cloner (C4-C1 — Klon-Funktionen).
+ * AuditFinding Cloner.
  *
  * Use case: recurring finding patterns ("we always find policy access control
  * gaps in supplier-audits") — template a finding and assign it to a new

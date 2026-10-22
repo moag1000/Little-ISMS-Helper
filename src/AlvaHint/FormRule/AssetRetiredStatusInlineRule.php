@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Asset form: end-of-life status.
+ * Form-Step-Inline-Hint — Asset form: end-of-life status.
  *
  * Fires when the user moves the Asset to `retired` or `disposed` while
  * editing. Reminds the user that secure-disposal evidence is required

@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 
 /**
- * Sprint 13 / S13-2: GuidedTour-Service.
+ * GuidedTour-Service.
  *
  * Liefert rollenbasierte Tour-Definitionen (Step-Listen) an den
  * Frontend-Stimulus-Controller als JSON. Steps referenzieren
@@ -56,7 +56,7 @@ final class GuidedTourService
     public const TOUR_MRIS = 'mris';
     /**
      * Topic-Tour MAPPING — themenbezogen, nicht rollenbezogen. Erklärt
-     * Junior-ISBs (IT-/9001-Hintergrund) das Mapping-Konzept: Brücke,
+     * beginners (IT-/9001-Hintergrund) das Mapping-Konzept: Brücke,
      * Data-Reuse/Vererbung, Coverage, Confidence/MQS, Lifecycle.
      */
     public const TOUR_MAPPING = 'mapping';
@@ -411,7 +411,7 @@ final class GuidedTourService
 
     /**
      * MAPPING-Topic-Tour — themenbezogen, nicht rollenbezogen.
-     * 9 Stopps, die das Mapping-Konzept für Junior-ISBs (IT-/9001-Hintergrund)
+     * 9 Stopps, die das Mapping-Konzept für beginners (IT-/9001-Hintergrund)
      * von Grund auf erklären und alle 4 Hub-Workflow-Ziele abdecken:
      *   1. what-is-mapping  → Hub (Einstieg)
      *   2. why-reuse        → Hub (Vererbungs-Nutzen)

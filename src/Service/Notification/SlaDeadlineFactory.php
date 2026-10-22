@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * SLA Deadline Factory — Sprint 7A F3 Wave 2
+ * SLA Deadline Factory
  *
  * Constructs and persists SlaDeadlineMonitor instances for well-known
  * regulatory deadlines. The caller (App\EventListener\SlaDeadlineMonitorSpawner)

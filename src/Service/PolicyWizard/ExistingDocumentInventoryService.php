@@ -17,14 +17,14 @@ use DateTimeImmutable;
 use App\Service\PolicyWizard\ExistingDocumentMatcher;
 
 /**
- * Policy-Wizard W4-C — existing-document inventory for brownfield tenants.
+ * Policy-Wizard — existing-document inventory for brownfield tenants.
  *
  * Walks the tenant's `Document` register, surfaces every governance-grade
  * document (`category` ∈ {policy, programme, plan, methodology}) that is
  * NOT itself a Policy-Wizard output, and emits a per-row metadata bundle
  * the Step-0 Bestandsaufnahme template can render.
  *
- * "documentType" in the W4-C task spec maps to {@see Document::getCategory}
+ * "documentType" maps to {@see Document::getCategory}
  * — this codebase stores governance-grade tags in the `category` column
  * (see `DocumentRepository::findByCategory`).
  *

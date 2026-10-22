@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * One-off backfill that reconciles the two historically-divergent consent
- * withdrawal paths (GDPR Art. 7(3), audit finding M-1):
+ * withdrawal paths (GDPR Art. 7(3)):
  *
  *   - the revoke() action set isRevoked/revokedAt/revocationMethod only,
  *   - the (now removed) edit form set withdrawnAt/withdrawalChannel/reason only.

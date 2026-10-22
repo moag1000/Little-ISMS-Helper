@@ -31,7 +31,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *
  * Module gate: 'compliance' module (existing — no new key needed).
  *
- * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * Authorization (Role-Scope Architecture, spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
  *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} as
  *    baseline (ROLE_ADMIN reads/imports for own tenant; SUPER_ADMIN

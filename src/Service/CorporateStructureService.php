@@ -197,7 +197,7 @@ class CorporateStructureService
     /**
      * After a move: point every governance rule of $tenant (the given default
      * rule, possibly not flushed yet, and all stored default/scoped rules) at
-     * the new $parent — otherwise the rules keep naming the old parent (#1059).
+     * the new $parent — otherwise the rules keep naming the old parent.
      * The stored rules belong to $tenant, so the caller's tenant filter is
      * suspended for the lookup (callers authorise $tenant first).
      */
@@ -263,7 +263,7 @@ class CorporateStructureService
      *    creates it right before validating), and
      *  - a stored rule regardless of the caller's tenant filter — the rule
      *    belongs to the SUBSIDIARY's tenant, so a holding admin's filter
-     *    would hide it and set-parent could never complete (#1059). Callers
+     *    would hide it and set-parent could never complete. Callers
      *    authorise the tenant before validating; the lookup names its tenant.
      */
     private function findDefaultGovernanceForValidation(Tenant $tenant): ?CorporateGovernance

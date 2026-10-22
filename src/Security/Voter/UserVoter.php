@@ -36,7 +36,7 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * - Initial setup admin cannot be deleted or deactivated
  * - Permission checks via hasPermission() method
  *
- * Multi-tenancy / scope (security hotfix 3.15.3 + record scope, #1048):
+ * Multi-tenancy / scope (record scope):
  * - ROLE_SUPER_ADMIN is global and may act on any user
  * - ROLE_ADMIN administers users of its organisation tree: VIEW/EDIT/DELETE
  *   only users whose tenant is accessible to it (TenantContext::canAccessTenant

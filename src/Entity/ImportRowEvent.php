@@ -10,8 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ISB-Review Sprint-2 gate MINOR-1 (docs/DATA_REUSE_PLAN_REVIEW_ISB.md):
- * per-row audit trail for a single imported CSV/XML record.
+ * Per-row audit trail for a single imported CSV/XML record.
  *
  * Each row of every imported file produces exactly one ImportRowEvent with:
  *   - line number within the source file (1-based, excluding comments/blanks)

@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Mapping-Seed-UI (Sprint 4 / M2).
+ * Mapping-Seed-UI.
  *
  * Aus dem 3-Personas-Walkthrough: die `app:seed-bsi-iso27001-mappings`,
  * `app:seed-soc2-iso27001-mappings` und `app:seed-c52026-iso27001-mappings`

@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 /**
- * Form for editing per-tenant step-level overrides in the Workflow Overlay Editor (Y.3).
+ * Form for editing per-tenant step-level overrides in the Workflow Overlay Editor.
  *
  * Editable keys:
  *   - approverRole               string|null  (ROLE_* override)

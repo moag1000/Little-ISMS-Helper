@@ -12,7 +12,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W6-D / ISO 27001 A.5.34 + GDPR cross-reference — confirms the thin
+ * ISO 27001 A.5.34 + GDPR cross-reference — confirms the thin
  * A.5.34 host Document exists when the tenant has BOTH ISO 27001 AND
  * GDPR scope active.
  *

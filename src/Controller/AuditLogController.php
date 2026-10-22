@@ -39,7 +39,7 @@ class AuditLogController extends AbstractController
     }
 
     /**
-     * V3 W2-M8 / UF-3: HMAC-Chain Verify endpoint surfaced as Admin button.
+     * HMAC-Chain Verify endpoint surfaced as Admin button.
      * Auditor's classic question "manipulationssicher?" → click & see green/red.
      */
     #[Route('/admin/audit-log/verify', name: 'app_audit_log_verify', methods: ['POST'])]

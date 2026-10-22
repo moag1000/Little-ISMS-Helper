@@ -8,7 +8,7 @@ use App\Service\PolicyWizard\SectionExtension\SectionExtension;
 use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
 
 /**
- * Policy-Wizard W4-A — DORA extension catalogue.
+ * Policy-Wizard — DORA extension catalogue.
  *
  * Per `docs/plans/policy-wizard/03-dora-input.md` §10 cross-mapping the
  * DORA addon classifies its 25 mandates against the ISO 27001 baseline
@@ -27,7 +27,7 @@ use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
  * tenant adopted both ISO 27001 and DORA: every ISO body whose topic
  * appears here grows a translated DORA-extension section appended at
  * render time. The translation key follows
- * `policy.iso27001.<topic>.v1.dora_extension.body` (authored in W4-E).
+ * `policy.iso27001.<topic>.v1.dora_extension.body` (authored in the policy translation files).
  */
 final class DoraExtensionCatalogue implements StandardSectionCatalogueInterface
 {
@@ -155,7 +155,7 @@ final class DoraExtensionCatalogue implements StandardSectionCatalogueInterface
      * single prose block (`## DORA-Erweiterung`) rather than N discrete
      * {@see \App\Entity\DocumentSection} rows.
      *
-     * The `bodyTranslationKey` follows the W4-E convention:
+     * The `bodyTranslationKey` follows this convention:
      * `policy.iso27001.<topic>.v1.dora_extension.body`
      * (v1 placeholder — consumers that need a version-aware key should call
      * {@see getExtensionFor()} directly and build the key from the template

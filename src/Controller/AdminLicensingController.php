@@ -20,7 +20,7 @@ use Throwable;
 /**
  * Admin wrapper for License Management.
  *
- * Role-Scope (Phase 4e — system-settings cluster):
+ * Role-Scope:
  *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — any tenant
  *    admin may read the bundled NOTICE.md + license report / summary for
  *    their own tenant.

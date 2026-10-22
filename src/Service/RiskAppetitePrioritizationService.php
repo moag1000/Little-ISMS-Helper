@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 /**
  * RiskAppetitePrioritizationService
  *
- * Phase 6F-D: Data Reuse Integration
+ * Data Reuse Integration
  * Auto-prioritizes risks based on organizational risk appetite
  *
  * Data Reuse Benefit:

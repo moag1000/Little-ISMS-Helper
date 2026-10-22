@@ -13,7 +13,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F30 — DORA Register of Information (RoI) submission record.
+ * DORA Register of Information (RoI) submission record.
  *
  * Tracks each XBRL export / submission event for the DORA Article 28
  * Register of Information (RoI) that financial entities must maintain

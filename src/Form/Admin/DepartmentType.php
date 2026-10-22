@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Admin CRUD form for Department master data (S18 B3).
+ * Admin CRUD form for Department master data.
  */
 final class DepartmentType extends AbstractType
 {

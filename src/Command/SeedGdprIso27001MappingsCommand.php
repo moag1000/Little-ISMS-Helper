@@ -31,8 +31,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * DIN ISO/IEC 27701 Cross-Reference zu 27001.
  *
  * Idempotent: bestehende Quell/Ziel-Paare werden übersprungen.
- *
- * Sprint 7 / S7-4.
  */
 #[AsCommand(
     name: 'app:seed-gdpr-iso27001-mappings',

@@ -148,7 +148,7 @@ final class AuditFindingImportSchemaProvider implements ImportSchemaProviderInte
                     type: ImportFieldSpec::TYPE_DATE,
                 ),
 
-                // ── S17 B4 — CAPA / NC details (ISO 27001 Cl. 10.2 b) + d)) ─────
+                // ── CAPA / NC details (ISO 27001 Cl. 10.2 b) + d)) ─────
                 new ImportFieldSpec(
                     name: 'ncRootCauseSummary',
                     setter: 'setNcRootCauseSummary',

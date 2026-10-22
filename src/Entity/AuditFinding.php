@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * H-01: Structured Audit Finding (ISO 27001 Clause 10.1).
+ * Structured Audit Finding (ISO 27001 Clause 10.1).
  * Captures a single nonconformity, observation or opportunity for improvement
  * detected during an audit — replaces free-text `InternalAudit.findings`.
  */
@@ -179,7 +179,7 @@ class AuditFinding
     private Collection $correctiveActions;
 
     /**
-     * F15 — Linked ComplianceRequirements (M2M).
+     * Linked ComplianceRequirements (M2M).
      * Linking triggers AutoTaskCreator to create CorrectiveAction tasks per owner.
      *
      * @var Collection<int, ComplianceRequirement>
@@ -190,7 +190,7 @@ class AuditFinding
     #[ORM\InverseJoinColumn(name: 'compliance_requirement_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $linkedRequirements;
 
-    // ── S17 B4 — Hybrid JSON Nonconformity details (ISO 27001 Cl. 10.2 b) + d)) ──
+    // ── Hybrid JSON Nonconformity details (ISO 27001 Cl. 10.2 b) + d)) ──
     /**
      * Structured nonconformity details (Root-Cause-Analysis method, corrective
      * actions, verification evidence). Only populated when type ∈ {major_nc, minor_nc}.
@@ -634,7 +634,7 @@ class AuditFinding
         return $this->dueDate < new DateTimeImmutable();
     }
 
-    // ── F15: Linked ComplianceRequirements ─────────────────────────────────────
+    // ── Linked ComplianceRequirements ─────────────────────────────────────
 
     /** @return Collection<int, ComplianceRequirement> */
     public function getLinkedRequirements(): Collection
@@ -656,7 +656,7 @@ class AuditFinding
         return $this;
     }
 
-    // ── S17 B4 — Nonconformity Hybrid JSON accessors ──────────────────────────
+    // ── Nonconformity Hybrid JSON accessors ──────────────────────────
 
     /** @return array<string, mixed>|null */
     public function getNonconformityDetails(): ?array

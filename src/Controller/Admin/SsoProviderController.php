@@ -40,7 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * SSO Identity-Provider admin controller.
  *
- * Role-Scope Architecture (Phase 4a, spec
+ * Role-Scope Architecture (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  *
  * Authorization model:

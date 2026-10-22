@@ -34,7 +34,7 @@ class RestoreEntityWriter
      * default meant for newly created records).
      */
     private const array LEGACY_FIELD_DEFAULTS = [
-        // Version20261021143100_sso_allow_email_linking: existing providers keep linking (#1059).
+        // Version20261021143100_sso_allow_email_linking: existing providers keep linking.
         'IdentityProvider' => ['allowEmailLinking' => true],
     ];
 

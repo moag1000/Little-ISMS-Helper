@@ -6,7 +6,7 @@ namespace App\Service\Sso;
 
 /**
  * Contract for AEAD secret encryption services.
- * Introduced in Sprint 6a to allow mocking in WebhookChannel tests
+ * Exists to allow mocking in WebhookChannel tests
  * without requiring SsoSecretEncryption (which uses libsodium) to be non-final.
  */
 interface SecretEncryptionInterface

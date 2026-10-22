@@ -96,13 +96,13 @@ class Document
      * Lifecycle status. Canonical 5-stage workflow:
      *   draft → in_review → approved → published → archived
      *
-     * S3 P-4: legacy 6th status `active` removed; rows holding `active` were
+     * Legacy 6th status `active` removed; rows holding `active` were
      * migrated to `published` by the consolidated data-migration
      * (Version20260518150000_vvt_document_canonical_lifecycle).
      *
      * @see \App\Lifecycle\LifecycleRegistry::STANDARD_5_STAGE
      */
-    // Phase 1 status-enum rollout: VARCHAR storage stays, accessors stay
+    // VARCHAR storage stays, accessors stay
     // string-typed for now. DocumentStatus::class provides a typed surface
     // for FormType + voters + templates; full property/accessor migration
     // ships in a follow-up PR once all 50+ string-comparison call-sites
@@ -130,7 +130,7 @@ class Document
     private ?string $tisaxInformationClassification = null;
 
     /**
-     * Phase 9.P2.1 — Holding policy inheritance.
+     * Holding policy inheritance.
      *
      * inheritable: Holding-Tenant marks a document (typically a policy)
      * as downstream-visible. Subsidiaries will see it read-only in their
@@ -151,7 +151,7 @@ class Document
     private bool $overrideAllowed = true;
 
     /**
-     * Policy-Wizard W3 — provenance link to the PolicyTemplate that
+     * Policy-Wizard — provenance link to the PolicyTemplate that
      * produced this document. Null when the document was uploaded
      * manually or imported from another flow.
      */
@@ -160,7 +160,7 @@ class Document
     private ?PolicyTemplate $generatedFromTemplate = null;
 
     /**
-     * Policy-Wizard W3 — provenance link to the WizardRun that
+     * Policy-Wizard — provenance link to the WizardRun that
      * produced this document. Null when the document was not produced
      * by a Policy-Wizard run.
      */
@@ -169,7 +169,7 @@ class Document
     private ?WizardRun $generatedFromWizardRun = null;
 
     /**
-     * Policy-Wizard W3 — snapshot of the variable substitution map at
+     * Policy-Wizard — snapshot of the variable substitution map at
      * generation time. Drives §10 re-generation diffing (compute
      * stable hash for change detection) and serves as audit-trail
      * manifest for §11.2 (hidden-marker rendering).
@@ -180,7 +180,7 @@ class Document
     private ?array $substitutionVariables = null;
 
     /**
-     * Policy-Wizard W3 / §10 — once a generated policy reaches
+     * Policy-Wizard — once a generated policy reaches
      * `status='approved'`, the document is locked: the UI hides the
      * edit button and force-edit requires SUPER_ADMIN + audit entry.
      */
@@ -188,7 +188,7 @@ class Document
     private bool $isImmutable = false;
 
     /**
-     * Policy-Wizard W3 / §10 — version chain. When a re-run produces
+     * Policy-Wizard — version chain. When a re-run produces
      * a changed policy, the new Document is created and points back
      * to the prior approved one via `supersedes`. The old document
      * stays approved + read-only as historical evidence.
@@ -199,7 +199,7 @@ class Document
 
     /**
      * Policy-Wizard — persisted rendered body of a wizard-generated
-     * policy. Until W7-X this column was unset and the body lived
+     * policy. Rows created before this column existed have no body; it lived
      * ONLY in the translation file (`policy.<standard>.<topic>.v<n>.body`)
      * + the `substitutionVariables` JSON map; the PDF exporter
      * re-rendered the body on every export.
@@ -209,7 +209,7 @@ class Document
      * clauses) without losing the wizard-baseline reference. The
      * exporter prefers this column when set; null falls through to
      * the legacy translation re-render path (back-compat for legacy
-     * rows pre-W7-X).
+     * rows).
      *
      * Markdown encoded — same flavour as the wizard generator emits.
      */
@@ -222,7 +222,7 @@ class Document
      * persisted body is the wizard-baseline). When non-NULL the doc
      * is considered "drifted" from the wizard baseline; re-generation
      * preserves the edited body and surfaces the conflict in the
-     * W7-C diff UI.
+     * diff UI.
      */
     #[ORM\Column(name: 'policy_body_edited_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $policyBodyEditedAt = null;
@@ -269,7 +269,7 @@ class Document
     private ?string $effectivenessReviewNotes = null;
 
     /**
-     * V3 W2-LB-8 — Review-cycle (formal scheduled review of the document
+     * Review-cycle (formal scheduled review of the document
      * itself; complements the effectiveness-review event above).
      *
      * `nextReviewDate` is auto-populated by DocumentApprovalListener when
@@ -282,7 +282,7 @@ class Document
     private ?DateTimeInterface $nextReviewDate = null;
 
     /**
-     * V3 W2-LB-8 — Cadence in months for the review-cycle. Default 12
+     * Cadence in months for the review-cycle. Default 12
      * (annual) matches the ISO 27001 Cl.7.5.2 expectation for documented
      * information governing the ISMS.
      */
@@ -290,12 +290,12 @@ class Document
     private int $reviewIntervalMonths = 12;
 
     /**
-     * V3 W2-Bug2 — Document version label.
+     * Document version label.
      *
      * Stored as a string, not a numeric, so that semantic versioning
      * (`1.2.3-beta`) and date-stamped policies (`2026-Q2`) both fit.
      * Defaults to `'1.0'` for newly uploaded files; the
-     * Auto-Acknowledgement-Campaign listener (W2-C4) requires a
+     * Auto-Acknowledgement-Campaign listener requires a
      * non-empty value to satisfy the (tenant, document, user, version)
      * uniqueness constraint on `policy_acknowledgement`.
      */
@@ -303,7 +303,7 @@ class Document
     private string $version = '1.0';
 
     /**
-     * V3 W2-Bug2 — Requires user acknowledgement.
+     * Requires user acknowledgement.
      *
      * When true and the document transitions to `status='approved'`,
      * the {@see \App\EventListener\AutoReactionAcknowledgementCampaignListener}
@@ -317,7 +317,7 @@ class Document
     private bool $requiresAcknowledgement = false;
 
     /**
-     * Sprint-2 P-7 Wave-2 — explicit acknowledgement audience (ISO 27001 A.6.3).
+     * Explicit acknowledgement audience (ISO 27001 A.6.3).
      *
      * When `requiresAcknowledgement = true` and this collection is empty,
      * {@see App\EventListener\AutoReactionAcknowledgementCampaignListener}
@@ -338,18 +338,18 @@ class Document
     #[SameTenantOwner]
     private Collection $acknowledgementAudience;
 
-    // ── F4 Evidence-Versioning fields ─────────────────────────────────────────
+    // ── Evidence-Versioning fields ─────────────────────────────────────────
 
     /**
-     * F4 — SHA-256 hex digest of the current file on disk.
+     * SHA-256 hex digest of the current file on disk.
      * Kept in sync with the currentVersion.contentHash by EvidenceVersioningService.
-     * 64-char hex string; NULL for documents uploaded before F4 was deployed.
+     * 64-char hex string; NULL for documents uploaded before was deployed.
      */
     #[ORM\Column(name: 'content_hash', length: 64, nullable: true)]
     private ?string $contentHash = null;
 
     /**
-     * F4 — FK to the currently active DocumentVersion.
+     * FK to the currently active DocumentVersion.
      * NULL for legacy documents that pre-date the versioning feature.
      */
     #[ORM\ManyToOne(targetEntity: DocumentVersion::class)]
@@ -357,7 +357,7 @@ class Document
     private ?DocumentVersion $currentVersion = null;
 
     /**
-     * F4 — all DocumentVersion rows for this document (ordered by version_number).
+     * All DocumentVersion rows for this document (ordered by version_number).
      *
      * @var Collection<int, DocumentVersion>
      */
@@ -365,7 +365,7 @@ class Document
     #[ORM\OrderBy(['versionNumber' => 'ASC'])]
     private Collection $versions;
 
-    // ── End F4 fields ─────────────────────────────────────────────────────────
+    // ── End fields ─────────────────────────────────────────────────────────
 
     public function __construct()
     {
@@ -598,7 +598,7 @@ class Document
 
     /**
      * Effective policy body for export / display. Returns the
-     * persisted `policyBody` when set (post-W7-X writes), null
+     * persisted `policyBody` when set, null
      * otherwise — callers fall back to translation-based re-render
      * for legacy rows. Empty string is treated as "intentionally
      * blank" and returned as-is so the editor can clear the body
@@ -665,7 +665,7 @@ class Document
     }
 
     /**
-     * V3 W2-Bug2 — Document version label.
+     * Document version label.
      */
     public function getVersion(): string
     {
@@ -683,7 +683,7 @@ class Document
     }
 
     /**
-     * V3 W2-Bug2 — Requires user acknowledgement (ISO 27001 A.6.3).
+     * Requires user acknowledgement (ISO 27001 A.6.3).
      */
     public function getRequiresAcknowledgement(): bool
     {
@@ -697,7 +697,7 @@ class Document
     }
 
     /**
-     * Sprint-2 P-7 Wave-2 — explicit acknowledgement audience.
+     * Explicit acknowledgement audience.
      *
      * @return Collection<int, User>
      */
@@ -727,7 +727,7 @@ class Document
     }
 
     /**
-     * V3 W2-LB-8 — true when nextReviewDate is set and is on / before today.
+     * True when nextReviewDate is set and is on / before today.
      */
     public function isReviewOverdue(?DateTimeInterface $now = null): bool
     {
@@ -781,7 +781,7 @@ class Document
      * True when a user has edited the policy body after the wizard
      * generated it. The signal drives:
      *  - the "Lokal angepasst" mini-chip in the document index
-     *  - the W7-C re-generation diff `policyBodyDrift` flag
+     *  - the re-generation diff `policyBodyDrift` flag
      *  - the PDF footer marker "Lokal angepasste Version"
      *  - the re-generation conflict path (preserve edited body, fork
      *    a new wizard-baseline version via `supersedes`)
@@ -854,7 +854,7 @@ class Document
         return false;
     }
 
-    // ── F4 Evidence-Versioning getters/setters ─────────────────────────────
+    // ── Evidence-Versioning getters/setters ─────────────────────────────
 
     public function getContentHash(): ?string
     {

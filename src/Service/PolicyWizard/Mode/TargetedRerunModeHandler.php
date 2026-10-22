@@ -12,7 +12,7 @@ use App\Service\PolicyWizard\WizardStepKeys;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
 
 /**
- * Policy-Wizard W2-C — Mode 2 (Targeted re-run) handler.
+ * Policy-Wizard — Mode 2 (Targeted re-run) handler.
  *
  * Restricts the wizard to the 4-step sub-flow defined in §6.3:
  *
@@ -119,10 +119,8 @@ final class TargetedRerunModeHandler implements ModeHandlerInterface
      * the same tenant — i.e. the approved baseline. Topics whose
      * value is unchanged are omitted from the diff.
      *
-     * For W2 the "approved baseline" is read from the latest
-     * completed `WizardRun.inputs`. W3 will swap this out for
-     * `Document.substitutionVariables` once the GeneratedPolicyDocument
-     * fields land.
+     * The "approved baseline" is read from the latest completed
+     * `WizardRun.inputs` (not from `Document.substitutionVariables`).
      *
      * @return list<array{
      *   topic: string,
@@ -195,7 +193,7 @@ final class TargetedRerunModeHandler implements ModeHandlerInterface
     public function generate(WizardRun $run): ?array
     {
         // Targeted mode delegates document generation back to the
-        // standard DocumentGenerator (W3 lands the real impl). The
+        // standard DocumentGenerator. The
         // generator inspects WizardRun.targetedTopics and only emits
         // the picked subset.
         return null;
@@ -244,7 +242,7 @@ final class TargetedRerunModeHandler implements ModeHandlerInterface
      * Inverse of {@see HierarchyOverrideValidator::SETTING_MAP} — pulls
      * the value the previous run stored for a given setting key out of
      * its `inputs` JSON. We do not have a generic step→key registry
-     * yet (W3 will add one), so we hand-roll the lookups for the four
+     * yet, so we hand-roll the lookups for the four
      * keys covered in DIFF_KEY_MAP.
      *
      * @param array<string, mixed> $inputs

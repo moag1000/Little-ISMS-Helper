@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Policy-Wizard W2-A — public façade that drives a wizard run.
+ * Policy-Wizard — public façade that drives a wizard run.
  *
  * Architecture: `docs/plans/policy-wizard/05-architecture.md` §5.
  *
@@ -34,7 +34,7 @@ use Psr\Log\NullLogger;
  *    one.
  *  - {@see complete}: invoke `DocumentGeneratorInterface::generate`,
  *    finalise lifecycle status. config/services.yaml aliases the
- *    interface to the real {@see DocumentGenerator}; the W2
+ *    interface to the real {@see DocumentGenerator}; the
  *    {@see DocumentGeneratorStub} is only used by unit tests.
  *  - {@see cancel}: mark run cancelled; delete when no documents
  *    were persisted.
@@ -127,7 +127,7 @@ final class WizardOrchestrator
             $run->setFindingReference($findingRef);
         }
 
-        // First applicable step in the chosen flow. W4-C: when the
+        // First applicable step in the chosen flow. When the
         // tenant is brownfield (existing governance documents not yet
         // wizard-managed) BestandsaufnahmeStep::isApplicable() returns
         // true and the user lands on STEP_BESTANDSAUFNAHME first.
@@ -232,7 +232,7 @@ final class WizardOrchestrator
 
         $step->persist($run, $result['normalised_input']);
 
-        // Early-apply Annex-A applicability (Sprint-2 fix): when the user
+        // Early-apply Annex-A applicability: when the user
         // submits STEP_RISK_CLASSIFICATION we immediately flip Control.applicable
         // so the SoA reflects their intent without waiting for wizard-complete.
         // Wizard's explicit submit IS authoritative — see AnnexAApplicabilityApplier.
@@ -291,9 +291,9 @@ final class WizardOrchestrator
     /**
      * Run the document generator for a completed wizard run. For
      * sandbox runs returns an empty list of document ids and the
-     * generator's preview payload (when populated). The W2 stub
+     * generator's preview payload (when populated). The stub
      * generator throws BadMethodCallException — we swallow that and
-     * return empty so the W2 wiring stays testable until W3 lands.
+     * return empty so the wiring stays testable without the real generator.
      *
      * @return array{document_ids: list<int>, wizard_run: WizardRun, sandbox_preview?: array<string, mixed>|null}
      */
@@ -313,9 +313,8 @@ final class WizardOrchestrator
             $documentIds = array_values($result['document_ids'] ?? []);
             $sandboxPreview = $result['sandbox_preview'] ?? null;
         } catch (BadMethodCallException $stubFailure) {
-            // W2: DocumentGeneratorStub throws by design. Empty list is
-            // the documented W2 contract; W3 swaps the stub for the real
-            // implementation.
+            // DocumentGeneratorStub throws by design. Empty list is
+            // the documented contract for the stub.
             $this->logger->info('PolicyWizard complete() running against stub generator', [
                 'wizard_run_id' => $run->getId(),
                 'stub_message' => $stubFailure->getMessage(),
@@ -337,14 +336,14 @@ final class WizardOrchestrator
 
         $this->entityManager->flush();
 
-        // W3-I §9.1: dispatch one `policy-approval` WorkflowInstance
+        // Dispatch one `policy-approval` WorkflowInstance
         // per generated Document. Sandbox runs and missing kickoff
         // service are handled inside ApprovalKickoffService.
         if (!$isSandbox && $documentIds !== [] && $this->approvalKickoffService !== null) {
             $this->kickoffApprovalsFor($documentIds, $run);
         }
 
-        // W5-B: BCM exercise programme — auto-seed BCExercise placeholder
+        // BCM exercise programme — auto-seed BCExercise placeholder
         // records when this run included BCM scope AND emitted (or would
         // have emitted) the `exercise_testing_programme` topic. Skipped
         // for sandbox runs (§6.4) and when the seeder is not wired.
@@ -418,7 +417,7 @@ final class WizardOrchestrator
     }
 
     /**
-     * W5-B: should we run the BCExercise auto-seeder for this run?
+     * Should we run the BCExercise auto-seeder for this run?
      *
      * Conditions:
      *  - `bcm` standard is in `WizardRun.standardsAdopted`
@@ -445,7 +444,7 @@ final class WizardOrchestrator
     }
 
     /**
-     * W5-B: invoke the BCExercise auto-seeder. Failures are logged but
+     * Invoke the BCExercise auto-seeder. Failures are logged but
      * never propagate — the wizard run already produced Documents and
      * dispatched approvals; a missing exercise placeholder must not
      * roll those back.

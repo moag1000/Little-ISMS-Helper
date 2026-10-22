@@ -14,7 +14,7 @@ use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\UserRepository;
 
 /**
- * Policy-Wizard W7-D — Tier-2 training-coverage gap.
+ * Policy-Wizard — Tier-2 training-coverage gap.
  *
  * Fires on a Tenant when at least one published Policy-Wizard
  * Document (status `approved` or `published`, generated from a
@@ -23,10 +23,10 @@ use App\Repository\UserRepository;
  * PolicyAcknowledgement inbox so the responsible Admin / CISO can
  * chase outstanding acknowledgements.
  *
- * Audience definition matches the W3-D
+ * Audience definition matches the
  * {@see \App\Service\ComplianceWizard\Check\PolicyWizard\PolicyAcknowledgementCoverageCheck}:
  * `User.isActive=true` rows in the tenant. Per-policy role-scoping
- * is out of scope for the W7-D MVP — the Alva hint is a
+ * is out of scope for the MVP — the Alva hint is a
  * coarse-grained reminder, the PolicyAcknowledgementCoverageCheck
  * remains the audit-grade source of truth.
  *
@@ -35,7 +35,7 @@ use App\Repository\UserRepository;
  * deadlined the way DSGVO/BSIG hints are. Dismissible so individual
  * Admins can snooze while ack-campaign runs.
  *
- * Spec: `07-phase4-sprint-reconciliation.md` lines 309-311 (W7-D
+ * Spec: `07-phase4-sprint-reconciliation.md` lines 309-311
  * Alva-Hints catalogue, training-coverage gap).
  */
 final class TrainingCoverageGapRule extends AbstractAlvaHintRule

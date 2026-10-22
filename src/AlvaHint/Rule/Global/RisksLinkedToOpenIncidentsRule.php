@@ -20,7 +20,7 @@ use App\Repository\RiskIncidentLinkRepository;
  * Role     : ROLE_MANAGER
  * Tier     : 2 (audit gap — open incident → unreviewed risk)
  *
- * Sprint 9B / F16 — 18th Alva-Hint criterion.
+ * 18th Alva-Hint criterion.
  */
 final class RisksLinkedToOpenIncidentsRule extends AbstractGlobalAlvaHintRule
 {

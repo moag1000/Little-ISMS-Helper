@@ -66,9 +66,9 @@ class BulkImportOrchestrator
      *
      * The source-file evidence document linkage (Document entity with
      * documentType='import_evidence') is intentionally deferred:
-     * @todo 2026-05-14 (F2.6) Create Document entity and set $batch->setSourceDocument()
+     * @todo Create Document entity and set $batch->setSourceDocument()
      * once the Document CRUD service is wired to the import pipeline.
-     * Blocked by: BulkImport ↔ Document linkage service (Sprint F2.6).
+     * Blocked by: BulkImport ↔ Document linkage service.
      *
      * @param string $mode One of BulkImportBatch::MODE_* constants
      */
@@ -130,7 +130,7 @@ class BulkImportOrchestrator
         $this->em->persist($batch);
         $this->em->flush();
 
-        // F2.6 — record the uploaded source file as an import-evidence Document
+        // Record the uploaded source file as an import-evidence Document
         // and link it to the batch (ISO 27001 Cl. 7.5.3 — documented evidence of
         // what was imported, with the same SHA-256 for tamper-evidence). The
         // batch id is available after the flush above, so the document can carry
@@ -440,7 +440,7 @@ class BulkImportOrchestrator
             perEntityData: $perEntityForAudit,
         );
 
-        // ── F11 FTE-Tracking ───────────────────────────────────────────────────
+        // ── FTE-Tracking ───────────────────────────────────────────────────
         if ($this->fteRecorder !== null && $rowCountSuccess > 0) {
             $tenant = $batch->getTenant();
             if ($tenant instanceof Tenant) {

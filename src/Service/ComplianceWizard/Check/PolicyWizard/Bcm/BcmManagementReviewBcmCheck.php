@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / ISO 22301 Cl. 9.3 — confirms the tenant has a published BCMS
+ * ISO 22301 Cl. 9.3 — confirms the tenant has a published BCMS
  * Management-Review Procedure document.
  *
  * A document qualifies when ALL of the following hold:

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Junior-ISB-Audit-2026-05-22 C2-01 — Doppelpflege-Deprecation listener.
+ * Doppelpflege-Deprecation listener.
  *
  * Emits a developer-facing deprecation warning when a brand-new Incident
  * is persisted with the legacy `affectedSystems` freetext field populated

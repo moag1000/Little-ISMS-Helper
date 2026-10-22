@@ -20,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Admin wrapper for Module Management.
  *
  * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}
- * (Phase 4e — system-settings cluster). Tenant admins activate / deactivate
+ *. Tenant admins activate / deactivate
  * modules for their own tenant; SUPER_ADMIN passes through transparently.
  * Existing method-level `MODULE_VIEW`/`MODULE_MANAGE` permission attributes
  * remain authoritative for read vs. write granularity.

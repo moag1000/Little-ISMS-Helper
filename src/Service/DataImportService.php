@@ -791,7 +791,7 @@ final class DataImportService
             'trainings' => Training::class,
             'compliance_frameworks' => ComplianceFramework::class,
             'compliance_requirements' => ComplianceRequirement::class,
-            // Phase 2 additions
+            // Additional entities
             'documents' => Document::class,
             'management_reviews' => ManagementReview::class,
             'processing_activities' => ProcessingActivity::class,

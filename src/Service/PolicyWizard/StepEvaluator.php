@@ -8,7 +8,7 @@ use App\Entity\WizardRun;
 use App\Service\PolicyWizard\Step\StepInterface;
 
 /**
- * Policy-Wizard W2-A — flow controller.
+ * Policy-Wizard — flow controller.
  *
  * Given a `WizardRun`, returns the next step key based on:
  * 1. The run's `mode` (full / targeted / sandbox).
@@ -18,7 +18,7 @@ use App\Service\PolicyWizard\Step\StepInterface;
  *    only applies for brownfield tenants — greenfield tenants flow
  *    straight to STEP_WELCOME).
  *
- * Default-flow transition contract (W4-C):
+ * Default-flow transition contract:
  *   STEP_BESTANDSAUFNAHME → STEP_WELCOME → STEP_ORG_SCOPE → … → STEP_REVIEW_GENERATE
  *
  * The evaluator does NOT mutate the run — it only computes which

@@ -28,7 +28,7 @@ use Symfony\Component\Workflow\Registry;
  * reason_required, four_eyes, module) without changing YAML source files.
  * All changes are tenant-scoped and audit-logged.
  *
- * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * ROLE_ADMIN configures own tenant,
  * SUPER_ADMIN any. Tenant scope resolves via
  * {@see TenantContext::resolveAdminScope()}.
  */
@@ -241,7 +241,7 @@ final class LifecycleOverridesController extends AbstractController
     /**
      * Resolve the tenant for the current admin operation.
      *
-     * Phase 4c contract: delegates to {@see TenantContext::resolveAdminScope()}
+     * delegates to {@see TenantContext::resolveAdminScope()}
      * so SUPER_ADMIN can pass an explicit `tenant_id` (POST or query) to
      * target another tenant. ROLE_ADMIN falls back to their own active
      * tenant. Throws AccessDeniedException for cross-tenant attempts.

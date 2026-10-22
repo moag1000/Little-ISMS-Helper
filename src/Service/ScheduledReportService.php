@@ -24,7 +24,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Scheduled Report Service
  *
- * Phase 7A: Handles generation and delivery of scheduled reports.
+ * Handles generation and delivery of scheduled reports.
  * Reports are generated based on configuration and sent via email.
  */
 final class ScheduledReportService

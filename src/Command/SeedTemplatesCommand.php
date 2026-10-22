@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * `app:seed-templates` — Foundation P-14 CLI applier.
+ * `app:seed-templates` — Foundation CLI applier.
  *
  * Filters the SystemTemplateRegistry by key pattern and applies matching
  * templates to a target tenant. Supports `--dry-run` to inspect what would

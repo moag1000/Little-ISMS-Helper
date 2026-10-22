@@ -11,7 +11,7 @@ use App\Entity\User;
 use App\Repository\TrainingParticipationRepository;
 
 /**
- * Sprint-2 P-7 Wave-2 trigger-3: Training.mandatory = true → Pflicht-Audience.
+ * Training.mandatory = true → Pflicht-Audience.
  *
  * ISO 27001 A.6.3 Awareness — when a training is flagged mandatory,
  * the organisation must be able to identify and prove which users are

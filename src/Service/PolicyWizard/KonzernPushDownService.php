@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Policy-Wizard W3-B — Konzern push-down service.
+ * Policy-Wizard — Konzern push-down service.
  *
  * Implements `docs/plans/policy-wizard/05-architecture.md` §7.4:
  * when a Konzern-CISO updates a `TenantPolicySetting` at the parent

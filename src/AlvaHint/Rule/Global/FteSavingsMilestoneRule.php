@@ -12,10 +12,10 @@ use App\Repository\Fte\FteTrackingMetricRepository;
 use DateInterval;
 
 /**
- * F11 Alva-Hint — FTE savings milestone celebration (18th end-to-end criterion).
+ * Alva-Hint — FTE savings milestone celebration (18th end-to-end criterion).
  *
  * Fires when cumulative savings for the tenant exceed 1,000 minutes (≈17 hours).
- * Encourages continued use of F2 Bulk-Import and F4 Evidence-Reuse to keep the
+ * Encourages continued use of Bulk-Import and Evidence-Reuse to keep the
  * savings graph climbing. Dismissible after first view.
  *
  * Tier: 3 (efficiency / insight)

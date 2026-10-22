@@ -10,7 +10,7 @@ use App\Entity\Control;
 use App\Repository\ComplianceMappingRepository;
 
 /**
- * Transitive Coverage Service (Sprint 2 / B1).
+ * Transitive Coverage Service.
  *
  * Answers the single question every cross-framework auditor asks:
  * *„Welche Controls sind die Herkunft dieser Abdeckung?"*

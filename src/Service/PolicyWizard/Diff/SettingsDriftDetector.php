@@ -9,7 +9,7 @@ use App\Entity\Tenant;
 use App\Repository\TenantPolicySettingRepository;
 
 /**
- * Policy-Wizard W7-C — Settings-Drift detector.
+ * Policy-Wizard — Settings-Drift detector.
  *
  * Per the ISB practitioner review (`05-isb-practitioner-review.md` lines
  * 184-189) generated policies need a "settings have changed since this

@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard W5-A — seed the 28 BSI Pflicht-Richtlinien + 1
+ * Policy-Wizard — seed the 28 BSI Pflicht-Richtlinien + 1
  * Schutzbedarfsfeststellungs-Methode-Dokument = 29 PolicyTemplate rows.
  *
  * Source of truth: `docs/plans/policy-wizard/02-bsi-input.md` Anhang A
@@ -39,7 +39,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:policy-wizard:seed-bsi --force
  *   php bin/console app:policy-wizard:seed-bsi --dry-run
  *
- * Mirrors {@see SeedDoraPolicyTemplatesCommand} (W4-A) in shape so
+ * Mirrors {@see SeedDoraPolicyTemplatesCommand} in shape so
  * downstream wizard tooling can treat both standards uniformly.
  *
  * @deprecated since 2026-06-20 — superseded by BsiSectionCatalogue which provides
@@ -61,7 +61,7 @@ final class SeedBsiPolicyTemplatesCommand extends Command
     /**
      * Canonical 29-row catalogue. Body / title translation keys follow
      * the §8.7 versioning scheme (`policy.bsi.<topic>.v1.body`); real
-     * translation content is authored in W5-E.
+     * translation content lives in the policy translation files.
      *
      * "Pflicht-Niveau" mapping rule: Anhang A column verbatim →
      *   "Basis"     → 'basis'

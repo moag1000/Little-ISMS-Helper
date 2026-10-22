@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * Repository for {@see TrainingParticipation}.
  *
- * Audit V3 W2-C3: structured Training-User assignment tracking.
+ * Structured Training-User assignment tracking.
  *
  * @extends ServiceEntityRepository<TrainingParticipation>
  *

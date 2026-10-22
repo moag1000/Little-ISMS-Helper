@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / BSI 200-2 Kap. 5–9 + ISMS.1.A6 — confirms the tenant has a
+ * BSI 200-2 Kap. 5–9 + ISMS.1.A6 — confirms the tenant has a
  * published ISMS-Konzept (Sicherheitskonzept), the second mandatory
  * Top-Level document after the Leitlinie.
  *

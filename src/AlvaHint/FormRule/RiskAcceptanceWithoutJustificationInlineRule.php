@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Risk form: acceptance without justification.
+ * Form-Step-Inline-Hint — Risk form: acceptance without justification.
  *
  * Fires when the user picks `accept` as the treatment strategy but
  * leaves `acceptanceJustification` blank. ISO 27001 Cl. 8.3 + Cl. 6.1.3

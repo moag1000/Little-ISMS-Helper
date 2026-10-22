@@ -46,7 +46,7 @@ class TagRepository extends ServiceEntityRepository
     }
 
     /**
-     * ISB-Review OBS-3: scope tags for ISO 27001 4.3 scope anchoring.
+     * Scope tags for ISO 27001 4.3 scope anchoring.
      *
      * @return Tag[]
      */

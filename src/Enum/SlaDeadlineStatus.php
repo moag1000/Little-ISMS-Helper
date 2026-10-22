@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enum;
 
 /**
- * SLA Deadline Monitor Status — Sprint 7A F3 Wave 2
+ * SLA Deadline Monitor Status
  *
  * Lifecycle states for a tracked SLA deadline:
  *  - active:    deadline is running; checkpoints may still fire

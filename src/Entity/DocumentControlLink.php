@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Policy-Wizard W3 — explicit link from a generated Document to the
+ * Policy-Wizard — explicit link from a generated Document to the
  * Control(s) it covers (§8.1 of `docs/plans/policy-wizard/05-architecture.md`).
  *
  * The Control entity already maintains a `evidenceDocuments` ManyToMany

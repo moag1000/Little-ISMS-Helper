@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 /**
- * F6 — authenticates a Bearer API token against the api_tokens table.
+ * Authenticates a Bearer API token against the api_tokens table.
  *
  * Read-only enforcement is handled separately by {@see \App\EventSubscriber\ReadOnlyApiSubscriber};
  * this authenticator only establishes WHO the request is (the token's user, and

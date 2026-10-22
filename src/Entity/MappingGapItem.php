@@ -115,7 +115,7 @@ class MappingGapItem implements SharedTenantRowsInterface
     private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * M-01: Link to the risk treatment plan that will close this gap.
+     * Link to the risk treatment plan that will close this gap.
      * Null until the gap is assigned to a plan.
      */
     #[ORM\ManyToOne(targetEntity: RiskTreatmentPlan::class)]
@@ -123,7 +123,7 @@ class MappingGapItem implements SharedTenantRowsInterface
     private ?RiskTreatmentPlan $riskTreatmentPlan = null;
 
     /**
-     * M-01: Link to a specific control that addresses this gap.
+     * Link to a specific control that addresses this gap.
      * Orthogonal to the plan link — some gaps are closed purely by
      * implementing or improving a single Annex-A control.
      */

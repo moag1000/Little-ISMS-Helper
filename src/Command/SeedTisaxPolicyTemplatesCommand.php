@@ -33,7 +33,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Remove this command in a future major release once all existing TISAX-specific
  * PolicyTemplate rows have been migrated to the extension-catalogue pattern.
  *
- * Policy-Wizard W7-A — seed the 10 TISAX (VDA ISA 5.x) Pflicht-
+ * Policy-Wizard — seed the 10 TISAX (VDA ISA 5.x) Pflicht-
  * Richtlinien for the Automotive Supply Chain TISAX Pruefkatalog.
  *
  * Source of truth: VDA ISA Katalog 5.x (Pruefkatalog Information
@@ -68,8 +68,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:policy-wizard:seed-tisax --force
  *   php bin/console app:policy-wizard:seed-tisax --dry-run
  *
- * Mirrors {@see SeedDoraPolicyTemplatesCommand} (W4-A) and
- * {@see SeedBsiPolicyTemplatesCommand} (W5-A) in shape so downstream
+ * Mirrors {@see SeedDoraPolicyTemplatesCommand} and
+ * {@see SeedBsiPolicyTemplatesCommand} in shape so downstream
  * wizard tooling can treat all standards uniformly.
  */
 #[AsCommand(
@@ -83,7 +83,7 @@ final class SeedTisaxPolicyTemplatesCommand extends Command
     /**
      * Canonical 10-row catalogue. Body / title translation keys follow
      * the §8.7 versioning scheme (`policy.tisax.<topic>.v1.body`); real
-     * translation content is authored in W7-E.
+     * translation content lives in the policy translation files.
      *
      * @var list<array{
      *     key: string,

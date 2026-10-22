@@ -10,13 +10,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F23 — outbound supplier security questionnaire (the counterpart to the F44
+ * Outbound supplier security questionnaire (the counterpart to the
  * inbound Answer-Library).
  *
  * A tenant sends a questionnaire to a supplier via a signed public link; the
  * supplier answers it in an unauthenticated portal (no login). Only this token
  * surface is public — guarded by a constant-time token compare, mirroring the
- * F43 Trust-Center pattern.
+ * Trust-Center pattern.
  */
 #[ORM\Entity(repositoryClass: SupplierQuestionnaireRepository::class)]
 #[ORM\Table(name: 'supplier_questionnaires')]

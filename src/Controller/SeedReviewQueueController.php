@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Sprint 6 / M6 — Seed-Review-Queue.
+ * Seed-Review-Queue.
  *
  * Auditor-Frage *„wer hat das Mapping gemacht?"* hat für seed-/CSV-
  * importierte Mappings keine menschliche Antwort. Diese Queue zeigt

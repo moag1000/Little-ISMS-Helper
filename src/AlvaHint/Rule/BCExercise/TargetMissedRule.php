@@ -10,7 +10,7 @@ use App\Entity\BCExercise;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\User;
 
-// Junior-ISB-Audit-2026-05-22 K-07: ISO 22301 Cl. 8.5.3 + 9.1.1 Lessons-Learned loop
+// ISO 22301 Cl. 8.5.3 + 9.1.1 Lessons-Learned loop
 
 /**
  * Tier-2 hint: ISO 22301 Cl. 8.5.3 + Cl. 9.1.1 — when an exercise's

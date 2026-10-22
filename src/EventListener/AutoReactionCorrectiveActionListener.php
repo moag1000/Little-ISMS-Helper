@@ -19,7 +19,7 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Audit V3 C3 — Auto-CorrectiveAction on Major/Critical Audit-Finding.
+ * Auto-CorrectiveAction on Major/Critical Audit-Finding.
  *
  * On AuditFinding postPersist/Update with severity in [major, critical, high]:
  * create a Corrective-Action skeleton with planned completion in 30 days,
@@ -32,7 +32,7 @@ use Psr\Log\LoggerInterface;
 final class AutoReactionCorrectiveActionListener
 {
     /**
-     * V3 W2-WS-7 — SystemSettings key for severity-based CA due-days.
+     * SystemSettings key for severity-based CA due-days.
      * Stored as JSON dict, e.g. {"critical":14,"major":30,"high":30,"medium":60,"minor":90,"low":90}.
      * Default fallbacks live in {@see DEFAULT_DUE_DAYS}.
      */
@@ -123,7 +123,7 @@ final class AutoReactionCorrectiveActionListener
                 'ca_id' => $ca->getId(),
             ]);
 
-            // V3 W2-H4 (ISO 27001 Cl.7.4 + Cl.10.1): Notify CA assignee /
+            // (ISO 27001 Cl.7.4 + Cl.10.1): Notify CA assignee /
             // finding owner so the 30-day target lands on a calendar.
             $this->notifyAssignee($finding, $ca);
         } catch (\Throwable $e) {
@@ -135,7 +135,7 @@ final class AutoReactionCorrectiveActionListener
     }
 
     /**
-     * V3 W2-WS-7 — Map severity / type to days-until-due.
+     * Map severity / type to days-until-due.
      *
      * Resolution order:
      *  1. SystemSettings JSON dict (per-tenant configurable).
@@ -184,7 +184,7 @@ final class AutoReactionCorrectiveActionListener
     }
 
     /**
-     * V3 W2-H4 — Notify the CA assignee. Falls back to finding.assignee, then
+     * Notify the CA assignee. Falls back to finding.assignee, then
      * tenant ROLE_AUDITOR / ROLE_MANAGER. Best-effort.
      */
     private function notifyAssignee(AuditFinding $finding, CorrectiveAction $ca): void

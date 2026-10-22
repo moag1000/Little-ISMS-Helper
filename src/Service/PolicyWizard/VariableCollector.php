@@ -14,7 +14,7 @@ use App\Repository\UserRepository;
 use App\Security\TenantOwnership;
 
 /**
- * Policy-Wizard W3 — VariableCollector.
+ * Policy-Wizard — VariableCollector.
  *
  * Pulls existing tenant data + WizardRun.inputs into a flat
  * variable bag for body substitution. Centralises the "do not make

@@ -9,7 +9,7 @@ use App\Service\PolicyWizard\WizardStepKeys;
 use DateTimeImmutable;
 
 /**
- * Policy-Wizard W2-C — Mode 3 (Sandbox preview) handler.
+ * Policy-Wizard — Mode 3 (Sandbox preview) handler.
  *
  * Wraps the standard 7-step flow but redirects every persistence-side
  * effect into a no-op. Concretely:

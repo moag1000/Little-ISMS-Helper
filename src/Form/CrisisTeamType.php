@@ -287,7 +287,7 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * S4 Foundation P-2 SectionPolicy — ISO 22301 Cl. 8.4 Crisis Team.
+     * SectionPolicy — ISO 22301 Cl. 8.4 Crisis Team.
      * Sections: overview · members · communication · escalation · activation · testing · audit_metadata
      *
      * @return array<string, list<string>>

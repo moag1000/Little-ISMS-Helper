@@ -12,7 +12,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W6-D / GDPR Art. 37-39 — confirms the tenant has appointed a Data
+ * GDPR Art. 37-39 — confirms the tenant has appointed a Data
  * Protection Officer AND the DPO mandate is documented.
  *
  * Two-pronged evidence:

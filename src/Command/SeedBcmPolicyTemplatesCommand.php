@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard W5-B — seed the 14 BCM PolicyTemplate rows.
+ * Policy-Wizard — seed the 14 BCM PolicyTemplate rows.
  *
  * @deprecated [DEPRECATED — superseded by BcmSectionCatalogue]
  *   Since the introduction of {@see \App\Service\PolicyWizard\SectionExtension\BcmSectionCatalogue}
@@ -71,7 +71,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
     /**
      * Canonical 14-row catalogue. Body / title translation keys follow
      * the §8.7 versioning scheme (`policy.bcm.<topic>.v1.body`). Real
-     * translation content is authored in the W5-D content sprint.
+     * translation content is supplied by the policy translation files.
      *
      * `linked_annex_a_controls` covers A.5.29 / A.5.30 where the BCM
      * topic touches ISO 27001:2022 (per §6 cross-mapping table). The

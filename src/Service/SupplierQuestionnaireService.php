@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F23 — outbound supplier questionnaire lifecycle: create + send + record the
+ * Outbound supplier questionnaire lifecycle: create + send + record the
  * supplier's response. The public answer surface is token-gated (see
  * {@see \App\Controller\PublicSupplierQuestionnaireController}).
  */

@@ -37,7 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *              configuration carries secrets (encrypted-at-rest webhook
  *              tokens / SMTP credentials) and is reserved for tenant admins.
  *
- * Migrated from `ROLE_MANAGER` in Phase 4d of the Role-Scope Architecture
+ * Migrated from `ROLE_MANAGER` in the Role-Scope Architecture
  * rollout (spec: `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  *
  * The `verify` action sends a test ping via the appropriate channel service.
@@ -191,7 +191,7 @@ class NotificationChannelController extends AbstractController
 
         $this->denyAccessUnlessGranted(NotificationChannelVoter::EDIT, $channel);
 
-        // Mark verified (actual delivery test is best-effort; real ping is Wave 2)
+        // Mark verified (actual delivery test is best-effort; a real ping is not implemented)
         $channel->setVerifiedAt(new DateTimeImmutable());
         $this->entityManager->flush();
 
@@ -248,7 +248,7 @@ class NotificationChannelController extends AbstractController
     /**
      * Apply unmapped form fields (configJson, secretPlain, deliveryMode) to the entity.
      *
-     * F3 digest mode: the `deliveryMode` choice is stored inside the JSON config
+     * Digest mode: the `deliveryMode` choice is stored inside the JSON config
      * array under the `delivery_mode` key so that no schema change is required on
      * the `notification_channel` table.
      */
@@ -259,7 +259,7 @@ class NotificationChannelController extends AbstractController
         $configData = $form->get('configJson')->getData();
         $config     = is_array($configData) ? $configData : [];
 
-        // F3 digest mode — merge delivery_mode from the radio field into config
+        // Digest mode — merge delivery_mode from the radio field into config
         $deliveryMode = $form->get('deliveryMode')->getData();
         if (
             $deliveryMode !== null

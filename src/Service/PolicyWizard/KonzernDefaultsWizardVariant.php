@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Policy-Wizard W3-B — Konzern-Defaults wizard variant.
+ * Policy-Wizard — Konzern-Defaults wizard variant.
  *
  * Sister-class to {@see WizardOrchestrator}: the Konzern-CISO uses the
  * same seven-step flow but at parent-tenant level. After Step 7 review

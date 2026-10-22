@@ -293,8 +293,6 @@ final class SetupRecommendationEngine
      * Get recommended compliance frameworks for multiple industries (corporate structures).
      *
      * @param string[] $industries   List of industry codes
-     * @param string   $employeeCount
-     * @param string   $country
      * @return string[]
      */
     public function getRecommendedFrameworksForIndustries(array $industries, string $employeeCount, string $country): array
@@ -315,7 +313,6 @@ final class SetupRecommendationEngine
      * Get recommended modules for multiple industries (corporate structures).
      *
      * @param string[] $industries   List of industry codes
-     * @param string   $employeeCount
      * @return string[]
      */
     public function getRecommendedModulesForIndustries(array $industries, string $employeeCount): array

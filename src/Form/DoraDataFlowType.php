@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * that omits the entire body if the module is somehow inactive (e.g. when
  * the form is rendered programmatically outside the standard controller).
  *
- * SectionPolicy (S4 Foundation P-2): explicit section-map across 4
+ * SectionPolicy: explicit section-map across 4
  * sections; covers all 7 editable fields.
  */
 final class DoraDataFlowType extends AbstractType implements SectionMapInterface

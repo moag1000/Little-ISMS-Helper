@@ -28,7 +28,7 @@ final class ManagementReviewAutoCollector
     }
 
     /**
-     * V3 B4 / EF-1: Auto-Collect Management-Review aus existing §9.3 sources.
+     * Auto-Collect Management-Review aus existing §9.3 sources.
      *
      * Aggregiert ISO 27001 §9.3 Inputs (Risk-Status, Audit-Results, NC-Status,
      * Performance-KPIs, Treatment-Plan-Effectiveness, Improvement-Opportunities)

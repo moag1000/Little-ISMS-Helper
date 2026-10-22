@@ -23,7 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Per-tenant Report-Doc Style Configurator (Sprint report-style-admin).
+ * Per-tenant Report-Doc Style Configurator.
  *
  * Lets ROLE_ADMIN re-skin generated report documents (cover pattern,
  * default audience, watermark, exec-summary/appendix/distribution-list

@@ -185,7 +185,7 @@ class AssetController extends AbstractController
             $assets = $this->tagFilterService->filterByTagName($assets, Asset::class, $tagFilter);
         }
 
-        // DORA Phase 1: filter-chip "Nur DORA-relevant / DORA only" via ?dora_relevant=1
+        // DORA filter-chip "Nur DORA-relevant / DORA only" via ?dora_relevant=1
         if ($request->query->get('dora_relevant') === '1') {
             $assets = array_values(array_filter(
                 $assets,
@@ -244,7 +244,7 @@ class AssetController extends AbstractController
             $this->entityManager->flush();
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $this->flashSuccess('asset.success.created');
 
@@ -285,7 +285,7 @@ class AssetController extends AbstractController
             $this->entityManager->flush();
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $this->flashSuccess('asset.success.created');
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
@@ -381,7 +381,7 @@ class AssetController extends AbstractController
 
         $inheritedProtection = $this->assetDependencyService?->calculateInheritedProtectionNeed($asset);
 
-        // Bucket-6 RT_05: enriched dependency edges (dependencyType +
+        // DORA RoI RT_05: enriched dependency edges (dependencyType +
         // criticalityImpact). Keyed by upstream-asset id so the show
         // template can decorate the legacy adjacency-list entries.
         $assetDependencyEdges = [];
@@ -399,7 +399,7 @@ class AssetController extends AbstractController
             ? $this->aiAgentInventoryService->findLinkedDpias($asset)
             : null;
 
-        // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+        // Inverse-Coverage Impact-Analyse
         $impactCoverage = $this->inverseCoverageService?->forAsset($asset) ?? ['total' => 0, 'frameworks' => []];
 
         // V4 LB-4: Comment-Thread adoption — load thread for this Asset.
@@ -426,7 +426,7 @@ class AssetController extends AbstractController
         ]);
     }
     /**
-     * Clone an Asset (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * Clone an Asset. Open to ROLE_USER. Keeps
      * configuration (type/sub-type/location/CIA/AI metadata), resets
      * lifecycle to active, omits M2M cascades (risks/incidents/controls).
      */
@@ -479,7 +479,7 @@ class AssetController extends AbstractController
             $this->entityManager->flush();
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $this->flashSuccess('asset.success.updated');
 

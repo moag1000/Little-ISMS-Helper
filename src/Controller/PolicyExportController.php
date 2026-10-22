@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Policy-Wizard W7-A — PDF + ZIP export endpoints.
+ * Policy-Wizard — PDF + ZIP export endpoints.
  *
  * Two routes:
  *  - GET  `/{_locale}/policy-wizard/export/document/{id}/pdf` — single
@@ -169,8 +169,6 @@ final class PolicyExportController extends AbstractController
      * The legacy sync POST route is kept for back-compat; new UI traffic
      * should use this dispatch endpoint to avoid PHP-FPM timeouts on big
      * policy + evidence document trees.
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/tenant/zip/dispatch', name: 'tenant_zip_dispatch', methods: ['POST'])]
     #[IsGranted(PolicyWizardVoter::EXPORT)]

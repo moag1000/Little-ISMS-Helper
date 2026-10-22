@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * F38 — Policy-Pack export.
+ * Policy-Pack export.
  *
  * Downloads the curated policy-template catalogue (optionally filtered by
  * standard) as a portable, versioned policy-pack JSON. Export-only by design —

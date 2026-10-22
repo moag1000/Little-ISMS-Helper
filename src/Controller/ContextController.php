@@ -50,7 +50,7 @@ class ContextController extends AbstractController
         // Get objectives for KPI display and table
         $objectives = $this->ismsObjectiveRepository->findActive();
 
-        // B2 (Junior #5): single-source-of-truth interested-party aggregate
+        // Single-source-of-truth interested-party aggregate
         // pulled from the structured module; context form no longer carries
         // a free-text duplicate.
         $interestedPartiesList = $tenant !== null

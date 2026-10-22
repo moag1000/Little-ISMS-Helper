@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
- * OwnerPickerFormTrait — audit-s4 P-1.
+ * OwnerPickerFormTrait.
  *
  * Unifies the recurring "Pattern A Dual-State Owner" cluster (User +
  * Person + optional Deputies + optional Legacy-Freetext) into a single
@@ -170,7 +170,7 @@ trait OwnerPickerFormTrait
             ]);
         }
 
-        // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish.
+        // Owner pre-fill — UX-Polish.
         // When opt-in and the form binds to a NEW entity (no existing owner),
         // pre-fill the User-slot of the owner-picker with the currently
         // authenticated user. Existing values are never overwritten. The
@@ -213,7 +213,7 @@ trait OwnerPickerFormTrait
     }
 
     /**
-     * Override hook for owner-picker pre-fill (Junior-ISB-Audit-2026-05-22 4.11).
+     * Override hook for owner-picker pre-fill.
      *
      * Consumers that opt-in via `default_to_current_user => true` MUST also
      * implement this method to expose their injected Security service. The

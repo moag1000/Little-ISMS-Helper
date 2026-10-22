@@ -43,7 +43,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
     ) {
     }
 
-    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    // Owner pre-fill — UX-Polish
     protected function getSecurityForOwnerPicker(): ?Security
     {
         return $this->security;
@@ -173,7 +173,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
             ])
         ;
 
-        // ── Risk Owner cluster (audit-s4 P-1) ───────────────────────────────
+        // ── Risk Owner cluster ───────────────────────────────
         // Replaces 3 hand-rolled add() calls (riskOwner / riskOwnerPerson /
         // riskOwnerDeputyPersons). Risk has no legacy free-text field.
         $this->addOwnerPicker($builder, [
@@ -190,7 +190,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
             'person_help'        => 'risk.help.risk_owner_person',
             'deputies_label'     => 'risk.field.risk_owner_deputies',
             'deputies_help'      => 'risk.help.risk_owner_deputies',
-            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            // Owner pre-fill — UX-Polish
             'default_to_current_user' => true,
         ]);
 
@@ -244,7 +244,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'risk.help.acceptance_justification',
             ])
-            // ISO 27001 Cl. 8.3 — Audit-V3 LB-7: acceptance must carry an
+            // ISO 27001 Cl. 8.3: acceptance must carry an
             // expiry / re-evaluation date so accepted risks do not "expire
             // silent" after the approver leaves the org or threat changes.
             ->add('acceptanceExpiryDate', DateType::class, [
@@ -254,8 +254,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'help' => 'risk.help.acceptance_expiry_date',
             ])
             // ── Risk-Decision Audit-Trail (ISO 27001 Cl. 6.1.3) ──────────────
-            // 5 entity-fields previously NOT exposed in any FormType — pure
-            // dead-code per UX-audit 2026-05-22. Required for full
+            // 5 entity-fields. Required for full
             // decision-rationale documentation distinct from "acceptance"
             // (acceptance = WHO/WHEN agreed; decision = WHY likelihood/impact
             // ratings + WHY overall decision were chosen).
@@ -327,7 +326,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
             $this->addVulnerabilityIntelFields($builder);
         }
 
-        // ── F46 Quantitative Risk (SLE/ARO/ALE) — only when 'risk_quant' module active.
+        // ── Quantitative Risk (SLE/ARO/ALE) — only when 'risk_quant' module active.
         // NIST SP 800-30 / ISO 27005 monetary quantification. Supplementary only —
         // qualitative probability×impact stays the default primary scoring.
         if ($this->isModuleActive('risk_quant')) {
@@ -397,7 +396,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * F46: Monetary quantitative risk fields (SLE/ARO).
+     * Monetary quantitative risk fields (SLE/ARO).
      * ALE = SLE × ARO is computed on the entity (not stored), shown on the show-page.
      * Only added when 'risk_quant' module is active.
      */
@@ -455,7 +454,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        // Junior-ISB-Audit-2026-05-22 K-05 / M-02: Form-level Callback
+        // Form-level Callback
         // constraints removed — entity-level Assert\Callback methods
         // validateOwnerEitherOr() + validateSubjectBound() on App\Entity\Risk
         // now own these rules so both the form-submit path AND the
@@ -467,7 +466,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * SectionPolicy (S4 Foundation P-2) — ISO 27001 Cl. 6.1.2 structure.
+     * SectionPolicy — ISO 27001 Cl. 6.1.2 structure.
      *
      * Module-conditional fields are included (privacy, vulnerability_intel)
      * to prevent Sonstiges-leakage when those modules are active.
@@ -510,11 +509,10 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'acceptanceJustification',
                 'acceptanceExpiryDate',
             ],
-            // Junior-ISB-Audit-2026-05-22 K-06: decision-trail audit fields.
+            // Decision-trail audit fields.
             // ISO 27001 Cl. 6.1.2.d (likelihood/impact justifications) +
             // Cl. 6.1.3 e + Cl. 8.3 (treatment decision rationale +
-            // approver + approval date). Previously living as orphan
-            // Sonstiges-leak — now grouped into a dedicated section.
+            // approver + approval date), grouped into a dedicated section.
             'decision_trail' => [
                 'likelihoodJustification',
                 'impactJustification',
@@ -531,7 +529,7 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'requiresDPIA',
                 'dataSubjectImpact',
             ],
-            // F46 quantitative risk fields (risk_quant module — conditional)
+            // Quantitative risk fields (risk_quant module — conditional)
             'risk_quant' => [
                 'singleLossExpectancy',
                 'annualRateOfOccurrence',

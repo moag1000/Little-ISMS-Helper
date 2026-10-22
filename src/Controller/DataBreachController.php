@@ -125,7 +125,7 @@ class DataBreachController extends AbstractController
      * Create new data breach
      * Supports both standalone breaches and incident-linked breaches.
      *
-     * Sprint-2 Foundation P-7: accepts `?from_incident=ID` to hydrate the
+     * Accepts `?from_incident=ID` to hydrate the
      * skeleton from the source Incident (data-reuse for GDPR Art. 33 72h
      * follow-up). Tenant-scoped lookup, silently falls back to a blank
      * breach if the id is missing or mismatched.
@@ -137,7 +137,7 @@ class DataBreachController extends AbstractController
         // Create a new breach with tenant and reference number pre-set
         $breach = $this->dataBreachService->prepareNewBreach();
 
-        // Sprint-2 P-7 — pre-fill from linked Incident (GDPR Art. 33 trigger)
+        // Pre-fill from linked Incident (GDPR Art. 33 trigger)
         $fromIncidentId = $request->query->getInt('from_incident', 0);
         if ($fromIncidentId > 0 && $this->incidentRepository !== null) {
             $incident = $this->incidentRepository->find($fromIncidentId);
@@ -214,7 +214,7 @@ class DataBreachController extends AbstractController
             ]);
         }
 
-        // V3 W3-Aurora: Comment-Thread (C7) — load thread for this DataBreach.
+        // Comment-Thread (C7) — load thread for this DataBreach.
         $comments = [];
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($this->commentRepository !== null && $tenant !== null && $dataBreach->getId() !== null) {

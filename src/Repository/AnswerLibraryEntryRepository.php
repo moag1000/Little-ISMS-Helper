@@ -10,7 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * F44 — Answer Library repository.
+ * Answer Library repository.
  *
  * All finders are tenant-scoped — no unguarded findAll() is exposed.
  *

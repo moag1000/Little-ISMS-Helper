@@ -52,14 +52,14 @@ final class ReviewReminderService
         private readonly UserRepository $userRepository,
         private readonly EmailNotificationService $emailNotificationService,
         private readonly ?LoggerInterface $logger = null,
-        // S3 P0-31 — optional; kept at the tail to preserve BC for callers that
+        // Optional; kept at the tail to preserve BC for callers that
         // construct the service positionally (existing test suite).
         private readonly ?CorrectiveActionRepository $correctiveActionRepository = null,
     ) {
     }
 
     /**
-     * S3 P0-31 — CAPA effectiveness-review due within $days.
+     * CAPA effectiveness-review due within $days.
      *
      * Returns CAPAs that are still in `completed` (not yet verified) but
      * whose effectivenessReviewDate is within the next $days. ISO 27001
@@ -172,7 +172,7 @@ final class ReviewReminderService
     public function getOverdueProcessingActivityReviews(Tenant $tenant): array
     {
         $now = new DateTime();
-        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
+        // Canonical 5-stage lifecycle — legacy 'active' → 'published'.
         $activities = $this->processingActivityRepository->findBy(['tenant' => $tenant, 'status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now): bool {
@@ -328,7 +328,7 @@ final class ReviewReminderService
             }
         }
 
-        // S3 P0-31 — Process CAPA effectiveness-review reminders.
+        // Process CAPA effectiveness-review reminders.
         foreach ($this->getCapaEffectivenessReviewsDueWithin($tenant, 14) as $capa) {
             $owner = $capa->getResponsiblePersonUser();
             if (!$owner instanceof User) {
@@ -480,7 +480,7 @@ final class ReviewReminderService
 
     private function getUpcomingProcessingActivityReviews(Tenant $tenant, DateTime $now, DateTime $threshold): array
     {
-        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
+        // Canonical 5-stage lifecycle — legacy 'active' → 'published'.
         $activities = $this->processingActivityRepository->findBy(['tenant' => $tenant, 'status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now, $threshold): bool {

@@ -142,7 +142,7 @@ class ComplianceRequirementFulfillment
     private Collection $responsibleDeputyPersons;
 
     /**
-     * Person-Rollout Phase B2 — yearly attestation owner. Distinct from
+     * Yearly attestation owner. Distinct from
      * `responsiblePerson` (day-to-day implementation owner) — the
      * attestation owner signs off on the formal compliance attestation
      * and may be a different governance role-holder (CISO, Compliance
@@ -514,10 +514,10 @@ class ComplianceRequirementFulfillment
         return $this->requirement?->getBaseEffortDays();
     }
 
-    // ── F4 Evidence-Versioning ────────────────────────────────────────────────
+    // ── Evidence-Versioning ────────────────────────────────────────────────
 
     /**
-     * F4 — set to true by EvidenceCascadeInvalidationService when a linked
+     * Set to true by EvidenceCascadeInvalidationService when a linked
      * DocumentVersion is superseded. Reset when the reverification task is completed.
      */
     #[ORM\Column(name: 'evidence_outdated', type: Types::BOOLEAN, options: ['default' => false])]

@@ -13,7 +13,7 @@ use Dompdf\Options;
 use Twig\Environment as TwigEnvironment;
 
 /**
- * CISO-Executive Reporting (Task #130) — One-Pager PDF for board
+ * CISO-Executive Reporting — One-Pager PDF for board
  * meetings.
  *
  * Renders a single-page A4-portrait summary covering:

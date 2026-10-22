@@ -12,7 +12,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * SLA Deadline Monitor Repository — Sprint 7A F3 Wave 2
+ * SLA Deadline Monitor Repository
  *
  * @extends ServiceEntityRepository<SlaDeadlineMonitor>
  *

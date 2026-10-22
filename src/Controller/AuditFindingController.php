@@ -30,7 +30,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * H-01: CRUD for structured Audit Findings (ISO 27001 Clause 10.1).
+ * CRUD for structured Audit Findings (ISO 27001 Clause 10.1).
  */
 #[IsGranted('ROLE_USER')]
 // @no-methods-required — class-level path prefix, methods declared per action
@@ -55,7 +55,7 @@ class AuditFindingController extends AbstractController
     }
 
     /**
-     * S17 B4 follow-up — choices payload for the CAPA-Builder owner-picker.
+     * Choices payload for the CAPA-Builder owner-picker.
      * Returns active tenant users as `[{id, label}, ...]` so the Stimulus
      * controller can hydrate the corrective-action owner dropdown without
      * an extra XHR roundtrip.
@@ -136,7 +136,7 @@ class AuditFindingController extends AbstractController
             $finding->setTenant($tenant);
         }
 
-        // F14 — pre-link to parent audit when ?audit=<id> is provided (e.g. from audit show-page).
+        // Pre-link to parent audit when ?audit=<id> is provided (e.g. from audit show-page).
         // Validate tenant scope before accepting the param.
         $prelinkedAudit = $this->resolveAuditParam($request, $tenant);
         $auditLocked = false;
@@ -154,7 +154,7 @@ class AuditFindingController extends AbstractController
             $this->entityManager->persist($finding);
             $this->entityManager->flush();
 
-            // F15.3 — auto-create CorrectiveAction tasks for linked requirements.
+            // Auto-create CorrectiveAction tasks for linked requirements.
             $this->autoTaskCreator->createTasksForLinkedRequirements($finding);
 
             $this->auditLogger->logCreate(
@@ -170,7 +170,7 @@ class AuditFindingController extends AbstractController
                 return $this->auditFindingStreamSave($finding, isNew: true);
             }
 
-            // F14 — when pre-linked to an audit, redirect back to the audit show-page.
+            // When pre-linked to an audit, redirect back to the audit show-page.
             if ($prelinkedAudit instanceof InternalAudit) {
                 return $this->redirectToRoute('app_audit_show', ['id' => $prelinkedAudit->getId()]);
             }
@@ -197,7 +197,7 @@ class AuditFindingController extends AbstractController
     }
 
     /**
-     * F14 — Quick inline finding capture from the audit show-page modal.
+     * Quick inline finding capture from the audit show-page modal.
      *
      * Accepts a lean POST payload (title, type, severity, description, audit_id)
      * and creates a minimal AuditFinding pre-linked to the parent audit.
@@ -280,7 +280,7 @@ class AuditFindingController extends AbstractController
     }
 
     /**
-     * F14 — resolve and validate the ?audit=<id> query parameter.
+     * Resolve and validate the ?audit=<id> query parameter.
      * Returns the InternalAudit only when it belongs to the current tenant
      * (or the current user is ROLE_ADMIN). Returns null when param is absent
      * or the lookup fails — callers treat null as "no pre-link requested".
@@ -317,7 +317,7 @@ class AuditFindingController extends AbstractController
             ]);
         }
 
-        // V3 W2-H3: Comment-Thread (C7) — load thread for this AuditFinding.
+        // Comment-Thread (C7) — load thread for this AuditFinding.
         $tenant = $this->tenantContext->getCurrentTenant();
         $comments = [];
         if ($this->commentRepository !== null && $tenant instanceof Tenant && $finding->getId() !== null) {
@@ -326,13 +326,13 @@ class AuditFindingController extends AbstractController
 
         return $this->render('audit_finding/show.html.twig', [
             'finding' => $finding,
-            // V3 W2-H3: Comments thread + form action
+            // Comments thread + form action
             'comments' => $comments,
         ]);
     }
 
     /**
-     * Clone an AuditFinding (C4-C1 — Klon-Funktionen). Open to ROLE_USER.
+     * Clone an AuditFinding. Open to ROLE_USER.
      * Keeps finding template (type, severity, clause reference, related
      * controls, linked requirements), resets lifecycle + nc-verification.
      */
@@ -377,7 +377,7 @@ class AuditFindingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            // F15.3 — auto-create CorrectiveAction tasks for linked requirements (idempotent).
+            // Auto-create CorrectiveAction tasks for linked requirements (idempotent).
             $this->autoTaskCreator->createTasksForLinkedRequirements($finding);
 
             $this->auditLogger->logUpdate(

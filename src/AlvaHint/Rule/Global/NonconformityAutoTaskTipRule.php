@@ -15,7 +15,7 @@ use App\Repository\AuditFindingRepository;
  * Tier-3 tip: tenant has > 5 unresolved AuditFindings without linkedRequirements.
  *
  * Linking AuditFindings to ISO/BSI ComplianceRequirements triggers automatic
- * CorrectiveAction tasks for the requirement owners (F15), closing the loop
+ * CorrectiveAction tasks for the requirement owners, closing the loop
  * between NC detection and documented treatment. When > 5 findings lack
  * norm-references this rule surfaces the tip on the AuditFinding index page.
  *

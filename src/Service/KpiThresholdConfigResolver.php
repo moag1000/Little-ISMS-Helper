@@ -26,7 +26,7 @@ final readonly class KpiThresholdView
 }
 
 /**
- * Phase 8M.3 — Resolver für KPI-Schwellwerte mit Fallback-Kaskade.
+ * Resolver für KPI-Schwellwerte mit Fallback-Kaskade.
  *
  * Ersetzt den direkten Repository-Zugriff via
  * KpiThresholdConfigRepository::getThresholdMap(?Tenant).

@@ -8,7 +8,7 @@ use App\Entity\IndustryPresetBundle;
 use App\Entity\WizardRun;
 
 /**
- * Policy-Wizard W4-B — applies an {@see IndustryPresetBundle} to a
+ * Policy-Wizard — applies an {@see IndustryPresetBundle} to a
  * {@see WizardRun}, pre-filling the run's `inputs` snapshot with
  * sector-specific defaults.
  *
@@ -27,7 +27,7 @@ use App\Entity\WizardRun;
  *     {@see \InvalidArgumentException}.
  *
  * Spec: docs/plans/policy-wizard/05-architecture.md §6 Step 4 +
- *       docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3 W4.
+ *       docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3.
  */
 final class PresetBundleApplier
 {
@@ -337,7 +337,7 @@ final class PresetBundleApplier
             $bag['_preset_flags']['dpo_sections_auto_enabled'] = true;
         }
 
-        // ── W6-B Sectoral privacy overlays ─────────────────────────────
+        // ── Sectoral privacy overlays ─────────────────────────────
         // Spec: `06-dpo-input.md` §7. The overlay flag drives subsequent
         // template generation (e.g. §2.16 Special-Category-Data adds
         // § 22 BDSG section for healthcare; §2.2 RoPA adds public-body

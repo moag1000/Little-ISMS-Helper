@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F4 Evidence-Versioning — immutable document version snapshot.
+ * Evidence-Versioning — immutable document version snapshot.
  *
  * Once publishedAt is set, this entity MUST NOT be deleted (enforced by
  * DocumentVersionVoter denying DELETE). The version history is the

@@ -156,7 +156,7 @@ class AuditLogRepository extends ServiceEntityRepository
      * Login audit rows (newest first) in a date range — action filtered in the
      * query. $tenants = null: all rows (SUPER_ADMIN). Otherwise only logins of
      * users the actor may administer, the same scope as the session index:
-     * users of $tenants that are not ROLE_SUPER_ADMIN, plus $self (#1059).
+     * users of $tenants that are not ROLE_SUPER_ADMIN, plus $self.
      *
      * @param list<string> $actions
      * @param Tenant[]|null $tenants

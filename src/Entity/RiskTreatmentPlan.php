@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Tracks implementation of risk treatment measures.
  * Links risks to controls with timeline, budget, and responsibility tracking.
  *
- * Phase 6F-B3: Risk treatment plan management for ISO 27001 compliance
+ * Risk treatment plan management for ISO 27001 compliance
  */
 #[ORM\Entity(repositoryClass: RiskTreatmentPlanRepository::class)]
 #[ORM\Index(name: 'idx_treatment_plan_status', columns: ['status'])]

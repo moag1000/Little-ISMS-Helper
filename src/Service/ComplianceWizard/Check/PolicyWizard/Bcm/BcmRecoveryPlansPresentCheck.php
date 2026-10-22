@@ -11,7 +11,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / ISO 22301 Cl. 8.4.5 + BSI 200-4 Kap. 6.2 — confirms the
+ * ISO 22301 Cl. 8.4.5 + BSI 200-4 Kap. 6.2 — confirms the
  * tenant has at least one Recovery Plan document for every crown-jewel
  * asset (very-high CIA).
  *

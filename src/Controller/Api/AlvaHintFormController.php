@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * P-19 — Form-Step-Inline-Hint API endpoint.
+ * Form-Step-Inline-Hint API endpoint.
  *
  * Receives a normalized form-payload snapshot from the
  * `alva-hint-in-form` Stimulus controller, runs every applicable

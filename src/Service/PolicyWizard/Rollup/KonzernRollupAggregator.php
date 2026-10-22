@@ -24,7 +24,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Policy-Wizard W7-B — Konzern roll-up aggregator.
+ * Policy-Wizard — Konzern roll-up aggregator.
  *
  * Walks the Konzern subtree (root + all descendant tenants) and
  * assembles six dashboard data slices into {@see KonzernRollupReport}:
@@ -490,7 +490,7 @@ final class KonzernRollupAggregator
 
     private function countAcknowledgementsForTenant(Tenant $tenant): int
     {
-        // Audit V3 W2-C4: count only completed ACKNOWLEDGED rows.
+        // Count only completed ACKNOWLEDGED rows.
         $acks = $this->policyAcknowledgementRepository->findBy([
             'tenant' => $tenant,
             'status' => PolicyAcknowledgement::STATUS_ACKNOWLEDGED,

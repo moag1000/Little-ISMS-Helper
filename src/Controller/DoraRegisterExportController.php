@@ -77,8 +77,6 @@ class DoraRegisterExportController extends AbstractController
      *
      * The legacy sync GET route is kept for back-compat (audit-link emails,
      * bookmarks); new UI traffic should use this dispatch endpoint.
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route(
         path: '/dora-compliance/register-export/dispatch',

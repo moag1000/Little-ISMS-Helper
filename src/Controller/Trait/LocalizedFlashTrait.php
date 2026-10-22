@@ -9,7 +9,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Localized flash-message helper for controllers.
  *
- * Replaces the raw `$this->addFlash($key, $this->translator->trans('XXX.success.created'))` // @todo H-06 flash-domain
+ * Replaces the raw `$this->addFlash($key, $this->translator->trans('XXX.success.created'))`
  * pattern that silently falls back to the `messages` translation-domain when no
  * domain parameter is passed. Because most domain keys live in dedicated
  * `<domain>.<locale>.yaml` files, the fallback resolves to the literal key and
@@ -40,7 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *         }
  *     }
  *
- * Foundation-Pattern P-5 — see var/junior-isb-audit/SOLUTIONS_FOUNDATION.md.
+ * See var/junior-isb-audit/SOLUTIONS_FOUNDATION.md.
  */
 trait LocalizedFlashTrait
 {

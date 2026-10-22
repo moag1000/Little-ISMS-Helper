@@ -12,7 +12,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use App\Service\PolicyWizard\GdprSectionCatalogue;
 
 /**
- * W6-D / GDPR Art. 5/24/25 — confirms every catalogue entry from
+ * GDPR Art. 5/24/25 — confirms every catalogue entry from
  * {@see GdprSectionCatalogue::SECTIONS} has a generated
  * {@see DocumentSection} on the corresponding ISO topic Document.
  *
@@ -26,7 +26,7 @@ use App\Service\PolicyWizard\GdprSectionCatalogue;
  * Sections that are not yet approved still count for coverage — the
  * presence of the section row evidences the GDPR addon was applied to
  * the host. Approval workflow is captured by separate per-section
- * approval checks (W6-A scope).
+ * approval checks.
  */
 final class GdprSectionCoverageCheck implements PolicyWizardCheckInterface
 {

@@ -329,8 +329,6 @@ class ProcessingActivityController extends AbstractController
      * {@see \App\Job\ExportProcessingActivityVvtJob} that writes the VVT
      * CSV to var/exports/<jobId>.csv in the background and renders a
      * polling progress page.
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/processing-activity/export/csv/dispatch', name: 'app_processing_activity_export_csv_dispatch', methods: ['POST'])]
     #[IsCsrfTokenValid('processing_activity_export_csv_dispatch')]
@@ -604,7 +602,7 @@ class ProcessingActivityController extends AbstractController
     }
 
     /**
-     * Sprint-2 P-7 Wave-2 Trigger-2: AVV (Auftragsverarbeitungs-Vertrag) supplier picker.
+     * AVV (Auftragsverarbeitungs-Vertrag) supplier picker.
      *
      * GET shows a Supplier-multi-select pre-filled with legacy `processors`-JSON
      * name matches; POST persists the selected suppliers onto

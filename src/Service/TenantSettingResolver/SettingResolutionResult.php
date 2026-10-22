@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\TenantSettingResolver;
 
 /**
- * Policy-Wizard W1 — value object returned by TenantSettingResolver::resolveFor().
+ * Policy-Wizard — value object returned by TenantSettingResolver::resolveFor().
  *
  * Carries the resolved value plus enough metadata for callers (and the
  * upcoming wizard UI) to surface "this value comes from the Konzern"

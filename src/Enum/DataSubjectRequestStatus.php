@@ -11,9 +11,9 @@ namespace App\Enum;
  * values are unchanged from the pre-enum string literals so no data
  * migration is needed.
  *
- * Phase 1 (foundation only): callers still pass and receive strings via
+ * callers still pass and receive strings via
  * `setStatus()` / `getStatus()`. This enum provides a typed surface via
- * `getStatusEnum()` and is intended as the migration target for Phase 2.
+ * `getStatusEnum()` and is the migration target for typed status handling.
  */
 enum DataSubjectRequestStatus: string
 {

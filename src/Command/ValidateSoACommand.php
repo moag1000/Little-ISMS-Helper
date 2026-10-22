@@ -14,7 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * M-02: Validate SoA completeness. Exits non-zero on errors (missing
+ * Validate SoA completeness. Exits non-zero on errors (missing
  * justifications), zero on pass / warnings only.
  */
 #[AsCommand(

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard W2-C — purge sandbox wizard runs older than 7 days.
+ * Policy-Wizard — purge sandbox wizard runs older than 7 days.
  *
  * Architecture §6.4: sandbox runs are auto-purged after 7 days. This
  * command finds every {@see \App\Entity\WizardRun} with

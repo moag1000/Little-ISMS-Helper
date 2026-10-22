@@ -12,7 +12,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\SupplierRepository;
 
 /**
- * Data-Reuse-Hub Service (Sprint 4 / R1).
+ * Data-Reuse-Hub Service.
  *
  * Liefert die „Top-Wiederverwendet"-Listen für den neuen `/reuse`-Hub.
  * Dreht die klassische Requirement→Evidence-Sicht um und beantwortet

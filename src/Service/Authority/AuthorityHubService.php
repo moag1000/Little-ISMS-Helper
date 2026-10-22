@@ -11,13 +11,13 @@ use App\Repository\ProcessingActivityRepository;
 use DateTimeImmutable;
 
 /**
- * F36 — EU-Behörden-Reporting-Hub: aggregates reporting obligations across all authority modules.
+ * EU-Behörden-Reporting-Hub: aggregates reporting obligations across all authority modules.
  *
  * Sources:
- *  - F25 VVT/BfDI (DSGVO Art. 30) — always "available" (on-demand only)
- *  - F26 Behörden-Templates (BSI/BfDI/LfDI) — always "available"
- *  - F29 NIS-2 BSI-Portal registration — status from Nis2RegistrationProfile.nextDueAt
- *  - F30 DORA RoI XBRL — status from DoraRegisterOfInformation current-year record
+ *  - VVT/BfDI (DSGVO Art. 30) — always "available" (on-demand only)
+ *  - Behörden-Templates (BSI/BfDI/LfDI) — always "available"
+ *  - NIS-2 BSI-Portal registration — status from Nis2RegistrationProfile.nextDueAt
+ *  - DORA RoI XBRL — status from DoraRegisterOfInformation current-year record
  *
  * Status values: current | due_soon | overdue | available | not_configured
  *
@@ -55,7 +55,7 @@ class AuthorityHubService
     {
         $obligations = [];
 
-        // ─── F25: VVT-BfDI Export (DSGVO Art. 30) ────────────────────────────
+        // ─── VVT-BfDI Export (DSGVO Art. 30) ────────────────────────────
         $hasPas = count($this->processingActivityRepository->findByTenant($tenant)) > 0;
         $obligations[] = [
             'authority'       => 'vvt_bfdi',
@@ -70,7 +70,7 @@ class AuthorityHubService
             'country'         => 'DE',
         ];
 
-        // ─── F26: Behörden-Templates (BSI/BfDI/LfDI) ─────────────────────────
+        // ─── Behörden-Templates (BSI/BfDI/LfDI) ─────────────────────────
         $obligations[] = [
             'authority'       => 'bfdi_templates',
             'label'           => 'eu_authorities.hub.obligation.bfdi_templates',
@@ -84,7 +84,7 @@ class AuthorityHubService
             'country'         => 'DE',
         ];
 
-        // ─── F29: NIS-2 BSI-Portal Registration ──────────────────────────────
+        // ─── NIS-2 BSI-Portal Registration ──────────────────────────────
         $nis2Profile = $this->nis2Repository->findForTenant($tenant);
         if ($nis2Profile !== null) {
             $nis2Status = match (true) {
@@ -119,7 +119,7 @@ class AuthorityHubService
             ];
         }
 
-        // ─── F30: DORA RoI XBRL ───────────────────────────────────────────────
+        // ─── DORA RoI XBRL ───────────────────────────────────────────────
         $doraRecord = $this->doraRoiRepository->findCurrentYearForTenant($tenant);
         $doraStatus = $this->computeDoraStatus($doraRecord);
         $obligations[] = [

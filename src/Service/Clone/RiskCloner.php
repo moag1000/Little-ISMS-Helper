@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Risk Cloner (C4-C1 — Klon-Funktionen).
+ * Risk Cloner.
  *
  * Use case: a Consultant wants to roll out the same "Phishing → Customer DB"
  * risk to every subsidiary, or copy a template risk and adjust the asset.

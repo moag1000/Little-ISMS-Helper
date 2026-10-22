@@ -38,7 +38,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Junior-ISB-Audit-2026-05-22 Schicht-5: Module-Gate-Polish
+        // Module-Gate-Polish
         // Gate corporate-scope choices behind tenant's corporate-structure
         // membership. There is no dedicated "konzern" feature module — the
         // holding hierarchy is intrinsic to Tenant.parent / Tenant.subsidiaries.
@@ -155,7 +155,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
                 'mapped' => false,
                 'choice_translation_domain' => 'audit',
             ])
-            // P-15 DataReuse: Pattern A dual-state lead auditor — structured
+            // Pattern A dual-state lead auditor — structured
             // User/Person preferred over legacy `leadAuditor` free-text. Legacy
             // field kept as optional textfield for migration window.
             ->add('leadAuditorUser', OwnerUserType::class, [
@@ -236,7 +236,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
                 ],
                 'help' => 'audit.help.audited_subsidiaries',
             ])
-            // Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+            // Doppelpflege-Deprecation —
             // findings/recommendations/conclusion freetext fields are disabled.
             // Use AuditFinding entity (structuredFindings collection) instead.
             // Closes data-reuse violation per ISO 27001 Cl. 9.2 — structured
@@ -285,7 +285,7 @@ final class InternalAuditType extends AbstractType implements SectionMapInterfac
     }
 
     /**
-     * P-15 DataReuse: lead auditor must be provided in at least one of
+     * Lead auditor must be provided in at least one of
      * the three Pattern-A states (User, Person, or legacy free-text). The
      * legacy column is no longer NotBlank in the entity to allow the
      * migration window — but at form level we still demand one of them.

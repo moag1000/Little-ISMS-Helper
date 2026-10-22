@@ -11,7 +11,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use App\Service\TenantSettingResolver\PolicySettingProvider;
 
 /**
- * W6-D / ISO 27701:2025 §3 — confirms the tenant has set the
+ * ISO 27701:2025 §3 — confirms the tenant has set the
  * `iso27701.version` setting if `iso27701.enabled` is true.
  *
  * Per `docs/plans/policy-wizard/06-dpo-input.md` §3, ISO 27701:2025

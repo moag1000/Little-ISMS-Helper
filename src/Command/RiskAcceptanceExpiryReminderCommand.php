@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * V3 W2-M8 / WS-2 — Risk-Acceptance-Expiry Reminder Cron.
+ * Risk-Acceptance-Expiry Reminder Cron.
  *
  * Scans risks with `acceptanceExpiryDate` <= today + N days, logs hits and
  * (when available) emits notifications via the standard logger.

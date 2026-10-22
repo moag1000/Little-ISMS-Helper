@@ -48,7 +48,7 @@ final class WelcomeStandardsStep extends AbstractStep
     ];
 
     /**
-     * Optional collaborators — the W4-B IndustryPresetBundle picker
+     * Optional collaborators — the IndustryPresetBundle picker
      * uses them when the user picks a sector preset. Wired via
      * service-container autowiring; nullable so legacy callers (and
      * older tests that instantiate the step directly) keep working.
@@ -77,7 +77,7 @@ final class WelcomeStandardsStep extends AbstractStep
     {
         $errors = [];
 
-        // Industry-Preset bundles (W4-B multi-select) — apply BEFORE other
+        // Industry-Preset bundles (multi-select) — apply BEFORE other
         // validation so preselectedStandards become the default for an empty
         // `standards` submission. Accepts both:
         //   - `industry_preset_bundle_keys[]` (multi-select, canonical)

@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Sprint 13 / P5 — Tenant-/Global-Override der Default-Tour-Step-Texte.
+ * Tenant-/Global-Override der Default-Tour-Step-Texte.
  *
  * Die Default-Texte leben in `translations/guided_tour.{de,en}.yaml`.
  * Wenn ein Admin einen Step pro Tenant anpasst (z. B. "Hier finden Sie

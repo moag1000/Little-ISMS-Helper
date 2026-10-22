@@ -102,7 +102,7 @@ class TenantManagementController extends AbstractController
     public function new(Request $request): Response
     {
         $tenant = new Tenant();
-        // Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+        // Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
         // Initial-marking bootstrap: tenants created via the admin UI are
         // operational from day one. Bypass the workflow on create because
         // the marking-store is not yet wired for an unpersisted entity;
@@ -131,13 +131,13 @@ class TenantManagementController extends AbstractController
                 // Tenant::$settings is deliberately not part of TenantType: it is
                 // an internal bag whose parts have dedicated editors (organisation
                 // context, MRIS KPI toggle, TISAX) and is shown read-only in the
-                // settings tab — no raw JSON editing (supersedes C-06).
+                // settings tab — no raw JSON editing.
 
                 $this->entityManager->persist($tenant);
                 $this->entityManager->flush();
 
                 // Seed BSI IT-Grundschutz default asset sub-types so the
-                // sub-type dropdown is not empty for new tenants (Bug S18 B2).
+                // sub-type dropdown is not empty for new tenants.
                 $this->assetSubTypeSeeder->applyPreset($tenant, \App\Service\AssetSubTypeSeeder::PRESET_BSI);
 
                 $this->logger->info('Tenant created', [

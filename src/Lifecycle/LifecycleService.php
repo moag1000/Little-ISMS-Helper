@@ -11,7 +11,7 @@ use Symfony\Component\Workflow\Exception\TransitionException;
 use Symfony\Component\Workflow\Registry;
 
 /**
- * Facade over Symfony Workflow component. Keeps the audit-s3 P-4 API
+ * Facade over Symfony Workflow component. Keeps the public API
  * stable while internally delegating state-machine logic to
  * `symfony/workflow`.
  *

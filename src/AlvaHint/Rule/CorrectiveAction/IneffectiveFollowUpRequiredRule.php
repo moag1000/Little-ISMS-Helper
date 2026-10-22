@@ -10,7 +10,7 @@ use App\Entity\CorrectiveAction;
 use App\Entity\User;
 
 /**
- * S3 P0-30 — Tier-1 Pflicht-Hinweis.
+ * Tier-1 Pflicht-Hinweis.
  *
  * Sobald eine CAPA als `verified_ineffective` markiert wird, fordert
  * ISO 27001 Cl. 10.1 (b) eine erneute Bewertung und Behandlung. Diese

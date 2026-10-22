@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * F6 — self-service read-only API token management for the logged-in user.
+ * Self-service read-only API token management for the logged-in user.
  */
 #[IsGranted('ROLE_USER')]
 final class ApiTokenController extends AbstractController

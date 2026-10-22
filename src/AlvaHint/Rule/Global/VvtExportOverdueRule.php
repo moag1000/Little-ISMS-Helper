@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Verfahrensverzeichnis (Art. 30 DSGVO) at any time. Best practice is an
  * annual refresh. When the last BfDI-export event is more than 365 days old
  * this rule fires as a warning-tier hint, prompting the DPO to export via
- * the Sprint-2 F25 BfDI-Muster XLSX download.
+ * the BfDI-Muster XLSX download.
  *
  * Unlike the tip (VvtExportTipRule), this rule fires on dashboard pages and
  * is Tier 2 (audit-gap). Snooze still works — permanent dismissal is not

@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Documents recovery procedures and strategies for business processes
  *
- * Junior-ISB-Audit-2026-05-22 C2-06: 3-team-worlds consolidation —
+ * 3-team-worlds consolidation —
  * responseTeamMembers canonical, crisisTeams reusable, bcTeam deprecated.
  */
 #[RequiresModule('bcm')]
@@ -92,7 +92,7 @@ class BusinessContinuityPlan
     private ?string $planOwner = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation — use $responseTeamMembers.
+     * Doppelpflege-Deprecation — use $responseTeamMembers.
      *
      * Freetext BC team roster. Superseded by the structured
      * {@see self::$responseTeamMembers} JSON field (per ISO 22301 §8.5.3 with
@@ -446,7 +446,7 @@ class BusinessContinuityPlan
 
     /**
      * @deprecated since S13 (2026-05-23) — use {@see self::getResponseTeamMembers()}.
-     *             Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation.
+     *             Doppelpflege-Deprecation.
      */
     public function getBcTeam(): ?string
     {
@@ -455,7 +455,7 @@ class BusinessContinuityPlan
 
     /**
      * @deprecated since S13 (2026-05-23) — use {@see self::setResponseTeamMembers()}.
-     *             Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation.
+     *             Doppelpflege-Deprecation.
      *             Retained for fixture/seed compatibility only — the Form
      *             input is disabled and the show-page renders the value
      *             read-only inside a "Legacy"-info alert.

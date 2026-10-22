@@ -10,7 +10,7 @@ use App\Entity\Tenant;
 use App\Repository\SupplierRepository;
 
 /**
- * Sprint-2 P-7 Wave-2 — AVV-Picker Pre-Filler.
+ * AVV-Picker Pre-Filler.
  *
  * Suggests Supplier candidates for the AVV (Auftragsverarbeitungs-
  * Vertrag) FK relation on a ProcessingActivity when the rule

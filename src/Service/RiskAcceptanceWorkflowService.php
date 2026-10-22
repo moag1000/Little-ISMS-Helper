@@ -43,8 +43,8 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
  */
 class RiskAcceptanceWorkflowService
 {
-    // Hardcoded Fallback-Werte falls Tenant keine Config hat (Phase 8L.F1:
-    // Werte wanderten in RiskApprovalConfig-Entity per Tenant). Die Defaults
+    // Hardcoded Fallback-Werte falls Tenant keine Config hat (die Werte
+    // liegen per Tenant in der RiskApprovalConfig-Entity). Die Defaults
     // hier sind identisch zu den vorherigen PHP-Constants und werden vom
     // Resolver gespiegelt (RiskApprovalConfigView::defaults()).
 
@@ -456,8 +456,7 @@ class RiskAcceptanceWorkflowService
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
 
-        // X.6: revert_to_assessed transition (accepted → assessed) via risk_lifecycle.
-        // Added to config/workflows/risk.yaml in X.6. Reverts acceptance decision.
+        // revert_to_assessed transition (accepted → assessed) via risk_lifecycle; reverts the acceptance decision.
         $this->lifecycleService->transition(
             $risk,
             'risk_lifecycle',
@@ -506,7 +505,7 @@ class RiskAcceptanceWorkflowService
 
     /**
      * Get approval thresholds configuration — tenant-specific wenn Risk übergeben,
-     * sonst defaults. Werte kommen aus RiskApprovalConfig (Phase 8L.F1).
+     * sonst defaults. Werte kommen aus RiskApprovalConfig.
      *
      * @return array Approval level configuration
      */

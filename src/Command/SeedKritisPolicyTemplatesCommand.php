@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard W5-K — seed 8 KRITIS-sektorspezifische
+ * Policy-Wizard — seed 8 KRITIS-sektorspezifische
  * B3S-PolicyTemplates (Branchenspezifische Sicherheits-Standards).
  *
  * Adressiert KRITIS-Betreiber, die nach BSIG § 8a Abs. 3 alle 24 Monate
@@ -55,7 +55,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:policy-wizard:seed-kritis --force
  *   php bin/console app:policy-wizard:seed-kritis --dry-run
  *
- * Spiegelt {@see SeedBsiPolicyTemplatesCommand} (W5-A) in der Form,
+ * Spiegelt {@see SeedBsiPolicyTemplatesCommand} in der Form,
  * sodass Wizard-Tooling beide Standards uniform behandeln kann.
  * Trennung als eigener Standard `kritis` (statt BSI-Sub-Standard) waehlt
  * klare Sektor-Aktivierung via IndustryPresetBundle (z.B. preset

@@ -20,7 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * NIS2UMSUCG is {@see LoadNis2UmsuCGFullCommand} (§N ids), because the
  * cross-framework mappings reference §N requirement ids. Registry-binding this
  * partial loader instead would make every § mapping pair silent-skip
- * (#951/#952-class wiring defect). This command remains available standalone
+ * (a registry-wiring defect). This command remains available standalone
  * via `app:load-nis2umsucg-requirements`.
  */
 #[AsCommand(

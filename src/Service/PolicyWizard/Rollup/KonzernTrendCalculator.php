@@ -18,9 +18,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * CISO-Executive Reporting (Task #130) — quarterly trend calculator.
+ * CISO-Executive Reporting — quarterly trend calculator.
  *
- * Persona-Walkthrough surfaced four reporting gaps at the Konzern level:
+ * Addresses four reporting gaps at the Konzern level:
  *   1. Compliance-tab is a flat 0-100 % stacked bar — no YoY/QoQ trend.
  *   2. Outstanding-Actions tab lists rows — no severity heatmap.
  *   3. No One-Pager PDF for board meetings.
@@ -174,7 +174,7 @@ final class KonzernTrendCalculator
             'isArchived' => false,
         ]);
 
-        // Audit V3 W2-C4: only count completed ACKNOWLEDGED rows; PENDING
+        // Only count completed ACKNOWLEDGED rows; PENDING
         // campaign rows are tracked but unsigned and must not skew trends.
         $acks = $this->policyAcknowledgementRepository->findBy([
             'tenant' => $tenant,

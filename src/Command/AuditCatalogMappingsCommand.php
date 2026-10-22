@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * app:audit-catalog-mappings — Phase-0 dangling-mapping inventory (Task 0.3).
+ * app:audit-catalog-mappings — dangling-mapping inventory.
  *
  * Loads every UI-wired framework (ComplianceFrameworkLoaderService registry) into
  * the CURRENT database, records the exact (frameworkCode, requirementId) pairs the

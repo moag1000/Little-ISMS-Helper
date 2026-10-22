@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Domain service for BSI-200-4 Übungs-Logbuch (F27).
+ * Domain service for BSI-200-4 Übungs-Logbuch.
  *
  * Handles creation from a BCExercise, lifecycle transitions (submit / confirm)
  * and extraction of improvement actions for follow-up task management.

@@ -37,7 +37,7 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
     public const SESSION_STATE_KEY = '_sso_oidc_state';
     public const SESSION_VERIFIER_KEY = '_sso_oidc_verifier';
     public const SESSION_PROVIDER_KEY = '_sso_oidc_provider';
-    /** Provider id chosen at start — the callback never re-resolves the slug (#1059 I-5). */
+    /** Provider id chosen at start — the callback never re-resolves the slug. */
     public const SESSION_PROVIDER_ID_KEY = '_sso_oidc_provider_id';
     public const SESSION_TARGET_KEY = '_sso_oidc_target';
 

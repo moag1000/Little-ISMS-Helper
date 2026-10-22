@@ -129,7 +129,7 @@ class BCExerciseController extends AbstractController
         ]);
     }
     /**
-     * Clone a BC-Exercise (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * Clone a BC-Exercise. Open to ROLE_USER. Keeps
      * planning template (scope, objectives, scenario, facilitator dual-state,
      * tested BC-Plans, success criteria), resets execution + results.
      */

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Tenant-configurable Asset Sub-Type (S18 B2).
+ * Tenant-configurable Asset Sub-Type.
  *
  * 6 ISO-conform top-level types (Hardware/Software/Datenbank/Personal/Standort/
  * Dienstleistung) are too generic for ISO 9001-migrated users — "Server" is not

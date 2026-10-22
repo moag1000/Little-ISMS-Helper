@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * CRUD form for tenant-configurable AssetSubType (S18 B2).
+ * CRUD form for tenant-configurable AssetSubType.
  */
 final class AssetSubTypeType extends AbstractType
 {

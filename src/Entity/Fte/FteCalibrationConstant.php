@@ -12,7 +12,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F11 FTE-Tracking — per-tenant calibration constants.
+ * FTE-Tracking — per-tenant calibration constants.
  *
  * Each row stores how many minutes one manual operation of a given type
  * takes for this tenant. ADMIN can override these per-tenant.

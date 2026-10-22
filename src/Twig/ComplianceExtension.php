@@ -36,7 +36,6 @@ final class ComplianceExtension
      *
      * @return bool True if NIS2 framework exists and is active
      * @throws Exception|InvalidArgumentException If cache fails
-     *
      */
     #[AsTwigFunction('is_nis2_active')]
     public function isNis2Active(): bool
@@ -72,7 +71,6 @@ final class ComplianceExtension
      *
      * @return array Array of frameworks with id, code, name, and mandatory status
      * @throws Exception|InvalidArgumentException If cache fails
-     *
      */
     #[AsTwigFunction('get_compliance_frameworks')]
     public function getComplianceFrameworks(): array
@@ -115,7 +113,6 @@ final class ComplianceExtension
      *
      * @return array Array with id, code, name (short version)
      * @throws Exception|InvalidArgumentException If cache fails
-     *
      */
     #[AsTwigFunction('get_compliance_frameworks_quick')]
     public function getComplianceFrameworksQuick(): array

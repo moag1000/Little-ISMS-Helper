@@ -12,7 +12,7 @@ use App\Entity\WizardRun;
 use App\Repository\WizardRunRepository;
 
 /**
- * Policy-Wizard W4-C — Document-Split-Needed reminder.
+ * Policy-Wizard — Document-Split-Needed reminder.
  *
  * Fires on a Tenant when at least one {@see WizardRun} carries a
  * `bestandsaufnahme` decision with action `split_to_topics`. The wizard
@@ -31,7 +31,7 @@ use App\Repository\WizardRunRepository;
  * off a fresh targeted run for each target topic.
  *
  * Source signal: {@see WizardRun::$inputs}['bestandsaufnahme']['decisions'][].
- * Spec anchor: `07-phase4-sprint-reconciliation.md` W4-C + the
+ * Spec anchor: `07-phase4-sprint-reconciliation.md` + the
  * `split_to_topics` warning branch in
  * `DocumentGenerator::runPersistent()` (reached via generate()).
  */

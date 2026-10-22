@@ -12,7 +12,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / BSIG §8a + KRITIS-DachG — confirms a KRITIS-Operator tenant
+ * BSIG §8a + KRITIS-DachG — confirms a KRITIS-Operator tenant
  * has the KRITIS-applicability section documented in its
  * IT-Sicherheitsleitlinie.
  *

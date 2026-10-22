@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W6-D / GDPR Art. 5 + Art. 24 — confirms an approved Privacy /
+ * GDPR Art. 5 + Art. 24 — confirms an approved Privacy /
  * Data-Protection Policy exists for the tenant.
  *
  * Evidence: at least one published-or-approved {@see \App\Entity\Document}

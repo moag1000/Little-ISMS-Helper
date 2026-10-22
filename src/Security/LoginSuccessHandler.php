@@ -55,7 +55,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         if ($targetPath) {
             // Clear the target path from session
             $request->getSession()->remove('_security.main.target_path');
-            // Re-validate: the stored target may come from a crafted re-auth link (#1059 m-7).
+            // Re-validate: the stored target may come from a crafted re-auth link.
             if (SafeRedirectTarget::isSafe((string) $targetPath, $request)) {
                 return new RedirectResponse($targetPath);
             }

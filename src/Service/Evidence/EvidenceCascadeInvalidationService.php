@@ -18,7 +18,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F4 Evidence-Versioning — cross-framework cascade invalidation service.
+ * Evidence-Versioning — cross-framework cascade invalidation service.
  *
  * When a new DocumentVersion is published for a document that is linked as
  * evidence on one or more Controls or ComplianceRequirementFulfillments,
@@ -279,14 +279,14 @@ class EvidenceCascadeInvalidationService
      * the document in their evidenceDescription or have a direct document link.
      *
      * Currently, CRF does not have a direct Document FK — we fall through to an
-     * empty array. When Sprint 5B adds direct evidence links on CRF, this query
+     * empty array. Once CRF gets direct evidence links, this query
      * should be extended.
      *
      * @return ComplianceRequirementFulfillment[]
      */
     private function findFulfillmentsLinkedToDocument(): array
     {
-        // CRF does not yet have a direct document FK (Sprint 5B scope).
+        // CRF does not yet have a direct document FK.
         // Return empty; the structure is in place for future extension.
         return [];
     }
