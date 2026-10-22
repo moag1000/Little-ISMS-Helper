@@ -5,9 +5,7 @@
 > **Y.4 Update (2026-06):** Auto-progression is now handled by the
 > `FieldCompletionAutoTransition` Doctrine event listener
 > (`src/Lifecycle/EventListener/FieldCompletionAutoTransition.php`).
-> `WorkflowAutoProgressionService` is `@deprecated` — it remains as a
-> bridge facade for one release but will be removed. Do NOT inject it in
-> new code. Workflow definitions live in `config/workflows/regulatory/*.yaml`.
+> Workflow definitions live in `config/workflows/regulatory/*.yaml`.
 > See: `docs/decisions/2026-05-17-workflow-yaml-unification.md`
 
 ## Overview
@@ -29,14 +27,7 @@ The Workflow Auto-Progression System enables **event-driven workflows** where wo
    - Automatically approves steps when conditions are met
    - Rules are configured in `config/workflows/regulatory/*.yaml` step metadata
 
-2. ~~**WorkflowAutoProgressionService**~~ (`src/Service/WorkflowAutoProgressionService.php`) — **@deprecated since Y.1**
-   - Kept as a bridge facade for backward compatibility; no production code
-     calls it any more (the last callers, `StatementOfApplicabilityController`
-     and `app:process-timed-workflows`, were removed in 2026-10)
-   - Do NOT inject in new code — use `FieldCompletionAutoTransition` via Symfony event system instead
-   - Will be removed in a future major release
-
-3. **WorkflowStep Metadata** (YAML) — **canonical since Y.2**
+2. **WorkflowStep Metadata** (YAML) — **canonical since Y.2**
    - Step definitions live in `config/workflows/regulatory/*.yaml`
    - The `metadata.steps[].auto_progress_conditions` key replaces the DB `metadata` JSON field
    - DB `workflow_steps.metadata` column preserved read-only for historical display
@@ -62,7 +53,7 @@ User Action:
 3. DPO clicks "Save"
 
 Auto-Progression:
-✓ WorkflowAutoProgressionService detects all fields are filled
+✓ FieldCompletionAutoTransition detects all fields are filled
 ✓ Step 1 auto-approved with comment: "Step automatically approved based on field completion"
 ✓ Workflow moves to Step 2: "Technical Assessment (CISO)"
 ✓ CISO receives notification email
@@ -550,7 +541,7 @@ configured target groups. Acknowledgement requests appear in the
 ## Tenant-Scope-Guard (V3 W2-C2)
 
 Auto-progression checks are tenant-scoped. Before evaluating conditions,
-`WorkflowAutoProgressionService` verifies that:
+`FieldCompletionAutoTransition` verifies that:
 
 1. The workflow instance belongs to the current tenant
    (`$instance->getTenantId() === $tenantContext->getCurrentTenantId()`).

@@ -5,22 +5,18 @@ declare(strict_types=1);
 namespace App\Tests\Command;
 
 use App\Command\ProcessTimedWorkflowsCommand;
-use App\Entity\Control;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
-use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\Notification\NotificationRuleRepository;
 use App\Repository\Notification\SlaDeadlineMonitorRepository;
-use App\Repository\RiskAppetiteRepository;
 use App\Repository\TenantRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
 use App\Service\Notification\NotificationDispatcher;
 use App\Service\Notification\SlaDeadlineWatcher;
-use App\Service\WorkflowAutoProgressionService;
 use App\Service\WorkflowService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,13 +25,11 @@ use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Automatic progression never satisfies four-eyes (#1059 follow-up).
  *
- * Runs the real chain — ProcessTimedWorkflowsCommand / the deprecated
- * WorkflowAutoProgressionService → WorkflowService → LifecycleService →
+ * Runs the real chain — ProcessTimedWorkflowsCommand → WorkflowService → LifecycleService →
  * FourEyesValidator — against the test database. The closing `approve`
  * of workflow_instance_lifecycle is four-eyes; an automatic approval that
  * would fire it must leave the instance untouched.
@@ -135,50 +129,6 @@ final class ProcessTimedWorkflowsFourEyesTest extends KernelTestCase
         self::assertSame('in_progress', $reloaded->getStatus());
         self::assertSame('auto_approved', ($reloaded->getApprovalHistory() ?? [])[0]['action'] ?? null);
         self::assertSame($secondStepId, $reloaded->getCurrentStep()?->getId());
-    }
-
-    /**
-     * Field-completion auto-progression (deprecated service, bridged from the
-     * listener): even a user who could approve by hand does not complete a
-     * four-eyes closing step automatically, and nothing is thrown.
-     */
-    #[Test]
-    public function fieldCompletionDoesNotApproveFourEyesClosingStep(): void
-    {
-        $initiator = $this->user('initiator', ['ROLE_MANAGER']);
-        $editor = $this->user('editor', ['ROLE_MANAGER']);
-
-        $control = new Control();
-        (new \ReflectionProperty(Control::class, 'id'))->setValue($control, random_int(10000000, 99999999));
-        $control->setName('Filled in');
-
-        $instance = $this->instance($initiator, [['approval', false]], 'Control', (int) $control->getId());
-        $step = $instance->getCurrentStep();
-        self::assertInstanceOf(WorkflowStep::class, $step);
-        $step->setMetadata(['autoProgressConditions' => [
-            'type' => 'field_completion',
-            'entity' => 'Control',
-            'fields' => ['name'],
-        ]]);
-        $this->em->flush();
-
-        // Unused in production wiring (deprecated) — built from real collaborators.
-        $container = static::getContainer();
-        $service = new WorkflowAutoProgressionService(
-            $this->em,
-            PropertyAccess::createPropertyAccessor(),
-            $container->get(WorkflowService::class),
-            new NullLogger(),
-            $container->get(RiskAppetiteRepository::class),
-            $this->createStub(FieldCompletionAutoTransitionInterface::class),
-        );
-        $progressed = $service->checkAndProgressWorkflow($control, $editor);
-
-        self::assertFalse($progressed);
-        $reloaded = $this->reload($instance);
-        self::assertSame('in_progress', $reloaded->getStatus());
-        self::assertSame([], $reloaded->getApprovalHistory() ?? []);
-        self::assertSame($step->getId(), $reloaded->getCurrentStep()?->getId());
     }
 
     private function runCron(WorkflowInstance ...$instances): CommandTester

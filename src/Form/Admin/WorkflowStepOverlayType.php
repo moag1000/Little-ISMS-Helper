@@ -71,7 +71,7 @@ final class WorkflowStepOverlayType extends AbstractType implements SectionMapIn
                 'help' => 'admin.workflows.form.days_to_complete_help',
             ])
             // Same keys the YAML `auto_progress_conditions` and
-            // WorkflowAutoProgressionService / ProcessTimedWorkflowsCommand read.
+            // ProcessTimedWorkflowsCommand read.
             ->add('autoProgressConditions', JsonBuilderType::class, [
                 'label' => 'admin.workflows.form.auto_progress_conditions',
                 'required' => false,

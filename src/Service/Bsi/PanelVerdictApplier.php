@@ -240,33 +240,6 @@ final class PanelVerdictApplier implements PanelVerdictApplierInterface
     }
 
     /**
-     * Legacy BC overload: apply(ComplianceFramework $iso, ComplianceFramework $bsi, bool $dryRun).
-     *
-     * Called by the existing ApplyPanelVerdictsCommand before the parametrized signature was added.
-     * Delegates to the new `apply()` with the ISO fixture path.
-     *
-     * @return array{
-     *     ki_validiert: int,
-     *     rejected: int,
-     *     needs_review: int,
-     *     panel_discovered: int,
-     *     panel_discovered_skipped: int,
-     *     not_matched: int,
-     *     already_applied: int,
-     *     total: int,
-     * }
-     *
-     * @deprecated Use apply(fixturePath, source, target, dryRun) instead.
-     */
-    public function applyLegacy(
-        ComplianceFramework $iso,
-        ComplianceFramework $bsi,
-        bool $dryRun = false,
-    ): array {
-        return $this->apply(self::FIXTURE_PATH, $iso, $bsi, $dryRun);
-    }
-
-    /**
      * Detect which JSON field name carries the source requirement ID from the fixture path.
      *
      * The fixture filename encodes the source framework as its first segment before `_to_`:

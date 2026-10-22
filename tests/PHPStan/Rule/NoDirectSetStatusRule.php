@@ -36,7 +36,6 @@ final class NoDirectSetStatusRule implements Rule
         '#/src/Lifecycle/#',
         '#/migrations/#',
         '#/tests/#',
-        '#WorkflowAutoProgressionService\\.php$#',  // legacy, slated for X.6 removal
         '#StateMachineMarkingStore#',                 // Symfony internal
     ];
 
