@@ -9,17 +9,17 @@ out. Read it top-to-bottom once; use it as a reference afterward.
 
 ```
  ┌─────────────────────────────────────────────────────────────────┐
- │  Layer 6 — CI / Quality Gates (48+ automated checks)           │
+ │  Layer 6 — CI / Quality Gates (scripts/quality/*)              │
  ├─────────────────────────────────────────────────────────────────┤
  │  Layer 5 — Frontend (Aurora v4 · Stimulus · Turbo · Bootstrap) │
  ├─────────────────────────────────────────────────────────────────┤
  │  Layer 4 — Security (AuditLogger · Voters · 4-Eyes · HMAC)     │
  ├─────────────────────────────────────────────────────────────────┤
- │  Layer 3 — Workflows (LifecycleService · 15 Regulatory YAMLs)  │
+ │  Layer 3 — Workflows (LifecycleService · Regulatory YAMLs)     │
  ├─────────────────────────────────────────────────────────────────┤
  │  Layer 2 — Boundaries (Multi-Tenant · Module Gating · RBAC)    │
  ├─────────────────────────────────────────────────────────────────┤
- │  Layer 1 — Domain (114 Entities · Doctrine ORM · tenant_id)    │
+ │  Layer 1 — Domain (Entities · Doctrine ORM · tenant_id)        │
  └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -27,7 +27,7 @@ out. Read it top-to-bottom once; use it as a reference afterward.
 
 ## Layer 1 — Domain
 
-### Entities (114 files in `src/Entity/`)
+### Entities (`src/Entity/`; count: `ls src/Entity/*.php | wc -l`)
 
 Every entity carries a `tenant_id` column. This is the primary isolation
 mechanism for multi-tenancy. There is no global query scope applied
@@ -82,7 +82,7 @@ The `AuditTenantVoter` and entity-specific voters (`AssetVoter`,
 
 ### Module Gating
 
-Optional compliance frameworks are controlled by 40 module keys defined in
+Optional compliance frameworks are controlled by the module keys defined in
 `config/modules.yaml`. Six modules are always on (`core`, `authentication`,
 `documents`, `audit_logging`, `workflows`, `objectives`); the rest are
 per-tenant opt-in.
@@ -108,7 +108,7 @@ Holding-level roles: `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`
 Persona-roles (each gates its own dashboard):
 `ROLE_CISO`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`
 
-There are 50+ fine-grained permissions. Authorization is enforced via Symfony
+Authorization uses fine-grained permissions (see `src/Security/Voter/`). Authorization is enforced via Symfony
 Security Voters in `src/Security/Voter/`. Controllers use the `#[IsGranted]`
 attribute — do not use `denyAccessUnlessGranted()` (deprecated pattern).
 
@@ -138,7 +138,7 @@ Tenant overrides of role/reason/four-eyes metadata live in the
 
 Resolution order: YAML baseline + DB override → `LifecycleConfigResolver::resolve()`.
 
-### Regulatory Workflows (15 YAML definitions)
+### Regulatory Workflows (YAML definitions)
 
 All in `config/workflows/regulatory/`. Key workflows:
 
@@ -252,7 +252,7 @@ Located in `assets/controllers/`. Controllers are auto-registered via the
 
 - **PHP static analysis** — PHPStan + custom rules (`tools/phpstan/`)
 - **Twig validation** — `lint:twig` + scope checks (`check_twig_macro_scope.py`)
-- **Translation completeness** — 90 domains × 2 languages
+- **Translation completeness** — every domain in `translations/` in DE and EN
 - **Architecture rules** — god-class size, entity reserved words, EM writes in controllers
 - **Migration safety** — PREPARE/EXECUTE detection, DDL transaction override check
 - **Security** — audit-log coverage, tenant isolation, module gating

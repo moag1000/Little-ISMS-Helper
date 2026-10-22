@@ -152,7 +152,7 @@ Common CI failure patterns:
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `PHPUnit: 2850 tests, N failures` | New migration not applied in fixtures | Check `tests/bootstrap.php` runs migrations |
+| `PHPUnit: N tests, N failures` | New migration not applied in fixtures | Check `tests/bootstrap.php` runs migrations |
 | `lint:container error: service X not found` | New service with wrong autowiring | Check `config/services.yaml` |
 | `check_twig_macro_scope.py: BROKEN` | Macro import inside `{% embed %}` missing | Add re-import inside embed block |
 | `God-class LOC exceeded baseline` | File grew past ratchet | Refactor or bump baseline with justification |

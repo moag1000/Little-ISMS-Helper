@@ -7,7 +7,7 @@ approximate file counts as of the 3.x release series.
 
 ## `src/` — PHP Application Root
 
-### Entity (114 files)
+### Entity (count: `ls src/Entity/*.php | wc -l`)
 
 All entities live in `src/Entity/`. Every entity:
 
@@ -29,7 +29,7 @@ Sub-directories: `src/Entity/Authority/` (authority-specific entities).
 
 ---
 
-### Service (171 files)
+### Service (count: `find src/Service -name "*.php" | wc -l`)
 
 Business logic lives in `src/Service/`. Grouped by namespace prefix:
 
@@ -56,7 +56,7 @@ Business logic lives in `src/Service/`. Grouped by namespace prefix:
 | `PolicyWizard/` | Document generator, policy template engine |
 | `PreFiller/` | Form pre-filling from existing entity data |
 | `Risk/` | Risk scoring, probability adjustment, matrix |
-| `Search/` | Full-text search across 33+ entity types (`SearchService`) |
+| `Search/` | Full-text search across the searchable entity types (`SearchService`) |
 | `Setup/` | Wizard + initial-admin provisioning |
 | `Soa/` | SoA report builder |
 | `Sso/` | SSO providers (OIDC, SAML, Azure OAuth) |
@@ -72,7 +72,7 @@ Business logic lives in `src/Service/`. Grouped by namespace prefix:
 
 ---
 
-### Controller (145 files)
+### Controller (count: `find src/Controller -name "*.php" | wc -l`)
 
 HTTP handlers in `src/Controller/`. Grouped by routing prefix:
 
@@ -94,7 +94,7 @@ Controllers must:
 
 ---
 
-### Command (146 files — categorised)
+### Command (categorised; count: `find src/Command -name "*.php" | wc -l`)
 
 Console commands in `src/Command/`:
 
@@ -170,14 +170,14 @@ templates/
 
 | File / Directory | Purpose |
 |---|---|
-| `config/modules.yaml` | 40 module keys + metadata (required vs optional) |
+| `config/modules.yaml` | Module keys + metadata (required vs optional) |
 | `config/active_modules.yaml` | Per-tenant module activation overrides |
 | `config/services.yaml` | Service definitions, tagged services |
 | `config/packages/security.yaml` | Firewalls, access control, password hasher |
 | `config/packages/workflow.yaml` | Imports all lifecycle YAML definitions |
 | `config/packages/messenger.yaml` | Async transport configuration |
 | `config/workflows/` | Entity lifecycle YAML definitions |
-| `config/workflows/regulatory/` | 15 regulatory workflow YAML definitions |
+| `config/workflows/regulatory/` | Regulatory workflow YAML definitions |
 
 ---
 
@@ -210,7 +210,7 @@ fixtures/library/
 
 ## `scripts/quality/` — CI Gate Scripts
 
-48+ Python and shell scripts. Each has a corresponding baseline file in
+Python and shell scripts (`ls scripts/quality`). Each has a corresponding baseline file in
 `scripts/quality/baselines/`. See [06-quality-gates.md](06-quality-gates.md).
 
 ---

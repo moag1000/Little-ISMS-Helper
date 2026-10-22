@@ -1,6 +1,6 @@
 # 06 — Quality Gates
 
-Every push runs 48+ automated checks. Understanding these gates prevents
+Every push runs the automated checks listed below (`ls scripts/quality`). Understanding these gates prevents
 wasted CI cycles. This document explains the gate system, lists all active
 gates, and shows how to add a new one.
 
@@ -140,15 +140,17 @@ done
 
 ---
 
-## Top 5 Baselines by Line Count
+## Largest Baselines
+
+Current sizes: `wc -l scripts/quality/baselines/*.txt | sort -rn | head`.
 
 | Baseline file | Lines | Meaning |
 |---|---|---|
-| `em_writes_in_controller.txt` | 470 | 470 known controller flush calls (brownfield; do not add more) |
-| `translation_nesting.txt` | 375 | 375 deeply nested YAML keys to flatten over time |
-| `flash_domain.txt` | 129 | 129 flash calls without explicit domain (migrate as you touch files) |
-| `notblank_on_not_null.txt` | 87 | 87 NOT NULL columns without Assert\NotBlank (add when you edit the entity) |
-| `auto_form_field_whitelist.txt` | 65 | 65 whitelisted `_auto_form` fields (add new fields after review) |
+| `em_writes_in_controller.txt` | many | Known controller flush calls (brownfield; do not add more) |
+| `translation_nesting.txt` | many | Deeply nested YAML keys to flatten over time |
+| `flash_domain.txt` | many | Flash calls without explicit domain (migrate as you touch files) |
+| `notblank_on_not_null.txt` | many | NOT NULL columns without Assert\NotBlank (add when you edit the entity) |
+| `auto_form_field_whitelist.txt` | many | Whitelisted `_auto_form` fields (add new fields after review) |
 
 ---
 

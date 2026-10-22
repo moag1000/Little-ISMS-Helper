@@ -196,9 +196,9 @@ dashboards.
 ### Reference data (required for normal operation)
 
 ```bash
-php bin/console isms:load-annex-a-controls          # 93 ISO 27001 Annex A controls
+php bin/console isms:load-annex-a-controls          # ISO 27001 Annex A controls
 php bin/console app:load-bsi-grundschutz-variants   # BSI module variants
-php bin/console app:generate-regulatory-workflows   # 15 regulatory workflow definitions
+php bin/console app:generate-regulatory-workflows   # regulatory workflow definitions
 ```
 
 ---

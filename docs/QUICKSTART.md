@@ -55,7 +55,7 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-Migrations dauern beim ersten Lauf 30–60 Sekunden (78 Entities, 200+ Migrations).
+Migrations dauern beim ersten Lauf 30–60 Sekunden (many entities and migrations).
 
 ---
 
