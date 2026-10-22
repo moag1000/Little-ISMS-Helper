@@ -66,7 +66,7 @@
                          level_medium: 'incident.severity.medium'|trans({}, 'incident'),
                          level_low: 'incident.severity.low'|trans({}, 'incident')
                      }|json_encode }}">
-                    {# P-19 — Form-Step-Inline-Hint controller. Asks the
+                    {# Form-Step-Inline-Hint controller. Asks the
                        AlvaHintFormEvaluator (server-side) which inline hints
                        apply to the live payload (debounced) and renders
                        them next to the matching form fields. See
@@ -136,7 +136,7 @@
                     </div>
 
                     {# Detection & Reporting Section #}
-                    {# S4 P-1 Wave-2 — reportedBy slot now rendered via the canonical
+                    {# ReportedBy slot now rendered via the canonical
                        _fa_owner_picker macro (User + Person + Deputies + legacy text).
                        Macro re-import here is required because we are inside an
                        {% embed %} block — file-scope imports do NOT carry across

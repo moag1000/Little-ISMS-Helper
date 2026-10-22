@@ -6,8 +6,7 @@
 {% block title %}{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }} - {{ 'workflow.title.instance_show'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-{# Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH):
-   Business-Summary-Block oben, Step-Namen humanisiert, Frist als Badge,
+{# Business-Summary-Block oben, Step-Namen humanisiert, Frist als Badge,
    "Rückfrage stellen"-Aktion ohne Workflow-Blockade. #}
 {% set deadline_dt = instance.dueDate %}
 {% set hours_remaining = deadline_dt ? ((deadline_dt.timestamp - "now"|date('U')) / 3600)|round(0, 'floor') : null %}
@@ -170,7 +169,7 @@
 {% endembed %}
 {% endif %}
 
-{# Workflow Steps — Aurora ISMS-Pattern: isms-approval-stages (V3 C7, V3 W2-M4 macro) #}
+{# Workflow Steps — Aurora ISMS-Pattern: isms-approval-stages #}
 {% if instance.workflow and instance.workflow.steps|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_header %}

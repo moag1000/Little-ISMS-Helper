@@ -2,7 +2,7 @@ import { faT } from '../js/fa-i18n.js';
 import { Controller } from '@hotwired/stimulus'
 
 /**
- * S18 B2 — Asset Sub-Type dependent dropdown.
+ * Asset Sub-Type dependent dropdown.
  *
  * Wires the Top-Level Asset-Type <select> to the Sub-Type <select>:
  *

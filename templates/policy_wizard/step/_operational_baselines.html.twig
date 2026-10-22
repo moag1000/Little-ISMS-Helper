@@ -58,7 +58,7 @@
 {% set working_modes_default = defaults.working_modes|default(['office', 'hybrid']) %}
 {% set cloud_mix_default = defaults.cloud_onprem_mix_pct|default(50) %}
 
-{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{# Beginner-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
     icon: 'nav-mortarboard',
@@ -343,7 +343,7 @@
 
 {# ── DORA block (DORA only) ──────────────────────────────────────── #}
 {% if dora_in_scope %}
-    {# Junior-ISB hint: surface a "DORA-not-applicable" notice when the
+    {# Beginner hint: surface a "DORA-not-applicable" notice when the
        tenant picked a non-financial industry-preset bundle but DORA is
        still in their Step-1 standards-mix. The hint is silenced once
        the user picks an entity_type (signals "yes, DORA does apply"). #}

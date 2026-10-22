@@ -233,7 +233,7 @@ modules:
     dependencies:
       - controls
 
-  # NOTE: `quantitative_risk` (FAIR/CRQ) previously declared here was orphan.
+  # NOTE: `quantitative_risk` (FAIR/CRQ) is not a module (orphan).
   # Risk entity has nullable FAIR columns (lossEventFrequency*, threatEventFrequency*)
   # but no form/UI exposes them yet. Re-add the module-key once RiskType
   # gates the FAIR field-group via ModuleAwareFormTrait.
@@ -282,14 +282,13 @@ modules:
     dependencies:
       - core
 
-  # NOTE: tisax_isa / ai_act / cra_sbom / procedures previously declared here
-  # were vaporware (entities not implemented). Removed 2026-05-25 — see
-  # commit log + docs/MODULE_GATING_GUIDE.md. Re-add once entities + routes
-  # actually exist.
+  # NOTE: tisax_isa / ai_act / cra_sbom / procedures are intentionally not
+  # declared (entities not implemented) — see docs/MODULE_GATING_GUIDE.md.
+  # Add them once entities + routes exist.
 
   # ─── Operational Modules (2026-05-10 inventory) ─────────────────────────────
-  # Added after full controller/entity audit: 14 controllers with live routes
-  # had no corresponding config/modules.yaml entry → invisible on /admin/modules.
+  # Every controller with live routes needs a config/modules.yaml entry,
+  # otherwise it is invisible on /admin/modules.
 
   documents:
     name: 'Dokumente & Policies'
@@ -402,7 +401,7 @@ modules:
     dependencies:
       - audits
 
-  # NOTE: `evidence` previously declared here was vaporware (entities: []).
+  # NOTE: `evidence` is intentionally not a module (no dedicated entity).
   # File-upload + Audit-Trail today lives in documents + audit_log
   # (ISO 27001 A.5.36 covered there). Re-add once dedicated Evidence entity
   # exists.
@@ -580,7 +579,7 @@ sample_data:
     required_modules:
       - incidents
 
-  # ────────────── Phase 2: Modul-weite Beispieldaten ──────────────
+  # ────────────── Modul-weite Beispieldaten ──────────────
 
   - name: 'Beispiel-Dokumente'
     description: 'Policies, Prozesse, Anweisungen (ISO 27001 A.5.1)'

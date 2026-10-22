@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Mapping-Wizard Client-Filter (Sprint 4 / M1).
+ * Mapping-Wizard Client-Filter.
  *
  * Serverseitig kommt `requirements_by_framework` als JSON in einem
  * `data-value` — der Controller filtert die Requirement-Dropdowns

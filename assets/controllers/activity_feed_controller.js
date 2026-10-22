@@ -6,7 +6,7 @@ import { Controller } from '@hotwired/stimulus';
  * Currently purely presentational (CSS-driven). The Stimulus hook exists for
  * future "load more" infinite-scroll / live-update via Turbo Streams.
  *
- * @todo H-12 — wire pagination / live updates.
+ * @todo wire pagination / live updates.
  */
 export default class extends Controller {
     connect() {

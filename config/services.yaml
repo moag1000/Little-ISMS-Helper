@@ -7,7 +7,7 @@ parameters:
     tisax.delta.pre_fill_target: '%env(int:TISAX_PRE_FILL_TARGET)%'
     # Env-configured Azure OAuth/SAML: link an existing account by e-mail when
     # its object id is unknown (AZURE_ALLOW_EMAIL_LINKING). Default true for
-    # existing single-tenant setups; privileged accounts are never linked (#1059).
+    # existing single-tenant setups; privileged accounts are never linked.
     app.azure_allow_email_linking_default: true
     # Application Configuration Parameters
     # Following Symfony Best Practice: Use 'app.' prefix for application parameters
@@ -23,7 +23,7 @@ parameters:
     # (single source of truth, ISO 27001 Cl. 6.1.2 b). Do not re-introduce
     # parameters here — change the constants in that class instead.
 
-    # Audit Log Retention ist seit Phase 8L in SystemSettings (category=audit,
+    # Audit Log Retention liegt in SystemSettings (category=audit,
     # key=retention_days). Default 730 Tage (ISO 27001 Clause 9.1), Min 365
     # (NIS2 Art. 21.2). Editierbar unter /admin/audit-log/retention.
 
@@ -42,7 +42,7 @@ parameters:
     app.compliance.review.min_comment_length: 20
     app.compliance.review.min_override_reason_length: 20
 
-    # F39 — ENISA EU Vulnerability Database (EUVD) feed endpoint. Overridable via
+    # ENISA EU Vulnerability Database (EUVD) feed endpoint. Overridable via
     # env if ENISA relocates the public API.
     app.euvd.base_url: '%env(default:default_euvd_base_url:EUVD_BASE_URL)%'
     default_euvd_base_url: 'https://euvdservices.enisa.europa.eu/api'
@@ -105,7 +105,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-            # W3-D — PolicyTopicPresentCheck is parameterised; the 24
+            # PolicyTopicPresentCheck is parameterised; the 24
             # tenant-scoped instances are wired explicitly below.
             - '../src/Service/ComplianceWizard/Check/PolicyWizard/PolicyTopicPresentCheck.php'
             # Schema-driven import value objects + the per-schema mapper are not
@@ -152,7 +152,7 @@ services:
     # AlvaHintRuleInterface auto-registers and lands in AlvaHintService.
     # Policy-Wizard step evaluators — same auto-tagging pattern, every
     # StepInterface implementation lands in StepEvaluator.
-    # W3-D — Compliance-Wizard check-types covering Policy-Wizard outputs
+    # Compliance-Wizard check-types covering Policy-Wizard outputs
     # auto-register via PolicyWizardCheckInterface (collected by
     # PolicyWizardCheckRegistry).
     _instanceof:
@@ -160,7 +160,7 @@ services:
             tags: ['alva.hint_rule']
         App\AlvaHint\GlobalAlvaHintRuleInterface:
             tags: ['alva.global_hint_rule']
-        # P-19 — Form-Step-Inline-Hint rules auto-register via interface tag.
+        # Form-Step-Inline-Hint rules auto-register via interface tag.
         App\AlvaHint\AlvaHintFormRuleInterface:
             tags: ['alva.form_hint_rule']
         App\Service\PolicyWizard\Step\StepInterface:
@@ -169,10 +169,10 @@ services:
             tags: ['policy_wizard.mode_handler']
         App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface:
             tags: ['policy_wizard.compliance_check']
-        # F40 — Audit-Workbook generators auto-register via interface tag.
+        # Audit-Workbook generators auto-register via interface tag.
         App\Service\Audit\Generator\AuditWorkbookGeneratorInterface:
             tags: ['app.audit.workbook_generator']
-        # P-14 (S5) — SystemTemplate providers auto-register via interface tag.
+        # SystemTemplate providers auto-register via interface tag.
         App\Template\TemplateProviderInterface:
             tags: ['system_template.provider']
         # Async admin jobs — all AsyncJobInterface implementations auto-register
@@ -180,7 +180,7 @@ services:
         # can resolve them.
         App\Job\AsyncJobInterface:
             tags: ['app.async_job']
-        # F2.3: Bulk-Import mappers auto-register so EntityMapperRegistry's
+        # Bulk-Import mappers auto-register so EntityMapperRegistry's
         # !tagged_iterator app.import.mapper collects all implementations.
         App\Service\Import\Mapper\EntityMapperInterface:
             tags: ['app.import.mapper']
@@ -227,12 +227,12 @@ services:
         arguments:
             $strategy: '%app.async_job.runner%'
 
-    # F40 — Audit-Workbook orchestrator: receives all tagged generators.
+    # Audit-Workbook orchestrator: receives all tagged generators.
     App\Service\Audit\AuditWorkbookGenerator:
         arguments:
             $generators: !tagged_iterator app.audit.workbook_generator
 
-    # P-14 (S5) — SystemTemplate registry: collects every TemplateProviderInterface
+    # SystemTemplate registry: collects every TemplateProviderInterface
     # implementation tagged via _instanceof above. Foundation for the
     # "create from template" empty-state CTA + `app:seed-templates` command.
     App\Template\SystemTemplateRegistry:
@@ -244,20 +244,20 @@ services:
             $rules: !tagged_iterator alva.hint_rule
             $globalRules: !tagged_iterator alva.global_hint_rule
 
-    # P-19 — Form-Step-Inline-Hint evaluator: collects every
+    # Form-Step-Inline-Hint evaluator: collects every
     # AlvaHintFormRuleInterface implementation tagged via _instanceof
     # above so the API endpoint can fan out per form-edit AJAX call.
     App\Service\AlvaHint\AlvaHintFormEvaluator:
         arguments:
             $rules: !tagged_iterator alva.form_hint_rule
 
-    # Policy-Wizard W2 — collect every StepInterface implementation
+    # Policy-Wizard — collect every StepInterface implementation
     # into the StepEvaluator's $steps argument.
     App\Service\PolicyWizard\StepEvaluator:
         arguments:
             $steps: !tagged_iterator policy_wizard.step
 
-    # Policy-Wizard W2-C — collect every ModeHandlerInterface impl
+    # Policy-Wizard — collect every ModeHandlerInterface impl
     # (sandbox / targeted) into the ModeRegistry's $handlers argument.
     # Full mode has no handler — registry returns null for it.
     App\Service\PolicyWizard\Mode\ModeRegistry:
@@ -265,19 +265,19 @@ services:
             $handlers: !tagged_iterator policy_wizard.mode_handler
 
     # Policy-Wizard — bind DocumentGeneratorInterface to the real
-    # generator (W3). The W2 stub stays available for unit-test
+    # generator. The stub stays available for unit-test
     # injection via direct instantiation (`new DocumentGeneratorStub()`).
     App\Service\PolicyWizard\DocumentGeneratorInterface:
         alias: App\Service\PolicyWizard\DocumentGenerator
 
-    # Policy-Wizard W3-D — Compliance-Wizard check-type registry.
+    # Policy-Wizard — Compliance-Wizard check-type registry.
     # Auto-collects every PolicyWizardCheckInterface implementation via
     # the `policy_wizard.compliance_check` tag (see _instanceof block).
     App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry:
         arguments:
             $checks: !tagged_iterator policy_wizard.compliance_check
 
-    # Policy-Wizard W3-D — one PolicyTopicPresentCheck instance per ISO 27002
+    # Policy-Wizard — one PolicyTopicPresentCheck instance per ISO 27002
     # topic from PolicyWizardTopicCatalogue::ISO27001_TOPICS. Listing 24
     # explicit aliases (rather than a generic factory) keeps the service
     # graph statically inspectable for `lint:container` and lets autoconfig
@@ -404,15 +404,15 @@ services:
         arguments:
             $inheritanceEnabled: '%app.compliance.mapping_inheritance.enabled%'
 
-    # ── Compliance-Certificate OCR (Task 12) — capability seam ───────────────
+    # ── Compliance-Certificate OCR — capability seam ───────────────
     # Production binds the availability verdict to the real detector; the test
     # env overrides this alias with a hermetic stub (config/packages/test).
     App\Service\Certificate\OcrCapabilityInterface:
         alias: App\Service\Certificate\OcrCapabilityDetector
 
-    # Policy-Wizard W1-C — generic tenant-setting resolver. SettingProviderInterface
-    # is satisfied by SystemSettingsBackedProvider until W1-A's TenantPolicySetting
-    # repository lands; ChangeAttemptLoggerInterface defaults to a null logger
+    # Policy-Wizard — generic tenant-setting resolver. SettingProviderInterface
+    # is satisfied by SystemSettingsBackedProvider until a TenantPolicySetting
+    # repository exists; ChangeAttemptLoggerInterface defaults to a null logger
     # for the same reason.
     App\Service\TenantSettingResolver\SettingProviderInterface:
         alias: App\Service\TenantSettingResolver\SystemSettingsBackedProvider
@@ -437,7 +437,7 @@ services:
         arguments:
             $hmacSecret: '%app.audit_log_hmac_key%'
 
-    # Junior-ISB-Audit-2026-05-22 9.5: File-Upload for Training.materialFiles
+    # File-Upload for Training.materialFiles
     # lands under public/uploads/training-materials/. Nullable optional param
     # kept for unit-test defensive null-guard — do not convert to #[Autowire].
     App\Controller\TrainingController:
@@ -479,7 +479,7 @@ services:
     # Aliases for Rector-renamed parameters (SecurityController login limiter)
     Symfony\Component\RateLimiter\RateLimiterFactory $rateLimiterFactory: '@limiter.login'
 
-    # ── F2.3: Bulk-Import Mapper Registry ────────────────────────────────────
+    # ── Bulk-Import Mapper Registry ────────────────────────────────────
     # Mappers auto-register via the _instanceof rule for EntityMapperInterface
     # above. No explicit per-mapper entries needed.
 
@@ -492,7 +492,7 @@ services:
             $mappers: !tagged_iterator app.import.mapper
             $schemaRegistry: '@App\Service\Import\Schema\ImportSchemaRegistry'
 
-    # ── F2.5: Bulk-Import Orchestrator ───────────────────────────────────────
+    # ── Bulk-Import Orchestrator ───────────────────────────────────────
     App\Service\Import\BulkImportOrchestrator:
         arguments:
             $uploadDir: '%kernel.project_dir%/var/import-uploads'
@@ -510,7 +510,7 @@ services:
         arguments:
             $ipRetentionDays: '%app.tisax.ip_retention_days%'
 
-    # ── Lifecycle Foundation (Task 13) — interface aliases ───────────────────
+    # ── Lifecycle Foundation — interface aliases ───────────────────
     App\Lifecycle\Config\LifecycleConfigResolverInterface:
         alias: App\Lifecycle\Config\LifecycleConfigResolver
 

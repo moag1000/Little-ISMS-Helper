@@ -38,7 +38,7 @@
         {% block alert_body %}<div> <strong>{{ 'loader_fixer.hint.heading'|trans({}, 'loader_fixer') }}</strong> <div class="small">{{ 'loader_fixer.hint.body'|trans({}, 'loader_fixer') }}</div> </div>{% endblock %}
     {% endembed %}
 
-    {# V3 W3-UX: migrated to fa-table Aurora pattern #}
+    {# Migrated to fa-table Aurora pattern #}
     {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
         {% block table_head %}
             <tr>

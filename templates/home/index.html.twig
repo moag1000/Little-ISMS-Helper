@@ -4,7 +4,7 @@
 {% block title %}{{ 'home.welcome'|trans({}, 'messages')}} - {{ 'app.title'|trans({}, 'messages')}}{% endblock %}
 
 {% block body %}
-{# Hero Section — V3 W2-M9: Aurora _fa_hero macro replaces Bootstrap hero-section #}
+{# Hero Section — Aurora _fa_hero macro replaces Bootstrap hero-section #}
 {% import '_components/_fa_hero.html.twig' as _fa_hero %}
 <main class="fa-aurora-surface">
     <div class="container my-4">
@@ -21,7 +21,7 @@
             alvaSize: 160
         }) }}
 
-        {# KPI tiles — formerly inline hero-stat blocks #}
+        {# KPI tiles #}
         <div class="row g-3 mt-3">
             {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
             <div class="col-md-4">

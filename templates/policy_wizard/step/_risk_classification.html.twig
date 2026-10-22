@@ -19,7 +19,7 @@
 {% set annex_default = defaults.annex_a_applicability|default({}) %}
 {% set bsi_in_scope = 'bsi' in standards %}
 
-{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{# Beginner-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
     icon: 'nav-mortarboard',
@@ -131,7 +131,7 @@
     </div>
 </div>
 
-{# ── Junior-ISB inline help: "Wann ist ein Annex-A-Control NICHT applicable?".
+{# ── Beginner inline help: "Wann ist ein Annex-A-Control NICHT applicable?".
    Compact help-card with the 4 typical exclusion reasons + the default note.
    Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
@@ -250,7 +250,7 @@
                     {% for ctrl in group.controls %}
                         {# Default is "applicable" — only when explicitly false do we render not_applicable. #}
                         {% set is_applicable = annex_default[ctrl] is defined ? annex_default[ctrl] : true %}
-                        {# Per-row Annex-A control title + description (Junior-ISB hand-holding).
+                        {# Per-row Annex-A control title + description (beginner hand-holding).
                          # Lookup keys:
                          #   policy_wizard.step.risk_classification.annex_a.control_title.<A.X.Y>
                          #   policy_wizard.step.risk_classification.annex_a.control_desc.<A.X.Y>

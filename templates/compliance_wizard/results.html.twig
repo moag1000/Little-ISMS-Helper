@@ -35,7 +35,7 @@
 {% endif %}
 
 
-    {# V3 B5 / EF-2: Snapshot CTA #}
+    {# Snapshot CTA #}
     <div class="d-flex justify-content-end mb-3">
         <form method="post" action="{{ path('app_compliance_wizard_snapshot', {wizard: wizard}) }}" class="d-inline">
             <input type="hidden" name="_token" value="{{ csrf_token('wizard_snapshot_' ~ wizard) }}">

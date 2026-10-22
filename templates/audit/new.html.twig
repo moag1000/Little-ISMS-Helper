@@ -34,7 +34,7 @@
 
             {# C5-05 — Audit-Program Templates (ISO 19011 Cl. 5.4). Lets junior
                implementers start from a standard ISO27001 / GDPR / BCM audit
-               instead of a blank form. Uses the P-14 SystemTemplateRegistry. #}
+               instead of a blank form. Uses the SystemTemplateRegistry. #}
             {% set _audit_program_templates = system_templates('App\\Entity\\InternalAudit') %}
             {% if _audit_program_templates|length > 0 %}
                 <div class="fa-template-cta my-3 p-3 border rounded bg-body-tertiary d-flex flex-wrap align-items-center gap-3">

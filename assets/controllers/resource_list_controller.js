@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
 
 /**
- * resource-list — P-9 JsonBuilder for BCPlan.requiredResources (ISO 22301 §8.1).
+ * resource-list — JsonBuilder for BCPlan.requiredResources (ISO 22301 §8.1).
  *
  * Three-tab chip builder: personnel / equipment / supplies. Serialises into:
  *   {"personnel": [...], "equipment": [...], "supplies": [...]}

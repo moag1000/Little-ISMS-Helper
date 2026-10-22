@@ -1,4 +1,4 @@
-{# Policy-Wizard W7-A — single-document PDF render.
+{# Policy-Wizard — single-document PDF render.
    Adopts the design-system `policy-doc` 5-slot template via the
    `_fa_policy_doc` macro (templates/_components/_fa_policy_doc.html.twig +
    assets/styles/policy-doc.css). The CSS is inlined below so dompdf can
@@ -286,7 +286,7 @@
         <div class="pdf-branding-pre">{{ header_html|raw }}</div>
     {% endif %}
 
-    {# Compose the policy-doc cover context from the W7-A `cover` payload. #}
+    {# Compose the policy-doc cover context from the `cover` payload. #}
     {% set _doc_cover = {
         title:               cover.title|default(document.originalFilename),
         kicker:              (cover.standard ? (cover.standard|upper ~ (cover.topic ? ' · ' ~ cover.topic|replace({'_': ' '}) : '')) : 'ISMS-Policy'),

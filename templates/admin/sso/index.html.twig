@@ -20,7 +20,7 @@
         ]
     }) }}
 
-    {# #1059: SSO-enforced accounts that keep the password login (anti-lockout). #}
+    {# SSO-enforced accounts that keep the password login (anti-lockout). #}
     {% if enforcement_exempt|default([]) is not empty %}
         {% from '_components/_fa_alert.html.twig' import render as fa_alert %}
         {% set exempt_names = enforcement_exempt|slice(0, 20)|map(u => u.email)|join(', ') %}
@@ -42,7 +42,7 @@
             ]
         }) }}
     {% else %}
-        {# V3 W3-UX: migrated to fa-table Aurora pattern #}
+        {# Migrated to fa-table Aurora pattern #}
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% block table_head %}
                 {% trans_default_domain 'sso' %}

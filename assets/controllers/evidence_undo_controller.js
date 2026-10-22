@@ -1,5 +1,5 @@
 /**
- * F4 Evidence-Versioning — 5-second undo toast controller.
+ * Evidence-Versioning — 5-second undo toast controller.
  *
  * Counts down from `windowValue` seconds. When the countdown reaches 0 the
  * toast is hidden and the undo window has passed. If the user clicks "Cancel"

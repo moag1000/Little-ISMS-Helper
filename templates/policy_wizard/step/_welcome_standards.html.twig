@@ -13,7 +13,7 @@
     )
 ) %}
 
-{# Junior-ISB-friendly help-card. Plain-language framing of the step
+{# Beginner-friendly help-card. Plain-language framing of the step
  # so first-time users understand what they pick here and why.
  # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
@@ -31,7 +31,7 @@
             <strong>DORA:</strong> {{ 'policy_wizard.step.welcome.help.dora_replaces_vait'|trans }}
         </p>
 
-        {# Junior-ISB Wish #1 — per-standard 1-Satz-Erklärung. Jr-ISB
+        {# Per-standard 1-Satz-Erklärung. Jr-ISB
          # may not know "PIMS" → spell it out (Privacy Information
          # Management System) and frame ISO 27701 as the privacy-layer
          # extension to ISO 27001. Same pattern for every standard. #}
@@ -51,7 +51,7 @@
     {% endblock %}
 {% endembed %}
 
-{# Junior-ISB Wish #2 — NIS-2 / DORA lex specialis banner. Surfaced
+{# NIS-2 / DORA lex specialis banner. Surfaced
  # only when DORA is in the picked-standards set. Reassures the
  # implementer that NIS-2 Art. 21 + Art. 23 are covered by DORA via
  # DORA Art. 1(2) + NIS-2 Erwägungsgrund 16. The downstream

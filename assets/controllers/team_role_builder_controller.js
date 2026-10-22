@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * team-role-builder — P-9 JsonBuilder visual repeater for
+ * team-role-builder — JsonBuilder visual repeater for
  * BCPlan.responseTeamMembers (ISO 22301 §8.5.3).
  *
  * Data contract (matches BCPlan entity JSON):

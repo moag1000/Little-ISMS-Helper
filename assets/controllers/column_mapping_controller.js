@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * ColumnMapping Controller — Bulk-Import Wizard Step 2 (F2.9)
+ * ColumnMapping Controller — Bulk-Import Wizard Step 2
  *
  * Manages confidence badge coloring for column mapping dropdowns.
  * When the user overrides an auto-mapping, the confidence badge dims to

@@ -1,8 +1,8 @@
 /**
- * Wave 5 — Density Toggle Controller
+ * Density Toggle Controller
  * Manages sidebar density: basic | standard | expert
  *
- * Wave 5 interface (sb-density radiogroup in _mega_menu.html.twig):
+ * Interface (sb-density radiogroup in _mega_menu.html.twig):
  *   data-density-toggle-target="option"  — each radio button
  *   data-action="click->density-toggle#set"
  *   data-density="basic|standard|expert"
@@ -28,10 +28,10 @@ export default class extends Controller {
         this._apply(saved, false);
     }
 
-    // ── Wave 5 action (click->density-toggle#set) ──────────────────────────
+    // ── Action (click->density-toggle#set) ──────────────────────────
 
     /**
-     * Wave 5 sb-density radiogroup click handler.
+     * sb-density radiogroup click handler.
      * @param {Event} event
      */
     set(event) {
@@ -76,7 +76,7 @@ export default class extends Controller {
 
         document.body.dataset.density = density;
 
-        // Wave 5 targets (sb-density__opt buttons)
+        // Targets (sb-density__opt buttons)
         if (this.hasOptionTarget) {
             this.optionTargets.forEach(opt => {
                 const active = opt.dataset.density === density;

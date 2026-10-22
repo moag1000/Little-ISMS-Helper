@@ -27,7 +27,7 @@
 <div class="mt-4">
     <h2>{{ 'entity_history.section'|trans({}, 'messages') }}</h2>
 
-    {# Aurora fa-audit-feed (CRUD change-log per #480 canonical pattern) #}
+    {# Aurora fa-audit-feed (CRUD change-log) #}
     <div class="fa-audit-feed mt-4">
         {% for log in auditLogs %}
             {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'

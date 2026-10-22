@@ -34,7 +34,7 @@
         actions: _show_actions
     }) }}
 
-    {# Sprint-2 P-7 — DSGVO Art. 33 72h-deadline counter surfaced prominently — M-4 gated by privacy module #}
+    {# DSGVO Art. 33 72h-deadline counter surfaced prominently — M-4 gated by privacy module #}
     {% if is_module_active('privacy') and incident.dataBreachOccurred and incident.detectedAt %}
         {% set sla72h = incident.detectedAt|date_modify('+72 hours') %}
         <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
@@ -155,7 +155,7 @@
         </div>
     {% endif %}
 
-    {# Data-Reuse: Entity Link Matrix (Junior-Finding #8 / CM-Blocker) #}
+    {# Data-Reuse: Entity Link Matrix #}
     {% include '_components/_entity_link_matrix.html.twig' with {
         source_type: 'incident',
         entity: incident,
@@ -179,7 +179,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {# Phase 8H.1: standardised via _detail_group component #}
+            {# Standardised via _detail_group component #}
             {% set incidentItems = [
                 { label: 'incident.field.category'|trans({}, 'incident'), value: incident.category|upper|replace({'_': ' '}) },
                 { label: 'incident.field.detected'|trans({}, 'incident'), value: incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' },
@@ -369,7 +369,7 @@
                 </div>
             {% endif %}
 
-            {# Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation —
+            {# Doppelpflege-Deprecation —
                render freetext affectedSystems read-only as "Legacy" alert
                ONLY when non-empty. Hidden for all new incidents (use the
                structured "Affected Assets" section below instead). #}
@@ -391,7 +391,7 @@
                 </div>
             {% endif %}
 
-            {# Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — structured CAPA card (preferred display). #}
+            {# Structured CAPA card (preferred display). #}
             {% if linkedCorrectiveActions is defined and linkedCorrectiveActions|length > 0 %}
                 <div class="detail-section">
                     <h3 class="h5">{{ 'incident.section.linked_corrective_actions'|trans({}, 'incident') }}</h3>
@@ -409,7 +409,7 @@
                 </div>
             {% endif %}
 
-            {# Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — freetext shown only as legacy alert (ADR 2026-05-23). #}
+            {# Freetext shown only as legacy alert (ADR 2026-05-23). #}
             {% if incident.correctiveActions %}
                 <div class="detail-section">
                     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', title: 'incident.section.corrective_actions_legacy'|trans({}, 'incident') } } %}
@@ -469,7 +469,7 @@
                                 <strong>{{ asset.name }}</strong>
                                 {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
                                 <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
-                                {# Junior-ISB-Audit S14+ #15: legacy monetaryValue column dropped — currentValue is canonical. Pre-migration rows were backfilled in Version20260612100000_DropAssetMonetaryValue. #}
+                                {# Legacy monetaryValue column dropped — currentValue is canonical. Pre-migration rows were backfilled in Version20260612100000_DropAssetMonetaryValue. #}
                                 {% set assetVal = asset.currentValue %}
                                 {% if assetVal %}
                                     <small class="text-danger">{{ 'incident.bcm.value'|trans({}, 'incident') }}: €{{ assetVal }}</small>
@@ -587,7 +587,7 @@
                                         {% set riskClass = risk.inherentRiskLevel >= 16 ? 'danger' : (risk.inherentRiskLevel >= 9 ? 'warning' : 'success') %}
                                         {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'incident.reuse.risk_level'|trans({'%level%': risk.inherentRiskLevel}, 'incident') } %}
                                         <small>{{ 'incident.reuse.probability'|trans({'%value%': risk.probability}, 'incident') }}</small>
-                                        {# V3 W2-FV-5 — show audit-trail of last incident-driven reassessment #}
+                                        {# Show audit-trail of last incident-driven reassessment #}
                                         {% if risk.lastIncidentReassessmentAt %}
                                             <small class="text-muted d-block">
                                                 <i class="fa-icon fa-icon--util-clock" aria-hidden="true"></i>
@@ -595,7 +595,7 @@
                                             </small>
                                         {% endif %}
                                     </div>
-                                    {# V3 W2-FV-5 — Update Risk-Assessment button #}
+                                    {# Update Risk-Assessment button #}
                                     <form method="post" action="{{ path('app_incident_risk_reassess', {id: incident.id, riskId: risk.id}) }}" class="m-0">
                                         <input type="hidden" name="_token" value="{{ csrf_token('incident-risk-reassess-' ~ incident.id ~ '-' ~ risk.id) }}">
                                         <button type="submit"
@@ -633,13 +633,13 @@
         {% endblock %}
     {% endembed %}
 
-    {# F16: Incident-Risk cross-links #}
+    {# Incident-Risk cross-links #}
     {% include 'incident/_linked_risks.html.twig' with {
         incident: incident,
         riskIncidentLinks: riskIncidentLinks|default([])
     } only %}
 
-    {# V3 W3-Aurora: Comment-Thread adoption (C7 macro). #}
+    {# Comment-Thread adoption (C7 macro). #}
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'Incident',

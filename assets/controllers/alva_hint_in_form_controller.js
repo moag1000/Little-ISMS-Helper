@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * P-19 — Form-Step-Inline-Hint controller.
+ * Form-Step-Inline-Hint controller.
  *
  * Listens to input/change events on form fields, debounces, and asks
  * /api/alva-hint/form/{entityType} which AlvaFormHints currently apply

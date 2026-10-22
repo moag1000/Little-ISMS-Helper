@@ -2,7 +2,6 @@ import { Controller } from '@hotwired/stimulus';
 
 /**
  * fa-bulk-select — Aurora Multi-Select for fa-table + fa-bulk-action-bar
- * (V3 W3-UX-Bulk)
  *
  * Lightweight selection-tracker: shows the bulk-action-bar when ≥1 row is
  * selected, updates the count, exposes selected ids via `selectedIds()`.

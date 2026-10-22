@@ -9,7 +9,7 @@ import { wireTabResize } from '../js/chart-tab-resize.js';
  * charts build at 0×0; this controller resizes them when their tab is revealed
  * (see js/chart-tab-resize.js).
  *
- * @todo H-12 (remaining) — framework filter + per-framework drilldown need a
+ * @todo framework filter + per-framework drilldown need a
  *       backend params contract first; tracked separately.
  */
 export default class extends Controller {

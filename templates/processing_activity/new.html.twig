@@ -20,7 +20,7 @@
         badge: { icon: 'plus', label: '' }
     }) }}
 
-    {# Foundation P-14 — VVT Template Library (M-05). Lets the DPO start from
+    {# VVT Template Library. Lets the DPO start from
        a curated GDPR Art. 30 starter VVT instead of a blank form. #}
     {% set _system_templates = system_templates('App\\Entity\\ProcessingActivity') %}
     {% if _system_templates|length > 0 %}

@@ -2,7 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
-{# W4-C — Step 0 "Bestandsaufnahme" for brownfield tenants.
+{# Step 0 "Bestandsaufnahme" for brownfield tenants.
 
    MUST-have items (Senior-Consultant pre-pilot review):
      #1 PDF preview drawer (offcanvas, lazy iframe load)
@@ -25,8 +25,8 @@
         body: 'policy_wizard.step.bestandsaufnahme.intro'|trans
     }) }}
 
-    {# Junior-ISB-friendly help-card explaining the 4 actions with concrete examples.
-     # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon for the "Junior-ISB tip" pattern. #}
+    {# Beginner-friendly help-card explaining the 4 actions with concrete examples.
+     # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon for the "beginner tip" pattern. #}
     {% embed '_components/_fa_alert.html.twig' with { props: {
         variant: 'info',
         icon: 'nav-mortarboard',

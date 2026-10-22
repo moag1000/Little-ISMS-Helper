@@ -49,7 +49,7 @@
 
     {% block stylesheets %}
         {# Bootstrap first — Aurora layers after (cascade order).
-           Parallel <link> pattern: no @import barrel = no FOUC (PR #795). #}
+           Parallel <link> pattern: no @import barrel = no FOUC. #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
         {{ include('_aurora_styles.html.twig') }}
         {{ importmap(['app'], {'nonce': csp_nonce()}) }}

@@ -1,4 +1,4 @@
-# Junior-ISB-Audit Phase-2 Lifecycle — Notification-Delivery state-machine.
+# Notification-Delivery state-machine.
 #
 # Notification-Delivery is the hot-path entity that records every fan-out of a
 # NotificationRule to a NotificationChannel. The pipeline is:

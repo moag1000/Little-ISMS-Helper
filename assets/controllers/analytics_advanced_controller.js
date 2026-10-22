@@ -7,7 +7,7 @@ import { Controller } from '@hotwired/stimulus';
  * globally on `window.Chart` from app.js). This controller exists as a
  * connection point for future filter / drilldown wiring.
  *
- * @todo H-12 — wire filter chips + drilldown handlers; until then this
+ * @todo wire filter chips + drilldown handlers; until then this
  *              stub keeps `data-controller="analytics-advanced"` from
  *              breaking the page when Stimulus tries to resolve it.
  */

@@ -151,7 +151,7 @@
 {% endif %}
 {% endif %}
 
-{# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for classification #}
+{# Aurora filter-chip quick row — quick toggles for classification #}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 {% set _activeClass = app.request.query.get('classification') %}
 {% set _baseAssetUrl = path('app_asset_index') %}
@@ -251,7 +251,7 @@
 
 {# Assets Table or Empty State #}
 {% if assets|length == 0 %}
-    {# Foundation P-14 — show "Create from template" CTA if templates exist #}
+    {# Show "Create from template" CTA if templates exist #}
     {% set _system_templates = system_templates('App\\Entity\\Asset') %}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'asset-server',

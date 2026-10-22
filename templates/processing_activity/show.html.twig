@@ -306,7 +306,7 @@
                         </ul>
                     {% endif %}
 
-                    {# V3 W2-Bug3: Linked Assets — drives DPIA auto-suggestion #}
+                    {# Linked Assets — drives DPIA auto-suggestion #}
                     {% if processing_activity.assets|length > 0 %}
                         <h3 class="h6 mt-3">{{ 'processing_activity.show.linked_assets'|trans({}, 'privacy') }}:</h3>
                         <ul>
@@ -405,7 +405,7 @@
         {% endif %}
     </div>
 
-    {# ── F32 DPA-Generator — Art. 28 GDPR AVV action block ───────────────── #}
+    {# ── DPA-Generator — Art. 28 GDPR AVV action block ───────────────── #}
     {% if is_module_active('privacy') and processing_activity.processorSuppliers|length > 0 %}
     <div class="row mb-4">
         <div class="col-12">

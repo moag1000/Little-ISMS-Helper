@@ -40,7 +40,7 @@ security:
                 invalidate_session: true
 
             # Custom authenticators for Azure OAuth, SAML, and generic SSO (OIDC)
-            # plus F6 read-only API Bearer-token auth (activates only when an
+            # plus read-only API Bearer-token auth (activates only when an
             # `Authorization: Bearer` header is present — session/form login
             # and the browsable API are unaffected).
             custom_authenticators:
@@ -78,18 +78,17 @@ security:
     role_hierarchy:
         ROLE_AUDITOR:           ROLE_USER
         ROLE_MANAGER:           [ROLE_USER, ROLE_AUDITOR]
-        # Audit V3 W2-C5 — Persona-Roles for dashboard gating.
-        # Previously the four persona-dashboards (CISO, Risk-Manager, Board,
-        # Compliance-Manager / DPO) were all gated with ROLE_MANAGER, so any
-        # Manager saw every persona view. The roles below model the four
-        # personas explicitly so each dashboard only surfaces to its actual
-        # audience. They all inherit ROLE_MANAGER (operational read+write
+        # Persona-Roles for dashboard gating.
+        # The four persona-dashboards (CISO, Risk-Manager, Board,
+        # Compliance-Manager / DPO) are gated by these roles rather than by
+        # ROLE_MANAGER, so a Manager does not see every persona view. Each
+        # dashboard only surfaces to its actual audience. They all inherit ROLE_MANAGER (operational read+write
         # scope) — admins assign exactly one to each user via the User-Form.
         ROLE_CISO:                  ROLE_MANAGER
         ROLE_RISK_MANAGER:          ROLE_MANAGER
         ROLE_DPO:                   ROLE_MANAGER
         ROLE_COMPLIANCE_MANAGER:    ROLE_MANAGER
-        # Wave 5 / Part 2 — ISB + BCM-Officer persona-roles.
+        # ISB + BCM-Officer persona-roles.
         # ROLE_ISB: Informationssicherheitsbeauftragter (operational security officer).
         #   Primary user of ISMS core, controls, incidents, audits.
         #   Inherits ROLE_MANAGER — full read+write ISMS operational scope.
@@ -100,7 +99,7 @@ security:
         ROLE_BCM_OFFICER:           ROLE_MANAGER
         ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER]
         ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR]
-        # Phase 8M.5 / 9.P1.6 — Holding-Rollen für Konzern-Strukturen.
+        # Holding-Rollen für Konzern-Strukturen.
         #
         # ROLE_GROUP_CISO: Konzern-ISB / Group-CISO.
         #   Lese-quer-Kapazität über alle Tochter-Tenants hinweg (Group-Dashboards,
@@ -114,14 +113,14 @@ security:
         #   alle Subsidiaries prüfen müssen, ohne Schreibrechte zu haben.
         #   Einsatz: Konzerninterne Audits, Regulierungs-Reviews, Portfolio-Berichte.
         ROLE_KONZERN_AUDITOR:   ROLE_AUDITOR
-        # Phase 4-C / Policy-Wizard Sprint W1 — Konzern-BCM-Officer.
-        #   Steuert konzernweite BCM-Standards (W5 BCM-Auto-Create-Flow), kann
+        # Konzern-BCM-Officer.
+        #   Steuert konzernweite BCM-Standards (BCM-Auto-Create-Flow), kann
         #   Konzern-Defaults für Policies setzen (policy_wizard.konzern_defaults)
         #   und BCM-Auto-Create-Vorgaben pflegen. Inherits ROLE_MANAGER, weil
         #   der Group-BCM-Officer auch operativ in Tochter-Tenants Policies
         #   reviewt — auf Manager-Level-Scope, nicht Admin.
         ROLE_GROUP_BCM_OFFICER: ROLE_MANAGER
-        # Phase 4-C / Policy-Wizard Sprint W1 — Function-Owner / Fachbereichsleiter.
+        # Function-Owner / Fachbereichsleiter.
         #   Per-Tenant Business-Function-Head (Risk-Owner P1, W2 wizard Step 3).
         #   Darf für Policies, deren affectedFunctions die eigene Funktion
         #   abdecken, einen Function-Owner-Review zeichnen. Erbt nur ROLE_USER:
@@ -156,7 +155,7 @@ security:
         # access is gated by App\Service\QuickFixGuard inside the controller.
         - { path: ^/quick-fix, roles: PUBLIC_ACCESS }
 
-        # F43 Trust-Center — unauthenticated compliance-posture sharing.
+        # Trust-Center — unauthenticated compliance-posture sharing.
         # Token in URL acts as bearer; controller enforces publicPostureEnabled gate.
         # No locale prefix — /trust/{token} is a stable bearer URL.
         - { path: ^/trust/, roles: PUBLIC_ACCESS }

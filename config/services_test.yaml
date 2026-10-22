@@ -6,7 +6,7 @@
 # that directory is imported BEFORE services.yaml and would be overwritten).
 
 services:
-    # Compliance-Certificate OCR (Task 12): swap the capability verdict for a
+    # Compliance-Certificate OCR: swap the capability verdict for a
     # hermetic stub so functional tests can drive BOTH the OCR-available and the
     # manual-fallback controller branches deterministically — without depending
     # on pdftotext/tesseract being installed on the CI host.

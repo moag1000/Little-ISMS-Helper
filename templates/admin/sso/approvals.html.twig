@@ -22,7 +22,7 @@
             title: 'sso.approvals.empty'|trans,
         }) }}
     {% else %}
-        {# V3 W3-UX: migrated to fa-table Aurora pattern #}
+        {# Migrated to fa-table Aurora pattern #}
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% block table_head %}
                 {% trans_default_domain 'sso' %}

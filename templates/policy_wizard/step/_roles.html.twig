@@ -15,7 +15,7 @@
 {% set function_owner_choices = function_owner_person_choices|default([]) %}
 {% set approver_user_pool = approval_chain_user_choices|default([]) %}
 
-{# Junior-ISB-friendly help-card. Plain-language framing of which
+{# Beginner-friendly help-card. Plain-language framing of which
  # roles are mandatory in which scope.
  # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
@@ -47,7 +47,7 @@
     {% endblock %}
 {% endembed %}
 
-{# W2 Gap-A — Krisen-Team RACI hint card. Senior-Consultant
+{# Krisen-Team RACI hint card. Senior-Consultant
  # "Hand-holding content" Step 3 (07-phase4-sprint-reconciliation.md
  # line 204). Surfaces the default RACI assignment so first-time users
  # don't have to look up BCM-Roles separately. The card is purely
@@ -140,7 +140,7 @@
     <div class="col-12 mt-2">
         <h3 class="h6 mb-2">{{ 'policy_wizard.step.roles.function_owners_label'|trans }}</h3>
         <p class="text-muted small mb-3">{{ 'policy_wizard.step.roles.function_owners_help'|trans }}</p>
-        {# Junior-ISB-friendly explainer card for first-time users:
+        {# Beginner-friendly explainer card for first-time users:
          # what is a Function-Owner, which functions are typical. #}
         {% embed '_components/_fa_alert.html.twig' with { props: {
             variant: 'info',
@@ -196,7 +196,7 @@
             {% endfor %}
         </select>
         <small class="text-muted d-block mt-1">{{ 'policy_wizard.step.roles.field.approval_chain.help'|trans }}</small>
-        {# Task #126 — generic hint that approver-role validation
+        {# Generic hint that approver-role validation
          # happens at section-approval time (per-template badges live
          # in Step 6 Lifecycle). Junior-ISB / Risk-Owner-Business
          # walkthrough showed users expect to see WHY a particular

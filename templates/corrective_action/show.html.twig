@@ -39,7 +39,7 @@
         {{ _lifecycle_actions.dropdown(action, 'corrective-action', 'corrective_action_lifecycle') }}
     </div>
 
-    {# S3 P0-30 — Tier-1 alert when CAPA is verified_ineffective and no Folge-CAPA yet.
+    {# Tier-1 alert when CAPA is verified_ineffective and no Folge-CAPA yet.
        AlvaHintService would also surface this via the Show-template, but a hard
        inline alert covers the path where the hint card is dismissed or absent. #}
     {% if action.verifiedIneffective %}
@@ -53,7 +53,7 @@
         }) }}
     {% endif %}
 
-    {# S3 P0-30 — Audit-Trail link to the unwirksame Vorgänger-CAPA. #}
+    {# Audit-Trail link to the unwirksame Vorgänger-CAPA. #}
     {% if action.previousCapa %}
         <p class="text-muted small mb-3">
             <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
@@ -90,7 +90,7 @@
         {% endblock %}
     {% endembed %}
 
-    {# S3 P0-32 — Verification details (only when verified_*). #}
+    {# Verification details (only when verified_*). #}
     {% if action.status in ['verified_effective', 'verified_ineffective'] %}
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
             {% block card_header %}

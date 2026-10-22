@@ -24,7 +24,7 @@
 
 <main class="fa-aurora-surface">
 
-{# V3 W2-L3 — flash banners via Aurora alert macro (variant-mapped). #}
+{# Flash banners via Aurora alert macro (variant-mapped). #}
 {% set _flash_variant_map = { 'success': 'success', 'error': 'danger', 'danger': 'danger', 'warning': 'warning', 'info': 'info', 'notice': 'info' } %}
 {% for label, msgs in app.flashes %}
     {% for msg in msgs %}

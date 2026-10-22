@@ -163,7 +163,7 @@
                 {{ 'cert_bundle.preflight.action.fix'|trans }}
             </a>
         {% else %}
-            {# Green path: dispatch async bundle export (Phase 3 async-jobs rollout) #}
+            {# Green path: dispatch async bundle export  #}
             <form method="post" action="{{ path('app_certification_bundle_export_dispatch') }}" data-turbo="false">
                 <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export_dispatch') }}">
                 <input type="hidden" name="framework" value="{{ selected_framework_code|default('ISO27001') }}">

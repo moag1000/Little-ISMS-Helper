@@ -143,7 +143,7 @@
     {% set wrapperClasses = wrapperClasses|merge(wrapperClass is iterable ? wrapperClass : wrapperClass|split(' ')) %}
 {% endif %}
 
-{# row-click → show as default since 2026-05-26 — same UX as fa-table (#722).
+{# row-click → show as default since 2026-05-26 — same UX as fa-table.
    Opt out by passing rowClick=false to the embed call. #}
 {% set legacyRowClick = rowClick is defined ? rowClick : true %}
 {% set hasWrapper = wrapperClasses|length > 0 or legacyRowClick %}

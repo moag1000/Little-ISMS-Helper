@@ -23,7 +23,7 @@
                 {% endblock %}
                 {% block card_body %}
                     {{ form_start(form) }}
-                        {# H-03: strict_whitelist is CRITICAL here — the profile
+                        {# Strict_whitelist is CRITICAL here — the profile
                            controller passes is_profile_edit=true, but the
                            catch-all would still render any field the FormType
                            accidentally added (e.g. roles, tenant, isActive),

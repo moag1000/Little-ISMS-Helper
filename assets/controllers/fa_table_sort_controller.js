@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * fa-table-sort — Client-side column sorting for fa-table (V3 W3-UX-Table)
+ * fa-table-sort — Client-side column sorting for fa-table
  *
  * Pairs with the `fa-table` Aurora-table macro. Click (or Enter/Space) on a
  * `.fa-table__th--sortable` header sorts the rows in <tbody> by the column's

@@ -16,14 +16,14 @@
         ]
     } only %}
 
-    {# V3 W2-H1: migrate hand-rolled <h1 class="h2"> to fa-page-header. #}
+    {# Migrate hand-rolled <h1 class="h2"> to fa-page-header. #}
     {{ _fa_page_header.render({
         badge: { icon: 'download', label: 'ISO 27001' },
         title: 'certification_bundle.title'|trans({}, 'certification_bundle'),
         subtitle: 'certification_bundle.subtitle'|trans({}, 'certification_bundle')
     }) }}
 
-    {# Tenant & Framework Info — Audit-V3 EF-3 + task #122: multi-framework
+    {# Tenant & Framework Info — multi-framework
        bundle. Single-framework dropdown stays for back-compat (default
        ISO27001) AND a checkbox-list lets compliance-managers compose a
        composite bundle (e.g. ISO27001 + DORA + NIS2) so subsequent audits
@@ -65,7 +65,7 @@
                         <div>ISO/IEC 27001:2022</div>
                     {% endif %}
 
-                    {# V3 W2-H1: Multi-framework composite bundle (task #122).
+                    {# Multi-framework composite bundle.
                        Checked codes are POST'd as `frameworks[]` and each
                        contributes a 02_FRAMEWORK_MAPPING/<code>_coverage.csv.
                        Dropdown always-visible (was hidden in <details>). #}
@@ -106,7 +106,7 @@
         }) }}
     {% endif %}
 
-    {# V3 W2-H1: 6× legacy variant:'kpi' replaced by Aurora fa-feature-card. #}
+    {# 6× legacy variant:'kpi' replaced by Aurora fa-feature-card. #}
     <div class="row mb-4">
         <div class="col-md-4 col-lg-2 mb-3">
             {{ _fa_feature_card.render({
@@ -208,7 +208,7 @@
         {% endblock %}
     {% endembed %}
 
-    {# Konzern Bundle (Holding) — Task #129: only visible when current
+    {# Konzern Bundle (Holding) — only visible when current
        tenant has subsidiaries. ROLE_GROUP_CISO / ROLE_KONZERN_AUDITOR
        can dispatch a holding-wide export that aggregates per-subsidiary
        bundles into one ZIP with INDEX/RACI/OVERVIEW. #}
@@ -320,9 +320,9 @@
         {% endembed %}
     {% endif %}
 
-    {# Generate Button — POSTs to async dispatch route (Phase 3 async-jobs rollout).
+    {# Generate Button — POSTs to async dispatch route.
        data-turbo="false" so the dispatch redirect to the progress page survives.
-       Audit-V3 EF-3: hidden #cert-bundle-framework-input mirrors the dropdown above
+       Hidden #cert-bundle-framework-input mirrors the dropdown above
        (kept in sync via ui-actions#copyValue) so POST carries the chosen framework code. #}
     <div class="text-center">
         <form method="post" action="{{ path('app_certification_bundle_export_dispatch') }}" data-turbo="false" id="cert-bundle-export-form">

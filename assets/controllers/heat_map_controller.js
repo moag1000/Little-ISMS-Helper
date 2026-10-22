@@ -4,7 +4,7 @@ import { faT } from '../js/fa-i18n.js';
 /**
  * Heat Map Controller - Risk Heat Map Visualization
  *
- * Junior-ISB-Audit-2026-05-22 Polish: Aurora-rework Risk-Heatmap
+ * Aurora-rework Risk-Heatmap
  *
  * Renders an Aurora .isms-risk-matrix 5x5 grid populated from
  * `/analytics/api/heat-map`. Cell colors driven by data-level (low/medium/high/

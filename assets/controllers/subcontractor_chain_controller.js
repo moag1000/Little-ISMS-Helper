@@ -1,10 +1,10 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * subcontractor-chain — P-9 JsonBuilder for Supplier.subcontractorChain
+ * subcontractor-chain — JsonBuilder for Supplier.subcontractorChain
  * (DORA Art. 28 sub-outsourcing chain, max-depth 4).
  *
- * NOTE: this is the new P-9 macro controller. The legacy
+ * NOTE: this is the macro controller. The legacy
  * `subcontractor-chain-editor` controller (table layout) still serves the
  * existing fields. New _fa_subcontractor_chain macro uses this controller.
  *

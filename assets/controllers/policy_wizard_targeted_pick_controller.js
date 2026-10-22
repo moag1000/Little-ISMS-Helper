@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Policy-Wizard W3-J — Targeted-pick max-cap enforcer.
+ * Policy-Wizard — Targeted-pick max-cap enforcer.
  *
  * Locks remaining unchecked checkboxes once `max` topics are selected.
  * Re-enables them as soon as the count drops below the cap. Pure UX —

@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 /**
  * Toggles the visibility of the merge-/split-topic pickers based on the
- * chosen action in Step 0 (Bestandsaufnahme). Junior-ISB-friendly UX:
+ * chosen action in Step 0 (Bestandsaufnahme). beginner-friendly UX:
  * only show the topic-picker that is actually relevant for the selected
  * action.
  */

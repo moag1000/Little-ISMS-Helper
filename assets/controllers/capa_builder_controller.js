@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * capa-builder — S17 B4 follow-up visual editor for
+ * capa-builder — visual editor for
  * AuditFinding.nonconformityDetails (ISO 27001 Cl. 10.2 b)+d)).
  *
  * Data contract (matches AuditFinding entity JSON):

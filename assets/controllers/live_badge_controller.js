@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Phase 4.4 — Live Badge Controller
+ * Live Badge Controller
  *
  * Polls GET /api/live-counts every 30 seconds and updates badge counts
  * from the JSON response. Automatically pauses when the browser tab is

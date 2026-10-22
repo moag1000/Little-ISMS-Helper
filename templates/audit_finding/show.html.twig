@@ -66,7 +66,7 @@
         {% endblock %}
     {% endembed %}
 
-    {# F15.3 — Linked Norm Requirements as filter-chip group #}
+    {# Linked Norm Requirements as filter-chip group #}
     {% if finding.linkedRequirements|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
@@ -83,7 +83,7 @@
     {% endembed %}
     {% endif %}
 
-    {# S17 B4 — CAPA / Nonconformity-Details (ISO 27001 Cl. 10.2 b) + d)). #}
+    {# CAPA / Nonconformity-Details (ISO 27001 Cl. 10.2 b) + d)). #}
     {% if finding.type in ['major_nc', 'minor_nc'] %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
@@ -185,7 +185,7 @@
         {% endblock %}
     {% endembed %}
 
-    {# V3 W2-H3: Comment-Thread adoption (C7 macro). #}
+    {# Comment-Thread adoption (C7 macro). #}
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'AuditFinding',

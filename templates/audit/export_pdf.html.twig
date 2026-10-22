@@ -212,7 +212,7 @@
     </div>
     {% endif %}
 
-    {# C4-B4 — Cross-Framework Coverage Matrix (PDF, shown when audit covers >1 framework) #}
+    {# Cross-Framework Coverage Matrix (PDF, shown when audit covers >1 framework) #}
     {% if coverageReport is defined and coverageReport.multiFramework %}
     <div class="section">
         <div class="section-title">{{ 'pdf.section.cross_framework_coverage'|trans({}, 'audit') }}</div>

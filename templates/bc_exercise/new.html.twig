@@ -7,7 +7,7 @@
 {% block title %}{{ 'bc_exercises.action.add_new'|trans({}, 'bc_exercises') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-{# Junior-ISB-Audit-2026-05-22 P-12 rollout — 9001 + 22301 norm-bridge for BC-Exercise. #}
+{# 9001 + 22301 norm-bridge for BC-Exercise. #}
 <div class="container-fluid py-4">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -27,7 +27,7 @@
         ]
     }) }}
 
-    {# 9001-bridge: BC-Exercise is process verification (9001 9.1 evaluation) and mandatory in 22301 8.5. P-12 rollout. #}
+    {# 9001-bridge: BC-Exercise is process verification (9001 9.1 evaluation) and mandatory in 22301 8.5. #}
     {{ _fa_norm_bridge.render({
         from_norm: 'ISO 22301 8.5',
         to_norm:   'ISO 9001 6.1 / 9.1',

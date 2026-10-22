@@ -35,7 +35,7 @@
             </h2>
         </div>
         <div class="fa-section__body">
-            {# C-02 fix: the outer "import" form previously wrapped the entire
+            {# The outer "import" form must not wrap the entire
                table, but each row's "remove" cell also contains a <form>. Nested
                forms are invalid HTML — browsers POST to the wrong action and
                drop checkbox state. Use the HTML5 `form` attribute: declare the

@@ -1,19 +1,19 @@
-# Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle — Sprint S13.
+# CAPA lifecycle.
 #
 # ISO 27001 Cl. 10.1 d demands that the effectiveness of every corrective
-# action is reviewed. C4-04 (RAW_FINDINGS Task 14 #9): the Sprint X.2 state
-# machine allowed a direct `completed → verified_effective` jump in YAML
+# action is reviewed. A state
+# machine without a `verified` place would allow a direct `completed → verified_effective` jump in YAML
 # but no place forced the reviewer to enter a "claimed verified" stage
 # first — i.e. the verifier could rubber-stamp the success without ever
 # showing the system that they had actually opened the verification step.
 #
-# Fix: insert an intermediate `verified` place between `completed` and the
+# Hence: an intermediate `verified` place between `completed` and the
 # two terminal verdicts. The reviewer must transition `completed → verified`
 # (forced, 4-eyes) BEFORE choosing one of the two terminal verdicts. This
 # splits the audit-trail into two events:
 #   1. `verify`            — verifier asserts they have reviewed evidence
 #   2. `confirm_effective` — verdict, success
-#   2. `confirm_ineffective` — verdict, failure (triggers C4-01 follow-up CAPA)
+#   2. `confirm_ineffective` — verdict, failure (triggers a follow-up CAPA)
 #
 # Terminal verdicts stay backward-compatible: the existing string values
 # `verified_effective` / `verified_ineffective` are preserved so historical
@@ -32,7 +32,7 @@ framework:
                 - planned
                 - in_progress
                 - completed
-                # Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: NEW intermediate
+                # NEW intermediate
                 # state — verifier has opened verification but not yet decided.
                 - verified
                 - verified_effective
@@ -49,7 +49,7 @@ framework:
                     to: completed
                     metadata:
                         roles: [ROLE_MANAGER]
-                # Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: forced
+                # Forced
                 # `completed → verified` step (ISO 27001 Cl. 10.1 d). The
                 # auditor MUST open the verification cycle before they can
                 # record a verdict — prevents the Minor-NC of jumping

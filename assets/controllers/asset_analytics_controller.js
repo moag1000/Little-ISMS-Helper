@@ -5,7 +5,7 @@ import { Controller } from '@hotwired/stimulus';
  *
  * Charts render via inline Chart.js scripts (window.Chart from app.js).
  *
- * @todo H-12 — wire filter chips + criticality drilldown.
+ * @todo wire filter chips + criticality drilldown.
  */
 export default class extends Controller {
     connect() {

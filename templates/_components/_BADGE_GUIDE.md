@@ -22,7 +22,7 @@ Spec `docs/superpowers/specs/2026-05-06-aurora-v4-zindex-bigbang-design.md`
 | `size: sm` | `--sm` | |
 | `size: lg` | `--lg` | |
 
-## Severity-Mapping (NEU per ROADMAP Phase 5)
+## Severity-Mapping
 
 Wenn `variant='severity'` mit `severity='critical|high|medium|low'`:
 

@@ -160,7 +160,7 @@
                                     {% endif %}
                                 </td>
                                 <td class="fa-table__cell">
-                                    {# ── Requirement tiers M/S/H/VH/SGA (B3 tiers-first-class, §9.2) ── #}
+                                    {# ── Requirement tiers M/S/H/VH/SGA (§9.2) ── #}
                                     {% set tierMap = req.dataSourceMapping ?? {} %}
                                     {% set tiers = [
                                         { key: 'tisax_must',     abbr: 'must',     css: 'bg-secondary' },

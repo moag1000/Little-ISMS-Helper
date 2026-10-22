@@ -2,7 +2,7 @@ parameters:
     # ── FieldCompletionAutoTransition rules ───────────────────────────────────
     # Each entry maps a fully-qualified entity class to one or more named rules.
     #
-    # Two rule formats are supported (Y.1 extended syntax):
+    # Two rule formats are supported (extended syntax):
     #
     # Legacy format — all listed required_fields must be non-null/non-empty:
     #   required_fields: [field1, field2]
@@ -27,7 +27,7 @@ parameters:
                 workflow: data_breach_lifecycle
                 transition: assess
                 required_fields: [severity, affectedDataSubjects, dataCategories]
-            # Y.1 migrated from WAPS: high-severity + large scope → fast-track assess
+            # Migrated from the legacy auto-progression rules: high-severity + large scope → fast-track assess
             assess_high_severity:
                 workflow: data_breach_lifecycle
                 transition: assess
@@ -35,7 +35,7 @@ parameters:
                     all:
                         - { field: severity, comparison: ">=", value: high }
                         - { field: affectedDataSubjects, comparison: ">", value: 100 }
-            # Y.1 migrated from WAPS: notification is legally required → assess immediately
+            # Migrated from the legacy auto-progression rules: notification is legally required → assess immediately
             assess_notification_required:
                 workflow: data_breach_lifecycle
                 transition: assess
@@ -58,7 +58,7 @@ parameters:
                 workflow: risk_lifecycle
                 transition: assess
                 required_fields: [probability, impact]
-            # Y.1 migrated from WAPS: residual risk within appetite → auto-accept
+            # Migrated from the legacy auto-progression rules: residual risk within appetite → auto-accept
             # REMOVED: value_from: riskAppetiteThreshold — field never existed on Risk entity
             # REMOVED: field: residualRisk — field never existed; use formallyAccepted instead
             accept_within_appetite:
@@ -70,12 +70,12 @@ parameters:
 
         # ── Incident (ISO 27001 Cl. 6.1.2 c) ─────────────────────────────────
         App\Entity\Incident:
-            # Y.1 migrated from WAPS: severity + immediate actions filled → begin review
+            # Migrated from the legacy auto-progression rules: severity + immediate actions filled → begin review
             review_when_assessed:
                 workflow: incident_lifecycle
                 transition: review
                 required_fields: [severity, immediateActions]
-            # Y.1 migrated from WAPS: corrective actions + root cause → resolve incident
+            # Migrated from the legacy auto-progression rules: corrective actions + root cause → resolve incident
             # REMOVED: field: containmentConfirmed — field never existed on Incident entity
             resolve_when_contained:
                 workflow: incident_lifecycle
@@ -87,7 +87,7 @@ parameters:
 
         # ── ProcessingActivity (GDPR Art. 30) ─────────────────────────────────
         App\Entity\ProcessingActivity:
-            # Y.1 migrated from WAPS: legal basis + purposes filled → activate
+            # Migrated from the legacy auto-progression rules: legal basis + purposes filled → activate
             # REMOVED: field: purpose (singular) — field never existed; entity has purposes (plural array)
             # REMOVED: field: dataCategories — field never existed; entity has personalDataCategories
             activate_when_complete:

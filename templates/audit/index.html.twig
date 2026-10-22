@@ -145,7 +145,7 @@
     {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'audit.upcoming_audits'|trans({}, 'audit'), body: 'audit.upcoming_audits_count'|trans({'%count%': upcoming|length}, 'audit') }) }}
     {% endif %}
 
-    {# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for status #}
+    {# Aurora filter-chip quick row — quick toggles for status #}
     {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
     {% set _activeAuditStatus = app.request.query.get('status') %}
     {% set _baseAuditUrl = path('app_audit_index') %}

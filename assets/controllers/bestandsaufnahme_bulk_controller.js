@@ -7,7 +7,7 @@ import { faConfirm } from '../js/fa-alerts.js';
  *
  * Every inventory row's action-<select> is `required`, so on large brownfield
  * estates the user must touch many rows. These mass-set actions make that one
- * click each. All of them gate through a single confirm modal first (Junior-ISBs
+ * click each. All of them gate through a single confirm modal first (beginners
  * deserve a "you can still adjust individual rows" reassurance).
  *
  * Targeted:

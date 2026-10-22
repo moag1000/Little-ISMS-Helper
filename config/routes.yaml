@@ -91,7 +91,7 @@ infra_metrics_routes:
     resource: ../src/Controller/MetricsController.php
     type: attribute
 
-# F43 Trust-Center public posture routes WITHOUT locale prefix.
+# Trust-Center public posture routes WITHOUT locale prefix.
 # /trust/{token} is a stable bearer-URL shared with external parties;
 # a locale prefix would change the URL on every locale-switch and invalidate
 # previously shared links. Token = access control — no auth required.
@@ -102,7 +102,7 @@ public_posture_routes:
     resource: ../src/Controller/PublicPostureController.php
     type: attribute
 
-# F23 public supplier-questionnaire portal WITHOUT locale prefix.
+# Public supplier-questionnaire portal WITHOUT locale prefix.
 # /supplier-questionnaire/{token} is a stable bearer-URL emailed to a supplier;
 # a locale prefix would change the URL on every locale-switch and invalidate
 # previously shared links. Token = access control — no auth required.

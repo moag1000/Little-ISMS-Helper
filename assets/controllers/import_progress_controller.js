@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * ImportProgress Controller — Bulk-Import Wizard Step 4 (F2.9 + F2.12)
+ * ImportProgress Controller — Bulk-Import Wizard Step 4
  *
  * Polls the batch status endpoint every N ms while status = 'committing'.
  * Updates status badge, counters, and error list in-place from JSON.

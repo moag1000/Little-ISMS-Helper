@@ -2,7 +2,7 @@
 /**
  * Reusable Badge Component — Aurora v4 (Tier-2 Refactor 2026-05-09)
  *
- * Audit V2 §F2: This macro now emits PURE AURORA classes
+ * This macro now emits PURE AURORA classes
  * (.fa-status-pill, .fa-status-pill--{tone}, .fa-status-pill--{size}) as
  * primary anchor. For backward compatibility, the legacy Bootstrap classes
  * (.badge, .bg-*) are still appended one final release so consumers that
@@ -31,7 +31,7 @@
 {% set title = title|default(null) %}
 {% set pill = pill|default(false) %}
 
-{# Severity-Mapping (per ROADMAP Phase 5):
+{# Severity-Mapping:
    critical → danger, high → warning, medium → info, low → success #}
 {% if variant == 'severity' and severity is defined and severity %}
     {% set variant = {
