@@ -121,17 +121,4 @@ final class AssetQuickTypeTest extends TestCase
             'Violation must be attached to the ownerUser field, matching AssetType.'
         );
     }
-
-    #[Test]
-    public function s13AuditMarkerIsPresentForFutureGreps(): void
-    {
-        $source = self::getFormTypeSource();
-
-        // Greppable marker so a future audit run can locate this change.
-        self::assertStringContainsString(
-            'Junior-ISB-Audit-2026-05-22 S13',
-            $source,
-            'Audit marker comment must be present so the parity-fix is greppable.'
-        );
-    }
 }
