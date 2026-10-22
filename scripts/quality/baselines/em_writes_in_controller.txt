@@ -128,7 +128,7 @@ src/Controller/AuditFindingController.php:356
 src/Controller/AuditFindingController.php:378
 src/Controller/AuditFindingController.php:439
 src/Controller/AuditFindingController.php:440
-src/Controller/AuditFreezeController.php:188
+src/Controller/AuditFreezeController.php:186
 src/Controller/AuditProgramController.php:123
 src/Controller/AuditProgramController.php:124
 src/Controller/AuditProgramController.php:176
