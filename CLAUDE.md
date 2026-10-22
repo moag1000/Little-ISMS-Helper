@@ -19,14 +19,14 @@ Guidelines for Claude Code in this repository.
 
 **Stack:** Symfony 7.4 LTS, PHP 8.4+ (8.5 tested), Doctrine ORM 3.6, Doctrine-Migrations-Bundle 4.0, Twig 3.24, Stimulus 3.2 / Turbo 8, Bootstrap 5.3, FairyAurora v4 Design System, PHPUnit 13.1, Chart.js 4, API Platform 4.3
 
-**Multi-tenancy:** Tenant-owned entities carry a `tenant_id` field (119 of 144); global catalogues
+**Multi-tenancy:** Tenant-owned entities carry a `tenant_id` field (most of them); global catalogues
 (frameworks, requirements, roles, permissions, policy templates, …) and child/join rows that inherit
 the parent's scope do not. `TenantContext` service manages context.
 
 **RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN, plus holding-level
 ROLE_GROUP_CISO + ROLE_KONZERN_AUDITOR, plus persona-roles
 ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER (each
-gates own dashboard at `/dashboards/<persona>`). 50+ permissions.
+gates own dashboard at `/dashboards/<persona>`). Plus fine-grained permissions.
 
 ## Essential Commands
 
@@ -219,14 +219,14 @@ systemctl enable isms-worker && systemctl start isms-worker
 ## Architecture Quick Guide
 
 **Directory Layout:**
-- `src/Entity/` - Doctrine entities (144; 119 tenant-owned with `tenant_id`)
-- `src/Service/` - Business logic (543 classes, 159 of them top-level in `src/Service/`)
-- `src/Controller/` - HTTP handlers (230 controllers)
-- `src/Command/` - Console commands (175)
+- `src/Entity/` - Doctrine entities (most tenant-owned with `tenant_id`; count: `ls src/Entity/*.php | wc -l`)
+- `src/Service/` - Business logic (top-level facades plus subnamespaces per area)
+- `src/Controller/` - HTTP handlers
+- `src/Command/` - Console commands
 - `src/Security/Voter/` - Authorization voters
 - `templates/` - Twig templates
 - `assets/controllers/` - Stimulus JS controllers
-- `translations/` - Translation files (302 YAML files organized by 151 domains)
+- `translations/` - Translation files, one YAML per domain and language (`ls translations/*.de.yaml | wc -l` counts the domains)
 
 **Key Services:**
 - `RiskService`, `AssetService`, `ControlService` - Core CRUD
@@ -312,7 +312,7 @@ Custom modals (like command palette) use CSS classes instead of Bootstrap Modal 
 The application uses domain-specific translation files instead of monolithic `messages.*.yaml` files.
 
 Structure:
-- `translations/` contains 302 YAML files (151 domains × 2 languages)
+- `translations/` contains one YAML file per domain and language (`{domain}.{de,en}.yaml`)
 - Each functional area has its own domain: `nav`, `mfa`, `tenant`, `role_management`, etc.
 - `messages.{de,en}.yaml` remains as fallback for common/cross-domain terms
 
@@ -327,7 +327,7 @@ Usage in Twig templates:
 {{ 'common.save'|trans({}, 'messages') }}
 ```
 
-Main domains (151 in total — `ls translations/*.de.yaml` lists all):
+Main domains (`ls translations/*.de.yaml` lists all):
 - **Navigation:** nav, dashboard, ui, help, welcome
 - **Access Control:** mfa, role_management, session, user, security, four_eyes
 - **ISMS Core:** assets, risk, control, incident, audits, audit_log, audit_freeze, soa, context, risk_appetite, risk_treatment_plan
@@ -382,7 +382,7 @@ Every entity with a `status` field that goes through staged transitions uses **S
 
 **Effective metadata resolution:** `LifecycleConfigResolver::resolve()` merges YAML + DB-overrides. Voter / Guards / Listeners ALWAYS read via Resolver, never from YAML directly.
 
-**Existing workflows** (as of 2026-05-17):
+**Existing workflows** (authoritative list: `config/packages/workflow.yaml` imports):
 - `document_lifecycle` (5 stages: draft → in_review → approved → published → archived)
 - `processing_activity_lifecycle` (5 stages, GDPR-gated — `privacy` module required)
 - `isms_objective_lifecycle` (5 custom stages: in_progress / achieved / delayed / cancelled)
@@ -426,7 +426,7 @@ $lifecycleService->transition($entity, 'foo_lifecycle', 'approve', $user, 'reaso
 > prevents new instantiations in `src/` outside Repository/Command namespaces.
 > ADR: `docs/decisions/2026-05-17-workflow-yaml-unification.md`
 
-**Source of Truth:** `config/workflows/regulatory/*.yaml` (15 files)
+**Source of Truth:** `config/workflows/regulatory/*.yaml`
 
 **Overview:**
 Event-driven workflow system where workflows automatically progress based on user actions.
@@ -439,7 +439,7 @@ Auto-progression is handled by `FieldCompletionAutoTransition` (Doctrine `postUp
 - **Incident Response Low/Medium** — `incident_low_severity.yaml` — ISO 27001, 4 steps
 - **Risk Treatment** — `risk_treatment.yaml` — ISO 27001 Cl. 6.1.3, 6 steps
 - **DPIA** — `dpia.yaml` — GDPR Art. 35/36, 6 steps
-- Plus 10 further workflows: DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC Plan Activation, Document Review, Incident Post-Mortem
+- Plus further workflows: DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC Plan Activation, Document Review, Incident Post-Mortem
 
 **Auto-Progression (canonical pattern since Y.1):**
 Auto-progression fires automatically via Doctrine event listener when entity fields are saved.
@@ -460,7 +460,7 @@ metadata:
 
 **Verification CLI:**
 ```bash
-# Verify all 15 DB workflow rows have YAML equivalents (report-only, safe)
+# Verify all DB workflow rows have YAML equivalents (report-only, safe)
 php bin/console app:migrate-legacy-workflows
 
 # Archive obsolete DB rows with no YAML counterpart (opt-in)
@@ -471,7 +471,7 @@ php bin/console app:migrate-legacy-workflows --archive
 - ✅ **AND/OR Logic**: Complex conditions like `(severity >= high AND count > 100) OR required = true`
 - ✅ **Time-Based**: Auto-progress after time delay via `app:process-timed-workflows` cron
 - ✅ **Entity Coverage**: DataBreach, Incident, Risk, Asset, Control, DPIA, ProcessingActivity
-- ✅ **15 canonical workflows**: All defined in `config/workflows/regulatory/*.yaml`
+- ✅ **Canonical workflows**: All defined in `config/workflows/regulatory/*.yaml`
 
 **Do NOT:**
 - Create `new Workflow()` or `new WorkflowStep()` in `src/` outside Repository/Command (PHPStan blocks this)
@@ -492,7 +492,7 @@ Do not add DORA fields to forms without `nis2_dora` gate, do not add GDPR fields
 Full reference: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md)
 
 **Key artifacts:**
-- `config/modules.yaml` — 45 module keys + metadata (6 required: core, authentication, documents, audit_logging, workflows, objectives)
+- `config/modules.yaml` — module keys + metadata (required modules: core, authentication, documents, audit_logging, workflows, objectives)
 - `config/active_modules.yaml` — per-tenant activation overrides
 - `src/Form/Trait/ModuleAwareFormTrait.php` — FormType helper (`isModuleActive()`)
 - `src/Controller/Trait/ModuleGatedControllerTrait.php` — Controller helper (`checkModuleActive()`)
@@ -534,7 +534,7 @@ if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 ```
 
 User-facing guide: [`docs/user-guide/MODULE_AKTIVIERUNG.md`](docs/user-guide/MODULE_AKTIVIERUNG.md)  
-Compliance audit trail: [`docs/FORM_AUDIT_2026-05.md`](docs/FORM_AUDIT_2026-05.md)
+Compliance audit trail: [`docs/archive/FORM_AUDIT_2026-05.md`](docs/archive/FORM_AUDIT_2026-05.md)
 
 ---
 
@@ -596,7 +596,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 **Forms:** Single-action with `handleRequest()`. Translation domain via FormType.
 **Testing:** PHPUnit 13.1. Use `#[Test]` attribute. `WebTestCase` for HTTP, `KernelTestCase` for services.
 **Templates:** FairyAurora v4 macros (`_fa_page_header`, `_fa_empty_state`, `_fa_alert`). `_breadcrumb.html.twig` for navigation. Every `|trans` call names its domain explicitly (`|trans({}, 'risk')`) — enforced by Gate 44; a file-level `trans_default_domain` is optional and never a substitute (it does not reach into `{% embed %}`, see pitfall 10b).
-**Translations:** 151 domains x 2 languages. Check `debug:translation --only-missing` before commit. No YAML duplicate keys (Gate 63).
+**Translations:** one domain per feature area, DE + EN. Check `debug:translation --only-missing` before commit. No YAML duplicate keys (Gate 63).
 **PHP 8.5:** `readonly` properties, `match` expressions, `enum` types where appropriate.
 
 ## Security Checklist
@@ -639,7 +639,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
    `SET @sql := IF(...) ; PREPARE stmt FROM @sql ; EXECUTE stmt ; DEALLOCATE`
    for "idempotent" ALTER/CREATE silently fails in Doctrine Migrations: the
    migration is recorded as `executed` but the actual DDL never runs. Symptoms:
-   `Column not found` errors, missing tables. The 17 Phase-8 migrations that once
+   `Column not found` errors, missing tables. The Phase-8 migrations that once
    used it have been rewritten; none remain, and Gate 33
    (`check_no_prepare_execute_migrations.py`) blocks new ones.
    - **New migrations**: use plain `ALTER TABLE` / `CREATE TABLE IF NOT EXISTS`
@@ -742,17 +742,17 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-stepper` | Multi-step wizard chrome (Preset → Discovery → Test for SSO; Upload → Map → Preview → Commit for Bulk-Import) | `_fa_stepper.html.twig` |
 | `fa-diff-row` | Old → New value diff visualization for Bulk-Import Delta-Mode + OSCAL-Conflict-Cards | `_fa_diff_row.html.twig` |
 | `fa-condition-builder` | Visual rule-builder (WHEN / AND / OR chip rows) for Notification-Rules — replaces raw JSON editing. Form-bound: `render(form.conditionRows, { logic: form.conditionLogic, suggestions: [...] })` renders a CollectionType of `ConditionRowType` (`field`/`op`/`value`, the evaluator format) with the real widgets; Stimulus `condition-builder` clones the prototype | `_fa_condition_builder.html.twig` |
-| `fa-table` | Aurora-styled data table (replaces raw `<table class="table">`) — 80+ adopted in v3.5 | `_fa_table.html.twig` |
+| `fa-table` | Aurora-styled data table (replaces raw `<table class="table">`) — widely adopted | `_fa_table.html.twig` |
 | `fa-matrix-table` | Multi-axis grid for risk-heatmaps (`mode: 'severity'`, default — ISO-27005 score-based) and compliance-heatmaps (`mode: 'rag'`, framework × cluster). Supports `caption`, `colspan` via grid template, `<th scope="col"/"row">` semantics, optional severity/RAG legend, optional per-cell `href` links, per-cell `severity` override. | `_fa_matrix_table.html.twig` |
 | `fa-settings-table` | Tabular form-grid for `/admin/settings/*` (label / control / status three-col layout). 8 row-kinds: `text/email/number/select/chips/toggle/textarea/widget`. `widget` passes through pre-rendered HTML (e.g. `form_widget()` output) so Symfony FormType controls keep CSRF/validation. Optional `headers: [{label, ...}]` switches to multi-column data-table mode with per-row `trailing` cell — used by Bulk-Import column-mapping wizard. | `_fa_settings_table.html.twig` |
-| `fa-progress` | Aurora progress-bar (replaces hand-rolled `.progress > .progress-bar`) — 54 adopted in v3.5 | `_fa_progress.html.twig` |
+| `fa-progress` | Aurora progress-bar (replaces hand-rolled `.progress > .progress-bar`) — widely adopted | `_fa_progress.html.twig` |
 | `fa-action-bar` | Page-level action bar (sticky bottom, top of detail-views). Per-action props: `disabled` (renders `<span>` with `aria-disabled="true"` since `<a>` ignores native `disabled`), `attrs: {key: value}` (data-* / Stimulus wiring), `tag: 'a'\|'button'`. Top-level `controller` + `wrapperAttrs` wire Stimulus on the outer container. | `_fa_action_bar.html.twig` |
 | `fa-bulk-bar` (BEM, canonical) | Canonical Aurora v4 floating bulk-action bar. Use `{% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete', 'tag', 'assign', 'approve', 'status_change'], variant: 'neutral' } %}`. Props: `actions` array + `variant: 'neutral'\|'brand'` (default `'neutral'`). Use `variant: 'brand'` for hero lists only (risk/document policy workflow). `approve` → quick-approve `.fa-bulk-btn--success` button; `status_change` → dropdown (draft→in_review→approved→published→archived). BEM CSS: `.fa-bulk-bar`, `.fa-bulk-bar--brand`, `.fa-bulk-bar__count`, `.fa-bulk-bar__count-num`, `.fa-bulk-bar__count-label`, `.fa-bulk-bar__divider`, `.fa-bulk-bar__actions`, `.fa-bulk-bar__close`, `.fa-bulk-btn`, `.fa-bulk-btn--success`, `.fa-bulk-btn--danger`, `.fa-bulk-btn.is-loading`. BC-bridge macro `_fa_bulk_action_bar.html.twig` kept for legacy callers — emits new BEM markup. Old `.bulk-action-bar*` class set is a deprecated CSS shim. | `_components/_bulk_action_bar.html.twig` (include, not macro) |
 | `fa-toast` | Aurora toast/flash-message stack (replaces Bootstrap toast-container) — wired in `base.html.twig` | `_fa_toast.html.twig` |
 | `fa-audit-row` | ISMS-Audit-Trail row pattern (compact + full views) | `_fa_audit_row.html.twig` |
 | `fa-form-layout` | Large-form pattern with outline-rail + section-cards + progress-bar (replaces flat _auto_form for 15+ field FormTypes) | `_fa_form_layout.html.twig` |
 | `fa-tabs` | Tab-group for settings-style forms with 3-6 equal groups (TenantType, UserType, Branding-Config). NOT for regulatory forms (use fa-form-layout) or linear flows (use fa-modal--wizard) | `_fa_tabs.html.twig` |
-| `fa-modal` (confirm + settings + wizard) | Canonical unified modal library. 3 modes: `confirm` (destructive/approval, 4 tones), `settings` (preferences/toggles), `wizard` (multi-step). Stimulus shell controller `fa-modal` + dispatcher `fa-modal-dispatcher`. Sub-controllers `fa-confirm` (type-to-confirm + cooldown) compose alongside via `data-controller="fa-modal fa-confirm"`. Open from JS via `document.dispatchEvent(new CustomEvent('fa-modal:request-open', { detail: { id: 'modal-id' } }))` — drop-in replacement for `new bootstrap.Modal()`. **Sweep status (2026-05-22):** 73+ modals across 49 templates migrated (PRs #547/#551/#555/#558 + Wave 4). Out-of-spec intentional exceptions: `_command_palette.html.twig` (⌘P power-user pattern), `_quick_view_modal.html.twig` (info popover), `_gdpr_breach_wizard_modal.html.twig` (uses `fa-prefs-modal` shell — kept for layout-stability, harmonization deferred). | `_fa_modal.html.twig` |
+| `fa-modal` (confirm + settings + wizard) | Canonical unified modal library. 3 modes: `confirm` (destructive/approval, 4 tones), `settings` (preferences/toggles), `wizard` (multi-step). Stimulus shell controller `fa-modal` + dispatcher `fa-modal-dispatcher`. Sub-controllers `fa-confirm` (type-to-confirm + cooldown) compose alongside via `data-controller="fa-modal fa-confirm"`. Open from JS via `document.dispatchEvent(new CustomEvent('fa-modal:request-open', { detail: { id: 'modal-id' } }))` — drop-in replacement for `new bootstrap.Modal()`. **Sweep status:** all modals are migrated except these intentional out-of-spec exceptions: `_command_palette.html.twig` (⌘P power-user pattern), `_quick_view_modal.html.twig` (info popover), `_gdpr_breach_wizard_modal.html.twig` (uses `fa-prefs-modal` shell — kept for layout-stability, harmonization deferred). | `_fa_modal.html.twig` |
 | `fa-modal--wizard` | High-stakes linear flow modal with step-pips + validation gates (Tenant-Setup, GDPR-Breach-Initial, Compliance-Wizard) — accessible via `_fa_modal.wizard()` delegate or direct `_fa_modal_wizard.render()` | `_fa_modal_wizard.html.twig` |
 | `fa-json-builder` | Structured editor for JSON entity columns (list / map / object of typed fields). Use via `JsonBuilderType` (`shape`, `fields`, `hidden_keys`) — never a raw JSON textarea; `JsonShape` re-validates server-side, Gate 34 enforces. Read-only counterpart `_fa_json_view.html.twig` | `_fa_json_builder.html.twig` |
 | `fa-cyber-field` | Hand-rolled Aurora-Frame inputs (text/textarea/select) | `_fa_cyber_field.html.twig` |
@@ -760,7 +760,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-menu` | Dropdown / overflow-action menu (`fa-menu-anchor` + `.fa-menu.is-open`). Supports groups, icons, shortcuts, danger items, dividers. CSS only. | CSS: `fairy-aurora-components.css` |
 | `fa-pager` | Aurora pagination pill shell with glow + gradient active page. `fa-pager-bar` wraps pager + info + per-page select. CSS only. | CSS: `fairy-aurora-components.css` |
 | `fa-kbd` / `fa-cheatsheet` | Keyboard key `<kbd class="fa-kbd">` + shortcut cheatsheet overlay content. CSS only. | CSS: `fairy-aurora-components.css` |
-| `isms-comment-thread` | Comment-thread for Show-Pages (10 entities whitelisted by CommentController) | `_isms_comment_thread.html.twig` |
+| `isms-comment-thread` | Comment-thread for Show-Pages (entities whitelisted by CommentController) | `_isms_comment_thread.html.twig` |
 | `isms-approval-stages` | Multi-stage approval visualization (workflow instances) | `_isms_approval_stages.html.twig` |
 | `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
 | `fa-mega-menu-section-header` | Section header inside mega-menu panel (title + norm-ref badge + density-hint + view-all link + count chip) | `_fa_mega_menu_section_header.html.twig` |
