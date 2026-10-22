@@ -4,7 +4,7 @@ This directory contains security-related documentation for the Little ISMS Helpe
 
 ## 📚 Available Documents
 
-### [CVE_ANALYSIS_2025.md](CVE_ANALYSIS_2025.md)
+### [CVE_ANALYSIS_2025.md](../archive/security/CVE_ANALYSIS_2025.md)
 Comprehensive analysis of CVEs detected in Docker images, including:
 - Detailed CVE investigations
 - Risk assessments
@@ -137,8 +137,8 @@ All ignored CVEs must have:
 | A02 Cryptographic Failures | TLS, Hashing | [SECURITY.md](SECURITY.md) |
 | A03 Injection | Parameterized queries | [SECURITY_IMPROVEMENTS.md](SECURITY_IMPROVEMENTS.md) |
 | A04 Insecure Design | Security architecture | [SECURITY.md](SECURITY.md) |
-| A05 Security Misconfiguration | Hardened defaults | [CVE_ANALYSIS_2025.md](CVE_ANALYSIS_2025.md) |
-| A06 Vulnerable Components | Dependency scanning | [CVE_ANALYSIS_2025.md](CVE_ANALYSIS_2025.md) |
+| A05 Security Misconfiguration | Hardened defaults | [CVE_ANALYSIS_2025.md](../archive/security/CVE_ANALYSIS_2025.md) |
+| A06 Vulnerable Components | Dependency scanning | [CVE_ANALYSIS_2025.md](../archive/security/CVE_ANALYSIS_2025.md) |
 | A07 Authentication Failures | MFA, Session mgmt | [SECURITY.md](SECURITY.md) |
 | A08 Software Integrity | Checksums, signatures | CI/CD pipeline |
 | A09 Logging Failures | Audit logging | [SECURITY.md](SECURITY.md) |

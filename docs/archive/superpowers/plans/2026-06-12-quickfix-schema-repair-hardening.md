@@ -1541,7 +1541,7 @@ Expected: no new errors above the project baseline. Fix any introduced (e.g. nul
 ```bash
 git push -u origin fix/quickfix-schema-repair-hardening
 gh pr create --title "fix(quick-fix): schema-repair hardening — 10 safety findings" --body "$(cat <<'EOF'
-Closes 10 source-grounded gaps in the Quick-Fix schema-repair UI (spec: docs/superpowers/specs/2026-06-12-quickfix-schema-repair-hardening-design.md).
+Closes 10 source-grounded gaps in the Quick-Fix schema-repair UI (spec: docs/archive/superpowers/specs/2026-06-12-quickfix-schema-repair-hardening-design.md).
 
 - QF-1 destructive DDL withheld unless explicitly opted in (+ honest force-route copy)
 - QF-2 mark-all post-drift reconcile guard + truthful docblock

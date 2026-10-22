@@ -11,14 +11,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 
-![Version](https://img.shields.io/badge/Version-v3.9-informational)
-![Entities](https://img.shields.io/badge/Entities-113-informational)
-![Frameworks](https://img.shields.io/badge/Frameworks-25_komplett-informational)
 ![Controls](https://img.shields.io/badge/ISO%2027001%20Controls-93-informational)
-![Tests](https://img.shields.io/badge/Tests-816%20Dateien-informational)
-![Mappings](https://img.shields.io/badge/Cross--Framework--Mappings-3%2C543-informational)
-![Wizards](https://img.shields.io/badge/Compliance--Wizards-22-informational)
-![BSI-Bausteine](https://img.shields.io/badge/BSI--Bausteine-106-informational)
 
 [Funktionen](#funktionen) |
 [Quick Start](#quick-start) |
@@ -40,9 +33,9 @@ DACH-Raum** und darin, **einmal erfasste Nachweise über viele Frameworks wieder
 
 Nicht nur Anforderungslisten — die eigentliche Vorgehensweise ist abgebildet:
 
-- **BSI IT-Grundschutz** — 117 Bausteine über alle 10 Schichten, ein echter **IT-Grundschutz-Check**
+- **BSI IT-Grundschutz** — Bausteine über alle Schichten, ein echter **IT-Grundschutz-Check**
   (Soll/Ist, MUSS/SOLLTE/KANN-Gewichtung) und **Schutzbedarfsvererbung nach dem Maximumprinzip** über den
-  Abhängigkeitsgraph. Dazu **5 Branchen-Baselines** mit je über 100 regulatorisch begründeten Reifegrad-Zielen
+  Abhängigkeitsgraph. Dazu **Branchen-Baselines** mit je über 100 regulatorisch begründeten Reifegrad-Zielen
   (Finanzen, Gesundheit, KRITIS, Fertigung, SaaS).
 - **BSI C5 (2020 + 2026)** — der **offizielle BSI-C5-Katalog**; die C5:2026-Neuerungen
   (Krypto-Agilität/PQC, SBOM, Confidential Computing, Container-Management) sind erfasst.
@@ -119,7 +112,7 @@ Besonders geeignet fuer regulierte Branchen im DACH-Raum:
 | **Informationssicherheitsbeauftragter (ISB)** | Voller ISMS-Lifecycle, SoA-Management, Risikobehandlungsplaene, Management-Reviews, Audit-Vorbereitung |
 | **CISO / Geschaeftsfuehrung** | Board-One-Pager, KPI-Dashboards, Zertifizierungs-Dokumentenpaket als ZIP, Konzern-Uebersicht |
 | **Datenschutzbeauftragter (DSB/DPO)** | Verarbeitungsverzeichnis, DSFA, Datenschutzverletzungen mit 72h-Frist, Betroffenenrechte |
-| **Compliance Manager** | 25 Frameworks mit Cross-Mapping, transitive Coverage, FTE-Einsparung durch Data-Reuse |
+| **Compliance Manager** | Alle Frameworks mit Cross-Mapping, transitive Coverage, FTE-Einsparung durch Data-Reuse |
 | **Interner / externer Auditor** | Evidence-Management, Audit-Freeze, Audit-Pakete, tamper-evidenter Audit-Trail |
 
 ### Was dieses Tool nicht ist
@@ -138,9 +131,9 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 | Scanner-Integration (OpenVAS / Nessus) | Geplant | Automatisierte Schwachstellenerfassung |
 | Ticketing-Connector (Jira / ServiceNow) | Geplant | Massnahmen-Tracking in bestehenden Workflows |
 | SaaS-Deployment mit Self-Service-Signup | Architektur steht | Organisationen ohne Docker-Know-how erreichen |
-| Weitere Sprachen (FR, IT, NL, PL) | Infrastruktur steht (96 Domaenen) | Schweizer Markt, EU-weite NIS2-Umsetzung |
+| Weitere Sprachen (FR, IT, NL, PL) | Infrastruktur steht | Schweizer Markt, EU-weite NIS2-Umsetzung |
 | Unabhaengiges Security-Audit | Geplant | Vertrauen fuer sicherheitskritisches Tool |
-| API-Ausbau (80 Entities, aktuell 18 exponiert) | Architektur steht | Enterprise-Integrationsfaehigkeit |
+| API-Ausbau (nur ein Teil der Entities per API exponiert) | Architektur steht | Enterprise-Integrationsfaehigkeit |
 
 **Das Projekt unterstuetzen:** Ueber den Sponsor-Button auf GitHub koennen Sie die Weiterentwicklung direkt foerdern. Jeder Beitrag fliesst in die oben genannten Features.
 
@@ -168,10 +161,10 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 | Bereich | Neuerung |
 |---|---|
 | **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`) gaten je eigenes Dashboard unter `/dashboards/<persona>` |
-| **Lifecycle-Foundation (Symfony Workflow)** | `LifecycleService::transition()`-Facade als Pflicht-Einstieg; 5 produktive Workflows (`document`, `processing_activity`, `isms_objective`, `policy_template`, `asset`) + 11 weitere YAML-Definitionen in `config/workflows/`; Tenant-Overrides via `/admin/lifecycle-overrides` |
-| **40+ Status-Enums** | Erste-Klasse-Status-Lifecycle: `DocumentStatus`, `IncidentStatus`, `RiskStatus`, `DataBreachStatus`, etc.; Server-erzwungene 5-Transition-Matrix; bulk-status-change-Support via canonical `_bulk_action_bar.html.twig` |
-| **15 YAML-Workflows** | Regulatorische Workflows als YAML-Source-of-Truth (`config/workflows/regulatory/*.yaml`) -- GDPR Data Breach, Incident Response, Risk Treatment, DPIA, DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC-Plan Activation, Document Review, Incident Post-Mortem; Event-getriebene Auto-Progression via Doctrine-Listener |
-| **Module-Awareness (43 Module)** | `config/modules.yaml` -- pro Tenant aktivierbare Frameworks/Funktionen; FormType-Trait `ModuleAwareFormTrait`, Controller-Trait `ModuleGatedControllerTrait`, Twig-Funktion `is_module_active()` -- saubere Trennung zwischen Pflicht- und Optional-Feldern |
+| **Lifecycle-Foundation (Symfony Workflow)** | `LifecycleService::transition()`-Facade als Pflicht-Einstieg; produktive Workflows u.a. `document`, `processing_activity`, `isms_objective`, `policy_template`, `asset` (Definitionen in `config/workflows/`); Tenant-Overrides via `/admin/lifecycle-overrides` |
+| **Status-Enums** | Erste-Klasse-Status-Lifecycle: `DocumentStatus`, `IncidentStatus`, `RiskStatus`, `DataBreachStatus`, etc.; Server-erzwungene 5-Transition-Matrix; bulk-status-change-Support via canonical `_bulk_action_bar.html.twig` |
+| **YAML-Workflows** | Regulatorische Workflows als YAML-Source-of-Truth (`config/workflows/regulatory/*.yaml`) -- GDPR Data Breach, Incident Response, Risk Treatment, DPIA, DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC-Plan Activation, Document Review, Incident Post-Mortem; Event-getriebene Auto-Progression via Doctrine-Listener |
+| **Module-Awareness** | `config/modules.yaml` -- pro Tenant aktivierbare Frameworks/Funktionen; FormType-Trait `ModuleAwareFormTrait`, Controller-Trait `ModuleGatedControllerTrait`, Twig-Funktion `is_module_active()` -- saubere Trennung zwischen Pflicht- und Optional-Feldern |
 | **AlvaHint Foundation** | Rules-Engine fuer kontextuelle Hilfetexte (`src/AlvaHint/Rule/`) mit Tier-System, `requiredModules`/`requiredRoles`-Gating und Render-/Dismiss-Telemetrie |
 | **22 Compliance-Wizards** | 4 neue Wizards (BSI C5:2026, EUCS, EU CRA, MRIS v1.5); WizardSession 22 Slots; Wizard-History-Diff-View mit Compare-PDF-Export |
 | **Industry-Preset Express-Path** | Tag-1-Onboarding in 3 Fragen -- Module und Baselines werden automatisch aktiviert |
@@ -181,8 +174,8 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 | **19-Bucket Mein-Tag-Inbox** | Vollstaendige Inbox-Aggregation aus allen Modulen |
 | **Activity-Feed** | Vollansicht `/de/activity-feed` mit Scope-Filter, CSV-Export, HMAC-Verknuepfung |
 | **Quick-Fix-Operator-UI** | Web-UI fuer Migrationen, Schema-Reconcile und Daten-Repair ohne CLI |
-| **CSRF-Haertung** | 16 Forms + 6 Controller gehaertet; CommentController mit Cross-Tenant-Validation |
-| **276 Uebersetzungsdateien / 138 Domaenen** | Vollstaendige i18n-Abdeckung aller neuen Features (DE + EN) |
+| **CSRF-Haertung** | Alle zustandsaendernden Aktionen gehaertet (CI-Gate); CommentController mit Cross-Tenant-Validation |
+| **Uebersetzungen pro Domaene** | Vollstaendige i18n-Abdeckung aller neuen Features (DE + EN) |
 
 ---
 
@@ -191,14 +184,14 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 ### Compliance und Frameworks
 
 - **ISO 27001:2022** -- Alle 93 Annex-A-Controls und Clauses 4-10 vollstaendig abgedeckt
-- **26 Compliance-Frameworks (vollstaendige Kataloge in der DB)** -- ISO 27001:2022 (93 Annex A), BSI IT-Grundschutz (111 Bausteine / 1834 Anforderungen, Kompendium 2023 vollstaendig), BSI C5:2020 (121), BSI C5:2026 (168, BSI YAML verbatim), NIS2 (85, alle 46 Articles + Art. 21(2) Sub-Letters + Art. 23 Timeline), NIS2-UmsuCG (47, BGBl. 2025 I Nr. 301), DORA (315, Level-1 Articles + Level-2 RTS/ITS/CIR), TISAX VDA-ISA 6 (80 Control-Nummern) + TISAX VDA-ISA 2027 (78, parallel zertifizierbar), GDPR (alle 99 Articles), EU AI Act (alle 113 Articles + 13 Annexe), EU CRA (Annex I + Operative Articles), NIST CSF 2.0 (alle 106 Subcategories), SOC 2 (50), PCI-DSS 4.0.1 (75), ISO 27701:2025 (Annex A + B + Klauseln), ISO 22301 (25), ISO 42001 (Annex A + Klauseln), ISO 27017 (CLD-Erweiterungen + 27002 Cloud-Guidance, 121), ISO 27018 (Annex A + 27002 PII-Guidance, 143), KRITIS, ENISA-EUCS (Mapping-derived bis ENISA Final), MRIS v1.5, BAIT (legacy via DORA obsolet)
-- **Cross-Framework-Mapping** -- 56 kuratierte Mapping-Fixtures (~3.543 persistente Mappings), Lex-Specialis-Markierung wo zutreffend (DORA <-> NIS2, NIS2-UmsuCG <-> DORA fuer DE-Finanzdienstleister), 4-stufiger Lifecycle (draft -> review -> approved -> published) mit Provenance-Block je Mapping. Transitive Compliance-Ableitung -- ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
-- **22 Compliance-Wizards** -- ISO 27001, NIS2, DORA, TISAX, GDPR, ISO 22301, ISO 27701, ISO 27017, ISO 27018, ISO 42001, BSI IT-Grundschutz, BSI C5:2020, BSI C5:2026, NIST CSF 2.0, KRITIS, PCI-DSS 4.0.1, SOC 2, EU AI Act, EUCS, EU CRA, MRIS v1.5, Industry-Preset-Express
+- **Compliance-Frameworks (vollstaendige Kataloge in der DB)** -- ISO 27001:2022 (93 Annex A), BSI IT-Grundschutz (111 Bausteine / 1834 Anforderungen, Kompendium 2023 vollstaendig), BSI C5:2020 (121), BSI C5:2026 (168, BSI YAML verbatim), NIS2 (85, alle 46 Articles + Art. 21(2) Sub-Letters + Art. 23 Timeline), NIS2-UmsuCG (47, BGBl. 2025 I Nr. 301), DORA (315, Level-1 Articles + Level-2 RTS/ITS/CIR), TISAX VDA-ISA 6 (80 Control-Nummern) + TISAX VDA-ISA 2027 (78, parallel zertifizierbar), GDPR (alle 99 Articles), EU AI Act (alle 113 Articles + 13 Annexe), EU CRA (Annex I + Operative Articles), NIST CSF 2.0 (alle 106 Subcategories), SOC 2 (50), PCI-DSS 4.0.1 (75), ISO 27701:2025 (Annex A + B + Klauseln), ISO 22301 (25), ISO 42001 (Annex A + Klauseln), ISO 27017 (CLD-Erweiterungen + 27002 Cloud-Guidance, 121), ISO 27018 (Annex A + 27002 PII-Guidance, 143), KRITIS, ENISA-EUCS (Mapping-derived bis ENISA Final), MRIS v1.5, BAIT (legacy via DORA obsolet)
+- **Cross-Framework-Mapping** -- kuratierte Mapping-Fixtures, Lex-Specialis-Markierung wo zutreffend (DORA <-> NIS2, NIS2-UmsuCG <-> DORA fuer DE-Finanzdienstleister), 4-stufiger Lifecycle (draft -> review -> approved -> published) mit Provenance-Block je Mapping. Transitive Compliance-Ableitung -- ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
+- **Compliance-Wizards** -- ISO 27001, NIS2, DORA, TISAX, GDPR, ISO 22301, ISO 27701, ISO 27017, ISO 27018, ISO 42001, BSI IT-Grundschutz, BSI C5:2020, BSI C5:2026, NIST CSF 2.0, KRITIS, PCI-DSS 4.0.1, SOC 2, EU AI Act, EUCS, EU CRA, MRIS v1.5, Industry-Preset-Express
 - **Maturity-Reife je Wizard** -- Baseline (KMU-pragmatisch) und Enhanced (audit-ready) als ausklappbare Narrative pro Kategorie in NIS2, DORA, GDPR, EU AI Act
 - **Catalogue-Coverage-KPI** -- Wizard-Result zeigt zusaetzlich zur Score `X / Y Anforderungen aus dem Framework-Katalog erfuellt` als Fortschrittsbalken
-- **Branchen-Baselines** -- 9 vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
-- **Framework-Reife-Baselines** -- 35 Reife-Soll-Pakete (7 Frameworks x 5 Branchen: ISO 27001, BSI IT-Grundschutz, BSI C5, NIS2, DORA, TISAX, GDPR x KRITIS/Finance/SaaS/Manufacturing/Healthcare)
-- **MRIS v1.5** -- 19 zusaetzliche Branchen-Reife-Baselines mit DE/EN-i18n
+- **Branchen-Baselines** -- vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
+- **Framework-Reife-Baselines** -- Reife-Soll-Pakete (Frameworks x Branchen: ISO 27001, BSI IT-Grundschutz, BSI C5, NIS2, DORA, TISAX, GDPR x KRITIS/Finance/SaaS/Manufacturing/Healthcare)
+- **MRIS v1.5** -- zusaetzliche Branchen-Reife-Baselines mit DE/EN-i18n
 - **GSTOOL-XML-Import** -- 5-phasiger Migrationspfad fuer Grundschutz-Altbestaende (Zielobjekte -> Bausteine -> Massnahmen -> Risikoanalyse), Admin-UI mit Tabbed-Preview
 - **SoA-Export** -- Statement of Applicability als PDF, inklusive Management-Review nach Clause 9.3
 
@@ -263,7 +256,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 ### Sicherheit und Administration
 
-- **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR plus Persona-Rollen ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER (50+ Permissions)
+- **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR plus Persona-Rollen ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER plus granulare Permissions
 - **Tenant-Scoped Admin** -- `TenantScopedAdminVoter` schraenkt `ROLE_ADMIN` strikt auf den eigenen Tenant ein; nur `ROLE_SUPER_ADMIN` darf tenant-uebergreifend agieren
 - **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, AEAD-verschluesselte Client-Secrets)
 - **MFA** -- TOTP mit Backup-Codes
@@ -309,7 +302,7 @@ Sieben Persona-Perspektiven auf dasselbe ISMS — vollautomatisch via Playwright
 <td align="center">
 <a href="docs/sichtwechsel/compliance-manager.md"><img src="docs/sichtwechsel/img/compliance-manager/compliance-overview.png" alt="Compliance-Übersicht" /></a><br/>
 <b>Compliance-Manager / Head of GRC</b><br/>
-<sub>25 Frameworks, Cross-Mapping, Data-Reuse</sub>
+<sub>Frameworks, Cross-Mapping, Data-Reuse</sub>
 </td>
 <td align="center">
 <a href="docs/sichtwechsel/implementer-junior.md"><img src="docs/sichtwechsel/img/implementer-junior/welcome.png" alt="Welcome-Screen" /></a><br/>
@@ -451,23 +444,23 @@ Neu im Projekt? Lies **[ONBOARDING.md](ONBOARDING.md)** und die Dokumente unter 
 
 ```
 src/
-  Entity/         113 Doctrine-Entities (alle mit tenant_id)
-  Controller/     183 HTTP-Controller
-  Service/        352 Business-Logic-Services (inkl. Sub-Packages)
-  Command/        141 Console-Commands
-  Enum/            43 Status-Enums (DocumentStatus, IncidentStatus, ...)
+  Entity/             Doctrine-Entities (Tenant-eigene mit tenant_id)
+  Controller/         HTTP-Controller
+  Service/            Business-Logic-Services (inkl. Sub-Packages)
+  Command/            Console-Commands
+  Enum/               Status-Enums (DocumentStatus, IncidentStatus, ...)
   Lifecycle/          LifecycleService-Facade + EntityTypeRegistry
   AlvaHint/           Rules-Engine fuer kontextuelle Hilfetexte
   Security/Voter/     Authorization-Voter (inkl. TenantScopedAdminVoter)
 
 templates/        Twig-Templates mit Aurora v4 Macros
-translations/     276 YAML-Dateien (138 Domaenen x 2 Sprachen)
-tests/            816 Testdateien (Unit + WebTestCase + Lifecycle)
+translations/     eine YAML-Datei je Domaene und Sprache (DE/EN)
+tests/            Unit + WebTestCase + Lifecycle
 config/
-  modules.yaml             43 Module-Definitionen
+  modules.yaml             Module-Definitionen
   active_modules.yaml      Per-Tenant-Aktivierungs-Overrides
-  workflows/               16 Lifecycle-Workflows (Symfony Workflow)
-  workflows/regulatory/    15 regulatorische YAML-Workflows
+  workflows/               Lifecycle-Workflows (Symfony Workflow)
+  workflows/regulatory/    regulatorische YAML-Workflows
 ```
 
 Vollstaendiger Entwickler-Guide -- inklusive Patterns, Pre-Commit-Checks und
@@ -490,9 +483,9 @@ Common Pitfalls -- siehe [`CLAUDE.md`](CLAUDE.md).
 ### Wichtige Patterns
 
 - **Multi-Tenancy:** Jede Entity traegt `tenant_id`. `TenantContext` filtert automatisch. `TenantScopedAdminVoter` haelt `ROLE_ADMIN` strikt auf den eigenen Tenant.
-- **RBAC:** USER bis SUPER_ADMIN + Holding-Rollen (ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR) + Persona-Rollen (ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER), 50+ granulare Permissions via Voter.
+- **RBAC:** USER bis SUPER_ADMIN + Holding-Rollen (ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR) + Persona-Rollen (ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER), granulare Permissions via Voter.
 - **Lifecycle-Foundation:** Status-Uebergaenge ueber `LifecycleService::transition()`-Facade. YAML-Baseline unter `config/workflows/<entity>.yaml`, per-Tenant-Overrides via `/admin/lifecycle-overrides`. Direkte `setStatus()`-Aufrufe sind anti-pattern.
-- **Module-Awareness:** Optional-Features werden ueber `config/modules.yaml` (43 Module) gegated. FormType-Trait `ModuleAwareFormTrait`, Controller-Trait `ModuleGatedControllerTrait`, Twig-Funktion `is_module_active()`. Vollstaendige Referenz: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md).
+- **Module-Awareness:** Optional-Features werden ueber `config/modules.yaml` gegated. FormType-Trait `ModuleAwareFormTrait`, Controller-Trait `ModuleGatedControllerTrait`, Twig-Funktion `is_module_active()`. Vollstaendige Referenz: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md).
 - **Data Reuse:** Ein Nachweis wird ueber Cross-Framework-Mappings mehreren Frameworks zugeordnet. Review-Pflicht bei Uebernahme.
 - **Workflow Auto-Progression:** YAML-Workflows in `config/workflows/regulatory/*.yaml`. Doctrine-Listener triggert Schritte automatisch bei Feldaenderungen (AND/OR-Logik, zeitbasiert).
 
@@ -549,9 +542,9 @@ php bin/console isms:load-annex-a-controls --env=test
 
 | Dokument | Thema |
 |---|---|
-| [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | 22 Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Cross-Framework-Mapping-Hub |
-| [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | 5 Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Mega-Menu-Gating |
-| [Mein Tag](docs/user-guide/MEIN_TAG.md) | 19 Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
+| [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Cross-Framework-Mapping-Hub |
+| [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Mega-Menu-Gating |
+| [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |
 | [Modulverwaltung](docs/user-guide/MODULE_AKTIVIERUNG.md) | Module aktivieren und konfigurieren (User-Guide) |
@@ -574,7 +567,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Solution Description](docs/architecture/SOLUTION_DESCRIPTION.md) | Architektur-Uebersicht |
 | [Data Reuse Analysis](docs/architecture/DATA_REUSE_ANALYSIS.md) | Cross-Modul-Datenwiederverwendung |
 | [Cross-Framework Mappings](docs/architecture/CROSS_FRAMEWORK_MAPPINGS.md) | Multi-Framework-Mapping-Architektur |
-| [ISO Compliance](docs/compliance/ISO_COMPLIANCE_IMPLEMENTATION_SUMMARY.md) | ISO 27001:2022 Implementierungsdetails |
+| [ISO Compliance](docs/archive/compliance/ISO_COMPLIANCE_IMPLEMENTATION_SUMMARY.md) | ISO 27001:2022 Implementierungsdetails |
 | [Corporate Structure](docs/CORPORATE_STRUCTURE.md) | Holding-/Konzern-Governance |
 
 ### Betrieb

@@ -64,7 +64,7 @@ Use this guide to pace your onboarding. These are suggestions, not gates — go 
 5. Read [03-where-things-live.md](docs/onboarding/03-where-things-live.md) — find any file in 30 seconds.
 6. Read [04-hot-files.md](docs/onboarding/04-hot-files.md) — identify god-classes and files that need care.
 7. Read [05-test-runbook.md](docs/onboarding/05-test-runbook.md) — know how to run targeted vs full test suites.
-8. Read [06-quality-gates.md](docs/onboarding/06-quality-gates.md) — understand all 48 CI gates before you accidentally trip one.
+8. Read [06-quality-gates.md](docs/onboarding/06-quality-gates.md) — understand the CI gates before you accidentally trip one.
 9. Read [10-pr-template-guide.md](docs/onboarding/10-pr-template-guide.md) — fill in a PR review template correctly.
 
 ### Day 30 — Understand the WHY and take ownership
@@ -85,10 +85,10 @@ Use this guide to pace your onboarding. These are suggestions, not gates — go 
 | [03-where-things-live.md](docs/onboarding/03-where-things-live.md) | 30-namespace index; directory map; config file reference |
 | [04-hot-files.md](docs/onboarding/04-hot-files.md) | God-classes and most-edited files; caution flags |
 | [05-test-runbook.md](docs/onboarding/05-test-runbook.md) | Full suite; targeted subsets; fixtures; Playwright screenshots |
-| [06-quality-gates.md](docs/onboarding/06-quality-gates.md) | 48+ CI gates explained; baseline workflow; how to add a gate |
+| [06-quality-gates.md](docs/onboarding/06-quality-gates.md) | CI gates explained; baseline workflow; how to add a gate |
 | [07-personas-and-skills.md](docs/onboarding/07-personas-and-skills.md) | Persona-skills; RBAC persona-roles; multi-agent review pattern |
 | [08-release-cadence.md](docs/onboarding/08-release-cadence.md) | Three release tracks; version bump; cadence discipline |
-| [09-anti-patterns.md](docs/onboarding/09-anti-patterns.md) | 12 named pitfalls extracted from CLAUDE.md; gate that catches each |
+| [09-anti-patterns.md](docs/onboarding/09-anti-patterns.md) | Named pitfalls extracted from CLAUDE.md; gate that catches each |
 | [10-pr-template-guide.md](docs/onboarding/10-pr-template-guide.md) | PR sections; Conventional Commits; co-authorship; house rules |
 | [11-first-pr-walkthrough.md](docs/onboarding/11-first-pr-walkthrough.md) | Concrete first-contribution walkthrough: fork → fix → test → PR |
 | [12-maintainer-handoff.md](docs/onboarding/12-maintainer-handoff.md) | Production topology; backup/restore; release rollback; domain expertise gaps; what the maintainer holds in their head |
@@ -102,7 +102,7 @@ Key ADRs for new contributors:
 - [ADR-0001](docs/adr/0001-symfony-7-4-lts-pin.md) — Why Symfony 7.4 LTS (not 8.x)
 - [ADR-0002](docs/adr/0002-multi-tenant-tenant-id-pattern.md) — Multi-tenancy: every entity has `tenant_id`
 - [ADR-0003](docs/adr/0003-fairyaurora-v4-design-system.md) — FairyAurora v4: why a custom design system
-- [ADR-0007](docs/adr/0007-module-gating-pattern.md) — 40+ module gates: why features are opt-in per tenant
+- [ADR-0007](docs/adr/0007-module-gating-pattern.md) — module gates: why features are opt-in per tenant
 - [ADR-0010](docs/adr/0010-tisax-byo-vs-pre-seeded.md) — TISAX BYO-Wizard: why VDA-ISA content is never shipped; see also [ENX VDA-ISA Licensing Analysis](docs/tisax/ENX_VDA_ISA_LICENSING_ANALYSIS.md)
 - [ADR-0011](docs/adr/0011-hmac-chained-audit-log.md) — HMAC-chained audit log: tamper evidence for ISO 27001
 
@@ -124,7 +124,7 @@ Key ADRs for new contributors:
 | **TISAX** | Trusted Information Security Assessment Exchange — automotive-sector standard |
 | **RBAC** | Role-Based Access Control — permission model used throughout this application |
 | **Tenant** | Isolated organisational unit in the multi-tenant data model (UI label: "Organisation") |
-| **Module** | Optional feature gate (40 keys in `config/modules.yaml`) enabling compliance frameworks |
+| **Module** | Optional feature gate (keys in `config/modules.yaml`) enabling compliance frameworks |
 | **Lifecycle** | Symfony Workflow state machine for entity status transitions via `LifecycleService` |
 | **Aurora** | FairyAurora v4 — the project's custom design system built on Bootstrap 5.3 |
 | **Alva** | The in-app hint assistant ("Alva-Tipp") powered by rule-based `AlvaHintService` |

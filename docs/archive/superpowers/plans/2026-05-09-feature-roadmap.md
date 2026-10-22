@@ -4,7 +4,7 @@
 > out of date — F5b/F27/F28 listed here as future are DONE, and the whole
 > EU-authority-reporting cluster (F25/F26/F29/F30/F36/F40) shipped beyond this
 > plan. Authoritative current status:
-> [`2026-06-04-feature-catalog-verified-status.md`](2026-06-04-feature-catalog-verified-status.md).
+> [`2026-06-04-feature-catalog-verified-status.md`](../../../superpowers/plans/2026-06-04-feature-catalog-verified-status.md).
 
 **Status (2026-05-25):** Stripped to the still-open items. Sprint 0
 foundations, Sprint 1 (F2 W1 + F40), Sprint 5b (F1 SSO Wave 2), and

@@ -871,7 +871,7 @@ Use this checklist when creating new components:
 ### Internal
 - Component Library: `templates/_components/`
 - Form Accessibility Guide: `templates/_components/_FORM_ACCESSIBILITY_GUIDE.md`
-- UI/UX Audit Report: `docs/reports/ui-ux-comprehensive-audit-2025-11-19.md`
+- UI/UX Audit Report: `docs/archive/reports/ui-ux-comprehensive-audit-2025-11-19.md`
 
 ### External
 - [Bootstrap 5.3 Documentation](https://getbootstrap.com/docs/5.3/)

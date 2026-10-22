@@ -27,7 +27,6 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 
 **Zeitraum:** Abgeschlossen Dez 2025
 **Status:** ✅ Abgeschlossen
-**Audit:** [docs/phases/MODULE_COMPLETENESS_AUDIT.md](docs/phases/MODULE_COMPLETENESS_AUDIT.md)
 
 ### Überblick
 Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicherstellung der Zertifizierungsbereitschaft.
@@ -921,7 +920,7 @@ aufgesetzt nach Audit durch Senior-Consultant + Compliance-Manager + ISB-Review
 
 ### ✅ Phase 8CM2: Compliance-Manager-Residual-Sprint (Abgeschlossen 2026-04-20)
 
-**Grundlage:** `docs/audit/compliance_manager_analysis.md` v2.1 Residual-Liste
+**Grundlage:** Compliance-Manager-Analyse v2.1 Residual-Liste
 (~19 FTE-Tage). Alle 10 HIGH/MEDIUM/LOW-Items im zweitägigen UI-Sprint
 geschlossen. Audit-Doc v2.2 mit Gesamtbewertung **98 / 100** (v2.1: 96).
 
@@ -1295,7 +1294,7 @@ Fundament für alle weiteren Tenant-Konfigurationen. Kein Workaround mehr nötig
 
 **Zeitraum:** TBD (nach 9A)
 **Status:** 📅 Backlog — Consultant-Rapport `a050f86be4a963da9`. Subsumiert Phase 8K (Classification).
-**Priorität:** HOCH (Enterprise-Feature-Parität mit verinice)
+**Priorität:** HOCH (Enterprise-Feature-Parität im Markt)
 **Aufwand:** ~22 Entwicklungstage
 **Vorbedingung:** Phase 9A (braucht Config-Infrastructure)
 
@@ -1308,17 +1307,17 @@ Risiko-Matrix fix 5×5, Classification fix 4-stufig, Incident-Kategorien fix 6-s
 3. **Incident-Kategorien Tenant-erweiterbar** (3–4 Tage) — Holding-Baseline (6 Default-Kategorien), Child darf ergänzen.
 
 **Outcome**
-verinice-Ebene für Kernkonfigurationen. Konzern-Onboarding ohne Code-Änderung möglich. TISAX-Enterprise-Kunden-ready.
+Marktstandard für Kernkonfigurationen. Konzern-Onboarding ohne Code-Änderung möglich. TISAX-Enterprise-Kunden-ready.
 
 **Merke:** Phase 8K wird mit 9B zusammengelegt (Classification ist Teil des größeren Schema-Themas; separate Phase ist redundant).
 
 ---
 
-### 📅 Phase 9C: Market-Positioning — verinice-Feature-Parität für 80 %-Use-Cases
+### 📅 Phase 9C: Market-Positioning — Feature-Parität für 80 %-Use-Cases
 
 **Zeitraum:** TBD (nach 9B)
 **Status:** 📅 Backlog — Consultant-Rapport `a050f86be4a963da9`
-**Priorität:** MITTEL (differenzierter Pitch gegen verinice / HiScout)
+**Priorität:** MITTEL (differenzierter Pitch gegenüber etablierten Open-Source-Alternativen)
 **Aufwand:** ~12 Entwicklungstage
 **Vorbedingung:** Phase 9B
 
@@ -1329,7 +1328,7 @@ verinice-Ebene für Kernkonfigurationen. Konzern-Onboarding ohne Code-Änderung 
 4. **Vier-Augen-Action-Registry konfigurierbar** (4–6 Tage) — statt 4 hardcoded `FourEyesApprovalRequest::ACTION_*`, Tenant kann beliebige Actions als 4-Augen-Pflicht markieren.
 
 **Outcome**
-Feature-Parität mit verinice für die 80 %-Anwendungsfälle. LIH wird ernstzunehmende Alternative statt preiswerte Nische.
+Feature-Parität für die 80 %-Anwendungsfälle. LIH wird ernstzunehmende Alternative statt preiswerte Nische.
 
 ---
 
@@ -1512,7 +1511,7 @@ Die Roadmap oben endet erzählerisch bei Phase 8G (Apr 2026). Seither sind die R
 
 ## 📅 Strategischer Backlog (aus Markt- & DACH-Audit, Jun 2026)
 
-> Quelldokumente (intern): [`docs/superpowers/plans/2026-06-06-market-positioning-review.md`](docs/superpowers/plans/2026-06-06-market-positioning-review.md) · [`docs/superpowers/plans/2026-06-06-dach-regulatory-deepening.md`](docs/superpowers/plans/2026-06-06-dach-regulatory-deepening.md)
+> Quelldokumente: interne Plan-Docs (Markt-Positionierungs- und DACH-Tiefen-Review, Jun 2026), nicht im Repository.
 
 ### Code-Härtung (Markt-Review P2/P3)
 - 📅 Per-Tenant-Modul-Gating (`isModuleActive` ist aktuell global) → Voraussetzung für Holding-Framework-Mandat
@@ -1551,14 +1550,12 @@ Die Roadmap oben endet erzählerisch bei Phase 8G (Apr 2026). Seither sind die R
 
 ## 📈 Projekt-Metriken
 
-### Aktueller Stand (Jun 2026 — Release-Linie v3.x, main @ #901)
-- **Entities:** 113 Doctrine-Entities (alle mit `tenant_id`)
-- **Compliance-Frameworks:** 25 vollständig · ~3.543 Cross-Framework-Mappings · 106 BSI-Bausteine · 93 ISO-27001-Controls
-- **Compliance-Wizards:** 22
-- **Controllers / Services / Commands:** ~220 / ~480 / ~160 Klassen-Dateien (inkl. Traits/Helper)
-- **Templates:** ~880 Twig-Templates · **Übersetzungen:** ~296 YAML (≈148 Domains × 2 Sprachen)
-- **Tests:** ~1.000+ Test-Dateien, CI-grün (full phpunit + Twig/Container-Lint + ~45 Quality-Gates)
-- **API Endpoints:** 18 von ~80 Entities via API Platform exponiert (Ausbau im Backlog)
+### Aktueller Stand
+Zahlen werden nicht von Hand gepflegt; sie stehen in den Quellen und lassen sich per Befehl ermitteln:
+
+- Entities: `ls src/Entity/*.php | wc -l` · Controller: `find src/Controller -name '*.php' | wc -l` · Services: `find src/Service -name '*.php' | wc -l` · Commands: `ls src/Command/*.php | wc -l`
+- Übersetzungs-Domains: `ls translations/*.de.yaml | wc -l` · Module: `config/modules.yaml` · Workflows: `ls config/workflows/regulatory/*.yaml | wc -l`
+- Tests und Quality-Gates: `php bin/phpunit`, `.github/workflows/ci.yml`
 - **Frameworks (Auswahl):** ISO 27001/22301/27005/27701, NIS2 + NIS2UmsuCG, DORA, TISAX/VDA-ISA, BSI IT-Grundschutz, BSI C5:2020/2026, KRITIS, GDPR/DSGVO, BDSG, EU AI Act, SOC 2, NIST CSF, CIS Controls, TKG, PCI DSS, HIPAA, CCPA, LGPD
 
 ---
@@ -1632,8 +1629,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 ## 📞 Weitere Informationen
 
 - **Projekt-README:** [README.md](README.md)
-- **Module Completeness Audit:** [docs/phases/MODULE_COMPLETENESS_AUDIT.md](docs/phases/MODULE_COMPLETENESS_AUDIT.md)
-- **Phase Reports:** [docs/phases/](docs/phases/)
+- **Dokumentationsübersicht:** [docs/README.md](docs/README.md)
 - **Issue Tracker:** [GitHub Issues](https://github.com/moag1000/Little-ISMS-Helper/issues)
 
 ---

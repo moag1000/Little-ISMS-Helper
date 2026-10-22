@@ -305,7 +305,9 @@ Module-gated fields use the same translation domain as the surrounding FormType.
 No separate domain for gated fields. The "module inactive" flash message uses
 the `messages` domain key `common.module_not_active`.
 
-#### 21 Module Keys Reference
+#### Module Keys Reference
+
+Authoritative list: `config/modules.yaml`; the table below shows the common ones.
 
 | Key | Trigger |
 |---|---|
