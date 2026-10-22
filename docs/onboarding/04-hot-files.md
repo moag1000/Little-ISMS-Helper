@@ -44,7 +44,7 @@ split strategy.
 ### 3. `src/Service/RestoreService.php` — 2285 LOC
 
 - **What it does:** Deserialises a backup archive (JSON + attachments) and
-  restores all 114 entities in dependency-safe insertion order, handling
+  restores all entities in dependency-safe insertion order, handling
   conflict resolution, tenant re-mapping, and orphan detection.
 - **Why it is large:** Each entity type requires a custom restoration strategy
   (upsert vs replace, FK order, unique-field deduplication). Foreign-key
@@ -97,7 +97,7 @@ split strategy.
 - **What it does:** Detects and repairs data integrity issues: orphaned records,
   tenant mismatches, duplicate entities, missing required fields, and FK
   violations. Feeds the `/quick-fix` operator UI.
-- **Why it is large:** Each of the 114 entities needs individual repair logic;
+- **Why it is large:** Each entity needs individual repair logic;
   the service also generates a structured repair report with severity levels.
 - **Refactor caution:** Repair operations are destructive. New repair methods
   must be non-destructive by default (dry-run first) and must log every
@@ -128,7 +128,7 @@ split strategy.
 
 ### 10. `src/Service/Search/SearchService.php` — 1410 LOC
 
-- **What it does:** Full-text search across 33+ entity types with faceted
+- **What it does:** Full-text search across the searchable entity types with faceted
   filtering, relevance scoring, tenant isolation, module-gating per entity
   type, and result-type grouping.
 - **Why it is large:** Each entity type requires a custom search query with

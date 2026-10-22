@@ -12,7 +12,7 @@ use App\Entity\InternalAudit;
 use App\Repository\ComplianceMappingRepository;
 
 /**
- * C4-B4 (CM_DATA_REUSE): cross-framework coverage analysis for multi-framework
+ * Cross-framework coverage analysis for multi-framework
  * audits. A single audit may cover ISO 27001 + NIS2 + DORA in one pass; this
  * service computes which findings transitively close requirements across every
  * covered framework via the ComplianceMapping graph.

@@ -24,7 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F29 — NIS-2 BSI-Portal Yearly Re-Registration Controller.
+ * NIS-2 BSI-Portal Yearly Re-Registration Controller.
  *
  * Routes:
  *  GET  /authority/nis2-registration         — index: profile overview

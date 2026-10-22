@@ -11,7 +11,7 @@ namespace App\Enum;
  * mirror the legacy `FourEyesApprovalRequest::STATUS_*` constants. No data
  * migration required: enum cases share string literals with prior code.
  *
- * Phase 1 status-enum rollout — typed surface for application code while
+ * typed surface for application code while
  * the storage column and setStatus(string) accessor stay backward-compatible.
  */
 enum FourEyesApprovalRequestStatus: string

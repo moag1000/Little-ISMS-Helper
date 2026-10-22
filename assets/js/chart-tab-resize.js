@@ -9,8 +9,8 @@
  *
  * Bootstrap fires `shown.bs.tab` on the tab trigger once the target pane is
  * visible; at that point we resize every Chart instance inside the revealed
- * pane so it picks up the now-real dimensions. This is the concrete piece of
- * H-12 the per-dashboard Stimulus controllers exist for.
+ * pane so it picks up the now-real dimensions. This is what the per-dashboard
+ * Stimulus controllers rely on.
  */
 
 /** Resize every Chart.js instance whose <canvas> lives inside `container`. */

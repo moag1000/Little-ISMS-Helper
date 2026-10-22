@@ -104,7 +104,7 @@ class WorkflowController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function definitions(): Response
     {
-        // Y.4: YAML workflows are now the source of truth. The Admin Workflow
+        // YAML workflows are now the source of truth. The Admin Workflow
         // Overlay Editor at /admin/workflows is the canonical UI for inspecting
         // and overriding workflow steps. Keep this route as a permanent redirect
         // for bookmarks; DB Workflow rows remain in place for audit-trail.
@@ -214,7 +214,7 @@ class WorkflowController extends AbstractController
     }
 
     /**
-     * Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH).
+     * Request a clarification from the workflow initiator.
      *
      * Allows the current approver to send a question to the workflow's
      * initiator (or the ISO if no initiator is set) WITHOUT rejecting or
@@ -418,7 +418,7 @@ class WorkflowController extends AbstractController
             10
         );
 
-        // Y.4: Show YAML-registered workflow data side-by-side with DB historical data.
+        // Show YAML-registered workflow data side-by-side with DB historical data.
         // New workflows are defined in config/workflows/regulatory/*.yaml.
         // DB rows are preserved read-only for historical display.
         return $this->render('workflow/definition_show.html.twig', [

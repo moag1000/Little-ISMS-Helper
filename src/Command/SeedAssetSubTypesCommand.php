@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * S18 B2 — Seed industry-preset AssetSubType rows for a tenant.
+ * Seed industry-preset AssetSubType rows for a tenant.
  *
  * Usage:
  *   php bin/console app:seed-asset-sub-types --preset=bsi-grundschutz --tenant-id=1

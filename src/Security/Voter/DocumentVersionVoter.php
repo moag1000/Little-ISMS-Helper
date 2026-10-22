@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * F4 Evidence-Versioning — DocumentVersion voter.
+ * Evidence-Versioning — DocumentVersion voter.
  *
  * Immutability contract:
  *  - VIEW: any authenticated user of the same tenant may view versions.

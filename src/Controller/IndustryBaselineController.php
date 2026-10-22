@@ -140,7 +140,7 @@ final class IndustryBaselineController extends AbstractController
     }
 
     /**
-     * Phase 9.P1.5 — Holding operator applies a baseline to the full
+     * Holding operator applies a baseline to the full
      * corporate subtree (holding + all direct/transitive subsidiaries).
      * Intended for governance baselines (ISO 27001 clauses, top-level
      * policies) that every tochter should share as a starting point.

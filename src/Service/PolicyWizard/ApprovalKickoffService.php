@@ -25,7 +25,7 @@ use Psr\Log\NullLogger;
 use Throwable;
 
 /**
- * Policy-Wizard W3-I — ApprovalKickoffService.
+ * Policy-Wizard — ApprovalKickoffService.
  *
  * Closes the production trigger gap "Step 7 generates Documents but
  * never enqueues the approval workflow". For every freshly generated
@@ -47,8 +47,8 @@ use Throwable;
  *    command runs.
  *  - DORA-supervised tenants get the WorkflowInstance approval-history
  *    annotated with `bulk_approval_dual_signoff=true` plus
- *    `dora_dual_signoff_enforced=true` per §9.2.1 defang #2 (W4-A
- *    Task 4). DORA scope is detected by EntityTag rows
+ *    `dora_dual_signoff_enforced=true` per §9.2.1 defang #2).
+ *    DORA scope is detected by EntityTag rows
  *    (`standard:dora` / `dora-extension:applied`) emitted by
  *    {@see DocumentGenerator}; the override fires regardless of the
  *    `bulk_approval_dual_signoff` TenantSettingResolver result.
@@ -169,7 +169,7 @@ final class ApprovalKickoffService
         }
 
         // §9.2.1 defang #2: regulated tenants force dual sign-off ON.
-        // W4-A Task 4: DORA-supervised tenants override the resolver
+        // DORA-supervised tenants override the resolver
         // result. Detection scans for any persisted Document carrying
         // a `standard:dora` or `dora-extension:applied` tag — both
         // signals are emitted by DocumentGenerator when DORA scope is
@@ -300,7 +300,7 @@ final class ApprovalKickoffService
     }
 
     /**
-     * W7-B — record a witness/co-signature on the approval-trail.
+     * Record a witness/co-signature on the approval-trail.
      *
      * GDPR DPO/CISO joint sign-offs (Art. 38(3) DPO independence) and
      * BSI 4-eyes ceremonies use this method to attach the second
@@ -360,7 +360,7 @@ throw new \LogicException(sprintf(
     }
 
     /**
-     * W6 Gap-E — guard called BEFORE adding a Document to a bulk-approval
+     * Guard called BEFORE adding a Document to a bulk-approval
      * batch. GDPR Art. 38(3) DPO-independence requirement: the DPO Charter
      * MUST be approved standalone so the independence sign-off is on the
      * audit trail unbundled from any other document. Privacy Policy is
@@ -373,7 +373,7 @@ throw new \LogicException(sprintf(
      * producer) and pass without further inspection.
      *
      * Spec: `docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md`
-     * line 285 (Auditor "Open questions for Phase 4" #1, lines 291-293).
+     * (Auditor "Open questions" #1).
      *
      * @throws DpoCharterBulkApprovalException when $document is a
      *         DPO Charter or Privacy Policy.
@@ -411,7 +411,7 @@ throw new \LogicException(sprintf(
     }
 
     /**
-     * W6 Gap-E — Topic keys forbidden from bulk batches (GDPR Art. 38(3)).
+     * Topic keys forbidden from bulk batches (GDPR Art. 38(3)).
      * Kept narrow on purpose: only the two artefacts that establish the
      * DPO independence + data-protection commitment chain. Other GDPR
      * documents (RoPA, DPIA Methodology, DSR Procedure, Retention) MAY
@@ -424,7 +424,7 @@ throw new \LogicException(sprintf(
     ];
 
     /**
-     * W4-A Task 4 — does the tenant carry any DORA-tagged Document?
+     * Does the tenant carry any DORA-tagged Document?
      *
      * Scans EntityTag rows for the canonical DORA markers emitted by
      * {@see DocumentGenerator::applyTags}: `standard:dora` (any of the

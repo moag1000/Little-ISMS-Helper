@@ -34,7 +34,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * The wizard builds a session-backed draft IdentityProvider, persisting only on step 3 confirm.
  *
- * Role-Scope Architecture (Phase 4a, spec
+ * Role-Scope Architecture (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`): class-level
  * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} restricts the wizard to
  * Tenant-Admins acting in their own tenant tree (SUPER_ADMIN sees all). The

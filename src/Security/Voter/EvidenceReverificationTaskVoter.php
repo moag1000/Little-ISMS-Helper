@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * F4 Evidence-Versioning — EvidenceReverificationTask voter.
+ * Evidence-Versioning — EvidenceReverificationTask voter.
  *
  * Rules:
  *  - VIEW: any authenticated user of the same tenant.

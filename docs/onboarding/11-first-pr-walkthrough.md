@@ -135,7 +135,7 @@ php bin/console debug:translation en --only-missing 2>&1 | grep "risk.foo.bar"
 
 ## Step 4: Run the Relevant Tests
 
-Do not run the full 2850+ test suite for a translation change. Run targeted:
+Do not run the full test suite for a translation change. Run targeted:
 
 ```bash
 # Lint all templates (catches translation key syntax errors)

@@ -18,7 +18,7 @@ use Twig\Environment as TwigEnvironment;
 use ZipArchive;
 
 /**
- * Policy-Wizard W7-A — bulk ZIP export for auditors.
+ * Policy-Wizard — bulk ZIP export for auditors.
  *
  * Builds a single ZIP archive holding the full tenant policy set as
  * PDF (one file per Document, grouped per standard), plus an evidence

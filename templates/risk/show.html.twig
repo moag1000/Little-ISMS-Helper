@@ -85,7 +85,7 @@
         {{ _lifecycle_actions.dropdown(risk, 'risk', 'risk_lifecycle') }}
     </div>
 
-    {# Data-Reuse: Entity Link Matrix (Junior-Finding #8 / CM-Blocker) #}
+    {# Data-Reuse: Entity Link Matrix #}
     {% include '_components/_entity_link_matrix.html.twig' with {
         source_type: 'risk',
         entity: risk,
@@ -109,7 +109,7 @@
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% import '_components/_status_pill.html.twig' as pill %}
             {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-            {# Phase 8H.1: standardised via _detail_group component #}
+            {# Standardised via _detail_group component #}
             {% include '_components/_detail_group.html.twig' with {
                 items: [
                     { label: 'risk.field.status'|trans({}, 'risk'), value: (risk.status ? risk.status.value : '')|upper|replace({'_': ' '}) },
@@ -170,8 +170,8 @@
                 {% endif %}
             </div>
 
-            {# F46 Quantitative Risk — ALE display (module: risk_quant) #}
-            {# F7 field-level RBAC: SLE/ARO/ALE are sensitive monetary fields — ROLE_MANAGER+ only #}
+            {# Quantitative Risk — ALE display (module: risk_quant) #}
+            {# Field-level RBAC: SLE/ARO/ALE are sensitive monetary fields — ROLE_MANAGER+ only #}
             {% if is_module_active('risk_quant') and risk.annualLossExpectancy is not null and can_view_field('Risk', 'sle') %}
                 <div class="detail-section">
                     <h3>{{ 'risk.quant.section.title'|trans({}, 'risk') }}</h3>
@@ -212,7 +212,7 @@
                     </p>
                 </div>
             {% elseif is_module_active('risk_quant') and risk.annualLossExpectancy is not null and not can_view_field('Risk', 'sle') %}
-                {# F7: module active + data present, but user role cannot see monetary fields #}
+                {# Module active + data present, but user role cannot see monetary fields #}
                 <div class="detail-section">
                     <h3>{{ 'risk.quant.section.title'|trans({}, 'risk') }}</h3>
                     <p class="text-muted fst-italic">{{ 'field.access.restricted'|trans({}, 'risk') }}</p>
@@ -237,7 +237,7 @@
                 {% endif %}
             </div>
 
-            {# Data Reuse: Risk Owner — F7 field-level RBAC (A.5.18): owner identity requires ROLE_MANAGER+ #}
+            {# Data Reuse: Risk Owner — field-level RBAC (A.5.18): owner identity requires ROLE_MANAGER+ #}
             {% if risk.effectiveRiskOwner or risk.riskOwner or risk.riskOwnerPerson %}
                 <div class="detail-section">
                     <h3>{{ 'risk.section.risk_owner'|trans({}, 'risk') }}</h3>
@@ -286,7 +286,7 @@
                 </div>
             {% endif %}
 
-            {# V3 W2-FV-2 — Unified "All linked Assets" overview.
+            {# Unified "All linked Assets" overview.
                Aggregates the primary risk-subject asset and every
                ictAssetDependency entry into a single explorable list so
                the auditor can see EVERY asset behind the risk at a
@@ -352,7 +352,7 @@
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.asset.name }}</div>
                                 <p><strong>{{ 'asset.field.type'|trans({}, 'asset') }}:</strong> {{ risk.asset.assetType }}</p>
-                                {# Junior-ISB-Audit S14+ #15: legacy monetaryValue column dropped — currentValue is canonical (form-maintained via AssetType). Pre-migration rows were backfilled in Version20260612100000_DropAssetMonetaryValue. #}
+                                {# Legacy monetaryValue column dropped — currentValue is canonical (form-maintained via AssetType). Pre-migration rows were backfilled in Version20260612100000_DropAssetMonetaryValue. #}
                                 {% set assetValue = risk.asset.currentValue %}
                                 {% if assetValue %}
                                     <p><strong>{{ 'asset.field.current_value'|trans({}, 'asset') }}:</strong> €{{ assetValue|number_format(2, ',', '.') }}</p>
@@ -550,19 +550,19 @@
         {% endblock %}
     {% endembed %}
 
-    {# V3 B6 / EF-4: Inverse-Coverage Impact-Analyse #}
+    {# Inverse-Coverage Impact-Analyse #}
     {% include '_components/_impact_coverage.html.twig' with {
         impact: impact_coverage|default({total: 0, frameworks: []}),
         entity_label: 'risk'
     } %}
 
-    {# F16: Risk-Incident cross-links #}
+    {# Risk-Incident cross-links #}
     {% include 'risk/_linked_incidents.html.twig' with {
         risk: risk,
         riskIncidentLinks: riskIncidentLinks|default([])
     } only %}
 
-    {# V3 W2-H3: Comment-Thread adoption (C7 macro). #}
+    {# Comment-Thread adoption (C7 macro). #}
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'Risk',

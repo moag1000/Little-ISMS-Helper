@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard\Step;
 use App\Entity\WizardRun;
 
 /**
- * Policy-Wizard W2-A — contract for individual step evaluators.
+ * Policy-Wizard — contract for individual step evaluators.
  *
  * Each step in the 7-step flow (plus the targeted re-run sub-flow) is
  * implemented as a class behind this interface so the
@@ -64,7 +64,7 @@ interface StepInterface
     /**
      * Pre-fill values for the step's form, sourced from existing
      * tenant data (for now: from prior wizard runs of the same tenant
-     * — full integration with VariableCollector lands in W3).
+     * — full integration with VariableCollector is planned).
      *
      * @return array<string, mixed>
      */

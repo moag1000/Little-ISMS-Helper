@@ -59,7 +59,7 @@ final class FrameworkCode
         'EU-CRA',
         'PCI-DSS-4.0.1',
         'MRIS-v1.5',
-        // DACH frameworks (added on main via #962, registry-bound)
+        // DACH frameworks (registry-bound)
         'NISG-AT',
         'REVDSG-CH',
         'IKT-MINSTD-CH',

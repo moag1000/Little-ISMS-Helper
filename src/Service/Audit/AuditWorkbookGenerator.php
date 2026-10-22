@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * implementations and routes generate() calls to the correct generator based on
  * the requested export type.
  *
- * Usage from a controller (F40.3):
+ * Usage from a controller:
  *   return $generator->streamToResponse('soa', $tenant, [], 'soa-export.xlsx');
  */
 final class AuditWorkbookGenerator
@@ -87,7 +87,7 @@ final class AuditWorkbookGenerator
     /**
      * Stream the generated XLSX workbook directly into an HTTP response.
      *
-     * Designed for controller actions (F40.3): produces a StreamedResponse
+     * Designed for controller actions: produces a StreamedResponse
      * with appropriate Content-Disposition / Content-Type headers so the
      * browser triggers a file download without writing to disk.
      *

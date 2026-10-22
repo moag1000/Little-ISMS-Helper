@@ -20,7 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Loads the ISO panel verdict fixture (144 entries: 133 ki_validiert, 2 reject, 9 needs_review)
  * and applies each verdict to the matching ISO 27001 → BSI IT-Grundschutz ComplianceMapping.
  *
- * ## NIS2 → BSI IT-Grundschutz (Task 4 / WS NIS2)
+ * ## NIS2 → BSI IT-Grundschutz
  * Use --fixture and --source-framework / --target-framework to apply the NIS2 panel verdicts:
  *   php bin/console app:bsi:apply-panel-verdicts \
  *     --fixture=fixtures/library/mappings/panel_verdicts/nis2-art21_to_bsi-grundschutz_panel_v1.json \

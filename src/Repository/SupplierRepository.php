@@ -144,7 +144,7 @@ class SupplierRepository extends ServiceEntityRepository
     }
 
     /**
-     * DORA Phase 1 — RoI scope filter.
+     * DORA — RoI scope filter.
      *
      * Returns only suppliers flagged as DORA-relevant (isDoraRelevant = true)
      * for the given tenant. Used by DoraRoiXbrlExporter::generate() to
@@ -167,7 +167,7 @@ class SupplierRepository extends ServiceEntityRepository
     }
 
     /**
-     * Phase 9.P2.5 — Cross-tenant supplier roll-up.
+     * Cross-tenant supplier roll-up.
      *
      * Collapses supplier rows from the given tenant subtree into a
      * deduplicated set keyed by LEI (preferred, ISO 17442 globally

@@ -64,7 +64,7 @@ final class PrototypeProtectionAssessmentType extends AbstractType implements Se
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `prototype_protection_assessment_lifecycle`. TISAX
             // VDA-ISA 6.0 4-eyes auf `approve`. Transitions via
             // LifecycleService::transition() only.

@@ -20,7 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Wizard Report Command
  *
- * Phase 7E: Generates compliance wizard reports from the command line.
+ * Generates compliance wizard reports from the command line.
  * Supports multiple output formats and can run assessments for any framework.
  *
  * Usage:

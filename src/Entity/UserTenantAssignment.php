@@ -147,7 +147,7 @@ class UserTenantAssignment
     /**
      * Optimistic-lock guard for concurrent admin edits (e.g. two admins
      * simultaneously toggling `isPrimary`). Lifecycle-spec convention since
-     * Foundation P-4b — every multi-actor-mutated entity carries this.
+     * Every multi-actor-mutated entity carries this.
      */
     #[ORM\Version]
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]

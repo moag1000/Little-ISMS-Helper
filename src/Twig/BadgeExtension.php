@@ -13,7 +13,7 @@ use Twig\Attribute\AsTwigFunction;
  * - Provides semantic status-to-color mapping
  * - Eliminates inline ternary logic
  *
- * Aurora v4 Migration (Sprint B):
+ * Aurora v4 Migration:
  * - All methods return BC-aliased dual class-set:
  *   "badge bg-{bs-color} fa-status-pill fa-status-pill--{aurora-variant}"
  * - Bootstrap classes kept for backward-compat (templates using the class
@@ -96,7 +96,7 @@ final class BadgeExtension
         'obsolete' => 'danger',
         'in_review' => 'info',
         'archived' => 'secondary',
-        // 'active' — legacy document state (S3 P-4 migrated to 'published').
+        // 'active' — legacy document state (migrated to 'published').
         // Kept for non-document entities (Supplier, Consent, etc.) that still
         // use 'active' as their canonical value.
         'active' => 'secondary',

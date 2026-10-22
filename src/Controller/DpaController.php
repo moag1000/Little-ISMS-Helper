@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F32 DPA-Generator — Art. 28 GDPR AVV generation endpoints.
+ * DPA-Generator — Art. 28 GDPR AVV generation endpoints.
  *
  * Two actions:
  *  - GET  `/privacy/dpa/generate/{supplierId}/{paId}`  — confirm page

@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Role gate: PERSONA_ISB (resolves to ROLE_ISB via TenantScopedAdminVoter).
  *
- * Wave 5 / Part 2 — placeholder release: full KPI widgets planned in follow-up sprint.
+ * placeholder release: full KPI widgets planned in follow-up sprint.
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards/isb', name: 'app_dashboard_isb')]

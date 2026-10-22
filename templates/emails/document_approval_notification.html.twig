@@ -1,7 +1,7 @@
 {% extends 'emails/base.html.twig' %}
 
 {#
- # Approval-Email — Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH).
+ # Approval-Email — .
  #
  # Vor dieser Iteration sah die Email für Fachbereichsleiter:innen wie eine
  # ITSec-Email aus: keine Erklärung WAS sie freigeben, was bei Reject passiert,
@@ -19,7 +19,7 @@
  #   - approval_level       : 'policy'|'procedure'|'guideline'
  #   - is_new_document      : bool
  #   - category             : Document.category
- # Optionale Variablen (ab Task #124, vom Service nachgereicht wenn vorhanden):
+ # Optionale Variablen (vom Service nachgereicht wenn vorhanden):
  #   - workflow_instance    : App\Entity\WorkflowInstance — für Frist + Step-Name
  #   - approval_link        : string — Direktlink zum Approval-Screen
  #   - clarify_link         : string — Direktlink zur "Rückfrage"-Aktion

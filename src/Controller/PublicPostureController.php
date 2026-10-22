@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * F43 Trust-Center — unauthenticated public compliance-posture endpoint.
+ * Trust-Center — unauthenticated public compliance-posture endpoint.
  *
  * Route: GET /trust/{token}  (no /{_locale} prefix — registered via
  * public_posture_routes in config/routes.yaml, same pattern as infra probes).

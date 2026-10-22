@@ -210,29 +210,29 @@ final class ImplementationJourneyService
      */
     private function collectMetrics(Tenant $tenant): array
     {
-        // Phase 1: Context
+        // Context
         $context = $this->ismsContextRepository->getContextForTenant($tenant);
         $hasScope = $context !== null && $context->getIsmsScope() !== null && $context->getIsmsScope() !== '';
         $interestedPartyCount = count($this->interestedPartyRepository->findBy(['tenant' => $tenant]));
 
-        // Phase 2: Assets
+        // Assets
         $assetCount = count($this->assetRepository->findBy(['tenant' => $tenant]));
 
-        // Phase 3: Risks
+        // Risks
         $riskCount = count($this->riskRepository->findBy(['tenant' => $tenant]));
         $hasAppetite = count($this->riskAppetiteRepository->findAllActiveForTenant($tenant)) > 0;
 
-        // Phase 4: Controls (applicable = true AND implementationStatus != 'not_started')
+        // Controls (applicable = true AND implementationStatus != 'not_started')
         $applicableReviewedCount = $this->countApplicableReviewedControls($tenant);
 
-        // Phase 5: Business Continuity Plans
+        // Business Continuity Plans
         $bcPlanCount = count($this->bcPlanRepository->findBy(['tenant' => $tenant]));
 
-        // Phase 6: Evidence
+        // Evidence
         $auditCount = count($this->internalAuditRepository->findBy(['tenant' => $tenant]));
         $reviewCount = count($this->managementReviewRepository->findBy(['tenant' => $tenant]));
 
-        // Phase 7: Improvement
+        // Improvement
         $openFindingsCount = count($this->auditFindingRepository->findOpenByTenant($tenant));
         $openCorrectiveCount = (int) $this->correctiveActionRepository
             ->createQueryBuilder('ca')
@@ -302,7 +302,7 @@ final class ImplementationJourneyService
     }
 
     /**
-     * Phase 1 -- Context (ISO 4.1-4.3)
+     * Context (ISO 4.1-4.3)
      * scope filled = 50 pts, interested parties (min 3) = 50 pts proportional
      *
      * @param array<string, mixed> $m
@@ -318,7 +318,7 @@ final class ImplementationJourneyService
     }
 
     /**
-     * Phase 2 -- Assets (ISO 8.1)
+     * Assets (ISO 8.1)
      * Linear ramp to threshold = 100 %. Threshold scales with company size.
      *
      * @param array<string, mixed> $m
@@ -331,7 +331,7 @@ final class ImplementationJourneyService
     }
 
     /**
-     * Phase 3 -- Risks (ISO 6.1)
+     * Risks (ISO 6.1)
      * Risks at threshold = 80 pts + appetite exists = 20 pts
      *
      * @param array<string, mixed> $m
@@ -346,7 +346,7 @@ final class ImplementationJourneyService
     }
 
     /**
-     * Phase 4 -- Controls / SoA (ISO 6.1.3)
+     * Controls / SoA (ISO 6.1.3)
      * Applicable & reviewed controls at threshold = 100 %
      *
      * @param array<string, mixed> $m
@@ -359,7 +359,7 @@ final class ImplementationJourneyService
     }
 
     /**
-     * Phase 5 -- Emergency / BCM (A.5.29-A.5.30)
+     * Emergency / BCM (A.5.29-A.5.30)
      * At least 1 BC plan = 100 %
      *
      * @param array<string, mixed> $m
@@ -370,7 +370,7 @@ final class ImplementationJourneyService
     }
 
     /**
-     * Phase 6 -- Evidence (ISO 9.2-9.3)
+     * Evidence (ISO 9.2-9.3)
      * 1 internal audit = 50 pts, 1 management review = 50 pts
      *
      * @param array<string, mixed> $m
@@ -384,7 +384,7 @@ final class ImplementationJourneyService
     }
 
     /**
-     * Phase 7 -- Improvement (ISO 10.1-10.2)
+     * Improvement (ISO 10.1-10.2)
      * 0 open findings/actions = 100 %, each open item costs 10 pts
      *
      * @param array<string, mixed> $m

@@ -23,18 +23,18 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
- * Workflow Management Service — public API facade (Sprint Y.0 / Y.2).
+ * Workflow Management Service — public API facade.
  *
  * Manages the lifecycle of approval workflows for ISMS entities.
  * Supports multi-step approval processes with configurable approvers and SLA tracking.
  *
- * Sprint Y.0: Internal status mutations have been replaced with
+ * Internal status mutations have been replaced with
  * LifecycleTransitionInterface::transition() calls against the
  * `workflow_instance_lifecycle` Symfony state-machine
  * (config/workflows/workflow_instance.yaml).
  * The public method signatures are UNCHANGED — callers are unaffected.
  *
- * Sprint Y.2: startWorkflow() now consults RegulatoryWorkflowLoader first;
+ * StartWorkflow() now consults RegulatoryWorkflowLoader first;
  * if the requested workflow name is registered in the Symfony Workflow Registry
  * (config/workflows/regulatory/*.yaml), the YAML-defined steps are used to seed
  * the WorkflowInstance. Falls back to DB-backed WorkflowRepository for tenant-custom
@@ -52,7 +52,7 @@ class WorkflowService
     private const WORKFLOW_NAME = 'workflow_instance_lifecycle';
 
     /**
-     * Map: entityType → canonical YAML workflow name (Sprint Y.2).
+     * Map: entityType → canonical YAML workflow name.
      * Used when startWorkflow() is called without an explicit $workflowName.
      */
     private const ENTITY_TYPE_TO_YAML_WORKFLOW = [
@@ -137,7 +137,7 @@ class WorkflowService
     /**
      * Start a workflow for an entity.
      *
-     * Sprint Y.2: tries YAML-registered regulatory workflow first (via
+     * Tries YAML-registered regulatory workflow first (via
      * RegulatoryWorkflowLoader), then falls back to DB-backed WorkflowRepository
      * for tenant-custom workflows not yet migrated to YAML.
      *
@@ -150,7 +150,7 @@ class WorkflowService
      */
     public function startWorkflow(string $entityType, int $entityId, ?string $workflowName = null, bool $autoFlush = true): ?WorkflowInstance
     {
-        // Sprint Y.2 — YAML-first lookup: resolve the YAML workflow name for this entity type.
+        // YAML-first lookup: resolve the YAML workflow name for this entity type.
         // When a regulatory YAML is registered, we prefer it over the DB row.
         $yamlWorkflowName = $workflowName ?? (self::ENTITY_TYPE_TO_YAML_WORKFLOW[$entityType] ?? null);
         $yamlSteps = $yamlWorkflowName !== null
@@ -159,7 +159,7 @@ class WorkflowService
 
         // Find appropriate workflow — DB lookup (backwards-compat for tenant-custom workflows).
         // Even when a YAML workflow is used, we still look up the DB row so that
-        // WorkflowInstance.workflow_id FK is set (required for history display until Y.4).
+        // WorkflowInstance.workflow_id FK is set (required for history display).
         $workflow = $workflowName
             ? $this->workflowRepository->findOneBy(['name' => $workflowName, 'entityType' => $entityType, 'isActive' => true])
             : $this->workflowRepository->findOneBy(['entityType' => $entityType, 'isActive' => true]);
@@ -210,7 +210,7 @@ class WorkflowService
         $this->entityManager->persist($workflowInstance);
 
         // Resolve steps: YAML-loader takes precedence; fall back to DB-backed workflow.
-        // Sprint Y.2: when YAML steps are available, we resolve the first step from YAML
+        // When YAML steps are available, we resolve the first step from YAML
         // metadata. DB workflow steps are still used for WorkflowStep entity FK references
         // when the DB row exists.
         $hasYamlSteps = $yamlSteps !== null && count($yamlSteps) > 0;

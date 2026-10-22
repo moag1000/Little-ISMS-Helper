@@ -424,7 +424,7 @@
 
                     const result = await response.json();
 
-                    // Async-job path (Phase 2): backend dispatched a worker
+                    // Async-job path: backend dispatched a worker
                     // job and returned a progress-page URL — redirect there
                     // immediately so the operator sees live progress.
                     if (result.async === true && result.progressUrl) {
@@ -775,7 +775,7 @@
 
                     const result = await response.json();
 
-                    // Async-job path (Phase 2): backend dispatched a worker
+                    // Async-job path: backend dispatched a worker
                     // job and returned a progress-page URL — redirect there
                     // immediately so the operator sees live progress.
                     if (result.async === true && result.progressUrl) {

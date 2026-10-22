@@ -23,8 +23,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * By-design immutable: there is no update / delete endpoint. A correction
  * produces a new freeze with a new name.
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
 #[ORM\Entity(repositoryClass: AuditFreezeRepository::class)]
 #[ORM\Table(name: 'audit_freeze')]

@@ -9,7 +9,7 @@ import { wireTabResize } from '../js/chart-tab-resize.js';
  * so their charts build at 0×0; this controller resizes them when their tab is
  * revealed (see js/chart-tab-resize.js).
  *
- * @todo H-12 (remaining) — forecast horizon picker + scenario toggle need a
+ * @todo forecast horizon picker + scenario toggle need a
  *       backend params contract first; tracked separately.
  */
 export default class extends Controller {

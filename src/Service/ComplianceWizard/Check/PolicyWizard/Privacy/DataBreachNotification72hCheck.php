@@ -13,7 +13,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W6-D / GDPR Art. 33 — confirms the Data-Breach Notification Procedure
+ * GDPR Art. 33 — confirms the Data-Breach Notification Procedure
  * is documented AND the breach-severity SLA is configured at or below
  * the 72-hour controller-notification ceiling.
  *

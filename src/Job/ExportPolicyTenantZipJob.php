@@ -29,8 +29,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *   exportedBy        (?string)        User identifier (email) for audit-log
  *                                      narrative — captured in dispatcher
  *                                      since worker has no Security scope.
- *
- * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportPolicyTenantZipJob implements AsyncJobInterface
 {

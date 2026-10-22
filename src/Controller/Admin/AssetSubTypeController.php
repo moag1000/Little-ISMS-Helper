@@ -27,7 +27,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Admin CRUD for tenant-configurable AssetSubType layer (S18 B2).
+ * Admin CRUD for tenant-configurable AssetSubType layer.
  *
  * Provides:
  *  - CRUD index/new/edit/delete under `/admin/asset-sub-types`

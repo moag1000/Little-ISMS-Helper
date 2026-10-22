@@ -8,16 +8,14 @@ use App\Entity\WizardRun;
 use BadMethodCallException;
 
 /**
- * Policy-Wizard W2-A — null implementation of {@see DocumentGeneratorInterface}.
+ * Policy-Wizard — null implementation of {@see DocumentGeneratorInterface}.
  *
- * Lets the WizardOrchestrator be wired up + tested in W2 without the
+ * Lets the WizardOrchestrator be wired up + tested without the
  * real generation pipeline. `generate()` throws so accidental calls
- * during partial-feature integration fail loudly. The orchestrator's
- * `complete()` method explicitly catches the BadMethodCallException
- * and returns an empty `document_ids` list (W2 contract).
- *
- * Replace this service binding in `services.yaml` once W3 lands the
- * real DocumentGenerator implementation.
+ * fail loudly. The orchestrator's `complete()` method explicitly
+ * catches the BadMethodCallException and returns an empty
+ * `document_ids` list. Production wiring aliases the interface to
+ * {@see DocumentGenerator} in `services.yaml`.
  */
 final class DocumentGeneratorStub implements DocumentGeneratorInterface
 {

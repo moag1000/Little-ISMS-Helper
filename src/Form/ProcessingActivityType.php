@@ -271,7 +271,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
 
             // ============================================================================
             // Retention Periods (Art. 30(1)(f))
-            // Junior-ISB-Audit-2026-05-22 C2-02: retentionPeriodDays is canonical
+            // RetentionPeriodDays is canonical
             // (numeric, machine-readable). retentionPeriod is the qualitative
             // justification (gesetzliche Frist, Vertrag, …).
             // ============================================================================
@@ -297,7 +297,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
 
             // ============================================================================
             // Technical and Organizational Measures (Art. 30(1)(g))
-            // Junior-ISB-Audit-2026-05-22 C2-03: TOMs textarea = qualitative description,
+            // TOMs textarea = qualitative description,
             // implementedControls M:N = structured evidence (ISO 27001 controls).
             // Cross-field validator on the entity ensures at least one form is present.
             // ============================================================================
@@ -316,7 +316,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => false,
                 'attr' => ['data-controller' => 'tom-select'],
             ])
-            // V3 W2-Bug3 — linked Assets (M:N). High-risk asset
+            // Linked Assets (M:N). High-risk asset
             // classifications (confidential / restricted) auto-trigger
             // a DPIA suggestion via AutoReactionDpiaSuggestListener.
             // Uses `field:` + `help:` keys (same convention as implemented_controls).
@@ -384,7 +384,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             // ============================================================================
             // Organizational Details
             // ============================================================================
-            // S18 B3: structured FK to Department master-data — preferred over legacy freetext.
+            // Structured FK to Department master-data — preferred over legacy freetext.
             ->add('responsibleDepartmentEntity', EntityType::class, [
                 'class' => Department::class,
                 'label' => 'processing_activity.field.responsible_department_entity',
@@ -409,7 +409,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 },
                 'attr' => ['data-controller' => 'tom-select'],
             ])
-            // @deprecated since 2026-05-25 (S18 B3) — kept for legacy data display only.
+            // @deprecated since 2026-05-25 — kept for legacy data display only.
             //   Structured FK above is preferred. Will be removed once backfill is done.
             // @legacy-freetext: deprecation-period; canonical EntityType<Department> above
             ->add('responsibleDepartment', TextType::class, [
@@ -446,7 +446,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => true,
                 'choice_translation_domain' => 'privacy',
             ])
-            // Junior-ISB-Audit-2026-05-22 M-08: DSGVO Art. 26 Joint-Controller-Doku
+            // DSGVO Art. 26 Joint-Controller-Doku
             // Joint controllers are typically EXTERNAL partner organisations
             // (other legal entities the data is jointly controlled with), so a
             // structured JSON list is the canonical shape — not an M2M to Tenant.
@@ -568,7 +568,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             // ============================================================================
             // Status & Dates
             // ============================================================================
-            // S3 P-4: migrated from legacy 3-stage (draft/active/archived) to canonical
+            // Migrated from legacy 3-stage (draft/active/archived) to canonical
             // 5-stage lifecycle per LifecycleRegistry::STANDARD_5_STAGE. Legacy `active`
             // values were UPDATEd to `published` by the consolidated data-migration.
             // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
@@ -611,7 +611,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
         ;
 
-        // Junior-ISB-Audit-2026-05-22 K-02: Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
+        // Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
         // M2M ProcessingActivity ↔ Supplier — exposes the existing entity relationship
         // (src/Entity/ProcessingActivity.php::$processorSuppliers) so DSGVO Art. 30(1)(d)
         // + Art. 28 documentation is fillable from the VVT form. Module-gated to `privacy`
@@ -635,7 +635,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ]);
         }
 
-        // S4 P-1 Wave-2 — OwnerPicker rollout (P-1).
+        // OwnerPicker rollout.
         // Contact-Person compound slot: contactPersonUser (User) +
         // contactPerson (Person) + contactDeputyPersons (Multi-Person).
         // No legacy free-text exists on ProcessingActivity → with_legacy=false.
@@ -681,7 +681,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
     }
 
     /**
-     * S4 Foundation P-2 SectionPolicy — covers ALL fields matching Art. 30(1) structure.
+     * SectionPolicy — covers ALL fields matching Art. 30(1) structure.
      * DPO fields (privacy-gated) are included so the section-map is always complete.
      * Fields not built by buildForm() are silently ignored by _auto_form.html.twig.
      *
@@ -735,10 +735,10 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'thirdCountries',
                 'transferSafeguards',
                 'involvesProcessors',
-                // Junior-ISB-Audit-2026-05-22 K-02: Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
+                // Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
                 'processorSuppliers',
                 'isJointController',
-                // Junior-ISB-Audit-2026-05-22 M-08: DSGVO Art. 26 Joint-Controller-Doku
+                // DSGVO Art. 26 Joint-Controller-Doku
                 'jointControllerDetails',
                 'isProcessor',
                 'processorClientController',

@@ -45,7 +45,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:policy-wizard:seed-c5 --force
  *   php bin/console app:policy-wizard:seed-c5 --dry-run
  *
- * Mirrors {@see SeedBsiPolicyTemplatesCommand} (W5-A) in shape so the
+ * Mirrors {@see SeedBsiPolicyTemplatesCommand} in shape so the
  * downstream wizard tooling can treat both BSI standards uniformly.
  *
  * @deprecated since 3.12 — superseded by {@see \App\Service\PolicyWizard\SectionExtension\C5SectionCatalogue}.

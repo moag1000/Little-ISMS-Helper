@@ -13,7 +13,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_owner_picker.html.twig' as _fa_owner_picker %}
 
-{# Basic Information Section — wrapped with asset-sub-type Stimulus controller (S18 B2) #}
+{# Basic Information Section — wrapped with asset-sub-type Stimulus controller #}
 <fieldset class="mb-4" data-controller="asset-sub-type">
     <legend class="h5 mb-3">
         <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    {# S18 B2: Sub-Type dependent dropdown — filtered client-side by asset-sub-type Stimulus controller #}
+    {# Sub-Type dependent dropdown — filtered client-side by asset-sub-type Stimulus controller #}
     {% if form.subType is defined %}
         <div class="row">
             <div class="col-md-6">
@@ -70,7 +70,7 @@
     </div>
 </fieldset>
 
-{# Assignment Section — audit-s4 P-1 OwnerPicker (unified User/Person/Deputies/Legacy) #}
+{# Assignment Section — OwnerPicker (unified User/Person/Deputies/Legacy) #}
 {{ _fa_owner_picker.render({
     userField:     form.ownerUser,
     personField:   form.ownerPerson,
@@ -127,7 +127,7 @@
             } %}
         </div>
 
-        {# monetaryValue removed (Junior-Finding #9 form-removal; S14+ #15 DB-column drop). acquisitionValue + currentValue are canonical. #}
+        {# monetaryValue removed (DB column dropped). acquisitionValue + currentValue are canonical. #}
     </div>
 </fieldset>
 

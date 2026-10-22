@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * F4 Evidence-Versioning — versioning lifecycle service.
+ * Evidence-Versioning — versioning lifecycle service.
  *
  * Responsibilities:
  *  - Auto-version on re-upload: when a new file is uploaded for an existing

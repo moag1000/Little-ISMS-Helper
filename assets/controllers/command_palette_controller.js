@@ -143,7 +143,7 @@ export default class extends Controller {
         this.inputTarget.value = '';
         this.inputTarget.focus();
 
-        // Sprint 12: Admin-Scope — wenn wir auf /admin/* sind, Admin-Commands
+        // Admin-Scope — wenn wir auf /admin/* sind, Admin-Commands
         // zuerst zeigen. User muss „admin" nicht erst tippen.
         this.filteredCommands = this.isOnAdminPage()
             ? this.sortAdminFirst(this.commands)

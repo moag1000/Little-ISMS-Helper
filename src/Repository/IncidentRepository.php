@@ -214,13 +214,13 @@ class IncidentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Open incidents currently assigned to a
+     * Open incidents currently assigned to a
      * specific user (ISO 27035-1 §6.3 monitoring of incident-handling).
      *
      * `status NOT IN (resolved, closed)` AND (`assignedTo` matches user
      * email/identifier OR user owns Reporter-FK). String-match keeps the
      * legacy free-text `assignedTo` column usable until all incidents are
-     * migrated to typed FKs (Phase 8 Owner-Pattern A).
+     * migrated to typed FKs.
      *
      * @return Incident[]
      */

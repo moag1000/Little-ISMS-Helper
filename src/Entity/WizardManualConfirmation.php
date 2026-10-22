@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Data-driven checks (control_coverage, entity_presence, …) never use this —
  * they derive their score from real tenant data. This table only covers the
- * residual genuinely-manual checks so a Junior-ISB can mark them done and the
+ * residual genuinely-manual checks so a beginner can mark them done and the
  * wizard stops reporting them as permanent critical gaps.
  *
  * One row per (tenant, wizard_key, check_key); presence + confirmed=true means

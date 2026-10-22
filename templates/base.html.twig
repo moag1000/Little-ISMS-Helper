@@ -10,7 +10,7 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
-    {# PWA Support - Phase 8A (FairyAurora v3.0) #}
+    {# PWA Support #}
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     {# PWA theme-color: hex must be static (meta-tags can't reference CSS-vars).
        Keep in sync with --primary token in fairy-aurora.css (light: #0284c7, dark: #38bdf8). #}
@@ -227,7 +227,7 @@
                 {# Global Search Component (Button + Modal) #}
                 {% include '_components/_global_search.html.twig' %}
 
-                {# Notification Bell — single canonical (Sprint-6b F3 backend-polled).
+                {# Notification Bell — single canonical.
                    Legacy _notification_bell.html.twig dropped 2026-05-22 — was a
                    non-functional duplicate that showed an empty bell next to the
                    working one. #}
@@ -235,7 +235,7 @@
                     {% include '_components/_navbar_notification_bell.html.twig' %}
                 {% endif %}
 
-                {# V3 W2-H7: header-alva removed.
+                {# Header-alva removed.
                    Spec: Alva only in empty-states/hints/onboarding. The header
                    already has fa-brand + user-avatar — a third brand-anchor
                    here causes UX-confusion. Alva-Dock + Hint-Position remain. #}
@@ -479,7 +479,7 @@
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}
 
-    {# Sprint 13 — Guided Tour Mount (global, damit User-Dropdown-Launcher
+    {# Guided Tour Mount (global, damit User-Dropdown-Launcher
      # von überall klickbar ist). Der eigentliche Tour-Content lebt via
      # Fetch der /tour/steps/{role}-Route. #}
     {% include '_components/_guided_tour_mount.html.twig' %}
@@ -500,7 +500,7 @@
         } only %}
     {% endif %}
 
-    {# FairyAurora v4.0 — Alva Companion Dock (Phase 4)
+    {# FairyAurora v4.0 — Alva Companion Dock
        Shown to authenticated users on non-setup routes who have the companion enabled. #}
     {% if is_granted('IS_AUTHENTICATED_REMEMBERED')
         and app.user is not null

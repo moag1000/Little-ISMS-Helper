@@ -38,7 +38,7 @@ use App\Util\CsvSanitizer;
 /**
  * Analytics Controller
  *
- * Phase 7B: Advanced Analytics Dashboards with multi-framework compliance,
+ * Advanced Analytics Dashboards with multi-framework compliance,
  * control effectiveness, and predictive risk analytics.
  */
 // @no-methods-required — class-level path prefix, methods declared per action
@@ -65,7 +65,7 @@ class AnalyticsController extends AbstractController
     }
 
     /**
-     * Phase 7B: Advanced Analytics Hub with tabbed navigation
+     * Advanced Analytics Hub with tabbed navigation
      */
     #[Route('/advanced', name: 'app_analytics_advanced', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -79,7 +79,7 @@ class AnalyticsController extends AbstractController
     }
 
     /**
-     * Phase 7B: Multi-Framework Compliance Dashboard
+     * Multi-Framework Compliance Dashboard
      */
     #[Route('/compliance/frameworks', name: 'app_analytics_compliance_frameworks', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -93,7 +93,7 @@ class AnalyticsController extends AbstractController
     }
 
     /**
-     * Phase 7B: Control Effectiveness Dashboard
+     * Control Effectiveness Dashboard
      */
     #[Route('/controls/effectiveness', name: 'app_analytics_control_effectiveness', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -107,7 +107,7 @@ class AnalyticsController extends AbstractController
     }
 
     /**
-     * Phase 7B: Risk Forecast Dashboard
+     * Risk Forecast Dashboard
      */
     #[Route('/risk/forecast', name: 'app_analytics_risk_forecast', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -122,7 +122,7 @@ class AnalyticsController extends AbstractController
     }
 
     /**
-     * Phase 7B: Asset Criticality Dashboard
+     * Asset Criticality Dashboard
      */
     #[Route('/assets/criticality', name: 'app_analytics_asset_criticality', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -141,7 +141,7 @@ class AnalyticsController extends AbstractController
     #[Route('/api/heat-map', name: 'app_analytics_heat_map_data', methods: ['GET'])]
     public function getHeatMapData(): JsonResponse
     {
-        // Junior-ISB-Audit-2026-05-22 Polish: Aurora-rework Risk-Heatmap
+        // Aurora-rework Risk-Heatmap
         // Emits `band` (low/medium/high/critical) per cell so the frontend can
         // drive Aurora .isms-risk-cell[data-level] styling — replaces hand-rolled
         // hex colors. SSoT: App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
@@ -263,8 +263,6 @@ class AnalyticsController extends AbstractController
      * The legacy sync GET route is kept for back-compat (bookmarks, links
      * embedded in saved reports). New UI traffic should use this dispatch
      * endpoint to avoid PHP-FPM timeouts on large datasets.
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route('/export/{type}/dispatch', name: 'app_analytics_export_dispatch', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
@@ -378,7 +376,7 @@ class AnalyticsController extends AbstractController
         return $response;
     }
     // Helper methods
-    // Junior-ISB-Audit-2026-05-22 Polish: Aurora-rework Risk-Heatmap removed
+    // Aurora-rework Risk-Heatmap removed
     // getRiskColor() hex helper — frontend now uses Aurora .isms-risk-cell[data-level].
     private function extractAnnex(string $controlId): string
     {
@@ -479,7 +477,7 @@ class AnalyticsController extends AbstractController
 
         return $trend;
     }
-    // ========== Phase 7B: New API Endpoints ==========
+    // ========== API Endpoints ==========
 
     /**
      * API: Framework Comparison Data

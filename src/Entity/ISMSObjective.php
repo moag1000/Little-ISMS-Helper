@@ -84,7 +84,7 @@ class ISMSObjective
     /**
      * ISO 27001 §6.2.b — wer fuer Messung verantwortlich ist.
      * Often overlaps with responsiblePerson but kept separate to allow
-     * "objective owner" vs "data steward" split (audit findings W3).
+     * "objective owner" vs "data steward" split.
      */
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]

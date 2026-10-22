@@ -13,8 +13,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ISB-Review Sprint-2 gate MINOR-1 (docs/DATA_REUSE_PLAN_REVIEW_ISB.md):
- * per-file audit header for every compliance-mapping CSV/XML import.
+ * Per-file audit header for every compliance-mapping CSV/XML import.
  *
  * One ImportSession is created when a file is uploaded (status=preview).
  * It records the uploading user, tenant, original + stored filenames, a

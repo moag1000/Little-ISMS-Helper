@@ -132,7 +132,7 @@
                 <div class="col-md-3">
                     <div class="risk-level-card risk-critical">
                         <div class="risk-level-icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></div>
-                        {# Junior-ISB-Audit-2026-05-22 M-03: Risk-Schwellen single-source-of-truth via RiskMatrixThresholds #}
+                        {# Risk-Schwellen single-source-of-truth via RiskMatrixThresholds #}
                         <div class="risk-level-label">{{ risk_level_label('critical') }} ({{ risk_threshold('critical') }})</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 20)|length }}</div>
                     </div>
@@ -199,11 +199,11 @@
     {% endblock %}
 {% endembed %}
 
-{# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for level filter #}
+{# Aurora filter-chip quick row — quick toggles for level filter #}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 {% set _activeLevel = app.request.query.get('level') %}
 {% set _baseUrl = path('app_risk_index') %}
-{# Junior-ISB-Audit-2026-05-22 M-03: chip-row labels now flow through risk_level_label() (SSoT) #}
+{# Chip-row labels now flow through risk_level_label() (SSoT) #}
 {{ _fa_filter_chip.group([
     { label: 'risk.filter.all_risks'|trans({}, 'risk'),     href: _baseUrl },
     { label: risk_level_label('critical') ~ ' (' ~ risk_threshold('critical') ~ ')', href: _baseUrl ~ '?level=critical' },
@@ -233,7 +233,7 @@
             <label for="filter-level" class="form-label">{{ 'risk.filter.level_label'|trans({}, 'risk') }}</label>
             <select class="form-select fa-cyber-input__field" id="filter-level" name="level">
                 <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
-                {# Junior-ISB-Audit-2026-05-22 M-03: select-options pull labels from risk_level_label() (SSoT) #}
+                {# Select-options pull labels from risk_level_label() (SSoT) #}
                 <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ risk_level_label('critical') }} ({{ risk_threshold('critical') }})</option>
                 <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ risk_level_label('high') }} ({{ risk_threshold('high') }})</option>
                 <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ risk_level_label('medium') }} ({{ risk_threshold('medium') }})</option>
@@ -289,7 +289,7 @@
 
 {# Risks Table or Empty State #}
 {% if risks|length == 0 %}
-    {# Foundation P-14 — "Create from template" (ISO 27005 catalog, BSI hazards) #}
+    {# "Create from template" (ISO 27005 catalog, BSI hazards) #}
     {% set _system_templates = system_templates('App\\Entity\\Risk') %}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'status-warning',

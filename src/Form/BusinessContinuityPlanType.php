@@ -58,7 +58,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.description',
             ])
-            // Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation.
+            // Doppelpflege-Deprecation.
             // Freetext BC-team superseded by structured `responseTeamMembers`
             // (ISO 22301 §8.5.3 builder) for per-plan team and `crisisTeams`
             // (ISO 22301 §8.4.2 M2M) for cross-plan reusable crisis teams.
@@ -75,7 +75,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 ],
                 'help' => 'bc_plans.help.bc_team_deprecated',
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `business_continuity_plan_lifecycle`. ISO 22301 Cl. 8.4
             // 4-eyes auf `activate`. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
@@ -112,7 +112,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'attr' => ['rows' => 6],
                 'help' => 'bc_plans.help.recovery_procedures',
             ])
-            // ISO 22301 Cl. 8.2.2 — Recovery targets. P0: previously missing from form.
+            // ISO 22301 Cl. 8.2.2 — Recovery targets.
             ->add('rto', IntegerType::class, [
                 'label' => 'bc_plans.field.rto',
                 'required' => true,
@@ -221,7 +221,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.review_notes',
             ])
-            // C-06: JsonStructuredType applies JsonArrayTransformer automatically
+            // JsonStructuredType applies JsonArrayTransformer automatically
             // so invalid JSON surfaces as TransformationFailedException.
             ->add('responseTeamMembers', JsonStructuredType::class, [
                 'label' => 'bc_plans.field.response_team_members',
@@ -244,7 +244,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'attr' => ['rows' => 5],
                 'help' => 'bc_plans.help.escalation_levels_json',
             ])
-            // Junior-ISB-Audit-2026-05-22 C2-06: 3-team-worlds consolidation —
+            // 3-team-worlds consolidation —
             // optional reusable verlinkung for cross-plan crisis teams.
             // Per-plan team-roster lives in `responseTeamMembers` (canonical).
             ->add('crisisTeams', EntityType::class, [
@@ -267,7 +267,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
             ])
         ;
 
-        // S4 P-1 Wave-2 — Plan-Owner compound slot. Replaces the inline
+        // Plan-Owner compound slot. Replaces the inline
         // 4-field block (planOwnerUser + planOwnerPerson +
         // planOwnerDeputyPersons + planOwner legacy text).
         // Legacy free-text `planOwner` is preserved as read-only Migration-Hint
@@ -324,7 +324,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 C2-06: Cross-field validator — at least ONE of
+     * Cross-field validator — at least ONE of
      * (responseTeamMembers non-empty) OR (crisisTeams.count >= 1) is required for
      * a `published` plan. ISO 22301 Cl. 8.4.2 — a BC plan without an identified
      * response team is non-conformant.

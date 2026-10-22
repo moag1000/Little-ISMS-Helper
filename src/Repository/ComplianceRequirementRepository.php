@@ -52,7 +52,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
     /**
      * Find the tenant's assessed TISAX requirements for a framework, for the
-     * audit-freeze snapshot (B2). Scopes to rows that belong to the tenant
+     * audit-freeze snapshot. Scopes to rows that belong to the tenant
      * (either tenant-uploaded via uploadTenant, or global system rows the tenant
      * shares) and that carry an assessment (maturityCurrent / assessmentStateDp /
      * maturityReviewedAt set). Sorted by requirementId for deterministic hashing.

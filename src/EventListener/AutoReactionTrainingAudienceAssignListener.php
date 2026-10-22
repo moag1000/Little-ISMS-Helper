@@ -16,7 +16,7 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Junior-ISB-Audit C3-01 (S14 Cluster C, 2026-05-23) — Auto-Audience-Assignment
+ * Auto-Audience-Assignment
  * on Training mandatory-flag flip.
  *
  * ISO 27001 Cl. 7.3 (Awareness) + A.6.3 (Information security awareness,

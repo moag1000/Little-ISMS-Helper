@@ -23,7 +23,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 /**
  * Role-Based Dashboard Service
  *
- * Phase 7D: Provides role-specific dashboard data for CISO, Risk Manager,
+ * Provides role-specific dashboard data for CISO, Risk Manager,
  * Auditor, and Board dashboards.
  *
  * Each role sees KPIs and metrics most relevant to their responsibilities:
@@ -456,7 +456,7 @@ class RoleDashboardService
     /**
      * Determine which dashboard a user should see based on their role.
      *
-     * Audit V3 W2-C5: persona-roles take precedence over the generic
+     * Persona-roles take precedence over the generic
      * Manager/Admin fallback so a user with ROLE_DPO sees the
      * Compliance-Manager dashboard rather than the CISO one.
      */

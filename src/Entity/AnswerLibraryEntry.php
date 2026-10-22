@@ -12,12 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * F44 — Inbound Security-Questionnaire Answer Library.
+ * Inbound Security-Questionnaire Answer Library.
  *
  * Stores reusable answers to common security-questionnaire questions (RFP,
  * customer due-diligence, audit responses). Once answered, a question can be
  * retrieved and "used" again — each reuse is recorded via FteRecorderService
- * so it feeds the ROI/FTE counter (F11).
+ * so it feeds the ROI/FTE counter.
  *
  * Categories mirror the ISO 27001 control families to allow scoped lookups:
  *   access_control · encryption · bcm · privacy · incident_management ·
@@ -114,7 +114,7 @@ class AnswerLibraryEntry
     private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * Optimistic-lock version counter (P-4b lifecycle baseline).
+     * Optimistic-lock version counter (lifecycle baseline).
      * Required for entities involved in concurrent update scenarios.
      */
     #[ORM\Version]

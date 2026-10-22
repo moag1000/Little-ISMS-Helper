@@ -8,7 +8,7 @@ use App\Entity\Tenant;
 use App\Repository\SystemSettingsRepository;
 
 /**
- * Phase 8L.F3 — Aufgelöstes E-Mail-Branding (Value-Object).
+ * Aufgelöstes E-Mail-Branding (Value-Object).
  *
  * `fromAddress` und `fromName` sind garantiert gesetzt (Fallback auf
  * Hardcoded-Default). Logo/Footer/Support sind optional.
@@ -26,7 +26,7 @@ final readonly class EmailBranding
 }
 
 /**
- * Phase 8L.F3 — Fallback-Kaskade für E-Mail-Branding.
+ * Fallback-Kaskade für E-Mail-Branding.
  *
  * Reihenfolge:
  *   1. Tenant-Feld gesetzt? → verwenden
@@ -34,8 +34,8 @@ final readonly class EmailBranding
  *   3. SystemSettings (category=email, key=default_from_email / _from_name / …)
  *   4. Hardcoded-Default ('noreply@little-isms.local' / 'Little ISMS Helper')
  *
- * Der Ancestor-Walk ist bereits 8M-Behavior (Holding-Fallback) — im F3-Scope
- * explizit eingebaut, weil Branding ohne Inheritance unsinnig ist.
+ * Der Ancestor-Walk (Holding-Fallback) ist explizit eingebaut,
+ * weil Branding ohne Inheritance unsinnig ist.
  *
  * Nicht final wegen PHPUnit-Mock-Kompatibilität.
  */

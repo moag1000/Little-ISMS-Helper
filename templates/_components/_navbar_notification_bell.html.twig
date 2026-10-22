@@ -1,11 +1,11 @@
 {% trans_default_domain 'notification' %}
 {#
- # Sprint-6b Navbar Bell — shown only when notifications module is active.
+ # Navbar Bell — shown only when notifications module is active.
  # Managed by notification_bell_controller.js (polls /notifications/bell every 30s).
  # Included in base.html.twig header (gated by is_module_active('notifications')).
  #
  # Note: The legacy _notification_bell.html.twig + notifications_controller.js remain
- # active for in-memory notifications. This component provides the Sprint-6b backend
+ # active for in-memory notifications. This component provides the backend
  # polling for server-persisted NotificationDelivery rows.
  #}
 {% if is_module_active('notifications') and is_granted('ROLE_USER') %}

@@ -34,7 +34,7 @@ final class OrphanFinder
      * @var list<class-string>
      */
     public const GLOBAL_CATALOGUE_ENTITIES = [
-        NotificationTemplate::class, // Sprint-6a: global notification templates, tenant_id=NULL by design
+        NotificationTemplate::class, // Global notification templates, tenant_id=NULL by design
     ];
 
     public function __construct(

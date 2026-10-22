@@ -10,7 +10,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Asset Cloner (C4-C1 — Klon-Funktionen).
+ * Asset Cloner.
  *
  * Use case: onboard a fleet of similar devices ("12 production workstations"),
  * duplicate an SaaS-Asset across departments, or template an AI-Agent asset.

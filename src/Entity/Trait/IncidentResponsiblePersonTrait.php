@@ -10,13 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
- * Long-term governance owner of an incident (Person-Rollout Phase B2). Extracted from Incident to
+ * Long-term governance owner of an incident. Extracted from Incident to
  * keep the entity within its god-class budget.
  */
 trait IncidentResponsiblePersonTrait
 {
     /**
-     * Person-Rollout Phase B2 — long-term governance owner of the
+     * Long-term governance owner of the
      * incident, distinct from the action-bound `assigned_to` ticket
      * assignee and the `reported_by_*` audit-trail. May be an external
      * Person without a system login (e.g. CISO consultant).

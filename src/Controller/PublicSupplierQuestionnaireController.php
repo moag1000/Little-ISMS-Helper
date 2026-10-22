@@ -13,12 +13,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * F23 — PUBLIC (unauthenticated) supplier-questionnaire portal.
+ * PUBLIC (unauthenticated) supplier-questionnaire portal.
  *
  * The ONLY surface a supplier touches: a signed token link. No login, no
  * session, no tenant data beyond the questionnaire itself. Token is compared in
  * constant time (hash_equals) against the stored value; an unknown/closed token
- * 404s. Mirrors the F43 Trust-Center disclosure-safety pattern.
+ * 404s. Mirrors the Trust-Center disclosure-safety pattern.
  */
 // @no-module-gate-required: anonymous token portal without tenant context — the
 // `suppliers` gate applies where questionnaires are issued (SupplierQuestionnaireController).

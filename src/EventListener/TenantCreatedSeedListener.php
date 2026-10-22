@@ -9,9 +9,9 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
 
 /**
- * Phase 8L / 8QW — Auto-Seeding-Listener (deaktiviert).
+ * Auto-Seeding-Listener (deaktiviert).
  *
- * Historisch (Phase 8L.F2 + 8QW-5) sollten neue Tenants automatisch
+ * Historisch sollten neue Tenants automatisch
  * Defaults für RiskApprovalConfig, IncidentSlaConfig und
  * SupplierCriticalityLevel bekommen. Die Umsetzung via postPersist führt
  * aber in Multi-Tenant-Tests (z.B. testIndexRespectsMultiTenancyIsolation)
@@ -27,9 +27,9 @@ use Doctrine\ORM\Events;
  *     lazy auf, persistieren sich selbst + flushen.
  *   - RiskApprovalConfig: wird beim ersten Admin-UI-Aufruf angelegt.
  *
- * @todo 2026-05-14 (9A/9B) Saubere Lösung: Post-Commit-Hook oder
+ * @todo Saubere Lösung: Post-Commit-Hook oder
  * dedizierter TenantProvisioningService in CorporateStructureService.
- * Blocked by: TenantPolicySetting + RiskMatrixConfig entities (Sprint 9+).
+ * Blocked by: TenantPolicySetting + RiskMatrixConfig entities.
  */
 #[AsEntityListener(event: Events::postPersist, entity: Tenant::class)]
 final class TenantCreatedSeedListener

@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * H-01: CRUD for Corrective Actions (ISO 27001 Clause 10.1).
+ * CRUD for Corrective Actions (ISO 27001 Clause 10.1).
  */
 #[IsGranted('ROLE_USER')]
 // @no-methods-required — class-level path prefix, methods declared per action
@@ -54,7 +54,7 @@ class CorrectiveActionController extends AbstractController
     {
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        // Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — sourceType filter (ADR 2026-05-23).
+        // SourceType filter (ADR 2026-05-23).
         $validSourceTypes = [
             CorrectiveAction::SOURCE_TYPE_AUDIT_FINDING,
             CorrectiveAction::SOURCE_TYPE_INCIDENT,
@@ -117,7 +117,7 @@ class CorrectiveActionController extends AbstractController
             }
         }
 
-        // S3 P0-30: Pre-Fill from an unwirksame Vorgänger-CAPA.
+        // Pre-Fill from an unwirksame Vorgänger-CAPA.
         // Tenant-Isolation: never accept a previous-CAPA from a different tenant.
         $previousCapa = null;
         $fromIneffective = $request->query->getInt('from_ineffective_capa', 0);

@@ -31,7 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Management Report Service
  *
- * Phase 7A: Provides comprehensive management reporting data for executive dashboards,
+ * Provides comprehensive management reporting data for executive dashboards,
  * risk management reports, BCM reports, compliance status, and more.
  *
  * Supports:

@@ -61,7 +61,7 @@ class IncidentEscalationWorkflowService
     ) {}
 
     /**
-     * Phase 8L.F2: SLA aus Tenant-Config für gegebene Severity. Fällt auf
+     * SLA aus Tenant-Config für gegebene Severity. Fällt auf
      * hardcoded Default zurück wenn Tenant oder Config fehlt.
      */
     private function getSlaHours(Incident $incident, string $severity): int

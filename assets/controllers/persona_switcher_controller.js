@@ -21,9 +21,6 @@ import { faT } from '../js/fa-i18n.js';
  * (dashboards + voters), so on success we reload. Clicking the active persona
  * reverts to the user's own view.
  *
- * NOTE: this controller previously did not exist — the buttons were wired in
- * the template but the Stimulus action resolved to nothing, so clicking them
- * silently did nothing.
  */
 import { Controller } from '@hotwired/stimulus'
 

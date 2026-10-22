@@ -8,7 +8,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 
 /**
- * F21 — minimal Model Context Protocol (MCP) server exposing READ-ONLY
+ * Minimal Model Context Protocol (MCP) server exposing READ-ONLY
  * compliance-catalogue queries to an LLM client.
  *
  * Implements the JSON-RPC 2.0 method surface an MCP host needs (`initialize`,

@@ -10,7 +10,7 @@ use App\Entity\ProcessingActivity;
 use App\Entity\User;
 
 /**
- * S18 B3 hint: ProcessingActivity has legacy freetext `responsibleDepartment`
+ * Hint: ProcessingActivity has legacy freetext `responsibleDepartment`
  * set but no structured FK to the Department master data.
  *
  * Suggests promoting the freetext value to a Department row so VVT entries

@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Document form: too-long review interval.
+ * Form-Step-Inline-Hint — Document form: too-long review interval.
  *
  * Fires when the user sets `reviewIntervalMonths` above 24 months (two
  * years). ISO 27001 A.5.32 ("Independent review of information

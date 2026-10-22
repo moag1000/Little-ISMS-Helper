@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * Async admin job (Phase B2): OCR a manually-uploaded compliance certificate
+ * Async admin job (): OCR a manually-uploaded compliance certificate
  * and write the extracted draft fields back onto the record for later
  * user review/confirmation (T12).
  *

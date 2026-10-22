@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard\Mode;
 use App\Entity\WizardRun;
 
 /**
- * Policy-Wizard W2-C — contract for mode-specific orchestration hooks.
+ * Policy-Wizard — contract for mode-specific orchestration hooks.
  *
  * The default {@see \App\Service\PolicyWizard\WizardOrchestrator} drives
  * the full-mode 7-step flow. Sandbox + targeted-re-run modes piggy-back

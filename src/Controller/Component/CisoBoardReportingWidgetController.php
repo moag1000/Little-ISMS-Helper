@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Policy-Wizard W7-E — CISO board-reporting widget.
+ * Policy-Wizard — CISO board-reporting widget.
  *
  * Embed-fragment that renders a small grid of KPI tiles for the
  * dashboard. Restricted to ROLE_GROUP_CISO scope (which inherits
@@ -31,7 +31,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *     documents that carry a generatedFromTemplate provenance link).
  *   - Pending approvals (Documents with status='pending_approval' or
  *     section-level status='dpo_sign_off').
- *   - Open audit findings (cross-ref to the W7-D
+ *   - Open audit findings (cross-ref to the
  *     {@see App\Service\PolicyWizard\Step\TargetedFindingReferenceStep}
  *     OpenFinding rule).
  *   - Policy acknowledgement coverage % (PolicyAcknowledgementService

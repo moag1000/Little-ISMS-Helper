@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * escalation-chain — P-9 JsonBuilder for BCPlan.escalationLevels
+ * escalation-chain — JsonBuilder for BCPlan.escalationLevels
  * (BSI 200-4 §6.2). Renders an auto-numbered escalation cascade with
  * trigger / responder / escalateAfter inputs per level.
  *

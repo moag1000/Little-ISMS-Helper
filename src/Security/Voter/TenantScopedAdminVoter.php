@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 /**
  * Tenant-Scoped Admin Voter.
  *
- * Foundation of the Role-Scope Architecture (Phase 1, spec
+ * Foundation of the Role-Scope Architecture (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  *
  * Provides 8 attributes covering admin-scope and persona-visibility checks:
@@ -64,7 +64,7 @@ final class TenantScopedAdminVoter extends Voter
     public const string PERSONA_RISK       = 'PERSONA_RISK';
     public const string PERSONA_DPO        = 'PERSONA_DPO';
     public const string PERSONA_COMPLIANCE = 'PERSONA_COMPLIANCE';
-    // Wave 5 / Part 2 — ISB + BCM-Officer personas
+    // ISB + BCM-Officer personas
     public const string PERSONA_ISB        = 'PERSONA_ISB';
     public const string PERSONA_BCM        = 'PERSONA_BCM';
 

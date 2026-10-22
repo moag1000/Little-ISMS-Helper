@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — BusinessProcess form: RPO/RTO imbalance.
+ * Form-Step-Inline-Hint — BusinessProcess form: RPO/RTO imbalance.
  *
  * Fires when the user enters a Recovery-Point-Objective (RPO, max
  * tolerated data loss in hours) that is larger than half of the

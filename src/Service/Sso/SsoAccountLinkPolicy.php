@@ -91,14 +91,14 @@ final class SsoAccountLinkPolicy
     public static function mayLinkByEmail(IdentityProvider $provider, User $target, ?string $externalId = null): bool
     {
         // Never link a privileged account by e-mail — through ANY provider,
-        // global ones included (same rule as the env Azure path, #1059 I-6).
+        // global ones included (same rule as the env Azure path).
         if (UserAdministrationGuard::privilegedRolesIn($target->getRoles()) !== []) {
             return false;
         }
         $boundProvider = $target->getSsoProvider();
         // A binding to an unusable provider (disabled, or no longer global /
         // in the user's tree) is treated exactly like no binding: the
-        // provider's own allowEmailLinking decides (#1059 I-4/I-6).
+        // provider's own allowEmailLinking decides.
         if ($boundProvider !== null && !self::isSameProvider($boundProvider, $provider)
             && !self::isUsableBinding($boundProvider, $target)
         ) {
@@ -113,7 +113,7 @@ final class SsoAccountLinkPolicy
     /**
      * $target is bound to $provider under a DIFFERENT subject id than the one
      * now presented with the same e-mail claim. Never re-linked silently — an
-     * IdP subject change needs admin action; callers log a security event (#1059).
+     * IdP subject change needs admin action; callers log a security event.
      */
     public static function isSubjectChange(IdentityProvider $provider, User $target, ?string $externalId): bool
     {
@@ -127,7 +127,7 @@ final class SsoAccountLinkPolicy
     /**
      * The provider an SSO-enforced password login is redirected to, or null
      * when no enabled provider can sign $user in (then the password login
-     * stays available — anti-lockout, #1059):
+     * stays available — anti-lockout):
      *  1. the enforced provider, when it can reach the user;
      *  2. otherwise the provider the user is already bound to, when that
      *     binding is usable ({@see isUsableBinding()}) — a binding to another
@@ -155,7 +155,7 @@ final class SsoAccountLinkPolicy
     /**
      * Can the provider $user is bound to still sign the user in — enabled and
      * global or in the user's CURRENT organisation tree? A binding that fails
-     * this counts as no binding for enforcement and for linking (#1059 I-4).
+     * this counts as no binding for enforcement and for linking.
      */
     public static function isUsableBinding(IdentityProvider $bound, User $user): bool
     {
@@ -167,7 +167,7 @@ final class SsoAccountLinkPolicy
      * SSO-enforcement subscribers: when it cannot (account not bound to this
      * provider and linking refused, or a privileged / out-of-tree account of a
      * tenant-owned provider), redirecting the password login to the provider
-     * would lock the user out, so the password login stays available (#1059).
+     * would lock the user out, so the password login stays available.
      */
     public static function canSsoLoginReach(IdentityProvider $provider, User $user): bool
     {
@@ -193,7 +193,7 @@ final class SsoAccountLinkPolicy
      * missed and the e-mail claim matches $target:
      *  - a privileged account (RoleNames::PRIVILEGED) is NEVER linked by
      *    e-mail, whatever the setting — the e-mail claim of the directory is
-     *    not proof of identity for the instance operator (#1059);
+     *    not proof of identity for the instance operator;
      *  - with AZURE_ALLOW_EMAIL_LINKING=false, or when $target is already
      *    bound to another Azure object id or to an IdentityProvider record,
      *    the login is refused with the same message as provider-record logins.

@@ -26,14 +26,12 @@ use DateTimeInterface;
  * granularly persisted over time, so a freeze for a past Stichtag returns
  * CURRENT values. The limitation is carried in the payload meta section
  * so auditors know what they are looking at.
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
 final class AuditFreezeSnapshotBuilder
 {
     /**
      * Framework codes whose per-requirement TISAX Reifegrad-Stand must be frozen
-     * into the snapshot (B2). Canonical 'TISAX' plus the deprecation-window alias
+     * into the snapshot. Canonical 'TISAX' plus the deprecation-window alias
      * so a tenant who has not yet run the consolidation migration is still
      * captured. Mirrors TisaxRequirementMapper::FRAMEWORK_CODE / LEGACY_CODE_ALIASES.
      *
@@ -167,7 +165,7 @@ final class AuditFreezeSnapshotBuilder
     }
 
     /**
-     * TISAX Reifegrad-Stand snapshot (B2, spec §9.1).
+     * TISAX Reifegrad-Stand snapshot (spec §9.1).
      *
      * Per assessed TISAX ComplianceRequirement (keyed by the canonical VDA-ISA
      * control number, e.g. 1.1.1) this captures the values that turn a freeze

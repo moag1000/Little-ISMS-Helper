@@ -118,7 +118,7 @@ class AuditProgram
     #[ORM\JoinColumn(name: 'created_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?User $createdBy = null;
 
-    /** Optimistic-locking — required by Lifecycle Foundation P-4b. */
+    /** Optimistic-locking — required by Lifecycle  */
     #[ORM\Version]
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
     private int $lockVersion = 0;

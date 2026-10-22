@@ -71,7 +71,7 @@
         <small class="text-muted d-block mt-1">{{ props.helpText }}</small>
     {% endif %}
 
-    {# V3 W2-L3 — empty-state via Aurora alert tokens (Bootstrap class-free). #}
+    {# Empty-state via Aurora alert tokens (Bootstrap class-free). #}
     {% if _choices|length == 0 %}
         {% set _emptyTitle = (props.emptyState.title|default(null)) ?: 'common.person_picker.empty_state.title'|trans({}, 'messages') %}
         {% set _emptyBody  = (props.emptyState.body|default(null))  ?: 'common.person_picker.empty_state.body'|trans({}, 'messages') %}

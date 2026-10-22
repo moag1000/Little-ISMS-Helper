@@ -11,7 +11,7 @@ use App\Template\TemplateProviderInterface;
 /**
  * ISO 27005:2022 Annex C threat-catalog — generic IT risk starter pack.
  *
- * Foundation P-14. ~30 threats grouped by ISO 27005 category. Each entry
+ * ~30 threats grouped by ISO 27005 category. Each entry
  * yields a Risk-Template prefilled with `title`, `category`, `threat`,
  * `description` and conservative default scores (probability=2, impact=3,
  * treatmentStrategy='mitigate').

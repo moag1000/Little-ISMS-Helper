@@ -44,7 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * preview record. Only a preview (no DB writes) is produced before the
  * explicit commit step.
  *
- * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * Authorization (Role-Scope Architecture, spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
  *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} —
  *    ROLE_ADMIN imports inside their own tenant tree (ImportSession is

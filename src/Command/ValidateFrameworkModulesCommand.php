@@ -10,7 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * L-02: Warn about active frameworks whose required modules are disabled.
+ * Warn about active frameworks whose required modules are disabled.
  * Return 1 on any issue, 0 when all frameworks are operational.
  */
 #[AsCommand(

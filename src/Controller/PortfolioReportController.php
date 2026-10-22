@@ -261,8 +261,6 @@ class PortfolioReportController extends AbstractController
      * Lists every ComplianceRequirement of $frameworkCode that maps to the
      * given NIST CSF $category, along with the tenant's fulfillment record
      * (if any) so the manager can click through to the specific requirement.
-     *
-     * @see docs/CM_JUNIOR_RESPONSE.md CM-3
      */
     #[Route(
         '/drill/{frameworkCode}/{category}',

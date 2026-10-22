@@ -10,7 +10,7 @@ use App\Entity\AuditFinding;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — AuditFinding form: major nonconformity
+ * Form-Step-Inline-Hint — AuditFinding form: major nonconformity
  * implies CAPA obligation.
  *
  * Fires when the user classifies the finding as `major_nc`

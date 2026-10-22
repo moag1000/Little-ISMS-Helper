@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Wave 5 — Sidebar Mega-Menu Controller
+ * Sidebar Mega-Menu Controller
  * Manages the sidebar L1 triggers + flyout-panel interactions.
  *
  * App-shell layout:
@@ -16,15 +16,15 @@ import { Controller } from '@hotwired/stimulus';
  *   trigger  — sb-link <button> elements (one per L1 category)
  *   panel    — .flyout <div> elements (rendered at body level)
  *
- * WCAG 2.2 AA (Phase 4.1):
+ * WCAG 2.2 AA:
  *   - focus-visible rings: 3px solid outline + glow shadow on triggers and fly-items (CSS)
  *   - role="menubar" aria-orientation="vertical" on nav container (template)
  *   - role="menuitem" aria-haspopup="menu" aria-expanded on trigger buttons (template)
  *   - role="menu" / role="menuitem" on panels (template)
- *   - ESC key closes open flyout and returns focus to trigger (Phase 4.1)
- *   - ArrowDown on trigger opens panel and focuses first item (Phase 4.1)
- *   - ArrowRight/Left between L1 triggers cycles focus + opens panel (Phase 4.1)
- *   - ArrowUp/Down within open panel navigates fly-items (Phase 4.1)
+ *   - ESC key closes open flyout and returns focus to trigger
+ *   - ArrowDown on trigger opens panel and focuses first item
+ *   - ArrowRight/Left between L1 triggers cycles focus + opens panel
+ *   - ArrowUp/Down within open panel navigates fly-items
  *   - Tab within open panel cycles focusable items; Shift+Tab on first item returns to trigger
  *   - Focus trapped inside open flyout (Tab cycles within)
  */
@@ -50,7 +50,7 @@ export default class extends Controller {
         document.addEventListener('keydown', this._boundGlobalKeydown);
         document.addEventListener('click', this._boundOutsideClick);
 
-        // Phase 4.1: Keyboard navigation inside open flyout panels (ArrowUp/Down within sub-panel)
+        // Keyboard navigation inside open flyout panels (ArrowUp/Down within sub-panel)
         document.addEventListener('keydown', this._handlePanelKeyboardBound);
 
         // Hover: open flyout on mouseenter over L1 trigger — store per-trigger
@@ -209,7 +209,7 @@ export default class extends Controller {
     // ─────────────── Keyboard handlers ───────────────
 
     /**
-     * Phase 4.1 — Arrow-key / Home / End navigation within the sidebar trigger list.
+     * Arrow-key / Home / End navigation within the sidebar trigger list.
      * WAI-ARIA Authoring Practices §3.15 (Menubar):
      *   - ArrowRight: move focus to next menuitem (wrap), open panel
      *   - ArrowLeft: move focus to previous menuitem (wrap), open panel
@@ -275,7 +275,7 @@ export default class extends Controller {
             case ' ':
                 event.preventDefault();
                 this.activatePanel(event.target.dataset.category);
-                // Phase 4.1: Move focus into the open flyout's first item
+                // Move focus into the open flyout's first item
                 this._focusFirstFlyoutItem(event.target.dataset.category);
                 return;
         }
@@ -287,7 +287,7 @@ export default class extends Controller {
     }
 
     /**
-     * Phase 4.1 — ArrowUp/Down navigation within an open flyout sub-panel.
+     * ArrowUp/Down navigation within an open flyout sub-panel.
      * WAI-ARIA Authoring Practices §3.15 (Menu):
      *   - ArrowDown: focus next focusable fly-item
      *   - ArrowUp: focus previous fly-item (on first: return focus to trigger)

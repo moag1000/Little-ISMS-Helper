@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
 
 /**
- * notification-bell — Sprint-6b F3 in-app notification bell.
+ * notification-bell — in-app notification bell.
  *
  * Polls /notifications/bell (GET, JSON) every `intervalValue` ms (default 30 000).
  * Updates the badge counter and populates the dropdown list.

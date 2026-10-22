@@ -196,7 +196,7 @@ class ProcessingActivity
     /**
      * Justification / reason for the retention duration (free-text).
      *
-     * Junior-ISB-Audit-2026-05-22 C2-02: dedup with semantic split — `retentionPeriodDays`
+     * Dedup with semantic split — `retentionPeriodDays`
      * is the canonical structured value (numeric days), while this column captures the
      * qualitative justification (e.g. "HGB §257 - 10 Jahre", "Vertragsdauer + 3 Jahre").
      * DB column kept (`retention_period`) to preserve data; only labels/help renamed.
@@ -208,7 +208,7 @@ class ProcessingActivity
     /**
      * Retention period in days (canonical structured value for automated deletion).
      *
-     * Junior-ISB-Audit-2026-05-22 C2-02: canonical numeric retention duration.
+     * Canonical numeric retention duration.
      */
     #[ORM\Column(nullable: true)]
     private ?int $retentionPeriodDays = null;
@@ -238,7 +238,7 @@ class ProcessingActivity
     /**
      * Qualitative description of technical and organizational measures (Art. 32 GDPR).
      *
-     * Junior-ISB-Audit-2026-05-22 C2-03: dedup with semantic split (qualitative vs structured).
+     * Dedup with semantic split (qualitative vs structured).
      * This free-text field holds the qualitative narrative — for the structured machine-readable
      * evidence linked to ISO 27001 controls, see {@see $implementedControls}. DSGVO Art. 32
      * demands evidence; either form counts (see {@see validateTomOrControlsPresent}).
@@ -249,7 +249,7 @@ class ProcessingActivity
     /**
      * Structured evidence: ISO 27001 controls implemented for this processing (M:N).
      *
-     * Junior-ISB-Audit-2026-05-22 C2-03: structured nachweis (vs the qualitative TOM narrative).
+     * Structured nachweis (vs the qualitative TOM narrative).
      *
      * @var Collection<int, Control>
      */
@@ -258,9 +258,9 @@ class ProcessingActivity
     private Collection $implementedControls;
 
     /**
-     * V3 W2-Bug3 — Linked Assets (M:N).
+     * Linked Assets (M:N).
      *
-     * Used by the DPIA-Auto-Suggestion listener (W2-H5): when any
+     * Used by the DPIA-Auto-Suggestion listener: when any
      * linked Asset has `dataClassification` ∈ {confidential,
      * restricted}, the processing activity is treated as high-risk
      * and a DPIA skeleton is auto-generated.
@@ -343,7 +343,7 @@ class ProcessingActivity
     /**
      * Department/Unit responsible for this processing activity (LEGACY freetext).
      *
-     * @deprecated since 2026-05-25 (S18 B3) — use {@see self::$responsibleDepartmentEntity}.
+     * @deprecated since 2026-05-25 — use {@see self::$responsibleDepartmentEntity}.
      *             Kept for zero-data-loss migration; remove in follow-up sprint once
      *             backfill is complete.
      */
@@ -351,7 +351,7 @@ class ProcessingActivity
     private ?string $responsibleDepartment = null;
 
     /**
-     * Structured FK to Department master-data (S18 B3).
+     * Structured FK to Department master-data.
      *
      * Replaces freetext $responsibleDepartment. The legacy field above stays
      * populated until the org-data-import in a later sprint promotes all
@@ -375,14 +375,14 @@ class ProcessingActivity
      * List of processors involved (name, contact, description)
      * JSON array of objects: [{"name": "...", "contact": "...", "description": "...", "contract_date": "..."}]
      *
-     * Sprint-2 P-7 Wave-2: kept for legacy / free-text capture, but the
+     * Kept for legacy / free-text capture, but the
      * canonical AVV link is via {@see ProcessingActivity::$processorSuppliers}.
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $processors = null;
 
     /**
-     * Sprint-2 P-7 Wave-2 / P0-15 — structured ProcessingActivity ↔ Supplier
+     * Structured ProcessingActivity ↔ Supplier
      * link for Auftragsverarbeiter (Art. 28 GDPR). Replaces the JSON
      * `processors` blob with a real FK so the supplier register and the
      * AVV register stay in sync.
@@ -494,7 +494,7 @@ class ProcessingActivity
     /**
      * Status of this record (canonical 5-stage lifecycle).
      *
-     * S3 P-4: migrated from legacy 3-stage (draft / active / archived) to
+     * Migrated from legacy 3-stage (draft / active / archived) to
      * canonical 5-stage (draft → in_review → approved → published → archived).
      * Legacy `active` values were UPDATEd to `published` by the consolidated
      * data-migration (Version20260518150000_vvt_document_canonical_lifecycle).
@@ -906,7 +906,7 @@ class ProcessingActivity
     }
 
     /**
-     * V3 W2-Bug3 — Linked Assets (M:N).
+     * Linked Assets (M:N).
      *
      * @return Collection<int, Asset>
      */
@@ -1322,11 +1322,11 @@ class ProcessingActivity
     }
 
     // -------------------------------------------------------------------------
-    // Cross-Field Validators (Junior-ISB-Audit-2026-05-22 C2-03)
+    // Cross-Field Validators
     // -------------------------------------------------------------------------
 
     /**
-     * Junior-ISB-Audit-2026-05-22 C2-03: DSGVO Art. 32 evidence requirement.
+     * DSGVO Art. 32 evidence requirement.
      *
      * At least ONE of the two TOM evidence forms must be present:
      *   - {@see $technicalOrganizationalMeasures}    (qualitative, ≥ 50 chars)

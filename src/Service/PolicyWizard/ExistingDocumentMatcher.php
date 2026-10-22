@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard;
 use App\Entity\Document;
 
 /**
- * Policy-Wizard W4-C — fuzzy matcher mapping legacy `Document`s to known
+ * Policy-Wizard — fuzzy matcher mapping legacy `Document`s to known
  * Policy-Wizard topics.
  *
  * Strategy:
@@ -35,7 +35,7 @@ final class ExistingDocumentMatcher
      * (umbrella policy) — a single document that mixes ≥3 different ISO 27002
      * topics (e.g. an 80-page "IT-Sicherheits-Richtlinie" covering access
      * control + crypto + backup + logging + …). Such documents must NOT be
-     * naively `replace`d (would lose 80 pages of content); the W4-C UI maps
+     * naively `replace`d (would lose 80 pages of content); the UI maps
      * this synthetic suggestion to suggested_action='split_to_topics'.
      *
      * Not part of {@see knownTopics()} — split_to_topics multi-pickers stay

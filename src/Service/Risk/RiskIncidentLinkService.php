@@ -15,7 +15,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * RiskIncidentLinkService — Sprint 9B / F16
+ * RiskIncidentLinkService
  *
  * Manages structured cross-links between Risk register entries and Incident
  * reports. Provides idempotent link/unlink and a helper for suggesting risk

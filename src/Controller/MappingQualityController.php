@@ -473,7 +473,6 @@ class MappingQualityController extends AbstractController
                 }
             }
 
-            // Flush all changes
             $this->entityManager->flush();
             $this->entityManager->clear();
 

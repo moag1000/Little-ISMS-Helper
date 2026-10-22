@@ -1,5 +1,5 @@
 {#
- # Wave 5 — Flyout Panels (Mega-Menu Secondary Content)
+ # Flyout Panels (Mega-Menu Secondary Content)
  # Rendered at body-level to escape z-index stacking context.
  # Each panel is a <div class="flyout"> keyed by data-category.
  # The Stimulus mega-menu controller adds/removes .is-open on the matching panel.
@@ -15,7 +15,7 @@
  # - Holding-structure gates: Portfolio panel + Konzern-Reports require
  #   app.user.tenant.isPartOfCorporateStructure() == true.
  #
- # Wave 5 — flyout pattern:
+ # Flyout pattern:
  #   .flyout          — hidden panel (opacity:0, pointer-events:none)
  #   .flyout.is-open  — visible panel (added by mega_menu_controller.js)
  #   .fly-section     — card grouping within flyout
@@ -827,7 +827,7 @@
                 </span>
             </a>
             {% endif %}
-            {# Mapping-Tour starten — geführte Themen-Tour für Junior-ISBs #}
+            {# Mapping-Tour starten — geführte Themen-Tour für beginners #}
             <button type="button" class="fly-item w-100 text-start border-0 bg-transparent" role="menuitem"
                     data-action="click->guided-tour#start"
                     data-guided-tour-role-param="mapping"
@@ -1258,7 +1258,7 @@
     </header>
     <div class="flyout__sections">
 
-        {# Onboarding Banner — Phase 2 slot, no dismiss until app_preferences_dismiss lands #}
+        {# Onboarding Banner — no dismiss until app_preferences_dismiss lands #}
         <div class="fly-section fly-section--full">
             <div class="fa-onboarding-banner mb-2" role="region" aria-labelledby="onboarding-banner-title-help">
                 <div class="fa-onboarding-banner__content">

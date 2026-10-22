@@ -1,5 +1,5 @@
 {#
- # FairyAurora v4 — Severity-Choice Macro (Audit-S5 P-13)
+ # FairyAurora v4 — Severity-Choice Macro
  #
  # Aurora-styled 4-stage severity selector (low / medium / high / critical)
  # that exposes a *definition tooltip* for every stage. Replaces the bare
@@ -10,7 +10,7 @@
  #   <prefix>.severity_choice.<value>.label
  #   <prefix>.severity_choice.<value>.definition
  # so each entity-domain (incident, risk, audits, bc_exercises) can ship
- # its own stage-definitions (see audit-s5 P-13 translation rollout).
+ # its own stage-definitions (see the severity translation domain).
  #
  # Usage (manual, outside Symfony Form-Theme):
  #   {% import '_components/_fa_severity_choice.html.twig' as _fa_severity_choice %}

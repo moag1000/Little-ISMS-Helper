@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * success-criteria — P-9 JsonBuilder for BCExercise.successCriteria
+ * success-criteria — JsonBuilder for BCExercise.successCriteria
  * (ISO 22301 §8.6c). Auto-detects Shape A (array of objects) vs Shape B
  * (legacy flat key:bool object) on load. Always writes Shape A back.
  *

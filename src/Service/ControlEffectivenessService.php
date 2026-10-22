@@ -14,7 +14,7 @@ use DateTimeInterface;
 /**
  * Control Effectiveness Service
  *
- * Phase 7B: Analyzes control performance and effectiveness metrics.
+ * Analyzes control performance and effectiveness metrics.
  * Provides data for control dashboards and performance analysis.
  */
 class ControlEffectivenessService

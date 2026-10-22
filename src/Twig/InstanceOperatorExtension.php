@@ -10,7 +10,7 @@ use Twig\Attribute\AsTwigFunction;
 
 /**
  * `instance_operator_missing()` — true when no active ROLE_SUPER_ADMIN
- * exists (#1059). /quick-fix shows a notice then. A failing check (broken
+ * exists. /quick-fix shows a notice then. A failing check (broken
  * schema) counts as "unknown" and shows nothing; the schema sections of the
  * page report that state already.
  */

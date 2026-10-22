@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Audit V3 C2 — Compliance-Manager (Head-of-GRC) Dashboard.
+ * Compliance-Manager (Head-of-GRC) Dashboard.
  *
  * Pendant to existing CISO/Risk-Manager/Auditor/Board dashboards.
  * Surfaces:
@@ -64,7 +64,7 @@ class ComplianceManagerDashboardController extends AbstractController
         $frameworkComparison = $this->analytics->getFrameworkComparison();
         $frameworks = $frameworkComparison['frameworks'] ?? [];
 
-        // V3 W2-M2: Service exposes `compliance_percentage` — normalize to
+        // Service exposes `compliance_percentage` — normalize to
         // `compliance` so the template (heatmap + Top-3) reads the value.
         // Without this, all rows render 0 % even when coverage > 0.
         foreach ($frameworks as &$fw) {

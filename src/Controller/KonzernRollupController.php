@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Policy-Wizard W7-B — Konzern Roll-Up dashboard.
+ * Policy-Wizard — Konzern Roll-Up dashboard.
  *
  * Read-only HTTP surface for the holding-level CISO / Group-Compliance
  * Officer / Konzern-Auditor. Aggregates six dashboard slices (coverage,
@@ -89,7 +89,7 @@ final class KonzernRollupController extends AbstractController
         $this->denyAccessUnlessGranted(PolicyWizardVoter::KONZERN_DEFAULTS, $konzernRoot);
 
         $report = $this->aggregator->aggregateForKonzern($konzernRoot);
-        // CISO Task #130 — quarterly trend for the Compliance tab
+        // CISO — quarterly trend for the Compliance tab
         // sparklines. 8 quarters = two full years.
         $trend = $this->trendCalculator->calculateQuarterlyTrend($konzernRoot, 8);
 
@@ -103,7 +103,7 @@ final class KonzernRollupController extends AbstractController
     }
 
     /**
-     * CISO Task #130 — board-ready One-Pager PDF. Auto-resolves the
+     * CISO — board-ready One-Pager PDF. Auto-resolves the
      * Konzern root identically to {@see self::index()} and falls back to
      * the dashboard with a flash when the user is not in a holding
      * context. Optional `?as_of=YYYY-MM-DD` query parameter pins the

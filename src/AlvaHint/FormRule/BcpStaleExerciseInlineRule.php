@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — BCP form: stale or missing exercise.
+ * Form-Step-Inline-Hint — BCP form: stale or missing exercise.
  *
  * Fires while the user is editing a BusinessContinuityPlan and the
  * `lastTested` field is either empty (plan never exercised) or older

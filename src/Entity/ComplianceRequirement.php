@@ -70,14 +70,14 @@ class ComplianceRequirement
 
     /**
      * @var Collection<int, Training>
-     * Phase 6K: Training ↔ ComplianceRequirement inverse relationship
+     * Training ↔ ComplianceRequirement inverse relationship
      * Tracks which trainings fulfill this compliance requirement
      */
     #[ORM\ManyToMany(targetEntity: Training::class, mappedBy: 'complianceRequirements')]
     private Collection $trainings;
 
     /**
-     * M-05: Structured evidence documents (ISO 27001 Clause 7.5).
+     * Structured evidence documents (ISO 27001 Clause 7.5).
      * Replaces the legacy free-text evidenceDescription at the data layer.
      *
      * @var Collection<int, Document>

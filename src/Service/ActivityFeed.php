@@ -18,7 +18,7 @@ use DateTimeInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Audit V3 C6 — Activity-Feed (Cross-Persona).
+ * Activity-Feed (Cross-Persona).
  *
  * Aggregates user-relevant activity from:
  *   - AuditLog (last 50 entries)
@@ -81,7 +81,7 @@ final class ActivityFeed
         $items = [];
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        // 1. AuditLog (last 50) — tenant-scoped (Audit V3 W2-C1).
+        // 1. AuditLog (last 50) — tenant-scoped.
         // When no tenant context is available we deliberately return nothing
         // from this source rather than leaking cross-tenant rows.
         $auditLogs = $tenant
@@ -105,7 +105,7 @@ final class ActivityFeed
             ];
         }
 
-        // 2. WorkflowInstance recent (active) — tenant-scoped (Audit V3 W2-C1).
+        // 2. WorkflowInstance recent (active) — tenant-scoped.
         // scope=compliance: only Document-approval workflows surfaced.
         $activeWorkflows = $tenant
             ? $this->workflowRepo->findActiveForTenant($tenant)

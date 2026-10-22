@@ -27,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * S4 P-15 DataReuse backfill — best-effort migration of free-text owner
+ * S4 DataReuse backfill — best-effort migration of free-text owner
  * fields to typed User / Person FKs:
  *
  *   InternalAudit.leadAuditor    → leadAuditorUser | leadAuditorPerson

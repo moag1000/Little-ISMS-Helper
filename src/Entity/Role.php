@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[UniqueEntity(fields: ['name'], message: 'role.validation.name_unique')]
 class Role implements Stringable
 {
-    // Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+    // RBAC core entities.
     // 3-stage lifecycle for a role: drafted → activated → archived.
     // Archive is irreversible from a 4-eyes perspective: archiving a role
     // removes it from user-bindings, which is a sensitive RBAC change.
@@ -46,7 +46,7 @@ class Role implements Stringable
     private bool $isSystemRole = false;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      * Owned by `role_lifecycle` — never call setStatus() directly outside the
      * initial-marking bootstrap; route transitions through LifecycleService::transition().
      */
@@ -54,7 +54,7 @@ class Role implements Stringable
     private string $status = self::STATUS_DRAFT;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      * Optimistic-lock guard for concurrent lifecycle transitions.
      */
     #[ORM\Version]
@@ -211,7 +211,7 @@ class Role implements Stringable
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      */
     public function getStatus(): string
     {
@@ -219,7 +219,7 @@ class Role implements Stringable
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      * Do NOT call directly outside the initial-marking bootstrap; route
      * transitions through LifecycleService::transition().
      */
@@ -230,7 +230,7 @@ class Role implements Stringable
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * RBAC core entities.
      */
     public function getLockVersion(): int
     {

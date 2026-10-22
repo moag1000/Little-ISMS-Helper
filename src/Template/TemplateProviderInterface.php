@@ -11,7 +11,7 @@ namespace App\Template;
  * with `system_template.provider` and discovered by SystemTemplateRegistry
  * at container boot.
  *
- * Foundation P-14 (S5 Junior-ISB-Audit). A provider groups a coherent set
+ * A provider groups a coherent set
  * of templates for one domain (ISO 27005 threats, BSI hazards, GDPR VVTs,
  * ISO 27001 policies, hyperscaler suppliers, industry module profiles).
  */

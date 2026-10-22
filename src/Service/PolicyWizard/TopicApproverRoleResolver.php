@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard;
 use App\Entity\User;
 
 /**
- * TopicApproverRoleResolver — Task #126.
+ * TopicApproverRoleResolver
  *
  * Resolves the recommended approver role(s) for a given PolicyTemplate
  * topic key, and validates whether a concrete {@see User} actually

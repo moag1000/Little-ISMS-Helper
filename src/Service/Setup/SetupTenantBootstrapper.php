@@ -94,7 +94,7 @@ final class SetupTenantBootstrapper
             $this->seedISMSContextFromWizard($tenant, $session);
 
             // Seed BSI IT-Grundschutz default asset sub-types so the sub-type
-            // dropdown is not empty for freshly provisioned tenants (Bug S18 B2).
+            // dropdown is not empty for freshly provisioned tenants.
             $this->assetSubTypeSeeder->applyPreset($tenant, AssetSubTypeSeeder::PRESET_BSI);
 
             $this->entityManager->flush();

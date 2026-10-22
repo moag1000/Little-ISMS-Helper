@@ -12,7 +12,7 @@ use App\Entity\User;
 use App\Repository\DataBreachRepository;
 
 /**
- * Sprint-2 Foundation P-7 — Tier-1 regulatory hint.
+ * Tier-1 regulatory hint.
  *
  * Trigger: `Incident.dataBreachOccurred === true` and no DataBreach is
  * linked back to this incident yet. Surfaces the GDPR Art. 33 72h

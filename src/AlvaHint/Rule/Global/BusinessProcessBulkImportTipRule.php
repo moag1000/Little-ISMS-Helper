@@ -15,7 +15,7 @@ use App\Repository\BusinessProcessRepository;
  *
  * Annual BIA owner reviews across more than 15 business processes become
  * error-prone when done record-by-record. The CSV/XLSX delta-mode import
- * (Sprint-2 F2-W2) lets owners batch-update criticality, RTO, and owner
+ * lets owners batch-update criticality, RTO, and owner
  * fields without per-row editing, saving approximately 1.5 FTE-hours per
  * review cycle.
  *

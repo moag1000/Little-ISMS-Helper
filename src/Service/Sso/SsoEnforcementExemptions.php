@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 /**
  * Accounts that SSO enforcement (Tenant::ssoEnforced or a provider with
  * domainBindingMode = enforce) applies to but that keep the password login,
- * because no enabled provider can sign them in (anti-lockout fail-open, #1059).
+ * because no enabled provider can sign them in (anti-lockout fail-open).
  * Shown on the SSO admin page so "SSO enforced" is not read as a full
  * guarantee in an audit. Uses the subscribers' own decision, and lists only
  * accounts the viewer may VIEW.

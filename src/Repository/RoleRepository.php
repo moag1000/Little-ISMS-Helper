@@ -89,7 +89,7 @@ class RoleRepository extends ServiceEntityRepository
      * Get all roles with eager-loaded users and permissions for role overview.
      *
      * Two queries on purpose: fetch-joining both collections in one query
-     * returns users × permissions rows per role (#1059). The second query
+     * returns users × permissions rows per role. The second query
      * hydrates the permissions into the same managed Role instances.
      *
      * @return Role[] Array of Role entities with users and permissions loaded

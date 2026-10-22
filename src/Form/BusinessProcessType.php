@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern — UX-Polish.
+ * BP-Tooltips Drawer Pattern — UX-Polish.
  *
  * The `help.<field>` translation keys hold the 30-sec summaries displayed
  * inline. The verbose ISO-22301 reference (RPO/RTO/MTPD definitions, BIA
@@ -48,7 +48,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
     ) {
     }
 
-    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    // Owner pre-fill — UX-Polish
     protected function getSecurityForOwnerPicker(): ?Security
     {
         return $this->security;
@@ -80,7 +80,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             ])
         ;
 
-        // ── Process Owner cluster (audit-s4 P-1) ────────────────────────────
+        // ── Process Owner cluster ────────────────────────────
         // Replaces 4 hand-rolled add() calls (processOwnerUser /
         // processOwnerPerson / processOwnerDeputyPersons / processOwner).
         $this->addOwnerPicker($builder, [
@@ -98,7 +98,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             'deputies_label'     => 'business_process.field.process_owner_deputies',
             'deputies_help'      => 'business_process.help.process_owner_deputies',
             'legacy_label'       => 'business_process.field.process_owner_legacy',
-            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            // Owner pre-fill — UX-Polish
             'default_to_current_user' => true,
         ]);
 
@@ -328,7 +328,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
     }
 
     /**
-     * S11 §1 (M-01) — ISO 22301 Cl. 8.2.2 / 8.3.2 recovery chain monotonicity.
+     * ISO 22301 Cl. 8.2.2 / 8.3.2 recovery chain monotonicity.
      *
      * The three BCM windows must satisfy:  RPO ≤ RTO ≤ MTPD
      *   RPO  — maximum acceptable data loss (since last good backup)

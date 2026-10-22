@@ -16,7 +16,7 @@ use Symfony\Component\Workflow\WorkflowInterface;
  *
  * Voter / Guards / Listeners ALWAYS call this, never read YAML directly.
  *
- * Extended in Y.3 to also support workflow-step-scoped overrides:
+ * Also support workflow-step-scoped overrides:
  *   resolveWorkflowStep($workflowName, $stepIndex) merges step YAML metadata
  *   with lifecycle_config rows keyed as:
  *     workflowName = 'workflow:{name}', transitionName = 'step:{index}'
@@ -60,7 +60,7 @@ final class LifecycleConfigResolver implements LifecycleConfigResolverInterface
     }
 
     /**
-     * Resolve merged config for a workflow-step overlay (Y.3).
+     * Resolve merged config for a workflow-step overlay.
      *
      * The YAML step baseline comes from the regulatory workflow's metadata.steps
      * array (loaded via RegulatoryWorkflowLoader if available, or passed in directly).

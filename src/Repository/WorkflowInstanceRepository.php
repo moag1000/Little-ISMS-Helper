@@ -50,7 +50,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
     /**
      * Find active workflow instances scoped to a specific tenant.
      *
-     * Audit V3 W2-C1: prevents Cross-Tenant-Leakage in ActivityFeed.
+     * Prevents Cross-Tenant-Leakage in ActivityFeed.
      *
      * @return WorkflowInstance[] Array of active instances sorted by start date (newest first)
      */
@@ -86,7 +86,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
     /**
      * Find overdue workflow instances scoped to a specific tenant.
      *
-     * Audit V3 W2-C2: prevents Cross-Tenant-Leakage in MyDayAggregator.
+     * Prevents Cross-Tenant-Leakage in MyDayAggregator.
      *
      * @return WorkflowInstance[] Array of overdue instances sorted by due date (oldest first)
      */
@@ -146,7 +146,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
      * Find pending workflow instances for a specific user.
      *
      * @param User $user User to filter by
-     * @param Tenant|null $tenant Optional tenant scope (Audit V3 W2-C2: required to prevent cross-tenant-leakage in MyDayAggregator)
+     * @param Tenant|null $tenant Optional tenant scope (required to prevent cross-tenant-leakage in MyDayAggregator)
      * @return WorkflowInstance[] Array of pending instances sorted by due date (earliest first)
      */
     public function findPendingForUser(User $user, ?Tenant $tenant = null): array
@@ -177,7 +177,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
 
         $queryBuilder->andWhere($orx);
 
-        // Audit V3 W2-C2: tenant-scope when provided (callers via TenantContext)
+        // Tenant-scope when provided (callers via TenantContext)
         if ($tenant instanceof Tenant) {
             $queryBuilder->andWhere('wi.tenant = :tenant')
                 ->setParameter('tenant', $tenant);

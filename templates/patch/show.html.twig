@@ -14,7 +14,7 @@
             body: 'common.module_not_active'|trans({'%module%': 'Patches'}, 'messages')
         }) }}
     {% else %}
-    {# Lifecycle Y.5 — status transition dropdown (patch_lifecycle) #}
+    {# Lifecycle — status transition dropdown (patch_lifecycle) #}
     {% include '_components/_lifecycle_toolbar.html.twig' with {
         entity: patch,
         entity_type: 'patch',

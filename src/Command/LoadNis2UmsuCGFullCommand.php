@@ -26,7 +26,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * nis2_to_nis2-umsucg, nis2-umsucg_to_kritis-dachgesetz, …) reference §N
  * requirement ids, so the partial LoadNis2UmsuCGRequirementsCommand
  * (NIS2UMSUCG-N ISO-mapping delta ids) must NOT be registry-bound or those
- * mappings silent-skip 100 % of their § pairs (#951/#952-class wiring defect).
+ * mappings silent-skip 100 % of their § pairs (a registry-wiring defect).
  */
 #[AsCommand(
     name: 'app:load-nis2-umsucg-full',

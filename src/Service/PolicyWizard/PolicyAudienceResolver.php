@@ -12,7 +12,7 @@ use App\Repository\UserRepository;
 
 /**
  * Audience resolver for {@see Document} → list of {@see User} that must
- * acknowledge the policy (W3-L, closes auditor's predicted A.6.3 NC).
+ * acknowledge the policy (ISO 27001 A.6.3: policies must be communicated and acknowledged).
  *
  * Strategy (priority order):
  *   1. Explicit override carried by the Document itself in

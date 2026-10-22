@@ -39,15 +39,15 @@ final class SsoController extends AbstractController
      * (legacy links) the slug is served only when exactly one enabled
      * provider carries it — slugs are unique per organisation only, and a
      * colliding slug of another organisation must never steer the visitor to
-     * that organisation's IdP (#1059 I-5). Every failure gets the same
+     * that organisation's IdP. Every failure gets the same
      * neutral message.
      */
     #[Route('/sso/{slug}/start', name: 'app_sso_start', methods: ['GET'])]
     public function start(string $slug, Request $request): Response
     {
         // Looked up without the tenant filter: a logged-in user re-authenticating
-        // through a global or parent-organisation provider must find it (#1059
-        // m-6); a signed-in user then only gets a provider allowed for them.
+        // through a global or parent-organisation provider must find it;
+        // a signed-in user then only gets a provider allowed for them.
         $providerId = $request->query->get('provider');
         if (is_string($providerId) && ctype_digit($providerId)) {
             $provider = $this->providerRepo->findUnfiltered((int) $providerId);
@@ -78,7 +78,7 @@ final class SsoController extends AbstractController
         $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_KEY, $slug);
         $session->set(GenericOidcAuthenticator::SESSION_PROVIDER_ID_KEY, $provider->getId());
         // A new start never inherits an old target; only a same-origin
-        // relative path is accepted (#1059 m-4).
+        // relative path is accepted.
         $session->remove(GenericOidcAuthenticator::SESSION_TARGET_KEY);
         $target = $request->query->get('target');
         if (is_string($target) && GenericOidcAuthenticator::isSafeTarget($target)) {

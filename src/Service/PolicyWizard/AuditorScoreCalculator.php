@@ -9,12 +9,12 @@ use App\Entity\PolicyTemplate;
 use App\Entity\WizardRun;
 
 /**
- * Policy-Wizard — Junior-ISB Wish #5 ("Auditor-Score") readiness scoring.
+ * Policy-Wizard — "Auditor-Score" readiness scoring.
  *
  * Heuristic traffic-light scoring for a single Policy-Wizard-generated
  * {@see Document}. Surfaced as a badge in the Document index (column)
  * and as a header section in the Document show view, so non-expert
- * implementers (Junior-ISB, 9001 background) get an immediate "is this
+ * implementers (beginners, 9001 background) get an immediate "is this
  * audit-ready?" signal without having to read the full body.
  *
  * Scoring tiers:

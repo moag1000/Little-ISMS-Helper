@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
 /**
- * Policy-Wizard W4-B — IndustryPresetBundle picker (Step 1).
+ * Policy-Wizard — IndustryPresetBundle picker (Step 1).
  *
  * Listens for change events on the bundle <select>, fetches the bundle
  * preview JSON from /policy-wizard/preset-preview/{key}, then:

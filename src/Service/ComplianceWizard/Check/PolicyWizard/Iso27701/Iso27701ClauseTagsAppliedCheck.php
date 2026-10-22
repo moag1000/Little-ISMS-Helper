@@ -14,7 +14,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use App\Service\TenantSettingResolver\PolicySettingProvider;
 
 /**
- * W6-D / ISO 27701 §3.3 — confirms generated Documents carry
+ * ISO 27701 §3.3 — confirms generated Documents carry
  * `iso27701:<clause>` tags when the PIMS addon is enabled.
  *
  * Per `docs/plans/policy-wizard/06-dpo-input.md` §3.3, the document

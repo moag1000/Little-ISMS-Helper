@@ -79,7 +79,7 @@ class Schedule implements ScheduleProviderInterface
             RecurringMessage::cron('0 4 * * 0', new EnforceRetentionMessage())
         );
 
-        // F39 — sync the ENISA EUVD feed daily at 5:00 AM (NIS2 Art. 12
+        // Sync the ENISA EUVD feed daily at 5:00 AM (NIS2 Art. 12
         // coordinated vulnerability disclosure / EU single entry point).
         $schedule->add(
             RecurringMessage::cron('0 5 * * *', new SyncEuvdFeedMessage())

@@ -9,7 +9,7 @@ use App\Entity\Risk;
 use App\Enum\DpiaStatus;
 
 /**
- * Sprint-2 P-7 Wave-2 — DPIA Pre-Filler from a Risk source.
+ * DPIA Pre-Filler from a Risk source.
  *
  * Called by {@see App\Controller\DPIAController::new()} when the AlvaHint
  * action button "DPIA anlegen mit Vorbefüllung" is taken from a Risk

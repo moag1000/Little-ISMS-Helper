@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Audit V3 C1 — "Mein Tag" zentrale Inbox.
+ * "Mein Tag" zentrale Inbox.
  *
  * Aggregates open items for the current user across 7 distributed inboxes
  * (workflow/pending + workflow/overdue, four_eyes/inbox, policy_ack/inbox,

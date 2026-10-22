@@ -16,8 +16,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
  * Creates a NotificationDelivery row and dispatches DispatchNotificationMessage
  * for each channel attached to the rule.
  *
- * When Messenger uses the sync transport (default until Sprint-6b configures
- * async queues), the handler executes inline in the same request.
+ * When Messenger uses the sync transport (default until async queues are
+ * configured), the handler executes inline in the same request.
  */
 class NotificationDispatcher
 {
@@ -29,7 +29,7 @@ class NotificationDispatcher
     /**
      * Dispatch notification for every channel attached to the rule.
      *
-     * F3 digest mode: if a channel has `delivery_mode = digest_daily` in its
+     * Digest mode: if a channel has `delivery_mode = digest_daily` in its
      * config, the delivery is persisted with status `pending_digest` and the
      * entityState snapshot is stored in `payload`. No Messenger message is
      * dispatched — the `app:notification:send-digests` command collects these
@@ -81,7 +81,7 @@ class NotificationDispatcher
     }
 
     /**
-     * F3 digest mode — persist a delivery that will be batched later.
+     * Digest mode — persist a delivery that will be batched later.
      *
      * @param array<string, mixed> $entityState
      */

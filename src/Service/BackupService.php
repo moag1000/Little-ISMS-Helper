@@ -53,7 +53,7 @@ class BackupService
         'Location',
         'Supplier',
         'SystemSettings',
-        'Department', // S18 B3: tenant-scoped Abteilung, FK target for responsibleDepartmentEntity
+        'Department', // Tenant-scoped Abteilung, FK target for responsibleDepartmentEntity
 
         // Tenant-level overrides / branding
         'TenantBranding',           // FK: Tenant, User (has logoPath upload)
@@ -67,14 +67,14 @@ class BackupService
         'IdentityProviderUserMapping',       // FK: Tenant, IdentityProvider, User
         'SsoUserApproval',                   // FK: Tenant, IdentityProvider, User
 
-        // Configuration entities (Phase 8 / QW-5)
-        'RiskApprovalConfig',       // Phase 8L.F1 — FK: Tenant, User
-        'IncidentSlaConfig',        // Phase 8L.F2 — FK: Tenant, User
-        'SupplierCriticalityLevel', // Phase 8QW-5 — FK: Tenant
+        // Configuration entities (
+        'RiskApprovalConfig',       // FK: Tenant, User
+        'IncidentSlaConfig',        // FK: Tenant, User
+        'SupplierCriticalityLevel', // FK: Tenant
         'KpiThresholdConfig',       // FK: Tenant
         'Tag',                      // FK: Tenant
         'EntityTag',                // FK: Tag, User
-        'AssetSubType',             // S18 B2 — FK: Tenant — tenant-konfigurierbare Asset-Sub-Types
+        'AssetSubType',             // FK: Tenant — tenant-konfigurierbare Asset-Sub-Types
 
         // ISMS Core
         'Asset',
@@ -106,7 +106,7 @@ class BackupService
         // GDPR/Privacy (CRITICAL - was missing!)
         'ProcessingActivity',
         'DataProtectionImpactAssessment',
-        'TransferImpactAssessment', // F13 — FK: Tenant, ProcessingActivity, User
+        'TransferImpactAssessment', // FK: Tenant, ProcessingActivity, User
         'DataBreach',
         'Consent',
         'DataSubjectRequest',       // DSGVO Art. 15-22 — FK: Tenant, User, ProcessingActivity
@@ -123,8 +123,8 @@ class BackupService
         'DocumentControlLink',      // FK: Document, Control — link table
         'Training',
         'TrainingParticipation',    // FK: Tenant, Training, User — sign-offs
-        'AccessReviewCampaign',     // F45 — FK: Tenant, User
-        'AccessReviewItem',         // F45 — FK: Tenant, AccessReviewCampaign, User
+        'AccessReviewCampaign',     // FK: Tenant, User
+        'AccessReviewItem',         // FK: Tenant, AccessReviewCampaign, User
 
         // Comments (polymorphic, after all target entities)
         'Comment',                  // FK: Tenant, User — polymorphic threads
@@ -132,7 +132,7 @@ class BackupService
         // Audit & Reviews
         'InternalAudit',
         'AuditChecklist',
-        'AuditFinding',             // H-01 — FK: Tenant, InternalAudit, Control, User
+        'AuditFinding',             // FK: Tenant, InternalAudit, Control, User
         'CorrectiveAction',         // FK: Tenant, AuditFinding, User
         'AuditFreeze',              // H-01 tamper-evident — FK: Tenant, User
         'ManagementReview',
@@ -146,12 +146,12 @@ class BackupService
         'InterestedParty',
         'CorporateGovernance',
 
-        // F44 — Inbound Security-Questionnaire Answer Library
+        // Inbound Security-Questionnaire Answer Library
         'AnswerLibraryEntry',            // FK: Tenant, User (createdBy)
 
         // TISAX / Prototype Protection
         'PrototypeProtectionAssessment', // FK: Tenant, Supplier, Location, User, Person
-        'SupplierQuestionnaire',         // F23 — FK: Tenant, Supplier — outbound questionnaire + answers
+        'SupplierQuestionnaire',         // FK: Tenant, Supplier — outbound questionnaire + answers
 
         // Operations
         'ChangeRequest',
@@ -202,7 +202,7 @@ class BackupService
         'DoraExitPlan',
         'DoraSubcontractor',
 
-        // Audit-Program (ISO 19011 §5.4 Jahresplan) — Phase 2.5
+        // Audit-Program (ISO 19011 §5.4 Jahresplan)
         'AuditProgram',             // FK: Tenant, User — links to InternalAudit children
 
         // TISAX BYO-Import disclaimer-trail (legal evidence)
@@ -238,7 +238,7 @@ class BackupService
         'PortfolioSnapshot'     => 'derived trend-cache, re-computable from primary entities',
         'ReuseTrendSnapshot'    => 'derived trend-cache, re-computable from primary entities',
 
-        // Security credentials — F6 read-only API tokens hold SHA-256 hashes;
+        // Security credentials — read-only API tokens hold SHA-256 hashes;
         // regeneratable via app:api-token:create, deliberately kept out of
         // backup files (same hygiene as the password/salt EXCLUDED_FIELDS).
         'ApiToken'              => 'security credential (token hashes), regeneratable via app:api-token:create',

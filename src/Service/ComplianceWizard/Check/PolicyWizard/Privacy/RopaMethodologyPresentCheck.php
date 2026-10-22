@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W6-D / GDPR Art. 30 — confirms a published Records-of-Processing
+ * GDPR Art. 30 — confirms a published Records-of-Processing
  * methodology document exists for the tenant.
  *
  * Evidence: at least one published-or-approved {@see \App\Entity\Document}

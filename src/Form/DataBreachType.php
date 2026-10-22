@@ -36,7 +36,7 @@ final class DataBreachType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Junior-ISB-Audit-2026-05-22 K-01: SLA-Countdown anchor needs an unambiguous start time.
+        // SLA-Countdown anchor needs an unambiguous start time.
         // GDPR Art. 33 (1) 72h authority-notification deadline is measured from detectedAt.
         // Pre-fill on the form layer only when the bound entity has none (new standalone
         // breach). DataBreachService::createFromIncident() syncs detectedAt from the linked
@@ -395,7 +395,7 @@ final class DataBreachType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * SectionPolicy (S4 Foundation P-2) — GDPR Art. 33/34 structure.
+     * SectionPolicy — GDPR Art. 33/34 structure.
      *
      * Sections follow the Art. 33(3) notification content structure so
      * regulatory-critical fields are visually grouped and not buried in "Sonstiges".

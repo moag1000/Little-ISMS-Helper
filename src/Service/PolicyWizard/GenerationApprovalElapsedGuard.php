@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * W1 audit-defang gap #2 — Generation-to-approval minimum-elapsed-time
+ * audit-defang gap #2 — Generation-to-approval minimum-elapsed-time
  * gate.
  *
  * Per the External-Auditor persona-review (`docs/plans/policy-wizard/

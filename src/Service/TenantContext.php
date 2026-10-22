@@ -285,8 +285,8 @@ class TenantContext
      *
      * For a regular tenant user this is just their own tenant. For a
      * Holding-Tenant (isCorporateParent = true), the caller gets the
-     * full subtree — intended for Group-CISO style read-only roll-ups
-     * (Phase 9.P1.6). Authorization enforcement itself lives in the
+     * full subtree — intended for Group-CISO style read-only roll-ups.
+     * Authorization enforcement itself lives in the
      * voter layer; this service only exposes the topology.
      *
      * @return Tenant[]

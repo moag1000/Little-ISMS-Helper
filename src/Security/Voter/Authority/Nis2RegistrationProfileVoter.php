@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * F29 — Voter for NIS-2 BSI Registration Profile.
+ * Voter for NIS-2 BSI Registration Profile.
  *
  * Permissions:
  *  - VIEW          ROLE_MANAGER (read profile + export page)

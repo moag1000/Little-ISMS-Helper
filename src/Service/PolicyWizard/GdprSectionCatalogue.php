@@ -9,14 +9,14 @@ use App\Service\PolicyWizard\SectionExtension\SectionExtension;
 use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
 
 /**
- * Policy-Wizard W6-C — GDPR section catalogue.
+ * Policy-Wizard — GDPR section catalogue.
  *
  * Per `docs/plans/policy-wizard/06-dpo-input.md` §0 Decision Matrix v2,
  * the DPO addon contributes 8 sections + 2 appendices that MERGE into
  * existing ISO 27001 host policies (rather than spawning standalone
  * privacy documents). The 5 genuinely standalone privacy artefacts
  * (DPO Charter, RoPA Methodology, DPIA Methodology, DSR Procedure,
- * Retention Schedule) are seeded by W6-B's
+ * Retention Schedule) are seeded by
  * {@see \App\Command\SeedPrivacyPolicyTemplatesCommand} and are NOT
  * represented here.
  *
@@ -26,9 +26,9 @@ use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
  * rows, each carrying its own `approval_role` per §0.A split-state
  * machine (CISO / DPO / JOINT). The DPO can then sign off / reject the
  * privacy section independently of the host CISO-owned content via
- * {@see PolicySectionApprovalService} (W6-A).
+ * {@see PolicySectionApprovalService}.
  *
- * Mechanically identical to {@see DoraExtensionCatalogue} (W4-A): a
+ * Mechanically identical to {@see DoraExtensionCatalogue}: a
  * static lookup driven by ISO topic key. The difference is that the
  * DORA addon appends prose `## DORA-Erweiterung` blocks to the rendered
  * body, whereas the GDPR addon emits per-section `DocumentSection`
@@ -183,8 +183,8 @@ final class GdprSectionCatalogue implements StandardSectionCatalogueInterface
     /**
      * Maps each matching catalogue row to a {@see SectionExtension} DTO.
      *
-     * Translation-key convention (W6-F): `policy_wizard.gdpr_section.<section_key>.body`
-     * (authored alongside the W6-C addon sections — kept as a static pattern here
+     * Translation-key convention: `policy_wizard.gdpr_section.<section_key>.body`
+     * (authored alongside the addon sections — kept as a static pattern here
      * so consumers do not need to know the domain layout).
      *
      * @return list<SectionExtension>

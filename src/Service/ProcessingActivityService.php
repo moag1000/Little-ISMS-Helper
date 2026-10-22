@@ -488,7 +488,7 @@ final class ProcessingActivityService
      * `activate` transition (direct draft→published shortcut in
      * processing_activity_lifecycle, ROLE_MANAGER only).
      *
-     * C-07: previously fell back to direct setStatus() when LifecycleService
+     * Previously fell back to direct setStatus() when LifecycleService
      * was unavailable — that bypass skipped Voter / 4-eyes / audit-log /
      * regulatory guards. Removed. The Symfony Workflow component MUST be
      * available; LifecycleService is non-optional from the call-site contract.
@@ -512,13 +512,13 @@ final class ProcessingActivityService
 
         if ($this->lifecycleService === null) {
             // @intentional-assertion: LifecycleService is required; the previous
-            // setStatus() fallback bypassed Voter / 4-eyes / audit-log (C-07).
+            // setStatus() fallback bypassed Voter / 4-eyes / audit-log.
             throw new \LogicException(
                 'ProcessingActivityService::activate() requires LifecycleService; '
                 . 'direct setStatus() fallback removed (C-07).'
             );
         }
-        // S3 P-4 / Lifecycle X.1: canonical transition via Symfony Workflow.
+        // canonical transition via Symfony Workflow.
         $this->lifecycleService->transition(
             $processingActivity,
             'processing_activity_lifecycle',
@@ -540,7 +540,7 @@ final class ProcessingActivityService
      * Lifecycle X.1: delegates to LifecycleService::transition() using the
      * `archive` transition (published→archived) in processing_activity_lifecycle.
      *
-     * C-07: previously fell back to direct setStatus() when LifecycleService
+     * Previously fell back to direct setStatus() when LifecycleService
      * was unavailable — that bypass skipped Voter / 4-eyes / audit-log /
      * regulatory guards. Removed; LifecycleService is required.
      */
@@ -553,7 +553,7 @@ final class ProcessingActivityService
 
         if ($this->lifecycleService === null) {
             // @intentional-assertion: LifecycleService is required; the previous
-            // setStatus() fallback bypassed Voter / 4-eyes / audit-log (C-07).
+            // setStatus() fallback bypassed Voter / 4-eyes / audit-log.
             throw new \LogicException(
                 'ProcessingActivityService::archive() requires LifecycleService; '
                 . 'direct setStatus() fallback removed (C-07).'

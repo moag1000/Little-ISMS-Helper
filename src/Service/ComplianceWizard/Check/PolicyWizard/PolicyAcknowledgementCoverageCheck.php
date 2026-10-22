@@ -13,12 +13,12 @@ use App\Repository\UserRepository;
 /**
  * For every published Policy-Wizard document the check verifies that at least
  * `THRESHOLD_PERCENT` of the required-audience users acknowledged the policy
- * (per W1's `PolicyAcknowledgement` entity).
+ * (per the `PolicyAcknowledgement` entity).
  *
  * Required audience = the count of `User.isActive=true` rows in the tenant.
- * A more granular role-scoped audience is out of scope for the W3-D MVP — the
+ * A more granular role-scoped audience is out of scope for the MVP — the
  * audit-defensible position is "everyone with an active user account" until
- * W6 ships per-policy audience-scoping.
+ * ships per-policy audience-scoping.
  *
  * Reference: ISO 27001 Cl. 7.3 awareness + ISO 27002 §6.3 awareness, education
  * and training (95 % is the empirical industry benchmark; the threshold is a

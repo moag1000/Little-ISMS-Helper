@@ -10,7 +10,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Supplier Cloner (C4-C1 — Klon-Funktionen).
+ * Supplier Cloner.
  *
  * Use case: onboard a similar SaaS vendor (e.g. clone "GitHub" as template
  * to create "GitLab"), template-build a typical audit firm, or replicate

@@ -51,7 +51,7 @@ class ChangeRequestRepository extends ServiceEntityRepository
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Change requests pending approval, scoped
+     * Change requests pending approval, scoped
      * to a tenant. ISO 27001 Clause 6.3 (Planning of Changes) requires
      * approval-tracking; the bucket surfaces to Manager/Admin/CAB-members
      * because `approvedBy` is a free-text auto-fill on approval, not a

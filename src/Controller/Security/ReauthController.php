@@ -165,7 +165,7 @@ final class ReauthController extends AbstractController
         // `target` so GenericOidcAuthenticator can store it (SESSION_TARGET_KEY).
         $params = ['slug' => $slug, 'target' => $returnTo];
         // Re-auth through the provider the account is bound to: carry its id
-        // so a colliding slug of another organisation cannot be chosen (#1059 I-5).
+        // so a colliding slug of another organisation cannot be chosen.
         $user = $this->getUser();
         $bound = $user instanceof \App\Entity\User ? $user->getSsoProvider() : null;
         if ($bound !== null && $bound->getSlug() === $slug) {
@@ -180,7 +180,7 @@ final class ReauthController extends AbstractController
      */
     private function sanitizeReturnTo(string $raw): string
     {
-        // One shared rule with the SSO start (#1059 m-7): `/\evil.com` etc. are refused.
+        // One shared rule with the SSO start: `/\evil.com` etc. are refused.
         return \App\Security\SafeRedirectTarget::isSafe($raw) ? $raw : '/';
     }
 }

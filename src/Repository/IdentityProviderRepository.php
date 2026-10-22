@@ -61,7 +61,7 @@ class IdentityProviderRepository extends ServiceEntityRepository
     /**
      * Every ENABLED provider with this slug, whatever its organisation. The
      * legacy start URL (slug only) is served only when this returns exactly
-     * one provider (#1059 I-5).
+     * one provider.
      *
      * @return list<IdentityProvider>
      */
@@ -73,7 +73,7 @@ class IdentityProviderRepository extends ServiceEntityRepository
     /**
      * Provider by id regardless of the request's tenant filter (SSO start /
      * callback: global and parent-organisation providers must resolve for a
-     * logged-in user; callers apply the allowed-for-user rules, #1059 m-6).
+     * logged-in user; callers apply the allowed-for-user rules).
      */
     public function findUnfiltered(int $id): ?IdentityProvider
     {
@@ -101,7 +101,7 @@ class IdentityProviderRepository extends ServiceEntityRepository
 
     /**
      * Is $slug used by a GLOBAL provider other than $exceptId? A tenant-owned
-     * provider must not take such a slug (#1059 I-5).
+     * provider must not take such a slug.
      */
     public function isSlugUsedByGlobalProvider(string $slug, ?int $exceptId): bool
     {

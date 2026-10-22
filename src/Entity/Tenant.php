@@ -19,7 +19,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\HasLifecycleCallbacks]
 class Tenant
 {
-    // Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+    // Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
     // 5-stage lifecycle: draft → active ⇄ suspended → terminated → archived.
     // SUPER_ADMIN-gated, 4-eyes on suspend/reactivate/terminate.
     public const STATUS_DRAFT = 'draft';
@@ -50,7 +50,7 @@ class Tenant
     private ?string $azureTenantId = null;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
      *
      * Legacy boolean preserved for backward-compat with 30+ readers:
      *   - Repository::createQueryBuilder()->where('t.isActive = :active')
@@ -64,7 +64,7 @@ class Tenant
     private bool $isActive = true;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
      * Owned by `tenant_lifecycle` — never call setStatus() directly outside
      * the initial-marking bootstrap; route transitions through
      * LifecycleService::transition().
@@ -73,7 +73,7 @@ class Tenant
     private string $status = self::STATUS_DRAFT;
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
      * Optimistic-lock guard for concurrent lifecycle transitions.
      */
     #[ORM\Version]
@@ -96,7 +96,7 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logoPath = null;
 
-    // Phase 8L.F3 — E-Mail-Branding. null = Fallback-Kaskade greift
+    // E-Mail-Branding. null = Fallback-Kaskade greift
     // (Tenant → Ancestors → SystemSettings → Hardcoded).
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Length(max: 100)]
@@ -172,7 +172,7 @@ class Tenant
     private string $bsiAssuranceLevel = 'standard';
 
     /**
-     * Phase 9.P1.7 — NIS2 classification per German BSIG §28:
+     * NIS2 classification per German BSIG §28:
      * - essential:     "besonders wichtige Einrichtung" (Annex I, 250+ MA / 50M€)
      * - important:     "wichtige Einrichtung"           (Annex II, 50+ MA / 10M€)
      * - not_regulated: below thresholds, out of NIS2 scope
@@ -202,7 +202,7 @@ class Tenant
     private ?string $legalForm = null;
 
     /**
-     * Bucket-6a (DORA RoI Sprint 9) — Legal Entity Identifier per ISO 17442.
+     * Legal Entity Identifier per ISO 17442.
      * 20-character alphanumeric LEI as issued by a GLEIF-accredited LOU.
      * Required for DORA Art. 28 ROI XBRL export — wired into B_01.01.0020
      * (reporting-entity-LEI). Nullable to keep non-DORA-obligated tenants
@@ -219,7 +219,7 @@ class Tenant
     private ?string $leiCode = null;
 
     /**
-     * Bucket-6a (DORA RoI Sprint 9) — ISO 4217 reporting currency for DORA
+     * ISO 4217 reporting currency for DORA
      * Art. 28 RoI XBRL output (B_01.01.0040). EUR default; tenants reporting
      * in other currencies (CHF, GBP, USD) override here.
      */
@@ -352,7 +352,7 @@ class Tenant
     public function isSsoEnforced(): bool { return $this->ssoEnforced; }
     public function setSsoEnforced(bool $v): static { $this->ssoEnforced = $v; return $this; }
 
-    // ── F43 Trust-Center / Public-Posture-Page ────────────────────────────────
+    // ── Trust-Center / Public-Posture-Page ────────────────────────────────
     // publicPostureEnabled: tenant opt-in gate (default off — no disclosure).
     // publicPostureToken: random 32+ char bearer used in /trust/{token} URL.
     // TENANT-DISCLOSURE-SAFE: exposes ONLY §4 compliance-posture data;
@@ -451,7 +451,7 @@ class Tenant
     }
 
     /**
-     * Bucket-6a — ISO 17442 Legal Entity Identifier. Wired into DORA RoI
+     * ISO 17442 Legal Entity Identifier. Wired into DORA RoI
      * XBRL export (B_01.01.0020). Null when the tenant is not DORA-obligated.
      */
     public function getLeiCode(): ?string
@@ -466,7 +466,7 @@ class Tenant
     }
 
     /**
-     * Bucket-6a — ISO 4217 reporting currency. EUR default. Wired into DORA
+     * ISO 4217 reporting currency. EUR default. Wired into DORA
      * RoI XBRL export (B_01.01.0040) and the iso4217:* unit measure.
      */
     public function getReportingCurrency(): ?string
@@ -599,7 +599,7 @@ class Tenant
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
      *
      * Direct setter preserved for backward-compat with 30+ readers. Mirrors
      * the boolean into `status` so the lifecycle marking stays consistent:
@@ -622,7 +622,7 @@ class Tenant
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
      */
     public function getStatus(): string
     {
@@ -630,7 +630,7 @@ class Tenant
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
      *
      * Do NOT call directly outside the initial-marking bootstrap; route
      * transitions through LifecycleService::transition(). The
@@ -651,7 +651,7 @@ class Tenant
     }
 
     /**
-     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
      */
     public function getLockVersion(): int
     {
@@ -669,7 +669,7 @@ class Tenant
         return $this;
     }
 
-    // Phase 8L.F3 — E-Mail-Branding Getter/Setter
+    // E-Mail-Branding Getter/Setter
     public function getEmailFromName(): ?string { return $this->emailFromName; }
     public function setEmailFromName(?string $v): static { $this->emailFromName = $v; return $this; }
 

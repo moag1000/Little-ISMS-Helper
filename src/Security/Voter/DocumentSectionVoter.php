@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * DocumentSectionVoter — Phase 4-C / Sprint W3-C "DPO Veto Mechanic".
+ * DocumentSectionVoter — "DPO Veto Mechanic".
  *
  * Enforces section-level authorization for the per-section sub-workflow
  * defined in `docs/plans/policy-wizard/06-dpo-input.md` §0.A.
@@ -125,8 +125,8 @@ final class DocumentSectionVoter extends Voter
             return $this->hasAnyRole($user, ['ROLE_DPO']);
         }
 
-        // Non-privacy gated sections — left to ROLE_CISO until W3 ships
-        // additional section-types (out of scope for this sprint).
+        // Non-privacy gated sections — left to ROLE_CISO; no other
+        // section types exist yet.
         return $this->hasAnyRole($user, ['ROLE_CISO']);
     }
 

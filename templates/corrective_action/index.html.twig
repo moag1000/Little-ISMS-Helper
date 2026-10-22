@@ -37,7 +37,7 @@
         {% endembed %}
     {% endif %}
 
-    {# Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — sourceType filter (ADR 2026-05-23). #}
+    {# SourceType filter (ADR 2026-05-23). #}
     {% if total_count is defined and total_count > 0 %}
         <div class="mb-3" aria-label="{{ 'corrective_action.filter.source_type'|trans({}, 'audits') }}">
             <div class="fa-filter-chip-group" role="group" aria-label="{{ 'corrective_action.filter.source_type'|trans({}, 'audits') }}">

@@ -552,7 +552,7 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
     }
 
     /**
-     * SectionPolicy (S4 Foundation P-2) — GDPR Art. 35(7) structure.
+     * SectionPolicy — GDPR Art. 35(7) structure.
      *
      * Sections follow the Art. 35(7) DPIA content requirements:
      * (a) description of processing, (b) necessity/proportionality,

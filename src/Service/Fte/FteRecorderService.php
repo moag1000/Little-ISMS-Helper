@@ -12,7 +12,7 @@ use App\Entity\User;
 use Psr\Log\LoggerInterface;
 
 /**
- * F11 FTE-Tracking — thin façade called by existing services.
+ * FTE-Tracking — thin façade called by existing services.
  *
  * Each method maps to one integration point:
  *   - recordSsoJit()       → called by SsoUserProvisioningService after JIT user creation

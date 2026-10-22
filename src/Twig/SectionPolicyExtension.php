@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormView;
 use Twig\Attribute\AsTwigFunction;
 
 /**
- * SectionPolicyExtension — S4 Foundation P-2.
+ * SectionPolicyExtension
  *
  * Provides Twig functions to integrate FormTypes implementing
  * {@see SectionMapInterface} with the `_auto_form.html.twig` renderer.

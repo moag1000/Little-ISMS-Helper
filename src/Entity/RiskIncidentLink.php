@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * RiskIncidentLink — Sprint 9B / F16
+ * RiskIncidentLink
  *
  * Structured cross-link between a Risk register entry and an Incident report.
  * Replaces the implicit ManyToMany realizedRisks relation with an explicit

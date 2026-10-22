@@ -50,7 +50,7 @@ class EmailNotificationService
     }
 
     /**
-     * Phase 8L.F3 — resolves From-Address aus Tenant-Branding (inkl.
+     * Resolves From-Address aus Tenant-Branding (inkl.
      * Ancestor-Kaskade, SystemSettings, Hardcoded-Default). Helper für
      * alle 17+ Send-Methoden.
      */
@@ -229,7 +229,6 @@ class EmailNotificationService
      *
      * @param User[] $recipients
      * @throws TransportExceptionInterface
-     *
      */
     public function sendWorkflowNotificationStepEmail(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep, array $recipients): void
     {

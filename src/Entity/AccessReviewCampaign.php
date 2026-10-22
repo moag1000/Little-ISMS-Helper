@@ -86,7 +86,7 @@ class AccessReviewCampaign
     private ?User $createdBy = null;
 
     /**
-     * Optimistic-locking version field (Lifecycle Foundation P-4b).
+     * Optimistic-locking version field (lifecycle foundation).
      * Required for concurrent decision/close transitions.
      */
     #[ORM\Version]

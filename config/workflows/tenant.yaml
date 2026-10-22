@@ -1,4 +1,4 @@
-# Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+# Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
 #
 # Tenant is the multi-tenancy root — 78 entities scope by tenant_id. A
 # Tenant lifecycle is a regulator-visible artifact: the decision to

@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * H-04: Seeds ISO 27001:2022 Clauses 4-10 (ISMS core clauses, not Annex A).
+ * Seeds ISO 27001:2022 Clauses 4-10 (ISMS core clauses, not Annex A).
  * Required for ISO 27001 certification readiness (Context, Leadership, Planning,
  * Support, Operation, Performance Evaluation, Improvement).
  */

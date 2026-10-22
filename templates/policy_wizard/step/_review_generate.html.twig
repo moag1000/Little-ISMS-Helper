@@ -2,7 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
-{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{# Beginner-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
     icon: 'nav-mortarboard',
@@ -62,7 +62,7 @@
 {% endif %}
 
 {# Cross-step consistency warnings (NON-blocking informational nudges).
- # Junior-ISB Wish #6 — each warning is a CLICKABLE alert that
+ # Each warning is a CLICKABLE alert that
  # navigates to the warning's `target_step`. The CrossStepConsistencyValidator
  # stamps every DTO with target_step. #}
 {% if consistency_warnings|default([])|length > 0 %}

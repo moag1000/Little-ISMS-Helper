@@ -37,8 +37,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:policy-wizard:seed-nis2 --force
  *   php bin/console app:policy-wizard:seed-nis2 --dry-run
  *
- * Mirrors {@see SeedDoraPolicyTemplatesCommand} (W4-A) and
- * {@see SeedBsiPolicyTemplatesCommand} (W5-A) in shape so downstream
+ * Mirrors {@see SeedDoraPolicyTemplatesCommand} and
+ * {@see SeedBsiPolicyTemplatesCommand} in shape so downstream
  * wizard tooling can treat all four standards uniformly.
  *
  * @deprecated since policy-wizard section-extension catalogue was introduced.

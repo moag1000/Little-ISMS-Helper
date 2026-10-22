@@ -7,7 +7,7 @@ namespace App\Enum;
 /**
  * NotificationDelivery lifecycle states.
  *
- * Junior-ISB-Audit Phase-2 Lifecycle — extended from the original 4-state set
+ * Extended from the original 4-state set
  * (`pending|sent|failed|retrying`) with two additional terminal stages:
  *   - `Delivered`: positive end-to-end ACK from the receiver (read-receipt,
  *     webhook ACK body, SMTP 250). Distinguished from `Sent` which only means
@@ -32,7 +32,7 @@ enum NotificationDeliveryStatus: string
     case Retrying = 'retrying';
     case Archived = 'archived';
     /**
-     * F3 email-digest mode — delivery is queued for batching.
+     * Digest mode — delivery is queued for batching.
      * The `app:notification:send-digests` command collects all
      * `pending_digest` rows per channel, sends ONE batched email,
      * and transitions them to `Sent`.

@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Department / Organizational Unit (S18 B3).
+ * Department / Organizational Unit.
  *
  * Foundation entity replacing freetext "Department" fields scattered across the
  * application. Initial wiring is for ProcessingActivity.responsibleDepartment

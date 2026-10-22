@@ -9,7 +9,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F6 — Read-only API access token (Bearer).
+ * Read-only API access token (Bearer).
  *
  * Only the SHA-256 hash of the token is stored; the plaintext is shown once at
  * creation. A token is bound to a User (and therefore a tenant) and grants

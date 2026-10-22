@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Per-user acknowledgement collection service for published policies.
  *
  * Closes the auditor's predicted ISO 27001 A.6.3 NC ("policy must be
- * communicated and acknowledged"). Pairs with W3-D's
+ * communicated and acknowledged"). Pairs with the
  * `PolicyAcknowledgementCoverageCheck` which queries this data via the
  * repository.
  *
@@ -26,7 +26,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *   - request acknowledgements when a policy goes public (pre-flight,
  *     idempotent — a re-run does not create stale rows nor duplicate);
  *   - record acknowledgements with method + IP + version snapshot;
- *   - produce coverage statistics for the W3-D check + dashboard widget.
+ *   - produce coverage statistics for the coverage check + dashboard widget.
  *
  * The service does NOT send emails / push notifications itself; that is
  * the responsibility of the caller (typically a CRON command). The
@@ -92,7 +92,7 @@ final class PolicyAcknowledgementService
                 continue;
             }
             $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
-            // Audit V3 W2-C4: PENDING rows still count toward "pending"
+            // PENDING rows still count toward "pending"
             // (the user owes an acknowledgement); only ACKNOWLEDGED
             // rows close the loop.
             if ($existing instanceof PolicyAcknowledgement
@@ -131,7 +131,7 @@ final class PolicyAcknowledgementService
 
         $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
 
-        // Audit V3 W2-C4: an existing PENDING row (from the auto-campaign)
+        // An existing PENDING row (from the auto-campaign)
         // is upgraded in-place to ACKNOWLEDGED. Only an existing
         // ACKNOWLEDGED row blocks the call.
         if ($existing instanceof PolicyAcknowledgement
@@ -221,7 +221,7 @@ final class PolicyAcknowledgementService
         if ($tenant instanceof Tenant) {
             foreach ($audience as $user) {
                 $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
-                // Audit V3 W2-C4: only ACKNOWLEDGED rows count toward coverage —
+                // Only ACKNOWLEDGED rows count toward coverage —
                 // pending campaign rows are tracked but unsigned.
                 if ($existing instanceof PolicyAcknowledgement
                     && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
@@ -285,7 +285,7 @@ final class PolicyAcknowledgementService
             }
             $version = $this->resolveDocumentVersion($document);
             $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
-            // Audit V3 W2-C4: PENDING rows still count as "pending"
+            // PENDING rows still count as "pending"
             // (auto-campaign created an audit-trail row but the user
             // hasn't clicked through). Only ACKNOWLEDGED rows close
             // the loop.

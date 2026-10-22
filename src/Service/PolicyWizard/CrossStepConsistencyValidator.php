@@ -17,7 +17,7 @@ use App\Entity\WizardRun;
  *
  * Each warning DTO carries a `target_step` field naming the step the
  * user should jump to in order to fix the inconsistency. The Step 7
- * review-page renders this as a click-jump button (Junior-ISB Wish #6,
+ * review-page renders this as a click-jump button (
  * May 2026).
  *
  * Rules:
@@ -44,7 +44,7 @@ final class CrossStepConsistencyValidator
      * Per-rule mapping to the wizard step the user should jump to in
      * order to fix the inconsistency. Surfaced as `target_step` on every
      * warning so the Step 7 review-page can render a click-jump button
-     * (Junior-ISB Wish #6).
+     * .
      */
     private const RULE_TARGET_STEP = [
         self::RULE_CONSERVATIVE_RPO => WizardStepKeys::STEP_OPERATIONAL_BASELINES,

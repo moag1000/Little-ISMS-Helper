@@ -11,7 +11,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\PolicyTemplateRepository;
 
 /**
- * W5 Gap-C — Works-Council BR-evidence inventory helper.
+ * Works-Council BR-evidence inventory helper.
  *
  * For every published Document generated from a PolicyTemplate marked
  * `requires_works_council_evidence=true`, confirms that the tenant

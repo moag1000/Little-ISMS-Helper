@@ -24,7 +24,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Report Builder Service
  *
- * Phase 7C: Provides widget library and data generation for custom report builder.
+ * Provides widget library and data generation for custom report builder.
  * Supports 25+ widget types across all ISMS domains.
  */
 final class ReportBuilderService

@@ -24,7 +24,7 @@
     ]
 }) }}
 
-{# 9001-bridge for users with previousQmsBackground = iso_9001. P-12 rollout. #}
+{# 9001-bridge for users with previousQmsBackground = iso_9001. #}
 {{ _fa_norm_bridge.render({
     from_norm: 'ISO 27001 6.1',
     to_norm:   'ISO 9001 6.1 / 8.5.6',
@@ -32,7 +32,7 @@
     prominence: 'subtle'
 }) }}
 
-{# ISO 27005 reference — Junior-ISB-Audit-2026-05-22 item 5.5. Always visible. #}
+{# ISO 27005 reference. Always visible. #}
 {{ _fa_norm_bridge.render({
     from_norm: 'ISO 27001 6.1.2',
     to_norm:   'ISO 27005',
@@ -40,7 +40,7 @@
     prominence: 'always_visible'
 }) }}
 
-{# Junior-ISB glossary intro: hover the core concepts for an inline definition
+{# Beginner glossary intro: hover the core concepts for an inline definition
    (loaded via /api/glossary/{acronym}). Addresses the recurring
    "Bedrohung vs. Schwachstelle?" confusion. #}
 {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
@@ -51,7 +51,7 @@
     {{ fa_glossary_tooltip(glossary('Restrisiko', app.request.locale)) }}
 </div>
 
-{# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
+{# Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
 {{ form_start(form, {'attr': {
     'data-controller': 'alva-hint-in-form',
     'data-alva-hint-in-form-entity-type-value': 'risk',

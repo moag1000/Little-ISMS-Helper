@@ -74,7 +74,7 @@ final class ControlFrameworkReferencesType extends AbstractType
     /**
      * Framework-appropriate placeholder examples, so the user sees references in
      * the right notation per framework (TISAX VDA-ISA "1.1.1", not ISO "A.5.1").
-     * Junior-Implementer feedback: generic "A.5.1" placeholder under every
+     * A generic "A.5.1" placeholder under every
      * framework is misleading. Used by the form theme to build the placeholder.
      *
      * @var array<string, string>

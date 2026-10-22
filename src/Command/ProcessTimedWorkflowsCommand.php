@@ -292,7 +292,7 @@ HELP
      */
     private function runSlaMonitoring(SymfonyStyle $io, bool $dryRun): int
     {
-        // --- SLA Deadline Watcher (Sprint 7A — F3 Wave 2) --------------------------------
+        // --- SLA Deadline Watcher --------------------------------
         if ($dryRun) {
             $io->note('SLA Deadline Watcher: skipped in dry-run mode');
         } else {

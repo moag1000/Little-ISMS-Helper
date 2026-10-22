@@ -136,7 +136,7 @@ class BCExercise
 
     /**
      * @deprecated since 2026-05-25 — use participantPersons (typed M2M collection).
-     *             Junior-ISB-Audit RAW_FINDINGS_2026-05-24 [MAJOR]: free-text
+     *             Free-text
      *             participant lists had no referential integrity, no link to
      *             Person stammdaten, no audit trail. Kept as legacy fallback
      *             during transition; will be dropped once data is backfilled.
@@ -148,7 +148,7 @@ class BCExercise
     private ?string $participants = null;
 
     /**
-     * P-15 DataReuse: typed exercise participants as a Collection<Person>.
+     * Typed exercise participants as a Collection<Person>.
      * Replaces the legacy free-text `participants` textarea.
      *
      * @var Collection<int, Person>
@@ -162,10 +162,10 @@ class BCExercise
     private ?Collection $participantPersons = null;
 
     /**
-     * Exercise facilitator/lead — legacy free-text field. P-15 DataReuse:
+     * Exercise facilitator/lead — legacy free-text field. 
      * Pattern A dual-state with `facilitatorUser` and `facilitatorPerson`
      * (NB: existing `exerciseLeaderUser` / `exerciseLeaderPerson` from
-     * Phase B1 are kept untouched, the new `facilitatorUser/Person` mirror
+     *  are kept untouched, the new `facilitatorUser/Person` mirror
      * the Pattern-A naming used across other entities).
      */
     #[ORM\Column(length: 100, nullable: true)]
@@ -173,7 +173,7 @@ class BCExercise
     private ?string $facilitator = null;
 
     /**
-     * P-15 DataReuse Pattern A: typed facilitator as application User.
+     * DataReuse Pattern A: typed facilitator as application User.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'facilitator_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -182,7 +182,7 @@ class BCExercise
     private ?User $facilitatorUser = null;
 
     /**
-     * P-15 DataReuse Pattern A: typed facilitator as Stammdaten Person.
+     * DataReuse Pattern A: typed facilitator as Stammdaten Person.
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'facilitator_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -191,7 +191,7 @@ class BCExercise
     private ?Person $facilitatorPerson = null;
 
     /**
-     * Person-Rollout Phase B1 — typed exercise leader. Application
+     * Typed exercise leader. Application
      * User (employee with login). Backward-compat optional slot —
      * `facilitator` string remains canonical for Migration legacy data.
      */
@@ -202,7 +202,7 @@ class BCExercise
     private ?User $exerciseLeaderUser = null;
 
     /**
-     * Person-Rollout Phase B1 — typed exercise leader as Person
+     * Typed exercise leader as Person
      * (external BC consultant without app login is the typical case).
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
@@ -222,7 +222,7 @@ class BCExercise
     private ?string $observers = null;
 
     /**
-     * P-15 DataReuse: typed observers as a Collection<Person>.
+     * Typed observers as a Collection<Person>.
      *
      * @var Collection<int, Person>
      */
@@ -378,7 +378,7 @@ class BCExercise
     private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * BSI-Standard 200-4 Übungs-Logbuch — F27
+     * BSI-Standard 200-4 Übungs-Logbuch
      * Nullable: a BCExercise can exist without a log entry yet.
      */
     #[ORM\OneToOne(targetEntity: Bsi2004ExerciseLog::class, mappedBy: 'bcExercise', cascade: ['persist', 'remove'])]
@@ -596,7 +596,7 @@ class BCExercise
     }
 
     /**
-     * P-15 DataReuse Tri-State resolver — prefer structured User name, then
+     * DataReuse Tri-State resolver — prefer structured User name, then
      * Person, fall back to legacy `facilitator` free-text.
      */
     public function getEffectiveFacilitatorName(): ?string
@@ -959,8 +959,7 @@ class BCExercise
     /**
      * Get exercise type translation key (i18n).
      *
-     * Junior-ISB-Audit-2026-05-22 S14: previously hardcoded EN strings — now
-     * returns a translation key. Callers must run `|trans({}, 'bc_exercises')`.
+     * Returns a translation key. Callers must run `|trans({}, 'bc_exercises')`.
      * No live callers in templates/services; kept for backward-compat API.
      */
     public function getExerciseTypeDescription(): string

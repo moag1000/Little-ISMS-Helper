@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * RiskIncidentLinkVoter — Sprint 9B / F16
+ * RiskIncidentLinkVoter
  *
  * Supported attributes:
  *   VIEW   — ROLE_USER, same tenant

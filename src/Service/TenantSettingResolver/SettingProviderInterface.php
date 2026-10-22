@@ -7,10 +7,10 @@ namespace App\Service\TenantSettingResolver;
 use App\Entity\Tenant;
 
 /**
- * Policy-Wizard W1 — pluggable storage abstraction for TenantSettingResolver.
+ * Policy-Wizard — pluggable storage abstraction for TenantSettingResolver.
  *
  * Decouples the resolver from any concrete persistence layer so that:
- * - W1-A's `TenantPolicySetting` repository can plug in once the entity lands.
+ * - a `TenantPolicySetting` repository can plug in once that entity exists.
  * - Existing settings sources (SystemSettingsRepository) can keep working.
  * - Tests can use trivial in-memory providers without a DB round-trip.
  *

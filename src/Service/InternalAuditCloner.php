@@ -13,7 +13,7 @@ use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * InternalAudit Cloner (Sprint 3 / C1).
+ * InternalAudit Cloner.
  *
  * Fokussiert die Consultant-Anforderung *"nimm meinen 27001-Auditplan
  * aus Kunde A und wende ihn auf Kunde B an"* als generische
@@ -103,7 +103,7 @@ final class InternalAuditCloner
             $clone->setScopedFramework($primaryFramework);
         }
 
-        // B4 multi-framework scope — copy the additional-framework set.
+        // Multi-framework scope — copy the additional-framework set.
         foreach ($source->getAdditionalScopedFrameworks() as $fw) {
             if ($fw instanceof ComplianceFramework) {
                 $clone->addAdditionalScopedFramework($fw);

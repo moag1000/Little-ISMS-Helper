@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Phase 8L.F2 — Per-Tenant Incident-SLAs pro Severity.
+ * Per-Tenant Incident-SLAs pro Severity.
  *
  * Ersetzt hardcoded `SLA_LOW=48 / MEDIUM=24 / HIGH=8 / CRITICAL=2 / BREACH=1`
  * aus IncidentEscalationWorkflowService. Eine Zeile pro (Tenant, Severity).

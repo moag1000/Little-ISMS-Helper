@@ -109,7 +109,7 @@ final class ThreatIntelligenceType extends AbstractType implements SectionMapInt
                     'placeholder' => 'placeholder.cve_id',
                 ],
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `threat_intelligence_lifecycle`. NIS2 Art. 21(2)e +
             // ISO 27001 A.5.7. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
@@ -290,7 +290,7 @@ final class ThreatIntelligenceType extends AbstractType implements SectionMapInt
     }
 
     /**
-     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.5.7 · Threat Intelligence.
+     * SectionPolicy — ISO 27001 A.5.7 · Threat Intelligence.
      * Module-gated fields (vulnerability_intel) listed to ensure complete coverage.
      *
      * @return array<string, list<string>>

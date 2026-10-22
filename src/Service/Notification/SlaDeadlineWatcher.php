@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * SLA Deadline Watcher — Sprint 7A F3 Wave 2
+ * SLA Deadline Watcher
  *
  * Cron-driven service that iterates over all tenants and:
  *   1. Fires approaching-deadline notifications at each configured checkpoint.

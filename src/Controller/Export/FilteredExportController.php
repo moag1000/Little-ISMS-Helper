@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * F19.4 — FilteredExportController
+ * FilteredExportController
  *
  * Exports the currently-filtered entity list-view as XLSX, CSV, or JSON.
  * Filter-state is captured from the current request's query-string,

@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Phase 4.4 — Live-Badge polling endpoint.
+ * Live-Badge polling endpoint.
  *
  * Returns tenant-scoped badge counts for the current user. Used by the
  * Stimulus `live-badge` controller which polls this endpoint every 30 seconds

@@ -48,14 +48,14 @@ final class IncidentType extends AbstractType implements SectionMapInterface
     ) {
     }
 
-    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    // Owner pre-fill — UX-Polish
     protected function getSecurityForOwnerPicker(): ?Security
     {
         return $this->security;
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 Schicht-5: Module-Gate-Polish (T11.7).
+     * Module-Gate-Polish (T11.7).
      *
      * Returns true when the current tenant is flagged as a KRITIS-operator
      * via the tenant-policy-setting `org.is_kritis_operator`. KRITIS is a
@@ -87,7 +87,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Junior-ISB-Audit-2026-05-22 K-01: SLA-Countdown anchor needs an unambiguous start time.
+        // SLA-Countdown anchor needs an unambiguous start time.
         // GDPR Art. 33 (1) / NIS2 Art. 23 (4) 72h notification deadlines are measured from
         // detectedAt. Incident::__construct() already sets a default; this form-layer listener
         // is a defence-in-depth so the SLA contract is explicit and survives any future entity
@@ -163,11 +163,11 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             ])
         ;
 
-        // ── ReportedBy cluster (audit-s4 P-1) ───────────────────────────────
+        // ── ReportedBy cluster ───────────────────────────────
         // Replaces 4 hand-rolled add() calls (reportedByUser / reportedByPerson
         // / reportedByDeputyPersons / reportedBy). The "responsiblePerson"
-        // slot stays separate (Governance Role) per SOLUTIONS_FOUNDATION P-1
-        // exception list — an Incident has BOTH a Reporter AND a Responsible.
+        // slot stays separate (Governance Role) and is not covered by the
+        // owner picker — an Incident has BOTH a Reporter AND a Responsible.
         $this->addOwnerPicker($builder, [
             'user_field'         => 'reportedByUser',
             'person_field'       => 'reportedByPerson',
@@ -184,7 +184,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             'deputies_help'      => 'incident.help.reported_by_deputies',
             'legacy_label'       => 'incident.field.reported_by_legacy',
             'legacy_placeholder' => 'incident.placeholder.reported_by',
-            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            // Owner pre-fill — UX-Polish
             'default_to_current_user' => true,
         ]);
 
@@ -215,7 +215,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                 'mapped' => false,
                 'choice_translation_domain' => 'incident',
             ])
-            // Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation.
+            // Doppelpflege-Deprecation.
             // Freetext superseded by structured `affectedAssets` (Asset entity
             // multi-select). Disabled in the Form; Show-pages render the value
             // read-only as "Legacy" only when non-empty. Column kept until S14
@@ -266,7 +266,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                 'input' => 'datetime_immutable',
                 'required' => false,
             ])
-            // Phase 9.P2.3 — opt-out of cross-posting to the Group-CISO
+            // Opt-out of cross-posting to the Group-CISO
             // in a holding subtree. Default true; operators of a Tochter
             // uncheck only for genuinely confidential incidents.
             ->add('visibleToHolding', CheckboxType::class, [
@@ -318,7 +318,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
         // reporting obligation. Templates already wrap the corresponding fieldset in
         // {% if is_module_active('nis2_dora') %}.
         //
-        // Junior-ISB-Audit-2026-05-22 Schicht-5: Module-Gate-Polish (T11.7).
+        // Module-Gate-Polish (T11.7).
         // When nis2_dora is active but the tenant has NOT flagged itself as a
         // KRITIS-operator (`org.is_kritis_operator`), the help-text on the entry
         // field guides the user to set the KRITIS flag for sector-specific

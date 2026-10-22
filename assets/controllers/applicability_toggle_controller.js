@@ -3,7 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 /**
  * Applicability Toggle Controller
  *
- * Junior-ISB-Audit-2026-05-22 S-07 — closes the UX-trap on the SoA Control
+ * Closes the UX-trap on the SoA Control
  * edit form where the `justification` field is server-side conditionally
  * required (when `applicable=false`) but the label-level `required:false`
  * leaves the user without a visible red required marker. The user submits
@@ -37,7 +37,7 @@ import { Controller } from '@hotwired/stimulus';
  * radio group with name ending in `[applicable]`.
  */
 export default class extends Controller {
-    // `collapse` (F3): sections (e.g. implementation + effectiveness fieldsets)
+    // `collapse`: sections (e.g. implementation + effectiveness fieldsets)
     // that become irrelevant when applicable=false. They are visually
     // collapsed + their inputs disabled so the user is not asked to fill out
     // implementation detail for a control that does not apply. Server-side the
@@ -69,7 +69,7 @@ export default class extends Controller {
         this.justificationTargets.forEach((field) => {
             this.#applyState(field, isRequired);
         });
-        // F3: when the justification is required (applicable=false), collapse +
+        // When the justification is required (applicable=false), collapse +
         // disable the implementation/effectiveness sections.
         this.#applyCollapse(isRequired);
     }

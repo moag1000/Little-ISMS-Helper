@@ -53,7 +53,7 @@ class TrainingController extends AbstractController
         private readonly ?TrainingParticipationRepository $participationRepository = null,
         private readonly ?UserRepository $userRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
-        // Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+        // File-Upload statt Freitext-Pfade.
         private readonly ?FileUploadSecurityService $fileUploadSecurityService = null,
         private readonly ?string $projectDir = null,
         private readonly ?TrainingCloner $trainingCloner = null,
@@ -116,13 +116,13 @@ class TrainingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Junior-ISB-Audit-2026-05-22 9.5: persist uploaded material files.
+            // Persist uploaded material files.
             $this->processMaterialFileUploads($training, $form->get('materialFiles')->getData());
 
             $this->entityManager->persist($training);
             $this->entityManager->flush();
 
-            // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
+            // Sync participantUsers → TrainingParticipation rows.
             $this->syncParticipantUsersToParticipationRows($training);
 
             $this->addFlash('success', $this->translator->trans('training.success.created', [], 'messages'));
@@ -190,7 +190,7 @@ class TrainingController extends AbstractController
         ]);
     }
     /**
-     * Clone a Training (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * Clone a Training. Open to ROLE_USER. Keeps
      * content template (trainer, materials, control/requirement coverage),
      * resets schedule + attendance data.
      */
@@ -231,10 +231,10 @@ class TrainingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Junior-ISB-Audit-2026-05-22 9.5: persist uploaded material files.
+            // Persist uploaded material files.
             $this->processMaterialFileUploads($training, $form->get('materialFiles')->getData());
             $this->entityManager->flush();
-            // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
+            // Sync participantUsers → TrainingParticipation rows.
             $this->syncParticipantUsersToParticipationRows($training);
 
             $this->addFlash('success', $this->translator->trans('training.success.updated', [], 'messages'));
@@ -272,7 +272,7 @@ class TrainingController extends AbstractController
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     * File-Upload statt Freitext-Pfade.
      *
      * Validate every uploaded file via {@see FileUploadSecurityService}
      * (MIME / magic-byte / extension / size whitelist), move to
@@ -325,7 +325,7 @@ class TrainingController extends AbstractController
     }
 
     /**
-     * P-15 DataReuse — Form-Submit-Sync for Training.participantUsers.
+     * DataReuse — Form-Submit-Sync for Training.participantUsers.
      *
      * For every User selected in the typed multi-select, create a
      * TrainingParticipation row (idempotent on (training_id, user_id)). Cross-
@@ -388,7 +388,7 @@ class TrainingController extends AbstractController
         return $this->redirectToRoute('app_training_index');
     }
     /**
-     * Sprint-2 P-7 Wave-2 Trigger-3: Mandatory-Training audience picker.
+     * Mandatory-Training audience picker.
      *
      * GET shows a User-multi-select pre-filled with the current tenant's
      * active users (optionally filtered by department / role hint); POST

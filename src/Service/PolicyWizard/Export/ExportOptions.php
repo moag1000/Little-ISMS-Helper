@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard\Export;
 
 /**
- * Policy-Wizard W7-A — ZIP export options DTO.
+ * Policy-Wizard — ZIP export options DTO.
  *
  * Encapsulates the auditor-facing toggles for {@see PolicyZipExporter}.
  * Defaults match the "give-me-everything" use case auditors want during

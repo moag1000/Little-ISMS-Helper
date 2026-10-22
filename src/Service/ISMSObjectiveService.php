@@ -159,7 +159,7 @@ final class ISMSObjectiveService
         }
 
         // Check if objective is now achieved; transition via Lifecycle X.1.
-        // C-08: previously fell back to direct setStatus() when the Workflow
+        // Previously fell back to direct setStatus() when the Workflow
         // guard rejected the transition (LifecycleService null OR status not
         // in_progress) — that bypass skipped Voter / audit-log / regulatory
         // guards and could promote a not_started/delayed objective to achieved
@@ -171,7 +171,7 @@ final class ISMSObjectiveService
         if ($ismsObjective->getTargetValue() && $currentValue >= (float)$ismsObjective->getTargetValue()) {
             if ($this->lifecycleService === null) {
                 // @intentional-assertion: LifecycleService is required; the previous
-                // setStatus() fallback bypassed Voter / audit-log (C-08).
+                // setStatus() fallback bypassed Voter / audit-log.
                 throw new \LogicException(
                     'ISMSObjectiveService::updateProgress() requires LifecycleService; '
                     . 'direct setStatus() fallback removed (C-08).'

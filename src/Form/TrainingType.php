@@ -39,12 +39,12 @@ final class TrainingType extends AbstractType implements SectionMapInterface
         return [
             'overview'     => ['title', 'description', 'trainingType', 'deliveryMethod'],
             'schedule'     => ['scheduledDate', 'durationMinutes', 'completionDate', 'recurrenceMonths'],
-            // Junior-ISB-Audit-2026-05-22 9.7: attendeeCount no longer in form
+            // AttendeeCount no longer in form
             // (derived from participantUsers / TrainingParticipation Collection).
             'audience'     => ['targetAudience', 'participantUsers', 'participants'],
             'team'         => ['trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'trainer'],
             'verification' => ['status', 'mandatory', 'coveredControls', 'complianceRequirements'],
-            // Junior-ISB-Audit-2026-05-22 9.5: materialFiles (File-Upload) replaces
+            // MaterialFiles (File-Upload) replaces
             // the verbose Freitext `materials` textarea on the canonical data path.
             // Legacy `materials` field is kept read-only for migration display.
             'resources'    => ['materialFiles', 'materials', 'feedback'],
@@ -126,7 +126,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'training.help.target_audience',
             ])
-            // P-15 DataReuse: structured participantUsers Multi-Select.
+            // Structured participantUsers Multi-Select.
             // Persisting flows through TrainingController which creates
             // TrainingParticipation rows on save (status=pending,
             // assignmentSource=manual:edit_form). Legacy `participants`
@@ -153,12 +153,12 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'training.help.participants_legacy',
             ])
-            // Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+            // AttendeeCount derived from participants Collection.
             // The integer form field has been removed — the count is now computed
             // from {@see Training::getParticipations()} (count of TrainingParticipation
             // rows). The legacy stored column survives in the entity for backfill
             // backwards compatibility but is no longer user-editable.
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `training_lifecycle`. Transitions via
             // LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
@@ -214,7 +214,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'training.help.compliance_requirements',
             ])
-            // Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+            // File-Upload statt Freitext-Pfade.
             // Multi-file upload widget. Files are validated via
             // FileUploadSecurityService inside the controller, moved to
             // public/uploads/training-materials/ and tracked as JSON metadata
@@ -259,7 +259,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                     ]),
                 ],
             ])
-            // Junior-ISB-Audit-2026-05-22 9.5: legacy free-text retained as
+            // Legacy free-text retained as
             // read-only migration display. New content MUST land in
             // `materialFiles` above.
             ->add('materials', TextareaType::class, [
@@ -285,7 +285,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
                 'required' => false,
             ])
-            // Junior-ISB-Audit C3-02 (S14, 2026-05-23) — Awareness recurrence
+            // Awareness recurrence
             // (ISO 27001 A.6.3). NULL = one-off, integer >=1 = months cadence
             // picked up by `app:training-send-reminders` cron.
             ->add('recurrenceMonths', IntegerType::class, [
@@ -300,7 +300,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 'help' => 'training.help.recurrence_months',
             ]);
 
-        // S4 P-1 Wave-2 — Trainer compound slot. Replaces the inline
+        // Trainer compound slot. Replaces the inline
         // 4-field block (trainerUser + trainerPerson + trainerDeputyPersons
         // + trainer legacy text). Legacy free-text `trainer` is preserved
         // as read-only Migration-Hint when populated.

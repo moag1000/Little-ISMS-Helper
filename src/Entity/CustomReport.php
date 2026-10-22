@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Custom Report Entity
  *
- * Phase 7C: Stores user-created custom report configurations with drag & drop widgets.
+ * Stores user-created custom report configurations with drag & drop widgets.
  * Reports can be saved, shared with team members, and exported as templates.
  */
 #[ORM\Entity(repositoryClass: CustomReportRepository::class)]

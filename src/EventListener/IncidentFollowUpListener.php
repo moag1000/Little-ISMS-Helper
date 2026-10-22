@@ -16,9 +16,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Sprint-2 Foundation P-7 — Wave-1 trigger registration.
+ * Follow-up trigger registration.
  *
- * Wires the only customer of FollowUpTriggerService for Wave-1: when
+ * Wires the only customer of FollowUpTriggerService: when
  * `Incident.dataBreachOccurred` flips to true, the service emits a
  * FollowUpTriggerResult whose pre-fill payload mirrors the relevant
  * incident fields into the DataBreach form. The corresponding AlvaHint

@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Defines the organization's willingness to accept risk.
  * Supports both global and category-specific risk appetite levels.
  *
- * Phase 6F-B2: Risk appetite management for ISO 27001 compliance
+ * Risk appetite management for ISO 27001 compliance
  */
 #[ORM\Entity(repositoryClass: RiskAppetiteRepository::class)]
 #[ORM\Index(name: 'idx_risk_appetite_category', columns: ['category'])]

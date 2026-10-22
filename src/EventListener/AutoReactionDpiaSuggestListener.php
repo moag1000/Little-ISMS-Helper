@@ -25,7 +25,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 /**
- * Audit V3 C3 — Auto-DPIA-Suggestion.
+ * Auto-DPIA-Suggestion.
  *
  * On ProcessingActivity create/update: when high-risk indicators are present
  * (special categories, automated decision-making, large scale, confidential
@@ -38,7 +38,7 @@ use Symfony\Contracts\Service\ResetInterface;
  * after the activity is committed. It used to be flushed from postPersist:
  * that re-entrant commit failed on the missing reference number, CLOSED the
  * EntityManager and was swallowed — no DPIA, the activity's own audit entry
- * lost, and every later write of the request failed (#1059).
+ * lost, and every later write of the request failed.
  *
  * The skeleton gets its reference number from the same generator as the
  * normal create path (DataProtectionImpactAssessmentRepository::
@@ -194,7 +194,7 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
             'DPIA auto-suggested: ' . $dpia->getReferenceNumber(),
         );
 
-        // V3 W2-H4 (ISO 27001 Cl.7.4 / GDPR Art.35): Notify DPO so the
+        // (ISO 27001 Cl.7.4 / GDPR Art.35): Notify DPO so the
         // auto-suggested skeleton enters the DPO's queue immediately.
         $this->notifyDpo($activity, $dpia);
     }
@@ -249,7 +249,7 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
     }
 
     /**
-     * V3 W2-H4 — Notify ROLE_DPO (tenant-scoped) about the auto-generated
+     * Notify ROLE_DPO (tenant-scoped) about the auto-generated
      * DPIA skeleton. Best-effort: failures must not block the persist.
      */
     private function notifyDpo(ProcessingActivity $activity, DataProtectionImpactAssessment $dpia): void
@@ -286,7 +286,7 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
     }
 
     /**
-     * V3 W2-H5: enumerate which high-risk indicators triggered the suggestion
+     * Enumerate which high-risk indicators triggered the suggestion
      * (used in the notification body).
      *
      * @return list<string>
@@ -307,11 +307,11 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
             && (int) $activity->getEstimatedDataSubjectsCount() > 1000) {
             $reasons[] = 'Large-scale processing (>1000 data subjects)';
         }
-        // V3 W2-H5: Asset-classification-driven trigger
+        // Asset-classification-driven trigger
         if ($this->hasConfidentialAsset($activity)) {
             $reasons[] = 'Linked Asset with classification confidential/restricted';
         }
-        // V3 W2-H5: vulnerable data-subject categories (Children/Employees/Patients)
+        // Vulnerable data-subject categories (Children/Employees/Patients)
         $vulnerable = $this->vulnerableSubjectCategories($activity);
         if (!empty($vulnerable)) {
             $reasons[] = 'Vulnerable data-subject categories: ' . implode(', ', $vulnerable);
@@ -336,11 +336,11 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
             && (int) $activity->getEstimatedDataSubjectsCount() > 1000) {
             return true;
         }
-        // V3 W2-H5: Asset with confidential/restricted dataClassification.
+        // Asset with confidential/restricted dataClassification.
         if ($this->hasConfidentialAsset($activity)) {
             return true;
         }
-        // V3 W2-H5: Vulnerable data-subject categories
+        // Vulnerable data-subject categories
         // (Children/Employees/Patients per Art. 35 (3) GDPR + WP29 guidelines).
         if (!empty($this->vulnerableSubjectCategories($activity))) {
             return true;
@@ -349,11 +349,11 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
     }
 
     /**
-     * V3 W2-H5 — Inspect linked Assets and flag classifications
+     * Inspect linked Assets and flag classifications
      * `confidential` and `restricted`. Reflects ISO 27001 A.5.12 /
      * Asset.dataClassification.
      *
-     * V3 W2-Bug3: ProcessingActivity↔Asset M:N relation now exists, so
+     * ProcessingActivity↔Asset M:N relation now exists, so
      * the previous method_exists()-defence has been replaced with a
      * direct accessor call.
      */
@@ -369,7 +369,7 @@ final class AutoReactionDpiaSuggestListener implements ResetInterface
     }
 
     /**
-     * V3 W2-H5 — Detect vulnerable data-subject categories per
+     * Detect vulnerable data-subject categories per
      * Art. 35 (3) GDPR + WP29 DPIA guidelines.
      *
      * @return list<string>

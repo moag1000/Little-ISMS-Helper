@@ -26,7 +26,7 @@ use Throwable;
  * Integrates existing compliance framework functionality into admin panel.
  *
  * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}
- * (Phase 4e — system-settings cluster). Existing method-level
+ *. Existing method-level
  * `COMPLIANCE_VIEW`/`COMPLIANCE_MANAGE` permission attributes remain in force
  * and are evaluated on top of the class-level guard.
  */

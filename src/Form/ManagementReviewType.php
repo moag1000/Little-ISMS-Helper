@@ -122,7 +122,7 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                     'data-controller' => 'tom-select',
                 ],
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `management_review_lifecycle`. ISO 27001 Cl. 9.3 —
             // 4-eyes auf `complete` (Aufzeichnungs-Integrität). Transitions
             // via LifecycleService::transition() only.

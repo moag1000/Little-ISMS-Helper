@@ -34,12 +34,10 @@ use Doctrine\ORM\Mapping as ORM;
 class PolicyAcknowledgement
 {
     /**
-     * Audit V3 W2-C4 — explicit pending/completed state.
+     * Explicit pending/completed state.
      *
-     * Previously PolicyAcknowledgement was a "completion-only" row;
-     * the auto-campaign listener could only log a campaign trigger,
-     * not persist per-user audit-trail of "user X was asked to ack
-     * version Y at time T". Adding STATUS_PENDING closes that gap.
+     * STATUS_PENDING persists the per-user audit-trail of "user X was asked
+     * to ack version Y at time T" before the acknowledgement happens.
      */
     public const STATUS_PENDING = 'pending';
     public const STATUS_ACKNOWLEDGED = 'acknowledged';

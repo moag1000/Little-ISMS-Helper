@@ -1402,7 +1402,7 @@ class DeploymentWizardController extends AbstractController
         $employeeCount = $session->get('setup_organisation_employee_count', '1-10');
         $country = $session->get('setup_organisation_country', 'DE');
 
-        // Sprint 9: 3-Bucket-Klassifikation pro Framework — gibt dem Junior
+        // 3-Bucket-Klassifikation pro Framework — gibt dem Junior
         // eine klare *„muss / sollte / kann"*-Entscheidung statt eines flachen
         // Empfehlungs-Arrays.
         $classification = $this->applicabilityService->classifyAll(

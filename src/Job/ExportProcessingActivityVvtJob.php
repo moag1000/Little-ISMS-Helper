@@ -21,8 +21,6 @@ use App\Util\CsvSanitizer;
  * Module-gate (privacy) is enforced by the dispatching controller, not
  * the job — once a job is queued, the worker has no HTTP request scope
  * to re-check.
- *
- * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportProcessingActivityVvtJob implements AsyncJobInterface
 {

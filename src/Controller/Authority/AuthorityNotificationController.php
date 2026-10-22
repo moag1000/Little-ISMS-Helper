@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F26.3 — Authority Notification Export Controller
+ * Authority Notification Export Controller
  *
  * Pre-fills BSI-Meldestelle, BfDI, and 16 LfDI submission forms from
  * existing DataBreach + Incident entities.
@@ -106,7 +106,7 @@ final class AuthorityNotificationController extends AbstractController
         $pdf = match (true) {
             $authorityKey === AuthorityTemplate::AUTHORITY_BFDI => $this->generator->generateBfdiBreachPdf($breach, $tenant),
             str_starts_with($authorityKey, 'lfdi_') => $this->generator->generateLfdiBreachPdf($breach, $tenant, $authorityKey),
-            // F26 — non-DE / sectoral authorities: parametrized generic notification
+            // Non-DE / sectoral authorities: parametrized generic notification
             $authorityKey === AuthorityTemplate::AUTHORITY_DSB_AT,
             $authorityKey === AuthorityTemplate::AUTHORITY_EDOEB_CH,
             $authorityKey === AuthorityTemplate::AUTHORITY_BAFIN_DORA => $this->generator->generateGenericBreachPdf($breach, $tenant, $authorityKey),

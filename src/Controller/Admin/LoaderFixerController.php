@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Picks up requirements that were added to loader code after the initial seed,
  * without touching existing records.
  *
- * Role-Scope (Phase 4e — system-settings cluster): class-level
+ * Role-Scope: class-level
  * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — tenant admins re-run
  * loaders inside their own tenant tree (`W own` per spec §3.1).
  * SUPER_ADMIN passes through and may additionally run schema-level fixers.

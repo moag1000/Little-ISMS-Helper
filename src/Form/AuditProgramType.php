@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * AuditProgramType — SectionPolicy P-2 (>6 fields => SectionMapInterface).
+ * AuditProgramType — SectionPolicy (>6 fields => SectionMapInterface).
  * Status is lifecycle-managed (Pattern A) — disabled + mapped=false.
  */
 final class AuditProgramType extends AbstractType implements SectionMapInterface

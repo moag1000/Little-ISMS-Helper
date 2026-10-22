@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     // -------------------------------------------------------------------------
-    // Phase 8M.5 — Holding-Rollen (Konzern-Strukturen)
+    // Holding-Rollen (Konzern-Strukturen)
     // -------------------------------------------------------------------------
 
     /**
@@ -139,7 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $skipWelcomePage = false;
 
     /**
-     * Sprint 13 — Guided Tour. Liste der Tour-IDs, die der User
+     * Guided Tour. Liste der Tour-IDs, die der User
      * durchlaufen hat (z. B. ['junior', 'cm']). Per ID, damit
      * Role-Umstieg eines Users alte Completions nicht aufräumt.
      *
@@ -158,7 +158,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $mappingOnboardingState = [];
 
     /**
-     * Audit-S5 P-12 — previous QM-System background.
+     * previous QM-System background.
      *
      * Controls visibility of "Norm-Bridge" hints (ISO 27001 ↔ ISO 9001 etc.)
      * underneath form-labels. Set to 'iso_9001' for the ~80 % of customers
@@ -211,7 +211,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $competencies = null;
 
     // -------------------------------------------------------------------------
-    // Sprint 6a — F3 Notification preferences
+    // Notification preferences
     // -------------------------------------------------------------------------
 
     #[ORM\Column(name: 'in_app_notifications_enabled')]
@@ -679,7 +679,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Audit-S5 P-12 — read previous QM-System background.
+     * read previous QM-System background.
      *
      * @return string|null One of 'iso_9001' | 'iso_14001' | 'other' | 'none' | NULL.
      */
@@ -872,7 +872,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // -------------------------------------------------------------------------
-    // Sprint 6a — F3 Notification preferences
+    // Notification preferences
     // -------------------------------------------------------------------------
 
     public function isInAppNotificationsEnabled(): bool

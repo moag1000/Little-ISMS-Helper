@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * BCExercise Cloner (C4-C1 — Klon-Funktionen).
+ * BCExercise Cloner.
  *
  * Use case: recurring drill cadence — copy last quarter's tabletop exercise
  * template (scope, objectives, scenario, success criteria, facilitator) and

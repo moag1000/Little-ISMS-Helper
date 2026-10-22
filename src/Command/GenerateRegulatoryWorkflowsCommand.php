@@ -22,8 +22,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * - ISO 27001:2022 Clause 5.24-5.28 (Incident Management)
  * - ISO 27001:2022 Clause 6.1.3 (Risk Treatment)
  * - GDPR Art. 35/36 (Data Protection Impact Assessment)
- *
- * Based on: docs/WORKFLOW_REQUIREMENTS.md
  */
 #[AsCommand(
     name: 'app:generate-regulatory-workflows',
@@ -78,13 +76,13 @@ HELP
 
         $io->title('Regulatory Workflow Generator');
 
-        // Sprint Y.2 — deprecation notice.
-        // As of Sprint Y.2, all 15 regulatory workflows are defined as YAML files under
+        // Deprecation notice.
+        // As of , all 15 regulatory workflows are defined as YAML files under
         // config/workflows/regulatory/*.yaml. This command remains as a backwards-compat
         // DB seeder (creates/updates rows in the `workflows` + `workflow_steps` tables
         // so WorkflowInstance.workflow_id FK is satisfied and legacy display works).
         // It will be removed in a future release once the WorkflowInstance.workflow_id
-        // FK is made nullable (Sprint Y.4).
+        // FK is made nullable.
         $io->warning([
             '[DEPRECATED since Y.2] app:generate-regulatory-workflows',
             'Regulatory workflow definitions are now YAML-first (config/workflows/regulatory/).',
@@ -163,15 +161,15 @@ HELP
             'incident-low' => $this->getIncidentLowSeverityWorkflow(),
             'risk-treatment' => $this->getRiskTreatmentWorkflow(),
             'dpia' => $this->getDpiaWorkflow(),
-            // Phase 10.1 — CRITICAL
+            // CRITICAL
             'dsr' => $this->getDsrWorkflow(),
             'capa' => $this->getCapaWorkflow(),
             'change-request' => $this->getChangeRequestWorkflow(),
             'management-review' => $this->getManagementReviewWorkflow(),
-            // Phase 10.2 — HIGH
+            // HIGH
             'control-verification' => $this->getControlVerificationWorkflow(),
             'supplier-assessment' => $this->getSupplierAssessmentWorkflow(),
-            // Phase 10.3 — MEDIUM
+            // MEDIUM
             'training-verification' => $this->getTrainingVerificationWorkflow(),
             'bc-plan-activation' => $this->getBcPlanActivationWorkflow(),
             'document-review' => $this->getDocumentReviewWorkflow(),

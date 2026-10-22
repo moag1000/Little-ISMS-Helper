@@ -14,7 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment as TwigEnvironment;
 
 /**
- * F32 DPA-Generator — Art. 28 GDPR Auftragsverarbeitungsvertrag.
+ * DPA-Generator — Art. 28 GDPR Auftragsverarbeitungsvertrag.
  *
  * Builds the variable-substitution snapshot from a ProcessingActivity +
  * Supplier pair, renders the fixed AVV Twig template to a Markdown/HTML

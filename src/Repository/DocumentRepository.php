@@ -145,7 +145,7 @@ class DocumentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Phase 9.P2.1 — inheritable documents visible to a subsidiary
+     * Inheritable documents visible to a subsidiary
      * from its ancestor chain. Returns only documents that the ancestor
      * has explicitly marked inheritable=true (and that are still active).
      *
@@ -254,7 +254,7 @@ class DocumentRepository extends ServiceEntityRepository
 
     /**
      * Find approved, non-archived Documents whose review-cycle is overdue —
-     * i.e. nextReviewDate < asOf. Surfaces in My-Day per Audit V4 V4-LB-1.
+     * i.e. nextReviewDate < asOf. Surfaces in My-Day.
      *
      * @return Document[] Sorted by nextReviewDate ASC (most overdue first)
      */

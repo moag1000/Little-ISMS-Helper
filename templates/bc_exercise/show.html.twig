@@ -9,7 +9,7 @@
 
 {% block body %}
 <div class="container">
-    {# Lifecycle Y.5 — status transition dropdown (bc_exercise_lifecycle) #}
+    {# Lifecycle — status transition dropdown (bc_exercise_lifecycle) #}
     {% include '_components/_lifecycle_toolbar.html.twig' with {
         entity: bc_exercise,
         entity_type: 'bc-exercise',
@@ -23,7 +23,7 @@
         ]
     } %}
 
-    {# Junior-ISB-Audit-2026-05-22 K-07: ISO 22301 Cl. 8.5.3 + 9.1.1 Lessons-Learned loop #}
+    {# ISO 22301 Cl. 8.5.3 + 9.1.1 Lessons-Learned loop #}
     {% set hint = alva_hint(bc_exercise) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
@@ -37,7 +37,7 @@
         ]
     }) }}
 
-    {# 9001-bridge: BC-Exercise = process verification (9001 9.1 evaluation) + 22301 8.5 mandatory test. P-12 show-page mirror of #614. #}
+    {# 9001-bridge: BC-Exercise = process verification (9001 9.1 evaluation) + 22301 8.5 mandatory test. #}
     {{ _fa_norm_bridge.render({
         from_norm: 'ISO 22301 8.5',
         to_norm:   'ISO 9001 6.1 / 9.1',
@@ -128,7 +128,7 @@
             <div class="detail-section">
                 <h3>{{ 'bc_exercises.section.participants'|trans({}, 'bc_exercises') }}</h3>
 
-                {# P-15 DataReuse: typed Person M2M collections (canonical). Render
+                {# Typed Person M2M collections (canonical). Render
                    as linked badges so users navigate to the master-data record. #}
                 {% if bc_exercise.participantPersons|length > 0 %}
                     <p><strong>{{ 'bc_exercises.field.participant_persons'|trans({}, 'bc_exercises') }}:</strong>

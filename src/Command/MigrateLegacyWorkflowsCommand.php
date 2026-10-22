@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Y.4 Migration Verification Command — Legacy Workflow → YAML
+ * Migration Verification Command — Legacy Workflow → YAML
  *
  * Verifies that all DB-stored regulatory workflows have YAML equivalents
  * in config/workflows/regulatory/. Reports mismatches. Optionally archives

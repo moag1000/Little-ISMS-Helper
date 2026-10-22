@@ -12,7 +12,7 @@ use App\Entity\User;
 use App\Repository\TenantPolicySettingRepository;
 
 /**
- * Policy-Wizard W7-D — Tier-2 Konzern-CISO drift alert.
+ * Policy-Wizard — Tier-2 Konzern-CISO drift alert.
  *
  * Counterpart to {@see SettingsDriftRule}: SettingsDriftRule fires on
  * the descendant Tochter when its own value violates the Konzern
@@ -24,7 +24,7 @@ use App\Repository\TenantPolicySettingRepository;
  * Tochter may have drifted before the central CISO had a chance to
  * inspect the rollup tab. Tier-2 because it is an audit-gap signal,
  * not a hard regulatory deadline (Tochter remains responsible for
- * its own audit). CTA links into the W7-B drift tab of the Konzern
+ * its own audit). CTA links into the drift tab of the Konzern
  * rollup view.
  *
  * Architecture: `docs/plans/policy-wizard/05-architecture.md` §7.4 +
@@ -161,7 +161,7 @@ final class KonzernCisoDriftAlertRule extends AbstractAlvaHintRule
     }
 
     /**
-     * Strip the W3-B `_meta` envelope and return the comparable scalar
+     * Strip the `_meta` envelope and return the comparable scalar
      * (or array) payload of the setting.
      */
     private function scalarValue(TenantPolicySetting $setting): mixed

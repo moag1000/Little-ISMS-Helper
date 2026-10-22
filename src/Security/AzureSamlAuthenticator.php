@@ -83,7 +83,7 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
                         $user = $this->userRepository->findOneBy(['email' => $email]);
                         // Without an objectidentifier claim no object id is ever
                         // stored; an account already bound via SAML to this very
-                        // NameID counts as linked (#1059). Anything else is a
+                        // NameID counts as linked. Anything else is a
                         // link by e-mail and goes through the policy.
                         if ($user instanceof User && !$this->isBoundToNameId($user, $objectId, $nameId)) {
                             SsoAccountLinkPolicy::assertMayLinkAzureByEmail($user, $this->allowEmailLinking, $this->logger);

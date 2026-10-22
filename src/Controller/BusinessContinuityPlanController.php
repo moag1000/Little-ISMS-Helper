@@ -122,7 +122,7 @@ class BusinessContinuityPlanController extends AbstractController
         ]);
     }
     /**
-     * Clone a BC-Plan (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * Clone a BC-Plan. Open to ROLE_USER. Keeps
      * operational template (RTO/RPO, procedures, response team, M2M
      * crisis teams + critical suppliers/assets), resets test/review state.
      */

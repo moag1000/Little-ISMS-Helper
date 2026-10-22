@@ -15,12 +15,12 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Audit V3 C3 — Auto-Training-Assignment.
+ * Auto-Training-Assignment.
  *
  * On User postPersist: assign all mandatory active Trainings whose
  * required-roles set intersects the new user's role list.
  *
- * Audit V3 W2-C3 fix:
+ * fix:
  *   - Tenant scoping: only Trainings of the new user's own tenant are
  *     considered. Previously {@see Training::class} was queried with
  *     `findBy(['mandatory' => true])` which leaked ALL tenants'
@@ -102,7 +102,7 @@ final class AutoReactionTrainingAssignListener
                     'count' => $assigned,
                 ]);
 
-                // V3 W2-H4 (ISO 27001 Cl.7.4 / A.6.3): Notify trainee.
+                // (ISO 27001 Cl.7.4 / A.6.3): Notify trainee.
                 $this->notifyTrainee($user, $assignedTrainings);
             }
         } catch (\Throwable $e) {
@@ -115,7 +115,7 @@ final class AutoReactionTrainingAssignListener
     }
 
     /**
-     * V3 W2-H4 — Send a single email summarising all auto-assigned mandatory
+     * Send a single email summarising all auto-assigned mandatory
      * trainings to the new user. Best-effort: failures must not block the
      * assignment persistence.
      *

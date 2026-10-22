@@ -72,7 +72,6 @@ class CryptographicOperation
     #[Groups(['crypto:read'])]
     private ?User $user = null;
 
-    // New relationship for data reuse
     #[ORM\ManyToOne(targetEntity: Asset::class)]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['crypto:read', 'crypto:write'])]

@@ -10,7 +10,7 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Enum\DpiaStatus;
 
 /**
- * F31 — Applies a curated sectoral DPIA template to a fresh DPIA entity.
+ * Applies a curated sectoral DPIA template to a fresh DPIA entity.
  *
  * Called by DPIAController::new() when the user selects a sector template
  * in the optional picker step. Only sets fields that are still blank on the

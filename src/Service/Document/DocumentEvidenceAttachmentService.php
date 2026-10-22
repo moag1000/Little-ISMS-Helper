@@ -377,10 +377,10 @@ final class DocumentEvidenceAttachmentService implements DocumentEvidenceAttachm
     /**
      * Attempt to resolve an arbitrary norm-ref string to a framework code.
      *
-     * Used by the Phase 3 bulk-link endpoint where users may paste mixed
+     * Used by the bulk-link endpoint where users may paste mixed
      * references from norm-ref label strings. Returns null when no match.
      *
-     * @internal exposed as public for the Phase 3 controller.
+     * @internal exposed as public for the bulk-link controller.
      */
     public function resolveFrameworkCodeFromLabel(string $label): ?string
     {

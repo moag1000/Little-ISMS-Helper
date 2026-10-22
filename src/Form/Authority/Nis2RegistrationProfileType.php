@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
 
 /**
- * F29 — Form for NIS-2 BSI-Portal registration profile.
+ * Form for NIS-2 BSI-Portal registration profile.
  *
  * All mandatory BSI-Portal fields are collected here.
  * Translation domain: eu_authorities

@@ -15,7 +15,7 @@ use DateTimeImmutable;
  * Dedicated service for the Wirksamkeits-Monitor page: surfaces controls
  * whose last effectiveness check (`lastEffectivenessTest`) is overdue (> X months),
  * coming due soon, or recently checked.  Separate from the existing
- * ControlEffectivenessService (Phase 7B) which analyses risk-reduction scores.
+ * ControlEffectivenessService which analyses risk-reduction scores.
  */
 class ControlEffectivenessMonitor
 {

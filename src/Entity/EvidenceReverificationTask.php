@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F4 Evidence-Versioning — reviewer-queue task.
+ * Evidence-Versioning — reviewer-queue task.
  *
  * Created automatically by EvidenceCascadeInvalidationService when a
  * new DocumentVersion is published and linked CI/CF rows are marked

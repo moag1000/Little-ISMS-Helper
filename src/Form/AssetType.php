@@ -44,7 +44,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
     ) {
     }
 
-    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    // Owner pre-fill — UX-Polish
     protected function getSecurityForOwnerPicker(): ?Security
     {
         return $this->security;
@@ -92,7 +92,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
             ])
         ;
 
-        // S18 B2: tenant-konfigurierbarer Sub-Type. Dependent-select gefiltert
+        // Tenant-konfigurierbarer Sub-Type. Dependent-select gefiltert
         // via Stimulus-Controller (asset-sub-type) + JSON-Endpoint. Bei jedem
         // Initialladen werden ALLE Tenant-Sub-Types geliefert; das JS filtert
         // clientseitig (Form-Render) + lädt frisch beim topType-Wechsel.
@@ -128,7 +128,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
             ],
         ]);
 
-        // ── Owner cluster (audit-s4 P-1) ────────────────────────────────────
+        // ── Owner cluster ────────────────────────────────────
         // Replaces 4 hand-rolled add() calls (ownerUser/ownerPerson/
         // ownerDeputyPersons/owner) with one shared helper. Pattern A
         // dual-state semantics are preserved at the entity layer
@@ -144,7 +144,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
             'legacy_label'       => 'asset.field.owner_legacy',
             'legacy_help'        => 'asset.help.owner',
             'legacy_placeholder' => 'asset.placeholder.owner',
-            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            // Owner pre-fill — UX-Polish
             'default_to_current_user' => true,
         ]);
 
@@ -171,7 +171,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'asset.help.depends_on',
             ])
-            // V3 W2-Bug3 — linked Processing Activities (M:N inverse).
+            // Linked Processing Activities (M:N inverse).
             // Edit from either side; the owning side lives on
             // ProcessingActivity::$assets.
             // @no-module-gate-required: M:N inverse to ProcessingActivity. When privacy is off,
@@ -239,8 +239,8 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'asset.help.availability',
             ])
-            // monetaryValue removed (Junior-Finding #9 form-removal,
-            // S14+ #15 DB-column drop in Version20260612100000): replaced
+            // monetaryValue removed (DB-column drop in
+            // Version20260612100000): replaced
             // by acquisitionValue + currentValue. Legacy column-data was
             // backfilled into current_value during the drop migration.
             ->add('dataClassification', ChoiceType::class, [
@@ -480,7 +480,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
     }
 
     /**
-     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.5.9 · Asset Inventory.
+     * SectionPolicy — ISO 27001 A.5.9 · Asset Inventory.
      * Module-gated fields (nis2_dora, tisax, ai_governance) listed here so
      * the map is always complete; fields not built are silently ignored.
      *

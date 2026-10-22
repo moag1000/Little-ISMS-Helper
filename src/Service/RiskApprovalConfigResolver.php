@@ -14,7 +14,7 @@ use Psr\Log\NullLogger;
  * Read-only Value-Object für aufgelöste Approval-Schwellwerte.
  *
  * Entkoppelt Konsumenten (RiskAcceptanceWorkflowService) von der Entity,
- * damit Phase 8M später child+parent-Ceiling-Merge einfügen kann ohne
+ * damit später child+parent-Ceiling-Merge einfügen kann ohne
  * Konsumenten-Änderung.
  */
 final readonly class RiskApprovalConfigView
@@ -43,16 +43,16 @@ final readonly class RiskApprovalConfigView
 }
 
 /**
- * Phase 8L.F1 — Resolver für Approval-Schwellwerte.
+ * Resolver für Approval-Schwellwerte.
  *
  * Einziger Zugang zur Approval-Config. Konsumenten rufen nie direkt das
- * Repository — damit Phase 8M Holding-Ceiling intern in den Resolver
+ * Repository — damit Holding-Ceiling intern in den Resolver
  * einbauen kann, ohne dass sich der Service-Kontrakt ändert.
  *
  * Request-scoped Cache (array) — Config ändert selten, eine DB-Query
  * pro Request reicht. Kein APCu/Redis (Premature Optimization).
  *
- * Phase 8M.1 — Ceiling-Merge mit Holding-Hierarchie:
+ * Ceiling-Merge mit Holding-Hierarchie:
  * Ein Holding-Parent setzt Maximum-Schwellwerte. Child-Tenants dürfen
  * nur NIEDRIGERE (strengere) Werte setzen, nie höhere (laxere).
  * Merge-Semantik: min(child, parent) für alle drei Threshold-Felder.
@@ -92,7 +92,7 @@ class RiskApprovalConfigResolver
             $view = RiskApprovalConfigView::fromEntity($childEntity);
         }
 
-        // 8M.1: Ceiling-Merge — Ancestor-Walk (Parent zuerst, Root zuletzt).
+        // Ceiling-Merge — Ancestor-Walk (Parent zuerst, Root zuletzt).
         // min() stellt sicher, dass Child nicht laxer als Holding-Parent werden kann.
         foreach ($tenant->getAllAncestors() as $ancestor) {
             $ancestorEntity = $this->repository->findByTenant($ancestor);

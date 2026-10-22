@@ -23,7 +23,7 @@
             </h1>
         </div>
         <div>
-            {# Y.4: builder + edit removed — YAML is source of truth. Use /admin/workflows for tenant overrides. #}
+            {# Builder + edit removed — YAML is source of truth. Use /admin/workflows for tenant overrides. #}
             <a href="{{ path('admin_workflow_overlay_index') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'workflow.action.manage_overlays'|trans({}, 'workflows') }}
             </a>
@@ -204,7 +204,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
-                        {# Y.4: edit removed — see /admin/workflows for step-level overrides #}
+                        {# Edit removed — see /admin/workflows for step-level overrides #}
                         <a href="{{ path('admin_workflow_overlay_index') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'workflow.action.manage_overlays'|trans({}, 'workflows') }}
                         </a>

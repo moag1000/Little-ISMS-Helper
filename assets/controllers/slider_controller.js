@@ -1,5 +1,5 @@
-// DEPRECATED: not wired to any template as of 2026-05-20 (H-13 audit).
-// Keep until either (a) a template references it, or (b) Phase Y.5 cleans up dead controllers.
+// DEPRECATED: not wired to any template as of 2026-05-20.
+// Keep until either (a) a template references it, or (b) dead controllers are cleaned up.
 import { Controller } from '@hotwired/stimulus';
 
 /**

@@ -16,7 +16,7 @@ use Doctrine\ORM\UnitOfWork;
 use Psr\Log\LoggerInterface;
 
 /**
- * V3 W2-WS-10 — Asset-Schutzbedarf → DPIA-Bedarf-Check.
+ * Asset-Schutzbedarf → DPIA-Bedarf-Check.
  *
  * BSI 200-2 / 3.6 + DSGVO Art. 35: when an Asset's protection requirement
  * is raised to "hoch" (4) or "sehr hoch" (5) on any of CIA, the linked

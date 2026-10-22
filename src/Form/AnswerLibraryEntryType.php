@@ -14,9 +14,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * F44 — Form type for AnswerLibraryEntry.
+ * Form type for AnswerLibraryEntry.
  *
- * SectionPolicy (S4 Foundation P-2): fields are grouped into two sections
+ * SectionPolicy: fields are grouped into two sections
  * so the auto-form renderer places them in named, semantically correct blocks.
  */
 final class AnswerLibraryEntryType extends AbstractType implements SectionMapInterface

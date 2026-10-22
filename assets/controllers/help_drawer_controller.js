@@ -1,5 +1,5 @@
 /**
- * Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern — UX-Polish
+ * BP-Tooltips Drawer Pattern — UX-Polish
  *
  * help-drawer — Aurora fa-drawer side-sheet for verbose form-help-text.
  *

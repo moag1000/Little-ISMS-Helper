@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * AuditWorkbookController — F40.3
+ * AuditWorkbookController
  *
  * Serves XLSX audit-workbook downloads for ISO 27001 chain-of-custody auditor handover.
  * Each download is logged via AuditLogger::logExport() for compliance traceability.

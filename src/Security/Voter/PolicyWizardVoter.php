@@ -15,10 +15,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * Policy-Wizard Voter — Phase 4-C / Sprint W1-B.
+ * Policy-Wizard Voter
  *
  * Authorisiert die sieben Wizard-spezifischen Aktionen, die in der
- * Verantwortungsmatrix Phase 4-C §7-#4 spezifiziert sind. Spielt mit der
+ * Verantwortungsmatrix (§7-#4) spezifiziert sind. Spielt mit der
  * RBAC-Hierarchie (security.yaml) zusammen sowie mit den fünf
  * `policy_wizard.*` Permissions, die die Migration
  * Version20260508121000 seedet.
@@ -54,7 +54,7 @@ final class PolicyWizardVoter extends Voter
     public const string DPO_SECTION_VETO      = 'POLICY_WIZARD_DPO_SECTION_VETO';
     public const string EXPORT                = 'POLICY_WIZARD_EXPORT';
     /**
-     * W7-C — Re-generation diff viewer. Same scope guard as
+     * Re-generation diff viewer. Same scope guard as
      * {@see RUN_FULL}: anyone allowed to start a wizard run can also
      * inspect the diff between two of its outputs (CISO / Admin in the
      * Document's tenant scope, Group-CISO when the Document lives in a
@@ -145,7 +145,7 @@ final class PolicyWizardVoter extends Voter
     }
 
     /**
-     * W7-C — diff viewer. Same effective scope as {@see canRunFull}:
+     * Diff viewer. Same effective scope as {@see canRunFull}:
      * ROLE_CISO / ROLE_ADMIN of the Document's tenant (or a Holding
      * ancestor with cross-tree read access).
      */
@@ -292,7 +292,7 @@ final class PolicyWizardVoter extends Voter
     }
 
     /**
-     * W7-A — PDF / ZIP export. Auditors, CISO, Admin and Group-CISO get
+     * PDF / ZIP export. Auditors, CISO, Admin and Group-CISO get
      * read-side access to the full tenant policy set so they can pull
      * an audit-pack for an external review. ROLE_AUDITOR is a
      * read-only role on the regular ISMS surface; here it explicitly

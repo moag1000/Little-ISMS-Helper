@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F11 FTE-Tracking Dashboard — three routes:
+ * FTE-Tracking Dashboard — three routes:
  *
  *   GET  /{_locale}/dashboard/fte-tracking                 — live counter + charts
  *   GET  /{_locale}/dashboard/fte-tracking/calibration     — view calibration constants

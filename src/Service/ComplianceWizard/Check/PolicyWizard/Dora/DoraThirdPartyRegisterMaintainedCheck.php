@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W4-D / DORA Art. 28.3 + ITS (EU) 2024/2956 — confirms the tenant
+ * DORA Art. 28.3 + ITS (EU) 2024/2956 — confirms the tenant
  * maintains a Register of Information for ICT third-party providers.
  *
  * The check considers a register maintained when at least one

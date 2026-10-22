@@ -8,7 +8,7 @@ use App\Entity\WizardRun;
 use App\Service\PolicyWizard\WizardStepKeys;
 
 /**
- * Policy-Wizard W2-C — handler-lookup for {@see WizardRun} mode.
+ * Policy-Wizard — handler-lookup for {@see WizardRun} mode.
  *
  * The registry maps the {@see WizardRun::getMode()} string onto the
  * matching {@see ModeHandlerInterface} implementation, or returns

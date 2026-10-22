@@ -31,7 +31,7 @@
             }) }}
         </div>
 
-        {# W7-E — mobile swipe-affordance hint, only visible <768px via CSS. #}
+        {# Mobile swipe-affordance hint, only visible <768px via CSS. #}
         <div class="fa-bulk-mobile-hint" aria-hidden="true">
             <span class="fa-bulk-mobile-hint__chip fa-bulk-mobile-hint__chip--right">
                 <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -44,7 +44,7 @@
         </div>
 
         {% set inbox_body %}
-            {# W7-E — `fa-grid--mobile-stack` collapses to vertical card-list
+            {# `fa-grid--mobile-stack` collapses to vertical card-list
                below 768px so each acknowledgement row stays touch-friendly.
                The Stimulus controller wires swipe-gesture detection per row. #}
             <ul class="list-group list-group-flush fa-grid--mobile-stack"

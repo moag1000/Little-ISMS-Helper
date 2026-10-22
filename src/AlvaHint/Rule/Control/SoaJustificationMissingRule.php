@@ -15,7 +15,7 @@ use App\Entity\User;
  * carry a written justification. A missing justification is a textbook
  * Major Non-Conformity at external certification audit.
  *
- * Closes the help-vs-code gap that the Junior-ISB audit flagged as P0-01:
+ * Closes the help-vs-code gap that an audit flagged:
  * the form help-text says "mandatory" but the underlying field was
  * `required: false`. The server-side validator (ControlType::
  * validateJustificationWhenNotApplicable) blocks the actual save; this

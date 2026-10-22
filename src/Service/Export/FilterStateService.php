@@ -7,7 +7,7 @@ namespace App\Service\Export;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * F19.1 — FilterStateService
+ * FilterStateService
  *
  * Captures the active filter-state from an HTTP request and serialises it
  * into a stable format suitable for passing to EntityListExporter.

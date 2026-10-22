@@ -9,7 +9,7 @@ use App\Service\PolicyWizard\ExistingDocumentInventoryService;
 use App\Service\PolicyWizard\WizardStepKeys;
 
 /**
- * Policy-Wizard W4-C — Step 0 "Bestandsaufnahme" for brownfield tenants.
+ * Policy-Wizard — Step 0 "Bestandsaufnahme" for brownfield tenants.
  *
  * The user is shown the tenant's existing governance-grade documents and
  * decides per row what should happen during the upcoming wizard run:
@@ -18,8 +18,8 @@ use App\Service\PolicyWizard\WizardStepKeys;
  *   - keep             → legacy doc stays; matching topic is SKIPPED
  *   - merge_into_topic → legacy content is appended as a section to a
  *                        single new wizard topic
- *   - split_to_topics  → manual split required (W4 raises an Alva-Hint;
- *                        the wizard does not auto-split in this sprint)
+ *   - split_to_topics  → manual split required (an Alva-Hint is raised;
+ *                        the wizard does not auto-split)
  *
  * Persisted shape under `WizardRun.inputs.bestandsaufnahme`:
  *

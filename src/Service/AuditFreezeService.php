@@ -18,8 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * at a chosen Stichtag, sealed with a SHA-256 hash over the canonical JSON
  * payload. The hash lets an external auditor verify weeks later that nobody
  * has tampered with the stored snapshot.
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
 final class AuditFreezeService
 {

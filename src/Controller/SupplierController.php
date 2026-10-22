@@ -121,7 +121,7 @@ class SupplierController extends AbstractController
             ));
         }
 
-        // DORA Phase 1: filter-chip "Nur DORA-relevant" via ?dora_relevant=1
+        // DORA filter-chip "Nur DORA-relevant" via ?dora_relevant=1
         if ($request->query->get('dora_relevant') === '1') {
             $suppliers = array_values(array_filter(
                 $suppliers,
@@ -255,7 +255,7 @@ class SupplierController extends AbstractController
 
         $inverseCoverage = $this->inverseCoverageService?->forSupplier($supplier) ?? ['total' => 0, 'frameworks' => []];
 
-        // F32 DPA-Generator — pass ProcessingActivities that list this supplier
+        // DPA-Generator — pass ProcessingActivities that list this supplier
         // as a processorSupplier (Art. 28 M:N link) so the show template can
         // render the "Generate AVV" action per PA.
         $processorPas = $this->processingActivityRepository?->findByProcessorSupplier($supplier) ?? [];
@@ -276,7 +276,7 @@ class SupplierController extends AbstractController
         ]);
     }
     /**
-     * Clone a Supplier (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * Clone a Supplier. Open to ROLE_USER. Keeps
      * description, service-type, security requirements, certification flags;
      * resets evaluation state + contract dates.
      */

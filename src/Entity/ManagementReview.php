@@ -41,7 +41,7 @@ class ManagementReview
     private Collection $participants;
 
     /**
-     * Person-Rollout Phase B1 — typed Person participants twin of the
+     * Typed Person participants twin of the
      * Collection<User> `participants`. External board members /
      * auditors / consultants attend without an app login; surfacing
      * them here keeps the attendance roster complete without licence

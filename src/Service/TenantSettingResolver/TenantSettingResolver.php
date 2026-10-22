@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Policy-Wizard W1-C — generic tenant-setting resolver.
+ * Policy-Wizard — generic tenant-setting resolver.
  *
  * Lifts the floor-pattern from PasswordPolicyResolver into a reusable
  * abstraction parametrised on (a) setting key and (b) override-mode.

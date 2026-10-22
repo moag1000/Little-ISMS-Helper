@@ -11,7 +11,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W4-D / DORA Art. 19 — confirms the tenant's per-severity
+ * DORA Art. 19 — confirms the tenant's per-severity
  * {@see IncidentSlaConfig} rows are configured tight enough to satisfy
  * the DORA major-incident reporting timetable per Commission Delegated
  * Regulation (EU) 2024/1772 + ITS JC 2024 33:

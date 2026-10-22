@@ -33,7 +33,7 @@ class GdprSectionInjector
     }
 
     /**
-     * W6-C — GDPR section injector.
+     * GDPR section injector.
      *
      * Per `06-dpo-input.md` §0 Decision Matrix v2, the DPO addon
      * contributes 10 privacy sections that MERGE into existing ISO 27001
@@ -42,7 +42,7 @@ class GdprSectionInjector
      * walk the {@see GdprSectionCatalogue} and emit one DocumentSection
      * row per matching ISO topic.
      *
-     * Each row carries the catalogue's `approval_role` so the W6-A
+     * Each row carries the catalogue's `approval_role` so the
      * split-state approval gate fires correctly:
      *  - `dpo`   → DPO-only sign-off (CISO locked out at edit time)
      *  - `joint` → both DPO + CISO must approve
@@ -139,7 +139,7 @@ class GdprSectionInjector
         // Capture a stub content snapshot pointing at the translation
         // key so a draft export render shows "[GDPR Section: <key>
         // (Art. X / Y)]" rather than an empty body. The full prose
-        // ships from W6-F (translations) — until then the snapshot
+        // is supplied by the translation files — until it exists the snapshot
         // labels the section so DPO reviewers can locate it.
         $articles = implode(', ', $row['gdpr_articles']);
         $section->setContentSnapshot(sprintf(
@@ -153,7 +153,7 @@ class GdprSectionInjector
 
         // §8.5 — emit one `gdpr-section:<key>:applied` tag per injected
         // section so the audit-export view can pivot on which GDPR
-        // sections grew from which run. Mirrors the W4-A
+        // sections grew from which run. Mirrors the
         // `dora-extension:applied` pattern.
         $this->tagGdprSectionApplied($document, $sectionKey, $run);
     }

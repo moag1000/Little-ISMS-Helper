@@ -44,7 +44,7 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 'version',
                 'reviewIntervalMonths',
                 'requiresAcknowledgement',
-                // Junior-ISB-Audit C3-03 (S14, 2026-05-23) — ISO 27001 Cl. 7.3 + A.6.3
+                // ISO 27001 Cl. 7.3 + A.6.3
                 // audience-picker that follows the requiresAcknowledgement toggle.
                 'acknowledgementAudience',
             ],
@@ -107,7 +107,7 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                     'document.type.training' => 'training',
                     'document.type.general' => 'general',
                     'document.type.communication_plan' => 'communication_plan',
-                    // F32 DPA-Generator — Art. 28 GDPR Auftragsverarbeitungsvertrag
+                    // DPA-Generator — Art. 28 GDPR Auftragsverarbeitungsvertrag
                     'document.type.dpa' => 'dpa',
                 ],
                 'required' => true,
@@ -142,7 +142,7 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 'mapped' => false,
                 'choice_translation_domain' => 'document',
             ])
-            // V3 W2-Bug2 — version label + acknowledgement-requirement.
+            // Version label + acknowledgement-requirement.
             ->add('version', TextType::class, [
                 'label' => 'document.field.version',
                 'help' => 'document.help.version',
@@ -157,13 +157,13 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 'help' => 'document.help.requires_acknowledgement',
                 'required' => false,
                 'attr' => [
-                    // Junior-ISB-Audit C3-03 — explicit ID so the Stimulus
+                    // Explicit ID so the Stimulus
                     // conditional-fields controller can target the
                     // acknowledgementAudience picker via data-depends-on.
                     'id' => 'document_requiresAcknowledgement',
                 ],
             ])
-            // Junior-ISB-Audit C3-03 (S14, 2026-05-23) — ISO 27001 Cl. 7.3
+            // ISO 27001 Cl. 7.3
             // (Awareness) + A.6.3 (Awareness, education and training):
             // when a document requires user acknowledgement the audience
             // must be auditable. Empty selection preserves legacy fan-out
@@ -183,11 +183,11 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                     'data-depends-on' => 'document_requiresAcknowledgement',
                 ],
             ])
-            // V3 W2-LB-8 — Review-cycle cadence. Used by
+            // Review-cycle cadence. Used by
             // DocumentApprovalListener to populate nextReviewDate
             // when the document is approved.
             //
-            // Junior-ISB-Audit C3-04 (S14, 2026-05-23) — explicit default
+            // Explicit default
             // 12 months when the entity has no value (new documents).
             // ISO 27001 Cl. 7.5.3 expects documented information to be
             // reviewed at a defined cadence; "annual" is the published
@@ -206,9 +206,9 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                     'placeholder' => '12',
                 ],
             ])
-            // Phase 9.P2.1 — holding policy inheritance flags. Only
+            // Holding policy inheritance flags. Only
             // meaningful on a holding tenant; standalone tenants don't see
-            // them at all (Junior-ISB-Audit T8.7 — gating instead of
+            // them at all (gating instead of
             // perma-visible + perma-default).
             //
             // Holding-CISO is wired through tenant.parentTenantId +

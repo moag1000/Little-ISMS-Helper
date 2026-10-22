@@ -185,7 +185,7 @@ class ManagementReviewController extends AbstractController
     }
 
     /**
-     * V3 B4 / EF-1: Auto-Collect ein Management-Review aus existierender §9.3-Datenlage.
+     * Auto-Collect ein Management-Review aus existierender §9.3-Datenlage.
      * Pre-fills Risk-/Audit-/NC-/KPI-Narratives, anschliessend redirect auf edit.
      */
     #[Route('/management-review/auto-collect', name: 'app_management_review_auto_collect', methods: ['POST'])]

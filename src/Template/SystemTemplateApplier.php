@@ -14,7 +14,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 /**
  * Materialises a SystemTemplate into one or many Doctrine entities.
  *
- * Foundation P-14. The Applier handles three concerns:
+ * The Applier handles three concerns:
  *  1. Tenant binding — every created entity gets the current tenant via
  *     reflection on `setTenant()` (skipped for entities without that method).
  *  2. Property assignment via Symfony PropertyAccess — supports nested

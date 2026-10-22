@@ -102,7 +102,7 @@ class DocumentController extends AbstractController
         // list to exactly the documents a hint is about.
         $focus = $request->query->get('focus');
 
-        // Policy-Wizard W7-C — history toggle. Default OFF: only the
+        // Policy-Wizard — history toggle. Default OFF: only the
         // current version of each policy is listed (a Document is
         // "current" when no other Document points back to it via
         // supersedes). Toggle via `?include_history=1` (persona-review
@@ -172,7 +172,7 @@ class DocumentController extends AbstractController
             );
         }
 
-        // Policy-Wizard W7-C — collapse to current versions only (default).
+        // Policy-Wizard — collapse to current versions only (default).
         // A Document is hidden when ANY other Document in the list points
         // back to it via `supersedes`. We compute the "superseded ids" set
         // in PHP rather than via SQL so the inheritance / subsidiary
@@ -226,7 +226,7 @@ class DocumentController extends AbstractController
             $detailedStats = ['own' => count($documents), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($documents)];
         }
 
-        // Policy-Wizard W7-C — settings-drift map. For every Document in
+        // Policy-Wizard — settings-drift map. For every Document in
         // the listing, ask the SettingsDriftDetector whether the snapshot
         // diverges from current tenant settings. Result map is keyed on
         // Document.id so the template can render the badge inline. The
@@ -246,7 +246,7 @@ class DocumentController extends AbstractController
             }
         }
 
-        // Junior-ISB Wish #5 — compute Auditor-Score for every
+        // Compute Auditor-Score for every
         // Wizard-generated document in the listing. Optional service:
         // when DI omits it, the badge column simply stays empty.
         $auditorScores = [];
@@ -658,7 +658,7 @@ class DocumentController extends AbstractController
 
         $inverseCoverage = $this->inverseCoverageService?->forDocument($document) ?? ['total' => 0, 'frameworks' => []];
 
-        // Junior-ISB Wish #5 — Auditor-Score for the show view.
+        // Auditor-Score for the show view.
         // calculateForDocument returns null for non-Wizard docs.
         $auditorScore = $this->auditorScoreCalculator?->calculateForDocument($document);
 
@@ -693,7 +693,7 @@ class DocumentController extends AbstractController
             $climateChangeAware = Document::isClimateChangeAwareFromTags($tagNames);
         }
 
-        // V3 W2-H3: Comment-Thread (C7) — load thread for this Document.
+        // Comment-Thread (C7) — load thread for this Document.
         $comments = [];
         if ($this->commentRepository !== null && $tenant !== null && $document->getId() !== null) {
             $comments = $this->commentRepository->findThread($tenant, 'Document', $document->getId());
@@ -737,9 +737,9 @@ class DocumentController extends AbstractController
             'policyBodyHtml' => $policyBodyHtml,
             'doraValidityDate' => $doraValidityDate,
             'climateChangeAware' => $climateChangeAware,
-            // V3 W2-H3: Comments thread + form action
+            // Comments thread + form action
             'comments' => $comments,
-            // Multi-framework evidence linkage (Phase 1+2)
+            // Multi-framework evidence linkage
             'controlLinks' => $controlLinks,
             'requirementsByFramework' => $requirementsByFramework,
         ]);
@@ -799,7 +799,7 @@ class DocumentController extends AbstractController
     }
 
     /**
-     * Clone a Document (C4-C1 — Klon-Funktionen). Open to ROLE_USER. The
+     * Clone a Document. Open to ROLE_USER. The
      * clone keeps the policy body, review cadence, classification and
      * metadata; file binary, version history and provenance refs are
      * intentionally NOT carried over.
@@ -1129,7 +1129,7 @@ class DocumentController extends AbstractController
         ];
     }
 
-    // ── F4 Evidence-Versioning endpoints ──────────────────────────────────────
+    // ── Evidence-Versioning endpoints ──────────────────────────────────────
 
     /**
      * Version history drawer for a document.
@@ -1226,7 +1226,7 @@ class DocumentController extends AbstractController
     }
 
     /**
-     * Sprint-2 P-7 Wave-2 Trigger-4: Document acknowledgement audience picker.
+     * Document acknowledgement audience picker.
      *
      * ISO 27001 A.6.3 — explicit audience selection for policy
      * acknowledgement, replacing the broadcast-to-all default. GET shows

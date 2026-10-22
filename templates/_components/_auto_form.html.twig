@@ -80,7 +80,6 @@
                           drawer body. Renders a "Mehr Info..." button under the help-line and
                           opens the page-level fa-drawer (mount `_fa_help_drawer.html.twig`
                           inside the same `data-controller="help-drawer"` scope).
-                          Junior-ISB-Audit-2026-05-22 S14 #17.
     - exclude            (array, optional) — field names to skip entirely
     - translation_domain (string, optional) — override tooltip translation domain
     - strict_whitelist   (bool, default false) — H-03: suppress catch-all bucket
@@ -128,13 +127,13 @@
 {% set other_section_label = other_section_label|default('common.section.other'|trans({}, 'messages')) %}
 {% set skip_other      = skip_other|default(false) %}
 
-{# ─── H-03 Privilege-Escalation Hardening ───────────────────────────────── #}
+{# ─── Privilege-Escalation Hardening ───────────────────────────────── #}
 {% set strict_whitelist = strict_whitelist|default(false) %}
 {% if strict_whitelist %}
     {% set skip_other = true %}
 {% endif %}
 
-{# ─── S4 Foundation P-2 SectionPolicy ───────────────────────────────────── #}
+{# ─── SectionPolicy ───────────────────────────────────── #}
 {% set sections = sections|default(null) %}
 {% if sections is null %}
     {% set _form_section_map = form_section_map(form) %}
@@ -340,7 +339,7 @@
        Skip via {skip_other: true} param if caller intentionally manages all
        fields (e.g. has its own form_widget calls outside this component).
 
-       S4 P-2 SectionPolicy note: if the FormType implements SectionMapInterface,
+       S4 SectionPolicy note: if the FormType implements SectionMapInterface,
        any field that ends up here is a leak — it means the section-map is out
        of sync with the builder. In dev-env we render a visible warning. CI-gate
        `scripts/quality/check_form_sections.py` enforces parity.
@@ -380,7 +379,7 @@
         {% endif %}
     {% endif %}
 
-    {# ─── H-03 dev-only visibility ───────────────────────────────────────────
+    {# ─── dev-only visibility ───────────────────────────────────────────
        Show which fields are suppressed by strict_whitelist (privilege-escalation
        safeguard) OR rendered via the catch-all (potential leak risk). Dev only.
        Hidden in prod for performance + UX. #}

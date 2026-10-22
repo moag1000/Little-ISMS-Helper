@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * Once a Verfahrensverzeichnis has at least 5 entries, the DPO can fulfil an
  * authority request (BfDI / LfDI) with a single click using the BfDI-Muster
- * XLSX export introduced in Sprint-2 (F25). This hint surfaces only when no
+ * XLSX export. This hint surfaces only when no
  * export has been logged in the last 30 days, keeping it relevant without
  * being repetitive.
  *

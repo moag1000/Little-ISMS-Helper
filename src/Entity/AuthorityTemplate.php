@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F26 — EU-Behörden-Notification-Template
+ * EU-Behörden-Notification-Template
  *
  * Stores pre-configured submission templates for German/EU supervisory authorities:
  * BSI-Meldestelle (NIS-2), BfDI (GDPR Art. 33), and 16 state DPAs (LfDI).
@@ -45,11 +45,11 @@ class AuthorityTemplate
     public const AUTHORITY_LFDI_ST = 'lfdi_st';
     public const AUTHORITY_LFDI_SH = 'lfdi_sh';
     public const AUTHORITY_LFDI_TH = 'lfdi_th';
-    /** F26 — Österreichische Datenschutzbehörde (GDPR, AT) */
+    /** Österreichische Datenschutzbehörde (GDPR, AT) */
     public const AUTHORITY_DSB_AT = 'dsb_at';
-    /** F26 — Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter (nDSG, CH) */
+    /** Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter (nDSG, CH) */
     public const AUTHORITY_EDOEB_CH = 'edoeb_ch';
-    /** F26 — BaFin DORA ICT-incident authority (DORA Art. 19, DE financial sector) */
+    /** BaFin DORA ICT-incident authority (DORA Art. 19, DE financial sector) */
     public const AUTHORITY_BAFIN_DORA = 'bafin_dora';
 
     public const ENTITY_TYPE_DATA_BREACH = 'data_breach';
@@ -74,10 +74,10 @@ class AuthorityTemplate
         self::AUTHORITY_LFDI_ST,
         self::AUTHORITY_LFDI_SH,
         self::AUTHORITY_LFDI_TH,
-        // F26 — non-DE national authorities
+        // Non-DE national authorities
         self::AUTHORITY_DSB_AT,
         self::AUTHORITY_EDOEB_CH,
-        // F26 — sectoral authority
+        // Sectoral authority
         self::AUTHORITY_BAFIN_DORA,
     ];
 

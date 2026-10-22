@@ -12,7 +12,7 @@ use App\Entity\User;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 
 /**
- * Sprint-2 P-7 Wave-2 trigger-1: Risk.requiresDPIA = true → DPIA-Anlage.
+ * Risk.requiresDPIA = true → DPIA-Anlage.
  *
  * GDPR Art. 35(1) — when a type of processing is likely to result in a
  * high risk to data subjects' rights, the controller MUST carry out a

@@ -14,7 +14,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * F29 — NIS-2 BSI-Portal Registrierungsprofil
+ * NIS-2 BSI-Portal Registrierungsprofil
  *
  * Stores the mandatory data set for yearly BSI-Portal re-registration
  * under NIS-2 (§ 33 BSIG). One profile per tenant; updated annually.

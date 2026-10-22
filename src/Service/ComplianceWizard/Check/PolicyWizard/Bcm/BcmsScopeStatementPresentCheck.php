@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / ISO 22301 Cl. 4.3 — confirms the tenant has a published
+ * ISO 22301 Cl. 4.3 — confirms the tenant has a published
  * BCMS Scope Statement (Geltungsbereich BCMS).
  *
  * A document qualifies when ALL of the following hold:

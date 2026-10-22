@@ -13,7 +13,7 @@ use Doctrine\ORM\UnitOfWork;
 use Psr\Log\LoggerInterface;
 
 /**
- * V3 W2-LB-6 — Asset-Owner Auto-Sync.
+ * Asset-Owner Auto-Sync.
  *
  * When a User entity changes its display name (firstName / lastName)
  * the legacy `Asset.owner` (free-text string) on every Asset that is

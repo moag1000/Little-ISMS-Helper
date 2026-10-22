@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F11 FTE-Tracking — savings calculation formulas.
+ * FTE-Tracking — savings calculation formulas.
  *
  * All "actual minutes" values reflect the tool-assisted workflow time
  * (a Bulk-Import wizard commit takes roughly 1 min regardless of row count;

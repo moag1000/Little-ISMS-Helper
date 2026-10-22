@@ -11,7 +11,7 @@ use App\Repository\FourEyesApprovalRequestRepository;
 use App\Repository\WorkflowInstanceRepository;
 
 /**
- * Phase 4.4 — Live-Badge Count Aggregator.
+ * Live-Badge Count Aggregator.
  *
  * Provides lightweight integer counts for the four sidebar live-badge slots:
  *

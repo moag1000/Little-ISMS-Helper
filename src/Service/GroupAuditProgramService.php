@@ -11,7 +11,7 @@ use App\Repository\InternalAuditRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Phase 9.P2.4 — derives tenant-scoped audits from a Holding program
+ * Derives tenant-scoped audits from a Holding program
  * audit. Idempotent: subsidiaries that already have a derived audit
  * pointing at the same program are skipped.
  *

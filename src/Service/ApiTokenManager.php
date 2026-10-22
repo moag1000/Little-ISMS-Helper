@@ -10,7 +10,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F6 — mint + revoke read-only API tokens. Only the SHA-256 hash is stored; the
+ * Mint + revoke read-only API tokens. Only the SHA-256 hash is stored; the
  * plaintext is returned once at mint time and never persisted. Shared by the
  * CLI command and the self-service UI.
  */

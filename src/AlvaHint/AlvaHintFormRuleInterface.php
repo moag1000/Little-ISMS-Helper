@@ -24,7 +24,7 @@ use App\Entity\User;
  *   BEFORE persistence and surfaces an inline alert next to a specific
  *   form field. No DB writes ever happen in the rule itself.
  *
- * Foundation pattern P-19: Form-Step-Inline-Hint.
+ * Form-Step-Inline-Hint.
  */
 interface AlvaHintFormRuleInterface
 {

@@ -44,7 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Admin UI for data repair / integrity / schema operations.
  *
- * Role-Scope (Phase 4e — system-settings cluster):
+ * Role-Scope:
  *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — tenant
  *    admins repair orphans / duplicates / tenant-mismatches inside their
  *    own tenant tree (`W own orphans/dupes` per spec §3.1).
@@ -162,7 +162,7 @@ class DataRepairController extends AbstractController
             'migration_status' => $maintenance['migration_status'],
             'schema_drift' => $maintenance['schema_drift'],
 
-            // Async-integrity-check (Phase 2.5): scalar summary written by
+            // Async-integrity-check: scalar summary written by
             // RunFullIntegrityCheckJob to var/data_integrity/last.json.
             'integrityResultCache' => $this->integrityResultCache->read(),
 
@@ -397,7 +397,7 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        // P-16 facade: one call replaces create-status + redirect-to-progress
+        // facade: one call replaces create-status + redirect-to-progress
         // + dispatch. The facade handles the 303 PRG dance internally so the
         // pattern is uniform across all dispatching controllers.
         return $this->asyncJobDispatcher->dispatchWithProgress(
@@ -788,7 +788,7 @@ class DataRepairController extends AbstractController
     /**
      * Bulk-assigns every orphaned entity (across all types) to the selected tenant.
      *
-     * Consultant-Review A2 (docs/DB_REPAIR_REVIEW_CONSULTANT.md): this is a
+     * This is a
      * DSGVO incident trigger in multi-tenant deployments — a misclick can
      * silently reassign assets/risks/incidents that belong to tenant A into
      * tenant B's namespace. The bulk path is therefore gated:
@@ -800,7 +800,7 @@ class DataRepairController extends AbstractController
      *      count shown at preview time — a stale browser tab can't
      *      reassign more rows than the admin actually saw.
      *   3. Audit-logs every reassignment individually with the current
-     *      actor_role (ISB Sprint-2 gate) before flush.
+     *      actor_role before flush.
      */
     #[Route('/admin/data-repair/fix-all-orphans/{tenantId}', name: 'admin_data_repair_fix_all_orphans', methods: ['POST'])]
     public function fixAllOrphans(Request $request, int $tenantId): Response

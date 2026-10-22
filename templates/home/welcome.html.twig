@@ -62,7 +62,7 @@
         </div>
     {% endif %}
 
-    {# Hero — V3 W2-M9: Aurora _fa_hero macro replaces Bootstrap-Insel #}
+    {# Hero — Aurora _fa_hero macro replaces Bootstrap-Insel #}
     {% import '_components/_fa_hero.html.twig' as _fa_hero %}
     {% set _hero_subtitle = 'welcome.tagline'|trans({}, 'welcome') %}
     {% if overall_compliance is defined and overall_compliance > 0 %}
@@ -237,7 +237,7 @@
 </div>
 
 <style>
-    /* V3 W2-M9: .welcome-hero CSS removed — replaced by _fa_hero macro
+    /* .welcome-hero CSS removed — replaced by _fa_hero macro
        (uses fa-hero / fa-hero__* classes from FairyAurora v4 stylesheet). */
     .welcome-page {
         padding-top: 2rem;

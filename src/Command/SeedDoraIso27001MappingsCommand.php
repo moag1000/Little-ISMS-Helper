@@ -33,8 +33,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Mappings — DORA ist regulatorisch enger als 27001.
  *
  * Idempotent: bestehende Quell/Ziel-Paare werden übersprungen.
- *
- * Sprint 7 / S7-2.
  */
 #[AsCommand(
     name: 'app:seed-dora-iso27001-mappings',

@@ -19,8 +19,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 trait InternalAuditTeamTrait
 {
     /**
-     * Legacy free-text audit team list ("Names, comma-separated"). P-15
-     * DataReuse: kept read-only for migration display once the typed
+     * Legacy free-text audit team list ("Names, comma-separated"). Kept read-only for migration display once the typed
      * `auditTeamMembers` collection is populated.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -28,7 +27,7 @@ trait InternalAuditTeamTrait
     private ?string $auditTeam = null;
 
     /**
-     * Pattern A dual-state (P-15 DataReuse): typed audit-team roster as a
+     * Pattern A dual-state: typed audit-team roster as a
      * Collection<Person>. Replaces the legacy comma-separated `auditTeam`
      * textarea.
      *

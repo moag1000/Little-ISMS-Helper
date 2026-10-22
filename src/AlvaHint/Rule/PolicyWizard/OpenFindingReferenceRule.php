@@ -14,7 +14,7 @@ use DateInterval;
 use DateTimeImmutable;
 
 /**
- * Policy-Wizard W7-D — Tier-1 open-finding-reference reminder.
+ * Policy-Wizard — Tier-1 open-finding-reference reminder.
  *
  * Fires on a Tenant when at least one in-progress {@see WizardRun}
  * with a {@see WizardRun::$findingReference} is older than
@@ -30,8 +30,8 @@ use DateTimeImmutable;
  * targeted re-run pre-seeded with the finding reference, so the
  * user can ack-and-act in one click.
  *
- * Spec anchor: `07-phase4-sprint-reconciliation.md` lines 309-311
- * (W7-D Alva-Hints catalogue, finding-reference item).
+ * Spec anchor: `07-phase4-sprint-reconciliation.md` 
+ * (Alva-Hints catalogue, finding-reference item).
  */
 final class OpenFindingReferenceRule extends AbstractAlvaHintRule
 {

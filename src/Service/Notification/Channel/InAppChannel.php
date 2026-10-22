@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Delivers in-app notifications by persisting the delivery row as "sent".
  *
- * The Sprint-6b notification center polls for NotificationDelivery rows
+ * The notification center polls for NotificationDelivery rows
  * with status=sent and channel.type=in_app to render the bell dropdown.
  * No external I/O occurs in this channel.
  */

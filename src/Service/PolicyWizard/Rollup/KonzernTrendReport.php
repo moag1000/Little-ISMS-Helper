@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard\Rollup;
 use App\Entity\Tenant;
 
 /**
- * CISO-Executive Reporting (Task #130) — read-only DTO carrying the
+ * CISO-Executive Reporting — read-only DTO carrying the
  * quarterly trend snapshot assembled by {@see KonzernTrendCalculator}.
  *
  * The trend feeds two render surfaces:

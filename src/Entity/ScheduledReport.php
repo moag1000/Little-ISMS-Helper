@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Scheduled Report Entity
  *
- * Phase 7A: Stores configuration for automated report generation and delivery.
+ * Stores configuration for automated report generation and delivery.
  * Reports can be scheduled daily, weekly, or monthly and sent via email.
  * Must be manually activated by an administrator.
  */

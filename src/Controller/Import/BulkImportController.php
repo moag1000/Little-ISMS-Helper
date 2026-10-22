@@ -422,7 +422,7 @@ final class BulkImportController extends AbstractController
     /**
      * Stream the sample-XLSX fixture for the current entity-type as a download.
      * Helps users build their first Excel without guessing column headers.
-     * The fixture-files live in fixtures/sample-imports/ (committed via F2.11).
+     * The fixture-files live in fixtures/sample-imports/ (committed).
      */
     #[Route('/sample.xlsx', name: 'app_bulk_import_sample', methods: ['GET'])]
     public function sample(string $entityType): Response

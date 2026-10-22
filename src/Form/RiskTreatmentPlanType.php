@@ -78,7 +78,7 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
                     new Assert\NotBlank(message: 'risk_treatment_plan.validation.description_required')
                 ]
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `risk_treatment_plan_lifecycle`. ISO 27001 Cl. 6.1.3
             // 4-eyes auf `complete`. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [

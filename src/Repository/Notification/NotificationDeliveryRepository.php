@@ -63,7 +63,7 @@ class NotificationDeliveryRepository extends ServiceEntityRepository
     }
 
     /**
-     * F3 digest mode — find all deliveries queued for digest on a specific channel.
+     * Digest mode — find all deliveries queued for digest on a specific channel.
      * Ordered oldest-first so the digest email presents events chronologically.
      *
      * @return NotificationDelivery[]
@@ -81,7 +81,7 @@ class NotificationDeliveryRepository extends ServiceEntityRepository
     }
 
     /**
-     * F3 digest mode — find all active email channels that have at least one
+     * Digest mode — find all active email channels that have at least one
      * pending_digest delivery. Returns distinct channels across all tenants.
      *
      * @return NotificationChannel[]

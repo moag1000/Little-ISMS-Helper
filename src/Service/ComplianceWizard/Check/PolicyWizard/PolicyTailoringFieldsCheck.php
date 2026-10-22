@@ -14,7 +14,7 @@ use App\Repository\DocumentRepository;
  * variable marked as required in the source `PolicyTemplate.requiredVariables`
  * has a non-empty value inside `Document.substitutionVariables`.
  *
- * The W3-D scope (per task brief) calls out "the 3 mandatory tailoring fields"
+ * The original scope calls out "the 3 mandatory tailoring fields"
  * — the actual mandatory-count is template-dependent. This check therefore
  * pivots on the template's required-flag rather than hard-coding a count, so
  * BSI- and DORA-templates (which carry more required vars) still benefit.

@@ -18,7 +18,7 @@
         badge: { icon: 'plus', label: '' }
     }) }}
 
-    {# S3 P0-30 — Info-Banner wenn aus unwirksamer Vorgänger-CAPA vorbefüllt. #}
+    {# Info-Banner wenn aus unwirksamer Vorgänger-CAPA vorbefüllt. #}
     {% if previousCapa is defined and previousCapa %}
         {{ _fa_alert.render({
             variant: 'info',

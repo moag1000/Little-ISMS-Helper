@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * S2 / CM-6 (docs/CM_JUNIOR_RESPONSE.md): pre-configured ISMS starter
+ * Pre-configured ISMS starter
  * packs per industry so a new tenant does not start from zero.
  *
  * A baseline captures: required + recommended frameworks, preset asset

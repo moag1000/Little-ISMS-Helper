@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * BusinessContinuityPlan Cloner (C4-C1 — Klon-Funktionen).
+ * BusinessContinuityPlan Cloner.
  *
  * Use case: ISO 22301 + BSI 200-4 annual BC-Plan refresh cycle. A BC-Plan
  * captures dozens of fields (RTO/RPO, recovery procedures, communication

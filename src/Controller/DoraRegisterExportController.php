@@ -27,8 +27,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CSV for the current tenant. Guarded by ROLE_MANAGER — export contains
  * regulated third-party data. Every download is audit-logged via
  * AuditLogger::logExport() for supervisory traceability.
- *
- * Tracks MINOR-6 in docs/DATA_REUSE_PLAN_REVIEW_ISB.md.
  */
 #[RequiresModule('nis2_dora')]
 class DoraRegisterExportController extends AbstractController
@@ -77,8 +75,6 @@ class DoraRegisterExportController extends AbstractController
      *
      * The legacy sync GET route is kept for back-compat (audit-link emails,
      * bookmarks); new UI traffic should use this dispatch endpoint.
-     *
-     * Phase 3 of the async admin-jobs rollout.
      */
     #[Route(
         path: '/dora-compliance/register-export/dispatch',

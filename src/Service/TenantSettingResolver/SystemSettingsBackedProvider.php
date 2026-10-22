@@ -8,8 +8,8 @@ use App\Entity\Tenant;
 use App\Repository\SystemSettingsRepository;
 
 /**
- * Policy-Wizard W1 — default SettingProviderInterface used until the
- * W1-A `TenantPolicySetting` entity + repository land.
+ * Policy-Wizard — default SettingProviderInterface used until a
+ * `TenantPolicySetting` entity + repository exist.
  *
  * Reads global defaults from the existing `system_settings` table (split by
  * "category.key" namespacing) and treats every tenant as having no own
@@ -21,7 +21,7 @@ use App\Repository\SystemSettingsRepository;
  * keys default to ForbiddenToRelax, which is the safe choice per §7.3 (most
  * settings).
  *
- * Once W1-A lands, swap this provider for one that hits
+ * Once that entity exists, swap this provider for one that hits
  * TenantPolicySettingRepository::findOneBy(['tenant'=>..., 'key'=>...]).
  */
 final class SystemSettingsBackedProvider implements SettingProviderInterface
@@ -43,7 +43,7 @@ final class SystemSettingsBackedProvider implements SettingProviderInterface
 
     public function getStoredValue(Tenant $tenant, string $key): mixed
     {
-        // Phase 9A / W1-A hook: tenant-specific values land here once the
+        // Hook: tenant-specific values land here once the
         // TenantPolicySetting entity is wired up. For now, no tenant has its
         // own stored value — everyone inherits the global default.
         return null;

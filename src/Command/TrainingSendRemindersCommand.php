@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Junior-ISB-Audit C3-02 (S14 Cluster C, 2026-05-23) — Awareness recurrence
+ * Awareness recurrence
  * + reminder cron.
  *
  * ISO 27001 A.6.3 expects security-awareness training to recur on a

@@ -15,7 +15,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Cross-Framework Mapping Importer (Sprint 2 / A3).
+ * Cross-Framework Mapping Importer.
  *
  * Generic importer for consultant-delivered mapping tables.
  * Accepts CSV in the following layout (RFC 4180, UTF-8, BOM tolerated):

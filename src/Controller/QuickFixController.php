@@ -86,7 +86,7 @@ class QuickFixController extends AbstractController
             $pendingFsNames = $maintenance->listPendingMigrationVersionsFromFileSystem();
             $pendingFsCount = count($pendingFsNames);
 
-            // Final clean-verdict band (QF-9): green only when no pending
+            // Final clean-verdict band: green only when no pending
             // migrations AND no entity-vs-DB drift remain.
             $cleanVerdict = $maintenance->verifyClean();
         } catch (\Throwable $e) {

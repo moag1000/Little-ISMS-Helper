@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Sprint 5 / R5 — CSV-Import-UI für Cross-Framework-Mappings.
+ * CSV-Import-UI für Cross-Framework-Mappings.
  *
  * Browser-Upload für consultant-gelieferte Mapping-CSVs.
  * Nutzt `CrossFrameworkMappingImporter` mit Dry-Run-Preview.

@@ -26,8 +26,6 @@ use Symfony\Component\Translation\LocaleSwitcher;
  *   frameworks (list<string>)  Framework codes; defaults to ['ISO27001'].
  *   asOfDate  (?string Y-m-d)  Optional point-in-time freeze for the SoA snapshot.
  *   locale    (?string)        PDF locale (e.g. 'de', 'en'). Defaults to 'de'.
- *
- * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportCertificationBundleJob implements AsyncJobInterface
 {

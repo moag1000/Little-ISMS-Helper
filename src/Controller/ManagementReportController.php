@@ -31,7 +31,7 @@ use Symfony\Component\Translation\LocaleSwitcher;
 /**
  * Management Report Controller
  *
- * Phase 7A: Provides management reporting endpoints for executive dashboards,
+ * Provides management reporting endpoints for executive dashboards,
  * risk management, BCM, compliance, audit, and asset reports.
  */
 // @no-methods-required — class-level path prefix, methods declared per action

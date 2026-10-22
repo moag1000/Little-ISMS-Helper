@@ -14,15 +14,15 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Wird vom `app:reuse:capture-snapshot`-Cron einmal täglich geschrieben
  * und ist die Datenquelle für den 12-Monats-Trend-Chart auf der
- * Portfolio-Report-Seite (Sprint 4 / R3).
+ * Portfolio-Report-Seite.
  *
  * `fteSavedTotal` ist die Ein-Zahl-KPI — pro Snapshot-Tag die aktuell
  * über Cross-Framework-Mapping-Inheritance eingesparten FTE-Tage.
  * Berechnung identisch zu `InheritanceMetricsService::fteSavedForTenant()`.
  *
  * Retention-Strategie: täglich für 90 Tage, danach kann ein externer
- * Compaction-Job auf monatliche Aggregate umstellen — für diesen
- * Sprint nicht notwendig (12 Monate × 30 Tage = 360 Zeilen pro Tenant).
+ * Compaction-Job auf monatliche Aggregate umstellen — zur Zeit
+ * nicht notwendig (12 Monate × 30 Tage = 360 Zeilen pro Tenant).
  */
 #[ORM\Entity(repositoryClass: ReuseTrendSnapshotRepository::class)]
 #[ORM\Table(name: 'reuse_trend_snapshot')]

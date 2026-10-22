@@ -28,7 +28,7 @@
     ]
 }) }}
 
-            {# Junior-ISB-Audit P-12 — 9001-bridge for 9001-background users. #}
+            {# 9001-bridge for 9001-background users. #}
             {{ _fa_norm_bridge.render({
                 from_norm: 'ISO 27001 A.5.24-27',
                 to_norm:   'ISO 9001 8.7 + 10.2',
@@ -88,7 +88,7 @@
                          level_medium: 'incident.severity.medium'|trans({}, 'incident'),
                          level_low: 'incident.severity.low'|trans({}, 'incident')
                      }|json_encode }}">
-                    {# P-19 — Form-Step-Inline-Hint controller (see edit.html.twig for full doc). #}
+                    {# Form-Step-Inline-Hint controller (see edit.html.twig for full doc). #}
                     {{ form_start(form, {'attr': {
                         'novalidate': 'novalidate',
                         'id': 'incident-form',
@@ -164,7 +164,7 @@
                     </div>
 
                     {# Detection & Reporting Section #}
-                    {# S4 P-1 Wave-2 — reportedBy slot now rendered via the canonical
+                    {# ReportedBy slot now rendered via the canonical
                        _fa_owner_picker macro (User + Person + Deputies + legacy text). #}
                     {% import '_components/_fa_owner_picker.html.twig' as _fa_owner_picker %}
                     <fieldset class="mb-4">

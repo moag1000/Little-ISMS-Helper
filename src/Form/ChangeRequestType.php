@@ -79,7 +79,7 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'required' => true,
                     'choice_translation_domain' => 'change_requests',
             ])
-            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, ) ──
             // Owned by `change_request_lifecycle`. ISO 27001 A.8.32 —
             // 4-eyes auf `approve`, `implement`, `close`. Transitions via
             // LifecycleService::transition() only.
@@ -111,7 +111,7 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'attr' => ['maxlength' => 100, 'placeholder' => 'change_request.placeholder.clause_reference'],
                 'help' => 'change_request.help.clause_reference',
             ])
-            // Junior-ISB-Audit C4-05 — Lineage to upstream artefacts
+            // Lineage to upstream artefacts
             // (AuditFinding / CorrectiveAction). ISO 27001 Cl. 10.1 —
             // continuous-improvement traceability without parsing the
             // free-text justification.
@@ -220,7 +220,7 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
     }
 
     /**
-     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.8.32 · ITIL Change Management.
+     * SectionPolicy — ISO 27001 A.8.32 · ITIL Change Management.
      * Sections: overview · details · impact_assessment · approval · implementation · verification · audit_metadata
      *
      * @return array<string, list<string>>
@@ -242,7 +242,7 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'status',
                 'clauseReference',
             ],
-            // Junior-ISB-Audit C4-05 — upstream-lineage section so the
+            // Upstream-lineage section so the
             // ISB can wire a ChangeRequest back to the AuditFinding /
             // CorrectiveAction that triggered it (ISO 27001 Cl. 10.1).
             'lineage' => [

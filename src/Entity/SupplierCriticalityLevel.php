@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Phase 8QW-5 — Tenant-erweiterbare Kritikalitätsstufen für Lieferanten.
+ * Tenant-erweiterbare Kritikalitätsstufen für Lieferanten.
  *
  * Jeder Tenant kann seine eigene Kritikalitätsskala definieren.
  * Neue Tenants bekommen 4 Default-Records (critical/high/medium/low)

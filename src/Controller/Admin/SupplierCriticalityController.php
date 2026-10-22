@@ -20,9 +20,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Phase 8QW-5 — Admin-UI für Supplier-Kritikalitätsstufen pro Tenant.
+ * Admin-UI für Supplier-Kritikalitätsstufen pro Tenant.
  *
- * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * ROLE_ADMIN configures own tenant,
  * SUPER_ADMIN any. Tenant scope resolves via
  * {@see TenantContext::resolveAdminScope()}.
  */

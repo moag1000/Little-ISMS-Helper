@@ -154,7 +154,7 @@
 </div>
 
 <script nonce="{{ csp_nonce() }}">
-    {# Emit scanning mood when the commit button is clicked — F2.12 #}
+    {# Emit scanning mood when the commit button is clicked #}
     document.addEventListener('turbo:load', function () {
         var commitBtn = document.querySelector('[data-action="click->import-progress#onCommitClick"]');
         if (commitBtn) {

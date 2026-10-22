@@ -151,7 +151,7 @@
                             </div>
                         {% endif %}
 
-                        {# Phase 1: Create Database Schema #}
+                        {# Create Database Schema #}
                         {% if not schema_created %}
                         {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
                             {% block card_header %}
@@ -194,7 +194,7 @@
                         {% endembed %}
                         {% endif %}
 
-                        {# Phase 2: Backup Restore Form (only shown after schema is created) #}
+                        {# Backup Restore Form (only shown after schema is created) #}
                         {% if schema_created %}
                         {% embed '_components/_card.html.twig' with { 'class': 'border-info mb-4' } %}
                             {% block card_header %}

@@ -12,7 +12,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / BSI 200-2 Kap. 3 (Vorgehensweise) — confirms the tenant's
+ * BSI 200-2 Kap. 3 (Vorgehensweise) — confirms the tenant's
  * `bsi.tier_filter` policy-setting matches the actual `bsiTier` of
  * generated tenant Documents.
  *

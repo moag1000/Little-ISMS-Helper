@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard;
 
 /**
- * Policy-Wizard W2-A — canonical step keys used by every step evaluator
+ * Policy-Wizard — canonical step keys used by every step evaluator
  * and by `WizardRun.step` persistence.
  *
  * Step keys mirror the §6 flow in
@@ -23,7 +23,7 @@ final class WizardStepKeys
     // -- Default 7-step flow (Mode 1 / Mode 3) -------------------------------
 
     /**
-     * W4-C — Step 0 "Bestandsaufnahme" (existing-document inventory).
+     * Step 0 "Bestandsaufnahme" (existing-document inventory).
      *
      * Lives BEFORE {@see self::STEP_WELCOME} for brownfield tenants only —
      * tenants that already have policy/programme/plan/methodology
@@ -70,7 +70,7 @@ final class WizardStepKeys
     public static function defaultFlow(): array
     {
         return [
-            // W4-C: Step 0 — only applies for brownfield tenants
+            // Step 0 — only applies for brownfield tenants
             // (BestandsaufnahmeStep::isApplicable() returns false otherwise
             // and the StepEvaluator skips it).
             self::STEP_BESTANDSAUFNAHME,

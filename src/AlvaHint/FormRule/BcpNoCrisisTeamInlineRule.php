@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — BCP form: no crisis-team assigned.
+ * Form-Step-Inline-Hint — BCP form: no crisis-team assigned.
  *
  * Fires while the user is editing a BusinessContinuityPlan and neither
  * `responseTeamMembers` (per-plan JSON struct, ISO 22301 §8.5.3) nor
@@ -19,8 +19,7 @@ use App\Entity\User;
  *
  * The check intentionally accepts ANY non-empty signal in either field
  * (mirrors the BC plan dual-source design where `responseTeamMembers`
- * is per-plan and `crisisTeams` is reusable across plans — Junior-ISB
- * audit C2-06).
+ * is per-plan and `crisisTeams` is reusable across plans).
  *
  * Pre-save heads-up only (tier `warning`).
  */

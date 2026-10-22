@@ -38,7 +38,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
     /**
      * Find active processing activities for a tenant.
      *
-     * S3 P-4: "active" in business-domain means a VVT-record currently in
+     * "active" in business-domain means a VVT-record currently in
      * production use. After the canonical 5-stage migration, this maps to
      * status='published' (legacy 'active' rows were UPDATEd in the
      * consolidated data-migration).
@@ -143,7 +143,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
 
         $total = (clone $queryBuilder)->select('COUNT(pa.id)')->getQuery()->getSingleScalarResult();
 
-        // S3 P-4: "active" dashboard counter maps to status='published'
+        // "active" dashboard counter maps to status='published'
         // after canonical 5-stage migration (legacy 'active' → 'published').
         $active = (clone $queryBuilder)
             ->andWhere('pa.status = :status')
@@ -253,7 +253,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
     }
 
     /**
-     * F32 DPA-Generator — find all ProcessingActivities that list the given
+     * DPA-Generator — find all ProcessingActivities that list the given
      * Supplier as a `processorSupplier` (Art. 28 GDPR M:N link), scoped to
      * the supplier's tenant for tenant-isolation.
      *

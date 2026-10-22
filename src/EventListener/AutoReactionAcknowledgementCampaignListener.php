@@ -16,14 +16,14 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Audit V3 C3 — Auto-Acknowledgement-Campaign.
+ * Auto-Acknowledgement-Campaign.
  *
  * Whenever a Document transitions to status='approved' AND
  * requiresAcknowledgement=true, create a PolicyAcknowledgement record
  * (status=pending) for every active user in the tenant — closing
  * ISO 27001 A.6.3 ("policy must be communicated and acknowledged").
  *
- * Audit V3 W2-C4 fix:
+ * fix:
  *   - Tenant-scoped active-user query (was: cross-tenant {@see UserRepository::findBy(['isActive'=>true])}).
  *   - Real persistence: rows of {@see PolicyAcknowledgement} with
  *     STATUS_PENDING are now created (was: counter-only, no DB writes
@@ -34,7 +34,7 @@ use Psr\Log\LoggerInterface;
  *     acknowledging.
  *
  * Notification fan-out is intentionally NOT done here — it is the
- * caller's / W2-H4's responsibility to surface pending rows via the
+ * caller's responsibility to surface pending rows via the
  * inbox UI / email reminder cron.
  *
  * Toggle: AutoReactionService::KEY_ACK_CAMPAIGN (default true).
@@ -57,7 +57,7 @@ final class AutoReactionAcknowledgementCampaignListener
         if ($document->getStatus() !== DocumentStatus::Approved->value) {
             return;
         }
-        // V3 W2-Bug2: getRequiresAcknowledgement() / getVersion() now live
+        // GetRequiresAcknowledgement() / getVersion() now live
         // on Document — drop the method_exists() defence that previously
         // short-circuited the listener silently.
         if (!$document->getRequiresAcknowledgement()) {
@@ -85,9 +85,9 @@ final class AutoReactionAcknowledgementCampaignListener
             /** @var \App\Repository\PolicyAcknowledgementRepository $repo */
             $repo = $em->getRepository(PolicyAcknowledgement::class);
 
-            // Audit V3 W2-C4: tenant-scoped active-user query.
+            // Tenant-scoped active-user query.
             //
-            // Junior-ISB-Audit C3-03 (S14, 2026-05-23) — ISO 27001 Cl. 7.3 +
+            // ISO 27001 Cl. 7.3 +
             // A.6.3: when the document carries an explicit
             // `acknowledgementAudience` selection, the campaign fan-out
             // restricts to that list. Empty selection preserves the

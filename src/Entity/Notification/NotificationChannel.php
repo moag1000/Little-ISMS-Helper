@@ -26,7 +26,7 @@ class NotificationChannel
     public const VALID_TYPES = [self::TYPE_EMAIL, self::TYPE_WEBHOOK, self::TYPE_IN_APP];
 
     /**
-     * F3 digest mode — delivery_mode values stored inside the `config` JSON field.
+     * Digest mode — delivery_mode values stored inside the `config` JSON field.
      * Only meaningful for TYPE_EMAIL channels; other channel types always use IMMEDIATE.
      */
     public const DELIVERY_MODE_IMMEDIATE    = 'immediate';
@@ -127,7 +127,7 @@ class NotificationChannel
     public function getRules(): Collection { return $this->rules; }
 
     /**
-     * F3 digest mode — reads `delivery_mode` from the JSON config.
+     * Digest mode — reads `delivery_mode` from the JSON config.
      * Defaults to `immediate` when the key is absent (backward-compatible).
      * Only valid for TYPE_EMAIL; webhook/in_app always return `immediate`.
      */
@@ -145,7 +145,7 @@ class NotificationChannel
     }
 
     /**
-     * F3 digest mode — returns true when this channel queues deliveries for batching
+     * Digest mode — returns true when this channel queues deliveries for batching
      * rather than sending immediately.
      */
     public function isDigestMode(): bool

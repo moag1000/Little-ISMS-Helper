@@ -32,7 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 /**
- * Policy-Wizard W3 — real DocumentGenerator.
+ * Policy-Wizard — real DocumentGenerator.
  *
  * Implements the §8.1-§8.7 spec from
  * `docs/plans/policy-wizard/05-architecture.md`. For every standard
@@ -52,12 +52,12 @@ use Throwable;
  *      `standard:<code>`, `topic:<key>`, `version:<n>`,
  *      `wizard-run:<id>`, plus `dora-validity:2025-01-17` for DORA
  *      templates only.
- *   8. W3-I Task 2: when the template carries `dpoSectionRequired=true`,
+ *   8. When the template carries `dpoSectionRequired=true`,
  *      auto-create a `privacy_addendum` DocumentSection (status=draft)
  *      so the §0.A privacy-section-gate can fire without a manual seed.
  *
  * Defensive checks:
- *  - W3-I Task 3 (architecture §6 Step 2): ISO 27001 top-level body
+ *  - Architecture §6 Step 2: ISO 27001 top-level body
  *    renders MUST contain the climate-change wording (Amd. 1:2024).
  *    Missing wording aborts the run with RuntimeException so the
  *    omission surfaces in tests and never ships to production.
@@ -196,7 +196,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $documentIds = [];
         $tagCache = [];
 
-        // W4-C — Step-0 Bestandsaufnahme decisions. Map every legacy
+        // Step-0 Bestandsaufnahme decisions. Map every legacy
         // document to a topic-scoped action so we can branch per template
         // (replace = supersedes link; keep = skip topic; merge = append
         // section; split = warn).
@@ -208,7 +208,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
                 ? $bestandsaufnahmeByTopic[$topic]
                 : null;
 
-            // W4-C — action='keep': user wants the legacy document to
+            // Action='keep': user wants the legacy document to
             // remain authoritative; the wizard does NOT generate a
             // replacement for this topic.
             if ($bestandsDecision !== null && $bestandsDecision['action'] === 'keep') {
@@ -235,7 +235,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             // construction.
             $body = $this->prependNormAnkerHeader($template, $body);
 
-            // W1 audit-defang gap #3 — Variable-substitution leakage
+            // audit-defang gap #3 — Variable-substitution leakage
             // detector. Pre-persist scan for raw `{{ … }}`, `{% … %}`
             // and `{# … #}` markers. Auditors will not accept generator
             // transparency in published policies (persona-review
@@ -256,7 +256,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
                 $existing,
             );
 
-            // W4-C — action='replace': new wizard output supersedes the
+            // Action='replace': new wizard output supersedes the
             // legacy Document the user explicitly marked for replacement.
             if ($bestandsDecision !== null && $bestandsDecision['action'] === 'replace') {
                 $legacy = $this->documentRepository->find($bestandsDecision['document_id']);
@@ -283,30 +283,30 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             // §8.5 — tags.
             $this->applyTags($document, $template, $run, $tagCache);
 
-            // W3-I Task 2 — DPO privacy section auto-creation.
+            // DPO privacy section auto-creation.
             // Idempotent: if a privacy_addendum section already exists
             // for this Document we skip; superseding documents get a
             // fresh section bound to the new row (the old stays linked
             // to the old Document for audit-trail integrity).
             $this->ensurePrivacyAddendumSection($document, $template);
 
-            // W6-C — GDPR section injector. After DORA extension append
+            // GDPR section injector. After DORA extension append
             // (body-level) we run the GDPR catalogue (section-level) so
             // ISO host policies grow per-§0-v2 privacy sections when the
             // tenant adopted GDPR scope. Each section carries an
-            // `approval_role` per W6-A so the DPO can sign off / reject
+            // `approval_role` so the DPO can sign off / reject
             // independently of the host CISO content.
             // Registry-driven generic dispatch (when registry wired) or
             // legacy hard-coded call (when not wired).
             $this->dispatchDocumentSectionExtensions($document, $run);
 
-            // W4-C — action='merge_into_topic': append the legacy
+            // Action='merge_into_topic': append the legacy
             // document's content as a `legacy_merge` section.
             if ($bestandsDecision !== null && $bestandsDecision['action'] === 'merge_into_topic') {
                 $this->mergeLegacySection($document, $bestandsDecision['document_id'], $tenant);
             }
 
-            // W4-C — action='split_to_topics': not auto-handled. Emit a warning;
+            // Action='split_to_topics': not auto-handled. Emit a warning;
             // DocumentSplitNeededRule surfaces a Tier-2 Alva-Hint until resolved.
             if ($bestandsDecision !== null && $bestandsDecision['action'] === 'split_to_topics') {
                 $this->logger->warning('PolicyWizard W4-C: split_to_topics requires manual handling', [
@@ -321,7 +321,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $documentIds[] = (int) $document->getId();
         }
 
-        // W6-C — emit the thin A.5.34 cross-reference host when the
+        // Emit the thin A.5.34 cross-reference host when the
         // tenant adopted both ISO 27001 and GDPR. Per §0 Decision Matrix
         // v2 row 18, ISO "shall maintain a topic-specific policy"
         // demands a document at A.5.34 even when content is satisfied
@@ -336,7 +336,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W4-C — flatten Step-0 decisions into a topic-keyed lookup. Decisions
+     * Flatten Step-0 decisions into a topic-keyed lookup. Decisions
      * carrying an explicit `target_topic` win; replace/keep decisions fall
      * back to a category-based topic (top_level / continuity / etc.) so
      * the most common case (replace ISMS-Leitlinie → top_level) just works.
@@ -401,7 +401,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W4-C — append the legacy document's content as a `legacy_merge`
+     * Append the legacy document's content as a `legacy_merge`
      * DocumentSection on the new wizard output. Idempotent on re-runs.
      */
     private function mergeLegacySection(Document $document, int $legacyDocumentId, Tenant $tenant): void
@@ -472,7 +472,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      * Topic + standard resolution. Honours Mode 2 (targeted re-run)
      * by intersecting `WizardRun.targetedTopics` against the catalogue.
      *
-     * W5-A — also applies the `bsi.tier_filter` tenant-setting:
+     * Also applies the `bsi.tier_filter` tenant-setting:
      *   • basis_only      → drop every template with bsi_tier in {standard, kern}
      *   • up_to_standard  → drop every template with bsi_tier=kern
      *   • kern_full       → no drops
@@ -571,7 +571,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
 
         $body = $this->substitute($rawBody, $variables);
 
-        // W3-I Task 3 — defensive ISO 27001 climate-change wording check.
+        // Defensive ISO 27001 climate-change wording check.
         // Architecture §6 Step 2 hardcodes climate-wording ON for ISO
         // (Amd. 1:2024 in force since Feb 2024). If the rendered body
         // is missing the phrase we throw early so the omission is loud
@@ -788,7 +788,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W4-A Task 2 — append the DORA-Erweiterung section to ISO 27001
+     * Append the DORA-Erweiterung section to ISO 27001
      * topic policies when the tenant adopted DORA scope.
      *
      * Per architecture §3 the DORA addon contributes 18 EXTENDS
@@ -797,7 +797,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      * topic with a DORA extension defined the rendered body grows a
      * `## DORA-Erweiterung (Art. X)` section, translated via the
      * `policy.iso27001.<topic>.v1.dora_extension.body` key (authored
-     * in W4-E). DORA-only templates (`standard='dora'`) are NOT
+     * in the policy translation files). DORA-only templates (`standard='dora'`) are NOT
      * extended — those are emitted as standalone Documents by the
      * 6 NEW seed and the catalogue does not target them.
      *
@@ -890,7 +890,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * Junior-ISB Wish #2 — append the NIS-2 / DORA lex specialis footer
+     * Append the NIS-2 / DORA lex specialis footer
      * to DORA-standard bodies.
      *
      * DORA Art. 1(2) + NIS-2 Erwägungsgrund 16 establish DORA as the
@@ -1018,7 +1018,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W3-I Task 3 — climate-change wording assertion for ISO 27001
+     * Climate-change wording assertion for ISO 27001
      * top-level Information Security Policy renders.
      *
      * Skipped (silently) for:
@@ -1060,7 +1060,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W1 audit-defang gap #3 — wrap the static {@see SubstitutionLeakageDetector}
+     * audit-defang gap #3 — wrap the static {@see SubstitutionLeakageDetector}
      * call so the detector failure surfaces as a structured audit-log
      * entry before the exception bubbles out of {@see runPersistent}.
      * The transactional rollback in {@see generate} ensures NOTHING
@@ -1177,7 +1177,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
                 // superseded doc carries tenant-specific edits
                 // (`hasPostGenerationEdits()`), the edited body is
                 // PRESERVED on the existing doc — the new wizard
-                // baseline forks via `supersedes` so the W7-C diff
+                // baseline forks via `supersedes` so the diff
                 // surfaces the conflict for manual reconciliation
                 // (drift indicator + audit-trail entry).
                 $next = $this->makeFreshDocument($run, $tenant, $template, $title, $body, $variables);
@@ -1447,7 +1447,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $tagsToApply[] = 'dora-validity:2025-01-17';
         }
 
-        // W4-A Task 2 — when the DORA extension has been appended to
+        // When the DORA extension has been appended to
         // an ISO body, mirror the DORA validity tag on the underlying
         // ISO Document plus an explicit `dora-extension:applied`
         // marker so the audit-export view can pivot on it.
@@ -1514,7 +1514,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W3-I Task 2 + W6-A §0.A.1 — when the PolicyTemplate flags
+     * When the PolicyTemplate flags
      * `dpoSectionRequired=true` we auto-create one DocumentSection row
      * per gated key (`privacy_addendum` by default; or every entry of
      * {@see PolicyTemplate::getDpoGatedSectionKeys()} when set).
@@ -1522,7 +1522,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      * version (supersedes path) gets its own fresh section; the old
      * section stays bound to the old Document.
      *
-     * W6-A §0.A.2 — every gated section is created with `approvalRole`
+     * every gated section is created with `approvalRole`
      * pre-set (default `dpo`). The role MAY be overridden per-key via
      * the template's `requiredVariables` block under the
      * `dpo_section_role_overrides` namespace; the resolver in
@@ -1540,15 +1540,15 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             return;
         }
 
-        // W6-A §0.A.1 — explicit gated-key list wins over the legacy
-        // single-key default. Empty / null → fall back to the W3-I
+        // explicit gated-key list wins over the legacy
+        // single-key default. Empty / null → fall back to the
         // single-key behaviour for backwards compatibility.
         $gatedKeys = $template->getDpoGatedSectionKeys();
         if (!is_array($gatedKeys) || $gatedKeys === []) {
             $gatedKeys = ['privacy_addendum'];
         }
 
-        // W6-A §0.A.2 — per-key approval-role override map authored on
+        // per-key approval-role override map authored on
         // the template. Default per spec is `dpo` so the
         // privacy_section_gate fires; tests/seeds may set role=`joint`
         // or `ciso` per section.
@@ -1568,7 +1568,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W6-A §0.A.2 — pull per-key approvalRole overrides out of the
+     * pull per-key approvalRole overrides out of the
      * template's `requiredVariables` block (when authored). Authors can
      * declare e.g.
      *   {"key": "dpo_section_role_overrides",
@@ -1609,7 +1609,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W6-A §0.A.2 + §0.A.6 — create one gated section row for the host
+     * Create one gated section row for the host
      * Document. Idempotent: when a row with the same (document, key)
      * already exists we skip and leave the existing approval state as
      * is. Defaults to `approval_role=dpo` so the privacy_section_gate
@@ -1640,7 +1640,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W6-C — thin A.5.34 cross-reference host emission.
+     * Thin A.5.34 cross-reference host emission.
      *
      * Per §0 Decision Matrix v2 row 18, ISO 27001 A.5.34 demands a
      * topic-specific policy at A.5.34 even when the privacy content
@@ -1659,7 +1659,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      *    + `wizard-run:<id>` so the audit-export view can pivot on it.
      *
      * Body comes from the `policy.iso.iso_a534_thin_host.v1.body`
-     * translation key (W6-F authors the full text). Until then the
+     * translation key. While that key is untranslated the
      * translator returns the key verbatim and we wrap it in a
      * "_(authoring pending)_" stub so the generated docs stay
      * auditor-presentable.
@@ -1698,7 +1698,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $bodyKey = 'policy.iso.iso_a534_thin_host.v1.body';
         $body = $this->resolvePolicyTranslation($bodyKey, 'iso27001');
         if ($body === $bodyKey) {
-            // Translation not yet authored (W6-F deliverable). Emit a
+            // Translation not yet authored. Emit a
             // stub body listing the 5 standalone privacy docs as
             // cross-references so the host is still meaningful.
             $body = $this->buildThinA534HostStub($bodyKey);

@@ -29,13 +29,12 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Audit V3 C7 — Generic Comment Controller.
+ * Generic Comment Controller.
  *
  * Persists comments attached to any ISMS entity via (entity_type, entity_id).
  * Whitelist-driven entity-type validation prevents arbitrary polymorphic abuse.
  *
- * Audit V4 LB-9 (2026-05-10): adds entity-existence + tenant-scope verification
- * before persist. Without this, a Tenant-A user could persist a Comment row that
+ * Verifies entity existence + tenant scope before persist. Without this, a Tenant-A user could persist a Comment row that
  * carries Tenant-A's tenant_id but `entity_id` pointing at a Tenant-B resource —
  * breaking ISO 27001 A.5.10 / A.8.2 information access control.
  */
@@ -54,7 +53,7 @@ class CommentController extends AbstractController
         'Control' => Control::class,
         'CorrectiveAction' => CorrectiveAction::class,
         'DataSubjectRequest' => DataSubjectRequest::class,
-        // V3 W3-Aurora: Comment-Thread adoption widened to GDPR-show-pages.
+        // Comment-Thread adoption widened to GDPR-show-pages.
         'DataBreach' => DataBreach::class,
         'DataProtectionImpactAssessment' => DataProtectionImpactAssessment::class,
     ];

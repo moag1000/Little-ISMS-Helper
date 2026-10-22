@@ -245,10 +245,9 @@ class Risk
 
     /**
      * Risk Owner (ISO 27001:2022 - A.5.1 Policies for information security)
-     * Person responsible for managing this risk
-     * Phase 6F-B: Changed from string to User entity reference
+     * Person responsible for managing this risk.
      *
-     * Junior-ISB-Audit-2026-05-22 K-05: NotNull replaced by entity-level
+     * Required via the entity-level
      * Callback validateOwnerEitherOr — either riskOwner (User) OR
      * riskOwnerPerson (Person from master data) is required. The DB column
      * was already nullable (Version20251113140643 created it as DEFAULT NULL),
@@ -258,7 +257,7 @@ class Risk
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'risk_owner_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
-    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: PII — mirror FieldVisibilityResolver Risk.owner
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // PII — mirror FieldVisibilityResolver Risk.owner
     #[MaxDepth(1)]
     // Either-or slot: validateOwnerEitherOr() (Entity callback) enforces
     // "at least one of riskOwner / riskOwnerPerson". A blanket NotNull would
@@ -305,7 +304,7 @@ class Risk
     private ?string $acceptanceJustification = null;
 
     /**
-     * Risk Acceptance Expiry (ISO 27001 Cl. 8.3 — Audit-V3 LB-7)
+     * Risk Acceptance Expiry (ISO 27001 Cl. 8.3)
      *
      * Date until which the risk acceptance is valid. After this date the
      * acceptance must be re-evaluated by the risk owner. Closing the
@@ -348,7 +347,7 @@ class Risk
     private ?string $decisionRationale = null;
 
     /**
-     * User who approved the risk treatment decision (replaces plain-text PT-F01 vector)
+     * User who approved the risk treatment decision (replaces plain-text PT-vector)
      * CVSS 9.1 fix: EntityType instead of free-text field.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -1240,11 +1239,11 @@ class Risk
     }
 
     // -------------------------------------------------------------------------
-    // Entity-level validators (Junior-ISB-Audit-2026-05-22)
+    // Entity-level validators
     // -------------------------------------------------------------------------
 
     /**
-     * Junior-ISB-Audit-2026-05-22 K-05: Owner Either-Or — at least one of
+     * Owner Either-Or — at least one of
      * riskOwner (User from system login) or riskOwnerPerson (Person from
      * master data) must be set. Replaces the bare Assert\NotNull on the
      * riskOwner field which blocked all Person-only assignments even though
@@ -1261,7 +1260,7 @@ class Risk
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 M-02: Subject required — ISO 27001
+     * Subject required — ISO 27001
      * Cl. 6.1.2 c demands every risk reference at least one of
      * asset / person / location / supplier. A risk "in general" without a
      * subject is a textbook Major-NC at external audit. The FormType
@@ -1283,7 +1282,7 @@ class Risk
         }
     }
 
-    // Junior-ISB-Audit-2026-05-22 S-02: ISO 27001 Cl. 6.1.3 a-b Treatment-Plan-Pflicht
+    // ISO 27001 Cl. 6.1.3 a-b Treatment-Plan-Pflicht
     /**
      * Once a Risk has left the initial draft-like state (Identified), the
      * organisation is required by ISO 27001 Cl. 6.1.3 a-b to have selected
@@ -1368,7 +1367,7 @@ class Risk
         return $this;
     }
 
-    // ── Sprint 7-A: DORA ICT-Risk fields (gated 'nis2_dora' module) ──────────
+    // ── DORA ICT-Risk fields (gated 'nis2_dora' module) ──────────
 
     /**
      * ICT risk category (DORA Art. 6(8)).
@@ -1454,17 +1453,17 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     private bool $lessonsLearnedDocumented = false;
 
-    // ── F46 Quantitative Risk fields (module: risk_quant) ──────────────────
+    // ── Quantitative Risk fields (module: risk_quant) ──────────────────
 
     /**
      * Single Loss Expectancy — estimated monetary damage per incident occurrence (€).
-     * F46 ALE model: ALE = SLE × ARO.
+     * ALE model: ALE = SLE × ARO.
      * Nullable — existing risks without quantitative data are unaffected.
      * Module-gate: risk_quant.
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: monetary — mirror FieldVisibilityResolver Risk.sle
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // Monetary — mirror FieldVisibilityResolver Risk.sle
     #[Assert\PositiveOrZero(message: 'risk.validation.sle_positive_or_zero')]
     private ?int $singleLossExpectancy = null;
 
@@ -1475,7 +1474,7 @@ class Risk
      */
     #[ORM\Column(type: 'decimal', precision: 8, scale: 4, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: monetary — mirror FieldVisibilityResolver Risk.aro
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // Monetary — mirror FieldVisibilityResolver Risk.aro
     #[Assert\PositiveOrZero(message: 'risk.validation.aro_positive_or_zero')]
     private ?string $annualRateOfOccurrence = null;
 
@@ -1504,12 +1503,12 @@ class Risk
     }
 
     /**
-     * Annual Loss Expectancy — computed from SLE × ARO (F46 ALE model).
+     * Annual Loss Expectancy — computed from SLE × ARO (ALE model).
      * Returns null when either SLE or ARO is not set (module: risk_quant).
      * ISO 27005 / NIST SP 800-30 standard monetary risk expression.
      */
     #[Groups(['risk:read'])]
-    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: monetary — mirror FieldVisibilityResolver Risk.ale
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // Monetary — mirror FieldVisibilityResolver Risk.ale
     public function getAnnualLossExpectancy(): ?int
     {
         if ($this->singleLossExpectancy === null || $this->annualRateOfOccurrence === null) {
@@ -1859,7 +1858,7 @@ class Risk
     }
 
     /**
-     * V3 W2-FV-5 — audit-trail: when was this risk last reassessed in
+     * Audit-trail: when was this risk last reassessed in
      * direct response to an incident (and which incident triggered it)?
      * Set by IncidentController::reassessLinkedRisk() so an auditor can
      * verify "Risk-Update was incident-driven" without grep-ing the audit

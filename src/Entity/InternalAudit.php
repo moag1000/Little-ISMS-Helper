@@ -150,7 +150,7 @@ class InternalAudit
     private ?ComplianceFramework $scopedFramework = null;
 
     /**
-     * Sprint 3 / B4 — Additional frameworks covered by the same audit.
+     * Additional frameworks covered by the same audit.
      * Real-world internal audits often verify 27001 + NIS2 + DORA in one
      * pass; a single `scoped_framework_id` cannot express that. This M:M
      * is additive: the primary framework stays in `complianceFramework`
@@ -182,7 +182,7 @@ class InternalAudit
     private ?string $auditedDepartments = null;
 
     /**
-     * S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d).
+     * Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d).
      *
      * Lifecycle:
      *   planned → conducted → reported → approved → closed
@@ -208,7 +208,7 @@ class InternalAudit
     private int $lockVersion = 0;
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+     * @deprecated since v3.6 — Doppelpflege-Deprecation —
      * use AuditFinding entity (structuredFindings collection) instead.
      * Legacy data preserved for read-only display. Closes data-reuse violation
      * per ISO 27001 Cl. 9.2 — structured audit-findings with traceability to CAPAs.
@@ -226,7 +226,7 @@ class InternalAudit
     private ?string $observations = null;
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+     * @deprecated since v3.6 — Doppelpflege-Deprecation —
      * use AuditFinding entity (structuredFindings collection) instead.
      * Legacy data preserved for read-only display. Closes data-reuse violation
      * per ISO 27001 Cl. 9.2 — structured audit-findings with traceability to CAPAs.
@@ -236,7 +236,7 @@ class InternalAudit
     private ?string $recommendations = null;
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+     * @deprecated since v3.6 — Doppelpflege-Deprecation —
      * use AuditFinding entity (structuredFindings collection) instead.
      * Legacy data preserved for read-only display. Closes data-reuse violation
      * per ISO 27001 Cl. 9.2 — structured audit-findings with traceability to CAPAs.
@@ -262,7 +262,7 @@ class InternalAudit
     private ?Tenant $tenant = null;
 
     /**
-     * Phase 9.P2.4 — Konzern-Audit-Programm.
+     * Konzern-Audit-Programm.
      *
      * parentAudit: when the Holding-CISO runs "Derive audits for
      * subsidiaries" on a program audit, the generated Tochter-audits
@@ -285,7 +285,7 @@ class InternalAudit
     private Collection $derivedAudits;
 
     /**
-     * H-01: Structured findings (ISO 27001 Clause 10.1). Replaces free-text `findings`.
+     * Structured findings (ISO 27001 Clause 10.1). Replaces free-text `findings`.
      *
      * @var Collection<int, AuditFinding>
      */
@@ -293,7 +293,7 @@ class InternalAudit
     private Collection $structuredFindings;
 
     // ==========================================================================
-    // S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d)
+    // Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d)
     // ==========================================================================
 
     /**
@@ -576,7 +576,7 @@ public function __construct()
     }
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity
+     * @deprecated since v3.6 — use AuditFinding entity
      * via getStructuredFindings(). Kept for legacy read-only display.
      */
     public function getFindings(): ?string
@@ -585,7 +585,7 @@ public function __construct()
     }
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity
+     * @deprecated since v3.6 — use AuditFinding entity
      * via addStructuredFinding(). Kept for legacy backfill paths only.
      */
     public function setFindings(?string $findings): static
@@ -617,7 +617,7 @@ public function __construct()
     }
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity
+     * @deprecated since v3.6 — use AuditFinding entity
      * (recommendations attached per-finding). Kept for legacy read-only display.
      */
     public function getRecommendations(): ?string
@@ -626,7 +626,7 @@ public function __construct()
     }
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity.
+     * @deprecated since v3.6 — use AuditFinding entity.
      * Kept for legacy backfill paths only.
      */
     public function setRecommendations(?string $recommendations): static
@@ -636,7 +636,7 @@ public function __construct()
     }
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: conclusion now derived
+     * @deprecated since v3.6 — conclusion now derived
      * from AuditFinding rollup. Kept for legacy read-only display.
      */
     public function getConclusion(): ?string
@@ -645,7 +645,7 @@ public function __construct()
     }
 
     /**
-     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity.
+     * @deprecated since v3.6 — use AuditFinding entity.
      * Kept for legacy backfill paths only.
      */
     public function setConclusion(?string $conclusion): static
@@ -831,7 +831,7 @@ public function __construct()
     }
 
     // ==========================================================================
-    // S3 P0-26 — Approval-Workflow getters/setters + helpers
+    // Approval-Workflow getters/setters + helpers
     // ==========================================================================
 
     public function getReportedBy(): ?User

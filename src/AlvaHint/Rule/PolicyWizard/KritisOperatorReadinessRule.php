@@ -12,7 +12,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\TenantPolicySettingRepository;
 
 /**
- * Policy-Wizard W5-E3 — Tier-1 KRITIS-Operator readiness hint.
+ * Policy-Wizard — Tier-1 KRITIS-Operator readiness hint.
  *
  * Fires on a Tenant flagged as KRITIS-Operator (tenant-policy-setting
  * `org.is_kritis_operator` = true) when no approved/published

@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
 
 /**
- * fa-toast — Aurora Toast Notification Stack-Manager (V3 W3-UX-Toast)
+ * fa-toast — Aurora Toast Notification Stack-Manager
  *
  * Stack-managed toast container. Renders dynamically created toasts and
  * handles auto-dismiss, persistence, animations, and a11y.

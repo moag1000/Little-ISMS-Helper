@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / ISO 22301 Cl. 5.2 — confirms the tenant has an approved
+ * ISO 22301 Cl. 5.2 — confirms the tenant has an approved
  * Top-Level Business Continuity Policy (Notfallleitlinie).
  *
  * A document qualifies when ALL of the following hold:

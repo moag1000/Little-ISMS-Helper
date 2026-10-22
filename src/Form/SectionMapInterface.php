@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 /**
- * SectionMapInterface — S4 Foundation P-2 SectionPolicy
+ * SectionMapInterface — SectionPolicy
  *
  * Form types implementing this interface declare an explicit field-to-section
  * mapping. The `_auto_form.html.twig` template uses this map to render fields

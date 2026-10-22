@@ -4,7 +4,7 @@ import { faT } from '../js/fa-i18n.js';
 /**
  * Report Designer Controller
  *
- * Phase 7C: Handles drag & drop widget placement, saving, and configuration
+ * Handles drag & drop widget placement, saving, and configuration
  * for the custom report builder.
  */
 export default class extends Controller {

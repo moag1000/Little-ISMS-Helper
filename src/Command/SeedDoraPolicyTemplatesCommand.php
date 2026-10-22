@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard W4-A — seed the 6 NEW DORA PolicyTemplate rows.
+ * Policy-Wizard — seed the 6 NEW DORA PolicyTemplate rows.
  *
  * Per `docs/plans/policy-wizard/03-dora-input.md` §10 cross-mapping
  * the DORA addon contributes 6 NEW documents on top of the ISO 27001
@@ -54,7 +54,7 @@ final class SeedDoraPolicyTemplatesCommand extends Command
     /**
      * Canonical 6-row catalogue. Body / title translation keys follow
      * the §8.7 versioning scheme (`policy.dora.<topic>.v1.body`); real
-     * translation content is authored in W4-E.
+     * translation content lives in the policy translation files.
      *
      * @var list<array{
      *     key: string,

@@ -11,7 +11,7 @@ use App\Entity\User;
 use DateTimeImmutable;
 
 /**
- * S17 B4 — Tier-2 hint: ISO 27001 Cl. 10.2 b) requires the cause of every
+ * Tier-2 hint: ISO 27001 Cl. 10.2 b) requires the cause of every
  * Nonconformity to be evaluated. Fires when a major/minor NC is older than
  * 30 days and the root-cause summary field is still empty.
  */

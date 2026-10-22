@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * F30 — Voter for DORA Register of Information (RoI).
+ * Voter for DORA Register of Information (RoI).
  *
  * Permissions:
  *  - VIEW          ROLE_MANAGER (read submission list + index page)

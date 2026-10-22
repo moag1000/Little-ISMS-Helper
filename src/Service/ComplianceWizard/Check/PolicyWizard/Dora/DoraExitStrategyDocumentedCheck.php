@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W4-D / DORA Art. 28.8 — confirms that every ICT-critical supplier
+ * DORA Art. 28.8 — confirms that every ICT-critical supplier
  * has a documented exit strategy.
  *
  * The {@see \App\Entity\Supplier} entity already carries the DORA

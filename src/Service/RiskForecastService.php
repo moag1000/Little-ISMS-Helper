@@ -17,7 +17,7 @@ use DateTimeInterface;
 /**
  * Risk Forecast Service
  *
- * Phase 7B: Predictive analytics for risk management.
+ * Predictive analytics for risk management.
  * Uses statistical methods to forecast risk trends and identify patterns.
  */
 class RiskForecastService

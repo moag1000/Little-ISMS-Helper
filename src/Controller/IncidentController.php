@@ -246,7 +246,7 @@ class IncidentController extends AbstractController
         $incident->setTenant($tenant);
         $incident->setIncidentNumber($this->incidentRepository->getNextIncidentNumber($tenant));
 
-        // Pre-fill from Risk (Junior-Finding #8 / Data-Reuse: one-click derivation)
+        // Pre-fill from Risk (Data-Reuse: one-click derivation)
         $fromRiskId = $request->query->get('fromRisk');
         if ($fromRiskId !== null && $fromRiskId !== '') {
             $sourceRisk = $this->riskRepository->find($fromRiskId);
@@ -295,7 +295,7 @@ class IncidentController extends AbstractController
             }
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $this->addFlash('success', $this->translator->trans('incident.success.reported', [], 'messages'));
 
@@ -419,17 +419,17 @@ class IncidentController extends AbstractController
             }
         }
 
-        // V3 W3-Aurora: Comment-Thread (C7) — load thread for this Incident.
+        // Comment-Thread (C7) — load thread for this Incident.
         $comments = [];
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($this->commentRepository !== null && $tenant !== null && $incident->getId() !== null) {
             $comments = $this->commentRepository->findThread($tenant, 'Incident', $incident->getId());
         }
 
-        // F16: structured risk cross-links
+        // Structured risk cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository->findByIncident($incident);
 
-        // Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — structured CAPAs auto-materialised
+        // Structured CAPAs auto-materialised
         // from this Incident (per ADR 2026-05-23). Used to show "Legacy"-alert near the
         // freetext field + link the analyst to the structured record.
         $linkedCorrectiveActions = $this->entityManager
@@ -445,11 +445,11 @@ class IncidentController extends AbstractController
             // Data-Reuse: one-click link matrix
             'linkedRisks' => $incident->getRealizedRisks(),
             'linkedVulnerabilities' => $incident->getRelatedVulnerabilities(),
-            // F16: structured risk cross-links
+            // Structured risk cross-links
             'riskIncidentLinks' => $riskIncidentLinks,
-            // V3 W3-Aurora: Comments thread
+            // Comments thread
             'comments' => $comments,
-            // Junior-ISB-Audit-2026-05-22 M-07 Phase-1: structured CAPAs for this incident
+            // Structured CAPAs for this incident
             'linkedCorrectiveActions' => $linkedCorrectiveActions,
         ]);
     }
@@ -472,7 +472,7 @@ class IncidentController extends AbstractController
             }
 
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
-            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+            // (postUpdate event) — no explicit service call required.
 
             $currentUser = $this->security->getUser();
             if ($currentUser instanceof User) {
@@ -487,7 +487,7 @@ class IncidentController extends AbstractController
                         ) ?: sprintf('%d related risk(s) triggered for re-evaluation', $triggeredCount));
                     }
 
-                    // F16: suggest risk review for cross-linked risks
+                    // Suggest risk review for cross-linked risks
                     $linkedRisksToReview = $this->riskIncidentLinkService->suggestRiskUpdateOnIncidentClose($incident);
                     if (!empty($linkedRisksToReview)) {
                         $this->addFlash('info', $this->translator->trans(
@@ -533,7 +533,7 @@ class IncidentController extends AbstractController
         ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
     /**
-     * F16: Link a Risk to this Incident.
+     * Link a Risk to this Incident.
      */
     #[Route('/incident/{id}/link-risk', name: 'app_incident_link_risk', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -569,7 +569,7 @@ class IncidentController extends AbstractController
     }
 
     /**
-     * F16: Unlink a Risk from this Incident by link ID.
+     * Unlink a Risk from this Incident by link ID.
      */
     #[Route('/incident/{id}/unlink-risk/{linkId}', name: 'app_incident_unlink_risk', requirements: ['id' => '\d+', 'linkId' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -746,7 +746,7 @@ class IncidentController extends AbstractController
         return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
     }
     /**
-     * V3 W2-FV-5 — Reassess a risk in direct response to an incident.
+     * Reassess a risk in direct response to an incident.
      *
      * Stamps the audit-trail (Risk.lastIncidentReassessmentAt /
      * .lastIncidentReassessmentIncident) and forwards the risk-owner to

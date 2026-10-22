@@ -11,7 +11,7 @@ use App\Template\TemplateProviderInterface;
 /**
  * BSI IT-Grundschutz elementare Gefährdungen G0.1 - G0.47.
  *
- * Foundation P-14. The canonical "elementare Gefährdungen" catalog from the
+ * The canonical "elementare Gefährdungen" catalog from the
  * BSI IT-Grundschutz-Kompendium. Module-gated under `bsi_it_grundschutz`
  * (mapped to the generic `risks` module here as fallback because the BSI
  * module key is not yet present in modules.yaml; the gating is enforced by

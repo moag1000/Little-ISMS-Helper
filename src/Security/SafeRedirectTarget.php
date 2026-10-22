@@ -7,7 +7,7 @@ namespace App\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * The one rule for post-login / post-re-auth redirect targets (#1059 m-4/m-7):
+ * The one rule for post-login / post-re-auth redirect targets:
  * a same-origin relative path — exactly one leading slash, no `//` or `/\`
  * prefix (browsers treat both as protocol-relative), no control characters.
  * With $request, an absolute http(s) URL on the request's own scheme + host

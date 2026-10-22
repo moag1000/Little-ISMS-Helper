@@ -22,9 +22,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Phase 8L.F2 — Admin-UI für Incident-SLAs pro Severity.
+ * Admin-UI für Incident-SLAs pro Severity.
  *
- * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * ROLE_ADMIN configures own tenant,
  * SUPER_ADMIN any. Tenant scope resolves via
  * {@see TenantContext::resolveAdminScope()} (optional `tenant_id`
  * POST param for SUPER_ADMIN cross-tenant).

@@ -13,7 +13,7 @@
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container-fluid py-4 fa-aurora-surface">
-    {# Junior-ISB Wish #3 — prominent progress-bar above the step
+    {# Prominent progress-bar above the step
        title. Controller injects current_step_index (0-based) and
        total_steps_in_mode. Defensive defaults keep the bar from
        crashing when extras are missing (e.g. legacy step routes). #}
@@ -50,7 +50,7 @@
 {% endif %}
 
 
-    {# Junior-ISB Wish #4 — Cancel-State-Hint. Reassures the
+    {# Cancel-State-Hint. Reassures the
        implementer that the run state is auto-saved and that
        Cancel only discards the current run (resumable later). #}
     <p class="small text-muted mb-3">
@@ -95,7 +95,7 @@
         <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_step') }}">
 
         {# Step-key → template-filename mapping. Default 7-step flow plus
-           Mode 2 (targeted re-run) sub-flow templates wired in W3-J. #}
+           Mode 2 (targeted re-run) sub-flow templates wired in. #}
         {% set template_map = {
             'bestandsaufnahme': 'policy_wizard/step/_bestandsaufnahme.html.twig',
             'welcome': 'policy_wizard/step/_welcome_standards.html.twig',

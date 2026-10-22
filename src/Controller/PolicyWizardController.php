@@ -35,7 +35,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Policy-Wizard Controller — Phase 4-C / Sprint W2-B.
+ * Policy-Wizard Controller
  *
  * HTTP surface for the seven-step Policy-Wizard. Class-level voter check
  * gates everything behind {@see PolicyWizardVoter::RUN_FULL}; per-action
@@ -183,12 +183,12 @@ final class PolicyWizardController extends AbstractController
         $isTerminal = $this->stepEvaluator->isTerminalStep($run, $step);
         $hierarchyConflicts = $isTerminal ? $this->orchestrator->hierarchyConflicts($run) : [];
 
-        // Welcome step (W4-B) ships the IndustryPresetBundle picker.
+        // Welcome step ships the IndustryPresetBundle picker.
         $industryPresetBundles = $step === WizardStepKeys::STEP_WELCOME
             ? $this->presetBundleRepository->findActiveBundles()
             : [];
 
-        // W4-C — Step 0 Bestandsaufnahme inventory + topic suggestions.
+        // Step 0 Bestandsaufnahme inventory + topic suggestions.
         $bestandsaufnahmePayload = $step === WizardStepKeys::STEP_BESTANDSAUFNAHME
             ? $this->buildBestandsaufnahmePayload($run)
             : ['inventory_rows' => [], 'topic_suggestions_by_doc' => [], 'available_topics' => [], 'persisted_decisions' => []];
@@ -484,7 +484,7 @@ final class PolicyWizardController extends AbstractController
     }
 
     /**
-     * W4-B Industry-Preset preview — returns the bundle's metadata as
+     * Industry-Preset preview — returns the bundle's metadata as
      * JSON so the Stimulus controller can pre-tick checkboxes and
      * surface an estimated document count.
      */
@@ -595,7 +595,7 @@ final class PolicyWizardController extends AbstractController
     }
 
     /**
-     * W4-C — assemble the per-row inventory + topic-suggestion bundle the
+     * Assemble the per-row inventory + topic-suggestion bundle the
      * Step-0 Bestandsaufnahme template renders. Returns empty arrays when
      * the run has no tenant (defensive).
      *
@@ -607,7 +607,7 @@ final class PolicyWizardController extends AbstractController
      */
     private function buildBestandsaufnahmePayload(WizardRun $run): array
     {
-        // W4-C — pre-fill: a returning user must see the decisions they already
+        // Pre-fill: a returning user must see the decisions they already
         // made. Decisions are persisted in the run inputs under the step slot
         // (the same shape DocumentGenerator reads at generation time). Without
         // this the inventory always re-rendered with fresh defaults and the
@@ -729,7 +729,7 @@ final class PolicyWizardController extends AbstractController
             $approvers = $this->userRepository->findApproversInTenant($tenant);
             $extras['approver_user_choices'] = $approvers;
 
-            // Task #126 — per-template recommended roles + per-approver
+            // Per-template recommended roles + per-approver
             // role-match map. Wizard renders a small badge per
             // (template, approver-pick) row so the user gets immediate
             // visual feedback ("strict_match" green / "weak_match" amber
@@ -913,7 +913,7 @@ final class PolicyWizardController extends AbstractController
         // Estimate document count from selected standards (Step 1) +
         // pre-selected presets — same heuristic the welcome-step
         // preview uses: ~4 docs per standard. Where the orchestrator
-        // already knows precise template count we'd swap this in W4-D.
+        // already knows precise template count we'd swap this in.
         $standards = $run->getStandardsAdopted() ?? [];
         $expectedDocumentCount = max(0, count($standards) * 4);
 
@@ -1307,7 +1307,7 @@ final class PolicyWizardController extends AbstractController
     }
 
     /**
-     * Junior-ISB Wish #3 — compute the per-mode step index + total so
+     * Compute the per-mode step index + total so
      * the step.html.twig progress-bar can render "Schritt X von Y".
      *
      * Targeted re-runs follow {@see WizardStepKeys::targetedFlow()};

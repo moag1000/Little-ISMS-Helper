@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * F7 Field-Level RBAC resolver.
+ * Field-Level RBAC resolver.
  *
  * Holds a declarative MAP of sensitive fields → minimum required role.
  * All internal roles (ROLE_MANAGER and above) see all fields.
@@ -22,9 +22,9 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * Risk::owner          → ROLE_MANAGER  (identity of risk owner — User ref)
  * Risk::ownerPerson    → ROLE_MANAGER  (identity of risk owner — Person ref)
  * Risk::ownerDeputies  → ROLE_MANAGER  (deputy Person list — reveals names)
- * Risk::sle            → ROLE_MANAGER  (Single Loss Expectancy €, F46 ALE)
- * Risk::aro            → ROLE_MANAGER  (Annual Rate of Occurrence, F46 ALE)
- * Risk::ale            → ROLE_MANAGER  (computed ALE = SLE×ARO, F46)
+ * Risk::sle            → ROLE_MANAGER  (Single Loss Expectancy €, ALE)
+ * Risk::aro            → ROLE_MANAGER  (Annual Rate of Occurrence, ALE)
+ * Risk::ale            → ROLE_MANAGER  (computed ALE = SLE×ARO)
  *
  * Threshold rationale: ROLE_AUDITOR and ROLE_KONZERN_AUDITOR both inherit
  * only ROLE_USER (not ROLE_MANAGER) per security.yaml role_hierarchy.
@@ -62,9 +62,9 @@ final class FieldVisibilityResolver
             'owner'         => 'ROLE_MANAGER', // riskOwner (User entity ref) — reveals person identity
             'ownerPerson'   => 'ROLE_MANAGER', // riskOwnerPerson (Person ref) — reveals person identity
             'ownerDeputies' => 'ROLE_MANAGER', // riskOwnerDeputyPersons — deputy list, same PII concern
-            'sle'           => 'ROLE_MANAGER', // singleLossExpectancy €  — F46 monetary field
-            'aro'           => 'ROLE_MANAGER', // annualRateOfOccurrence  — F46 monetary field
-            'ale'           => 'ROLE_MANAGER', // annualLossExpectancy (computed SLE×ARO) — F46
+            'sle'           => 'ROLE_MANAGER', // singleLossExpectancy €  — monetary field
+            'aro'           => 'ROLE_MANAGER', // annualRateOfOccurrence  — monetary field
+            'ale'           => 'ROLE_MANAGER', // annualLossExpectancy (computed SLE×ARO)
         ],
     ];
 

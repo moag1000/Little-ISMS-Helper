@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 Form-Step-Inline-Hint — Incident form: high-severity without root cause.
+ * Form-Step-Inline-Hint — Incident form: high-severity without root cause.
  *
  * Fires while the user is editing an Incident with severity `high` or
  * `critical` whose status is being moved into `resolved` or `closed`

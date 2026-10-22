@@ -8,7 +8,7 @@ use App\Entity\Document;
 use App\Entity\DocumentSection;
 
 /**
- * Policy-Wizard W7-C — DTO emitted by {@see PolicyDiffService::diffDocuments}.
+ * Policy-Wizard — DTO emitted by {@see PolicyDiffService::diffDocuments}.
  *
  * Doc-level + variable-level only — explicit "NOT character-level" per the
  * ISB practitioner review (`docs/plans/policy-wizard/persona-reviews/05-isb-
@@ -50,7 +50,6 @@ final readonly class PolicyDiff
      * @param list<DocumentSection> $sectionsRemoved
      * @param list<array{section: DocumentSection, oldHash: ?string, newHash: ?string}> $sectionsModified
      * @param array{totalChanges: int, severity: string} $summaryStats
-     * @param bool $policyBodyDrift
      *     True when the `previous` document carried tenant-specific
      *     post-generation edits to its `policyBody` — re-generation
      *     preserved the edited body on `previous` and forked a new

@@ -7,7 +7,7 @@ namespace App\Service\Clone;
 use App\Entity\Tenant;
 
 /**
- * Shared contract for entity-cloning services (C4-C1 "Klon-Funktionen").
+ * Shared contract for entity-cloning services.
  *
  * Implementations clone a single entity inside a tenant scope and persist the
  * clone (caller is expected to flush). The clone:

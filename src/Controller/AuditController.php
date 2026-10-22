@@ -204,7 +204,7 @@ class AuditController extends AbstractController
         $totalAuditLogs = count($auditLogs);
         $auditLogs = array_slice($auditLogs, 0, 10);
 
-        // C4-B4 — cross-framework coverage analysis for multi-framework audits
+        // Cross-framework coverage analysis for multi-framework audits
         $coverageReport = $this->crossFrameworkCoverage->buildReport($internalAudit);
 
         return $this->render('audit/show.html.twig', [
@@ -249,7 +249,7 @@ class AuditController extends AbstractController
         ], new Response(status: $status));
     }
     /**
-     * Sprint 3 / C1 — Clone an existing audit into a new planned audit.
+     * Clone an existing audit into a new planned audit.
      * Shallow clone: title/scope/objectives/frameworks/team copied,
      * findings and reports intentionally not copied (audit history
      * must stay intact).
@@ -396,7 +396,7 @@ class AuditController extends AbstractController
         return $this->redirectToRoute('app_audit_index');
     }
     // ==========================================================================
-    // S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d)
+    // Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d)
     // ==========================================================================
 
     /**

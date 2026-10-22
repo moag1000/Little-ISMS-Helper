@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// Junior-ISB-Audit C4-05 — Lineage FKs from ChangeRequest back to the
+// Lineage FKs from ChangeRequest back to the
 // AuditFinding / CorrectiveAction that triggered it (ISO 27001 Cl. 10.1).
 
 /**
@@ -291,7 +291,7 @@ class ChangeRequest
     private ?string $closureNotes = null;
 
     /**
-     * Junior-ISB-Audit C4-05 — Lineage to upstream AuditFinding (nullable).
+     * Lineage to upstream AuditFinding (nullable).
      *
      * Allows reporting "which change requests originated from audit
      * findings?" without parsing free-text justification — ISO 27001
@@ -303,7 +303,7 @@ class ChangeRequest
     private ?AuditFinding $relatedFinding = null;
 
     /**
-     * Junior-ISB-Audit C4-05 — Lineage to upstream CorrectiveAction (nullable).
+     * Lineage to upstream CorrectiveAction (nullable).
      *
      * When a CAPA's remediation requires an ISMS change (policy/scope/
      * technology) the change-request is materialised here. The link
@@ -785,7 +785,7 @@ class ChangeRequest
     }
 
     /**
-     * Junior-ISB-Audit C4-05 — upstream AuditFinding (nullable).
+     * Upstream AuditFinding (nullable).
      */
     public function getRelatedFinding(): ?AuditFinding
     {
@@ -799,7 +799,7 @@ class ChangeRequest
     }
 
     /**
-     * Junior-ISB-Audit C4-05 — upstream CorrectiveAction (nullable).
+     * Upstream CorrectiveAction (nullable).
      */
     public function getRelatedCorrectiveAction(): ?CorrectiveAction
     {

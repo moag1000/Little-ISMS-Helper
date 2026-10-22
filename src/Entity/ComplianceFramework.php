@@ -63,7 +63,7 @@ class ComplianceFramework
     private ?bool $active = true;
 
     /**
-     * M-04: Lifecycle state — controls how the framework is surfaced:
+     * Lifecycle state — controls how the framework is surfaced:
      *  - active      → current, appears in pickers and dashboards (default)
      *  - deprecated  → still usable but flagged for replacement
      *  - superseded  → read-only, succeeded by another framework (see predecessor/successor)
@@ -78,7 +78,7 @@ class ComplianceFramework
     private string $lifecycleState = self::LIFECYCLE_ACTIVE;
 
     /**
-     * M-04: Forward link to the framework that supersedes this one.
+     * Forward link to the framework that supersedes this one.
      * Mapping source for upgrade wizards (e.g. ISO 27001:2013 → 2022).
      */
     #[ORM\ManyToOne(targetEntity: self::class)]

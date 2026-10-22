@@ -18,11 +18,10 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * W6 Gap-D — GDPR-toggle off-cleanup behaviour.
+ * GDPR-toggle off-cleanup behaviour.
  *
  * Spec: `docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md`
- * line 287-289 (Compliance-Manager "Open questions for Phase 4" #2,
- * lines 332-338).
+ * (Compliance-Manager "Open questions" #2).
  *
  * When a tenant flips the org-level setting `org.is_gdpr_subject` from
  * `true` to `false` AFTER having already generated GDPR documents, the

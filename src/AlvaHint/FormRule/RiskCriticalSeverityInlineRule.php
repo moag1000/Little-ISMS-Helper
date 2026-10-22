@@ -9,7 +9,7 @@ use App\AlvaHint\AlvaHintFormRuleInterface;
 use App\Entity\User;
 
 /**
- * P-19 reference rule — Form-Step-Inline-Hint.
+ * reference rule — Form-Step-Inline-Hint.
  *
  * Fires while the user is filling out the Risk form when the entered
  * (probability x impact) product reaches "critical" territory

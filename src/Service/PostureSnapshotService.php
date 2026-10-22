@@ -13,7 +13,7 @@ use App\Repository\InternalAuditRepository;
 use App\Repository\KpiSnapshotRepository;
 
 /**
- * F43 Trust-Center — safe read-only compliance-posture snapshot.
+ * Trust-Center — safe read-only compliance-posture snapshot.
  *
  * TENANT-DISCLOSURE-SAFE CONTRACT
  * ================================

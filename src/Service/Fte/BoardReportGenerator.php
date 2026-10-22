@@ -14,14 +14,14 @@ use DateTimeImmutable;
 use Twig\Environment;
 
 /**
- * F11 FTE-Tracking — board-ready monthly report generator.
+ * FTE-Tracking — board-ready monthly report generator.
  *
  * Produces three output formats from the same structured data:
  *   - PDF   → via DomPDF (PdfExportService)
  *   - HTML  → Twig-rendered board_report.html.twig
  *   - CSV   → hand-built RFC 4180 CSV (no library dependency)
  *
- * F46: When module 'risk_quant' is active, the report data includes
+ * When module 'risk_quant' is active, the report data includes
  * aggregate ALE (Annual Loss Expectancy) across all tenant risks.
  */
 final class BoardReportGenerator
@@ -65,7 +65,7 @@ final class BoardReportGenerator
         $bySource = $this->metricRepo->getSavingsBySource($tenant);
         $trend = $this->metricRepo->getMonthlyTrend($tenant, 12);
 
-        // F46: Aggregate ALE when risk_quant module is active
+        // Aggregate ALE when risk_quant module is active
         $riskQuantActive = $this->moduleConfiguration->isModuleActive('risk_quant');
         $riskQuantSummary = $riskQuantActive
             ? $this->riskQuantSummary->getRiskQuantSummary($tenant)
@@ -119,7 +119,7 @@ final class BoardReportGenerator
         $lines[] = $this->csvRow(['Total Savings (minutes)', $data['totals']['savings_minutes']]);
         $lines[] = $this->csvRow(['Total Savings (hours)', $data['totals']['savings_hours']]);
 
-        // F46: Include ALE aggregate when module is active
+        // Include ALE aggregate when module is active
         if (!empty($data['risk_quant_active'])) {
             $lines[] = $this->csvRow([]);
             $lines[] = $this->csvRow(['Risk Quantification (ALE)', '']);

@@ -1,5 +1,5 @@
 /**
- * F4 Evidence-Versioning — reuse / version drawer controller.
+ * Evidence-Versioning — reuse / version drawer controller.
  *
  * Handles click-to-expand of the version-history drawer on the document
  * show page. Fetches the version list partial and injects it into a

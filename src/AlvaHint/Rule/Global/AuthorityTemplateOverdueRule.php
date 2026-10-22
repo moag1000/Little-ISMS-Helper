@@ -17,7 +17,7 @@ use App\Service\Authority\OverdueAuthorityNotificationResolver;
  * of becoming aware of a personal data breach. When a high/critical DataBreach
  * has been open for more than 24 hours without a documented authority-export event
  * this rule fires as a warning-tier hint to remind the DPO to use the
- * EU-Behörden-Export feature (F26).
+ * EU-Behörden-Export feature.
  *
  * Trigger  : dashboard_ciso / dashboard_compliance_manager / inbox,
  *            DataBreach count > 0 for tenant, breach detected > 24h ago without export

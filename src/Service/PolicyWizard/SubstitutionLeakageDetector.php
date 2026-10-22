@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard;
 
 /**
- * W1 audit-defang gap #3 — Variable-substitution Leakage Detector.
+ * audit-defang gap #3 — Variable-substitution Leakage Detector.
  *
  * Pre-persist guard for the {@see DocumentGenerator}. Scans the rendered
  * Document body for unresolved Twig markers and aborts the run before

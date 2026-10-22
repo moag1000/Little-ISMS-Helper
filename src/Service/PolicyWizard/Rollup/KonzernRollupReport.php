@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard\Rollup;
 use App\Entity\Tenant;
 
 /**
- * Policy-Wizard W7-B — read-only DTO carrying the Konzern roll-up
+ * Policy-Wizard — read-only DTO carrying the Konzern roll-up
  * data assembled by {@see KonzernRollupAggregator}.
  *
  * Spec: docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md

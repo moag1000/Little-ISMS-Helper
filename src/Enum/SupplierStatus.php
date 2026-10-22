@@ -10,7 +10,7 @@ namespace App\Enum;
  * Backed by the existing `suppliers.status` column. Choice list comes from
  * SupplierType FormType; values are unchanged so no data migration is needed.
  *
- * Phase 1 status-enum rollout — typed surface for application code while
+ * typed surface for application code while
  * the storage column and setStatus(string) accessor stay backward-compatible.
  */
 enum SupplierStatus: string

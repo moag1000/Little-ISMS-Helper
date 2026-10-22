@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\FollowUpTrigger;
 
 /**
- * Sprint-2 Foundation P-7 — declarative follow-up trigger registry.
+ * Declarative follow-up trigger registry.
  *
  * Entity-class-keyed map of FollowUpTriggerDefinition lists. Consumers
  * (Doctrine entity listeners, controllers, services) call evaluate() with
@@ -15,9 +15,9 @@ namespace App\Service\FollowUpTrigger;
  * the DB. That responsibility belongs to the caller (and keeps the unit
  * tests pure).
  *
- * Wave-1 customer: `IncidentFollowUpListener` registers the
+ * Current customer: `IncidentFollowUpListener` registers the
  * `Incident.dataBreachOccurred = true` trigger to surface the GDPR Art. 33
- * 72h DataBreach skeleton. Future waves add Risk/Asset/Control triggers
+ * 72h DataBreach skeleton. Further Risk/Asset/Control triggers can be added
  * without changing this class.
  *
  * Field resolution uses reflection-style accessor heuristics:

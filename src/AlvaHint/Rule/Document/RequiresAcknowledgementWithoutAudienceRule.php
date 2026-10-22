@@ -10,7 +10,7 @@ use App\Entity\Document;
 use App\Entity\User;
 
 /**
- * Sprint-2 P-7 Wave-2 trigger-4: Document.requiresAcknowledgement = true
+ * Document.requiresAcknowledgement = true
  * → Acknowledgement-Audience-Picker.
  *
  * ISO 27001 A.6.3 — policies and supporting documentation must be
@@ -22,7 +22,7 @@ use App\Entity\User;
  * only apply to a subset (e.g. cleaning-services SOP for facility
  * staff, secure-coding-guideline for developers).
  *
- * Wave-2 introduces Document::$acknowledgementAudience (Many2Many
+ * This rule uses Document::$acknowledgementAudience (Many2Many
  * → User). When empty, legacy "broadcast to all" behaviour applies.
  * When populated, audit-ready targeted campaigns become possible.
  *

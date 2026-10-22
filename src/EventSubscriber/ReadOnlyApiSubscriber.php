@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * F6 — enforces READ-ONLY access for Bearer-API-token requests.
+ * Enforces READ-ONLY access for Bearer-API-token requests.
  *
  * When a request to /api carries a valid Bearer token, only safe HTTP methods
  * (GET, HEAD, OPTIONS) are permitted; any write verb is rejected with 405. This

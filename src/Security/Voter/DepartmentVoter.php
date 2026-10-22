@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * Department Voter (S18 B3).
+ * Department Voter.
  *
  * Enforces tenant-isolation and role-hierarchy for Department master data.
  * - VIEW: same tenant OR holding-tree access for group-CISO/Konzern-ISB

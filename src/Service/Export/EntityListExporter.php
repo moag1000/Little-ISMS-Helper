@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * F19.2 — EntityListExporter
+ * EntityListExporter
  *
  * Exports the currently-filtered entity list as XLSX, CSV, or JSON.
  * Filter-state is passed in as an array from FilterStateService.

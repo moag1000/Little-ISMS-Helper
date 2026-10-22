@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\TenantSettingResolver;
 
 /**
- * Policy-Wizard W1 — Override-Mode-Matrix per architecture §7.3.
+ * Policy-Wizard — Override-Mode-Matrix per architecture §7.3.
  *
  * Defines, for a given setting key, how a child tenant in the holding
  * hierarchy may override the value coming from an ancestor.

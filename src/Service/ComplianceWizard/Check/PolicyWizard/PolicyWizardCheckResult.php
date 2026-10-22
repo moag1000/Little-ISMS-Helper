@@ -12,7 +12,7 @@ namespace App\Service\ComplianceWizard\Check\PolicyWizard;
  * a `details` array consumable by the wizard UI and an optional `gap` payload
  * surfaced inside the gap-list. Keeping the shape compatible lets the existing
  * wizard merge Policy-Wizard checks into a category result without a special
- * adapter — see W3-D / `07-phase4-sprint-reconciliation.md` §3.
+ * adapter — see `07-phase4-sprint-reconciliation.md` §3.
  */
 final class PolicyWizardCheckResult
 {

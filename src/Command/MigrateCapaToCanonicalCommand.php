@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Junior-ISB-Audit-2026-05-22 M-07 Phase-1: CAPA-Welt consolidation backfill.
+ * CAPA-Welt consolidation backfill.
  *
  * Per ADR `docs/decisions/2026-05-23-capa-canonical-process.md`:
  *
@@ -42,7 +42,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @see docs/decisions/2026-05-23-capa-canonical-process.md
  * @see \App\EventListener\AutoReactionCorrectiveActionListener        — AuditFinding-path listener (reference pattern)
- * @see \App\Listener\AutoReactionCorrectiveActionListenerForIncident — Incident-path listener (M-07 Phase-1 wiring)
+ * @see \App\Listener\AutoReactionCorrectiveActionListenerForIncident — Incident-path listener
  */
 #[AsCommand(
     name: 'app:migrate-capa',

@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Data-Reuse-Hub (Sprint 4 / R1).
+ * Data-Reuse-Hub.
  *
  * Erster First-Class-Einstiegspunkt für Data-Reuse. Beantwortet
  * kontextuell die drei CM-Kernfragen:
@@ -74,7 +74,7 @@ class DataReuseHubController extends AbstractController
     }
 
     /**
-     * Sprint 6 / R6 — Per-Entity-Reuse-Heatmap.
+     * Per-Entity-Reuse-Heatmap.
      *
      * Gibt jedem wiederverwendeten Dokument und Lieferanten eine farbige
      * Kachel, intensiv nach Anzahl referenzierender Requirements. Dient

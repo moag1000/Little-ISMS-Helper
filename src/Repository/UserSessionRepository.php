@@ -91,7 +91,7 @@ class UserSessionRepository extends ServiceEntityRepository
             ->setParameter('active', true);
 
         // Scope (null = unrestricted, SUPER_ADMIN). Applied in the query so
-        // LIMIT and the statistics see the same row set (#1059).
+        // LIMIT and the statistics see the same row set.
         if ($tenants !== null) {
             if ($tenants === [] && !$self instanceof User) {
                 return [];

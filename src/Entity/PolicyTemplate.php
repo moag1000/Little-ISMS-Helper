@@ -33,7 +33,7 @@ class PolicyTemplate
 {
     /**
      * BSI IT-Grundschutz Vorgehensweise (200-2 Kap. 2). Drives the
-     * Policy-Wizard W5-A tier filter — `basis_only` ships only Basis-
+     * Policy-Wizard tier filter — `basis_only` ships only Basis-
      * Pflicht-Set, `up_to_standard` adds Standard-Absicherung-Bausteine,
      * `kern_full` ships everything including high-effort Kern-Absicherung.
      *
@@ -122,7 +122,7 @@ class PolicyTemplate
     /**
      * Specific BSI Baustein anchor IDs (incl. Anforderung suffix), e.g.
      * `ISMS.1.A4`, `ORP.4.A1` etc. Distinct from {@see $linkedBausteine}
-     * which only carries Baustein-level IDs (`ORP.4`). Used by the W5-A
+     * which only carries Baustein-level IDs (`ORP.4`). Used by the
      * BSI seed to record the Anhang A "Mandatiert von" anchors and to
      * drive the BSI-specific gap report. Null = no BSI anchor.
      *
@@ -140,7 +140,7 @@ class PolicyTemplate
 
     /**
      * ISO/IEC 27701:2025 clause references covered by this template
-     * (e.g. ['5.1','7.2.8']). Drives the W6-B PIMS-readiness mapping —
+     * (e.g. ['5.1','7.2.8']). Drives the PIMS-readiness mapping —
      * see `docs/plans/policy-wizard/06-dpo-input.md` §3.1 for the
      * canonical clause-by-document table and
      * {@see \App\Service\TenantSettingResolver\PolicySettingProvider}
@@ -207,10 +207,10 @@ class PolicyTemplate
     private bool $dpoSectionRequired = false;
 
     /**
-     * W6-A §0.A.1 — explicit list of section keys that need DPO sign-off
+     * explicit list of section keys that need DPO sign-off
      * for this host template. Each key matches the `sectionKey` of a
      * {@see DocumentSection} created at generation time. Null = use the
-     * default `privacy_addendum` single-key behaviour from W3-I when
+     * default `privacy_addendum` single-key behaviour when
      * {@see $dpoSectionRequired} is true. When non-empty, every entry
      * creates a `DocumentSection` row at generation time and the host
      * workflow blocks at `privacy_section_gate` until ALL listed sections
@@ -225,7 +225,7 @@ class PolicyTemplate
     private ?array $dpoGatedSectionKeys = null;
 
     /**
-     * W5 Gap-C — Works-Council BR-evidence requirement.
+     * Works-Council BR-evidence requirement.
      *
      * When true, generated Documents from this template touch
      * personal-data processing or workplace-monitoring areas (logging,
@@ -583,7 +583,7 @@ class PolicyTemplate
     }
 
     /**
-     * W5 Gap-C — Works-Council BR-evidence requirement flag.
+     * Works-Council BR-evidence requirement flag.
      */
     public function isRequiresWorksCouncilEvidence(): bool
     {

@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Implements hybrid audit-pattern (ISO 27001 Clause 7.5.3): one batch entry
  * per import + N per-row entries referencing batch_id, persisted via
- * AuditLogger::logBulk() (CC3 Sprint 0).
+ * AuditLogger::logBulk().
  *
  * Source-file retention: original CSV/XLSX persisted as Document
  * (documentType='import_evidence'), linked via $sourceDocument.

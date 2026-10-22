@@ -28,7 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Phase 9.P1.7 + P1.8 — Group-level read-only reports intended for a
+ * Group-level read-only reports intended for a
  * Konzern-ISB / Group-CISO sitting at a holding tenant. Access requires
  * ROLE_GROUP_CISO and at least one subsidiary below the current tenant.
  *
@@ -126,7 +126,7 @@ final class GroupReportController extends AbstractController
     }
 
     /**
-     * Phase 9.P2.2 — Top-N Konzernrisiken across the whole subtree.
+     * Top-N Konzernrisiken across the whole subtree.
      * Sorted by residual risk if the tenant/risk has residual values,
      * otherwise by inherent risk. Caps at 10 for the dashboard view.
      */
@@ -164,7 +164,7 @@ final class GroupReportController extends AbstractController
     }
 
     /**
-     * Phase 9.P2.6 — Group-KPI-Matrix: framework compliance per tenant
+     * Group-KPI-Matrix: framework compliance per tenant
      * in the subtree. Rows = tenant, columns = framework, cell =
      * fulfilled/applicable percentage. Uses the existing
      * ComplianceRequirementRepository stats helper so the numbers are
@@ -206,7 +206,7 @@ final class GroupReportController extends AbstractController
     }
 
     /**
-     * Phase 9.P2.7 — Group-SoA-Matrix: 93 controls × N tenants, showing
+     * Group-SoA-Matrix: 93 controls × N tenants, showing
      * applicability and implementation status per cell. Rendered
      * read-only; per-tenant edits still happen in the per-tenant SoA.
      */
@@ -260,7 +260,7 @@ final class GroupReportController extends AbstractController
     }
 
     /**
-     * Phase 9.P2.5 — Cross-tenant supplier register.
+     * Cross-tenant supplier register.
      * Deduplicates suppliers across the holding subtree by LEI
      * (preferred) or normalized name. Shows how many tenants reference
      * each unique supplier — the consolidation + re-negotiation hook
@@ -317,7 +317,7 @@ final class GroupReportController extends AbstractController
     }
 
     /**
-     * Phase 9.P2.3 — Incidents across the holding subtree, respecting
+     * Incidents across the holding subtree, respecting
      * each subsidiary's visible_to_holding opt-out flag. Confidential
      * incidents (flag = false) are silently excluded; the tab does
      * NOT surface "N hidden" so the Tochter's opt-out actually stays
@@ -369,7 +369,7 @@ final class GroupReportController extends AbstractController
     }
 
     /**
-     * Phase 9.P2.4 — Konzern-Audit-Programm matrix: every audit on the
+     * Konzern-Audit-Programm matrix: every audit on the
      * current tenant that has been derived onto N subsidiaries, plus
      * per-tochter status (planned / in_progress / completed / missing).
      * Missing cells are the action hook for the "Derive" button.

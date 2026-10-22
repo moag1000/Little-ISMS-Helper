@@ -16,7 +16,7 @@ use App\Repository\KpiSnapshotRepository;
 /**
  * Compliance Analytics Service
  *
- * Phase 7B: Advanced analytics for multi-framework compliance analysis.
+ * Advanced analytics for multi-framework compliance analysis.
  * Provides data for dashboards, charts, and comparative analysis.
  */
 class ComplianceAnalyticsService
@@ -499,7 +499,7 @@ class ComplianceAnalyticsService
                 'highest_compliance' => null,
                 'lowest_compliance' => null,
                 'mandatory_compliance' => 0,
-                // V3 W2-M2: keys consumed by Compliance-Manager-Dashboard KPIs.
+                // Keys consumed by Compliance-Manager-Dashboard KPIs.
                 'at_risk' => 0,
                 'cross_mapping_coverage' => 0,
                 'total_frameworks' => 0,
@@ -513,7 +513,7 @@ class ComplianceAnalyticsService
             ? round(array_sum(array_column($mandatoryFrameworks, 'compliance_percentage')) / count($mandatoryFrameworks), 1)
             : 0;
 
-        // V3 W2-M2: at-risk = mandatory frameworks with < 80 % coverage.
+        // At-risk = mandatory frameworks with < 80 % coverage.
         // Mirrors getExecutiveSummary frameworks.at_risk so CM-Dashboard
         // KPI tile shows non-zero values.
         $atRisk = count(array_filter(
@@ -521,7 +521,7 @@ class ComplianceAnalyticsService
             static fn($f) => ($f['mandatory'] ?? false) && ($f['compliance_percentage'] ?? 0) < 80,
         ));
 
-        // V3 W2-M2: cross-framework mapping coverage = % of frameworks with
+        // Cross-framework mapping coverage = % of frameworks with
         // at least one fulfilled requirement (rough but stable proxy).
         $withFulfilled = count(array_filter(
             $comparison,
@@ -539,7 +539,7 @@ class ComplianceAnalyticsService
             'total_frameworks' => count($comparison),
             'total_requirements' => array_sum(array_column($comparison, 'total')),
             'total_fulfilled' => array_sum(array_column($comparison, 'fulfilled')),
-            // V3 W2-M2: keys consumed by Compliance-Manager-Dashboard KPIs.
+            // Keys consumed by Compliance-Manager-Dashboard KPIs.
             'at_risk' => $atRisk,
             'cross_mapping_coverage' => $crossMappingCoverage,
         ];

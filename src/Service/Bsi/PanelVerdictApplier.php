@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * Originally built for residual heuristic ISO↔BSI mappings not corroborated by the
  * official CRT (144 rows, 133 ki_validiert, 2 reject, 9 needs_review).
  *
- * As of WS NIS2 Task 4, the applier is parametrized to also handle NIS2↔BSI
+ * The applier is parametrized to also handle NIS2↔BSI
  * panel verdicts loaded from a separate fixture. A `sourceKey` parameter tells
  * the applier which JSON field carries the source requirement identifier
  * (`iso` for ISO fixture, `nis2` for NIS2 fixture).

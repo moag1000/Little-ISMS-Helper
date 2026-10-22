@@ -7,7 +7,7 @@ namespace App\Workflow\Loader;
 use Symfony\Component\Workflow\Registry;
 
 /**
- * Sprint Y.2 — RegulatoryWorkflowLoader
+ * RegulatoryWorkflowLoader
  *
  * Reads the `metadata.steps` block from each regulatory workflow registered in
  * Symfony's Workflow Registry (config/workflows/regulatory/*.yaml) and exposes

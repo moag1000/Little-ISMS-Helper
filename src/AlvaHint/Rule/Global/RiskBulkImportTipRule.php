@@ -14,7 +14,7 @@ use App\Repository\RiskRepository;
  * Tier-3 tip: risk register has grown beyond 30 entries — suggest the Bulk-Import wizard.
  *
  * Once a register exceeds 30 risks, manual owner and score updates become
- * tedious. The CSV/XLSX bulk-import wizard (Sprint-2 F2-W2) handles owner
+ * tedious. The CSV/XLSX bulk-import wizard handles owner
  * re-assignment and inherent-score bulk-updates without touching individual
  * records. Surfacing this shortcut saves approximately 2 FTE-hours per cycle.
  *

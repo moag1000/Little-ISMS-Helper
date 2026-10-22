@@ -12,7 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * Custom Report Repository
  *
- * Phase 7C: Repository for custom report configurations
+ * Repository for custom report configurations
  *
  * @extends ServiceEntityRepository<CustomReport>
  *

@@ -24,7 +24,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Jedes Sample-Dataset lässt sich nach Import gezielt wieder entfernen,
  * ohne User-Daten zu gefährden (tracked via SampleDataImport).
  *
- * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * Authorization (Role-Scope Architecture, spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
  *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} —
  *    ROLE_ADMIN seeds sample data into their own tenant; SUPER_ADMIN

@@ -1,16 +1,16 @@
 {#
- # Wave 5 — Sidebar Mega-Menu (App-Shell Sidebar)
- # Replaces the top-bar mega-menu with a Wave 5 sidebar + flyout-panel pattern.
+ # Sidebar Mega-Menu (App-Shell Sidebar)
+ # Replaces the top-bar mega-menu with a sidebar + flyout-panel pattern.
  # Stimulus controller "mega-menu" remains on <body> in base.html.twig.
  # L1 triggers use data-mega-menu-target="trigger" + data-category="<id>"
  # to activate the corresponding flyout panel (data-mega-menu-target="panel").
  # Direct links (Mein Tag, Aktivität) have no trigger/panel.
  #
- # Phase 4.1 WCAG 2.2 AA Audit:
+ # WCAG 2.2 AA Audit:
  #   - role="menubar" aria-orientation="vertical" on <nav>
  #   - role="menuitem" + aria-haspopup="menu" on L1 trigger buttons
  #   - Focus-visible rings bumped to 3px with glow-shadow (see CSS)
- # Phase 4.4 Live-Badges:
+ # Live-Badges:
  #   - badge spans use data-controller="live-badge" for polling /api/live-counts
  #   - aria-live="polite" + aria-atomic="true" (WCAG 2.2 SC 4.1.3)
  #}
@@ -115,7 +115,7 @@
 ] %}
 {% for _m in _nav_map %}{% if nav_active is null and (current_route == _m.p or current_route starts with _m.p) %}{% set nav_active = _m.c %}{% endif %}{% endfor %}
 
-{# Phase 4.4: locale-aware URL for the live-counts endpoint (locale-prefixed route) #}
+{# Locale-aware URL for the live-counts endpoint (locale-prefixed route) #}
 {% set _live_counts_url = path('api_live_counts') %}
 
 {# ── Prominent hero cards: Mein Tag + Aktivität ── #}
@@ -130,7 +130,7 @@
             <span class="sb-prominent__label">{{ 'nav.my_day'|trans({}, 'nav') }}</span>
             <span class="sb-prominent__sub">{{ 'nav.mega.desc.my_day_short'|trans({}, 'nav') }}</span>
         </span>
-        {# Phase 4.4 Live-Badge: polls /api/live-counts every 30s (tab-visibility-aware) #}
+        {# Live-Badge: polls /api/live-counts every 30s (tab-visibility-aware) #}
         <span class="sb-prominent__badge"
               data-controller="live-badge"
               data-live-badge-source-value="my_day"
@@ -149,7 +149,7 @@
             <span class="sb-prominent__label">{{ 'nav.activity'|trans({}, 'nav') }}</span>
             <span class="sb-prominent__sub">{{ 'nav.mega.desc.activity_short'|trans({}, 'nav') }}</span>
         </span>
-        {# Phase 4.4 Live-Badge: activity feed entry count #}
+        {# Live-Badge: activity feed entry count #}
         <span class="sb-prominent__badge"
               data-controller="live-badge"
               data-live-badge-source-value="activity"
@@ -370,7 +370,7 @@
 </div>
 {% endif %}
 
-{# ── Density toggle — Phase 3.1: endpoint + CSRF for server-side persist ── #}
+{# ── Density toggle — endpoint + CSRF for server-side persist ── #}
 <div class="sb-density"
      data-controller="density-toggle"
      data-density-toggle-endpoint-value="{{ app.user ? path('app_preferences_density') : '' }}"
@@ -414,7 +414,7 @@
     </div>
 </div>
 
-{# ── Phase 3.4: Persona Quick-Switcher (ROLE_COMPLIANCE_MANAGER + expert-density only) ── #}
+{# ── Persona Quick-Switcher (ROLE_COMPLIANCE_MANAGER + expert-density only) ── #}
 {% if is_granted('PERSONA_COMPLIANCE') and app.user %}
 {% set _acting_persona = app.request.session.get('compliance.acting_as_persona') %}
 <div class="sb-persona-switcher{{ _acting_persona ? ' is-acting' : '' }}"

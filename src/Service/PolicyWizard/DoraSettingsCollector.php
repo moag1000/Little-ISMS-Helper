@@ -7,13 +7,13 @@ namespace App\Service\PolicyWizard;
 use App\Entity\WizardRun;
 
 /**
- * Policy-Wizard W4-A — DoraSettingsCollector.
+ * Policy-Wizard — DoraSettingsCollector.
  *
  * Pulls DORA-specific settings out of {@see WizardRun}::inputs slot
  * `operational_baselines.dora` and returns a flat
  * `[varName => value]` map for {@see VariableCollector}-side
  * composition. Used by DocumentGenerator render-time substitution and
- * by the DORA-extension section append in §3 of the W4-A spec.
+ * by the DORA-extension section append in the DORA-extension spec.
  *
  * Inputs (architecture §6 Step 5b):
  *   - entity_type             — credit_institution / investment_firm /

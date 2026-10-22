@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
- * F39 — handles the scheduled EUVD feed sync. Enrichment-only: flags existing
+ * Handles the scheduled EUVD feed sync. Enrichment-only: flags existing
  * vulnerabilities present in the EU Vulnerability Database.
  */
 #[AsMessageHandler]

@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *   4. Optionally identifies entities absent from the sheet (delete candidates).
  *
  * The DeltaCalculator is intentionally read-only: it NEVER persists or removes
- * entities — that responsibility belongs to the BulkImportOrchestrator (F2.5).
+ * entities — that responsibility belongs to the BulkImportOrchestrator.
  */
 final class DeltaCalculator
 {

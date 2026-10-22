@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
 /**
- * OwnerPicker controller (audit-s4 P-1).
+ * OwnerPicker controller.
  *
  * Soft cross-disable UX for the User + Person owner cluster: when one
  * primary slot has a value, fade the other to signal "either / or".

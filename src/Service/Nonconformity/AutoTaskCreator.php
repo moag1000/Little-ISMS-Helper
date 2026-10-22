@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * F15.2 — AutoTaskCreator
+ * AutoTaskCreator
  *
  * When an AuditFinding is linked to ComplianceRequirements, this service
  * automatically creates CorrectiveAction tasks for each linked requirement

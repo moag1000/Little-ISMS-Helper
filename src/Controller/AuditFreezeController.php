@@ -32,8 +32,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * with SHA-256 at create time and verified on demand. PDF generation is
  * separate from freeze creation so an admin can re-generate the PDF after
  * styling changes without affecting payload integrity.
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/audit-freeze')]

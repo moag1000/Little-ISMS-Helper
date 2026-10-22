@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Captures today's Reuse-Metrics-Snapshot per Tenant (Sprint 4 / R3).
+ * Captures today's Reuse-Metrics-Snapshot per Tenant.
  *
  * Usage:
  *   bin/console app:reuse:capture-snapshot          # alle aktiven Tenants

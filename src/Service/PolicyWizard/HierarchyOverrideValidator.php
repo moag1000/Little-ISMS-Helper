@@ -9,7 +9,7 @@ use App\Service\TenantSettingResolver\OverrideMode;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
 
 /**
- * Policy-Wizard W2-A — Step 7 hierarchy-conflict gate.
+ * Policy-Wizard — Step 7 hierarchy-conflict gate.
  *
  * Walks the inputs the wizard collected and consults the
  * `TenantSettingResolver` for each setting key to decide whether the

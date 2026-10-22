@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W5-C / ISO 22301 Cl. 8.4.4 + BSI 200-4 Kap. 5.4 — confirms the
+ * ISO 22301 Cl. 8.4.4 + BSI 200-4 Kap. 5.4 — confirms the
  * tenant has a published Crisis Management Plan (Krisenstabsordnung).
  *
  * A document qualifies when ALL of the following hold:

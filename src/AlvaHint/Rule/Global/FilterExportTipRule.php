@@ -15,7 +15,7 @@ use App\Repository\RiskRepository;
  * Tier-3 tip: entity list-view has > 50 results — suggest the filtered export feature.
  *
  * When a tenant has more than 50 risks OR 50 assets, the filtered-list export
- * (F19) saves significant time over manual copy-paste. This tip surfaces on
+ *  saves significant time over manual copy-paste. This tip surfaces on
  * list-view pages so the user sees it in context.
  *
  * Trigger  : app_risk_index, app_asset_index — > 50 items for tenant

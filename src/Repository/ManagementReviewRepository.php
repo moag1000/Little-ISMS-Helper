@@ -46,7 +46,7 @@ class ManagementReviewRepository extends ServiceEntityRepository
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Upcoming management reviews within a
+     * Upcoming management reviews within a
      * window (default 90 days). ISO 27001 Clause 9.3 mandates planned
      * intervals; surfacing the next-review-due-date to top management
      * keeps the review cadence honest.

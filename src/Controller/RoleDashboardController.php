@@ -15,10 +15,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * Role-Based Dashboard Controller
  *
- * Phase 7D: Provides specialized dashboards for different user roles.
+ * Provides specialized dashboards for different user roles.
  * Each dashboard shows KPIs and information most relevant to the role.
  *
- * Role-Scope Architecture Phase 6 (spec
+ * Role-Scope Architecture (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`): persona
  * dashboards are guarded via `TenantScopedAdminVoter::PERSONA_*` attributes
  * (module-visibility filter). Semantic equivalent of `#[IsGranted('ROLE_X')]`
@@ -48,7 +48,7 @@ class RoleDashboardController extends AbstractController
             'risk_manager' => $this->redirectToRoute('app_dashboard_risk_manager'),
             'auditor' => $this->redirectToRoute('app_dashboard_auditor'),
             'board' => $this->redirectToRoute('app_dashboard_board'),
-            // Audit V3 W2-C5 — Compliance-Manager / DPO persona dashboard.
+            // Compliance-Manager / DPO persona dashboard.
             'compliance_manager' => $this->redirectToRoute('app_dashboard_compliance_manager'),
             default => $this->redirectToRoute('app_dashboard'),
         };

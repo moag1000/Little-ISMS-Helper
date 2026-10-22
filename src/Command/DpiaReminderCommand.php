@@ -15,12 +15,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * V3 W2-FV-7 — DPIA review-frist reminder cron.
+ * DPIA review-frist reminder cron.
  *
  * Scans DataProtectionImpactAssessment rows whose `nextReviewDate` lies
  * within configured warning windows (30 / 14 / 7 days ahead) and emits
  * notifications to the tenant DPO. Mirrors the design of
- * RiskAcceptanceExpiryReminderCommand (V3 W2-M8 / WS-2).
+ * RiskAcceptanceExpiryReminderCommand.
  *
  *   php bin/console app:dpia-reminder
  *   php bin/console app:dpia-reminder --windows=30,14,7

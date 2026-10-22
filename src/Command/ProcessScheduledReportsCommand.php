@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Process Scheduled Reports Command
  *
- * Phase 7A: Processes all due scheduled reports and sends them via email.
+ * Processes all due scheduled reports and sends them via email.
  * Should be run via cron job (e.g., every hour or as needed).
  *
  * Usage:

@@ -7,7 +7,7 @@ namespace App\Service\PolicyWizard;
 use App\Entity\PolicyTemplate;
 
 /**
- * W1 audit-defang gap #1 — Tailoring-field minimum-quality validator.
+ * audit-defang gap #1 — Tailoring-field minimum-quality validator.
  *
  * Per the External-Auditor persona-review (`docs/plans/policy-wizard/
  * persona-reviews/06-external-auditor-review.md` lines 168-173) "tailoring

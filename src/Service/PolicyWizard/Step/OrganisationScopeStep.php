@@ -21,11 +21,11 @@ use App\Service\PolicyWizard\WizardStepKeys;
  * surface a toggle. It is recorded as `climate_change_wording=true` on
  * the inputs purely for the §11 auditor manifest.
  *
- * W1 audit-defang gap #1 — runs every free-text input through the
+ * audit-defang gap #1 — runs every free-text input through the
  * {@see TailoringFieldQualityValidator} so 1-character placeholders or
  * "lorem ipsum" copy-pasta block forward navigation.
  *
- * W2 user-feedback (May 2026) — `defaults()` now pre-fills `legal_name`
+ * user-feedback (May 2026) — `defaults()` now pre-fills `legal_name`
  * + `primary_address` from the Tenant configuration so the user does
  * not retype data already in the system, and exposes the list of
  * tenant-scoped Locations the current user can see so the in-scope
@@ -140,7 +140,7 @@ final class OrganisationScopeStep extends AbstractStep
             $errors['scope_statement'][] = 'policy_wizard.error.scope_statement_too_short';
         }
 
-        // W1 audit-defang gap #1 — tailoring-field minimum quality.
+        // audit-defang gap #1 — tailoring-field minimum quality.
         // ONLY for narrative fields (scope_statement). Legal name is a
         // proper noun (e.g. "Mordor Inc.", 11 chars) and must NOT trip
         // the 30-char min_length default — that bug rejected valid org

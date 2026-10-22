@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Apply-endpoint for SystemTemplates (Foundation P-14).
+ * Apply-endpoint for SystemTemplates.
  *
  *  POST /{locale}/system-templates/apply
  *      _token: <CSRF>

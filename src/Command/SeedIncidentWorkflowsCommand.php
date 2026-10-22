@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * @deprecated since Sprint Y.2 — incident workflows are now defined in
+ * @deprecated incident workflows are now defined in
  *   config/workflows/regulatory/incident_high_severity.yaml and
  *   config/workflows/regulatory/incident_low_severity.yaml.
  *   Use app:generate-regulatory-workflows to seed DB rows from YAML.

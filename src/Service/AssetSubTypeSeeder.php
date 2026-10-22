@@ -11,7 +11,7 @@ use App\Repository\AssetSubTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Seed preset library for AssetSubType (S18 B2).
+ * Seed preset library for AssetSubType.
  *
  * Three industry presets:
  *  - bsi-grundschutz: BSI IT-Grundschutz Zielobjekt-Typen (28 entries)

@@ -11,7 +11,7 @@ use Closure;
  * entity reaches a specific field state and a follow-up entity is not yet
  * linked.
  *
- * Used by FollowUpTriggerService (Sprint-2 Foundation P-7). The motivating
+ * Used by FollowUpTriggerService. The motivating
  * use-case is the regulatory pattern "Incident.dataBreachOccurred = true"
  * which must, per GDPR Art. 33, surface a 72h-deadline follow-up to create
  * a linked DataBreach. The DTO is intentionally minimal: the caller wires

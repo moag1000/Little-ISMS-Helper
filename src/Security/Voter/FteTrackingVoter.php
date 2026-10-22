@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * F11 FTE-Tracking security voter.
+ * FTE-Tracking security voter.
  *
  * Rules:
  *  - VIEW:       ROLE_MANAGER (own tenant data only)

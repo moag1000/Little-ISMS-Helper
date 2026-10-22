@@ -87,7 +87,7 @@ class CorporateStructureController extends AbstractController
             return false;
         }
 
-        // Tenant admin: only within the own tree — never to root, never outside (#1059).
+        // Tenant admin: only within the own tree — never to root, never outside.
         return $newParent instanceof Tenant && $this->isGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $newParent);
     }
 

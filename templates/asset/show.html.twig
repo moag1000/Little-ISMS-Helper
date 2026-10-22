@@ -91,7 +91,7 @@
         {% endblock %}
         {% block card_body %}
             {% import '_components/_status_pill.html.twig' as pill %}
-            {# Phase 8H.1: standardised via _detail_group component #}
+            {# Standardised via _detail_group component #}
             {% include '_components/_detail_group.html.twig' with {
                 items: [
                     { label: 'asset.label.type'|trans({}, 'asset'), value: asset.typeDisplay },
@@ -241,12 +241,12 @@
 
             <div class="detail-section">
                 <h3>{{ 'asset.section.valuation'|trans({}, 'asset') }}</h3>
-                {# Phase 8H.1: standardised via _detail_group component #}
+                {# Standardised via _detail_group component #}
                 {% set valuationItems = [
                     { label: 'asset.label.acquisition_value'|trans({}, 'asset'), value: asset.acquisitionValue ? asset.acquisitionValue ~ ' EUR' : 'N/A' },
                     { label: 'asset.label.current_value'|trans({}, 'asset'), value: asset.currentValue ? asset.currentValue ~ ' EUR' : 'N/A' }
                 ] %}
-                {# Junior-ISB-Audit S14+ #15: monetaryValue column dropped. acquisitionValue + currentValue are canonical. #}
+                {# MonetaryValue column dropped. acquisitionValue + currentValue are canonical. #}
                 {% set valuationItems = valuationItems|merge([
                     { label: 'asset.label.total_value'|trans({}, 'asset'), value: asset.totalValue ~ ' EUR', dataReuse: true },
                     { label: 'asset.label.risks'|trans({}, 'asset'), raw: true, dataReuse: true, value: asset.risks|length > 0
@@ -359,7 +359,7 @@
                 {% endif %}
             {% endif %}
 
-            {# Bucket-6 RT_05: Asset-dependency-graph tree-renderer.
+            {# DORA RoI RT_05: Asset-dependency-graph tree-renderer.
                Walks asset.dependsOn (legacy ManyToMany) and decorates with
                enriched-edge metadata when available via assetDependencyEdges
                (keyed by upstream asset id). Feeds the DORA RoI XBRL export. #}
@@ -571,7 +571,7 @@
                 </div>
             {% endif %}
 
-            {# V3 W2-Bug3: Linked Processing Activities (M:N inverse) — privacy module (GDPR Art. 30 RoPA) #}
+            {# Linked Processing Activities (M:N inverse) — privacy module (GDPR Art. 30 RoPA) #}
             {% if is_module_active('privacy') and asset.processingActivities is defined and asset.processingActivities|length > 0 %}
                 <div class="detail-section">
                     <h3>{{ 'asset.section.processing_activities'|trans({}, 'asset') }} ({{ asset.processingActivities|length }})</h3>
@@ -634,7 +634,7 @@
         {% endblock %}
     {% endembed %}
 
-    {# V3 B6 / EF-4: Inverse-Coverage Impact-Analyse #}
+    {# Inverse-Coverage Impact-Analyse #}
     {% include '_components/_impact_coverage.html.twig' with {
         impact: impact_coverage|default({total: 0, frameworks: []}),
         entity_label: 'asset'

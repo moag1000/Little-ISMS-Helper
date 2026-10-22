@@ -14,8 +14,8 @@ use App\Service\PolicyWizard\WizardStepKeys;
  * change" snapshot vs. the currently approved documents and confirms
  * via `confirm=true`.
  *
- * Real diff content lands in W3 (DocumentGenerator + diff service);
- * for W2 we just record the user confirmation.
+ * This step only records the user confirmation; the diff content
+ * itself comes from the DocumentGenerator and the diff service.
  */
 final class TargetedDiffPreviewStep extends AbstractStep
 {

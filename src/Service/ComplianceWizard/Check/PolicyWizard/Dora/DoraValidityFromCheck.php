@@ -12,8 +12,8 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
 /**
- * W4-D / DORA Art. 1 — confirms every DORA-tagged Document carries the
- * `dora-validity:2025-01-17` tag introduced by W3-A's
+ * DORA Art. 1 — confirms every DORA-tagged Document carries the
+ * `dora-validity:2025-01-17` tag set by
  * {@see \App\Service\PolicyWizard\DocumentGenerator::applyTags}.
  *
  * The validity-from anchor is the date Regulation (EU) 2022/2554

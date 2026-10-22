@@ -18,7 +18,7 @@ use Psr\Log\NullLogger;
  * When a WorkflowInstance reaches status 'approved', fires the parent
  * entity's lifecycle transition via LifecycleService. Bridges the legacy
  * multi-step approval-chain system (WorkflowInstance/WorkflowStep) with the
- * new Symfony-Workflow-backed state machine introduced in Task 13.
+ * new Symfony-Workflow-backed state machine introduced with the lifecycle foundation.
  *
  * Mapping from entity class → lifecycle workflow + transition is configured
  * in `config/packages/lifecycle.yaml` under the `lifecycle.approval_bridges`

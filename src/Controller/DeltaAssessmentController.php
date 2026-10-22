@@ -23,8 +23,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Produces a management-review-ready workbook that shows how an existing
  * baseline framework (e.g. ISO 27001) pre-fills a newly activated target
  * framework (e.g. NIS2) — gaps + source mappings + FTE-savings on one page.
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-2
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/delta-assessment')]

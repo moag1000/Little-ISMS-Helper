@@ -14,7 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 
 /**
- * GSTOOL XML import — Phase 1 (Zielobjekte → Asset).
+ * GSTOOL XML import (Zielobjekte → Asset).
  *
  * Reads the pragmatic v1 schema (gstool_xml_v1) — see
  * docs/features/GSTOOL_IMPORT.md for the full schema and migration strategy.
@@ -366,7 +366,7 @@ final class GstoolXmlImporter
             );
         }
 
-        // Phase 2: resolve <modellierung>/<abhaengigkeit> entries to
+        // Resolve <modellierung>/<abhaengigkeit> entries to
         // Asset.dependsOn. We only link assets that participated in this
         // import (cross-import links would silently dangle otherwise).
         $rootResult = $this->loadRoot($path);
@@ -405,7 +405,7 @@ final class GstoolXmlImporter
     }
 
     /**
-     * Phase 2: apply <modellierung>/<abhaengigkeit von="X" zu="Y"/> to
+     * Apply <modellierung>/<abhaengigkeit von="X" zu="Y"/> to
      * Asset.dependsOn. The semantics are "X depends on Y", which matches
      * BSI 200-2 § 3.6 Maximumprinzip — dependent assets inherit the maximum
      * Schutzbedarf of their dependencies.
@@ -469,7 +469,7 @@ final class GstoolXmlImporter
     }
 
     /**
-     * Phase 3: log <bausteine>/<baustein-ref> entries with their migration
+     * Log <bausteine>/<baustein-ref> entries with their migration
      * mapping into the audit trail. No ComplianceRequirement linking is
      * created automatically — this is deliberately a "review-then-act"
      * step because some legacy Bausteine map to multiple new modules.
@@ -521,7 +521,7 @@ final class GstoolXmlImporter
     }
 
     /**
-     * Phase 4: log <massnahmen>/<massnahme> entries with their
+     * Log <massnahmen>/<massnahme> entries with their
      * Umsetzungsstatus → implementationStatus mapping.
      *
      * @param array<string, Asset> $assetByGstoolId
@@ -581,7 +581,7 @@ final class GstoolXmlImporter
     }
 
     /**
-     * Phase 5: log <risikoanalyse>/<risiko> entries with their BSI-200-3
+     * Log <risikoanalyse>/<risiko> entries with their BSI-200-3
      * Eintrittshäufigkeit + Schadenshöhe + Risikobehandlung mapping.
      *
      * No Risk-entity is created automatically because Risk-Owner-

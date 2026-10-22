@@ -9,7 +9,7 @@ use App\Entity\User;
 use RuntimeException;
 
 /**
- * W1 audit-defang gap #2 — thrown by
+ * audit-defang gap #2 — thrown by
  * {@see GenerationApprovalElapsedGuard::assertMinimumElapsed} when an
  * approval attempt arrives before the human-plausible review window
  * has elapsed since the Document was generated.

@@ -52,7 +52,7 @@ use App\Validator\Constraint\SameTenantOwner;
 #[ORM\HasLifecycleCallbacks]
 class InterestedParty
 {
-    // Junior-ISB-Audit-2026-05-22 S-01: Lifecycle places (ISO 27001 Cl. 4.2 + 9.3.2 c).
+    // Lifecycle places (ISO 27001 Cl. 4.2 + 9.3.2 c).
     public const STATUS_DRAFT = 'draft';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_IN_REVIEW = 'in_review';
@@ -212,7 +212,7 @@ class InterestedParty
     private ?string $issues = null;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 S-01: Lifecycle status (ISO 27001 Cl. 4.2 + 9.3.2 c).
+     * Lifecycle status (ISO 27001 Cl. 4.2 + 9.3.2 c).
      * Owned by `interested_party_lifecycle` — never call setStatus() directly
      * outside the initial-marking bootstrap; route transitions through
      * LifecycleService::transition().
@@ -222,7 +222,7 @@ class InterestedParty
     private string $status = self::STATUS_DRAFT;
 
     /**
-     * Junior-ISB-Audit-2026-05-22 S-01: Optimistic-lock guard for concurrent
+     * Optimistic-lock guard for concurrent
      * lifecycle transitions (HTTP 409 via OptimisticLockException).
      */
     #[ORM\Version]
@@ -479,7 +479,7 @@ class InterestedParty
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 S-01: marking-store accessor for the
+     * Marking-store accessor for the
      * `interested_party_lifecycle` state-machine (ISO 27001 Cl. 4.2 + 9.3.2 c).
      */
     public function getStatus(): string
@@ -488,7 +488,7 @@ class InterestedParty
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 S-01: marking-store mutator. Only the
+     * Marking-store mutator. Only the
      * Symfony Workflow component / LifecycleService should invoke this in
      * production code — call-sites that need a transition must go through
      * LifecycleService::transition().
@@ -500,7 +500,7 @@ class InterestedParty
     }
 
     /**
-     * Junior-ISB-Audit-2026-05-22 S-01: Optimistic-lock version exposed
+     * Optimistic-lock version exposed
      * for the LifecycleService HTTP 409 path.
      */
     public function getLockVersion(): int

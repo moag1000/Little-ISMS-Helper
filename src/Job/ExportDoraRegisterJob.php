@@ -20,8 +20,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *
  * Args:
  *   tenantId (int) REQUIRED — register scope.
- *
- * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportDoraRegisterJob implements AsyncJobInterface
 {

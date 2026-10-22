@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * F4 Evidence-Versioning — Reviewer Queue controller.
+ * Evidence-Versioning — Reviewer Queue controller.
  *
  * Routes (no /{_locale}/ prefix — added by config/routes.yaml wrapper):
  *   GET  /evidence-reverification             — queue index

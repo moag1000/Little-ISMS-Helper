@@ -25,8 +25,6 @@ use Symfony\Component\Translation\LocaleSwitcher;
  *   subsidiaryIds   (?list<int>)     Optional whitelist of subsidiary IDs;
  *                                    null = all subsidiaries.
  *   locale          (?string)        PDF locale (e.g. 'de', 'en'). Default 'de'.
- *
- * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportKonzernCertificationBundleJob implements AsyncJobInterface
 {

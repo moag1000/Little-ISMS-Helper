@@ -182,7 +182,7 @@
     {% endblock %}
 {% endembed %}
 
-{# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for severity #}
+{# Aurora filter-chip quick row — quick toggles for severity #}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 {% set _activeSeverity = app.request.query.get('severity') %}
 {% set _baseIncidentUrl = path('app_incident_index') %}

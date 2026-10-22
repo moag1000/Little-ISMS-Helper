@@ -9,11 +9,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Policy-Wizard W4-B — Industry-Preset bundle (first-class entity).
+ * Policy-Wizard — Industry-Preset bundle (first-class entity).
  *
  * Captures sector-specific defaults that pre-fill the Policy-Wizard's
  * Step 1 + Step 4 (Annex-A applicability). Driven by the
- * Senior-Consultant review (P3) and Phase 4-C §3 W4 — four bundles
+ * Senior-Consultant review and the Phase-4 reconciliation §3 — four bundles
  * ship in v1: Healthcare, Public-Sector / KRITIS, B2C-SaaS,
  * OT / IEC 62443.
  *
@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * may still adjust everything before pressing "Continue".
  *
  * Spec: docs/plans/policy-wizard/05-architecture.md §6 + §7,
- *       docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3 W4.
+ *       docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3.
  */
 #[ORM\Entity(repositoryClass: IndustryPresetBundleRepository::class)]
 #[ORM\Table(name: 'industry_preset_bundle')]
@@ -37,9 +37,9 @@ class IndustryPresetBundle
     public const KEY_B2C_SAAS = 'b2c_saas';
     public const KEY_OT_IEC62443 = 'ot_iec62443';
     /**
-     * Junior-ISB-friendly fallback bundle: no industry assumptions —
+     * Beginner-friendly fallback bundle: no industry assumptions —
      * the user fills Step 4+5 manually. Pre-selects only the mandatory
-     * ISO 27001 baseline. Added per Junior-Implementer-Persona feedback.
+     * ISO 27001 baseline.
      */
     public const KEY_CUSTOM_GENERAL = 'custom_general';
 

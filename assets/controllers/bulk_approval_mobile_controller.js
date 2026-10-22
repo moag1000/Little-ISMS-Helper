@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Policy-Wizard W7-E — Bulk-Approval-Inbox mobile swipe controller.
+ * Policy-Wizard — Bulk-Approval-Inbox mobile swipe controller.
  *
  * Adds gesture detection to each row of the per-user policy
  * acknowledgement inbox so the user can quickly indicate intent on a

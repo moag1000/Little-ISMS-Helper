@@ -10,7 +10,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use App\Service\PolicyWizard\WorksCouncilEvidenceCheck;
 
 /**
- * W5 Gap-C / BSI / German Works-Council (Betriebsverfassungsgesetz § 87
+ * BSI / German Works-Council (Betriebsverfassungsgesetz § 87
  * Abs. 1 Nr. 6) — confirms every published policy that touches workplace-
  * monitoring or personal-data processing has a corresponding Betriebsrats-
  * Beteiligungsnachweis attached.

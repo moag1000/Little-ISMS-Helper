@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
 
 /**
- * Guided Tour Controller (Sprint 13 / S13-1).
+ * Guided Tour Controller.
  *
  * Kein externes Library-Dep — eigener Stimulus-Controller für volle
  * Kontrolle über Styling, A11y, Turbo-Integration.

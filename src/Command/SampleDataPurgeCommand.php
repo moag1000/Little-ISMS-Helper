@@ -149,7 +149,11 @@ final class SampleDataPurgeCommand
             }
         }
         if ($orphanRows > 0) {
-            try { $this->entityManager->flush(); } catch (\Throwable) {}
+            try {
+                $this->entityManager->flush();
+            } catch (\Throwable) {
+                // Best-effort cleanup: tracking rows that could not be flushed are picked up by the next purge run.
+            }
             $io->writeln(sprintf('  Cleaned %d orphan tracking-row(s) pointing at non-existent entities.', $orphanRows));
         }
 

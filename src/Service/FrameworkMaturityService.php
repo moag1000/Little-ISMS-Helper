@@ -13,7 +13,7 @@ use App\Repository\InternalAuditRepository;
 use App\Repository\KpiSnapshotRepository;
 
 /**
- * Framework Maturity Service (Sprint 3 / C2).
+ * Framework Maturity Service.
  *
  * Computes CMMI-style maturity levels per ComplianceFramework so the
  * CM can report progress to the CISO beyond raw coverage-percentage.

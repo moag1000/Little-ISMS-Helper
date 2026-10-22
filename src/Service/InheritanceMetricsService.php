@@ -27,8 +27,6 @@ use App\Repository\FulfillmentInheritanceLogRepository;
  *   - FTE factor = CompliancePolicyService::KEY_REUSE_DAYS_PER_REQUIREMENT (default 0.3).
  *
  * Tenant-scoping: every query filters by tenant to preserve multi-tenant isolation.
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-1, CM-5
  */
 class InheritanceMetricsService
 {

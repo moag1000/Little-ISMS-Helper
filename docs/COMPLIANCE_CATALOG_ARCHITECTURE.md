@@ -74,7 +74,7 @@ aller. 2. Tenant der dasselbe lädt → `UniqueConstraintViolationException`.
 
 | Quelle | Ort | Umfang | Lädt was | Verdrahtung |
 |---|---|---|---|---|
-| **PHP-Loader-Commands** | `src/Command/Load*/Seed*/Supplement*` | ~90 Commands | Requirements (hardcoded Arrays od. fixtures) + manche Framework-Rows | UI nur über `ComplianceFrameworkLoaderService` match (1 pro Code), Rest CLI-Orphan |
+| **PHP-Loader-Commands** | `src/Command/Load*/Seed*/Supplement*` | Commands (`ls src/Command/Load* src/Command/Seed*`) | Requirements (hardcoded Arrays od. fixtures) + manche Framework-Rows | UI nur über `ComplianceFrameworkLoaderService` match (1 pro Code), Rest CLI-Orphan |
 | **Mapping-Library YAML** | `fixtures/library/mappings/*.yaml` | **64 Dateien** | Cross-Framework-Mappings + Metadaten (methodology, gap_warning, provenance, confidence) | CLI `app:mapping:library:import` (kein UI) |
 | **Mapping-CSV (public)** | `fixtures/mappings/public/*.csv` | **22 Dateien** | Cross-Framework-Mappings (CI/CD-Bootstrap) | CLI `app:mappings:import-csv` (kein UI) |
 | **Seed-Mappings (Code)** | `src/Command/Seed*Iso27001Mappings*` | 8 Commands | Vorgefertigte Crosswalks X↔ISO27001/27701 | UI `ComplianceMappingSeedController` |

@@ -11,7 +11,7 @@ use App\Template\TemplateProviderInterface;
 /**
  * Hyperscaler / SaaS supplier starter set (5 entries).
  *
- * Foundation P-14. AWS, Azure, GCP, Microsoft 365, Google Workspace —
+ * AWS, Azure, GCP, Microsoft 365, Google Workspace —
  * the cloud providers that are present in 90%+ of German SMB ISMS scopes.
  * Each template prefills `name`, `serviceProvided`, `criticality='medium'`,
  * `hasISO27001=true`, `hasDPA=true`, `countryOfHeadOffice='US'`,

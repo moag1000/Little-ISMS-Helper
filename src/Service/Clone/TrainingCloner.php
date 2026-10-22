@@ -12,7 +12,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Training Cloner (C4-C1 — Klon-Funktionen).
+ * Training Cloner.
  *
  * Use case: annual ISO 27001 A.6.3 awareness training cycle — duplicate
  * last year's training schedule and reschedule it. Roll out the same

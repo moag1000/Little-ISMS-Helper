@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * System Settings — application / security / feature flags.
  *
- * Role-Scope (Phase 4e — system-settings cluster): class-level
+ * Role-Scope: class-level
  * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — tenant admins configure
  * the settings scoped to their own tenant; SUPER_ADMIN passes through and
  * may additionally configure cross-tenant defaults. Existing method-level

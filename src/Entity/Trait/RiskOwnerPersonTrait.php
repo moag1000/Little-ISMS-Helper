@@ -26,7 +26,7 @@ trait RiskOwnerPersonTrait
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'risk_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
-    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: PII — mirror FieldVisibilityResolver Risk.ownerPerson
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // PII — mirror FieldVisibilityResolver Risk.ownerPerson
     #[SameTenantOwner]
     private ?Person $riskOwnerPerson = null;
 
@@ -47,7 +47,7 @@ trait RiskOwnerPersonTrait
      * @var Collection<int, Person>
      */
     #[Groups(['risk:read', 'risk:write'])]
-    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: PII — mirror FieldVisibilityResolver Risk.ownerDeputies
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // PII — mirror FieldVisibilityResolver Risk.ownerDeputies
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'risk_owner_deputy')]
     #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]

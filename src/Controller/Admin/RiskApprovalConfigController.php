@@ -22,9 +22,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Phase 8L.F1 — Admin-UI für Approval-Schwellwerte pro Tenant.
+ * Admin-UI für Approval-Schwellwerte pro Tenant.
  *
- * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * ROLE_ADMIN configures own tenant,
  * SUPER_ADMIN any. The optional `tenant_id` POST param lets
  * SUPER_ADMIN target an arbitrary tenant via
  * {@see TenantContext::resolveAdminScope()}.

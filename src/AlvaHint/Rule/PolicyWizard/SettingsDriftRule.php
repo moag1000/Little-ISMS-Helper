@@ -12,7 +12,7 @@ use App\Entity\User;
 use App\Repository\TenantPolicySettingRepository;
 
 /**
- * Policy-Wizard W3-B — Tier-1 settings-drift hint.
+ * Policy-Wizard — Tier-1 settings-drift hint.
  *
  * Fires on the descendant Tenant when one or more of its
  * `TenantPolicySetting` rows carry the `_meta.settings_drift_detected`

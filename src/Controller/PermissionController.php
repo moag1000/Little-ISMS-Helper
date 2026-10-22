@@ -74,7 +74,7 @@ class PermissionController extends AbstractController
     /**
      * Distinct holders of any of $roles. Roles are global, so a non-SUPER_ADMIN
      * actor counts only the holders it may VIEW (UserVoter scope) — never a
-     * cross-organisation total (#1059). Users holding several of the roles are
+     * cross-organisation total. Users holding several of the roles are
      * counted once.
      *
      * @param list<Role> $roles

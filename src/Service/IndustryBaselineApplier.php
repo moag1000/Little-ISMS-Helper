@@ -181,7 +181,7 @@ final class IndustryBaselineApplier
      * subsidiary. Each tenant gets its own AppliedBaseline record and
      * its own preset risks/assets/controls — propagation, not mere
      * reference. Tenants that already have the baseline are left alone
-     * (idempotent per-subtree). Phase 9.P1.5.
+     * (idempotent per-subtree).
      *
      * The return array is keyed by tenant code so a caller can render a
      * per-tenant roll-up ("Holding: 12 risks, Tochter-A: 0 (already

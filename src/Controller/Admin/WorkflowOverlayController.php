@@ -23,10 +23,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Admin UI for workflow step-level overlay editor (Sprint Y.3).
+ * Admin UI for workflow step-level overlay editor.
  *
  * Reads canonical step definitions from:
- *   1. RegulatoryWorkflowLoader::getStepsForWorkflow() (Y.2 contract — service may not yet exist)
+ *   1. RegulatoryWorkflowLoader::getStepsForWorkflow() (the service may not exist)
  *   2. Fallback: parse metadata.steps from config/workflows/regulatory/*.yaml directly
  *   3. Lifecycle workflows: config/workflows/*.yaml (no steps, but listed for cross-link)
  *
@@ -312,7 +312,7 @@ final class WorkflowOverlayController extends AbstractController
     /**
      * Resolve the tenant for the current admin operation.
      *
-     * Phase 4c contract: delegates to {@see TenantContext::resolveAdminScope()}
+     * delegates to {@see TenantContext::resolveAdminScope()}
      * so SUPER_ADMIN can pass an explicit `tenant_id` (query or POST) to
      * target another tenant. ROLE_ADMIN falls back to their own active
      * tenant. Throws AccessDeniedException for cross-tenant attempts.
@@ -397,7 +397,7 @@ final class WorkflowOverlayController extends AbstractController
     {
         $base = \dirname(__DIR__, 3) . '/config/workflows/';
 
-        // Regulatory workflows may be stored under regulatory/ subdirectory (Y.2)
+        // Regulatory workflows may be stored under regulatory/ subdirectory
         $regulatory = $base . 'regulatory/' . $name . '.yaml';
         if (file_exists($regulatory)) {
             return $regulatory;
@@ -456,8 +456,8 @@ final class WorkflowOverlayController extends AbstractController
             return $names;
         }
 
-        // Y.2 not yet merged — return the known 5 critical regulatory workflow names
-        // so the index page is non-empty even before Y.2 ships.
+        // Fallback: return the known 5 critical regulatory workflow names
+        // so the index page is non-empty without the loader service.
         return [
             'gdpr_data_breach',
             'incident_high_severity',

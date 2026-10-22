@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Seed the `policy-approval` workflow definition (Phase 4-C / W3-C).
+ * Seed the `policy-approval` workflow definition.
  *
  * Reflects the 6-step approval pipeline from
  * `docs/plans/policy-wizard/05-architecture.md` §9.1:
@@ -23,7 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   1. prepared             — author submits the draft
  *   2. ciso_review          — CISO reviews non-privacy content
  *   3. dpo_cross_check      — DPO cross-checks privacy implications
- *   4. function_owner_review— P1 Risk-Owner sign-off (W3 NEW)
+ *   4. function_owner_review— Risk-Owner sign-off
  *   5. top_mgmt_signoff     — Top-Management ceremony
  *   6. published            — terminal state
  *
@@ -34,7 +34,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Run as one-off after deploy:
  *   php bin/console app:seed-policy-approval-workflow
  *
- * @deprecated since Sprint Y.2 — policy-approval workflow steps should be migrated
+ * @deprecated policy-approval workflow steps should be migrated
  *   to config/workflows/regulatory/document_review.yaml.
  *   This command will be removed in a future release.
  */

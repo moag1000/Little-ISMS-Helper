@@ -43,7 +43,7 @@
            class="fa-row-link"
            data-turbo-frame="fa-form-modal"><strong>{{ document.originalFilename }}</strong></a>
         {{ inheritance.small_badge(document, currentTenant) }}
-        {# Policy-Wizard W7-C — settings-drift badge. #}
+        {# Policy-Wizard — settings-drift badge. #}
         {% if driftMap[document.id] is defined and driftMap[document.id] %}
             {{ pill.render('policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard'), 'warning', {size: 'sm', icon: 'status-warning', class: 'ms-1', title: 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard')}) }}
         {% endif %}

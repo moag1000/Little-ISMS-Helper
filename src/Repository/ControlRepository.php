@@ -350,7 +350,7 @@ class ControlRepository extends ServiceEntityRepository
     }
 
     /**
-     * F4 — all controls for the given tenant where evidenceOutdated=true.
+     * All controls for the given tenant where evidenceOutdated=true.
      * Used by EvidenceCascadeInvalidationService and the OutdatedEvidence Alva-Hint.
      *
      * @return Control[]

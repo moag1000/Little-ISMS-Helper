@@ -11,7 +11,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * F30 — Repository for DoraRegisterOfInformation.
+ * Repository for DoraRegisterOfInformation.
  *
  * @extends ServiceEntityRepository<DoraRegisterOfInformation>
  */

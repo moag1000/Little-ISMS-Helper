@@ -11,7 +11,7 @@ namespace App\Enum;
  * AssetType FormType + `asset_lifecycle` Symfony Workflow places; values are
  * unchanged so no data migration is needed.
  *
- * Phase 1 status-enum rollout — typed surface for application code while
+ * typed surface for application code while
  * the storage column and setStatus(string) accessor stay backward-compatible.
  */
 enum AssetStatus: string

@@ -81,7 +81,7 @@ class AssetRepository extends ServiceEntityRepository
     }
 
     /**
-     * DORA Phase 1 — RoI scope filter.
+     * DORA — RoI scope filter.
      *
      * Returns only assets flagged as DORA-relevant (isDoraRelevant = true)
      * for the given tenant. Used by DoraRoiXbrlExporter::generate() to

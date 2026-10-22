@@ -151,30 +151,4 @@ final class ProcessingActivityValidationTest extends TestCase
         self::assertStringContainsString("'processing_activity.validation.recipient_categories_required'", $source);
         self::assertStringContainsString("->atPath('recipientCategories')", $source);
     }
-
-    // ── Audit markers (grep-ability when the roadmap is closed out) ───────
-
-    #[Test]
-    public function entityCarriesC2_02AuditMarker(): void
-    {
-        $source = self::getEntitySource();
-
-        self::assertStringContainsString(
-            'Junior-ISB-Audit-2026-05-22 C2-02',
-            $source,
-            'ProcessingActivity entity must carry the C2-02 audit marker on the retention field doc-blocks.'
-        );
-    }
-
-    #[Test]
-    public function entityCarriesC2_03AuditMarker(): void
-    {
-        $source = self::getEntitySource();
-
-        self::assertStringContainsString(
-            'Junior-ISB-Audit-2026-05-22 C2-03',
-            $source,
-            'ProcessingActivity entity must carry the C2-03 audit marker on TOM / implementedControls / validator.'
-        );
-    }
 }

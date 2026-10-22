@@ -13,7 +13,7 @@ use App\Repository\RiskRepository;
 /**
  * Asset Criticality Service
  *
- * Phase 7B: Asset risk profiling and criticality analytics.
+ * Asset risk profiling and criticality analytics.
  * Analyzes assets based on CIA values, incident history, and risk exposure.
  */
 final class AssetCriticalityService

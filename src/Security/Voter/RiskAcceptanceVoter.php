@@ -22,7 +22,6 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  *  Score 13–19  → ROLE_ADMIN     (high risk — senior approval)
  *  Score 20–25  → ROLE_SUPER_ADMIN (critical risk — executive sign-off)
  */
-// Junior-ISB-Audit-2026-05-22 #582-followup: RiskAcceptanceVoter hierarchy-aware
 final class RiskAcceptanceVoter extends Voter
 {
     public const string APPROVE = 'risk_acceptance_approve';

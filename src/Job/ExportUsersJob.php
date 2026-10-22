@@ -26,8 +26,6 @@ use App\Util\CsvSanitizer;
  * filter is not relied upon because it is unarmed outside the HTTP request.
  * A legacy single `tenantId` of a since-deleted organisation yields an empty
  * file (no matching users) instead of a TenantNotFoundException.
- *
- * Phase 3 of the async admin-jobs rollout.
  */
 final class ExportUsersJob implements AsyncJobInterface
 {

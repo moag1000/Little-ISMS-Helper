@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { faT } from '../js/fa-i18n.js';
 
 /**
- * F11 FTE-Tracking — Chart.js trend chart with period toggle.
+ * FTE-Tracking — Chart.js trend chart with period toggle.
  *
  * Reads all 12-month data from data-attributes, then slices to the
  * selected period (3m / 6m / 12m) on toggle. No additional HTTP request.

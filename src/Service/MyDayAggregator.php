@@ -42,10 +42,10 @@ use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Audit V3 C1 — Mein-Tag (Central Inbox) Aggregator.
+ * Mein-Tag (Central Inbox) Aggregator.
  *
  * Aggregates open items for the current user across the distributed inboxes.
- * Original 7 buckets (Audit V3):
+ * Core buckets:
  *   - workflow/pending + workflow/overdue
  *   - four_eyes/inbox
  *   - policy_acknowledgement/inbox
@@ -53,12 +53,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *   - data_subject_request (assigned-to-me)
  *   - corrective_action overdue
  *
- * Audit V4 V4-LB-1 Round-1 (ISB-Practitioner) — added 3 ISB-Pflicht-Buckets:
+ * ISB-Pflicht-Buckets:
  *   - risk_acceptance_expiring  (Risk.acceptanceExpiryDate ≤ today+30d)
  *   - documents_review_overdue  (Document.nextReviewDate  < today)
  *   - trainings_pending         (TrainingParticipation.status = pending for me)
  *
- * Audit V4 V4-LB-1 Round-2 — added 6 ISB-Tagesgeschäft-Buckets covering
+ * ISB-Tagesgeschäft-Buckets covering
  * incident handling, GDPR breach notification, vulnerability management,
  * audit programme execution, change governance, and management-review
  * cadence:
@@ -91,7 +91,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class MyDayAggregator
 {
-    /** Days-window for Risk-acceptance-expiry surfacing (Audit V4 V4-LB-1). */
+    /** Days-window for Risk-acceptance-expiry surfacing. */
     private const RISK_ACCEPTANCE_WARN_DAYS = 30;
 
     /** Audit-checklist `plannedDate` look-ahead window (V4 R2). */
@@ -166,7 +166,7 @@ final class MyDayAggregator
         $tenant = $this->tenantContext->getCurrentTenant();
         $today = new DateTimeImmutable();
 
-        // Audit V3 W2-C2: tenant-scope all aggregator queries to prevent
+        // Tenant-scope all aggregator queries to prevent
         // Cross-Tenant-Leakage. Without an active tenant we surface nothing
         // — better empty than mixed-tenant.
         $workflowsPending = $tenant ? $this->buildWorkflowsPending($user, $tenant) : [];
@@ -176,11 +176,11 @@ final class MyDayAggregator
         $findings        = $tenant ? $this->buildFindings($user, $tenant) : [];
         $dsrs            = $tenant ? $this->buildDsrs($user, $tenant) : [];
         $caOverdue       = $tenant ? $this->buildCorrectiveActionsOverdue($user, $tenant) : [];
-        // Audit V4 V4-LB-1 Round-1 — ISB-Pflicht-Buckets.
+        // ISB-Pflicht-Buckets.
         $riskAcceptance  = $tenant ? $this->buildRiskAcceptanceExpiring($user, $tenant) : [];
         $docsReviewOver  = $tenant ? $this->buildDocumentsReviewOverdue($user, $tenant) : [];
         $trainingsPending = $tenant ? $this->buildTrainingsPending($user, $tenant) : [];
-        // Audit V4 V4-LB-1 Round-2 — ISB-Tagesgeschäft-Buckets.
+        // ISB-Tagesgeschäft-Buckets.
         $incidentsAssigned = $tenant ? $this->buildIncidentsOpenAssigned($user, $tenant) : [];
         $breaches72h       = $tenant ? $this->buildDataBreaches72hTicking($user, $tenant) : [];
         $vulnsCritical     = $tenant ? $this->buildVulnerabilitiesCriticalUnpatched($user, $tenant) : [];
@@ -393,7 +393,7 @@ final class MyDayAggregator
                 && !$document->getRequiresAcknowledgement()) {
                 continue;
             }
-            // Check if ack exists for this user + version. Audit V3 W2-C4:
+            // Check if ack exists for this user + version. 
             // PENDING rows (created by Auto-Acknowledgement-Campaign) keep
             // the document on the user's My-Day list — only ACKNOWLEDGED
             // rows close the item.
@@ -492,11 +492,11 @@ final class MyDayAggregator
 
     private function dsrAssignedToUser(DataSubjectRequest $dsr, User $user): bool
     {
-        // Audit V3 W2-C2 DSGVO-Fix: DSRs contain personally-identifiable
+        // DSGVO-Fix: DSRs contain personally-identifiable
         // data of the data subject (Art. 4 (1) DSGVO). Surface them ONLY
         // to the explicitly assigned handler — no See-All-Fallback for
         // generic ROLE_MANAGER. The DPO/Compliance-Manager-Persona has
-        // a dedicated dashboard via ROLE_DPO (W2-C5); seeing every open
+        // a dedicated dashboard via ROLE_DPO; seeing every open
         // DSR via My-Day would breach Art. 5 (1) (c) (Datenminimierung).
         if (method_exists($dsr, 'getAssignedTo')) {
             $u = $dsr->getAssignedTo();
@@ -547,7 +547,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 — Risks whose formal acceptance expires within
+     * Risks whose formal acceptance expires within
      * RISK_ACCEPTANCE_WARN_DAYS (or already has). The ISB has to renew
      * acceptance OR pivot to a different treatment-strategy. Surfaces to
      * the risk owner; CISO/Manager (ROLE_ADMIN/ROLE_MANAGER) sees them all
@@ -597,7 +597,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 — Approved Documents whose review-cycle is overdue.
+     * Approved Documents whose review-cycle is overdue.
      * ISO 27001 Clause 7.5.3 requires periodic re-validation of documented
      * information. Surfaces to the document-owner; falls back to ROLE_ADMIN
      * / ROLE_MANAGER (governance-wide responsibility).
@@ -651,7 +651,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 — TrainingParticipations with status=pending for the
+     * TrainingParticipations with status=pending for the
      * current user. Strict per-user filter (no governance fallback): a
      * pending training is the responsibility of the assignee, not of the
      * Manager.
@@ -685,7 +685,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Open security incidents currently assigned
+     * Open security incidents currently assigned
      * to the user (or reported by user). ISO 27035-1 §6.3 — ongoing incident
      * monitoring is the operational duty of the assignee. Governance roles
      * (Admin/Manager/CISO) see ALL open incidents because incident oversight
@@ -740,7 +740,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Data breaches whose GDPR Art. 33 72h
+     * Data breaches whose GDPR Art. 33 72h
      * authority-notification clock is still ticking. Surfaces ONLY to
      * DPO / Manager / Admin — not every employee should see breach details
      * (DSGVO Art. 5 (1) (c) Datenminimierung). Already-overdue breaches
@@ -791,7 +791,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Critical / high vulnerabilities still
+     * Critical / high vulnerabilities still
      * open (NIS2 Art. 21 (2) (e)). Visible to ISB/CISO/Manager and the
      * named `responsiblePerson` (string-match best-effort).
      *
@@ -848,7 +848,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Audit-checklist items due within 7 days,
+     * Audit-checklist items due within 7 days,
      * not yet verified, for the assigned auditor. ISO 27001 Clause 9.2 —
      * Internal-Audit programme execution. Visible to assigned auditor +
      * audit-coordinator roles (Admin / Manager / Auditor).
@@ -884,7 +884,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Change-requests pending approval. ISO 27001
+     * Change-requests pending approval. ISO 27001
      * Clause 6.3 (Planning of Changes) requires evidence-trail for every
      * approval. Visible to ROLE_MANAGER / ROLE_ADMIN (CAB-equivalent) — the
      * `approvedBy` column is a free-text auto-fill on approval and cannot
@@ -928,7 +928,7 @@ final class MyDayAggregator
     }
 
     /**
-     * Audit V4 V4-LB-1 Round-2 — Management reviews scheduled within the
+     * Management reviews scheduled within the
      * next 90 days. ISO 27001 Clause 9.3 mandates planned-interval reviews;
      * the bucket reminds top-management + ISB to prepare inputs in time.
      * Visible to top-management proxies (Admin / Manager / CISO) and the

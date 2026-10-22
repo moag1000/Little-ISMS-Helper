@@ -12,7 +12,7 @@ use App\Repository\DocumentRepository;
 /**
  * Resolves the free-text "Referenz Dokumentation" citation carried by an
  * imported TISAX ComplianceRequirement into real {@see Document} evidence
- * (B3, spec §9.1 / §9.4).
+ * (spec §9.1 / §9.4).
  *
  * Before this, the VDA-ISA import stored the assessor's cited documents only as
  * a string in `dataSourceMapping.referenceDocumentation`, leaving the entity's

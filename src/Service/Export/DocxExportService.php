@@ -10,7 +10,7 @@ use PhpOffice\PhpWord\Shared\Html as PhpWordHtml;
 use PhpOffice\PhpWord\Writer\Word2007;
 
 /**
- * F20 — DOCX + Markdown export for ISMS Documents.
+ * DOCX + Markdown export for ISMS Documents.
  *
  * The canonical document body is Markdown ({@see Document::getEffectivePolicyBody()},
  * with the same fallback chain the PDF exporter uses). This service renders that

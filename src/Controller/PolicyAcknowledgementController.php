@@ -20,8 +20,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * HTTP surface for the per-user PolicyAcknowledgement collection flow
- * (W3-L). Closes the auditor's predicted ISO 27001 A.6.3 NC.
+ * HTTP surface for the per-user PolicyAcknowledgement collection flow.
+ * Closes the auditor's predicted ISO 27001 A.6.3 NC.
  *
  * Routes:
  *   GET  /policy-ack/inbox            inbox of pending policies for the user

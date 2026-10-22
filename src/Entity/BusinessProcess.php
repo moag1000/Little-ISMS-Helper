@@ -59,7 +59,7 @@ class BusinessProcess
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $financialImpactPerDay = null;
 
-    // Reputationsschaden — Junior-ISB-Audit T4.2: nullable for Save-as-Draft
+    // Reputationsschaden — nullable for Save-as-Draft
     // (BIA assessment is incremental work; require completion only when the
     // process is promoted out of draft, not at first save).
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -864,7 +864,7 @@ class BusinessProcess
         return $totalLoss;
     }
 
-    // Junior-ISB-Audit-2026-05-22 M-01: ISO 22301 Cl. 8.2.2 / 8.3.2 Recovery-Kette RPO ≤ RTO ≤ MTPD
+    // ISO 22301 Cl. 8.2.2 / 8.3.2 Recovery-Kette RPO ≤ RTO ≤ MTPD
     /**
      * ISO 22301 Cl. 8.2.2 / 8.3.2 — enforce the full BIA recovery-chain
      * RPO ≤ RTO ≤ MTPD on save.

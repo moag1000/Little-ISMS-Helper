@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Phase 8L.F2 — Read-only Value-Object für aufgelöste SLA pro Severity.
+ * Read-only Value-Object für aufgelöste SLA pro Severity.
  */
 final readonly class IncidentSlaView
 {
@@ -41,7 +41,7 @@ final readonly class IncidentSlaView
 }
 
 /**
- * Phase 8L.F2 — Resolver für Incident-SLAs.
+ * Resolver für Incident-SLAs.
  *
  * Einziger Zugang zur SLA-Config. Konsumenten rufen nie direkt Repository.
  * Default-Fallback wenn kein Record da (Robustheit: Incident-Flow darf
@@ -49,7 +49,7 @@ final readonly class IncidentSlaView
  *
  * Cache pro (Tenant-ID, Severity).
  *
- * Phase 8M.2 — Ceiling-Merge pro Severity:
+ * Ceiling-Merge pro Severity:
  * Ein Holding-Parent setzt Maximum-Stunden. Child-Tenants dürfen nur
  * NIEDRIGERE (schnellere/strengere) Stunden setzen. Null bedeutet
  * „kein Wert gesetzt" — minNullable() behandelt das korrekt.
@@ -89,7 +89,7 @@ class IncidentSlaConfigResolver
             $view = IncidentSlaView::fromEntity($childEntity);
         }
 
-        // 8M.2: Ceiling-Merge pro Severity — Ancestor-Walk (Parent zuerst, Root zuletzt).
+        // Ceiling-Merge pro Severity — Ancestor-Walk (Parent zuerst, Root zuletzt).
         // min() stellt sicher, dass Child nicht laxere SLAs als Holding-Parent bekommt.
         foreach ($tenant->getAllAncestors() as $ancestor) {
             $ancestorEntity = $this->repository->findByTenantAndSeverity($ancestor, $severity);

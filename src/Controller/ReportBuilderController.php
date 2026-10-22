@@ -26,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Report Builder Controller
  *
- * Phase 7C: Manages custom report creation, editing, and generation.
+ * Manages custom report creation, editing, and generation.
  * Provides drag & drop visual designer for building custom reports.
  */
 // @no-methods-required — class-level path prefix, methods declared per action

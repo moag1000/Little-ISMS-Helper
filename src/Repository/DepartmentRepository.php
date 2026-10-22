@@ -10,7 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * Department Repository (S18 B3).
+ * Department Repository.
  *
  * @extends ServiceEntityRepository<Department>
  *

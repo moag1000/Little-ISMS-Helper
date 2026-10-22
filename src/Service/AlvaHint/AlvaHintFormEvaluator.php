@@ -27,7 +27,7 @@ use Symfony\Bundle\SecurityBundle\Security;
  *    table. Telemetry, if added later, must be aggregated client-side
  *    or via the existing dismiss endpoint.
  *
- * Foundation pattern P-19: Form-Step-Inline-Hint.
+ * Form-Step-Inline-Hint.
  */
 final class AlvaHintFormEvaluator
 {

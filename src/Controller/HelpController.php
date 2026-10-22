@@ -31,7 +31,7 @@ class HelpController extends AbstractController
     }
 
     /**
-     * Sprint 13 / P6-alt — Statische Übersicht aller Tour-Rollen als
+     * Statische Übersicht aller Tour-Rollen als
      * druckbares Handout-Material. Ersetzt den ursprünglich geplanten
      * PDF-Export (~75 % Aufwand bei gleichem Consultant-Nutzen).
      */

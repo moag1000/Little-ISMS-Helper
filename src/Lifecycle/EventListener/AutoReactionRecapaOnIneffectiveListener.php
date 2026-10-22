@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Workflow\Event\CompletedEvent;
 
 /**
- * Junior-ISB-Audit C4-01 — Auto-Eskalation auf
+ * Auto-Eskalation auf
  * `corrective_action_lifecycle.verify_ineffective`.
  *
  * ISO 27001 Cl. 10.1 (d) verlangt bei unwirksamen Korrekturmaßnahmen

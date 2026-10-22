@@ -7,7 +7,7 @@ namespace App\Message\Schedule;
 use DateTimeImmutable;
 
 /**
- * F39 — scheduled message to sync the ENISA EU Vulnerability Database (EUVD)
+ * Scheduled message to sync the ENISA EU Vulnerability Database (EUVD)
  * feed and flag existing vulnerabilities present in the EU database.
  *
  * Dispatched by {@see \App\Schedule} (daily). Handled by

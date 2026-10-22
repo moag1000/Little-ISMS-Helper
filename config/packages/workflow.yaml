@@ -16,7 +16,7 @@ imports:
     - { resource: '../workflows/internal_audit.yaml' }
     - { resource: '../workflows/risk.yaml' }
     - { resource: '../workflows/vulnerability.yaml' }
-    # Sprint Y.5 — 10 additional entity lifecycles (close FormType-bypass surface)
+    # 10 additional entity lifecycles (close FormType-bypass surface)
     - { resource: '../workflows/training.yaml' }
     - { resource: '../workflows/risk_treatment_plan.yaml' }
     - { resource: '../workflows/supplier.yaml' }
@@ -27,15 +27,15 @@ imports:
     - { resource: '../workflows/change_request.yaml' }
     - { resource: '../workflows/threat_intelligence.yaml' }
     - { resource: '../workflows/bc_exercise.yaml' }
-    # Junior-ISB-Audit-2026-05-22 S-01 — Sprint S13 InterestedParty lifecycle
+    # InterestedParty lifecycle
     - { resource: '../workflows/interested_party.yaml' }
-    # Junior-ISB-Audit Phase-2 Lifecycle — NotificationDelivery 6-stage pipeline
+    # NotificationDelivery 6-stage pipeline
     # (ISO 27001 Cl. 7.4 + DORA Art. 19 end-to-end notification traceability).
     - { resource: '../workflows/notification_delivery.yaml' }
-    # Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities (Permission + Role)
+    # RBAC core entities (Permission + Role)
     - { resource: '../workflows/permission.yaml' }
     - { resource: '../workflows/role.yaml' }
-    # Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper)
+    # Tenant (security-critical, 30+ isActive callsites preserved via wrapper)
     - { resource: '../workflows/tenant.yaml' }
     # Lifecycle completion — staged-status entities that still bypassed the facade
     - { resource: '../workflows/document_section.yaml' }
@@ -45,7 +45,7 @@ imports:
     - { resource: '../workflows/access_review_campaign.yaml' }
     # Global catalogue data (no tenant) — roles enforced from YAML in ComplianceMappingController
     - { resource: '../workflows/compliance_mapping.yaml' }
-    # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
+    # Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }
     - { resource: '../workflows/regulatory/incident_low_severity.yaml' }

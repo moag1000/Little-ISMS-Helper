@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * F21 — MCP (Model Context Protocol) stdio server for read-only catalogue
+ * MCP (Model Context Protocol) stdio server for read-only catalogue
  * queries. Speaks JSON-RPC 2.0 line-delimited over STDIN/STDOUT, the transport
  * an MCP host (LLM client) expects. Each STDIN line is one JSON-RPC request;
  * each response is written as a single JSON line to STDOUT.
