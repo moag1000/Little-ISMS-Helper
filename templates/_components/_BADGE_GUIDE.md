@@ -6,9 +6,7 @@ Standardized badge system with 4 categories, full dark mode support, and consist
 ## BC-Bridge Status (2026-05-06)
 
 `_badge` emittiert sowohl Bootstrap- (`.badge.bg-X`) als auch Aurora-
-Klassen (`.fa-status-pill.fa-status-pill--X`). Cleanup-Trigger gemäß
-Spec `docs/superpowers/specs/2026-05-06-aurora-v4-zindex-bigbang-design.md`
-§0 BC-Alias-Cleanup.
+Klassen (`.fa-status-pill.fa-status-pill--X`). Cleanup-Trigger: BC-Alias-Cleanup.
 
 | Bootstrap-Variant | Aurora-Variant | Notes |
 |---|---|---|

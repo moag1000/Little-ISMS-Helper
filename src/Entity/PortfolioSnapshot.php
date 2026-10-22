@@ -20,8 +20,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Populated by: app:portfolio:capture-snapshot (designed for daily cron)
  * Consumed by:  PortfolioReportService::buildMatrixWithTrend()
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-3
  */
 #[ORM\Entity(repositoryClass: PortfolioSnapshotRepository::class)]
 #[ORM\Table(name: 'portfolio_snapshot')]

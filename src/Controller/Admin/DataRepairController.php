@@ -788,7 +788,7 @@ class DataRepairController extends AbstractController
     /**
      * Bulk-assigns every orphaned entity (across all types) to the selected tenant.
      *
-     * Consultant-Review A2 (docs/DB_REPAIR_REVIEW_CONSULTANT.md): this is a
+     * This is a
      * DSGVO incident trigger in multi-tenant deployments — a misclick can
      * silently reassign assets/risks/incidents that belong to tenant A into
      * tenant B's namespace. The bulk path is therefore gated:

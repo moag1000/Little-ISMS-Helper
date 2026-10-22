@@ -27,8 +27,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CSV for the current tenant. Guarded by ROLE_MANAGER — export contains
  * regulated third-party data. Every download is audit-logged via
  * AuditLogger::logExport() for supervisory traceability.
- *
- * Tracks MINOR-6 in docs/DATA_REUSE_PLAN_REVIEW_ISB.md.
  */
 #[RequiresModule('nis2_dora')]
 class DoraRegisterExportController extends AbstractController

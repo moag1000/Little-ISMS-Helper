@@ -16,8 +16,6 @@ use App\Util\CsvSanitizer;
  * (DORA Art. 28). Produces a supervisory-grade CSV with the exact 19 ITS-
  * mandated columns, RFC 4180 quoting, UTF-8 BOM for Excel, and deterministic
  * field formatting (ISO-8601 dates, Y/N booleans, pipe-joined lists).
- *
- * Tracks MINOR-6 in docs/DATA_REUSE_PLAN_REVIEW_ISB.md.
  */
 final class DoraRegisterOfInformationExporter
 {

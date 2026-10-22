@@ -41,8 +41,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   - InheritanceMetricsService (CM-1/CM-5) for the inheritance rate + FTE saved
  *   - GapEffortCalculator (WS-6) for remaining-effort per requirement
  *   - ExcelExportService for BOM-safe / formula-injection-safe cell writes
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-2
  */
 final class DeltaAssessmentExcelExporter
 {

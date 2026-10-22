@@ -23,7 +23,7 @@ use LogicException;
 /**
  * Orchestrates mapping-based inheritance suggestions with mandatory review.
  *
- * See docs/DATA_REUSE_IMPROVEMENT_PLAN.md v1.1 WS-1 and docs/WS1_UX_DEV_DESIGN.md.
+ * See docs/DATA_REUSE_IMPROVEMENT_PLAN.md v1.1 WS-1.
  *
  * Suggestions never write ComplianceRequirementFulfillment.fulfillmentPercentage
  * directly — they land in FulfillmentInheritanceLog with status pending_review.

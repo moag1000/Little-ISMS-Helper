@@ -26,8 +26,6 @@ use DateTimeInterface;
  * granularly persisted over time, so a freeze for a past Stichtag returns
  * CURRENT values. The limitation is carried in the payload meta section
  * so auditors know what they are looking at.
- *
- * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
 final class AuditFreezeSnapshotBuilder
 {

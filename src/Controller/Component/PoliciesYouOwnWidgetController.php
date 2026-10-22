@@ -24,8 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * The controller is intended to be embedded into the dashboard via
  *   {{ render(controller('App\\Controller\\Component\\PoliciesYouOwnWidgetController::widget')) }}
  *
- * Closes the Risk-Owner review's "What's missing #5" gap from
- * `docs/plans/policy-wizard/07-risk-owner-review.md` (lines 226-230).
+ * Gives Risk-Owners an overview of the policies they own.
  */
 final class PoliciesYouOwnWidgetController extends AbstractController
 {
