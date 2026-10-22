@@ -64,7 +64,6 @@ PR_DESCRIPTION.md
 .idea/
 
 ###> temporary analysis & utility files ###
-/docs/
 fix_specific_headings.php
 ###< temporary analysis & utility files ###
 
@@ -104,3 +103,6 @@ __pycache__/
 /var/quickfix-snapshots/
 
 /.playwright-mcp/
+
+# Local AI-assistant history — never commit
+/.local-code/
