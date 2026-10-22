@@ -2,7 +2,7 @@
 
 > **Zielgruppe:** Compliance Manager, CISO, ISB, DPO  
 > **Sprache:** Deutsch (primär) / English where indicated  
-> **Cross-references:** [MODULE_GATING_GUIDE.md](../MODULE_GATING_GUIDE.md) (Entwickler) | [FORM_AUDIT_2026-05.md](../FORM_AUDIT_2026-05.md) (Auditoren)
+> **Cross-references:** [MODULE_GATING_GUIDE.md](../MODULE_GATING_GUIDE.md) (Entwickler) | [FORM_AUDIT_2026-05.md](../archive/FORM_AUDIT_2026-05.md) (Auditoren)
 
 ---
 

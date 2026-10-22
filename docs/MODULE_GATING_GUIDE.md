@@ -1,6 +1,6 @@
 # Module Gating Guide — Developer Reference
 
-> Cross-references: [FORM_AUDIT_2026-05.md](FORM_AUDIT_2026-05.md) | [CONTRIBUTING.md](../CONTRIBUTING.md#module-gating-pattern) | [User Guide](user-guide/MODULE_AKTIVIERUNG.md)
+> Cross-references: [FORM_AUDIT_2026-05.md](archive/FORM_AUDIT_2026-05.md) | [CONTRIBUTING.md](../CONTRIBUTING.md#module-gating-pattern) | [User Guide](user-guide/MODULE_AKTIVIERUNG.md)
 
 ## Overview
 
@@ -493,7 +493,7 @@ $this->assertSelectorNotExists('[name="risk_form[ictRiskCategory]"]');
 
 ## See Also
 
-- [FORM_AUDIT_2026-05.md](FORM_AUDIT_2026-05.md) — Compliance-Coverage-Matrix per norm
+- [FORM_AUDIT_2026-05.md](archive/FORM_AUDIT_2026-05.md) — Compliance-Coverage-Matrix per norm
 - [CONTRIBUTING.md](../CONTRIBUTING.md#module-gating-pattern) — Form Standards with Module-Gating subsection
 - [user-guide/MODULE_AKTIVIERUNG.md](user-guide/MODULE_AKTIVIERUNG.md) — User-facing setup guide
 - `config/modules.yaml` — Module definitions and metadata

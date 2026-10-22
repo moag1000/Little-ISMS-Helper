@@ -246,7 +246,7 @@ BaFin-RS 09/2017 i.d.F. 2023) ist ein eigenstaendiges BaFin-Rundschreiben fuer
 das Bankrisikomanagement. Das Tool implementiert MRIS als ergaenzendes internes
 Framework — keine MaRisk-Wizards.
 
-Dokumentation: `docs/MRIS_INTEGRATION_PLAN.md`, `docs/MRIS_HELP_TEXTS_JUNIOR_REQUEST.md`
+Dokumentation: `docs/archive/MRIS_INTEGRATION_PLAN.md`, `docs/MRIS_HELP_TEXTS_JUNIOR_REQUEST.md`
 
 Routen: `/dev/mris/*` (intern, nicht im Kundenmenue)
 

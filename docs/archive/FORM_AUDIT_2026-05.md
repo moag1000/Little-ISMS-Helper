@@ -3,7 +3,7 @@
 > **Audience:** External auditors, compliance officers, CISO, DPO  
 > **Period covered:** 2026-05-01 – 2026-05-08  
 > **Scope:** T31 FormType Norm-Gating Rollout, Sprints 1–8  
-> **Cross-references:** [MODULE_GATING_GUIDE.md](MODULE_GATING_GUIDE.md) | [CONTRIBUTING.md](../CONTRIBUTING.md)
+> **Cross-references:** [MODULE_GATING_GUIDE.md](../MODULE_GATING_GUIDE.md) | [CONTRIBUTING.md](../../CONTRIBUTING.md)
 
 ---
 
