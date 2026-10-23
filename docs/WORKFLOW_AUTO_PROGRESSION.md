@@ -578,7 +578,7 @@ workflow manipulation via crafted entity updates.
 
 ## References
 
-- [WORKFLOW_REQUIREMENTS.md](WORKFLOW_REQUIREMENTS.md) - Regulatory requirements and SLAs
+- [config/workflows/regulatory/](../config/workflows/regulatory/) - Regulatory workflow definitions (steps and SLAs)
 - [ISO 27001:2022](https://www.iso.org/standard/27001) - Information security management
 - [GDPR Art. 33/34](https://gdpr-info.eu/) - Data breach notification requirements
 - [BSI IT-Grundschutz](https://www.bsi.bund.de/) - German IT security baseline
@@ -587,6 +587,6 @@ workflow manipulation via crafted entity updates.
 
 For questions or issues with the workflow system:
 1. Check this documentation
-2. Review `docs/WORKFLOW_REQUIREMENTS.md` for regulatory context
+2. Review the YAML definitions in `config/workflows/regulatory/` for regulatory context
 3. Check application logs in `var/log/dev.log`
 4. Review workflow instance approval history in the UI

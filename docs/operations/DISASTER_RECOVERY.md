@@ -543,5 +543,5 @@ php bin/console cache:clear --env=prod
 ## Verwandte Dokumente
 
 - [BACKUP_ARCHITECTURE.md](BACKUP_ARCHITECTURE.md) — technische Referenz für Entwickler
-- [docs/WORKFLOW_REQUIREMENTS.md](../WORKFLOW_REQUIREMENTS.md) — Regulatory Workflow Anforderungen
+- [config/workflows/regulatory/](../../config/workflows/regulatory/) — Regulatory Workflow Definitionen
 - [docs/setup/AUDIT_LOGGING.md](../setup/AUDIT_LOGGING.md) — Audit-Log Konfiguration
