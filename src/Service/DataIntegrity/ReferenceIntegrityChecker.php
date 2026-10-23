@@ -17,6 +17,8 @@ use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
 use App\Repository\TrainingRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Checks structural reference integrity: broken FK references, missing required
@@ -58,7 +60,20 @@ final class ReferenceIntegrityChecker
         private readonly BusinessContinuityPlanRepository $bcPlanRepository,
         private readonly ?DataSubjectRequestRepository $dataSubjectRequestRepository = null,
         private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
+        private readonly LoggerInterface $logger = new NullLogger(),
     ) {
+    }
+
+    /**
+     * A failing status/ownership query skips only that check (the other checks stay valid),
+     * so the failure is logged instead of aborting the whole report.
+     */
+    private function logSkippedCheck(string $check, \Throwable $e): void
+    {
+        $this->logger->warning('Reference integrity check skipped: {check} failed', [
+            'check' => $check,
+            'exception' => $e,
+        ]);
     }
 
     /**
@@ -313,8 +328,8 @@ final class ReferenceIntegrityChecker
             if (is_array($invalidRiskStatuses) && count($invalidRiskStatuses) > 0) {
                 $inconsistent['invalid_risk_status'] = $invalidRiskStatuses;
             }
-        } catch (\Throwable) {
-            // Skip if query fails (e.g., in unit tests with mocked repos)
+        } catch (\Throwable $e) {
+            $this->logSkippedCheck('invalid_risk_status', $e);
         }
 
         // Risk: accept without formal acceptance
@@ -332,7 +347,8 @@ final class ReferenceIntegrityChecker
             if (is_array($invalidIncidentStatuses) && count($invalidIncidentStatuses) > 0) {
                 $inconsistent['invalid_incident_status'] = $invalidIncidentStatuses;
             }
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            $this->logSkippedCheck('invalid_incident_status', $e);
         }
 
         // DataSubjectRequest checks
@@ -381,7 +397,8 @@ final class ReferenceIntegrityChecker
             if (is_array($docsWithoutOwner) && count($docsWithoutOwner) > 0) {
                 $inconsistent['documents_without_owner'] = $docsWithoutOwner;
             }
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            $this->logSkippedCheck('documents_without_owner', $e);
         }
 
         return $inconsistent;

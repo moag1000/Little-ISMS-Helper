@@ -54,6 +54,22 @@ final class HealthIssueAggregator
     }
 
     /**
+     * Runs one independent health check. A failing query (table missing, schema not yet
+     * migrated, mocked repository) skips only that check, so the remaining checks of the
+     * same group still report.
+     *
+     * @param callable():void $check
+     */
+    private function probe(callable $check): void
+    {
+        try {
+            $check();
+        } catch (\Throwable) {
+            // skip this check only; see docblock
+        }
+    }
+
+    /**
      * Risk-specific health checks (ISO 27005 / ISO 27001 Clause 6.1.2).
      *
      * Returns four keyed arrays, each an array of Risk objects:
@@ -144,7 +160,7 @@ final class HealthIssueAggregator
         $issues = [];
 
         // Check 1: Assets without CIA values (all three NULL or 0 = no classification)
-        try {
+        $this->probe(function () use (&$issues): void {
             $assetsWithoutCia = $this->assetRepository->createQueryBuilder('a')
                 ->where(
                     '(a.confidentialityValue IS NULL OR a.confidentialityValue = 0) AND ' .
@@ -156,11 +172,10 @@ final class HealthIssueAggregator
             if (count($assetsWithoutCia) > 0) {
                 $issues['assets_without_cia'] = $assetsWithoutCia;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 2: Data Breaches overdue 72h supervisory authority notification (GDPR Art. 33)
-        try {
+        $this->probe(function () use (&$issues): void {
             $cutoff = new \DateTimeImmutable('-72 hours');
             $overdueBreaches = $this->dataBreachRepository->createQueryBuilder('db')
                 ->where('db.requiresAuthorityNotification = :req')
@@ -174,12 +189,11 @@ final class HealthIssueAggregator
             if (count($overdueBreaches) > 0) {
                 $issues['breaches_overdue_72h'] = $overdueBreaches;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 3: Data Subject Requests past 30-day deadline and still open (GDPR Art. 12(3))
         if ($this->dataSubjectRequestRepository !== null) {
-            try {
+            $this->probe(function () use (&$issues): void {
                 $now = new \DateTimeImmutable();
                 $overdueDsr = $this->dataSubjectRequestRepository->createQueryBuilder('d')
                     ->where('d.deadlineAt IS NOT NULL')
@@ -192,13 +206,12 @@ final class HealthIssueAggregator
                 if (count($overdueDsr) > 0) {
                     $issues['dsr_overdue_30d'] = $overdueDsr;
                 }
-            } catch (\Throwable) {
-            }
+            });
         }
 
         // Check 4: DPIA approved without DPO consultation (GDPR Art. 35/36)
         if ($this->dpiaRepository !== null) {
-            try {
+            $this->probe(function () use (&$issues): void {
                 $dpiaWithoutDpo = $this->dpiaRepository->createQueryBuilder('d')
                     ->where('d.status = :approved')
                     ->andWhere('d.dpoConsultationDate IS NULL')
@@ -208,12 +221,11 @@ final class HealthIssueAggregator
                 if (count($dpiaWithoutDpo) > 0) {
                     $issues['dpia_without_dpo'] = $dpiaWithoutDpo;
                 }
-            } catch (\Throwable) {
-            }
+            });
         }
 
         // Check 5: Active processing activities incomplete per Art. 30 VVT
-        try {
+        $this->probe(function () use (&$issues): void {
             $allActiveActivities = $this->processingActivityRepository->createQueryBuilder('pa')
                 ->where('pa.status = :active')
                 ->setParameter('active', 'active')
@@ -229,8 +241,7 @@ final class HealthIssueAggregator
             if (count($incomplete) > 0) {
                 $issues['vvt_incomplete'] = array_values($incomplete);
             }
-        } catch (\Throwable) {
-        }
+        });
 
         return $issues;
     }
@@ -253,7 +264,7 @@ final class HealthIssueAggregator
         $now = new \DateTimeImmutable();
 
         // Check 1: Critical suppliers never assessed
-        try {
+        $this->probe(function () use (&$issues): void {
             $unassessed = $this->supplierRepository->createQueryBuilder('s')
                 ->where('s.criticality = :crit')
                 ->andWhere('s.lastSecurityAssessment IS NULL')
@@ -263,11 +274,10 @@ final class HealthIssueAggregator
             if (count($unassessed) > 0) {
                 $issues['suppliers_unassessed'] = $unassessed;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 2: Active BC Plans never tested
-        try {
+        $this->probe(function () use (&$issues): void {
             $untested = $this->bcPlanRepository->createQueryBuilder('bc')
                 ->where('bc.status = :active')
                 ->andWhere('bc.lastTested IS NULL')
@@ -277,12 +287,11 @@ final class HealthIssueAggregator
             if (count($untested) > 0) {
                 $issues['bc_plans_untested'] = $untested;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 3: Audit findings overdue (not done — AuditFindingStatus::isDone() — past dueDate)
         if ($this->auditFindingRepository !== null) {
-            try {
+            $this->probe(function () use (&$issues, $now): void {
                 $overdueFindings = $this->auditFindingRepository->createQueryBuilder('af')
                     ->where('af.status NOT IN (:done)')
                     ->andWhere('af.dueDate IS NOT NULL')
@@ -294,13 +303,12 @@ final class HealthIssueAggregator
                 if (count($overdueFindings) > 0) {
                     $issues['findings_overdue'] = $overdueFindings;
                 }
-            } catch (\Throwable) {
-            }
+            });
         }
 
         // Check 4: Corrective actions in_progress past plannedCompletionDate
         if ($this->correctiveActionRepository !== null) {
-            try {
+            $this->probe(function () use (&$issues, $now): void {
                 $overdueCapas = $this->correctiveActionRepository->createQueryBuilder('ca')
                     ->where('ca.status = :prog')
                     ->andWhere('ca.plannedCompletionDate IS NOT NULL')
@@ -312,12 +320,11 @@ final class HealthIssueAggregator
                 if (count($overdueCapas) > 0) {
                     $issues['capa_overdue'] = $overdueCapas;
                 }
-            } catch (\Throwable) {
-            }
+            });
         }
 
         // Check 5: Trainings with scheduledDate in the past and not completed/cancelled
-        try {
+        $this->probe(function () use (&$issues, $now): void {
             $overdueTrainings = $this->trainingRepository->createQueryBuilder('tr')
                 ->where('tr.scheduledDate < :now')
                 ->andWhere('tr.status NOT IN (:terminal)')
@@ -328,11 +335,10 @@ final class HealthIssueAggregator
             if (count($overdueTrainings) > 0) {
                 $issues['training_overdue'] = $overdueTrainings;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 6: Policy/procedure/guideline documents stale (no update in >1 year)
-        try {
+        $this->probe(function () use (&$issues, $now): void {
             $staleThreshold = $now->modify('-1 year');
             $staleDocuments = $this->documentRepository->createQueryBuilder('d')
                 ->where('d.category IN (:cats)')
@@ -345,12 +351,11 @@ final class HealthIssueAggregator
             if (count($staleDocuments) > 0) {
                 $issues['documents_stale'] = $staleDocuments;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 7: Management reviews planned but reviewDate in the past
         if ($this->managementReviewRepository !== null) {
-            try {
+            $this->probe(function () use (&$issues, $now): void {
                 $overdueReviews = $this->managementReviewRepository->createQueryBuilder('mr')
                     ->where('mr.status = :planned')
                     ->andWhere('mr.reviewDate < :now')
@@ -361,8 +366,7 @@ final class HealthIssueAggregator
                 if (count($overdueReviews) > 0) {
                     $issues['reviews_overdue'] = $overdueReviews;
                 }
-            } catch (\Throwable) {
-            }
+            });
         }
 
         return $issues;
@@ -384,7 +388,7 @@ final class HealthIssueAggregator
 
         // Check 1: Workflow instances stuck in progress for more than 30 days
         if ($this->workflowInstanceRepository !== null) {
-            try {
+            $this->probe(function () use (&$issues): void {
                 $cutoff = new \DateTimeImmutable('-30 days');
                 $stuckWorkflows = $this->workflowInstanceRepository->createQueryBuilder('wi')
                     ->where('wi.status = :status')
@@ -397,12 +401,11 @@ final class HealthIssueAggregator
                 if (count($stuckWorkflows) > 0) {
                     $issues['workflows_stuck'] = $stuckWorkflows;
                 }
-            } catch (\Throwable) {
-            }
+            });
         }
 
         // Check 2: Risks with zero or null probability/impact that are not closed
-        try {
+        $this->probe(function () use (&$issues): void {
             $risksZeroValues = $this->riskRepository->createQueryBuilder('r')
                 ->where('(r.probability = 0 OR r.probability IS NULL)')
                 ->andWhere('r.status NOT IN (:excludedStatuses)')
@@ -413,11 +416,10 @@ final class HealthIssueAggregator
             if (count($risksZeroValues) > 0) {
                 $issues['risks_zero_values'] = $risksZeroValues;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 3: Incidents closed without a root cause analysis
-        try {
+        $this->probe(function () use (&$issues): void {
             $incidentsNoRca = $this->incidentRepository->createQueryBuilder('i')
                 ->where('i.status = :status')
                 ->andWhere('i.rootCause IS NULL')
@@ -428,12 +430,11 @@ final class HealthIssueAggregator
             if (count($incidentsNoRca) > 0) {
                 $issues['incidents_no_rca'] = $incidentsNoRca;
             }
-        } catch (\Throwable) {
-        }
+        });
 
         // Check 4: Risk treatment plans completed without an actual completion date (effectiveness review missing)
         if ($this->riskTreatmentPlanRepository !== null) {
-            try {
+            $this->probe(function () use (&$issues): void {
                 $unreviewedTreatments = $this->riskTreatmentPlanRepository->createQueryBuilder('rtp')
                     ->where('rtp.status = :status')
                     ->andWhere('rtp.actualCompletionDate IS NULL')
@@ -444,8 +445,7 @@ final class HealthIssueAggregator
                 if (count($unreviewedTreatments) > 0) {
                     $issues['treatments_unreviewed'] = $unreviewedTreatments;
                 }
-            } catch (\Throwable) {
-            }
+            });
         }
 
         return $issues;

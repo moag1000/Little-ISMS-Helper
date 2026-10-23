@@ -403,7 +403,11 @@ class RestoreEntityWriter
                     try {
                         $this->entityManager->flush();
                         $connection->releaseSavepoint($batchSpName);
-                    } catch (\Throwable) {
+                    } catch (\Throwable $cleanupError) {
+                        $this->logger->warning('Best-effort: batch savepoint release failed', [
+                            'entity' => $entityName,
+                            'error' => $cleanupError->getMessage(),
+                        ]);
                     }
                     $batchSpName  = null;
                     $batchStart   = $index + 1;
@@ -423,7 +427,11 @@ class RestoreEntityWriter
                 if ($bestEffort && $batchSpName !== null) {
                     try {
                         $connection->releaseSavepoint($batchSpName);
-                    } catch (\Throwable) {
+                    } catch (\Throwable $cleanupError) {
+                        $this->logger->warning('Best-effort: final savepoint release failed', [
+                            'entity' => $entityName,
+                            'error' => $cleanupError->getMessage(),
+                        ]);
                     }
                 }
 
@@ -449,7 +457,11 @@ class RestoreEntityWriter
                     if ($batchSpName !== null) {
                         try {
                             $connection->rollbackSavepoint($batchSpName);
-                        } catch (\Throwable) {
+                        } catch (\Throwable $cleanupError) {
+                            $this->logger->warning('Best-effort: savepoint rollback after flush error failed', [
+                                'entity' => $entityName,
+                                'error' => $cleanupError->getMessage(),
+                            ]);
                         }
                     }
 
@@ -459,7 +471,11 @@ class RestoreEntityWriter
                             // before verbatim (a tenant ADMIN's restore stays
                             // scoped, a SUPER_ADMIN's stays unscoped).
                             $entityManagerRecovery->recover();
-                        } catch (\Throwable) {
+                        } catch (\Throwable $cleanupError) {
+                            $this->logger->warning('Best-effort: entity manager recovery after flush error failed', [
+                                'entity' => $entityName,
+                                'error' => $cleanupError->getMessage(),
+                            ]);
                         }
                     }
                 } else {
@@ -994,7 +1010,12 @@ class RestoreEntityWriter
             $this->logger->info('Best-effort: rolled back batch savepoint', [
                 'savepoint' => $savepoint, 'entity' => $entityName,
             ]);
-        } catch (\Throwable) {
+        } catch (\Throwable $cleanupError) {
+            $this->logger->warning('Best-effort: batch savepoint rollback failed', [
+                'savepoint' => $savepoint,
+                'entity' => $entityName,
+                'error' => $cleanupError->getMessage(),
+            ]);
         }
     }
 

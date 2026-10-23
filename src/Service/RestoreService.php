@@ -381,7 +381,11 @@ class RestoreService
                     try {
                         $connection->createSavepoint($spName);
                         $savepointCreated = true;
-                    } catch (\Throwable) {
+                    } catch (\Throwable $cleanupError) {
+                        $this->logger->warning('Best-effort: savepoint creation failed, entity type restores without one', [
+                            'entity' => $orderedEntity,
+                            'error' => $cleanupError->getMessage(),
+                        ]);
                     }
 
                     try {
@@ -393,7 +397,11 @@ class RestoreService
                         if ($savepointCreated) {
                             try {
                                 $connection->releaseSavepoint($spName);
-                            } catch (\Throwable) {
+                            } catch (\Throwable $cleanupError) {
+                                $this->logger->warning('Best-effort: savepoint release failed', [
+                                    'entity' => $orderedEntity,
+                                    'error' => $cleanupError->getMessage(),
+                                ]);
                             }
                         }
                     } catch (\Throwable $entityTypeError) {
@@ -404,7 +412,11 @@ class RestoreService
                         if ($savepointCreated) {
                             try {
                                 $connection->rollbackSavepoint($spName);
-                            } catch (\Throwable) {
+                            } catch (\Throwable $cleanupError) {
+                                $this->logger->warning('Best-effort: savepoint rollback failed', [
+                                    'entity' => $orderedEntity,
+                                    'error' => $cleanupError->getMessage(),
+                                ]);
                             }
                         }
 

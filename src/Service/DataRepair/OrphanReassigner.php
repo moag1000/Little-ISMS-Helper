@@ -84,6 +84,7 @@ final readonly class OrphanReassigner
             try {
                 $em->rollback();
             } catch (\Throwable) {
+                // connection already gone; the reassignment is reported as failed below either way
             }
             if (!$em->isOpen()) {
                 $this->entityManagerRecovery?->recover();
