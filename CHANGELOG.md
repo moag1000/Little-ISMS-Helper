@@ -3,6 +3,36 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.16.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.3...v3.16.0) (2026-10-23)
+
+
+### Added
+
+* **person-picker:** dual-state owner for 6 entities + tenant-scoped owner user picker ([#1062](https://github.com/moag1000/Little-ISMS-Helper/issues/1062)) ([0a0d62f](https://github.com/moag1000/Little-ISMS-Helper/commit/0a0d62f9f97a585e92ce300d04a077121960352d))
+
+
+### Fixed
+
+* DPIA auto-suggestion, tenant-safe EM recovery, atomic audited bulk delete, SLA retry ([#1059](https://github.com/moag1000/Little-ISMS-Helper/issues/1059)) ([#1068](https://github.com/moag1000/Little-ISMS-Helper/issues/1068)) ([5f61f93](https://github.com/moag1000/Little-ISMS-Helper/commit/5f61f9384e5ea990d11b2e45a1059e9fbc181bb9))
+* four-eyes on automatic progression, tenant-scoped exports/KPIs, single status rules ([#1059](https://github.com/moag1000/Little-ISMS-Helper/issues/1059)) ([#1063](https://github.com/moag1000/Little-ISMS-Helper/issues/1063)) ([33168e8](https://github.com/moag1000/Little-ISMS-Helper/commit/33168e89cd4ec3f9f47edfcc3498357f9579f0af))
+* KPI windows and tenant scope, risk review filters, person-picker import/clone/deputies ([#1059](https://github.com/moag1000/Little-ISMS-Helper/issues/1059)) ([#1066](https://github.com/moag1000/Little-ISMS-Helper/issues/1066)) ([2248fa3](https://github.com/moag1000/Little-ISMS-Helper/commit/2248fa3a4260d166ce88056efcc00dfa01d635ef))
+* merge web-session stack ([#1036](https://github.com/moag1000/Little-ISMS-Helper/issues/1036), [#1039](https://github.com/moag1000/Little-ISMS-Helper/issues/1039)–[#1050](https://github.com/moag1000/Little-ISMS-Helper/issues/1050)) with review fixes ([742d887](https://github.com/moag1000/Little-ISMS-Helper/commit/742d8873ee6ba3733d4a7419f965adf5f6277412))
+* **reminders:** build e-mail links without the HTTP request ([131c671](https://github.com/moag1000/Little-ISMS-Helper/commit/131c6710f1180e7ce5359c703dbd02d35fbc07ae))
+* security report reads the generated file; log or justify every empty catch ([#1073](https://github.com/moag1000/Little-ISMS-Helper/issues/1073)) ([b6f9045](https://github.com/moag1000/Little-ISMS-Helper/commit/b6f9045195a6cf4750eb347a5347e8715b1542bd))
+* **security:** SSO linking/enforcement hardening and operator fixes ([#1059](https://github.com/moag1000/Little-ISMS-Helper/issues/1059)) ([#1067](https://github.com/moag1000/Little-ISMS-Helper/issues/1067)) ([1319f5f](https://github.com/moag1000/Little-ISMS-Helper/commit/1319f5ffa2bd9ca97d3eba289914685756d0671f))
+* **security:** tenant-scope every user picker and owner relation ([#1059](https://github.com/moag1000/Little-ISMS-Helper/issues/1059)) ([#1064](https://github.com/moag1000/Little-ISMS-Helper/issues/1064)) ([e13c4fc](https://github.com/moag1000/Little-ISMS-Helper/commit/e13c4fc2f54ac5829a32e2a534ec4812ddcbd769))
+
+
+### Changed
+
+* drop history-narrating comments, document swallowed exceptions ([#1071](https://github.com/moag1000/Little-ISMS-Helper/issues/1071)) ([0e62a75](https://github.com/moag1000/Little-ISMS-Helper/commit/0e62a757da54fb52eaf895c31db0df7714787c3e))
+* **workflow:** remove deprecated WorkflowAutoProgressionService and unused BC aliases ([#1069](https://github.com/moag1000/Little-ISMS-Helper/issues/1069)) ([a74607c](https://github.com/moag1000/Little-ISMS-Helper/commit/a74607cff55d236062441e6340aba86be42eaa15))
+
+
+### Documentation
+
+* archive stale reports, drop drifting counts, stop tracking local history ([#1070](https://github.com/moag1000/Little-ISMS-Helper/issues/1070)) ([d0cfc9e](https://github.com/moag1000/Little-ISMS-Helper/commit/d0cfc9ee27c7cfd591ec1207229e969fd5dc1e06))
+
 ## [3.15.3](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.2...v3.15.3) (2026-10-19)
 
 
