@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\SecurityAuditService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ReportsController extends AbstractController
 {
+    public function __construct(private readonly SecurityAuditService $securityAuditService)
+    {
+    }
+
     #[Route('/about/reports', name: 'app_reports_overview', methods: ['GET'])]
     public function overview(): Response
     {
@@ -23,19 +28,14 @@ class ReportsController extends AbstractController
         ];
 
         // Check for security reports
-        $securityReport2025File = $projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md';
-        $securityReport2021File = $projectDir . '/docs/reports/security-audit-owasp-2021.md';
-
-        $securityStats = [
-            'owasp_2025' => [
-                'exists' => file_exists($securityReport2025File),
-                'updated_at' => file_exists($securityReport2025File) ? date('Y-m-d', filemtime($securityReport2025File)) : null,
-            ],
-            'owasp_2021' => [
-                'exists' => file_exists($securityReport2021File),
-                'updated_at' => file_exists($securityReport2021File) ? date('Y-m-d', filemtime($securityReport2021File)) : null,
-            ],
-        ];
+        $securityStats = [];
+        foreach (['owasp_2025' => SecurityAuditService::EDITION_2025, 'owasp_2021' => SecurityAuditService::EDITION_2021] as $key => $edition) {
+            $file = $this->securityAuditService->reportPath($edition);
+            $securityStats[$key] = [
+                'exists' => $file !== null,
+                'updated_at' => $file !== null ? date('Y-m-d', (int) filemtime($file)) : null,
+            ];
+        }
 
         return $this->render('reports/overview.html.twig', [
             'license_stats' => $licenseStats,

@@ -9,10 +9,39 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class SecurityAuditService
 {
+    public const EDITION_2025 = '2025';
+    public const EDITION_2021 = '2021';
+
+    /** Where scripts/generate-security-audit.php writes its output, relative to the project dir. */
+    private const GENERATED_REPORTS = [
+        self::EDITION_2025 => 'var/reports/security-audit-owasp-2025.md',
+        self::EDITION_2021 => 'var/reports/security-audit-owasp-2021.md',
+    ];
+
+    /** Tracked fallback snapshots, relative to the project dir (there is none for 2021). */
+    private const SNAPSHOT_REPORTS = [
+        self::EDITION_2025 => 'docs/reports/security-audit-owasp-2025-rc1.md',
+    ];
+
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir
     ) {
+    }
+
+    /**
+     * Single place that knows where a report lives: the generated file in var/reports if it
+     * exists, otherwise the tracked snapshot if the edition has one, otherwise null.
+     */
+    public function reportPath(string $edition): ?string
+    {
+        foreach ([self::GENERATED_REPORTS, self::SNAPSHOT_REPORTS] as $candidates) {
+            if (isset($candidates[$edition]) && is_file($this->projectDir . '/' . $candidates[$edition])) {
+                return $this->projectDir . '/' . $candidates[$edition];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -30,32 +59,16 @@ final class SecurityAuditService
         $process = new Process(['php', $scriptPath], $this->projectDir, null, null, 300);
         $process->run();
 
-        $output = $process->getOutput();
-        $errorOutput = $process->getErrorOutput();
         $exitCode = $process->getExitCode();
-
-        // Check if reports were generated
-        $report2025Path = $this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md';
-        $report2021Path = $this->projectDir . '/docs/reports/security-audit-owasp-2021.md';
 
         return [
             'success' => $exitCode === 0 || $exitCode === 1, // Exit code 1 means critical findings, but report was generated
             'exit_code' => $exitCode,
-            'output' => $output,
-            'error_output' => $errorOutput,
+            'output' => $process->getOutput(),
+            'error_output' => $process->getErrorOutput(),
             'reports' => [
-                'owasp_2025' => [
-                    'exists' => file_exists($report2025Path),
-                    'path' => $report2025Path,
-                    'size' => file_exists($report2025Path) ? filesize($report2025Path) : 0,
-                    'updated_at' => file_exists($report2025Path) ? date('Y-m-d H:i:s', filemtime($report2025Path)) : null,
-                ],
-                'owasp_2021' => [
-                    'exists' => file_exists($report2021Path),
-                    'path' => $report2021Path,
-                    'size' => file_exists($report2021Path) ? filesize($report2021Path) : 0,
-                    'updated_at' => file_exists($report2021Path) ? date('Y-m-d H:i:s', filemtime($report2021Path)) : null,
-                ],
+                'owasp_2025' => $this->describe(self::EDITION_2025, true),
+                'owasp_2021' => $this->describe(self::EDITION_2021, true),
             ],
         ];
     }
@@ -65,18 +78,28 @@ final class SecurityAuditService
      */
     public function getReportsStatus(): array
     {
-        $report2025Path = $this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md';
-        $report2021Path = $this->projectDir . '/docs/reports/security-audit-owasp-2021.md';
-
         return [
-            'owasp_2025' => [
-                'exists' => file_exists($report2025Path),
-                'updated_at' => file_exists($report2025Path) ? date('Y-m-d H:i:s', filemtime($report2025Path)) : null,
-            ],
-            'owasp_2021' => [
-                'exists' => file_exists($report2021Path),
-                'updated_at' => file_exists($report2021Path) ? date('Y-m-d H:i:s', filemtime($report2021Path)) : null,
-            ],
+            'owasp_2025' => $this->describe(self::EDITION_2025, false),
+            'owasp_2021' => $this->describe(self::EDITION_2021, false),
         ];
+    }
+
+    private function describe(string $edition, bool $detailed): array
+    {
+        $path = $this->reportPath($edition);
+        $info = [
+            'exists' => $path !== null,
+            'updated_at' => $path !== null ? date('Y-m-d H:i:s', (int) filemtime($path)) : null,
+        ];
+        if ($detailed) {
+            $info = [
+                'exists' => $info['exists'],
+                'path' => $path ?? $this->projectDir . '/' . self::GENERATED_REPORTS[$edition],
+                'size' => $path !== null ? (int) filesize($path) : 0,
+                'updated_at' => $info['updated_at'],
+            ];
+        }
+
+        return $info;
     }
 }

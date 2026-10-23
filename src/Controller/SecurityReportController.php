@@ -6,7 +6,10 @@ namespace App\Controller;
 
 use App\Service\SecurityAuditService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
@@ -14,15 +17,16 @@ use Throwable;
 
 class SecurityReportController extends AbstractController
 {
+    public function __construct(private readonly SecurityAuditService $securityAuditService)
+    {
+    }
+
     #[Route('/about/security', name: 'app_security_report', methods: ['GET'])]
     public function index(): Response
     {
-        $report2025File = $this->getParameter('kernel.project_dir') . '/docs/reports/security-audit-owasp-2025-rc1.md';
-        $report2021File = $this->getParameter('kernel.project_dir') . '/docs/reports/security-audit-owasp-2021.md';
-
         $stats = [
-            'owasp_2025' => $this->parseSecurityReport($report2025File),
-            'owasp_2021' => $this->parseSecurityReport($report2021File),
+            'owasp_2025' => $this->parseSecurityReport($this->securityAuditService->reportPath(SecurityAuditService::EDITION_2025)),
+            'owasp_2021' => $this->parseSecurityReport($this->securityAuditService->reportPath(SecurityAuditService::EDITION_2021)),
         ];
 
         return $this->render('security/index.html.twig', [
@@ -31,38 +35,42 @@ class SecurityReportController extends AbstractController
     }
 
     #[Route('/about/security/owasp-2025', name: 'app_security_report_2025', methods: ['GET'])]
-    public function owasp2025(): Response
+    public function owasp2025(Request $request): Response
     {
-        $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/security-audit-owasp-2025-rc1.md';
+        $reportFile = $this->securityAuditService->reportPath(SecurityAuditService::EDITION_2025);
 
-        if (!file_exists($reportFile)) {
+        if ($reportFile === null) {
             $this->addFlash('warning', 'OWASP 2025 Security Report not found. Please run "php scripts/generate-security-audit.php" to generate it.');
             return $this->redirectToRoute('app_security_report');
         }
 
-        $reportContent = file_get_contents($reportFile);
+        if ($request->query->has('download')) {
+            return $this->downloadReport($reportFile, 'security-audit-owasp-2025.md');
+        }
 
         return $this->render('security/report.html.twig', [
-            'report_content' => $reportContent,
+            'report_content' => file_get_contents($reportFile),
             'report_version' => '2025 RC1',
             'report_title' => 'OWASP Top 10:2025 RC1 Security Report',
         ]);
     }
 
     #[Route('/about/security/owasp-2021', name: 'app_security_report_2021', methods: ['GET'])]
-    public function owasp2021(): Response
+    public function owasp2021(Request $request): Response
     {
-        $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/security-audit-owasp-2021.md';
+        $reportFile = $this->securityAuditService->reportPath(SecurityAuditService::EDITION_2021);
 
-        if (!file_exists($reportFile)) {
+        if ($reportFile === null) {
             $this->addFlash('warning', 'OWASP 2021 Security Report not found. Please run "php scripts/generate-security-audit.php" to generate it.');
             return $this->redirectToRoute('app_security_report');
         }
 
-        $reportContent = file_get_contents($reportFile);
+        if ($request->query->has('download')) {
+            return $this->downloadReport($reportFile, 'security-audit-owasp-2021.md');
+        }
 
         return $this->render('security/report.html.twig', [
-            'report_content' => $reportContent,
+            'report_content' => file_get_contents($reportFile),
             'report_version' => '2021',
             'report_title' => 'OWASP Top 10:2021 Security Report',
         ]);
@@ -95,7 +103,16 @@ class SecurityReportController extends AbstractController
         }
     }
 
-    private function parseSecurityReport(string $filePath): array
+    private function downloadReport(string $file, string $downloadName): BinaryFileResponse
+    {
+        $response = new BinaryFileResponse($file);
+        $response->headers->set('Content-Type', 'text/markdown; charset=UTF-8');
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $downloadName);
+
+        return $response;
+    }
+
+    private function parseSecurityReport(?string $filePath): array
     {
         $stats = [
             'exists' => false,
@@ -107,7 +124,7 @@ class SecurityReportController extends AbstractController
             'generated_at' => null,
         ];
 
-        if (!file_exists($filePath)) {
+        if ($filePath === null) {
             return $stats;
         }
 

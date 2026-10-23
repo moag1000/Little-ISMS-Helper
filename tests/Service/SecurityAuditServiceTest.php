@@ -22,6 +22,7 @@ class SecurityAuditServiceTest extends TestCase
         mkdir($this->projectDir, 0755, true);
         mkdir($this->projectDir . '/scripts', 0755, true);
         mkdir($this->projectDir . '/docs/reports', 0755, true);
+        mkdir($this->projectDir . '/var/reports', 0755, true);
 
         $this->service = new SecurityAuditService($this->projectDir);
     }
@@ -50,8 +51,8 @@ class SecurityAuditServiceTest extends TestCase
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
         $scriptContent = <<<'PHP'
 <?php
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2025-rc1.md', 'Test 2025 Report');
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2021.md', 'Test 2021 Report');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2025.md', 'Test 2025 Report');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2021.md', 'Test 2021 Report');
 exit(0);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -74,8 +75,8 @@ PHP;
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
         $scriptContent = <<<'PHP'
 <?php
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2025-rc1.md', 'Critical findings');
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2021.md', 'Critical findings');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2025.md', 'Critical findings');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2021.md', 'Critical findings');
 exit(1);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -116,8 +117,8 @@ PHP;
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
         $scriptContent = <<<'PHP'
 <?php
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2025-rc1.md', 'Test Report Content');
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2021.md', 'Another Report');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2025.md', 'Test Report Content');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2021.md', 'Another Report');
 exit(0);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -149,8 +150,8 @@ PHP;
     public function testGetReportsStatusReturnsExistingReports(): void
     {
         // Create test reports
-        $report2025Path = $this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md';
-        $report2021Path = $this->projectDir . '/docs/reports/security-audit-owasp-2021.md';
+        $report2025Path = $this->projectDir . '/var/reports/security-audit-owasp-2025.md';
+        $report2021Path = $this->projectDir . '/var/reports/security-audit-owasp-2021.md';
 
         file_put_contents($report2025Path, 'Test 2025 Report');
         file_put_contents($report2021Path, 'Test 2021 Report');
@@ -169,7 +170,7 @@ PHP;
     #[Test]
     public function testGetReportsStatusReturnsCorrectTimestamps(): void
     {
-        $report2025Path = $this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md';
+        $report2025Path = $this->projectDir . '/var/reports/security-audit-owasp-2025.md';
         file_put_contents($report2025Path, 'Test Report');
 
         $expectedTime = filemtime($report2025Path);
@@ -189,8 +190,8 @@ PHP;
 <?php
 echo "Generating OWASP 2025 report...\n";
 echo "Generating OWASP 2021 report...\n";
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2025-rc1.md', 'Test');
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2021.md', 'Test');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2025.md', 'Test');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2021.md', 'Test');
 exit(0);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -208,8 +209,8 @@ PHP;
         $scriptContent = <<<'PHP'
 <?php
 fwrite(STDERR, "Warning: Some issue detected\n");
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2025-rc1.md', 'Test');
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2021.md', 'Test');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2025.md', 'Test');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2021.md', 'Test');
 exit(0);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -227,8 +228,8 @@ PHP;
         $scriptContent = <<<'PHP'
 <?php
 // This test just verifies the timeout is set, not that it actually times out
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2025-rc1.md', 'Test');
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2021.md', 'Test');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2025.md', 'Test');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2021.md', 'Test');
 exit(0);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -245,7 +246,7 @@ PHP;
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
         $scriptContent = <<<'PHP'
 <?php
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2025-rc1.md', 'OWASP 2025 Content');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2025.md', 'OWASP 2025 Content');
 exit(0);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -253,7 +254,7 @@ PHP;
         $result = $this->service->generateReports();
 
         $this->assertTrue($result['reports']['owasp_2025']['exists']);
-        $this->assertStringEndsWith('security-audit-owasp-2025-rc1.md', $result['reports']['owasp_2025']['path']);
+        $this->assertStringEndsWith('security-audit-owasp-2025.md', $result['reports']['owasp_2025']['path']);
     }
 
     #[Test]
@@ -262,7 +263,7 @@ PHP;
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
         $scriptContent = <<<'PHP'
 <?php
-file_put_contents(__DIR__ . '/../docs/reports/security-audit-owasp-2021.md', 'OWASP 2021 Content');
+file_put_contents(__DIR__ . '/../var/reports/security-audit-owasp-2021.md', 'OWASP 2021 Content');
 exit(0);
 PHP;
         file_put_contents($scriptPath, $scriptContent);
@@ -271,6 +272,40 @@ PHP;
 
         $this->assertTrue($result['reports']['owasp_2021']['exists']);
         $this->assertStringEndsWith('security-audit-owasp-2021.md', $result['reports']['owasp_2021']['path']);
+    }
+
+    #[Test]
+    public function testReportPathPrefersGeneratedReportOverSnapshot(): void
+    {
+        file_put_contents($this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md', 'snapshot');
+        file_put_contents($this->projectDir . '/var/reports/security-audit-owasp-2025.md', 'generated');
+
+        $this->assertSame(
+            $this->projectDir . '/var/reports/security-audit-owasp-2025.md',
+            $this->service->reportPath(SecurityAuditService::EDITION_2025),
+        );
+    }
+
+    #[Test]
+    public function testReportPathFallsBackToTrackedSnapshot(): void
+    {
+        file_put_contents($this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md', 'snapshot');
+
+        $this->assertSame(
+            $this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md',
+            $this->service->reportPath(SecurityAuditService::EDITION_2025),
+        );
+        $this->assertTrue($this->service->getReportsStatus()['owasp_2025']['exists']);
+    }
+
+    #[Test]
+    public function testReportPathIsNullWithoutGeneratedFileOrSnapshot(): void
+    {
+        $this->assertNull($this->service->reportPath(SecurityAuditService::EDITION_2025));
+        // 2021 has no tracked snapshot: a docs/ file of that name is never consulted
+        file_put_contents($this->projectDir . '/docs/reports/security-audit-owasp-2021.md', 'stray');
+        $this->assertNull($this->service->reportPath(SecurityAuditService::EDITION_2021));
+        $this->assertNull($this->service->reportPath('1999'));
     }
 
     private function removeDirectory(string $dir): void
