@@ -64,6 +64,9 @@ PR_DESCRIPTION.md
 .idea/
 
 ###> temporary analysis & utility files ###
+# docs/ holds local-only material on dev machines; tracked docs stay tracked,
+# new docs are added with git add -f.
+/docs/
 fix_specific_headings.php
 ###< temporary analysis & utility files ###
 
