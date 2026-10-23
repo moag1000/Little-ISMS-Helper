@@ -64,6 +64,23 @@ final class HealthIssueAggregatorTest extends TestCase
         );
     }
 
+    #[Test]
+    public function find_operational_health_issues_reports_stale_documents_and_skips_failing_checks(): void
+    {
+        $query = $this->createMock(\Doctrine\ORM\Query::class);
+        $query->method('getResult')->willReturn(['stale-document']);
+        $qb = $this->createMock(QueryBuilder::class);
+        $qb->method('where')->willReturnSelf();
+        $qb->method('andWhere')->willReturnSelf();
+        $qb->method('setParameter')->willReturnSelf();
+        $qb->method('getQuery')->willReturn($query);
+        $this->documentRepository->method('createQueryBuilder')->willReturn($qb);
+        // every other check fails (unconfigured mocks return null) and must not hide this one
+        $result = $this->aggregator->findOperationalHealthIssues();
+
+        self::assertSame(['documents_stale' => ['stale-document']], $result);
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // findRiskHealthIssues
     // ────────────────────────────────────────────────────────────────────────

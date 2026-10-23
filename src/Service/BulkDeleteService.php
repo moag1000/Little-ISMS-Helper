@@ -186,6 +186,7 @@ class BulkDeleteService
             // Drop scheduled removals of the rolled-back batch so a later flush cannot replay them.
             $this->entityManager->clear();
         } catch (\Throwable) {
+            // best-effort: the caller reports the original failure; an unusable manager is recovered below
         }
         // A failed flush closes the EntityManager. The operation ends with an
         // error, but nothing later in the request may run on a closed — or

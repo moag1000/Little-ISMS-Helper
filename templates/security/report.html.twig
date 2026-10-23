@@ -65,7 +65,7 @@
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon me-1 fa-icon--ui-printer" aria-hidden="true"></i>{{ 'security_reports.action.print'|trans({}, 'security_reports') }}
                         </button>
-                        <a href="{{ asset('docs/reports/security-audit-owasp-' ~ (report_version == '2025 RC1' ? '2025-rc1' : '2021') ~ '.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                        <a href="{{ path(report_version == '2021' ? 'app_security_report_2021' : 'app_security_report_2025', { download: 1 }) }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon me-1 fa-icon--nav-download" aria-hidden="true"></i>{{ 'security_reports.action.download_md'|trans({}, 'security_reports') }}
                         </a>
                         <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"

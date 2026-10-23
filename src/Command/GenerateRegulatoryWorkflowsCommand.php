@@ -62,7 +62,8 @@ This command generates regulatory-compliant workflow definitions based on:
   <comment>php bin/console app:generate-regulatory-workflows --overwrite</comment>
 
 <info>Regulatory References:</info>
-  See docs/WORKFLOW_REQUIREMENTS.md for detailed requirements and SLAs.
+  Workflow definitions (steps, SLAs): config/workflows/regulatory/*.yaml
+  Auto-progression guide: docs/WORKFLOW_AUTO_PROGRESSION.md
 HELP
             );
     }

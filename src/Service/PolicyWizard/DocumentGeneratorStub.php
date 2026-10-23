@@ -22,9 +22,8 @@ final class DocumentGeneratorStub implements DocumentGeneratorInterface
     public function generate(WizardRun $run): array
     {
         throw new BadMethodCallException(
-            'Document generation is deferred to Policy-Wizard W3. '
-            . 'See docs/plans/policy-wizard/05-architecture.md §8 + §11. '
-            . '@todo 2026-05-14: replace stub with real DocumentGenerator once W3 lands.',
+            'DocumentGeneratorStub does not generate documents; it exists for tests only. '
+            . 'Inject ' . DocumentGenerator::class . ' (the production alias of DocumentGeneratorInterface) instead.',
         );
     }
 }
