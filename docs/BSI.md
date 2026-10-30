@@ -1,6 +1,6 @@
-# BSI — IT-Grundschutz und C5
+# BSI — IT-Grundschutz, Grundschutz++ und C5
 
-Stand: v3.5 (2026-05). Betrifft die Module `bsi_grundschutz` und `bsi_c5` (`config/modules.yaml`).
+Stand: v3.5 (2026-05), Grundschutz++ ergänzt 2026-10. Betrifft die Module `bsi_grundschutz` und `bsi_c5` (`config/modules.yaml`).
 
 > **MRIS-Hinweis:** MRIS (Mythos-Resistant Information Security, Custom-Framework v1.5)
 > ist ein internes Bewertungsrahmenwerk des Tools und hat KEINEN Bezug zu MaRisk
@@ -11,11 +11,12 @@ Stand: v3.5 (2026-05). Betrifft die Module `bsi_grundschutz` und `bsi_c5` (`conf
 
 ## 1. Ueberblick
 
-Das Tool implementiert zwei BSI-Produkte:
+Das Tool implementiert drei BSI-Produkte:
 
 | Produkt | Version | Scope |
 |---|---|---|
 | **BSI IT-Grundschutz-Kompendium** | Edition 2023 | 10 Schichten, 117 Bausteine, ~360 Anforderungen |
+| **BSI Grundschutz++ (BSI-Standard 300-1)** | Anwenderkatalog 2026-10 | 1000 Anforderungen (Methodik, Risikomanagement, Stand-der-Technik-Kernel), siehe § 14 |
 | **BSI C5 Cloud Computing Compliance Criteria Catalogue** | 2020 + 2026 | Cloud-Sicherheit, 17 Domanen |
 
 ---
@@ -295,11 +296,68 @@ GST-Importformat (GSTool-Export) wird ueber `docs/features/GSTOOL_IMPORT.md` dok
 
 ---
 
-## 14. Referenzen
+## 14. Grundschutz++ (BSI-Standard 300-1)
+
+Der BSI-Standard 300-1 „Methodik Grundschutz++" (veröffentlicht 2026-10-26) löst das
+IT-Grundschutz-Kompendium ab: prozessorientiert, ab 2027 zertifizierbar, kompatibel zu
+ISO/IEC 27001. Die Anforderungen stehen im **Anwenderkatalog Grundschutz++**, den das
+BSI als OSCAL in der [Stand-der-Technik-Bibliothek](https://github.com/BSI-Bund/Stand-der-Technik-Bibliothek)
+veröffentlicht (CC BY-SA 4.0).
+
+| Was | Wo |
+|---|---|
+| Framework-Code | `BSI-GSPP` (bedingt anwendbar, Admin → Compliance → Frameworks) |
+| Loader | `php bin/console app:load-bsi-grundschutz-plusplus [-u]` (`LoadBsiGrundschutzPlusPlusCommand`) |
+| Katalog | `fixtures/library/catalogues/bsi-grundschutz-plusplus/catalogue.json` |
+| Generator | `python3 scripts/library/build_bsi_grundschutz_plusplus.py <Klon der Stand-der-Technik-Bibliothek>` |
+
+Der Generator erzeugt Katalog **und** Mappings aus einem festen Commit der BSI-Bibliothek;
+die erzeugten Dateien nicht von Hand ändern, sondern neu generieren.
+
+**Aufbau.** 95 Methodik-Anforderungen (Praktik GC = Governance und Compliance usw.),
+4 Anforderungen zum Risikomanagement, 901 Kernel-Anforderungen. Jede verschachtelte
+Anforderung hat ein eigenes Modalverb und zählt deshalb als eigene Zeile im
+Erfüllungsgrad (keine `parentRequirement`; der OSCAL-Parent steht in
+`dataSourceMapping.gspp.parent`).
+
+**Stufen.** `absicherungsStufe` folgt dem Sicherheitsniveau: `basis` = MUSS auf Niveau
+„normal (Stand der Technik)", `standard` = SOLLTE/KANN auf Niveau normal, `hoch` =
+Niveau „erhöht". Priorität: MUSS mit Aufwandsstufe 0 → critical, MUSS → high,
+SOLLTE → medium, sonst low.
+
+**Datenwiederverwendung.** Die BSI-Zielobjektkategorien werden auf die Asset-Typen der
+App abgebildet (`dataSourceMapping.asset_types`: IT-Systeme/Netze → Hardware,
+Anwendungen → Software, Informationen → Information, Einkäufe → Service,
+Mitarbeitende → Personnel, Standorte → Physical). Die Praktiken DET/REA setzen
+`incident_management`, NOT setzt `bcm_required`, PERF setzt `audit_evidence`. Damit
+greift die Data-Reuse-Analyse (`ComplianceMappingService::getDataReuseAnalysis`) für
+GS++ genauso wie für die anderen Frameworks.
+
+**Mappings** (`fixtures/library/mappings/`, Import mit `app:mapping:library:import`):
+
+| Datei | Quelle | Paare |
+|---|---|---|
+| `iso27001-2022_to_bsi-gspp_official_v1.yaml` + Gegenrichtung | amtliches BSI-Mapping Annex A → GS++ (1.0.1-qa), alle 93 Controls | 362 |
+| `iso27001-2022-clauses_to_bsi-gspp_v1.yaml` + Gegenrichtung | Expertenmapping Klauseln 4–10 → GS++-Methodik | 28 / 81 |
+| `bsi-it-grundschutz_to_bsi-gspp_official_v1.yaml` | BSI-Mapping Kompendium 2023 → GS++ (beim BSI noch **Entwurf**), von Teilanforderungen auf Anforderungen verdichtet | 1026 |
+
+Ziel-IDs, die das BSI seit Erstellung eines Mappings umnummeriert hat, löst der
+Generator über die stabile OSCAL-UUID auf. Wer ISO 27001 umgesetzt hat, sieht über die
+Vererbungs-Queue, welche GS++-Anforderungen dadurch schon belegt sind; Kompendium-Anwender
+übertragen ihren Stand über das Kompendium-Mapping.
+
+**ISO→BSI-Gap-Ansicht.** `/compliance/cross-gap?target=gspp` zeigt die Gap-Analyse
+gegen Grundschutz++ statt gegen das Kompendium (Umschalter oben auf der Seite, sobald
+beide Kataloge geladen sind).
+
+---
+
+## 15. Referenzen
 
 | Norm | Version | Implementierung |
 |---|---|---|
 | BSI IT-Grundschutz-Kompendium | Edition 2023 | `LoadBsiItGrundschutzCatalogueCommand` |
+| BSI-Standard 300-1 (Grundschutz++) | Anwenderkatalog 2026-10 | `LoadBsiGrundschutzPlusPlusCommand` (§ 14) |
 | BSI-Standard 200-1 | — | ISMS-Konzept (`BsiIsmsConceptPresentCheck`) |
 | BSI-Standard 200-2 | Kap. 3.6 | `AssetDependencyService` (Schutzbedarfsvererbung) |
 | BSI-Standard 200-3 | — | Risikoanalyse (Schutzbedarfsfelder) |

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 
@@ -14,6 +15,11 @@ use App\Repository\ComplianceRequirementRepository;
  */
 class MappingValidatorService
 {
+    /** Framework whose catalogue groups requirements by Baustein (category = Baustein code). */
+    private const BAUSTEIN_FRAMEWORK = 'BSI_GRUNDSCHUTZ';
+    /** A Baustein code: layer + numbering without an Anforderung suffix, e.g. ORP.4 or OPS.1.1.3. */
+    private const BAUSTEIN_PATTERN = '/^[A-Z]{2,4}(\.\d+)+$/';
+
     public const ALLOWED_LIFECYCLE_STATES = ['draft', 'review', 'approved', 'published', 'deprecated'];
     public const ALLOWED_RELATIONSHIPS = ['equivalent', 'subset', 'superset', 'related', 'partial_overlap'];
     public const ALLOWED_CONFIDENCES = ['low', 'medium', 'high'];
@@ -148,6 +154,7 @@ class MappingValidatorService
         // 7. Per-Eintrag-Validierung
         if (is_array($mappings)) {
             $coveredSourceIds = [];
+            $unresolved = ['source' => [], 'target' => []];
             foreach ($mappings as $i => $entry) {
                 $prefix = "mappings[{$i}]";
                 if (!is_array($entry)) {
@@ -183,15 +190,31 @@ class MappingValidatorService
                     $warnings[] = "{$prefix}.rationale empty — Auditor-Argumentation fehlt.";
                 }
 
-                // Source/Target-IDs in DB?
+                // Source/Target-IDs in DB? An unknown ID only disqualifies its own pair —
+                // MappingLibraryLoader skips it. Rejecting the whole file here used to
+                // drop every valid pair of a library because of one stale ID.
                 if ($sourceFw && !$this->requirementExists($sourceFw, (string) $entry['source'])) {
-                    $errors[] = "{$prefix}.source '{$entry['source']}' not found in framework '{$sourceCode}'.";
+                    $unresolved['source'][(string) $entry['source']] = true;
                 }
                 if (!$targetIsNull && $targetFw && !$this->requirementExists($targetFw, (string) $targetValue)) {
-                    $errors[] = "{$prefix}.target '{$targetValue}' not found in framework '{$targetCode}'.";
+                    $unresolved['target'][(string) $targetValue] = true;
                 }
 
                 $coveredSourceIds[(string) $entry['source']] = true;
+            }
+
+            foreach (['source' => $sourceCode, 'target' => $targetCode] as $side => $code) {
+                if ($unresolved[$side] !== []) {
+                    $ids = array_keys($unresolved[$side]);
+                    $warnings[] = sprintf(
+                        '%d %s ID(s) not found in framework \'%s\' — pairs skipped: %s%s',
+                        count($ids),
+                        $side,
+                        (string) $code,
+                        implode(', ', array_slice($ids, 0, 10)),
+                        count($ids) > 10 ? ', …' : '',
+                    );
+                }
             }
 
             // 8. Coverage-Warnung wenn < 50 %
@@ -222,9 +245,46 @@ class MappingValidatorService
 
     private function requirementExists(ComplianceFramework $fw, string $identifier): bool
     {
-        return $this->requirementRepository->findOneBy([
-            'framework' => $fw,
-            'requirementId' => $identifier,
-        ]) !== null;
+        return $this->resolveRequirement($fw, $identifier) !== null;
+    }
+
+    /**
+     * Resolve a fixture requirement ID to the catalogue row. Shared with
+     * {@see MappingLibraryLoader} so validation and import agree on every pair.
+     *
+     * Order: the ID as written; then prefixed with the framework code (several
+     * loaders store `ISO27001-4.1` / `NIS2-21.2.a` while official crosswalks cite
+     * `4.1` / `21.2.a` — the prefixed form is unique per framework); then, for
+     * IT-Grundschutz only, a Baustein code (`ORP.4`) resolves to the Baustein's
+     * representative requirement — its first catalogue row, the same rule
+     * {@see \App\Service\Bsi\PanelVerdictApplier} uses. The official BSI
+     * crosswalk maps many ISO controls to whole Bausteine; the catalogue holds
+     * Anforderungen only, so without this rule those rows never reached the DB.
+     */
+    public function resolveRequirement(ComplianceFramework $fw, string $identifier): ?ComplianceRequirement
+    {
+        if ($identifier === '') {
+            return null;
+        }
+        $code = (string) $fw->getCode();
+        $candidates = [$identifier];
+        if ($code !== '' && !str_starts_with($identifier, $code . '-')) {
+            $candidates[] = $code . '-' . $identifier;
+        }
+        foreach ($candidates as $candidate) {
+            $requirement = $this->requirementRepository->findOneBy(['framework' => $fw, 'requirementId' => $candidate]);
+            if ($requirement !== null) {
+                return $requirement;
+            }
+        }
+
+        if ($code === self::BAUSTEIN_FRAMEWORK && preg_match(self::BAUSTEIN_PATTERN, $identifier) === 1) {
+            return $this->requirementRepository->findOneBy(
+                ['framework' => $fw, 'category' => $identifier],
+                ['id' => 'ASC'],
+            );
+        }
+
+        return null;
     }
 }

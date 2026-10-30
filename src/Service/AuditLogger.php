@@ -478,9 +478,11 @@ class AuditLogger
                 continue;
             }
 
-            // Truncate very long strings
+            // Truncate very long strings. mb_strcut keeps the 1000-byte budget but never
+            // splits a multibyte character — substr() did, and the broken UTF-8 made
+            // json_encode() return false (TypeError on setNewValues).
             if (is_string($value) && strlen($value) > 1000) {
-                $sanitized[$key] = substr($value, 0, 1000) . '... (truncated)';
+                $sanitized[$key] = mb_strcut($value, 0, 1000, 'UTF-8') . '... (truncated)';
                 continue;
             }
 

@@ -338,6 +338,25 @@ class AuditLoggerTest extends TestCase
     }
 
     #[Test]
+    public function testTruncationNeverSplitsMultibyteCharacters(): void
+    {
+        $this->setupRequest('127.0.0.1', 'Browser');
+        $this->setupUser('admin@example.com');
+
+        // The leading 'x' shifts every 2-byte 'ä' onto an odd offset, so byte 1000 falls mid-character.
+        $newValues = ['description' => 'x' . str_repeat('ä', 1000)];
+
+        $this->entityManager->expects($this->once())
+            ->method('persist')
+            ->with($this->callback(function (AuditLog $log) {
+                $json = (string) $log->getNewValues();
+                return str_contains($json, '(truncated)') && mb_check_encoding($json, 'UTF-8');
+            }));
+
+        $this->logger->logCreate('Document', 1, $newValues);
+    }
+
+    #[Test]
     public function testHandlesDateTimeComparison(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');

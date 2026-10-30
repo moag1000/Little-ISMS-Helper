@@ -83,22 +83,22 @@ mappings:
     audit_evidence_hint: 'Einarbeitungsprotokoll, Fuehrungs- und Strafregister-Abfrage-Nachweis, Verpflichtungserklaerung.'
 
   - source: 'ORP.3.A3'
-    target: '2.2.1'
+    target: '2.1.3'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      ORP.3.A3 (Sensibilisierungs- und Schulungsprogramm) und ISA 2.2.1
-      (Schulung und Sensibilisierung) sind direkte Entsprechungen. Beide
+      ORP.3.A3 (Sensibilisierungs- und Schulungsprogramm) und ISA 2.1.3
+      (Sensibilisierung und Schulung) sind direkte Entsprechungen. Beide
       fordern ein systematisches, regelmaessiges Schulungsprogramm.
     audit_evidence_hint: 'Schulungsplan, Teilnehmerlisten, Phishing-Simulationsergebnisse.'
 
   - source: 'ORP.3.A1'
-    target: '2.2.1'
+    target: '2.1.3'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       ORP.3.A1 (Sensibilisierung Leitungsebene) ist ein Teilaspekt von
-      ISA 2.2.1 (alle Mitarbeitenden). TISAX fordert Schulungen fuer alle,
+      ISA 2.1.3 (alle Mitarbeitenden). TISAX fordert Schulungen fuer alle,
       BSI-Basis nur fuer Fuehrungskraefte.
     audit_evidence_hint: 'Management-Awareness-Schulungs-Nachweis, Top-Management-Briefing-Protokolle.'
 

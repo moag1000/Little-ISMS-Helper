@@ -214,18 +214,18 @@ mappings:
     audit_evidence_hint: 'DEV-01: SDLC-Richtlinie mit Threat-Modeling, SAST/DAST-Reports. CON.8.A1 Festlegung der Sicherheitsanforderungen für Eigenentwicklungen.'
 
   - source: 'DEV-02'
-    target: 'CON.8.A4'
+    target: 'CON.8.A7'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       C5-Kriterium DEV-02 "Tests von Outsourced-Development und Eigen-
       entwicklungen" verlangt dokumentierte Sicherheitstests vor Produktiv-
-      setzung. CON.8.A4 "Sicherheitsüberprüfung von Software" adressiert
+      setzung. CON.8.A7 "Durchführung von entwicklungsbegleitenden Software-Tests" adressiert
       exakt diese Anforderung. Die Schnittmenge ist 1:1; aus C5-Cloud-Sicht
       gibt es keinen Delta-Aufwand zwischen beiden Anforderungen — wer
-      CON.8.A4 erfüllt, erfüllt auch DEV-02.
+      CON.8.A7 erfüllt, erfüllt auch DEV-02.
     cross_refs: ['DEV-01']
-    audit_evidence_hint: 'DEV-02: Sicherheitstest-Reports vor Release-Freigabe. CON.8.A4 Sicherheitsüberprüfung von Software, SAST/DAST/IAST-Toolchain-Belege.'
+    audit_evidence_hint: 'DEV-02: Sicherheitstest-Reports vor Release-Freigabe. CON.8.A7 Entwicklungsbegleitende Software-Tests, SAST/DAST/IAST-Toolchain-Belege.'
 
   - source: 'SIM-01'
     target: 'ORP.4'

@@ -186,7 +186,7 @@ final class IsoBsiGapControllerTest extends TestCase
     {
         $this->moduleService->method('isModuleActive')->willReturn(false);
 
-        $response = $this->controller->crossGap();
+        $response = $this->controller->crossGap($this->makeRequest());
 
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
@@ -211,7 +211,7 @@ final class IsoBsiGapControllerTest extends TestCase
         $this->gapService->method('buildGap')->willReturn($result);
         $this->inheritance->method('getPendingReviewCount')->willReturn(0);
 
-        $response = $this->controller->crossGap();
+        $response = $this->controller->crossGap($this->makeRequest());
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
 
@@ -219,6 +219,64 @@ final class IsoBsiGapControllerTest extends TestCase
         $this->assertNotFalse($content);
         $this->assertStringContainsString('data-testid="bucket-quick_win"', $content);
         $this->assertStringContainsString('data-tour-step="bsi-gap-level"', $content);
+    }
+
+    // ── Test: ?target=gspp → gap against Grundschutz++ ───────────────────────
+
+    #[Test]
+    public function crossGapTargetsGrundschutzPlusPlusWhenRequested(): void
+    {
+        $this->moduleService->method('isModuleActive')->willReturn(true);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
+        $this->tenant->method('getBsiAssuranceLevel')->willReturn('standard');
+
+        $gspp = $this->createMock(ComplianceFramework::class);
+        $this->frameworkRepo->method('findOneBy')->willReturnCallback(fn(array $c) => match ($c['code']) {
+            'ISO27001' => $this->iso,
+            'BSI-GSPP' => $gspp,
+            default => $this->bsi,
+        });
+
+        $this->gapService->expects($this->once())
+            ->method('buildGap')
+            ->with($this->tenant, $this->iso, $gspp)
+            ->willReturn(new BsiGapResult(
+                items: [],
+                bucketCounts: ['erledigt' => 0, 'quick_win' => 0, 'bsi_arbeit' => 0, 'pruefen' => 0],
+                total: 0,
+            ));
+        $this->inheritance->method('getPendingReviewCount')->willReturn(0);
+
+        $request = $this->makeRequest();
+        $request->query->set('target', 'gspp');
+
+        $this->assertSame(Response::HTTP_OK, $this->controller->crossGap($request)->getStatusCode());
+    }
+
+    #[Test]
+    public function crossGapFallsBackToKompendiumForUnknownTarget(): void
+    {
+        $this->moduleService->method('isModuleActive')->willReturn(true);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
+        $this->tenant->method('getBsiAssuranceLevel')->willReturn('standard');
+
+        $requested = [];
+        $this->frameworkRepo->method('findOneBy')->willReturnCallback(function (array $c) use (&$requested) {
+            $requested[] = $c['code'];
+            return $c['code'] === 'ISO27001' ? $this->iso : $this->bsi;
+        });
+        $this->gapService->method('buildGap')->willReturn(new BsiGapResult(
+            items: [],
+            bucketCounts: ['erledigt' => 0, 'quick_win' => 0, 'bsi_arbeit' => 0, 'pruefen' => 0],
+            total: 0,
+        ));
+        $this->inheritance->method('getPendingReviewCount')->willReturn(0);
+
+        $request = $this->makeRequest();
+        $request->query->set('target', 'nonsense');
+        $this->controller->crossGap($request);
+
+        $this->assertSame(['ISO27001', 'BSI_GRUNDSCHUTZ'], array_slice($requested, 0, 2));
     }
 
     // ── Test: POST level=kern → flush + 302 ──────────────────────────────────

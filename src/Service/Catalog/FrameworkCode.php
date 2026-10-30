@@ -35,6 +35,7 @@ final class FrameworkCode
         'NIS2',
         'NIS2UMSUCG',
         'BSI_GRUNDSCHUTZ',
+        'BSI-GSPP',
         'GDPR',
         'BDSG',
         'ISO27001',
