@@ -65,12 +65,12 @@ library:
 
 mappings:
   - source: '21.2.a'
-    target: 'ISMS.1.4'
+    target: 'ISMS.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       NIS2 Art. 21(2)(a) verlangt "Konzepte für Risikoanalyse und Sicherheit der
-      Informationssysteme". IT-Grundschutz-Baustein ISMS.1.4 "Risikoanalyse"
+      Informationssysteme". IT-Grundschutz-Baustein ISMS.1 "Sicherheitsmanagement" (mit BSI-Standard 200-3)
       definiert die methodische Vorgehensweise zur Risikoidentifikation,
       -bewertung und -behandlung gemäß BSI-Standard 200-3. Ergänzend deckt
       CON.7 "Sicherheit auf Auslandsreisen" Risikoaspekte mobiler
@@ -117,7 +117,7 @@ mappings:
     gap_warning: |
       OPS.2.3 allein deckt nicht den gesamten Lieferkettenbegriff der NIS2 ab.
       Empfehlung: Bündel mit OPS.2.2 (Cloud) und Lieferanten-Risikobewertung
-      nach ISMS.1.4 für vollständigen Nachweis.
+      nach ISMS.1 und BSI-Standard 200-3 für vollständigen Nachweis.
     cross_refs: ['OPS.2.2', 'OPS.3']
     audit_evidence_hint: 'Lieferantenverzeichnis mit Risikoeinstufung, Outsourcing-Verträge mit Sicherheitsanforderungen, Audit-Reports kritischer Dienstleister, AVV nach DSGVO.'
 
@@ -194,7 +194,7 @@ mappings:
     audit_evidence_hint: 'Berechtigungskonzept, Zugriffsrechte-Reviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten Personal, Asset-Inventar mit Verantwortlichen.'
 
   - source: '21.2.j'
-    target: 'ORP.4.6'
+    target: 'ORP.4'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -218,8 +218,8 @@ mappings:
       CON.7 "Sicherheit auf Auslandsreisen" deckt einen Teilaspekt von
       NIS2 21.2.a ab — speziell Risiken durch mobile Informationsverarbeitung.
       Die Kernanforderung "Konzept für Risikoanalyse" wird primär durch
-      ISMS.1.4 erfüllt; CON.7 ist nur ergänzend relevant.
-    cross_refs: ['ISMS.1.4']
+      ISMS.1 erfüllt; CON.7 ist nur ergänzend relevant.
+    cross_refs: ['ISMS.1']
     audit_evidence_hint: 'Reiserichtlinie für sensible Geschäftsreisen, mobile Geräte-Härtung, Verhaltensregeln im Ausland.'
   - source: '21.2.i'
     target: 'ORP.2'

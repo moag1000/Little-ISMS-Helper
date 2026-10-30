@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
+use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
-use App\Repository\ComplianceRequirementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Yaml\Yaml;
@@ -24,7 +25,6 @@ final class MappingLibraryLoader
         private readonly MappingValidatorService $validator,
         private readonly MappingQualityScoreService $mqsService,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
-        private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly ComplianceMappingRepository $mappingRepository,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
@@ -146,14 +146,8 @@ final class MappingLibraryLoader
         $skipped = 0;
 
         foreach ($entries as $entry) {
-            $sourceReq = $this->requirementRepository->findOneBy([
-                'framework' => $sourceFw,
-                'requirementId' => $entry['source'],
-            ]);
-            $targetReq = $this->requirementRepository->findOneBy([
-                'framework' => $targetFw,
-                'requirementId' => $entry['target'],
-            ]);
+            $sourceReq = $this->findRequirement($sourceFw, (string) $entry['source']);
+            $targetReq = $this->findRequirement($targetFw, (string) ($entry['target'] ?? ''));
             if ($sourceReq === null || $targetReq === null) {
                 $skipped++;
                 continue;
@@ -225,14 +219,8 @@ final class MappingLibraryLoader
 
         // MQS-Score für jedes geladene Mapping berechnen
         foreach ($entries as $entry) {
-            $sourceReq = $this->requirementRepository->findOneBy([
-                'framework' => $sourceFw,
-                'requirementId' => $entry['source'],
-            ]);
-            $targetReq = $this->requirementRepository->findOneBy([
-                'framework' => $targetFw,
-                'requirementId' => $entry['target'],
-            ]);
+            $sourceReq = $this->findRequirement($sourceFw, (string) $entry['source']);
+            $targetReq = $this->findRequirement($targetFw, (string) ($entry['target'] ?? ''));
             if ($sourceReq === null || $targetReq === null) {
                 continue;
             }
@@ -255,6 +243,14 @@ final class MappingLibraryLoader
             'updated' => $updated,
             'skipped' => $skipped,
         ];
+    }
+
+    /**
+     * Same ID resolution as the validator ({@see MappingValidatorService::resolveRequirement()}).
+     */
+    private function findRequirement(?ComplianceFramework $framework, string $identifier): ?ComplianceRequirement
+    {
+        return $framework === null ? null : $this->validator->resolveRequirement($framework, $identifier);
     }
 
     /**

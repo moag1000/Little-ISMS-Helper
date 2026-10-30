@@ -72,7 +72,7 @@ mappings:
       ISMS.1 verlangt zusätzlich Sicherheitsorganisation (ISMS.1.A2),
       Sicherheitskonzept (ISMS.1.A6) und Management-Reviews. Wer rein OPS-01-
       konform ist, deckt nur die Leitlinien-Komponente von ISMS.1 ab.
-    cross_refs: ['ISMS.1.1', 'OPS-02']
+    cross_refs: ['ISMS.1', 'OPS-02']
     audit_evidence_hint: 'ISMS.1.A1 Übernahme der Gesamtverantwortung, ISMS.1.A6 Sicherheitskonzept. OPS-01: Cloud-spezifische InfoSec-Leitlinie mit Management-Freigabe.'
 
   - source: 'OPS.1.1.4'
@@ -202,22 +202,22 @@ mappings:
       Beschaffung von Informationssystemen" adressiert die identischen
       SDLC-Anforderungen. Aus Grundschutz-Sicht ist die Entsprechung
       vollständig; der BSI-Crosswalk bestätigt das 1:1-Mapping.
-    cross_refs: ['CON.8.A4', 'DEV-02']
+    cross_refs: ['CON.8.A7', 'DEV-02']
     audit_evidence_hint: 'CON.8.A1 Festlegung der Sicherheitsanforderungen für Eigenentwicklungen. DEV-01: SDLC-Richtlinie mit Threat-Modeling, SAST/DAST-Reports.'
 
-  - source: 'CON.8.A4'
+  - source: 'CON.8.A7'
     target: 'DEV-02'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      Grundschutz-Maßnahme CON.8.A4 "Sicherheitsüberprüfung von Software"
+      Grundschutz-Maßnahme CON.8.A7 "Durchführung von entwicklungsbegleitenden Software-Tests"
       verlangt dokumentierte Sicherheitstests (SAST/DAST/IAST) vor Produktiv-
       setzung. C5-Kriterium DEV-02 "Tests von Outsourced-Development und
       Eigenentwicklungen" adressiert exakt diese Anforderung. Die Schnittmenge
       ist 1:1; aus Grundschutz-Sicht gibt es keinen Delta-Aufwand zwischen
       beiden Anforderungen.
     cross_refs: ['CON.8', 'DEV-01']
-    audit_evidence_hint: 'CON.8.A4 Sicherheitsüberprüfung von Software, SAST/DAST/IAST-Toolchain-Belege. DEV-02: Sicherheitstest-Reports vor Release-Freigabe.'
+    audit_evidence_hint: 'CON.8.A7 Entwicklungsbegleitende Software-Tests, SAST/DAST/IAST-Toolchain-Belege. DEV-02: Sicherheitstest-Reports vor Release-Freigabe.'
 
   - source: 'ORP.4'
     target: 'SIM-01'
@@ -269,12 +269,12 @@ mappings:
     cross_refs: ['COM-04']
     audit_evidence_hint: 'CON.2.A1 Umsetzung Standard-Datenschutzmodell, Verfahrensverzeichnis. COS-01: Rechts- und Pflichtenkataster mit DSGVO-Bezug, AVV-Templates.'
 
-  - source: 'ISMS.1.1'
+  - source: 'ISMS.1'
     target: null
     relationship: 'superset'
     confidence: 'high'
     rationale: |
-      Grundschutz-Komponente ISMS.1.1 (Management-Steuerung als integraler
+      Baustein ISMS.1 (Management-Steuerung als integraler
       Teil von ISMS.1) adressiert InfoSec-Organisation mit Rollen, Verant-
       wortlichkeiten und Management-Steuerung. C5-Kriterium MA-01
       "Management — Organisation des Sicherheitsprozesses und Verant-

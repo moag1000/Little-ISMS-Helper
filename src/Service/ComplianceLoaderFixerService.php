@@ -38,6 +38,7 @@ final class ComplianceLoaderFixerService
         'DORA'            => 'EU-DORA (2022/2554)',
         'TISAX'           => 'TISAX (VDA-ISA 6.0)',
         'BSI_GRUNDSCHUTZ' => 'BSI IT-Grundschutz',
+        'BSI-GSPP'        => 'BSI Grundschutz++ (300-1)',
         'BSI-C5'          => 'BSI C5:2020',
         'BSI-C5-2026'     => 'BSI C5:2026',
         'GDPR'            => 'GDPR (2016/679)',

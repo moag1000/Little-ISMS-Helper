@@ -25,7 +25,7 @@ use Symfony\Component\Yaml\Yaml;
  *  - Operational mappings dominated by amtlich (205) + amtlich_gestuetzt
  *  - Panel-reject verdicts → deprecated
  *  - Panel-needs_review verdicts → reviewStatus='needs_review'
- *  - Fixture integrity: official crosswalk has exactly 205 pairs
+ *  - Fixture integrity: official crosswalk has exactly 242 pairs (205 BSI rows, ranges expanded)
  *  - detectSourceKey correctly identifies 'c5' for C5 fixture files
  *  - buildIndex uses raw requirementId for ISO27001 targets (not bausteinCodeFrom)
  */
@@ -36,7 +36,12 @@ final class C5IsoQualityTest extends TestCase
     private const PANEL_FIXTURE_PATH    = __DIR__ . '/../../../fixtures/library/mappings/panel_verdicts/bsi-c5-2020_to_iso27001-2022_panel_v1.json';
 
     private const OFFICIAL_PROVENANCE   = 'official_bsi_c5_iso_crosswalk';
-    private const EXPECTED_AMTLICH_PAIRS = 205;
+    /**
+     * The BSI table has 205 rows; rows citing a clause range ("4.1 - 10.2") or a
+     * clause the ISO catalogue splits (9.2 → 9.2.1, …) are expanded into one entry
+     * per catalogue requirement so every pair imports — 242 entries.
+     */
+    private const EXPECTED_AMTLICH_PAIRS = 242;
 
     private EntityManagerInterface&MockObject $entityManager;
     private string $tempDir;
@@ -71,14 +76,14 @@ final class C5IsoQualityTest extends TestCase
     }
 
     #[Test]
-    public function official_crosswalk_has_exactly_205_amtlich_pairs(): void
+    public function official_crosswalk_has_exactly_242_amtlich_pairs(): void
     {
         $data = Yaml::parseFile(self::OFFICIAL_FIXTURE_PATH);
         $mappings = $data['mappings'] ?? [];
         self::assertCount(
             self::EXPECTED_AMTLICH_PAIRS,
             $mappings,
-            'Official BSI C5:2020 ↔ ISO 27001:2022 crosswalk must contain exactly 205 pairs',
+            'Official BSI C5:2020 ↔ ISO 27001:2022 crosswalk must contain exactly 242 pairs (205 BSI rows, ranges expanded)',
         );
     }
 

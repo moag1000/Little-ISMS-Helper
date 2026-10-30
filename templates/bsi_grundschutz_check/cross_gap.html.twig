@@ -16,6 +16,20 @@
 <main class="fa-aurora-surface">
 <div class="container-fluid">
 
+    {# ── Target catalogue switch (Kompendium / Grundschutz++) ────────────── #}
+    {% if (targets ?? [])|length > 1 %}
+        {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+        <nav class="d-flex flex-wrap align-items-center gap-2 mb-3" aria-label="{{ 'bsi.cross_gap.target.label'|trans({}, 'compliance') }}">
+            <span class="small text-muted">{{ 'bsi.cross_gap.target.label'|trans({}, 'compliance') }}</span>
+            {% for key in targets %}
+                {{ _fa_filter_chip.render(('bsi.cross_gap.target.' ~ key)|trans({}, 'compliance'), {
+                    active: key == target,
+                    href: path('app_compliance_cross_gap', {_locale: app.request.locale, target: key}),
+                }) }}
+            {% endfor %}
+        </nav>
+    {% endif %}
+
     {# ── No-framework empty state ─────────────────────────────────────────── #}
     {% if result is null %}
         <div class="row mb-4">
@@ -109,7 +123,7 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.requirement'|trans({}, 'compliance') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.baustein'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ ((target ?? 'kompendium') == 'gspp' ? 'bsi.cross_gap.col.topic' : 'bsi.cross_gap.col.baustein')|trans({}, 'compliance') }}</th>
                                 <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.iso_control'|trans({}, 'compliance') }}</th>
                                 <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.tier'|trans({}, 'compliance') }}</th>
                                 <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.action'|trans({}, 'compliance') }}</th>
@@ -175,6 +189,7 @@
                     <h3 class="h6 mb-3">{{ 'bsi.cross_gap.level.title'|trans }}</h3>
                     <form method="post" action="{{ path('app_compliance_bsi_level', {_locale: app.request.locale}) }}" novalidate>
                         <input type="hidden" name="_token" value="{{ csrf_token('bsi_level') }}">
+                        <input type="hidden" name="target" value="{{ target ?? 'kompendium' }}">
                         <div class="mb-3">
                             <label for="bsi-level-select" class="form-label small mb-1">
                                 {{ 'bsi.cross_gap.level.label'|trans }}

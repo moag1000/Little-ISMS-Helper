@@ -11,4 +11,4 @@ src/Repository/ComplianceMappingRepository.php:64
 src/Service/AccessReviewCampaignService.php:169
 src/Service/Audit/Generator/AccessReviewWorkbookGenerator.php:61
 src/Service/Compliance/FrameworkLoaderRegistry.php:49
-src/Service/ComplianceLoaderFixerService.php:115
+src/Service/ComplianceLoaderFixerService.php:116

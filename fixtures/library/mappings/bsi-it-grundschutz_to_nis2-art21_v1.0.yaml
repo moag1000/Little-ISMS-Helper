@@ -60,12 +60,12 @@ library:
       - { state: 'published', date: '2025-01-15', actor: 'ciso-signoff' }
 
 mappings:
-  - source: 'ISMS.1.4'
+  - source: 'ISMS.1'
     target: '21.2.a'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      Baustein ISMS.1.4 "Risikoanalyse" bündelt die methodische Vorgehensweise
+      Baustein ISMS.1 "Sicherheitsmanagement" bündelt mit BSI-Standard 200-3 die methodische Vorgehensweise
       zur Risikoidentifikation, -bewertung und -behandlung gemäß BSI-Standard
       200-3. NIS2 Art. 21(2)(a) "Konzepte für Risikoanalyse und Sicherheit der
       Informationssysteme" wird durch diesen Baustein nahezu vollständig
@@ -110,7 +110,7 @@ mappings:
       OPS.2.3 deckt mehr ab als NIS2 21.2.d (Kundenseite-Outsourcing), aber
       nicht den vollen Lieferkettenbegriff der NIS2 (Software-Bezug, Cloud).
       Für vollständige NIS2-Konformität: Bündel mit OPS.2.2 (Cloud) und
-      Lieferanten-Risikobewertung nach ISMS.1.4.
+      Lieferanten-Risikobewertung nach ISMS.1 und BSI-Standard 200-3.
     audit_evidence_hint: 'Outsourcing-Verträge nach OPS.2.3 mit Sicherheitsanforderungen, Lieferantenverzeichnis mit Risikoeinstufung, Audit-Reports kritischer Dienstleister, AVV nach DSGVO; ergänzend NIS2-Art.-21(2)(d)-Lieferkettenbewertung.'
 
   - source: 'CON.8'
@@ -187,7 +187,7 @@ mappings:
       OPS.1.1.7 (Asset-Management).
     audit_evidence_hint: 'Berechtigungskonzept nach ORP.4, Zugriffsrechte-Reviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten Personal, Asset-Inventar mit Verantwortlichen; ergänzend NIS2-Art.-21(2)(i)-Compliance-Nachweis.'
 
-  - source: 'ORP.4.6'
+  - source: 'ORP.4.A21'
     target: '21.2.j'
     relationship: 'superset'
     confidence: 'medium'
@@ -214,7 +214,7 @@ mappings:
       Baustein CON.7 "Sicherheit auf Auslandsreisen" bündelt Risiken durch
       mobile Informationsverarbeitung im Ausland. NIS2 Art. 21(2)(a) "Konzept
       für Risikoanalyse" wird davon nur am Rand berührt — der Kern wird durch
-      ISMS.1.4 erfüllt. CON.7 ist nur ergänzend für NIS2 21.2.a relevant.
+      ISMS.1 erfüllt. CON.7 ist nur ergänzend für NIS2 21.2.a relevant.
     audit_evidence_hint: 'Reiserichtlinie nach CON.7 für sensible Geschäftsreisen, mobile Geräte-Härtung, Verhaltensregeln im Ausland; ergänzend NIS2-Art.-21(2)(a)-Risikoanalyse-Nachweis.'
   - source: 'ORP.2'
     target: '21.2.i'
