@@ -340,6 +340,16 @@ GS++ genauso wie für die anderen Frameworks.
 | `iso27001-2022_to_bsi-gspp_official_v1.yaml` + Gegenrichtung | amtliches BSI-Mapping Annex A → GS++ (1.0.1-qa), alle 93 Controls | 362 |
 | `iso27001-2022-clauses_to_bsi-gspp_v1.yaml` + Gegenrichtung | Expertenmapping Klauseln 4–10 → GS++-Methodik | 28 / 81 |
 | `bsi-it-grundschutz_to_bsi-gspp_official_v1.yaml` | BSI-Mapping Kompendium 2023 → GS++ (beim BSI noch **Entwurf**), von Teilanforderungen auf Anforderungen verdichtet | 1026 |
+| `{nis2-art21,bsi-c5-2020,bsi-c5-2026,dora,tisax}_to_bsi-gspp_derived_v1.yaml` + Gegenrichtung | über ISO 27001 abgeleitet (siehe unten) | 159 / 928 / 559 / 176 / 265 |
+
+**Über ISO abgeleitete Mappings.** Für NIS2, C5, DORA und TISAX gibt es kein amtliches
+Mapping auf Grundschutz++. `python3 scripts/library/derive_gspp_pivot_mappings.py` verkettet
+das gepflegte Mapping des Frameworks auf ISO 27001 mit dem amtlichen BSI-Mapping
+ISO 27001 → GS++. Glieder mit `related` oder `low` entfallen, die Konfidenz ist höchstens
+`medium`, die Begründung nennt die ISO-Controls des Pfads. Die Provenienz
+`derived_iso27001_pivot` stuft die Paare als heuristisch ein: Die Vererbung schlägt sie zur
+Prüfung vor und übernimmt sie nicht ungeprüft. Nach Änderungen an einem der Eingangs-Mappings
+das Skript erneut laufen lassen.
 
 Ziel-IDs, die das BSI seit Erstellung eines Mappings umnummeriert hat, löst der
 Generator über die stabile OSCAL-UUID auf. Wer ISO 27001 umgesetzt hat, sieht über die

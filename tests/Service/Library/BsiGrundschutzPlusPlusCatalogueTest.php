@@ -22,6 +22,9 @@ final class BsiGrundschutzPlusPlusCatalogueTest extends TestCase
     private const ROOT = __DIR__ . '/../../../fixtures/library/';
     private const CATALOGUE = self::ROOT . 'catalogues/bsi-grundschutz-plusplus/catalogue.json';
 
+    /** Frameworks bridged to GS++ over ISO 27001 by scripts/library/derive_gspp_pivot_mappings.py. */
+    private const PIVOT_SLUGS = ['nis2-art21', 'bsi-c5-2020', 'bsi-c5-2026', 'dora', 'tisax'];
+
     /** @var array<string, array<string, mixed>> */
     private static array $requirements = [];
 
@@ -75,6 +78,29 @@ final class BsiGrundschutzPlusPlusCatalogueTest extends TestCase
         yield 'ISO clauses → GS++' => ['iso27001-2022-clauses_to_bsi-gspp_v1.yaml', 'target'];
         yield 'GS++ → ISO clauses' => ['bsi-gspp_to_iso27001-2022-clauses_v1.yaml', 'source'];
         yield 'IT-Grundschutz → GS++' => ['bsi-it-grundschutz_to_bsi-gspp_official_v1.yaml', 'target'];
+        foreach (self::PIVOT_SLUGS as $slug) {
+            yield "{$slug} → GS++ (ISO pivot)" => ["{$slug}_to_bsi-gspp_derived_v1.yaml", 'target'];
+            yield "GS++ → {$slug} (ISO pivot)" => ["bsi-gspp_to_{$slug}_derived_v1.yaml", 'source'];
+        }
+    }
+
+    /**
+     * Derived pairs are candidates: they must stay in the heuristic tier (review queue),
+     * never claim more than medium confidence, and never be mistaken for an official crosswalk.
+     */
+    #[Test]
+    public function pivot_mappings_are_marked_as_derived_candidates(): void
+    {
+        foreach (self::PIVOT_SLUGS as $slug) {
+            foreach (["{$slug}_to_bsi-gspp_derived_v1.yaml", "bsi-gspp_to_{$slug}_derived_v1.yaml"] as $file) {
+                $data = Yaml::parseFile(self::ROOT . 'mappings/' . $file);
+                self::assertSame('derived_iso27001_pivot', $data['library']['provenance']['primary_source'], $file);
+                foreach ($data['mappings'] as $entry) {
+                    self::assertSame('medium', $entry['confidence'], $file);
+                    self::assertNotSame('related', $entry['relationship'], $file);
+                }
+            }
+        }
     }
 
     #[Test]
