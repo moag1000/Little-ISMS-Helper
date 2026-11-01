@@ -1,13 +1,13 @@
 # check_translation_nesting.py baseline
 # Format: <relative-path>:<line>:<key>
-translations/admin.de.yaml:1805:data_management
-translations/admin.de.yaml:1913:setup
-translations/admin.de.yaml:1984:kpi_threshold
-translations/admin.de.yaml:2027:industry_preset
-translations/admin.en.yaml:1789:data_management
-translations/admin.en.yaml:1898:setup
-translations/admin.en.yaml:1969:kpi_threshold
-translations/admin.en.yaml:2012:industry_preset
+translations/admin.de.yaml:1768:data_management
+translations/admin.de.yaml:1876:setup
+translations/admin.de.yaml:1947:kpi_threshold
+translations/admin.de.yaml:1990:industry_preset
+translations/admin.en.yaml:1752:data_management
+translations/admin.en.yaml:1861:setup
+translations/admin.en.yaml:1932:kpi_threshold
+translations/admin.en.yaml:1975:industry_preset
 translations/alva.de.yaml:60:vulnerability
 translations/alva.de.yaml:66:data_subject_request
 translations/alva.de.yaml:72:asset
@@ -190,10 +190,10 @@ translations/data_management.de.yaml:1:data
 translations/data_management.en.yaml:1:data
 translations/data_subject_request.de.yaml:5:dsr
 translations/data_subject_request.en.yaml:5:dsr
-translations/document.de.yaml:292:evidence_reverification
-translations/document.de.yaml:331:iso_9001_bridge
-translations/document.en.yaml:292:evidence_reverification
-translations/document.en.yaml:331:iso_9001_bridge
+translations/document.de.yaml:283:evidence_reverification
+translations/document.de.yaml:322:iso_9001_bridge
+translations/document.en.yaml:283:evidence_reverification
+translations/document.en.yaml:322:iso_9001_bridge
 translations/dora.de.yaml:175:dora_subcontractor
 translations/dora.en.yaml:175:dora_subcontractor
 translations/dpa_template.de.yaml:1:title
@@ -362,10 +362,10 @@ translations/tisax_isa.de.yaml:7:tisax
 translations/tisax_isa.en.yaml:7:tisax
 translations/training.de.yaml:197:iso_9001_bridge
 translations/training.en.yaml:192:iso_9001_bridge
-translations/user.de.yaml:303:user_management
-translations/user.de.yaml:307:profile
-translations/user.en.yaml:303:user_management
-translations/user.en.yaml:307:profile
+translations/user.de.yaml:305:user_management
+translations/user.de.yaml:309:profile
+translations/user.en.yaml:305:user_management
+translations/user.en.yaml:309:profile
 translations/validators.de.yaml:110:Error
 translations/validators.de.yaml:224:setup
 translations/validators.de.yaml:244:document
