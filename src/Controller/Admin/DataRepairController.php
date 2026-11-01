@@ -74,7 +74,6 @@ class DataRepairController extends AbstractController
         private readonly DataIntegrityResultCache $integrityResultCache,
         private readonly SectionScanResultCache $sectionScanCache,
         private readonly AsyncJobDispatcher $asyncJobDispatcher,
-        private readonly \App\Service\DataRepair\OrphanReassigner $orphanReassigner,
     ) {
     }
 
