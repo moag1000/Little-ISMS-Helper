@@ -38,9 +38,8 @@
                     </div>
                     {% if settings.application is defined %}
                         <ul class="list-unstyled small">
-                            <li><strong>{{ 'admin.settings.application.locale'|trans({}, 'admin') }}:</strong> {{ settings.application.default_locale ?? 'de' }}</li>
                             <li><strong>{{ 'admin.settings.application.timezone'|trans({}, 'admin') }}:</strong> {{ settings.application.timezone ?? 'Europe/Berlin' }}</li>
-                            <li><strong>{{ 'admin.settings.application.items_per_page'|trans({}, 'admin') }}:</strong> {{ settings.application.items_per_page ?? 25 }}</li>
+                            <li><strong>{{ 'admin.settings.application.date_format'|trans({}, 'admin') }}:</strong> {{ date()|fa_date }}</li>
                         </ul>
                     {% endif %}
                 </div>
@@ -68,21 +67,15 @@
                         </div>
                     </div>
                     {% if settings.security is defined %}
-                        {% set _session_min = (settings.security.session_timeout_minutes is defined)
-                            ? settings.security.session_timeout_minutes
-                            : ((settings.security.session_lifetime ?? 3600) / 60) %}
                         {% set _pw_len = settings.security.password_min_length ?? 12 %}
-                        {% set _mfa = settings.security.mfa_required_roles is defined
-                            ? settings.security.mfa_required_roles
-                            : (settings.security.require_2fa ?? false) %}
+                        {% set _mfa = settings.security.mfa_required_roles ?? [] %}
                         <ul class="list-unstyled small">
-                            <li><strong>{{ 'admin.settings.security.session_lifetime'|trans({}, 'admin') }}:</strong> {{ _session_min }} min</li>
                             <li><strong>{{ 'admin.settings.security.password_min_length'|trans({}, 'admin') }}:</strong> {{ _pw_len }}</li>
-                            <li><strong>{{ 'admin.settings.security.require_2fa'|trans({}, 'admin') }}:</strong>
+                            <li><strong>{{ 'admin.settings.security.mfa_policy_title'|trans({}, 'admin') }}:</strong>
                                 {% if _mfa is iterable %}
                                     {{ _mfa|length > 0 ? _mfa|join(', ') : ('common.no'|trans({}, 'messages')) }}
                                 {% else %}
-                                    {{ _mfa ? 'Yes' : 'No' }}
+                                    {{ _mfa in ['', '[]'] ? ('common.no'|trans({}, 'messages')) : _mfa|replace({'[': '', ']': '', '"': ''}) }}
                                 {% endif %}
                             </li>
                         </ul>
@@ -90,58 +83,6 @@
                 </div>
                 <div class="fa-section__footer">
                     <a href="{{ path('admin_settings_security') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
-                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
-                    </a>
-                </div>
-            </section>
-        </div>
-
-        {# Feature Flags #}
-        <div class="col-md-6 col-lg-4">
-            <section class="fa-section h-100">
-                <div class="fa-section__body">
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="p-3 rounded me-3" style="background-color: var(--success-tint); border: 1px solid var(--success);">
-                            <i class="fa-icon text-success fs-2 fa-icon--nav-sliders" aria-hidden="true"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h3 class="card-title h5">{{ 'admin.settings.features.title'|trans({}, 'admin') }}</h3>
-                            <p class="card-text text-muted small">
-                                {{ 'admin.settings.features.description'|trans({}, 'admin') }}
-                            </p>
-                        </div>
-                    </div>
-                    {% if settings.features is defined %}
-                        <ul class="list-unstyled small">
-                            <li>
-                                {% if settings.features.enable_dark_mode|default(false) %}
-                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                {% else %}
-                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                {% endif %}
-                                {{ 'admin.settings.features.dark_mode'|trans({}, 'admin') }}
-                            </li>
-                            <li>
-                                {% if settings.features.enable_global_search|default(false) %}
-                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                {% else %}
-                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                {% endif %}
-                                {{ 'admin.settings.features.global_search'|trans({}, 'admin') }}
-                            </li>
-                            <li>
-                                {% if settings.features.enable_audit_log|default(false) %}
-                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                {% else %}
-                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                {% endif %}
-                                {{ 'admin.settings.features.audit_log'|trans({}, 'admin') }}
-                            </li>
-                        </ul>
-                    {% endif %}
-                </div>
-                <div class="fa-section__footer">
-                    <a href="{{ path('admin_settings_features') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
                         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
                     </a>
                 </div>

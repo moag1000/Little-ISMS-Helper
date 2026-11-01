@@ -34,6 +34,7 @@ four_eyes:
 
     approve: 'Approve'
     reject: 'Reject'
+    reassign_approver: 'Reassign approver'
 
     edit:
         title: 'Edit Approval Request'

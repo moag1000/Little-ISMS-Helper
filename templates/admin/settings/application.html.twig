@@ -32,19 +32,12 @@
                             form: form,
                             strict_whitelist: true,
                             sections: {
-                                'locale_settings': {
-                                    'label': 'admin.settings.application.locale_settings'|trans({}, 'admin'),
-                                    fields: ['default_locale', 'supported_locales']
-                                },
                                 'display_settings': {
                                     'label': 'admin.settings.application.display_settings'|trans({}, 'admin'),
-                                    fields: ['items_per_page', 'timezone', 'date_format', 'datetime_format']
+                                    fields: ['timezone', 'date_format', 'datetime_format']
                                 }
                             },
                             'col_widths': {
-                                'default_locale': 12,
-                                'supported_locales': 12,
-                                'items_per_page': 12,
                                 'timezone': 12,
                                 'date_format': 12,
                                 'datetime_format': 12

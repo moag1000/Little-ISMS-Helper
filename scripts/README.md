@@ -171,6 +171,40 @@ python3 verify_translations_v2.py
 
 ---
 
+### quality/check_unreferenced_ui.py (Gate 69)
+
+**Zweck:** Kein totes UI. Ein Template, das nirgends gerendert, eingebunden,
+eingebettet, erweitert oder importiert wird, und ein Stimulus-Controller, den
+kein Markup anhängt, werden bei jedem Design-System-Durchgang mitgeschleppt und
+täuschen dem nächsten Leser ein lebendes Feature vor (UX-Review 2026-11: 20
+Templates, 2 nie angehängte Controller).
+
+**Verwendung:** `python3 scripts/quality/check_unreferenced_ui.py --baseline scripts/quality/baselines/unreferenced_ui.txt`.
+Ein Template gilt als referenziert, wenn sein Pfad unter `templates/` (mit oder
+ohne `.html.twig`) irgendwo in `src/`, `templates/`, `config/` oder `tests/`
+vorkommt; `bundles/` und `emails/` sind ausgenommen. Ein Controller gilt als
+referenziert, wenn sein Bezeichner (`foo_bar_controller.js` → `foo-bar`) in
+`templates/`, `src/`, `config/` oder einer anderen Datei unter `assets/`
+vorkommt. Dynamisch gebaute Namen gehören mit Begründung in die Baseline.
+
+**CI-Integration:** Gate 69 im `code-quality`-Job.
+
+---
+
+### quality/check_settings_readers.py (Gate 70)
+
+**Zweck:** Jede Einstellung unter `/admin/settings` wirkt. Vor 2026-11 speicherte
+der Screen 14 Felder, die nirgends gelesen wurden, darunter „MFA erzwingen“.
+Jedes Feld aus `ApplicationSettingsType` / `SecuritySettingsType` braucht
+außerhalb von `SystemSettingsController` einen Leser: `getSetting('<kategorie>', '<feld>')`,
+den Punkt-Schlüssel `'<kategorie>.<feld>'` (TenantSettingResolver) oder ein
+`getSetting('<kategorie>', $var)` in einer Klasse, die den Feldnamen als
+String nennt.
+
+**CI-Integration:** Gate 70 im `code-quality`-Job, keine Baseline.
+
+---
+
 ### quality/check_entity_manager_reset.py (Gate 68)
 
 **Zweck:** Ein geschlossener EntityManager wird ausschließlich über

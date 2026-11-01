@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -966,12 +967,11 @@ class UserManagementController extends AbstractController
 
         return $this->redirectToRoute('user_management_mfa', ['id' => $user->getId()]);
     }
-    #[Route('/admin/users/{id}/impersonate', name: 'user_management_impersonate', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route('/admin/users/{id}/impersonate', name: 'user_management_impersonate', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsCsrfTokenValid(new Expression('"impersonate_" ~ args["user"].getId()'))]
     public function impersonate(User $user): Response
     {
-        // Redirect to the homepage with the impersonation parameter
-        // Using direct URL with _switch_user parameter for Symfony's user impersonation
         return $this->redirect('/?_switch_user=' . urlencode((string) $user->getEmail()));
     }
     /**

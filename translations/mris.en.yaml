@@ -40,6 +40,7 @@ mris:
             from existing data, five require manual entry per organization.
         source: 'Source: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. License: CC BY 4.0.'
         kpi_breadcrumb: 'MRIS KPIs'
+        wizards_title: 'Decision aids (wizards)'
         note_label: 'Note:'
     badge:
         auto: auto

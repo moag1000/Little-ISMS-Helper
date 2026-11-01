@@ -292,7 +292,21 @@
                 <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
+                <a href="{{ path('user_management_activity', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'user.activity.title'|trans({}, 'user') }}
+                </a>
                 {% if user.id != app.user.id %}
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <form method="post" action="{{ path('user_management_impersonate', {'id': user.id}) }}" class="d-inline"
+                              data-controller="ui-actions"
+                              data-action="submit->ui-actions#confirm"
+                              data-ui-actions-message-param="{{ 'user.modal.impersonate_confirm'|trans({'%name%': user.firstName ~ ' ' ~ user.lastName}, 'user') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('impersonate_' ~ user.id) }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'user.action.impersonate'|trans({}, 'user') }}
+                            </button>
+                        </form>
+                    {% endif %}
                     {% if user.isActive %}
                         <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">

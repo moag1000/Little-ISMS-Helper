@@ -1,7 +1,3 @@
-/* ===================================
-   Phase 5: Premium Features Styles - Cyberpunk Fairy
-   =================================== */
-
 /* ===============================
    Hero Section - Landing Page - Cyberpunk
    =============================== */
@@ -37,81 +33,6 @@
     pointer-events: none;
 }
 
-.hero-content {
-    position: relative;
-    z-index: 1; /* local stacking-context */
-}
-
-.hero-title {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    animation: fadeInUp 0.8s ease-out;
-}
-
-.hero-subtitle {
-    font-size: 1.25rem;
-    margin-bottom: 30px;
-    opacity: 0.95;
-    animation: fadeInUp 0.8s ease-out 0.2s both;
-}
-
-.hero-stats {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-    animation: fadeInUp 0.8s ease-out 0.4s both;
-}
-
-.hero-stat {
-    text-align: center;
-}
-
-.hero-stat-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.hero-stat-label {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.hero-actions {
-    animation: fadeInUp 0.8s ease-out 0.6s both;
-}
-
-.hero-actions .btn {
-    margin-right: 15px;
-    margin-bottom: 10px;
-    padding: 12px 30px;
-    font-size: 1.1rem;
-}
-
-.hero-image {
-    position: relative;
-    z-index: 1; /* local stacking-context */
-    animation: fadeIn 1s ease-out 0.4s both;
-}
-
-.hero-image img {
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-overlay);
-}
-
-.hero-icon {
-    font-size: 15rem;
-    color: rgb(255, 255, 255, 0.2);
-}
-
-[data-theme="dark"] .hero-icon {
-    color: rgb(255, 255, 255, 0.1);
-}
-
 /* ===============================
    Dashboard Widgets
    =============================== */
@@ -140,77 +61,6 @@
     transform: translateY(-5px);
     box-shadow: 0 8px 20px var(--primary-tint), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
     border-color: var(--primary);
-}
-
-.stat-card-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: var(--r-xl);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-}
-
-.stat-card-icon.bg-primary {
-    background: var(--primary);
-    color: var(--on-primary);
-    box-shadow: none;
-}
-
-.stat-card-icon.bg-success {
-    background: var(--success);
-    color: var(--on-success);
-    box-shadow: none;
-}
-
-.stat-card-icon.bg-warning {
-    background: var(--warning);
-    color: var(--on-warning);
-    box-shadow: none;
-}
-
-.stat-card-icon.bg-danger {
-    background: var(--danger);
-    color: var(--on-danger);
-    box-shadow: none;
-}
-
-.stat-card-icon.bg-info {
-    background: var(--primary);
-    color: var(--on-primary);
-    box-shadow: none;
-}
-
-.stat-card-title {
-    font-size: 0.85rem;
-    color: var(--fg-2);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-}
-
-.stat-card-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--fg);
-    margin-bottom: 5px;
-}
-
-.stat-card-change {
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.stat-card-change.positive {
-    color: var(--success);
-}
-
-.stat-card-change.negative {
-    color: var(--danger);
 }
 
 /* ===============================
@@ -422,15 +272,6 @@
     color: var(--primary);
 }
 
-.quick-action-icon {
-    font-size: 2rem;
-}
-
-.quick-action-label {
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
 /* ===============================
    Feature Cards (Landing Page)
    =============================== */
@@ -555,72 +396,8 @@
 }
 
 /* ===============================
-   Testimonials
-   =============================== */
-.testimonial-card {
-    background: var(--surface);
-    border-radius: var(--r-xl);
-    padding: 30px;
-    box-shadow: 0 2px 10px rgb(0, 0, 0, 0.05); /* design-spec: premium feature card faint singular shadow */
-    border: 1px solid rgb(0, 0, 0, 0.05); /* design-spec: premium card hairline border tint */
-    height: 100%;
-}
-
-.testimonial-content {
-    font-style: italic;
-    color: var(--fg-2);
-    margin-bottom: 20px;
-    line-height: 1.7;
-}
-
-.testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.testimonial-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--primary-strong); /* Kanon H4 */
-    color: var(--on-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.testimonial-info {
-    flex: 1;
-}
-
-.testimonial-name {
-    font-weight: 600;
-    color: var(--fg);
-    margin-bottom: 3px;
-}
-
-.testimonial-position {
-    font-size: 0.85rem;
-    color: var(--fg-2);
-}
-
-/* ===============================
    Animations
    =============================== */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -645,25 +422,9 @@
    Responsive Design
    =============================== */
 @media (max-width: 767.98px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-
-    .hero-stats {
-        justify-content: center;
-    }
-
-    .stat-card-value {
-        font-size: 1.5rem;
-    }
-
-    .chart-container {
+                    .chart-container {
         height: 250px;
-    }
+                    }
 
     .quick-actions {
         grid-template-columns: repeat(2, 1fr);
@@ -692,10 +453,6 @@
    Dark Mode Support (for later)
    =============================== */
 /* To be implemented in Paket C */
-
-/* ===============================
-   Paket B: Quick View & Global Search
-   =============================== */
 
 /* ===============================
    Global Search Modal — Aurora-Refactor
@@ -948,39 +705,6 @@
     color: inherit;
     padding: 0 2px;
     border-radius: 4px;
-}
-
-/* ── Spec 5: Aurora-tokenized status-pills in results (replaces generic Bootstrap) ── */
-.search-result-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    border-radius: 100px;
-    border: 1px solid transparent;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.search-result-status--warning {
-    background: var(--warning-glow);
-    color: var(--warning-text);
-    border-color: var(--warning);
-}
-
-.search-result-status--success {
-    background: var(--success-glow);
-    color: var(--success);
-    border-color: var(--success);
-}
-
-.search-result-status--neutral {
-    background: var(--surface-2);
-    color: var(--fg-2);
-    border-color: var(--border);
 }
 
 .search-loading,
@@ -1343,10 +1067,6 @@
 }
 
 /* ===============================
-   Paket C: Dark Mode & Preferences
-   =============================== */
-
-/* ===============================
    Preferences Modal
    =============================== */
 .preferences-modal {
@@ -1368,18 +1088,6 @@
     animation: fadeIn 0.2s ease-out;
 }
 
-.preferences-container {
-    background: var(--surface);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-lg);
-    max-width: 600px;
-    width: 100%;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    animation: slideInUp 0.3s ease-out;
-}
-
 @keyframes slideInUp {
     from {
         opacity: 0;
@@ -1389,31 +1097,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.preferences-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    border-bottom: 2px solid var(--border);
-    background: var(--bg);
-}
-
-.preferences-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--fg);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.preferences-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
 }
 
 .preference-section {
@@ -1435,17 +1118,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.preferences-footer {
-    padding: 15px 20px;
-    border-top: 1px solid var(--border);
-    background: var(--bg);
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 /* ===============================
@@ -1743,10 +1415,6 @@
         max-width: 100vw;
     }
 
-    .preferences-container {
-        max-width: 100%;
-        max-height: 90vh;
-    }
 }
 
 @media (max-width: 575.98px) {

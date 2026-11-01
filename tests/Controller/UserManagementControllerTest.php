@@ -625,17 +625,47 @@ class UserManagementControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('GET', '/en/admin/users/' . $this->targetUser->getId() . '/impersonate');
+        $this->client->request('POST', '/en/admin/users/' . $this->targetUser->getId() . '/impersonate', [
+            '_token' => 'irrelevant',
+        ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     #[Test]
-    public function testImpersonateRedirectsForSuperAdmin(): void
+    public function testImpersonateRejectsGet(): void
     {
         $this->loginAsUser($this->superAdminUser);
 
         $this->client->request('GET', '/en/admin/users/' . $this->targetUser->getId() . '/impersonate');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+    #[Test]
+    public function testImpersonateRejectsInvalidCsrfToken(): void
+    {
+        $this->loginAsUser($this->superAdminUser);
+
+        $this->client->request('POST', '/en/admin/users/' . $this->targetUser->getId() . '/impersonate', [
+            '_token' => 'invalid',
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function testImpersonateRedirectsForSuperAdminWithValidToken(): void
+    {
+        $this->loginAsUser($this->superAdminUser);
+
+        // Seed a session-bound CSRF token the same way the show page renders it.
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $this->targetUser->getId());
+        $token = $crawler->filter('form[action$="/impersonate"] input[name="_token"]')->attr('value');
+
+        $this->client->request('POST', '/en/admin/users/' . $this->targetUser->getId() . '/impersonate', [
+            '_token' => $token,
+        ]);
 
         $this->assertResponseRedirects();
     }

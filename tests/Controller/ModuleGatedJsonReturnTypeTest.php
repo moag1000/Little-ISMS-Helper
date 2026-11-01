@@ -28,8 +28,6 @@ final class ModuleGatedJsonReturnTypeTest extends TestCase
     {
         yield 'incident bcm impact' => [IncidentController::class, 'bcmImpactApi'];
         yield 'incident gdpr wizard result' => [IncidentController::class, 'gdprWizardResult'];
-        yield 'dpia search' => [DPIAController::class, 'search'];
-        yield 'dpia compliance report' => [DPIAController::class, 'complianceReport'];
         yield 'dpia validate' => [DPIAController::class, 'validate'];
         yield 'processing activity search' => [ProcessingActivityController::class, 'search'];
         yield 'processing activity compliance report' => [ProcessingActivityController::class, 'complianceReport'];

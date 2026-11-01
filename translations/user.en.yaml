@@ -7,6 +7,7 @@ user:
         edit: Edit
         delete_user: 'Delete User'
         deactivate: 'Deactivate'
+        impersonate: 'Impersonate user'
         export_csv: 'Export CSV'
     export:
         badge: 'User Export'
@@ -213,6 +214,7 @@ user:
         delete_user: 'Delete User'
         delete_confirm: 'Do you really want to delete user <strong>%name%</strong>?'
         delete_warning: 'Warning: This action cannot be undone.'
+        impersonate_confirm: 'Impersonate %name%? All actions are performed as this user and are logged.'
     confirm:
         delete: 'Do you really want to delete user %name%?'
     role:

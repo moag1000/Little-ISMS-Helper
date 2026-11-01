@@ -603,27 +603,6 @@ class WorkflowControllerTest extends WebTestCase
         }
     }
 
-    // ========== BY ENTITY TESTS ==========
-
-    #[Test]
-    public function testByEntityRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/workflow/by-entity/Risk/1');
-
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testByEntityRedirectsToInstanceIfExists(): void
-    {
-        $this->loginAsUser($this->testUser);
-
-        $this->client->request('GET', '/en/workflow/by-entity/Risk/1');
-
-        // Should redirect to instance show page or index if not found
-        $this->assertResponseRedirects();
-    }
-
     // ========== START WORKFLOW TESTS ==========
 
     #[Test]

@@ -32,30 +32,13 @@
                             form: form,
                             strict_whitelist: true,
                             sections: {
-                                'session_settings': {
-                                    'label': 'admin.settings.security.session_settings'|trans({}, 'admin'),
-                                    fields: ['session_lifetime', 'remember_me_lifetime']
-                                },
                                 'password_policy': {
                                     'label': 'admin.settings.security.password_settings'|trans({}, 'admin'),
                                     fields: ['password_min_length']
-                                },
-                                '2fa_settings': {
-                                    'label': 'admin.settings.security.2fa_settings'|trans({}, 'admin'),
-                                    fields: ['require_2fa']
-                                },
-                                'login_protection': {
-                                    'label': 'admin.settings.security.auth_settings'|trans({}, 'admin'),
-                                    fields: ['max_login_attempts', 'lockout_duration']
                                 }
                             },
                             'col_widths': {
-                                'session_lifetime': 12,
-                                'remember_me_lifetime': 12,
-                                'password_min_length': 12,
-                                'require_2fa': 12,
-                                'max_login_attempts': 12,
-                                'lockout_duration': 12
+                                'password_min_length': 12
                             },
                             'translation_domain': 'admin'
                         } %}
@@ -74,6 +57,10 @@
         </div>
 
         <div class="col-lg-4">
+            {{ _fa_alert.render({ variant: 'info', title: 'admin.settings.security.mfa_policy_title'|trans({}, 'admin'), body: 'admin.settings.security.mfa_policy_hint'|trans({}, 'admin') }) }}
+            <p class="mb-4">
+                <a href="{{ path('admin_tenant_compliance_settings_current') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'admin.settings.security.mfa_policy_link'|trans({}, 'admin') }}</a>
+            </p>
             {{ _fa_alert.render({ variant: 'warning', title: 'common.warning'|trans({}, 'messages'), body: 'admin.settings.security.warning'|trans({}, 'admin') }) }}
         </div>
     </div>

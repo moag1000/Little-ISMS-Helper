@@ -34,6 +34,7 @@ four_eyes:
 
     approve: 'Freigeben'
     reject: 'Ablehnen'
+    reassign_approver: 'Genehmiger neu zuweisen'
 
     edit:
         title: 'Freigabe-Anfrage bearbeiten'

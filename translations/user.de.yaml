@@ -7,6 +7,7 @@ user:
         edit: Bearbeiten
         delete_user: 'Benutzer löschen'
         deactivate: 'Deaktivieren'
+        impersonate: 'Als Benutzer anmelden'
         export_csv: 'CSV-Export'
     export:
         badge: 'Benutzer-Export'
@@ -213,6 +214,7 @@ user:
         delete_user: 'Benutzer löschen'
         delete_confirm: 'Möchten Sie den Benutzer <strong>%name%</strong> wirklich löschen?'
         delete_warning: 'Achtung: Diese Aktion kann nicht rückgängig gemacht werden.'
+        impersonate_confirm: 'Als %name% anmelden? Alle Aktionen werden im Namen dieses Benutzers ausgeführt und protokolliert.'
     confirm:
         delete: 'Möchten Sie den Benutzer %name% wirklich löschen?'
     role:

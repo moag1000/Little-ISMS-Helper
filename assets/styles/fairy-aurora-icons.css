@@ -57,49 +57,6 @@
 .fa-icon--status-archived  { color: var(--fg-3); }
 
 /* ── Framework-Lockup ──────────────────────────────────────────── */
-.fa-framework-lockup {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 10px 4px 8px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    color: var(--fg);
-    font-size: 12px;
-    line-height: 1;
-    white-space: nowrap;
-    transition: border-color 0.15s, background 0.15s;
-}
-.fa-framework-lockup:hover {
-    border-color: var(--primary); /* Kanon H4: Violett nur ✦/Alva */
-    background: var(--surface-3, var(--surface-2));
-}
-.fa-framework-lockup .fa-icon {
-    color: var(--primary);
-    font-size: 16px;
-}
-.fa-framework-lockup__abbr {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--fg);
-}
-.fa-framework-lockup--lg {
-    padding: 8px 14px 8px 12px;
-    font-size: 14px;
-    border-radius: var(--r-lg);
-}
-.fa-framework-lockup--lg .fa-icon {
-    font-size: 20px;
-}
-.fa-framework-lockup--ghost {
-    background: transparent;
-    border-color: transparent;
-    padding-left: 0;
-    padding-right: 0;
-}
-
 /* ── Per-Icon Mask-URLs ────────────────────────────────────────── */
 .fa-icon--compliance-shield { --fa-icon: url("../icons/compliance-shield.svg"); }
 .fa-icon--regulator { --fa-icon: url("../icons/regulator.svg"); }

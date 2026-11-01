@@ -325,6 +325,11 @@
        Hidden #cert-bundle-framework-input mirrors the dropdown above
        (kept in sync via ui-actions#copyValue) so POST carries the chosen framework code. #}
     <div class="text-center">
+        <a href="{{ path('app_certification_bundle_preflight', { framework: selected_framework_code|default('ISO27001') }) }}"
+           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm mb-3">
+            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+            {{ 'certification_bundle.check_readiness'|trans({}, 'certification_bundle') }}
+        </a>
         <form method="post" action="{{ path('app_certification_bundle_export_dispatch') }}" data-turbo="false" id="cert-bundle-export-form">
             <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export_dispatch') }}">
             <input type="hidden" name="framework" id="cert-bundle-framework-input" value="{{ selected_framework_code|default('ISO27001') }}">

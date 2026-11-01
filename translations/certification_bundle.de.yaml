@@ -3,6 +3,7 @@ certification_bundle:
     subtitle: 'Alle ISMS-Dokumente in einem ZIP-Archiv für den Auditor'
     breadcrumb: 'Zertifizierungs-Paket'
     generate: 'Paket generieren'
+    check_readiness: 'Bereitschaft prüfen'
     generating: 'Wird generiert...'
     export:
         progress_title: 'Zertifizierungs-Paket wird erstellt'

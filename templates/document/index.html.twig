@@ -28,6 +28,19 @@
         ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'document', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
         |merge(is_granted('ROLE_ADMIN') ? [{ label: 'document.action.policy_pack_export'|trans({}, 'document'), href: path('admin_policy_pack_export'), variant: 'ghost', icon: 'nav-download', attrs: {'data-turbo': 'false'} }] : [])
     }) }}
+    {% if is_granted('POLICY_WIZARD_EXPORT') %}
+        <form method="post" action="{{ path('app_policy_export_tenant_zip_dispatch') }}" class="d-flex justify-content-end mb-3"
+              data-turbo="false"
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'policy_wizard.export.zip.confirm'|trans({}, 'policy_wizard') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('policy_export_tenant_zip_dispatch') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                {{ 'document.action.policy_zip_export'|trans({}, 'document') }}
+            </button>
+        </form>
+    {% endif %}
     {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: documents|default([])|length } %}
 {% set _global_hints = alva_hints('document_index') %}
 {% if _global_hints|length > 0 %}

@@ -1349,6 +1349,10 @@ dpia:
             requires_consultation: 'Erfordert Konsultation der Aufsichtsbehörde (Art. 36 DSGVO)'
         not_yet_consulted: 'Noch nicht konsultiert'
         required_not_completed: 'Erforderlich, aber noch nicht durchgeführt'
+        dpo_advice_label: 'Beratung durch den Datenschutzbeauftragten (Art. 35 Abs. 2)'
+        record_dpo_consultation: 'DSB-Konsultation erfassen'
+        supervisory_feedback_label: 'Rückmeldung der Aufsichtsbehörde (Art. 36)'
+        record_supervisory_consultation: 'Konsultation der Aufsichtsbehörde erfassen'
         not_required: 'Nicht erforderlich'
     action:
         export_pdf: 'PDF exportieren'

@@ -418,6 +418,19 @@
                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                         {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
                     </a>
+                    {% if singleTenantId is not null %}
+                        <form method="post" action="{{ path('admin_data_repair_fix_all_orphans_async', {tenantId: singleTenantId}) }}"
+                              class="d-inline-block ms-2 m-0"
+                              data-controller="ui-actions"
+                              data-action="submit->ui-actions#confirm"
+                              data-ui-actions-message-param="{{ 'admin.data_repair.fix_all_orphans_confirm'|trans({'%count%': orphTotal}, 'admin') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('fix_all_orphans') }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
+                                <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                                {{ 'admin.data_repair.job.fix_all_orphans_label'|trans({}, 'admin') }}
+                            </button>
+                        </form>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

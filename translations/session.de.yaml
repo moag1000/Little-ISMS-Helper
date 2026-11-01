@@ -29,8 +29,10 @@ session:
         email_placeholder: 'E-Mail-Adresse...'
     action:
         terminate: 'Sitzung beenden'
+        terminate_all: 'Alle Sitzungen des Benutzers beenden'
     confirm:
         terminate: 'Möchten Sie diese Sitzung wirklich beenden?'
+        terminate_all: 'Möchten Sie wirklich alle aktiven Sitzungen von %user% beenden?'
     active_sessions: 'Aktive Sitzungen'
     duration: Dauer
     no_sessions_found: 'Keine aktiven Sitzungen im gewählten Zeitraum gefunden.'

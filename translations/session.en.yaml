@@ -29,8 +29,10 @@ session:
         email_placeholder: 'Email address...'
     action:
         terminate: 'Terminate session'
+        terminate_all: 'Terminate all sessions of this user'
     confirm:
         terminate: 'Do you really want to terminate this session?'
+        terminate_all: 'Do you really want to terminate all active sessions of %user%?'
     active_sessions: 'Active Sessions'
     duration: Duration
     no_sessions_found: 'No active sessions found in the selected time period.'

@@ -226,7 +226,6 @@ personas:
       # Core settings pages
       - { name: admin-settings,        path: /de/admin/settings }
       - { name: admin-settings-application, path: /de/admin/settings/application }
-      - { name: admin-settings-features, path: /de/admin/settings/features }
       - { name: admin-settings-security, path: /de/admin/settings/security }
       # New admin/settings/* sub-pages (added during settings expansion sprint)
       - { name: admin-settings-api-rate-limits, path: /de/admin/settings/api-rate-limits }

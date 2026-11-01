@@ -55,6 +55,21 @@
         {% endfor %}
     </div>
 
+    <section class="mt-4" aria-labelledby="mris-wizards-title">
+        <h2 id="mris-wizards-title" class="h6 text-muted mb-2">{{ 'mris.page.wizards_title'|trans({}, 'mris') }}</h2>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ path('app_mris_wizard_pure_friction') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i> {{ 'mris.wizard.pure_friction.breadcrumb'|trans({}, 'mris') }}
+            </a>
+            <a href="{{ path('app_mris_wizard_maturity_evidence') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'mris.wizard.maturity_evidence.breadcrumb'|trans({}, 'mris') }}
+            </a>
+            <a href="{{ path('app_mris_wizard_ai_risk_class') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                <i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i> {{ 'mris.wizard.ai_risk_class.breadcrumb'|trans({}, 'mris') }}
+            </a>
+        </div>
+    </section>
+
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-4 small' } } %}
         {% block alert_body %}
         <strong>{{ 'mris.page.note_label'|trans({}, 'mris') }}</strong>

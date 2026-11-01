@@ -1600,7 +1600,6 @@ workflow:
         rejected: 'Workflow step was rejected'
     info:
         cancelled: 'Workflow was cancelled'
-        no_active_workflow: 'No active workflow'
     days: 'Days'
     message:
         no_overdue: 'No overdue workflows'

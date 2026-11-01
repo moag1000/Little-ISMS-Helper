@@ -9,6 +9,7 @@
 <turbo-frame id="fa-form-modal">
     {{ form_start(form, { action: form_action, method: 'POST', attr: {
         id: 'asset-modal-form',
+        'data-controller': 'asset-sub-type asset-form',
         'data-turbo-frame': 'fa-form-modal'
     } }) }}
     {% include 'asset/_form_body.html.twig' with {

@@ -390,17 +390,6 @@ class ReportBuilderController extends AbstractController
     }
 
     /**
-     * Get widget library (AJAX)
-     */
-    #[Route('/api/widget-library', name: 'report_builder_widget_library', methods: ['GET'])]
-    public function getWidgetLibrary(): JsonResponse
-    {
-        if ($r = $this->gateJson()) return $r;
-        $library = $this->reportBuilderService->getWidgetLibrary();
-        return new JsonResponse($library);
-    }
-
-    /**
      * Toggle favorite status
      */
     #[Route('/{id}/favorite', name: 'report_builder_toggle_favorite', methods: ['POST'], requirements: ['id' => '\d+'])]
@@ -563,32 +552,5 @@ class ReportBuilderController extends AbstractController
         $this->addFlash('success', $this->translator->trans('report_builder.deleted', [], 'report_builder'));
 
         return $this->redirectToRoute('report_builder_index');
-    }
-
-    /**
-     * Get shareable users list (AJAX)
-     */
-    #[Route('/api/users', name: 'report_builder_users', methods: ['GET'])]
-    public function getUsers(): JsonResponse
-    {
-        if ($r = $this->gateJson()) return $r;
-        $tenant = $this->tenantContext->getCurrentTenant();
-        /** @var User $currentUser */
-        $currentUser = $this->getUser();
-
-        $users = $tenant !== null ? $this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true]) : [];
-
-        $result = [];
-        foreach ($users as $user) {
-            if ($user->getId() !== $currentUser->getId()) {
-                $result[] = [
-                    'id' => $user->getId(),
-                    'name' => $user->getFullName(),
-                    'email' => $user->getEmail(),
-                ];
-            }
-        }
-
-        return new JsonResponse($result);
     }
 }
