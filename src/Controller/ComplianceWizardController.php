@@ -410,8 +410,7 @@ class ComplianceWizardController extends AbstractController
 
         $tenant = $this->tenantContext->getCurrentTenant();
         $config = $this->wizardService->getWizardConfig($wizard);
-        $framework = $this->frameworkRepository->findOneBy(['code' => strtoupper((string) ($config['framework_code'] ?? $wizard))])
-            ?? $this->frameworkRepository->findOneBy(['code' => strtoupper($wizard)]);
+        $framework = $this->frameworkRepository->findOneBy(['code' => (string) ($config['code'] ?? strtoupper($wizard))]);
         if ($framework === null || $tenant === null) {
             throw $this->createNotFoundException();
         }

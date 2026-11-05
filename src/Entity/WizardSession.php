@@ -416,6 +416,7 @@ class WizardSession
             self::WIZARD_BSI_C5_2026 => 'BSI C5:2026',
             self::WIZARD_BSI_GRUNDSCHUTZ_STANDARD => 'BSI Grundschutz Standard',
             self::WIZARD_BSI_GRUNDSCHUTZ_KERN => 'BSI Grundschutz Kern',
+            self::WIZARD_BSI_GSPP => 'BSI Grundschutz++',
             self::WIZARD_ISO22301 => 'ISO 22301',
             self::WIZARD_ISO27017 => 'ISO 27017',
             self::WIZARD_ISO27018 => 'ISO 27018',
