@@ -135,6 +135,9 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      */
     private array $doraExtensionApplied = [];
 
+    /** @var array<int, list<string>> standards whose body extension was appended, keyed on `spl_object_id($template)` */
+    private array $extensionsApplied = [];
+
     /**
      * @return array{document_ids: list<int>, sandbox_preview: array<string, mixed>|null}
      */
@@ -221,7 +224,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             }
 
             $body = $this->renderBody($template, $variables);
-            $body = $this->dispatchBodyExtensions($template, $body, $run);
+            $body = $this->substitute($this->dispatchBodyExtensions($template, $body, $run), $variables);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
             $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
 
@@ -442,7 +445,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $previews = [];
         foreach ($templates as $template) {
             $body = $this->renderBody($template, $variables);
-            $body = $this->dispatchBodyExtensions($template, $body, $run);
+            $body = $this->substitute($this->dispatchBodyExtensions($template, $body, $run), $variables);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
             $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
             $body = $this->prependNormAnkerHeader($template, $body);
@@ -681,6 +684,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         'tisax'     => ['policy_tisax'],
         'nis2'      => ['policy_nis2'],
         'c5'        => ['policy_c5'],
+        'gspp'      => ['policy_gspp'],
         'kritis'    => ['policy_kritis'],
     ];
 
@@ -689,8 +693,8 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         if ($key === '') {
             return '';
         }
-        $candidates = self::POLICY_DOMAINS_BY_STANDARD[$standard] ?? [];
-        foreach ($candidates as $domain) {
+        $candidates = [...(self::POLICY_DOMAINS_BY_STANDARD[$standard] ?? []), 'policy_' . $standard];
+        foreach (array_unique($candidates) as $domain) {
             $resolved = $this->translator->trans($key, [], $domain);
             if ($resolved !== $key) {
                 return $resolved;
@@ -706,48 +710,32 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     // =========================================================================
 
     /**
-     * Generic body-extension dispatch.
-     *
-     * When {@see SectionExtensionRegistry} is wired, iterates every catalogue
-     * registered under the `app.policy_section_catalogue` tag and applies all
-     * extensions with `renderMode = 'body_extension'` to the rendered body.
-     * Currently this covers DORA (`appendDoraExtensionIfApplicable`).
-     *
-     * Fall-back: when the registry is not wired (legacy unit tests instantiate
-     * `DocumentGenerator` without it) the old hard-coded DORA method is called
-     * directly so output is byte-identical to pre-registry runs.
-     *
-     * Skip rules (per catalogue):
-     *  - The template standard is not 'iso27001' (body extensions only
-     *    target ISO host policies — DORA-only templates are standalone).
-     *  - The standard token is not in `run.standardsAdopted` (for 'dora';
-     *    'gdpr' uses isGdprScopeActive because of the iso27701 alias).
-     *
-     * The GDPR standard is registered with `renderMode = 'document_section'`
-     * and is therefore NOT processed here; it goes through
-     * {@see dispatchDocumentSectionExtensions} instead.
+     * Body-extension dispatch: DORA first (own heading, validity tags), then every
+     * other `body_extension` catalogue of an adopted standard via
+     * {@see SectionExtensionRegistry::appendBodyExtensions()} (BSI, GS++, C5, NIS2,
+     * TISAX, SOC 2, ISO 27701, BCM). Only ISO 27001 host policies are extended;
+     * GDPR (`document_section`) goes through {@see dispatchDocumentSectionExtensions}.
+     * Each appended standard is tagged `<standard>-extension:applied`; callers run the
+     * result through {@see substitute()} because extension prose uses the same variables.
      */
     private function dispatchBodyExtensions(
         PolicyTemplate $template,
         string $body,
         WizardRun $run,
     ): string {
-        if ($this->sectionExtensionRegistry === null) {
-            // Legacy path — no registry wired. Call the hard-coded method directly.
-            return $this->appendDoraExtensionIfApplicable($template, $body, $run);
+        $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+        if ($this->sectionExtensionRegistry === null || $template->getStandard() !== 'iso27001') {
+            return $body;
         }
+        $result = $this->sectionExtensionRegistry->appendBodyExtensions(
+            $body,
+            (string) $template->getTopic(),
+            $run->getStandardsAdopted() ?? [],
+            fn (string $key, string $standard): string => $this->resolvePolicyTranslation($key, $standard),
+        );
+        $this->extensionsApplied[spl_object_id($template)] = $result['applied'];
 
-        // Registry path — iterate all catalogues; apply body_extension entries.
-        foreach ($this->sectionExtensionRegistry->all() as $catalogue) {
-            if ($catalogue->getStandard() === 'dora') {
-                // DORA body extension — delegate to the existing method
-                // so the $doraExtensionApplied side-effect fires (drives tag emission).
-                $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
-            }
-            // Other body_extension catalogues can be dispatched generically here in future.
-        }
-
-        return $body;
+        return $result['body'];
     }
 
     /**
@@ -1456,6 +1444,10 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             if (!in_array('dora-validity:2025-01-17', $tagsToApply, true)) {
                 $tagsToApply[] = 'dora-validity:2025-01-17';
             }
+        }
+
+        foreach ($this->extensionsApplied[spl_object_id($template)] ?? [] as $standard) {
+            $tagsToApply[] = $standard . '-extension:applied';
         }
 
         // Compliance-Manager / Auditor-External Wish — `climate-change:amended`

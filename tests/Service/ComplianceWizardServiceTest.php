@@ -477,6 +477,21 @@ class ComplianceWizardServiceTest extends KernelTestCase
     }
 
     #[Test]
+    public function testBsiGsppWizardScoresKernelPracticesFromMappedIsoControls(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('bsi_gspp');
+        if ($config === null) {
+            $this->markTestSkipped('bsi_gspp wizard requires the "controls" module');
+        }
+        $this->assertSame('BSI-GSPP', $config['code']);
+        $this->assertCount(14, $config['categories']);
+        $technology = $config['categories']['technology']['checks']['bsi_gspp_technology_soa'];
+        $this->assertSame('control_coverage', $technology['type']);
+        $this->assertContains('8.20', $technology['control_ids'], 'A.8.20 maps to ARCH (network design)');
+    }
+
+    #[Test]
     public function testNistCsfWizardIsAvailable(): void
     {
         $this->requireDatabase();

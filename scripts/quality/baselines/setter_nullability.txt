@@ -21,6 +21,6 @@ src/Entity/User.php:505  setCreatedAt(DateTimeImmutable $createdAt (property nul
 src/Entity/UserSession.php:166  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/UserSession.php:177  setLastActivityAt(DateTimeImmutable $lastActivityAt (property nullable, setter not))
 src/Entity/Vulnerability.php:636  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
-src/Entity/WizardSession.php:317  setStartedAt(DateTimeImmutable $startedAt (property nullable, setter not))
+src/Entity/WizardSession.php:319  setStartedAt(DateTimeImmutable $startedAt (property nullable, setter not))
 src/Entity/Workflow.php:161  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/WorkflowInstance.php:243  setStartedAt(DateTimeImmutable $startedAt (property nullable, setter not))

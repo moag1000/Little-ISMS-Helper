@@ -31,6 +31,7 @@ use App\Service\ComplianceWizard\EntityPresenceChecker;
  * - DORA (bcm, incidents, controls, assets, suppliers)
  * - TISAX (controls, assets)
  * - BSI IT-Grundschutz (controls, assets, risks)
+ * - BSI Grundschutz++ (BSI-Standard 300-1)
  * - GDPR/DSGVO (processing activities, DPIA, data breaches)
  */
 final class ComplianceWizardService
@@ -220,6 +221,16 @@ final class ComplianceWizardService
                 'required_modules' => ['controls'],
                 'recommended_modules' => ['assets', 'risks'],
                 'categories' => $this->bsiProvider->getBsiGrundschutzKernCategories(),
+            ],
+            'bsi_gspp' => [
+                'code' => 'BSI-GSPP',
+                'name' => 'BSI Grundschutz++ (BSI-Standard 300-1)',
+                'description' => 'wizard.bsi_gspp.description',
+                'icon' => 'ui-flag',
+                'color' => 'danger',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['assets', 'risks', 'audits', 'training', 'suppliers', 'incidents', 'bcm'],
+                'categories' => $this->bsiProvider->getBsiGsppCategories(),
             ],
             'nist_csf' => [
                 'code' => 'NIST-CSF-2.0',

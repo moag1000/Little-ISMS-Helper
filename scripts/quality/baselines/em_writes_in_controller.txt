@@ -187,9 +187,9 @@ src/Controller/ComplianceRequirementController.php:347
 src/Controller/ComplianceRequirementController.php:348
 src/Controller/ComplianceRequirementController.php:462
 src/Controller/ComplianceRequirementController.php:465
-src/Controller/ComplianceWizardController.php:486
+src/Controller/ComplianceWizardController.php:485
+src/Controller/ComplianceWizardController.php:676
 src/Controller/ComplianceWizardController.php:677
-src/Controller/ComplianceWizardController.php:678
 src/Controller/ConsentController.php:144
 src/Controller/ConsentController.php:145
 src/Controller/ConsentController.php:149

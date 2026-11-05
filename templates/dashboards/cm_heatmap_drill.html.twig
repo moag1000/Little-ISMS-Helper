@@ -193,10 +193,10 @@
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--actions">
                                     {# Link to the compliance wizard for this framework #}
-                                    {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
-                                    {% if framework_code is not empty and (framework_code|lower) in _knownWizards %}
+                                    {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','bsi_gspp','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
+                                    {% if framework_code is not empty and (framework_code|lower|replace({'-': '_'})) in _knownWizards %}
                                         <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                           href="{{ path('app_compliance_wizard_start', {wizard: framework_code|lower}) }}">
+                                           href="{{ path('app_compliance_wizard_start', {wizard: framework_code|lower|replace({'-': '_'})}) }}">
                                             <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                             {{ 'compliance_manager.heatmap.drill.fix'|trans }}
                                         </a>

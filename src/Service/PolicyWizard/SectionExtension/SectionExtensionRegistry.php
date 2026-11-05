@@ -50,6 +50,41 @@ final class SectionExtensionRegistry
     }
 
     /**
+     * Appends the `body_extension` prose of every adopted standard to an ISO 27001
+     * topic body. DORA (own heading and validity tags in DocumentGenerator) and the
+     * `document_section` catalogues (GDPR) are not handled here. A section whose
+     * translation is missing is skipped rather than rendered as a raw key.
+     *
+     * @param list<string>                                  $standards WizardRun::getStandardsAdopted()
+     * @param callable(string $key, string $standard): string $translate returns $key when untranslated
+     *
+     * @return array{body: string, applied: list<string>}
+     */
+    public function appendBodyExtensions(string $body, string $topic, array $standards, callable $translate): array
+    {
+        $applied = [];
+        foreach ($this->catalogues as $catalogue) {
+            $standard = $catalogue->getStandard();
+            if ($standard === 'dora' || $topic === '' || !in_array($standard, $standards, true)) {
+                continue;
+            }
+            foreach ($catalogue->sectionsForTopic($topic) as $section) {
+                if ($section->renderMode !== 'body_extension') {
+                    continue;
+                }
+                $text = $translate($section->bodyTranslationKey, $standard);
+                if ($text === '' || $text === $section->bodyTranslationKey) {
+                    continue;
+                }
+                $body = rtrim($body) . "\n\n" . trim($text) . "\n";
+                $applied[] = $standard;
+            }
+        }
+
+        return ['body' => $body, 'applied' => array_values(array_unique($applied))];
+    }
+
+    /**
      * All registered catalogues in registration order.
      *
      * @return iterable<StandardSectionCatalogueInterface>
