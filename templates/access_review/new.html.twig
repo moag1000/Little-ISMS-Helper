@@ -2,7 +2,7 @@
 {% trans_default_domain 'access_review' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'access_review.new_campaign'|trans({}, 'access_review') }} – {{ parent() }}{% endblock %}
+{% block title %}{{ 'access_review.new_campaign'|trans({}, 'access_review') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -13,11 +13,10 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge:  { icon: 'nav-shield', label: 'access_review.badge'|trans({}, 'access_review') },
     title:  'access_review.new_campaign'|trans({}, 'access_review'),
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4" style="max-width: 700px;">
 
     <div class="card">

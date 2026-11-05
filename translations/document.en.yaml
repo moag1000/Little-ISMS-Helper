@@ -26,6 +26,7 @@ document:
         create: Create
         policy_wizard: 'Open Policy Wizard'
         policy_pack_export: 'Export policy pack'
+        policy_zip_export: 'Export all policies (ZIP)'
     alva_tipp:
         policy_wizard:
             title: 'Alva tip: generate mandatory policies automatically'
@@ -273,16 +274,6 @@ document:
         history:
             title: 'Version History'
             empty: 'No previous versions on file yet.'
-    # Undo recently-applied destructive actions within the undo window
-    undo:
-        title: 'Undo last action'
-        body: 'Revert the most recent change to this document. Available within the undo window.'
-        action: 'Undo'
-        success: 'Action successfully reverted.'
-        error:
-            invalid_token: 'Undo token is invalid or expired.'
-            window_expired: 'The undo window has expired. Manual recovery required.'
-            service_unavailable: 'Undo service is unavailable. Please try again later.'
     # Document Reuse — show consumers of a document across the ISMS
     reuse:
         used_by: 'Used by'

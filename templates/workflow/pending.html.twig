@@ -2,7 +2,7 @@
 {% trans_default_domain 'workflows' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'workflow.title.pending'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'workflow.title.pending'|trans({}, 'workflows') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -11,7 +11,6 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
     title: 'workflow.title.pending'|trans({}, 'workflows'),
     subtitle: 'workflow.description.pending_detail'|trans({}, 'workflows'),
     actions: [

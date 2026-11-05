@@ -79,7 +79,6 @@ final class EmailConfigurationType extends AbstractType implements SectionMapInt
                 'attr' => [
                     'placeholder' => '••••••••',
                 ],
-                'help' => 'setup.email.password_help',
             ])
             ->add('from_address', EmailType::class, [
                 'label' => 'setup.email.from_address',

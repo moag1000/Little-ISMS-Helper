@@ -2,7 +2,7 @@ evidence:
     title: 'Evidence Documents'
     subtitle: 'Evidence management for ISO 27001 audit preparation'
     upload: 'Upload Evidence'
-    upload_success: 'Evidence uploaded and linked successfully.'
+    upload_success: Evidence uploaded and linked.
     upload_hint: 'Max. 10 MB. Allowed formats: PDF, Office, images, text, ZIP.'
     link: 'Link Existing Document'
     unlink: 'Unlink'
@@ -10,7 +10,7 @@ evidence:
     recent_uploads: 'Recent Uploads'
     coverage:
         title: 'Evidence Coverage'
-        subtitle: 'Evidence coverage overview for all ISO 27001 controls'
+        subtitle: Check evidence coverage per ISO 27001 control and close gaps
         total_controls: 'Total Controls'
         with_evidence: 'With Evidence'
         without_evidence: 'Without Evidence'

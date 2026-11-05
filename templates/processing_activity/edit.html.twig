@@ -18,7 +18,6 @@
     {{ _fa_page_header.render({
         title: 'processing_activity.page.edit_title'|trans({}, 'privacy'),
         subtitle: processing_activity.name,
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_processing_activity_show', {id: processing_activity.id}), variant: 'secondary', icon: 'util-arrow-left' }
         ]

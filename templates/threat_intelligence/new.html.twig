@@ -2,7 +2,7 @@
 {% trans_default_domain 'threat' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'threat.title.new'|trans({}, 'threat') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'threat.title.new'|trans({}, 'threat') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -14,7 +14,6 @@
 
 {{ _fa_page_header.render({
     title: 'threat.title.new'|trans({}, 'threat'),
-    badge: { icon: 'plus', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_threat_intelligence_index'), variant: 'secondary', icon: 'util-arrow-left' }
     ]

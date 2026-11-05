@@ -132,7 +132,7 @@ wizard:
     overall_compliance: "Gesamte Compliance"
     critical_gaps_count: "%count% kritische Lücken"
     view_all_wizards: "Alle Wizards anzeigen"
-    no_frameworks_available: "Keine Compliance-Frameworks aktiv. Starten Sie mit einem Wizard!"
+    no_frameworks_available: Keine Compliance-Frameworks aktiv. Starten Sie mit einem Wizard.
     get_started: "Loslegen"
 
     # Compare

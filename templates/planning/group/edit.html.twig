@@ -2,7 +2,7 @@
 {% trans_default_domain 'planning' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'planning.group.title.edit'|trans({}, 'planning') }} - {{ group.name }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'planning.group.title.edit'|trans({}, 'planning') }} - {{ group.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -16,7 +16,6 @@
 
     {{ _fa_page_header.render({
         title: 'planning.group.title.edit'|trans({}, 'planning') ~ ': ' ~ group.name,
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_planning_group_index'), variant: 'ghost', icon: 'util-arrow-left' }
         ]

@@ -176,7 +176,7 @@ dsr:
 
     # Alerts
     alert:
-        overdue_title: "Overdue Requests!"
+        overdue_title: Overdue requests
         overdue_text: "%count% data subject request(s) have exceeded the legal response deadline."
         overdue_single: "This request is %days% days overdue. Immediate action required per GDPR Art. 12(3)."
         view_overdue: "View overdue requests"
@@ -185,8 +185,8 @@ dsr:
     # Flash messages
     flash:
         invalid_csrf: "Invalid CSRF token."
-        created: "Data subject request created successfully."
-        updated: "Data subject request updated successfully."
+        created: Data subject request created.
+        updated: Data subject request updated.
         completed: "Data subject request marked as completed."
         rejected: "Data subject request rejected."
         extended: "Deadline extended to 90 days."

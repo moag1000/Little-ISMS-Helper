@@ -15,7 +15,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-building', label: 'tenant.title'|trans({}, 'tenant') },
         title: 'tenant.title'|trans({}, 'tenant'),
         subtitle: 'tenant.subtitle'|trans({}, 'tenant'),
         actions: is_granted('ROLE_SUPER_ADMIN') ? [

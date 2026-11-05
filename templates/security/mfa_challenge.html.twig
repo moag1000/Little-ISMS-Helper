@@ -1,7 +1,7 @@
 {% extends 'base_auth.html.twig' %}
 {% trans_default_domain 'mfa' %}
 
-{% block title %}{{ 'mfa.challenge.title'|trans({}, 'mfa') }} — Little ISMS Helper{% endblock %}
+{% block title %}{{ 'mfa.challenge.title'|trans({}, 'mfa') }}{% endblock %}
 
 {% block auth_mood %}thinking{% endblock %}
 {% block auth_alva_line %}{{ 'mfa.alva_line'|trans({}, 'mfa')|default('Zweiter Faktor.') }}{% endblock %}

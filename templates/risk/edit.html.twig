@@ -4,7 +4,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
-{% block title %}{{ 'risk.edit'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.edit'|trans({}, 'risk') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -19,7 +19,6 @@
 {# Page Header #}
 {{ _fa_page_header.render({
     title: 'risk.edit'|trans({}, 'risk') ~ ': ' ~ risk.title,
-    badge: { icon: 'ui-edit', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_show', {id: risk.id}), variant: 'secondary', icon: 'util-arrow-left' }
     ]

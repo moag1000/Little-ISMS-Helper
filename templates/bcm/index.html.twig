@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-workflow', label: 'bcm.page.title'|trans({}, 'bcm') },
         title: 'bcm.page.title'|trans({}, 'bcm'),
         subtitle: 'bcm.page.subtitle'|trans({}, 'bcm'),
         actions: [
@@ -39,7 +38,7 @@
             {{ _fa_feature_card.render({ label: 'bcm.stats.total_processes'|trans({}, 'bcm'), value: stats.total, variant: 'primary' }) }}
         </div>
         <div class="col-auto">
-            {{ _fa_feature_card.render({ label: 'bcm.stats.critical_processes'|trans({}, 'bcm'), value: stats.critical, variant: 'danger' }) }}
+            {{ _fa_feature_card.render({ label: 'bcm.stats.critical_processes'|trans({}, 'bcm'), value: stats.critical, variant: 'danger', href: path('app_bcm_critical') }) }}
         </div>
         <div class="col-auto">
             {{ _fa_feature_card.render({ label: 'bcm.stats.high_priority'|trans({}, 'bcm'), value: stats.high, variant: 'warning' }) }}

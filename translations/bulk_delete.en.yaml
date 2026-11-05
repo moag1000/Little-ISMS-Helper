@@ -25,5 +25,5 @@ bulk_delete:
     understand: 'I understand the consequences'
     confirm_help: 'Type "DELETE" to confirm deletion'
     confirm_count: '%count% items will be permanently deleted'
-    success: '%count% items were successfully deleted'
+    success: '%count% items deleted'
     error: 'Error deleting items'

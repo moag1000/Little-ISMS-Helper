@@ -13,14 +13,13 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'ui-circle', label: 'audit_freeze.title'|trans({}, 'audit_freeze') },
         title: 'audit_freeze.title'|trans({}, 'audit_freeze'),
         subtitle: 'audit_freeze.subtitle'|trans({}, 'audit_freeze'),
         actions: [
             { label: 'audit_freeze.action.create'|trans({}, 'audit_freeze'), href: path('app_audit_freeze_new'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
-    <main class="fa-aurora-surface">
+    <main>
 
     {# Filters #}
     {% embed '_components/_card.html.twig' with {'class': 'shadow-sm mb-4', 'purposes': purposes, 'years': years, 'selected_purpose': selected_purpose, 'selected_year': selected_year} %}

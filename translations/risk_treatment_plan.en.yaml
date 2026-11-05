@@ -65,7 +65,7 @@ risk_treatment_plan:
         medium: Medium
         low: Low
     message:
-        no_plans: 'No treatment plans found.'
+        no_plans: No treatment plans available.
     delete:
         warning: 'This action cannot be undone. Do you really want to delete the treatment plan?'
         confirm: 'Are you sure you want to delete this treatment plan?'

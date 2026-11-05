@@ -68,7 +68,7 @@ emails:
         avoid: 'Avoid'
         avoid_desc: 'Change processes to eliminate the risk entirely'
         approved_title: 'Risk Acceptance Approved'
-        approved_message: 'Your risk acceptance request has been approved!'
+        approved_message: Your risk acceptance request has been approved.
         approved_by: 'Approved By'
         approval_date: 'Approval Date'
         next_steps: 'Next Steps'
@@ -89,8 +89,8 @@ emails:
     # Workflow notifications
     workflow:
         deadline_warning: 'Workflow Deadline Warning'
-        warning_approaching: 'A workflow deadline is approaching!'
-        days_remaining: 'Only %days% day(s) remaining!'
+        warning_approaching: A workflow deadline is approaching.
+        days_remaining: 'Only %days% day(s) remaining.'
         workflow_field: 'Workflow'
         related_entity: 'Related Entity'
         current_step: 'Current Step'
@@ -117,7 +117,7 @@ emails:
         next_steps_text: 'Please log in to the ISMS system to review the details and provide your approval or rejection with comments.'
         login_process: 'Please log in to the ISMS system to process this approval.'
         overdue_title: 'Overdue Workflow Approval'
-        overdue_alert: 'This workflow step requires your immediate attention!'
+        overdue_alert: This workflow step requires your immediate attention.
         action_required: 'Action Required'
         action_required_text: 'Please review and complete this workflow step as soon as possible to avoid delays in the approval process.'
         login_process_step: 'Please log in immediately to process this workflow step.'
@@ -137,9 +137,9 @@ emails:
     data_breach:
         subject: '[%urgency%] Data Breach 72h Notification Deadline: %title%'
         deadline_exceeded: 'GDPR 72h DEADLINE EXCEEDED'
-        deadline_exceeded_text: 'The supervisory authority notification deadline has passed!'
+        deadline_exceeded_text: The supervisory authority notification deadline has passed.
         critical_title: 'CRITICAL: Less than 12 hours remaining'
-        critical_text: 'Immediate action required to meet GDPR Art. 33 deadline!'
+        critical_text: Immediate action required to meet GDPR Art. 33 deadline.
         warning_title: 'WARNING: Notification deadline approaching'
         warning_text: 'Action required within %hours% hours'
         notification_required: 'Data Breach Notification Required'

@@ -15,7 +15,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-clipboard-check', label: 'DPIA / DSFA' },
         title: 'dpia.index.page_title'|trans({}, 'privacy'),
         subtitle: 'dpia.index.page_subtitle'|trans({}, 'privacy'),
         actions: [
@@ -31,7 +30,7 @@
 {% endif %}
 
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}

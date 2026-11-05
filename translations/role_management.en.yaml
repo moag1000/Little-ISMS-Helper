@@ -5,7 +5,7 @@ role_management:
         edit: 'Edit Role'
         show: 'Role Details'
     description:
-        overview: 'Manage user roles and their permissions for access control'
+        overview: Define user roles and their permissions for access control
     action:
         create: 'Create New Role'
         compare: 'Compare Roles'

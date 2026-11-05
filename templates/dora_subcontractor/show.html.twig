@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 
-{% block title %}{{ subcontractor.name }} - {{ 'dora_subcontractor.title.show'|trans({}, 'dora') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ subcontractor.name }} - {{ 'dora_subcontractor.title.show'|trans({}, 'dora') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -26,7 +26,7 @@
     }) }}
 </div>
 
-<main class="fa-aurora-surface">
+<main>
     <div class="container">
         {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
             {% block card_body %}

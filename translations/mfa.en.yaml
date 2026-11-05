@@ -13,9 +13,9 @@ mfa:
     token:
         primary: 'Primary Token'
         success:
-            backup_regenerated: 'Backup codes regenerated successfully.'
-            disabled: 'MFA token disabled successfully.'
-            deleted: 'MFA token deleted successfully.'
+            backup_regenerated: Backup codes regenerated.
+            disabled: MFA token disabled.
+            deleted: MFA token deleted.
         error:
             invalid_csrf: 'Invalid CSRF token.'
     device_name: 'Device Name'
@@ -46,11 +46,11 @@ mfa:
         invalid_code: 'Invalid code. Please try again.'
         verification_failed: 'Verification failed'
     success:
-        token_reset: 'MFA token successfully reset'
-        verified: 'MFA token successfully verified and activated'
-        disabled: 'MFA token successfully disabled'
-        deleted: 'MFA token successfully deleted'
-        backup_codes_regenerated: 'Backup codes successfully regenerated'
+        token_reset: MFA token reset
+        verified: MFA token verified and activated
+        disabled: MFA token disabled
+        deleted: MFA token deleted
+        backup_codes_regenerated: Backup codes regenerated
     statistics:
         active_tokens: 'Active Tokens'
         total_tokens: 'Total Tokens'
@@ -79,7 +79,7 @@ mfa:
         code: 'Verification Code'
         code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
         verify: 'Verify Code'
-        success: 'Two-factor authentication successful!'
+        success: Two-factor authentication confirmed.
         cancel: 'Cancel and logout'
         backup_code_hint: 'No access to your device?'
         using_backup_code: 'Use backup code'
@@ -132,7 +132,7 @@ mfa:
     backup_codes:
         title: 'Backup Codes'
         subtitle: 'Emergency Recovery Codes'
-        warning: 'IMPORTANT: Keep codes secure!'
+        warning: 'IMPORTANT: Keep codes secure.'
         warning_text: 'These codes can be used to access your account if you lose access to your authenticator device. Each code can only be used once.'
         onetime_display: 'These codes are shown only once. Save or print them now.'
         codes: 'Backup Codes'
@@ -149,7 +149,7 @@ mfa:
         remaining: 'Remaining codes'
         regenerate_confirm: 'Are you sure you want to generate new backup codes? All old codes will become invalid.'
         regenerate: 'Generate New Codes'
-        no_codes_left: 'No backup codes left! Generate new codes immediately.'
+        no_codes_left: No backup codes left. Generate new codes immediately.
         low_codes: 'Only a few backup codes remaining. Consider generating new codes.'
         description: 'Backup codes are emergency recovery codes for when you do not have access to your primary authenticator device.'
 mfa_token:
@@ -197,7 +197,7 @@ mfa_token:
     backup_codes:
         title: 'Backup Codes'
         subtitle: 'Emergency Recovery Codes'
-        warning: 'IMPORTANT: Keep codes secure!'
+        warning: 'IMPORTANT: Keep codes secure.'
         warning_text: 'These codes can be used to access your account if you lose access to your authenticator device.'
         onetime_display: 'These codes are shown only once.'
         codes: 'Backup Codes'
@@ -214,7 +214,7 @@ mfa_token:
         remaining: Remaining
         regenerate_confirm: 'Really generate new codes?'
         regenerate: 'Regenerate'
-        no_codes_left: 'No codes left!'
+        no_codes_left: No codes left.
         low_codes: 'Few codes'
         description: 'Emergency recovery codes'
     details:

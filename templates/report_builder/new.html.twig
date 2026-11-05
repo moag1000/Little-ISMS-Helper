@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'report_builder.new.title'|trans({},'report_builder') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'report_builder.new.title'|trans({},'report_builder') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
@@ -15,9 +15,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        title: 'report_builder.new.title'|trans({}, 'report_builder'),
-        badge: { icon: 'plus', label: '' }
-    }) }}
+        title: 'report_builder.new.title'|trans({}, 'report_builder')}) }}
 
     <div class="row justify-content-center">
         <div class="col-lg-8">

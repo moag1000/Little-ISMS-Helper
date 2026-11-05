@@ -6,10 +6,10 @@
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
-{% block title %}{{ 'inbox.title'|trans({}, 'alva') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'inbox.title'|trans({}, 'alva') }}{% endblock %}
 
 {% block body %}
-<main class="fa-aurora-surface">
+<main>
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'inbox.badge'|trans({}, 'alva') }
@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'ui-stars', label: 'inbox.badge'|trans({}, 'alva') },
         title: 'inbox.title'|trans({}, 'alva'),
         subtitle: 'inbox.subtitle'|trans({}, 'alva')
     }) }}

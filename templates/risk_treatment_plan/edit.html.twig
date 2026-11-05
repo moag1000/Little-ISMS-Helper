@@ -2,7 +2,7 @@
 {% trans_default_domain 'risk_treatment_plan' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') }}: {{ plan.title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') }}: {{ plan.title }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -16,7 +16,6 @@
 
     {{ _fa_page_header.render({
         title: 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') ~ ': ' ~ plan.title,
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_treatment_plan_show', {id: plan.id}), variant: 'ghost', icon: 'util-arrow-left' }
         ]

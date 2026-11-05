@@ -2,7 +2,7 @@ evidence:
     title: 'Nachweisdokumente'
     subtitle: 'Evidence Management für ISO 27001 Audit-Vorbereitung'
     upload: 'Nachweis hochladen'
-    upload_success: 'Nachweis erfolgreich hochgeladen und verknüpft.'
+    upload_success: Nachweis hochgeladen und verknüpft.
     upload_hint: 'Max. 10 MB. Erlaubte Formate: PDF, Office, Bilder, Text, ZIP.'
     link: 'Bestehendes Dokument verknüpfen'
     unlink: 'Verknüpfung aufheben'
@@ -10,7 +10,7 @@ evidence:
     recent_uploads: 'Letzte Uploads'
     coverage:
         title: 'Evidence Coverage'
-        subtitle: 'Übersicht der Nachweisabdeckung für alle ISO 27001 Controls'
+        subtitle: Nachweisabdeckung je ISO-27001-Control prüfen und Lücken schließen
         total_controls: 'Gesamte Controls'
         with_evidence: 'Mit Nachweis'
         without_evidence: 'Ohne Nachweis'

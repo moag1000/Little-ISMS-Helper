@@ -186,18 +186,6 @@
     color: var(--danger);
 }
 
-/* Notification/Toast Styles */
-.notification-container {
-    position: fixed;
-    top: var(--spacing-xl);
-    right: var(--spacing-xl);
-    z-index: var(--z-toast);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    pointer-events: none;
-}
-
 .notification {
     background: var(--surface);
     border-radius: var(--r-md);
@@ -222,30 +210,6 @@
     transform: translateX(400px);
 }
 
-.notification-success {
-    border-color: color-mix(in oklab, var(--success) 35%, var(--border));
-    background: var(--success-glow);
-    box-shadow: var(--shadow-lg);
-}
-
-.notification-error {
-    border-color: color-mix(in oklab, var(--danger) 35%, var(--border));
-    background: var(--danger-glow);
-    box-shadow: var(--shadow-lg);
-}
-
-.notification-warning {
-    border-color: color-mix(in oklab, var(--warning) 35%, var(--border));
-    background: var(--warning-glow);
-    box-shadow: var(--shadow-lg);
-}
-
-.notification-info {
-    border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
-    background: var(--primary-tint);
-    box-shadow: var(--shadow-lg);
-}
-
 .notification-header {
     display: flex;
     justify-content: space-between;
@@ -258,25 +222,6 @@
     color: var(--fg);
 }
 
-.notification-close {
-    background: none;
-    border: none;
-    font-size: 1.25rem;
-    cursor: pointer;
-    color: var(--fg-3);
-    padding: 0;
-    line-height: 1;
-}
-
-.notification-close:hover {
-    color: var(--fg);
-}
-
-.notification-body {
-    color: var(--fg-2);
-    font-size: 0.9rem;
-}
-
 /* Dark Mode - Notifications */
 [data-theme="dark"] .notification {
     background: var(--surface);
@@ -285,10 +230,6 @@
 
 [data-theme="dark"] .notification-title {
     color: var(--fg);
-}
-
-[data-theme="dark"] .notification-body {
-    color: var(--fg-2);
 }
 
 /* Filter Panel */
@@ -350,35 +291,6 @@
     border-color: var(--border);
 }
 
-/* Search Box */
-.search-box {
-    position: relative;
-}
-
-.search-box input {
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 2.5rem;
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    font-size: 1rem;
-    transition: all 0.2s;
-}
-
-.search-box input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgb(var(--primary-rgb), 0.1);
-}
-
-.search-box::before {
-    content: '🔍';
-    position: absolute;
-    left: var(--spacing-md);
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
-}
-
 /* Collapsible Section */
 .collapsible {
     border: 1px solid var(--border);
@@ -432,35 +344,6 @@
 .tabs {
     border-bottom: 2px solid var(--border);
     margin-bottom: var(--spacing-xl);
-}
-
-.tabs-nav {
-    display: flex;
-    list-style: none;
-    gap: var(--spacing-md);
-}
-
-.tabs-nav button {
-    background: none;
-    border: none;
-    padding: var(--spacing-md) var(--spacing-lg);
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--fg-2);
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    position: relative;
-    top: 2px;
-}
-
-.tabs-nav button:hover {
-    color: var(--fg);
-}
-
-.tabs-nav button.active {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
 }
 
 .tab-panel {
@@ -677,11 +560,9 @@
 @keyframes sla-pulse {
     0%, 100% {
         opacity: 1;
-        box-shadow: 0 0 10px var(--danger-glow);
     }
     50% {
         opacity: 0.8;
-        box-shadow: 0 0 20px var(--danger-glow);
     }
 }
 
@@ -876,16 +757,10 @@
 
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
-    .notification-container {
-        top: var(--spacing-md);
-        right: var(--spacing-md);
-        left: var(--spacing-md);
-    }
-
-    .notification {
+        .notification {
         min-width: auto;
         max-width: none;
-    }
+        }
 
     .filter-controls {
         grid-template-columns: 1fr;

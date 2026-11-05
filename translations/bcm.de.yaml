@@ -13,7 +13,7 @@ bcm:
         normal: 'Normal'
         low: 'Niedrig'
     description:
-        critical: 'Übersicht über kritische Assets und Prozesse inklusive RTO/RPO und Handlungsbedarf'
+        critical: Kritische Assets und Prozesse mit RTO/RPO prüfen und Handlungsbedarf ableiten
         data_reuse_insights: 'Wie BCM-Daten die Asset-Schutzbedarfsanforderungen verbessern'
         critical_level: 'Sofortiger Geschäftsausfall bei Verlust oder Ausfall. Höchste Priorität für Notfallmaßnahmen.'
         high_level: 'Erhebliche Geschäftsbeeinträchtigung innerhalb kurzer Zeit. Schnelle Wiederanlaufplanung erforderlich.'
@@ -63,7 +63,7 @@ bcm:
         rpo_tooltip: 'Recovery Point Objective - Maximaler akzeptabler Datenverlust (Zeitraum)'
         mtd_tooltip: 'Maximum Tolerable Downtime - Maximale tolerierbare Ausfallzeit'
         bcm_influences_asset_ratings: 'BCM-Bewertungen beeinflussen die Risikoeinstufung von Assets'
-        no_critical_processes: 'Keine kritischen Prozesse vorhanden'
+        no_critical_processes: Keine kritischen Prozesse vorhanden.
         no_critical_processes_desc: 'Es sind derzeit keine kritischen Prozesse definiert'
     data_reuse:
         asset_recommendations_title: 'Asset-Empfehlungen aus BCM-Analyse'
@@ -166,8 +166,8 @@ business_process:
         no_processes: 'Keine Geschäftsprozesse zugeordnet'
         no_critical_processes_desc: 'Es sind derzeit keine kritischen Prozesse definiert'
         never_tested: 'Nie getestet'
-        no_critical_assets: 'Keine kritischen Assets vorhanden – gute Arbeit!'
-        no_critical_processes: 'Keine kritischen Prozesse vorhanden'
+        no_critical_assets: Keine kritischen Assets vorhanden.
+        no_critical_processes: Keine kritischen Prozesse vorhanden.
         no_matching_processes: 'Keine übereinstimmenden Prozesse gefunden'
         rto_tooltip: 'Recovery Time Objective - Maximale Zeit bis zur Wiederherstellung des Geschäftsbetriebs'
         rpo_tooltip: 'Recovery Point Objective - Maximaler akzeptabler Datenverlust (Zeitraum)'

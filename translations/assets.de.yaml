@@ -12,5 +12,5 @@ asset:
     message:
         inherited_asset: 'Geerbtes Asset'
     bulk_delete:
-        success: '%count% Asset(s) erfolgreich gelöscht.'
+        success: '%count% Asset(s) gelöscht.'
         no_items: 'Es wurden keine Assets gelöscht.'

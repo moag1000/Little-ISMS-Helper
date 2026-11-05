@@ -20,7 +20,6 @@ use App\Repository\DocumentRepository;
 use App\Repository\DocumentVersionRepository;
 use App\Service\Evidence\EvidenceCascadeInvalidationService;
 use App\Service\Evidence\DocumentReuseAnalyticsService;
-use App\Service\Evidence\EvidenceVersioningService;
 use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
@@ -76,7 +75,6 @@ class DocumentController extends AbstractController
         private readonly ?DocumentControlLinkRepository $documentControlLinkRepository = null,
         private readonly ?ComplianceRequirementRepository $complianceRequirementRepository = null,
         private readonly ?DocumentVersionRepository $documentVersionRepository = null,
-        private readonly ?EvidenceVersioningService $evidenceVersioningService = null,
         private readonly ?EvidenceCascadeInvalidationService $evidenceCascadeInvalidationService = null,
         private readonly ?DocumentReuseAnalyticsService $documentReuseAnalyticsService = null,
         private readonly ?UserRepository $userRepository = null,
@@ -1191,38 +1189,6 @@ class DocumentController extends AbstractController
         );
         $response->headers->set('Content-Type', $version->getMimeType());
         return $response;
-    }
-
-    /**
-     * Undo the last version upload (5-second window).
-     *
-     * POST /document/{id}/version/{vid}/undo
-     */
-    #[Route('/document/{id}/version/{vid}/undo', name: 'app_document_version_undo', requirements: ['id' => '\d+', 'vid' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function versionUndo(Document $document, int $vid, Request $request): Response
-    {
-        $this->denyAccessUnlessGranted('edit', $document);
-
-        if (!$this->isCsrfTokenValid('version_undo_' . $vid, (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('document.undo.error.invalid_token', [], 'document'));
-            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
-        }
-
-        if ($this->evidenceVersioningService === null) {
-            $this->addFlash('error', $this->translator->trans('document.undo.error.service_unavailable', [], 'document'));
-            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
-        }
-
-        $success = $this->evidenceVersioningService->undo($vid);
-
-        if ($success) {
-            $this->addFlash('success', $this->translator->trans('document.undo.success', [], 'document'));
-        } else {
-            $this->addFlash('warning', $this->translator->trans('document.undo.error.window_expired', [], 'document'));
-        }
-
-        return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
     }
 
     /**

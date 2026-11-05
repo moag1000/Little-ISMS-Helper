@@ -7,6 +7,7 @@ user:
         edit: Edit
         delete_user: 'Delete User'
         deactivate: 'Deactivate'
+        impersonate: 'Impersonate user'
         export_csv: 'Export CSV'
     export:
         badge: 'User Export'
@@ -57,7 +58,7 @@ user:
         by_action: 'By Action Type'
         timeline: 'Activity Timeline'
         show_details: 'Show Details'
-        no_activities: 'No activities found for this user.'
+        no_activities: No activities for this user.
         filter:
             show_count: 'Show count'
     import:
@@ -213,6 +214,7 @@ user:
         delete_user: 'Delete User'
         delete_confirm: 'Do you really want to delete user <strong>%name%</strong>?'
         delete_warning: 'Warning: This action cannot be undone.'
+        impersonate_confirm: 'Impersonate %name%? All actions are performed as this user and are logged.'
     confirm:
         delete: 'Do you really want to delete user %name%?'
     role:
@@ -254,7 +256,7 @@ user:
         custom_feature_2: 'Flexible: Can be created and customized by administrators'
         custom_feature_3: 'Fine-grained: Specific permissions per module/entity'
         difference_title: 'Important Note'
-        difference_same_name: 'A custom role can have the same name as a system role (e.g., "Manager"), but they are NOT identical! System roles always start with ROLE_ and control application access. Custom roles control detailed resource permissions.'
+        difference_same_name: "A custom role can have the same name as a system role (e.g., \"Manager\"), but they are NOT identical. System roles always start with ROLE_ and control application access. Custom roles control detailed resource permissions."
         difference_system: 'System role ROLE_MANAGER: Checked by Symfony Security, controls access to URLs and controllers.'
         difference_custom: 'Custom role "Manager": Controls specific permissions at resource level (read/write/delete).'
         recommendation: 'Recommendation: Use different names for custom roles (e.g., "Risk Manager", "ISMS Officer") to avoid confusion.'
@@ -283,9 +285,9 @@ user:
         confirm:
             delete_avatar: 'Do you really want to delete your profile picture?'
         success:
-            updated: 'Profile successfully updated'
-            password_changed: 'Password successfully changed'
-            avatar_deleted: 'Avatar successfully deleted'
+            updated: Profile updated
+            password_changed: Password changed
+            avatar_deleted: Avatar deleted
             alva_settings: 'Alva Companion settings saved'
         alva:
             enabled_label: 'Show Alva Companion'
@@ -306,6 +308,6 @@ user_management:
 # Flat profile keys (for ProfileController compatibility)
 profile:
     success:
-        updated: 'Profile successfully updated'
-        password_changed: 'Password successfully changed'
-        avatar_deleted: 'Avatar successfully deleted'
+        updated: Profile updated
+        password_changed: Password changed
+        avatar_deleted: Avatar deleted

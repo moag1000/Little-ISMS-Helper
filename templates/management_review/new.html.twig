@@ -2,7 +2,7 @@
 {% trans_default_domain 'management_review' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'management_review.new'|trans({}, 'management_review') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'management_review.new'|trans({}, 'management_review') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
@@ -16,7 +16,6 @@
     {{ _fa_page_header.render({
         title: 'management_review.new'|trans({}, 'management_review'),
         subtitle: 'management_review.iso_clause_93_info'|trans({}, 'management_review'),
-        badge: { icon: 'plus', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_management_review_index'), variant: 'secondary', icon: 'util-arrow-left' }
         ]

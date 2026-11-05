@@ -17,7 +17,6 @@
 
     {{ _fa_page_header.render({
     title: ('risk_appetite.edit'|trans({}, 'risk_appetite')) ~ ': ' ~ (appetite.displayName),
-    badge: { icon: 'ui-edit', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_appetite_show', {id: appetite.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]

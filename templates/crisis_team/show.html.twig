@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'crisis_team' %}
-{% block title %}{{ crisis_team.teamName }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ crisis_team.teamName }}{% endblock %}
 {% block body %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
@@ -17,7 +17,6 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-people', label: 'nav.crisis_team'|trans({}, 'nav') },
         title: crisis_team.teamName,
         actions: [
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit',     href: path('app_crisis_team_edit',  {id: crisis_team.id}) },

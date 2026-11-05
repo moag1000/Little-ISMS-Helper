@@ -3,7 +3,7 @@
 {% trans_default_domain 'portfolio_report' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -37,7 +37,6 @@
         vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
     } %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-grid', label: '' },
         title: 'portfolio_report.title'|trans({}, 'portfolio_report'),
         subtitle: _portfolio_subtitle,
         actions: [

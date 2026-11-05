@@ -7,6 +7,7 @@ user:
         edit: Bearbeiten
         delete_user: 'Benutzer löschen'
         deactivate: 'Deaktivieren'
+        impersonate: 'Als Benutzer anmelden'
         export_csv: 'CSV-Export'
     export:
         badge: 'Benutzer-Export'
@@ -57,7 +58,7 @@ user:
         by_action: 'Nach Aktionstyp'
         timeline: Aktivitätsverlauf
         show_details: 'Details anzeigen'
-        no_activities: 'Keine Aktivitäten für diesen Benutzer gefunden.'
+        no_activities: Keine Aktivitäten für diesen Benutzer vorhanden.
         filter:
             show_count: 'Anzahl anzeigen'
     import:
@@ -213,6 +214,7 @@ user:
         delete_user: 'Benutzer löschen'
         delete_confirm: 'Möchten Sie den Benutzer <strong>%name%</strong> wirklich löschen?'
         delete_warning: 'Achtung: Diese Aktion kann nicht rückgängig gemacht werden.'
+        impersonate_confirm: 'Als %name% anmelden? Alle Aktionen werden im Namen dieses Benutzers ausgeführt und protokolliert.'
     confirm:
         delete: 'Möchten Sie den Benutzer %name% wirklich löschen?'
     role:
@@ -254,7 +256,7 @@ user:
         custom_feature_2: 'Flexibel: Können vom Administrator erstellt und angepasst werden'
         custom_feature_3: 'Fein-granular: Spezifische Berechtigungen pro Modul/Entität'
         difference_title: 'Wichtiger Hinweis'
-        difference_same_name: 'Eine benutzerdefinierte Rolle kann denselben Namen haben wie eine Systemrolle (z.B. "Manager"), ist aber NICHT identisch! Systemrollen beginnen immer mit ROLE_ und steuern den Anwendungszugriff. Benutzerdefinierte Rollen steuern detaillierte Ressourcen-Berechtigungen.'
+        difference_same_name: "Eine benutzerdefinierte Rolle kann denselben Namen haben wie eine Systemrolle (z.B. \"Manager\"), ist aber NICHT identisch. Systemrollen beginnen immer mit ROLE_ und steuern den Anwendungszugriff. Benutzerdefinierte Rollen steuern detaillierte Ressourcen-Berechtigungen."
         difference_system: 'Systemrolle ROLE_MANAGER: Wird von Symfony Security geprüft, steuert Zugriff auf URLs und Controller.'
         difference_custom: 'Benutzerdefinierte Rolle "Manager": Steuert spezifische Berechtigungen auf Ressourcen-Ebene (lesen/schreiben/löschen).'
         recommendation: 'Empfehlung: Verwenden Sie unterschiedliche Namen für benutzerdefinierte Rollen (z.B. "Risiko-Manager", "ISMS-Beauftragter"), um Verwechslungen zu vermeiden.'
@@ -283,9 +285,9 @@ user:
         confirm:
             delete_avatar: 'Möchten Sie Ihr Profilbild wirklich löschen?'
         success:
-            updated: 'Profil erfolgreich aktualisiert'
-            password_changed: 'Passwort erfolgreich geändert'
-            avatar_deleted: 'Profilbild erfolgreich gelöscht'
+            updated: Profil aktualisiert
+            password_changed: Passwort geändert
+            avatar_deleted: Profilbild gelöscht
             alva_settings: 'Alva-Begleiter-Einstellungen gespeichert'
         alva:
             enabled_label: 'Alva-Begleiter anzeigen'
@@ -306,6 +308,6 @@ user_management:
 # Flat profile keys (for ProfileController compatibility)
 profile:
     success:
-        updated: 'Profil erfolgreich aktualisiert'
-        password_changed: 'Passwort erfolgreich geändert'
-        avatar_deleted: 'Profilbild erfolgreich gelöscht'
+        updated: Profil aktualisiert
+        password_changed: Passwort geändert
+        avatar_deleted: Profilbild gelöscht

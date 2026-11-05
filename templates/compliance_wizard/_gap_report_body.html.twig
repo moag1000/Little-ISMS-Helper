@@ -104,6 +104,9 @@
                     <th scope="col" class="fa-table__th fa-table__th--num">{{ 'gap_report.table.base_effort'|trans({}, 'gap_report') }}</th>
                     <th scope="col" class="fa-table__th fa-table__th--num">{{ 'gap_report.table.remaining_effort'|trans({}, 'gap_report') }}</th>
                     <th scope="col" class="fa-table__th fa-table__th--center">{{ 'gap_report.table.quick_win'|trans({}, 'gap_report') }}</th>
+                    {% if is_granted('ROLE_MANAGER') %}
+                        <th scope="col" class="fa-table__th">{{ 'gap_report.table.override_column'|trans({}, 'gap_report') }}</th>
+                    {% endif %}
                 </tr>
             {% endblock %}
             {% block table_body %}
@@ -154,10 +157,31 @@
                                 </span>
                             {% endif %}
                         </td>
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <td class="fa-table__cell">
+                                {% if row.fulfillment is not null %}
+                                    <form method="post" action="{{ path('app_compliance_wizard_override_effort', {id: row.fulfillment.id}) }}" class="d-flex gap-1 align-items-center">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('override_effort_' ~ row.fulfillment.id) }}">
+                                        <input type="number" name="days" min="0" max="999" required style="width: 5rem;"
+                                               class="form-control form-control-sm fa-cyber-input__field"
+                                               value="{{ row.adjusted_effort_days }}"
+                                               aria-label="{{ 'gap_report.override.days_label'|trans({}, 'gap_report') }}"
+                                               title="{{ 'gap_report.override.days_label'|trans({}, 'gap_report') }}">
+                                        <input type="text" name="reason" minlength="20" required
+                                               class="form-control form-control-sm fa-cyber-input__field"
+                                               aria-label="{{ 'gap_report.override.reason_label'|trans({}, 'gap_report') }}"
+                                               placeholder="{{ 'gap_report.override.reason_label'|trans({}, 'gap_report') }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                            {{ 'gap_report.override.save'|trans({}, 'gap_report') }}
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="8" class="text-center text-muted py-4">
                             {{ 'gap_report.table.empty'|trans({}, 'gap_report') }}
                         </td>
                     </tr>

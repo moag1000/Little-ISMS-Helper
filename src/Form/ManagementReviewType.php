@@ -195,7 +195,6 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                 'attr' => [
                     'rows' => 3,
                 ],
-                'help' => 'management_review.help.risks_review',
             ])
             ->add('objectivesReview', TextareaType::class, [
                 'label' => 'management_review.field.objectives_review',

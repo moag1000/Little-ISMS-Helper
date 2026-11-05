@@ -1,26 +1,4 @@
 /* ============================================================================
- * Bulk-Action-Bar — Aurora v4 Canonical (BEM: fa-bulk-bar / fa-bulk-btn)
- *
- * DS Source of Truth: docs/design_system/sections/generics-extra.html
- *                     #bulk-action-bar (line 641+) and
- *                     docs/design_system/previews/bulk-action-bar.html
- *
- * Canonical class set (BEM):
- *   .fa-bulk-bar            container — neutral surface default
- *   .fa-bulk-bar--brand     modifier — primary→accent gradient for hero lists
- *   .fa-bulk-bar__count / __count-num / __count-label
- *   .fa-bulk-bar__divider
- *   .fa-bulk-bar__actions
- *   .fa-bulk-bar__close
- *   .fa-bulk-btn            generic action button
- *   .fa-bulk-btn--primary / --success / --danger
- *   .fa-bulk-btn.is-loading loading state with centered spinner
- *
- * Stimulus controller: `bulk-actions`. Targets UNCHANGED: actionBar|count|item.
- * See the DEPRECATED block at the bottom for the legacy .bulk-action-bar* shim.
- * ========================================================================= */
-
-/* ============================================================================
  * DEPRECATED 2026-05-11 — Legacy .bulk-action-bar* class set
  *
  * The OLD class set (.bulk-action-bar / .bulk-action-btn* / .bulk-selection-info
@@ -29,8 +7,7 @@
  *
  * All consumers (asset, risk, document, incident, supplier, soa, training,
  * consent) have been migrated to emit .fa-bulk-bar markup via
- * _bulk_action_bar.html.twig (generic branch) and _fa_bulk_action_bar.html.twig
- * (macro BC-bridge).
+ * _bulk_action_bar.html.twig (generic branch).
  *
  * This block is kept as a safety net. Remove after next major Aurora version.
  * ========================================================================= */
@@ -94,127 +71,11 @@
     white-space: nowrap;
 }
 
-.bulk-selection-count {
-    font-size: 1.125rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-.bulk-selection-label {
-    font-size: 0.875rem;
-    opacity: 0.92;
-}
-
-/* Vertical divider — semi-transparent on gradient */
-.bulk-action-divider {
-    width: 1px;
-    height: 24px;
-    flex-shrink: 0;
-    border-left: 1px solid rgb(255 255 255 / 0.3);
-}
-
 /* Action button group */
 .bulk-actions {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-}
-
-/* Canonical action button — transparent w/ light border on gradient */
-.bulk-action-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
-    background: transparent;
-    color: var(--on-primary);
-    border: 1px solid rgb(255 255 255 / 0.4);
-    border-radius: var(--r-md);
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1;
-    cursor: pointer;
-    transition: background var(--t-fast) var(--ease-out),
-                border-color var(--t-fast) var(--ease-out),
-                transform var(--t-fast) var(--ease-out);
-}
-
-.bulk-action-btn:hover {
-    background: rgb(255 255 255 / 0.15);
-    transform: translateY(-1px);
-}
-
-.bulk-action-btn:active {
-    transform: translateY(0);
-}
-
-.bulk-action-btn:focus-visible {
-    outline: 2px solid var(--on-primary);
-    outline-offset: 2px;
-}
-
-/* Success modifier — success-token border + tint */
-.bulk-action-btn-success {
-    border-color: var(--success);
-    background: rgb(255 255 255 / 0.1);
-}
-
-.bulk-action-btn-success:hover {
-    background: var(--success);
-    border-color: var(--success);
-    color: var(--on-success);
-}
-
-/* Danger modifier — danger-token border + tint */
-.bulk-action-btn-danger {
-    border-color: var(--danger);
-    background: rgb(255 255 255 / 0.1);
-}
-
-.bulk-action-btn-danger:hover {
-    background: var(--danger);
-    border-color: var(--danger);
-    color: var(--on-danger);
-}
-
-/* Loading state — disables, spinner suffix */
-.bulk-action-btn.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    position: relative;
-    padding-right: calc(var(--space-3) + 18px);
-}
-
-.bulk-action-btn.loading::after {
-    content: '';
-    position: absolute;
-    right: var(--space-2);
-    top: 50%;
-    width: 14px;
-    height: 14px;
-    margin-top: -7px;
-    border: 2px solid rgb(255 255 255 / 0.6);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: bulk-action-btn-spin 0.6s linear infinite;
-}
-
-@keyframes bulk-action-btn-spin {
-    to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .bulk-action-btn.loading::after { animation-duration: 1.6s; }
-}
-
-/* Dropdown chevron inside bulk-action-btn — normalize Bootstrap caret size */
-.bulk-action-btn.dropdown-toggle::after {
-    width: 0.5em;
-    height: 0.5em;
-    margin-left: var(--space-2);
-    vertical-align: 0.15em;
-    border-top-color: currentColor;
-    opacity: 0.85;
 }
 
 /* Dropdown menu on gradient bar — use surface tokens so items are readable */
@@ -233,35 +94,6 @@
 .bulk-action-bar .dropdown-menu .dropdown-item:focus {
     background: var(--primary-tint);
     color: var(--primary-strong);
-}
-
-/* Close button (X right side) */
-.bulk-action-close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    background: rgb(255 255 255 / 0.1);
-    color: var(--on-primary);
-    border: 1px solid rgb(255 255 255 / 0.2);
-    border-radius: var(--r-pill);
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-    transition: background var(--t-fast) var(--ease-out),
-                border-color var(--t-fast) var(--ease-out);
-}
-
-.bulk-action-close:hover {
-    background: rgb(255 255 255 / 0.25);
-    border-color: rgb(255 255 255 / 0.4);
-}
-
-.bulk-action-close:focus-visible {
-    outline: 2px solid var(--on-primary);
-    outline-offset: 2px;
 }
 
 /* Checkbox styling for bulk-target inputs */
@@ -303,17 +135,6 @@ input[type="checkbox"]:indeterminate {
     vertical-align: middle;
 }
 
-/* Header-badge for selected count (legacy) */
-.bulk-selected-badge {
-    background: var(--primary);
-    color: var(--on-primary);
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: var(--r-xl);
-    margin-left: var(--space-2);
-}
-
 /* Mobile — full-width pinned bottom, stacked actions */
 @media (max-width: 767.98px) {
     .bulk-action-bar {
@@ -336,22 +157,10 @@ input[type="checkbox"]:indeterminate {
         justify-content: center;
     }
 
-    .bulk-action-divider {
-        display: none;
-    }
-
-    .bulk-actions {
+        .bulk-actions {
         flex-direction: column;
-    }
+        }
 
-    .bulk-action-btn {
-        justify-content: center;
-        width: 100%;
-    }
-
-    .bulk-action-close {
-        align-self: flex-end;
-    }
 }
 
 /* Fairy-magic completion-flash for bulk-removed rows */
@@ -560,20 +369,6 @@ html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
 .fa-bulk-bar--brand .fa-bulk-bar__close    { color: rgb(255 255 255 / 0.85); }
 .fa-bulk-bar--brand .fa-bulk-bar__close:hover { background: rgb(255 255 255 / 0.16); color: var(--on-primary); }
 .fa-bulk-bar--brand .fa-bulk-btn.is-loading::after { border-color: var(--on-primary); border-top-color: transparent; }
-
-/* Inline badge — used in the bulk-bar or standalone to show selection count */
-.fa-bulk-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--primary-tint);
-    color: var(--primary);
-    font: 700 11px var(--font-mono);
-    padding: 3px 9px;
-    border-radius: var(--r-pill);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
 
 /* Mobile — full-width bottom-pinned */
 @media (max-width: 600px) {

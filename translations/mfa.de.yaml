@@ -13,9 +13,9 @@ mfa:
     token:
         primary: 'Primärer Token'
         success:
-            backup_regenerated: 'Backup-Codes erfolgreich neu generiert.'
-            disabled: 'MFA-Token erfolgreich deaktiviert.'
-            deleted: 'MFA-Token erfolgreich gelöscht.'
+            backup_regenerated: Backup-Codes neu generiert.
+            disabled: MFA-Token deaktiviert.
+            deleted: MFA-Token gelöscht.
         error:
             invalid_csrf: 'Ungültiges CSRF-Token.'
     device_name: Gerätename
@@ -25,7 +25,7 @@ mfa:
     is_active: Aktiv
     is_primary: Primär
     never_used: 'Noch nie verwendet'
-    no_tokens: 'Keine Token vorhanden'
+    no_tokens: Keine Token vorhanden.
     no_tokens_registered: 'Sie haben noch keine MFA-Token registriert.'
     setup_now: 'Jetzt einrichten'
     token_details: 'Token-Details'
@@ -46,11 +46,11 @@ mfa:
         invalid_code: 'Ungültiger Code. Bitte versuchen Sie es erneut.'
         verification_failed: 'Verifizierung fehlgeschlagen'
     success:
-        token_reset: 'MFA-Token erfolgreich zurückgesetzt'
-        verified: 'MFA-Token erfolgreich verifiziert und aktiviert'
-        disabled: 'MFA-Token erfolgreich deaktiviert'
-        deleted: 'MFA-Token erfolgreich gelöscht'
-        backup_codes_regenerated: 'Backup-Codes erfolgreich neu generiert'
+        token_reset: MFA-Token zurückgesetzt
+        verified: MFA-Token verifiziert und aktiviert
+        disabled: MFA-Token deaktiviert
+        deleted: MFA-Token gelöscht
+        backup_codes_regenerated: Backup-Codes neu generiert
     statistics:
         active_tokens: 'Aktive Token'
         total_tokens: 'Gesamt Token'
@@ -79,7 +79,7 @@ mfa:
         code: Bestätigungscode
         code_help: 'Geben Sie den 6-stelligen Code von Ihrer Authenticator-App oder einen 8-stelligen Backup-Code ein.'
         verify: 'Code überprüfen'
-        success: 'Zwei-Faktor-Authentifizierung erfolgreich!'
+        success: Zwei-Faktor-Authentifizierung bestätigt.
         cancel: 'Abbrechen und abmelden'
         backup_code_hint: 'Kein Zugriff auf Ihr Gerät?'
         using_backup_code: 'Backup-Code verwenden'
@@ -132,7 +132,7 @@ mfa:
     backup_codes:
         title: 'Backup-Codes'
         subtitle: 'Notfall-Wiederherstellungscodes'
-        warning: 'WICHTIG: Codes sicher aufbewahren!'
+        warning: 'WICHTIG: Codes sicher aufbewahren.'
         warning_text: 'Diese Codes können verwendet werden, um auf Ihr Konto zuzugreifen, wenn Sie den Zugriff auf Ihr Authenticator-Gerät verlieren. Jeder Code kann nur einmal verwendet werden.'
         onetime_display: 'Diese Codes werden nur einmal angezeigt. Speichern oder drucken Sie sie jetzt.'
         codes: 'Backup-Codes'
@@ -149,7 +149,7 @@ mfa:
         remaining: 'Verbleibende Codes'
         regenerate_confirm: 'Möchten Sie wirklich neue Backup-Codes generieren? Alle alten Codes werden ungültig.'
         regenerate: 'Neue Codes generieren'
-        no_codes_left: 'Keine Backup-Codes mehr verfügbar! Generieren Sie sofort neue Codes.'
+        no_codes_left: Keine Backup-Codes mehr verfügbar. Generieren Sie sofort neue Codes.
         low_codes: 'Nur noch wenige Backup-Codes verfügbar. Erwägen Sie die Generierung neuer Codes.'
         description: 'Backup-Codes sind Notfall-Wiederherstellungscodes für den Fall, dass Sie keinen Zugriff auf Ihr primäres Authenticator-Gerät haben.'
 mfa_token:
@@ -197,7 +197,7 @@ mfa_token:
     backup_codes:
         title: 'Backup-Codes'
         subtitle: 'Notfall-Wiederherstellungscodes'
-        warning: 'WICHTIG: Codes sicher aufbewahren!'
+        warning: 'WICHTIG: Codes sicher aufbewahren.'
         warning_text: 'Diese Codes können verwendet werden, um auf Ihr Konto zuzugreifen, wenn Sie den Zugriff auf Ihr Authenticator-Gerät verlieren.'
         onetime_display: 'Diese Codes werden nur einmal angezeigt.'
         codes: 'Backup-Codes'
@@ -214,7 +214,7 @@ mfa_token:
         remaining: 'Verbleibend'
         regenerate_confirm: 'Wirklich neue Codes generieren?'
         regenerate: 'Neu generieren'
-        no_codes_left: 'Keine Codes mehr!'
+        no_codes_left: Keine Codes mehr.
         low_codes: 'Wenige Codes'
         description: 'Notfall-Wiederherstellungscodes'
     details:

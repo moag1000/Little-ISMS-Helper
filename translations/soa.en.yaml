@@ -136,7 +136,7 @@ soa:
         load_button: 'Load ISO 27001 Annex A controls'
         contact_admin: 'Contact an administrator to load the Annex A controls.'
         no_tenant: 'No active organization — controls cannot be loaded.'
-        loaded_flash: '%count% ISO 27001 Annex A controls successfully loaded.'
+        loaded_flash: '%count% ISO 27001 Annex A controls loaded.'
         already_loaded_flash: 'Annex A controls were already loaded for this tenant — no change.'
         no_justification: 'No justification provided.'
         no_implementation_notes: 'No implementation notes available.'

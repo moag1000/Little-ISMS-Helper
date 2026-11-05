@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 
-{% block title %}{{ 'risk_appetite.title'|trans({}, 'risk_appetite') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk_appetite.title'|trans({}, 'risk_appetite') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -15,7 +15,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-dashboard', label: 'nav.risk_appetite'|trans({}, 'nav') },
     title: 'risk_appetite.title'|trans({}, 'risk_appetite'),
     subtitle: 'risk_appetite.description'|trans({}, 'risk_appetite'),
     actions: is_granted('ROLE_ADMIN') ? [
@@ -23,7 +22,7 @@
     ] : []
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 
 <div class="stats-grid mb-4">
     <div class="col-auto">

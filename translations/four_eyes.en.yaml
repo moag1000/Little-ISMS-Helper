@@ -34,6 +34,7 @@ four_eyes:
 
     approve: 'Approve'
     reject: 'Reject'
+    reassign_approver: 'Reassign approver'
 
     edit:
         title: 'Edit Approval Request'
@@ -51,4 +52,4 @@ four_eyes:
     flash:
         approved: 'Approval granted.'
         rejected: 'Approval rejected.'
-        approver_updated: 'Approver updated successfully.'
+        approver_updated: Approver updated.

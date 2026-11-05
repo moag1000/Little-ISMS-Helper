@@ -2,7 +2,7 @@
 {% trans_default_domain 'locations' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'location.title.list'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'location.title.list'|trans({}, 'locations') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -17,7 +17,6 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'geo-alt', label: 'nav.locations'|trans({}, 'nav') },
     title: 'location.title.list'|trans({}, 'locations'),
     subtitle: 'location.description.overview'|trans({}, 'locations'),
     actions: [
@@ -32,7 +31,7 @@
 {% endif %}
 
 
-<main class="fa-aurora-surface">
+<main>
 
 {# Statistics Cards #}
 <div class="kpi-grid">

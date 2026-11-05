@@ -150,20 +150,4 @@ class SystemSettingsControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
     }
-
-    #[Test]
-    public function testFeaturesSettingsRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/admin/settings/features');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testFeaturesSettingsDisplaysForAdmin(): void
-    {
-        $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/en/admin/settings/features');
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form');
-    }
 }

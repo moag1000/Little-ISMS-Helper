@@ -25,28 +25,6 @@ class AssetSubTypeRepository extends ServiceEntityRepository
     }
 
     /**
-     * Filter sub-types for the dependent-select widget — by tenant + top-level type.
-     *
-     * @return list<AssetSubType>
-     */
-    public function findByTenantAndTopType(Tenant $tenant, string $topType): array
-    {
-        /** @var list<AssetSubType> $rows */
-        $rows = $this->createQueryBuilder('s')
-            ->andWhere('s.tenant = :tenant')
-            ->andWhere('s.topType = :topType')
-            ->andWhere('s.isActive = :active')
-            ->setParameter('tenant', $tenant)
-            ->setParameter('topType', $topType)
-            ->setParameter('active', true)
-            ->orderBy('s.name', 'ASC')
-            ->getQuery()
-            ->getResult();
-
-        return $rows;
-    }
-
-    /**
      * All active sub-types for the given tenant — used by Admin index.
      *
      * @return list<AssetSubType>

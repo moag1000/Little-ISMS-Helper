@@ -5,7 +5,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
-{% block title %}{{ 'trust_center.page_title'|trans({'%org%': snapshot.tenantName}, 'trust_center') }} — {{ parent() }}{% endblock %}
+{% block title %}{{ 'trust_center.page_title'|trans({'%org%': snapshot.tenantName}, 'trust_center') }}{% endblock %}
 
 {% block meta_extra %}
     {# Canonical: no indexing — token URL is the access control #}
@@ -15,7 +15,6 @@
 {% block body %}
     {# Page header #}
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-check', label: 'Trust Center' },
         title: 'trust_center.page_title'|trans({'%org%': snapshot.tenantName}, 'trust_center'),
         subtitle: 'trust_center.page_subtitle'|trans({}, 'trust_center'),
     }) }}

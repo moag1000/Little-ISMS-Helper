@@ -68,7 +68,7 @@ emails:
         avoid: 'Vermeiden'
         avoid_desc: 'Ändern Sie Prozesse, um das Risiko vollständig zu eliminieren'
         approved_title: 'Risikoakzeptanz genehmigt'
-        approved_message: 'Ihr Antrag auf Risikoakzeptanz wurde genehmigt!'
+        approved_message: Ihr Antrag auf Risikoakzeptanz wurde genehmigt.
         approved_by: 'Genehmigt von'
         approval_date: 'Genehmigungsdatum'
         next_steps: 'Nächste Schritte'
@@ -89,8 +89,8 @@ emails:
     # Workflow-Benachrichtigungen
     workflow:
         deadline_warning: 'Workflow-Frist Warnung'
-        warning_approaching: 'Eine Workflow-Frist nähert sich!'
-        days_remaining: 'Nur noch %days% Tag(e) verbleibend!'
+        warning_approaching: Eine Workflow-Frist nähert sich.
+        days_remaining: 'Nur noch %days% Tag(e) verbleibend.'
         workflow_field: 'Workflow'
         related_entity: 'Zugehörige Entität'
         current_step: 'Aktueller Schritt'
@@ -117,7 +117,7 @@ emails:
         next_steps_text: 'Bitte melden Sie sich am ISMS-System an, um die Details zu überprüfen und Ihre Genehmigung oder Ablehnung mit Kommentaren abzugeben.'
         login_process: 'Bitte melden Sie sich am ISMS-System an, um diese Genehmigung zu bearbeiten.'
         overdue_title: 'Überfällige Workflow-Genehmigung'
-        overdue_alert: 'Dieser Workflow-Schritt erfordert Ihre sofortige Aufmerksamkeit!'
+        overdue_alert: Dieser Workflow-Schritt erfordert Ihre sofortige Aufmerksamkeit.
         action_required: 'Aktion erforderlich'
         action_required_text: 'Bitte überprüfen und vervollständigen Sie diesen Workflow-Schritt so schnell wie möglich, um Verzögerungen im Genehmigungsprozess zu vermeiden.'
         login_process_step: 'Bitte melden Sie sich sofort an, um diesen Workflow-Schritt zu bearbeiten.'
@@ -137,9 +137,9 @@ emails:
     data_breach:
         subject: '[%urgency%] Datenschutzverletzung 72h Meldefrist: %title%'
         deadline_exceeded: 'DSGVO 72h FRIST ÜBERSCHRITTEN'
-        deadline_exceeded_text: 'Die Meldefrist an die Aufsichtsbehörde ist abgelaufen!'
+        deadline_exceeded_text: Die Meldefrist an die Aufsichtsbehörde ist abgelaufen.
         critical_title: 'KRITISCH: Weniger als 12 Stunden verbleibend'
-        critical_text: 'Sofortiges Handeln erforderlich zur Einhaltung der DSGVO Art. 33 Frist!'
+        critical_text: Sofortiges Handeln erforderlich zur Einhaltung der DSGVO Art. 33 Frist.
         warning_title: 'WARNUNG: Meldefrist nähert sich'
         warning_text: 'Handlung erforderlich innerhalb von %hours% Stunden'
         notification_required: 'Meldung einer Datenschutzverletzung erforderlich'

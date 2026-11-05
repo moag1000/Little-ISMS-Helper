@@ -145,11 +145,11 @@ consent:
 
     # Flash messages
     success:
-        created: 'Einwilligung erfolgreich erstellt.'
-        updated: 'Einwilligung erfolgreich aktualisiert.'
-        verified: 'Einwilligung erfolgreich verifiziert.'
-        revoked: 'Einwilligung erfolgreich widerrufen.'
-        deleted: 'Einwilligung erfolgreich gelöscht.'
+        created: Einwilligung erstellt.
+        updated: Einwilligung aktualisiert.
+        verified: Einwilligung verifiziert.
+        revoked: Einwilligung widerrufen.
+        deleted: Einwilligung gelöscht.
     error:
         cannot_edit_status: 'Einwilligungen mit diesem Status können nicht bearbeitet werden.'
         invalid_token: 'Ungültiger Sicherheitstoken.'

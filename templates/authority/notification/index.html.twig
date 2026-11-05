@@ -15,14 +15,13 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-building-check', label: 'EU-Behörden' },
         title:    'eu_authorities.page.title'|trans,
         subtitle: 'eu_authorities.page.subtitle'|trans,
         actions: []
     }) }}
     {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: breaches|default([])|length } %}
 
-    <main class="fa-aurora-surface">
+    <main>
 
         {# ── DataBreach exports ─────────────────────────────────────────────── #}
         {% if breaches|length > 0 %}

@@ -15,7 +15,6 @@
     ]
 } %}
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-clipboard-check', label: 'audit_finding.page.title'|trans({}, 'audits') },
     title: 'audit_finding.page.title'|trans({}, 'audits'),
     subtitle: 'audit_finding.page.subtitle'|trans({}, 'audits'),
     actions: [
@@ -30,7 +29,7 @@
     {% endfor %}
 {% endif %}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
 
     {% if overdue_count > 0 %}

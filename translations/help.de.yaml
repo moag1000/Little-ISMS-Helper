@@ -3,7 +3,7 @@ help:
     iso9001_bridge:
         title: "Von ISO 9001 zu ISO 27001 — Ihr Wegweiser"
         subtitle: "Nutzen Sie Ihr QM-Wissen für den Einstieg in die Informationssicherheit"
-        intro_title: "Sie kennen ISO 9001? Dann kennen Sie schon vieles!"
+        intro_title: 'Sie kennen ISO 9001? Dann kennen Sie schon vieles'
         intro_text: "ISO 27001 baut auf aehnlichen Prinzipien auf. Beide Normen teilen die High-Level Structure (HLS) und folgen dem PDCA-Zyklus. Hier sehen Sie, wo Ihr vorhandenes Wissen direkt anwendbar ist."
 
         mapping_title: "Konzept-Mapping: 9001 → 27001"
@@ -82,7 +82,7 @@ help:
         tip_text: "Beginnen Sie mit dem Context-Modul und den Assets — diese Bereiche kennen Sie aus 9001 am besten. Von dort aus erschliessen sich die neuen 27001-Konzepte Schritt für Schritt."
 
     glossary:
-        title: "ISMS Glossar — Begriffe einfach erklaert"
+        title: ISMS-Glossar — Begriffe erklärt
         subtitle: "Fachbegriffe der Informationssicherheit verstaendlich erklaert"
         intro_title: "Fachbegriffe schnell nachschlagen"
         intro_text: "Dieses Glossar erklaert die wichtigsten Begriffe der Informationssicherheit. Wo moeglich, finden Sie Analogien zu ISO 9001, damit der Einstieg leichter faellt."

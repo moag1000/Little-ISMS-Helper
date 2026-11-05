@@ -14,7 +14,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-clock-history', label: 'History' },
         title: session.originalFilename,
         subtitle: 'compliance_import.history.title'|trans({}, 'compliance_import'),
         actions: [

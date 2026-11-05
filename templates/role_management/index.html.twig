@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'role_management.title.list'|trans({}, 'role_management') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'role_management.title.list'|trans({}, 'role_management') }}{% endblock %}
 
 {% block admin_content %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -16,7 +16,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-shield-lock', label: 'nav.roles'|trans({}, 'nav') },
     title: 'role_management.title.list'|trans({}, 'role_management'),
     subtitle: 'role_management.description.overview'|trans({}, 'role_management'),
     actions: [
@@ -26,7 +25,7 @@
     ] : [])
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 
 {# Statistics Cards #}
 <div class="kpi-grid">

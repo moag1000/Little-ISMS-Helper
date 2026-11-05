@@ -145,12 +145,12 @@ scheduled_report:
 
     # Flash messages
     flash:
-        created: 'Geplanter Bericht wurde erfolgreich erstellt.'
-        updated: 'Geplanter Bericht wurde erfolgreich aktualisiert.'
-        deleted: 'Geplanter Bericht wurde erfolgreich gelöscht.'
+        created: Geplanter Bericht erstellt.
+        updated: Geplanter Bericht aktualisiert.
+        deleted: Geplanter Bericht gelöscht.
         activated: 'Geplanter Bericht wurde aktiviert.'
         deactivated: 'Geplanter Bericht wurde deaktiviert.'
-        triggered: 'Bericht wurde erfolgreich generiert und versendet.'
+        triggered: Bericht generiert und versendet.
         trigger_failed: 'Fehler beim Versenden des Berichts.'
         preview_failed: 'Fehler beim Erstellen der Vorschau.'
 

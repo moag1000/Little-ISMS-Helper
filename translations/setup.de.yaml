@@ -25,12 +25,12 @@ setup:
             admin: 'Alva legt den Admin-Benutzer an – einen Moment bitte.'
             frameworks: 'Alva richtet die Compliance-Frameworks ein – kann einige Sekunden dauern.'
         success:
-            base_data: 'Stammdaten erfolgreich importiert.'
+            base_data: Stammdaten importiert.
 
     # Index/Landing Page
     already_complete:
         title: 'Setup bereits abgeschlossen'
-        description: 'Das Little ISMS Helper Setup wurde bereits erfolgreich durchgeführt. Sie können jetzt mit der Anwendung arbeiten.'
+        description: Das Setup ist abgeschlossen. Sie können jetzt mit der Anwendung arbeiten.
     go_to_dashboard: 'Zum Dashboard'
     manage_modules: 'Module verwalten'
     reset_development: 'Setup zurücksetzen (nur Entwicklung)'
@@ -85,7 +85,7 @@ setup:
     welcome:
         title: 'Willkommen - Deployment Wizard'
         header: 'Willkommen beim Deployment Wizard'
-        greeting: 'Willkommen!'
+        greeting: Willkommen
         description: 'Dieser Assistent führt Sie durch die Einrichtung Ihres Little ISMS Helper.'
         start_button: 'Setup beginnen'
         info:
@@ -146,7 +146,7 @@ setup:
         title: 'Schritt 2: Datenbank - Deployment Wizard'
         header: 'Schritt 2: Datenbank konfigurieren'
         description: 'Geben Sie Ihre Datenbank-Verbindungsdaten ein.'
-        schema_created: 'Datenbank-Schema erfolgreich erstellt'
+        schema_created: Datenbank-Schema erstellt
         type: 'Datenbank-Typ'
         host: 'Host'
         port: 'Port'
@@ -159,7 +159,7 @@ setup:
         version_detected: 'Erkannt: %version%'
         test_button: 'Verbindung testen'
         test:
-            success: 'Verbindung erfolgreich!'
+            success: Verbindung hergestellt
             failed: 'Verbindung fehlgeschlagen:'
             create_needed: 'Datenbank existiert nicht und wird erstellt.'
         info:
@@ -180,11 +180,11 @@ setup:
         info:
             title: 'Backup vs. Neu-Installation'
             restore: 'Backup wiederherstellen:'
-            restore_desc: 'Wenn Sie eine bestehende Installation migrieren möchten, laden Sie hier Ihr Backup hoch. Alle folgenden Schritte werden übersprungen!'
+            restore_desc: 'Wenn Sie eine bestehende Installation migrieren möchten, laden Sie hier Ihr Backup hoch. Alle folgenden Schritte werden übersprungen.'
             new_install: 'Neu-Installation:'
             new_install_desc: 'Klicken Sie auf "Überspringen", um eine frische Installation zu erstellen und alle weiteren Setup-Schritte durchzuführen.'
         restore_result:
-            success: 'Backup erfolgreich wiederhergestellt!'
+            success: Backup wiederhergestellt.
             created: 'erstellt'
             updated: 'aktualisiert'
             entries: 'Einträge'
@@ -218,9 +218,9 @@ setup:
             submit: 'Datenbank-Struktur jetzt erstellen'
         restore:
             title: 'Option 1: Backup wiederherstellen'
-            schema_success: 'Datenbank-Struktur erfolgreich erstellt!'
+            schema_success: Datenbank-Struktur erstellt.
             schema_success_msg: 'Sie können jetzt ein Backup hochladen.'
-            description: 'Haben Sie ein Backup von einer anderen Installation? Laden Sie es hier hoch. Nach erfolgreicher Wiederherstellung wird das Setup automatisch abgeschlossen.'
+            description: 'Haben Sie ein Backup von einer anderen Installation? Laden Sie es hier hoch. Nach der Wiederherstellung wird das Setup automatisch abgeschlossen.'
             file_label: 'Backup-Datei auswählen'
             file_formats: 'Erlaubte Formate: .json, .json.gz'
             clear_before: 'Alle bestehenden Daten löschen vor Wiederherstellung (empfohlen)'
@@ -263,7 +263,7 @@ setup:
             description: 'Nach Erstellung des Administrator-Kontos können Sie Module auswählen und Basisdaten importieren.'
         creation_failed: 'Benutzer konnte nicht erstellt werden'
         migration_failed: 'Datenbank-Migration fehlgeschlagen'
-        user_created: 'Administrator-Konto erfolgreich erstellt'
+        user_created: Administrator-Konto erstellt
 
     # Step 5: Email Configuration
     email:
@@ -373,7 +373,7 @@ setup:
         command: 'Befehl'
         modules: 'Module'
         success:
-            master_data_imported: 'Stammdaten erfolgreich importiert.'
+            master_data_imported: Stammdaten importiert.
     can_delete_later: 'Daten können später gelöscht werden.'
 
     # Step 10: Sample Data
@@ -426,8 +426,8 @@ setup:
     # Step 11: Complete
     complete:
         title: 'Setup abgeschlossen - Deployment Wizard'
-        system_ready: 'Ihr Little ISMS Helper ist einsatzbereit!'
-        all_components_ready: 'Alle Komponenten wurden erfolgreich konfiguriert.'
+        system_ready: Ihr Little ISMS Helper ist einsatzbereit.
+        all_components_ready: Alle Komponenten konfiguriert.
         progress_title: 'Setup-Fortschritt'
         step_of: 'Schritt %current% von %total%'
         configure_context: 'Kontext konfigurieren'
@@ -509,5 +509,5 @@ setup:
             nist_csf: 'US-Framework — primär relevant für Bundesvertrags-Zulieferer oder internationale Reports.'
             cis_controls: 'Operationalisierungshilfe mit Implementation Groups — gutes Werkzeug, keine formelle Anforderung.'
 
-setup.alva.success.restore: 'Restore erfolgreich abgeschlossen.'
-setup.alva.success.sample_data: 'Beispiel-Daten erfolgreich angelegt.'
+setup.alva.success.restore: Restore abgeschlossen.
+setup.alva.success.sample_data: Beispiel-Daten angelegt.

@@ -132,7 +132,7 @@ wizard:
     overall_compliance: "Overall Compliance"
     critical_gaps_count: "%count% critical gaps"
     view_all_wizards: "View All Wizards"
-    no_frameworks_available: "No compliance frameworks active. Get started with a wizard!"
+    no_frameworks_available: No compliance frameworks active. Get started with a wizard.
     get_started: "Get Started"
 
     # Compare

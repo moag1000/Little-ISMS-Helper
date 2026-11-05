@@ -374,19 +374,6 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/by-entity/{entityType}/{entityId}', name: 'app_workflow_by_entity', requirements: ['entityId' => '\d+'], methods: ['GET'])]
-    public function byEntity(string $entityType, int $entityId): Response
-    {
-        $instance = $this->workflowService->getWorkflowInstance($entityType, $entityId);
-
-        if (!$instance instanceof WorkflowInstance) {
-            $this->addFlash('info', $this->translator->trans('workflow.info.no_active_workflow', [], 'messages'));
-            return $this->redirectToRoute('app_workflow_index');
-        }
-
-        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
-    }
-
     #[Route('/workflow/start/{entityType}/{entityId}', name: 'app_workflow_start', requirements: ['entityId' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     #[IsCsrfTokenValid(new Expression('"workflow_start_" ~ args["entityType"] ~ "_" ~ args["entityId"]'))]

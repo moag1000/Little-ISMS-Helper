@@ -41,7 +41,7 @@ library:
 
   import_result:
     title: 'Import Result: %type%'
-    success: 'Import completed successfully.'
+    success: Import completed.
     partial_success: 'Import completed with warnings.'
     errors_occurred: '%count% error(s) occurred -- see details below.'
     frameworks_created: 'Frameworks created'

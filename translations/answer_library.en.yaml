@@ -78,9 +78,9 @@ answer_library:
 
   # Flash messages
   flash:
-    created: Answer saved successfully.
-    updated: Answer updated successfully.
-    deleted: Answer deleted successfully.
+    created: Answer saved.
+    updated: Answer updated.
+    deleted: Answer deleted.
     reused: Answer marked as used — the reuse has been recorded in the ROI dashboard.
 
   # Confirm dialogs

@@ -122,7 +122,7 @@ analytics:
             shared_controls: 'Shared Controls'
             overlap_rate: 'Overlap Rate'
             efficiency: 'Efficiency Potential'
-            efficiency_info: 'Control reuse opportunity detected!'
+            efficiency_info: Control reuse opportunity detected.
             efficiency_description: '%percentage%% of controls can be reused across multiple frameworks, reducing implementation effort.'
             matrix_title: 'Framework Overlap Matrix'
         roadmap:
@@ -132,7 +132,7 @@ analytics:
             medium_priority: 'Medium Priority'
             low_priority: 'Low Priority'
             no_gaps: 'No Compliance Gaps'
-            fully_compliant: 'Congratulations! All compliance requirements are met.'
+            fully_compliant: All compliance requirements are met.
             table:
                 framework: 'Framework'
                 requirement: 'Requirement'
@@ -199,7 +199,7 @@ analytics:
             distribution_chart: 'Aging Distribution'
             overdue_controls: 'Overdue Controls'
             never: 'Never'
-            all_current: 'All controls are up to date!'
+            all_current: All controls are up to date.
         orphans:
             title: 'Orphaned Controls'
             found: 'found'
@@ -286,7 +286,7 @@ analytics:
         high_risk:
             title: 'High Risk Assets'
             count: 'assets'
-            none: 'No high-risk assets found'
+            none: No high-risk assets available.
         table:
             asset: 'Asset'
             type: 'Type'
@@ -306,7 +306,7 @@ analytics:
             low: 'Low'
         all_assets:
             title: 'All Assets by Risk Level'
-        no_assets: 'No Assets Found'
+        no_assets: No assets available.
         add_assets_hint: 'Add assets to see criticality analytics'
     filter:
         period:

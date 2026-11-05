@@ -97,7 +97,7 @@ patch:
         pending: Ausstehend
         deployed: Eingespielt
         total: Gesamt
-    empty: 'Keine Patches vorhanden'
+    empty: Keine Patches vorhanden.
     show:
         metadata: Metadaten
         created_at: 'Erstellt am'

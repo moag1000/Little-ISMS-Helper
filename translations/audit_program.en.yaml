@@ -56,8 +56,8 @@ audit_program:
         title: 'No Audit Programmes Yet'
         body: 'Create ISO 19011 §5.4 audit programmes to systematically plan your internal audits.'
     success:
-        created: 'Audit programme created successfully.'
-        updated: 'Audit programme updated successfully.'
+        created: Audit programme created.
+        updated: Audit programme updated.
         archived: 'Audit programme has been archived.'
         deleted: 'Audit programme has been deleted.'
     error:

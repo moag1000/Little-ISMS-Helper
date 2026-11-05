@@ -116,7 +116,7 @@ nis2:
         notice:
             not_seeded: "%count% requirement(s) not yet loaded into the database. Run:"
         empty:
-            title: "No requirements found"
+            title: No measures available
             text: "Load the NIS2 Art. 21(2) requirements first using the console command."
         col:
             clause: "Clause"

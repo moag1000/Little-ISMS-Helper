@@ -3,7 +3,7 @@ alva:
     dismiss: 'Nicht jetzt'
     stats:
         title: 'Alva-Hint-Statistik'
-        description: 'Aggregation der Hint-Dismissals pro Schlüssel — hilft zu sehen welche Hinweise als Lärm empfunden werden und welche tatsächlich Aktion ausgelöst haben.'
+        description: 'Hint-Dismissals pro Schlüssel: zeigt, welche Hinweise als Lärm gelten und welche tatsächlich Aktionen auslösen.'
         empty: 'Bisher keine Hint-Dismissals erfasst.'
         col:
             hint_key: 'Hint-Key'
@@ -16,29 +16,29 @@ alva:
 data_breach:
     gdpr_72h:
         title: '72-h-Frist DSGVO Art. 33 läuft'
-        body: 'Schwere Datenpanne ohne Aufsichtsbehörden-Meldung. Verbleibend: %hours% h %minutes% min. Versäumte Frist = bis 10 Mio. € / 2 % Konzernumsatz (Art. 83 Abs. 4).'
+        body: 'Schwere Datenpanne ohne Meldung an die Aufsichtsbehörde. Verbleibend: %hours% h %minutes% min. Bußgeld bis 10 Mio. € / 2 % (Art. 83 Abs. 4).'
         action: 'Meldung dokumentieren'
     notification_overdue:
         title: 'DSGVO Art. 33 — Meldepflicht um %hours% h überschritten'
-        body: 'Die 72h-Frist für die Aufsichtsbehörden-Meldung ist ohne bestätigte Meldung verstrichen (%hours% Stunden überfällig). DSGVO Art. 33 / Art. 83 Abs. 4 — Bußgeld bis 10 Mio. € / 2 % Konzernumsatz. Meldung dokumentieren oder Verzögerung sofort begründen.'
+        body: '72h-Frist ohne bestätigte Meldung überschritten (%hours% h). DSGVO Art. 33 / 83 Abs. 4. Meldung dokumentieren oder Verzug begründen.'
         action: 'Meldung dokumentieren'
 
 processing_activity:
     third_country:
         title: 'Drittlandtransfer ohne Garantien'
-        body: 'Personenbezogene Daten werden in %countries% übermittelt, aber kein Mechanismus nach DSGVO Art. 46 ist hinterlegt (SCC, BCR, Angemessenheitsbeschluss). Schrems-II-Risiko.'
+        body: 'Daten gehen nach %countries% ohne Garantien nach DSGVO Art. 46 (SCC, BCR, Angemessenheitsbeschluss). Schrems-II-Risiko.'
         action: 'Garantien ergänzen'
     purpose_legal_basis_mismatch:
         title: 'Rechtsgrundlage passt nicht zum Marketing-Zweck'
-        body: 'Diese Tätigkeit verfolgt einen Marketing-Zweck, stützt sich aber auf „%basis%". Direktmarketing ist praktisch nur über Einwilligung (Art. 6(1)(a)) oder berechtigtes Interesse (Art. 6(1)(f), ErwGr. 47) zulässig. Bitte die Rechtsgrundlage prüfen.'
+        body: 'Marketing mit Rechtsgrundlage „%basis%“. Direktmarketing braucht Einwilligung (Art. 6(1)(a)) oder berechtigtes Interesse (Art. 6(1)(f)).'
         action: 'Rechtsgrundlage prüfen'
     dpia_required:
         title: 'DPIA erforderlich (Art. 35 DSGVO)'
-        body: 'Verarbeitung deutet auf Pflicht-DPIA: automatisierte Entscheidungsfindung, besondere Kategorien im großen Umfang oder selbstklassifiziert als hohes Risiko. Bisher keine DPIA dokumentiert.'
+        body: 'Pflicht-DPIA wahrscheinlich: automatisierte Entscheidung, besondere Kategorien im großen Umfang oder hohes Risiko. Keine DPIA dokumentiert.'
         action: 'DPIA anlegen'
     avv_required:
         title: 'AVV-Lieferant fehlt — DSGVO Art. 28'
-        body: 'Diese Verarbeitungstätigkeit bezieht Auftragsverarbeiter ein, aber kein strukturierter Lieferanten-FK ist gesetzt. DSGVO Art. 28 fordert einen schriftlichen AVV mit benanntem Auftragsverarbeiter. Bitte den Lieferanten aus dem Lieferantenregister auswählen.'
+        body: 'Auftragsverarbeiter beteiligt, aber kein Lieferant verknüpft. DSGVO Art. 28 fordert einen schriftlichen AVV. Lieferanten auswählen.'
         action: 'Auftragsverarbeiter auswählen'
         picker_title: 'Auftragsverarbeiter auswählen (DSGVO Art. 28)'
         picker_subtitle: 'Wähle die Lieferanten aus dem Lieferantenregister, die als Auftragsverarbeiter für diese Verarbeitungstätigkeit fungieren.'
@@ -50,11 +50,11 @@ processing_activity:
         flash_saved: 'AVV-Lieferanten gespeichert.'
     retention_missing:
         title: 'Aufbewahrungsfrist fehlt — DSGVO Art. 5 Abs. 1 lit. e Lücke'
-        body: 'Diese Verarbeitungstätigkeit hat keine dokumentierte Aufbewahrungsfrist oder Löschrichtlinie. DSGVO Art. 5 Abs. 1 lit. e Speicherbegrenzungsgrundsatz verlangt, personenbezogene Daten nicht länger als erforderlich aufzubewahren. Aufsichtsbehörden bemängeln fehlende Löschfristen regelmäßig.'
+        body: Keine Aufbewahrungsfrist oder Löschrichtlinie dokumentiert. DSGVO Art. 5 Abs. 1 lit. e (Speicherbegrenzung). Löschfrist ergänzen.
         action: 'Aufbewahrungsfrist setzen'
     unstructured_department:
         title: 'Abteilung nur als Freitext erfasst'
-        body: 'Die verantwortliche Abteilung „%department%" ist nur als Freitext gespeichert. Lege eine strukturierte Abteilung in den Stammdaten an, damit ISO 27001 Cl. 5.3 (Rollen/Verantwortlichkeiten) und Cross-Framework-Wiederverwendung (Assets, Risiken, Incidents) sauber abgebildet werden.'
+        body: 'Abteilung „%department%“ nur als Freitext gespeichert. Strukturierte Abteilung anlegen (ISO 27001 Cl. 5.3 Rollen/Verantwortlichkeiten).'
         action: 'Abteilung anlegen'
 
 vulnerability:
@@ -66,7 +66,7 @@ vulnerability:
 data_subject_request:
     identity:
         title: 'Identität noch nicht verifiziert'
-        body: 'Verifikationsmethode hinterlegt (%method%), Identität jedoch nicht bestätigt. Vor Datenherausgabe prüfen — falsche Auskunft = Datenpanne nach Art. 5 Abs. 1 lit. f.'
+        body: 'Methode hinterlegt (%method%), Identität nicht bestätigt. Vor Herausgabe prüfen — falsche Auskunft ist Datenpanne (Art. 5 Abs. 1 lit. f).'
         action: 'Verifikation durchführen'
 
 asset:
@@ -76,7 +76,7 @@ asset:
         action: 'Schutzbedarf übernehmen'
     criticality_missing_high_risk:
         title: 'CIA-Klassifizierung fehlt bei hoch-risikobeladenem Asset'
-        body: 'Dieses Asset ist mit einem hochkritischen Risiko verknüpft, hat aber keine Vertraulichkeits-/Integritäts-/Verfügbarkeitsklassifizierung. Ohne diese ist der Schutzbedarf nicht nachweisbar und kann weder in die BSI-3.6-Vererbung noch in den ISO-27001-A.5.9-Nachweis einfließen.'
+        body: 'Asset mit hochkritischem Risiko ohne Vertraulichkeits-/Integritäts-/Verfügbarkeitsklasse: Schutzbedarf nicht nachweisbar (A.5.9, BSI 3.6).'
         action: 'CIA-Klassifizierung setzen'
 
 bc_plan:
@@ -99,8 +99,8 @@ supplier:
         action: 'Exit-Strategie ergänzen'
     no_recent_assessment:
         title: 'Hochkritischer Lieferant ohne aktuelles Sicherheits-Assessment'
-        body_with_last: 'Letztes Sicherheits-Assessment für diesen %criticality%-Lieferanten vor %months% Monaten. ISO 27001 A.5.19 / DORA Art. 28 fordern regelmäßige Sicherheits-Reviews für kritische Dritte — jährliche Kadenz ist der erwartete Standard.'
-        body_never: 'Kein Sicherheits-Assessment dokumentiert für diesen %criticality%-Lieferanten. ISO 27001 A.5.19 / DORA Art. 28 fordern Nachweise für Drittpartei-Sicherheits-Reviews.'
+        body_with_last: 'Letztes Sicherheits-Assessment des %criticality%-Lieferanten vor %months% Monaten. ISO 27001 A.5.19 / DORA Art. 28: jährlich prüfen.'
+        body_never: 'Kein Sicherheits-Assessment für diesen %criticality%-Lieferanten. ISO 27001 A.5.19 / DORA Art. 28 fordern Nachweise.'
         action: 'Assessment einplanen'
 
 audit_finding:
@@ -110,7 +110,7 @@ audit_finding:
         action: 'CAPA anlegen'
     nc_without_root_cause:
         title: 'NC ohne Ursachenanalyse seit %days% Tagen offen'
-        body: 'ISO 27001 Cl. 10.2 b) verlangt die Bewertung der Ursachen jeder Nichtkonformität. Bitte tragen Sie die Root-Cause-Zusammenfassung (z.B. 5-Why / Ishikawa / FMEA) nach.'
+        body: 'ISO 27001 Cl. 10.2 b) verlangt die Ursachenbewertung jeder Nichtkonformität. Root-Cause nachtragen (z. B. 5-Why, Ishikawa, FMEA).'
         action: 'Ursachenanalyse erfassen'
 
 consent:
@@ -135,7 +135,7 @@ crisis_team:
 document:
     acknowledgement_audience:
         title: 'Wer muss diese Dokumenten-Kenntnisnahme bestätigen?'
-        body: 'Dieses Dokument fordert eine Mitarbeiter-Bestätigung (ISO 27001 A.6.3), aber keine explizite Audience ist hinterlegt. Standardmäßig wird an alle aktiven Organisations-Nutzer gestreut — eine gezielte Audience macht die Awareness-Evidenz Audit-fit.'
+        body: 'Bestätigung gefordert (ISO 27001 A.6.3), aber keine Audience hinterlegt — Standard sind alle aktiven Nutzer. Zielgruppe festlegen.'
         action: 'Audience festlegen'
         picker_title: 'Acknowledgement-Audience festlegen'
         picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Dokument bestätigen müssen. Bei leerer Auswahl wird wie bisher an alle aktiven Nutzer gestreut.'
@@ -149,13 +149,13 @@ document:
         flash_not_required: 'Dokument fordert keine Bestätigung — Audience-Picker übersprungen.'
     review_overdue:
         title: 'Dokument-Review überfällig — %months% Monate ohne Überprüfung'
-        body: 'Dieses freigegebene/veröffentlichte Dokument wurde vor mehr als %months% Monaten zuletzt aktualisiert und hat kein geplantes Nächst-Review-Datum. ISO 27001 Cl. 7.5.3 fordert regelmäßige Dokument-Reviews — fehlende Nachweise sind ein Audit-Finding.'
+        body: 'Zuletzt vor über %months% Monaten aktualisiert, kein Review-Termin geplant. ISO 27001 Cl. 7.5.3 fordert regelmäßige Reviews.'
         action: 'Review planen'
 
 training:
     mandatory_audience:
         title: 'Pflichttraining ohne Teilnehmer-Liste'
-        body: 'Dieses Training ist als Pflicht markiert (ISO 27001 A.6.3 Awareness), aber bisher sind keine Pflichtteilnehmer ausgewählt. Damit der Awareness-Nachweis im Audit greift, sollte die Audience explizit zugewiesen werden.'
+        body: 'Pflichttraining ohne Pflichtteilnehmer (ISO 27001 A.6.3). Audience zuweisen, damit der Awareness-Nachweis im Audit greift.'
         action: 'Pflichtteilnehmer auswählen'
         picker_title: 'Pflichtteilnehmer auswählen'
         picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Pflichttraining absolvieren müssen. Schon zugewiesene Personen sind grau hinterlegt.'
@@ -169,7 +169,7 @@ training:
         flash_not_mandatory: 'Training ist nicht als Pflicht markiert — Audience-Picker übersprungen.'
     low_completion_rate:
         title: 'Pflichttraining: Abschlussquote bei %rate%%%'
-        body: 'Nur %completed% von %total% zugewiesenen Teilnehmenden haben dieses Pflichttraining abgeschlossen (%rate%%). ISO 27001 A.6.3 / Cl. 7.3 Awareness fordert nachweisbaren Abschluss — ausstehende Nachweise vor dem nächsten Audit einholen.'
+        body: 'Nur %completed% von %total% Teilnehmenden haben das Pflichttraining abgeschlossen (%rate%%). ISO 27001 A.6.3 / Cl. 7.3: Nachweise einholen.'
         action: 'Ausstehende Teilnehmer erinnern'
 
 risk:
@@ -179,11 +179,11 @@ risk:
         action: 'Treatment-Plan anlegen'
     requires_dpia:
         title: 'DSFA-Pflicht erkannt — Datenschutz-Folgenabschätzung fehlt'
-        body: 'Risiko ist als DSFA-pflichtig markiert (DSGVO Art. 35), aber bisher keine DSFA verlinkt. Vorbefüllung aus Risiko-Daten verfügbar — Beschreibung, verknüpftes Asset und Betroffenen-Auswirkungen werden übernommen.'
+        body: 'Risiko ist DSFA-pflichtig (DSGVO Art. 35), keine DSFA verlinkt. Vorbefüllung aus Beschreibung, Asset und Betroffenen-Auswirkungen möglich.'
         action: 'DSFA mit Vorbefüllung anlegen'
     treatment_overdue:
         title: 'Hohes Risiko seit %days% Tagen unbehandelt'
-        body: 'Inherentes Risiko-Niveau %level% vor %days% Tagen identifiziert, bisher kein Treatment-Plan. ISO 27001 Cl. 6.1.3 fordert eine dokumentierte Behandlungsentscheidung — je länger die Lücke, desto stärker die Audit-Feststellung.'
+        body: 'Inhärentes Risiko-Niveau %level% seit %days% Tagen ohne Treatment-Plan. ISO 27001 Cl. 6.1.3 fordert eine Behandlungsentscheidung.'
         action: 'Treatment-Plan anlegen'
 
 control:
@@ -193,47 +193,47 @@ control:
         action: 'Verknüpfungen prüfen'
     soa_justification_missing:
         title: 'Nicht-anwendbares Control ohne Begründung — Major-NC-Risiko'
-        body: 'Dieses Control ist als „nicht anwendbar" markiert, aber im SoA fehlt die schriftliche Begründung. ISO 27001 Cl. 6.1.3 d / 8.3 b verlangen für jede Ausschluss-Entscheidung eine dokumentierte Begründung — sonst Major-NC beim externen Zertifizierungs-Audit.'
+        body: 'Control „nicht anwendbar“, aber SoA ohne Begründung. ISO 27001 Cl. 6.1.3 d / 8.3 b verlangen sie — sonst Major-NC im Zertifizierungsaudit.'
         action: 'Begründung ergänzen'
     soa_no_mappings:
         title: 'SoA-Control ohne Compliance-Anforderungs-Mappings'
-        body: 'Dieses anwendbare Control hat Risiken verknüpft, aber keine Framework-Anforderungs-Mappings. ISO 27001 Cl. 6.1.3 c fordert, dass jedes Control im SoA auf Framework-Klauseln oder Risikoentscheidungen zurückgeführt wird. Mindestens ein Mapping ergänzen, um die Nachweis-Lücke zu schließen.'
+        body: 'Anwendbares Control mit Risiken, aber ohne Framework-Mappings. ISO 27001 Cl. 6.1.3 c: im SoA zurückverfolgbar machen. Mapping ergänzen.'
         action: 'Anforderungs-Mappings ergänzen'
 
 bc_exercise:
     no_findings:
         title: 'Abgeschlossene BC-Übung ohne dokumentierte Erkenntnisse'
-        body: 'ISO 22301 Cl. 8.6 erwartet von jeder Übung mindestens eine dokumentierte Feststellung oder einen Verbesserungsbereich. Ein Übungsbericht ohne Beobachtungen hat begrenzten Audit-Wert — Regulatoren und Zertifizierungsstellen werden dies bemerken.'
+        body: 'ISO 22301 Cl. 8.6 erwartet je Übung mindestens eine Feststellung oder einen Verbesserungsbereich. Ohne Beobachtungen: geringer Audit-Wert.'
         action: 'Erkenntnisse ergänzen'
     actual_exceeds_plan:
         action: 'Übung prüfen und Plan anpassen'
         rto:
             title: 'Gemessene RTO überschreitet die Plan-Vorgabe'
-            body: 'Die in dieser Übung erreichte tatsächliche Wiederanlaufzeit (RTO) liegt über dem Zielwert mindestens eines getesteten BC-Plans. ISO 22301 Cl. 8.5.3 verlangt eine Lessons-Learned-Schleife: Entweder den Plan an die Realität anpassen oder eine dokumentierte Abweichungsbegründung hinterlegen.'
+            body: 'Erreichte RTO liegt über dem Ziel eines getesteten BC-Plans. ISO 22301 Cl. 8.5.3: Plan anpassen oder Abweichung dokumentieren.'
         rpo:
             title: 'Gemessener RPO überschreitet die Plan-Vorgabe'
-            body: 'Der in dieser Übung erreichte Datenverlust (RPO) liegt über dem Zielwert mindestens eines getesteten BC-Plans. ISO 22301 Cl. 8.5.3 verlangt eine Lessons-Learned-Schleife: Entweder das Backup-Intervall verbessern oder die Abweichung dokumentieren.'
+            body: 'Erreichter Datenverlust (RPO) liegt über dem Ziel eines BC-Plans. ISO 22301 Cl. 8.5.3: Backup-Intervall verbessern oder Abweichung belegen.'
     target_missed:
         title: 'Übungsziel verfehlt — geplanter RTO nicht erreicht'
-        body: 'Die Übung hat den geplanten RTO (%planRto% h) des Plans „%planTitle%" nicht erreicht — actualRTO %actualRto% h. ISO 22301 Cl. 8.5.3 + 9.1.1 (Lessons-Learned) und BSI 200-4 ÜP-9 fordern, dass dieses Ergebnis in eine Plan-Korrektur überführt wird. Eine Anpassung des Plans wird empfohlen.'
+        body: 'RTO-Ziel (%planRto% h) von Plan „%planTitle%“ verfehlt, erreicht: %actualRto% h. ISO 22301 Cl. 8.5.3 / 9.1.1, BSI 200-4: Plan korrigieren.'
         action: 'Plan bearbeiten'
 
 audit:
     findings_without_capa:
         title: '%count% offene Finding(s) ohne zugewiesenen Verantwortlichen'
-        body: '%count% offene oder in Bearbeitung befindliche Finding(s) haben keinen zugewiesenen Verantwortlichen. ISO 27001 Cl. 10.1 fordert für jede Nichtkonformität einen dokumentierten Korrekturmaßnahmen-Inhaber — nicht zugewiesene Findings sind ein Major-NC-Indikator beim externen Audit.'
+        body: '%count% offene Finding(s) ohne Verantwortlichen. ISO 27001 Cl. 10.1 fordert je Nichtkonformität einen Korrekturmaßnahmen-Inhaber.'
         action: 'Findings zuweisen'
 
 compliance_framework:
     low_coverage:
         title: 'Framework „%name%" — nur %coverage%% der Anforderungen gemappt'
-        body: 'Nur %coverage%% der Anforderungen in „%name%" sind Controls oder Nachweisen zugeordnet (Schwelle: %threshold%%). ISO 27001 Cl. 9.1 erwartet eine aktuelle, evidenzgestützte Compliance-Haltung für aktive Frameworks. Mit den hochpriorisierten Lücken beginnen.'
+        body: 'Nur %coverage%% von „%name%“ abgedeckt (Schwelle: %threshold%%, ISO 27001 Cl. 9.1). Mit den hochpriorisierten Lücken beginnen.'
         action: 'Framework-Lücken öffnen'
 
 management_review:
     interval_overdue:
         title: 'Management-Review überfällig — letzter vor %months% Monaten'
-        body: 'Der zuletzt dokumentierte Management-Review ist %months% Monate alt. ISO 27001 Cl. 9.3 fordert Reviews in geplanten Intervallen — in der Regel jährlich. Fehlende Kadenz ist ein direktes Audit-Finding bei der Zertifizierung.'
+        body: 'Letzter Management-Review vor %months% Monaten. ISO 27001 Cl. 9.3 fordert Reviews in geplanten Intervallen, meist jährlich.'
         action: 'Management-Review anlegen'
 
 dpia:
@@ -249,17 +249,17 @@ incident:
         action: 'Treatment-Plan anlegen'
     high_severity_open_too_long:
         title: 'Hochkritischer Vorfall seit %hours% Stunden offen — SLA überschritten'
-        body: 'Dieser hoch-/kritische Vorfall ist seit %hours% Stunden offen (SLA: %sla% h). ISO 27001 A.5.26 und NIS2 Art. 23 fordern schnelle Reaktion und Eskalation. Sofortiger Handlungsbedarf.'
+        body: 'Hoch-/kritischer Vorfall seit %hours% h offen (SLA: %sla% h). ISO 27001 A.5.26 / NIS2 Art. 23: schnell reagieren und eskalieren.'
         action: 'Vorfall aktualisieren'
     requires_data_breach:
         title: 'DSGVO Art. 33 — Datenpanne dokumentieren (72h-Frist)'
-        body: 'Dieser Vorfall ist als Datenpanne markiert, aber es liegt noch keine verknüpfte Datenpanne-Akte vor. DSGVO Art. 33 verlangt Meldung an die Aufsichtsbehörde binnen 72h nach Kenntnisnahme. Versäumte Frist = Bußgeld bis 10 Mio. € / 2 % Konzernumsatz (Art. 83 Abs. 4 lit. a).'
+        body: 'Als Datenpanne markiert, aber keine Datenpanne-Akte verknüpft. DSGVO Art. 33: Meldung binnen 72h; Bußgeld bis 10 Mio. € / 2 %.'
         action: 'Datenpanne mit Vorbefüllung anlegen'
 
 policy_wizard:
     settings_drift:
         title: 'Konzern-Vorgabe verschärft — Re-Run nötig'
-        body: 'Konzern-CISO von %konzern_name% hat Setting "%setting_key%" von %old_value% auf %new_value% angehoben. Betroffene Einstellungen in deiner Organisation: %affected_count%. Wizard im Targeted-Modus erneut ausführen, um die Policies anzugleichen.'
+        body: 'Konzern-CISO %konzern_name% hat „%setting_key%“ von %old_value% auf %new_value% angehoben (%affected_count% betroffen). Wizard neu starten.'
         action: 'Wizard neu starten'
 
 dora_exit_plan:
@@ -272,7 +272,7 @@ dora_exit_plan:
 global:
     risk_bulk_import_tip:
         title: 'Risikoregister wächst — Bulk-Import verfügbar'
-        body: 'Risikoregister wächst schön (%count% Einträge) — beim nächsten Update spart der Bulk-Import-Assistent ca. 2 FTE-Stunden für Owner-Pflege oder Inherent-Score-Bulk-Update.'
+        body: 'Risikoregister mit %count% Einträgen: Der Bulk-Import-Assistent spart ca. 2 FTE-Stunden bei Owner-Pflege oder Inherent-Score-Update.'
         action: 'Bulk-Import-Wizard öffnen'
     business_process_bulk_import_tip:
         title: 'BIA-Liste wächst — CSV-Bulk-Import verfügbar'
@@ -280,23 +280,23 @@ global:
         action: 'Bulk-Import-Wizard öffnen'
     vvt_export_tip:
         title: 'Verfahrensverzeichnis exportbereit'
-        body: 'Du hast %count% Verarbeitungstätigkeiten erfasst — bereit für die nächste Aufsichtsbehörde-Anfrage? Export im BfDI-Muster (XLSX/CSV/PDF) ist mit einem Klick verfügbar.'
+        body: '%count% Verarbeitungstätigkeiten erfasst. Der Export im BfDI-Muster (XLSX/CSV/PDF) steht für Aufsichtsbehörden-Anfragen bereit.'
         action: 'BfDI-XLSX exportieren'
     vvt_export_overdue:
         title: 'Verfahrensverzeichnis-Export überfällig'
-        body: 'Letzter BfDI-Verfahrensverzeichnis-Export vor %months% Monaten — Aufsichtsbehörde-Anfrage-Risiko. Aufsichtsbehörden (BfDI / 16 LfDI) können jederzeit anfordern; Compliance-Best-Practice empfiehlt jährliche Auffrischung.'
+        body: 'Letzter BfDI-Verfahrensverzeichnis-Export vor %months% Monaten. Aufsichtsbehörden können jederzeit anfordern; jährlich auffrischen.'
         action: 'Jetzt exportieren'
     asset_ohne_risk:
         title: '%count% kritische Assets ohne Risiko-Eintrag'
-        body: '%count% Assets mit Schutzbedarf hoch/sehr hoch haben keinen verlinkten Risk-Eintrag. DSGVO Art. 32 + ISO 27001 Cl. 6.1.2 fordern, dass hochsensible Assets das Risikoassessment speisen.'
+        body: '%count% Assets mit Schutzbedarf hoch/sehr hoch ohne Risiko-Eintrag. DSGVO Art. 32 + ISO 27001 Cl. 6.1.2: ins Risikoassessment aufnehmen.'
         action: 'Risiko anlegen'
     approved_doc_ohne_ack:
         title: '%count% genehmigte Richtlinien ohne Mitarbeiter-Bestätigung'
-        body: '%count% freigegebene Dokumente haben noch keine Policy-Acknowledgement-Einträge. ISO 27001 A.6.3 / Cl. 7.3 Awareness fordert nachweisbare Bestätigung durch alle Betroffenen.'
+        body: '%count% freigegebene Dokumente ohne Policy-Acknowledgement. ISO 27001 A.6.3 / Cl. 7.3 fordert nachweisbare Bestätigung aller Betroffenen.'
         action: 'Richtlinien prüfen'
     open_incident_ohne_sla:
-        title: 'DSGVO-Datenschutz-Vorfall: 72h-Frist läuft!'
-        body: '%count% schwerwiegender Datenschutz-Vorfall(Vorfälle) seit über 24 Stunden offen ohne Aufsichtsbehörden-Meldung. DSGVO Art. 33 Meldepflicht innerhalb 72h!'
+        title: 'DSGVO-Datenschutzvorfall: 72-Stunden-Frist läuft'
+        body: '%count% schwere(r) Datenschutzvorfall(-vorfälle) seit über 24 h ohne Aufsichtsbehörden-Meldung. DSGVO Art. 33: Meldung binnen 72h.'
         action: 'Vorfälle prüfen'
     risk_ohne_owner:
         title: '%count% Risiken ohne Verantwortlichen'
@@ -304,19 +304,19 @@ global:
         action: 'Risiken zuweisen'
     overdue_audit_finding:
         title: '%count% Audit-Findings überfällig'
-        body: '%count% Audit-Findings haben das Fälligkeitsdatum überschritten ohne abgeschlossene Korrekturmaßnahme. ISO 27001 Cl. 10.1 fordert zeitnahe Behebung.'
+        body: '%count% Audit-Findings überfällig ohne abgeschlossene Korrekturmaßnahme. ISO 27001 Cl. 10.1 fordert zeitnahe Behebung.'
         action: 'Findings prüfen'
     missing_dpo_for_gdpr:
         title: 'Kein DSB zugeordnet — Art. 37 DSGVO'
-        body: '%count% Verarbeitungstätigkeiten erfasst, aber kein Nutzer mit ROLE_DPO zugewiesen. Art. 37 DSGVO fordert benannten Datenschutzbeauftragten für bestimmte Verarbeitungstypen.'
+        body: '%count% Verarbeitungstätigkeiten, aber kein Nutzer mit ROLE_DPO. DSGVO Art. 37 fordert einen benannten Datenschutzbeauftragten.'
         action: 'Nutzer prüfen'
     missing_bc_exercise:
         title: 'Keine BCM-Übung in den letzten 12 Monaten'
-        body: 'Im letzten Jahr wurde keine abgeschlossene BC-Übung dokumentiert. ISO 22301 Cl. 8.5 fordert regelmäßige Tests zur Wirksamkeitsprüfung der BCP.'
+        body: Im letzten Jahr keine abgeschlossene BC-Übung dokumentiert. ISO 22301 Cl. 8.5 fordert regelmäßige Tests der BCP.
         action: 'Übung anlegen'
     vulnerability_without_patch:
         title: '%count% kritische CVEs ohne Patch-Eintrag (> %days% Tage)'
-        body: '%count% offene Schwachstellen mit CVSS ≥ 7,0 sind seit mehr als %days% Tagen ohne verlinkten Patch. OPS.1.1.3 / NIS2 Art. 21 Abs. 2 lit. e verlangen dokumentierte Patch-SLA-Einhaltung.'
+        body: '%count% offene Schwachstellen mit CVSS ≥ 7,0 seit über %days% Tagen ohne Patch. OPS.1.1.3 / NIS2 Art. 21 Abs. 2 lit. e: Patch-SLA einhalten.'
         action: 'Schwachstellen prüfen'
     filter_export_tip:
         title: 'Gefilterte Liste? Export spart Zeit'
@@ -328,23 +328,23 @@ global:
         action: 'Findings mit Norm verknüpfen'
     missing_data_breach_procedure:
         title: '%count% Datenpanne(n) ohne Behörden-Meldung'
-        body: '%count% Datenpanne(n) ohne Datum der Aufsichtsbehörden-Meldung (authorityNotificationAt). DSGVO Art. 33 verlangt Meldung innerhalb 72h nach Kenntnis.'
+        body: '%count% Datenpanne(n) ohne Datum der Aufsichtsbehörden-Meldung (authorityNotificationAt). DSGVO Art. 33: Meldung binnen 72h.'
         action: 'Überfällige Datenpannen anzeigen'
     konzern_settings_drift:
         title: 'Abweichung von Konzern-Baseline (%konzern_name%)'
-        body: '%count% Compliance-Framework-Differenz(en) zwischen dieser Organisation und dem übergeordneten Konzern (%konzern_name%). ISB-Abstimmung empfohlen vor dem nächsten Audit.'
+        body: '%count% Compliance-Framework-Differenz(en) zum Konzern (%konzern_name%). ISB-Abstimmung vor dem nächsten Audit empfohlen.'
         action: 'Compliance prüfen'
     missing_sso_for_enterprise:
         title: 'Kein SSO für %count% Benutzer — Authentifizierungslücke'
-        body: 'Diese Organisation hat %count% aktive Benutzer, aber keinen SSO-Identity-Provider konfiguriert. ISO 27001:2022 A.5.17 und A.8.5 empfehlen zentralisierte Authentifizierung für größere Teams zur Durchsetzung starker Passwörter, MFA und Account-Lifecycle-Management.'
+        body: '%count% aktive Benutzer, aber kein SSO-Identity-Provider. ISO 27001:2022 A.5.17 / A.8.5 empfehlen zentrale Authentifizierung mit MFA.'
         action: 'SSO einrichten'
     missed_sla_deadline:
         title: '%count% SLA-Frist(en) versäumt — regulatorische Haftung'
-        body: '%count% Meldefrist(en) sind ohne Erfüllung abgelaufen (DSGVO Art. 33 72h / DORA Art. 19 / NIS2 Art. 23). Versäumte Meldepflichten können zu Bußgeldern bis zu 10 Mio. € / 2 % Konzernumsatz führen. Sofortiger Handlungsbedarf.'
+        body: '%count% Meldefrist(en) ohne Erfüllung abgelaufen (DSGVO Art. 33 / DORA Art. 19 / NIS2 Art. 23). Bußgeld bis 10 Mio. € / 2 % möglich.'
         action: 'Benachrichtigungsregeln prüfen'
     nis2_registration_overdue:
         title: 'NIS-2 BSI-Portal-Registrierung überfällig'
-        body: 'Die jährliche NIS-2-Registrierung beim BSI-Portal ist überfällig (Frist war %date%). BSIG § 33 verpflichtet wesentliche und wichtige Einrichtungen zur jährlichen Wiederregistrierung.'
+        body: 'Jährliche NIS-2-Registrierung beim BSI-Portal überfällig (Frist: %date%). BSIG § 33 verlangt jährliche Wiederregistrierung.'
         action: 'NIS-2-Registrierung öffnen'
     nis2_registration_due_soon:
         title: 'NIS-2 BSI-Portal-Registrierung bald fällig'
@@ -352,15 +352,15 @@ global:
         action: 'NIS-2-Registrierung öffnen'
     outdated_evidence:
         title: 'Nachweise sind veraltet — Überprüfung erforderlich'
-        body: '%count% Controls sind als Nachweis-veraltet markiert, weil verknüpfte Dokumente aktualisiert wurden. Bitte die Prüf-Queue bearbeiten, um ISO 27001 Kl. 7.5.3 Compliance zu erhalten.'
+        body: '%count% Controls mit veraltetem Nachweis, da verknüpfte Dokumente geändert wurden. Prüf-Queue bearbeiten (ISO 27001 Kl. 7.5.3).'
         action: 'Prüf-Queue öffnen'
     no_notification_channel:
         title: 'Keine aktiven Benachrichtigungskanäle konfiguriert'
-        body: 'Das Benachrichtigungsmodul ist aktiv, aber für diese Organisation sind keine aktiven Kanäle (E-Mail / Webhook / In-App) eingerichtet. Ohne Kanal werden alle Benachrichtigungsregeln lautlos ausgeführt — kein Alert erreicht die Empfänger. ISO 27001 Kl. 9.1 erfordert überwachungsfähige Prozesse.'
+        body: 'Benachrichtigungsmodul aktiv, aber kein Kanal (E-Mail / Webhook / In-App) eingerichtet — Alerts erreichen niemanden (ISO 27001 Kl. 9.1).'
         action: 'Kanal anlegen'
     overdue_authority_report:
         title: 'EU-Behörden-Meldung überfällig'
-        body: '%count% EU-Behörden-Meldepflicht(en) ist/sind überfällig. Sofortiger Handlungsbedarf — regulatorische Fristen (DSGVO Art. 33 / NIS-2 BSIG § 33 / DORA Art. 28).'
+        body: '%count% EU-Behörden-Meldepflicht(en) überfällig (DSGVO Art. 33 / NIS-2 BSIG § 33 / DORA Art. 28). Sofort melden.'
         action: 'Behörden-Hub öffnen'
     dora_roi_export_due:
         title: 'DORA RoI noch nicht eingereicht'
@@ -368,23 +368,23 @@ global:
         action: 'DORA RoI öffnen'
     dora_category_unset:
         title: 'DORA-Verpflichtungsstatus nicht gesetzt — Widerspruch erkannt'
-        body: '%count% Lieferant(en)/Asset(s) sind als DORA-relevant markiert, aber die Organisation ist nicht als DORA-pflichtig eingestuft. Bitte DORA-Verpflichtungsstatus in die Organisation-Einstellungen prüfen.'
+        body: '%count% Lieferant(en)/Asset(s) als DORA-relevant markiert, die Organisation aber nicht DORA-pflichtig. Status in den Einstellungen prüfen.'
         action: 'Organisations-Einstellungen öffnen'
     fte_savings_milestone:
-        title: 'Meilenstein erreicht — %hours% FTE-Stunden eingespart!'
-        body: 'Das System hat für diese Organisation bereits %minutes% Minuten (%hours% Stunden) manuellen Aufwand eingespart — durch SSO-JIT-Provisioning, Bulk-Import und Evidence-Wiederverwendung. Weiter so!'
+        title: 'Meilenstein: %hours% FTE-Stunden eingespart'
+        body: '%minutes% Minuten (%hours% Stunden) Aufwand gespart: SSO-JIT-Provisioning, Bulk-Import und Evidence-Wiederverwendung.'
         action: 'FTE-Dashboard öffnen'
     risks_linked_to_open_incidents:
         title: 'Offene Vorfälle halten Risikodruck aufrecht — Überprüfung empfohlen'
-        body: '%count% Risiko(en) sind seit mehr als 30 Tagen mit offenen Vorfällen verknüpft. Die Behebung dieser Vorfälle reduziert die tatsächliche Risikoexposition und hält das Risikoregister aktuell.'
+        body: '%count% Risiko(en) seit über 30 Tagen mit offenen Vorfällen verknüpft. Vorfälle beheben, um Risikoexposition und Register aktuell zu halten.'
         action: 'Risikoregister öffnen'
     library_updated:
         title: 'Compliance-Framework-Aktualisierung verfügbar'
-        body: 'Eine neuere Version des Frameworks %code% liegt vor (lokal: %yaml_version%, importiert: %db_version%). Bibliothek erneut importieren, um neue Bausteine/Controls zu übernehmen.'
+        body: 'Neuere Version von Framework %code% (lokal: %yaml_version%, importiert: %db_version%). Bibliothek erneut importieren.'
         action: 'Bibliothek aktualisieren'
     role_mapping_without_claim:
         title: 'IdP ohne Rollen-Mapping — Privilegienlücke'
-        body: '%count% Identity-Provider haben aktive Logins, aber kein konfiguriertes Rollen-Mapping. JIT-provisionierte Nutzer erhalten nur die Fallback-Rolle. Rollen-Mapping in ~5 Minuten konfigurieren verhindert stille Privilegienprobleme.'
+        body: '%count% Identity-Provider mit aktiven Logins ohne Rollen-Mapping — JIT-Nutzer erhalten nur die Fallback-Rolle. Rollen-Mapping konfigurieren.'
         action: 'Rollen-Mapping konfigurieren'
     planning_due_action_items:
         title: 'Fällige Maßnahmen'
@@ -392,19 +392,19 @@ global:
         action: 'Fällige ansehen'
     mapping_concept_primer:
         title: 'Neu bei Mappings? Kurz erklärt'
-        body: 'Ein Mapping ist eine Brücke zwischen zwei Frameworks: Es sagt „diese Anforderung aus ISO 27001 meint dasselbe wie jene aus NIS2". Der Clou: Erfüllen Sie sie einmal, zählt sie über die Vererbung automatisch auch im anderen Framework (Data-Reuse). Wie eine 9001-CAPA, die mehrere Prozesse abdeckt. Für den vollen Rundgang oben rechts auf „Mapping-Tour starten" klicken.'
+        body: 'Ein Mapping verbindet zwei Frameworks: Einmal erfüllt, zählt eine Anforderung über Vererbung auch im anderen. Mehr: „Mapping-Tour starten“.'
     mapping_coverage_primer:
         title: 'Coverage-% richtig lesen'
-        body: 'Die Coverage zeigt, wie viel Prozent eines Frameworks bereits durch Ihre erfüllten Controls abgedeckt sind. Die fehlenden Prozente sind keine Fehlermeldung, sondern Ihre To-do-Liste: ungemappte oder noch nicht erfüllte Anforderungen. Genau diese Lücken schließen Sie als Nächstes. (ISO 27001 Cl. 6.1.3)'
+        body: 'Coverage zeigt, wie viel eines Frameworks durch erfüllte Controls abgedeckt ist. Der Rest ist Ihre To-do-Liste (ISO 27001 Cl. 6.1.3).'
     mapping_quality_primer:
         title: 'Zwei Qualitäts-Zahlen — was bedeuten sie?'
-        body: 'Confidence beantwortet „wie sicher passt der Inhalt der Verbindung?". MQS (Mapping-Qualitäts-Score) beantwortet „wie gut ist sie belegt und gepflegt?" — Herkunft, Methodik, Lebenszyklus. Wichtig: Ein Mapping im Status „draft" (Entwurf) zählt noch NICHT in der Coverage — erst nach dem Review („published") wird es wirksam.'
+        body: 'Confidence: wie sicher passt die Verbindung? MQS: wie gut ist sie belegt? Mappings im Status „draft“ zählen erst nach Review zur Coverage.'
 
 inbox:
     title: 'Alva-Inbox'
     subtitle: 'Alle aktiven Alva-Tipps für deine Organisation — priorisiert nach Tier'
     empty_title: 'Keine aktiven Hinweise'
-    empty_body: 'Alva hat aktuell keine offenen Empfehlungen für deine Organisation. Gut gemacht!'
+    empty_body: Alva hat aktuell keine offenen Empfehlungen für deine Organisation.
     badge: 'Alva-Inbox'
     filter:
         all: 'Alle'
@@ -423,43 +423,43 @@ inbox:
 alva_hint:
     kritis_operator_readiness:
         title: 'KRITIS-Pflicht: IT-Sicherheitsleitlinie fehlt'
-        body: '%tenant_name% ist als KRITIS-Betreiber markiert, hat aber keine genehmigte IT-Sicherheitsleitlinie nach BSI-Vorlage. BSIG § 8a und KRITIS-Dachgesetz fordern eine dokumentierte, vom Top-Management freigegebene Leitlinie als Mindestnachweis. Ohne sie droht eine Audit-Feststellung beim nächsten BSI-Nachweis.'
+        body: '%tenant_name% ist KRITIS-Betreiber ohne genehmigte IT-Sicherheitsleitlinie. BSIG § 8a / KRITIS-Dachgesetz fordern sie als Mindestnachweis.'
         cta_label: 'BSI-Wizard starten'
         dismiss_label: 'Nicht jetzt'
     konzern_ciso_drift_alert:
         title: 'Tochter weicht von Konzern-Vorgabe ab'
-        body: 'Im Konzern %konzern_name% verletzen %affected_count% Tochter-Einstellungen verbindliche Konzern-Vorgaben (nicht-änderbar / nicht-lockerbar). Erstes Beispiel: Organisation "%first_tenant_name%", Einstellung "%first_setting_key%". Bitte im Konzern-Rollup unter "Abweichungen" prüfen und die Tochter zur Korrektur auffordern, bevor das Audit es findet.'
+        body: '%affected_count% Tochter-Einstellungen weichen vom Konzern %konzern_name% ab, z. B. „%first_setting_key%“. Siehe „Abweichungen“.'
         cta_label: 'Abweichungen öffnen'
         dismiss_label: 'Später erinnern'
     open_finding_reference:
         title: 'Audit-Finding ohne Re-Run-Abschluss'
-        body: 'Wizard-Run mit Finding-Referenz "%finding_ref%" ist seit %age_days% Tagen offen (Schwelle: %threshold_days% Tage). Auditor erwartet entweder einen abgeschlossenen Re-Run mit aktualisierter Policy oder eine dokumentierte Begründung. Ohne Reaktion entsteht eine Nichtkonformität.'
+        body: 'Wizard-Run mit Finding „%finding_ref%“ seit %age_days% Tagen offen (Schwelle: %threshold_days%). Re-Run abschließen oder begründen.'
         cta_label: 'Targeted Re-Run starten'
         dismiss_label: 'Nicht jetzt'
     document_split_needed:
         title: 'Legacy-Dokument noch nicht aufgeteilt'
-        body: 'Im Topic "%topic%" wartet eine Bestandsaufnahme-Entscheidung "split_to_topics" auf manuelle Bearbeitung (Ziele: %target_topics%). Insgesamt sind %count% solcher Splits in der Organisation offen. Der Policy-Wizard kann ein Legacy-Dokument nicht automatisch in mehrere Topic-Dokumente aufteilen — entweder Entscheidung auf merge_into_topic / replace umstellen oder einen Targeted-Re-Run pro Zieltopic anstoßen.'
+        body: 'Topic „%topic%“: Entscheidung „split_to_topics“ offen (%count% gesamt). Auf merge_into_topic/replace umstellen oder Targeted-Re-Run starten.'
         cta_label: 'Bestandsaufnahme öffnen'
         dismiss_label: 'Später erinnern'
     training_coverage_gap:
         title: 'Policy-Bestätigungsquote unter Schwelle'
-        body: 'Die Policy "%document_title%" ist nur zu %coverage_percent% % von der Mitarbeiter-Audience bestätigt (Schwelle: %threshold_percent% %). ISO 27001 Cl. 7.3 Awareness fordert nachweisbare Kommunikation und Bestätigung — bitte Bestätigungs-Inbox prüfen und ausstehende Acknowledgements anstoßen.'
+        body: '„%document_title%“ erst zu %coverage_percent% % bestätigt (Ziel: %threshold_percent% %). ISO 27001 Cl. 7.3: Bestätigungen anstoßen.'
         cta_label: 'Bestätigungs-Inbox öffnen'
         dismiss_label: 'Später erinnern'
     bcm_exercise_due:
         title: 'BCM-Übung steht in %days% Tagen an'
-        body: 'Geplante BCM-Übung "%exercise_name%" (%exercise_type%) findet in %days% Tagen statt (Erinnerungsfenster: %window_days% Tage). ISO 22301 Cl. 8.6 fordert dokumentierte Vorbereitung — Teilnehmer einladen, Szenario finalisieren, Beobachter benennen.'
+        body: 'BCM-Übung „%exercise_name%“ (%exercise_type%) in %days% Tagen. ISO 22301 Cl. 8.6: Teilnehmer einladen, Szenario finalisieren.'
         cta_label: 'Übung öffnen'
         dismiss_label: 'Später erinnern'
     bcm_exercise_overdue:
         title: 'BCM-Übung überfällig'
-        body: 'Geplante BCM-Übung "%exercise_name%" (%exercise_type%) ist seit %days% Tagen überfällig und steht weiterhin auf "planned". ISO 22301 Cl. 8.6 verlangt dokumentierte Übungs-Kadenz — verschieben mit Begründung oder Status auf "cancelled" setzen, andernfalls Audit-Risiko.'
+        body: 'BCM-Übung „%exercise_name%“ (%exercise_type%) seit %days% Tagen überfällig. ISO 22301 Cl. 8.6: mit Begründung verschieben oder absagen.'
         cta_label: 'Übung öffnen'
         dismiss_label: 'Nicht jetzt'
     lifecycle:
         stuck_in_status:
             title: 'Lifecycle-Übergänge feststeckend'
-            body: '%count% Dokument(e) stecken seit über %days% Tagen in einem nicht-terminalen Status (Entwurf, In Prüfung usw.). Bitte überprüfen und den nächsten Schritt einleiten.'
+            body: '%count% Dokument(e) seit über %days% Tagen in einem nicht-terminalen Status (Entwurf, In Prüfung …). Nächsten Schritt einleiten.'
             action: 'Dokumente anzeigen'
     # P-19 — Form-Step-Inline-Hint Pattern. Inline-Hinweise, die WÄHREND des
     # Form-Ausfüllens (vor Speichern) erscheinen — neben dem auslösenden Feld.
@@ -468,74 +468,74 @@ alva_hint:
     form:
         incident_data_breach:
             title: 'Datenpanne-Akte wird beim Speichern automatisch angelegt'
-            body: 'Sobald du speicherst, wird eine DataBreach-Akte mit Vorbefüllung aus diesem Vorfall angelegt. Der DSGVO-Art.-33-Countdown (72 h) startet ab dem Erkennungszeitpunkt — plane Aufsichtsbehörden-Meldung + Betroffenen-Information frühzeitig ein.'
+            body: Beim Speichern entsteht eine DataBreach-Akte mit Vorbefüllung. Der DSGVO-Art.-33-Countdown (72 h) startet ab Erkennung — früh planen.
             action: 'Wie die 72-h-Frist abläuft'
         risk_critical_severity:
             title: 'Kritisches Risiko (Score %score%) — Board-Approval prüfen'
-            body: 'Dieses Risiko erreicht mit Score %score% das kritische Niveau. ISO 27001 Cl. 5.3 + 6.1.3 f verlangt einen Risk-Owner mit ausreichender Entscheidungskompetenz — bei kritischen Risiken üblicherweise C-Level / Board (ROLE_CISO). Bitte Owner-Eintragung und Behandlungsentscheidung entsprechend planen.'
+            body: 'Risiko-Score %score% ist kritisch. ISO 27001 Cl. 5.3 + 6.1.3 f: Risk-Owner mit Entscheidungskompetenz, meist C-Level (ROLE_CISO).'
             action: 'Risk-Owner-Konvention öffnen'
         risk_score_explainer:
             title: 'Risikowert = %probability% × %impact% = %score%'
-            body: 'Kurz erklärt: Aus Wahrscheinlichkeit (%probability%) und Auswirkung (%impact%) bildet das Tool automatisch den Risikowert %score%. Danach wird das Register sortiert — je höher der Wert, desto dringender die Behandlung. So vergleichst du Risiken einheitlich (ISO 27005). Die Live-Heatmap rechts zeigt die Einstufung sofort farblich.'
+            body: 'Wahrscheinlichkeit (%probability%) × Auswirkung (%impact%) = Risikowert %score% (ISO 27005). Höher = dringender. Heatmap zeigt es.'
         # ── Form-Coverage-Expansion (P-19 follow-up) ─────────────────────────
         # Inline-Hints für 9 weitere FormTypes, alle pre-save Warnungen.
         asset_critical_confidentiality:
             title: 'Kritische Vertraulichkeit — verschärfte Owner-Pflichten'
-            body: 'Confidentiality-Wert 5 stuft dieses Asset als "kritisch" ein. ISO 27001 A.5.17 + BSI ORP.4.A11 verlangen MFA-Pflicht für den Owner und jährliche Re-Verification (A.5.15 Access-Review). Bitte Access-Control-Plan und Re-Cert-Intervall vorab planen.'
+            body: 'Vertraulichkeit 5 = „kritisch“. ISO 27001 A.5.17 + BSI ORP.4.A11: MFA für den Owner, jährlicher Access-Review (A.5.15). Jetzt planen.'
             action: 'Access-Control-Konvention öffnen'
         asset_retired_status:
             title: 'End-of-Life — Disposal-Evidence erforderlich'
-            body: 'Status "retired" / "disposed" zieht eine Pflicht zur dokumentierten sicheren Entsorgung nach ISO 27001 A.7.14 + BSI CON.6 nach sich. Falls das Asset einen kritischen Geschäftsprozess unterstützt hat, sollte zudem ein Replacement-Plan oder ein Verweis im verknüpften BC-Plan dokumentiert werden.'
+            body: '„retired“/„disposed“ erfordert dokumentierte sichere Entsorgung (ISO 27001 A.7.14, BSI CON.6). Bei kritischem Prozess: Ersatz im BC-Plan.'
             action: 'Disposal-Checkliste öffnen'
         business_process_recovery_chain_imbalance:
             title: 'RPO (%rpo% h) > RTO/2 (%rto% h) — Backup-Frequenz prüfen'
-            body: 'Der Recovery-Point-Objective von %rpo% h übersteigt die Hälfte des Recovery-Time-Objective von %rto% h. In der Praxis bedeutet das: die Backup-Frequenz schafft es nicht, vor dem Wiederanlauf-Zeitpunkt einen konsistenten Stand bereitzustellen — die BC-Strategie verfehlt still ihre Ziele. ISO 22301 Cl. 8.2.2 verlangt explizit konsistente Recovery-Targets.'
+            body: 'RPO von %rpo% h übersteigt die Hälfte der RTO von %rto% h: Backups liefern vor Wiederanlauf keinen konsistenten Stand (ISO 22301 Cl. 8.2.2).'
             action: 'BIA-Leitfaden öffnen'
         bcp_stale_exercise:
             title: 'BC-Plan länger als 12 Monate nicht geübt'
-            body: 'ISO 22301 Cl. 8.5 verlangt eine dokumentierte Übungs-Kadenz — der Audit-Default ist jährlich. Ein BC-Plan ohne Exercise-Eintrag innerhalb der letzten 12 Monate ist ein klassisches Major-NC-Kandidat. Bitte Exercise terminieren und nach Durchführung das Datum hier eintragen.'
+            body: 'ISO 22301 Cl. 8.5: Übungen mindestens jährlich. BC-Plan ohne Übung in 12 Monaten = Major-NC-Kandidat. Übung terminieren, Datum nachtragen.'
             action: 'BCM-Übungs-Doku öffnen'
         bcp_no_crisis_team:
             title: 'Kein Krisenteam definiert — wer aktiviert den Plan?'
-            body: 'Weder responseTeamMembers (plan-spezifisch) noch crisisTeams (übergreifend wiederverwendbar) ist gesetzt. Ein BC-Plan ohne aktivierungsbefugtes Team ist im Ernstfall unbrauchbar — ISO 22301 §8.5.3 verlangt explizit benannte Rollen mit Aktivierungs-Authority.'
+            body: Weder responseTeamMembers noch crisisTeams gesetzt. Ohne aktivierungsbefugtes Team unbrauchbar — ISO 22301 §8.5.3 verlangt benannte Rollen.
             action: 'Krisenteam-Konvention öffnen'
         incident_high_severity_no_root_cause:
             title: 'Hochsicherheits-Vorfall ohne Root-Cause-Analyse'
-            body: 'Severity %severity% in Status %status% ohne dokumentierte rootCause-Analyse. ISO 27001 Cl. 10.1 + 10.2 ("Continual improvement" / "Nonconformity & corrective action") verlangen vor Closure eine dokumentierte Ursachenanalyse — andernfalls gilt die corrective action als nicht-wirksam und der Vorfall wird im Audit beanstandet.'
+            body: 'Severity %severity%, Status %status%, ohne Ursachenanalyse. ISO 27001 Cl. 10.1 + 10.2 verlangen sie vor Closure, sonst unwirksam.'
             action: 'Root-Cause-Template öffnen'
         incident_nis2_early_warning_pending:
             title: 'NIS2 24h-Frühwarnung läuft — earlyWarningReportedAt setzen'
-            body: 'NIS2 Art. 23 (4)(a) verpflichtet wesentliche und wichtige Einrichtungen zur Frühwarnung an die zuständige Behörde innerhalb von 24 Stunden ab Kenntnisnahme. Das Feld earlyWarningReportedAt ist noch leer — bitte Behörden-Kontakt und Frühwarn-Inhalt vorbereiten und Eintrag nach Abgabe zeitnah ergänzen.'
+            body: 'NIS2 Art. 23 (4)(a): Frühwarnung binnen 24 Stunden nach Kenntnisnahme. earlyWarningReportedAt ist leer — Behörden-Kontakt vorbereiten.'
             action: 'NIS2-Meldepflicht-Guide öffnen'
         document_review_interval_too_long:
             title: 'Review-Intervall (%months% Monate) länger als 24 Monate'
-            body: 'Der Industrie-Baseline für ISO 27001 A.5.32 ("Independent review of information security") ist ein jährlicher Review. Intervalle > 24 Monate verlangen von externen Auditoren eine ausdrückliche risikobasierte Begründung. Bitte das Intervall reduzieren oder die Begründung im Approval-Workflow dokumentieren.'
+            body: 'Baseline für ISO 27001 A.5.32 ist ein jährlicher Review. Intervalle > 24 Monate brauchen eine risikobasierte Begründung. Intervall kürzen.'
             action: 'Review-Cadence-Konvention öffnen'
         document_acknowledgement_without_audience:
             title: 'Acknowledgement-Pflicht ohne definierte Audience'
-            body: 'Wenn requiresAcknowledgement aktiv ist und acknowledgementAudience leer bleibt, wird die Bestätigungs-Anforderung an alle Organisations-Nutzer ausgerollt — selten der gewünschte Effekt. ISO 27001 A.6.3 erwartet eine zielgerichtete, rollenbasierte Kommunikation. Bitte eine Empfänger-Gruppe auswählen.'
+            body: 'Ohne acknowledgementAudience geht die Bestätigung an alle Nutzer — selten gewollt (ISO 27001 A.6.3: rollenbasiert). Empfängergruppe wählen.'
             action: 'Audience-Picker öffnen'
         training_mandatory_without_audience:
             title: 'Pflicht-Training ohne definierte Audience'
-            body: 'mandatory=true ohne targetAudience oder participants/participantUsers verhindert die Auto-Zuweisung und macht die Coverage-Auswertung unmöglich. ISO 27001 A.6.3 verlangt geeignete Awareness/Schulung für all jene, deren Arbeit die InfoSec beeinflussen kann — eine definierte Audience ist Voraussetzung.'
+            body: mandatory=true ohne targetAudience/Teilnehmer verhindert Auto-Zuweisung und Coverage-Auswertung (ISO 27001 A.6.3). Audience definieren.
             action: 'Audience-Konvention öffnen'
         training_mandatory_without_materials:
             title: 'Pflicht-Training ohne Materialien'
-            body: 'Ein Pflicht-Training ohne materialFiles und ohne Materials-Beschreibung kann weder selbstgesteuert noch konsistent durchgeführt werden. ISO 27001 A.6.3 erwartet dokumentierte Awareness-Inhalte als Audit-Evidence.'
+            body: 'Pflichttraining ohne materialFiles/Materialbeschreibung ist nicht durchführbar. ISO 27001 A.6.3: Awareness-Inhalte als Evidence hinterlegen.'
             action: 'Training-Material-Template öffnen'
         corrective_action_effectiveness_review_overdue:
             title: 'Wirksamkeitsprüfung überfällig'
-            body: 'Das effectivenessReviewDate liegt in der Vergangenheit, der Status ist aber noch nicht verified*. ISO 27001 Cl. 10.1 d ("review the effectiveness of any corrective action taken") macht die Wirksamkeitsverifikation zu einem Audit-kritischen Meilenstein — überfällige Reviews sind ein klassischer Major-NC.'
+            body: 'effectivenessReviewDate liegt in der Vergangenheit, Status nicht verified*. ISO 27001 Cl. 10.1 d: Wirksamkeit prüfen, sonst Major-NC.'
             action: 'Wirksamkeitsprüfungs-Leitfaden öffnen'
         audit_finding_major_nc_requires_capa:
             title: 'Major-NC verlangt CAPA'
-            body: 'Eine Major-Nonconformity (major_nc) verlangt nach ISO 27001 Cl. 10.1.1 ("Nonconformity and corrective action") eine dokumentierte Reaktion: Bewerten, ob Maßnahmen notwendig sind, und ggf. CAPA umsetzen. In der Audit-Praxis bedeutet das einen verknüpften CorrectiveAction-Datensatz vor Closure des Findings.'
+            body: 'Major-NC verlangt nach ISO 27001 Cl. 10.1.1 eine dokumentierte Reaktion: CorrectiveAction mit dem Finding verknüpfen, dann schließen.'
             action: 'CAPA-Workflow öffnen'
         risk_acceptance_without_justification:
             title: 'Risk-Acceptance ohne Begründung'
-            body: 'treatmentStrategy=accept ohne acceptanceJustification ist eines der häufigsten ISO-27001-NCs. Cl. 8.3 + 6.1.3 f verlangen, dass die Akzeptanz-Entscheidung des Risk-Owners dokumentiert begründet wird — Auditoren prüfen explizit, ob der Residual-Risiko-Wert zur dokumentierten Risk-Appetite passt.'
+            body: 'accept ohne acceptanceJustification ist ein häufiger ISO-27001-NC. Cl. 8.3 + 6.1.3 f: Akzeptanz begründen und gegen Risk-Appetite prüfen.'
             action: 'Acceptance-Template öffnen'
         risk_residual_exceeds_initial:
             title: 'Residual-Score (%residual%) > Initial-Score (%initial%)'
-            body: 'ISO 27005 Cl. 8.4 definiert Residual-Risiko als "das Risiko, das NACH der Behandlung verbleibt" — also per Definition ≤ Initial. Ein höherer Residual-Wert deutet meist auf vertauschte Achsen oder einen Tippfehler hin. Bitte residualProbability und residualImpact überprüfen.'
+            body: 'ISO 27005 Cl. 8.4: Residualrisiko ist das Risiko NACH Behandlung, also ≤ Initial. Höherer Wert = oft vertauschte Achsen. Werte prüfen.'
             action: 'Risiko-Matrix-Leitfaden öffnen'

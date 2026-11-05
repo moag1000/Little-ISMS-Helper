@@ -15,13 +15,12 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-file-earmark-text', label: 'eu_authorities.vvt.title'|trans },
         title:    'eu_authorities.vvt.title'|trans,
         subtitle: 'eu_authorities.vvt.subtitle'|trans,
         actions: []
     }) }}
 
-    <main class="fa-aurora-surface">
+    <main>
         {{ _fa_empty_state.render({
             mood:    'warning',
             title:   'eu_authorities.vvt.error.no_processing_activities'|trans,

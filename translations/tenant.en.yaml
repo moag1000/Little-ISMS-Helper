@@ -1,6 +1,6 @@
 tenant:
     title: 'Organization Management'
-    subtitle: 'Manage your organizations (each maps to the organization or subsidiary inside the ISMS scope per ISO 27001 Cl. 4.3).'
+    subtitle: Create and maintain organizations in the ISMS scope (ISO 27001 Cl. 4.3).
     empty: 'No organizations available'
     switch_hint: 'Switch'
     switch_header: 'Switch organization'
@@ -95,18 +95,18 @@ tenant:
             email_required: 'Email address is required'
             user_not_found: 'User with this email address was not found'
             already_assigned: 'User is already assigned to this organization'
-            user_added: 'User successfully added to organization'
-            user_removed: 'User successfully removed from organization'
+            user_added: User added to organization
+            user_removed: User removed from organization
             not_assigned: 'User is not assigned to this organization'
             error: 'Error managing users'
     form:
         create_title: 'Create New Organization'
         edit_title: 'Edit Organization'
     flash:
-        created: 'Organization created successfully'
-        updated: 'Organization updated successfully'
-        deleted: 'Organization deleted successfully'
-        activated: 'Organization activated successfully'
+        created: Organization created
+        updated: Organization updated
+        deleted: Organization deleted
+        activated: Organization activated
         suspended: 'Organization suspended'
         reactivated: 'Organization reactivated'
         reason_required: 'A reason is required for this status change.'
@@ -117,7 +117,7 @@ tenant:
         error: 'Error saving organization'
         not_found: 'The requested organization was not found. It may have been deleted.'
         has_users: 'Organization cannot be deleted as it still has assigned users'
-        organisation_context_updated: 'Organization profile successfully updated'
+        organisation_context_updated: Organization profile updated
         organisation_context_error: 'Error updating organization profile'
     lifecycle:
         title: 'Organization status'

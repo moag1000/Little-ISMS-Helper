@@ -93,14 +93,14 @@ my_day:
 
     empty:
         title: 'All done'
-        text: 'No open tasks for you right now. Great work!'
+        text: No open tasks right now.
 
     item:
         due: 'Due'
         overdue_by: '%days% d overdue'
         due_in: 'due in %days% d'
         hours_left: '%hours% h left (72h deadline)'
-        sla_breached: '72h deadline missed!'
+        sla_breached: 72h deadline missed.
 
     hint:
         four_eyes: 'You confirm as the second person (segregation of duties, four-eyes).'

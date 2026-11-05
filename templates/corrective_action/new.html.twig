@@ -14,9 +14,7 @@
         ]
     } %}
     {{ _fa_page_header.render({
-        title: 'corrective_action.page.new'|trans({}, 'audits'),
-        badge: { icon: 'plus', label: '' }
-    }) }}
+        title: 'corrective_action.page.new'|trans({}, 'audits')}) }}
 
     {# Info-Banner wenn aus unwirksamer Vorgänger-CAPA vorbefüllt. #}
     {% if previousCapa is defined and previousCapa %}

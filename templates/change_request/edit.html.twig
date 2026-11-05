@@ -2,7 +2,7 @@
 {% trans_default_domain 'change_requests' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'change_request.edit'|trans({}, 'change_requests') }} {{ change_request.changeNumber }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'change_request.edit'|trans({}, 'change_requests') }} {{ change_request.changeNumber }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -26,7 +26,6 @@
 
             {{ _fa_page_header.render({
     title: ('change_request.page.edit'|trans({}, 'change_requests')) ~ ': ' ~ (change_request.changeNumber),
-    badge: { icon: 'ui-edit', label: '' },
     actions: [
         { label: 'change_request.action.view'|trans({}, 'change_requests'), href: path('app_change_request_show', {id: change_request.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]

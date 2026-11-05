@@ -131,7 +131,7 @@ context:
         view_all_objectives: 'View all %count% objectives'
         manage_objectives: 'Manage objectives'
     message:
-        overdue_review_title: 'Context review overdue!'
+        overdue_review_title: Context review overdue
         overdue_review_text: 'The next review was scheduled for %date% (by %days% days overdue). Please update the ISMS context.'
         upcoming_review_title: 'Context review due soon'
         upcoming_review_text: 'The next review is scheduled for %date% (in %days% days).'

@@ -277,6 +277,14 @@ six fields implements it at all. Existing offenders are listed in
 because the previous catch-all silently buried ISO 22301 Cl. 8.2.2 RTO/RPO
 fields and BC-Exercise result-fields among unrelated data.
 
+**UI copy (Gate 71, `check_copy_slop.py`).** A toast is a participle, not a sentence:
+"Gespeichert.", "Export gestartet." — no "erfolgreich"/"successfully", no "!" anywhere in
+UI text (urgency comes from the toast colour and the words). Help texts only when they add a
+norm reference, an example, a consequence or a default; page subtitles say what the user
+decides on the page or are omitted. Empty states: "Keine X vorhanden." / "Keine Treffer.".
+Alva hints ≤ 140 characters, one action each. The `<title>` suffix lives only in
+`base.html.twig`. Icons only on primary, danger and icon-only buttons. The page-header badge carries record data (reference number, code, status), never the navigation level.
+
 **Inline JavaScript & CSP:** `script-src` has no `'unsafe-inline'` — every
 inline `<script>` needs `nonce="{{ csp_nonce() }}"`; no `on*=` handlers or
 `javascript:` URLs (use Stimulus `data-action`, generic helpers in
@@ -745,7 +753,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-settings-table` | Tabular form-grid for `/admin/settings/*` (label / control / status three-col layout). 8 row-kinds: `text/email/number/select/chips/toggle/textarea/widget`. `widget` passes through pre-rendered HTML (e.g. `form_widget()` output) so Symfony FormType controls keep CSRF/validation. Optional `headers: [{label, ...}]` switches to multi-column data-table mode with per-row `trailing` cell — used by Bulk-Import column-mapping wizard. | `_fa_settings_table.html.twig` |
 | `fa-progress` | Aurora progress-bar (replaces hand-rolled `.progress > .progress-bar`) — widely adopted | `_fa_progress.html.twig` |
 | `fa-action-bar` | Page-level action bar (sticky bottom, top of detail-views). Per-action props: `disabled` (renders `<span>` with `aria-disabled="true"` since `<a>` ignores native `disabled`), `attrs: {key: value}` (data-* / Stimulus wiring), `tag: 'a'\|'button'`. Top-level `controller` + `wrapperAttrs` wire Stimulus on the outer container. | `_fa_action_bar.html.twig` |
-| `fa-bulk-bar` (BEM, canonical) | Canonical Aurora v4 floating bulk-action bar. Use `{% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete', 'tag', 'assign', 'approve', 'status_change'], variant: 'neutral' } %}`. Props: `actions` array + `variant: 'neutral'\|'brand'` (default `'neutral'`). Use `variant: 'brand'` for hero lists only (risk/document policy workflow). `approve` → quick-approve `.fa-bulk-btn--success` button; `status_change` → dropdown (draft→in_review→approved→published→archived). BEM CSS: `.fa-bulk-bar`, `.fa-bulk-bar--brand`, `.fa-bulk-bar__count`, `.fa-bulk-bar__count-num`, `.fa-bulk-bar__count-label`, `.fa-bulk-bar__divider`, `.fa-bulk-bar__actions`, `.fa-bulk-bar__close`, `.fa-bulk-btn`, `.fa-bulk-btn--success`, `.fa-bulk-btn--danger`, `.fa-bulk-btn.is-loading`. BC-bridge macro `_fa_bulk_action_bar.html.twig` kept for legacy callers — emits new BEM markup. Old `.bulk-action-bar*` class set is a deprecated CSS shim. | `_components/_bulk_action_bar.html.twig` (include, not macro) |
+| `fa-bulk-bar` (BEM, canonical) | Canonical Aurora v4 floating bulk-action bar. Use `{% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete', 'tag', 'assign', 'approve', 'status_change'], variant: 'neutral' } %}`. Props: `actions` array + `variant: 'neutral'\|'brand'` (default `'neutral'`). Use `variant: 'brand'` for hero lists only (risk/document policy workflow). `approve` → quick-approve `.fa-bulk-btn--success` button; `status_change` → dropdown (draft→in_review→approved→published→archived). BEM CSS: `.fa-bulk-bar`, `.fa-bulk-bar--brand`, `.fa-bulk-bar__count`, `.fa-bulk-bar__count-num`, `.fa-bulk-bar__count-label`, `.fa-bulk-bar__divider`, `.fa-bulk-bar__actions`, `.fa-bulk-bar__close`, `.fa-bulk-btn`, `.fa-bulk-btn--success`, `.fa-bulk-btn--danger`, `.fa-bulk-btn.is-loading`. Old `.bulk-action-bar*` class set is a deprecated CSS shim. | `_components/_bulk_action_bar.html.twig` (include, not macro) |
 | `fa-toast` | Aurora toast/flash-message stack (replaces Bootstrap toast-container) — wired in `base.html.twig` | `_fa_toast.html.twig` |
 | `fa-audit-row` | ISMS-Audit-Trail row pattern (compact + full views) | `_fa_audit_row.html.twig` |
 | `fa-form-layout` | Large-form pattern with outline-rail + section-cards + progress-bar (replaces flat _auto_form for 15+ field FormTypes) | `_fa_form_layout.html.twig` |

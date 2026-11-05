@@ -18,7 +18,6 @@
     {{ _fa_page_header.render({
         title: 'privacy.data_breach.page.new_title'|trans({}, 'privacy'),
         subtitle: 'privacy.data_breach.page.new_subtitle'|trans({}, 'privacy'),
-        badge: { icon: 'status-warning', label: '' },
         actions: [
             { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_breach_index'), variant: 'secondary', icon: 'ui-close' }
         ]
@@ -27,7 +26,7 @@
     {# fa-modal--wizard wraps the entire Symfony form so POST submission works as-is.
        The Stimulus modal-wizard controller enforces per-step HTML5 validation before
        advancing. The final submit button on step 4 submits the whole form. #}
-    {{ form_start(form, { attr: { class: 'fa-aurora-surface' } }) }}
+    {{ form_start(form) }}
 
         {{ _fa_modal_wizard.render({
             id: 'gdpr-breach-wizard',

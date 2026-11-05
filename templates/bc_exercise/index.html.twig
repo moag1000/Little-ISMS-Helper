@@ -18,7 +18,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-clipboard-data', label: 'bc_exercises.page.title'|trans({}, 'bc_exercises') },
         title: 'bc_exercises.page.header'|trans({}, 'bc_exercises'),
         actions: [
             { label: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'), href: path('app_bc_exercise_new'), variant: 'primary', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } }
@@ -31,7 +30,7 @@
     {% endfor %}
 {% endif %}
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {% if statistics %}
     <div class="row mb-4">

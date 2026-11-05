@@ -116,7 +116,7 @@ nis2:
         notice:
             not_seeded: "%count% Anforderung(en) noch nicht in die Datenbank geladen. Ausfuehren:"
         empty:
-            title: "Keine Massnahmen gefunden"
+            title: Keine Maßnahmen vorhanden
             text: "Laden Sie zuerst die NIS2 Art. 21(2) Anforderungen mit dem Konsolenbefehl."
         col:
             clause: "Klausel"

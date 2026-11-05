@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-clipboard-check', label: 'audit_management.title'|trans({}, 'audit') },
         title: 'audit_management.title'|trans({}, 'audit'),
         subtitle: 'audit_management.subtitle'|trans({}, 'audit'),
         actions: [
@@ -32,7 +31,7 @@
     {% endfor %}
 {% endif %}
 
-<main class="fa-aurora-surface">
+<main>
 
     {# Calculate Stats #}
     {% set total = audits|length %}

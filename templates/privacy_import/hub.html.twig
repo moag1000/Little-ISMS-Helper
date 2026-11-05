@@ -6,12 +6,11 @@
 
 {% block body %}
 {{ _fa_page_header.render({
-    badge: { icon: 'ui-upload', label: 'privacy_import.hub.badge'|trans({}, 'data_import') },
     title: 'privacy_import.hub.title'|trans({}, 'data_import'),
     subtitle: 'privacy_import.hub.subtitle'|trans({}, 'data_import'),
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
     <div class="row g-3">
         {% for import in imports %}
             <div class="col-md-4">

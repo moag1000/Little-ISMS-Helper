@@ -128,29 +128,6 @@ class SessionControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testStatisticsRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/admin/sessions/statistics');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testStatisticsRequiresAdminRole(): void
-    {
-        $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/admin/sessions/statistics');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testStatisticsDisplaysForAdmin(): void
-    {
-        $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/en/admin/sessions/statistics');
-        $this->assertResponseIsSuccessful();
-    }
-
-    #[Test]
     public function testTerminateRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

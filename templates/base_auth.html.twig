@@ -20,7 +20,10 @@
     <meta name="csp-nonce" content="{{ csp_nonce() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="turbo-cache-control" content="no-cache">
-    <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
+    {# Page title is set once here: "<page> – <app title>"; pages only fill the `title` block with their own name. #}
+    {% set _page_title %}{% block title %}{% endblock %}{% endset %}
+    {% set _page_title = _page_title|trim %}
+    <title>{% if _page_title != '' %}{{ _page_title|raw }} – {% endif %}{{ 'app.title'|trans({}, 'messages') }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <meta name="theme-color" content="#0284c7" media="(prefers-color-scheme: light)">

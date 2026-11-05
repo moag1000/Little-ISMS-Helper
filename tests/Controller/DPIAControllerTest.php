@@ -347,23 +347,6 @@ class DPIAControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
-    // ========== SEARCH TESTS ==========
-
-    #[Test]
-    public function testSearchRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/en/dpia/search');
-        $this->assertResponseRedirects();
-    }
-
-    #[Test]
-    public function testSearchDisplaysResults(): void
-    {
-        $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/dpia/search?q=test');
-        $this->assertResponseIsSuccessful();
-    }
-
     // ========== WORKFLOW TESTS ==========
 
     #[Test]

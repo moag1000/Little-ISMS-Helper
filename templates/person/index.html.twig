@@ -2,7 +2,7 @@
 {% trans_default_domain 'people' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'person.title.list'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'person.title.list'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -18,7 +18,6 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-people', label: 'nav.people'|trans({}, 'nav') },
     title: 'person.title.list'|trans({}, 'messages'),
     subtitle: 'person.description.overview'|trans({}, 'messages'),
     actions: [
@@ -33,7 +32,7 @@
 {% endif %}
 
 
-<main class="fa-aurora-surface">
+<main>
 
 {# Statistics Cards #}
 <div class="kpi-grid">

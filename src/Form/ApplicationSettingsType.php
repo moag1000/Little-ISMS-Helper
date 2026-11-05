@@ -6,10 +6,8 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Application Settings Form Type
@@ -22,47 +20,8 @@ final class ApplicationSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // Locale Settings
-            ->add('default_locale', ChoiceType::class, [
-                'label' => 'admin.settings.application.default_locale',
-                'choices' => [
-                    'Deutsch (de)' => 'de',
-                    'English (en)' => 'en',
-                ],
-                'required' => true,
-                'help' => 'admin.settings.application.default_locale_help',
-            ])
-            ->add('supported_locales', ChoiceType::class, [
-                'label' => 'admin.settings.application.supported_locales',
-                'choices' => [
-                    'Deutsch (de)' => 'de',
-                    'English (en)' => 'en',
-                ],
-                'multiple' => true,
-                'expanded' => true,
-                'required' => true,
-                'help' => 'admin.settings.application.supported_locales_help',
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Count(min: 1),
-                ],
-            ])
 
             // Display Settings
-            ->add('items_per_page', IntegerType::class, [
-                'label' => 'admin.settings.application.items_per_page',
-                'required' => true,
-                'attr' => [
-                    'min' => 10,
-                    'max' => 100,
-                    'step' => 5,
-                ],
-                'help' => 'admin.settings.application.items_per_page_help',
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Range(min: 10, max: 100),
-                ],
-            ])
             ->add('timezone', ChoiceType::class, [
                 'label' => 'admin.settings.application.timezone',
                 'choices' => [

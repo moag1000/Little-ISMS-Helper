@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'scheduled_reports' %}
 
-{% block title %}{{ 'scheduled_report.title'|trans({}, 'scheduled_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'scheduled_report.title'|trans({}, 'scheduled_reports') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -16,14 +16,13 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-clock-history', label: 'nav.reports'|trans({}, 'nav') },
     title: 'scheduled_report.title'|trans({}, 'scheduled_reports'),
     actions: [
         { label: 'scheduled_report.action.new'|trans({}, 'scheduled_reports'), variant: 'primary', icon: 'plus', href: path('app_scheduled_report_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
     ]
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
 
     {# Statistics #}

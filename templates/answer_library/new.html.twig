@@ -2,7 +2,7 @@
 {% trans_default_domain 'answer_library' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'answer_library.page.new_title'|trans({}, 'answer_library') }} – {{ parent() }}{% endblock %}
+{% block title %}{{ 'answer_library.page.new_title'|trans({}, 'answer_library') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -14,11 +14,10 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge:  { icon: 'nav-shield-check', label: 'answer_library.badge'|trans({}, 'answer_library') },
     title:  'answer_library.page.new_title'|trans({}, 'answer_library'),
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4" style="max-width: 800px;">
     <div class="card">
         <div class="card-body">

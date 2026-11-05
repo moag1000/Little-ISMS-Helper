@@ -4,7 +4,7 @@
 {% trans_default_domain 'training' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'training.title'|trans({}, 'training') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'training.title'|trans({}, 'training') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -16,7 +16,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-mortarboard', label: 'nav.training'|trans({}, 'nav') },
     title: 'training.title'|trans({}, 'training'),
     actions: is_granted('ROLE_USER') ? [
         { label: 'training.new'|trans({}, 'training'), variant: 'primary', icon: 'plus', href: path('app_training_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
@@ -30,7 +29,7 @@
 {% endif %}
 
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
 
     {# View Filter #}

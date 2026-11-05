@@ -1,6 +1,6 @@
 compliance:
     auto_mapping:
-        success: 'Erfolgreich %count% neue Mappings zwischen %framework1% und %framework2% erstellt!'
+        success: '%count% neue Mappings zwischen %framework1% und %framework2% erstellt.'
         skipped_suffix: '(%count% bereits vorhanden, übersprungen)'
         error: 'Fehler beim Erstellen der Mappings: %reason%'
     heatmap:
@@ -32,7 +32,7 @@ compliance:
         high_gaps: 'Schwere Lücken mit hoher Priorität.'
         medium_gaps: 'Mittlere Lücken mit moderater Priorität.'
         low_gaps: 'Geringe Lücken, nachgelagert behandeln.'
-        reuse_matrix: 'Übersicht, in welchen Frameworks Daten wiederverwendet werden können.'
+        reuse_matrix: 'Zeigt, in welchen Frameworks Daten wiederverwendet werden können.'
         unique_requirements: 'Einzigartige Anforderungen je Framework'
         matrix: 'Matrix der Framework-Überschneidungen'
     section:
@@ -159,7 +159,7 @@ compliance:
     load_framework: 'Framework laden'
     confirm_load: 'Möchten Sie dieses Framework wirklich laden?'
     loading: 'Wird geladen...'
-    successfully_loaded: 'Framework erfolgreich geladen'
+    successfully_loaded: Framework geladen
     load_failed: 'Fehler beim Laden des Frameworks'
     error: Fehler
     # Generic flash-message keys (Controllers via LocalizedFlashTrait)
@@ -169,7 +169,7 @@ compliance:
             select_two_frameworks: 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.'
             framework_not_found: 'Ein oder beide Frameworks wurden nicht gefunden.'
     deleting: 'Wird gelöscht...'
-    successfully_deleted: 'Framework erfolgreich gelöscht'
+    successfully_deleted: Framework gelöscht
     delete_failed: 'Fehler beim Löschen des Frameworks'
     confirm_delete:
         title: 'ACHTUNG: Framework löschen'
@@ -178,9 +178,9 @@ compliance:
         delete_framework: 'Das Framework löschen'
         delete_requirements: 'Alle Anforderungen des Frameworks löschen'
         delete_mappings: 'Alle Mappings zu anderen Frameworks löschen'
-        cannot_undo: 'Diese Aktion kann nicht rückgängig gemacht werden!'
+        cannot_undo: Diese Aktion kann nicht rückgängig gemacht werden.
         confirm_question: 'Möchten Sie wirklich fortfahren?'
-        second_confirm: 'Sind Sie sicher? Framework wird unwiderruflich gelöscht!'
+        second_confirm: 'Sind Sie sicher? Framework wird unwiderruflich gelöscht.'
     mapping:
         filter:
             search: 'Suche'
@@ -253,7 +253,7 @@ compliance:
             created: 'Compliance-Mapping wurde erstellt.'
             updated: 'Compliance-Mapping wurde aktualisiert.'
             deleted: 'Compliance-Mapping wurde gelöscht.'
-            analysis_completed: 'Mapping-Analyse erfolgreich abgeschlossen.'
+            analysis_completed: Mapping-Analyse abgeschlossen.
         overview: 'Mapping-Übersicht'
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
@@ -266,7 +266,7 @@ compliance:
             title: 'Seed-Review-Queue'
             subtitle: 'Maschinell erstellte Mappings (Seeds, CSV-Import, Wizard, Migration) prüfen und freigeben.'
             queue_heading: 'Ungeprüfte Mappings (%count%)'
-            empty: 'Alle maschinell erstellten Mappings sind geprüft. Gute Arbeit!'
+            empty: Alle maschinell erstellten Mappings sind geprüft.
             manager_hint: 'Freigabe erfolgt durch eine Manager-Rolle (4-Augen-Prinzip).'
             filter:
                 all: 'Alle'
@@ -433,7 +433,7 @@ compliance:
                 advanced: 'Klassisches Formular'
             submit: 'Mapping anlegen'
             flash:
-                created: 'Mapping erfolgreich per Assistent angelegt.'
+                created: Mapping per Assistent angelegt.
             error:
                 source_required: 'Bitte Quell-Anforderung auswählen.'
                 target_required: 'Bitte Ziel-Anforderung auswählen.'
@@ -481,11 +481,11 @@ compliance:
     message:
         no_data_elements: 'Keine Datenelemente vorhanden'
         no_frameworks: 'Keine Frameworks vorhanden'
-        no_opportunities: 'Keine Wiederverwendungsmöglichkeiten gefunden'
+        no_opportunities: Keine Wiederverwendungsmöglichkeiten vorhanden.
         no_comparison_data: 'Keine Vergleichsdaten verfügbar'
         more_requirements: '+ %count% weitere Anforderungen'
         no_unique: 'Keine einzigartigen Anforderungen'
-        no_gaps: 'Keine Lücken gefunden'
+        no_gaps: Keine Lücken vorhanden.
         no_gaps_desc: 'Alle Anforderungen sind erfüllt'
     badge:
         reusable: Wiederverwendbar
@@ -570,7 +570,7 @@ compliance:
             assess: Bewerten
         title: Compliance-Frameworks
         heading: 'Compliance-Frameworks verwalten'
-        description: 'Verwalten Sie regulatorische Frameworks wie ISO 27001, NIS2, DORA und weitere Standards'
+        description: 'Frameworks wie ISO 27001, NIS2 und DORA laden, aktivieren und prüfen'
         list: Framework-Liste
         empty: 'Keine Compliance-Frameworks vorhanden. Erstellen Sie Ihr erstes Framework.'
         no_requirements: 'Keine Anforderungen für dieses Framework definiert'
@@ -752,7 +752,7 @@ compliance:
         strategic_title: 'Strategischer Nutzen'
         strategic_description: 'Nutzen Sie Mappings, um bei der Erfüllung eines Frameworks gleichzeitig Anforderungen anderer Frameworks zu erfüllen und so Zeit und Aufwand zu sparen'
     page_title: 'Compliance-Management'
-    page_subtitle: 'Verwalten Sie mehrere regulatorische Frameworks und deren Anforderungen zentral'
+    page_subtitle: Frameworks laden und Anforderungen je Framework bewerten
     button:
         cross_framework: Framework-Mappings
         transitive: 'Transitive Mappings'
@@ -842,7 +842,7 @@ compliance:
     mapping_status:
         creating: 'Erstelle Mappings...'
         creating_with_icon: '⏳ Erstelle Mappings...'
-        new_created: 'neue Mappings erstellt!'
+        new_created: neue Mappings erstellt
         button_text: '🔗 Mappings erstellen'
     mapping_error:
         creating: 'Fehler beim Erstellen der Mappings'
@@ -906,8 +906,8 @@ compliance:
     mapping_quality:
         title: 'Mapping Quality Dashboard'
         subtitle: 'Automatisierte Qualitätsanalyse für Compliance-Mappings'
-        no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
-        no_mappings: 'Keine Mappings gefunden'
+        no_mappings_found: Keine Compliance-Mappings in der Datenbank vorhanden.
+        no_mappings: Keine Mappings vorhanden.
         no_gap_data: 'Keine Gap-Daten verfügbar'
         quick_analysis: 'Schnellanalyse'
         full_analysis: 'Vollständige Analyse'
@@ -953,7 +953,7 @@ compliance:
             errors: 'Fehler'
             status: 'Status'
             ready: 'Bereit'
-            complete: 'Analyse abgeschlossen!'
+            complete: Analyse abgeschlossen.
             reload: 'Seite neu laden'
         confidence:
             high: 'Hoch (≥80)'
@@ -1014,7 +1014,7 @@ compliance:
             title: 'Mapping Review Queue'
             subtitle: 'Mappings mit niedrigem Confidence für manuelle Überprüfung'
             no_review_needed:
-                title: 'Keine Mappings benötigen Review!'
+                title: Keine Mappings benötigen Review
                 desc: 'Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.'
                 status: 'Status:'
                 low_confidence_checked: 'Alle Mappings mit niedrigem Confidence (<70) wurden geprüft'
@@ -1041,7 +1041,7 @@ compliance:
                 auto_identify: 'Gaps werden automatisch während der Analyse identifiziert'
                 return_here: 'Kehren Sie dann zu dieser Seite zurück'
             no_critical_gaps:
-                title: 'Keine kritischen Gaps!'
+                title: Keine kritischen Gaps
                 desc: 'Alle Gaps haben niedrige Priorität oder wurden bereits behoben.'
             actions:
                 title: 'Aktionen'
@@ -1106,7 +1106,7 @@ compliance:
         flash:
             file_required: 'Bitte wählen Sie eine Zertifikatsdatei zum Hochladen aus.'
             upload_failed: 'Das Zertifikat konnte nicht hochgeladen werden. Bitte prüfen Sie die Datei und versuchen Sie es erneut.'
-            created: 'Zertifikat erfolgreich hochgeladen.'
+            created: Zertifikat hochgeladen.
             applied: 'Abdeckung angewendet — %count% Anforderung(en) als verifiziert markiert.'
             nothing_applied: 'Keine Anforderung wurde abgedeckt — für dieses Zertifikat existiert keine passende Abdeckungsregel.'
             fallback_used: 'Es wurde die Framework-weite Fallback-Abdeckung verwendet, da keine Regel griff.'
@@ -1192,9 +1192,9 @@ compliance_requirement:
         detailed: 'Detaillierte Anforderung'
         sub_requirement: Unter-Anforderung
     message:
-        no_gaps: 'Keine Gaps gefunden'
+        no_gaps: Keine Gaps vorhanden.
         no_gaps_desc: 'Für das ausgewählte Framework wurden keine Umsetzungs‑Lücken identifiziert.'
-        no_opportunities: 'Keine Wiederverwendungs‑Möglichkeiten gefunden.'
+        no_opportunities: Keine Wiederverwendungs‑Möglichkeiten vorhanden.
         no_data_elements: 'Keine Datenelemente vorhanden.'
         no_frameworks: 'Keine Frameworks vorhanden.'
     badge:
@@ -1257,7 +1257,7 @@ mapping_review:
         approved: 'Approved'
         rejected: 'Rejected'
     message:
-        review_saved: 'Review erfolgreich gespeichert!'
+        review_saved: Review gespeichert.
         new_percentage: 'Neuer Prozentsatz'
         error: 'Fehler'
         unknown_error: 'Unbekannter Fehler'
@@ -1405,15 +1405,15 @@ coverage:
 # ─── mapping_admin JSON error/progress responses ───────────────────────────
 mapping_admin:
     error:
-        both_ids_required: 'Beide Framework IDs müssen angegeben werden!'
-        frameworks_must_differ: 'Die beiden Frameworks müssen unterschiedlich sein!'
-        frameworks_not_found: 'Ein oder beide Frameworks wurden nicht gefunden!'
-        iso_required: 'ISO 27001 Framework muss zuerst geladen werden!'
-        min_two_frameworks: 'Mindestens 2 Frameworks müssen geladen sein!'
+        both_ids_required: Beide Framework IDs müssen angegeben werden.
+        frameworks_must_differ: Die beiden Frameworks müssen unterschiedlich sein.
+        frameworks_not_found: Ein oder beide Frameworks wurden nicht gefunden.
+        iso_required: ISO 27001 Framework muss zuerst geladen werden.
+        min_two_frameworks: Mindestens 2 Frameworks müssen geladen sein.
     progress:
         batch_created: 'Batch %batch%: %count% Mappings erstellt'
         batch_progress: '(%percent%% – %processed%/%total% verarbeitet, %remaining% verbleibend)'
-        all_done: ' – Alle Mappings erstellt!'
+        all_done: ' – Alle Mappings erstellt'
 
 # ─── export CSV / Excel column headers and labels ───────────────────────────
 export:
@@ -1525,7 +1525,7 @@ bsi:
             erledigt: 'Erledigt'
             erledigt_hint: 'ISO-Kontrolle vorhanden und erfüllt (verifiziertes Mapping)'
             quick_win: 'Quick Wins'
-            quick_win_hint: 'ISO-Kontrolle existiert — einfach umsetzen'
+            quick_win_hint: ISO-Kontrolle existiert — direkt umsetzbar
             bsi_arbeit: 'BSI-Eigenarbeit'
             bsi_arbeit_hint: 'Partielles Mapping oder BSI-spezifische Anforderung'
             pruefen: 'Zu prüfen'

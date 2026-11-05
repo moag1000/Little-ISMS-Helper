@@ -26,6 +26,7 @@ document:
         create: Erstellen
         policy_wizard: 'Policy-Wizard öffnen'
         policy_pack_export: 'Policy-Pack exportieren'
+        policy_zip_export: 'Alle Richtlinien exportieren (ZIP)'
     alva_tipp:
         policy_wizard:
             title: 'Alva-Tipp: Pflicht-Richtlinien automatisch generieren'
@@ -273,16 +274,6 @@ document:
         history:
             title: 'Versionsverlauf'
             empty: 'Bisher keine früheren Versionen archiviert.'
-    # Letzte destruktive Aktion innerhalb des Undo-Fensters rückgängig machen
-    undo:
-        title: 'Letzte Aktion rückgängig machen'
-        body: 'Letzte Änderung an diesem Dokument zurücknehmen. Innerhalb des Undo-Fensters verfügbar.'
-        action: 'Rückgängig'
-        success: 'Aktion erfolgreich zurückgenommen.'
-        error:
-            invalid_token: 'Undo-Token ist ungültig oder abgelaufen.'
-            window_expired: 'Das Undo-Fenster ist abgelaufen. Manuelle Wiederherstellung erforderlich.'
-            service_unavailable: 'Undo-Service nicht verfügbar. Bitte später erneut versuchen.'
     # Dokumenten-Wiederverwendung — zeigt Verwender eines Dokuments im ISMS
     reuse:
         used_by: 'Verwendet von'

@@ -263,15 +263,6 @@ final class DataProtectionImpactAssessmentService
         return $this->dataProtectionImpactAssessmentRepository->findByProcessingActivity($processingActivity);
     }
 
-    /**
-     * Search DPIAs by title or reference number
-     */
-    public function search(string $query): array
-    {
-        $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->dataProtectionImpactAssessmentRepository->search($tenant, $query);
-    }
-
     // ============================================================================
     // Workflow Management
     // ============================================================================

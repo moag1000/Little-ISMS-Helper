@@ -13,12 +13,11 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-check', label: 'admin.nav.permissions'|trans({}, 'admin') },
         title: 'permission.title'|trans({}, 'messages'),
         subtitle: 'permission.subtitle'|trans({}, 'messages')
     }) }}
 
-    <main class="fa-aurora-surface">
+    <main>
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">

@@ -126,30 +126,6 @@ class EvidenceController extends AbstractController
     }
 
     /**
-     * Link an existing document to an entity (AJAX).
-     */
-    #[Route('/link', name: 'link', methods: ['POST'])]
-    #[IsCsrfTokenValid('evidence_link')]
-    public function link(Request $request): JsonResponse
-    {
-        $documentId = (int) $request->request->get('document_id');
-        $entityType = $request->request->get('entity_type');
-        $entityId = (int) $request->request->get('entity_id');
-
-        $document = $this->documentRepository->find($documentId);
-        if (!$document) {
-            return new JsonResponse(['error' => 'Document not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        try {
-            $this->evidenceService->linkToEntity($document, $entityType, $entityId);
-            return new JsonResponse(['success' => true, 'message' => 'Evidence linked']);
-        } catch (\InvalidArgumentException $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        }
-    }
-
-    /**
      * Unlink a document from an entity (AJAX).
      */
     #[Route('/unlink', name: 'unlink', methods: ['POST'])]

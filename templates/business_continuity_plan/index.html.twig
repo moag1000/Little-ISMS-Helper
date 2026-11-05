@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-check', label: 'bc_plans.page.title'|trans({}, 'bc_plans') },
         title: 'bc_plans.page.header'|trans({}, 'bc_plans'),
         subtitle: 'bc_plans.page.subtitle'|trans({}, 'bc_plans'),
         actions: [
@@ -31,7 +30,7 @@
     {% endfor %}
 {% endif %}
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {% if overdue_tests|length > 0 %}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}

@@ -4,7 +4,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'trust_center.admin.settings_title'|trans({}, 'trust_center') }} — {{ parent() }}{% endblock %}
+{% block title %}{{ 'trust_center.admin.settings_title'|trans({}, 'trust_center') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item active" aria-current="page">{{ 'trust_center.admin.settings_title'|trans({}, 'trust_center') }}</li>
@@ -12,7 +12,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-check', label: 'Trust Center' },
         title: 'trust_center.admin.settings_title'|trans({}, 'trust_center'),
         subtitle: 'trust_center.admin.settings_subtitle'|trans({}, 'trust_center'),
         actions: [

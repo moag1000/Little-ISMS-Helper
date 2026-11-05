@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
-{% block title %}{{ 'planning.admin.title'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'planning.admin.title'|trans({}, 'planning') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -15,7 +15,6 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-calendar-check', label: 'nav.planning'|trans({}, 'nav') },
     title: 'planning.admin.title'|trans({}, 'planning'),
     subtitle: 'planning.admin.subtitle'|trans({}, 'planning'),
     actions: [
@@ -33,7 +32,7 @@
     {% endfor %}
 {% endif %}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container">
 
     {# ── Teams ──────────────────────────────────────────────── #}

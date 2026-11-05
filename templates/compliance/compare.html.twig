@@ -4,11 +4,10 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_action_bar.html.twig' as _fa_action_bar %}
 
-{% block title %}{{ 'compliance.title.compare'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'compliance.title.compare'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 {{ _fa_page_header.render({
-    badge: { icon: 'compliance-shield', label: 'nav.compliance'|trans({}, 'nav') },
     title: 'compliance.title.compare'|trans({}, 'compliance'),
     subtitle: 'compliance.description.compare'|trans({}, 'compliance')
 }) }}

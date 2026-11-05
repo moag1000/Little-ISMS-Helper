@@ -15,7 +15,7 @@ notification:
             updated: 'Benachrichtigungskanal aktualisiert'
             verified: 'Benachrichtigungskanal verifiziert'
         delivery:
-            succeeded: 'Benachrichtigung erfolgreich zugestellt'
+            succeeded: Benachrichtigung zugestellt
             failed: 'Benachrichtigung fehlgeschlagen'
             retried: 'Benachrichtigungszustellung wiederholt'
     error:
@@ -162,7 +162,7 @@ notification:
     template:
         index:
             title: 'Tier-1 Vorlagen'
-            subtitle: 'Vorkonfigurierte Benachrichtigungsregeln für häufige Compliance-Szenarien. Einfach anwenden und anpassen.'
+            subtitle: Vorkonfigurierte Benachrichtigungsregeln für häufige Compliance-Szenarien. Anwenden und anpassen.
         category:
             incident: 'Vorfälle'
             compliance: 'Compliance'

@@ -5,7 +5,7 @@
 {% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
-{% block title %}{{ campaign.name|e }} – {{ 'access_review.title'|trans({}, 'access_review') }} – {{ parent() }}{% endblock %}
+{% block title %}{{ campaign.name|e }} – {{ 'access_review.title'|trans({}, 'access_review') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -16,7 +16,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge:   { icon: 'nav-shield', label: 'access_review.badge'|trans({}, 'access_review') },
     title:   campaign.name,
     subtitle: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') ~ ' · ' ~ 'access_review.field.due_date'|trans({}, 'access_review') ~ ': ' ~ (campaign.dueDate ? campaign.dueDate|date('Y-m-d') : '–'),
     actions: [
@@ -38,7 +37,7 @@
     ]|filter(a => a is not null)
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
 
 <div class="row g-4">

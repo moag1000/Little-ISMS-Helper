@@ -93,15 +93,15 @@ tia:
     body: 'Für diese Verarbeitungstätigkeit wurde noch kein Transfer Impact Assessment angelegt. Legen Sie jetzt eine TIA an, um die Drittlandübermittlung zu dokumentieren.'
 
   success:
-    created: 'TIA erfolgreich angelegt.'
-    updated: 'TIA erfolgreich aktualisiert.'
+    created: TIA angelegt.
+    updated: TIA aktualisiert.
     assessed: 'TIA als bewertet markiert.'
     deleted: 'TIA gelöscht.'
 
   warning:
     cannot_edit_assessed: 'Bewertete TIAs können nicht mehr bearbeitet werden.'
     already_assessed: 'Diese TIA wurde bereits abgeschlossen.'
-    high_risk_title: 'Kritisches Übertragungsrisiko – Handlungsbedarf!'
+    high_risk_title: Kritisches Übertragungsrisiko – Handlungsbedarf
     high_risk_body: 'Das Restrisiko wurde als HOCH eingestuft. Diese Übermittlung muss gem. DSGVO Art. 58 Abs. 2(f) unverzüglich ausgesetzt werden, bis ein angemessenes Schutzniveau nachgewiesen werden kann. Ein Risikoeintrag wurde automatisch erzeugt.'
 
   error:

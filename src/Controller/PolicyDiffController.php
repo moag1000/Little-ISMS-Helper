@@ -46,20 +46,6 @@ final class PolicyDiffController extends AbstractController
     }
 
     #[Route(
-        '/policy-wizard/diff/{currentDocId}/vs/{previousDocId}',
-        name: 'app_policy_wizard_diff_explicit',
-        requirements: ['currentDocId' => '\d+', 'previousDocId' => '\d+'],
-        methods: ['GET'],
-    )]
-    public function diffExplicit(int $currentDocId, int $previousDocId): Response
-    {
-        $current = $this->loadDocumentOr404($currentDocId);
-        $previous = $this->loadDocumentOr404($previousDocId);
-
-        return $this->renderDiff($current, $previous);
-    }
-
-    #[Route(
         '/policy-wizard/diff/{currentDocId}',
         name: 'app_policy_wizard_diff',
         requirements: ['currentDocId' => '\d+'],

@@ -145,7 +145,7 @@ tisax:
       confirm_body: 'This will create %new% new requirements and update %existing% existing requirements under framework "%framework%".'
       irreversible_note: 'Existing requirements will be overwritten in place. This action can be re-run to refresh data from a new workbook version.'
       submit_button: 'Commit Import'
-      success: 'VDA-ISA requirements imported successfully.'
+      success: VDA-ISA requirements imported.
       company_mismatch_title: 'Organisation differs'
       company_mismatch_body: 'The uploaded self-assessment is issued for "%workbook%", but your organisation in this system is "%org%". Please verify you are importing the correct workbook.'
       company_confirm_label: 'I confirm that the self-assessment from "%workbook%" belongs to our organisation and should be imported.'

@@ -15,7 +15,7 @@ notification:
             updated: 'Notification channel updated'
             verified: 'Notification channel verified'
         delivery:
-            succeeded: 'Notification delivered successfully'
+            succeeded: Notification delivered
             failed: 'Notification delivery failed'
             retried: 'Notification delivery retried'
     error:

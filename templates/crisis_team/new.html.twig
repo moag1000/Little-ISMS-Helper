@@ -15,7 +15,6 @@
 
     {{ _fa_page_header.render({
     title: ('crisis_team.new'|trans({}, 'crisis_team')),
-    badge: { icon: 'plus', label: '' },
     actions: [
         { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_crisis_team_index'), variant: 'ghost', icon: 'util-arrow-left' }
     ]
@@ -95,7 +94,6 @@
             'notes': 12
         },
         'help_texts': {
-            'teamName': 'crisis_team.help.team_name'|trans({}, 'crisis_team'),
             'teamType': 'crisis_team.help.team_type'|trans({}, 'crisis_team'),
             'teamLeader': 'crisis_team.help.team_leader'|trans({}, 'crisis_team'),
             'deputyLeader': 'crisis_team.help.deputy_leader'|trans({}, 'crisis_team'),
@@ -106,8 +104,7 @@
             'decisionAuthority': 'crisis_team.help.decision_authority'|trans({}, 'crisis_team'),
             'communicationProtocols': 'crisis_team.help.communication_protocols'|trans({}, 'crisis_team'),
             'trainingSchedule': 'crisis_team.help.training_schedule'|trans({}, 'crisis_team'),
-            'nextTrainingAt': 'crisis_team.help.next_training_at'|trans({}, 'crisis_team'),
-            'businessContinuityPlans': 'crisis_team.help.business_continuity_plans'|trans({}, 'crisis_team')
+            'nextTrainingAt': 'crisis_team.help.next_training_at'|trans({}, 'crisis_team')
         },
         'actions': {
             'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },

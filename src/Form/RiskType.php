@@ -120,7 +120,6 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'choice_label' => fn(Person $person): ?string => $person->getFullName(),
                 'placeholder' => 'risk.placeholder.person',
                 'required' => false,
-                'help' => 'risk.help.person',
                 'attr' => [
                     'class' => 'risk-subject-field',
                 ],

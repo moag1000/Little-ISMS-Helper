@@ -54,10 +54,10 @@ audit_log:
         next: 'Next »'
         page_counter: 'Page %current% of %total%'
     message:
-        no_entries: 'No log entries found.'
+        no_entries: No log entries available.
         no_entries_filtered: 'No audit log entries found for the selected filter.'
         no_data_available: 'No data available'
-        no_user_activities: 'No activities found for this user.'
+        no_user_activities: No activities for this user.
     action:
         back_to_health: 'Back to Health'
         view_details: 'View Details'
@@ -97,7 +97,7 @@ audit_log:
         section_title: 'Activity History'
     retention:
         title: 'Audit Log Retention Period'
-        subtitle: 'Central retention policy for all audit log entries.'
+        subtitle: Set how long audit log entries are kept.
         setting_title: 'Set Retention Period'
         field:
             days: 'Retention Period (days)'

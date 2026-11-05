@@ -2,13 +2,13 @@
  # FairyAurora v4.0 — fa-page-header macro
  #
  # Replaces ad-hoc <h1> + <small> + breadcrumb combos with a consistent
- # page-level header that includes an optional badge, display-font title,
+ # page-level header that includes an optional record badge, display-font title,
  # optional subtitle, and right-aligned action buttons.
  #
  # Usage:
  #   {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
  #   {{ _fa_page_header.render({
- #       badge:    { icon: 'nav-shield-lock', label: 'ISMS' },
+ #       badge:    { icon: 'nav-clipboard-check', label: dpia.referenceNumber },
  #       title:    'Dashboard',
  #       subtitle: 'Übersicht Ihrer Sicherheitskennzahlen',
  #       actions: [
@@ -17,6 +17,12 @@
  #       ]
  #   }) }}
  #
+ # `badge` prop: only for record data the title does not show (reference
+ # number, framework code, status, tenant). Never for the navigation level —
+ # the breadcrumb already shows it.
+ #
+ # action icons: rendered only for variant `primary`/`danger` (or an icon-only action
+ # without a label); ghost/secondary/outline actions are text-only.
  # action variants: primary | ghost | secondary | accent | danger
  # action attrs:    optional map of extra HTML attributes (e.g. data-* )
  #}
@@ -59,7 +65,7 @@
                     <a href="{{ action.href|default('#') }}"
                        class="fa-cyber-btn fa-cyber-btn--{{ variant }} fa-cyber-btn--sm"
                        {% for attr, val in extraAttrs %} {{ attr|e('html_attr') }}="{{ val }}"{% endfor %}>
-                        {% if action.icon is defined and action.icon %}
+                        {% if action.icon is defined and action.icon and (variant in ['primary', 'danger'] or not action.label|default('')) %}
                             <i class="fa-icon fa-icon--{{ action.icon }}" aria-hidden="true"></i>
                         {% endif %}
                         <span class="fa-cyber-btn__label">{{ action.label }}</span>

@@ -2,13 +2,12 @@
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'wizard.title'|trans({}, 'wizard') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'wizard.title'|trans({}, 'wizard') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-target', label: 'wizard.title'|trans({}, 'wizard') },
     title: 'wizard.title'|trans({}, 'wizard'),
     subtitle: 'wizard.subtitle'|trans({}, 'wizard'),
     actions: available_wizards|length > 1 ? [
@@ -22,7 +21,7 @@
     {% endfor %}
 {% endif %}
 
-<main class="fa-aurora-surface fa-aurora-surface--dots">
+<main>
 <div class="container-fluid py-4">
 
     {# Available Wizards #}

@@ -7,7 +7,6 @@
 {% block body %}
 <div class="container-fluid">
     {{ _fa_page_header.render({
-        badge: { icon: 'user', label: '' },
         title: 'user.profile.title'|trans({}, 'user'),
         actions: [
             { label: 'user.profile.action.edit'|trans({}, 'user'), href: path('app_profile_edit'), variant: 'primary', icon: 'ui-edit' },
