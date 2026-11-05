@@ -7,12 +7,14 @@ namespace App\Service\ComplianceWizard\CategoryProvider;
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Bsi\GsppReuseMap;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiBaselineCoverageCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiIsmsConceptPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiKritisFlagDocumentedCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiSchutzbedarfMethodPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTierConsistencyCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTopLevelLeitliniePresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Gspp\GsppPolicyCoverageCheck;
 use App\Service\TenantContext;
 
 /**
@@ -25,6 +27,7 @@ use App\Service\TenantContext;
  * - BSI IT-Grundschutz (Kern-Absicherung)
  * - BSI C5:2020 Cloud Compliance
  * - BSI C5:2026 Cloud Compliance Criteria Catalogue
+ * - BSI Grundschutz++ (BSI-Standard 300-1)
  */
 final class BsiFrameworkCategoryProvider
 {
@@ -32,7 +35,155 @@ final class BsiFrameworkCategoryProvider
         private readonly TenantContext $tenantContext,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ?\App\Repository\TenantPolicySettingRepository $tenantPolicySettingRepository = null,
+        private readonly ?GsppReuseMap $gsppReuseMap = null,
     ) {
+    }
+
+    /**
+     * BSI Grundschutz++ (BSI-Standard 300-1) categories — one per practice group of the
+     * Anwenderkatalog. Methodik practices (GC, STM, RISK, UMS, PERF, VRB) are scored from
+     * the ISMS records that answer them; Kernel practices from the SoA status of the ISO
+     * Annex A controls the BSI maps to them ({@see GsppReuseMap::isoControlsFor()}), so a
+     * tenant that already runs ISO 27001 sees its GS++ position without re-entering data.
+     * Requirement-level fulfilment is shown separately as catalogue coverage (BSI-GSPP).
+     */
+    public function getBsiGsppCategories(): array
+    {
+        $soa = fn (array $practices): array => [
+            'name' => 'wizard.check.bsi_gspp_soa',
+            'type' => 'control_coverage',
+            'control_ids' => $this->gsppReuseMap?->isoControlsFor($practices) ?? [],
+            'route' => 'app_soa_index',
+        ];
+        $category = static fn (string $key, string $icon, float $weight, string $article, array $checks): array => [
+            'name' => 'wizard.bsi_gspp.' . $key,
+            'description' => 'wizard.bsi_gspp.' . $key . '_desc',
+            'icon' => $icon,
+            'weight' => $weight,
+            'article' => $article,
+            'checks' => $checks,
+        ];
+
+        return [
+            'governance' => $category('governance', 'shield-check', 2, 'GC', [
+                'bsi_gspp_context' => [
+                    'name' => 'wizard.check.bsi_gspp_context',
+                    'type' => 'entity_presence',
+                    'entity' => 'isms_context',
+                    'priority' => 'high',
+                    'route' => 'app_context_edit',
+                ],
+                'bsi_gspp_governance_soa' => $soa(['GC']),
+            ]),
+            'structure' => $category('structure', 'nav-boxes', 2, 'STM', [
+                'bsi_gspp_structure_assets' => [
+                    'name' => 'wizard.check.bsi_gspp_structure_assets',
+                    'type' => 'asset_coverage',
+                    'module' => 'assets',
+                    'route' => 'app_asset_index',
+                ],
+            ]),
+            'risk' => $category('risk', 'ui-exclamation-triangle', 2, 'RISK, GC.12', [
+                'bsi_gspp_risk_coverage' => [
+                    'name' => 'wizard.check.bsi_gspp_risk_coverage',
+                    'type' => 'risk_coverage',
+                    'module' => 'risks',
+                    'route' => 'app_risk_index',
+                ],
+                'bsi_gspp_risk_treatment' => [
+                    'name' => 'wizard.check.bsi_gspp_risk_treatment',
+                    'type' => 'treatment_plan',
+                    'module' => 'risks',
+                    'route' => 'app_risk_index',
+                ],
+            ]),
+            'implementation' => $category('implementation', 'nav-gear', 2, 'UMS', [
+                'bsi_gspp_implementation' => [
+                    'name' => 'wizard.check.bsi_gspp_implementation',
+                    'type' => 'control_coverage',
+                    'route' => 'app_soa_index',
+                ],
+            ]),
+            'performance' => $category('performance', 'ui-search', 1.5, 'PERF', [
+                'bsi_gspp_audits' => [
+                    'name' => 'wizard.check.bsi_gspp_audits',
+                    'type' => 'audit_status',
+                    'module' => 'audits',
+                    'route' => 'app_audit_index',
+                ],
+                'bsi_gspp_management_review' => [
+                    'name' => 'wizard.check.bsi_gspp_management_review',
+                    'type' => 'entity_presence',
+                    'entity' => 'management_review',
+                    'priority' => 'high',
+                    'route' => 'app_management_review_index',
+                ],
+            ]),
+            'improvement' => $category('improvement', 'ui-stars', 1, 'VRB', [
+                'bsi_gspp_improvement' => [
+                    'name' => 'wizard.check.bsi_gspp_improvement',
+                    'type' => 'manual',
+                    'priority' => 'medium',
+                    'description' => 'wizard.check.bsi_gspp_improvement_desc',
+                ],
+            ]),
+            'personnel' => $category('personnel', 'nav-people', 1.5, 'PERS, SENS', [
+                'bsi_gspp_training' => [
+                    'name' => 'wizard.check.bsi_gspp_training',
+                    'type' => 'training_coverage',
+                    'module' => 'training',
+                    'route' => 'app_training_index',
+                ],
+                'bsi_gspp_personnel_soa' => $soa(['PERS', 'SENS']),
+            ]),
+            'procurement' => $category('procurement', 'nav-truck', 1.5, 'BES, DLS', [
+                'bsi_gspp_suppliers' => [
+                    'name' => 'wizard.check.bsi_gspp_suppliers',
+                    'type' => 'supplier_assessment',
+                    'module' => 'suppliers',
+                    'route' => 'app_supplier_index',
+                ],
+                'bsi_gspp_procurement_soa' => $soa(['BES', 'DLS']),
+            ]),
+            'detection' => $category('detection', 'ui-search', 1.5, 'DET, REA', [
+                'bsi_gspp_incidents' => [
+                    'name' => 'wizard.check.bsi_gspp_incidents',
+                    'type' => 'incident_process',
+                    'module' => 'incidents',
+                    'route' => 'app_incident_index',
+                ],
+                'bsi_gspp_detection_soa' => $soa(['DET', 'REA']),
+            ]),
+            'continuity' => $category('continuity', 'recovery', 1.5, 'NOT', [
+                'bsi_gspp_bcm' => [
+                    'name' => 'wizard.check.bsi_gspp_bcm',
+                    'type' => 'bcm_coverage',
+                    'module' => 'bcm',
+                    'route' => 'app_bc_plan_index',
+                ],
+                'bsi_gspp_continuity_soa' => $soa(['NOT']),
+            ]),
+            'assets_access' => $category('assets_access', 'ui-key', 2, 'ASST, BER', [
+                'bsi_gspp_assets_access_soa' => $soa(['ASST', 'BER']),
+            ]),
+            'technology' => $category('technology', 'asset-network', 2, 'ARCH, KONF, DEV, TEST', [
+                'bsi_gspp_technology_soa' => $soa(['ARCH', 'KONF', 'DEV', 'TEST']),
+            ]),
+            'buildings' => $category('buildings', 'nav-building', 1, 'GEB', [
+                'bsi_gspp_buildings_soa' => $soa(['GEB']),
+            ]),
+            'gspp_policies' => $category('gspp_policies', 'nav-file-earmark-text', 2, '300-1', [
+                GsppPolicyCoverageCheck::CHECK_ID => [
+                    'name' => sprintf('compliance_check.%s.title', GsppPolicyCoverageCheck::CHECK_ID),
+                    'description' => sprintf('compliance_check.%s.description', GsppPolicyCoverageCheck::CHECK_ID),
+                    'translation_domain' => 'policy_wizard',
+                    'type' => 'policy_wizard',
+                    'check_id' => GsppPolicyCoverageCheck::CHECK_ID,
+                    'priority' => 'high',
+                    'route' => 'app_policy_wizard_index',
+                ],
+            ]),
+        ];
     }
 
     /**

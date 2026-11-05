@@ -360,6 +360,33 @@ Vererbungs-Queue, welche GS++-Anforderungen dadurch schon belegt sind; Kompendiu
 gegen Grundschutz++ statt gegen das Kompendium (Umschalter oben auf der Seite, sobald
 beide Kataloge geladen sind).
 
+**Compliance-Wizard** (`/compliance-wizard/bsi_gspp`). 14 Prüfbereiche entlang der Praktiken
+des Anwenderkatalogs. Die Methodik-Praktiken (GC, STM, RISK, UMS, PERF, VRB) werden aus den
+ISMS-Daten bewertet: Kontext, Assets, Risiken, Behandlungspläne, Audits und Managementbewertung.
+Die Kernel-Praktiken (ASST, BER, ARCH, KONF, DEV, TEST, PERS, SENS, BES, DLS, DET, REA, NOT, GEB)
+zählen den SoA-Stand der ISO-Controls, die das amtliche BSI-Mapping der jeweiligen Praktik
+zuordnet. Wer ISO 27001 betreibt, sieht seinen GS++-Stand also ohne neue Eingaben. Den
+Erfüllungsgrad je Anforderung zeigt der Wizard getrennt davon als Katalogabdeckung von `BSI-GSPP`.
+
+**Policy-Wizard** (Standard „BSI Grundschutz++“). Jede der 25 ISO-27001-Richtlinien erhält
+einen Abschnitt „Ergänzung Grundschutz++“ mit den Anforderungen, die das BSI ihren
+Annex-A-Controls zuordnet. Die Tabelle nennt ID, Titel und Stufe. Die Leitlinie erhält
+zusätzlich die Anforderungen zu den ISO-Klauseln 4.3, 5.1–5.3 und 6.2 sowie den Verweis auf
+die Methodik nach 300-1. Der Compliance-Wizard-Check `gspp_policy_coverage` prüft, ob alle
+diese Richtlinien freigegeben oder veröffentlicht sind und mit Grundschutz++ erzeugt wurden
+(Tag `gspp-extension:applied`).
+
+Datengrundlage beider Wizards ist `reuse_map.json` im Katalogordner, die Abschnittstexte
+stehen in `translations/policy_gspp.{de,en}.yaml`. Beide erzeugt
+`python3 scripts/library/build_gspp_policy_sections.py` aus Katalog und Mappings.
+`GsppSectionCatalogueTest` schlägt fehl, sobald sie vom BSI-Mapping abweichen. Nach einem
+Katalog- oder Mapping-Update das Skript erneut laufen lassen.
+
+Die Ergänzungsabschnitte aller anderen Standards (IT-Grundschutz, C5, NIS2, TISAX, SOC 2,
+ISO 27701, BCM) laufen seit dieser Änderung über denselben Weg
+(`SectionExtensionRegistry::appendBodyExtensions`). Vorher flossen sie nur in die
+Abdeckungsberechnung ein, im erzeugten Dokument fehlten sie.
+
 ---
 
 ## 15. Referenzen
@@ -367,7 +394,7 @@ beide Kataloge geladen sind).
 | Norm | Version | Implementierung |
 |---|---|---|
 | BSI IT-Grundschutz-Kompendium | Edition 2023 | `LoadBsiItGrundschutzCatalogueCommand` |
-| BSI-Standard 300-1 (Grundschutz++) | Anwenderkatalog 2026-10 | `LoadBsiGrundschutzPlusPlusCommand` (§ 14) |
+| BSI-Standard 300-1 (Grundschutz++) | Anwenderkatalog 2026-10 | `LoadBsiGrundschutzPlusPlusCommand`, Compliance-Wizard `bsi_gspp`, `GsppSectionCatalogue` (§ 14) |
 | BSI-Standard 200-1 | — | ISMS-Konzept (`BsiIsmsConceptPresentCheck`) |
 | BSI-Standard 200-2 | Kap. 3.6 | `AssetDependencyService` (Schutzbedarfsvererbung) |
 | BSI-Standard 200-3 | — | Risikoanalyse (Schutzbedarfsfelder) |

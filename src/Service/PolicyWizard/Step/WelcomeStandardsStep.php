@@ -39,6 +39,8 @@ final class WelcomeStandardsStep extends AbstractStep
         'tisax',
         'soc2',
         'c5',
+        // BSI-Standard 300-1 (Grundschutz++): extends the ISO topic policies via GsppSectionCatalogue.
+        'gspp',
     ];
 
     public const ALLOWED_MODES = [

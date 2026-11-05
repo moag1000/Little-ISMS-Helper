@@ -43,6 +43,7 @@ class WizardSession
     public const WIZARD_BSI_C5_2026 = 'bsi_c5_2026';
     public const WIZARD_BSI_GRUNDSCHUTZ_STANDARD = 'bsi_grundschutz_standard';
     public const WIZARD_BSI_GRUNDSCHUTZ_KERN = 'bsi_grundschutz_kern';
+    public const WIZARD_BSI_GSPP = 'bsi_gspp';
     public const WIZARD_ISO22301 = 'iso22301';
     public const WIZARD_ISO27017 = 'iso27017';
     public const WIZARD_ISO27018 = 'iso27018';
@@ -71,6 +72,7 @@ class WizardSession
         self::WIZARD_BSI_C5_2026,
         self::WIZARD_BSI_GRUNDSCHUTZ_STANDARD,
         self::WIZARD_BSI_GRUNDSCHUTZ_KERN,
+        self::WIZARD_BSI_GSPP,
         self::WIZARD_ISO22301,
         self::WIZARD_ISO27017,
         self::WIZARD_ISO27018,
