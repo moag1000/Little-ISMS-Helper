@@ -117,6 +117,13 @@ class ThreatIntelligenceController extends AbstractController
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant !== null) {
             $threat->setTenant($tenant);
+            // Tenant default (compliance settings); the form offers no AMBER+STRICT / CLEAR, map to the closest choice.
+            $threat->setTlpClassification(match ($tenant->getTlpDefault()) {
+                null, '' => null,
+                'clear' => 'white',
+                'amber+strict' => 'amber',
+                default => $tenant->getTlpDefault(),
+            });
         }
 
         $form = $this->createForm(ThreatIntelligenceType::class, $threat);

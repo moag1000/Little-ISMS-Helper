@@ -9,6 +9,7 @@ use App\Entity\TenantPolicySetting;
 use App\Repository\TenantPolicySettingRepository;
 use App\Service\AuditLogger;
 use App\Service\TenantSettingResolver\OverrideMode;
+use App\Service\TenantSettingResolver\TenantPolicySettingProvider;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -31,22 +32,6 @@ use Psr\Log\NullLogger;
  */
 final class KonzernPushDownService
 {
-    /**
-     * Override-mode catalogue for known Policy-Wizard setting keys.
-     * Mirrors `HierarchyOverrideValidator::SETTING_MAP` plus the
-     * additional Konzern-default keys mentioned in §7.3.
-     *
-     * @var array<string, OverrideMode>
-     */
-    private const KEY_OVERRIDE_MODE = [
-        'risk.appetite_tier' => OverrideMode::CeilingOnly,
-        'policy.review_interval_months' => OverrideMode::CeilingOnly,
-        'backup.rpo_hours' => OverrideMode::CeilingOnly,
-        'crypto.minimum_key_length' => OverrideMode::FloorOnly,
-        'gdpr.scope_flag' => OverrideMode::ForbiddenToRelax,
-        'approval.top_management_chain' => OverrideMode::ForbiddenToChange,
-    ];
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantPolicySettingRepository $settingRepository,
@@ -67,7 +52,7 @@ final class KonzernPushDownService
      */
     public function propagate(Tenant $konzern, string $settingKey, mixed $newValue): array
     {
-        $mode = self::KEY_OVERRIDE_MODE[$settingKey] ?? OverrideMode::Free;
+        $mode = TenantPolicySettingProvider::overrideModeFor($settingKey);
         if ($mode === OverrideMode::Free) {
             // Free settings cannot drift — nothing to propagate.
             return ['affected_subsidiaries' => [], 'alva_hints_emitted' => 0];

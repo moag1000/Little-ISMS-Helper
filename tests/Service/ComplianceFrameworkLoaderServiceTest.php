@@ -50,8 +50,8 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $frameworks = $this->service->getAvailableFrameworks();
 
         $this->assertIsArray($frameworks);
-        // 29 base + 3 DACH frameworks (NISG-AT, REVDSG-CH, IKT-MINSTD-CH) + 1 EUCS.
-        $this->assertCount(33, $frameworks);
+        // 29 base + BSI Grundschutz++ + 3 DACH frameworks (NISG-AT, REVDSG-CH, IKT-MINSTD-CH) + 1 EUCS.
+        $this->assertCount(34, $frameworks);
 
         // Verify TISAX framework structure
         $this->assertEquals('TISAX', $frameworks[0]['code']);
@@ -84,7 +84,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
     {
         $stats = $this->service->getFrameworkStatistics();
 
-        $this->assertEquals(33, $stats['total_available']);
+        $this->assertEquals(34, $stats['total_available']);
         $this->assertArrayHasKey('total_loaded', $stats);
         $this->assertArrayHasKey('total_not_loaded', $stats);
         $this->assertArrayHasKey('compliance_percentage', $stats);
@@ -114,7 +114,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $codes = array_column($frameworks, 'code');
 
         $expectedCodes = [
-            'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'GDPR',
+            'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'BSI-GSPP', 'GDPR',
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
             'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP',
             'SOC2', 'NIST-CSF-2.0', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
@@ -141,7 +141,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         // `applicability: voluntary` (freiwillig).
         $universal = ['GDPR'];
         $conditional = [
-            'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'KRITIS', 'KRITIS-HEALTH',
+            'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'BSI-GSPP', 'KRITIS', 'KRITIS-HEALTH',
             'DIGAV', 'TKG-2024', 'GXP', 'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG',
             'MRIS-v1.5',
             // Newly-wired catalogues (Welle 1a) — all conditional + mandatory=false.

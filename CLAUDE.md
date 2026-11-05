@@ -569,7 +569,7 @@ ueber drei definierte Kanaele — wenn der User "Release machen" / "publish" /
 
 | Form | Trigger | Docker-Tags | composer.json bumped? |
 |---|---|---|---|
-| **Stable** | release-please-PR wird **Mo 09:00 UTC automatisch gemerged** (`release-please-auto-merge.yml`) — Skip via Label `release-blocked`/`do-not-merge`, Force via workflow_dispatch | `:vX.Y.Z`, `:X.Y`, `:latest` | ja, automatisch via release-please |
+| **Stable** | release-please-PR wird **Mo 09:00 UTC automatisch gemerged** (`release-please-auto-merge.yml`, startet CI per workflow_dispatch auf dem Release-Branch und merged nur bei grünem Lauf) — Skip via Label `release-blocked`/`do-not-merge`, Force via workflow_dispatch | `:vX.Y.Z`, `:X.Y`, `:latest` | ja, automatisch via release-please |
 | **Dev** | GitHub Actions → *"Dev Release (manual)"* → bump-Input (patch/minor/major) | `:vX.Y.Z-dev.N`, `:dev` (rolling) | nein |
 | **RC** | manuell `git tag vX.Y.Z-rc.1 && git push --tags` | `:vX.Y.Z-rc.N`, `:rc` | nein |
 
@@ -607,7 +607,11 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 
 ## Security Checklist
 
-- [ ] Entity has `tenant_id` for tenant isolation
+- [ ] Entity has `tenant_id` for tenant isolation, and every new record gets
+      `setTenant()` — the TenantFilter hides tenant-less rows from their own
+      organisation. Rows meant for all organisations need
+      `SharedTenantRowsInterface` plus a voter that keeps them read-only for
+      tenant admins (Gate 72, `check_tenant_null_rows.py`).
 - [ ] CSRF token validated for every state-changing action (forms and
       fetch()/JSON endpoints): `#[IsCsrfTokenValid('id')]`, for fetch() with
       `tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER`

@@ -62,13 +62,8 @@ class BulkImportOrchestrator
 
     /**
      * Persist the uploaded file to disk, compute SHA-256, and create a
-     * BulkImportBatch entity with status=uploaded.
-     *
-     * The source-file evidence document linkage (Document entity with
-     * documentType='import_evidence') is intentionally deferred:
-     * @todo Create Document entity and set $batch->setSourceDocument()
-     * once the Document CRUD service is wired to the import pipeline.
-     * Blocked by: BulkImport ↔ Document linkage service.
+     * BulkImportBatch entity with status=uploaded, plus an import-evidence
+     * Document linked as the batch's source document.
      *
      * @param string $mode One of BulkImportBatch::MODE_* constants
      */

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Doctrine\SharedTenantRowsInterface;
 use App\Repository\TagRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_tag_type', columns: ['type'])]
 #[ORM\Index(name: 'idx_tag_framework_code', columns: ['framework_code'])]
 #[ORM\UniqueConstraint(name: 'uniq_tag_tenant_name', columns: ['tenant_id', 'name'])]
-class Tag
+class Tag implements SharedTenantRowsInterface
 {
     public const TYPE_FRAMEWORK = 'framework';
     public const TYPE_CLASSIFICATION = 'classification';

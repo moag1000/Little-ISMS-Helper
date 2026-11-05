@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard;
 
 use App\Entity\WizardRun;
+use App\Entity\Tenant;
 use App\Service\TenantSettingResolver\OverrideMode;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
 
@@ -94,6 +95,14 @@ class HierarchyOverrideValidator
             return [];
         }
 
+        // The limit comes from the parent chain, never from the tenant's own
+        // earlier value: resolve for the immediate parent (getAllAncestors()
+        // lists it first). A tenant without a parent has nothing to conflict with.
+        $parentTenant = $tenant->getAllAncestors()[0] ?? null;
+        if (!$parentTenant instanceof Tenant) {
+            return [];
+        }
+
         $inputs = $run->getInputs() ?? [];
         $conflicts = [];
 
@@ -110,7 +119,7 @@ class HierarchyOverrideValidator
                 continue;
             }
 
-            $resolution = $this->resolver->resolveFor($tenant, $rule['setting_key']);
+            $resolution = $this->resolver->resolveFor($parentTenant, $rule['setting_key']);
             $parentValue = $resolution->value;
             $mode = $resolution->effectiveMode;
 

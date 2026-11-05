@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Repository\DocumentRepository;
 use App\Repository\IncidentSlaConfigRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DataBreachNotification72hCheck;
+use App\Service\IncidentSlaConfigResolver;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -29,7 +30,7 @@ final class DataBreachNotification72hCheckTest extends TestCase
         $this->slaRepository = $this->createMock(IncidentSlaConfigRepository::class);
         $this->check = new DataBreachNotification72hCheck(
             $this->documentRepository,
-            $this->slaRepository,
+            new IncidentSlaConfigResolver($this->slaRepository),
         );
     }
 
@@ -77,7 +78,7 @@ final class DataBreachNotification72hCheckTest extends TestCase
     }
 
     #[Test]
-    public function testGapActionableWhenProcedureMissingAndSlaMissing(): void
+    public function testGapActionableWhenProcedureMissingAndMissingSlaUsesDefault(): void
     {
         $tenant = $this->createMock(Tenant::class);
         $this->documentRepository->method('createQueryBuilder')
@@ -95,10 +96,12 @@ final class DataBreachNotification72hCheckTest extends TestCase
             'compliance_check.data_breach_notification_72h.fail_message',
             $result->gap['title'],
         );
-        self::assertCount(2, $result->details['violations']);
-        $reasons = array_column($result->details['violations'], 'reason');
-        self::assertContains('missing_procedure_document', $reasons);
-        self::assertContains('missing_breach_sla_row', $reasons);
+        // No breach row: the default SLA (IncidentSlaConfig::DEFAULTS) applies
+        // and meets 72 h, so only the missing procedure is reported.
+        self::assertSame(
+            ['missing_procedure_document'],
+            array_column($result->details['violations'], 'reason'),
+        );
 
         $nullResult = $this->check->run(null);
         self::assertFalse($nullResult->passed);

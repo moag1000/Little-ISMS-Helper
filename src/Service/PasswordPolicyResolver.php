@@ -27,9 +27,10 @@ use Psr\Log\NullLogger;
  * Cache-Invalidation: invalidate(null) löscht den Gesamt-Cache (z.B. nach
  * globaler Setting-Änderung). invalidate($tenant) löscht nur den Tenant-Eintrag.
  *
- * @todo Sobald TenantPolicySetting verfügbar ist, genügt es,
- * einen neuen SettingProviderInterface zu injizieren — die Logik selbst lebt im
- * generischen Resolver. Blocked by: TenantPolicySetting entity.
+ * Im Container bekommt die Klasse den TenantSettingResolver mit
+ * {@see \App\Service\TenantSettingResolver\TenantPolicySettingProvider}
+ * (Mandantenwerte aus tenant_policy_setting). Ohne Resolver (Unit-Tests)
+ * gilt nur der globale Wert aus SystemSettings.
  */
 final class PasswordPolicyResolver
 {

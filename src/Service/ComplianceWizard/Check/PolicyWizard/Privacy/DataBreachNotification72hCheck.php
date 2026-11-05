@@ -8,9 +8,9 @@ use App\Entity\IncidentSlaConfig;
 use App\Entity\Tenant;
 use App\Enum\DocumentStatus;
 use App\Repository\DocumentRepository;
-use App\Repository\IncidentSlaConfigRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
+use App\Service\IncidentSlaConfigResolver;
 
 /**
  * GDPR Art. 33 — confirms the Data-Breach Notification Procedure
@@ -21,7 +21,8 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
  *  1. A published-or-approved {@see \App\Entity\Document} generated from
  *     the {@see \App\Command\SeedPrivacyPolicyTemplatesCommand} breach
  *     template (`standard='gdpr'`, `topic='data_breach_notification_procedure'`).
- *  2. The tenant's {@see IncidentSlaConfig} row for severity `breach`
+ *  2. The tenant's effective {@see IncidentSlaConfig} SLA for severity
+ *     `breach` (own row, else default, tightened by the holding chain)
  *     has `responseHours <= 72` (Art. 33(1) without undue delay, and
  *     where feasible, not later than 72 hours).
  *
@@ -40,7 +41,7 @@ final class DataBreachNotification72hCheck implements PolicyWizardCheckInterface
 
     public function __construct(
         private readonly DocumentRepository $documentRepository,
-        private readonly IncidentSlaConfigRepository $slaRepository,
+        private readonly IncidentSlaConfigResolver $slaResolver,
     ) {
     }
 
@@ -80,10 +81,9 @@ final class DataBreachNotification72hCheck implements PolicyWizardCheckInterface
             ->getQuery()
             ->getSingleScalarResult();
 
-        $sla = $this->slaRepository->findByTenantAndSeverity(
-            $tenant,
-            IncidentSlaConfig::SEVERITY_BREACH,
-        );
+        $breachHours = $this->slaResolver
+            ->resolveFor($tenant, IncidentSlaConfig::SEVERITY_BREACH)
+            ->responseHours;
 
         $violations = [];
         if ($procedureCount === 0) {
@@ -92,17 +92,11 @@ final class DataBreachNotification72hCheck implements PolicyWizardCheckInterface
                 'topic' => self::TOPIC,
             ];
         }
-        if ($sla === null) {
-            $violations[] = [
-                'reason' => 'missing_breach_sla_row',
-                'severity' => IncidentSlaConfig::SEVERITY_BREACH,
-                'required_max_hours' => self::GDPR_BREACH_DEADLINE_HOURS,
-            ];
-        } elseif ($sla->getResponseHours() > self::GDPR_BREACH_DEADLINE_HOURS) {
+        if ($breachHours > self::GDPR_BREACH_DEADLINE_HOURS) {
             $violations[] = [
                 'reason' => 'sla_exceeds_gdpr_72h_ceiling',
                 'severity' => IncidentSlaConfig::SEVERITY_BREACH,
-                'configured_hours' => $sla->getResponseHours(),
+                'configured_hours' => $breachHours,
                 'required_max_hours' => self::GDPR_BREACH_DEADLINE_HOURS,
             ];
         }
@@ -114,7 +108,7 @@ final class DataBreachNotification72hCheck implements PolicyWizardCheckInterface
                 passed: true,
                 details: [
                     'procedure_documents' => $procedureCount,
-                    'breach_sla_hours' => $sla?->getResponseHours(),
+                    'breach_sla_hours' => $breachHours,
                 ],
             );
         }
@@ -125,7 +119,7 @@ final class DataBreachNotification72hCheck implements PolicyWizardCheckInterface
             passed: false,
             details: [
                 'procedure_documents' => $procedureCount,
-                'breach_sla_hours' => $sla?->getResponseHours(),
+                'breach_sla_hours' => $breachHours,
                 'violations' => $violations,
             ],
             gap: [

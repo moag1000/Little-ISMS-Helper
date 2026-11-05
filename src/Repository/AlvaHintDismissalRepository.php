@@ -41,7 +41,7 @@ class AlvaHintDismissalRepository extends ServiceEntityRepository
             ->setParameter('now', $now);
 
         if ($tenant instanceof Tenant) {
-            $qb->andWhere('d.tenant = :tenant OR d.tenant IS NULL')
+            $qb->andWhere('d.tenant = :tenant')
                 ->setParameter('tenant', $tenant);
         } else {
             $qb->andWhere('d.tenant IS NULL');

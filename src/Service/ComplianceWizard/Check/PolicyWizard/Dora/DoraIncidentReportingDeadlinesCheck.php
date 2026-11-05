@@ -6,7 +6,7 @@ namespace App\Service\ComplianceWizard\Check\PolicyWizard\Dora;
 
 use App\Entity\IncidentSlaConfig;
 use App\Entity\Tenant;
-use App\Repository\IncidentSlaConfigRepository;
+use App\Service\IncidentSlaConfigResolver;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 
@@ -23,8 +23,9 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
  * - **final** report: ≤ 1 month (Art. 19.4(c)). Mapped against
  *   `severity = breach` whose `responseHours` covers the wrap-up SLA.
  *
- * The check passes when every required severity row exists AND its
- * `responseHours` is at or below the DORA ceiling.
+ * The check passes when the effective `responseHours` per severity (own
+ * row, else the IncidentSlaConfig default, tightened by the holding chain —
+ * see {@see IncidentSlaConfigResolver}) is at or below the DORA ceiling.
  */
 final class DoraIncidentReportingDeadlinesCheck implements PolicyWizardCheckInterface
 {
@@ -43,7 +44,7 @@ final class DoraIncidentReportingDeadlinesCheck implements PolicyWizardCheckInte
     ];
 
     public function __construct(
-        private readonly IncidentSlaConfigRepository $slaRepository,
+        private readonly IncidentSlaConfigResolver $slaResolver,
     ) {
     }
 
@@ -68,27 +69,9 @@ final class DoraIncidentReportingDeadlinesCheck implements PolicyWizardCheckInte
             );
         }
 
-        $configs = $this->slaRepository->findByTenant($tenant);
-        $bySeverity = [];
-        foreach ($configs as $cfg) {
-            $sev = $cfg->getSeverity();
-            if ($sev !== null) {
-                $bySeverity[$sev] = $cfg;
-            }
-        }
-
         $violations = [];
         foreach (self::REQUIRED_DEADLINES_HOURS as $severity => $ceiling) {
-            $cfg = $bySeverity[$severity] ?? null;
-            if ($cfg === null) {
-                $violations[] = [
-                    'severity' => $severity,
-                    'reason' => 'missing_sla_row',
-                    'required_max_hours' => $ceiling,
-                ];
-                continue;
-            }
-            $responseHours = $cfg->getResponseHours();
+            $responseHours = $this->slaResolver->resolveFor($tenant, $severity)->responseHours;
             if ($responseHours > $ceiling) {
                 $violations[] = [
                     'severity' => $severity,
