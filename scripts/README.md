@@ -205,6 +205,24 @@ String nennt.
 
 ---
 
+### quality/check_tenant_null_rows.py (Gate 72)
+
+**Zweck:** Datensätze ohne Mandant, die der `TenantFilter` versteckt. Zwei Regeln:
+`new-no-tenant` meldet Controller/Services, die eine mandantenbezogene Entity mit
+`new X()` anlegen, ohne in derselben Methode `setTenant()` aufzurufen (so gingen
+Workflow-Instanzen und Risikoappetit für die eigene Organisation verloren).
+`shared-query` meldet Abfragen „eigene ODER globale Zeilen“
+(`x.tenant = :t OR x.tenant IS NULL`) auf Entities ohne
+`SharedTenantRowsInterface`: Unter dem Filter trifft der globale Zweig nie.
+
+**Baseline:** `scripts/quality/baselines/tenant_null_rows.txt`, Einträge
+`<datei>::<regel>::<detail>  # Grund` (z. B. Formularobjekt, dessen Service den
+Mandanten setzt). Veraltete Einträge werden gemeldet, schlagen aber nicht fehl.
+
+**CI-Integration:** Gate 72 im `code-quality`-Job.
+
+---
+
 ### quality/check_copy_slop.py (Gate 71)
 
 **Zweck:** UI-Texte ohne Füllstoff (Copy-Regeln in CLAUDE.md, Abschnitt

@@ -192,7 +192,7 @@ class ComplianceWizardController extends AbstractController
             'config' => $config,
             'category_key' => $category,
             'category' => $result['categories'][$category],
-            'overall_result' => $result,
+            'overall_result' => $result, 'maturity_target' => $tenant?->getWizardMaturityTarget(),
         ]);
     }
 

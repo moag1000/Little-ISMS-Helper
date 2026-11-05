@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\User;
+use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
@@ -93,6 +95,41 @@ class WorkflowServiceTest extends TestCase
         $this->assertSame($step, $instance->getCurrentStep());
         $this->assertSame(0, $instance->getCurrentStepIndex());
         $this->assertNotNull($instance->getDueDate());
+    }
+
+    #[Test]
+    public function testStartWorkflowTakesTheTenantOfTheRecord(): void
+    {
+        // Without a tenant the TenantFilter hides the instance from its own
+        // organisation (approval inbox, My Day).
+        $tenant = new Tenant();
+        $risk = $this->createStub(Risk::class);
+        $risk->method('getTenant')->willReturn($tenant);
+        $this->entityManager->method('find')->willReturnCallback(
+            static fn (string $class, mixed $id): ?Risk => $class === Risk::class && $id === 123 ? $risk : null,
+        );
+        $this->workflowRepository->method('findOneBy')
+            ->willReturn($this->createWorkflow('Risk Review', 'Risk', [$this->createWorkflowStep(1, 'Review', 5)]));
+
+        $instance = $this->service->startWorkflow('Risk', 123);
+
+        $this->assertSame($tenant, $instance?->getTenant());
+    }
+
+    #[Test]
+    public function testStartWorkflowFallsBackToTheInitiatorsTenant(): void
+    {
+        $tenant = new Tenant();
+        $user = $this->createStub(User::class);
+        $user->method('getTenant')->willReturn($tenant);
+        $this->security->method('getUser')->willReturn($user);
+        $this->entityManager->method('find')->willReturn(null);
+        $this->workflowRepository->method('findOneBy')
+            ->willReturn($this->createWorkflow('Risk Review', 'Risk', [$this->createWorkflowStep(1, 'Review', 5)]));
+
+        $instance = $this->service->startWorkflow('Risk', 123);
+
+        $this->assertSame($tenant, $instance?->getTenant());
     }
 
     #[Test]

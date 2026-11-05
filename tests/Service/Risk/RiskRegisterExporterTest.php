@@ -10,7 +10,9 @@ use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
+use App\Entity\Tenant;
 use App\Service\Risk\RiskRegisterExporter;
+use App\Service\TenantContext;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -32,9 +34,12 @@ final class RiskRegisterExporterTest extends TestCase
 
     private ?Spreadsheet $generated = null;
 
-    private function exporter(?PdfExportService $pdf = null): RiskRegisterExporter
+    private function exporter(?PdfExportService $pdf = null, ?string $methodology = null): RiskRegisterExporter
     {
         $test = $this;
+        $tenantContext = $this->createStub(TenantContext::class);
+        $tenantContext->method('getCurrentTenant')
+            ->willReturn($methodology === null ? null : (new Tenant())->setRiskMethodology($methodology));
         // Captures the workbook instead of zipping it (no ext-zip needed to inspect it).
         $excel = new class ($test) extends ExcelExportService {
             public function __construct(private readonly RiskRegisterExporterTest $test)
@@ -53,6 +58,7 @@ final class RiskRegisterExporterTest extends TestCase
             new IdentityTranslator(),
             $excel,
             $pdf ?? $this->createStub(PdfExportService::class),
+            $tenantContext,
         );
     }
 
@@ -128,6 +134,36 @@ final class RiskRegisterExporterTest extends TestCase
         $criticalHigh = $spreadsheet->getSheetByName('Kritische & Hohe Risiken');
         self::assertSame('high', $criticalHigh->getCell('B2')->getValue());
         self::assertNull($criticalHigh->getCell('B3')->getValue());
+    }
+
+    #[Test]
+    public function excelSummaryDocumentsTheTenantRiskMethodology(): void
+    {
+        $this->exporter(null, 'nist_800_30')->buildExcel([$this->risk('low', 1, 1)]);
+        $summary = $this->generated?->getSheetByName('Zusammenfassung');
+        self::assertNotNull($summary);
+        $found = null;
+        foreach ($summary->toArray() as $row) {
+            if (($row[0] ?? null) === 'Risikomethodik') {
+                $found = $row[1];
+            }
+        }
+        // IdentityTranslator has no label → raw methodology value.
+        self::assertSame('nist_800_30', $found);
+    }
+
+    #[Test]
+    public function pdfReceivesTheTenantRiskMethodology(): void
+    {
+        $pdf = $this->createMock(PdfExportService::class);
+        $pdf->expects(self::once())->method('generatePdf')
+            ->with('pdf/risk_report.html.twig', self::callback(static function (array $ctx): bool {
+                self::assertSame('fair', $ctx['risk_methodology']);
+
+                return true;
+            }))
+            ->willReturn('%PDF');
+        $this->exporter($pdf, 'fair')->buildPdf([], null);
     }
 
     #[Test]

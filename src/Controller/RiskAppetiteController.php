@@ -12,6 +12,7 @@ use App\Form\RiskAppetiteType;
 use App\Repository\AuditLogRepository;
 use App\Repository\RiskAppetiteRepository;
 use App\Repository\RiskRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +31,8 @@ class RiskAppetiteController extends AbstractController
         private readonly RiskRepository $riskRepository,
         private readonly AuditLogRepository $auditLogRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext,
     ) {}
     #[Route('/risk-appetite', name: 'app_risk_appetite_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -87,6 +89,8 @@ class RiskAppetiteController extends AbstractController
     public function new(Request $request): Response
     {
         $riskAppetite = new RiskAppetite();
+        // Without a tenant the TenantFilter hides the new row from its own organisation.
+        $riskAppetite->setTenant($this->tenantContext->getCurrentTenant());
         $form = $this->createForm(RiskAppetiteType::class, $riskAppetite);
         $form->handleRequest($request);
 

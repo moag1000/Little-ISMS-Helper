@@ -595,6 +595,11 @@ risk:
   # Async CSV export (Phase 2.5 — async admin jobs rollout)
   export:
     badge: 'Risiko-Export'
+    methodology:
+      iso_27005: 'ISO/IEC 27005'
+      nist_800_30: 'NIST SP 800-30'
+      fair: 'FAIR'
+      custom: 'Eigene Methodik'
     progress_title: 'Risiken als CSV exportieren'
     progress_subtitle: 'Der Export läuft im Hintergrund — die Datei steht nach Fertigstellung zum Download bereit.'
     download_button: 'CSV herunterladen'

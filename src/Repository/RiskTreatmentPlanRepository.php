@@ -30,7 +30,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('rtp')
             ->where('rtp.status NOT IN (:completed_statuses)')
-            ->andWhere('rtp.tenant = :tenant OR rtp.tenant IS NULL')
+            ->andWhere('rtp.tenant = :tenant')
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
             ->setParameter('tenant', $tenant)
             ->orderBy('rtp.priority', 'DESC')
@@ -50,7 +50,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rtp')
             ->where('rtp.targetCompletionDate < :now')
             ->andWhere('rtp.status NOT IN (:completed_statuses)')
-            ->andWhere('rtp.tenant = :tenant OR rtp.tenant IS NULL')
+            ->andWhere('rtp.tenant = :tenant')
             ->setParameter('now', $now)
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
             ->setParameter('tenant', $tenant)
@@ -67,7 +67,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('rtp')
             ->where('rtp.status = :status')
-            ->andWhere('rtp.tenant = :tenant OR rtp.tenant IS NULL')
+            ->andWhere('rtp.tenant = :tenant')
             ->setParameter('status', $status)
             ->setParameter('tenant', $tenant)
             ->orderBy('rtp.targetCompletionDate', 'ASC')
@@ -97,7 +97,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('rtp')
             ->where('rtp.responsiblePerson = :userId')
-            ->andWhere('rtp.tenant = :tenant OR rtp.tenant IS NULL')
+            ->andWhere('rtp.tenant = :tenant')
             ->setParameter('userId', $userId)
             ->setParameter('tenant', $tenant)
             ->orderBy('rtp.priority', 'DESC')
@@ -117,7 +117,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rtp')
             ->where('rtp.targetCompletionDate BETWEEN :now AND :future')
             ->andWhere('rtp.status NOT IN (:completed_statuses)')
-            ->andWhere('rtp.tenant = :tenant OR rtp.tenant IS NULL')
+            ->andWhere('rtp.tenant = :tenant')
             ->setParameter('now', $now)
             ->setParameter('future', $futureDate)
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
@@ -143,7 +143,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
                 'SUM(CASE WHEN rtp.status = :on_hold THEN 1 ELSE 0 END) as on_hold',
                 'AVG(rtp.completionPercentage) as avg_completion'
             )
-            ->where('rtp.tenant = :tenant OR rtp.tenant IS NULL')
+            ->where('rtp.tenant = :tenant')
             ->setParameter('tenant', $tenant)
             ->setParameter('planned', 'planned')
             ->setParameter('in_progress', 'in_progress')
@@ -162,7 +162,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rtp')
             ->where('rtp.priority IN (:high_priorities)')
             ->andWhere('rtp.status NOT IN (:completed_statuses)')
-            ->andWhere('rtp.tenant = :tenant OR rtp.tenant IS NULL')
+            ->andWhere('rtp.tenant = :tenant')
             ->andWhere('rtp.targetCompletionDate < :future OR rtp.completionPercentage < 50')
             ->setParameter('high_priorities', ['high', 'critical'])
             ->setParameter('completed_statuses', ['completed', 'cancelled'])

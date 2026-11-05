@@ -447,7 +447,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->setParameter('flag', true);
 
         if ($tenant instanceof Tenant) {
-            $qb->andWhere('s.tenant = :tenant OR s.tenant IS NULL')
+            $qb->andWhere('s.tenant = :tenant')
                 ->setParameter('tenant', $tenant);
         }
 

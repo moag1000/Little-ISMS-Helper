@@ -6,6 +6,7 @@ namespace App\Service;
 
 use DateMalformedStringException;
 use DateTimeImmutable;
+use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\Tenant;
@@ -69,6 +70,11 @@ class WorkflowService
         'Training' => 'training_verification',
         'BusinessContinuityPlan' => 'bc_plan_activation',
         'Document' => 'document_review',
+    ];
+
+    /** Workflow entity types whose class name differs from the type. */
+    private const ENTITY_TYPE_CLASS_ALIASES = [
+        'DPIA' => 'DataProtectionImpactAssessment',
     ];
 
     public function __construct(
@@ -206,6 +212,9 @@ class WorkflowService
         $workflowInstance->setEntityId($entityId);
         // Status stays at the entity default `pending` (initial marking).
         $workflowInstance->setInitiatedBy($this->security->getUser());
+        // Without a tenant the TenantFilter hides the instance from the
+        // organisation it belongs to (approval inbox, My Day, overdue lists).
+        $workflowInstance->setTenant($this->resolveOwningTenant($entityType, $entityId, $workflow));
 
         $this->entityManager->persist($workflowInstance);
 
@@ -738,5 +747,27 @@ class WorkflowService
         ]);
 
         return array_filter($instances, fn(WorkflowInstance $workflowInstance): bool => $workflowInstance->isOverdue());
+    }
+
+    /**
+     * Tenant of the workflow instance: the tenant of the record it runs on,
+     * else the tenant of a tenant-custom workflow definition, else the
+     * initiating user's tenant.
+     */
+    private function resolveOwningTenant(string $entityType, int $entityId, ?Workflow $workflow): ?Tenant
+    {
+        $class = 'App\\Entity\\' . (self::ENTITY_TYPE_CLASS_ALIASES[$entityType] ?? $entityType);
+        if (class_exists($class) && method_exists($class, 'getTenant')) {
+            $entity = $this->entityManager->find($class, $entityId);
+            if ($entity !== null && $entity->getTenant() instanceof Tenant) {
+                return $entity->getTenant();
+            }
+        }
+        if ($workflow?->getTenant() instanceof Tenant) {
+            return $workflow->getTenant();
+        }
+        $user = $this->security->getUser();
+
+        return $user instanceof User ? $user->getTenant() : null;
     }
 }

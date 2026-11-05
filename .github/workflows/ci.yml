@@ -673,6 +673,11 @@ jobs:
         # Copy rules in CLAUDE.md "UI copy". Findings keyed by file::key, so
         # line shifts never touch the baseline; new entries need a reason.
         run: python3 scripts/quality/check_copy_slop.py --baseline scripts/quality/baselines/copy_slop.txt --quiet
+      - name: "Gate 72: no tenant-less rows the TenantFilter hides"
+        # New tenant-owned records must get a tenant; "own OR global" queries
+        # need SharedTenantRowsInterface on the entity. Findings keyed by
+        # file::rule::detail; baseline entries carry a reason.
+        run: python3 scripts/quality/check_tenant_null_rows.py --baseline scripts/quality/baselines/tenant_null_rows.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
