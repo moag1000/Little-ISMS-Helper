@@ -3,6 +3,13 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.16.1](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.16.0...v3.16.1) (2026-11-01)
+
+
+### Fixed
+
+* **deps:** update symfony/mime for CVE-2026-45070 ([#1076](https://github.com/moag1000/Little-ISMS-Helper/issues/1076)) ([915397d](https://github.com/moag1000/Little-ISMS-Helper/commit/915397dfe97e485b407c55b35883fb3a1cd62303))
+
 ## [3.16.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.15.3...v3.16.0) (2026-10-23)
 
 
