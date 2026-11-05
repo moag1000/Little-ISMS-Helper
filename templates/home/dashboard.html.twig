@@ -128,7 +128,7 @@
                                 {{ 'workflow.dashboard.alert.pending_message'|trans({'%count%': total_pending}, 'workflows') }}
                             {% endif %}
                         </p>
-                        <a href="{{ path('app_workflow_pending') }}" class="fa-cyber-btn fa-cyber-btn--sm {% if total_overdue > 0 %}fa-cyber-btn--danger{% else %}fa-cyber-btn--warning{% endif %}">
+                        <a href="{{ path('app_my_day') ~ '#workflows-pending' }}" class="fa-cyber-btn fa-cyber-btn--sm {% if total_overdue > 0 %}fa-cyber-btn--danger{% else %}fa-cyber-btn--warning{% endif %}">
                             <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i>
                             {{ 'workflow.dashboard.alert.view_all'|trans({}, 'workflows') }}
                         </a>

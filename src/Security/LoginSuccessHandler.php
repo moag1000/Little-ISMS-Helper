@@ -21,7 +21,8 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly MfaService $mfaService
+        private readonly MfaService $mfaService,
+        private readonly LandingRoute $landingRoute,
     ) {
     }
 
@@ -61,8 +62,8 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             }
         }
 
-        // Default: redirect to dashboard with locale
-        $url = $this->urlGenerator->generate('app_dashboard', ['_locale' => $locale]);
+        // Default: the user's landing page (My Day or dashboard), with locale
+        $url = $this->urlGenerator->generate($this->landingRoute->routeFor($user), ['_locale' => $locale]);
         return new RedirectResponse($url);
     }
 }

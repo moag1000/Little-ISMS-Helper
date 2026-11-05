@@ -694,26 +694,11 @@ class WorkflowService
     }
 
     /**
-     * Get pending approvals for a user
+     * Get pending approvals for a user (one definition: WorkflowInstanceRepository::findPendingForUser)
      */
     public function getPendingApprovals(User $user): array
     {
-        $tenant = $user->getTenant();
-        $criteria = ['status' => WorkflowInstanceStatus::InProgress->value];
-        if ($tenant !== null) {
-            $criteria['tenant'] = $tenant;
-        }
-        $instances = $this->workflowInstanceRepository->findBy($criteria);
-        $pending = [];
-
-        foreach ($instances as $instance) {
-            $currentStep = $instance->getCurrentStep();
-            if ($currentStep && $this->canUserApprove($user, $currentStep)) {
-                $pending[] = $instance;
-            }
-        }
-
-        return $pending;
+        return $this->workflowInstanceRepository->findPendingForUser($user, $user->getTenant());
     }
 
     /**
@@ -750,14 +735,31 @@ class WorkflowService
     }
 
     /**
+     * Entity class behind a workflow instance's entity_type (short name such
+     * as 'Risk' or 'DPIA', or a class name); null when there is none.
+     *
+     * @return class-string|null
+     */
+    public static function subjectClass(?string $entityType): ?string
+    {
+        if ($entityType === null || $entityType === '') {
+            return null;
+        }
+        $short = (string) preg_replace('#^.*\\\\#', '', $entityType);
+        $class = 'App\\Entity\\' . (self::ENTITY_TYPE_CLASS_ALIASES[$short] ?? $short);
+
+        return class_exists($class) ? $class : null;
+    }
+
+    /**
      * Tenant of the workflow instance: the tenant of the record it runs on,
      * else the tenant of a tenant-custom workflow definition, else the
      * initiating user's tenant.
      */
     private function resolveOwningTenant(string $entityType, int $entityId, ?Workflow $workflow): ?Tenant
     {
-        $class = 'App\\Entity\\' . (self::ENTITY_TYPE_CLASS_ALIASES[$entityType] ?? $entityType);
-        if (class_exists($class) && method_exists($class, 'getTenant')) {
+        $class = self::subjectClass($entityType);
+        if ($class !== null && method_exists($class, 'getTenant')) {
             $entity = $this->entityManager->find($class, $entityId);
             if ($entity !== null && $entity->getTenant() instanceof Tenant) {
                 return $entity->getTenant();

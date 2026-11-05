@@ -12,6 +12,7 @@ use App\Entity\WorkflowInstance;
 use App\Enum\WorkflowInstanceStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Workflow Instance Repository
@@ -27,8 +28,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class WorkflowInstanceRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly ?RoleHierarchyInterface $roleHierarchy = null,
+    ) {
         parent::__construct($registry, WorkflowInstance::class);
     }
 
@@ -143,47 +146,50 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find pending workflow instances for a specific user.
+     * Open workflow instances whose current step $user may approve.
      *
-     * @param User $user User to filter by
-     * @param Tenant|null $tenant Optional tenant scope (required to prevent cross-tenant-leakage in MyDayAggregator)
-     * @return WorkflowInstance[] Array of pending instances sorted by due date (earliest first)
+     * The one definition of "waiting for my decision" (My Day, sidebar badge,
+     * dashboards, workflow pages). It applies the rule of
+     * {@see \App\Service\WorkflowService::canUserApprove()}: ROLE_ADMIN, an
+     * explicit approver_users entry, or the step's approver_role, both roles
+     * through the role hierarchy. The former SQL match (`approver_users LIKE
+     * '%"<id>"%'`, `approver_role = <own role>`) never matched the integer ids
+     * the step stores and ignored inherited roles, so assigned approvers did
+     * not see their approvals.
+     *
+     * @param Tenant|null $tenant tenant scope; null leaves scoping to the tenant filter
+     * @return WorkflowInstance[] sorted by due date (earliest first)
      */
     public function findPendingForUser(User $user, ?Tenant $tenant = null): array
     {
-        // Get user roles for role-based filtering
-        $userRoles = $user->getRoles();
-
-        // Query for workflows where user is approver by user ID or role
         $queryBuilder = $this->createQueryBuilder('wi')
-            ->leftJoin('wi.currentStep', 'step')
+            ->innerJoin('wi.currentStep', 'step')->addSelect('step')
             ->where('wi.status IN (:statuses)')
             ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->orderBy('wi.dueDate', 'ASC');
-
-        // Build OR conditions for user matching
-        $orx = $queryBuilder->expr()->orX();
-
-        // Match by user ID in approverUsers array
-        $orx->add($queryBuilder->expr()->like('step.approverUsers', ':userId'));
-        $queryBuilder->setParameter('userId', '%"' . $user->getId() . '"%');
-
-        // Match by role in approverRole field
-        foreach ($userRoles as $userRole) {
-            $paramName = 'role_' . md5($userRole);
-            $orx->add($queryBuilder->expr()->eq('step.approverRole', ':' . $paramName));
-            $queryBuilder->setParameter($paramName, $userRole);
-        }
-
-        $queryBuilder->andWhere($orx);
-
-        // Tenant-scope when provided (callers via TenantContext)
         if ($tenant instanceof Tenant) {
-            $queryBuilder->andWhere('wi.tenant = :tenant')
-                ->setParameter('tenant', $tenant);
+            $queryBuilder->andWhere('wi.tenant = :tenant')->setParameter('tenant', $tenant);
         }
 
-        return $queryBuilder->getQuery()->getResult();
+        $roles = $this->roleHierarchy?->getReachableRoleNames($user->getRoles()) ?? $user->getRoles();
+        $isAdmin = in_array('ROLE_ADMIN', $roles, true);
+        $userId = $user->getId();
+
+        return array_values(array_filter(
+            $queryBuilder->getQuery()->getResult(),
+            static function (WorkflowInstance $instance) use ($roles, $isAdmin, $userId): bool {
+                $step = $instance->getCurrentStep();
+                if ($step === null) {
+                    return false;
+                }
+                if ($isAdmin || in_array($userId, $step->getApproverUsers() ?? [], false)) {
+                    return true;
+                }
+                $role = $step->getApproverRole();
+
+                return $role !== null && $role !== '' && in_array($role, $roles, true);
+            },
+        ));
     }
 
     /**
