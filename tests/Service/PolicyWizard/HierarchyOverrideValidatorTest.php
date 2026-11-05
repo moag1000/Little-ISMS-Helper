@@ -120,6 +120,26 @@ final class HierarchyOverrideValidatorTest extends TestCase
     }
 
     #[Test]
+    public function childsOwnEarlierValueIsNotTreatedAsParentLimit(): void
+    {
+        $parent = $this->makeTenantStub(1);
+        $child = $this->makeTenantStub(2, [$parent]);
+
+        // Parent allows tier 5; the child stored 3 earlier and now raises it to 4.
+        $resolver = $this->makeResolver(
+            modes: ['risk.appetite_tier' => OverrideMode::CeilingOnly],
+            stored: [1 => ['risk.appetite_tier' => 5], 2 => ['risk.appetite_tier' => 3]],
+        );
+        $validator = new HierarchyOverrideValidator($resolver);
+
+        $run = $this->makeRun($child, [
+            WizardStepKeys::STEP_RISK_CLASSIFICATION => ['risk_appetite_tier' => 4],
+        ]);
+
+        self::assertSame([], $validator->validate($run));
+    }
+
+    #[Test]
     public function reviewIntervalCeilingFlagsChildAboveParent(): void
     {
         $parent = $this->makeTenantStub(1);

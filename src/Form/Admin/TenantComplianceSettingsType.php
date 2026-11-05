@@ -173,17 +173,6 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
                 'required' => true,
                 'translation_domain' => 'admin',
             ])
-            ->add('riskMatrixSize', ChoiceType::class, [
-                'label' => 'admin.tenant_settings.risk_matrix_size',
-                'help' => 'admin.tenant_settings.risk_matrix_size_help',
-                'choices' => [
-                    '3 × 3 (KMU-pragmatisch)' => 3,
-                    '4 × 4 (mittelstaendisch)' => 4,
-                    '5 × 5 (Standard nach ISO 27005)' => 5,
-                ],
-                'required' => true,
-                'translation_domain' => 'admin',
-            ])
             ->add('wizardMaturityTarget', ChoiceType::class, [
                 'label' => 'admin.tenant_settings.wizard_maturity_target',
                 'help' => 'admin.tenant_settings.wizard_maturity_target_help',
@@ -317,7 +306,7 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
             'defaults'              => ['locale', 'timezone', 'financialYearStartMonth', 'tlpDefault'],
             'address'               => ['addressStreet', 'addressPostalCode', 'addressCity', 'addressCountry'],
             'privacy'               => ['dpoContactName', 'dpoContactEmail', 'dpoAppointmentDate', 'dpoIsExternal', 'dpoAuthorityNotifiedAt', 'dpoDeputyName', 'representativeName', 'representativeContact'],
-            'risk_assessment'       => ['riskMethodology', 'riskMatrixSize', 'wizardMaturityTarget'],
+            'risk_assessment'       => ['riskMethodology', 'wizardMaturityTarget'],
             'entity_classification' => ['doraEntityCategory'],
             'advanced'              => ['apiRateLimitPerMinute', 'supervisoryAuthorities', 'dataRetentionPolicies', 'notificationPreferences', 'csirtEndpoints', 'crisisTeamOnCall'],
         ];

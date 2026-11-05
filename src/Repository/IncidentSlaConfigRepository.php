@@ -50,7 +50,7 @@ class IncidentSlaConfigRepository extends ServiceEntityRepository
             $row->setTenant($tenant)->setSeverity($severity)->setResponseHours($hours);
             $em->persist($row);
         }
-        // Kein flush() — Aufrufer (TenantCreatedSeedListener::postFlush oder
-        // Admin-Controller) flusht explizit. So kein nested-flush-Problem.
+        // Kein flush() — der Admin-Controller flusht. Ohne Zeilen liest
+        // IncidentSlaConfigResolver die DEFAULTS.
     }
 }
