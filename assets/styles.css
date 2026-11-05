@@ -57,3 +57,6 @@
 
 /* In-page forms — drawer / form-modal glue (list-row link, hover affordance) */
 @import "./styles/in-page-forms.css";
+
+/* Location map (Standortkarte) */
+@import "./styles/location-map.css";

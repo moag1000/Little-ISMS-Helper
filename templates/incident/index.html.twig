@@ -202,10 +202,13 @@
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_incident_index'),
-    filter_keys: ['status', 'severity', 'category', 'data_breach_only', 'nis2_only', 'view'],
+    filter_keys: ['status', 'severity', 'category', 'data_breach_only', 'nis2_only', 'view', 'location'],
     form_id: 'incident-filter-form'
 } %}
     {% block filters %}
+        {% if app.request.query.getInt('location') > 0 %}
+            <input type="hidden" name="location" value="{{ app.request.query.getInt('location') }}">
+        {% endif %}
         {% if app.request.query.get('view') %}
             <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
         {% endif %}

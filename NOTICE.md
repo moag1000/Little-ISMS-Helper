@@ -82,6 +82,18 @@ The above copyright notice and this permission notice shall be included in all c
 
 ---
 
+### Bundled Geodata (location map)
+
+- **GeoNames** postal codes and places, CC BY 4.0, https://www.geonames.org/ —
+  `fixtures/geo/postal_dach.csv.gz` (DE, AT, CH postal codes, via
+  zauberware/postal-codes-json-xml-csv) and `fixtures/geo/cities.csv.gz`
+  (world places with population over 1000, via the npm package `all-the-cities`;
+  the most populous place wins per name). Reduced to country, code,
+  name and rounded coordinates; no other changes.
+- **Natural Earth** land and boundary outlines, public domain,
+  https://www.naturalearthdata.com/ — `assets/data/world-map.json`, simplified
+  and projected (Equal Earth).
+
 ## License Types Explained
 
 ### MIT License

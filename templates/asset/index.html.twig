@@ -172,10 +172,13 @@
    All state lives in URL query params (UXC-11 / UXC-12). #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_asset_index'),
-    filter_keys: ['type', 'classification', 'owner', 'status', 'dora_relevant', 'view', 'tag'],
+    filter_keys: ['type', 'classification', 'owner', 'status', 'dora_relevant', 'view', 'tag', 'location'],
     form_id: 'asset-filter-form'
 } %}
     {% block filters %}
+        {% if app.request.query.getInt('location') > 0 %}
+            <input type="hidden" name="location" value="{{ app.request.query.getInt('location') }}">
+        {% endif %}
         {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
         {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
         {# Preserve the view parameter across filter submissions #}

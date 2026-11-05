@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\Location\LocationScope;
 use App\Attribute\RequiresModule;
 use App\Service\BulkDeleteService;
 use Exception;
@@ -98,9 +99,7 @@ class AssetController extends AbstractController
         $status = $request->query->get('status');
         $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Cross-tenant + orphan views are admin-only — silently coerce to
-        // 'own' for non-admins so a hand-crafted ?view=all URL doesn't leak
-        // foreign-tenant data.
+        // Cross-tenant + orphan views are admin-only (no ?view=all leak for non-admins).
         $isAdmin = $this->isGranted('ROLE_ADMIN');
         if (in_array($view, ['orphaned', 'all'], true) && !$isAdmin) {
             $view = 'own';
@@ -146,6 +145,7 @@ class AssetController extends AbstractController
             );
         }
 
+        $assets = LocationScope::filter($assets, $request->query->getInt('location')); // drill-down from the location map
         if ($type) {
             $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getAssetType() === $type);
         }

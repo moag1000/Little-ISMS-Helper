@@ -131,6 +131,7 @@ admin:
             dora_roi: { label: 'DORA RoI XBRL-Export', desc: 'Register-of-Information XBRL/CSV-Export für die BaFin-Meldung' }
             # Sprint 6 System-Settings Folgeseiten
             api_rate_limits: { label: 'API-Rate-Limits', desc: 'Request-Limits pro Route und Token-Klasse' }
+            location_map_settings: { label: 'Standortkarte', desc: 'Online-Nachschlagen der Standortlage (optional)' }
             backup_settings: { label: 'Backup-Einstellungen', desc: 'Aufbewahrungsdauer und automatische Backup-Planung' }
             fiscal_year: { label: 'Geschäftsjahr', desc: 'Startmonat und Steuerjahr für Reports und KPIs' }
             data_retention_settings: { label: 'Aufbewahrungsfristen', desc: 'DSGVO-Löschfristen pro Datenkategorie' }
@@ -1206,6 +1207,21 @@ admin:
             help: 'Regulärer Ausdruck für Routen-Pfade, die von der Ratenbegrenzung ausgenommen sind (z. B. Health-Check, Metriken). Leer lassen, um Limits global anzuwenden.'
 
     # ── Backup Settings ───────────────────────────────────────────────────────────
+    location_map:
+        title: Standortkarte
+        geocoding_title: 'Lage der Standorte'
+        offline_note: 'Die Lage wird offline aus Postleitzahl, Ort und Land bestimmt (DE, AT, CH nach Postleitzahl, übrige Länder nach Ort). Es verlässt dabei nichts den Server.'
+        online:
+            label: 'Online nachschlagen, wenn offline nur das Land bekannt ist'
+            help: 'Gesendet werden nur Postleitzahl, Ort und Ländercode. Höchstens 10 Abfragen pro Aufruf, eine pro Sekunde. Das Ergebnis wird am Standort gespeichert.'
+        endpoint:
+            label: 'Dienst-Adresse (Nominatim-kompatibel)'
+            help: 'Nur HTTPS. Standard: %default%. Für eigenen Betrieb die Adresse der eigenen Nominatim-Instanz eintragen.'
+        privacy_title: Datenschutz
+        privacy_text: 'Postleitzahl und Ort eines Firmenstandorts sind in der Regel keine personenbezogenen Daten. Beim öffentlichen Dienst gelten dessen Nutzungsbedingungen; eine eigene Instanz vermeidet die Übermittlung ganz.'
+        saved: Gespeichert.
+        csrf_invalid: 'Sitzung abgelaufen. Seite neu laden.'
+        endpoint_invalid: 'Ungültige Adresse. Nur HTTPS ohne Zugangsdaten.'
     backups:
         title: 'Backup-Einstellungen'
         subtitle: 'Automatisierten Backup-Zeitplan und Datenhaltungsdauer konfigurieren.'

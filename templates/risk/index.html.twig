@@ -220,10 +220,13 @@
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_risk_index'),
-    filter_keys: ['level', 'status', 'treatment', 'owner', 'view', 'review_overdue', 'tag'],
+    filter_keys: ['level', 'status', 'treatment', 'owner', 'view', 'review_overdue', 'tag', 'location'],
     form_id: 'risk-filter-form'
 } %}
     {% block filters %}
+        {% if app.request.query.getInt('location') > 0 %}
+            <input type="hidden" name="location" value="{{ app.request.query.getInt('location') }}">
+        {% endif %}
         {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
         {% if app.request.query.get('view') %}
             <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">

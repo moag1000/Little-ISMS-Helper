@@ -1,0 +1,68 @@
+{% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+
+{% block admin_title %}{{ 'admin.location_map.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_settings_index') }}">{{ 'admin.settings.title'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.location_map.title'|trans({}, 'admin') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        title: 'admin.location_map.title'|trans({}, 'admin'),
+    }) }}
+
+    <div class="row g-4 mt-2">
+        <div class="col-lg-8">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.location_map.geocoding_title'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p>{{ 'admin.location_map.offline_note'|trans({}, 'admin') }}</p>
+                    <form method="post" action="{{ path('admin_settings_location_map') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_location_map') }}">
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" role="switch" id="online_geocoding"
+                                   name="online_geocoding" value="1" {{ current.enabled ? 'checked' : '' }}>
+                            <label class="form-check-label fw-semibold" for="online_geocoding">
+                                {{ 'admin.location_map.online.label'|trans({}, 'admin') }}
+                            </label>
+                        </div>
+                        <div class="form-text mb-4">{{ 'admin.location_map.online.help'|trans({}, 'admin') }}</div>
+
+                        <div class="mb-4">
+                            {{ _fa_cyber.text('endpoint', {
+                                id: 'endpoint',
+                                label: 'admin.location_map.endpoint.label'|trans({}, 'admin'),
+                                value: current.endpoint,
+                                type: 'url',
+                                help: 'admin.location_map.endpoint.help'|trans({ '%default%': default_endpoint }, 'admin'),
+                            }) }}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <div class="col-lg-4">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.location_map.privacy_title'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p class="small mb-0">{{ 'admin.location_map.privacy_text'|trans({}, 'admin') }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

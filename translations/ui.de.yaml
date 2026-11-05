@@ -308,6 +308,14 @@ ui:
             palette_win: 'Befehlspalette öffnen (Windows/Linux)'
             search: 'Suche fokussieren'
             then: 'dann'
+        location_map:
+            cluster: '%count% Standorte, zum Vergrößern wählen'
+            score: 'Restrisiko %score%'
+            no_risks: 'keine Risiken erfasst'
+            gaps: '%count% von %total% Prüfungen offen'
+            gaps_none: 'alle Prüfungen erfüllt'
+            protection: 'Schutzbedarf %level%'
+            coarse: 'Lage nur auf Landesebene bekannt'
         mfa_setup:
             copied: Kopiert.
             error: 'Fehler'

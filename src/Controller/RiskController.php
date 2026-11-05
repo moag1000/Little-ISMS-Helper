@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\Location\LocationScope;
 use App\Security\Voter\AsyncJobVoter;
 use App\Service\BulkDeleteService;
 use App\Entity\User;
@@ -118,9 +119,7 @@ class RiskController extends AbstractController
         $owner = $request->query->get('owner');
         $view = $request->query->get('view', 'own'); // Default: own tenant's risks
 
-        // Cross-tenant + orphan views are admin-only — silently coerce to
-        // 'own' for non-admins so a hand-crafted ?view=all URL doesn't leak
-        // foreign-tenant data.
+        // Cross-tenant + orphan views are admin-only (no ?view=all leak for non-admins).
         $isAdmin = $this->isGranted('ROLE_ADMIN');
         if (in_array($view, ['orphaned', 'all'], true) && !$isAdmin) {
             $view = 'own';
@@ -165,6 +164,7 @@ class RiskController extends AbstractController
         }
 
         $risks = $this->riskRegisterExporter->filter($risks, $level, $status, $treatment, $owner);
+        $risks = LocationScope::filter($risks, $request->query->getInt('location')); // drill-down from the location map
 
         // Overdue reviews only (date passed or null) of risks requiring review (RiskStatus — never closed)
         $reviewOverdue = $request->query->get('review_overdue');

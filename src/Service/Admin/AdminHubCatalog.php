@@ -627,6 +627,15 @@ final class AdminHubCatalog
                         'route' => 'admin_settings_backups',
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
+                    // scope: own-tenant location map (opt-in online geocoding)
+                    [
+                        'key' => 'location_map_settings',
+                        'icon' => 'fa-icon--nav-location',
+                        'label' => 'admin.hub.module.location_map_settings.label',
+                        'description' => 'admin.hub.module.location_map_settings.desc',
+                        'route' => 'admin_settings_location_map',
+                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                    ],
                     // scope: own-tenant fiscal year configuration
                     [
                         'key' => 'fiscal_year',

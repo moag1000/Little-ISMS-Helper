@@ -88,6 +88,22 @@ class Location
     #[Groups(['location:read', 'location:write'])]
     private ?string $postalCode = null;
 
+    /** WGS84 latitude for the location map; filled by LocationGeocoder unless set manually. */
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\Range(min: -90, max: 90)]
+    #[Groups(['location:read', 'location:write'])]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\Range(min: -180, max: 180)]
+    #[Groups(['location:read', 'location:write'])]
+    private ?float $longitude = null;
+
+    /** Where the coordinates came from: postal, city, country, online or manual. */
+    #[ORM\Column(length: 16, nullable: true)]
+    #[Groups(['location:read'])]
+    private ?string $geoSource = null;
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'childLocations')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['location:read', 'location:write'])]
@@ -290,6 +306,44 @@ class Location
     {
         $this->postalCode = $postalCode;
         return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): static
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): static
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
+    public function getGeoSource(): ?string
+    {
+        return $this->geoSource;
+    }
+
+    public function setGeoSource(?string $geoSource): static
+    {
+        $this->geoSource = $geoSource;
+        return $this;
+    }
+
+    public function hasCoordinates(): bool
+    {
+        return $this->latitude !== null && $this->longitude !== null;
     }
 
     public function getParentLocation(): ?self
