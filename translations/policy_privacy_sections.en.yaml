@@ -35,7 +35,7 @@ policy:
 
                             *Approval: CISO + DPO (joint)*
                             *Approval chain: {{ approval.chain }}*
-        awareness_training:
+        hr_security:
             v1:
                 gdpr_section:
                     gdpr_dpo_mandate:
@@ -175,7 +175,7 @@ policy:
 
                             *Approval: CISO + DPO (joint)*
                             *Approval chain: {{ approval.chain }}*
-        supplier_security:
+        supplier_relationships:
             v1:
                 gdpr_section:
                     gdpr_joint_controllers:

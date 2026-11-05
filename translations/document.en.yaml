@@ -281,6 +281,11 @@ document:
     clone:
         success: 'Document has been duplicated. File binary not copied — please re-upload if needed.'
 evidence_reverification:
+    status:
+        pending: 'Open'
+        in_progress: 'In review'
+        completed: 'Reverified'
+        skipped: 'Skipped'
     title: 'Evidence Reverification'
     badge: 'Cl. 9.1'
     subtitle: 'Recheck whether evidence is still current and aligned with the linked controls.'

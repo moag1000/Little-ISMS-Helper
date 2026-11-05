@@ -1,4 +1,6 @@
 policy_wizard:
+    generator:
+        unfilled_variable: '[to be completed: %name%]'
     title: Policy Wizard
     subtitle: Generate your policy framework with minimal typing
     badge: ISMS
@@ -1170,6 +1172,7 @@ policy_wizard:
         reasons_heading: 'Findings:'
         regenerate_cta: 'Regenerate document'
         reason:
+            unfilled_variables: 'Values are still missing in the text (marked "to be completed").'
             audit_trail_missing: 'Audit trail missing — wizard-run reference is not recorded.'
             substitution_vars_missing: 'Substitution-variable snapshot is missing entirely.'
             substitution_var_incomplete: 'A required variable is missing or empty.'
@@ -1253,6 +1256,36 @@ policy_wizard:
             alva_hint_on_review: 'Alva reminder 30 days before review'
 
     error:
+        access_review_cadence_invalid: 'Access review interval is invalid.'
+        cloud_onprem_mix_pct_invalid: 'Cloud share must be between 0 and 100 percent.'
+        confirmation_required: 'Confirm the generation.'
+        data_classification_invalid: 'Number of classification levels is invalid (3 or 4).'
+        iso27001_required: 'ISO 27001 is the base of every policy and must stay selected.'
+        legal_name_required: 'Legal name of the organisation is missing.'
+        legal_name_too_long: 'Legal name is too long (191 characters at most).'
+        logging_retention_invalid: 'Log retention must be between 1 and 120 months.'
+        mfa_scope_invalid: 'MFA scope is invalid.'
+        mode_invalid: 'Wizard mode is invalid.'
+        risk_appetite_invalid: 'Risk appetite is invalid.'
+        risk_appetite_out_of_range: 'Risk appetite must be between 1 and 5.'
+        risk_appetite_required: 'Risk appetite is missing.'
+        schutzbedarf_levels_invalid: 'Protection-need levels are invalid.'
+        scope_statement_required: 'Scope statement is missing.'
+        scope_statement_too_short: 'Scope statement is too short (30 characters at least).'
+        site_ids_invalid: 'At least one site does not belong to the organisation.'
+        standard_unknown: 'Unknown standard selected.'
+        standards_required: 'Select at least one standard.'
+        topics_invalid: 'At least one topic is unknown.'
+        topics_required: 'Select at least one topic.'
+        topics_too_many: '10 topics per run at most.'
+        vuln_scan_cadence_invalid: 'Vulnerability scan interval is invalid.'
+        working_modes_invalid: 'Working modes are invalid.'
+        hierarchy:
+            ceiling_only: 'The group setting is a ceiling — the value may not be higher.'
+            floor_only: 'The group setting is a floor — the value may not be lower.'
+            forbidden_to_change: 'The group setting may not be changed.'
+            forbidden_to_relax: 'The group setting may only be tightened.'
+            free: 'Deviating from the group setting is allowed.'
         review_interval_max: 'The review interval must not exceed 24 months (ISO 27001 + audit defang).'
         approver_must_be_user_id: 'Approver must be a concrete person (user-id), not a role string.'
         approver_must_have_login: 'Approver must be a User with system login. Please link a Person to a user account first.'

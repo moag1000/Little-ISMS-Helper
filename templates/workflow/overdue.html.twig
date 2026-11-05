@@ -173,7 +173,7 @@
                             <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'workflow.action.cancel'|trans({}, 'workflows') }}</button>
                         </div>
                         <div class="fa-modal__body">
-                            <p>{{ 'workflow.widget.confirm.approve'|trans({workflow: instance.workflow.name}, 'workflows') }}</p>
+                            <p>{{ 'workflow.widget.confirm.approve'|trans({'%workflow%': instance.workflow.name}, 'workflows') }}</p>
                             {{ _fa_alert.render({ variant: 'info', class: 'mb-3', body: '<strong>' ~ 'workflow.field.entity'|trans({}, 'workflows') ~ ':</strong> ' ~ instance.entityType|split('\\')|last ~ ' #' ~ instance.entityId }) }}
                             <div class="mb-3">
                                 <label class="form-label">
@@ -203,7 +203,7 @@
                                 {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                             </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
                         <div class="fa-modal__body">
-                            <p>{{ 'workflow.widget.confirm.reject'|trans({workflow: instance.workflow.name}, 'workflows') }}</p>
+                            <p>{{ 'workflow.widget.confirm.reject'|trans({'%workflow%': instance.workflow.name}, 'workflows') }}</p>
                             {{ _fa_alert.render({ variant: 'warning', class: 'mb-3', body: '<strong>' ~ 'workflow.field.entity'|trans({}, 'workflows') ~ ':</strong> ' ~ instance.entityType|split('\\')|last ~ ' #' ~ instance.entityId }) }}
                             <div class="mb-3">
                                 <label class="form-label">

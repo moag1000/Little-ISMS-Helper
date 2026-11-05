@@ -120,14 +120,21 @@ final class DoraExtensionCoverageCheck implements PolicyWizardCheckInterface
         }
 
         if ($applicableTopics === 0) {
-            // Tenant has no ISO documents that need extension yet.
+            // No ISO documents to extend recorded: nothing evidences DORA coverage.
             return new PolicyWizardCheckResult(
                 checkId: self::CHECK_ID,
-                score: 100.0,
-                passed: true,
+                score: 0.0,
+                passed: false,
                 details: [
+                    'reason' => 'no_data',
                     'expected_topics' => count($expectedTopics),
                     'applicable_topics' => 0,
+                ],
+                gap: [
+                    'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
+                    'priority' => 'high',
+                    'route' => 'app_policy_wizard_index',
+                    'translation_domain' => 'policy_wizard',
                 ],
             );
         }

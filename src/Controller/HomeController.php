@@ -580,12 +580,12 @@ class HomeController extends AbstractController
         $minutes = $diff->i;
 
         if ($days > 0) {
-            return $this->translator->trans('dashboard.activity.days_ago', ['count' => $days], 'dashboard');
+            return $this->translator->trans('dashboard.activity.days_ago', ['%count%' => $days], 'dashboard');
         }
         if ($hours > 0) {
-            return $this->translator->trans('dashboard.activity.hours_ago', ['count' => $hours], 'dashboard');
+            return $this->translator->trans('dashboard.activity.hours_ago', ['%count%' => $hours], 'dashboard');
         }
 
-        return $this->translator->trans('dashboard.activity.minutes_ago', ['count' => $minutes], 'dashboard');
+        return $this->translator->trans('dashboard.activity.minutes_ago', ['%count%' => $minutes], 'dashboard');
     }
 }

@@ -195,7 +195,9 @@ final readonly class CrossCoverageCalculator
             // is registered, union the SectionExtension::controlRefs into the
             // matching framework coverage bucket. array_unique() deduplicates
             // against refs already contributed by FIELD_ACCESSORS above.
-            if ($this->sectionExtensionRegistry !== null) {
+            // Only ISO 27001 host policies receive extensions (DocumentGenerator), so
+            // only they may count the extension refs as covered.
+            if ($this->sectionExtensionRegistry !== null && $template->getStandard() === 'iso27001') {
                 $topic = $template->getTopic() ?? '';
                 foreach ($run->getStandardsAdopted() ?? [] as $standardToken) {
                     $frameworkCode = self::SECTION_EXTENSION_FRAMEWORK_MAP[$standardToken] ?? null;

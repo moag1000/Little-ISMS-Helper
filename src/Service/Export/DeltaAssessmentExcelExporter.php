@@ -153,7 +153,7 @@ final class DeltaAssessmentExcelExporter
     ): void {
         $sheet = $spreadsheet->getActiveSheet();
         // Use sanitized title via reusable helper — PhpSpreadsheet enforces 31-char cap.
-        $sheet->setTitle($this->sanitizeSheetName($this->t('compliance_wizard.delta.sheet.summary')));
+        $sheet->setTitle($this->sanitizeSheetName($this->t('delta.sheet.summary')));
 
         $total = count($targetRequirements);
         $directFulfilled = 0;
@@ -188,38 +188,38 @@ final class DeltaAssessmentExcelExporter
         $fteSaved = $this->inheritanceMetricsService->fteSavedForFramework($tenant, $targetFramework);
 
         $metrics = [
-            $this->t('compliance_wizard.delta.summary.tenant') => (string) $tenant->getName(),
-            $this->t('compliance_wizard.delta.summary.target') => $this->frameworkLabel($targetFramework),
-            $this->t('compliance_wizard.delta.summary.baseline') => $baselineFramework !== null
+            $this->t('delta.summary.tenant') => (string) $tenant->getName(),
+            $this->t('delta.summary.target') => $this->frameworkLabel($targetFramework),
+            $this->t('delta.summary.baseline') => $baselineFramework !== null
                 ? $this->frameworkLabel($baselineFramework)
                 : '—',
-            $this->t('compliance_wizard.delta.summary.reporting_date') => (new \DateTimeImmutable())->format('Y-m-d'),
-            $this->t('compliance_wizard.delta.summary.total') => (string) $total,
-            $this->t('compliance_wizard.delta.summary.inherited') => sprintf('%d (%d%%)', $inheritedCount, $preFillPct),
-            $this->t('compliance_wizard.delta.summary.direct') => (string) $directFulfilled,
-            $this->t('compliance_wizard.delta.summary.gap') => (string) $gapCount,
-            $this->t('compliance_wizard.delta.summary.avg_fulfillment') => $avgFulfillment . '%',
-            $this->t('compliance_wizard.delta.summary.fte_saved') => number_format($fteSaved, 1, '.', '') . ' FTE-days',
+            $this->t('delta.summary.reporting_date') => (new \DateTimeImmutable())->format('Y-m-d'),
+            $this->t('delta.summary.total') => (string) $total,
+            $this->t('delta.summary.inherited') => sprintf('%d (%d%%)', $inheritedCount, $preFillPct),
+            $this->t('delta.summary.direct') => (string) $directFulfilled,
+            $this->t('delta.summary.gap') => (string) $gapCount,
+            $this->t('delta.summary.avg_fulfillment') => $avgFulfillment . '%',
+            $this->t('delta.summary.fte_saved') => number_format($fteSaved, 1, '.', '') . ' FTE-days',
         ];
 
         $nextRow = $this->excelExportService->addSummarySection(
             $sheet,
             $metrics,
             1,
-            $this->t('compliance_wizard.delta.title'),
+            $this->t('delta.title'),
         );
 
         // Pre-fill call-out block ─────────────────────────────────────────────
         $targetPct = $this->preFillTargetPercent;
         $meetsTarget = $preFillPct >= $targetPct;
         $calloutLabel = $this->translator->trans(
-            'compliance_wizard.delta.summary.pre_fill_rate',
+            'delta.summary.pre_fill_rate',
             ['%target%' => $targetPct, '%actual%' => $preFillPct],
             'compliance_wizard',
         );
         $calloutValue = $meetsTarget
-            ? $this->t('compliance_wizard.delta.summary.pre_fill_rate_ok')
-            : $this->t('compliance_wizard.delta.summary.pre_fill_rate_miss');
+            ? $this->t('delta.summary.pre_fill_rate_ok')
+            : $this->t('delta.summary.pre_fill_rate_miss');
 
         $sheet->setCellValue('A' . $nextRow, $calloutLabel);
         $sheet->setCellValue('B' . $nextRow, $calloutValue);
@@ -258,21 +258,21 @@ final class DeltaAssessmentExcelExporter
     ): void {
         $sheet = $this->excelExportService->createSheet(
             $spreadsheet,
-            $this->t('compliance_wizard.delta.sheet.detail'),
+            $this->t('delta.sheet.detail'),
         );
 
         $headers = [
-            $this->t('compliance_wizard.delta.detail.col.requirement_id'),
-            $this->t('compliance_wizard.delta.detail.col.title'),
-            $this->t('compliance_wizard.delta.detail.col.category'),
-            $this->t('compliance_wizard.delta.detail.col.priority'),
-            $this->t('compliance_wizard.delta.detail.col.fulfillment_pct'),
-            $this->t('compliance_wizard.delta.detail.col.status'),
-            $this->t('compliance_wizard.delta.detail.col.source_mappings'),
-            $this->t('compliance_wizard.delta.detail.col.inheritance_state'),
-            $this->t('compliance_wizard.delta.detail.col.applicability_justification'),
-            $this->t('compliance_wizard.delta.detail.col.gap_estimation'),
-            $this->t('compliance_wizard.delta.detail.col.action_required'),
+            $this->t('delta.detail.col.requirement_id'),
+            $this->t('delta.detail.col.title'),
+            $this->t('delta.detail.col.category'),
+            $this->t('delta.detail.col.priority'),
+            $this->t('delta.detail.col.fulfillment_pct'),
+            $this->t('delta.detail.col.status'),
+            $this->t('delta.detail.col.source_mappings'),
+            $this->t('delta.detail.col.inheritance_state'),
+            $this->t('delta.detail.col.applicability_justification'),
+            $this->t('delta.detail.col.gap_estimation'),
+            $this->t('delta.detail.col.action_required'),
         ];
         $this->excelExportService->addFormattedHeaderRow($sheet, $headers, 1, true);
 
@@ -305,7 +305,7 @@ final class DeltaAssessmentExcelExporter
                 $this->inheritanceLabel($inheritanceState),
                 (string) ($fulfillment?->getApplicabilityJustification() ?? ''),
                 $gapDays,
-                $this->t('compliance_wizard.delta.action.' . $action),
+                $this->t('delta.action.' . $action),
             ];
         }
 
@@ -335,18 +335,18 @@ final class DeltaAssessmentExcelExporter
     ): void {
         $sheet = $this->excelExportService->createSheet(
             $spreadsheet,
-            $this->t('compliance_wizard.delta.sheet.mapping'),
+            $this->t('delta.sheet.mapping'),
         );
 
         $headers = [
-            $this->t('compliance_wizard.delta.mapping.col.source_requirement'),
-            $this->t('compliance_wizard.delta.mapping.col.target_requirement'),
-            $this->t('compliance_wizard.delta.mapping.col.mapping_percentage'),
-            $this->t('compliance_wizard.delta.mapping.col.confidence'),
-            $this->t('compliance_wizard.delta.mapping.col.bidirectional'),
-            $this->t('compliance_wizard.delta.mapping.col.source'),
-            $this->t('compliance_wizard.delta.mapping.col.valid_from'),
-            $this->t('compliance_wizard.delta.mapping.col.valid_until'),
+            $this->t('delta.mapping.col.source_requirement'),
+            $this->t('delta.mapping.col.target_requirement'),
+            $this->t('delta.mapping.col.mapping_percentage'),
+            $this->t('delta.mapping.col.confidence'),
+            $this->t('delta.mapping.col.bidirectional'),
+            $this->t('delta.mapping.col.source'),
+            $this->t('delta.mapping.col.valid_from'),
+            $this->t('delta.mapping.col.valid_until'),
         ];
         $this->excelExportService->addFormattedHeaderRow($sheet, $headers, 1, true);
 

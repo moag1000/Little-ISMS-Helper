@@ -81,9 +81,9 @@
                                 {% endif %}
                             </td>
                             <td class="fa-table__cell">
-                                <span class="badge bg-secondary">{{ ('exercise_type.' ~ log.exerciseType)|trans({}, 'bsi_200_4_exercise') }}</span>
+                                <span class="badge bg-secondary">{{ ('bsi_200_4_exercise.exercise_type.' ~ log.exerciseType)|trans({}, 'bsi_200_4_exercise') }}</span>
                             </td>
-                            <td class="fa-table__cell">{{ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise') }}</td>
+                            <td class="fa-table__cell">{{ ('bsi_200_4_exercise.template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise') }}</td>
                             <td class="fa-table__cell">
                                 {% if log.isConfirmed %}
                                     <span class="fa-status-pill fa-status-pill--success">{{ 'bsi_200_4_exercise.status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
@@ -95,7 +95,7 @@
                             </td>
                             <td class="fa-table__cell">
                                 {% if log.overallRating %}
-                                    {{ ('rating.' ~ log.overallRating)|trans({}, 'bsi_200_4_exercise') }}
+                                    {{ ('bsi_200_4_exercise.rating.' ~ log.overallRating)|trans({}, 'bsi_200_4_exercise') }}
                                 {% else %}—{% endif %}
                             </td>
                             <td class="fa-table__cell">{{ log.submittedAt ? log.submittedAt|date('d.m.Y') : '—' }}</td>

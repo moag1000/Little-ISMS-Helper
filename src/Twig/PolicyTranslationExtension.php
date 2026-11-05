@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use App\Service\PolicyWizard\PolicyTranslationDomains;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -26,27 +27,6 @@ use Twig\TwigFunction;
  */
 final class PolicyTranslationExtension extends AbstractExtension
 {
-    /**
-     * Per-standard candidate domain list. Iterated in order until a
-     * domain returns a translation for the key. Add new batches here
-     * as they ship.
-     *
-     * @var array<string, list<string>>
-     */
-    private const DOMAINS_BY_STANDARD = [
-        'gdpr'      => ['policy_privacy_batch1', 'policy_privacy_sections'],
-        'iso27001'  => ['policy_iso27001', 'policy_iso27001_batch2', 'policy_iso27001_batch3', 'policy_iso27001_batch4', 'policy_iso27001_batch5'],
-        'iso27701'  => ['policy_iso27701'],
-        'bsi'       => ['policy_bsi_batch1', 'policy_bsi_batch2', 'policy_bsi_batch3', 'policy_bsi_batch4', 'policy_bsi_batch5'],
-        'bcm'       => ['policy_bcm_batch1', 'policy_bcm_batch2'],
-        'dora'      => ['policy_dora'],
-        'soc2'      => ['policy_soc2'],
-        'tisax'     => ['policy_tisax'],
-        'nis2'      => ['policy_nis2'],
-        'c5'        => ['policy_c5'],
-        'kritis'    => ['policy_kritis'],
-    ];
-
     public function __construct(
         private readonly TranslatorInterface $translator,
     ) {
@@ -70,12 +50,9 @@ final class PolicyTranslationExtension extends AbstractExtension
             return $topicFallback !== null ? $this->humanise($topicFallback) : '—';
         }
 
-        $candidates = self::DOMAINS_BY_STANDARD[$standard] ?? [];
-        foreach ($candidates as $domain) {
-            $resolved = $this->translator->trans($key, [], $domain);
-            if ($resolved !== $key) {
-                return $resolved;
-            }
+        $resolved = PolicyTranslationDomains::translate($this->translator, $key, $standard);
+        if ($resolved !== null) {
+            return $resolved;
         }
 
         // Last-resort: humanise the topic segment from the key path.

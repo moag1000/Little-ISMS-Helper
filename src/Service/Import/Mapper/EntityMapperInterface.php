@@ -51,4 +51,13 @@ interface EntityMapperInterface
      * @return object|null  the existing entity, or null if not found
      */
     public function findExisting(array $row, Tenant $tenant): ?object;
+
+    /**
+     * Identity of the row inside one file (its unique-field values), or null when the
+     * entity has none. Two new rows with the same key would violate the unique key at
+     * flush time and abort the whole commit, so the delta stage rejects the later one.
+     *
+     * @param array<string, mixed> $row
+     */
+    public function duplicateKey(array $row): ?string;
 }

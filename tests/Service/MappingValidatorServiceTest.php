@@ -97,7 +97,7 @@ class MappingValidatorServiceTest extends TestCase
     }
 
     #[Test]
-    public function testInvalidRelationshipIsError(): void
+    public function testInvalidRelationshipSkipsOnlyThatPair(): void
     {
         $payload = $this->validPayload();
         $payload['mappings'][0]['relationship'] = 'totally_invented';
@@ -105,8 +105,21 @@ class MappingValidatorServiceTest extends TestCase
         $svc = $this->makeService(new ComplianceFramework(), new ComplianceRequirement());
         $result = $svc->validate($payload);
 
-        $errors = implode(' | ', $result['errors']);
-        $this->assertStringContainsString('relationship', $errors);
+        $this->assertSame([], $result['errors'], 'one bad pair must not reject the whole library');
+        $this->assertStringContainsString('relationship', implode(' | ', $result['warnings']));
+        $this->assertStringContainsString('skipped', implode(' | ', $result['warnings']));
+    }
+
+    #[Test]
+    public function testEntryProblemFlagsUnusableEntries(): void
+    {
+        $this->assertNull(MappingValidatorService::entryProblem(['source' => 'A', 'target' => 'B', 'relationship' => 'equivalent']));
+        $this->assertNull(MappingValidatorService::entryProblem(['source' => 'A', 'target' => null, 'relationship' => 'related']));
+        $this->assertNotNull(MappingValidatorService::entryProblem('x'));
+        $this->assertNotNull(MappingValidatorService::entryProblem(['target' => 'B']));
+        $this->assertNotNull(MappingValidatorService::entryProblem(['source' => 'A', 'target' => '']));
+        $this->assertNotNull(MappingValidatorService::entryProblem(['source' => 'A', 'target' => null, 'relationship' => 'equivalent']));
+        $this->assertNotNull(MappingValidatorService::entryProblem(['source' => 'A', 'target' => 'B', 'confidence' => 'certain']));
     }
 
     #[Test]

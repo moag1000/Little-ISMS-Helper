@@ -115,7 +115,7 @@ final class SeedKritisPolicyTemplatesCommand extends Command
                 'A.5.7', 'A.5.24', 'A.5.30', 'A.7.4', 'A.8.14', 'A.8.16',
             ],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         // 2 — Sektor Wasser (BSI-KritisV § 3 + DVGW-Regelwerk W 1060/1100)
@@ -138,7 +138,7 @@ final class SeedKritisPolicyTemplatesCommand extends Command
                 'A.5.30', 'A.7.1', 'A.7.4', 'A.8.14', 'A.8.16',
             ],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         // 3 — Sektor IT/TK (TKG § 165 + BSI-KritisV § 6 + BNetzA-Katalog)
@@ -183,7 +183,7 @@ final class SeedKritisPolicyTemplatesCommand extends Command
                 'A.5.24', 'A.5.30', 'A.8.13', 'A.8.16',
             ],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_DPO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_DPO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => true,
         ],
         // 5 — Sektor Gesundheit (BSI-KritisV § 7 + KHZG + DigiG + § 75c SGB V)
@@ -205,7 +205,7 @@ final class SeedKritisPolicyTemplatesCommand extends Command
                 'A.5.30', 'A.5.34', 'A.7.4', 'A.8.10', 'A.8.13', 'A.8.16', 'A.8.24',
             ],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_DPO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_DPO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => true,
         ],
         // 6 — Sektor Transport + Verkehr (BSI-KritisV § 5)
@@ -228,7 +228,7 @@ final class SeedKritisPolicyTemplatesCommand extends Command
                 'A.5.30', 'A.7.1', 'A.7.4', 'A.8.14', 'A.8.16',
             ],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         // 7 — Sektor Ernaehrung (BSI-KritisV § 4)
@@ -251,7 +251,7 @@ final class SeedKritisPolicyTemplatesCommand extends Command
                 'A.5.30', 'A.7.1', 'A.7.4', 'A.8.14', 'A.8.16',
             ],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         // 8 — Sektor Staat + Verwaltung (BSIG § 8 + UP Bund + IT-Konsolidierung)
@@ -274,7 +274,7 @@ final class SeedKritisPolicyTemplatesCommand extends Command
                 'A.5.24', 'A.5.30', 'A.5.34', 'A.7.1', 'A.7.4', 'A.8.16',
             ],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_DPO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_DPO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => true,
         ],
     ];

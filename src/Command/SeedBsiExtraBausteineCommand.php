@@ -329,7 +329,7 @@ final class SeedBsiExtraBausteineCommand extends Command
             ],
             'linked_annex_a_controls' => ['A.7.1', 'A.7.4', 'A.7.5', 'A.7.8', 'A.7.11', 'A.7.12'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_FACILITIES', 'ROLE_BCM'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_FACILITIES', 'ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
         // 15 — IND.1 Prozessleit- und Automatisierungstechnik (OT/ICS,
@@ -350,7 +350,7 @@ final class SeedBsiExtraBausteineCommand extends Command
             ],
             'linked_annex_a_controls' => ['A.5.7', 'A.7.4', 'A.8.20', 'A.8.21', 'A.8.32'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_OT_LEAD', 'ROLE_BCM'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_OT_LEAD', 'ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
     ];

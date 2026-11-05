@@ -240,7 +240,7 @@
         {% block card_header %}
             <div class="card-header">
                 {%- set supplierCount = suppliers|length -%}
-                <h2>{{ 'supplier.list.title'|trans({'count': supplierCount}, 'suppliers') }}</h2>
+                <h2>{{ 'supplier.list.title'|trans({'%count%': supplierCount}, 'suppliers') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}

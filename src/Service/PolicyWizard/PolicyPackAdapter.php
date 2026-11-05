@@ -125,8 +125,8 @@ final class PolicyPackAdapter
             'topic'         => $template->getTopic(),
             'norm_ref'      => $template->getNormRef(),
             'version'       => $template->getVersion(),
-            'title'         => $this->resolve($template->getTitleTranslationKey(), $locale),
-            'body'          => $this->resolve($template->getBodyTranslationKey(), $locale),
+            'title'         => $this->resolve($template->getTitleTranslationKey(), $template->getStandard(), $locale),
+            'body'          => $this->resolve($template->getBodyTranslationKey(), $template->getStandard(), $locale),
             'required_variables'   => $template->getRequiredVariables() ?? [],
             'linked_annex_a'       => $template->getLinkedAnnexAControls() ?? [],
             'linked_bausteine'     => $template->getLinkedBausteine() ?? [],
@@ -134,18 +134,14 @@ final class PolicyPackAdapter
         ];
     }
 
-    private function resolve(?string $key, string $locale): ?string
+    private function resolve(?string $key, ?string $standard, string $locale): ?string
     {
         if ($key === null || $key === '') {
             return null;
         }
 
-        // Policy template title/body live in the translations catalogue; resolve
-        // against the requested locale so the pack is self-contained text.
-        $translated = $this->translator->trans($key, [], 'policy_templates', $locale);
-
-        // If the key did not resolve, fall back to the raw key so the pack still
-        // carries a traceable reference rather than a silent empty string.
-        return $translated === $key ? $key : $translated;
+        // Policy prose lives in the standard's policy_* domains; an unresolved key
+        // stays in the pack as a traceable reference rather than an empty string.
+        return PolicyTranslationDomains::translate($this->translator, $key, $standard, $locale) ?? $key;
     }
 }

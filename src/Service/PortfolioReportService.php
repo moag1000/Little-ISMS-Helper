@@ -185,10 +185,13 @@ final class PortfolioReportService
     {
         $fulfillments = $this->fulfillmentRepository->findByFrameworkAndTenant($framework, $tenant);
 
+        // Non-applicable fulfilments are excluded from numerator and denominator
+        // (same rule as CoverageCheckService), never counted as 100 %.
         $matching = array_values(array_filter(
             $fulfillments,
             fn(ComplianceRequirementFulfillment $f): bool =>
                 $f->getRequirement() instanceof ComplianceRequirement
+                && $f->isApplicable()
                 && $this->mapRequirementToCategory($f->getRequirement()) === $category
         ));
 
@@ -201,9 +204,9 @@ final class PortfolioReportService
         $sum = 0;
         $gaps = 0;
         foreach ($matching as $fulfillment) {
-            $score = $fulfillment->isApplicable() ? $fulfillment->getFulfillmentPercentage() : 100;
+            $score = $fulfillment->getFulfillmentPercentage();
             $sum += $score;
-            if ($fulfillment->isApplicable() && $score < 100) {
+            if ($score < 100) {
                 $gaps++;
             }
         }

@@ -39,11 +39,11 @@ use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
  *  | ISO Topic               | Section Key                       | GDPR Article            | Approval Role |
  *  |-------------------------|-----------------------------------|-------------------------|---------------|
  *  | acceptable_use          | gdpr_lawful_basis_workplace       | Art. 6, 9               | dpo           |
- *  | awareness_training      | gdpr_dpo_mandate                  | Art. 37-39              | dpo           |
+ *  | hr_security             | gdpr_dpo_mandate                  | Art. 37-39              | dpo           |
  *  | information_classification | gdpr_special_categories       | Art. 9                  | joint         |
  *  | secure_development      | gdpr_privacy_by_design            | Art. 25                 | joint         |
  *  | secure_development      | gdpr_ai_systems                   | Art. 22 + EU AI Act     | dpo           |
- *  | supplier_security       | gdpr_joint_controllers            | Art. 26                 | dpo           |
+ *  | supplier_relationships  | gdpr_joint_controllers            | Art. 26                 | dpo           |
  *  | information_transfer    | gdpr_international_transfers      | Art. 44-49 (Schrems II) | dpo           |
  *  | asset_management        | gdpr_retention_minimisation       | Art. 5(1)(c)+(e)        | joint         |
  *  | incident_management     | gdpr_breach_72h                   | Art. 33                 | dpo           |
@@ -70,7 +70,7 @@ final class GdprSectionCatalogue implements StandardSectionCatalogueInterface
             'approval_role' => DocumentSection::APPROVAL_ROLE_DPO,
         ],
         [
-            'iso_topic'     => 'awareness_training',
+            'iso_topic'     => 'hr_security',
             'section_key'   => 'gdpr_dpo_mandate',
             'gdpr_articles' => ['Art. 37', 'Art. 38', 'Art. 39'],
             'approval_role' => DocumentSection::APPROVAL_ROLE_DPO,
@@ -94,7 +94,7 @@ final class GdprSectionCatalogue implements StandardSectionCatalogueInterface
             'approval_role' => DocumentSection::APPROVAL_ROLE_DPO,
         ],
         [
-            'iso_topic'     => 'supplier_security',
+            'iso_topic'     => 'supplier_relationships',
             'section_key'   => 'gdpr_joint_controllers',
             'gdpr_articles' => ['Art. 26'],
             'approval_role' => DocumentSection::APPROVAL_ROLE_DPO,
@@ -183,7 +183,7 @@ final class GdprSectionCatalogue implements StandardSectionCatalogueInterface
     /**
      * Maps each matching catalogue row to a {@see SectionExtension} DTO.
      *
-     * Translation-key convention: `policy_wizard.gdpr_section.<section_key>.body`
+     * Translation-key convention: `policy.iso27001.<iso_topic>.v1.gdpr_section.<section_key>.body` (policy_privacy_sections)
      * (authored alongside the addon sections — kept as a static pattern here
      * so consumers do not need to know the domain layout).
      *
@@ -203,11 +203,17 @@ final class GdprSectionCatalogue implements StandardSectionCatalogueInterface
                 standard:            'gdpr',
                 controlRefs:         $row['gdpr_articles'],
                 approvalRole:        $row['approval_role'],
-                bodyTranslationKey:  'policy_wizard.gdpr_section.' . $row['section_key'] . '.body',
+                bodyTranslationKey:  self::bodyKey($row['iso_topic'], $row['section_key']),
                 renderMode:          'document_section',
             );
         }
 
         return $extensions;
+    }
+
+    /** Prose of a GDPR section in `policy_privacy_sections.{de,en}.yaml`. */
+    public static function bodyKey(string $isoTopic, string $sectionKey): string
+    {
+        return sprintf('policy.iso27001.%s.v1.gdpr_section.%s.body', $isoTopic, $sectionKey);
     }
 }

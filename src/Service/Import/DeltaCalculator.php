@@ -50,6 +50,8 @@ final class DeltaCalculator
 
         /** IDs of entities already matched (for delete-candidate subtraction) */
         $matchedIds = [];
+        /** @var array<string, int> unique key of a new row => row number that first used it */
+        $newKeys = [];
 
         foreach ($parsed->rows as $index => $row) {
             $rowNumber  = $index + 1; // 1-based for human-readable output
@@ -67,6 +69,20 @@ final class DeltaCalculator
             $existing = $mapper->findExisting($row, $config->tenant);
 
             if ($existing === null) {
+                // A second new row with the same unique key would fail the flush and
+                // abort the whole commit — reject it here as a row error instead.
+                $key = $mapper->duplicateKey($row);
+                if ($key !== null && isset($newKeys[$key])) {
+                    $errors[] = [
+                        'rowNumber' => $rowNumber,
+                        'data'      => $row,
+                        'errors'    => [sprintf('Duplicate key: same as row %d of this file.', $newKeys[$key])],
+                    ];
+                    continue;
+                }
+                if ($key !== null) {
+                    $newKeys[$key] = $rowNumber;
+                }
                 $newValues = $mapper->toEntityData($row, $columnMapping);
 
                 $creates[] = [

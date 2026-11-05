@@ -26,7 +26,7 @@ final class DoraExtensionCatalogueCharacterizationTest extends TestCase
     #[Test]
     public function countIsExactlyEighteen(): void
     {
-        self::assertSame(18, $this->catalogue->count());
+        self::assertSame(19, $this->catalogue->count());
     }
 
     #[Test]
@@ -36,7 +36,7 @@ final class DoraExtensionCatalogueCharacterizationTest extends TestCase
         self::assertArrayHasKey('backup', $all);
         self::assertArrayHasKey('network_security', $all);
         self::assertArrayHasKey('incident_management', $all);
-        self::assertArrayHasKey('supplier_security', $all);
+        self::assertArrayHasKey('supplier_relationships', $all);
         self::assertArrayHasKey('cryptography', $all);
         self::assertArrayHasKey('top_level', $all);
     }

@@ -147,8 +147,7 @@ final class DocumentGeneratorThinA534HostTest extends TestCase
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')->willReturnCallback(
-            // Return the key verbatim — exercises the stub-body path
-            // until W6-F ships the full prose translation.
+            // Bodies resolve to a stand-in text; everything else returns the key.
             static fn (string $key): string => match (true) {
                 str_ends_with($key, '.title') => 'Title for ' . $key,
                 str_ends_with($key, '.body') => 'Base ISO body for ' . $key,

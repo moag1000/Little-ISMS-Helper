@@ -286,7 +286,7 @@
 
             {# Chart Placeholder (charts need JavaScript) #}
             {% elseif widgetType starts with 'chart_' %}
-            <div class="widget-title">{{ ('widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
+            <div class="widget-title">{{ ('report_builder.widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
             <div style="text-align: center; padding: 30px; color: #666; background: var(--surface-2); border-radius: 4px;">
                 {{ 'report_builder.pdf.chart_data'|trans({}, 'report_builder') }}:
                 {% if data.labels is defined %}
@@ -299,7 +299,7 @@
 
             {# Table Widgets #}
             {% elseif widgetType starts with 'table_' %}
-            <div class="widget-title">{{ ('widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
+            <div class="widget-title">{{ ('report_builder.widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
             {% if data.rows|length > 0 %}
             <table class="data-table">
                 <thead>

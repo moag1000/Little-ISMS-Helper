@@ -168,7 +168,7 @@
                             </header>
                             <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}" data-fa-modal-target="form">
                                 <div class="fa-modal__body">
-                                    <p>{{ 'workflow.widget.confirm.approve'|trans({workflow: workflow.name}, 'workflows') }}</p>
+                                    <p>{{ 'workflow.widget.confirm.approve'|trans({'%workflow%': workflow.name}, 'workflows') }}</p>
                                     <div class="mb-3">
                                         <label for="comments{{ instance.id }}" class="form-label">
                                             {{ 'workflow.widget.field.comments'|trans({}, 'workflows') }}
@@ -207,7 +207,7 @@
                             </header>
                             <form method="post" action="{{ path('app_workflow_instance_reject', {id: instance.id}) }}" data-fa-modal-target="form">
                                 <div class="fa-modal__body">
-                                    <p>{{ 'workflow.widget.confirm.reject'|trans({workflow: workflow.name}, 'workflows') }}</p>
+                                    <p>{{ 'workflow.widget.confirm.reject'|trans({'%workflow%': workflow.name}, 'workflows') }}</p>
                                     <div class="mb-3">
                                         <label for="reason{{ instance.id }}" class="form-label">
                                             {{ 'workflow.widget.field.reason'|trans({}, 'workflows') }} <span class="text-danger">*</span>
@@ -236,7 +236,7 @@
                 <div class="text-center mt-3 pt-3 border-top">
                     <a href="{{ path('app_workflow_pending') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                        {{ 'workflow.widget.view_all'|trans({count: total_pending - 5}, 'workflows') }}
+                        {{ 'workflow.widget.view_all'|trans({'%count%': total_pending - 5}, 'workflows') }}
                     </a>
                 </div>
             {% endif %}

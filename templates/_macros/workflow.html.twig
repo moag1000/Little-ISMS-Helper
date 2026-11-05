@@ -270,7 +270,7 @@
 
                         <div class="fa-modal__body">
                             <p class="mb-3">
-                                {{ 'workflow.widget.confirm.approve'|trans({workflow: workflowInstance.workflow.name}, 'workflows') }}
+                                {{ 'workflow.widget.confirm.approve'|trans({'%workflow%': workflowInstance.workflow.name}, 'workflows') }}
                             </p>
 
                             {% if entity is defined %}
@@ -328,7 +328,7 @@
 
                         <div class="fa-modal__body">
                             <p class="mb-3">
-                                {{ 'workflow.widget.confirm.reject'|trans({workflow: workflowInstance.workflow.name}, 'workflows') }}
+                                {{ 'workflow.widget.confirm.reject'|trans({'%workflow%': workflowInstance.workflow.name}, 'workflows') }}
                             </p>
 
                             {% if entity is defined %}

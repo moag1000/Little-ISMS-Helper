@@ -96,11 +96,17 @@ final class SeedTemplatesCommand extends Command
 
         $rows = [];
         $totalRecords = 0;
+        $failed = 0;
         foreach ($matches as $template) {
             try {
                 $entities = $this->applier->apply($template, dryRun: $dryRun);
                 $info = $this->applier->lastResult();
                 $count = $info['records'] ?? count($entities);
+                if (!$dryRun) {
+                    // Per template, so one failing template cannot leave half-built
+                    // entities in the unit of work for the next one to flush.
+                    $this->entityManager->flush();
+                }
                 $totalRecords += $count;
                 $rows[] = [
                     $template->key,
@@ -111,21 +117,32 @@ final class SeedTemplatesCommand extends Command
                 ];
             } catch (\Throwable $e) {
                 $rows[] = [$template->key, 'ERROR', $template->module ?? '—', 0, $e->getMessage()];
+                ++$failed;
+                if (!$dryRun && $this->entityManager->isOpen()) {
+                    // Drop the failed template's pending entities, keep the tenant attached.
+                    $this->entityManager->clear();
+                    if ($tenant !== null) {
+                        $tenant = $this->tenantRepository->find($tenant->getId()) ?? $tenant;
+                        $this->tenantContext->setCurrentTenant($tenant);
+                    }
+                }
             }
-        }
-
-        if (!$dryRun) {
-            $this->entityManager->flush();
         }
 
         $io->table(['Key', 'Entity', 'Module', 'Records', 'Note'], $rows);
         $io->success(sprintf(
             '%s — applied %d template(s), %d entity record(s)%s.',
             $dryRun ? 'DRY-RUN' : 'DONE',
-            count($matches),
+            count($matches) - $failed,
             $totalRecords,
             $dryRun ? ' (nothing persisted)' : '',
         ));
+
+        if ($failed > 0) {
+            $io->error(sprintf('%d template(s) failed — see the ERROR rows above.', $failed));
+
+            return Command::FAILURE;
+        }
 
         return Command::SUCCESS;
     }

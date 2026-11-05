@@ -129,7 +129,7 @@
             <ul class="mb-0">
                 {% for gap in result.critical_gaps|slice(0, 5) %}
                 <li>
-                    <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
+                    <strong>{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}</strong>
                     {% if gap.route is defined and gap.route is not null and gap.route is not empty %}
                         - <a href="{{ path(gap.route) }}" class="fa-alert__link">{{ 'wizard.go_to_module'|trans({}, 'wizard') }}</a>
                     {% endif %}
@@ -208,9 +208,9 @@
                         <strong class="text-danger">{{ 'wizard.gaps'|trans({}, 'wizard') }}: {{ category.gap_count }}</strong>
                         <ul class="list-unstyled mt-1 mb-0">
                             {% for gap in category.gaps|slice(0, 2) %}
-                            <li class="text-truncate" title="{{ gap.title|trans({}, 'wizard') }}">
+                            <li class="text-truncate" title="{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}">
                                 <i class="fa-icon fa-icon--ui-flag text-danger me-1" aria-hidden="true"></i>
-                                {{ gap.title|trans({}, 'wizard') }}
+                                {{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}
                             </li>
                             {% endfor %}
                         </ul>

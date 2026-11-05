@@ -169,7 +169,7 @@ class DoraComplianceController extends AbstractController
         $highIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN));
         $criticalIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::CRITICAL_MIN));
         $treatedIctRisks = count(array_filter($ictRisks, fn($r) => $r->getTreatmentStrategy() !== null));
-        $treatmentRate = $totalIctRisks > 0 ? round(($treatedIctRisks / $totalIctRisks) * 100) : 100;
+        $treatmentRate = $totalIctRisks > 0 ? round(($treatedIctRisks / $totalIctRisks) * 100) : 0;
 
         // ICT Assets inventory (Art. 8)
         $tenant = $this->getUser()?->getTenant();
@@ -189,13 +189,13 @@ class DoraComplianceController extends AbstractController
         $totalIctAssets = count($ictAssets);
         $classifiedIctAssets = count(array_filter($ictAssets, fn($a) => $a->getConfidentialityValue() > 0 || $a->getIntegrityValue() > 0 || $a->getAvailabilityValue() > 0
         ));
-        $assetClassificationRate = $totalIctAssets > 0 ? round(($classifiedIctAssets / $totalIctAssets) * 100) : 100;
+        $assetClassificationRate = $totalIctAssets > 0 ? round(($classifiedIctAssets / $totalIctAssets) * 100) : 0;
 
         // Critical business functions (Art. 8)
         $allProcesses = $this->businessProcessRepository->findAll();
         $criticalProcesses = array_filter($allProcesses, fn($p) => $p->getCriticality() === 'critical' || $p->getCriticality() === 'high');
         $processesWithRto = array_filter($criticalProcesses, fn($p) => $p->getRto() !== null);
-        $rtoCoverage = count($criticalProcesses) > 0 ? round((count($processesWithRto) / count($criticalProcesses)) * 100) : 100;
+        $rtoCoverage = count($criticalProcesses) > 0 ? round((count($processesWithRto) / count($criticalProcesses)) * 100) : 0;
 
         // Controls implementation (Art. 9)
         $ictControls = $this->controlRepository->findBy(['category' => ['access_control', 'cryptography', 'network_security', 'operations_security', 'system_acquisition']]);
@@ -278,7 +278,7 @@ class DoraComplianceController extends AbstractController
             $diff = $i->getDetectedAt()->diff($reportedAt);
             return ($diff->days === 0 && $diff->h <= 4);
         }));
-        $reportingComplianceRate = $totalMajorIncidents > 0 ? round(($reportedIn4h / $totalMajorIncidents) * 100) : 100;
+        $reportingComplianceRate = $totalMajorIncidents > 0 ? round(($reportedIn4h / $totalMajorIncidents) * 100) : 0;
 
         // Mean Time To Resolve (MTTR)
         $resolvedIncidents = array_filter($incidentsThisYear, fn($i) => $i->getResolvedAt() !== null);
@@ -296,7 +296,7 @@ class DoraComplianceController extends AbstractController
 
         // Incident classification compliance
         $classifiedIncidents = count(array_filter($ictIncidents, fn($i) => $i->getSeverity() !== null));
-        $classificationRate = $totalIctIncidents > 0 ? round(($classifiedIncidents / $totalIctIncidents) * 100) : 100;
+        $classificationRate = $totalIctIncidents > 0 ? round(($classifiedIncidents / $totalIctIncidents) * 100) : 0;
 
         return [
             'total_incidents' => $totalIctIncidents,
@@ -335,7 +335,7 @@ class DoraComplianceController extends AbstractController
         // BusinessProcess has no getBusinessContinuityPlan() — the relation is owned by
         // BusinessContinuityPlan (ManyToOne → BusinessProcess). Query the BC plan repo instead.
         $processesWithBcPlan = array_filter($criticalProcesses, fn($p) => $this->bcPlanRepository->findOneBy(['businessProcess' => $p]) !== null);
-        $bcPlanCoverage = count($criticalProcesses) > 0 ? round((count($processesWithBcPlan) / count($criticalProcesses)) * 100) : 100;
+        $bcPlanCoverage = count($criticalProcesses) > 0 ? round((count($processesWithBcPlan) / count($criticalProcesses)) * 100) : 0;
 
         // Training / awareness for resilience
         $allTrainings = $this->trainingRepository->findAll();
@@ -394,7 +394,7 @@ class DoraComplianceController extends AbstractController
 
         // Assessed providers (Supplier uses getLastSecurityAssessment())
         $assessedProviders = array_filter($criticalProviders, fn($s) => $s->getLastSecurityAssessment() !== null);
-        $assessmentRate = $totalCriticalProviders > 0 ? round((count($assessedProviders) / $totalCriticalProviders) * 100) : 100;
+        $assessmentRate = $totalCriticalProviders > 0 ? round((count($assessedProviders) / $totalCriticalProviders) * 100) : 0;
 
         // Overdue assessments (> 12 months)
         $overdueAssessments = count(array_filter($criticalProviders, fn($s) => $s->getLastSecurityAssessment() === null || $s->getLastSecurityAssessment()->diff(new DateTime())->days > 365
@@ -406,7 +406,7 @@ class DoraComplianceController extends AbstractController
         // Exit strategies (Supplier has hasExitStrategy() bool; no getExitStrategy() string getter)
         $providersWithExitStrategy = array_filter($criticalProviders, fn($s) => $s->hasExitStrategy()
         );
-        $exitStrategyRate = $totalCriticalProviders > 0 ? round((count($providersWithExitStrategy) / $totalCriticalProviders) * 100) : 100;
+        $exitStrategyRate = $totalCriticalProviders > 0 ? round((count($providersWithExitStrategy) / $totalCriticalProviders) * 100) : 0;
 
         return [
             'total_ict_providers' => $totalIctProviders,

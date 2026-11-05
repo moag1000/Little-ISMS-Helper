@@ -1,4 +1,5 @@
 setup:
+    reset_done: 'Setup reset.'
     # Common keys used across setup templates
     common:
         close: 'Close'
@@ -143,6 +144,14 @@ setup:
 
     # Step 2: Database Configuration
     database:
+        user_help: 'Username for the database connection'
+        unix_socket_help: 'Path to MySQL/MariaDB Unix socket (leave empty for TCP connection)'
+        type_help: 'Select the type of your database'
+        port_help: 'Port of the database server (auto-set if empty)'
+        password_help_standalone: 'Password has been auto-generated and is already pre-filled (see /var/www/html/var/mysql_credentials.txt)'
+        password_help: 'Password for the database connection'
+        name_help: 'Name of the database (only letters, numbers and underscores)'
+        host_help: 'Hostname or IP address of the database server'
         title: 'Step 2: Database - Deployment Wizard'
         header: 'Step 2: Configure Database'
         description: 'Enter your database connection details.'
@@ -237,6 +246,7 @@ setup:
 
     # Step 4: Admin User
     admin:
+        password_mismatch: 'The passwords do not match.'
         title: 'Step 4: Administrator - Deployment Wizard'
         header: 'Step 4: Create Administrator Account'
         description: 'Create the first administrator account for your ISMS installation.'
@@ -267,6 +277,14 @@ setup:
 
     # Step 5: Email Configuration
     email:
+        username_help: 'SMTP username for authentication'
+        transport_help: 'Select the method for sending emails'
+        port_help: 'SMTP port (587 for TLS, 465 for SSL, 25 for unencrypted)'
+        host_help: 'Hostname of the SMTP server (e.g. smtp.example.com)'
+        from_name_help: 'Name displayed as the sender'
+        from_address_help: 'Email address from which messages are sent'
+        encryption_help: 'Encryption method (TLS recommended)'
+        from_name_placeholder: 'e.g. ISMS Helper'
         title: 'Step 5: Email - Deployment Wizard'
         header: 'Step 5: Email Configuration (Optional)'
         transport: 'Email Transport'
@@ -291,6 +309,11 @@ setup:
 
     # Step 6: Organisation Info
     organisation:
+        name_help: 'The official name of your organization'
+        description_label: 'Description'
+        description_help: 'Brief description of your business activities (optional, helps with assessment)'
+        name_placeholder: 'e.g. Example Ltd'
+        description_placeholder: 'e.g. software development for the healthcare sector'
         title: 'Step 6: Organization - Deployment Wizard'
         header: 'Step 6: Organization Information'
         description: 'This information helps configure your ISMS.'
@@ -337,6 +360,8 @@ setup:
 
     # Step 8: Compliance Frameworks
     compliance:
+        frameworks_help: 'The preselection follows your industry and size and can be changed later.'
+        frameworks: 'Compliance frameworks'
         title: 'Step 8: Compliance Frameworks - Deployment Wizard'
         header: 'Step 8: Select Compliance Frameworks'
         description: 'Select the compliance frameworks relevant to your organization.'
@@ -466,6 +491,16 @@ setup:
                 hint: 'For specific business areas or as additional evidence.'
                 why: 'Optional because'
         reason:
+            iso27017: 'Cloud services: ISO 27017 adds cloud-specific controls to ISO 27001.'
+            iso27018: 'Cloud services handling personal data: ISO 27018 covers PII protection in the cloud.'
+            iso42001: 'AI governance standard — recommended if you operate high-risk AI.'
+            eu_cra: 'Manufacturers and IT service providers in the EU — Cyber Resilience Act obligations for products with digital elements.'
+            pci_dss: 'Only relevant if you process, store or transmit cardholder data.'
+            bsi_gspp: 'BSI Grundschutz++ (Standard 300-1) — evolution of IT-Grundschutz.'
+            mris: 'MRIS — niche framework, only if explicitly needed.'
+            nisg_at: 'Austrian entity in a NIS2 sector — NISG obligations apply.'
+            revdsg_ch: 'Swiss data protection law (revDSG) applies to entities or processing in Switzerland.'
+            ikt_minstd_ch: 'Critical-infrastructure operator in Switzerland — ICT minimum standard recommended.'
             iso27001: 'Core goal of the tool — requirements serve as foundation for all other frameworks.'
             gdpr_eu: 'You are based in the EU — GDPR applies to every PII processing activity without exception.'
             gdpr_non_eu: 'Also relevant outside the EU as soon as EU citizen data is processed (market-place principle).'

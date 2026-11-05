@@ -8,6 +8,8 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\Catalog\FrameworkCode;
+use App\Service\Catalog\RequirementIdPrefixes;
 
 /**
  * Shared resolver for the sub-requirement decomposition pipeline.
@@ -37,31 +39,63 @@ use App\Repository\ComplianceRequirementRepository;
 final class SubRequirementResolver
 {
     /**
-     * Known prefix variants per framework code. Mirrors the alias map in
-     * ImportMappingCsvCommand so coarse-parent lookups tolerate the same
-     * loader inconsistencies (27701 stores "27701-5.2.1", EU-AI-ACT stores
-     * "AIACT-1", etc.).
+     * Fixture-filename slugs whose letters/digits do not spell the canonical
+     * framework code (everything else is matched via FrameworkCode).
      *
-     * @var array<string, list<string>>
+     * @var array<string, string>
      */
-    private const PREFIX_ALIASES = [
-        'ISO27701' => ['27701', 'ISO27701'],
-        'ISO27001' => ['ISO27001'],
-        'ISO27018' => ['ISO27018', '27018'],
-        'ISO42001' => ['ISO42001', '42001', 'AIMS'],
-        'ISO27005' => ['27005', 'ISO27005'],
-        'EU-AI-ACT' => ['AIACT', 'EUAIACT', 'EU-AI-ACT'],
-        'NIS2' => ['NIS2'],
-        'NIS2-UmsuCG' => ['NIS2-UmsuCG', 'NIS2UMSUCG', 'NIS2UmsuCG', 'BSIG'],
-        'BDSG' => ['BDSG'],
-        'GDPR' => ['GDPR'],
-        'TISAX' => ['TISAX', 'VDA', 'VDA-ISA'],
+    private const SLUG_EXCEPTIONS = [
+        'ai-act' => 'EU-AI-ACT',
+        'cis-v8' => 'CIS-CONTROLS',
+        'tkg' => 'TKG-2024',
+        'mris' => 'MRIS-v1.5',
     ];
 
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
     ) {
+    }
+
+    /**
+     * Source/target framework codes for a decomposition fixture basename
+     * (`decomp_<source>_<target>[_suffix]`), derived from the file name and the
+     * canonical code registry. Null when a slug names no registered framework
+     * (e.g. historic editions like iso27001-2013); callers skip such files.
+     *
+     * @return array{source: string, target: string}|null
+     */
+    public function frameworkPairFor(string $basename): ?array
+    {
+        $parts = explode('_', $basename);
+        if (count($parts) < 3 || $parts[0] !== 'decomp') {
+            return null;
+        }
+        $source = $this->codeForSlug($parts[1]);
+        $target = $this->codeForSlug($parts[2]);
+
+        return $source !== null && $target !== null ? ['source' => $source, 'target' => $target] : null;
+    }
+
+    private function codeForSlug(string $slug): ?string
+    {
+        if (isset(self::SLUG_EXCEPTIONS[$slug])) {
+            return self::SLUG_EXCEPTIONS[$slug];
+        }
+        $normalize = static fn (string $v): string => strtoupper((string) preg_replace('/[^A-Za-z0-9]/', '', $v));
+        $wanted = $normalize($slug);
+        foreach (FrameworkCode::CANONICAL as $code) {
+            if ($normalize($code) === $wanted) {
+                return $code;
+            }
+        }
+        foreach (FrameworkCode::ALIASES as $alias => $code) {
+            if ($normalize($alias) === $wanted) {
+                return $code;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -72,7 +106,11 @@ final class SubRequirementResolver
     public function resolveFramework(string $code, array &$cache): ?ComplianceFramework
     {
         if (!array_key_exists($code, $cache)) {
+            $canonical = FrameworkCode::canonicalize($code);
             $cache[$code] = $this->frameworkRepository->findOneBy(['code' => $code])
+                ?? ($canonical !== null && $canonical !== $code
+                    ? $this->frameworkRepository->findOneBy(['code' => $canonical])
+                    : null)
                 ?? $this->frameworkRepository->findOneBy(['name' => $code]);
         }
 
@@ -242,7 +280,7 @@ final class SubRequirementResolver
         $strippedAnnex = preg_replace('/^A\./i', '', $stripped) ?? $stripped;
         // Strip a leading framework-name prefix the fixture may carry inline,
         // e.g. "GDPR-5.1" / "NIS2-Art.20(1)" / "BSIG-§30(2)" / "ISO27018-A.10.1".
-        foreach ($this->prefixesFor($code) as $prefix) {
+        foreach (RequirementIdPrefixes::forFramework($code) as $prefix) {
             foreach (['-', '_', '.', ':'] as $sep) {
                 $needle = $prefix . $sep;
                 if (str_starts_with($parentId, $needle)) {
@@ -260,7 +298,7 @@ final class SubRequirementResolver
         // Re-prefix in loader conventions.
         $cores = array_filter([$parentId, $stripped, $strippedAnnex], static fn (string $v) => $v !== '');
         foreach ($cores as $core) {
-            foreach ($this->prefixesFor($code) as $prefix) {
+            foreach (RequirementIdPrefixes::forFramework($code) as $prefix) {
                 $candidates[] = $prefix . '-' . $core;
                 $candidates[] = $prefix . '_' . $core;
             }
@@ -318,17 +356,5 @@ final class SubRequirementResolver
             'framework' => $framework,
             'requirementId' => $this->compactId($rawId),
         ]);
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function prefixesFor(string $code): array
-    {
-        if (isset(self::PREFIX_ALIASES[$code])) {
-            return self::PREFIX_ALIASES[$code];
-        }
-
-        return array_values(array_unique([$code, str_replace(['-', '_'], '', $code)]));
     }
 }

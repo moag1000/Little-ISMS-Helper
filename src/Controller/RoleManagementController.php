@@ -175,7 +175,7 @@ class RoleManagementController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', $translator->trans('role.success.created_from_template', [
-                    'role' => $role->getName(),
+                    '%role%' => $role->getName(),
                 ], 'messages'));
 
                 return $this->redirectToRoute('role_management_show', ['id' => $role->getId()]);

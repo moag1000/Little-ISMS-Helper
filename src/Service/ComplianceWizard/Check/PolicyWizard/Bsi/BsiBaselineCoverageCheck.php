@@ -66,16 +66,20 @@ final class BsiBaselineCoverageCheck implements PolicyWizardCheckInterface
 
         $expected = count($basisTemplates);
         if ($expected === 0) {
-            // No Basis templates seeded yet — vacuously satisfied. The
-            // seed-templates command populates them; until that
-            // runs we cannot fail the tenant for missing artefacts.
+            // A missing seed is a setup gap, not a pass: run the seed-templates command.
             return new PolicyWizardCheckResult(
                 checkId: self::CHECK_ID,
-                score: 100.0,
-                passed: true,
+                score: 0.0,
+                passed: false,
                 details: [
                     'expected_topics' => 0,
                     'reason' => 'no_basis_templates_seeded',
+                ],
+                gap: [
+                    'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
+                    'priority' => 'high',
+                    'route' => 'app_policy_wizard_index',
+                    'translation_domain' => 'policy_wizard',
                 ],
             );
         }

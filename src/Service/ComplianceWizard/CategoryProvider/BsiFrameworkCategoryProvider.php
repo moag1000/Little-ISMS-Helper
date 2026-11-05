@@ -14,6 +14,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiKritisFlagDocumentedC
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiSchutzbedarfMethodPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTierConsistencyCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTopLevelLeitliniePresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\WorksCouncilEvidenceAttachedCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Gspp\GsppPolicyCoverageCheck;
 use App\Service\TenantContext;
 
@@ -390,6 +391,7 @@ final class BsiFrameworkCategoryProvider
             BsiSchutzbedarfMethodPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
             BsiTierConsistencyCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
             BsiKritisFlagDocumentedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            WorksCouncilEvidenceAttachedCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_document_index'],
         ] as $checkId => $meta) {
             $checks[$checkId] = [
                 'name' => sprintf('compliance_check.%s.title', $checkId),

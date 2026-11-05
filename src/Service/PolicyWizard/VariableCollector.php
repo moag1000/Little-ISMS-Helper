@@ -30,6 +30,26 @@ use App\Security\TenantOwnership;
  */
 class VariableCollector
 {
+    /** BSI IT-Grundschutz-Kompendium edition the BSI templates are written against. */
+    public const string BSI_KOMPENDIUM_EDITION = 'Edition 2023';
+
+    /** Role name in a policy text => wizard role slot that holds the same function. */
+    private const array ROLE_ALIASES = [
+        'isb' => 'ciso',
+        'bcm' => 'bcm_officer',
+        'notfallbeauftragter' => 'bcm_officer',
+    ];
+
+    /** Marker name in a policy text => collected variable with the same value. */
+    private const array VARIABLE_ALIASES = [
+        'review.interval_months' => 'lifecycle.review_interval_months',
+        'data.classification_levels' => 'risk.classification_levels',
+        'asset.classification_levels' => 'risk.classification_levels',
+        'crypto.allowed_algorithms' => 'crypto.algorithms',
+        'continuity.rto_hours' => 'continuity.rto_summary',
+        'incident.sla_critical_hours' => 'patch.sla_critical_hours',
+    ];
+
     public function __construct(
         private readonly TenantPolicySettingRepository $settingRepository,
         private readonly UserRepository $userRepository,
@@ -42,6 +62,8 @@ class VariableCollector
         // Role slots store Person ids (RolesStep). Nullable for legacy test
         // construction; autowired in production.
         private readonly ?PersonRepository $personRepository = null,
+        // DORA slot (operational_baselines.dora) — {{ dora.* }} markers.
+        private readonly ?DoraSettingsCollector $doraSettingsCollector = null,
     ) {
     }
 
@@ -76,10 +98,23 @@ class VariableCollector
             ? $rolesSlot['roles']
             : [];
 
-        $vars['roles.ciso.fullName'] = $this->resolveRoleHolderName($rolesMap['ciso'] ?? null, $tenant);
-        $vars['roles.dpo.fullName'] = $this->resolveRoleHolderName($rolesMap['dpo'] ?? null, $tenant);
-        $vars['roles.bcm_officer.fullName'] = $this->resolveRoleHolderName($rolesMap['bcm_officer'] ?? null, $tenant);
-        $vars['roles.it_operations.fullName'] = $this->resolveRoleHolderName($rolesMap['it_operations'] ?? null, $tenant);
+        $functionOwners = is_array($rolesSlot) && is_array($rolesSlot['function_owners'] ?? null)
+            ? $rolesSlot['function_owners']
+            : [];
+        foreach ($rolesMap + $functionOwners as $roleKey => $holderId) {
+            if (is_string($roleKey) && preg_match('/^[a-z_]+$/', $roleKey) === 1) {
+                $vars['roles.' . $roleKey . '.fullName'] = $this->resolveRoleHolderName($holderId, $tenant);
+            }
+        }
+        foreach (['ciso', 'dpo', 'bcm_officer', 'it_operations'] as $roleKey) {
+            $vars['roles.' . $roleKey . '.fullName'] ??= null;
+        }
+        // Same function, other name in the policy texts: the wizard's CISO slot is
+        // the ISB (BSI wording), the BCM officer is the Notfallbeauftragte (BSI 200-4).
+        foreach (self::ROLE_ALIASES as $alias => $source) {
+            $vars['roles.' . $alias . '.fullName'] ??= $vars['roles.' . $source . '.fullName'] ?? null;
+        }
+        $vars['approval.chain'] = $this->approvalChainNames($rolesSlot['approval_chain'] ?? null, $tenant);
 
         // ── Risk + classification slot ──────────────────────────────
         $riskSlot = $inputs[WizardStepKeys::STEP_RISK_CLASSIFICATION] ?? [];
@@ -160,6 +195,45 @@ class VariableCollector
             $vars['lifecycle.review_interval_months'] = $this->scalarOrNull(
                 $lifecycleSlot['review_interval_months'] ?? null,
             );
+        }
+
+        // ── Same values under the names older policy texts use ────────
+        foreach (self::VARIABLE_ALIASES as $alias => $source) {
+            $vars[$alias] ??= $vars[$source] ?? null;
+        }
+
+        // ── Run-level facts ─────────────────────────────────────────
+        $vars['generation_date'] = (new \DateTimeImmutable())->format('d.m.Y');
+        $vars['bsi.kompendium_edition'] = self::BSI_KOMPENDIUM_EDITION;
+        $welcome = $inputs[WizardStepKeys::STEP_WELCOME] ?? [];
+        if (is_array($welcome) && is_array($welcome['standards'] ?? null) && $welcome['standards'] !== []) {
+            $vars['standards_adopted_list'] = implode(', ', array_map(
+                static fn (mixed $s): string => strtoupper((string) $s),
+                $welcome['standards'],
+            ));
+        }
+
+        // ── Organisation master data (tenant settings) ──────────────
+        if ($tenant !== null) {
+            $vars['gdpr.dpo_email'] = $tenant->getDpoContactEmail();
+            $authorities = $tenant->getSupervisoryAuthorities() ?? [];
+            $names = array_values(array_filter(array_map(
+                static fn (mixed $a): ?string => is_array($a) ? ($a['name'] ?? null) : (is_string($a) ? $a : null),
+                $authorities,
+            )));
+            if ($names !== []) {
+                $vars['regulators_list'] = implode(', ', $names);
+            }
+            $vars['nis2.competent_authority'] = $this->authorityName($authorities, 'BSI');
+        }
+
+        if ($this->doraSettingsCollector !== null) {
+            foreach ($this->doraSettingsCollector->collectFor($run) as $key => $value) {
+                $vars[$key] ??= $value;
+            }
+        }
+        if ($tenant !== null) {
+            $vars['dora.competent_authority'] ??= $this->authorityName($tenant->getSupervisoryAuthorities() ?? [], 'BaFin');
         }
 
         // ── Policy-parameter slot ───────────────────────────────────
@@ -268,6 +342,39 @@ class VariableCollector
             return $candidate;
         }
         return $user->getEmail();
+    }
+
+    /**
+     * @param array<mixed> $authorities supervisory-authority map from the organisation settings
+     */
+    private function authorityName(array $authorities, string $key): ?string
+    {
+        $entry = $authorities[$key] ?? null;
+        $name = is_array($entry) ? ($entry['name'] ?? null) : $entry;
+
+        return is_string($name) && trim($name) !== '' ? trim($name) : null;
+    }
+
+    /**
+     * Approvers chosen in the roles step (User ids), as "Name → Name".
+     */
+    private function approvalChainNames(mixed $chain, ?Tenant $tenant): ?string
+    {
+        if (!is_array($chain) || $tenant === null) {
+            return null;
+        }
+        $names = [];
+        foreach ($chain as $userId) {
+            $user = is_int($userId) || (is_string($userId) && ctype_digit($userId))
+                ? $this->userRepository->find((int) $userId)
+                : null;
+            if ($user instanceof User && TenantOwnership::isSameTenant($user->getTenant(), $tenant)) {
+                $name = trim($user->getFullName());
+                $names[] = $name !== '' ? $name : (string) $user->getEmail();
+            }
+        }
+
+        return $names === [] ? null : implode(' → ', $names);
     }
 
     /**

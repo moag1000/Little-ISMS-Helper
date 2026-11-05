@@ -90,7 +90,7 @@ final class PolicyAcknowledgementCoverageCheckTest extends TestCase
     }
 
     #[Test]
-    public function emptyAudienceShortCircuitsToPass(): void
+    public function emptyAudienceScoresZeroNoData(): void
     {
         $tenant = $this->createMock(Tenant::class);
         $policy = $this->createMock(Document::class);
@@ -102,9 +102,11 @@ final class PolicyAcknowledgementCoverageCheckTest extends TestCase
 
         $result = $this->check->run($tenant);
 
-        self::assertTrue($result->passed);
-        self::assertSame(100.0, $result->score);
+        self::assertFalse($result->passed);
+        self::assertSame(0.0, $result->score);
+        self::assertSame('no_data', $result->details['reason']);
         self::assertSame(0, $result->details['audience_size']);
+        self::assertNotNull($result->gap);
     }
 
     /**

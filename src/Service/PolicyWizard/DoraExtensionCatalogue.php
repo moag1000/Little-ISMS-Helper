@@ -16,7 +16,7 @@ use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
  *
  *   - 6 NEW   — standalone DORA-only PolicyTemplate rows seeded by
  *               {@see \App\Command\SeedDoraPolicyTemplatesCommand}.
- *   - 18 EXT  — appended as a `## DORA-Erweiterung (Art. X)` section
+ *   - 19 EXT  — appended as a `## DORA-Erweiterung (Art. X)` section
  *               to the equivalent ISO topic policy (this catalogue).
  *   - 1 REP   — Network Security (Art. 9.4) — DORA replaces the ISO
  *               A.8.20-A.8.23 set wholesale; surfaced here as a single
@@ -34,8 +34,8 @@ final class DoraExtensionCatalogue implements StandardSectionCatalogueInterface
     /**
      * Static mapping `iso_topic_key` → `dora_article_refs`.
      *
-     * 18 entries per DORA §10 cross-mapping: 17 EXTENDS rows plus
-     * `network_security` as the single REPLACES entry. The catalogue
+     * 19 ISO topics: 18 EXTENDS rows plus `network_security` as the single
+     * REPLACES entry. The catalogue
      * intentionally treats REPLACES the same way mechanically (append
      * a `## DORA-Erweiterung` section to the ISO body) because the
      * tenant's SoA still tracks the same Annex A control rows; the
@@ -52,59 +52,60 @@ final class DoraExtensionCatalogue implements StandardSectionCatalogueInterface
      * @var array<string, list<string>>
      */
     public const array EXTENSIONS = [
-        // §10 row 1 — ICT-RMF Policy (Art. 6) extends Cl. 4-6 + A.5.1.
-        'top_level' => ['Art. 6', 'Art. 6.8'],
+        // Keys are the ISO policy topics (PolicyTemplate::topic, same as the
+        // GS++/BSI catalogues); each has its prose at
+        // policy.iso27001.<topic>.v1.dora_extension.body in policy_dora.*.yaml —
+        // SectionExtensionBodyTest fails when a topic has no text.
 
-        // §10 row 3 — ICT Asset Mgmt Policy extends A.5.9 / A.5.10.
+        // ICT risk-management framework (Art. 5-6) extends Cl. 4-6 + A.5.1.
+        'top_level' => ['Art. 5', 'Art. 6'],
+
+        // ICT asset management (Art. 8) extends A.5.9 / A.5.10.
         'asset_management' => ['Art. 8'],
 
-        // §10 row 4 — Identification + Classification extends A.5.12.
-        'classification' => ['Art. 8.1', 'Art. 8.2', 'Art. 8.3'],
+        // Identification + classification (Art. 8.1, 8.4) extends A.5.12.
+        'information_classification' => ['Art. 8.1', 'Art. 8.4'],
 
-        // §10 row 5 — ICT Operations Security extends A.8.6/8/9/15/32.
-        'operations_security' => ['Art. 9.2', 'Art. 9.3'],
+        // Protection + prevention (Art. 9.4) extends the access, identity,
+        // acceptable-use, transfer and mobile-device policies.
+        'access_control' => ['Art. 9.4'],
+        'identity_management' => ['Art. 9.4'],
+        'acceptable_use' => ['Art. 9.4'],
+        'information_transfer' => ['Art. 9.4'],
+        'mobile_device' => ['Art. 9.4'],
 
-        // §10 row 6 — Network Security REPLACES A.8.20-A.8.23 (stricter).
+        // Network security REPLACES A.8.20-A.8.23 (stricter).
         'network_security' => ['Art. 9.4'],
 
-        // §10 row 7 — Cryptography extends A.8.24 (PQC + crypto-agility).
+        // Cryptography extends A.8.24 (PQC + crypto-agility).
         'cryptography' => ['Art. 9.4.b'],
 
-        // §10 row 8 — Physical + Environmental extends A.7.1-A.7.14.
+        // Physical + environmental extends A.7.1-A.7.14.
         'physical_security' => ['Art. 9.4'],
 
-        // §10 row 9 — ICT Project Management extends A.5.8.
+        // ICT project management extends A.5.8.
         'project_management' => ['Art. 9.4.f'],
 
-        // §10 row 10 — Acquisition / Development extends A.8.25-A.8.31.
+        // Acquisition / development extends A.8.25-A.8.31.
         'secure_development' => ['Art. 9.4.g'],
 
-        // §10 row 11 — Detection of Anomalous Activities extends A.8.16, A.5.7.
-        'monitoring' => ['Art. 10'],
+        // Detection of anomalous activities (Art. 10) extends A.8.15/A.8.16.
+        'logging' => ['Art. 10'],
 
-        // §10 row 12 — ICT Response + Recovery extends A.5.29, A.5.30.
+        // ICT response + recovery extends A.5.29, A.5.30.
         'continuity' => ['Art. 11'],
 
-        // §10 row 13 — Backup extends A.8.13 (segregation + restoration evidence).
+        // Backup extends A.8.13 (segregation + restoration evidence).
         'backup' => ['Art. 12'],
 
-        // §10 row 14 — Learning + Evolving extends A.6.3, A.5.27.
-        'awareness_training' => ['Art. 13'],
-
-        // §10 row 15 — Communication on ICT Incidents extends A.5.5, A.5.6.
-        'authority_contacts' => ['Art. 14'],
-
-        // §10 row 16 — Incident Mgmt + Reporting extends A.5.24-A.5.28.
+        // Incident management + reporting extends A.5.24-A.5.28.
         'incident_management' => ['Art. 17', 'Art. 18', 'Art. 19', 'Art. 20', 'Art. 21', 'Art. 22', 'Art. 23'],
 
-        // §10 row 19 — ICT Third-Party Strategy extends A.5.19-A.5.23.
-        'supplier_security' => ['Art. 28', 'Art. 29', 'Art. 30'],
+        // Information sharing (Art. 45) extends A.5.7.
+        'threat_intelligence' => ['Art. 45'],
 
-        // §10 row 22 — Exit Strategy extends A.5.22.
-        'supplier_exit' => ['Art. 28.8'],
-
-        // §10 row 25 — Information Sharing extends A.5.6, A.5.7.
-        'information_sharing' => ['Art. 45'],
+        // ICT third-party risk incl. exit strategy extends A.5.19-A.5.23.
+        'supplier_relationships' => ['Art. 28', 'Art. 29', 'Art. 30'],
     ];
 
     /**

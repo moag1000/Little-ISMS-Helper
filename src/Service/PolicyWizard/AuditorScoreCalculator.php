@@ -83,10 +83,10 @@ final class AuditorScoreCalculator
             }
         }
 
-        // 3. Body / description length — virtual docs store the first
-        //    paragraph in description. A near-empty description is a
-        //    strong signal of a stub render.
-        $description = (string) ($document->getDescription() ?? '');
+        // 3. Body length — the generated policy text lives in policyBody; the
+        //    description only holds its first paragraph (legacy documents fall
+        //    back to it). A near-empty body is a strong signal of a stub render.
+        $description = (string) ($document->getPolicyBody() ?? $document->getDescription() ?? '');
         if (strlen(trim($description)) < self::MIN_DESCRIPTION_LENGTH) {
             $score -= 15;
             $reasons[] = 'body_too_short';
@@ -97,6 +97,12 @@ final class AuditorScoreCalculator
         if ($description !== '' && $this->containsTwigMarkers($description)) {
             $score -= 30;
             $reasons[] = 'substitution_leakage';
+        }
+
+        // 4b. Values the organisation has not entered yet (generator marker).
+        if (preg_match_all(self::UNFILLED_MARKER, $description) > 0) {
+            $score -= 10;
+            $reasons[] = 'unfilled_variables';
         }
 
         // 5. Climate-change wording — only required for ISO 27001
@@ -171,6 +177,9 @@ final class AuditorScoreCalculator
         }
         return $out;
     }
+
+    /** Marker PolicyVariableSubstitutor leaves for a value nobody entered (DE + EN). */
+    private const string UNFILLED_MARKER = '/\[(?:zu ergänzen|to be completed): [a-zA-Z0-9_.]+\]/u';
 
     private function containsTwigMarkers(string $body): bool
     {

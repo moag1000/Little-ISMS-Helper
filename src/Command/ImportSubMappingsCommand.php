@@ -61,18 +61,6 @@ final class ImportSubMappingsCommand extends Command
         'related' => 40,
     ];
 
-    /** @var array<string, array{source: string, target: string}> */
-    private const FRAMEWORK_PAIRS = [
-        'decomp_gdpr_iso27701' => ['source' => 'GDPR', 'target' => 'ISO27701'],
-        'decomp_bdsg_gdpr' => ['source' => 'BDSG', 'target' => 'GDPR'],
-        'decomp_nis2_iso27001' => ['source' => 'NIS2', 'target' => 'ISO27001'],
-        'decomp_dora_iso27001' => ['source' => 'DORA', 'target' => 'ISO27001'],
-        'decomp_ai-act_iso42001' => ['source' => 'EU-AI-ACT', 'target' => 'ISO42001'],
-        'decomp_gdpr_iso27018' => ['source' => 'GDPR', 'target' => 'ISO27018'],
-        'decomp_tisax_iso27001' => ['source' => 'TISAX', 'target' => 'ISO27001'],
-        'decomp_nis2_nis2umsucg' => ['source' => 'NIS2', 'target' => 'NIS2-UmsuCG'],
-    ];
-
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly ComplianceMappingRepository $mappingRepository,
@@ -121,7 +109,7 @@ final class ImportSubMappingsCommand extends Command
 
         foreach ($files as $file) {
             $base = basename($file, '.json');
-            $pair = self::FRAMEWORK_PAIRS[$base] ?? null;
+            $pair = $this->resolver->frameworkPairFor($base);
             if ($pair === null) {
                 $io->warning(sprintf('Unknown fixture %s — skipping.', $base));
                 continue;

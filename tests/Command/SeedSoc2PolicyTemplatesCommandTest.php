@@ -210,7 +210,7 @@ final class SeedSoc2PolicyTemplatesCommandTest extends TestCase
         self::assertContains('A.5.29', $avail->getLinkedAnnexAControls() ?? []);
         self::assertContains('A.5.30', $avail->getLinkedAnnexAControls() ?? []);
         self::assertContains('A.8.13', $avail->getLinkedAnnexAControls() ?? []);
-        self::assertContains('ROLE_BCM', $avail->getApprovalChain() ?? []);
+        self::assertContains('ROLE_BCM_OFFICER', $avail->getApprovalChain() ?? []);
 
         // Confidentiality — C1.1-C1.2 → A.5.12 (classification) + A.8.24 (crypto).
         $conf = $byKey['soc2.confidentiality_principle'] ?? null;

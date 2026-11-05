@@ -509,6 +509,7 @@ corrective_action:
         effectiveness_evidence: 'Mandatory evidence (re-audit report, re-test result, evidence-document ID) — enforced when status switches to verified effective/ineffective.'
         status_readonly: 'Status is driven by the lifecycle workflow (Planned → In progress → Completed → Effectiveness verified). Direct editing is disabled; use the status actions on the detail page.'
     status:
+        verified: 'Verified'
         planned: 'Planned'
         in_progress: 'In Progress'
         completed: 'Completed'
