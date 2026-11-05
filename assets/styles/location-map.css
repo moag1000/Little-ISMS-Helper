@@ -68,6 +68,7 @@
 .location-map__cluster {
     cursor: pointer;
     outline: none;
+
     --pin: var(--fg-3);
 }
 
