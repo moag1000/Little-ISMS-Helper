@@ -99,6 +99,7 @@ wizard:
         toggle: "Show maturity levels (Baseline / Enhanced)"
         baseline: "Baseline"
         enhanced: "Enhanced"
+        target: "Target"
 
     # Catalogue Coverage KPI
     catalogue_coverage:

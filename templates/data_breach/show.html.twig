@@ -259,6 +259,9 @@
                             {% endif %}
                         </p>
                     {% endif %}
+                    {% if not breach.supervisoryAuthorityNotifiedAt and breach.requiresAuthorityNotification %}
+                        {% include '_components/_tenant_reporting_contacts.html.twig' with { authorities: breach.tenant.supervisoryAuthorities } only %}
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
         </div>
@@ -418,6 +421,9 @@
                         <label class="form-label">{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }} *</label>
                         <select name="authority_name" class="form-select fa-cyber-input__field" required>
                             <option value="">Select authority...</option>
+                            {% for _key, _a in (breach.tenant.supervisoryAuthorities ?? []) %}
+                                <option value="{{ _a.name|default(_key) }}">{{ _a.name|default(_key) }}</option>
+                            {% endfor %}
                             <option value="BfDI">BfDI (Federal Commissioner)</option>
                             <option value="LfDI Baden-Württemberg">LfDI Baden-Württemberg</option>
                             <option value="LfDI Bayern">LfDI Bayern</option>

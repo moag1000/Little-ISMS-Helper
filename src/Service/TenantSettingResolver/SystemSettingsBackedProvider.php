@@ -8,21 +8,14 @@ use App\Entity\Tenant;
 use App\Repository\SystemSettingsRepository;
 
 /**
- * Policy-Wizard — default SettingProviderInterface used until a
- * `TenantPolicySetting` entity + repository exist.
+ * SettingProviderInterface without tenant values: every tenant inherits the
+ * global default from `system_settings` ("category.key").
  *
- * Reads global defaults from the existing `system_settings` table (split by
- * "category.key" namespacing) and treats every tenant as having no own
- * stored value (returns null), so the resolver effectively falls back to
- * the global default. This preserves the current PasswordPolicyResolver
- * behaviour exactly.
+ * Fallback for services built outside the container (unit tests). The
+ * container uses {@see TenantPolicySettingProvider}.
  *
  * Override-mode is read from a per-key registry (overrideModeMap). Unknown
- * keys default to ForbiddenToRelax, which is the safe choice per §7.3 (most
- * settings).
- *
- * Once that entity exists, swap this provider for one that hits
- * TenantPolicySettingRepository::findOneBy(['tenant'=>..., 'key'=>...]).
+ * keys default to ForbiddenToRelax.
  */
 final class SystemSettingsBackedProvider implements SettingProviderInterface
 {
@@ -43,9 +36,6 @@ final class SystemSettingsBackedProvider implements SettingProviderInterface
 
     public function getStoredValue(Tenant $tenant, string $key): mixed
     {
-        // Hook: tenant-specific values land here once the
-        // TenantPolicySetting entity is wired up. For now, no tenant has its
-        // own stored value — everyone inherits the global default.
         return null;
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Admin;
 
 use App\Entity\RiskApprovalConfig;
+use App\Risk\RiskMatrixThresholds;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -19,17 +20,17 @@ final class RiskApprovalConfigType extends AbstractType
             ->add('thresholdAutomatic', IntegerType::class, [
                 'label' => 'risk_approval_config.field.automatic',
                 'help' => 'risk_approval_config.help.automatic',
-                'attr' => ['min' => 1, 'max' => 25, 'step' => 1],
+                'attr' => ['min' => 1, 'max' => RiskMatrixThresholds::SCORE_MAX, 'step' => 1],
             ])
             ->add('thresholdManager', IntegerType::class, [
                 'label' => 'risk_approval_config.field.manager',
                 'help' => 'risk_approval_config.help.manager',
-                'attr' => ['min' => 1, 'max' => 25, 'step' => 1],
+                'attr' => ['min' => 1, 'max' => RiskMatrixThresholds::SCORE_MAX, 'step' => 1],
             ])
             ->add('thresholdExecutive', IntegerType::class, [
                 'label' => 'risk_approval_config.field.executive',
                 'help' => 'risk_approval_config.help.executive',
-                'attr' => ['min' => 1, 'max' => 25, 'step' => 1],
+                'attr' => ['min' => 1, 'max' => RiskMatrixThresholds::SCORE_MAX, 'step' => 1],
             ])
             ->add('note', TextareaType::class, [
                 'label' => 'risk_approval_config.field.note',

@@ -13,8 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Tenant-erweiterbare Kritikalitätsstufen für Lieferanten.
  *
  * Jeder Tenant kann seine eigene Kritikalitätsskala definieren.
- * Neue Tenants bekommen 4 Default-Records (critical/high/medium/low)
- * via TenantCreatedSeedListener.
+ * Die 4 Default-Records (critical/high/medium/low) entstehen beim ersten
+ * Aufruf der Admin-Seite; bis dahin nutzt SupplierType dieselben Codes.
  *
  * DORA-ICT-Kritikalität bleibt separat (Supplier.ictCriticality) und
  * wird nicht mit diesem Entity verquickt.

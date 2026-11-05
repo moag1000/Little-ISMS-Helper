@@ -90,7 +90,6 @@ final class TenantComplianceSettingsControllerTest extends KernelTestCase
     {
         $this->tenant
             ->setRiskMethodology('iso_27005')
-            ->setRiskMatrixSize(5)
             ->setWizardMaturityTarget('enhanced')
             ->setNotificationPreferences(['incident_high' => 'email,sms'])
             ->setCsirtEndpoints(['bsi' => 'reports@bsi.bund.de'])
@@ -101,7 +100,6 @@ final class TenantComplianceSettingsControllerTest extends KernelTestCase
         $reload = $this->em->find(Tenant::class, $this->tenant->getId());
         self::assertNotNull($reload);
         self::assertSame('iso_27005', $reload->getRiskMethodology());
-        self::assertSame(5, $reload->getRiskMatrixSize());
         self::assertSame('enhanced', $reload->getWizardMaturityTarget());
         self::assertSame(['incident_high' => 'email,sms'], $reload->getNotificationPreferences());
         self::assertSame(['bsi' => 'reports@bsi.bund.de'], $reload->getCsirtEndpoints());

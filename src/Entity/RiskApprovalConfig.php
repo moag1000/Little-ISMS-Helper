@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\RiskApprovalConfigRepository;
+use App\Risk\RiskMatrixThresholds;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -17,15 +18,11 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *
  * Ersetzt die hardcoded private const APPROVAL_AUTOMATIC / MANAGER / EXECUTIVE
  * aus RiskAcceptanceWorkflowService. Werte beziehen sich auf den Risk-Score
- * (Likelihood × Impact, aktuell 5×5-Matrix → max. 25).
+ * (Likelihood × Impact, 5×5-Matrix → max. RiskMatrixThresholds::SCORE_MAX).
  *
  * Holding-Readiness: genau ein Record pro Tenant via UNIQUE. Ein
  * späterer Ceiling-Resolver kann parent+child-Configs mergen (min-Regel:
  * child darf nicht lascher sein als holding).
- *
- * @todo Bei dynamischer Matrix-Größe (RiskMatrixConfig) muss
- * threshold_executive gegen matrix.getMaxScore() validiert werden statt
- * hardcoded 25. Blocked by: RiskMatrixConfig entity.
  */
 #[ORM\Entity(repositoryClass: RiskApprovalConfigRepository::class)]
 #[ORM\Table(name: 'risk_approval_config')]
@@ -43,15 +40,15 @@ class RiskApprovalConfig
     private ?Tenant $tenant = null;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Assert\Range(min: 1, max: 25, notInRangeMessage: 'risk_approval_config.error.range')]
+    #[Assert\Range(min: 1, max: RiskMatrixThresholds::SCORE_MAX, notInRangeMessage: 'risk_approval_config.error.range')]
     private int $thresholdAutomatic = 3;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Assert\Range(min: 1, max: 25, notInRangeMessage: 'risk_approval_config.error.range')]
+    #[Assert\Range(min: 1, max: RiskMatrixThresholds::SCORE_MAX, notInRangeMessage: 'risk_approval_config.error.range')]
     private int $thresholdManager = 7;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Assert\Range(min: 1, max: 25, notInRangeMessage: 'risk_approval_config.error.range')]
+    #[Assert\Range(min: 1, max: RiskMatrixThresholds::SCORE_MAX, notInRangeMessage: 'risk_approval_config.error.range')]
     private int $thresholdExecutive = 25;
 
     #[ORM\ManyToOne(targetEntity: User::class)]

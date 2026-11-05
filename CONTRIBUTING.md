@@ -433,7 +433,9 @@ This project uses **release-please** for automated releases. The flow:
 2. release-please opens (and keeps updating) a `chore(main): release X.Y.Z` PR
    that bumps `composer.json` + `CHANGELOG.md` from accumulated commits.
 3. **Auto-merge runs every Monday at 09:00 UTC** via `.github/workflows/release-please-auto-merge.yml`.
-   Required checks must be green; PR is squash-merged + branch deleted.
+   The job starts the CI pipeline on the release branch (workflow_dispatch —
+   the PR's own bot-triggered runs stay "action required") and squash-merges
+   only when that run is green; red, missing or still-running CI stops it.
 4. Merge → tag (`vX.Y.Z`) + GitHub Release auto-created + CI/CD Pipeline
    builds + pushes Docker image (`:vX.Y.Z`, `:X.Y`, `:latest`).
 

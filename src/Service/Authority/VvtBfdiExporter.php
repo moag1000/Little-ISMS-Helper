@@ -94,17 +94,23 @@ final class VvtBfdiExporter
         $coverSheet->setCellValue('A4', 'Verantwortlicher:');
         $coverSheet->setCellValue('B4', $tenant->getName() ?? '—');
         $coverSheet->setCellValue('A5', 'Datenschutzbeauftragter:');
-        $coverSheet->setCellValue('B5', $tenant->getDpoContactName() ?? '—');
+        $coverSheet->setCellValue('B5', $this->dpoLabel($tenant));
         $coverSheet->setCellValue('A6', 'DSB-E-Mail:');
         $coverSheet->setCellValue('B6', $tenant->getDpoContactEmail() ?? '—');
-        $coverSheet->setCellValue('A7', 'Erstellt am:');
-        $coverSheet->setCellValue('B7', (new \DateTimeImmutable())->format('d.m.Y H:i'));
-        $coverSheet->setCellValue('A8', 'Anzahl Verarbeitungstätigkeiten:');
-        $coverSheet->setCellValue('B8', count($activities));
+        $coverSheet->setCellValue('A7', 'Stellvertretung DSB:');
+        $coverSheet->setCellValue('B7', $tenant->getDpoDeputyName() ?? '—');
+        $coverSheet->setCellValue('A8', 'DSB bestellt / Aufsichtsbehörde informiert:');
+        $coverSheet->setCellValue('B8', $this->dpoRegisterLabel($tenant));
+        $coverSheet->setCellValue('A9', 'Vertreter in der EU (Art. 27 DSGVO):');
+        $coverSheet->setCellValue('B9', $this->representativeLabel($tenant));
+        $coverSheet->setCellValue('A10', 'Erstellt am:');
+        $coverSheet->setCellValue('B10', (new \DateTimeImmutable())->format('d.m.Y H:i'));
+        $coverSheet->setCellValue('A11', 'Anzahl Verarbeitungstätigkeiten:');
+        $coverSheet->setCellValue('B11', count($activities));
 
         $coverSheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
         $coverSheet->getStyle('A2')->getFont()->setSize(11)->setItalic(true);
-        $coverSheet->getStyle('A4:A8')->getFont()->setBold(true);
+        $coverSheet->getStyle('A4:A11')->getFont()->setBold(true);
         $coverSheet->getColumnDimension('A')->setWidth(38);
         $coverSheet->getColumnDimension('B')->setWidth(50);
 
@@ -307,7 +313,7 @@ final class VvtBfdiExporter
 
         // 2. DSB
         $dpo = implode(' / ', array_filter([
-            $tenant->getDpoContactName(),
+            $this->dpoLabel($tenant) !== '—' ? $this->dpoLabel($tenant) : null,
             $tenant->getDpoContactEmail(),
         ])) ?: '—';
 
@@ -390,5 +396,37 @@ final class VvtBfdiExporter
         foreach ($cols as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
+    }
+
+    /** DPO name, marked when the DPO is external (BDSG § 38 / Art. 37(6) GDPR). */
+    private function dpoLabel(Tenant $tenant): string
+    {
+        $name = $tenant->getDpoContactName();
+        if ($name === null || $name === '') {
+            return '—';
+        }
+
+        return $tenant->isDpoExternal() ? $name . ' (extern)' : $name;
+    }
+
+    /** Appointment date and Art. 37(7) notification date of the DPO. */
+    private function dpoRegisterLabel(Tenant $tenant): string
+    {
+        $appointed = $tenant->getDpoAppointmentDate();
+        $notified = $tenant->getDpoAuthorityNotifiedAt();
+
+        return implode(' / ', [
+            $appointed?->format('d.m.Y') ?? '—',
+            $notified?->format('d.m.Y') ?? '—',
+        ]);
+    }
+
+    /** Art. 27 GDPR representative of a non-EU controller. */
+    private function representativeLabel(Tenant $tenant): string
+    {
+        return implode(' / ', array_filter([
+            $tenant->getRepresentativeName(),
+            $tenant->getRepresentativeContact(),
+        ])) ?: '—';
     }
 }

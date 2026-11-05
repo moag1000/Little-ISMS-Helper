@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Fte;
 
+use App\Doctrine\SharedTenantRowsInterface;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\Fte\FteCalibrationConstantRepository;
@@ -26,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: FteCalibrationConstantRepository::class)]
 #[ORM\Table(name: 'fte_calibration_constant')]
 #[ORM\UniqueConstraint(name: 'uniq_fte_tenant_op', fields: ['tenant', 'operationType'])]
-class FteCalibrationConstant
+class FteCalibrationConstant implements SharedTenantRowsInterface
 {
     // Well-known operation types — list is open-ended, not exhaustive
     public const string OP_MANUAL_USER_PROVISIONING = 'manual_user_provisioning';

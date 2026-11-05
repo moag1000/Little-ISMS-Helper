@@ -1,0 +1,42 @@
+{#
+ # Reporting contacts configured in the tenant compliance settings
+ # (Tenant::supervisoryAuthorities / Tenant::csirtEndpoints), shown where the
+ # user has to file a report. Renders nothing when no entry is configured.
+ #
+ # Usage:
+ #   {% include '_components/_tenant_reporting_contacts.html.twig' with {
+ #       authorities: breach.tenant.supervisoryAuthorities,
+ #       csirts: incident.tenant.csirtEndpoints
+ #   } only %}
+ #}
+{% set _authorities = authorities|default([]) %}
+{% set _csirts = csirts|default([]) %}
+{% if _authorities|length > 0 or _csirts|length > 0 %}
+<div class="mt-3" data-testid="tenant-reporting-contacts">
+    {% if _authorities|length > 0 %}
+        <h3 class="h6">{{ 'admin.tenant_settings.supervisory_authorities'|trans({}, 'admin') }}</h3>
+        <ul class="list-unstyled mb-2">
+            {% for _key, _a in _authorities %}
+                <li>
+                    <strong>{{ _a.name|default(_key) }}</strong>
+                    {% if _a.scope|default %}<span class="text-muted">({{ _a.scope }})</span>{% endif %}
+                    {% if _a.email|default %} · <a href="mailto:{{ _a.email }}">{{ _a.email }}</a>{% endif %}
+                    {% if _a.phone|default %} · {{ _a.phone }}{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if _csirts|length > 0 %}
+        <h3 class="h6">{{ 'admin.tenant_settings.csirt_endpoints'|trans({}, 'admin') }}</h3>
+        <ul class="list-unstyled mb-2">
+            {% for _key, _c in _csirts %}
+                <li>
+                    <strong>{{ _key }}</strong>
+                    {% if _c.contact|default %} · {{ _c.contact }}{% endif %}
+                    {% if _c.url|default %} · {% if _c.url starts with 'https://' or _c.url starts with 'http://' %}<a href="{{ _c.url }}" rel="noopener noreferrer" target="_blank">{{ _c.url }}</a>{% else %}{{ _c.url }}{% endif %}{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endif %}
