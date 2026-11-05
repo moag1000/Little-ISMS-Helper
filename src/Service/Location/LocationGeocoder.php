@@ -90,11 +90,12 @@ class LocationGeocoder
         $postalCode = $postalCode !== null ? strtoupper(trim($postalCode)) : '';
         $cityKey = self::normalise($city);
 
-        $candidates = $code !== null ? [$code] : ($postalCode !== '' || $cityKey !== '' ? self::DACH : []);
+        $countryKnown = $code !== null;
+        $candidates = $countryKnown ? [$code] : ($postalCode !== '' || $cityKey !== '' ? self::DACH : []);
 
         foreach ($candidates as $cc) {
             if ($postalCode !== '' && in_array($cc, self::DACH, true)) {
-                $hit = $this->postalHit($cc, $postalCode, $cityKey, $code !== null);
+                $hit = $this->postalHit($cc, $postalCode, $cityKey, $countryKnown);
                 if ($hit !== null) {
                     return $hit;
                 }
