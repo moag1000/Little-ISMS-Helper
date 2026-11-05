@@ -26,6 +26,13 @@ class LocationGeocoder
     public const string SOURCE_COUNTRY = 'country';
     public const string SOURCE_ONLINE = 'online';
     public const string SOURCE_MANUAL = 'manual';
+    public const string SOURCE_REGION = 'region';
+
+    public const string AREA_EU = 'EU';
+    public const string AREA_WORLD = 'WORLD';
+
+    /** Marker position for an EU/EWR-wide region (central Europe). */
+    private const array EU_MARKER = [50.5, 10.5];
 
     private const array DACH = ['DE', 'AT', 'CH'];
 
@@ -67,7 +74,9 @@ class LocationGeocoder
         if ($location->getGeoSource() === self::SOURCE_MANUAL) {
             return false;
         }
-        $point = $this->locate($location->getPostalCode(), $location->getCity(), $location->getCountry());
+        $point = $location->isRegion()
+            ? $this->locateArea($location->getCountry())
+            : $this->locate($location->getPostalCode(), $location->getCity(), $location->getCountry());
         if ($point === null) {
             $changed = $location->hasCoordinates();
             $location->setLatitude(null)->setLongitude(null)->setGeoSource(null);
@@ -113,6 +122,36 @@ class LocationGeocoder
             return $this->countryCentroid($code);
         }
         return null;
+    }
+
+    /**
+     * Area of a region-type location from its country field: an ISO alpha-2
+     * code, AREA_EU for "EU", "EWR", "EEA", "Europa", or AREA_WORLD for
+     * "weltweit", "global", "worldwide". Null when unrecognised.
+     */
+    public function area(?string $country): ?string
+    {
+        $key = self::normalise($country);
+        return match (true) {
+            $key === '' => null,
+            in_array($key, ['eu', 'ewr', 'eea', 'eu ewr', 'eu eea', 'europa', 'europe', 'europaeische union', 'european union'], true) => self::AREA_EU,
+            in_array($key, ['weltweit', 'global', 'worldwide', 'world', 'welt', 'ueberall'], true) => self::AREA_WORLD,
+            default => $this->countryCode($country),
+        };
+    }
+
+    /** Marker for a region: EU marker, country centroid, or none for worldwide. */
+    public function locateArea(?string $country): ?GeoPoint
+    {
+        $area = $this->area($country);
+        if ($area === self::AREA_EU) {
+            return new GeoPoint(self::EU_MARKER[0], self::EU_MARKER[1], self::SOURCE_REGION);
+        }
+        if ($area === null || $area === self::AREA_WORLD) {
+            return null;
+        }
+        $point = $this->countryCentroid($area);
+        return $point !== null ? new GeoPoint($point->latitude, $point->longitude, self::SOURCE_REGION) : null;
     }
 
     /**

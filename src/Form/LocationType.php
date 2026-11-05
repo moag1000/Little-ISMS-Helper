@@ -60,6 +60,7 @@ final class LocationType extends AbstractType implements SectionMapInterface
                     'location.type.entrance' => 'entrance',
                     'location.type.parking' => 'parking',
                     'location.type.outdoor' => 'outdoor',
+                    'location.type.region' => 'region',
                     'location.type.other' => 'other',
                 ],
                 'required' => true,

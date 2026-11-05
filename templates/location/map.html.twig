@@ -110,6 +110,7 @@
             </div>
             <figcaption class="location-map__legend">
                 <span>{{ 'location.map.legend.size'|trans({}, 'locations') }}</span>
+                <span class="location-map__key location-map__key--region">{{ 'location.map.legend.region'|trans({}, 'locations') }}</span>
                 <span data-location-map-target="legend" data-layer="risk">
                     <span class="location-map__key location-map__key--ok">{{ 'location.map.legend.risk_low'|trans({}, 'locations') }}</span>
                     <span class="location-map__key location-map__key--warn">{{ 'location.map.legend.risk_medium'|trans({}, 'locations') }}</span>
@@ -176,7 +177,7 @@
             {% for site in _sites %}
                 <tr data-location-map-target="row" data-site-id="{{ site.id }}" data-action="click->location-map#selectRow" class="location-map__row">
                     <td><a href="{{ path('app_location_show', { id: site.id }) }}">{{ site.name }}</a>{% if site.mine %} <span class="text-muted-color">· {{ 'location.map.mine'|trans({}, 'locations') }}</span>{% endif %}</td>
-                    <td>{{ [site.city, site.country]|filter(v => v)|join(', ') ?: '–' }}</td>
+                    <td>{{ (site.area in ['EU', 'WORLD'] ? ('location.map.area.' ~ site.area)|trans({}, 'locations') : [site.city, site.country]|filter(v => v)|join(', ')) ?: '–' }}{% if site.type == 'region' %} <span class="text-muted-color">· {{ 'location.type.region'|trans({}, 'locations') }}</span>{% endif %}</td>
                     <td class="text-end">{{ site.protection ?: '–' }}</td>
                     <td>{% if site.riskBand == 'none' %}<span class="text-muted-color">–</span>{% else %}{{ site.score }} {{ risk_level_label(site.riskBand) }}{% endif %}</td>
                     <td>{{ 'location.map.gaps_of'|trans({ '%count%': site.gaps|length, '%total%': site.checksApplicable }, 'locations') }}</td>
@@ -193,7 +194,8 @@
         <template data-site-panel="{{ site.id }}">
             <h2 class="location-map__panel-title">{{ site.name }}</h2>
             <p class="text-muted-color mb-2">
-                {{ [site.city, site.country]|filter(v => v)|join(', ') }}
+                {{ (site.area in ['EU', 'WORLD'] ? ('location.map.area.' ~ site.area)|trans({}, 'locations') : [site.city, site.country]|filter(v => v)|join(', ')) }}
+                {% if site.type == 'region' %}· {{ 'location.type.region'|trans({}, 'locations') }}{% endif %}
                 {% if site.securityLevel %}· {{ ('location.security.' ~ site.securityLevel)|trans({}, 'locations') }}{% endif %}
                 {% if site.children > 0 %}· {{ 'location.map.children'|trans({ '%count%': site.children }, 'locations') }}{% endif %}
             </p>

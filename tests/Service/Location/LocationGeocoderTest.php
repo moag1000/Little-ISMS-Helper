@@ -102,6 +102,22 @@ final class LocationGeocoderTest extends TestCase
     }
 
     #[Test]
+    public function regionsArePlacedByArea(): void
+    {
+        self::assertSame(LocationGeocoder::AREA_EU, $this->geocoder->area('EU/EWR'));
+        self::assertSame(LocationGeocoder::AREA_WORLD, $this->geocoder->area('weltweit'));
+        self::assertSame('IE', $this->geocoder->area('Irland'));
+
+        $homeOffice = (new Location())->setLocationType('region')->setCountry('Deutschland')->setCity('München');
+        self::assertTrue($this->geocoder->fillCoordinates($homeOffice));
+        self::assertSame(LocationGeocoder::SOURCE_REGION, $homeOffice->getGeoSource());
+        self::assertEqualsWithDelta(10.5, $homeOffice->getLongitude(), 2.5, 'country centre, not the city');
+
+        self::assertSame(LocationGeocoder::SOURCE_REGION, $this->geocoder->locateArea('EU')?->source);
+        self::assertNull($this->geocoder->locateArea('weltweit'));
+    }
+
+    #[Test]
     public function applyKeepsManualCoordinates(): void
     {
         $location = (new Location())->setPostalCode('80331')->setCountry('DE')

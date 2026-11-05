@@ -314,6 +314,7 @@ ui:
             no_risks: 'no risks recorded'
             gaps: '%count% of %total% checks open'
             gaps_none: 'all checks met'
+            region: 'Region without a building'
             protection: 'Protection need %level%'
             coarse: 'Position known at country level only'
         mfa_setup:

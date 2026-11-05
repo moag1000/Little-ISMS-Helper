@@ -75,7 +75,7 @@
     --pin: var(--fg-3);
 }
 
-.location-map__pin > :not(.location-map__ring),
+.location-map__pin > :not(.location-map__ring, .location-map__area),
 .location-map__cluster > circle {
     fill: var(--pin);
     stroke: var(--surface);
@@ -88,6 +88,12 @@
 .location-map__pin--none { --pin: var(--fg-3); }
 
 .location-map__pin.is-coarse > :not(.location-map__ring) { fill-opacity: 0.55; }
+
+.location-map__area {
+    fill: var(--pin);
+    fill-opacity: 0.12;
+    stroke: var(--pin);
+}
 
 .location-map__ring {
     fill: none;
@@ -172,6 +178,7 @@
 .location-map__key--warn::before { --key: var(--warning); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
 .location-map__key--danger::before { --key: var(--danger); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 .location-map__key--crit::before { --key: var(--danger); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); outline: 2px solid var(--danger-tint); }
+.location-map__key--region::before { --key: transparent; border: 1px dashed var(--fg-3); border-radius: 50%; }
 .location-map__key--none::before { --key: var(--fg-3); border-radius: 50%; }
 
 .location-map__panel {

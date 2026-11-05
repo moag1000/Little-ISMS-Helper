@@ -50,7 +50,9 @@ final class LocationMapController extends AbstractController
         $unsaved = 0;
         foreach ($sites as &$site) {
             if ($site['lat'] === null && $site['geoSource'] === null) {
-                $point = $this->geocoder->locate($site['postalCode'], $site['city'], $site['country']);
+                $point = $site['type'] === 'region'
+                    ? $this->geocoder->locateArea($site['country'])
+                    : $this->geocoder->locate($site['postalCode'], $site['city'], $site['country']);
                 if ($point !== null) {
                     [$site['lat'], $site['lng'], $site['geoSource']] = [$point->latitude, $point->longitude, $point->source];
                     ++$unsaved;
@@ -65,7 +67,10 @@ final class LocationMapController extends AbstractController
             $lens = $this->defaultLens($hasOwnSite);
         }
 
-        $unplaced = array_values(array_filter($sites, static fn (array $s): bool => $s['lat'] === null));
+        $unplaced = array_values(array_filter(
+            $sites,
+            static fn (array $s): bool => $s['lat'] === null && $s['area'] !== LocationGeocoder::AREA_WORLD,
+        ));
         $coarse = array_values(array_filter(
             $sites,
             static fn (array $s): bool => $s['geoSource'] === LocationGeocoder::SOURCE_COUNTRY,

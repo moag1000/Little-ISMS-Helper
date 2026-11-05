@@ -15,14 +15,14 @@ use Doctrine\ORM\Events;
  *
  * - Coordinates typed in by hand (form or API) are marked "manual" and kept.
  * - Clearing both coordinates hands the location back to the geocoder.
- * - A changed postal code, city or country re-geocodes, unless manual.
+ * - A changed postal code, city, country or type re-geocodes, unless manual.
  *
  * Runs in onFlush so form, API, import and restore all go through it.
  */
 #[AsDoctrineListener(event: Events::onFlush)]
 final class LocationGeocodeSubscriber
 {
-    private const array ADDRESS_FIELDS = ['postalCode', 'city', 'country'];
+    private const array ADDRESS_FIELDS = ['postalCode', 'city', 'country', 'locationType'];
 
     public function __construct(private readonly LocationGeocoder $geocoder)
     {

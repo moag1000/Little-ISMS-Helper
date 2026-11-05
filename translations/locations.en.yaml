@@ -86,6 +86,7 @@ location:
         gate: Gate
         entrance: Entrance
         parking: Parking
+        region: 'Region (no building)'
         outdoor: Outdoor
         campus: Campus
         other: Other
@@ -112,6 +113,7 @@ location:
             country: 'Map position: country only'
             online: 'Map position: looked up online'
             manual: 'Map position: entered manually'
+            region: 'Map position: area (country, EU/EEA or worldwide)'
     map:
         title: 'Location map'
         aria: 'World map with %count% locations'
@@ -156,7 +158,11 @@ location:
             out: 'Zoom out'
             fit: 'All locations'
             world: World
+        area:
+            EU: 'EU/EEA'
+            WORLD: worldwide
         legend:
+            region: 'dashed = region'
             size: 'Size = protection need'
             risk_low: low
             risk_medium: medium

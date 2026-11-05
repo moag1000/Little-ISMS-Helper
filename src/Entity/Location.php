@@ -61,7 +61,7 @@ class Location
 
     #[ORM\Column(length: 100)]
     #[Groups(['location:read', 'location:write'])]
-    #[Assert\Choice(choices: ['building', 'floor', 'room', 'area', 'datacenter', 'server_room', 'office', 'warehouse', 'gate', 'entrance', 'parking', 'outdoor', 'other'])]
+    #[Assert\Choice(choices: ['building', 'floor', 'room', 'area', 'datacenter', 'server_room', 'office', 'warehouse', 'gate', 'entrance', 'parking', 'outdoor', 'region', 'other'])]
     private ?string $locationType = 'room';
 
     #[ORM\Column(length: 50, nullable: true)]
@@ -339,6 +339,16 @@ class Location
     {
         $this->geoSource = $geoSource;
         return $this;
+    }
+
+    /**
+     * Type "region": a place without a building (home office, field service,
+     * mobile teams). Its area is the country field: a country, EU/EWR or
+     * worldwide.
+     */
+    public function isRegion(): bool
+    {
+        return $this->locationType === 'region';
     }
 
     public function hasCoordinates(): bool

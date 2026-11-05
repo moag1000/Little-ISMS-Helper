@@ -309,7 +309,8 @@ export default class extends Controller {
         const g = document.createElementNS(NS, 'g');
         g.setAttribute('class', `location-map__pin location-map__pin--${neutral ? 'none' : TONE[rank]}`
             + (site.id === this.selectedValue ? ' is-selected' : '')
-            + (site.geoSource === 'country' ? ' is-coarse' : ''));
+            + (site.geoSource === 'country' ? ' is-coarse' : '')
+            + (site.type === 'region' ? ' is-region' : ''));
         g.setAttribute('tabindex', '0');
         g.setAttribute('role', 'button');
         g.setAttribute('aria-label', `${site.name}: ${this.summary(site)}`);
@@ -318,6 +319,14 @@ export default class extends Controller {
             ring.setAttribute('class', 'location-map__ring');
             ring.style.strokeWidth = String(1.2 * k);
             g.appendChild(ring);
+        }
+        if (site.type === 'region') {
+            // A region covers an area, not a point: dashed outline around it.
+            const area = this.shape('circle', x, y, r * 2.6);
+            area.setAttribute('class', 'location-map__area');
+            area.style.strokeWidth = String(1.2 * k);
+            area.style.strokeDasharray = `${3 * k} ${2 * k}`;
+            g.appendChild(area);
         }
         const mark = this.shape(SHAPE[rank], x, y, r);
         mark.style.strokeWidth = String(1.4 * k);
@@ -372,6 +381,7 @@ export default class extends Controller {
             : (site.riskBand === 'none' ? faT('location_map.no_risks') : faT('location_map.score', { '%score%': site.score })));
         parts.push(faT('location_map.protection', { '%level%': site.protection }));
         if (site.geoSource === 'country') parts.push(faT('location_map.coarse'));
+        if (site.type === 'region') parts.push(faT('location_map.region'));
         return parts.join(', ');
     }
 

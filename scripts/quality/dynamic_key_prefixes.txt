@@ -145,6 +145,7 @@ kpi_threshold.key	1
 lifecycle	2
 lifecycle.tenant_lifecycle	2
 location.geo.source	1
+location.map.area	1
 location.map.check	1
 location.map.fix	1
 location.map.layer	1

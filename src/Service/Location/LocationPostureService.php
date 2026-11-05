@@ -47,8 +47,10 @@ class LocationPostureService
 
     private const array CONTROLLED_LEVELS = ['controlled', 'secure'];
 
-    public function __construct(private readonly EntityManagerInterface $em)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly LocationGeocoder $geocoder,
+    ) {
     }
 
     /**
@@ -274,6 +276,11 @@ class LocationPostureService
             'risks_treated' => $risks !== [] ? $unhandled === 0 : null,
             'incidents_closed' => $site['assets'] > 0 ? $site['incidents'] === [] : null,
         ];
+        if ($root->isRegion()) {
+            // No building: physical access checks do not apply.
+            $checks['access_control'] = null;
+            $checks['camera'] = null;
+        }
         $applicable = array_filter($checks, static fn (?bool $ok): bool => $ok !== null);
         $gaps = array_keys(array_filter($applicable, static fn (bool $ok): bool => !$ok));
 
@@ -282,6 +289,7 @@ class LocationPostureService
             'name' => (string) $root->getName(),
             'code' => $root->getCode(),
             'type' => $root->getLocationType(),
+            'area' => $root->isRegion() ? $this->geocoder->area($root->getCountry()) : null,
             'postalCode' => $root->getPostalCode(),
             'city' => $root->getCity(),
             'country' => $root->getCountry(),

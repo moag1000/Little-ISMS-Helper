@@ -89,6 +89,7 @@ class OnlineGeocoder
     {
         $hasAddress = trim((string) $location->getPostalCode()) !== '' || trim((string) $location->getCity()) !== '';
         return $hasAddress
+            && !$location->isRegion()
             && in_array($location->getGeoSource(), [null, LocationGeocoder::SOURCE_COUNTRY], true);
     }
 

@@ -87,6 +87,7 @@ location:
         entrance: Eingang
         parking: Parkplatz
         outdoor: Außenbereich
+        region: 'Region (ohne Gebäude)'
         campus: Campus
         other: Sonstiges
     security:
@@ -112,6 +113,7 @@ location:
             country: 'Lage auf der Karte: nur Land bekannt'
             online: 'Lage auf der Karte: online nachgeschlagen'
             manual: 'Lage auf der Karte: von Hand eingetragen'
+            region: 'Lage auf der Karte: Gebiet (Land, EU/EWR oder weltweit)'
     map:
         title: Standortkarte
         aria: 'Weltkarte mit %count% Standorten'
@@ -156,7 +158,11 @@ location:
             out: Verkleinern
             fit: 'Alle Standorte'
             world: Welt
+        area:
+            EU: 'EU/EWR'
+            WORLD: weltweit
         legend:
+            region: 'gestrichelt = Region'
             size: 'Größe = Schutzbedarf'
             risk_low: niedrig
             risk_medium: mittel
