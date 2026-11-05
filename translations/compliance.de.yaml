@@ -1342,6 +1342,7 @@ admin:
                 nis2: 'Wesentliche oder wichtige Einrichtung in einem NIS2-Sektor (Anhang I+II) **und** ≥ 50 MA oder ≥ 10 Mio € Jahresumsatz.'
                 nis2umsucg: 'Gleiche Schwellwerte wie NIS2 + deutscher Sitz. Zusätzlich: Betreiber besonders wichtiger Einrichtungen nach BSI-Katalog.'
                 bsi_grundschutz: 'Bundesbehörden (pflichtig via UP Bund), Landesbehörden mit Bezug zum Bund, sowie Zulieferer öffentlicher Auftraggeber.'
+                bsi_gspp: 'Nachfolger des IT-Grundschutz-Kompendiums (BSI-Standard 300-1). Für Neueinstiege und Institutionen, die ab 2027 nach Grundschutz++ zertifizieren wollen; Kompendium-Anwender migrieren über das BSI-Mapping.'
                 kritis: 'Betreiber kritischer Infrastrukturen nach BSI-Kritis-Verordnung (Sektoren: Energie, Wasser, Ernährung, IKT, Gesundheit, Finanz, Transport, Entsorgung).'
                 kritis_health: 'Krankenhäuser ab 30.000 vollstationären Fällen/Jahr, sowie Pflegeeinrichtungen und Rettungsdienste nach KHZG/§75c SGB V.'
                 digav: 'Hersteller oder Vertrieb digitaler Gesundheitsanwendungen (DiGA) mit BfArM-Zulassung (App auf Rezept).'
@@ -1529,6 +1530,10 @@ bsi:
             bsi_arbeit_hint: 'Partielles Mapping oder BSI-spezifische Anforderung'
             pruefen: 'Zu prüfen'
             pruefen_hint: 'Heuristisches Mapping oder keine Zuordnung — manuelle Prüfung nötig'
+        target:
+            label: 'Zielkatalog:'
+            kompendium: 'IT-Grundschutz-Kompendium'
+            gspp: 'Grundschutz++ (BSI-Standard 300-1)'
         next_step:
             title: 'Dein nächster Schritt'
         pending_review: '%count% heuristische/offene Mappings prüfen'
@@ -1546,6 +1551,7 @@ bsi:
         col:
             requirement: 'Anforderung'
             baustein: 'Baustein'
+            topic: 'Thema'
             iso_control: 'ISO-Kontrolle'
             tier: 'Stufe'
             state: 'Status'

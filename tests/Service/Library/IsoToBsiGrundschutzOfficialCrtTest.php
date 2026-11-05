@@ -110,11 +110,13 @@ final class IsoToBsiGrundschutzOfficialCrtTest extends TestCase
     {
         $sources = array_column(self::$data['mappings'] ?? [], 'source');
 
+        // The BSI table cites 7.5.1–7.5.3, 9.2 and 9.3; the fixture uses the clause IDs
+        // the ISO 27001 loader produces (7.5, 9.2.1, 9.3.1) so the rows are importable.
         $clauses = ['4.1', '4.2', '4.3', '4.4', '5.1', '5.2', '5.3',
             '6.1.1', '6.1.2', '6.1.3', '6.2',
-            '7.1', '7.2', '7.3', '7.4', '7.5.1', '7.5.2', '7.5.3',
+            '7.1', '7.2', '7.3', '7.4', '7.5',
             '8.1', '8.2', '8.3',
-            '9.1', '9.2', '9.3',
+            '9.1', '9.2.1', '9.3.1',
             '10.1', '10.2'];
 
         foreach ($clauses as $clause) {

@@ -23,7 +23,7 @@
   "verdicts": [
     {
       "nis2": "21.2.a",
-      "baustein": "ISMS.1.4",
+      "baustein": "ISMS.1",
       "state": "needs_review",
       "mappingPercentage": 60,
       "realVotes": 2
@@ -86,7 +86,7 @@
     },
     {
       "nis2": "21.2.j",
-      "baustein": "ORP.4.6",
+      "baustein": "ORP.4",
       "state": "reject",
       "mappingPercentage": 60,
       "realVotes": 1

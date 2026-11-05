@@ -1339,6 +1339,7 @@ admin:
                 nis2: 'Essential or important entity in a NIS2 sector (Annex I+II) **and** ≥ 50 employees or ≥ 10 M€ annual revenue.'
                 nis2umsucg: 'Same thresholds as NIS2 + based in Germany. Additionally: operators of especially important entities per BSI catalog.'
                 bsi_grundschutz: 'German federal authorities (mandatory via UP Bund), state authorities with federal link, suppliers of public contracting authorities.'
+                bsi_gspp: 'Successor to the IT-Grundschutz Compendium (BSI-Standard 300-1). For new adopters and organisations planning Grundschutz++ certification from 2027; Compendium users migrate via the BSI mapping.'
                 kritis: 'Operators of critical infrastructure per BSI KRITIS Regulation (sectors: energy, water, food, ICT, health, finance, transport, waste).'
                 kritis_health: 'Hospitals with ≥ 30,000 inpatient cases/year, care facilities, and emergency services per KHZG/§75c SGB V.'
                 digav: 'Providers or distributors of digital health applications (DiGA) with BfArM approval (prescription apps).'
@@ -1529,6 +1530,10 @@ bsi:
             bsi_arbeit_hint: 'Partial mapping or BSI-specific requirement'
             pruefen: 'Review Required'
             pruefen_hint: 'Heuristic mapping or no assignment — manual review needed'
+        target:
+            label: 'Target catalogue:'
+            kompendium: 'IT-Grundschutz Compendium'
+            gspp: 'Grundschutz++ (BSI Standard 300-1)'
         next_step:
             title: 'Your Next Step'
         pending_review: '%count% heuristic/open mappings to review'
@@ -1546,6 +1551,7 @@ bsi:
         col:
             requirement: 'Requirement'
             baustein: 'Baustein'
+            topic: 'Topic'
             iso_control: 'ISO Control'
             tier: 'Tier'
             state: 'Status'
