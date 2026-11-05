@@ -148,7 +148,7 @@ sso:
     wizard:
         title: 'SSO Setup Wizard'
         aria_label: 'SSO Setup Wizard'
-        success: 'SSO Identity Provider saved successfully.'
+        success: SSO Identity Provider saved.
         step1:
             label: 'Choose preset'
             subtitle: 'Select the identity provider type that best matches your SSO infrastructure.'
@@ -167,7 +167,7 @@ sso:
             save: 'Save provider'
             summary: 'Configuration summary'
             preset: 'Preset'
-            discovery_ok: 'Discovery document loaded successfully. Endpoints are ready.'
+            discovery_ok: Discovery document loaded. Endpoints are ready.
             discovery_failed: 'Discovery check failed: %error%. You can still save and test later.'
             no_discovery_url: 'No discovery URL set. Endpoints will need to be configured manually.'
     attribute_map:

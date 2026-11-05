@@ -13,7 +13,7 @@ bcm:
         normal: 'Normal'
         low: 'Low'
     description:
-        critical: 'Overview of critical assets and processes including RTO/RPO and action needs'
+        critical: Review critical assets and processes with RTO/RPO and decide on actions
         data_reuse_insights: 'How BCM data enhances asset protection requirements'
         critical_level: 'Immediate business outage in case of loss or failure. Highest priority for emergency actions.'
         high_level: 'Significant business impact within a short time. Rapid recovery planning required.'
@@ -63,7 +63,7 @@ bcm:
         rpo_tooltip: 'Recovery Point Objective - Maximum acceptable data loss (time period)'
         mtd_tooltip: 'Maximum Tolerable Downtime - Maximum tolerable outage duration'
         bcm_influences_asset_ratings: 'BCM assessments influence asset risk ratings'
-        no_critical_processes: 'No critical processes'
+        no_critical_processes: No critical processes available.
         no_critical_processes_desc: 'There are currently no critical processes defined'
     data_reuse:
         asset_recommendations_title: 'Asset Recommendations from BCM Analysis'
@@ -166,8 +166,8 @@ business_process:
         no_processes: 'No business processes assigned'
         no_critical_processes_desc: 'There are currently no critical processes defined'
         never_tested: 'Never tested'
-        no_critical_assets: 'No critical assets — well done!'
-        no_critical_processes: 'No critical processes'
+        no_critical_assets: No critical assets available.
+        no_critical_processes: No critical processes available.
         no_matching_processes: 'No matching processes found'
         rto_tooltip: 'Recovery Time Objective - Maximum time to restore business operations'
         rpo_tooltip: 'Recovery Point Objective - Maximum acceptable data loss (time period)'

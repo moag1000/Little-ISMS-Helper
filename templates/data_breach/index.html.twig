@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'status-warning', label: 'privacy.data_breach.management'|trans({}, 'privacy') },
         title: 'privacy.data_breach.management'|trans({}, 'privacy'),
         subtitle: 'privacy.data_breach.subtitle'|trans({}, 'privacy'),
         actions: [
@@ -32,7 +31,7 @@
     {% endfor %}
 {% endif %}
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {# CRITICAL: Overdue Notifications Alert #}
     {% if compliance_score.overdue_notifications > 0 %}

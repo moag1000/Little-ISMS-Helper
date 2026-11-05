@@ -18,7 +18,6 @@
     {{ _fa_page_header.render({
         title: 'privacy.data_breach.page.edit_title'|trans({}, 'privacy'),
         subtitle: 'privacy.data_breach.page.edit_subtitle'|trans({'%ref%': breach.referenceNumber, '%title%': breach.title}, 'privacy'),
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_breach_show', {id: breach.id}), variant: 'secondary', icon: 'ui-close' }
         ]

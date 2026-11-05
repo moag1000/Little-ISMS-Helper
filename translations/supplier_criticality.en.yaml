@@ -33,6 +33,6 @@ supplier_criticality:
     validation:
         code_pattern: 'Code must contain only lowercase letters, digits, and underscores.'
     flash:
-        created: 'Criticality level created successfully.'
-        updated: 'Criticality level updated successfully.'
-        deleted: 'Criticality level deleted successfully.'
+        created: Criticality level created.
+        updated: Criticality level updated.
+        deleted: Criticality level deleted.

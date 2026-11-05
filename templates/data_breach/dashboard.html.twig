@@ -17,7 +17,6 @@
     {{ _fa_page_header.render({
         title: 'data_breach.dashboard.title'|trans({}, 'privacy'),
         subtitle: 'data_breach.dashboard.subtitle'|trans({}, 'privacy'),
-        badge: { icon: 'nav-dashboard', label: '' },
         actions: [
             { label: 'data_breach.dashboard.action.view_all'|trans({}, 'privacy'), href: path('app_data_breach_index'), variant: 'primary', icon: 'ui-list', attrs: { 'data-turbo-action': 'advance' } },
             { label: 'data_breach.dashboard.action.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } }

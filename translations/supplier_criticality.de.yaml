@@ -33,6 +33,6 @@ supplier_criticality:
     validation:
         code_pattern: 'Code darf nur Kleinbuchstaben, Ziffern und Unterstriche enthalten.'
     flash:
-        created: 'Kritikalitätsstufe erfolgreich angelegt.'
-        updated: 'Kritikalitätsstufe erfolgreich aktualisiert.'
-        deleted: 'Kritikalitätsstufe erfolgreich gelöscht.'
+        created: Kritikalitätsstufe angelegt.
+        updated: Kritikalitätsstufe aktualisiert.
+        deleted: Kritikalitätsstufe gelöscht.

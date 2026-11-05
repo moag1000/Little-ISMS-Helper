@@ -1,7 +1,7 @@
 location:
     title: Standorte
     description:
-        overview: 'Übersicht über Standorte, Gebäude und Räume'
+        overview: 'Standorte, Gebäude und Räume pflegen'
     action:
         create: 'Standort anlegen'
         view_details: 'Details anzeigen'

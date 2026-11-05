@@ -2,7 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'risk.acceptance.title'|trans({}, 'risk') }} - {{ risk.title }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.acceptance.title'|trans({}, 'risk') }} - {{ risk.title }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -17,7 +17,6 @@
 {# Page Header #}
 {{ _fa_page_header.render({
     title: 'risk.acceptance.title'|trans({}, 'risk'),
-    badge: { icon: 'status-ok', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_show', {id: risk.id}), variant: 'secondary', icon: 'util-arrow-left', attrs: { 'data-turbo-action': 'advance' } }
     ]

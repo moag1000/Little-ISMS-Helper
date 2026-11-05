@@ -14,13 +14,26 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-people', label: 'admin.nav.sessions'|trans({}, 'admin') },
         title: user_name,
         subtitle: 'session.user_activity'|trans({}, 'session'),
         actions: [
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('session_index') }
         ]
     }) }}
+
+    {% if is_granted('SESSION_TERMINATE') %}
+        <form method="post" action="{{ path('session_terminate', {userName: user_name}) }}"
+              class="mb-4"
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'session.confirm.terminate_all'|trans({'%user%': user_name}, 'session') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('terminate_session_' ~ user_name) }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
+                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                {{ 'session.action.terminate_all'|trans({}, 'session') }}
+            </button>
+        </form>
+    {% endif %}
 
     {# Session Overview #}
     <div class="row mb-4">

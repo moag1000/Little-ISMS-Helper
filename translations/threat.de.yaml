@@ -17,8 +17,8 @@ threat:
         create: 'Bedrohung erfassen'
         update: 'Änderungen speichern'
         list: 'Zur Liste'
-        created_flash: 'Bedrohung wurde erfolgreich erfasst.'
-        updated_flash: 'Bedrohung wurde erfolgreich aktualisiert.'
+        created_flash: Bedrohung erfasst.
+        updated_flash: Bedrohung aktualisiert.
         deleted_flash: 'Bedrohung wurde gelöscht.'
     section:
         basic: 'Grunddaten'
@@ -34,7 +34,7 @@ threat:
         mitigations: 'Maßnahmen & Empfehlungen'
         audit_metadata: 'Verantwortliche Zuweisung'
     empty:
-        title: 'Keine Bedrohungen gefunden'
+        title: Keine Bedrohungen vorhanden
         description: 'Noch keine Bedrohungsinformationen erfasst. Erfassen Sie eine neue Bedrohung, um zu beginnen.'
     confirm:
         delete: 'Möchten Sie diese Bedrohung wirklich unwiderruflich löschen?'

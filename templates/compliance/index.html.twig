@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-bullseye', label: 'compliance.page_title'|trans({}, 'compliance') },
         title: 'compliance.page_title'|trans({}, 'compliance'),
         subtitle: 'compliance.page_subtitle'|trans({}, 'compliance'),
         actions: [
@@ -33,7 +32,7 @@
     {% endfor %}
 {% endif %}
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {# Maturity Heatmap — CMMI Levels per Framework (C2) #}
     {% if maturity_portfolio is defined and maturity_portfolio|length > 0 %}

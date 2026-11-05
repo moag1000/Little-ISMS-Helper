@@ -55,7 +55,6 @@
 
         {# ── Page header ───────────────────────────────────────────────── #}
         {{ _fa_page_header.render({
-            badge:    { icon: 'nav-palette', label: 'Dev only' },
             title:    'Aurora v4 Living Styleguide',
             subtitle: 'Every FairyAurora component with live preview and copy-paste Twig snippet.',
             actions: [
@@ -162,7 +161,6 @@
 
                 <div class="mb-3" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-lg,8px); padding:1.5rem;">
                     {{ _fa_page_header.render({
-                        badge:    { icon: 'nav-shield-lock', label: 'ISMS' },
                         title:    'Risikoübersicht',
                         subtitle: 'Alle offenen Risiken der aktuellen Periode.',
                         actions: [
@@ -177,7 +175,6 @@
                     <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {{ _fa_page_header.render({
-    badge:    { icon: 'nav-shield-lock', label: 'ISMS' },
     title:    'Risikoübersicht',
     subtitle: 'Alle offenen Risiken der aktuellen Periode.',
     actions: [

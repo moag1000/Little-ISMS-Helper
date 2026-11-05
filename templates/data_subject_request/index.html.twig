@@ -16,7 +16,6 @@
     } only %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'ui-person', label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request') },
         title: 'dsr.page.index_title'|trans({}, 'data_subject_request'),
         subtitle: 'dsr.page.index_subtitle'|trans({}, 'data_subject_request'),
         actions: [
@@ -31,7 +30,7 @@
 {% endif %}
 
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {# Overdue Alert #}
     {% if statistics.overdue_count > 0 %}

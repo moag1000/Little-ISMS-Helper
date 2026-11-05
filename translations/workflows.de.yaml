@@ -7,14 +7,14 @@ workflow:
         overdue: 'Überfällige Workflows'
         definitions: Workflow‑Definitionen
     description:
-        overview: 'Übersicht über laufende, ausstehende und überfällige Workflows'
+        overview: 'Laufende, ausstehende und überfällige Workflows nachverfolgen'
         pending: 'Workflows, die auf Bearbeitung oder Entscheidung warten'
         active: 'Aktive Workflows in Bearbeitung'
         in_progress: 'Workflows, die aktuell bearbeitet werden'
         overdue: 'Überfällige Workflows mit überschrittener Frist'
-        active_detail: 'Übersicht der aktuell aktiven Workflow‑Instanzen mit Fortschritt und Zuständigkeiten'
-        pending_detail: 'Übersicht der ausstehenden Workflow‑Instanzen mit Fristen und Prioritäten'
-        overdue_detail: 'Übersicht der überfälligen Workflow‑Instanzen mit Ausreißern und Prioritäten'
+        active_detail: Aktive Workflow‑Instanzen mit Fortschritt und Zuständigkeiten nachverfolgen
+        pending_detail: Ausstehende Workflow‑Instanzen nach Fristen und Prioritäten abarbeiten
+        overdue_detail: Überfällige Workflow‑Instanzen nach Priorität abarbeiten
         definitions: 'Verwalten und konfigurieren Sie wiederverwendbare Workflow‑Definitionen.'
     action:
         definitions: Definitionen
@@ -120,7 +120,7 @@ workflow:
         no_active: 'Keine aktiven Workflows vorhanden.'
         no_pending: 'Keine ausstehenden Workflows vorhanden.'
         unassigned: 'Nicht zugewiesen'
-        no_overdue: 'Keine überfälligen Workflows — gut gemacht!'
+        no_overdue: Keine überfälligen Workflows.
         no_overdue_desc: 'Alle Workflow‑Instanzen liegen derzeit innerhalb ihrer Fristen.'
         no_definitions: 'Keine Workflow‑Definitionen vorhanden.'
         no_activities: 'Keine Aktivitäten vorhanden.'
@@ -317,7 +317,7 @@ sla:
     days_short: 'd'
     dashboard:
         alert:
-            overdue_title: '%count% überfällige Workflow-Genehmigungen!'
+            overdue_title: '%count% überfällige Workflow-Genehmigungen'
             overdue_message: '%overdue% von %total% Workflows sind überfällig und erfordern sofortige Aufmerksamkeit.'
             pending_title: '%count% ausstehende Workflow-Genehmigungen'
             pending_message: 'Sie haben %count% Workflows, die Ihre Genehmigung erfordern.'
@@ -333,7 +333,7 @@ sla:
         in_progress: 'Workflows, die gerade bearbeitet werden'
 
 # Dashboard Alert Keys (alternative path)
-workflow.dashboard.alert.overdue_title: '%count% überfällige Workflow-Genehmigungen!'
+workflow.dashboard.alert.overdue_title: '%count% überfällige Workflow-Genehmigungen'
 workflow.dashboard.alert.overdue_message: '%overdue% von %total% Workflows sind überfällig und erfordern sofortige Aufmerksamkeit.'
 workflow.dashboard.alert.pending_title: '%count% ausstehende Workflow-Genehmigungen'
 workflow.dashboard.alert.pending_message: 'Sie haben %count% Workflows, die Ihre Genehmigung erfordern.'

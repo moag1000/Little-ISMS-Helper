@@ -2,7 +2,7 @@
 {% trans_default_domain 'security_reports' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ report_title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ report_title }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -18,9 +18,7 @@
     {# Page Header #}
     {{ _fa_page_header.render({
         title: report_title,
-        subtitle: 'security_reports.page.subtitle'|trans({}, 'security_reports'),
-        badge: { icon: 'nav-shield-lock', label: '' }
-    }) }}
+        subtitle: 'security_reports.page.subtitle'|trans({}, 'security_reports')}) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">

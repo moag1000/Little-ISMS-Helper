@@ -4,7 +4,7 @@
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-{% block title %}{{ 'planning.action_item.title.list'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'planning.action_item.title.list'|trans({}, 'planning') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -16,14 +16,13 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-calendar-check', label: 'nav.planning'|trans({}, 'nav') },
     title: 'planning.action_item.title.list'|trans({}, 'planning'),
     actions: [
         { label: 'planning.action_item.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_action_item_new') }
     ]
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 
 <div class="container mb-3">
     <div class="fa-filter-chip-group" role="group" aria-label="{{ 'planning.action_item.filter.label'|trans({}, 'planning') }}">

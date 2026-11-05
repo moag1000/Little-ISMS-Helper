@@ -232,6 +232,17 @@
                             <span class="text-muted">{{ 'dpia.show.not_yet_consulted'|trans({}, 'privacy') }}</span>
                         {% endif %}
                     </p>
+                    {% if not dpia.dpoConsultationDate and is_granted('ROLE_AUDITOR') %}
+                        <form method="post" action="{{ path('app_dpia_dpo_consultation', {id: dpia.id}) }}" class="mb-3">
+                            <input type="hidden" name="_token" value="{{ csrf_token('dpo' ~ dpia.id) }}">
+                            <label for="dpo_advice_{{ dpia.id }}" class="form-label small">{{ 'dpia.show.dpo_advice_label'|trans({}, 'privacy') }}</label>
+                            <textarea name="dpo_advice" id="dpo_advice_{{ dpia.id }}" rows="3" required
+                                      class="form-control form-control-sm fa-cyber-input__field mb-2"></textarea>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                {{ 'dpia.show.record_dpo_consultation'|trans({}, 'privacy') }}
+                            </button>
+                        </form>
+                    {% endif %}
                     <p><strong>{{ 'dpia.show.field.supervisory_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.requiresSupervisoryConsultation %}
                             {% if dpia.supervisoryConsultationDate %}
@@ -243,6 +254,17 @@
                             <span class="text-muted">{{ 'dpia.show.not_required'|trans({}, 'privacy') }}</span>
                         {% endif %}
                     </p>
+                    {% if dpia.requiresSupervisoryConsultation and not dpia.supervisoryConsultationDate and is_granted('ROLE_MANAGER') %}
+                        <form method="post" action="{{ path('app_dpia_supervisory_consultation', {id: dpia.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('supervisory' ~ dpia.id) }}">
+                            <label for="supervisory_feedback_{{ dpia.id }}" class="form-label small">{{ 'dpia.show.supervisory_feedback_label'|trans({}, 'privacy') }}</label>
+                            <textarea name="supervisory_feedback" id="supervisory_feedback_{{ dpia.id }}" rows="3" required
+                                      class="form-control form-control-sm fa-cyber-input__field mb-2"></textarea>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                {{ 'dpia.show.record_supervisory_consultation'|trans({}, 'privacy') }}
+                            </button>
+                        </form>
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
         </div>

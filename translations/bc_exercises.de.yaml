@@ -74,7 +74,7 @@ bc_exercises:
         'yes': Ja
         'no': Nein
     message:
-        no_exercises: 'Keine BC‑Übungen gefunden.'
+        no_exercises: Keine BC‑Übungen vorhanden.
         schedule_first: 'Planen Sie Ihre erste Übung'
         incomplete_reports: 'Unvollständige Berichte'
         upcoming: 'Bevorstehende Übungen'
@@ -87,7 +87,6 @@ bc_exercises:
         scope: 'Welche BC-Pläne, Prozesse oder Systeme werden getestet?'
         objectives: 'Was soll mit dieser Übung erreicht werden? (Lernziele, zu testende Prozesse)'
         scenario: 'Beschreiben Sie das Übungsszenario (z.B. "Serverraum-Brand" oder "Ransomware-Angriff")'
-        exercise_date: 'Geplantes Datum der Übung'
         duration_hours: 'Geplante oder tatsächliche Dauer der Übung in Stunden'
         participants: 'Welche Personen/Teams nehmen an der Übung teil?'
         participants_legacy: 'Legacy-Freitext, nur lesend bei Migration. Bitte Personen-Multi-Select nutzen.'

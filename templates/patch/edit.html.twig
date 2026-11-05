@@ -2,7 +2,7 @@
 {% trans_default_domain 'patches' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'patch.edit'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'patch.edit'|trans({}, 'patches') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -16,7 +16,6 @@
 
     {{ _fa_page_header.render({
         title: ('patch.edit'|trans({}, 'patches')) ~ ': ' ~ patch.title,
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_patch_show', {id: patch.id}), variant: 'ghost', icon: 'util-arrow-left' }
         ]

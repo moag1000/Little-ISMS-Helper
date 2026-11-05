@@ -97,7 +97,7 @@ policy_wizard:
     mode:
         full:
             label: 'Vollständiger Lauf'
-            description: 'Sieben Schritte vom Welcome bis zur Generate-Phase. Erzeugt das komplette Regelwerks-Set inklusive ISO 27001, BSI- und DORA-Sektionen.'
+            description: 'Sieben Schritte vom Einstieg bis zur Generate-Phase. Erzeugt das komplette Regelwerks-Set inklusive ISO 27001, BSI- und DORA-Sektionen.'
         targeted:
             label: 'Gezielter Re-Run'
             description: 'Aktualisiert einzelne Sektionen nach einem Audit-Finding oder einer regulatorischen Änderung, ohne das gesamte Regelwerk neu zu erzeugen.'
@@ -115,7 +115,7 @@ policy_wizard:
             suggested_topic: 'Vorschlag'
             rationale_label: 'Begründung (optional)'
             rationale_placeholder: 'Kurze Notiz für das Audit-Log (optional, max. 1000 Zeichen).'
-            continue_hint: 'Fortfahren bringt Sie in Schritt 1 (Welcome). Ihre Entscheidungen werden im Wizard-Lauf festgehalten.'
+            continue_hint: 'Fortfahren bringt Sie in Schritt 1 (Einstieg). Ihre Entscheidungen werden im Wizard-Lauf festgehalten.'
             action:
                 replace: 'Durch neues Wizard-Dokument ersetzen'
                 keep: 'Bestehendes Dokument behalten (Thema überspringen)'
@@ -136,7 +136,7 @@ policy_wizard:
             empty:
                 title: 'Greenfield-Organisation'
                 message: 'Es wurden keine bestehenden Dokumente gefunden. Lassen Sie uns frisch starten.'
-                action_continue: 'Weiter zu Schritt 1 (Welcome).'
+                action_continue: 'Weiter zu Schritt 1 (Einstieg).'
             action_placeholder: '— Aktion wählen —'
             target_topic_placeholder: '— Thema wählen —'
             suggestion_label: 'Empfehlung'
@@ -208,7 +208,7 @@ policy_wizard:
                 show_full: 'Im Dokumenten-Modul öffnen'
                 loading: 'Lade Vorschau …'
         welcome:
-            title: 'Willkommen + Standards'
+            title: Einstieg + Standards
             subtitle: 'Wählen Sie den Standards-Mix und den Run-Modus.'
             standard:
                 iso27001: 'ISO/IEC 27001:2022 (Pflicht)'
@@ -1012,7 +1012,7 @@ policy_wizard:
         generate_preview: 'Diese Auswahl wird voraussichtlich %count% Dokumente erzeugen.'
         run_started: 'Wizard-Lauf gestartet.'
         run_cancelled: 'Wizard-Lauf wurde abgebrochen.'
-        run_completed: 'Wizard-Lauf wurde erfolgreich abgeschlossen.'
+        run_completed: Wizard-Lauf abgeschlossen.
         sandbox_no_persistence: 'Sandbox-Modus aktiv — es werden keine Dokumente persistiert.'
         changed_yes: 'Geändert'
         changed_no: 'Unverändert'
@@ -1531,7 +1531,7 @@ policy_ack:
         title: 'Offene Richtlinien-Quittierungen'
         subtitle: 'Bitte bestätigen Sie die folgenden veröffentlichten Richtlinien.'
         pending_count: '%count% Richtlinie(n) warten auf Ihre Quittierung.'
-        no_pending: 'Alle Richtlinien sind quittiert — vielen Dank!'
+        no_pending: Alle Richtlinien sind quittiert.
     view:
         title: 'Richtlinie ansehen und quittieren'
         subtitle: 'Lesen Sie die Richtlinie und bestätigen Sie die Kenntnisnahme am Seitenende.'
@@ -1539,7 +1539,7 @@ policy_ack:
             acknowledge: 'Kenntnisnahme bestätigen'
         button_disabled_already_acked: 'Sie haben diese Version bereits quittiert.'
     message:
-        acknowledged_success: 'Quittierung erfasst — danke!'
+        acknowledged_success: Quittierung erfasst.
     widget:
         title: 'Richtlinien-Quittierungen ausstehend'
         action:

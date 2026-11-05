@@ -32,7 +32,6 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge:    { icon: 'ui-list', label: 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') },
     title:    plan.title,
     subtitle: 'risk_treatment_plan.show.subtitle'|trans({}, 'risk_treatment_plan') ~ (plan.isOverdue() ? ' • ' ~ 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') : ''),
     actions: [

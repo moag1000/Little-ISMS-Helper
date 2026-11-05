@@ -2,7 +2,7 @@
 {% trans_default_domain 'people' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'person.title.edit'|trans({}, 'messages') }} - {{ person.fullName }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'person.title.edit'|trans({}, 'messages') }} - {{ person.fullName }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -17,7 +17,6 @@
 
 {{ _fa_page_header.render({
     title: ('person.title.edit'|trans({}, 'messages')) ~ ': ' ~ (person.fullName),
-    badge: { icon: 'ui-edit', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_person_show', {id: person.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]

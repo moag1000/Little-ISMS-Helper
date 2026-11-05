@@ -52,6 +52,10 @@
  #       flush: false
  #   }) }}
  #
+ # Icons: an action's icon renders only for the primary/danger variant or when the
+ #   action has no label (icon-only; then pass `ariaLabel`). Ghost/secondary/
+ #   outline actions are text-only.
+ #
  # A11y:
  #   - <form role="search"> wraps search input; visually-hidden label
  #   - Filter-chips are <a>; aria-current="true" on active
@@ -82,7 +86,9 @@
     {%- if isDisabled %}{% set cls = cls ~ ' is-disabled' %}{% endif -%}
 
     {%- set iconHtml = '' -%}
-    {%- if action.icon is defined -%}
+    {#- Icon rule: only primary/danger actions (or icon-only ones without a label) carry an icon. -#}
+    {%- set isPrimary = action.variant is defined ? (action.variant in ['primary', 'danger']) : ('--ghost' not in baseClass) -%}
+    {%- if action.icon is defined and action.icon and (isPrimary or not action.label|default('')) -%}
         {%- set iconName = (action.icon starts with 'bi-') ? action.icon[3:] : action.icon -%}
         {%- set iconHtml = '<i class="fa-icon fa-icon--' ~ iconName ~ '" aria-hidden="true"></i> ' -%}
     {%- endif -%}

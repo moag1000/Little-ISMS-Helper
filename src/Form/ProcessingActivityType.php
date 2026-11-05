@@ -58,7 +58,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'processing_activity.form.description',
-                'help' => 'processing_activity.help.description',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -493,7 +492,6 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('dpiaCompleted', ChoiceType::class, [
                 'label' => 'processing_activity.form.dpia_completed',
-                'help' => 'processing_activity.help.dpia_completed',
                 'choices' => [
                     'common.no' => false,
                     'common.yes' => true,
@@ -504,13 +502,11 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             ->add('dpiaDate', DateType::class, [
                 'label' => 'processing_activity.form.dpia_date',
-                'help' => 'processing_activity.help.dpia_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('riskLevel', ChoiceType::class, [
                 'label' => 'processing_activity.form.risk_level',
-                'help' => 'processing_activity.help.risk_level',
                 'choices' => [
                     'processing_activity.risk_level.low' => 'low',
                     'processing_activity.risk_level.medium' => 'medium',

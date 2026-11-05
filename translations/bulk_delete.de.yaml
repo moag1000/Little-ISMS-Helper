@@ -25,5 +25,5 @@ bulk_delete:
         list: 'Liste der betroffenen Verknüpfungen'
     loading: 'Abhängigkeiten werden geprüft...'
     confirm_count: '%count% Elemente werden dauerhaft gelöscht'
-    success: '%count% Elemente wurden erfolgreich gelöscht'
+    success: '%count% Elemente gelöscht'
     error: 'Fehler beim Löschen der Elemente'

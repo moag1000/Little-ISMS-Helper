@@ -6,7 +6,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'portfolio_report' %}
 
-{% block title %}{{ 'portfolio_report.drill.title'|trans({'%framework%': framework.code, '%category%': category}, 'portfolio_report') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'portfolio_report.drill.title'|trans({'%framework%': framework.code, '%category%': category}, 'portfolio_report') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">

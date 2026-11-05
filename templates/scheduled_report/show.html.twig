@@ -2,7 +2,7 @@
 {% trans_default_domain 'scheduled_reports' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ report.name }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ report.name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -24,7 +24,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-calendar-check', label: 'scheduled_report.title'|trans({}, 'scheduled_reports') },
         title:    report.name,
         actions: [
             { label: 'scheduled_report.action.edit'|trans({}, 'scheduled_reports'),    variant: 'ghost', icon: 'ui-edit', href: path('app_scheduled_report_edit',    {id: report.id}) },

@@ -17,9 +17,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        title: 'audit_finding.page.edit'|trans({}, 'audits') ~ ': ' ~ finding.title,
-        badge: { icon: 'ui-edit', label: '' }
-    }) }}
+        title: 'audit_finding.page.edit'|trans({}, 'audits') ~ ': ' ~ finding.title}) }}
 
     {# C5-03 — Severity × Type correlation help (ISO 19011 Cl. 6.4.8). #}
     {# Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}

@@ -8,7 +8,6 @@
 {% block body %}
 <div class="container-fluid">
     {{ _fa_page_header.render({
-        badge:   { icon: 'shield-check', label: 'mfa.section.title'|trans({}, 'mfa') },
         title:   'mfa.token_details'|trans({}, 'mfa'),
         actions: [
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_profile_mfa_index') }

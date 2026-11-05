@@ -4,11 +4,10 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_tabs.html.twig' as _fa_tabs %}
 
-{% block title %}{{ 'compliance.title.transitive'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'compliance.title.transitive'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 {{ _fa_page_header.render({
-    badge: { icon: 'compliance-shield', label: 'nav.compliance'|trans({}, 'nav') },
     title: 'compliance.title.transitive'|trans({}, 'compliance'),
     subtitle: 'compliance.description.transitive'|trans({}, 'compliance'),
     actions: [

@@ -14,7 +14,6 @@
     {{ _fa_page_header.render({
         title: 'processing_activity.dashboard.title'|trans({}, 'privacy'),
         subtitle: 'processing_activity.dashboard.subtitle'|trans({}, 'privacy'),
-        badge: { icon: 'nav-dashboard', label: '' },
         actions: [
             { label: 'processing_activity.dashboard.action.view_all'|trans({}, 'privacy'), href: path('app_processing_activity_index'), variant: 'primary', icon: 'ui-list', attrs: { 'data-turbo-action': 'advance' } },
             { label: 'processing_activity.dashboard.action.new'|trans({}, 'privacy'), href: path('app_processing_activity_new'), variant: 'success', icon: 'plus', attrs: { 'data-turbo-action': 'advance' } }

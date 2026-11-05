@@ -5,7 +5,7 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
-{% block title %}{{ 'soa.page.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'soa.page.title'|trans({}, 'soa') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -24,7 +24,6 @@
 {# Direct download / preview actions opt out of Turbo via attrs.data-turbo: 'false'
    so the browser keeps the binary/PDF stream instead of letting Turbo swallow it. #}
 {{ _fa_page_header.render({
-    badge: { icon: 'shield-check', label: 'nav.soa'|trans({}, 'nav') },
     title: 'soa.page.title'|trans({}, 'soa'),
     subtitle: 'soa.page.subtitle'|trans({}, 'soa'),
     actions: [
@@ -51,7 +50,7 @@
     prominence: 'subtle'
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 
 {# View Filter #}
 {% if currentTenant %}

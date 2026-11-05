@@ -40,6 +40,7 @@ mris:
             Bestandsdaten berechnet, fünf erfordern manuelle Pflege je Organisation.
         source: 'Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.'
         kpi_breadcrumb: 'MRIS-KPIs'
+        wizards_title: 'Entscheidungshilfen (Wizards)'
         note_label: 'Hinweis:'
     badge:
         auto: auto

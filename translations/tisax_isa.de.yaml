@@ -145,7 +145,7 @@ tisax:
       confirm_body: 'Hiermit werden %new% neue Anforderungen erstellt und %existing% bestehende Anforderungen unter Framework „%framework%" aktualisiert.'
       irreversible_note: 'Bestehende Anforderungen werden direkt überschrieben. Diese Aktion kann mit einer neuen Workbook-Version erneut ausgeführt werden.'
       submit_button: 'Import festschreiben'
-      success: 'VDA-ISA-Anforderungen wurden erfolgreich importiert.'
+      success: VDA-ISA-Anforderungen importiert.
       company_mismatch_title: 'Organisation weicht ab'
       company_mismatch_body: 'Das Self-Assessment ist auf „%workbook%" ausgestellt, Ihre Organisation heißt hier „%org%". Oft ist das nur eine andere Schreibweise — kein Grund zur Sorge. Prüfen Sie nur kurz, dass es Ihre Datei ist, und bestätigen Sie.'
       company_confirm_label: 'Ich bestätige, dass das Self-Assessment von „%workbook%" zu unserer Organisation gehört und importiert werden soll.'

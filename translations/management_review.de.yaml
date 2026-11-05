@@ -158,7 +158,6 @@ management_review:
         audit_results: 'Ergebnisse interner/externer Audits seit dem letzten Review'
         nonconformities_review: 'Status offener Nichtkonformitäten aus Audits'
         incidents_review: 'Analyse von Sicherheitsvorfällen seit letztem Review'
-        risks_review: 'Änderungen im Risikoprofil'
         objectives_review: 'Status der ISMS-Ziele und Zielerreichung'
         context_changes: 'Änderungen in internen/externen Anforderungen'
         previous_review_actions: 'Status der Maßnahmen aus dem vorherigen Management Review'

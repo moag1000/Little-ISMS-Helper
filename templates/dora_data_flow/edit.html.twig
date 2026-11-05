@@ -2,7 +2,7 @@
 {% trans_default_domain 'dora_data_flow' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'dora_data_flow.title.edit'|trans({}, 'dora_data_flow') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'dora_data_flow.title.edit'|trans({}, 'dora_data_flow') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -15,7 +15,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'ui-edit', label: 'DORA Art. 28 · RT_03' },
         title: 'dora_data_flow.title.edit'|trans({}, 'dora_data_flow'),
         subtitle: flow.displayLabel,
         actions: [

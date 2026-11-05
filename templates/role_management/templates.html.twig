@@ -11,7 +11,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-collection', label: 'role.templates.title'|trans({}, 'role_management') },
         title: 'role.templates.title'|trans({}, 'role_management'),
         actions: [
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_index') }

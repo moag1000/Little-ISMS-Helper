@@ -105,9 +105,7 @@ business_process:
     rpo: '<strong>RPO - Recovery Point Objective</strong><br>⏱️ <em>Enter in hours</em><br><br>Maximum
       acceptable data loss<br><br><em>Examples:</em><br>• Financial data: 0 (real-time)<br>•
       ERP: 1<br>• Archive: 24'
-    mtpd: <strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>⏱️ <em>Enter
-      in hours</em><br><br>Maximum disruption before irreversible damage occurs<br><br><em>Note:</em>
-      MTPD must be &gt; RTO!
+    mtpd: '<strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>⏱️ <em>Enter in hours</em><br><br>Maximum disruption before irreversible damage occurs<br><br><em>Note:</em> MTPD must be &gt; RTO.'
     reputational_impact: '<strong>Reputational Impact (1-5)</strong><br>1=no external impact · 2=internal only · 3=local media · 4=national media · 5=international attention'
     regulatory_impact: '<strong>Regulatory Impact (1-5)</strong><br>1=no regulatory concern · 2=advisory · 3=formal deficiency notice · 4=fine/sanction · 5=licence revocation possible'
     operational_impact: '<strong>Operational Impact (1-5)</strong><br>1=no other processes affected · 2=1-2 processes impaired · 3=department impaired · 4=multiple departments · 5=entire operation at risk'
@@ -190,7 +188,7 @@ business_process:
     deviation: Deviation
     impact_assessment: Impact Assessment
     warning: Warning
-    unmitigated_high_risks: This process has unmitigated high risks!
+    unmitigated_high_risks: This process has unmitigated high risks.
     asset: Asset
     type: Type
     cia_rating: CIA Rating

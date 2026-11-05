@@ -8,7 +8,7 @@
 # explicit ADR-level justification.
 # remediated.
 # triples from the script output and diffs against this file. NEW entries
-dev/design_system.html.twig:207: Hardcoded text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula mauris in erat accumsan, vel varius odio lacinia. Suspendisse potenti.'
+dev/design_system.html.twig:204: Hardcoded text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula mauris in erat accumsan, vel varius odio lacinia. Suspendisse potenti.'
 dev/design_system.html.twig:402: Hardcoded text: 'Chip group with hrefs:'
 dev/design_system.html.twig:977: Untranslated placeholder: 'Was ist passiert? Welche Daten sind betroffen?'
 incident/_gdpr_breach_wizard_modal.html.twig:320: Hardcoded text: 'GDPR Art. 33 (Notification to supervisory authority)'

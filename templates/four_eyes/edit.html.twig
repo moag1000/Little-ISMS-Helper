@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'four_eyes.edit.title'|trans({}, 'four_eyes') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'four_eyes.edit.title'|trans({}, 'four_eyes') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -13,7 +13,6 @@
 
 {{ _fa_page_header.render({
     title: 'four_eyes.edit.title'|trans({}, 'four_eyes'),
-    badge: { icon: 'ui-edit', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_four_eyes_inbox'), variant: 'secondary', icon: 'util-arrow-left' }
     ]

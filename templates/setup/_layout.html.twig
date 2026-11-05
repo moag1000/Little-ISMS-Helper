@@ -16,7 +16,6 @@
 {% import '_components/_brand.html.twig' as faBrand %}
 {% import '_components/_tech_backdrop.html.twig' as techBg %}
 {% import '_components/_onboarding_fairy.html.twig' as onFairy %}
-{% import '_components/_typewriter.html.twig' as tw %}
 
 {% set step = setup_flow(active_step|default('welcome')) %}
 {% set total = setup_flow_total() %}
@@ -80,7 +79,7 @@
             <div>
                 <div class="fa-setup-left__alva-label">Alva · {{ 'wizard.companion_short'|trans({}, 'messages')|default('Begleiterin') }}</div>
                 <div class="fa-setup-left__line">
-                    {{ tw.render(step.line, { lang: app.request.locale })|raw }}
+                    {{ step.line }}
                 </div>
                 <div class="fa-setup-left__sub">{{ step.sub }}</div>
             </div>

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'my_day' %}
 
-{% block title %}{{ 'my_day.title'|trans({}, 'my_day') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'my_day.title'|trans({}, 'my_day') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -73,7 +73,6 @@
 
 <main class="fa-aurora-surface my-day">
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-inbox', label: 'my_day.badge'|trans({}, 'my_day') },
         title:    'my_day.title'|trans({}, 'my_day'),
         subtitle: 'my_day.subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}, 'my_day'),
         actions: [

@@ -27,3 +27,4 @@ tests/Template/SystemTemplateApplierTest.php:52
 tests/Template/SystemTemplateApplierTest.php:90
 tests/Template/SystemTemplateApplierTest.php:120
 tests/Template/SystemTemplateApplierTest.php:152
+tests/Twig/AppDateFormatExtensionTest.php:76

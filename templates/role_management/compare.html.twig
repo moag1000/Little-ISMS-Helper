@@ -12,7 +12,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-grid', label: 'role.compare.title'|trans },
         title: 'role.compare.title'|trans,
         actions: [
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_index') }

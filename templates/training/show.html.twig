@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'training' %}
 
-{% block title %}{{ training.title }} - {{ parent() }}{% endblock %}
+{% block title %}{{ training.title }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
@@ -33,7 +33,6 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-mortarboard', label: 'nav.training'|trans({}, 'nav') },
         title: training.title,
         subtitle: ('training.status.' ~ training.status)|trans({}, 'training')
     }) }}

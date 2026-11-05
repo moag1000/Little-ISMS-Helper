@@ -7,13 +7,13 @@ workflow:
         overdue: 'Overdue Workflows'
         definitions: 'Workflow Definitions'
     description:
-        overview: 'Overview of running, pending and overdue workflows'
+        overview: 'Track running, pending and overdue workflows'
         pending: 'Workflows waiting for processing or decision'
         active: 'Active workflows in progress'
         overdue: 'Overdue workflows with missed deadlines'
-        active_detail: 'Overview of currently active workflow instances with progress and responsibilities'
-        pending_detail: 'Overview of pending workflow instances with deadlines and priorities'
-        overdue_detail: 'Overview of overdue workflow instances with outliers and priorities'
+        active_detail: Track active workflow instances with progress and responsibilities
+        pending_detail: Work through pending workflow instances by deadline and priority
+        overdue_detail: Work through overdue workflow instances by priority
         definitions: 'Manage and configure reusable workflow definitions.'
         in_progress: 'Workflows currently being processed'
     action:
@@ -120,7 +120,7 @@ workflow:
         no_active: 'No active workflows available.'
         no_pending: 'No pending workflows available.'
         unassigned: Unassigned
-        no_overdue: 'No overdue workflows — great!'
+        no_overdue: No overdue workflows.
         no_overdue_desc: 'All workflow instances are currently within their deadlines.'
         no_definitions: 'No workflow definitions available.'
         no_activities: 'No activities available.'
@@ -317,7 +317,7 @@ sla:
     days_short: 'd'
     dashboard:
         alert:
-            overdue_title: '%count% overdue workflow approvals!'
+            overdue_title: '%count% overdue workflow approvals'
             overdue_message: '%overdue% of %total% workflows are overdue and require immediate attention.'
             pending_title: '%count% pending workflow approvals'
             pending_message: 'You have %count% workflows awaiting your approval.'
@@ -333,7 +333,7 @@ sla:
         in_progress: 'Workflows currently being processed'
 
 # Dashboard Alert Keys (alternative path)
-workflow.dashboard.alert.overdue_title: '%count% overdue workflow approvals!'
+workflow.dashboard.alert.overdue_title: '%count% overdue workflow approvals'
 workflow.dashboard.alert.overdue_message: '%overdue% of %total% workflows are overdue and require immediate attention.'
 workflow.dashboard.alert.pending_title: '%count% pending workflow approvals'
 workflow.dashboard.alert.pending_message: 'You have %count% workflows awaiting your approval.'

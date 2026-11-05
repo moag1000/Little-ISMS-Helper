@@ -18,7 +18,6 @@ use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -32,8 +31,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Provides:
  *  - CRUD index/new/edit/delete under `/admin/asset-sub-types`
  *  - Seed-preset application via POST (BSI / TISAX / production-DE-Mittelstand)
- *  - JSON endpoint `/admin/asset-sub-types/by-top-type/{topType}` for the
- *    dependent-dropdown Stimulus controller on the Asset form
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/asset-sub-types', name: 'admin_asset_sub_type_')]
@@ -236,40 +233,6 @@ final class AssetSubTypeController extends AbstractController
         ));
 
         return $this->redirectToRoute('admin_asset_sub_type_index');
-    }
-
-    /**
-     * JSON endpoint feeding the dependent-dropdown on the Asset form.
-     * Returns active sub-types for the given top-type, scoped to current tenant.
-     */
-    #[Route('/by-top-type/{topType}', name: 'by_top_type', methods: ['GET'], requirements: ['topType' => '[A-Za-zÄÖÜäöü]+'])]
-    public function byTopType(string $topType): JsonResponse
-    {
-        $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant instanceof Tenant) {
-            return new JsonResponse(['ok' => false, 'error' => 'tenant_required'], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (!in_array($topType, AssetSubType::TOP_TYPES, true)) {
-            return new JsonResponse(['ok' => false, 'error' => 'invalid_top_type'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $rows = $this->repository->findByTenantAndTopType($tenant, $topType);
-
-        $payload = array_map(
-            static fn (AssetSubType $s): array => [
-                'id' => $s->getId(),
-                'name' => $s->getName(),
-                'description' => $s->getDescription(),
-            ],
-            $rows,
-        );
-
-        return new JsonResponse([
-            'ok' => true,
-            'top_type' => $topType,
-            'sub_types' => $payload,
-        ]);
     }
 
     private function assertOwnedByCurrentTenant(AssetSubType $subType): void

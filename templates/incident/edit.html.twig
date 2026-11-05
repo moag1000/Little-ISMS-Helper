@@ -2,7 +2,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
-{% block title %}{{ 'incident.edit'|trans({}, 'incident') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'incident.edit'|trans({}, 'incident') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -18,7 +18,6 @@
 
             {{ _fa_page_header.render({
     title: ('incident.edit'|trans({}, 'incident')) ~ ': ' ~ (incident.title),
-    badge: { icon: 'ui-edit', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_incident_show', {id: incident.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]

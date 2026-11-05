@@ -4,7 +4,7 @@
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-{% block title %}{{ 'dora_subcontractor.title.list'|trans({}, 'dora') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'dora_subcontractor.title.list'|trans({}, 'dora') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-flow', label: 'dora_subcontractor.badge'|trans({}, 'dora') },
         title: 'dora_subcontractor.title.list'|trans({}, 'dora'),
         subtitle: 'dora_subcontractor.subtitle'|trans({}, 'dora'),
         actions: [
@@ -25,7 +24,7 @@
     }) }}
 </div>
 
-<main class="fa-aurora-surface">
+<main>
     <div class="container">
     {% if tree is empty %}
         {{ _fa_empty_state.render({

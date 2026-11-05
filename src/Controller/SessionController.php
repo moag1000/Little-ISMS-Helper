@@ -16,7 +16,6 @@ use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -58,50 +57,6 @@ class SessionController extends AbstractController
             'sessions' => $activeSessions,
             'statistics' => $statistics,
             'search_email' => $userEmail,
-        ]);
-    }
-    #[Route('/admin/sessions/statistics', name: 'session_statistics', methods: ['GET'])]
-    #[IsGranted('SESSION_VIEW')]
-    public function statistics(
-        AuditLogRepository $auditLogRepository,
-        TenantContext $tenantContext
-    ): JsonResponse {
-        // Get login statistics for the last 30 days
-        $thirtyDaysAgo = new DateTime('-30 days');
-        $now = new DateTime();
-
-        // Same scope as the session index: logins of users the actor
-        // may administer; the action filter runs in the query.
-        $userScope = $this->resolveAdministrableUserScope($tenantContext);
-        $logins = $auditLogRepository->findLoginEvents(
-            $thirtyDaysAgo,
-            $now,
-            ['login', 'login_success', 'authentication'],
-            $userScope,
-            $userScope !== null && $this->getUser() instanceof User ? $this->getUser() : null,
-        );
-
-        // Group by date
-        $loginsByDate = [];
-        foreach ($logins as $login) {
-            $date = $login->getCreatedAt()->format('Y-m-d');
-            if (!isset($loginsByDate[$date])) {
-                $loginsByDate[$date] = 0;
-            }
-            $loginsByDate[$date]++;
-        }
-
-        // Get unique users
-        $uniqueUsers = array_unique(array_map(fn(AuditLog $log): ?string => $log->getUserName(), $logins));
-
-        return $this->json([
-            'total_logins' => count($logins),
-            'unique_users' => count($uniqueUsers),
-            'logins_by_date' => $loginsByDate,
-            'period' => [
-                'from' => $thirtyDaysAgo->format('Y-m-d'),
-                'to' => $now->format('Y-m-d'),
-            ],
         ]);
     }
     #[Route('/admin/sessions/{userName}/show', name: 'session_show', methods: ['GET'])]

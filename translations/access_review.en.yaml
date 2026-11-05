@@ -90,12 +90,12 @@ access_review:
       should retain which access rights (ISO 27001 A.5.18).
 
   flash:
-    campaign_created: Campaign created successfully. Review items have been generated.
+    campaign_created: Campaign created. Review items generated.
     campaign_closed: Campaign has been closed.
     decision_saved: 'Decision "%decision%" saved.'
     campaign_already_closed: This campaign is already closed.
     invalid_decision: Invalid decision.
-    bulk_decide_success: '%count% decision(s) saved successfully.'
+    bulk_decide_success: '%count% decision(s) saved.'
     bulk_decide_partial: '%done% saved, %skipped% skipped.'
     export_ok: XLSX export started.
     escalation_notified: 'Escalation notification sent for %count% item(s).'

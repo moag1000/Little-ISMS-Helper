@@ -2,10 +2,10 @@
 {% trans_default_domain 'fte_tracking' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'fte_tracking.report.title'|trans({}, 'fte_tracking') }} {{ month_label }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'fte_tracking.report.title'|trans({}, 'fte_tracking') }} {{ month_label }}{% endblock %}
 
 {% block body %}
-<div class="fa-aurora-surface">
+<div>
 
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-bar-chart', label: 'fte_tracking.report.badge'|trans({}, 'fte_tracking') },
         title: 'fte_tracking.report.title'|trans({}, 'fte_tracking') ~ ' — ' ~ month_label,
         subtitle: 'fte_tracking.report.subtitle'|trans({}, 'fte_tracking'),
         actions: [

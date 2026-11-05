@@ -34,6 +34,7 @@ four_eyes:
 
     approve: 'Freigeben'
     reject: 'Ablehnen'
+    reassign_approver: 'Genehmiger neu zuweisen'
 
     edit:
         title: 'Freigabe-Anfrage bearbeiten'
@@ -51,4 +52,4 @@ four_eyes:
     flash:
         approved: 'Freigabe erteilt.'
         rejected: 'Freigabe abgelehnt.'
-        approver_updated: 'Genehmiger erfolgreich aktualisiert.'
+        approver_updated: Genehmiger aktualisiert.

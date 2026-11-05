@@ -13,7 +13,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-clipboard-check', label: 'audit_program.page.title'|trans },
     title: program.name,
     subtitle: program.startDate|date('d.m.Y') ~ ' – ' ~ program.endDate|date('d.m.Y'),
     actions: is_granted('ROLE_MANAGER') ? [
@@ -21,7 +20,7 @@
     ] : []
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
     <div class="row g-4">
         <div class="col-lg-8">

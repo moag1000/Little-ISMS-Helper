@@ -30,7 +30,7 @@
     {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_supplier_index') }]) %}
     {{ _fa_page_header.render({
-        badge: (isInherited is defined and isInherited) ? { icon: 'nav-building', label: 'corporate.inherited'|trans({}, 'messages') } : { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
+        badge: (isInherited is defined and isInherited) ? { icon: 'nav-building', label: 'corporate.inherited'|trans({}, 'messages') } : null,
         title: supplier.name,
         actions: _show_actions
     }) }}

@@ -13,12 +13,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-boxes', label: 'industry_baseline.title'|trans({}, 'industry_baseline') },
         title: 'industry_baseline.title'|trans({}, 'industry_baseline'),
         subtitle: 'industry_baseline.subtitle'|trans({}, 'industry_baseline')
     }) }}
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'd-flex gap-2' } } %}
         {% block alert_body %}<div class="small">{{ 'industry_baseline.intro'|trans({}, 'industry_baseline')|raw }}</div>{% endblock %}

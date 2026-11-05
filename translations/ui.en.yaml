@@ -103,9 +103,9 @@ ui:
             trigger_title: 'Keyboard Shortcuts (?)'
     bulk_actions:
         entity_label: 'items'
-        delete_success: '%count% %entity% successfully deleted'
+        delete_success: '%count% %entity% deleted'
         delete_error: 'Error deleting: '
-        export_success: 'Export successful'
+        export_success: Exported.
         export_error: 'Error exporting'
         tag_prompt: 'Add tag:'
         tag_success: 'Tag added'
@@ -124,7 +124,7 @@ ui:
         file_too_large: 'File "%name%" is too large. Maximum: %size%'
         invalid_file_type: 'File "%name%" has an invalid file type.'
         no_files_selected: 'No files selected'
-        upload_success: 'Files uploaded successfully!'
+        upload_success: Files uploaded.
         upload_error: 'Error uploading files.'
     quick_view:
         loading: 'Loading preview...'
@@ -181,15 +181,15 @@ ui:
             light: 'Light'
             system: 'System'
         autofix:
-            done_by_fairy: 'The Cyberpunk Fairy took care of it for you!'
+            done_by_fairy: Fixed automatically.
             processing: 'Processing …'
         backup_codes:
             allow_popups: 'Please allow pop-ups to print the backup codes.'
             codes: 'Backup codes'
-            copied: 'Copied!'
+            copied: Copied.
             copy_failed: 'Copy failed'
             device: 'Device'
-            downloaded: 'Downloaded!'
+            downloaded: Downloaded.
             generated: 'Generated'
             title: 'MFA backup codes'
             usage_1: 'Use backup codes when you cannot access your authenticator'
@@ -199,7 +199,7 @@ ui:
             usage_title: 'Usage instructions'
             user: 'User'
             warning_text: 'Keep these codes secure. Anyone with these codes can access your account.'
-            warning_title: 'Important security notice!'
+            warning_title: Important security notice
         batch_analysis:
             analyzing: 'Analysing …'
             cancelled: 'Cancelled'
@@ -223,7 +223,7 @@ ui:
             delete_error: 'Deleting failed'
             delete_success: '%count% %entity% deleted.'
             export_error: 'Export failed'
-            export_success: 'Export successful'
+            export_success: Exported.
             items: 'items'
             no_tags_selected: 'No tags selected.'
             status_change_error: 'Update failed'
@@ -309,7 +309,7 @@ ui:
             search: 'Focus search'
             then: 'then'
         mfa_setup:
-            copied: 'Copied!'
+            copied: Copied.
             error: 'Error'
             verify: 'Verify & activate'
             verifying: 'Verifying …'

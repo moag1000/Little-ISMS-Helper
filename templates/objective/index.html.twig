@@ -5,7 +5,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'objective.page.title'|trans({}, 'objective') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'objective.page.title'|trans({}, 'objective') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-target', label: 'nav.objectives'|trans({}, 'nav') },
         title: 'objective.page.title'|trans({}, 'objective'),
         actions: is_granted('ROLE_ADMIN') ? [
             { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
@@ -30,7 +29,7 @@
 {% endif %}
 
 
-    <main class="fa-aurora-surface">
+    <main>
 
     <turbo-frame id="objective-stats">
         <div class="row mb-4">

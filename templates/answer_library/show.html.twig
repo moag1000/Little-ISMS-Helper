@@ -2,7 +2,7 @@
 {% trans_default_domain 'answer_library' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'answer_library.page.show_title'|trans({}, 'answer_library') }} – {{ parent() }}{% endblock %}
+{% block title %}{{ 'answer_library.page.show_title'|trans({}, 'answer_library') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -14,7 +14,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge:  { icon: 'nav-shield-check', label: 'answer_library.badge'|trans({}, 'answer_library') },
     title:  entry.question|u.truncate(80, '…'),
     actions: is_granted('ROLE_MANAGER') ? [
         { label: 'common.edit'|trans({}, 'messages'), variant: 'secondary', icon: 'pencil',
@@ -22,7 +21,7 @@
     ] : []
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4" style="max-width: 900px;">
 
     <div class="row g-4">

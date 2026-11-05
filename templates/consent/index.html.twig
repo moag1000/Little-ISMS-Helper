@@ -3,7 +3,7 @@
 {% trans_default_domain 'consent' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
-{% block title %}{{ 'consent.header.title'|trans({}, 'consent') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'consent.header.title'|trans({}, 'consent') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -15,7 +15,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'approve', label: 'consent.header.title'|trans({}, 'consent') },
     title: 'consent.header.title'|trans({}, 'consent'),
     subtitle: 'consent.header.subtitle'|trans({}, 'consent'),
     actions: [
@@ -29,7 +28,7 @@
     {% endfor %}
 {% endif %}
 
-<main class="fa-aurora-surface">
+<main>
 
 {# KPI Cards Grid #}
 <div class="kpi-grid kpi-grid-responsive">

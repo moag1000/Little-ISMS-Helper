@@ -43,9 +43,9 @@ bsi_200_4_exercise:
         improvement_actions: Improvement Actions
 
     action:
-        created: 'BSI-200-4 exercise log successfully created.'
+        created: BSI-200-4 exercise log created.
         saved: 'Exercise log saved.'
-        submitted: 'Exercise log submitted successfully.'
+        submitted: Exercise log submitted.
         confirmed: 'Exercise log confirmed by auditor.'
 
     error:

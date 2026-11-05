@@ -1,0 +1,9 @@
+# Gate 71 baseline: copy-rule exceptions, one per line: <file>::<key>  # reason
+translations/admin.de.yaml::admin.queue.job_status.succeeded  # status label, not a toast
+translations/crypto.de.yaml::crypto.status_type.success  # status label
+translations/loader_fixer.de.yaml::loader_fixer.result.ok  # status label
+translations/messages.de.yaml::common.success  # status label
+translations/scheduled_reports.de.yaml::scheduled_report.last_run.success  # status label
+translations/setup.de.yaml::setup.step1.status.success  # status label (connection check)
+translations/setup.en.yaml::setup.step1.status.success  # status label (connection check)
+translations/sso.de.yaml::sso.audit.event.sso_login_success  # audit event name

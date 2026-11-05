@@ -1,7 +1,7 @@
 tenant:
     title: Organisationsverwaltung
-    subtitle: 'Verwalten Sie Ihre Organisationen (entspricht der Organisation oder Tochtergesellschaft im ISMS-Scope nach ISO 27001 Kl. 4.3).'
-    empty: 'Keine Organisationen vorhanden'
+    subtitle: Organisationen im ISMS-Scope anlegen und pflegen (ISO 27001 Kl. 4.3).
+    empty: Keine Organisationen vorhanden.
     switch_hint: 'Wechseln'
     switch_header: 'Organisation wechseln'
     switch_glossary_hint: 'Organisation gemäß ISO 27001 Cl. 4.1 — die eigenständige Einheit mit eigenen Assets, Risiken und Benutzern.'
@@ -95,18 +95,18 @@ tenant:
             email_required: 'E-Mail-Adresse ist erforderlich'
             user_not_found: 'Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden'
             already_assigned: 'Benutzer ist bereits dieser Organisation zugeordnet'
-            user_added: 'Benutzer erfolgreich zur Organisation hinzugefügt'
-            user_removed: 'Benutzer erfolgreich von der Organisation entfernt'
+            user_added: Benutzer zur Organisation hinzugefügt
+            user_removed: Benutzer von der Organisation entfernt
             not_assigned: 'Benutzer ist nicht dieser Organisation zugeordnet'
             error: 'Fehler bei der Benutzer-Verwaltung'
     form:
         create_title: 'Neue Organisation anlegen'
         edit_title: 'Organisation bearbeiten'
     flash:
-        created: 'Organisation erfolgreich erstellt'
-        updated: 'Organisation erfolgreich aktualisiert'
-        deleted: 'Organisation erfolgreich gelöscht'
-        activated: 'Organisation erfolgreich aktiviert'
+        created: Organisation erstellt
+        updated: Organisation aktualisiert
+        deleted: Organisation gelöscht
+        activated: Organisation aktiviert
         suspended: 'Organisation gesperrt'
         reactivated: 'Organisation reaktiviert'
         reason_required: 'Für diese Statusänderung ist eine Begründung erforderlich.'
@@ -117,7 +117,7 @@ tenant:
         error: 'Fehler beim Speichern der Organisation'
         not_found: 'Die angeforderte Organisation wurde nicht gefunden. Möglicherweise wurde sie gelöscht.'
         has_users: 'Organisation kann nicht gelöscht werden, da sie noch Benutzer hat'
-        organisation_context_updated: 'Organisationsprofil erfolgreich aktualisiert'
+        organisation_context_updated: Organisationsprofil aktualisiert
         organisation_context_error: 'Fehler beim Aktualisieren des Organisationsprofils'
     lifecycle:
         title: 'Status der Organisation'

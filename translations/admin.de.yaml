@@ -9,7 +9,7 @@ admin:
             invalid_csrf: 'Ungültiges CSRF-Token.'
     backup:
         success:
-            uploaded: 'Backup-Datei erfolgreich hochgeladen: %filename%'
+            uploaded: 'Backup-Datei hochgeladen: %filename%'
         error:
             no_file_uploaded: 'Keine Datei hochgeladen.'
             invalid_file_format: 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.'
@@ -21,7 +21,7 @@ admin:
             role_mappings_saved: 'Rollen-Mappings gespeichert.'
             created: 'SSO-Provider angelegt.'
             updated: 'SSO-Provider aktualisiert.'
-            discovery_ok: 'Discovery für „%name%“ erfolgreich – Endpunkte synchronisiert.'
+            discovery_ok: 'Discovery für „%name%“ – Endpunkte synchronisiert.'
             approval_approved: 'Freigegeben: %email%'
             approval_rejected: 'Abgelehnt: %email%'
         error:
@@ -201,7 +201,7 @@ admin:
         annex_a_missing_fix: 'Jetzt laden'
     dashboard:
         title: 'Admin Dashboard'
-        subtitle: 'Zentrale Verwaltung und Systemübersicht'
+        subtitle: 'Benutzer, Einstellungen und Systemzustand prüfen'
         alerts:
             title: Systemhinweise
             item: Element
@@ -254,7 +254,7 @@ admin:
         warning:
             report_not_found: 'Lizenz-Report nicht gefunden. Bitte über den Button unten erstellen.'
         success:
-            report_generated: 'Lizenz-Report erfolgreich erstellt.'
+            report_generated: Lizenz-Report erstellt.
         error:
             report_generation_failed: 'Erstellung des Lizenz-Reports fehlgeschlagen.'
         no_report:
@@ -289,17 +289,9 @@ admin:
         subtitle: 'Konfiguration von Anwendungsparametern und Systemverhalten'
         application:
             title: Anwendungseinstellungen
-            description: 'Grundlegende Einstellungen für Sprache, Zeitzone und Anzeigeoptionen'
-            locale: 'Sprache / Locale'
+            description: 'Zeitzone und Datumsformate für alle Anzeigen'
             timezone: Zeitzone
-            items_per_page: 'Einträge pro Seite'
-            locale_settings: Spracheinstellungen
-            default_locale: Standard-Sprache
-            default_locale_help: 'Standard-Sprache für neue Benutzer und Systemausgaben'
-            supported_locales: 'Unterstützte Sprachen'
-            supported_locales_help: 'Sprachen, die Benutzer auswählen können (de, en)'
             display_settings: Anzeigeeinstellungen
-            items_per_page_help: 'Anzahl der Einträge pro Seite in Tabellen (Standard: 25)'
             timezone_help: 'Zeitzone für Datumsanzeigen (z.B. Europe/Berlin)'
             date_format: Datumsformat
             date_format_help: 'Format für Datumsanzeigen (z.B. d.m.Y für 31.12.2024)'
@@ -310,40 +302,13 @@ admin:
         security:
             title: Sicherheitseinstellungen
             description: 'Konfiguration von Authentifizierung, Session-Management und Passwortrichtlinien (ISO 27001 Anhang A 5.17, 5.18)'
-            2fa_settings: 'Zwei-Faktor-Authentifizierung Einstellungen'
-            session_lifetime: Session-Laufzeit
-            max_login_attempts: 'Max. Anmeldeversuche'
-            require_2fa: 'MFA erzwingen'
-            session_settings: Session-Einstellungen
-            session_lifetime_help: 'Session-Laufzeit in Minuten (Standard: 1440 = 24 Stunden)'
-            remember_me_lifetime: 'Remember-Me Laufzeit'
-            remember_me_help: 'Dauer des "Angemeldet bleiben"-Cookies in Tagen (Standard: 30)'
+            mfa_policy_title: 'MFA-Pflicht'
+            mfa_policy_hint: 'Welche Rollen MFA einrichten müssen, legen Sie in den Compliance-Einstellungen der Organisation fest (NIS2 Art. 21 Abs. 2 lit. j).'
+            mfa_policy_link: 'MFA-Pflicht festlegen'
             password_settings: Passwortrichtlinien
             password_min_length: 'Min. Passwortlänge'
             password_min_length_help: 'Minimale Anzahl Zeichen für Passwörter (Standard: 12, empfohlen: 12-16)'
-            auth_settings: Authentifizierungseinstellungen
-            max_login_attempts_help: 'Anzahl fehlgeschlagener Anmeldeversuche vor Account-Sperre (Standard: 5)'
-            lockout_duration: Sperrdauer
-            lockout_duration_help: 'Dauer der Account-Sperre in Minuten nach zu vielen Fehlversuchen (Standard: 15)'
-            require_2fa_help: 'Multi-Faktor-Authentifizierung für alle Benutzer erzwingen (NIS2-konform, Art. 21.2.b)'
             warning: 'Warnung: Änderungen an Sicherheitseinstellungen können bestehende Sessions ungültig machen'
-            remember_me_lifetime_help: 'Gültigkeit des „Angemeldet bleiben"-Cookies in Sekunden (86400 = 1 Tag, max. 7776000 = 90 Tage; Standard 2592000 = 30 Tage).'
-        features:
-            title: Feature-Einstellungen
-            description: 'Aktivierung und Konfiguration von optionalen Funktionen'
-            feature_toggles: Feature-Schalter
-            dark_mode: 'Dark Mode'
-            global_search: 'Globale Suche'
-            audit_log: 'Audit Log'
-            intro: Einführungs-Tutorial
-            dark_mode_help: 'Dark Mode für alle Benutzer aktivieren'
-            global_search_help: 'Globale Volltextsuche über alle Entities aktivieren'
-            quick_view: 'Quick View'
-            quick_view_help: 'Schnellansicht-Modals für Entities aktivieren'
-            notifications: Benachrichtigungen
-            notifications_help: 'System-Benachrichtigungen für Benutzer aktivieren'
-            audit_log_help: 'Audit-Protokollierung aller Benutzeraktionen (ISO 27001 Anhang A 8.15)'
-            info_text: 'Feature-Flags ermöglichen das selektive Aktivieren von Funktionalitäten'
         info_title: 'Systemeinstellungen Hilfe'
         info_text: 'Änderungen werden sofort wirksam und betreffen alle Organisationen'
         info: Information
@@ -552,7 +517,7 @@ admin:
         entity_type: Entity-Typ
         issue: Problem
         orphaned_entities: 'Verwaiste Entities'
-        no_orphans: 'Keine verwaisten Entities gefunden - alle Daten korrekt zugewiesen!'
+        no_orphans: Keine verwaisten Entities vorhanden. Alle Daten sind zugewiesen.
         orphans_found: 'Entities ohne Organisationszuordnung gefunden, die behoben werden müssen'
         orphaned_assets: 'Verwaiste Assets'
         orphaned_risks: 'Verwaiste Risiken'
@@ -564,19 +529,17 @@ admin:
         risks_only: 'Nur Risiken'
         incidents_only: 'Nur Vorfälle'
         assign_orphans: 'Verwaiste zuweisen'
-        assigned_count: '%count% Entities erfolgreich %tenant% zugewiesen'
+        assigned_count: '%count% Entities %tenant% zugewiesen'
         partial_assignment: 'Teilzuordnung abgeschlossen — %count% Entities Organisation %tenant% zugewiesen. Der Entity-Manager wurde nach einem Fehler geschlossen; bitte die Seite neu laden, um den finalen Stand zu prüfen.'
-        fixed_all_orphans: '%count% verwaiste Entities erfolgreich %tenant% zugewiesen'
-        orphans_skipped: '%count% Entities übersprungen (Constraint-Violation o.ä.)'
-        bulk_blocked_multi_tenant: 'Bulk-Zuweisung blockiert: %count% Organisationen in dieser Instanz. In Multi-Organisations-Setups darf keine einzige Aktion Entitäten organisationsübergreifend umhängen. Bitte die Einzel-Zuweisungen pro Entity-Typ nutzen.'
+        fix_all_orphans_confirm: 'Alle %count% verwaisten Einträge der einzigen Organisation zuweisen? Der Vorgang läuft im Hintergrund.'
         bulk_confirm_hash_mismatch: 'Bulk-Zuweisung abgebrochen: Anzahl der verwaisten Entitäten hat sich geändert, seit die Vorschau gezeigt wurde (erwartet: %expected%). Seite neu laden und erneut bestätigen.'
-        fixed_mismatches: '%count% Organisations-Diskrepanzen erfolgreich behoben'
+        fixed_mismatches: '%count% Organisations-Diskrepanzen behoben'
         reason_required: 'Organisations-Diskrepanz-Fix abgelehnt: Begründung mit mindestens %min% Zeichen ist Pflicht (aktuell %actual%).'
         reason_label: 'Begründung für Organisations-Zuweisung'
         reason_help: 'Mindestens 20 Zeichen. Wird im Audit-Log pro betroffenem Datensatz gespeichert.'
         tenant_not_found: 'Gewählter Organisation nicht gefunden'
         entity_not_found: 'Entity nicht gefunden'
-        entity_reassigned: '%entity% erfolgreich %tenant% zugewiesen'
+        entity_reassigned: '%entity% %tenant% zugewiesen'
         asset_not_found: 'Asset nicht gefunden'
         orphaned_assets_list: 'Liste verwaister Assets'
         orphaned_risks_list: 'Liste verwaister Risiken'
@@ -609,9 +572,9 @@ admin:
             run_migrations: 'Migrationen ausführen'
             run_reconcile: 'Schema reconcilen'
             show_sql: 'SQL anzeigen'
-            migrations_applied: '%count% Migration(en) erfolgreich ausgeführt.'
+            migrations_applied: '%count% Migration(en) ausgeführt.'
             migrations_failed: 'Migrationen fehlgeschlagen: %error%'
-            reconcile_applied: 'Schema-Reconcile erfolgreich (%count% Statements ausgeführt).'
+            reconcile_applied: 'Schema-Reconcile ausgeführt (%count% Statements).'
             auto_marked_migrations: '%count% Migration(en) automatisch als ausgeführt markiert.'
             auto_mark_failed: '%count% Migration(en) konnten NICHT markiert werden (erste: %first%).'
             reconcile_failed: 'Schema-Reconcile fehlgeschlagen: %error%'
@@ -703,7 +666,7 @@ admin:
             confirm_quarantine: 'Wirklich %count% verwaiste Datei(en) in die Quarantäne verschieben? Dies kann durch manuelles Zurückkopieren rückgängig gemacht werden.'
             action_quarantine: '%count% Datei(en) in Quarantäne verschieben'
             action_hint: 'Dateien werden nach var/quarantine/<datum>/ verschoben, nicht gelöscht.'
-            quarantined: '%count% Datei(en) erfolgreich nach %dir% verschoben.'
+            quarantined: '%count% Datei(en) nach %dir% verschoben.'
             nothing_to_quarantine: 'Keine Dateien zur Quarantäne markiert.'
             quarantine_dir_failed: 'Quarantäne-Verzeichnis konnte nicht angelegt werden: %dir%'
         cascade:
@@ -714,7 +677,7 @@ admin:
             more: 'weitere'
             confirm_cleanup: 'Wirklich %count% dangling Einträge löschen? Diese Aktion ist nicht reversibel und wird im Audit-Log unter einem batch_id protokolliert.'
             action_cleanup: '%count% dangling Referenz(en) löschen'
-            cleaned: '%count% dangling Referenz(en) erfolgreich aufgeräumt.'
+            cleaned: '%count% dangling Referenz(en) aufgeräumt.'
             category:
                 workflow_instances: 'Workflow-Instanzen (Ziel fehlt)'
                 mfa_tokens: 'MFA-Token (abgelaufen, nie benutzt)'
@@ -1206,7 +1169,7 @@ admin:
     notification_preferences:
         title: 'Benachrichtigungseinstellungen'
         subtitle: 'Organisationsweite Benachrichtigungsstandards und Zustellungseinstellungen konfigurieren.'
-        saved: 'Benachrichtigungseinstellungen erfolgreich gespeichert.'
+        saved: Benachrichtigungseinstellungen gespeichert.
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Diese Einstellungen legen fest, wie und wann Benachrichtigungen an Benutzer in dieser Organisation zugestellt werden. Einzelne Benutzer können ihre eigenen Präferenzen in ihrem Profil anpassen.'
         digest_enabled:
@@ -1229,7 +1192,7 @@ admin:
     api_rate_limits:
         title: 'API-Ratenbegrenzung'
         subtitle: 'Maximale API-Anfragen pro Minute für diese Organisation steuern.'
-        saved: 'API-Ratenbegrenzung erfolgreich gespeichert.'
+        saved: API-Ratenbegrenzung gespeichert.
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Ratenbegrenzungen schützen die Plattform vor Missbrauch und sichern faire Ressourcenteilung. 0 = unbegrenzt (in der Produktion nicht empfohlen).'
         rate_limit_per_minute:
@@ -1246,7 +1209,7 @@ admin:
     backups:
         title: 'Backup-Einstellungen'
         subtitle: 'Automatisierten Backup-Zeitplan und Datenhaltungsdauer konfigurieren.'
-        saved: 'Backup-Einstellungen erfolgreich gespeichert.'
+        saved: Backup-Einstellungen gespeichert.
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Diese Einstellungen steuern, wie lange Backup-Dateien aufbewahrt werden und ob automatisierte Backups nach einem Zeitplan laufen. Die Jetzt-Ausführen-Funktion und der Messenger-Dispatch kommen in Welle 2.'
         settings_title: 'Backup-Konfiguration'
@@ -1270,7 +1233,7 @@ admin:
     fiscal_year:
         title: 'Geschäftsjahrs-Konfiguration'
         subtitle: 'Startmonat des Geschäftsjahres und Berichts-Rhythmus für diese Organisation festlegen.'
-        saved: 'Geschäftsjahrs-Konfiguration erfolgreich gespeichert.'
+        saved: Geschäftsjahrs-Konfiguration gespeichert.
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Der Startmonat des Geschäftsjahres steuert, wie KPI-Dashboards, Management-Berichte und Compliance-Reviews gruppiert werden. Änderungen wirken sich bei der nächsten Berichtsgenerierung aus.'
         start_month:
@@ -1303,7 +1266,7 @@ admin:
     data_retention:
         title: 'Datenhaltungsrichtlinien'
         subtitle: 'Aufbewahrungsfristen und automatische Löschregeln je Entitätstyp konfigurieren.'
-        saved: 'Datenhaltungsrichtlinien erfolgreich gespeichert.'
+        saved: Datenhaltungsrichtlinien gespeichert.
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         gdpr_cap_applied: 'Einer oder mehrere Aufbewahrungswerte überschritten das DSGVO-Maximum und wurden automatisch begrenzt.'
         warning:
@@ -1329,7 +1292,7 @@ admin:
     workflow_slas:
         title: 'Lifecycle-SLA-Standards'
         subtitle: 'Standard-SLA-Dauern (Stunden) für jeden Lifecycle-Ereignistyp festlegen.'
-        saved: 'Lifecycle-SLA-Standards erfolgreich gespeichert.'
+        saved: Lifecycle-SLA-Standards gespeichert.
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         regulatory_minimum_enforced: 'Einer oder mehrere SLA-Werte lagen unter dem regulatorischen Minimum und wurden automatisch angepasst.'
         help_text: 'Diese SLA-Standards werden vom Sprint-6b SlaDeadlineMonitor (Welle 2) genutzt, um Fristenwarnungen und Eskalationen zu erzeugen. Regulatorische Minima (DSGVO Art. 33, ISO 27035) können nicht unterschritten werden.'
@@ -1626,7 +1589,7 @@ admin:
         queued: "Job wurde in die Warteschlange eingereiht und wird bald verarbeitet…"
         progress: "Fortschritt"
         error: "Fehler"
-        completed: "Job erfolgreich abgeschlossen."
+        completed: Job abgeschlossen.
         id_label: "Job-ID"
         worker_hint: "Der Job läuft im Hintergrund. Diese Seite aktualisiert sich automatisch alle 3 Sekunden."
         download: "Datei herunterladen"
@@ -1770,7 +1733,7 @@ admin:
             description: 'Sicheres Notfall-Drain: bis zu 5 Nachrichten in maximal 25 Sekunden — bleibt unter dem PHP-FPM-Timeout. Mehrfach klicken bei voller Queue.'
             button: 'Jetzt verarbeiten'
             fineprint: 'CSRF-geschützt, Audit-Log-pflichtig.'
-            success: 'Queue-Drain erfolgreich abgeschlossen (%duration% s).'
+            success: 'Queue-Drain abgeschlossen (%duration% s).'
             partial: 'Worker-Lauf endete mit Exit-Code %exit% nach %duration% s. Logs prüfen.'
             error: 'Queue-Drain konnte nicht starten: %error%'
         cron:
@@ -2048,7 +2011,7 @@ industry_preset:
         controls: 'Controls'
         documents: 'Dokumente'
     empty:
-        title: 'Keine Presets gefunden'
+        title: Keine Presets vorhanden
         text: 'In fixtures/library/presets/ liegen keine YAML-Dateien.'
     confirm:
         apply_full: 'Preset wirklich anwenden? Module + Frameworks werden aktiviert, Controls und Dokumente angelegt.'

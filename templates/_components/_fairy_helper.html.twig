@@ -1,8 +1,0 @@
-{% import '_components/_alva.html.twig' as alvaMacro %}
-<div class="fairy-helper-container {{ class|default('') }}"
-     {% if id is defined %}id="{{ id }}"{% endif %}
-     title="{{ tooltip|default('Little ISMS Helper ist hier, um zu helfen!') }}"
-     data-bs-toggle="tooltip"
-     data-bs-placement="{{ placement|default('top') }}">
-    {{ alvaMacro.render(working|default(false) ? 'working' : 'idle', { size: width|default(40), decorative: true }) }}
-</div>

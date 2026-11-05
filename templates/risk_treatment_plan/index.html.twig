@@ -2,7 +2,7 @@
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% trans_default_domain 'risk_treatment_plan' %}
 
-{% block title %}{{ 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -18,7 +18,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-clipboard-check', label: 'nav.treatment_plans'|trans({}, 'nav') },
     title: 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan'),
     subtitle: 'risk_treatment_plan.description'|trans({}, 'risk_treatment_plan'),
     actions: [
@@ -33,7 +32,7 @@
 {% endif %}
 
 
-<main class="fa-aurora-surface">
+<main>
 <div class="stats-grid mb-4">
     <div class="col-auto">
         {{ _fa_feature_card.render({ label: 'risk_treatment_plan.stats.total'|trans({}, 'risk_treatment_plan'), value: stats.total, variant: 'primary' }) }}

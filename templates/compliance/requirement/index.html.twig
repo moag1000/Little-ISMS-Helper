@@ -14,7 +14,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-list-check', label: 'nav.compliance'|trans({}, 'nav') },
         title: 'compliance.requirement.index_title'|trans({}, 'compliance'),
         actions: [
             { label: 'compliance.requirement.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'ui-plus', href: path('app_compliance_requirement_new', {framework: selected_framework}), attrs: { 'data-turbo-frame': 'fa-form-modal' } }

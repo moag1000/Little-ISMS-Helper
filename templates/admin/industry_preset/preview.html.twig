@@ -2,7 +2,7 @@
 {% trans_default_domain 'admin' %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
-{% block title %}{{ 'industry_preset.preview.badge'|trans }}: {{ config.name|default(preset) }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'industry_preset.preview.badge'|trans }}: {{ config.name|default(preset) }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
@@ -13,9 +13,8 @@
 {% set _preset_desc_key = 'industry_preset.catalog.' ~ preset ~ '.description' %}
 {% set _preset_desc = _preset_desc_key|trans({}, 'admin') %}
 {% set _preset_desc = _preset_desc != _preset_desc_key ? _preset_desc : config.description|default('—') %}
-<main class="fa-aurora-surface">
+<main>
     {{ _fa_page_header.render({
-        badge:    { icon: 'ui-eye', label: 'industry_preset.preview.badge'|trans },
         title:    _preset_name,
         subtitle: 'industry_preset.preview.subtitle'|trans,
         actions: [

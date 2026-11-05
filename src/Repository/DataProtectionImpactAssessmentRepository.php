@@ -238,21 +238,6 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Search DPIAs by title or reference number
-     */
-    public function search(Tenant $tenant, string $query): array
-    {
-        return $this->createQueryBuilder('dpia')
-            ->where('dpia.tenant = :tenant')
-            ->andWhere('dpia.title LIKE :query OR dpia.referenceNumber LIKE :query')
-            ->setParameter('tenant', $tenant)
-            ->setParameter('query', '%' . $query . '%')
-            ->orderBy('dpia.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Get statistics for dashboard
      */
     public function getStatistics(Tenant $tenant): array

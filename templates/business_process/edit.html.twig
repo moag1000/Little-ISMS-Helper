@@ -18,7 +18,6 @@
 
     {{ _fa_page_header.render({
         title: 'business_process.edit'|trans({}, 'business_process') ~ ': ' ~ business_process.name,
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_business_process_show', {id: business_process.id}), variant: 'ghost', icon: 'util-arrow-left' }
         ]

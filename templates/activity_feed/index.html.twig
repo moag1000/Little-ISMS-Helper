@@ -1,14 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'activity_feed.title'|trans({}, 'activity_feed') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'activity_feed.title'|trans({}, 'activity_feed') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 
 {% block body %}
-<main class="fa-aurora-surface">
+<main>
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-heart-pulse', label: 'activity_feed.badge'|trans({}, 'activity_feed') },
         title:    'activity_feed.title'|trans({}, 'activity_feed'),
         subtitle: 'activity_feed.subtitle'|trans({}, 'activity_feed'),
         actions: [

@@ -11,6 +11,9 @@
  #   {{ _fa_btn.render({ label: 'Abbrechen', variant: 'ghost', icon: 'ui-close' }) }}
  #   {{ _fa_btn.render({ label: 'Löschen', variant: 'danger', size: 'sm', type: 'submit' }) }}
  #
+ # Icon rule: the icon renders only for variant 'primary'/'danger' or when label is empty
+ # (icon-only; pass aria-label via attrs). Other variants are text-only.
+ #
  # Parameters:
  #   label    - Button-Text (required)
  #   variant  - 'primary' | 'ghost' | 'danger' | 'success' | 'warning' (default: primary)
@@ -45,7 +48,8 @@
         {% if props.disabled is defined and props.disabled %}disabled aria-disabled="true"{% endif %}
         {% for k, v in props.attrs|default({}) %} {{ k|e('html_attr') }}="{{ v|e('html_attr') }}"{% endfor %}
     >
-        {% if props.icon is defined and props.icon %}
+        {# Icon rule: only primary/danger buttons or icon-only ones (empty label) show an icon. #}
+        {% if props.icon is defined and props.icon and (variant in ['primary', 'danger'] or not props.label|default('')) %}
             {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
             <i class="fa-icon fa-icon--{{ (props.icon starts with 'bi-') ? props.icon[3:] : props.icon }}" aria-hidden="true"></i>
         {% endif %}

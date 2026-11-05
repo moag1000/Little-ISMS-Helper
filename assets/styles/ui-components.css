@@ -1,8 +1,3 @@
-/* ============================================
-   UI Components Styles
-   Reusable component library
-   ============================================ */
-
 /* ====================
    Risk Score Display
    ==================== */
@@ -269,30 +264,6 @@
     gap: var(--spacing-lg);
 }
 
-.page-header-content {
-    flex: 1;
-}
-
-.page-header-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--fg);
-    margin: 0 0 var(--spacing-xs) 0;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-}
-
-.page-header-title i {
-    font-size: 28px;
-}
-
-.page-header-subtitle {
-    font-size: 16px;
-    color: var(--fg-2);
-    margin: 0;
-}
-
 .page-header-actions {
     display: flex;
     gap: var(--spacing-sm);
@@ -358,10 +329,6 @@
 
 .grid-col-1 {
     grid-template-columns: 1fr;
-}
-
-.grid-auto-fit-250 {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 /* Margin utilities */
@@ -629,14 +596,6 @@
     padding: 0;
 }
 
-.list-item-action {
-    padding: var(--spacing-md);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 /* Border utilities */
 .border-bottom {
     border-bottom: 1px solid var(--border);
@@ -839,54 +798,10 @@
     margin: var(--spacing-xl) 0;
 }
 
-.empty-state-icon {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    background: var(--surface);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
-}
-
-.empty-state-icon i {
-    font-size: 48px;
-    color: var(--fg-3);
-    opacity: 0.5;
-}
-
-.empty-state-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--fg);
-    margin: 0 0 var(--spacing-sm) 0;
-}
-
-.empty-state-description {
-    font-size: 15px;
-    color: var(--fg-2);
-    margin: 0 0 var(--spacing-lg) 0;
-    max-width: 400px;
-}
-
 /* Dark Mode - Empty State */
 [data-theme="dark"] .empty-state {
     background: var(--bg);
     border-color: var(--border);
-}
-
-[data-theme="dark"] .empty-state-icon {
-    background: var(--surface);
-}
-
-[data-theme="dark"] .empty-state-title {
-    color: var(--fg);
-}
-
-[data-theme="dark"] .empty-state-description {
-    color: var(--fg-2);
 }
 
 /* ====================
@@ -1110,11 +1025,6 @@
     color: var(--success);
 }
 
-.audit-icon-cancelled {
-    font-size: 2rem;
-    color: var(--fg-3);
-}
-
 /* Status count styles - using theme colors */
 .audit-count-planned {
     font-size: 2.5rem;
@@ -1132,12 +1042,6 @@
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--success);
-}
-
-.audit-count-cancelled {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--fg-3);
 }
 
 /* ====================
@@ -1515,12 +1419,6 @@
 .th-stats-left {
     padding: 0.5rem;
     text-align: left;
-    border: 1px solid var(--border);
-}
-
-.th-stats-right {
-    padding: 0.5rem;
-    text-align: right;
     border: 1px solid var(--border);
 }
 
@@ -2170,21 +2068,12 @@
     margin: 0 1rem;
 }
 
-.h3-small {
-    font-size: 1rem;
-    margin-bottom: var(--spacing-sm);
-}
-
 /* Compliance Index Utilities - Cyberpunk Fairy Emerald Gradient */
 .alert-gradient-success {
     background: var(--success);  /* Emerald fairy dust */
     color: var(--on-success);
     border: none;
     margin-bottom: var(--spacing-lg);
-}
-
-.h3-m0-mb-sm {
-    margin: 0 0 var(--spacing-sm) 0;
 }
 
 .text-lg-m0 {
@@ -2217,11 +2106,6 @@
     background: var(--primary);
 }
 
-/* Location Form Utilities */
-.h3-mt-lg {
-    margin-top: var(--spacing-lg);
-}
-
 /* Incident Index Utilities */
 .progress-h-6 {
     height: 6px;
@@ -2249,24 +2133,6 @@
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
     color: var(--fg-2);
-}
-
-.label-checkbox {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    cursor: pointer;
-}
-
-.checkbox-lg {
-    width: 20px;
-    height: 20px;
-}
-
-.small-muted-block {
-    color: var(--fg-3);
-    margin-top: var(--spacing-xs);
-    display: block;
 }
 
 .flex-center-gap-md {
@@ -2365,11 +2231,6 @@
 
 .text-inherit {
     color: inherit;
-}
-
-.footer-text-small {
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
 }
 
 /* Asset Index Modern Utilities */
@@ -2492,10 +2353,6 @@
     color: var(--on-accent);
     box-shadow: none;
 }
-
-/* ============================================
-   Mobile Responsiveness Enhancements
-   ============================================ */
 
 /* ====================
    Responsive Stacked Tables

@@ -5,7 +5,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'grid', label: 'admin.hub.title'|trans({}, 'admin') },
         title: 'admin.hub.title'|trans({}, 'admin'),
         subtitle: 'admin.hub.subtitle'|trans({'%count%': total_modules}, 'admin'),
     }) }}

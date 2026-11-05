@@ -14,9 +14,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        title: 'prototype_protection.page.edit_title'|trans({'%title%': assessment.title}, 'prototype_protection'),
-        badge: { icon: 'ui-edit', label: '' }
-    }) }}
+        title: 'prototype_protection.page.edit_title'|trans({'%title%': assessment.title}, 'prototype_protection')}) }}
 
     {{ form_start(form) }}
     {% include '_components/_auto_form.html.twig' with {

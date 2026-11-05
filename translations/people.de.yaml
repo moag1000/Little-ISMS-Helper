@@ -5,7 +5,7 @@ person:
         show: Personendetails
         edit: 'Person bearbeiten'
     description:
-        overview: 'Übersicht über Mitarbeiter, Auftragnehmer und weitere Personen'
+        overview: 'Mitarbeiter, Auftragnehmer und weitere Personen pflegen'
     action:
         create: 'Person anlegen'
     stats:

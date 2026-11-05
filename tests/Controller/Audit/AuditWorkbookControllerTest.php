@@ -175,7 +175,8 @@ class AuditWorkbookControllerTest extends WebTestCase
         $this->client->loginUser($this->auditorUser);
         $this->client->request('GET', '/en/audit-workbook/');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('main.fa-aurora-surface');
+        $this->assertSelectorExists('main');
+        $this->assertSelectorExists('h1.fa-page-header__title');
     }
 
     // ── SoA endpoint ──────────────────────────────────────────────────────

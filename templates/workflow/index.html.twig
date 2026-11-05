@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
 
-{% block title %}{{ 'workflow.title.list'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'workflow.title.list'|trans({}, 'workflows') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -16,7 +16,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
     title: 'workflow.title.list'|trans({}, 'workflows'),
     subtitle: 'workflow.description.overview'|trans({}, 'workflows'),
     actions: [
@@ -25,7 +24,7 @@
     ]
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 
 {# Statistics Cards #}
 <div class="kpi-grid">

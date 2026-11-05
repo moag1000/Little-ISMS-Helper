@@ -2,7 +2,7 @@
 {% trans_default_domain 'role_management' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'role_management.title.create'|trans({}, 'role_management')}} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'role_management.title.create'|trans({}, 'role_management')}}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{{ path('role_management_index') }}">{{ 'nav.roles'|trans({}, 'nav') }}</a></li>
@@ -11,7 +11,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-shield-lock', label: 'role_management.title.create'|trans({}, 'role_management') },
         title: 'role_management.title.create'|trans({}, 'role_management'),
         actions: [
             { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_compare') },

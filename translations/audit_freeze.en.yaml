@@ -35,7 +35,7 @@ audit_freeze:
     integrity:
         verified: 'Integrity verified'
         verified_body: 'Payload matches the hash %hash%... captured at freeze time.'
-        tampered: 'Integrity compromised!'
+        tampered: Integrity compromised.
         tampered_body: 'Payload hash differs from the value captured at creation. Contact the ISO immediately.'
     meta:
         title: 'Metadata'
@@ -55,9 +55,9 @@ audit_freeze:
         notes_help: 'Optional. E.g. context about the upcoming audit session'
     flash:
         no_tenant: 'No active organization — audit freeze unavailable.'
-        created: 'Freeze successfully created and sealed.'
+        created: Freeze created and sealed.
         stichtag_future: 'Reference date must not be in the future.'
-        pdf_generated: 'PDF generated successfully.'
+        pdf_generated: PDF generated.
         pdf_failed: 'PDF generation failed.'
         pdf_not_found: 'PDF not found. Generate it first.'
         invalid_csrf: 'Invalid CSRF token.'

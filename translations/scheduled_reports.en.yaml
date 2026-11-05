@@ -84,12 +84,12 @@ scheduled_report.metadata.created: 'Created at'
 scheduled_report.metadata.updated: 'Updated at'
 scheduled_report.confirm.delete: 'Are you sure you want to delete this scheduled report?'
 scheduled_report.confirm.trigger: 'Do you want to manually trigger this report and send it via email now?'
-scheduled_report.flash.created: 'Scheduled report has been created successfully.'
-scheduled_report.flash.updated: 'Scheduled report has been updated successfully.'
-scheduled_report.flash.deleted: 'Scheduled report has been deleted successfully.'
+scheduled_report.flash.created: Scheduled report created.
+scheduled_report.flash.updated: Scheduled report updated.
+scheduled_report.flash.deleted: Scheduled report deleted.
 scheduled_report.flash.activated: 'Scheduled report has been activated.'
 scheduled_report.flash.deactivated: 'Scheduled report has been deactivated.'
-scheduled_report.flash.triggered: 'Report has been generated and sent successfully.'
+scheduled_report.flash.triggered: Report generated and sent.
 scheduled_report.flash.trigger_failed: 'Error sending the report.'
 scheduled_report.flash.preview_failed: 'Error creating the preview.'
 scheduled_report.email.subject: 'Scheduled Report: %name%'

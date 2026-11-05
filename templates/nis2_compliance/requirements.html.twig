@@ -4,7 +4,7 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
-{% block title %}{{ 'nis2.art21.dashboard.title'|trans({}, 'nis2') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'nis2.art21.dashboard.title'|trans({}, 'nis2') }}{% endblock %}
 
 {% block body %}
 
@@ -17,7 +17,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'compliance-shield', label: 'NIS2 Art. 21(2)' },
     title: 'nis2.art21.dashboard.title'|trans({}, 'nis2'),
     subtitle: 'nis2.art21.dashboard.subtitle'|trans({}, 'nis2'),
     actions: [
@@ -25,7 +24,7 @@
     ]
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 
     {# ── KPI row ─────────────────────────────────────────────────────────── #}
     <div class="row g-3 mb-4">

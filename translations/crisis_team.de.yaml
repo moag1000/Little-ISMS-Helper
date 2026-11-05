@@ -69,7 +69,6 @@ crisis_team:
         communication_protocols: 'Wie kommuniziert der Krisenstab intern und extern?'
         training_schedule: 'Wann finden Trainings und Übungen statt?'
     help:
-        team_name: 'Bezeichnung des Krisenstabs'
         team_type: 'Art des Krisenstabs nach BSI 200-4'
         team_leader: 'Leiter des Krisenstabs'
         team_leader_person: 'Person ohne System-Login als Teamleiter. Reihenfolge: User > Person > leer.'
@@ -85,16 +84,15 @@ crisis_team:
         communication_protocols: 'Interne und externe Kommunikationswege'
         training_schedule: 'Regelmäßige Trainings und Übungen'
         next_training_at: 'Wann findet das nächste Training statt?'
-        business_continuity_plans: 'Zugeordnete BCPs'
         person_members: 'Strukturierte Mitgliederliste — Stammdaten-Personen, ergänzend zur JSON-Liste mit Rollen/Kontakt. Externe Berater oder Auditoren können hier ohne System-Login geführt werden.'
         escalation_matrix_json: 'Externe Eskalationspartner gemäß BSI 200-4 §6.2 und NIS2 Art. 23 (z. B. BSI, CERT-Bund, Polizei) mit Auslöser, Kontakt und Eskalationszeitpunkt.'
         activation_count: 'Gesamtanzahl der realen Aktivierungen dieses Krisenstabs (BSI 200-4 §7.2). Wird typisch automatisch erhöht.'
         last_activated_at: 'Datum und Uhrzeit der letzten realen Aktivierung (BSI 200-4 §7.2 Einsatz-Tracking).'
     success:
-        created: 'Krisenstab erfolgreich erstellt.'
-        updated: 'Krisenstab erfolgreich aktualisiert.'
-        deleted: 'Krisenstab erfolgreich gelöscht.'
-        activated: 'Krisenstab erfolgreich aktiviert.'
+        created: Krisenstab erstellt.
+        updated: Krisenstab aktualisiert.
+        deleted: Krisenstab gelöscht.
+        activated: Krisenstab aktiviert.
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
         deputy_required_user_or_person: 'Stellvertretung: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

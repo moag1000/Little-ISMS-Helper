@@ -5,7 +5,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
-{% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk')}}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -17,7 +17,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'status-warning', label: 'nav.risks'|trans({}, 'nav') },
     title: 'risk.modern.header.title'|trans({}, 'risk'),
     subtitle: 'risk.modern.header.subtitle'|trans({}, 'risk'),
     actions: [
@@ -36,7 +35,7 @@
 {% endif %}
 
 
-<main class="fa-aurora-surface">
+<main>
 
 {# View Filter #}
 {% if currentTenant %}

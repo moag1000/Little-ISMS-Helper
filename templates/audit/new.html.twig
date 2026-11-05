@@ -3,7 +3,7 @@
 {% trans_default_domain 'audit' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'audit.new'|trans({}, 'audit') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'audit.new'|trans({}, 'audit') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -22,7 +22,6 @@
 
             {{ _fa_page_header.render({
     title: ('audit.new'|trans({}, 'audit')),
-    badge: { icon: 'plus', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_audit_index'), variant: 'ghost', icon: 'util-arrow-left' }
     ]

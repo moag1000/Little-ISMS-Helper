@@ -92,7 +92,7 @@ bc_plans:
   message:
     not_scheduled: Not scheduled
     never: Never
-    no_plans: No BC plans found.
+    no_plans: No BC plans available.
     create_first: Create your first BC plan
     readiness_score: 'Readiness Score: %score%%'
   help:

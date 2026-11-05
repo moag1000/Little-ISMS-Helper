@@ -18,7 +18,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'bell', label: 'Rule' },
         title: 'notification.rule.edit.title'|trans({'%name%': rule.name}, 'notification'),
         subtitle: rule.eventType,
         actions: [

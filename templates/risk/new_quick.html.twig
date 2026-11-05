@@ -2,7 +2,7 @@
 {% trans_default_domain 'risk' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'risk.quick_form.title'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.quick_form.title'|trans({}, 'risk') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -17,7 +17,6 @@
 {{ _fa_page_header.render({
     title: 'risk.quick_form.title'|trans({}, 'risk'),
     subtitle: 'risk.quick_form.subtitle'|trans({}, 'risk'),
-    badge: { icon: 'ui-lightbulb', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_index'), variant: 'secondary', icon: 'util-arrow-left', attrs: { 'data-turbo-action': 'advance' } }
     ]

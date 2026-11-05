@@ -387,7 +387,6 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'label' => 'incident.field.estimated_financial_impact',
                     'currency' => 'EUR',
                     'required' => false,
-                    'help' => 'incident.help.estimated_financial_impact',
                 ])
                 ->add('nationalAuthorityNotified', TextType::class, [
                     'label' => 'incident.field.national_authority_notified',

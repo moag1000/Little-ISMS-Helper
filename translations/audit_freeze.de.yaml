@@ -35,7 +35,7 @@ audit_freeze:
     integrity:
         verified: 'Integrität verifiziert'
         verified_body: 'Die Payload stimmt mit dem beim Freeze festgehaltenen Hash %hash%... überein.'
-        tampered: 'Integrität verletzt!'
+        tampered: Integrität verletzt.
         tampered_body: 'Der Payload-Hash weicht vom bei Erstellung festgehaltenen Wert ab. Kontaktieren Sie sofort den ISB.'
     meta:
         title: 'Meta-Daten'
@@ -55,9 +55,9 @@ audit_freeze:
         notes_help: 'Optional. Z. B. Kontext zur geplanten Audit-Session'
     flash:
         no_tenant: 'Kein aktiver Organisation — Audit-Freeze nicht verfügbar.'
-        created: 'Freeze erfolgreich erstellt und versiegelt.'
+        created: Freeze erstellt und versiegelt.
         stichtag_future: 'Stichtag darf nicht in der Zukunft liegen.'
-        pdf_generated: 'PDF erfolgreich erzeugt.'
+        pdf_generated: PDF erzeugt.
         pdf_failed: 'PDF-Generierung fehlgeschlagen.'
         pdf_not_found: 'PDF nicht gefunden. Erzeuge es zuerst.'
         invalid_csrf: 'Ungültiges CSRF-Token.'

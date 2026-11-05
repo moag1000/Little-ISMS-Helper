@@ -74,7 +74,7 @@ bc_exercises:
         'yes': 'Yes'
         'no': 'No'
     message:
-        no_exercises: 'No BC exercises found.'
+        no_exercises: No BC exercises available.
         schedule_first: 'Schedule your first exercise'
         incomplete_reports: 'Incomplete Reports'
         upcoming: 'Upcoming Exercises'
@@ -87,7 +87,6 @@ bc_exercises:
         scope: 'Which BC plans, processes or systems will be tested?'
         objectives: 'What should be achieved with this exercise? (Learning objectives, processes to be tested)'
         scenario: 'Describe the exercise scenario (e.g. "Server room fire" or "Ransomware attack")'
-        exercise_date: 'Planned date of the exercise'
         duration_hours: 'Planned or actual duration of the exercise in hours'
         participants: 'Which persons/teams are participating in the exercise?'
         participants_legacy: 'Legacy free-text — read-only for migration. Prefer the persons multi-select.'

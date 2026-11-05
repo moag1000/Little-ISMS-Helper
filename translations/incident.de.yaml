@@ -289,7 +289,6 @@ incident:
       (NIS2 Art. 23)
     cross_border_impact: Hat der Vorfall Auswirkungen auf andere EU-Mitgliedstaaten?
     affected_users_count: Geschätzte Anzahl betroffener Nutzer/Kunden
-    estimated_financial_impact: Geschätzter finanzieller Schaden in EUR
     national_authority: Zuständige nationale Behörde (z.B. BSI in Deutschland)
     data_breach_occurred: 'Wenn aktiviert, sollten Sie zusätzlich eine Datenpanne unter Privacy/GDPR → Datenpannen erfassen. Dies löst KEINE automatische Erstellung aus — Sie müssen die Datenpanne separat melden.'
     resolution_after_investigation: Typischerweise erst nach Abschluss der Untersuchung
@@ -308,7 +307,7 @@ incident:
     critical_services_affected: 'Kritische oder wichtige Funktionen/Dienste, die beeinträchtigt wurden (DORA Art. 19(1)(e)).'
     clients_affected_financial_volume: 'Gesamtes Transaktions- oder Vertragsvolumen der betroffenen Kunden in EUR (DORA Art. 19).'
     replication_of_impact: 'Wurde ein Service-Replikat oder Failover aktiviert, um die Auswirkungen zu begrenzen?'
-    initial_report_submitted_at: 'DORA 4-Stunden-Erstmeldung (≠ NIS2 24h!): Zeitpunkt der Übermittlung an die zuständige Behörde (Art. 19(4)(a)).'
+    initial_report_submitted_at: 'DORA 4-Stunden-Erstmeldung (≠ NIS2 24h): Zeitpunkt der Übermittlung an die zuständige Behörde (Art. 19(4)(a)).'
     data_recovery_strategy: 'Strategie zur Wiederherstellung von Daten und Diensten; Cross-Referenz auf den BCM-Kontinuitätsplan (DORA Art. 11(2)).'
     owner_legacy: 'Veraltetes Freitextfeld — nur noch für migrierte Altdaten. Bitte Benutzer oder Person oben auswählen.'
     initial_report_submitted_at_dora: 'Zeitpunkt der Erstmeldung an die zuständige Behörde. DORA Art. 19 i. V. m. RTS: spätestens 4 Stunden nach Einstufung als schwerwiegend und 24 Stunden nach Kenntnisnahme.'
@@ -414,7 +413,7 @@ incident:
     add_link: 'Risiko verknüpfen'
     submit: 'Verknüpfen'
     empty: 'Bisher sind keine Risiken mit diesem Vorfall verknüpft.'
-    risk_linked: 'Risiko erfolgreich verknüpft.'
+    risk_linked: Risiko verknüpft.
     risk_unlinked: 'Verknüpfung zum Risiko entfernt.'
     csrf_invalid: 'Sicherheitstoken ungültig — bitte Seite neu laden und erneut versuchen.'
     risk_not_found: 'Risiko nicht gefunden.'

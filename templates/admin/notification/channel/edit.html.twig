@@ -14,7 +14,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'send', label: 'Channel' },
         title: 'notification.channel.edit.title'|trans({'%name%': channel.name}, 'notification'),
         subtitle: ('notification.channel.type.' ~ channel.type)|trans,
         actions: [

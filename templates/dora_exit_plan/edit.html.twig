@@ -16,7 +16,6 @@
 
     {{ _fa_page_header.render({
         title: ('dora_exit_plan.action.edit'|trans({}, 'dora_exit_plan')) ~ ': ' ~ (plan.supplier ? plan.supplier.name : ''),
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_dora_exit_plan_show', {id: plan.id}), variant: 'ghost', icon: 'util-arrow-left' }
         ]

@@ -555,32 +555,6 @@ class DPIAController extends AbstractController
     }
 
     /**
-     * Search DPIAs (AJAX endpoint)
-     */
-    #[Route('/dpia/search', name: 'app_dpia_search', methods: ['GET'])]
-    public function search(Request $request): JsonResponse
-    {
-        $query = $request->query->get('q', '');
-
-        if (strlen($query) < 2) {
-            return $this->json(['results' => []]);
-        }
-
-        $results = $this->dataProtectionImpactAssessmentService->search($query);
-
-        $formattedResults = array_map(fn(DataProtectionImpactAssessment $dataProtectionImpactAssessment): array => [
-            'id' => $dataProtectionImpactAssessment->getId(),
-            'reference_number' => $dataProtectionImpactAssessment->getReferenceNumber(),
-            'title' => $dataProtectionImpactAssessment->getTitle(),
-            'status' => $dataProtectionImpactAssessment->getStatus(),
-            'risk_level' => $dataProtectionImpactAssessment->getRiskLevel(),
-            'completeness' => $dataProtectionImpactAssessment->getCompletenessPercentage(),
-        ], $results);
-
-        return $this->json(['results' => $formattedResults]);
-    }
-
-    /**
      * Show DPIA details
      */
     #[Route('/dpia/{id}', name: 'app_dpia_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -648,17 +622,6 @@ class DPIAController extends AbstractController
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Content-Length' => (string) strlen($pdf),
         ]);
-    }
-
-    /**
-     * Compliance report for a single DPIA (JSON API)
-     */
-    #[Route('/dpia/{id}/compliance-report', name: 'app_dpia_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function complianceReport(DataProtectionImpactAssessment $dataProtectionImpactAssessment): JsonResponse
-    {
-        $report = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
-
-        return $this->json($report);
     }
 
     /**

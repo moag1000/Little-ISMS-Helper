@@ -32,6 +32,7 @@ gap_report:
         remaining_effort: 'Verbleibend (PT)'
         quick_win: 'Quick-Win'
         quick_win_badge: 'Quick-Win'
+        override_column: 'Aufwands-Override'
         override_hint: 'Organisations-spezifischer Override aktiv'
         not_estimated: 'nicht geschätzt'
         empty: 'Keine Requirements für dieses Framework vorhanden.'

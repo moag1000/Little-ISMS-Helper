@@ -19,7 +19,6 @@
     {{ _fa_page_header.render({
         title: dpia.title,
         subtitle: dpia.referenceNumber,
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.cancel'|trans({}, 'messages'), href: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'ui-close' }
         ]

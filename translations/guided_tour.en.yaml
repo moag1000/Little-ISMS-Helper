@@ -43,7 +43,7 @@ guided_tour:
             description: 'The most important entry points for newcomers — especially helpful with a QM background.'
         step:
             welcome:
-                title: 'Welcome to the tool!'
+                title: Welcome to the tool
                 body: 'In 5 minutes I''ll show you the key landing points. You can skip with Esc anytime — the tour stays accessible from the user menu (top right).'
             mega_menu:
                 title: 'Navigation via the mega menu'
@@ -53,7 +53,7 @@ guided_tour:
                 body: 'Your current status at a glance: risk heatmap, framework load state, FTE savings from reuse. Colors indicate action required — red = now, yellow = soon, green = fine.'
             iso9001_bridge:
                 title: 'For newcomers with a QM background'
-                body: 'Familiar with ISO 9001? Then you already know a lot! In the Help menu under "9001 → 27001 bridge" you''ll find a conceptual translation — CAPA ↔ Risk treatment, Process map ↔ SoA, Management review ↔ Management evaluation.'
+                body: "Familiar with ISO 9001? Then you already know a lot. In the Help menu under \"9001 → 27001 bridge\" you'll find a conceptual translation — CAPA ↔ Risk treatment, Process map ↔ SoA, Management review ↔ Management evaluation."
             command_palette:
                 title: 'Faster via the Command Palette (⌘P / Ctrl+P)'
                 body: 'Press ⌘P (Mac) or Ctrl+P (Windows/Linux). The search finds every page, action and admin function via keyboard — faster than clicking through the menu. "?" shows all shortcuts.'
@@ -62,7 +62,7 @@ guided_tour:
                 body: 'Assets (IT systems, information, processes) are the foundation — risks, controls and compliance build on them. Create one and record the protection needs (confidentiality / integrity / availability on a 1–5 scale).'
             shortcuts:
                 title: 'Help and implementation progress'
-                body: 'In the menu under "Help & Resources" you''ll find the ISO 9001 → 27001 bridge, the glossary and all keyboard shortcuts. On the dashboard, the implementation progress shows your status across 7 phases and what to tackle next. Tip: press "?" for the shortcut overview. Good luck!'
+                body: "In the menu under \"Help & Resources\" you'll find the ISO 9001 → 27001 bridge, the glossary and all keyboard shortcuts. On the dashboard, the implementation progress shows your status across 7 phases and what to tackle next. Tip: press \"?\" for the shortcut overview."
 
     # Compliance-Manager (5 Steps)
     cm:
@@ -71,7 +71,7 @@ guided_tour:
             description: 'Framework portfolio, reuse KPIs, mapping leverage — everything GRC day-to-day needs.'
         step:
             welcome:
-                title: 'Welcome, Compliance Manager'
+                title: Quick tour for compliance managers
                 body: 'Three minutes, five stops — the levers for framework portfolio, data reuse and mapping efficiency. You know ISMS jargon, I''ll skip asset/risk basics.'
             framework_dashboard:
                 title: 'Framework dashboard'
@@ -93,7 +93,7 @@ guided_tour:
             description: 'Board metrics in 90 seconds — delegation to CM/ISB runs through the modules.'
         step:
             welcome:
-                title: 'Welcome, CISO'
+                title: Quick tour for the CISO
                 body: '90 seconds, four stops. No SoA detail, no button explanations — the three numbers for your next board meeting plus the delegation path.'
             board_export:
                 title: 'Board one-pager export'
@@ -112,7 +112,7 @@ guided_tour:
             description: 'Operational tools: SoA, risk register, incidents, workflows, audit log — daily ISB work.'
         step:
             welcome:
-                title: 'Welcome, ISB'
+                title: Quick tour for the ISB
                 body: 'Five minutes, six operational stops — SoA, risk register, incidents, workflows, audit log, command palette. Your core tools for daily work.'
             soa:
                 title: 'SoA with bulk edit'
@@ -137,7 +137,7 @@ guided_tour:
             description: 'Your risks, your confirmation — enough to get started.'
         step:
             welcome:
-                title: 'Welcome, Risk Owner'
+                title: Quick tour for risk owners
                 body: 'One minute, two stops. You''re business, not security expert — my tour is intentionally short.'
             my_risks:
                 title: 'View + confirm my risks'
@@ -195,7 +195,7 @@ guided_tour:
             description: 'Read-only scope. Three bookmarks are enough for audit runs.'
         step:
             welcome:
-                title: 'Welcome, auditor'
+                title: Quick tour for auditors
                 body: 'Your account is read-only. Two minutes, three stops — the three bookmarks for your audit run.'
             documents:
                 title: 'Documents + policies'

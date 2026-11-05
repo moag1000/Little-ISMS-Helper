@@ -5,7 +5,7 @@ role_management:
         edit: 'Rolle bearbeiten'
         show: Rollendetails
     description:
-        overview: 'Verwalten Sie Benutzerrollen und deren Berechtigungen für die Zugriffskontrolle'
+        overview: Benutzerrollen und ihre Berechtigungen für die Zugriffskontrolle festlegen
     action:
         create: 'Neue Rolle erstellen'
         compare: 'Rollen vergleichen'

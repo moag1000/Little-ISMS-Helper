@@ -29,8 +29,10 @@ session:
         email_placeholder: 'E-Mail-Adresse...'
     action:
         terminate: 'Sitzung beenden'
+        terminate_all: 'Alle Sitzungen des Benutzers beenden'
     confirm:
         terminate: 'Möchten Sie diese Sitzung wirklich beenden?'
+        terminate_all: 'Möchten Sie wirklich alle aktiven Sitzungen von %user% beenden?'
     active_sessions: 'Aktive Sitzungen'
     duration: Dauer
     no_sessions_found: 'Keine aktiven Sitzungen im gewählten Zeitraum gefunden.'
@@ -42,8 +44,8 @@ session:
         invalid_token: 'Ungültiges CSRF-Token'
         user_not_found: 'Benutzer wurde nicht gefunden.'
     success:
-        terminated_user_sessions: '%count% aktive Sitzung(en) für Benutzer %user% erfolgreich beendet.'
-        terminated_single: 'Sitzung erfolgreich beendet.'
+        terminated_user_sessions: '%count% aktive Sitzung(en) für Benutzer %user% beendet.'
+        terminated_single: Sitzung beendet.
     warning:
         not_found_or_inactive: 'Sitzung nicht gefunden oder bereits inaktiv.'
     info:

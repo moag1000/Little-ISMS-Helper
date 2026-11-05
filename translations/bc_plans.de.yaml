@@ -92,7 +92,7 @@ bc_plans:
   message:
     not_scheduled: Nicht geplant
     never: Nie
-    no_plans: Keine BC‑Pläne gefunden.
+    no_plans: Keine BC‑Pläne vorhanden.
     create_first: Erstellen Sie Ihren ersten BC‑Plan
     readiness_score: 'Bereitschafts‑Score: %score%%'
   help:

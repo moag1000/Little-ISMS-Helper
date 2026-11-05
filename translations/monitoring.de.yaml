@@ -121,7 +121,7 @@ monitoring:
         log_file: Protokolldatei
         show_entries: 'Einträge anzeigen'
         recent: 'Letzte Fehler'
-        no_errors: 'Keine Fehler gefunden!'
+        no_errors: Keine Fehler vorhanden.
         no_log_file: 'Keine Protokolldatei gefunden'
         no_log_file_text: 'Die Protokolldatei <code>%file%</code> existiert noch nicht. Fehler werden hier protokolliert, sobald sie auftreten.'
         show_full: 'Vollständigen Eintrag anzeigen'
@@ -166,7 +166,7 @@ monitoring:
     back_to_health: 'Zurück zur Gesundheit'
     by_level: 'Nach Stufe'
     show_entries: 'Einträge anzeigen'
-    no_errors_found: 'Keine Fehler gefunden'
+    no_errors_found: Keine Fehler vorhanden.
     reverse_order: 'Umgekehrte Reihenfolge'
     recent_entries_only: 'Nur aktuelle Einträge'
     full_log_analysis: 'Vollständige Log-Analyse'

@@ -3,10 +3,10 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_settings_table.html.twig' as _fa_settings %}
 
-{% block title %}{{ 'fte_tracking.calibration.title'|trans({}, 'fte_tracking') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'fte_tracking.calibration.title'|trans({}, 'fte_tracking') }}{% endblock %}
 
 {% block body %}
-<div class="fa-aurora-surface">
+<div>
 
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-sliders', label: 'fte_tracking.calibration.badge'|trans({}, 'fte_tracking') },
         title: 'fte_tracking.calibration.title'|trans({}, 'fte_tracking'),
         subtitle: 'fte_tracking.calibration.subtitle'|trans({}, 'fte_tracking')
     }) }}

@@ -137,7 +137,7 @@ control:
     provider: Anbieter
     shared: Geteilt
   success:
-    updated: Maßnahme erfolgreich aktualisiert
+    updated: Maßnahme aktualisiert
   flash:
     mapping_accepted: 'Mapping-Vorschlag übernommen — Anforderung %requirement% ist nun mit dieser Maßnahme verknüpft.'
   mapping_suggestions:
@@ -257,6 +257,6 @@ effectiveness_monitor:
     action:
         view: 'Maßnahme anzeigen'
     empty:
-        no_overdue: 'Keine überfälligen Wirksamkeitsprüfungen — ausgezeichnet!'
+        no_overdue: Keine überfälligen Wirksamkeitsprüfungen.
         no_due_soon: 'Keine Prüfungen in den nächsten 30 Tagen fällig.'
         no_recent: 'Keine Maßnahmen in den letzten 90 Tagen geprüft.'

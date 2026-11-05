@@ -79,9 +79,9 @@ answer_library:
 
   # Flash messages
   flash:
-    created: Antwort erfolgreich gespeichert.
-    updated: Antwort erfolgreich aktualisiert.
-    deleted: Antwort erfolgreich gelöscht.
+    created: Antwort gespeichert.
+    updated: Antwort aktualisiert.
+    deleted: Antwort gelöscht.
     reused: Antwort als verwendet markiert — die Wiederverwendung wurde im ROI-Dashboard erfasst.
 
   # Confirm dialogs

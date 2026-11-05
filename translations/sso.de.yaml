@@ -148,7 +148,7 @@ sso:
     wizard:
         title: 'SSO-Einrichtungsassistent'
         aria_label: 'SSO-Einrichtungsassistent'
-        success: 'SSO-Identity-Provider erfolgreich gespeichert.'
+        success: SSO-Identity-Provider gespeichert.
         step1:
             label: 'Preset wählen'
             subtitle: 'Wähle den Identity-Provider-Typ, der zu deiner SSO-Infrastruktur passt.'
@@ -167,7 +167,7 @@ sso:
             save: 'Provider speichern'
             summary: 'Konfigurationsübersicht'
             preset: 'Preset'
-            discovery_ok: 'Discovery-Dokument erfolgreich geladen. Endpoints sind bereit.'
+            discovery_ok: Discovery-Dokument geladen. Endpoints sind bereit.
             discovery_failed: 'Discovery-Prüfung fehlgeschlagen: %error%. Provider kann trotzdem gespeichert und später getestet werden.'
             no_discovery_url: 'Keine Discovery-URL gesetzt. Endpoints müssen manuell konfiguriert werden.'
     attribute_map:

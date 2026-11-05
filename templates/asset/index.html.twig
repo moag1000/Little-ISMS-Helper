@@ -5,7 +5,7 @@
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% import '_components/_status_pill.html.twig' as pill %}
-{% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -17,7 +17,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'asset-server', label: 'asset.modern.header.title'|trans({}, 'asset') },
     title: 'asset.modern.header.title'|trans({}, 'asset'),
     subtitle: 'asset.modern.header.subtitle'|trans({}, 'asset'),
     actions: [
@@ -33,7 +32,7 @@
     {% endfor %}
 {% endif %}
 
-<main class="fa-aurora-surface">
+<main>
 
 {# Tenant View Filter (Multi-Tenant Support) #}
 {% if currentTenant %}
