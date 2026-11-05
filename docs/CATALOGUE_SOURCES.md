@@ -14,7 +14,7 @@ by the cross-framework mapping resolution.
 `lint:container` enforces the one-loader-per-code invariant — if two loaders
 claim the same code the container fails to compile.
 
-## Canonical registry loaders (30)
+## Canonical registry loaders (32)
 
 | Framework code   | Canonical registry loader (command)        | Loader class                              |
 |------------------|--------------------------------------------|-------------------------------------------|
@@ -22,6 +22,7 @@ claim the same code the container fails to compile.
 | BSI-C5           | `app:load-c5-2020-full-catalogue`          | `LoadC52020FullCatalogueCommand`          |
 | BSI-C5-2026      | `app:load-c5-2026-full-catalogue`          | `LoadC52026FullCatalogueCommand`          |
 | BSI_GRUNDSCHUTZ  | `app:load-bsi-grundschutz-catalogue`       | `LoadBsiItGrundschutzCatalogueCommand`    |
+| BSI-GSPP         | `app:load-bsi-grundschutz-plusplus`        | `LoadBsiGrundschutzPlusPlusCommand`       |
 | CIS-CONTROLS     | `app:load-cis-controls-requirements`       | `LoadCisControlsRequirementsCommand`      |
 | DIGAV            | `app:load-digav-requirements`              | `LoadDigavRequirementsCommand`            |
 | DORA             | `app:load-dora-requirements`               | `LoadDoraRequirementsCommand`             |

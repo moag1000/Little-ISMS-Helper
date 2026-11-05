@@ -59,7 +59,7 @@ final class MappingCrossRefIntegrityTest extends TestCase
         'KRITIS→NIS2UMSUCG' => ['§ 1'],
         'NIS2UMSUCG→DORA' => ['Art.19', 'Art.25', 'Art.26', 'Art.29', 'Art.30', 'Art.4'],
         'NIS2UMSUCG→KRITIS' => ['§ 30', '§ 30 Abs. 2 Nr. 3', '§ 31', '§ 32', '§ 33'],
-        'NIS2→BSI_GRUNDSCHUTZ' => ['ISMS.2', 'OPS.3'],
+        'NIS2→BSI_GRUNDSCHUTZ' => ['ISMS.2', 'OPS.3', 'SYS.1.1'],
         'NIS2→DORA' => ['Art.19', 'Art.25', 'Art.26', 'DORA.Art.11.6', 'DORA.Art.5.4'],
         'REVDSG-CH→GDPR' => ['Art.14', 'Art.16', 'Art.34'],
     ];

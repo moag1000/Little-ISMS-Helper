@@ -9,7 +9,6 @@ use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
-use App\Repository\ComplianceRequirementRepository;
 use App\Service\MappingLibraryLoader;
 use App\Service\MappingQualityScoreService;
 use App\Service\MappingValidatorService;
@@ -58,6 +57,14 @@ class MappingLibraryLoaderTest extends TestCase
             'errors' => $validatorOk ? [] : ['Schema-Error'],
             'warnings' => [],
         ]);
+        // The loader resolves pair IDs through the validator so both agree on every pair.
+        $validator->method('resolveRequirement')->willReturnCallback(
+            fn (ComplianceFramework $fw, string $id): ?ComplianceRequirement => match ($id) {
+                'A.5.7' => $sourceReq,
+                '21.2.f' => $targetReq,
+                default => null,
+            }
+        );
 
         $mqs = $this->createStub(MappingQualityScoreService::class);
         $mqs->method('compute')->willReturn(['mqs' => 80, 'breakdown' => []]);
@@ -72,15 +79,6 @@ class MappingLibraryLoaderTest extends TestCase
             }
         );
 
-        $reqRepo = $this->createStub(ComplianceRequirementRepository::class);
-        $reqRepo->method('findOneBy')->willReturnCallback(
-            function (array $criteria) use ($sourceReq, $targetReq): ?ComplianceRequirement {
-                $reqId = $criteria['requirementId'] ?? null;
-                if ($reqId === 'A.5.7') return $sourceReq;
-                if ($reqId === '21.2.f') return $targetReq;
-                return null;
-            }
-        );
 
         $mappingRepo = $this->createStub(ComplianceMappingRepository::class);
         $mappingRepo->method('findOneBy')->willReturn($existingMapping);
@@ -90,7 +88,6 @@ class MappingLibraryLoaderTest extends TestCase
             $validator,
             $mqs,
             $fwRepo,
-            $reqRepo,
             $mappingRepo,
             $this->tmpDir,
         );
@@ -250,6 +247,9 @@ YAML;
 
         $validator = $this->createStub(MappingValidatorService::class);
         $validator->method('validate')->willReturn(['errors' => [], 'warnings' => []]);
+        $validator->method('resolveRequirement')->willReturnCallback(
+            fn(ComplianceFramework $fw, string $id) => match ($id) { 'A.5.7' => $sourceReq, '21.2.f' => $targetReq, default => null },
+        );
 
         $mqs = $this->createStub(MappingQualityScoreService::class);
         $mqs->method('compute')->willReturn(['mqs' => 80, 'breakdown' => []]);
@@ -259,15 +259,11 @@ YAML;
             fn(array $c) => match ($c['code'] ?? null) { 'ISO27001' => $sourceFw, 'NIS2' => $targetFw, default => null },
         );
 
-        $reqRepo = $this->createStub(ComplianceRequirementRepository::class);
-        $reqRepo->method('findOneBy')->willReturnCallback(
-            fn(array $c) => match ($c['requirementId'] ?? null) { 'A.5.7' => $sourceReq, '21.2.f' => $targetReq, default => null },
-        );
 
         $mappingRepo = $this->createStub(ComplianceMappingRepository::class);
         $mappingRepo->method('findOneBy')->willReturn(null);
 
-        $loader = new MappingLibraryLoader($em, $validator, $mqs, $fwRepo, $reqRepo, $mappingRepo, $this->tmpDir);
+        $loader = new MappingLibraryLoader($em, $validator, $mqs, $fwRepo, $mappingRepo, $this->tmpDir);
         $loader->load($path);
 
         $mappings = array_filter($persisted, static fn($e) => $e instanceof ComplianceMapping);

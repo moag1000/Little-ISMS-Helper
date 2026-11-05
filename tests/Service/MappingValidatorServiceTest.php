@@ -150,4 +150,55 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertStringContainsString('rationale empty', $warnings);
         $this->assertEmpty($result['errors']);
     }
+
+    #[Test]
+    public function testUnknownRequirementIdIsSkippedWithWarningNotError(): void
+    {
+        $fw = new ComplianceFramework();
+        $svc = $this->makeService($fw, null);
+        $result = $svc->validate($this->validPayload());
+
+        $this->assertEmpty($result['errors'], implode('; ', $result['errors']));
+        $warnings = implode(' | ', $result['warnings']);
+        $this->assertStringContainsString('pairs skipped: A.5.7', $warnings);
+        $this->assertStringContainsString('pairs skipped: 21.2.f', $warnings);
+    }
+
+    #[Test]
+    public function testResolveRequirementFallsBackToFrameworkPrefixedId(): void
+    {
+        $fw = (new ComplianceFramework())->setCode('ISO27001');
+        $clause = (new ComplianceRequirement())->setRequirementId('ISO27001-4.1');
+        $svc = $this->makeLookupService(static fn (array $criteria): ?ComplianceRequirement =>
+            ($criteria['requirementId'] ?? null) === 'ISO27001-4.1' ? $clause : null);
+
+        $this->assertSame($clause, $svc->resolveRequirement($fw, '4.1'));
+        $this->assertSame($clause, $svc->resolveRequirement($fw, 'ISO27001-4.1'));
+        $this->assertNull($svc->resolveRequirement($fw, '4.2'));
+    }
+
+    #[Test]
+    public function testResolveRequirementMapsGrundschutzBausteinToFirstRequirement(): void
+    {
+        $bsi = (new ComplianceFramework())->setCode('BSI_GRUNDSCHUTZ');
+        $first = (new ComplianceRequirement())->setRequirementId('ISMS.1.A1');
+        $svc = $this->makeLookupService(static fn (array $criteria): ?ComplianceRequirement =>
+            ($criteria['category'] ?? null) === 'ISMS.1' ? $first : null);
+
+        $this->assertSame($first, $svc->resolveRequirement($bsi, 'ISMS.1'));
+        // Baustein rule is IT-Grundschutz-only and needs a Baustein-shaped code.
+        $this->assertNull($svc->resolveRequirement((new ComplianceFramework())->setCode('BSI-GSPP'), 'ISMS.1'));
+        $this->assertNull($svc->resolveRequirement($bsi, 'Kapitel 4'));
+    }
+
+    /**
+     * @param \Closure(array<string, mixed>): ?ComplianceRequirement $lookup
+     */
+    private function makeLookupService(\Closure $lookup): MappingValidatorService
+    {
+        $reqRepo = $this->createStub(ComplianceRequirementRepository::class);
+        $reqRepo->method('findOneBy')->willReturnCallback($lookup);
+
+        return new MappingValidatorService($this->createStub(ComplianceFrameworkRepository::class), $reqRepo);
+    }
 }

@@ -141,7 +141,7 @@ src/Controller/BCExerciseController.php:153
 src/Controller/BCExerciseController.php:177
 src/Controller/BCExerciseController.php:219
 src/Controller/BCExerciseController.php:220
-src/Controller/Bsi/IsoBsiGapController.php:115
+src/Controller/Bsi/IsoBsiGapController.php:132
 src/Controller/Bsi2004ExerciseLogController.php:123
 src/Controller/Bsi2004ExerciseLogController.php:124
 src/Controller/Bsi2004ExerciseLogController.php:192

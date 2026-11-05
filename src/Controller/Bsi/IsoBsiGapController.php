@@ -35,8 +35,15 @@ class IsoBsiGapController extends AbstractController
     /** Real ISO 27001:2022 framework code in the DB */
     private const ISO_CODE = 'ISO27001';
 
-    /** BSI IT-Grundschutz 2024 framework code in the DB */
-    private const BSI_CODE = 'BSI_GRUNDSCHUTZ';
+    /**
+     * Target catalogues, keyed by the `target` query value: IT-Grundschutz-Kompendium
+     * (default) or Grundschutz++ (BSI-Standard 300-1). Both are fed by official BSI
+     * crosswalks from ISO 27001, so the same gap logic applies.
+     */
+    private const TARGETS = [
+        'kompendium' => 'BSI_GRUNDSCHUTZ',
+        'gspp' => 'BSI-GSPP',
+    ];
 
     public function __construct(
         private readonly IsoToBsiGapService $gapService,
@@ -56,7 +63,7 @@ class IsoBsiGapController extends AbstractController
      * bsi_arbeit / pruefen) and drives the "Dein nächster Schritt" block.
      */
     #[Route('/compliance/cross-gap', name: 'app_compliance_cross_gap', methods: ['GET'])]
-    public function crossGap(): Response
+    public function crossGap(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bsi_grundschutz')) {
             return $redirect;
@@ -67,8 +74,14 @@ class IsoBsiGapController extends AbstractController
             throw $this->createAccessDeniedException('No tenant context.');
         }
 
+        $target = $this->resolveTarget($request);
         $iso = $this->frameworkRepo->findOneBy(['code' => self::ISO_CODE]);
-        $bsi = $this->frameworkRepo->findOneBy(['code' => self::BSI_CODE]);
+        $bsi = $this->frameworkRepo->findOneBy(['code' => self::TARGETS[$target]]);
+        // Offer only catalogues that are loaded; the switch hides when just one is.
+        $targets = array_keys(array_filter(
+            self::TARGETS,
+            fn (string $code): bool => $this->frameworkRepo->findOneBy(['code' => $code]) !== null,
+        ));
 
         if ($iso === null || $bsi === null) {
             // Frameworks not imported yet — render a graceful empty state
@@ -76,6 +89,8 @@ class IsoBsiGapController extends AbstractController
                 'result'        => null,
                 'level'         => $tenant->getBsiAssuranceLevel(),
                 'pendingReview' => 0,
+                'target'        => $target,
+                'targets'       => $targets,
             ]);
         }
 
@@ -86,7 +101,9 @@ class IsoBsiGapController extends AbstractController
             'result'        => $result,
             'level'         => $tenant->getBsiAssuranceLevel(),
             'pendingReview' => $pendingReview,
-            'bsiCode'       => self::BSI_CODE,
+            'bsiCode'       => self::TARGETS[$target],
+            'target'        => $target,
+            'targets'       => $targets,
         ]);
     }
 
@@ -119,6 +136,15 @@ class IsoBsiGapController extends AbstractController
 
         return $this->redirectToRoute('app_compliance_cross_gap', [
             '_locale' => $request->getLocale(),
+            'target' => $this->resolveTarget($request),
         ]);
+    }
+
+    private function resolveTarget(Request $request): string
+    {
+        // GET carries it in the query, the level form posts it back as a field.
+        $target = (string) ($request->query->get('target') ?? $request->request->get('target', 'kompendium'));
+
+        return array_key_exists($target, self::TARGETS) ? $target : 'kompendium';
     }
 }
