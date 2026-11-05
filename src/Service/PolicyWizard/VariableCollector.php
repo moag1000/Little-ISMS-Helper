@@ -217,10 +217,7 @@ class VariableCollector
         if ($tenant !== null) {
             $vars['gdpr.dpo_email'] = $tenant->getDpoContactEmail();
             $authorities = $tenant->getSupervisoryAuthorities() ?? [];
-            $names = array_values(array_filter(array_map(
-                static fn (mixed $a): ?string => is_array($a) ? ($a['name'] ?? null) : (is_string($a) ? $a : null),
-                $authorities,
-            )));
+            $names = array_values(array_filter(array_column($authorities, 'name')));
             if ($names !== []) {
                 $vars['regulators_list'] = implode(', ', $names);
             }

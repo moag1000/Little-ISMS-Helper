@@ -121,10 +121,8 @@ final class SeedTemplatesCommand extends Command
                 if (!$dryRun && $this->entityManager->isOpen()) {
                     // Drop the failed template's pending entities, keep the tenant attached.
                     $this->entityManager->clear();
-                    if ($tenant !== null) {
-                        $tenant = $this->tenantRepository->find($tenant->getId()) ?? $tenant;
-                        $this->tenantContext->setCurrentTenant($tenant);
-                    }
+                    $tenant = $this->tenantRepository->find($tenant->getId()) ?? $tenant;
+                    $this->tenantContext->setCurrentTenant($tenant);
                 }
             }
         }
