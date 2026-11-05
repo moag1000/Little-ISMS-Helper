@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Security;
 
 use App\Entity\User;
+use App\Security\LandingRoute;
 use App\Security\LoginSuccessHandler;
 use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -57,7 +58,7 @@ final class ReauthTargetValidationTest extends WebTestCase
         $urls = $this->createStub(UrlGeneratorInterface::class);
         $urls->method('generate')->willReturn('/de/dashboard');
         // MfaService is final: the real one (a user without MFA devices).
-        $handler = new LoginSuccessHandler($urls, static::getContainer()->get(MfaService::class));
+        $handler = new LoginSuccessHandler($urls, static::getContainer()->get(MfaService::class), static::getContainer()->get(LandingRoute::class));
         $token = $this->createStub(TokenInterface::class);
         $token->method('getUser')->willReturn(new User());
 

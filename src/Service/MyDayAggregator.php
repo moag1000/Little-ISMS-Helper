@@ -322,25 +322,18 @@ final class MyDayAggregator
      */
     private function mapWorkflow(WorkflowInstance $instance, bool $isOverdue): array
     {
-        $entityType = $instance->getEntityType() !== null
-            ? (string) preg_replace('#^.*\\\\#', '', $instance->getEntityType())
-            : 'Workflow';
-
-        $title = sprintf(
-            '%s #%s — %s',
-            $entityType,
-            $instance->getEntityId() ?? '?',
-            $instance->getWorkflow()?->getName() ?? '—',
-        );
-
+        $entityType = (string) preg_replace('#^.*\\\\#', '', $instance->getEntityType() ?? 'Workflow');
+        // MyDayInboxEnricher replaces title/subtitle with the record's name.
         return [
             'priority'    => $isOverdue ? 'high' : 'medium',
             'due_date'    => $instance->getDueDate(),
             'link'        => $this->urls->generate('app_workflow_instance_show', ['id' => $instance->getId()]),
             'entity_type' => 'workflow',
             'tone'        => $isOverdue ? 'danger' : 'warning',
-            'title'       => $title,
+            'title'       => sprintf('%s #%s', $entityType, $instance->getEntityId() ?? '?'),
             'subtitle'    => $instance->getCurrentStep()?->getName() ?? '—',
+            'decision'    => ['id' => $instance->getId(), 'name' => $instance->getWorkflow()?->getName() ?? '—',
+                'subject_type' => $instance->getEntityType(), 'subject_id' => $instance->getEntityId(), 'decidable' => !$isOverdue],
             'badge'       => $isOverdue ? 'overdue' : 'pending',
         ];
     }
@@ -355,17 +348,14 @@ final class MyDayAggregator
             /** @var FourEyesApprovalRequest $req */
             $items[] = [
                 'priority'    => 'medium',
-                'due_date'    => method_exists($req, 'getRequestedAt') ? $req->getRequestedAt() : null,
+                'due_date'    => $req->getExpiresAt(),
                 'link'        => $this->urls->generate('app_four_eyes_inbox'),
                 'entity_type' => 'four_eyes',
                 'tone'        => 'warning',
-                'title'       => sprintf('%s — %s',
-                    method_exists($req, 'getOperation') ? ($req->getOperation() ?? '4-Eyes') : '4-Eyes',
-                    method_exists($req, 'getEntityType') ? ($req->getEntityType() ?? '') : ''),
-                'subtitle'    => $req->getRequestedBy()
-                    ? trim(($req->getRequestedBy()->getFirstName() ?? '') . ' ' . ($req->getRequestedBy()->getLastName() ?? ''))
-                    : '—',
+                'title'       => $req->getActionType(), // translated by MyDayInboxEnricher
+                'subtitle'    => $req->getRequestedBy()?->getFullName() ?? '—',
                 'badge'       => 'pending',
+                'four_eyes_id' => $req->getId(),
             ];
         }
         return $items;

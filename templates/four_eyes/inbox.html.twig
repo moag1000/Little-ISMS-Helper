@@ -38,18 +38,7 @@
                             <pre class="small bg-body-secondary p-2 mt-2 mb-0">{{ r.payload|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
                         </div>
                         <div class="d-flex flex-column gap-2">
-                            <form method="post" action="{{ path('app_four_eyes_approve', { id: r.id }) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_approve_' ~ r.id) }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
-                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                                    {{ 'four_eyes.approve'|trans({}, 'four_eyes') }}
-                                </button>
-                            </form>
-                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                    data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="reject-{{ r.id }}">
-                                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
-                                {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
-                            </button>
+                            {% include 'four_eyes/_decision_buttons.html.twig' with { requestId: r.id } only %}
                             {% if is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('app_four_eyes_edit', { id: r.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
@@ -60,28 +49,7 @@
                     </div>
                 </div>
 
-                <div class="fa-modal fa-modal--confirm fa-modal--danger" id="reject-{{ r.id }}"
-     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
-     role="alertdialog" aria-modal="true" aria-labelledby="reject-{{ r.id }}-label" aria-hidden="true">
-    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
-    <div class="fa-modal__container" data-fa-modal-target="dialog"><form method="post"
-                              action="{{ path('app_four_eyes_reject', { id: r.id }) }}" data-fa-modal-target="form">
-                            <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_reject_' ~ r.id) }}">
-                            <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span><div class="fa-modal__heading"><h5 class="fa-modal__title" id="reject-{{ r.id }}-label">
-                                    {{ 'four_eyes.reject_modal.title'|trans({}, 'four_eyes') }}
-                                </h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
-                            <div class="fa-modal__body">
-                                <label class="form-label">{{ 'four_eyes.reject_modal.reason'|trans({}, 'four_eyes') }}</label>
-                                <textarea name="reason" class="form-control fa-cyber-input__field" rows="3" minlength="20" required></textarea>
-                            </div>
-                            <footer class="fa-modal__footer">
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                                    {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
-                                </button>
-                            </footer>
-                        </form></div>
-</div>
+                {% include 'four_eyes/_reject_modal.html.twig' with { requestId: r.id } only %}
             {% endfor %}
         </div>
     {% endif %}

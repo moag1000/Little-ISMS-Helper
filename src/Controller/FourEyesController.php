@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\SafeRedirectTarget;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
 use App\Form\FourEyesApprovalRequestType;
@@ -25,6 +28,7 @@ final class FourEyesController extends AbstractController
         private readonly FourEyesApprovalService $service,
         private readonly TenantContext $tenantContext,
         private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -40,12 +44,12 @@ final class FourEyesController extends AbstractController
 
         try {
             $this->service->approve($request, $user);
-            $this->addFlash('success', 'four_eyes.flash.approved');
+            $this->addFlash('success', $this->translator->trans('four_eyes.flash.approved', [], 'four_eyes'));
         } catch (\Throwable $e) {
             $this->addFlash('danger', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('app_dashboard'));
+        return $this->backToInbox($httpRequest);
     }
 
     #[Route('/{id}/reject', name: 'reject', methods: ['POST'], requirements: ['id' => '\d+'])]
@@ -60,12 +64,12 @@ final class FourEyesController extends AbstractController
 
         try {
             $this->service->reject($request, $user, (string) $httpRequest->request->get('reason', ''));
-            $this->addFlash('success', 'four_eyes.flash.rejected');
+            $this->addFlash('success', $this->translator->trans('four_eyes.flash.rejected', [], 'four_eyes'));
         } catch (\Throwable $e) {
             $this->addFlash('danger', $e->getMessage());
         }
 
-        return $this->redirect($this->generateUrl('app_dashboard'));
+        return $this->backToInbox($httpRequest);
     }
 
     /**
@@ -84,7 +88,7 @@ final class FourEyesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'four_eyes.flash.approver_updated');
+            $this->addFlash('success', $this->translator->trans('four_eyes.flash.approver_updated', [], 'four_eyes'));
 
             return $this->redirectToRoute('app_four_eyes_inbox');
         }
@@ -105,5 +109,16 @@ final class FourEyesController extends AbstractController
         if ($current === null || $request->getTenant()?->getId() !== $current->getId()) {
             throw $this->createAccessDeniedException('Tenant mismatch.');
         }
+    }
+
+    /** Back to the page the decision was made on (My Day or the four-eyes inbox). */
+    private function backToInbox(Request $httpRequest): Response
+    {
+        $referer = (string) $httpRequest->headers->get('referer', '');
+        if ($referer !== '' && SafeRedirectTarget::isSafe($referer, $httpRequest)) {
+            return $this->redirect($referer);
+        }
+
+        return $this->redirectToRoute('app_four_eyes_inbox');
     }
 }

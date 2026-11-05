@@ -7,6 +7,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_macros/workflow.html.twig' as workflow_macros %}
 
 {% block body %}
 {# Category metadata — single source for both the KPI tiles and the accordion
@@ -41,10 +42,12 @@
     'documents_pending_approval_for_me':  { icon: 'nav-file-check',         tone: 'warning' },
     'wizard_overdue':                     { icon: 'ui-hourglass',           tone: 'warning' },
     'framework_gaps_critical':            { icon: 'nav-bar-chart',          tone: 'danger'  },
+    'alva_hints':                         { icon: 'ui-stars',               tone: 'warning' },
 } %}
 {# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
-   default to [] when the aggregator did not provide them. #}
-{% set order = ['workflows_pending','workflows_overdue','four_eyes','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+   default to [] when the aggregator did not provide them. Approvals and
+   four-eyes requests come first: they are decided right here. #}
+{% set order = ['workflows_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
 {# Build the active list and the zero counter in one pass — avoids relying on a
    lazy |filter iterator being consumed twice. #}
 {# Jargon categories that get a hover-tooltip (junior aid) — the ones a 9001-
@@ -71,7 +74,7 @@
     {% endif %}
 {% endfor %}
 
-<main class="fa-aurora-surface my-day">
+<div class="fa-aurora-surface my-day">
     {{ _fa_page_header.render({
         title:    'my_day.title'|trans({}, 'my_day'),
         subtitle: 'my_day.subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}, 'my_day'),
@@ -117,7 +120,7 @@
        <details> — keyboard-accessible, works without JavaScript. #}
     {% for c in activeCategories %}
         {% set hasHigh = c.items|filter(i => i.priority == 'high')|length > 0 %}
-        <details class="fa-section my-day-section mb-3" id="{{ c.anchor }}"{{ (c.tone == 'danger' or hasHigh) ? ' open' : '' }}>
+        <details class="fa-section my-day-section mb-3" id="{{ c.anchor }}"{{ (c.tone == 'danger' or hasHigh or c.key in ['workflows_pending', 'four_eyes']) ? ' open' : '' }}>
             <summary class="fa-section__header my-day-section__summary">
                 <span class="fa-section__title d-flex align-items-center gap-2">
                     <i class="fa-icon fa-icon--{{ c.icon }}" aria-hidden="true"></i>
@@ -132,25 +135,27 @@
             <div class="fa-section__body">
                 <div class="list-group">
                     {% for item in c.items %}
-                        <a href="{{ item.link }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
-                            <div class="ms-2 me-auto">
-                                <div class="fw-bold">
-                                    {% set entityIcon = {
-                                        'workflow': 'ui-refresh', 'four_eyes': 'nav-people', 'acknowledgement': 'ui-check',
-                                        'audit_finding': 'ui-search', 'dsr': 'ui-file-person', 'corrective_action': 'ui-hourglass',
-                                        'risk_acceptance': 'nav-shield-alert', 'document_review': 'nav-document', 'training': 'nav-mortarboard',
-                                        'incident': 'status-critical', 'data_breach': 'nav-shield-alert', 'vulnerability': 'util-bug',
-                                        'audit_checklist': 'nav-clipboard-check', 'change_request': 'ui-refresh', 'management_review': 'nav-clipboard-data',
-                                        'document_pending_approval': 'nav-file-check', 'wizard_overdue': 'ui-hourglass', 'framework_gap': 'nav-bar-chart',
-                                        'evidence_reverification': 'nav-clipboard-check', 'control': 'ui-search', 'supplier': 'nav-truck',
-                                        'dpia': 'ui-file-person', 'bc_plan': 'util-refresh', 'risk_review': 'nav-shield-alert'
-                                    } %}
+                        {% set entityIcon = {
+                            'workflow': 'ui-refresh', 'four_eyes': 'nav-people', 'acknowledgement': 'ui-check',
+                            'audit_finding': 'ui-search', 'dsr': 'ui-file-person', 'corrective_action': 'ui-hourglass',
+                            'risk_acceptance': 'nav-shield-alert', 'document_review': 'nav-document', 'training': 'nav-mortarboard',
+                            'incident': 'status-critical', 'data_breach': 'nav-shield-alert', 'vulnerability': 'util-bug',
+                            'audit_checklist': 'nav-clipboard-check', 'change_request': 'ui-refresh', 'management_review': 'nav-clipboard-data',
+                            'document_pending_approval': 'nav-file-check', 'wizard_overdue': 'ui-hourglass', 'framework_gap': 'nav-bar-chart',
+                            'evidence_reverification': 'nav-clipboard-check', 'control': 'ui-search', 'supplier': 'nav-truck',
+                            'dpia': 'ui-file-person', 'bc_plan': 'util-refresh', 'risk_review': 'nav-shield-alert', 'alva_hint': 'ui-stars'
+                        } %}
+                        {% set canDecideWorkflow = item.decision.decidable ?? false %}
+                        {% set canDecideFourEyes = (item.four_eyes_id ?? null) and is_granted('ROLE_MANAGER') %}
+                        <div class="list-group-item my-day-item">
+                            <div class="my-day-item__main">
+                                <a href="{{ item.link }}" class="fw-bold my-day-item__title">
                                     {% if entityIcon[item.entity_type] is defined %}
                                         <i class="fa-icon fa-icon--{{ entityIcon[item.entity_type] }}" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ item.title }}
-                                </div>
-                                <small class="text-muted">{{ item.subtitle }}</small>
+                                </a>
+                                <small class="text-muted d-block">{{ item.subtitle }}</small>
                                 {% if item.due_date %}
                                     {% set secsLeft = item.due_date|date('U') - 'now'|date('U') %}
                                     {% set overdue = secsLeft < 0 %}
@@ -171,7 +176,7 @@
                                     {% endif %}
                                 {% endif %}
                             </div>
-                            <div class="text-end">
+                            <div class="my-day-item__side">
                                 {% if item.badge %}
                                     {% set pillTone = item.tone == 'danger' ? 'danger'
                                         : (item.tone == 'warning' ? 'warning'
@@ -180,20 +185,37 @@
                                     {{ pill.render(item.badge, pillTone) }}
                                 {% endif %}
                                 {% if item.priority == 'high' %}
-                                    {{ pill.render('my_day.priority.high'|trans({}, 'my_day'), 'danger', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.high'|trans({}, 'my_day'), 'danger') }}
                                 {% elseif item.priority == 'medium' %}
-                                    {{ pill.render('my_day.priority.medium'|trans({}, 'my_day'), 'warning', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.medium'|trans({}, 'my_day'), 'warning') }}
+                                {% endif %}
+                                {% if canDecideWorkflow %}
+                                    <span class="my-day-item__actions">{{ workflow_macros.decision_buttons(item.decision.id) }}</span>
+                                {% elseif canDecideFourEyes %}
+                                    <span class="my-day-item__actions">{% include 'four_eyes/_decision_buttons.html.twig' with { requestId: item.four_eyes_id } only %}</span>
                                 {% endif %}
                             </div>
-                        </a>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
         </details>
     {% endfor %}
 
+    {# Decision dialogs live outside the <details> sections: a dialog inside a
+       collapsed section would not be displayed. #}
+    {% for c in activeCategories|filter(c => c.key in ['workflows_pending', 'four_eyes']) %}
+        {% for item in c.items %}
+            {% if item.decision.decidable ?? false %}
+                {{ workflow_macros.decision_modals(item.decision.id, item.decision.name, item.title) }}
+            {% elseif (item.four_eyes_id ?? null) and is_granted('ROLE_MANAGER') %}
+                {% include 'four_eyes/_reject_modal.html.twig' with { requestId: item.four_eyes_id } only %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
     {% endif %}
-</main>
+</div>
 
 <style>
 /* My-Day accordion — collapsed sections show only the summary (title + count).
@@ -205,5 +227,18 @@
 .my-day-section[open] > .my-day-section__summary::after { transform: rotate(90deg); }
 .my-day-section__summary:hover { background: var(--surface-2); }
 body[data-density='compact'] .my-day-section__summary { padding: .4rem .75rem; }
+/* One row per item: what it is on the left, status and the decision on the
+   right. On a phone the decision drops below the text with full-size buttons. */
+.my-day-item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: .5rem 1rem; }
+.my-day-item__main { flex: 1 1 18rem; min-width: 0; }
+.my-day-item__title { color: var(--fg); text-decoration: none; }
+.my-day-item__title:hover { text-decoration: underline; }
+.my-day-item__side { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .4rem; }
+.my-day-item__actions { display: inline-flex; flex-wrap: wrap; gap: .4rem; }
+.my-day-item__actions form { display: inline; }
+@media (max-width: 575.98px) {
+    .my-day-item__side { justify-content: flex-start; width: 100%; }
+    .my-day-item__actions .fa-cyber-btn { min-height: 44px; }
+}
 </style>
 {% endblock %}
