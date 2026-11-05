@@ -47,8 +47,11 @@
     width: 100%;
     height: auto;
     aspect-ratio: 1000 / 437;
-    touch-action: manipulation;
+    touch-action: pan-y pinch-zoom;
+    cursor: grab;
 }
+
+.location-map__svg.is-panning { cursor: grabbing; }
 
 .location-map__sea { fill: var(--surface-2); }
 

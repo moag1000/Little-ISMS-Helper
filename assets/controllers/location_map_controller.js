@@ -68,6 +68,7 @@ export default class extends Controller {
         this.view = this.fitView(this.points.map((p) => p.xy));
         this.onResize = () => this.render();
         window.addEventListener('resize', this.onResize);
+        this.bindPanZoom();
         this.loadWorld();
         this.syncControls();
         if (this.selectedValue) this.showPanel(this.selectedValue);
@@ -201,6 +202,42 @@ export default class extends Controller {
         x = Math.min(Math.max(x, fx), fx + fw - w);
         y = Math.min(Math.max(y, fy), fy + fh - h);
         return [x, y, w, h];
+    }
+
+    // Drag to pan (mouse, pen, one finger), Ctrl/⌘ + wheel or pinch-like
+    // wheel to zoom around the pointer. Plain wheel scrolls the page.
+    bindPanZoom() {
+        const svg = this.svgTarget;
+        let drag = null;
+        svg.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0 || e.target.closest('.location-map__pin, .location-map__cluster')) return;
+            drag = { x: e.clientX, y: e.clientY, view: this.view.slice(), moved: false };
+            svg.setPointerCapture(e.pointerId);
+        });
+        svg.addEventListener('pointermove', (e) => {
+            if (!drag) return;
+            const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+            if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+            drag.moved = true;
+            svg.classList.add('is-panning');
+            const unit = drag.view[2] / (svg.clientWidth || WIDTH);
+            this.view = this.clamp([drag.view[0] - dx * unit, drag.view[1] - dy * unit, drag.view[2], drag.view[3]]);
+            this.render();
+        });
+        const end = () => { drag = null; svg.classList.remove('is-panning'); };
+        svg.addEventListener('pointerup', end);
+        svg.addEventListener('pointercancel', end);
+        svg.addEventListener('wheel', (e) => {
+            if (!e.ctrlKey && !e.metaKey) return;
+            e.preventDefault();
+            const rect = svg.getBoundingClientRect();
+            const [x, y, w, h] = this.view;
+            const px = x + ((e.clientX - rect.left) / rect.width) * w;
+            const py = y + ((e.clientY - rect.top) / rect.height) * h;
+            const f = e.deltaY > 0 ? 1.25 : 0.8;
+            this.view = this.clamp([px - (px - x) * f, py - (py - y) * f, w * f, h * f]);
+            this.render();
+        }, { passive: false });
     }
 
     zoomBy(factor) {
