@@ -290,13 +290,13 @@ class WorkflowControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testPendingShowsApprovalsForUser(): void
+    public function testPendingRedirectsToMyDay(): void
     {
         $this->loginAsUser($this->testUser);
 
         $this->client->request('GET', '/en/workflow/pending');
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseRedirects('/en/my-day#workflows-pending');
     }
 
     // ========== ACTIVE WORKFLOWS TESTS ==========

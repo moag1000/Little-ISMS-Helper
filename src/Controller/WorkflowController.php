@@ -111,23 +111,11 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('admin_workflow_overlay_index');
     }
 
+    /** My Day is the one inbox; this URL stays for bookmarks and e-mail links. */
     #[Route('/workflow/pending', name: 'app_workflow_pending', methods: ['GET'])]
     public function pending(): Response
     {
-        $user = $this->currentUser();
-        $pendingApprovals = $this->workflowService->getPendingApprovals($user);
-
-        // Check approval permissions for each instance
-        $userCanApprove = [];
-        foreach ($pendingApprovals as $instance) {
-            $currentStep = $instance->getCurrentStep();
-            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($user, $currentStep);
-        }
-
-        return $this->render('workflow/pending.html.twig', [
-            'pending_approvals' => $pendingApprovals,
-            'userCanApprove' => $userCanApprove,
-        ]);
+        return $this->redirect($this->generateUrl('app_my_day') . '#workflows-pending');
     }
 
     #[Route('/workflow/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'], methods: ['GET'])]

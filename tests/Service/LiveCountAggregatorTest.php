@@ -12,6 +12,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\FourEyesApprovalRequestRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\LiveCountAggregator;
+use App\Service\MyDay\MyDayInboxEnricher;
 use App\Service\MyDayAggregator;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -65,6 +66,7 @@ final class LiveCountAggregatorTest extends TestCase
             $this->auditLogRepo,
             $this->fourEyesRepo,
             $this->workflowInstanceRepo,
+            $this->createStub(MyDayInboxEnricher::class),
         );
     }
 
@@ -203,7 +205,7 @@ final class LiveCountAggregatorTest extends TestCase
             $this->createMock(FourEyesApprovalRequest::class),
         ];
 
-        $this->fourEyesRepo->method('findPendingFor')
+        $this->fourEyesRepo->expects($this->once())->method('findPendingFor')
             ->with($user, $tenant)
             ->willReturn($requests);
 
@@ -237,7 +239,7 @@ final class LiveCountAggregatorTest extends TestCase
             $this->createMock(WorkflowInstance::class),
         ];
 
-        $this->workflowInstanceRepo->method('findPendingForUser')
+        $this->workflowInstanceRepo->expects($this->once())->method('findPendingForUser')
             ->with($user, $tenant)
             ->willReturn($instances);
 

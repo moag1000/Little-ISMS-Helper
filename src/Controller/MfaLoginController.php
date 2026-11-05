@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\LandingRoute;
 use App\Security\SafeRedirectTarget;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Repository\MfaTokenRepository;
@@ -33,7 +34,8 @@ class MfaLoginController extends AbstractController
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly LandingRoute $landingRoute,
     ) {
     }
 
@@ -55,7 +57,7 @@ class MfaLoginController extends AbstractController
 
         if (!$session->get('_security.mfa_required')) {
             // No MFA required or already verified
-            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
+            return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $request->getLocale()]);
         }
 
         $userId = $session->get('_security.mfa_user_id');
@@ -74,7 +76,7 @@ class MfaLoginController extends AbstractController
             $session->remove('_security.mfa_required');
             $session->remove('_security.mfa_user_id');
 
-            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
+            return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $request->getLocale()]);
         }
 
         return $this->render('security/mfa_challenge.html.twig', [
@@ -93,7 +95,7 @@ class MfaLoginController extends AbstractController
         $session = $request->getSession();
 
         if (!$session->get('_security.mfa_required')) {
-            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
+            return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $request->getLocale()]);
         }
 
         $userId = $session->get('_security.mfa_user_id');
@@ -162,7 +164,7 @@ class MfaLoginController extends AbstractController
                 }
             }
 
-            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
+            return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $request->getLocale()]);
         }
 
         // Verification failed

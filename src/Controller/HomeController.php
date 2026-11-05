@@ -393,7 +393,7 @@ class HomeController extends AbstractController
             $myTasks[] = [
                 'type' => 'workflow',
                 'title' => $workflow->getWorkflow()?->getName() ?? $this->translator->trans('dashboard.my_tasks.workflow_approval', [], 'dashboard'),
-                'url' => $this->generateUrl('app_workflow_pending'),
+                'url' => $this->generateUrl('app_my_day') . '#workflows-pending',
                 'priority' => 'info',
                 'overdue_days' => null,
                 'icon' => 'status-pending',
@@ -496,7 +496,7 @@ class HomeController extends AbstractController
                 'color' => 'info',
                 'label' => $this->translator->trans('dashboard.urgent.pending_workflows', [], 'dashboard'),
                 'count' => count($pendingWorkflows),
-                'url' => $this->generateUrl('app_workflow_pending'),
+                'url' => $this->generateUrl('app_my_day') . '#workflows-pending',
                 'priority' => 2,
             ];
         }
