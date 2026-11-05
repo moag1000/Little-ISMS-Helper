@@ -11,6 +11,7 @@ use App\Enum\TreatmentStrategy;
 use App\Risk\RiskMatrixThresholds;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
+use App\Service\TenantContext;
 use App\Util\CsvSanitizer;
 use DateTime;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -34,6 +35,7 @@ class RiskRegisterExporter
         private readonly TranslatorInterface $translator,
         private readonly ExcelExportService $excelExportService,
         private readonly PdfExportService $pdfExportService,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -153,6 +155,7 @@ class RiskRegisterExporter
             'Mittlere Risiken' => $counts['medium'],
             'Niedrige Risiken' => $counts['low'],
             'Export-Datum' => date('d.m.Y H:i'),
+            'Risikomethodik' => $this->methodologyLabel() ?? '-',
         ], 1, 'Risk Management Übersicht');
 
         $statusMetrics = [];
@@ -240,6 +243,7 @@ class RiskRegisterExporter
             'low_risks' => $counts['low'],
             'status_breakdown' => $statusBreakdown,
             'filter_info' => $filterInfo,
+            'risk_methodology' => $this->methodologyLabel(),
             'pdf_generation_date' => new DateTime(),
         ]);
     }
@@ -312,6 +316,20 @@ class RiskRegisterExporter
             $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
             $risk->getCreatedAt() ? $risk->getCreatedAt()->format('d.m.Y') : '-',
         ];
+    }
+
+    /**
+     * Risk-assessment methodology documented in the tenant compliance settings
+     * (ISO 27001 Cl. 6.1.2 requires a defined method), or null when none is set.
+     */
+    private function methodologyLabel(): ?string
+    {
+        $methodology = $this->tenantContext->getCurrentTenant()?->getRiskMethodology();
+        if ($methodology === null || $methodology === '') {
+            return null;
+        }
+
+        return $this->translatedOrRaw('risk.export.methodology.', $methodology);
     }
 
     /** Translated label, or the raw value when no translation exists. */

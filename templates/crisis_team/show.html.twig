@@ -29,6 +29,15 @@
                 <dt class="col-sm-3">{{ ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') } %}</dd>
                 <dt class="col-sm-3">{{ 'crisis_team.field.is_active'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: crisis_team.isActive ? 'success' : 'danger', content: crisis_team.isActive ? 'yes'|trans({}, 'messages') : 'no'|trans({}, 'messages') } %}</dd>
                 {% if crisis_team.teamLeader %}<dt class="col-sm-3">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.teamLeader.email }}</dd>{% endif %}
+                {% set _on_call = current_on_call(crisis_team.tenant.crisisTeamOnCall) %}
+                {% if _on_call %}
+                    <dt class="col-sm-3">{{ 'admin.tenant_settings.crisis_team_on_call'|trans({}, 'admin') }}</dt>
+                    <dd class="col-sm-9">
+                        {{ _on_call.primary|default('—') }}
+                        {% if _on_call.deputy|default %}<span class="text-muted">({{ 'admin.tenant_settings.json_builder.on_call_deputy'|trans({}, 'admin') }}: {{ _on_call.deputy }})</span>{% endif %}
+                        <span class="text-muted">· {{ _on_call.date|date('d.m.Y') }}</span>
+                    </dd>
+                {% endif %}
                 {% if crisis_team.description %}<dt class="col-sm-3">{{ 'crisis_team.field.description'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.description|nl2br }}</dd>{% endif %}
             </dl>
         {% endblock %}

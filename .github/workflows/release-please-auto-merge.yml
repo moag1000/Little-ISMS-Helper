@@ -11,8 +11,8 @@ name: Release Please Auto-Merge
 # Skip-Bedingungen:
 #   - Kein offener release-please-PR (keine Commits seit letztem Tag)
 #   - PR hat Label "release-blocked" oder "do-not-merge"
-#   - Branch-Protection / Required-Checks fehlen → Standard-Merge schlaegt fehl,
-#     Workflow loggt Fehler aber stirbt nicht laut
+#   - CI (per workflow_dispatch auf dem Release-Branch gestartet) ist nicht
+#     gruen → kein Merge, der Job schlaegt sichtbar fehl
 #
 # Manueller Bypass: GitHub Actions → "Release Please Auto-Merge" → Run workflow
 # (workflow_dispatch). Praktisch wenn z. B. ein dringender Bugfix sofort raus
@@ -62,32 +62,52 @@ jobs:
           echo "found=true" >> "$GITHUB_OUTPUT"
           echo "number=$pr_number" >> "$GITHUB_OUTPUT"
 
-      - name: Wait for required checks
+      - name: Run CI on the release PR and wait for green
         if: steps.find_pr.outputs.found == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           pr=${{ steps.find_pr.outputs.number }}
-          # Up to ~30 min Wartezeit auf laufende CI-Runs der PR.
-          for _ in $(seq 1 60); do
-            state=$(gh pr checks "$pr" --repo "${{ github.repository }}" --json state --jq '[.[].state] | unique | sort | join(",")' 2>/dev/null || echo "PENDING")
-            echo "Current check states: $state"
-            case "$state" in
-              "")          echo "No checks reported (yet)."; sleep 30 ;;
-              *FAILURE*|*CANCELLED*|*TIMED_OUT*|*ACTION_REQUIRED*)
-                echo "::error::PR #$pr has failing/blocked checks: $state"
-                exit 1
-                ;;
-              SUCCESS|SUCCESS,SUCCESS)
-                echo "All checks succeeded."
-                break
-                ;;
-              *)
-                sleep 30
-                ;;
-            esac
+          repo="${{ github.repository }}"
+          # release-please opens the PR with GITHUB_TOKEN. Its pull_request
+          # runs end as "action_required" (bot runs need approval), so the PR
+          # never gets a real CI result. A workflow_dispatch from this job is
+          # allowed to start CI, so run it on the release branch and merge only
+          # when that run for the PR head commit concludes with success.
+          # Before #1059 the old wait loop fell through to the merge on timeout
+          # and #1057 went in with red checks.
+          read -r branch sha < <(gh pr view "$pr" --repo "$repo" --json headRefName,headRefOid --jq '"\(.headRefName) \(.headRefOid)"')
+          echo "Release PR #$pr: $branch @ $sha"
+          gh workflow run ci.yml --repo "$repo" --ref "$branch"
+
+          run_id=""
+          for _ in $(seq 1 20); do
+            sleep 15
+            run_id=$(gh run list --repo "$repo" --workflow ci.yml --branch "$branch" --event workflow_dispatch \
+              --json databaseId,headSha --jq "[.[] | select(.headSha == \"$sha\")][0].databaseId // empty")
+            [ -n "$run_id" ] && break
           done
+          if [ -z "$run_id" ]; then
+            echo "::error::CI run for $sha did not start — not merging."
+            exit 1
+          fi
+          echo "Waiting for CI run $run_id"
+          # Up to ~60 min; the full suite takes ~25 min.
+          for _ in $(seq 1 120); do
+            read -r status conclusion < <(gh run view "$run_id" --repo "$repo" --json status,conclusion --jq '"\(.status) \(.conclusion)"')
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" = "success" ]; then
+                echo "CI green."
+                exit 0
+              fi
+              echo "::error::CI run $run_id concluded $conclusion — not merging."
+              exit 1
+            fi
+            sleep 30
+          done
+          echo "::error::CI run $run_id still running after waiting — not merging."
+          exit 1
 
       - name: Merge release-please PR
         if: steps.find_pr.outputs.found == 'true'

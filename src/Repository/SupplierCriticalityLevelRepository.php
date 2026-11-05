@@ -74,7 +74,8 @@ class SupplierCriticalityLevelRepository extends ServiceEntityRepository
 
     /**
      * Idempotent seed: creates the 4 standard levels if the tenant has none yet.
-     * Called from TenantCreatedSeedListener (postPersist) and migration backfill.
+     * Called lazily from the admin page; until then SupplierType falls back to
+     * the same four codes.
      */
     public function ensureDefaultsFor(Tenant $tenant): void
     {
@@ -108,7 +109,6 @@ class SupplierCriticalityLevelRepository extends ServiceEntityRepository
                 ->setIsActive(true);
             $em->persist($level);
         }
-        // Kein flush() — Aufrufer (TenantCreatedSeedListener::postFlush oder
-        // Admin-Controller /admin/supplier-criticality) flusht explizit.
+        // Kein flush() — der Admin-Controller /admin/supplier-criticality flusht.
     }
 }

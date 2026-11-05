@@ -48,6 +48,8 @@ final class SlaDeadlineMonitorRetryTest extends KernelTestCase
         $tenantId = $this->tenant?->getId();
         if ($tenantId !== null) {
             $this->conn->executeStatement('DELETE FROM sla_deadline_monitor WHERE tenant_id = ?', [$tenantId]);
+            // Incident workflows started on flush carry the incident's tenant.
+            $this->conn->executeStatement('DELETE FROM workflow_instances WHERE tenant_id = ?', [$tenantId]);
             $this->conn->executeStatement('DELETE FROM incident WHERE tenant_id = ?', [$tenantId]);
             $this->conn->executeStatement('DELETE FROM tenant WHERE id = ?', [$tenantId]);
         }

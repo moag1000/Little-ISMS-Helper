@@ -410,12 +410,12 @@ services:
     App\Service\Certificate\OcrCapabilityInterface:
         alias: App\Service\Certificate\OcrCapabilityDetector
 
-    # Policy-Wizard — generic tenant-setting resolver. SettingProviderInterface
-    # is satisfied by SystemSettingsBackedProvider until a TenantPolicySetting
-    # repository exists; ChangeAttemptLoggerInterface defaults to a null logger
-    # for the same reason.
+    # Policy-Wizard — generic tenant-setting resolver. Tenant values come from
+    # tenant_policy_setting, global defaults from system_settings. Resolve-time
+    # clamps are not persisted (TenantPolicySettingChangeAttempt records write
+    # attempts by a user), so the change-attempt logger stays the null logger.
     App\Service\TenantSettingResolver\SettingProviderInterface:
-        alias: App\Service\TenantSettingResolver\SystemSettingsBackedProvider
+        alias: App\Service\TenantSettingResolver\TenantPolicySettingProvider
     App\Service\TenantSettingResolver\ChangeAttemptLoggerInterface:
         alias: App\Service\TenantSettingResolver\NullChangeAttemptLogger
 

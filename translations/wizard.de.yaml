@@ -99,6 +99,7 @@ wizard:
         toggle: "Reifegrade anzeigen (Baseline / Enhanced)"
         baseline: "Baseline"
         enhanced: "Enhanced"
+        target: "Soll"
 
     # Catalogue Coverage KPI
     catalogue_coverage:

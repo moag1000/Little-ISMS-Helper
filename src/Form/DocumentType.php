@@ -311,7 +311,7 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 $qb = $r->createQueryBuilder('c')->orderBy('c.controlId', 'ASC');
                 $tenant = $this->tenantContext->getCurrentTenant();
                 if ($tenant !== null) {
-                    $qb->andWhere('c.tenant = :tenant OR c.tenant IS NULL')
+                    $qb->andWhere('c.tenant = :tenant')
                        ->setParameter('tenant', $tenant);
                 }
                 return $qb;

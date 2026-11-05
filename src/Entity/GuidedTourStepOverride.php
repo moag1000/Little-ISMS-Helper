@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Doctrine\SharedTenantRowsInterface;
 use App\Repository\GuidedTourStepOverrideRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -31,7 +32,7 @@ use Doctrine\ORM\Mapping as ORM;
     columns: ['tenant_id', 'tour_id', 'step_id', 'locale'],
 )]
 #[ORM\Index(name: 'idx_tour_step_tenant', columns: ['tenant_id'])]
-class GuidedTourStepOverride
+class GuidedTourStepOverride implements SharedTenantRowsInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
