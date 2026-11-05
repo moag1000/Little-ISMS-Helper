@@ -73,6 +73,6 @@ dora_data_flow:
     message:
         no_flows: "No data flows recorded yet."
     success:
-        created: "Data flow created successfully."
-        updated: "Data flow updated successfully."
-        deleted: "Data flow deleted successfully."
+        created: Data flow created.
+        updated: Data flow updated.
+        deleted: Data flow deleted.

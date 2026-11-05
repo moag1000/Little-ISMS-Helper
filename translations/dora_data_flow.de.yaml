@@ -73,6 +73,6 @@ dora_data_flow:
     message:
         no_flows: "Noch keine Datenflüsse erfasst."
     success:
-        created: "Datenfluss wurde erfolgreich angelegt."
+        created: Datenfluss angelegt.
         updated: "Datenfluss wurde aktualisiert."
         deleted: "Datenfluss wurde gelöscht."

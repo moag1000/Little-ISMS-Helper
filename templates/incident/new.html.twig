@@ -5,7 +5,7 @@
 {% import '_components/_fa_owner_picker.html.twig' as _fa_owner_picker %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
-{% block title %}{{ 'incident.new'|trans({}, 'incident') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'incident.new'|trans({}, 'incident') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -22,7 +22,6 @@
 
             {{ _fa_page_header.render({
     title: ('incident.new'|trans({}, 'incident')),
-    badge: { icon: 'plus', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_incident_index'), variant: 'ghost', icon: 'util-arrow-left' }
     ]

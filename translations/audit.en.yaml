@@ -4,9 +4,9 @@ audit_log:
     showing_recent: 'Showing the latest %count% entries'
 audit:
     success:
-        created: 'Audit created successfully.'
-        updated: 'Audit updated successfully.'
-        deleted: 'Audit deleted successfully.'
+        created: Audit created.
+        updated: Audit updated.
+        deleted: Audit deleted.
     edit: Edit
     conclusion: 'Conclusion'
     iso_27001_requirement: 'ISO 27001: Internal Audit (Clause 9.2)'

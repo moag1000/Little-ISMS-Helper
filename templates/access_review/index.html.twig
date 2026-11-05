@@ -7,7 +7,7 @@
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
-{% block title %}{{ 'access_review.title'|trans({}, 'access_review') }} – {{ parent() }}{% endblock %}
+{% block title %}{{ 'access_review.title'|trans({}, 'access_review') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -17,7 +17,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge:   { icon: 'nav-shield', label: 'access_review.badge'|trans({}, 'access_review') },
     title:   'access_review.title'|trans({}, 'access_review'),
     subtitle: 'access_review.subtitle'|trans({}, 'access_review'),
     actions: [
@@ -38,7 +37,7 @@
     </div>
 </div>
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-2">
 
 {% if campaigns|length == 0 %}

@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-{% block title %}{{ 'soa.no_tenant.title'|trans({}, 'soa') }} — Little ISMS Helper{% endblock %}
+{% block title %}{{ 'soa.no_tenant.title'|trans({}, 'soa') }}{% endblock %}
 
 {% block body %}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -13,12 +13,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-check', label: 'nav.soa'|trans({}, 'nav') },
         title: 'soa.no_tenant.title'|trans({}, 'soa'),
         subtitle: 'soa.no_tenant.subtitle'|trans({}, 'soa')
     }) }}
 
-    <main class="fa-aurora-surface mt-4">
+    <main class="mt-4">
         {{ _fa_empty_state.render({
             mood: 'warning',
             title: 'soa.no_tenant.title'|trans({}, 'soa'),

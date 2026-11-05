@@ -25,7 +25,7 @@ privacy:
         review_and_approve: 'Vorfall prüfen und Meldung genehmigen'
         compliance_note: 'Compliance-Hinweis'
         compliance_text: 'Eine verspätete Meldung kann zu erheblichen Bußgeldern (bis zu 10 Mio. EUR oder 2% des Jahresumsatzes) und rechtlichen Konsequenzen führen. Die rechtzeitige Meldung ist zwingend erforderlich.'
-        urgent_automated: 'DRINGENDE automatisierte Benachrichtigung - Sofortiges Handeln erforderlich!'
+        urgent_automated: DRINGENDE automatisierte Benachrichtigung - Sofortiges Handeln erforderlich.
         footer_reference: 'DSGVO Art. 33 & 34 | BDSG § 42 | ISO 27001 A.16.1.6'
         show:
             page_title: 'Datenschutzverletzung - %ref%'
@@ -265,7 +265,7 @@ privacy:
         step4_title: 'Ergebnis & Empfehlung'
         risk_level_label: 'Risikostufe'
         gdpr_article_33_requirement: 'DSGVO Art. 33 Meldepflicht'
-        deadline_warning: '72-Stunden-Frist läuft!'
+        deadline_warning: 72-Stunden-Frist läuft.
         deadline_date: 'Meldefrist (72h ab jetzt)'
         recommendation_label: 'Empfehlung'
         legal_references: 'Rechtsgrundlagen'
@@ -406,7 +406,7 @@ processing_activity:
         third_country: 'Drittland'
         dpia_required: 'DSFA erforderlich'
     empty:
-        title: 'Keine Verarbeitungstätigkeiten gefunden.'
+        title: Keine Verarbeitungstätigkeiten vorhanden.
         description: 'Ein Verzeichnis von Verarbeitungstätigkeiten (VVT) dokumentiert, welche personenbezogenen Daten Sie verarbeiten, warum und wie. Es ist Pflicht nach DSGVO Art. 30.'
         filter_hint: 'Versuchen Sie einen anderen Filter oder'
         create_hint: 'Beginnen Sie mit dem'
@@ -575,7 +575,6 @@ processing_activity:
     help:
         status_readonly: 'Status wird über den Lebenszyklus gesteuert (Entwurf → in Prüfung → freigegeben → veröffentlicht → archiviert), nicht direkt im Formular.'
         name: 'Name/Bezeichnung der Verarbeitungstätigkeit (z.B. "Kundenverwaltung", "Lohnbuchhaltung")'
-        description: 'Detaillierte Beschreibung der Verarbeitungstätigkeit'
         purposes: 'Zweck(e) der Verarbeitung (Art. 30(1)(a))'
         data_subject_categories: 'Kategorien betroffener Personen (Art. 30(1)(b))'
         estimated_data_subjects_count: 'Ungefähre Anzahl der betroffenen Personen'
@@ -617,9 +616,6 @@ processing_activity:
         processor_client_controller: 'Identität (und ggf. DSB) des/der Verantwortlichen, in dessen Auftrag verarbeitet wird (Art. 30(2)(a)).'
         joint_controller_details_json: 'Gemeinsam Verantwortliche mit Kontakt, Aufgabenverteilung gem. Art. 26(1) und Verweis auf die Vereinbarung. Die wesentlichen Inhalte sind den Betroffenen zugänglich zu machen (Art. 26(2)).'
         is_high_risk: 'Gilt dies als Hochrisiko-Verarbeitung?'
-        dpia_completed: 'Wurde eine Datenschutz-Folgenabschätzung (DSFA) durchgeführt?'
-        dpia_date: 'Datum der DSFA-Fertigstellung'
-        risk_level: 'Gesamtbewertung der Risikostufe'
         has_automated_decision_making: 'Beinhaltet dies automatisierte Entscheidungsfindung/Profiling (Art. 22)?'
         automated_decision_making_details: 'Erläutern Sie Logik und Bedeutung der automatisierten Entscheidungsfindung'
         data_sources: 'Woher werden die Daten erhoben?'
@@ -839,7 +835,7 @@ data_breach:
             pending_authority: 'Noch %hours% Stunden bis zur 72-Stunden-Frist.'
             pending_subject: 'Benachrichtigung der betroffenen Personen erforderlich (Art. 34).'
             incomplete: 'Datenpannen-Dokumentation unvollständig.'
-        empty_state: '<strong>Alle Aktionen erledigt!</strong> Keine ausstehenden Meldungen oder überfälligen Fristen.'
+        empty_state: '<strong>Alle Aktionen erledigt.</strong> Keine ausstehenden Meldungen oder überfälligen Fristen.'
         stats_status_title: 'Statistik nach Status'
         status:
             draft: 'Entwurf'
@@ -871,8 +867,8 @@ data_breach:
         authority_notification_recorded: 'Meldung an die Aufsichtsbehörde dokumentiert.'
         subject_notification_recorded: 'Benachrichtigung der betroffenen Personen dokumentiert.'
         exemption_recorded: 'Ausnahme von der Benachrichtigungspflicht dokumentiert.'
-        closed: 'Datenschutzverletzung erfolgreich geschlossen.'
-        reopened: 'Datenschutzverletzung erfolgreich wiedereröffnet.'
+        closed: Datenschutzverletzung geschlossen.
+        reopened: Datenschutzverletzung wiedereröffnet.
     error:
         cannot_edit_in_status: 'Datenschutzverletzung kann im aktuellen Status nicht bearbeitet werden.'
         invalid_csrf: 'Ungültiges CSRF-Token.'
@@ -955,7 +951,7 @@ data_breach:
         high: 'Hoch'
         critical: 'Kritisch'
     tooltip:
-        affected_data_subjects: '<strong>👥 Anzahl betroffener Personen</strong><br><em>Frage: Wie viele Personen sind von der Datenschutzverletzung betroffen?</em><br><br>Schätzen Sie die Anzahl der betroffenen Personen:<br>• Genau, wenn bekannt<br>• Obergrenze bei Unsicherheit<br><br><em>Wichtig für Art. 33 DSGVO: Ab ~1.000 Personen wird die Aufsichtsbehörde genauer hinschauen!</em>'
+        affected_data_subjects: '<strong>👥 Anzahl betroffener Personen</strong><br><em>Frage: Wie viele Personen sind von der Datenschutzverletzung betroffen?</em><br><br>Schätzen Sie die Anzahl der betroffenen Personen:<br>• Genau, wenn bekannt<br>• Obergrenze bei Unsicherheit<br><br><em>Wichtig für Art. 33 DSGVO: Ab ~1.000 Personen wird die Aufsichtsbehörde genauer hinschauen.</em>'
         severity: '<strong>⚠️ Schweregrad der Verletzung</strong><br><em>Frage: Wie schwerwiegend ist diese Datenschutzverletzung?</em><br><br><strong>Niedrig</strong> = Geringe Auswirkung auf Betroffene<br><strong>Mittel</strong> = Mögliche Unannehmlichkeiten<br><strong>Hoch</strong> = Erhebliche Schäden möglich<br><strong>Kritisch</strong> = Schwerwiegende Schäden zu erwarten<br><br><em>Tipp: Bei besonderen Kategorien (Gesundheit, Religion) mindestens "Hoch"</em>'
         risk_level: '<strong>🎯 Risikostufe für Betroffene</strong><br><em>Frage: Welches Risiko besteht für die Rechte und Freiheiten der Betroffenen?</em><br><br>Bewerten Sie das Risiko basierend auf:<br>• Art der Daten (sensibel?)<br>• Menge der Betroffenen<br>• Mögliche Folgen (Identitätsdiebstahl?)<br><br><em>Ab "Hoch" → Meldung an Aufsichtsbehörde erforderlich (Art. 33)</em>'
     data_categories:
@@ -1077,7 +1073,7 @@ data_breach:
         step4_title: 'Ergebnis & Empfehlung'
         risk_level_label: 'Risikolevel'
         gdpr_article_33_requirement: 'DSGVO Art. 33 Meldepflicht'
-        deadline_warning: '72-Stunden-Frist läuft!'
+        deadline_warning: 72-Stunden-Frist läuft.
         deadline_date: 'Meldefrist (72h ab jetzt)'
         recommendation_label: 'Empfehlung'
         legal_references: 'Rechtsgrundlagen'
@@ -1103,7 +1099,7 @@ data_breach:
         step_of: 'von'
         new_title: 'Datenpanne erfassen'
         new_subtitle: 'DSGVO Art. 33 · Frist 72h ab Kenntnisnahme'
-        title_72h_warning: '72-Stunden-Meldefrist läuft!'
+        title_72h_warning: 72-Stunden-Meldefrist läuft.
         subtitle_72h_warning: 'Meldung an die Aufsichtsbehörde gemäß DSGVO Art. 33 muss innerhalb von 72 Stunden nach Kenntnisnahme erfolgen.'
         step:
             detection: 'Erkennung'
@@ -1148,7 +1144,7 @@ dpia:
         awaiting_dpo: 'Warten auf DSB-Konsultation (%count%)'
         requires_supervisory: 'Erfordert Aufsichtsbehörden-Konsultation (%count%)'
         due_for_review_section: 'Überprüfung fällig (%count%)'
-        no_action_items: 'Keine Handlungsbedarfe - alles konform!'
+        no_action_items: Keine Handlungsbedarfe.
         statistics: 'Statistiken'
         residual_risk_distribution: 'Restrisiko-Verteilung'
         compliance: 'Compliance'
@@ -1261,7 +1257,6 @@ dpia:
         processing_purposes: 'Zwecke der Verarbeitung (Art. 35(7)(a))'
         data_categories: 'Kategorien der verarbeiteten personenbezogenen Daten (Art. 35(7)(a))'
         data_subject_categories: 'Kategorien der betroffenen Personen (Art. 35(7)(a))'
-        estimated_data_subjects: 'Geschätzte Anzahl betroffener Personen'
         data_retention_period: 'Wie lange werden die Daten aufbewahrt?'
         data_flow_description: 'Beschreibung der Datenflüsse (Erhebung, Speicherung, Verarbeitung, Weitergabe, Löschung)'
         necessity_assessment: 'Warum ist diese Verarbeitung notwendig? (Art. 35(7)(b))'
@@ -1270,20 +1265,15 @@ dpia:
         legislative_compliance: 'Einhaltung anderer Rechtsvorschriften (z.B. NIS2, branchenspezifische Gesetze)'
         risk_level: 'Gesamtrisikostufe für Rechte und Freiheiten (Art. 35(7)(c))'
         likelihood: 'Wahrscheinlichkeit des Risikoeintritts'
-        impact: 'Auswirkung bei Risikoeintritt'
         data_subject_risks: 'Spezifische Risiken für betroffene Personen (z.B. Diskriminierung, Identitätsdiebstahl, finanzielle Verluste)'
         technical_measures: 'Technische Maßnahmen zur Risikominderung (Art. 32 DSGVO)'
         organizational_measures: 'Organisatorische Maßnahmen zur Risikominderung (Art. 32 DSGVO)'
         implemented_controls: 'Implementierte ISO 27001 Kontrollen'
         compliance_measures: 'Maßnahmen zum Nachweis der Compliance (Art. 24 DSGVO - Rechenschaftspflicht)'
         residual_risk_assessment: 'Bewertung des Restrisikos nach Umsetzung der Maßnahmen'
-        residual_risk_level: 'Restrisikostufe nach Risikominderung'
         data_protection_officer: 'Datenschutzbeauftragter (Art. 35(2))'
-        dpo_consultation_date: 'Datum der DSB-Konsultation'
         dpo_advice: 'Stellungnahme/Feedback des DSB'
         data_subjects_consulted: 'Wurden betroffene Personen konsultiert? (Art. 35(9) - soweit angemessen)'
-        data_subject_consultation_details: 'Details zur Konsultation betroffener Personen'
-        requires_supervisory_consultation: 'Ist eine vorherige Konsultation der Aufsichtsbehörde erforderlich? (Art. 36)'
         supervisory_consultation_date: 'Datum der Konsultation der Aufsichtsbehörde'
         supervisory_authority_feedback: 'Rückmeldung/Entscheidung der Aufsichtsbehörde'
         conductor: 'Für die Durchführung der DSFA verantwortliche Person'
@@ -1685,6 +1675,6 @@ dpa.generate.third_country_active: 'Ja — Drittlandklausel wird eingefügt'
 dpa.generate.help_title: 'Was ist ein AVV?'
 dpa.generate.help_body: 'Auftragsverarbeitungsvertrag — Pflicht mit jedem Dienstleister, der personenbezogene Daten in Ihrem Auftrag verarbeitet (DSGVO Art. 28).'
 dpa.generate.action.generate: 'AVV generieren'
-dpa.generate.flash.success: 'AVV erfolgreich generiert. Bitte prüfen und unterzeichnen Sie den Entwurf.'
+dpa.generate.flash.success: AVV generiert. Bitte prüfen und unterzeichnen Sie den Entwurf.
 dpa.list.generate_avv: 'AVV generieren'
 dpa.list.generate_avv_hint: 'Auftragsverarbeitungsvertrag — Pflicht mit jedem Dienstleister der personenbezogene Daten in deinem Auftrag verarbeitet, DSGVO Art. 28'

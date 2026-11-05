@@ -2,7 +2,7 @@
 {% trans_default_domain 'threat' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
-{% block title %}{{ 'threat.title.index'|trans({}, 'threat') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'threat.title.index'|trans({}, 'threat') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -14,7 +14,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-shield-alert', label: 'threat.title.index'|trans({}, 'threat') },
     title: 'threat.title.index'|trans({}, 'threat'),
     subtitle: 'threat.subtitle.index'|trans({}, 'threat'),
     actions: [
@@ -22,7 +21,7 @@
     ]
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 
 {# KPI Cards #}
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">

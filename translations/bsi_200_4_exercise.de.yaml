@@ -43,9 +43,9 @@ bsi_200_4_exercise:
         improvement_actions: Verbesserungsmaßnahmen
 
     action:
-        created: 'BSI-200-4 Übungs-Logbuch erfolgreich erstellt.'
+        created: BSI-200-4 Übungs-Logbuch erstellt.
         saved: 'Übungs-Logbuch gespeichert.'
-        submitted: 'Übungs-Logbuch erfolgreich eingereicht.'
+        submitted: Übungs-Logbuch eingereicht.
         confirmed: 'Übungs-Logbuch durch Auditor bestätigt.'
 
     error:

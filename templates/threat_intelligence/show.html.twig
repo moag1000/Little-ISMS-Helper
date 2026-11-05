@@ -34,7 +34,6 @@
     {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_threat_intelligence_index') }]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-shield-alert', label: 'threat.title.index'|trans({}, 'threat') },
         title: threat.title,
         actions: _show_actions
     }) }}

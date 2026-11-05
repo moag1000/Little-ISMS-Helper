@@ -42,7 +42,7 @@ dashboard:
   quick_access: Schnellzugriff
   next_steps: Nächste Schritte
   success:
-    settings_imported: Dashboard-Einstellungen erfolgreich importiert!
+    settings_imported: Dashboard-Einstellungen importiert.
   error:
     import_failed: Fehler beim Importieren der Einstellungen. Bitte überprüfen Sie
   overdue_reviews:
@@ -86,14 +86,14 @@ dashboard:
       due: Fällig
       test_overdue: Test überfällig
       review_overdue: Prüfung überfällig
-      breach_alert: '%count% Datenschutzverletzung(en) mit 72h-Frist!'
+      breach_alert: '%count% Datenschutzverletzung(en) mit 72h-Frist.'
       breach_alert_desc: DSGVO Art. 33 erfordert Meldung an die Aufsichtsbehörde innerhalb
         von 72 Stunden.
       view_breaches: Datenschutzverletzungen anzeigen
-      breach_overdue: '%hours%h überfällig - sofortige Meldung erforderlich!'
+      breach_overdue: '%hours%h überfällig - sofortige Meldung erforderlich.'
       breach_remaining: '%hours%h verbleibend bis zur Meldepflicht'
       more_items: '%count% weitere Einträge...'
-      all_good: Alles aktuell!
+      all_good: Alles aktuell.
       all_good_desc: Keine überfälligen Prüfungen. Ihr ISMS ist auf dem neuesten Stand.
       manage: Verwalten
   management_kpis:
@@ -224,7 +224,7 @@ dashboard:
     documents_without_owner: Ohne Eigentümer
   my_tasks:
     title: Meine Aufgaben heute
-    all_done: Keine Aufgaben — alles erledigt!
+    all_done: Keine Aufgaben — alles erledigt.
     type_treatment_plan: Behandlungsplan
     type_workflow: Lifecycle-Freigabe
     type_risk_review: Risikobewertung

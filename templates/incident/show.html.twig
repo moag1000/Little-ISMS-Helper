@@ -29,7 +29,6 @@
     {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'incident.action.back_to_list'|trans({}, 'incident'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_incident_index') }]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'status-critical', label: 'nav.incidents'|trans({}, 'nav') },
         title: incident.title,
         actions: _show_actions
     }) }}

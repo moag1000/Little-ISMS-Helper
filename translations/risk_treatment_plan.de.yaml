@@ -65,7 +65,7 @@ risk_treatment_plan:
         medium: Mittel
         low: Niedrig
     message:
-        no_plans: 'Keine Behandlungspläne gefunden.'
+        no_plans: Keine Behandlungspläne vorhanden.
     delete:
         warning: 'Diese Aktion kann nicht rückgängig gemacht werden. Möchten Sie den Behandlungsplan wirklich löschen?'
         confirm: 'Sind Sie sicher, dass Sie diesen Behandlungsplan löschen möchten?'

@@ -25,12 +25,12 @@ setup:
             admin: 'Alva is creating the admin user — one moment please.'
             frameworks: 'Alva is setting up compliance frameworks — this may take a few seconds.'
         success:
-            base_data: 'Master data imported successfully.'
+            base_data: Master data imported.
 
     # Index/Landing Page
     already_complete:
         title: 'Setup Already Complete'
-        description: 'The Little ISMS Helper setup has already been completed successfully. You can now start working with the application.'
+        description: Setup is complete. You can now start working with the application.
     go_to_dashboard: 'Go to Dashboard'
     manage_modules: 'Manage Modules'
     reset_development: 'Reset Setup (Development Only)'
@@ -85,7 +85,7 @@ setup:
     welcome:
         title: 'Welcome - Deployment Wizard'
         header: 'Welcome to the Deployment Wizard'
-        greeting: 'Welcome!'
+        greeting: Welcome
         description: 'This wizard will guide you through setting up your Little ISMS Helper.'
         start_button: 'Start Setup'
         info:
@@ -146,7 +146,7 @@ setup:
         title: 'Step 2: Database - Deployment Wizard'
         header: 'Step 2: Configure Database'
         description: 'Enter your database connection details.'
-        schema_created: 'Database schema created successfully'
+        schema_created: Database schema created
         type: 'Database Type'
         host: 'Host'
         port: 'Port'
@@ -159,7 +159,7 @@ setup:
         version_detected: 'Detected: %version%'
         test_button: 'Test Connection'
         test:
-            success: 'Connection successful!'
+            success: Connection established
             failed: 'Connection failed:'
             create_needed: 'Database does not exist and will be created.'
         info:
@@ -180,11 +180,11 @@ setup:
         info:
             title: 'Backup vs. New Installation'
             restore: 'Restore Backup:'
-            restore_desc: 'If you want to migrate an existing installation, upload your backup here. All following steps will be skipped!'
+            restore_desc: 'If you want to migrate an existing installation, upload your backup here. All following steps will be skipped.'
             new_install: 'New Installation:'
             new_install_desc: 'Click "Skip" to create a fresh installation and go through all setup steps.'
         restore_result:
-            success: 'Backup successfully restored!'
+            success: Backup restored.
             created: 'created'
             updated: 'updated'
             entries: 'entries'
@@ -218,9 +218,9 @@ setup:
             submit: 'Create Database Schema Now'
         restore:
             title: 'Option 1: Restore Backup'
-            schema_success: 'Database schema successfully created!'
+            schema_success: Database schema created.
             schema_success_msg: 'You can now upload a backup.'
-            description: 'Do you have a backup from another installation? Upload it here. After successful restoration, the setup will be automatically completed.'
+            description: 'Do you have a backup from another installation? Upload it here. After restoration, setup completes automatically.'
             file_label: 'Select Backup File'
             file_formats: 'Allowed formats: .json, .json.gz'
             clear_before: 'Delete all existing data before restoration (recommended)'
@@ -263,7 +263,7 @@ setup:
             description: 'After creating the administrator account, you can select modules and import base data.'
         creation_failed: 'User could not be created'
         migration_failed: 'Database migration failed'
-        user_created: 'Administrator account created successfully'
+        user_created: Administrator account created
 
     # Step 5: Email Configuration
     email:
@@ -373,7 +373,7 @@ setup:
         command: 'Command'
         modules: 'Modules'
         success:
-            master_data_imported: 'Master data imported successfully.'
+            master_data_imported: Master data imported.
     can_delete_later: 'Data can be deleted later.'
 
     # Step 10: Sample Data
@@ -426,8 +426,8 @@ setup:
     # Step 11: Complete
     complete:
         title: 'Setup Complete - Deployment Wizard'
-        system_ready: 'Your Little ISMS Helper is ready to use!'
-        all_components_ready: 'All components have been successfully configured.'
+        system_ready: Your Little ISMS Helper is ready to use.
+        all_components_ready: All components configured.
         progress_title: 'Setup Progress'
         step_of: 'Step %current% of %total%'
         configure_context: 'Configure Context'
@@ -509,5 +509,5 @@ setup:
             nist_csf: 'US framework — primarily relevant for US federal contract suppliers or international reports.'
             cis_controls: 'Implementation-Group-based operationalization aid — good tooling, no formal requirement.'
 
-setup.alva.success.restore: 'Restore completed successfully.'
-setup.alva.success.sample_data: 'Sample data created successfully.'
+setup.alva.success.restore: Restore completed.
+setup.alva.success.sample_data: Sample data created.

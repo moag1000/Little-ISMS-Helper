@@ -205,6 +205,22 @@ String nennt.
 
 ---
 
+### quality/check_copy_slop.py (Gate 71)
+
+**Zweck:** UI-Texte ohne Füllstoff (Copy-Regeln in CLAUDE.md, Abschnitt
+„UI copy“). Prüft jeden Wert in `translations/*.{de,en}.yaml` auf
+„erfolgreich“ / „successful(ly)“, Ausrufezeichen und Füllwörter („nahtlos“,
+„seamlessly“ …) sowie jeden `{% block title %}` auf einen hart kodierten
+App-Namen (der Suffix steht einmal in `base.html.twig`).
+
+**Baseline:** `scripts/quality/baselines/copy_slop.txt`, Einträge
+`<datei>::<key>  # Grund` bzw. `<template>  # Grund`. Schlüsselbasiert, also
+unabhängig von Zeilenverschiebungen.
+
+**CI-Integration:** Gate 71 im `code-quality`-Job.
+
+---
+
 ### quality/check_entity_manager_reset.py (Gate 68)
 
 **Zweck:** Ein geschlossener EntityManager wird ausschließlich über

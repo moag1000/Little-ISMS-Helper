@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'management_reports' %}
 
-{% block title %}{{ 'management_reports.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'management_reports.title'|trans({}, 'management_reports') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-bar-chart', label: 'nav.reports'|trans({}, 'nav') },
         title: 'management_reports.title'|trans({}, 'management_reports'),
         subtitle: 'management_reports.subtitle'|trans({}, 'management_reports')
     }) }}

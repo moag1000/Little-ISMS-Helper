@@ -12,7 +12,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: module.icon, label: 'admin.modules.badge_single'|trans({}, 'admin') },
         title: module_name(module_key, module.name),
         subtitle: module_description(module_key, module.description),
         actions: [

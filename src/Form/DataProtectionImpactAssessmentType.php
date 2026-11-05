@@ -95,7 +95,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('dataSubjectCategories', ChoiceType::class, [
                 'label' => 'dpia.form.data_subject_categories',
-                'help' => 'dpia.form.data_subject_categories',
                 'choices' => [
                     'privacy.data_subject.customers' => 'customers',
                     'privacy.data_subject.employees' => 'employees',
@@ -116,7 +115,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('estimatedDataSubjects', IntegerType::class, [
                 'label' => 'dpia.form.estimated_data_subjects',
-                'help' => 'dpia.help.estimated_data_subjects',
                 'required' => false,
             ])
             ->add('dataRetentionPeriod', TextareaType::class, [
@@ -202,7 +200,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('impact', ChoiceType::class, [
                 'label' => 'dpia.form.impact',
-                'help' => 'dpia.help.impact',
                 'choices' => [
                     'privacy.impact.negligible' => 'negligible',
                     'privacy.impact.minor' => 'minor',
@@ -259,7 +256,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('residualRiskLevel', ChoiceType::class, [
                 'label' => 'dpia.form.residual_risk_level',
-                'help' => 'dpia.help.residual_risk_level',
                 'choices' => [
                     'privacy.risk_level.low' => 'low',
                     'privacy.risk_level.medium' => 'medium',
@@ -313,7 +309,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('dpoConsultationDate', DateType::class, [
                 'label' => 'dpia.form.dpo_consultation_date',
-                'help' => 'dpia.help.dpo_consultation_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
@@ -336,7 +331,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             ])
             ->add('dataSubjectConsultationDetails', TextareaType::class, [
                 'label' => 'dpia.form.data_subject_consultation_details',
-                'help' => 'dpia.help.data_subject_consultation_details',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -346,7 +340,6 @@ final class DataProtectionImpactAssessmentType extends AbstractType implements S
             // ============================================================================
             ->add('requiresSupervisoryConsultation', ChoiceType::class, [
                 'label' => 'dpia.form.requires_supervisory_consultation',
-                'help' => 'dpia.help.requires_supervisory_consultation',
                 'choices' => [
                     'common.no' => false,
                     'privacy.supervisory_consultation.yes_high_risk' => true,

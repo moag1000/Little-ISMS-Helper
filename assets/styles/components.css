@@ -560,11 +560,9 @@
 @keyframes sla-pulse {
     0%, 100% {
         opacity: 1;
-        box-shadow: 0 0 10px var(--danger-glow);
     }
     50% {
         opacity: 0.8;
-        box-shadow: 0 0 20px var(--danger-glow);
     }
 }
 

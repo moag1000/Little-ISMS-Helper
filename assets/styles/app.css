@@ -197,9 +197,7 @@ body {
 /* Container glow - subtle shimmer effect */
 .fairy-magic-glow {
     position: relative;
-    box-shadow:
-        inset 0 0 0 1px var(--accent-tint),
-        0 0 20px var(--accent-tint);
+    box-shadow: inset 0 0 0 1px var(--accent-tint); /* Kanon: kein Ruhe-Glow */
     border-radius: var(--r-md);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -339,9 +337,7 @@ body {
 }
 
 [data-theme="dark"] .fairy-magic-glow {
-    box-shadow:
-        inset 0 0 0 1px var(--accent-tint),
-        0 0 25px var(--accent-glow);
+    box-shadow: inset 0 0 0 1px var(--accent-tint);
 }
 
 /* Animations - Smooth and subtle */

@@ -1,7 +1,7 @@
 location:
     title: Locations
     description:
-        overview: 'Overview of locations, buildings and rooms'
+        overview: 'Maintain locations, buildings and rooms'
     action:
         create: 'Create location'
         view_details: 'View details'

@@ -283,7 +283,6 @@ incident:
       23)
     cross_border_impact: Does the incident have impact on other EU member states?
     affected_users_count: Estimated number of affected users/customers
-    estimated_financial_impact: Estimated financial damage in EUR
     national_authority: Competent national authority (e.g. BSI in Germany)
     data_breach_occurred: 'When checked, you should also report a data breach under Privacy/GDPR → Data Breaches. This does NOT auto-create a breach record — you must report it separately.'
     resolution_after_investigation: Typically filled in only after the investigation
@@ -301,7 +300,7 @@ incident:
     critical_services_affected: 'Critical or important functions/services impacted (DORA Art. 19(1)(e)).'
     clients_affected_financial_volume: 'Total transaction or contract volume of affected clients in EUR (DORA Art. 19).'
     replication_of_impact: 'Was a service replica or failover activated to limit impact?'
-    initial_report_submitted_at: 'DORA 4-hour initial report (≠ NIS2 24h!): timestamp of submission to the competent authority (Art. 19(4)(a)).'
+    initial_report_submitted_at: 'DORA 4-hour initial report (≠ NIS2 24h): timestamp of submission to the competent authority (Art. 19(4)(a)).'
     data_recovery_strategy: 'Strategy for restoring data and services; cross-reference to the BCM continuity plan (DORA Art. 11(2)).'
     owner_legacy: 'Legacy free-text field — kept only for migrated data. Please select a user or person above.'
     initial_report_submitted_at_dora: 'Time the initial notification was submitted to the competent authority. DORA Art. 19 with RTS: no later than 4 hours after classification as major and 24 hours after becoming aware.'
@@ -404,7 +403,7 @@ incident:
     add_link: 'Link Risk'
     submit: 'Link'
     empty: 'No risks are linked to this incident yet.'
-    risk_linked: 'Risk linked successfully.'
+    risk_linked: Risk linked.
     risk_unlinked: 'Risk link removed.'
     csrf_invalid: 'Security token invalid — please reload the page and try again.'
     risk_not_found: 'Risk not found.'

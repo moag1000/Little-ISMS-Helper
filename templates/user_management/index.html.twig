@@ -14,7 +14,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-people', label: 'nav.users'|trans({}, 'nav') },
     title: 'user.page.title'|trans({}, 'user'),
     actions: [
         { label: 'user.action.export_csv'|trans({}, 'user'), variant: 'ghost', icon: 'nav-download', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#userExportModal' } },
@@ -43,7 +42,7 @@
 </div>
 </div>
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid">
 
     {# Notifications Container #}

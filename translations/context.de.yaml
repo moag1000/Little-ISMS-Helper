@@ -131,7 +131,7 @@ context:
         view_all_objectives: 'Alle %count% Ziele anzeigen'
         manage_objectives: 'Ziele verwalten'
     message:
-        overdue_review_title: 'Context Review überfällig!'
+        overdue_review_title: Context Review überfällig
         overdue_review_text: 'Das nächste Review war geplant für %date% (vor %days% Tagen). Bitte aktualisieren Sie den ISMS‑Kontext.'
         upcoming_review_title: 'Context Review bald fällig'
         upcoming_review_text: 'Das nächste Review ist geplant für %date% (in %days% Tagen).'

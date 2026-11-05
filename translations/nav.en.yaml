@@ -239,7 +239,7 @@ nav:
             dpo_dashboard: 'Data breaches (Art. 33), DPIA status (Art. 35), processing register'
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
-            mapping_hub: 'Central entry: wizard, seeds, quality, transitive coverage'
+            mapping_hub: 'Entry point: wizard, seeds, quality, transitive coverage'
             mapping_quality: 'Cross-framework mapping quality analysis'
             mapping_tour: 'Guided tour: mapping, inheritance, coverage & quality in 6 steps'
             mris_kpis: 'Mythos-relevant KPIs (MRIS v1.5 Ch. 10.6)'

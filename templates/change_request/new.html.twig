@@ -2,7 +2,7 @@
 {% trans_default_domain 'change_requests' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'change_request.new'|trans({}, 'change_requests') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'change_request.new'|trans({}, 'change_requests') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -21,7 +21,6 @@
 
             {{ _fa_page_header.render({
     title: ('change_request.page.new'|trans({}, 'change_requests')),
-    badge: { icon: 'plus', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_change_request_index'), variant: 'ghost', icon: 'util-arrow-left' }
     ]

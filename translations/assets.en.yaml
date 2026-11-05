@@ -12,5 +12,5 @@ asset:
     message:
         inherited_asset: 'Inherited Asset'
     bulk_delete:
-        success: '%count% asset(s) deleted successfully.'
+        success: '%count% asset(s) deleted.'
         no_items: 'No assets were deleted.'

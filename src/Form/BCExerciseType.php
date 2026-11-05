@@ -79,7 +79,6 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
             ])
             ->add('exerciseDate', DateType::class, [
                 'label' => 'bc_exercises.field.exercise_date',
-                'help' => 'bc_exercises.help.exercise_date',
                 'widget' => 'single_text',
                 'required' => true,
             ])

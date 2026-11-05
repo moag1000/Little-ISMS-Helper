@@ -2,15 +2,14 @@
 {% trans_default_domain 'admin' %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
-{% block title %}{{ 'industry_preset.title'|trans }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'industry_preset.title'|trans }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
-<main class="fa-aurora-surface">
+<main>
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-collection', label: 'industry_preset.badge'|trans },
         title:    'industry_preset.title'|trans,
         subtitle: 'industry_preset.subtitle'|trans,
         actions: [

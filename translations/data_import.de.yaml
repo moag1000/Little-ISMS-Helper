@@ -112,7 +112,7 @@ import:
 
     success:
         dispatched: 'Der Import wurde gestartet und läuft im Hintergrund.'
-        committed: 'Import erfolgreich abgeschlossen.'
+        committed: Import abgeschlossen.
 
     commit:
         heading: 'Import wird ausgeführt'
@@ -123,7 +123,7 @@ import:
         failed_heading: 'Import fehlgeschlagen'
         failed_body: 'Der Import wurde mit einem Fehler abgebrochen. Bitte die Details unten prüfen.'
         completed_heading: 'Import abgeschlossen'
-        completed_body: 'Der Import wurde erfolgreich abgeschlossen.'
+        completed_body: Import abgeschlossen.
 
     error:
         upload_failed: 'Datei-Upload fehlgeschlagen: %message%'

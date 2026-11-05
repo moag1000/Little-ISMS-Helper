@@ -15,7 +15,6 @@
 
     {{ _fa_page_header.render({
         title: ('compliance.framework.edit.heading'|trans({}, 'compliance')) ~ ': ' ~ framework.name,
-        badge: { icon: 'ui-edit', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_compliance_framework_show', {id: framework.id}), variant: 'ghost', icon: 'util-arrow-left' }
         ]

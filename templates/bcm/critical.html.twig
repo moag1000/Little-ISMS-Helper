@@ -3,11 +3,10 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
-{% block title %}{{ 'bcm.title.critical'|trans({}, 'bcm') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'bcm.title.critical'|trans({}, 'bcm') }}{% endblock %}
 
 {% block body %}
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-bar-chart', label: 'nav.bcm'|trans({}, 'nav') },
     title: 'bcm.title.critical'|trans({}, 'bcm'),
     subtitle: 'bcm.description.critical'|trans({}, 'bcm'),
     actions: [

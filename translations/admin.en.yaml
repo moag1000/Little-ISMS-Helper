@@ -9,7 +9,7 @@ admin:
             invalid_csrf: 'Invalid CSRF token.'
     backup:
         success:
-            uploaded: 'Backup file uploaded successfully: %filename%'
+            uploaded: 'Backup file uploaded: %filename%'
         error:
             no_file_uploaded: 'No file uploaded.'
             invalid_file_format: 'Invalid file format. Only .json, .gz or .zip files are allowed.'
@@ -185,7 +185,7 @@ admin:
         annex_a_missing_fix: 'Load now'
     dashboard:
         title: 'Admin Dashboard'
-        subtitle: 'Central administration and system overview'
+        subtitle: 'Check users, settings and system health'
         alerts:
             title: 'System Alerts'
             item: item
@@ -238,7 +238,7 @@ admin:
         warning:
             report_not_found: 'License report not found. Please generate it using the button below.'
         success:
-            report_generated: 'License report generated successfully.'
+            report_generated: License report generated.
         error:
             report_generation_failed: 'License report generation failed.'
         no_report:
@@ -501,7 +501,7 @@ admin:
         entity_type: 'Entity Type'
         issue: Issue
         orphaned_entities: 'Orphaned Entities'
-        no_orphans: 'No orphaned entities found - all data properly assigned!'
+        no_orphans: No orphaned entities present. All data is assigned.
         orphans_found: 'Found entities without tenant assignment that need to be fixed'
         orphaned_assets: 'Orphaned Assets'
         orphaned_risks: 'Orphaned Risks'
@@ -513,17 +513,17 @@ admin:
         risks_only: 'Risks Only'
         incidents_only: 'Incidents Only'
         assign_orphans: 'Assign Orphans'
-        assigned_count: '%count% entities successfully assigned to %tenant%'
+        assigned_count: '%count% entities assigned to %tenant%'
         partial_assignment: 'Partial assignment completed — %count% entities assigned to %tenant%. The Entity Manager closed after an error; please reload to verify final state.'
         fix_all_orphans_confirm: 'Assign all %count% orphaned records to the only organisation? The job runs in the background.'
         bulk_confirm_hash_mismatch: 'Bulk assign aborted: orphan count changed since preview (expected %expected%). Reload the page and confirm again.'
-        fixed_mismatches: '%count% tenant mismatches successfully fixed'
+        fixed_mismatches: '%count% tenant mismatches fixed'
         reason_required: 'Organization-mismatch fix rejected: reason with at least %min% characters is mandatory (currently %actual%).'
         reason_label: 'Reason for tenant reassignment'
         reason_help: 'Minimum 20 characters. Stored in the audit log for every affected record.'
         tenant_not_found: 'Selected tenant not found'
         entity_not_found: 'Entity not found'
-        entity_reassigned: '%entity% successfully reassigned to %tenant%'
+        entity_reassigned: '%entity% reassigned to %tenant%'
         asset_not_found: 'Asset not found'
         orphaned_assets_list: 'Orphaned Assets List'
         orphaned_risks_list: 'Orphaned Risks List'
@@ -556,7 +556,7 @@ admin:
             run_migrations: 'Run migrations'
             run_reconcile: 'Run reconcile'
             show_sql: 'Show SQL'
-            migrations_applied: '%count% migration(s) executed successfully.'
+            migrations_applied: '%count% migration(s) executed.'
             migrations_failed: 'Migrations failed: %error%'
             reconcile_applied: 'Schema reconcile applied (%count% statements executed).'
             auto_marked_migrations: '%count% migration(s) auto-marked as executed.'
@@ -650,7 +650,7 @@ admin:
             confirm_quarantine: 'Really move %count% orphaned file(s) to quarantine? You can manually restore from var/quarantine/ if needed.'
             action_quarantine: 'Quarantine %count% file(s)'
             action_hint: 'Files are moved to var/quarantine/<date>/, never unlinked.'
-            quarantined: '%count% file(s) successfully moved to %dir%.'
+            quarantined: '%count% file(s) moved to %dir%.'
             nothing_to_quarantine: 'No files queued for quarantine.'
             quarantine_dir_failed: 'Quarantine directory could not be created: %dir%'
         cascade:
@@ -661,7 +661,7 @@ admin:
             more: 'more'
             confirm_cleanup: 'Really delete %count% dangling entries? This action is not reversible and is logged under one batch_id in the audit-log.'
             action_cleanup: 'Cleanup %count% dangling reference(s)'
-            cleaned: '%count% dangling reference(s) successfully cleaned up.'
+            cleaned: '%count% dangling reference(s) cleaned up.'
             category:
                 workflow_instances: 'Workflow instances (target missing)'
                 mfa_tokens: 'MFA tokens (expired, never used)'
@@ -1153,7 +1153,7 @@ admin:
     notification_preferences:
         title: 'Notification Preferences'
         subtitle: 'Configure tenant-level notification defaults and delivery settings.'
-        saved: 'Notification preferences saved successfully.'
+        saved: Notification preferences saved.
         csrf_invalid: 'Invalid security token. Please try again.'
         help_text: 'These settings define how and when notifications are delivered to users in this tenant. Individual users can override their own preferences in their profile.'
         digest_enabled:
@@ -1176,7 +1176,7 @@ admin:
     api_rate_limits:
         title: 'API Rate Limits'
         subtitle: 'Control the maximum number of API requests allowed per minute for this tenant.'
-        saved: 'API rate limit settings saved successfully.'
+        saved: API rate limit settings saved.
         csrf_invalid: 'Invalid security token. Please try again.'
         help_text: 'Rate limits protect the platform against abuse and ensure fair resource sharing. Set to 0 to disable rate limiting (not recommended in production).'
         rate_limit_per_minute:
@@ -1193,7 +1193,7 @@ admin:
     backups:
         title: 'Backup Settings'
         subtitle: 'Configure automated backup schedule and data retention.'
-        saved: 'Backup settings saved successfully.'
+        saved: Backup settings saved.
         csrf_invalid: 'Invalid security token. Please try again.'
         help_text: 'These settings control how long backup files are kept and whether automated backups run on a schedule. The "Run now" trigger and Messenger dispatch are coming in Wave 2.'
         settings_title: 'Backup Configuration'
@@ -1217,7 +1217,7 @@ admin:
     fiscal_year:
         title: 'Fiscal Year Configuration'
         subtitle: 'Set the financial year start month and reporting cadence for this tenant.'
-        saved: 'Fiscal year configuration saved successfully.'
+        saved: Fiscal year configuration saved.
         csrf_invalid: 'Invalid security token. Please try again.'
         help_text: 'The fiscal year start month controls how KPI dashboards, management reports, and compliance reviews are grouped. Changes take effect on the next report generation.'
         start_month:
@@ -1250,7 +1250,7 @@ admin:
     data_retention:
         title: 'Data Retention Policies'
         subtitle: 'Configure per-entity data retention periods and automatic deletion rules.'
-        saved: 'Data retention policies saved successfully.'
+        saved: Data retention policies saved.
         csrf_invalid: 'Invalid security token. Please try again.'
         gdpr_cap_applied: 'One or more retention values exceeded the GDPR maximum and were automatically capped.'
         warning:
@@ -1276,7 +1276,7 @@ admin:
     workflow_slas:
         title: 'Lifecycle SLA Defaults'
         subtitle: 'Set default SLA durations (hours) for each lifecycle event type.'
-        saved: 'Lifecycle SLA defaults saved successfully.'
+        saved: Lifecycle SLA defaults saved.
         csrf_invalid: 'Invalid security token. Please try again.'
         regulatory_minimum_enforced: 'One or more SLA values were below the regulatory minimum and were automatically adjusted.'
         help_text: 'These SLA defaults will be used by the Sprint-6b SlaDeadlineMonitor (Wave 2) to generate deadline warnings and escalations. Regulatory minimums (GDPR Art. 33, ISO 27035) cannot be undercut.'
@@ -1573,7 +1573,7 @@ admin:
         queued: "Job queued and will be processed shortly…"
         progress: "Progress"
         error: "Error"
-        completed: "Job completed successfully."
+        completed: Job completed.
         id_label: "Job ID"
         worker_hint: "The job is running in the background. This page auto-refreshes every 3 seconds."
         download: "Download file"
@@ -1717,7 +1717,7 @@ admin:
             description: 'Safe emergency drain: up to 5 messages within 25 seconds — stays under the PHP-FPM timeout. Click repeatedly for larger queues.'
             button: 'Process now'
             fineprint: 'CSRF-protected, audit-logged.'
-            success: 'Queue drain completed successfully (%duration% s).'
+            success: 'Queue drain completed (%duration% s).'
             partial: 'Worker exited with code %exit% after %duration% s. Check logs.'
             error: 'Queue drain failed to start: %error%'
         cron:
@@ -1996,7 +1996,7 @@ industry_preset:
         controls: 'Controls'
         documents: 'Documents'
     empty:
-        title: 'No presets found'
+        title: No presets available
         text: 'No YAML files in fixtures/library/presets/.'
     confirm:
         apply_full: 'Really apply preset? Modules + frameworks will be activated, controls and documents will be created.'

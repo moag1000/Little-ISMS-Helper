@@ -2,7 +2,7 @@
 {% trans_default_domain 'patches' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'patch.new'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'patch.new'|trans({}, 'patches') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,9 +14,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        title: 'patch.new'|trans({}, 'patches'),
-        badge: { icon: 'plus', label: '' }
-    }) }}
+        title: 'patch.new'|trans({}, 'patches')}) }}
 
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     {% include '_components/_auto_form.html.twig' with {

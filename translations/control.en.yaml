@@ -137,7 +137,7 @@ control:
     provider: Provider
     shared: Shared
   success:
-    updated: Control updated successfully
+    updated: Control updated
   flash:
     mapping_accepted: 'Mapping suggestion accepted — requirement %requirement% is now linked to this control.'
   mapping_suggestions:
@@ -257,6 +257,6 @@ effectiveness_monitor:
     action:
         view: 'View control'
     empty:
-        no_overdue: 'No overdue effectiveness checks — excellent!'
+        no_overdue: No overdue effectiveness checks.
         no_due_soon: 'No checks due within the next 30 days.'
         no_recent: 'No controls checked in the last 90 days.'

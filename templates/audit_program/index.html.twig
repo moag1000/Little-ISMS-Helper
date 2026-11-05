@@ -14,7 +14,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-clipboard-check', label: 'audit_program.page.title'|trans },
     title: 'audit_program.page.title'|trans,
     subtitle: 'audit_program.page.subtitle'|trans,
     actions: is_granted('ROLE_MANAGER') ? [
@@ -22,7 +21,7 @@
     ] : []
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
 
     {% set _total     = programs|length %}

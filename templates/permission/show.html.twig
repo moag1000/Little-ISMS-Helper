@@ -14,7 +14,6 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-shield-lock', label: 'admin.nav.permissions'|trans({}, 'admin') },
         title: permission.name,
         subtitle: 'permission.show'|trans({}, 'messages'),
         actions: [

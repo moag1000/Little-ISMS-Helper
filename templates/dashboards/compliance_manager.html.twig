@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'dashboards' %}
 
-{% block title %}{{ 'compliance_manager.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'compliance_manager.title'|trans }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -12,7 +12,6 @@
 {% block body %}
 <main class="fa-aurora-surface role-dashboard compliance-manager-dashboard">
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-clipboard-check', label: 'compliance_manager.badge'|trans },
         title:    'compliance_manager.title'|trans,
         subtitle: 'compliance_manager.subtitle'|trans,
         actions: [

@@ -3,7 +3,7 @@
 {% trans_default_domain 'reports' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'reports.page.title'|trans({}, 'reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'reports.page.title'|trans({}, 'reports') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-reports', label: '' },
         title: 'reports.page.title'|trans({}, 'reports')
     }) }}
 

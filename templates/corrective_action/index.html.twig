@@ -15,7 +15,6 @@
     ]
 } %}
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-tools', label: 'corrective_action.page.title'|trans({}, 'audits') },
     title: 'corrective_action.page.title'|trans({}, 'audits'),
     actions: [
         { label: 'corrective_action.action.new'|trans({}, 'audits'), href: path('app_corrective_action_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
@@ -28,7 +27,7 @@
     {% endfor %}
 {% endif %}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
 
     {% if overdue_count > 0 %}

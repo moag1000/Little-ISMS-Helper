@@ -2,7 +2,7 @@
 {% trans_default_domain 'locations' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'location.title.create'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'location.title.create'|trans({}, 'locations') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -15,7 +15,6 @@
 
     {{ _fa_page_header.render({
         title: 'location.title.create'|trans({}, 'locations'),
-        badge: { icon: 'plus', label: '' },
         actions: [
             { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_location_index'), variant: 'ghost', icon: 'util-arrow-left' }
         ]

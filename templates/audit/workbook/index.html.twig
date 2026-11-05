@@ -18,12 +18,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-file-earmark-spreadsheet', label: 'audit_workbook.page.badge'|trans({}, 'audit_workbook') },
         title: 'audit_workbook.index.title'|trans({}, 'audit_workbook'),
         subtitle: 'audit_workbook.index.subtitle'|trans({}, 'audit_workbook')
     }) }}
 
-    <main class="fa-aurora-surface">
+    <main>
 
         {# ── KPI tiles: one per export type ─────────────────────────────── #}
         <div class="row mb-4">

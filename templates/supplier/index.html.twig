@@ -36,7 +36,6 @@
     {% set supplierActions = supplierActions | merge([{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'supplier', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }]) %}
 {% endif %}
 {{ _fa_page_header.render({
-    badge: { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
     title: 'supplier.page.title'|trans({}, 'suppliers'),
     actions: supplierActions
 }) }}
@@ -72,7 +71,7 @@
 {% endif %}
 
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container">
 
     {% if currentTenant %}

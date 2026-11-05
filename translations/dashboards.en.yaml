@@ -228,7 +228,7 @@ compliance_manager:
             empty:
                 no_covered_title: 'No covered requirements'
                 no_covered_text: 'No controls for this section have been implemented yet.'
-                no_gaps_title: 'No gaps — fully covered!'
+                no_gaps_title: No gaps — fully covered
                 no_gaps_text: 'All requirements in this section are covered by controls.'
                 no_findings_title: 'No open findings'
                 no_findings_text: 'There are currently no open audit findings.'

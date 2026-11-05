@@ -3,7 +3,7 @@
 {% trans_default_domain 'incident' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% block title %}{{ 'incident.header.title'|trans({}, 'incident') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'incident.header.title'|trans({}, 'incident') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -14,7 +14,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'bug', label: 'incident.breadcrumb'|trans({}, 'incident') },
     title: 'incident.header.title'|trans({}, 'incident'),
     subtitle: 'incident.header.subtitle'|trans({}, 'incident'),
     actions: [
@@ -30,7 +29,7 @@
 {% endif %}
 
 
-<main class="fa-aurora-surface">
+<main>
 
 {# Tenant View Filter (Multi-Tenant Support) #}
 {% if currentTenant %}

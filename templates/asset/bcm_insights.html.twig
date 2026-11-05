@@ -4,7 +4,7 @@
 {% trans_default_domain 'bcm' %}
 
 
-{% block title %}{{ 'bcm.title.asset_insights'|trans({}, 'bcm') }}: {{ asset.name }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'bcm.title.asset_insights'|trans({}, 'bcm') }}: {{ asset.name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -25,7 +25,6 @@
         ]) %}
     {% endif %}
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-bar-chart', label: 'nav.bcm'|trans({}, 'nav') },
         title: 'bcm.title.asset_insights'|trans({}, 'bcm'),
         subtitle: asset.name,
         actions: _header_actions

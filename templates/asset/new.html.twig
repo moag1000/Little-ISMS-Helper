@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
-{% block title %}{{ 'asset.title.new'|trans({}, 'asset') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'asset.title.new'|trans({}, 'asset') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -17,7 +17,6 @@
 {# Page Header #}
 {{ _fa_page_header.render({
     title: 'asset.title.new'|trans({}, 'asset'),
-    badge: { icon: 'plus', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_asset_index'), variant: 'secondary', icon: 'util-arrow-left' }
     ]

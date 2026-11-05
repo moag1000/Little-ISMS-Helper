@@ -2,7 +2,7 @@
 {% trans_default_domain 'crisis_team' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
-{% block title %}{{ 'crisis_team.title'|trans({}, 'crisis_team') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'crisis_team.title'|trans({}, 'crisis_team') }}{% endblock %}
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-shield-alert', label: 'crisis_team.title'|trans({}, 'crisis_team') },
         title: 'crisis_team.title'|trans({}, 'crisis_team'),
         actions: [
             { label: 'crisis_team.new'|trans({}, 'crisis_team'), href: path('app_crisis_team_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
@@ -29,7 +28,7 @@
     {% endfor %}
 {% endif %}
 
-    <main class="fa-aurora-surface">
+    <main>
     <div class="row mb-4">
         <div class="col-md-4">
             {{ _fa_feature_card.render({ label: 'crisis_team.kpi.active'|trans({}, 'crisis_team'), value: active_count, variant: 'success' }) }}

@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'util-refresh', label: 'change_request.title'|trans({}, 'change_requests') },
         title: 'change_request.page.title'|trans({}, 'change_requests'),
         actions: [
             { label: 'change_request.action.create'|trans({}, 'change_requests'), href: path('app_change_request_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
@@ -30,7 +29,7 @@
     {% endfor %}
 {% endif %}
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {% if statistics %}
     <div class="row mb-4">

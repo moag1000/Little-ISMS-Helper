@@ -23,7 +23,8 @@ fa-cyber-btn fa-cyber-btn--{{ variant|default('primary') }} fa-cyber-btn--{{ siz
 {% endmacro %}
 
 {% macro body(label, props) %}
-    {% set icon = props.icon|default(null) %}
+    {# Icon rule: only primary/danger buttons (default variant primary) or icon-only ones (empty label) show an icon. #}
+    {% set icon = (props.variant|default('primary') in ['primary', 'danger'] or not label) ? props.icon|default(null) : null %}
     {% set iconAfter = props.iconAfter|default(false) %}
     {# Auto-strip legacy bi-* prefix so callers passing either Bootstrap-Icon
        or Aurora names render correctly under Aurora. #}

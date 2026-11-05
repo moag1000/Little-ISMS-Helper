@@ -145,11 +145,11 @@ consent:
 
     # Flash messages
     success:
-        created: 'Consent successfully created.'
-        updated: 'Consent successfully updated.'
-        verified: 'Consent successfully verified.'
-        revoked: 'Consent successfully revoked.'
-        deleted: 'Consent successfully deleted.'
+        created: Consent created.
+        updated: Consent updated.
+        verified: Consent verified.
+        revoked: Consent revoked.
+        deleted: Consent deleted.
     error:
         cannot_edit_status: 'Consents with this status cannot be edited.'
         invalid_token: 'Invalid security token.'

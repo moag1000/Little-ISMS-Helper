@@ -4,7 +4,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% trans_default_domain 'certification_bundle' %}
 
-{% block title %}{{ 'certification_bundle.title'|trans({}, 'certification_bundle') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'certification_bundle.title'|trans({}, 'certification_bundle') }}{% endblock %}
 
 {% block body %}
 
@@ -18,7 +18,6 @@
 
     {# Migrate hand-rolled <h1 class="h2"> to fa-page-header. #}
     {{ _fa_page_header.render({
-        badge: { icon: 'download', label: 'ISO 27001' },
         title: 'certification_bundle.title'|trans({}, 'certification_bundle'),
         subtitle: 'certification_bundle.subtitle'|trans({}, 'certification_bundle')
     }) }}

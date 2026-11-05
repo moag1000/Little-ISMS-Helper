@@ -25,7 +25,7 @@ privacy:
         review_and_approve: 'Review incident and approve notification'
         compliance_note: 'Compliance Note'
         compliance_text: 'Late notification can result in significant fines (up to EUR 10 million or 2% of annual turnover) and legal consequences. Timely notification is mandatory.'
-        urgent_automated: 'URGENT automated notification - Immediate action required!'
+        urgent_automated: URGENT automated notification - Immediate action required.
         footer_reference: 'GDPR Art. 33 & 34 | BDSG § 42 | ISO 27001 A.16.1.6'
         show:
             page_title: 'Data Breach - %ref%'
@@ -266,7 +266,7 @@ privacy:
         step4_title: 'Result & Recommendation'
         risk_level_label: 'Risk Level'
         gdpr_article_33_requirement: 'GDPR Art. 33 Reporting Requirement'
-        deadline_warning: '72-hour deadline is running!'
+        deadline_warning: 72-hour deadline is running.
         deadline_date: 'Reporting deadline (72h from now)'
         recommendation_label: 'Recommendation'
         legal_references: 'Legal References'
@@ -405,7 +405,7 @@ processing_activity:
         third_country: 'Third Country'
         dpia_required: 'DPIA Required'
     empty:
-        title: 'No processing activities found.'
+        title: No processing activities available.
         description: 'A record of processing activities (ROPA) documents which personal data you process, why, and how. It is mandatory under GDPR Art. 30.'
         filter_hint: 'Try changing the filter or'
         create_hint: 'Start by'
@@ -569,7 +569,6 @@ processing_activity:
     help:
         status_readonly: 'Status is driven by the lifecycle (draft → in review → approved → published → archived), not edited directly in the form.'
         name: 'Name/title of the processing activity (e.g., "Customer Management", "Payroll")'
-        description: 'Detailed description of the processing activity'
         purposes: 'Purpose(s) of processing (Art. 30(1)(a))'
         data_subject_categories: 'Categories of data subjects (Art. 30(1)(b))'
         estimated_data_subjects_count: 'Approximate number of affected data subjects'
@@ -611,9 +610,6 @@ processing_activity:
         processor_client_controller: 'Identity (and DPO where relevant) of the controller(s) on whose behalf processing is carried out (Art. 30(2)(a)).'
         joint_controller_details_json: 'Joint controllers with contact, split of duties per Art. 26(1) and a reference to the arrangement. The essence must be made available to data subjects (Art. 26(2)).'
         is_high_risk: 'Is this considered high-risk processing?'
-        dpia_completed: 'Has a Data Protection Impact Assessment (DPIA) been conducted?'
-        dpia_date: 'Date of DPIA completion'
-        risk_level: 'Overall risk level assessment'
         has_automated_decision_making: 'Does this involve automated decision-making/profiling (Art. 22)?'
         automated_decision_making_details: 'Explain logic and significance of automated decision-making'
         data_sources: 'Where is data collected from?'
@@ -831,7 +827,7 @@ data_breach:
             pending_authority: '%hours% hours remaining until 72-hour deadline.'
             pending_subject: 'Data subject notification required (Art. 34).'
             incomplete: 'Data breach documentation incomplete.'
-        empty_state: '<strong>All action items completed!</strong> No pending notifications or overdue deadlines.'
+        empty_state: '<strong>All action items completed.</strong> No pending notifications or overdue deadlines.'
         stats_status_title: 'Breach Statistics by Status'
         status:
             draft: 'Draft'
@@ -857,14 +853,14 @@ data_breach:
             risk: 'Risk'
             affected_subjects: 'Affected Subjects'
     success:
-        updated: 'Data breach updated successfully.'
-        deleted: 'Data breach deleted successfully.'
+        updated: Data breach updated.
+        deleted: Data breach deleted.
         submitted_for_assessment: 'Data breach submitted for assessment.'
         authority_notification_recorded: 'Supervisory authority notification recorded.'
         subject_notification_recorded: 'Data subject notification recorded.'
         exemption_recorded: 'Subject notification exemption recorded.'
-        closed: 'Data breach closed successfully.'
-        reopened: 'Data breach reopened successfully.'
+        closed: Data breach closed.
+        reopened: Data breach reopened.
     error:
         cannot_edit_in_status: 'Cannot edit data breach in current status.'
         invalid_csrf: 'Invalid CSRF token.'
@@ -976,7 +972,7 @@ data_breach:
         high: 'High'
         critical: 'Critical'
     tooltip:
-        affected_data_subjects: '<strong>👥 Number of Affected Persons</strong><br><em>Question: How many people are affected by this data breach?</em><br><br>Estimate the number of affected persons:<br>• Exact count if known<br>• Upper limit if uncertain<br><br><em>Important for Art. 33 GDPR: Above ~1,000 persons, supervisory authorities will look more closely!</em>'
+        affected_data_subjects: '<strong>👥 Number of Affected Persons</strong><br><em>Question: How many people are affected by this data breach?</em><br><br>Estimate the number of affected persons:<br>• Exact count if known<br>• Upper limit if uncertain<br><br><em>Important for Art. 33 GDPR: Above ~1,000 persons, supervisory authorities will look more closely.</em>'
         severity: '<strong>⚠️ Breach Severity</strong><br><em>Question: How severe is this data breach?</em><br><br><strong>Low</strong> = Minor impact on data subjects<br><strong>Medium</strong> = Possible inconvenience<br><strong>High</strong> = Significant harm possible<br><strong>Critical</strong> = Severe harm expected<br><br><em>Tip: For special categories (health, religion) use at least "High"</em>'
         risk_level: '<strong>🎯 Risk Level for Data Subjects</strong><br><em>Question: What risk exists for the rights and freedoms of data subjects?</em><br><br>Assess risk based on:<br>• Type of data (sensitive?)<br>• Number of affected persons<br>• Possible consequences (identity theft?)<br><br><em>From "High" → Authority notification required (Art. 33)</em>'
     pdf:
@@ -1069,7 +1065,7 @@ data_breach:
         step4_title: 'Result & Recommendation'
         risk_level_label: 'Risk Level'
         gdpr_article_33_requirement: 'GDPR Art. 33 Reporting Requirement'
-        deadline_warning: '72-hour deadline is running!'
+        deadline_warning: 72-hour deadline is running.
         deadline_date: 'Reporting deadline (72h from now)'
         recommendation_label: 'Recommendation'
         legal_references: 'Legal References'
@@ -1095,7 +1091,7 @@ data_breach:
         step_of: 'of'
         new_title: 'Record data breach'
         new_subtitle: 'GDPR Art. 33 · 72h reporting deadline'
-        title_72h_warning: '72-hour reporting deadline is running!'
+        title_72h_warning: 72-hour reporting deadline is running.
         subtitle_72h_warning: 'Notification to the supervisory authority under GDPR Art. 33 must be submitted within 72 hours of becoming aware of the breach.'
         step:
             detection: 'Detection'
@@ -1140,7 +1136,7 @@ dpia:
         awaiting_dpo: 'Awaiting DPO Consultation (%count%)'
         requires_supervisory: 'Requires Supervisory Consultation (%count%)'
         due_for_review_section: 'Due for Review (%count%)'
-        no_action_items: 'No action items - all compliant!'
+        no_action_items: No action items.
         statistics: 'Statistics'
         residual_risk_distribution: 'Residual Risk Distribution'
         compliance: 'Compliance'
@@ -1253,7 +1249,6 @@ dpia:
         processing_purposes: 'Purposes of the processing (Art. 35(7)(a))'
         data_categories: 'Categories of personal data processed (Art. 35(7)(a))'
         data_subject_categories: 'Categories of data subjects affected (Art. 35(7)(a))'
-        estimated_data_subjects: 'Estimated number of affected data subjects'
         data_retention_period: 'How long will the data be retained?'
         data_flow_description: 'Description of data flows (collection, storage, processing, sharing, deletion)'
         necessity_assessment: 'Why is this processing necessary? (Art. 35(7)(b))'
@@ -1262,20 +1257,15 @@ dpia:
         legislative_compliance: 'Compliance with other legislation (e.g., NIS2, sector-specific laws)'
         risk_level: 'Overall risk level to rights and freedoms (Art. 35(7)(c))'
         likelihood: 'Likelihood of risk occurrence'
-        impact: 'Impact if risk materializes'
         data_subject_risks: 'Specific risks to data subjects (e.g., discrimination, identity theft, financial loss)'
         technical_measures: 'Technical measures to mitigate risks (Art. 32 GDPR)'
         organizational_measures: 'Organizational measures to mitigate risks (Art. 32 GDPR)'
         implemented_controls: 'ISO 27001 controls implemented'
         compliance_measures: 'Measures to demonstrate compliance (Art. 24 GDPR - accountability)'
         residual_risk_assessment: 'Residual risk assessment after implementing measures'
-        residual_risk_level: 'Residual risk level after mitigation'
         data_protection_officer: 'Data Protection Officer (Art. 35(2))'
-        dpo_consultation_date: 'Date DPO was consulted'
         dpo_advice: 'DPO advice/feedback'
         data_subjects_consulted: 'Were data subjects consulted? (Art. 35(9) - where appropriate)'
-        data_subject_consultation_details: 'Details of data subject consultation'
-        requires_supervisory_consultation: 'Does this require prior consultation with supervisory authority? (Art. 36)'
         supervisory_consultation_date: 'Date supervisory authority was consulted'
         supervisory_authority_feedback: 'Supervisory authority feedback/decision'
         conductor: 'Person responsible for conducting the DPIA'
@@ -1679,7 +1669,7 @@ dpa.generate.third_country_active: 'Yes — third-country clause will be include
 dpa.generate.help_title: 'What is a DPA?'
 dpa.generate.help_body: 'Data Processing Agreement — required with every service provider that processes personal data on your behalf (GDPR Art. 28).'
 dpa.generate.action.generate: 'Generate DPA'
-dpa.generate.flash.success: 'DPA generated successfully. Please review and sign the draft.'
+dpa.generate.flash.success: DPA generated. Please review and sign the draft.
 dpa.list.generate_avv: 'Generate DPA'
 dpa.list.generate_avv_hint: 'Data Processing Agreement — required with every service provider that processes personal data on your behalf, GDPR Art. 28'
 common:

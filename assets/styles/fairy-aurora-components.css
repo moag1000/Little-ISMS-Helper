@@ -1518,45 +1518,6 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Typewriter
-   ═══════════════════════════════════════════════════════════════════ */
-
-.fa-typewriter {
-    display: inline;
-    position: relative;
-}
-.fa-typewriter__text { white-space: pre-wrap; }
-.fa-typewriter__caret {
-    display: inline-block;
-    color: var(--primary);
-    animation: fa-typewriter-caret 0.8s step-end infinite;
-    margin-left: 1px; /* Kanon H4 */
-}
-
-@keyframes fa-typewriter-caret { 50% { opacity: 0; } }
-.fa-typewriter__skip {
-    display: inline-block;
-    margin-left: 12px;
-    padding: 2px 8px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: var(--r-pill);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: var(--fg-3);
-    cursor: pointer;
-    transition: color var(--t-fast), border-color var(--t-fast);
-}
-.fa-typewriter__skip:hover { color: var(--primary); border-color: var(--primary); }
-.fa-typewriter__skip[hidden] { display: none; }
-
-@media (prefers-reduced-motion: reduce) {
-    .fa-typewriter__caret { animation: none; display: none; }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
    Setup-Wizard 2-Col Layout (Left 480 / Right flex)
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -5866,7 +5827,6 @@ html[data-theme="dark"] .framework-card {
     font-size: 12px;
     line-height: 1;
     color: var(--accent);
-    text-shadow: 0 0 8px color-mix(in oklab, var(--accent) 45%, transparent);
     pointer-events: none;
 }
 
@@ -9374,7 +9334,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     line-height: 1;
     transition: text-shadow var(--t-magic);
 }
-.fa-reuse-roi-counter__value.is-complete { text-shadow: var(--reuse-roi-glow); }
+.fa-reuse-roi-counter__value.is-complete:hover { text-shadow: var(--reuse-roi-glow); } /* Kanon: Glow nur bei Hover */
 
 @media (prefers-reduced-motion: reduce) { .fa-reuse-roi-counter__value.is-complete { text-shadow: none; } }
 .fa-reuse-roi-counter__unit { font-size: 0.8125rem; color: var(--fg-2); display: block; margin-top: 0.125rem; }
@@ -9410,7 +9370,6 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     bottom: 0;
     width: 2px;
     background: var(--audit-timeline-today);
-    box-shadow: var(--audit-timeline-today-glow);
     z-index: 2;
     pointer-events: none;
 }
@@ -9432,16 +9391,10 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--persona-color, var(--primary)) 30%, transparent);
     outline: none;
 }
-.fa-audit-program-timeline__pin--overdue { background: var(--audit-timeline-overdue); box-shadow: var(--audit-timeline-overdue-glow); }
+.fa-audit-program-timeline__pin--overdue { background: var(--audit-timeline-overdue); }
+.fa-audit-program-timeline__pin--overdue:hover,
+.fa-audit-program-timeline__pin--overdue:focus-visible { box-shadow: var(--audit-timeline-overdue-glow); }
 
-@media (prefers-reduced-motion: no-preference) {
-    .fa-audit-program-timeline__pin--overdue { animation: fa-audit-pin-pulse 1.5s ease-in-out infinite; }
-
-    @keyframes fa-audit-pin-pulse {
-        0%, 100% { box-shadow: var(--audit-timeline-overdue-glow); }
-        50%       { box-shadow: 0 0 16px var(--audit-timeline-overdue); }
-    }
-}
 .fa-audit-program-timeline__milestone {
     position: absolute;
     top: 50%;

@@ -5,7 +5,7 @@ person:
         show: 'Person details'
         edit: 'Edit person'
     description:
-        overview: 'Overview of employees, contractors and other persons'
+        overview: 'Maintain employees, contractors and other persons'
     action:
         create: 'Create person'
     stats:

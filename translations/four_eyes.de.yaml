@@ -52,4 +52,4 @@ four_eyes:
     flash:
         approved: 'Freigabe erteilt.'
         rejected: 'Freigabe abgelehnt.'
-        approver_updated: 'Genehmiger erfolgreich aktualisiert.'
+        approver_updated: Genehmiger aktualisiert.

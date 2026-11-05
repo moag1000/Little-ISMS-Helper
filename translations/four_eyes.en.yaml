@@ -52,4 +52,4 @@ four_eyes:
     flash:
         approved: 'Approval granted.'
         rejected: 'Approval rejected.'
-        approver_updated: 'Approver updated successfully.'
+        approver_updated: Approver updated.

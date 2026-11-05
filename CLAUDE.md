@@ -277,6 +277,14 @@ six fields implements it at all. Existing offenders are listed in
 because the previous catch-all silently buried ISO 22301 Cl. 8.2.2 RTO/RPO
 fields and BC-Exercise result-fields among unrelated data.
 
+**UI copy (Gate 71, `check_copy_slop.py`).** A toast is a participle, not a sentence:
+"Gespeichert.", "Export gestartet." — no "erfolgreich"/"successfully", no "!" anywhere in
+UI text (urgency comes from the toast colour and the words). Help texts only when they add a
+norm reference, an example, a consequence or a default; page subtitles say what the user
+decides on the page or are omitted. Empty states: "Keine X vorhanden." / "Keine Treffer.".
+Alva hints ≤ 140 characters, one action each. The `<title>` suffix lives only in
+`base.html.twig`. Icons only on primary, danger and icon-only buttons. The page-header badge carries record data (reference number, code, status), never the navigation level.
+
 **Inline JavaScript & CSP:** `script-src` has no `'unsafe-inline'` — every
 inline `<script>` needs `nonce="{{ csp_nonce() }}"`; no `on*=` handlers or
 `javascript:` URLs (use Stimulus `data-action`, generic helpers in

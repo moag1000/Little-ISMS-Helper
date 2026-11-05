@@ -54,10 +54,10 @@ audit_log:
         next: 'Weiter »'
         page_counter: 'Seite %current% von %total%'
     message:
-        no_entries: 'Keine Protokolleinträge gefunden.'
+        no_entries: Keine Protokolleinträge vorhanden.
         no_entries_filtered: 'Keine Protokolleinträge für den ausgewählten Filter gefunden.'
         no_data_available: 'Keine Daten verfügbar'
-        no_user_activities: 'Keine Aktivitäten für diesen Benutzer gefunden.'
+        no_user_activities: Keine Aktivitäten für diesen Benutzer vorhanden.
     action:
         back_to_health: 'Zurück zur Systemgesundheit'
         view_details: 'Details anzeigen'
@@ -97,7 +97,7 @@ audit_log:
         section_title: 'Aktivitätsverlauf'
     retention:
         title: 'Audit-Log Aufbewahrungsdauer'
-        subtitle: 'Zentrale Retention-Policy für alle Audit-Log-Einträge.'
+        subtitle: Aufbewahrungsdauer der Audit-Log-Einträge festlegen.
         setting_title: 'Aufbewahrungsdauer festlegen'
         field:
             days: 'Aufbewahrungsdauer (Tage)'

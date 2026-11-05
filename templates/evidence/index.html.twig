@@ -4,7 +4,7 @@
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% trans_default_domain 'evidence' %}
 
-{% block title %}{{ 'evidence.title'|trans({}, 'evidence') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'evidence.title'|trans({}, 'evidence') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -17,7 +17,6 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-list-check', label: 'nav.evidence'|trans({}, 'nav') },
     title: 'evidence.title'|trans({}, 'evidence'),
     subtitle: 'evidence.subtitle'|trans({}, 'evidence'),
     actions: [

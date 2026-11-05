@@ -33,7 +33,7 @@ gstool_import:
         error: Fehler
     flash:
         preview_ok: Vorschau erstellt — keine Daten geschrieben.
-        commit_ok: Import erfolgreich abgeschlossen.
+        commit_ok: Import abgeschlossen.
     error:
         no_tenant: Keine Organisation aktiv. Bitte zuerst eine Organisation auswählen.
         upload_failed: Upload fehlgeschlagen.

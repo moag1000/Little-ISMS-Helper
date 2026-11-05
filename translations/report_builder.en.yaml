@@ -88,7 +88,7 @@ report_builder:
         filters: 'Filters'
         styles: 'Style Settings'
         title: 'Report Settings'
-        saved: 'Report settings saved successfully.'
+        saved: Report settings saved.
 
     # Filters
     filter:
@@ -217,12 +217,12 @@ report_builder:
             title: 'Configure Widget'
 
     # Flash messages
-        created: 'Report created successfully'
+        created: Report created
         created_from_template: 'Report created from template'
-        cloned: 'Report cloned successfully'
-        saved: 'Report saved successfully'
-        deleted: 'Report deleted successfully'
-        template_created: 'Template created successfully'
+        cloned: Report cloned
+        saved: Report saved
+        deleted: Report deleted
+        template_created: Template created
         template_not_found: 'Template not found'
 
     # Preview

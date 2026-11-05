@@ -4,7 +4,7 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
-{% block title %}{{ 'answer_library.page.index_title'|trans({}, 'answer_library') }} – {{ parent() }}{% endblock %}
+{% block title %}{{ 'answer_library.page.index_title'|trans({}, 'answer_library') }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
@@ -15,7 +15,6 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge:    { icon: 'nav-shield-check', label: 'answer_library.badge'|trans({}, 'answer_library') },
     title:    'answer_library.page.index_title'|trans({}, 'answer_library'),
     subtitle: 'answer_library.page.index_subtitle'|trans({}, 'answer_library'),
     tooltip:  {
@@ -28,7 +27,7 @@
     ] : []
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid py-4">
 
 {# ── KPI row ──────────────────────────────────────────────────────────────── #}

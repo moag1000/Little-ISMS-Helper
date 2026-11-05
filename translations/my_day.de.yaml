@@ -93,14 +93,14 @@ my_day:
 
     empty:
         title: 'Alles erledigt'
-        text: 'Aktuell keine offenen Aufgaben für dich. Gute Arbeit!'
+        text: Aktuell keine offenen Aufgaben.
 
     item:
         due: 'Fällig'
         overdue_by: 'seit %days% Tg. überfällig'
         due_in: 'in %days% Tg. fällig'
         hours_left: 'noch %hours% h (72h-Frist)'
-        sla_breached: '72h-Frist überschritten!'
+        sla_breached: 72h-Frist überschritten.
 
     hint:
         four_eyes: 'Du bestätigst als zweite Person (Funktionstrennung, 4-Augen-Prinzip).'

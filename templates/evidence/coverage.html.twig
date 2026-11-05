@@ -3,7 +3,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% trans_default_domain 'evidence' %}
 
-{% block title %}{{ 'evidence.coverage.title'|trans({}, 'evidence') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'evidence.coverage.title'|trans({}, 'evidence') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -16,7 +16,6 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'compliance-shield', label: 'nav.evidence'|trans({}, 'nav') },
     title: 'evidence.coverage.title'|trans({}, 'evidence'),
     subtitle: 'evidence.coverage.subtitle'|trans({}, 'evidence'),
     actions: [

@@ -91,12 +91,12 @@ access_review:
       zu prüfen, wer welchen Zugriff behalten darf (ISO 27001 A.5.18).
 
   flash:
-    campaign_created: Kampagne erfolgreich erstellt. Review-Items wurden erzeugt.
+    campaign_created: Kampagne erstellt. Review-Items wurden erzeugt.
     campaign_closed: Kampagne wurde geschlossen.
     decision_saved: 'Entscheidung "%decision%" gespeichert.'
     campaign_already_closed: Diese Kampagne ist bereits geschlossen.
     invalid_decision: Ungültige Entscheidung.
-    bulk_decide_success: '%count% Entscheidung(en) erfolgreich gespeichert.'
+    bulk_decide_success: '%count% Entscheidung(en) gespeichert.'
     bulk_decide_partial: '%done% gespeichert, %skipped% übersprungen.'
     export_ok: XLSX-Export gestartet.
     escalation_notified: 'Eskalations-Benachrichtigung für %count% Item(s) versendet.'
@@ -137,7 +137,7 @@ access_review:
       Exportiert alle Kampagnen-Ergebnisse (Nutzer, Rolle, Entscheidung, Zeitstempel)
       als Audit-Arbeitsmappe für die Weitergabe an externe Prüfer (ISO 27001 A.5.18).
     filename_prefix: uar-kampagne
-    flash_success: XLSX-Export erfolgreich heruntergeladen und in Audit-Log eingetragen.
+    flash_success: XLSX-Export heruntergeladen und in Audit-Log eingetragen.
     aria_download: 'Kampagne %name% als XLSX herunterladen'
 
   progress:

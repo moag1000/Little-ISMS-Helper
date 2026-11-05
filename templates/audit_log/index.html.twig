@@ -47,14 +47,13 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'nav-journal-text', label: 'audit_log.page.title'|trans({}, 'audit_log') },
     title: 'audit_log.page.title'|trans({}, 'audit_log'),
     subtitle: 'audit_log.page.subtitle'|trans({}, 'audit_log'),
     actions: [
         { label: 'audit_log.filter.statistics'|trans({}, 'audit_log'), href: path('app_audit_log_statistics'), variant: 'ghost', icon: 'nav-bar-chart' }
     ]
 }) }}
-<main class="fa-aurora-surface">
+<main>
 
 {# HMAC-Chain Verify button — Auditor's "manipulationssicher?" answer #}
 <div class="d-flex justify-content-end mb-3">

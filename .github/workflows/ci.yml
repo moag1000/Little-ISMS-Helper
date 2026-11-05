@@ -669,6 +669,10 @@ jobs:
         # Each field of Application-/SecuritySettingsType needs a getSetting()
         # reader outside the settings screen. No baseline.
         run: python3 scripts/quality/check_settings_readers.py
+      - name: "Gate 71: UI copy rules (no 'erfolgreich'/'successfully', no '!', title suffix only in base)"
+        # Copy rules in CLAUDE.md "UI copy". Findings keyed by file::key, so
+        # line shifts never touch the baseline; new entries need a reason.
+        run: python3 scripts/quality/check_copy_slop.py --baseline scripts/quality/baselines/copy_slop.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

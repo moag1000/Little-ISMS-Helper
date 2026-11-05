@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'consent' %}
 
-{% block title %}{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">

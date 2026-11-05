@@ -2,7 +2,7 @@
 {% trans_default_domain 'dora' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'dora_subcontractor.title.edit'|trans({'%name%': subcontractor.name}, 'dora') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'dora_subcontractor.title.edit'|trans({'%name%': subcontractor.name}, 'dora') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -17,7 +17,6 @@
 
     {{ _fa_page_header.render({
         title: 'dora_subcontractor.title.edit'|trans({'%name%': subcontractor.name}, 'dora'),
-        badge: { icon: 'pencil', label: '' },
         actions: [
             { label: 'common.back'|trans({}, 'messages'), href: path('app_dora_subcontractor_show', {id: subcontractor.id}), variant: 'ghost', icon: 'util-arrow-left' }
         ]

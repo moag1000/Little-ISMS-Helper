@@ -27,7 +27,6 @@
     {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_consent_index') }]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'ui-check', label: 'consent.header.title'|trans({}, 'consent') },
         title: consent.dataSubjectIdentifier,
         actions: _show_actions
     }) }}

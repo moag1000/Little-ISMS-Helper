@@ -88,7 +88,7 @@ report_builder:
         filters: 'Filter'
         styles: 'Stil-Einstellungen'
         title: 'Report-Einstellungen'
-        saved: 'Report-Einstellungen erfolgreich gespeichert.'
+        saved: Report-Einstellungen gespeichert.
 
     # Filter
     filter:
@@ -217,12 +217,12 @@ report_builder:
             title: 'Widget konfigurieren'
 
     # Flash-Nachrichten
-        created: 'Report erfolgreich erstellt'
+        created: Report erstellt
         created_from_template: 'Report aus Vorlage erstellt'
-        cloned: 'Report erfolgreich geklont'
-        saved: 'Report erfolgreich gespeichert'
-        deleted: 'Report erfolgreich gelöscht'
-        template_created: 'Vorlage erfolgreich erstellt'
+        cloned: Report geklont
+        saved: Report gespeichert
+        deleted: Report gelöscht
+        template_created: Vorlage erstellt
         template_not_found: 'Vorlage nicht gefunden'
 
     # Vorschau

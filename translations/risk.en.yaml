@@ -261,7 +261,6 @@ risk:
     title: Unique designation of the risk for internal reference
     category: Categorization of the risk (financial, operational, compliance, etc.)
     asset: The asset affected by this risk (hardware, software, data, process)
-    person: The person affected by this risk
     location: The location affected by this risk
     supplier: The supplier affected by this risk
     description: Detailed description of the risk scenario and possible consequences
@@ -326,19 +325,9 @@ risk:
       = Major (€100,000-1M, weeks of downtime)<br><em>e.g. ransomware, data leak</em><br><strong>5</strong>
       = Catastrophic (&gt;€1M, existential threat)<br><em>e.g. complete data loss,
       bankruptcy</em>'
-    residual_probability: '<strong>📉 Residual Probability After Controls</strong><br><em>Question:
-      How likely is the risk AFTER you implement controls?</em><br><br>Example: Phishing
-      risk<br>• Before: 4 (frequent)<br>• After training + spam filter: 2 (rare)<br><br><em>Tip:
-      Be realistic - zero is not possible!</em>'
-    residual_impact: '<strong>📉 Residual Impact After Controls</strong><br><em>Question:
-      How severe would damage be AFTER you implement controls?</em><br><br>Example:
-      Data loss<br>• Before: 5 (catastrophic)<br>• After backup strategy: 2 (minor,
-      only 1 day lost)<br><br><em>Tip: Controls often reduce impact more than probability!</em>'
-    treatment_strategy: <strong>🛡️ How will you handle this risk?</strong><br><br><strong>Avoid</strong><br>Stop
-      the activity, eliminate risk source<br><em>e.g. stop using insecure software</em><br><br><strong>Mitigate</strong>
-      (most common)<br>Implement controls<br><em>e.g. firewall, training, backups</em><br><br><strong>Transfer</strong><br>Pass
-      risk to third party<br><em>e.g. insurance, outsourcing</em><br><br><strong>Accept</strong><br>Consciously
-      tolerate (with justification!)<br><em>e.g. control cost > potential damage</em>
+    residual_probability: '<strong>📉 Residual Probability After Controls</strong><br><em>Question: How likely is the risk AFTER you implement controls?</em><br><br>Example: Phishing risk<br>• Before: 4 (frequent)<br>• After training + spam filter: 2 (rare)<br><br><em>Tip: Be realistic - zero is not possible.</em>'
+    residual_impact: '<strong>📉 Residual Impact After Controls</strong><br><em>Question: How severe would damage be AFTER you implement controls?</em><br><br>Example: Data loss<br>• Before: 5 (catastrophic)<br>• After backup strategy: 2 (minor, only 1 day lost)<br><br><em>Tip: Controls often reduce impact more than probability.</em>'
+    treatment_strategy: '<strong>🛡️ How will you handle this risk?</strong><br><br><strong>Avoid</strong><br>Stop the activity, eliminate risk source<br><em>e.g. stop using insecure software</em><br><br><strong>Mitigate</strong> (most common)<br>Implement controls<br><em>e.g. firewall, training, backups</em><br><br><strong>Transfer</strong><br>Pass risk to third party<br><em>e.g. insurance, outsourcing</em><br><br><strong>Accept</strong><br>Consciously tolerate (with justification)<br><em>e.g. control cost > potential damage</em>'
     category: <strong>📁 Risk Category</strong><br><em>Helps with classification and
       reporting</em><br><br><strong>Financial</strong><br>Direct monetary impact<br><em>e.g.
       revenue loss, fines, property damage</em><br><br><strong>Operational</strong><br>Business
@@ -387,7 +376,7 @@ risk:
     residual_risk: 'Residual Risk (Net)'
   incidents: 'Linked Incidents'
   realization:
-    warning: 'WARNING: This risk has already materialised!'
+    warning: 'WARNING: This risk has already materialised.'
     review_suggestion: 'Review the risk assessment and treatment measures in light of the incidents that occurred'
   subject:
     person:
@@ -570,7 +559,7 @@ risk:
     add_link: 'Link Incident'
     submit: 'Link'
     empty: 'No incidents are linked to this risk yet.'
-    linked: 'Incident linked successfully.'
+    linked: Incident linked.
     unlinked: 'Incident link removed.'
     csrf_invalid: 'Security token invalid — please reload the page and try again.'
     incident_not_found: 'Incident not found.'

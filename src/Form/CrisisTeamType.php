@@ -38,7 +38,6 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
                     'maxlength' => 255,
                     'placeholder' => 'crisis_team.placeholder.team_name',
                 ],
-                'help' => 'crisis_team.help.team_name',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'crisis_team.field.description',
@@ -226,7 +225,6 @@ final class CrisisTeamType extends AbstractType implements SectionMapInterface
                 'choice_label' => 'name',
                 'multiple' => true,
                 'required' => false,
-                'help' => 'crisis_team.help.business_continuity_plans',
                 'attr' => [
                     'size' => 5,
                 ],

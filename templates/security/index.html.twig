@@ -3,7 +3,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'security_reports.page.title'|trans({}, 'reports') }} - {{ 'app.title'|trans({}, 'security_reports') }}{% endblock %}
+{% block title %}{{ 'security_reports.page.title'|trans({}, 'reports') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -18,9 +18,7 @@
     {# Page Header #}
     {{ _fa_page_header.render({
         title: 'security_reports.page.title'|trans({}, 'security_reports'),
-        subtitle: 'security_reports.page.subtitle'|trans({}, 'security_reports'),
-        badge: { icon: 'nav-shield-lock', label: '' }
-    }) }}
+        subtitle: 'security_reports.page.subtitle'|trans({}, 'security_reports')}) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">

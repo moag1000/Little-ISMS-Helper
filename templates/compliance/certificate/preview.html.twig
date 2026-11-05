@@ -17,7 +17,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-check', label: 'Compliance' },
         title: 'compliance.certificate.preview.title'|trans({}, 'compliance'),
         subtitle: certificate.frameworkCode ~ ' · ' ~ (certificate.certNumber ?? '')
     }) }}

@@ -237,7 +237,7 @@ nav:
             dpo_dashboard: 'Datenpannen (Art. 33), DSFA-Status (Art. 35), Verfahrensverzeichnis'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
-            mapping_hub: 'Zentraler Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
+            mapping_hub: 'Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
             mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
             mapping_tour: 'Geführte Tour: Mapping, Vererbung, Coverage & Qualität in 6 Schritten'
             mris_kpis: 'Mythos-relevante Kennzahlen (MRIS v1.5 Kap. 10.6)'
@@ -269,7 +269,7 @@ nav:
             data_repair: 'Datenintegritätswerkzeuge'
             audit_log: 'System-Audit-Trail'
             iso9001_bridge: 'Konzeptuelle Übersetzung: CAPA ↔ Risikobehandlung, Prozesslandkarte ↔ SoA'
-            glossary: 'ISMS-Fachbegriffe einfach erklärt — von Asset bis Vulnerability'
+            glossary: ISMS-Fachbegriffe erklärt — von Asset bis Vulnerability
             keyboard_shortcuts: 'Alle Tastenkürzel und Schnellzugriffe auf einen Blick'
             mris_tour: 'Acht-Stopp-Rundgang durchs MRIS-Modul (~6 Min, jederzeit überspringbar)'
             # Audit-V3 ME-1..ME-12: Module discoverability fix — descriptions.

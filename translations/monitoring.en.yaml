@@ -121,7 +121,7 @@ monitoring:
         log_file: 'Log File'
         show_entries: 'Show Entries'
         recent: 'Recent Errors'
-        no_errors: 'No errors found!'
+        no_errors: No errors available.
         no_log_file: 'No log file found'
         no_log_file_text: 'The log file <code>%file%</code> does not exist yet. Errors will be logged here once they occur.'
         show_full: 'Show full log entry'
@@ -166,7 +166,7 @@ monitoring:
     back_to_health: 'Back to Health'
     by_level: 'By Level'
     show_entries: 'Show Entries'
-    no_errors_found: 'No errors found'
+    no_errors_found: No errors available.
     reverse_order: 'Reverse Order'
     recent_entries_only: 'Recent Entries Only'
     full_log_analysis: 'Full Log Analysis'

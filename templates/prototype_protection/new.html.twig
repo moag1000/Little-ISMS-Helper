@@ -13,9 +13,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        title: 'prototype_protection.page.new_title'|trans({}, 'prototype_protection'),
-        badge: { icon: 'plus', label: '' }
-    }) }}
+        title: 'prototype_protection.page.new_title'|trans({}, 'prototype_protection')}) }}
 
     {{ form_start(form) }}
     {% include '_components/_auto_form.html.twig' with {

@@ -263,7 +263,6 @@ risk:
     title: Eindeutige Bezeichnung des Risikos für interne Referenzierung
     category: Kategorisierung des Risikos (finanziell, operativ, compliance, etc.)
     asset: Das von diesem Risiko betroffene Asset (Hardware, Software, Daten, Prozess)
-    person: Die von diesem Risiko betroffene Person
     location: Der von diesem Risiko betroffene Standort
     supplier: Der von diesem Risiko betroffene Lieferant
     description: Detaillierte Beschreibung des Risikoszenarios und möglicher Folgen
@@ -334,21 +333,9 @@ risk:
       = Hoch (100.000-1Mio€, Wochen Ausfall)<br><em>z.B. Ransomware, Datenleck</em><br><strong>5</strong>
       = Katastrophal (&gt;1Mio€, existenzbedrohend)<br><em>z.B. kompletter Datenverlust,
       Insolvenz</em>'
-    residual_probability: '<strong>📉 Restwahrscheinlichkeit nach Maßnahmen</strong><br><em>Frage:
-      Wie wahrscheinlich ist das Risiko NACHDEM Sie Maßnahmen umgesetzt haben?</em><br><br>Beispiel:
-      Phishing-Risiko<br>• Vorher: 4 (häufig)<br>• Nach Schulung + Spam-Filter: 2
-      (selten)<br><br><em>Tipp: Realistisch bleiben - 0 gibt es nicht!</em>'
-    residual_impact: '<strong>📉 Restschaden nach Maßnahmen</strong><br><em>Frage:
-      Wie schwer wäre der Schaden NACHDEM Sie Maßnahmen umgesetzt haben?</em><br><br>Beispiel:
-      Datenverlust<br>• Vorher: 5 (katastrophal)<br>• Nach Backup-Strategie: 2 (gering,
-      nur 1 Tag verloren)<br><br><em>Tipp: Maßnahmen reduzieren oft die Auswirkung
-      mehr als die Wahrscheinlichkeit!</em>'
-    treatment_strategy: <strong>🛡️ Wie gehen Sie mit dem Risiko um?</strong><br><br><strong>Vermeiden</strong><br>Aktivität
-      einstellen, Risikoquelle eliminieren<br><em>z.B. unsichere Software nicht mehr
-      nutzen</em><br><br><strong>Reduzieren</strong> (häufigste Wahl)<br>Maßnahmen
-      implementieren<br><em>z.B. Firewall, Schulungen, Backups</em><br><br><strong>Übertragen</strong><br>Risiko
-      an Dritte abgeben<br><em>z.B. Versicherung, Outsourcing</em><br><br><strong>Akzeptieren</strong><br>Bewusst
-      tolerieren (mit Begründung!)<br><em>z.B. Kosten der Maßnahme > möglicher Schaden</em>
+    residual_probability: '<strong>📉 Restwahrscheinlichkeit nach Maßnahmen</strong><br><em>Frage: Wie wahrscheinlich ist das Risiko NACHDEM Sie Maßnahmen umgesetzt haben?</em><br><br>Beispiel: Phishing-Risiko<br>• Vorher: 4 (häufig)<br>• Nach Schulung + Spam-Filter: 2 (selten)<br><br><em>Tipp: Realistisch bleiben - 0 gibt es nicht.</em>'
+    residual_impact: '<strong>📉 Restschaden nach Maßnahmen</strong><br><em>Frage: Wie schwer wäre der Schaden NACHDEM Sie Maßnahmen umgesetzt haben?</em><br><br>Beispiel: Datenverlust<br>• Vorher: 5 (katastrophal)<br>• Nach Backup-Strategie: 2 (gering, nur 1 Tag verloren)<br><br><em>Tipp: Maßnahmen reduzieren oft die Auswirkung mehr als die Wahrscheinlichkeit.</em>'
+    treatment_strategy: '<strong>🛡️ Wie gehen Sie mit dem Risiko um?</strong><br><br><strong>Vermeiden</strong><br>Aktivität einstellen, Risikoquelle eliminieren<br><em>z.B. unsichere Software nicht mehr nutzen</em><br><br><strong>Reduzieren</strong> (häufigste Wahl)<br>Maßnahmen implementieren<br><em>z.B. Firewall, Schulungen, Backups</em><br><br><strong>Übertragen</strong><br>Risiko an Dritte abgeben<br><em>z.B. Versicherung, Outsourcing</em><br><br><strong>Akzeptieren</strong><br>Bewusst tolerieren (mit Begründung)<br><em>z.B. Kosten der Maßnahme > möglicher Schaden</em>'
     category: <strong>📁 Risikokategorie</strong><br><em>Hilft bei der Zuordnung und
       Auswertung</em><br><br><strong>Finanziell</strong><br>Direkter monetärer Schaden<br><em>z.B.
       Umsatzausfall, Bußgeld, Sachschaden</em><br><br><strong>Operativ</strong><br>Geschäftsprozesse,
@@ -398,7 +385,7 @@ risk:
     residual_risk: Restrisiko (Netto)
   incidents: Verbundene Vorfälle
   realization:
-    warning: 'WARNUNG: Dieses Risiko ist bereits eingetreten!'
+    warning: 'WARNUNG: Dieses Risiko ist bereits eingetreten.'
     review_suggestion: Überprüfen Sie die Risikobewertung und Behandlungsmaßnahmen
       aufgrund eingetretener Vorfälle
   subject:
@@ -586,7 +573,7 @@ risk:
     add_link: 'Vorfall verknüpfen'
     submit: 'Verknüpfen'
     empty: 'Bisher sind keine Vorfälle mit diesem Risiko verknüpft.'
-    linked: 'Vorfall erfolgreich verknüpft.'
+    linked: Vorfall verknüpft.
     unlinked: 'Verknüpfung zum Vorfall entfernt.'
     csrf_invalid: 'Sicherheitstoken ungültig — bitte Seite neu laden und erneut versuchen.'
     incident_not_found: 'Vorfall nicht gefunden.'

@@ -16,7 +16,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-people', label: 'nav.interested_parties'|trans({}, 'nav') },
         title: 'interested_party.page.title'|trans({}, 'interested_parties'),
         subtitle: 'interested_party.iso_reference'|trans({}, 'interested_parties'),
         actions: [
@@ -31,7 +30,7 @@
 {% endif %}
 
 
-    <main class="fa-aurora-surface">
+    <main>
 
     {{ _fa_alert.render({ variant: 'info', class: 'mb-3', body: 'interested_party.hint.clause_context'|trans({}, 'interested_parties') ~ ' <a href="' ~ path('app_context_index') ~ '" class="fa-alert__link">' ~ 'interested_party.link.isms_context'|trans({}, 'interested_parties') ~ '</a>' }) }}
 

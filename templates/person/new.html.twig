@@ -2,7 +2,7 @@
 {% trans_default_domain 'people' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'person.title.create'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'person.title.create'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -16,7 +16,6 @@
 
 {{ _fa_page_header.render({
     title: ('person.title.create'|trans({}, 'messages')),
-    badge: { icon: 'plus', label: '' },
     actions: [
         { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_person_index'), variant: 'ghost', icon: 'util-arrow-left' }
     ]

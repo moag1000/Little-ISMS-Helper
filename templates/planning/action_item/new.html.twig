@@ -2,7 +2,7 @@
 {% trans_default_domain 'planning' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'planning.action_item.title.create'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'planning.action_item.title.create'|trans({}, 'planning') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -15,7 +15,6 @@
 
     {{ _fa_page_header.render({
         title: 'planning.action_item.title.create'|trans({}, 'planning'),
-        badge: { icon: 'plus', label: '' },
         actions: [
             { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_planning_action_item_index'), variant: 'ghost', icon: 'util-arrow-left' }
         ]

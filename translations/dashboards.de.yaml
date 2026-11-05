@@ -52,7 +52,7 @@ ciso:
     no_frameworks: 'Keine Frameworks konfiguriert'
     appetite_compliance_score: 'Risikoappetit-Konformitätswert'
     breaches: 'Überschreitungen'
-    no_critical_risks: 'Keine kritischen Risiken vorhanden'
+    no_critical_risks: Keine kritischen Risiken vorhanden.
     no_pending_approvals: 'Keine ausstehenden Genehmigungen'
     controls:
         total: 'Gesamte Maßnahmen'
@@ -228,7 +228,7 @@ compliance_manager:
             empty:
                 no_covered_title: 'Keine abgedeckten Anforderungen'
                 no_covered_text: 'Noch keine Controls dieser Section implementiert.'
-                no_gaps_title: 'Keine Lücken — alles abgedeckt!'
+                no_gaps_title: Keine Lücken — alles abgedeckt
                 no_gaps_text: 'Alle Anforderungen dieser Section sind durch Controls abgedeckt.'
                 no_findings_title: 'Keine offenen Findings'
                 no_findings_text: 'Es gibt aktuell keine offenen Audit-Findings.'

@@ -4,7 +4,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
-{% block title %}{{ role.name }} - {{ 'role_management.title.show'|trans({}, 'role_management') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ role.name }} - {{ 'role_management.title.show'|trans({}, 'role_management') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{{ path('role_management_index') }}">{{ 'nav.roles'|trans({}, 'nav') }}</a></li>

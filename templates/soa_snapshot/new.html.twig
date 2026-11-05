@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'soa' %}
 
-{% block title %}{{ 'soa.snapshot.new.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'soa.snapshot.new.title'|trans({}, 'soa') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -15,12 +15,11 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'camera', label: 'soa.snapshot.badge'|trans({}, 'soa') },
     title: 'soa.snapshot.new.title'|trans({}, 'soa'),
     subtitle: 'soa.snapshot.new.subtitle'|trans({}, 'soa')
 }) }}
 
-<main class="fa-aurora-surface">
+<main>
     <div class="row">
         <div class="col-md-8">
             <form method="post" action="{{ path('app_soa_snapshot_new') }}" class="vstack gap-3">

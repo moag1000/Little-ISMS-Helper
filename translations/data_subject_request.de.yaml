@@ -176,7 +176,7 @@ dsr:
 
     # Warnungen
     alert:
-        overdue_title: "Ueberfaellige Anfragen!"
+        overdue_title: Überfällige Anfragen
         overdue_text: "%count% Betroffenenanfrage(n) haben die gesetzliche Antwortfrist ueberschritten."
         overdue_single: "Diese Anfrage ist %days% Tage ueberfaellig. Sofortiges Handeln gemaess DSGVO Art. 12(3) erforderlich."
         view_overdue: "Ueberfaellige Anfragen anzeigen"
@@ -185,8 +185,8 @@ dsr:
     # Flash-Meldungen
     flash:
         invalid_csrf: "Ungültiges CSRF-Token."
-        created: "Betroffenenanfrage erfolgreich erstellt."
-        updated: "Betroffenenanfrage erfolgreich aktualisiert."
+        created: Betroffenenanfrage erstellt.
+        updated: Betroffenenanfrage aktualisiert.
         completed: "Betroffenenanfrage als abgeschlossen markiert."
         rejected: "Betroffenenanfrage abgelehnt."
         extended: "Frist auf 90 Tage verlaengert."

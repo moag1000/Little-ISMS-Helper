@@ -42,7 +42,7 @@ dashboard:
   quick_access: Quick Access
   next_steps: Next Steps
   success:
-    settings_imported: Dashboard settings successfully imported!
+    settings_imported: Dashboard settings imported.
   error:
     import_failed: Error importing settings. Please check the file.
   overdue_reviews:
@@ -84,14 +84,14 @@ dashboard:
       due: Due
       test_overdue: Test overdue
       review_overdue: Review overdue
-      breach_alert: '%count% data breach(es) with 72h deadline!'
+      breach_alert: '%count% data breach(es) with 72h deadline.'
       breach_alert_desc: GDPR Art. 33 requires notification to supervisory authority
         within 72 hours.
       view_breaches: View data breaches
-      breach_overdue: '%hours%h overdue - immediate notification required!'
+      breach_overdue: '%hours%h overdue - immediate notification required.'
       breach_remaining: '%hours%h remaining until notification deadline'
       more_items: '%count% more items...'
-      all_good: All up to date!
+      all_good: All up to date.
       all_good_desc: No overdue reviews. Your ISMS is current.
       manage: Manage
   management_kpis:
@@ -222,7 +222,7 @@ dashboard:
     documents_without_owner: Without Owner
   my_tasks:
     title: My Tasks Today
-    all_done: No tasks — you're all caught up!
+    all_done: 'No tasks — you''re all caught up.'
     type_treatment_plan: Treatment Plan
     type_workflow: Lifecycle Approval
     type_risk_review: Risk Review

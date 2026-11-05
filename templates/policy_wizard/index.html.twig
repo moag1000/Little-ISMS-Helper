@@ -10,9 +10,8 @@
 {% block title %}{{ 'policy_wizard.title'|trans }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid py-4 fa-aurora-surface">
+<div class="container-fluid py-4">
     {{ _fa_page_header.render({
-        badge: { icon: 'nav-shield-lock', label: 'policy_wizard.badge'|trans },
         title: 'policy_wizard.title'|trans,
         subtitle: 'policy_wizard.subtitle'|trans,
         actions: (tenant is not null and is_granted('POLICY_WIZARD_KONZERN_DEFAULTS', tenant)) ? [

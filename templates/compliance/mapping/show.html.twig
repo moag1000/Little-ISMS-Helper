@@ -25,7 +25,6 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'util-arrow-left', label: 'compliance.mapping.title'|trans({}, 'compliance') },
         title: mapping.sourceRequirement.requirementId ~ ' → ' ~ mapping.targetRequirement.requirementId,
         subtitle: 'Compliance Mapping',
         actions: (is_granted('ROLE_MANAGER') ? [

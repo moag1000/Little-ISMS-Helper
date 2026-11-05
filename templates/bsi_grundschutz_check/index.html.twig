@@ -41,11 +41,10 @@
 } %}
 {% set stufe_options = ['basis', 'standard', 'kern'] %}
 {{ _fa_page_header.render({
-    badge: { icon: 'shield-check', label: 'bsi_check.title'|trans({}, 'messages') },
     title: 'bsi_check.title'|trans({}, 'messages'),
     subtitle: 'bsi_check.description'|trans({}, 'messages')
 }) }}
-<main class="fa-aurora-surface">
+<main>
 <div class="container-fluid">
 
     {# Absicherungsstufe filter #}
