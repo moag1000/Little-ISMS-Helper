@@ -61,7 +61,7 @@ class Location
 
     #[ORM\Column(length: 100)]
     #[Groups(['location:read', 'location:write'])]
-    #[Assert\Choice(choices: ['building', 'floor', 'room', 'area', 'datacenter', 'server_room', 'office', 'warehouse', 'gate', 'entrance', 'parking', 'outdoor', 'other'])]
+    #[Assert\Choice(choices: ['building', 'floor', 'room', 'area', 'datacenter', 'server_room', 'office', 'warehouse', 'gate', 'entrance', 'parking', 'outdoor', 'region', 'other'])]
     private ?string $locationType = 'room';
 
     #[ORM\Column(length: 50, nullable: true)]
@@ -87,6 +87,22 @@ class Location
     #[ORM\Column(length: 20, nullable: true)]
     #[Groups(['location:read', 'location:write'])]
     private ?string $postalCode = null;
+
+    /** WGS84 latitude for the location map; filled by LocationGeocoder unless set manually. */
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\Range(min: -90, max: 90)]
+    #[Groups(['location:read', 'location:write'])]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\Range(min: -180, max: 180)]
+    #[Groups(['location:read', 'location:write'])]
+    private ?float $longitude = null;
+
+    /** Where the coordinates came from: postal, city, country, online or manual. */
+    #[ORM\Column(length: 16, nullable: true)]
+    #[Groups(['location:read'])]
+    private ?string $geoSource = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'childLocations')]
     #[ORM\JoinColumn(nullable: true)]
@@ -290,6 +306,54 @@ class Location
     {
         $this->postalCode = $postalCode;
         return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): static
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): static
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
+    public function getGeoSource(): ?string
+    {
+        return $this->geoSource;
+    }
+
+    public function setGeoSource(?string $geoSource): static
+    {
+        $this->geoSource = $geoSource;
+        return $this;
+    }
+
+    /**
+     * Type "region": a place without a building (home office, field service,
+     * mobile teams). Its area is the country field: a country, EU/EWR or
+     * worldwide.
+     */
+    public function isRegion(): bool
+    {
+        return $this->locationType === 'region';
+    }
+
+    public function hasCoordinates(): bool
+    {
+        return $this->latitude !== null && $this->longitude !== null;
     }
 
     public function getParentLocation(): ?self

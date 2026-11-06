@@ -26,7 +26,7 @@ final class LocationType extends AbstractType implements SectionMapInterface
     {
         return [
             'overview'      => ['name', 'locationType', 'code', 'description', 'parentLocation'],
-            'address'       => ['address', 'city', 'postalCode', 'country'],
+            'address'       => ['address', 'city', 'postalCode', 'country', 'latitude', 'longitude'],
             'security_zone' => ['securityLevel'],
             'access_control'=> ['requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem'],
             'environmental' => ['capacity', 'squareMeters'],
@@ -60,6 +60,7 @@ final class LocationType extends AbstractType implements SectionMapInterface
                     'location.type.entrance' => 'entrance',
                     'location.type.parking' => 'parking',
                     'location.type.outdoor' => 'outdoor',
+                    'location.type.region' => 'region',
                     'location.type.other' => 'other',
                 ],
                 'required' => true,
@@ -121,6 +122,22 @@ final class LocationType extends AbstractType implements SectionMapInterface
                     'maxlength' => 20,
                     'placeholder' => 'location.placeholder.postal_code',
                 ],
+            ])
+            // Location map: empty = filled from postal code / city / country.
+            ->add('latitude', NumberType::class, [
+                'label' => 'location.field.latitude',
+                'required' => false,
+                'scale' => 5,
+                'html5' => true,
+                'help' => 'location.help.coordinates',
+                'attr' => ['step' => 'any', 'min' => -90, 'max' => 90],
+            ])
+            ->add('longitude', NumberType::class, [
+                'label' => 'location.field.longitude',
+                'required' => false,
+                'scale' => 5,
+                'html5' => true,
+                'attr' => ['step' => 'any', 'min' => -180, 'max' => 180],
             ])
             ->add('securityLevel', ChoiceType::class, [
                 'label' => 'location.field.security_level',

@@ -22,12 +22,15 @@
         ]
     } %}
 
+    {% set _site = location %}
+    {% for _i in 1..20 %}{% if _site.parentLocation %}{% set _site = _site.parentLocation %}{% endif %}{% endfor %}
     {{ _fa_page_header.render({
         badge: { icon: 'geo-alt', label: ('location.type.' ~ location.locationType)|trans({}, 'locations') },
         title: location.name,
         subtitle: location.code|default(''),
         actions: [
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_location_edit', {id: location.id}) },
+            { label: 'location.map.show_on_map'|trans({}, 'locations'), variant: 'ghost', href: path('app_location_map', { site: _site.id }) },
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_location_index') }
         ]
     }) }}
@@ -114,6 +117,9 @@
             {% endif %}
             {% if location.country %}
                 <p><strong>{{ location.country }}</strong></p>
+            {% endif %}
+            {% if location.geoSource %}
+                <p class="small mb-0">{{ ('location.geo.source.' ~ location.geoSource)|trans({}, 'locations') }}</p>
             {% endif %}
         {% endblock %}
     {% endembed %}

@@ -19,6 +19,8 @@ location:
         address: Adresse
         postal_code: Postleitzahl
         country: Land
+        latitude: Breitengrad
+        longitude: Längengrad
         parent_location: 'Übergeordneter Standort'
         access_control_system: Zutrittskontrollsystem
         access_control: Zutrittskontrolle
@@ -63,6 +65,7 @@ location:
         responsible_person_user: '-- Benutzerkonto wählen --'
         responsible_person_ref: '-- Person wählen --'
     help:
+        coordinates: 'Leer lassen: wird aus Postleitzahl, Ort und Land ermittelt. Eingetragene Werte bleiben beim Ändern der Adresse erhalten.'
         type: 'Wählen Sie den passenden Standorttyp (Gebäude, Raum, Rechenzentrum, …)'
         code: 'Interner Standort‑Code für eindeutige Referenz (optional)'
         parent: 'Optional – ordnen Sie den Standort einem übergeordneten Standort zu'
@@ -84,6 +87,7 @@ location:
         entrance: Eingang
         parking: Parkplatz
         outdoor: Außenbereich
+        region: 'Region (ohne Gebäude)'
         campus: Campus
         other: Sonstiges
     security:
@@ -98,6 +102,110 @@ location:
         no_locations: 'Keine Standorte vorhanden.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diesen Standort löschen möchten?'
+    view:
+        aria: 'Ansicht der Standorte'
+        list: Liste
+        map: Karte
+    geo:
+        source:
+            postal: 'Lage auf der Karte: nach Postleitzahl'
+            city: 'Lage auf der Karte: nach Ort'
+            country: 'Lage auf der Karte: nur Land bekannt'
+            online: 'Lage auf der Karte: online nachgeschlagen'
+            manual: 'Lage auf der Karte: von Hand eingetragen'
+            region: 'Lage auf der Karte: Gebiet (Land, EU/EWR oder weltweit)'
+    map:
+        title: Standortkarte
+        aria: 'Weltkarte mit %count% Standorten'
+        attribution: 'Karte: Natural Earth. Postleitzahlen und Orte: GeoNames (CC BY 4.0).'
+        show_on_map: 'Auf Karte zeigen'
+        focus: 'Nur Handlungsbedarf'
+        no_action: 'Kein Standort mit Handlungsbedarf.'
+        mine: 'mein Standort'
+        children: '%count% Unterstandorte'
+        gaps_of: '%count% von %total% offen'
+        coarse: '%count% Standorte nur auf Landesebene platziert. Mit Postleitzahl und Ort werden sie genau.'
+        unplaced:
+            title: '%count% Standorte ohne Ort'
+            body: 'Ohne Ort, Postleitzahl oder Land erscheinen sie nur in der Tabelle:'
+        action:
+            settings: Karteneinstellungen
+            store: 'Lage speichern'
+            refine: 'Lage online genauer bestimmen'
+        flash:
+            geocoded: '%count% Standorte platziert.'
+        lens:
+            aria: Sicht
+            ciso:
+                label: 'CISO / Leitung'
+                question: 'Wo liegt kritisches Restrisiko?'
+            isb:
+                label: ISB
+                question: 'Welche Nachweise fehlen an welchem Standort?'
+            cm:
+                label: Compliance
+                question: 'Welche Lücke tritt an mehreren Standorten auf?'
+            owner:
+                label: 'Meine Standorte'
+                question: 'Was ist an meinem Standort offen?'
+        layer:
+            aria: Kartenebene
+            risk: Restrisiko
+            gaps: Prüfungen
+        zoom:
+            aria: Zoom
+            in: Vergrößern
+            out: Verkleinern
+            fit: 'Alle Standorte'
+            world: Welt
+        area:
+            EU: 'EU/EWR'
+            WORLD: weltweit
+        legend:
+            region: 'gestrichelt = Region'
+            size: 'Größe = Schutzbedarf'
+            risk_low: niedrig
+            risk_medium: mittel
+            risk_high: hoch
+            risk_critical: kritisch
+            risk_none: 'keine Risiken'
+            gaps_none: 'alle erfüllt'
+            gaps_some: '1 bis 2 offen'
+            gaps_many: 'ab 3 offen'
+        col:
+            place: Ort
+            protection: Schutzbedarf
+            risk: Restrisiko
+            gaps: Prüfungen
+            incidents: 'Offene Vorfälle'
+            assets: Assets
+        panel:
+            top_risks: 'Höchste Risiken'
+            checks: 'Prüfungen: %count% von %total% offen'
+        check_ok: erfüllt
+        check_gap: offen
+        check:
+            owner: 'Verantwortliche Person benannt'
+            deputy: 'Vertretung benannt'
+            access_control: 'Zutrittskontrolle passt zur Sicherheitsstufe'
+            camera: 'Videoüberwachung bei Stufe „Gesichert“'
+            risks_treated: 'Alle Risiken mit Behandlung'
+            incidents_closed: 'Keine offenen Vorfälle an Assets'
+        fix:
+            owner: 'Verantwortliche Person zuweisen'
+            deputy: 'Vertretung benennen'
+            access_control: 'Zutrittssystem eintragen'
+            camera: 'Kameraüberwachung eintragen'
+            risks_treated: 'Offene Risiken behandeln'
+            incidents_closed: 'Offene Vorfälle ansehen'
+        same_gap:
+            title: 'Gleiche Lücke an mehreren Standorten'
+            count: '%count% Standorte:'
+        link:
+            location: 'Standort öffnen'
+            risks: 'Risiken (%count%)'
+            assets: 'Assets (%count%)'
+            incidents: Vorfälle
     title.list: Standorte
     title.create: 'Standort anlegen'
     title.show: Standortdetails

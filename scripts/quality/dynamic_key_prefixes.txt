@@ -147,6 +147,12 @@ journey.status	1
 kpi_threshold.key	1
 lifecycle	2
 lifecycle.tenant_lifecycle	1
+location.geo.source	1
+location.map.area	1
+location.map.check	1
+location.map.fix	1
+location.map.layer	1
+location.map.lens	1
 location.security	3
 location.type	3
 management_reports.category	1

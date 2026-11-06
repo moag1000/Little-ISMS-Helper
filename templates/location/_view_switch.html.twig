@@ -1,0 +1,8 @@
+{# List / map switch shared by location/index and location/map. #}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+<nav class="location-view-switch mb-3" aria-label="{{ 'location.view.aria'|trans({}, 'locations') }}">
+    {{ _fa_filter_chip.group([
+        { label: 'location.view.list'|trans({}, 'locations'), href: path('app_location_index') },
+        { label: 'location.view.map'|trans({}, 'locations'), href: path('app_location_map') }
+    ], active == 'map' ? 1 : 0, { ariaLabel: 'location.view.aria'|trans({}, 'locations') }) }}
+</nav>

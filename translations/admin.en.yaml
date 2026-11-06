@@ -115,6 +115,7 @@ admin:
             dora_roi: { label: 'DORA RoI XBRL export', desc: 'Register of Information XBRL/CSV export for BaFin reporting' }
             # Sprint 6 deferred system-settings sub-pages
             api_rate_limits: { label: 'API rate limits', desc: 'Request limits per route and token class' }
+            location_map_settings: { label: 'Location map', desc: 'Online lookup of location positions (optional)' }
             backup_settings: { label: 'Backup settings', desc: 'Retention windows and automated backup scheduling' }
             fiscal_year: { label: 'Fiscal year', desc: 'Start month and fiscal year for reports and KPIs' }
             data_retention_settings: { label: 'Retention periods', desc: 'GDPR deletion schedules per data category' }
@@ -1188,6 +1189,21 @@ admin:
             help: 'Regular expression matching route paths that are exempt from rate limiting (e.g. health-check, metrics). Leave empty to apply limits globally.'
 
     # ── Backup Settings ───────────────────────────────────────────────────────────
+    location_map:
+        title: 'Location map'
+        geocoding_title: 'Location positions'
+        offline_note: 'Positions are derived offline from postal code, city and country (DE, AT, CH by postal code, other countries by city). Nothing leaves the server.'
+        online:
+            label: 'Look up online when offline data only knows the country'
+            help: 'Only postal code, city and country code are sent. At most 10 lookups per run, one per second. The result is stored on the location.'
+        endpoint:
+            label: 'Service URL (Nominatim-compatible)'
+            help: 'HTTPS only. Default: %default%. For self-hosting, enter the URL of your own Nominatim instance.'
+        privacy_title: Privacy
+        privacy_text: 'Postal code and city of a company site are usually not personal data. The public service has its own terms of use; a self-hosted instance avoids any transfer.'
+        saved: Saved.
+        csrf_invalid: 'Session expired. Reload the page.'
+        endpoint_invalid: 'Invalid URL. HTTPS only, without credentials.'
     backups:
         title: 'Backup Settings'
         subtitle: 'Configure automated backup schedule and data retention.'

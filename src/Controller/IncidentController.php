@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\Location\LocationScope;
 use App\Attribute\RequiresModule;
 use App\Service\BulkDeleteService;
 use App\Entity\Tenant;
@@ -97,9 +98,7 @@ class IncidentController extends AbstractController
         $focus = $request->query->get('focus'); // Alva-hint deep-link target
         $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Cross-tenant + orphan views are admin-only — silently coerce to
-        // 'own' for non-admins so a hand-crafted ?view=all URL doesn't leak
-        // foreign-tenant data.
+        // Cross-tenant + orphan views are admin-only (no ?view=all leak for non-admins).
         $isAdmin = $this->isGranted('ROLE_ADMIN');
         if (in_array($view, ['orphaned', 'all'], true) && !$isAdmin) {
             $view = 'own';
@@ -156,6 +155,7 @@ class IncidentController extends AbstractController
         }
 
         // Apply filters
+        $allIncidents = LocationScope::filter($allIncidents, $request->query->getInt('location')); // drill-down from the location map
         if ($severity) {
             $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getSeverity()?->value === $severity);
         }
