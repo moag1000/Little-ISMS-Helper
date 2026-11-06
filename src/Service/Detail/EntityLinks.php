@@ -27,7 +27,7 @@ class EntityLinks
 {
     public const int LIMIT = 8;
 
-    /** Group type => [module key or null, show route]. Order is the chain order. */
+    /** Group type => [module key, show route]. Order is the chain order. */
     private const array GROUPS = [
         'asset' => ['assets', 'app_asset_show'],
         'risk' => ['risks', 'app_risk_show'],
@@ -71,7 +71,7 @@ class EntityLinks
             if ($type === $source || !array_key_exists($type, $related)) {
                 continue;
             }
-            if ($module !== null && !$this->modules->isModuleActive($module)) {
+            if (!$this->modules->isModuleActive($module)) {
                 continue;
             }
             [$records, $via] = $related[$type];
