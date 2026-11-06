@@ -1,0 +1,40 @@
+{#
+ # FairyAurora v4 — Historie (detail-page skeleton, UI wave E)
+ #
+ # Last block before the comments: the newest audit-log entries of the record
+ # and, for lifecycle-managed entities, the status transitions.
+ #
+ # Usage:
+ #   {% include '_components/_fa_show_history.html.twig' with {
+ #       auditLogs: auditLogs|default([]), total: totalAuditLogs|default(0),
+ #       entityType: 'Risk', entityId: risk.id, lifecycle: 'risk'
+ #   } only %}
+ #}
+{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+<section id="history" class="fa-section fa-show-section mb-4" aria-labelledby="history-title">
+    <h2 id="history-title" class="fa-section__title">{{ 'show.anchor.history'|trans({}, 'messages') }} <span class="text-muted">({{ total|default(0) }})</span></h2>
+    {% if auditLogs|default([]) is not empty %}
+        <div class="fa-audit-feed">
+            {% for log in auditLogs %}
+                <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
+                    <span class="fa-audit-row__ts">{{ log.createdAt|fa_datetime }}</span>
+                    <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
+                    <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
+                    <span class="fa-audit-row__action">{{ log.action|upper }}</span>
+                    <span class="fa-audit-row__target">{{ log.entityType|default(entityType) }}#{{ log.entityId|default('') }}</span>
+                    <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0, 12) : '' }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        {% if total|default(0) > auditLogs|length %}
+            <a href="{{ path('app_audit_log_index', {entity: entityType, entityId: entityId}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm mt-3">
+                {{ 'action.view_all'|trans({}, 'messages') }} ({{ total }})
+            </a>
+        {% endif %}
+    {% else %}
+        <p class="text-muted mb-0">{{ 'show.history.none'|trans({}, 'messages') }}</p>
+    {% endif %}
+</section>
+{% if lifecycle|default(null) %}
+    {{ _lifecycle_history.history(lifecycle, entityId) }}
+{% endif %}

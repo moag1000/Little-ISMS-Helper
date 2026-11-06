@@ -21,9 +21,6 @@ asset:
     quick_new: Quick entry
   details:
     title: Asset details
-  risk_item:
-    risk_level: 'Risk Level: %value%'
-    status: 'Status: %value%'
   section:
     basic_info: Basic Information
     assignment: Assignment
@@ -42,11 +39,7 @@ asset:
     handling_instructions: Handling instructions
     acceptable_use_policy: Acceptable use policy
     protection_analysis: Protection needs analysis
-    protecting_controls: Protecting controls
-    related_risks: Related risks
-    related_incidents: Related incidents
     processing_activities: Linked processing activities (RoPA)
-    history: History
     business_impact: Business Impact
     rto_analysis: Rto Analysis
     critical_assets: Critical Assets

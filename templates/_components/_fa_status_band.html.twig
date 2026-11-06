@@ -1,0 +1,55 @@
+{#
+ # FairyAurora v4 — Status band (detail-page skeleton, UI wave E)
+ #
+ # One line under the page header: lifecycle status, the few facts a reader
+ # decides on (owner, next due date, level) and the running approval.
+ # Facts with an empty value are skipped.
+ #
+ # Props:
+ #   status   — pre-rendered status chip ({% set _s %}…{% endset %})
+ #   facts    — [{ label, value }]
+ #   workflow — workflow_state(entity) result; renders a pill linking the approval
+ #   actions  — pre-rendered actions (lifecycle transition dropdown)
+ #
+ # Usage:
+ #   {% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+ #   {{ _fa_status_band.render({ status: _status, facts: [...], workflow: workflow_state(risk), actions: _actions }) }}
+ #}
+{% macro render(props) %}
+{% import '_components/_status_pill.html.twig' as _pill %}
+{% set _wf = props.workflow|default({}) %}
+<div class="fa-status-band" data-testid="status-band">
+    {% if props.status|default(null) %}
+        <div class="fa-status-band__status">{{ props.status }}</div>
+    {% endif %}
+    <dl class="fa-status-band__facts">
+        {% for f in props.facts|default([]) %}
+            {% if f.value is not null and f.value is not same as('') %}
+                <div class="fa-status-band__fact">
+                    <dt>{{ f.label }}</dt>
+                    <dd>{{ f.value }}</dd>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if _wf.id is defined and _wf.id %}
+            <div class="fa-status-band__fact" data-testid="status-band-workflow">
+                <dt>{{ 'show.status.workflow'|trans({}, 'messages') }}</dt>
+                <dd>
+                    <a href="{{ path('app_workflow_instance_show', {id: _wf.id}) }}">
+                        {{- _pill.render(
+                            (_wf.stuck|default(false) ? 'show.status.workflow_overdue' : 'show.status.workflow_running')|trans({}, 'messages'),
+                            _wf.stuck|default(false) ? 'danger' : 'primary',
+                            {size: 'sm'}
+                        ) -}}
+                    </a>
+                    {% if _wf.step_name|default(null) %}{{ _wf.step_name }}{% endif %}
+                    {% if _wf.due_date|default(null) %}· {{ _wf.due_date|fa_date }}{% endif %}
+                </dd>
+            </div>
+        {% endif %}
+    </dl>
+    {% if props.actions|default(null) %}
+        <div class="fa-status-band__actions">{{ props.actions }}</div>
+    {% endif %}
+</div>
+{% endmacro %}

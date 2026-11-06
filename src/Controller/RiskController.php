@@ -32,7 +32,6 @@ use App\Service\RiskMatrixService;
 use App\Service\RiskService;
 use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\Risk\RiskRegisterExporter;
-use App\Service\RoleDashboardService;
 use App\Service\TagFilterService;
 use App\Service\Risk\RiskIncidentLinkService;
 use App\Repository\RiskIncidentLinkRepository;
@@ -80,7 +79,6 @@ class RiskController extends AbstractController
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
         private readonly ?RiskIncidentLinkRepository $riskIncidentLinkRepository = null,
-        private readonly ?RoleDashboardService $roleDashboardService = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?UserRepository $userRepository = null,
         private readonly ?RiskCloner $riskCloner = null,
@@ -653,14 +651,6 @@ class RiskController extends AbstractController
             $canEdit = true;
         }
 
-        // Data-Reuse: Build link matrix data
-        // Risks have a single linkedVulnerability (ManyToOne). Wrap it in an
-        // array so the matrix component can render a uniform list.
-        $linkedVulnerabilities = [];
-        if ($risk->getLinkedVulnerability() !== null) {
-            $linkedVulnerabilities[] = $risk->getLinkedVulnerability();
-        }
-
         // Risk Treatment Plans linked to this risk (ISO 27001 Cl.6.1.3)
         $treatmentPlans = $this->riskTreatmentPlanRepository->findByRisk($risk);
 
@@ -676,9 +666,6 @@ class RiskController extends AbstractController
         // Structured incident cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository?->findByRisk($risk) ?? [];
 
-        // Z.0 — Workflow transparency: pre-compute pending banner for this entity
-        $workflowInfo = $this->roleDashboardService?->getWorkflowInfoForEntity('Risk', $risk->getId()) ?? [];
-
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
             'auditLogs' => $recentAuditLogs,
@@ -686,9 +673,6 @@ class RiskController extends AbstractController
             'isInherited' => $isInherited,
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
-            // Data-Reuse: one-click link matrix
-            'linkedVulnerabilities' => $linkedVulnerabilities,
-            'linkedIncidents' => $risk->getIncidents(),
             // Treatment plans collection on Risk show
             'treatmentPlans' => $treatmentPlans,
             // Impact analysis (which frameworks break if this risk changes?)
@@ -697,8 +681,6 @@ class RiskController extends AbstractController
             'comments' => $comments,
             // Structured incident cross-links
             'riskIncidentLinks' => $riskIncidentLinks,
-            // Z.0: lifecycle pending banner data (no N+1)
-            'workflow_info' => $workflowInfo,
         ]);
     }
     /**

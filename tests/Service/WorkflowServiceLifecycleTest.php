@@ -315,7 +315,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $step->method('getApproverRole')->willReturn('ROLE_MANAGER');
 
         $dbWorkflow = $this->buildWorkflow('Risk Review', 'Risk', [$step]);
-        $this->workflowRepository->method('findOneBy')->willReturn($dbWorkflow);
+        $this->workflowRepository->method('findBy')->willReturn([$dbWorkflow]);
 
         // Make duplicate-check return null so a new instance is created
         $query = $this->getMockBuilder(\Doctrine\ORM\Query::class)
@@ -361,7 +361,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $this->security->method('getUser')->willReturn($currentUser);
 
         $dbWorkflow = $this->buildWorkflow('Empty Workflow', 'Risk', []);
-        $this->workflowRepository->method('findOneBy')->willReturn($dbWorkflow);
+        $this->workflowRepository->method('findBy')->willReturn([$dbWorkflow]);
         $this->workflowInstanceRepository->method('findOneBy')->willReturn(null);
 
         $this->lifecycleService->expects($this->never())->method('transition');

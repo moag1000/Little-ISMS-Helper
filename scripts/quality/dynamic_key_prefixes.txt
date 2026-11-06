@@ -254,6 +254,8 @@ scheduled_report.type	3
 setup	1
 setup.applicability.bucket	1
 severity	3
+show.links.derive	1
+show.links.type	1
 soa.category	3
 soa.status	1
 sso.domain_mode	2

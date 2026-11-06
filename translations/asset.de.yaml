@@ -21,9 +21,6 @@ asset:
     quick_new: Schnell erfassen
   details:
     title: Asset‑Details
-  risk_item:
-    risk_level: 'Risikostufe: %value%'
-    status: 'Status: %value%'
   section:
     basic_info: Grundinformationen
     assignment: Zuordnung
@@ -42,11 +39,7 @@ asset:
     handling_instructions: Umgangshinweise
     acceptable_use_policy: Richtlinie zur akzeptablen Nutzung
     protection_analysis: Schutzbedarfsanalyse
-    protecting_controls: Schutzmaßnahmen
-    related_risks: Zugehörige Risiken
-    related_incidents: Zugehörige Incidents
     processing_activities: Verknüpfte Verarbeitungstätigkeiten (VVT)
-    history: Historie
     business_impact: Geschäftliche Auswirkung
     rto_analysis: RTO-Analyse
     critical_assets: Kritische Assets

@@ -5,7 +5,8 @@
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_fa_icon.html.twig' as _fa_icon %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'incident' %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_status_pill.html.twig' as pill %}
@@ -49,11 +50,29 @@
         {% endif %}
     {% endif %}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Incident', status_key: incident.status.value|default(incident.status) }) }}
-        {{ _lifecycle_actions.dropdown(incident, 'incident', 'incident_lifecycle') }}
-    </div>
+    {# Detail skeleton (UI wave E): status band → anchor bar → links → sections → history → comments #}
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Incident', status_key: incident.status.value|default(incident.status) }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(incident, 'incident', 'incident_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.severity'|trans({}, 'messages'), value: incident.severity ? incident.severity.value|upper : null },
+            { label: 'show.status.detected'|trans({}, 'messages'), value: incident.detectedAt ? incident.detectedAt|fa_date : null },
+            { label: 'incident.field.assigned_to'|trans({}, 'incident'), value: incident.assignedTo },
+        ],
+        workflow: workflow_state(incident),
+    }) }}
+
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages') },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'nis2-reporting', label: 'incident.nis2_timeline.title'|trans({}, 'incident'), show: is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt },
+        { id: 'bcm-impact', label: 'incident.section.bcm_impact'|trans({}, 'incident'), show: is_module_active('bcm') },
+        { id: 'incident-risk-links', label: 'incident.link.section_title'|trans({}, 'incident') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages'), count: totalAuditLogs|default(0) },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages'), count: comments|default([])|length },
+    ]) }}
 
     {# NIS2 MUS-export dropdown + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if (is_nis2_active() and incident.requiresNis2Reporting) or is_granted('ROLE_ADMIN') %}
@@ -154,14 +173,9 @@
         </div>
     {% endif %}
 
-    {# Data-Reuse: Entity Link Matrix #}
-    {% include '_components/_entity_link_matrix.html.twig' with {
-        source_type: 'incident',
-        entity: incident,
-        linked_risks: linkedRisks|default([]),
-        linked_vulnerabilities: linkedVulnerabilities|default([])
-    } only %}
+    {% include '_components/_fa_entity_links.html.twig' with { entity: incident } only %}
 
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             {% import '_components/_status_pill.html.twig' as pill %}
@@ -192,7 +206,7 @@
 
             {# NIS2 Article 23 Reporting Timeline #}
             {% if is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt %}
-                <div class="detail-section nis2-timeline-section">
+                <div id="nis2-reporting" class="detail-section nis2-timeline-section fa-show-section">
                     <h3 class="h5">
                         <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                         {{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}
@@ -435,54 +449,9 @@
                 </div>
             {% endif %}
 
-            {# Audit Log History #}
-            {% if auditLogs is defined and auditLogs|length > 0 %}
-                <div class="detail-section">
-                    <h3 class="h5"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'incident.section.history'|trans({}, 'incident') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
-                    <div class="fa-audit-feed">
-                        {% for log in auditLogs %}
-                        <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
-                            <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
-                            <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
-                            <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
-                            <span class="fa-audit-row__action">{{ log.action|upper }}</span>
-                            <span class="fa-audit-row__target">{{ log.entityType|default('Incident') }}#{{ log.entityId|default('') }}</span>
-                            <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% if totalAuditLogs > 10 %}
-                    <div class="text-center mt-3">
-                        <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit') }}</small>
-                    </div>
-                    {% endif %}
-                </div>
-            {% endif %}
-
-            {# Data Reuse: Affected Assets #}
-            {% if incident.affectedAssets is defined and incident.affectedAssets|length > 0 %}
-                <div class="detail-section">
-                    <h3 class="h5"><i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'incident.section.affected_assets'|trans({'%count%': incident.affectedAssets|length}, 'incident') }}</h3>
-                    <div class="data-reuse-list">
-                        {% for asset in incident.affectedAssets %}
-                            <div class="data-reuse-item">
-                                <strong>{{ asset.name }}</strong>
-                                {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
-                                <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
-                                {# Legacy monetaryValue column dropped — currentValue is canonical. Pre-migration rows were backfilled in Version20260612100000_DropAssetMonetaryValue. #}
-                                {% set assetVal = asset.currentValue %}
-                                {% if assetVal %}
-                                    <small class="text-danger">{{ 'incident.bcm.value'|trans({}, 'incident') }}: €{{ assetVal }}</small>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
             {# CRITICAL-05: BCM Impact Analysis — ISO 22301, bcm module only #}
             {% if is_module_active('bcm') %}
-            <div class="detail-section">
+            <div id="bcm-impact" class="detail-section fa-show-section">
                 <h3 class="h5"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'incident.section.bcm_impact'|trans({}, 'incident') }}</h3>
 
                 {% if incident.affectedBusinessProcesses|length > 0 %}
@@ -571,67 +540,34 @@
             </div>
             {% endif %}
 
-            {# Data Reuse: Realized Risks #}
-            {% if incident.realizedRisks is defined and incident.realizedRisks|length > 0 %}
-                <div class="detail-section">
-                    <h3 class="h5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'incident.section.realized_risks'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}</h3>
-                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
-                        {% block alert_body %}<strong>{{ 'incident.reuse.risk_realization'|trans({}, 'incident') }}:</strong> {{ 'incident.reuse.risk_realization_detail'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}{% endblock %}
-                    {% endembed %}
-                    <div class="data-reuse-list">
-                        {% for risk in incident.realizedRisks %}
-                            <div class="data-reuse-item">
-                                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
-                                    <div>
-                                        <strong>{{ risk.title }}</strong>
-                                        {% set riskClass = {critical: 'danger', high: 'danger', medium: 'warning', low: 'success'}[risk_level_band(risk.inherentRiskLevel)] %}
-                                        {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'incident.reuse.risk_level'|trans({'%level%': risk.inherentRiskLevel}, 'incident') } %}
-                                        <small>{{ 'incident.reuse.probability'|trans({'%value%': risk.probability}, 'incident') }}</small>
-                                        {# Show audit-trail of last incident-driven reassessment #}
-                                        {% if risk.lastIncidentReassessmentAt %}
-                                            <small class="text-muted d-block">
-                                                <i class="fa-icon fa-icon--util-clock" aria-hidden="true"></i>
-                                                {{ 'incident.fv5.last_reassessed'|trans({'%date%': risk.lastIncidentReassessmentAt|date('Y-m-d H:i')}, 'incident') }}
-                                            </small>
-                                        {% endif %}
-                                    </div>
-                                    {# Update Risk-Assessment button #}
-                                    <form method="post" action="{{ path('app_incident_risk_reassess', {id: incident.id, riskId: risk.id}) }}" class="m-0">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('incident-risk-reassess-' ~ incident.id ~ '-' ~ risk.id) }}">
-                                        <button type="submit"
-                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                                title="{{ 'incident.fv5.reassess_help'|trans({}, 'incident') }}">
-                                            <i class="fa-icon fa-icon--util-refresh" aria-hidden="true"></i>
-                                            {{ 'incident.fv5.reassess_button'|trans({}, 'incident') }}
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
-            {# Data Reuse: Related Controls #}
-            {% if incident.relatedControls is defined and incident.relatedControls|length > 0 %}
-                <div class="detail-section">
-                    <h3 class="h5"><i class="fa-icon fa-icon--certificate" aria-hidden="true"></i> {{ 'incident.section.related_controls'|trans({'%count%': incident.relatedControls|length}, 'incident') }}</h3>
-                    <p class="text-muted">{{ 'incident.controls_should_prevent'|trans({}, 'incident') }}</p>
-                    <div class="data-reuse-list">
-                        {% for control in incident.relatedControls %}
-                            <div class="data-reuse-item">
-                                {% include '_components/_iso_reference_label.html.twig' with { control: control, code_class: 'fw-bold' } only %}
-                                {% include '_components/_badge.html.twig' with { variant: control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger'), content: control.implementationStatus|upper } %}
-                                {% if control.implementationStatus != 'implemented' %}
-                                    <small class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'incident.reuse.control_not_implemented'|trans({}, 'incident') }}</small>
+            {# Realised risks: level in the links block above, re-assessment here #}
+            {% if incident.realizedRisks|length > 0 %}
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                    {% block alert_body %}<strong>{{ 'incident.reuse.risk_realization'|trans({}, 'incident') }}:</strong> {{ 'incident.reuse.risk_realization_detail'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}{% endblock %}
+                {% endembed %}
+                {# ISO 27001 Cl. 6.1.2: re-assess each realised risk against the real incident #}
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-0" data-testid="incident-risk-reassess">
+                    {% for risk in incident.realizedRisks %}
+                        <li class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                            <span>
+                                <a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a>
+                                {% if risk.lastIncidentReassessmentAt %}
+                                    <small class="text-muted d-block">{{ 'incident.fv5.last_reassessed'|trans({'%date%': risk.lastIncidentReassessmentAt|fa_datetime}, 'incident') }}</small>
                                 {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                            </span>
+                            <form method="post" action="{{ path('app_incident_risk_reassess', {id: incident.id, riskId: risk.id}) }}" class="m-0">
+                                <input type="hidden" name="_token" value="{{ csrf_token('incident-risk-reassess-' ~ incident.id ~ '-' ~ risk.id) }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'incident.fv5.reassess_help'|trans({}, 'incident') }}">
+                                    {{ 'incident.fv5.reassess_button'|trans({}, 'incident') }}
+                                </button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
 
     {# Incident-Risk cross-links #}
     {% include 'incident/_linked_risks.html.twig' with {
@@ -639,7 +575,13 @@
         riskIncidentLinks: riskIncidentLinks|default([])
     } only %}
 
+    {% include '_components/_fa_show_history.html.twig' with {
+        auditLogs: auditLogs|default([]), total: totalAuditLogs|default(0),
+        entityType: 'Incident', entityId: incident.id, lifecycle: 'incident'
+    } only %}
+
     {# Comment-Thread adoption (C7 macro). #}
+    <div id="comments" class="fa-show-section">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'Incident',
@@ -648,9 +590,7 @@
         formAction: path('app_comment_post', {entityType: 'Incident', entityId: incident.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
-
-    {# Lifecycle X.3b — transition history tab #}
-    {{ _lifecycle_history.history('incident', incident.id) }}
+    </div>
 </div>
 
 <style>
