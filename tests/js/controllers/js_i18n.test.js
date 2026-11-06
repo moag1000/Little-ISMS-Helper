@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import { faT } from '../../../assets/js/fa-i18n.js';
 import PasswordStrengthController from '../../../assets/controllers/password_strength_controller.js';
-import SearchController from '../../../assets/controllers/search_controller.js';
+import CommandPaletteController from '../../../assets/controllers/command_palette_controller.js';
 import ReportDesignerController from '../../../assets/controllers/report_designer_controller.js';
 import BulkDeleteConfirmationController from '../../../assets/controllers/bulk_delete_confirmation_controller.js';
 import { mount, stopAll } from '../support/mount.js';
@@ -58,14 +58,23 @@ describe('controllers render dictionary texts', () => {
         expect(text).not.toMatch(/Missing|Upper/);
     });
 
-    it('search escapes the query in the empty state and uses the dictionary', async () => {
-        const { controller } = await mount('search', SearchController, `
-            <div data-controller="search"><div data-search-target="results"></div></div>`);
-        controller.displayEmpty('<img src=x onerror=alert(1)>');
-        const results = document.querySelector('[data-search-target="results"]');
-        expect(results.querySelector('img')).toBeNull();
-        expect(results.textContent).toContain('Keine Ergebnisse für „<img src=x onerror=alert(1)>“');
-        expect(controller.highlight('a<b>c', 'b')).toBe('a&lt;<mark>b</mark>&gt;c');
+    it('search overlay escapes records and the query and uses the dictionary', async () => {
+        window.translations = { ui: { ...GERMAN, 'search.category.risks': 'Risiken' } };
+        const { controller } = await mount('command-palette', CommandPaletteController, `
+            <div data-controller="command-palette">
+                <div data-command-palette-target="modal">
+                    <input data-command-palette-target="input">
+                    <div data-command-palette-target="results"></div>
+                    <div data-command-palette-target="noResults" class="hidden"></div>
+                </div>
+            </div>`);
+        controller.query = 'b';
+        controller.records = controller.recordGroups({ risks: [{ title: 'a<b>c', url: '/de/risk/1' }] });
+        controller.render();
+        const results = document.querySelector('[data-command-palette-target="results"]');
+        expect(results.querySelector('b')).toBeNull();
+        expect(results.textContent).toContain('Risiken');
+        expect(controller.highlight('a<b>c')).toBe('a&lt;<mark>b</mark>&gt;c');
     });
 
     it('report-designer renders an escaped Aurora table and translated empty text', async () => {

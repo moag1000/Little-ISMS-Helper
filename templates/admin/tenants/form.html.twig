@@ -123,12 +123,12 @@
                             {% block table_body %}
                                 <tr class="fa-table__row">
                                     <th scope="row" class="fa-table__cell text-muted small">{{ 'common.created'|trans({}, 'messages') }}</th>
-                                    <td class="fa-table__cell small">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
+                                    <td class="fa-table__cell small">{{ tenant.createdAt|fa_datetime }}</td>
                                 </tr>
                                 {% if tenant.updatedAt %}
                                     <tr class="fa-table__row">
                                         <th scope="row" class="fa-table__cell text-muted small">{{ 'common.updated'|trans({}, 'messages') }}</th>
-                                        <td class="fa-table__cell small">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
+                                        <td class="fa-table__cell small">{{ tenant.updatedAt|fa_datetime }}</td>
                                     </tr>
                                 {% endif %}
                                 <tr class="fa-table__row">

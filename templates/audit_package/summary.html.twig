@@ -24,7 +24,7 @@
         <h1>{{ 'audits.audit_package.cover.title'|trans }}</h1>
         <div><strong>{{ 'audits.audit_package.cover.label.framework'|trans }}:</strong> {{ framework.name }} ({{ framework.code }}{% if framework.version %} — {{ framework.version }}{% endif %})</div>
         <div><strong>{{ 'audits.audit_package.cover.label.tenant'|trans }}:</strong> {{ tenant.name }}</div>
-        <div><strong>{{ 'audits.audit_package.cover.label.generated'|trans }}:</strong> {{ generated_at|date('d.m.Y H:i') }}</div>
+        <div><strong>{{ 'audits.audit_package.cover.label.generated'|trans }}:</strong> {{ generated_at|fa_datetime }}</div>
     </div>
 
     <h2>{{ 'audits.audit_package.section.summary'|trans }}</h2>

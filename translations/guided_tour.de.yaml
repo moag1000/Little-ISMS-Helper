@@ -55,8 +55,8 @@ guided_tour:
                 title: 'Für Einsteiger mit QM-Hintergrund'
                 body: 'Kennen Sie ISO 9001? Dann kennen Sie schon vieles. Im Hilfemenü unter „9001 → 27001 Brücke“ finden Sie eine konzeptuelle Übersetzung — z. B. CAPA ↔ Risikobehandlung, Prozesslandkarte ↔ SoA, Management Review ↔ Management-Bewertung.'
             command_palette:
-                title: 'Schneller mit der Command-Palette (⌘P / Ctrl+P)'
-                body: 'Drücken Sie ⌘P (Mac) oder Ctrl+P (Windows/Linux). Die Suche findet alle Seiten, Aktionen und Admin-Funktionen per Tastatur — schneller als durchs Menü zu klicken. Mit „?" sehen Sie alle Shortcuts.'
+                title: 'Suchen statt klicken (⌘K / Ctrl+K)'
+                body: '⌘K, ⌘P oder „/“ öffnen ein Fenster für Datensätze, Seiten und Befehle. Mit „?“ sehen Sie alle Tastenkürzel.'
             first_asset:
                 title: 'Ihr erstes Asset anlegen'
                 body: 'Assets (IT-Systeme, Informationen, Prozesse) sind die Grundlage — auf ihnen ruhen Risiken, Controls und Compliance. Legen Sie eines an und tragen Sie den Schutzbedarf ein (Vertraulichkeit / Integrität / Verfügbarkeit auf einer 1-5-Skala).'

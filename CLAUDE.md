@@ -291,6 +291,15 @@ detail pages come from `EntityLinks::DERIVE`. Legacy free-text person fields go 
 `App\Form\Util\LegacyFreeTextField::hideWhenEmpty()`. Mapping screens include
 `compliance/mapping/_hub_tabs.html.twig` (one menu entry, four tabs).
 
+**Display conventions (UI wave G).** Dates in text output go through `|fa_date` / `|fa_datetime`
+(admin format + timezone, null → "-"; Gate 77) — `|date('Y-m-d')` only in attributes/URLs.
+Statuses without a lifecycle (workflow instances, consents, import rows, compliance results) take
+their tone from `_components/_status_vocabulary.html.twig`, lifecycle entities from `_fa_status_chip`;
+no local `statusColors` maps, no own `<main>`, one `<h1>` (the page header's), Bootstrap tooltips
+only on focusable elements (Gate 78). Search and commands are one overlay
+(`_command_palette.html.twig`, ⌘K/⌘P/`/`, triggers carry `data-command-palette-open`); its
+commands use `path()` and are gated by module and role.
+
 **UI copy (Gate 71, `check_copy_slop.py`).** A toast is a participle, not a sentence:
 "Gespeichert.", "Export gestartet." — no "erfolgreich"/"successfully", no "!" anywhere in
 UI text (urgency comes from the toast colour and the words). Help texts only when they add a

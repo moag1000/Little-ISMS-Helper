@@ -11,7 +11,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block body %}
-<main class="fa-aurora-surface role-dashboard ciso-dashboard">
+<div class="fa-aurora-surface role-dashboard ciso-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
         title:    'ciso.title'|trans({}, 'dashboards'),
@@ -207,7 +207,7 @@
                                         <h6 class="mb-1">{{ approval.title }}</h6>
                                         <small class="text-muted">{{ approval.entity_type }}</small>
                                     </div>
-                                    <small class="text-muted">{{ approval.created_at|date('d.m.Y') }}</small>
+                                    <small class="text-muted">{{ approval.created_at|fa_date }}</small>
                                 </div>
                             </div>
                             {% endfor %}
@@ -340,5 +340,5 @@
         {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
     </div>
 
-</main>
+</div>
 {% endblock %}

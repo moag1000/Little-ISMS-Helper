@@ -52,7 +52,7 @@
         {% if tia.assessedAt %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'tia.field.assessed_at'|trans({}, 'tia') }}</span>
-                <span>{{ tia.assessedAt|date('Y-m-d') }}</span>
+                <span>{{ tia.assessedAt|fa_date }}</span>
             </div>
         {% endif %}
         {% if tia.assessedBy %}

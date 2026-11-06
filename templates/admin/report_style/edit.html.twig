@@ -22,7 +22,7 @@
     subtitle: 'admin.report_style.subtitle'|trans
 }) }}
 
-<main>
+<div>
 
 {% set _flash_variant_map = { 'success': 'success', 'error': 'danger', 'danger': 'danger', 'warning': 'warning', 'info': 'info', 'notice': 'info' } %}
 {% for label, msgs in app.flashes %}
@@ -141,5 +141,5 @@
         </section>
     </div>
 </div>
-</main>
+</div>
 {% endblock %}

@@ -10,7 +10,7 @@
 {% import '_components/_status_pill.html.twig' as pill %}
 
 {% block body %}
-<main class="fa-aurora-surface compliance-manager-dashboard">
+<div class="fa-aurora-surface compliance-manager-dashboard">
 
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -269,5 +269,5 @@
         }) }}
     {% endif %}
 
-</main>
+</div>
 {% endblock %}

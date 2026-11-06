@@ -10,7 +10,7 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
-<main class="fa-aurora-surface role-dashboard risk-manager-dashboard">
+<div class="fa-aurora-surface role-dashboard risk-manager-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
         title:    'risk_manager.title'|trans({}, 'dashboards'),
@@ -281,7 +281,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="mb-1">{{ treatment.risk_title }}</h6>
-                                    <small class="text-muted">{{ 'risk_manager.target_date'|trans({}, 'dashboards') }}: {{ treatment.target_date|date('d.m.Y') }}</small>
+                                    <small class="text-muted">{{ 'risk_manager.target_date'|trans({}, 'dashboards') }}: {{ treatment.target_date|fa_date }}</small>
                                 </div>
                                 {% include '_components/_badge.html.twig' with { variant: 'danger', content: treatment.days_overdue ~ ' ' ~ 'days'|trans({}, 'dashboards') } %}
                             </div>
@@ -382,5 +382,5 @@
         </div>
     </div>
 
-</main>
+</div>
 {% endblock %}

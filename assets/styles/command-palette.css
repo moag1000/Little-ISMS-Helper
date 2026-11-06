@@ -242,3 +242,9 @@
     .command-item:hover,
     .command-item.selected { transform: none; }
 }
+/* Search results inside the one overlay (UI wave G): second line + match marker */
+.command-item-description {
+    display: block; font: 400 12px var(--font-sans); color: var(--fg-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.command-item mark { background: var(--primary-tint); color: inherit; padding: 0; }

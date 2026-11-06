@@ -119,7 +119,7 @@
             <label class="form-check-label" for="lifecycle-alva-hint">
                 {{ 'policy_wizard.step.lifecycle.alva_hint_label'|trans }}
                 <i class="fa-icon fa-icon--ui-info text-muted ms-1"
-                   data-bs-toggle="tooltip"
+                   data-bs-toggle="tooltip" tabindex="0" role="img"
                    title="{{ 'policy_wizard.step.lifecycle.tooltip.alva_hint'|trans }}"
                    aria-label="{{ 'policy_wizard.step.lifecycle.tooltip.alva_hint'|trans }}"></i>
             </label>
@@ -181,7 +181,7 @@
                                 {% if is_bsi and hits_max %}
                                     <i class="fa-icon fa-icon--status-warning text-warning small"
                                        aria-label="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}"
-                                       data-bs-toggle="tooltip"
+                                       data-bs-toggle="tooltip" tabindex="0" role="img"
                                        title="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}"></i>
                                 {% endif %}
                             </td>

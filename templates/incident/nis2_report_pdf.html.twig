@@ -187,11 +187,11 @@
             </tr>
             <tr>
                 <td>Report Generated:</td>
-                <td>{{ "now"|date('d.m.Y H:i') }} UTC</td>
+                <td>{{ "now"|fa_datetime }} UTC</td>
             </tr>
             <tr>
                 <td>Incident Detected:</td>
-                <td>{{ incident.detectedAt|date('d.m.Y H:i') }}</td>
+                <td>{{ incident.detectedAt|fa_datetime }}</td>
             </tr>
             <tr>
                 <td>Severity Level:</td>
@@ -248,8 +248,8 @@
             </tr>
             <tr>
                 <td><strong>Early Warning (24h)</strong></td>
-                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : 'N/A' }}</td>
-                <td>{{ incident.earlyWarningReportedAt ? incident.earlyWarningReportedAt|date('d.m.Y H:i') : 'Pending' }}</td>
+                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|fa_datetime : 'N/A' }}</td>
+                <td>{{ incident.earlyWarningReportedAt ? incident.earlyWarningReportedAt|fa_datetime : 'Pending' }}</td>
                 <td>
                     {% if incident.earlyWarningReportedAt %}
                         <span class="status-badge status-compliant">Completed</span>
@@ -262,8 +262,8 @@
             </tr>
             <tr>
                 <td><strong>Detailed Notification (72h)</strong></td>
-                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : 'N/A' }}</td>
-                <td>{{ incident.detailedNotificationReportedAt ? incident.detailedNotificationReportedAt|date('d.m.Y H:i') : 'Pending' }}</td>
+                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|fa_datetime : 'N/A' }}</td>
+                <td>{{ incident.detailedNotificationReportedAt ? incident.detailedNotificationReportedAt|fa_datetime : 'Pending' }}</td>
                 <td>
                     {% if incident.detailedNotificationReportedAt %}
                         <span class="status-badge status-compliant">Completed</span>
@@ -276,8 +276,8 @@
             </tr>
             <tr>
                 <td><strong>Final Report (1 month)</strong></td>
-                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : 'N/A' }}</td>
-                <td>{{ incident.finalReportSubmittedAt ? incident.finalReportSubmittedAt|date('d.m.Y H:i') : 'Pending' }}</td>
+                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|fa_datetime : 'N/A' }}</td>
+                <td>{{ incident.finalReportSubmittedAt ? incident.finalReportSubmittedAt|fa_datetime : 'Pending' }}</td>
                 <td>
                     {% if incident.finalReportSubmittedAt %}
                         <span class="status-badge status-compliant">Completed</span>
@@ -377,7 +377,7 @@
 
     {# Footer #}
     <div class="footer">
-        Report generated on {{ "now"|date('d.m.Y H:i') }} | NIS2 Incident Management System | Page 1/1
+        Report generated on {{ "now"|fa_datetime }} | NIS2 Incident Management System | Page 1/1
     </div>
 </body>
 </html>

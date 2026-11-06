@@ -75,14 +75,8 @@
             </td>
             <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
             <td>
-                {% set statusColors = {
-                    'pending': 'warning',
-                    'in_progress': 'info',
-                    'approved': 'success',
-                    'rejected': 'danger',
-                    'cancelled': 'secondary'
-                } %}
-                {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
+                {% import '_components/_status_vocabulary.html.twig' as _status %}
+                {{ _status.pill('workflow', instance.status, ('workflow.status.' ~ instance.status)|trans({}, 'workflows')) }}
             </td>
             <td>
                 {% if instance.initiatedBy %}
@@ -96,7 +90,7 @@
             </td>
             <td>
                 {% if instance.dueDate %}
-                    {{ instance.dueDate|date('d.m.Y') }}
+                    {{ instance.dueDate|fa_date }}
                 {% else %}
                     <span class="text-muted">-</span>
                 {% endif %}

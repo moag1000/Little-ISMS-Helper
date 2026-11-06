@@ -19,8 +19,8 @@ export default class extends Controller {
         // Global Command Palette — matches existing binding in command_palette_controller.js
         // (metaKey/ctrlKey + 'p'). Documented here for discoverability; the actual key
         // handling lives in command_palette_controller.js — these entries are display-only.
-        { keys: ['⌘+P'], description: () => faT('keyboard_shortcuts.palette_mac'), category: 'global', displayOnly: true },
-        { keys: ['Ctrl+P'], description: () => faT('keyboard_shortcuts.palette_win'), category: 'global', displayOnly: true },
+        { keys: ['⌘+K'], description: () => faT('keyboard_shortcuts.palette_mac'), category: 'global', displayOnly: true },
+        { keys: ['Ctrl+K'], description: () => faT('keyboard_shortcuts.palette_win'), category: 'global', displayOnly: true },
 
         // Global Navigation (paths without locale - will be prefixed automatically)
         { keys: ['g', 'd'], description: () => faT('keyboard_shortcuts.go_dashboard'), action: () => this.navigateWithLocale('/dashboard'), category: 'navigation' },
@@ -48,6 +48,15 @@ export default class extends Controller {
         this.boundHandleKeydown = this.handleKeydown.bind(this);
         document.addEventListener('keydown', this.boundHandleKeydown);
 
+        // Menu entries outside this controller open the cheatsheet via
+        // `data-keyboard-shortcuts-open` (e.g. the mega menu "Tastenkürzel").
+        this.boundHandleOpenClick = (event) => {
+            if (!event.target.closest?.('[data-keyboard-shortcuts-open]')) return;
+            event.preventDefault();
+            this.show();
+        };
+        document.addEventListener('click', this.boundHandleOpenClick);
+
         // Close modal on ESC
         if (this.hasModalTarget) {
             this.boundHandleBackdropClick = this.handleBackdropClick.bind(this);
@@ -57,6 +66,7 @@ export default class extends Controller {
 
     disconnect() {
         document.removeEventListener('keydown', this.boundHandleKeydown);
+        document.removeEventListener('click', this.boundHandleOpenClick);
         if (this.hasModalTarget && this.boundHandleBackdropClick) {
             this.modalTarget.removeEventListener('click', this.boundHandleBackdropClick);
         }
@@ -198,12 +208,8 @@ export default class extends Controller {
     }
 
     focusSearch() {
-        // Focus search input if exists
-        const searchInput = document.querySelector('input[type="search"], input[placeholder*="Suche"], input[placeholder*="Search"]');
-        if (searchInput) {
-            searchInput.focus();
-            searchInput.select();
-        }
+        // "/" opens the one search/command overlay, like ⌘K and ⌘P (UI wave G).
+        document.querySelector('[data-command-palette-open]')?.click();
     }
 
     closeModals() {

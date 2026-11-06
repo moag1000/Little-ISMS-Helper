@@ -43,7 +43,7 @@
                 <strong>{{ workflow_info.title }}</strong>
                 {%- if workflow_info.step_name is defined and workflow_info.step_name %} — {{ workflow_info.step_name }}{%- endif -%}
                 {%- if workflow_info.due_date is defined and workflow_info.due_date -%}
-                    &nbsp;·&nbsp;{{ 'lifecycle.pending_banner.due'|trans({}, 'workflows') }}: <strong>{{ workflow_info.due_date|date('d.m.Y H:i') }}</strong>
+                    &nbsp;·&nbsp;{{ 'lifecycle.pending_banner.due'|trans({}, 'workflows') }}: <strong>{{ workflow_info.due_date|fa_datetime }}</strong>
                 {%- endif -%}
             </p>
         </div>

@@ -5,11 +5,6 @@
    Edit button is gated on ROLE_USER + editable statuses. #}
 {% trans_default_domain 'consent' %}
 {% set canEdit = canEdit|default(false) %}
-{% set statusColors = {
-    'pending_verification': 'warning',
-    'active': 'success',
-    'revoked': 'danger'
-} %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
@@ -23,7 +18,8 @@
     </div>
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
-            {% include '_components/_badge.html.twig' with { variant: statusColors[consent.status] ?? 'secondary', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
+            {% import '_components/_status_vocabulary.html.twig' as _status %}
+            {{ _status.pill('consent', consent.status, ('consent.status.' ~ consent.status)|trans({}, 'consent')) }}
             {% if consent.verifiedBy %}
                 {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'consent.verified'|trans({}, 'consent') } %}
             {% endif %}
@@ -50,7 +46,7 @@
 
         <div class="fa-drawer__kv">
             <span class="label">{{ 'consent.field.granted_at'|trans({}, 'consent') }}</span>
-            <span>{{ consent.grantedAt|date('d.m.Y H:i') }}</span>
+            <span>{{ consent.grantedAt|fa_datetime }}</span>
         </div>
 
         <div class="fa-drawer__kv">
@@ -61,14 +57,14 @@
         {% if consent.expiresAt %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'consent.field.expires_at'|trans({}, 'consent') }}</span>
-            <span>{{ consent.expiresAt|date('d.m.Y') }}</span>
+            <span>{{ consent.expiresAt|fa_date }}</span>
         </div>
         {% endif %}
 
         {% if consent.revokedAt %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'consent.section.revocation'|trans({}, 'consent') }}</span>
-            <span>{{ consent.revokedAt|date('d.m.Y H:i') }}</span>
+            <span>{{ consent.revokedAt|fa_datetime }}</span>
         </div>
         {% endif %}
 

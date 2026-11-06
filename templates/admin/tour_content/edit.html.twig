@@ -92,7 +92,7 @@
                     {% if row.updated_at %}
                         <div class="small text-muted mt-1">
                             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                            {{ row.updated_at|date('Y-m-d H:i') }}{% if row.updated_by %} — {{ row.updated_by }}{% endif %}
+                            {{ row.updated_at|fa_datetime }}{% if row.updated_by %} — {{ row.updated_by }}{% endif %}
                         </div>
                     {% endif %}
                 </div>

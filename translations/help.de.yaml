@@ -424,8 +424,8 @@ help:
                 definition: "Mehrere Eintraege per Checkbox markieren und eine Aktion auf alle gleichzeitig ausfuehren: Loeschen, Exportieren, Tag zuweisen. Die Aktionsleiste erscheint erst bei Auswahl."
                 analogy: "Wie Sammelkorrektur im QMS: statt 30 Dokumente einzeln aendern, alle markieren und in einem Schritt."
             command_palette:
-                name: "Befehlspalette (Cmd+P / Strg+P)"
-                definition: "Schnellsuche per Tastenkuerzel. Tippen Sie einen Begriff und springen Sie direkt zu jeder Seite, Aktion oder Admin-Funktion — schneller als durchs Menue."
+                name: "Suche und Befehle (Cmd+K / Strg+K)"
+                definition: "Ein Fenster für Datensätze, Seiten und Befehle, geöffnet mit Cmd+K, Cmd+P oder „/“. Ab zwei Zeichen erscheinen passende Risiken, Assets, Controls und weitere Datensätze."
                 analogy: "Wie Spotlight auf dem Mac — aber für alle Tool-Funktionen."
             audit_trail:
                 name: "Pruefprotokoll (Audit Trail)"

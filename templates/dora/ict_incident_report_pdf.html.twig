@@ -105,7 +105,7 @@
     <div class="header">
         <h1>{{ 'dora.ict_incident_report.title'|trans({}, 'dora') }}</h1>
         <div class="subtitle">{{ 'dora.ict_incident_report.subtitle'|trans({}, 'dora') }}</div>
-        <div class="date">{{ 'dora.ict_incident_report.generated_at'|trans({}, 'dora') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
+        <div class="date">{{ 'dora.ict_incident_report.generated_at'|trans({}, 'dora') }}: {{ generated_at|fa_datetime }}</div>
     </div>
 
     {# Header Meta Information #}
@@ -120,7 +120,7 @@
         </div>
         <div class="meta-row">
             <div class="meta-label">{{ 'dora.ict_incident_report.reporting_date'|trans({}, 'dora') }}</div>
-            <div class="meta-value">{{ generated_at|date('d.m.Y') }}</div>
+            <div class="meta-value">{{ generated_at|fa_date }}</div>
         </div>
         <div class="meta-row">
             <div class="meta-label">{{ 'dora.ict_incident_report.reference'|trans({}, 'dora') }}</div>
@@ -272,7 +272,7 @@
 
         <div class="field-group">
             <div class="field-label">{{ 'dora.ict_incident_report.details.resolved_at'|trans({}, 'dora') }}</div>
-            <div class="field-value">{{ incident.resolvedAt ? incident.resolvedAt|date('d.m.Y H:i') : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+            <div class="field-value">{{ incident.resolvedAt ? incident.resolvedAt|fa_datetime : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
         </div>
     </div>
 
@@ -289,15 +289,15 @@
             </tr>
             <tr>
                 <td>{{ 'dora.ict_incident_report.timeline.detection'|trans({}, 'dora') }}</td>
-                <td>{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : '-' }}</td>
+                <td>{{ incident.detectedAt ? incident.detectedAt|fa_datetime : '-' }}</td>
                 <td><span class="compliant">{{ 'dora.ict_incident_report.timeline.completed'|trans({}, 'dora') }}</span></td>
             </tr>
             <tr>
                 <td>{{ 'dora.ict_incident_report.timeline.initial_report'|trans({}, 'dora') }}</td>
-                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|fa_datetime : '-' }}</td>
                 <td>
                     {% if incident.earlyWarningReportedAt %}
-                        <span class="compliant">{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</span>
+                        <span class="compliant">{{ incident.earlyWarningReportedAt|fa_datetime }}</span>
                     {% elseif incident.earlyWarningOverdue %}
                         <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
                     {% else %}
@@ -307,10 +307,10 @@
             </tr>
             <tr>
                 <td>{{ 'dora.ict_incident_report.timeline.intermediate'|trans({}, 'dora') }}</td>
-                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|fa_datetime : '-' }}</td>
                 <td>
                     {% if incident.detailedNotificationReportedAt %}
-                        <span class="compliant">{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</span>
+                        <span class="compliant">{{ incident.detailedNotificationReportedAt|fa_datetime }}</span>
                     {% elseif incident.detailedNotificationOverdue %}
                         <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
                     {% else %}
@@ -320,10 +320,10 @@
             </tr>
             <tr>
                 <td>{{ 'dora.ict_incident_report.timeline.final_report'|trans({}, 'dora') }}</td>
-                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|fa_datetime : '-' }}</td>
                 <td>
                     {% if incident.finalReportSubmittedAt %}
-                        <span class="compliant">{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</span>
+                        <span class="compliant">{{ incident.finalReportSubmittedAt|fa_datetime }}</span>
                     {% elseif incident.finalReportOverdue %}
                         <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
                     {% else %}
@@ -335,7 +335,7 @@
     </div>
 
     <div class="footer">
-        {{ 'dora.ict_incident_report.footer'|trans({}, 'dora') }} | {{ incident.incidentNumber }} | {{ generated_at|date('d.m.Y') }}
+        {{ 'dora.ict_incident_report.footer'|trans({}, 'dora') }} | {{ incident.incidentNumber }} | {{ generated_at|fa_date }}
     </div>
 </body>
 </html>

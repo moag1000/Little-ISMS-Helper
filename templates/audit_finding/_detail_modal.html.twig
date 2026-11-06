@@ -41,7 +41,7 @@
         {% if finding.dueDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}</span>
-                <span class="{{ finding.isOverdue ? 'text-danger' : '' }}">{{ finding.dueDate|date('Y-m-d') }}</span>
+                <span class="{{ finding.isOverdue ? 'text-danger' : '' }}">{{ finding.dueDate|fa_date }}</span>
             </div>
         {% endif %}
         {% if finding.assignedTo %}

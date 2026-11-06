@@ -43,7 +43,7 @@
                     {% endif %}
                 </span>
                 {% if item.timestamp %}
-                    <span class="isms-trail__meta">{{ item.timestamp|date('d.m.Y H:i') }}</span>
+                    <span class="isms-trail__meta">{{ item.timestamp|fa_datetime }}</span>
                 {% endif %}
             </div>
             <div class="isms-trail__body">
