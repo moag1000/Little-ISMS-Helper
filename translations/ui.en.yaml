@@ -349,23 +349,6 @@ ui:
             just_now: 'Just now'
             minutes_ago: '%n% min ago'
             view_details: 'View details'
-        password_strength:
-            all_met: '✓ All criteria met'
-            announce: 'Password strength: %label%'
-            avoid_common: 'Avoid common passwords'
-            avoid_digits_only: 'Avoid digits-only passwords'
-            avoid_repeats: 'Avoid repeated characters'
-            lowercase: 'Lower-case letters (a-z)'
-            medium: 'Medium'
-            min_length: 'At least 8 characters'
-            missing: 'Missing: %items%'
-            numbers: 'Digits (0-9)'
-            special: 'Special characters (!@#$%^&*)'
-            strong: 'Strong'
-            uppercase: 'Upper-case letters (A-Z)'
-            very_strong: 'Very strong'
-            very_weak: 'Very weak'
-            weak: 'Weak'
         persona_switcher:
             failed: 'Switching the persona failed.'
         preferences:
@@ -377,11 +360,6 @@ ui:
             created: 'Created: %label%'
             name_required: 'Name is required.'
             network: 'Network error. Please try again.'
-        quick_view:
-            close: 'Close'
-            error_subtitle: 'Please try again.'
-            error_title: 'The preview could not be loaded'
-            loading: 'Loading preview …'
         radar_chart:
             load_error: 'The compliance radar could not be loaded. Please try again.'
         reauth:
@@ -409,28 +387,6 @@ ui:
             loading: 'Generating …'
             success: 'Report regenerated.'
         retry: 'Try again'
-        reuse_drawer:
-            load_failed: 'The version history could not be loaded.'
-        risk_slider:
-            axis_impact: 'Impact →'
-            axis_probability: 'Probability ↑'
-            impact:
-                1: 'Negligible'
-                2: 'Minor'
-                3: 'Moderate'
-                4: 'Major'
-                5: 'Severe'
-            level:
-                critical: 'Critical risk'
-                high: 'High risk'
-                low: 'Low risk'
-                medium: 'Medium risk'
-            probability:
-                1: 'Rare'
-                2: 'Unlikely'
-                3: 'Possible'
-                4: 'Likely'
-                5: 'Almost certain'
         save_failed: 'Saving failed.'
         saved: 'Saved.'
         saving: 'Saving …'

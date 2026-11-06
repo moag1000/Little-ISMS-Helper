@@ -1113,6 +1113,8 @@ compliance:
             preview: 'Abdeckung anzeigen'
             view_details: 'Details anzeigen'
             delete: 'Löschen'
+        confirm:
+            delete: 'Dieses Zertifikat löschen?'
         empty:
             title: 'Noch keine Zertifikate'
             text: 'Laden Sie Ihr erstes externes Compliance-Zertifikat hoch, um Anforderungen gesammelt zu erfüllen.'

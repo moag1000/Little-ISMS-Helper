@@ -28,7 +28,7 @@ import { Controller } from '@hotwired/stimulus';
  *   </ul>
  */
 export default class extends Controller {
-    static targets = ['row'];
+    static targets = ['row', 'hint', 'approveBtn', 'rejectBtn'];
 
     /**
      * Minimum horizontal distance (px) to count as a swipe. Below this

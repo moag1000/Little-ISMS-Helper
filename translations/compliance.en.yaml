@@ -1113,6 +1113,8 @@ compliance:
             preview: 'Preview Coverage'
             view_details: 'View Details'
             delete: 'Delete'
+        confirm:
+            delete: 'Delete this certificate?'
         empty:
             title: 'No certificates yet'
             text: 'Upload your first external compliance certificate to bulk-fulfil requirements.'

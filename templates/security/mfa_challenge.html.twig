@@ -28,7 +28,8 @@
 
     <form method="post"
           action="{{ path('app_mfa_verify', {_locale: app.request.locale}) }}"
-          class="fa-auth-form__form">
+          class="fa-auth-form__form"
+          data-controller="ui-actions" data-action="submit->ui-actions#submitOnce">
 
         {% set deviceOptions = [] %}
         {% for token in mfaTokens %}
@@ -59,8 +60,7 @@
         {{ btn.submit('mfa.challenge.verify'|trans({}, 'mfa'), {
             variant: 'primary',
             fullWidth: true,
-            icon: 'ui-check',
-            attrs: { 'data-controller': 'button-loading', 'data-action': 'button-loading#start' }
+            icon: 'ui-check'
         }) }}
     </form>
 

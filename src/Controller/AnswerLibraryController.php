@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\RequiresModule;
+use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\AnswerLibraryEntry;
 use App\Form\AnswerLibraryEntryType;
 use App\Repository\AnswerLibraryEntryRepository;
 use App\Service\AnswerLibraryService;
+use App\Service\BulkDeleteService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -35,6 +38,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class AnswerLibraryController extends AbstractController
 {
+    use BulkActionTrait;
     use CurrentUserTrait;
     use ModuleGatedControllerTrait;
 
@@ -240,6 +244,28 @@ class AnswerLibraryController extends AbstractController
 
         $this->addFlash('success', $this->translator->trans('answer_library.flash.deleted', [], 'answer_library'));
         return $this->redirectToRoute('app_answer_library_index', ['_locale' => $request->getLocale()]);
+    }
+
+    /**
+     * Bulk delete from the list (bulk-actions controller, shared `bulk_action` CSRF token).
+     * Same role as the single delete; one audit batch via BulkDeleteService.
+     */
+    #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[RequiresModule('answer_library')]
+    public function bulkDelete(Request $request, BulkDeleteService $bulkDeleteService): JsonResponse
+    {
+        return $this->handleBulkDelete(
+            $request,
+            $bulkDeleteService,
+            'AnswerLibraryEntry',
+            $this->getUser(),
+            fn (int $id): ?object => $this->repository->find($id),
+            auditValues: static fn (AnswerLibraryEntry $entry): array => [
+                'question' => mb_substr($entry->getQuestion(), 0, 120),
+                'category' => $entry->getCategory(),
+            ],
+        );
     }
 
     // ─────────────────────────────────────────────────────────────────────────
