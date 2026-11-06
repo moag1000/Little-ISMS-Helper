@@ -106,36 +106,6 @@ final class TisaxMaturityAssessmentService
     }
 
     /**
-     * Return true when the control has a Hoher Schutzbedarf (high-protection)
-     * addendum in the ENX workbook (column L populated).
-     */
-    public function requiresHighProtectionAddendum(ComplianceRequirement $req): bool
-    {
-        if ($this->metadataLoader === null) {
-            return false;
-        }
-
-        $meta = $this->metadataLoader->getMetadataFor((string) ($req->getRequirementId() ?? ''));
-
-        return ($meta['levels']['high_protection'] ?? false) === true;
-    }
-
-    /**
-     * Return true when the control has a Sehr hoher Schutzbedarf (very-high)
-     * addendum in the ENX workbook (column M populated).
-     */
-    public function requiresVeryHighProtectionAddendum(ComplianceRequirement $req): bool
-    {
-        if ($this->metadataLoader === null) {
-            return false;
-        }
-
-        $meta = $this->metadataLoader->getMetadataFor((string) ($req->getRequirementId() ?? ''));
-
-        return ($meta['levels']['very_high_protection'] ?? false) === true;
-    }
-
-    /**
      * Return all four level-flags for a requirement in one call.
      *
      * @return array{must: bool, should: bool, high_protection: bool, very_high_protection: bool}

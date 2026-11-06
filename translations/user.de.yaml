@@ -227,6 +227,8 @@ user:
         risk_manager: 'Risk-Manager'
         dpo: 'Datenschutzbeauftragter'
         compliance_manager: 'Compliance-Manager'
+        isb: 'Informationssicherheitsbeauftragter (ISB)'
+        bcm_officer: 'BCM-Beauftragter'
     role_description:
         user: 'Basis-Zugriff auf ISMS-Module. Kann Daten einsehen und eigene Aufgaben bearbeiten.'
         auditor: 'Erweiterte Leserechte für Audits und Reviews. Kann Audit-Ergebnisse dokumentieren und Compliance prüfen.'
@@ -237,6 +239,8 @@ user:
         risk_manager: 'Risiko-Manager. Operative Sicht auf Risiko-Pipeline, Risk-Appetite-Monitoring und Mitigation-Effektivität. Schaltet das Risk-Manager-Dashboard frei.'
         dpo: 'Datenschutzbeauftragter (DPO). Sieht eigene zugewiesene DSAR-Vorgänge in Mein-Tag und das Compliance-Manager-Dashboard. KEIN See-All-Zugriff auf Datenbetroffenen-Anfragen.'
         compliance_manager: 'Head of GRC / Compliance-Manager. Framework-Coverage, Cross-Mapping, Audit-Plan und Findings im Blick. Schaltet das Compliance-Manager-Dashboard frei.'
+        isb: 'Operativer Informationssicherheitsbeauftragter: Controls, Vorfälle, Audits. Schaltet das ISB-Dashboard frei.'
+        bcm_officer: 'Business-Continuity-Manager: BC-Pläne, Krisenstab, Übungen, Geschäftsprozesse. Schaltet das BCM-Dashboard frei.'
     role_hierarchy:
         title: 'Rollen-Hierarchie'
         description: 'Jede Rolle erbt automatisch die Berechtigungen der darunterliegenden Rollen.'

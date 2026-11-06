@@ -4,6 +4,25 @@ Stand: 2026-05-19 · Zielgruppe: Admins, die Little-ISMS-Helper auf einem
 klassischen Webhosting-Paket (cPanel, Plesk, ISPConfig, generischer PHP-FPM-
 Host) betreiben — also ohne Root-Zugriff, ohne systemd, ohne Docker.
 
+## Geplante Aufgaben — immer nötig (seit 2026-11)
+
+Fristen-Workflows (NIS2/DSGVO), Erinnerungen, Digest-Mails, KPI-/Portfolio-Snapshots,
+Backup + Aufräumen laufen über den Symfony-Scheduler (`src/Schedule.php`,
+Liste `Schedule::COMMAND_TASKS`). Der Scheduler tickt nur, wenn ein Worker seinen
+Transport `scheduler_default` abarbeitet. **Eine** Cron-Zeile genügt — sie bedient
+zugleich die `async`-Warteschlange:
+
+```cron
+* * * * * cd /var/www/isms-helper && /usr/bin/php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
+```
+
+Verpasste Läufe holt der Scheduler einmal nach. Docker bringt den Worker per
+`supervisord` mit, dort ist nichts zu tun.
+
+**Umstieg von Einzel-Crons:** Wer bisher einzelne Zeilen wie
+`app:process-timed-workflows`, `app:send-notifications` oder `app:audit-log:cleanup`
+im Crontab hatte, entfernt sie — sonst laufen sie doppelt (doppelte Mails).
+
 ## Warum braucht der Helper einen "Worker"?
 
 Viele Admin-Operationen laufen mittlerweile **asynchron** (Async-Admin-Jobs

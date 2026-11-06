@@ -238,13 +238,6 @@ for ($row = $headerRow + 1; $row <= $highestRow; $row++) {
         $als[] = 'AL3';
     }
 
-    $protectionAddenda = [];
-    if ($hasHigh) {
-        $protectionAddenda[] = 'high';
-    }
-    if ($hasVeryHigh) {
-        $protectionAddenda[] = 'very_high';
-    }
 
     $controls[] = [
         'controlId'   => $controlId,
@@ -253,7 +246,6 @@ for ($row = $headerRow + 1; $row <= $highestRow; $row++) {
         'high'        => $hasHigh,
         'veryHigh'    => $hasVeryHigh,
         'als'         => $als,
-        'addenda'     => $protectionAddenda,
         // Cell-length proxies (never the actual text — only approximate length)
         'mustLen'     => $mustLen,
         'shouldLen'   => $shouldLen,
@@ -323,9 +315,6 @@ foreach ($controls as $c) {
     if ($c['als'] === []) {
         $alList = '[]';
     }
-    $addList = count($c['addenda']) > 0
-        ? "['" . implode("', '", $c['addenda']) . "']"
-        : '[]';
 
     $yaml .= "  - controlId: '{$c['controlId']}'\n";
     $yaml .= "    levels:\n";
@@ -340,7 +329,6 @@ foreach ($controls as $c) {
     $yaml .= "      high: "      . $c['highLen']     . "\n";
     $yaml .= "      very_high: " . $c['veryHighLen'] . "\n";
     $yaml .= "    suggested_assessment_levels: {$alList}\n";
-    $yaml .= "    protection_need_addenda: {$addList}\n";
 }
 
 // Write output
