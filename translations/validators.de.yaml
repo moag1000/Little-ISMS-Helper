@@ -223,24 +223,9 @@ Error: Fehler
 'Please enter a valid week.': 'Bitte geben Sie eine gültige Woche ein.'
 setup:
     admin:
-        email_required: 'Bitte geben Sie eine E-Mail-Adresse ein.'
-        email_invalid: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'
-        first_name_required: 'Bitte geben Sie einen Vornamen ein.'
-        first_name_min: 'Der Vorname muss mindestens {{ limit }} Zeichen lang sein.'
-        last_name_required: 'Bitte geben Sie einen Nachnamen ein.'
-        last_name_min: 'Der Nachname muss mindestens {{ limit }} Zeichen lang sein.'
-        password_required: 'Bitte geben Sie ein Passwort ein.'
-        password_min: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
-        password_strength: 'Das Passwort muss mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Ziffer enthalten.'
-    database:
-        name_invalid: 'Der Datenbankname enthält ungültige Zeichen.'
     organisation:
-        name_required: 'Bitte geben Sie einen Organisationsnamen ein.'
-        name_min: 'Der Organisationsname muss mindestens {{ limit }} Zeichen lang sein.'
         industry_required: 'Bitte wählen Sie eine Branche aus.'
         employee_count_required: 'Bitte wählen Sie die Mitarbeiteranzahl aus.'
-        industries_required: 'Bitte wählen Sie mindestens eine Branche aus.'
-        industries_min: 'Sie müssen mindestens {{ limit }} Branche(n) auswählen.'
 document:
     validation:
         mime_types: 'Bitte laden Sie ein gültiges Dokument hoch (PDF, Word, Excel, Bild oder Textdatei).'
@@ -291,22 +276,11 @@ compliance_mapping:
         verified_by_max_length: 'Das Feld "Verifiziert von" darf maximal {{ limit }} Zeichen lang sein.'
 risk_appetite:
     validation:
-        category_max_length: 'Kategoriename darf maximal {{ limit }} Zeichen lang sein'
-        max_acceptable_risk_required: 'Maximales akzeptables Risiko ist erforderlich'
-        max_acceptable_risk_range: 'Maximales akzeptables Risiko muss zwischen {{ min }} und {{ max }} liegen'
-        description_required: 'Beschreibung ist erforderlich'
         review_buffer_multiplier_range: 'Der Überprüfungspuffer-Multiplikator muss im gültigen Bereich liegen'
 risk_treatment_plan:
     validation:
-        risk_required: 'Risiko ist erforderlich'
-        title_required: 'Titel ist erforderlich'
-        title_max_length: 'Titel darf maximal {{ limit }} Zeichen lang sein'
-        description_required: 'Beschreibung ist erforderlich'
-        target_completion_date_required: 'Ziel-Fertigstellungsdatum ist erforderlich'
-        completion_percentage_range: 'Fertigstellungsgrad muss zwischen {{ min }} und {{ max }} liegen'
 training:
     validation:
-        title_required: 'Bitte geben Sie einen Titel ein.'
         date_required: 'Bitte wählen Sie ein Datum.'
         trainer_required: 'Trainer muss ausgewählt werden'
     error:

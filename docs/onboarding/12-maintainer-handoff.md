@@ -31,18 +31,10 @@ only recovery is a code fix + DB audit. Consider this risk in any security revie
 No worker process is needed. If a customer switches to Messenger mode (`APP_ASYNC_JOB_RUNNER=messenger`),
 they need a persistent `messenger:consume async` worker (systemd unit template in CLAUDE.md).
 
-**Cron jobs recommended for production:**
-
-```cron
-# Process timed regulatory workflows (NIS2 SLA escalation, DORA 24h notifications)
-*/15 * * * * /usr/bin/php /var/www/isms/bin/console app:process-timed-workflows --no-interaction
-
-# Clean up job status files older than 7 days
-0 3 * * * find /var/www/isms/var/jobs/ -name "*.json" -mtime +7 -delete
-
-# Send scheduled compliance reports (if module enabled)
-0 8 * * 1 /usr/bin/php /var/www/isms/bin/console app:send-scheduled-reports --no-interaction
-```
+**Cron:** one line drives every periodic task through the Symfony scheduler
+(`src/Schedule.php`) — `* * * * * php bin/console messenger:consume scheduler_default async --time-limit=55 --quiet`.
+Add new periodic commands to `Schedule::COMMAND_TASKS`, never as separate crontab lines.
+Job status files older than 7 days: `0 3 * * * find /var/www/isms/var/jobs/ -name "*.json" -mtime +7 -delete`.
 
 ---
 

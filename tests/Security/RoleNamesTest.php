@@ -30,7 +30,8 @@ final class RoleNamesTest extends KernelTestCase
         $expected[] = 'ROLE_ALLOWED_TO_SWITCH';
         // System roles offered by UserType (roles ChoiceType).
         array_push($expected, 'ROLE_USER', 'ROLE_AUDITOR', 'ROLE_MANAGER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN',
-            'ROLE_CISO', 'ROLE_RISK_MANAGER', 'ROLE_DPO', 'ROLE_COMPLIANCE_MANAGER');
+            'ROLE_CISO', 'ROLE_RISK_MANAGER', 'ROLE_DPO', 'ROLE_COMPLIANCE_MANAGER',
+            'ROLE_ISB', 'ROLE_BCM_OFFICER');
 
         foreach (array_unique($expected) as $role) {
             self::assertTrue(RoleNames::isReserved($role), $role . ' must be reserved');

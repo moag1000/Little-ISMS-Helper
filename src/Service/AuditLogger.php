@@ -365,7 +365,7 @@ class AuditLogger
      * Used as the actor_role column in AuditLog.
      * Returns null for system / CLI / unauthenticated contexts.
      */
-    public function getCurrentActorRole(): ?string
+    private function getCurrentActorRole(): ?string
     {
         $user = $this->security->getUser();
         if (!$user instanceof User) {

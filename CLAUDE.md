@@ -644,7 +644,9 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 - [ ] User choice fields use `OwnerUserType` (users of the record's
       organisation; never `EntityType` + `User::class`), and owner/assignee
       User/Person FKs carry `#[SameTenantOwner]` — the TenantFilter skips `User`.
-- [ ] Input sanitized via `InputValidationService`
+- [ ] Input validated by form constraints (`#[Assert\…]` / FormType); no `|raw` on user
+      content — Twig auto-escaping is the XSS defence, Doctrine parameter binding the SQL one.
+      Outbound URLs a user can set carry `#[NoInternalIp]` (SSRF).
 - [ ] File uploads checked via `FileUploadSecurityService`
 - [ ] Sensitive data excluded from audit logs
 - [ ] Bulk operations use `AuditLogger::logBulk()` (1 batch-entry +

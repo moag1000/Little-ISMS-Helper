@@ -55,7 +55,6 @@ final class RequirementLevelMetadataLoader
      *     ],
      *     'cell_lengths' => ['must' => int, 'should' => int, 'high' => int, 'very_high' => int],
      *     'suggested_assessment_levels' => ['AL1', 'AL2', 'AL3'],
-     *     'protection_need_addenda'     => ['high', 'very_high'],  // subset
      *   ]
      *
      * Returns null when the control ID is unknown (outside the fixture).

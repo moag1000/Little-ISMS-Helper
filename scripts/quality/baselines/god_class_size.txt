@@ -24,7 +24,7 @@ src/Controller/RiskController.php:LOC=1037 deps=0
 src/Entity/BusinessContinuityPlan.php:LOC=1027 deps=0
 src/Entity/Tenant.php:LOC=1007 deps=0
 src/Controller/TenantManagementController.php:LOC=1000 deps=0
-src/Service/ComplianceWizard/CoverageCheckService.php:LOC=988 deps=17
+src/Service/ComplianceWizard/CoverageCheckService.php:LOC=888 deps=17
 src/Service/Search/SearchService.php:LOC=968 deps=32
 src/Controller/Admin/ComplianceImportController.php:LOC=918 deps=0
 src/Controller/IncidentController.php:LOC=900 deps=0

@@ -57,48 +57,6 @@ class SchutzbedarfCascadeTest extends TestCase
         self::assertContains('AL3', $als);
     }
 
-    /**
-     * @return array<string, array{string, bool}>
-     */
-    public static function highProtectionProvider(): array
-    {
-        return [
-            '1.1.1 has high addendum'   => ['1.1.1',  true],
-            '1.2.2 no high addendum'    => ['1.2.2',  false],
-            '4.1.1 has high addendum'   => ['4.1.1',  true],
-            '5.2.7 no high addendum'    => ['5.2.7',  false],
-        ];
-    }
-
-    #[Test]
-    #[DataProvider('highProtectionProvider')]
-    public function requires_high_protection_addendum_matches_fixture(string $controlId, bool $expected): void
-    {
-        $req = $this->makeReq($controlId);
-        self::assertSame($expected, $this->service->requiresHighProtectionAddendum($req));
-    }
-
-    /**
-     * @return array<string, array{string, bool}>
-     */
-    public static function veryHighProtectionProvider(): array
-    {
-        return [
-            '1.4.1 has very-high addendum' => ['1.4.1',  true],
-            '1.1.1 no very-high addendum'  => ['1.1.1',  false],
-            '4.1.1 has very-high addendum' => ['4.1.1',  true],
-            '1.2.2 no very-high addendum'  => ['1.2.2',  false],
-        ];
-    }
-
-    #[Test]
-    #[DataProvider('veryHighProtectionProvider')]
-    public function requires_very_high_protection_addendum_matches_fixture(string $controlId, bool $expected): void
-    {
-        $req = $this->makeReq($controlId);
-        self::assertSame($expected, $this->service->requiresVeryHighProtectionAddendum($req));
-    }
-
     // ─────────────────────────────────────────────────────────────────────────
     // getLevelFlags
     // ─────────────────────────────────────────────────────────────────────────
@@ -158,8 +116,6 @@ class SchutzbedarfCascadeTest extends TestCase
         $req     = $this->makeReq('1.1.1');
 
         self::assertSame([], $service->getApplicableAssessmentLevels($req));
-        self::assertFalse($service->requiresHighProtectionAddendum($req));
-        self::assertFalse($service->requiresVeryHighProtectionAddendum($req));
 
         $flags = $service->getLevelFlags($req);
         self::assertFalse($flags['must']);

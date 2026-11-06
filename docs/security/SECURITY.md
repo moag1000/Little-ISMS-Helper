@@ -65,7 +65,7 @@ bin/console debug:voter AssetVoter
 2. **XSS Prevention:**
    - Twig auto-escaping enabled (`autoescape: 'html'`)
    - CSP headers in production
-   - `InputValidationService` for additional sanitization
+   - No `|raw` on user content
 
 3. **File Upload Injection:**
    - `FileUploadSecurityService`:
@@ -200,7 +200,7 @@ $this->securityLogger->logAccessDenied($resource, $action, $user);
 
 **Implementation:**
 - PDF generation: `isRemoteEnabled: false` (prevents SSRF)
-- URL validation in `InputValidationService`
+- User-configurable outbound URLs (webhooks) validated by `#[NoInternalIp]` (`src/Validator/Constraint/NoInternalIp.php`)
 
 ## Services Overview
 
@@ -233,23 +233,6 @@ $this->securityLogger->logLoginSuccess($user);
 $this->securityLogger->logAccessDenied($resource, $action, $user);
 $this->securityLogger->logFileUpload($filename, $mimeType, $size, $success);
 $this->securityLogger->logSuspiciousActivity($description, $details);
-```
-
-### InputValidationService
-
-Input validation and sanitization:
-
-```php
-// Validate and sanitize
-$email = $this->inputValidation->validateEmail($input);
-$int = $this->inputValidation->validateInteger($input);
-$safeFilename = $this->inputValidation->sanitizeFilename($filename);
-$safeHtml = $this->inputValidation->sanitizeHtml($html);
-
-// Detect attacks
-if ($this->inputValidation->detectXssPatterns($input)) {
-    // Log and reject
-}
 ```
 
 ## Security Headers (Production Only)

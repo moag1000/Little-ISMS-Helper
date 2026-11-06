@@ -690,6 +690,11 @@ jobs:
         # Status band, links block (evidence chain), sections, history, comments;
         # unmigrated show pages are baselined and may only shrink.
         run: python3 scripts/quality/check_show_skeleton.py --baseline scripts/quality/baselines/show_skeleton.txt --quiet
+      - name: "Gate 76: no |trans|default over a missing key"
+        # Symfony returns the key itself for a missing message, so |default(...)
+        # never fires and the user sees the raw key. Every literal key with a
+        # literal domain must exist in <domain>.de.yaml AND <domain>.en.yaml. No baseline.
+        run: python3 scripts/quality/check_trans_default_masking.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

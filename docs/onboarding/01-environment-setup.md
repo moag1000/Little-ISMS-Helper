@@ -247,17 +247,17 @@ number/date formatters.
 
 ---
 
-## Recommended Cron Jobs
+## Scheduled Tasks
 
-Add these to your crontab (`crontab -e`) or server scheduler once the
-application is deployed.
+All periodic commands (timed workflows, reminders, digests, snapshots, backup,
+retention clean-ups) are registered in `src/Schedule.php` (`Schedule::COMMAND_TASKS`).
+One cron line runs them — do not add the commands individually, they would run twice:
 
-| Schedule | Command | Purpose |
-|---|---|---|
-| `0 2 * * 0` (weekly, Sun 02:00) | `php bin/console app:tisax:purge-old-ip-addresses` | GDPR Art. 5(1)(e): NULL-out IP addresses on `tisax_license_confirmation` rows older than 365 days |
-| `0 3 * * *` (daily, 03:00) | `php bin/console app:policy-wizard:purge-sandboxes` | Remove sandbox Policy-Wizard runs older than 7 days |
-| `0 4 * * *` (daily, 04:00) | `php bin/console app:process-timed-workflows` | Advance time-based regulatory workflow auto-progressions |
-| `0 1 * * 0` (weekly, Sun 01:00) | `php bin/console app:audit-log:cleanup` | Trim audit log to configured retention window |
+```cron
+* * * * * cd /path/to/app && php bin/console messenger:consume scheduler_default async --time-limit=55 --limit=20 --quiet
+```
+
+Docker runs this worker via supervisord. Details: `docs/user-guide/HOSTING_WORKER.md`.
 
 ### TISAX IP-address purge detail
 

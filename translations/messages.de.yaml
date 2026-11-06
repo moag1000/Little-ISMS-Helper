@@ -234,7 +234,6 @@ common:
     id: ID
     inactive: Inaktiv
     last_updated: 'Zuletzt aktualisiert'
-    loading: 'Wird geladen...'
     never: Nie
     entries: Einträge
     not_applicable: 'Nicht zutreffend'
@@ -289,12 +288,6 @@ common:
     target_date: Zieldatum
     export_pdf: 'PDF exportieren'
     optional: '(optional)'
-    modules: Module
-    confirm: Bestätigen
-    report_regenerated: 'Bericht wurde neu generiert'
-    regenerate: 'Neu generieren'
-    statistics: Statistiken
-    error.unknown: 'Ein unbekannter Fehler ist aufgetreten'
     tooltip:
         go_to_module_management: 'Zur Modulverwaltung gehen, um weitere Funktionen zu aktivieren'
         framework_dashboard_description: Aktivierte Compliance-Frameworks mit Erfüllungsgrad
@@ -468,8 +461,6 @@ role:
         title: Rollenvergleich
         select_roles: 'Rollen zum Vergleich auswählen'
         permission_matrix: Berechtigungsmatrix
-        permission_column: Berechtigung
-        system_badge: System
         has_permission: 'Hat Berechtigung'
         no_permission: 'Keine Berechtigung'
         select_label: 'Rollen auswählen'
