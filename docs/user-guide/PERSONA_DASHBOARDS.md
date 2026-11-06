@@ -199,8 +199,27 @@ Seitenleiste. Jede Person sieht dort nur die Karten ihrer Rollen:
 | Board | CISO, Compliance-Manager |
 
 Die Bereiche der Seitenleiste richten sich nach den aktiven Modulen; Admin nur
-für ADMIN / SUPER_ADMIN. **Portfolio** (Gruppenbericht) ist ein direkter Link
-für Group-CISO in Konzern-Mandanten.
+für ADMIN / SUPER_ADMIN. **Portfolio** (Konzern-Reports) ist ein direkter Link
+für Group-CISO und Konzern-Auditor in Konzern-Organisationen.
+
+### Konzern-Reports und Organisationsvergleich
+
+Die Konzern-Reports lesen alle Organisationen unterhalb der eigenen (nie
+Schwester- oder Mutterorganisationen). Group-CISO und Konzern-Auditor sehen
+sie; Audits auf Töchter ableiten darf nur der Group-CISO.
+
+Der **Organisationsvergleich** (Konzern-Reports → Organisationsvergleich, auch
+über die Suche: "Vergleich", "Benchmark") stellt je Organisation die
+Management-KPIs (Health Score, Control-Compliance, kritische Risiken,
+Behandlungsrate, Vorfälle, BIA, Schulungen, Audit-Feststellungen, Lieferanten,
+Dokumente, Jahresschaden in Euro für berechtigte Rollen) und die
+Framework-Erfüllung nebeneinander. Jede Zelle ist der Wert vom Dashboard der
+jeweiligen Organisation, eingefärbt nach deren KPI-Schwellwerten; leer heißt:
+Modul dort nicht aktiv oder keine Daten. Die Konzern-Zeile zeigt Quoten als
+einfachen Mittelwert (Ø), Anzahlen und Euro als Summe (Σ). Excel und PDF
+enthalten dieselben Werte; jeder Export wird im Audit-Log festgehalten
+(`group_report.comparison.export`). Die frühere Framework-Reifegrad-Matrix ist
+darin aufgegangen; ihre alte Adresse leitet weiter.
 
 Jede Seite hat genau einen Menüeintrag (Gate `check_nav_area_parity.py`).
 Bulk-Importe laufen über "Bulk-Import – Übersicht" (ISMS Kern), nicht

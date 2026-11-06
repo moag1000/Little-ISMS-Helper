@@ -1,0 +1,69 @@
+{# Organisationsvergleich — every organisation of the holding subtree side by side.
+   Values come from the KPI catalog (App\Service\Group\OrganisationComparison), computed
+   per organisation: the same number as its own dashboard, traffic light by its own
+   KPI thresholds. Excel/PDF export via POST (token stays out of the URL). #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.comparison.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), url: path('app_group_report_tree') },
+            { label: 'group_report.comparison.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
+    {% import 'group_report/_comparison_macros.html.twig' as _cmp %}
+
+    <form method="post" class="d-flex justify-content-end gap-2 mb-3" data-unsaved-guard="off">
+        <input type="hidden" name="_token" value="{{ csrf_token('group_report_comparison_export') }}">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" formaction="{{ path('app_group_report_comparison_export', {format: 'xlsx'}) }}">
+            {{ 'group_report.comparison.export.excel'|trans({}, 'group_report') }}
+        </button>
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" formaction="{{ path('app_group_report_comparison_export', {format: 'pdf'}) }}">
+            {{ 'group_report.comparison.export.pdf'|trans({}, 'group_report') }}
+        </button>
+    </form>
+
+    {% set _danger = comparison.statusCounts.danger %}
+    {% set _warning = comparison.statusCounts.warning %}
+
+    {% set _kpi_table %}{{ _cmp.kpi_table(comparison) }}{% endset %}
+    {% set _fw_table %}{{ _cmp.framework_table(comparison) }}{% endset %}
+
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.comparison.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.comparison.subtitle'|trans({'%root%': root.name, '%count%': comparison.rows|length}, 'group_report'),
+            kicker:       'group_report.title'|trans({}, 'group_report'),
+            status:       'final',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: 'group_report.comparison.findings.organisations'|trans({'%count%': comparison.rows|length}, 'group_report'), tone: 'ok' },
+            { label: 'group_report.comparison.findings.danger'|trans({'%count%': _danger}, 'group_report'), tone: _danger > 0 ? 'danger' : 'ok' },
+            { label: 'group_report.comparison.findings.warning'|trans({'%count%': _warning}, 'group_report'), tone: _warning > 0 ? 'warn' : 'ok' },
+        ],
+        sections: [
+            {
+                heading:   'group_report.comparison.kpis.title'|trans({}, 'group_report'),
+                intro:     'group_report.comparison.kpis.intro'|trans({}, 'group_report'),
+                body_html: _kpi_table,
+            },
+            {
+                heading:   'group_report.comparison.frameworks.title'|trans({}, 'group_report'),
+                intro:     'group_report.comparison.frameworks.intro'|trans({}, 'group_report'),
+                body_html: _fw_table,
+            },
+        ],
+        appendix: {
+            methodology: '<p>' ~ ('group_report.comparison.methodology'|trans({}, 'group_report')|e) ~ '</p>',
+        },
+    }) }}
+</div>
+{% endblock %}

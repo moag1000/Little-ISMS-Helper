@@ -28,8 +28,8 @@
         {% set _rbadge = _badge_map[risk_level_band(_residual)] %}
         {% set _top_rows = _top_rows|merge([[
             loop.index,
-            '<strong>' ~ risk.title ~ '</strong>' ~ (risk.category ? '<br><code style="font-size:.75em;color:var(--fg-3);">' ~ risk.category ~ '</code>' : ''),
-            '<code style="font-size:.75em;">' ~ risk.tenant.code ~ '</code>',
+            '<strong>' ~ risk.title|e ~ '</strong>' ~ (risk.category ? '<br><code style="font-size:.75em;color:var(--fg-3);">' ~ risk.category|e ~ '</code>' : ''),
+            '<code style="font-size:.75em;">' ~ risk.tenant.code|e ~ '</code>',
             '<span class="report-doc__chip report-doc__chip--status-' ~ _ibadge ~ '">' ~ _inherent ~ '</span>',
             _residual > 0 ? '<span class="report-doc__chip report-doc__chip--status-' ~ _rbadge ~ '">' ~ _residual ~ '</span>' : '<span style="color:var(--fg-3);">—</span>',
         ]]) %}
@@ -39,7 +39,7 @@
     {% set _dist_rows = [] %}
     {% for tenant in tenants %}
         {% set _dist_rows = _dist_rows|merge([[
-            '<strong>' ~ tenant.name ~ '</strong> <code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code ~ '</code>',
+            '<strong>' ~ tenant.name|e ~ '</strong> <code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code|e ~ '</code>',
             risks_by_tenant[tenant.code]|default(0),
         ]]) %}
     {% endfor %}
@@ -60,7 +60,7 @@
         ],
         kpis: [
             { label: 'group_report.risks.total'|trans({}, 'group_report'), value: total_risks, tone: total_risks > 0 ? 'warning' : 'success' },
-            { label: 'group_report.kpi.col.tenant'|trans({}, 'group_report'), value: tenants|length, tone: 'neutral' },
+            { label: 'group_report.comparison.col.organisation'|trans({}, 'group_report'), value: tenants|length, tone: 'neutral' },
         ],
         sections: [
             {

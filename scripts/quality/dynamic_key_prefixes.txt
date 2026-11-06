@@ -90,7 +90,8 @@ corrective_action.status	5
 coverage.impact.help	1
 coverage.impact.title	1
 crisis_team.type	3
-dashboard.kpi	3
+dashboard.kpi	5
+dashboard.management_kpis	2
 data_breach.data_categories	1
 data_breach.data_subject_categories	1
 data_breach.severity	1

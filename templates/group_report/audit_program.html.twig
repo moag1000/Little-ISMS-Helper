@@ -23,10 +23,10 @@
     {% if programs is not empty and subsidiaries is not empty %}
         {% for program in programs %}
             {# First cell: program identity #}
-            {% set _prog_cell = '<strong>' ~ program.title ~ '</strong>'
-                ~ '<br><code style="font-size:.7em;color:var(--fg-3);">' ~ program.auditNumber ~ '</code>'
+            {% set _prog_cell = '<strong>' ~ program.title|e ~ '</strong>'
+                ~ '<br><code style="font-size:.7em;color:var(--fg-3);">' ~ program.auditNumber|e ~ '</code>'
                 ~ (program.plannedDate ? ' <span style="font-size:.75em;color:var(--fg-3);">· ' ~ program.plannedDate|date('Y-m-d') ~ '</span>' : '')
-                ~ (program.scopeType ? ' <code style="font-size:.7em;">' ~ program.scopeType ~ '</code>' : '') %}
+                ~ (program.scopeType ? ' <code style="font-size:.7em;">' ~ program.scopeType|e ~ '</code>' : '') %}
             {% set _row = [ _prog_cell ] %}
 
             {# One cell per subsidiary #}
@@ -38,7 +38,7 @@
                     {% set status = derived.status %}
                     {% set _chip = status == 'completed' ? 'final' : (status == 'in_progress' ? 'draft' : (status == 'planned' ? 'auditor-only' : 'confidential')) %}
                     {% set _sym = status == 'completed' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '–')) %}
-                    {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status ~ ' — ' ~ derived.auditNumber ~ '">' ~ _sym ~ '</span>' ]) %}
+                    {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status|e ~ ' — ' ~ derived.auditNumber|e ~ '">' ~ _sym ~ '</span>' ]) %}
                 {% endif %}
             {% endfor %}
 
@@ -52,7 +52,9 @@
                 ~ '<button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">'
                 ~ ('group_report.audit_program.action.derive'|trans({}, 'group_report'))
                 ~ '</button></form>' %}
-            {% set _row = _row|merge([ _form_html ]) %}
+            {% if is_granted('ROLE_GROUP_CISO') %}
+                {% set _row = _row|merge([ _form_html ]) %}
+            {% endif %}
 
             {% set _prog_rows = _prog_rows|merge([_row]) %}
         {% endfor %}
@@ -62,10 +64,12 @@
     {% set _headers = [ 'group_report.audit_program.col.program'|trans({}, 'group_report') ] %}
     {% if subsidiaries is defined %}
         {% for sub in subsidiaries %}
-            {% set _headers = _headers|merge([ '<code>' ~ sub.code ~ '</code>' ]) %}
+            {% set _headers = _headers|merge([ sub.code ]) %}
         {% endfor %}
     {% endif %}
-    {% set _headers = _headers|merge([ 'group_report.audit_program.col.actions'|trans({}, 'group_report') ]) %}
+    {% if is_granted('ROLE_GROUP_CISO') %}
+        {% set _headers = _headers|merge([ 'group_report.audit_program.col.actions'|trans({}, 'group_report') ]) %}
+    {% endif %}
 
     {# Legend body_html #}
     {% set _legend_html = '<p style="font-size:8pt;color:var(--fg-2);">'
@@ -92,11 +96,11 @@
         brand_name: root.name,
         key_findings: [
             { label: ('group_report.audit_program.col.program'|trans({}, 'group_report')) ~ ': ' ~ _total_programs, tone: 'ok' },
-            { label: ('group_report.kpi.col.tenant'|trans({}, 'group_report')) ~ ': ' ~ _total_subs, tone: 'ok' },
+            { label: ('group_report.comparison.col.organisation'|trans({}, 'group_report')) ~ ': ' ~ _total_subs, tone: 'ok' },
         ],
         kpis: [
             { label: 'group_report.audit_program.col.program'|trans({}, 'group_report'), value: _total_programs, tone: 'neutral' },
-            { label: 'group_report.kpi.col.tenant'|trans({}, 'group_report'),            value: _total_subs,     tone: 'neutral' },
+            { label: 'group_report.comparison.col.organisation'|trans({}, 'group_report'),            value: _total_subs,     tone: 'neutral' },
         ],
         sections: [
             {

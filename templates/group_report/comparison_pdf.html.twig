@@ -1,0 +1,43 @@
+{# Organisationsvergleich as landscape PDF (dompdf) — same tables as the page. #}
+{% import 'group_report/_comparison_macros.html.twig' as _cmp %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{{ 'group_report.comparison.title'|trans({}, 'group_report') }}</title>
+    <style>
+        @page { margin: 1.4cm 1.2cm; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 7.5pt; color: #1e293b; }
+        h1 { font-size: 15pt; margin: 0 0 2pt; }
+        h2 { font-size: 10pt; margin: 14pt 0 3pt; border-bottom: 1px solid #cbd5e1; padding-bottom: 2pt; }
+        p { margin: 0 0 5pt; }
+        .meta, .text-body-secondary { color: #64748b; }
+        .visually-hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 0.5pt solid #cbd5e1; padding: 3pt 4pt; vertical-align: top; }
+        th { background: #f1f5f9; color: #475569; font-size: 6.5pt; text-align: left; }
+        tfoot td { background: #f8fafc; }
+        .text-end { text-align: right; }
+        code { font-size: 6.5pt; color: #64748b; }
+        .report-doc__chip { padding: 0 3pt; border-radius: 3pt; white-space: nowrap; }
+        .report-doc__chip--status-final { background: #dcfce7; color: #166534; }
+        .report-doc__chip--status-draft { background: #fef3c7; color: #92400e; }
+        .report-doc__chip--status-confidential { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+    <h1>{{ 'group_report.comparison.title'|trans({}, 'group_report') }}</h1>
+    <div class="meta">{{ 'group_report.comparison.subtitle'|trans({'%root%': root.name, '%count%': comparison.rows|length}, 'group_report') }} · {{ 'now'|date('d.m.Y') }}</div>
+
+    <h2>{{ 'group_report.comparison.kpis.title'|trans({}, 'group_report') }}</h2>
+    <p class="text-body-secondary">{{ 'group_report.comparison.kpis.intro'|trans({}, 'group_report') }}</p>
+    {{ _cmp.kpi_table(comparison) }}
+
+    <h2>{{ 'group_report.comparison.frameworks.title'|trans({}, 'group_report') }}</h2>
+    <p class="text-body-secondary">{{ 'group_report.comparison.frameworks.intro'|trans({}, 'group_report') }}</p>
+    {{ _cmp.framework_table(comparison) }}
+
+    <h2>{{ 'report.doc.appendix.methodology'|trans({}, 'reports') }}</h2>
+    <p>{{ 'group_report.comparison.methodology'|trans({}, 'group_report') }}</p>
+</body>
+</html>

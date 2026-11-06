@@ -235,7 +235,8 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 ### Corporate Structure und Multi-Tenancy
 
 - **Holding-/Konzernstruktur** -- Tenant-Hierarchie mit Cycle-Safety und Baseline-Vererbung
-- **Group-CISO-Dashboards** -- 7 Konzern-Uebersichten (NIS2-Matrix, Top-10-Risiken, SoA-Matrix 93xN, Supplier-Dedup, Incident-Cross-Post)
+- **Konzern-Reports** -- Konzern-Uebersichten fuer Group-CISO und (nur lesend) Konzern-Auditor: NIS2-Matrix, Top-10-Risiken, SoA-Matrix 93xN, Supplier-Dedup, Incident-Cross-Post, Audit-Programm; sie lesen die Daten aller Toechter (vorher sah man nur die Holding)
+- **Organisationsvergleich** -- alle Organisationen des Konzerns nebeneinander: Management-KPIs und Framework-Erfuellung aus dem KPI-Katalog, je Organisation mit ihren eigenen Modulen und Schwellwerten berechnet, Konzern-Zeile (Mittelwert bzw. Summe); Export als Excel und PDF, jeder Export im Audit-Log
 - **Policy-Vererbung** -- Mandatory-Policies durchmandatieren oder lokalen Override erlauben
 - **Portfolio-Report** -- Delta-Trends via Snapshots mit Drill-Down auf einzelne Requirements
 

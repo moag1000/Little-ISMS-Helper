@@ -67,7 +67,7 @@
     {% set _nav_html = '<div class="d-flex flex-wrap gap-2" style="margin-bottom:1rem;">'
         ~ (is_module_active('nis2_dora') ? '<a href="' ~ path('app_group_report_nis2_registration') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.nis2.title'|trans({}, 'group_report')) ~ '</a>' : '')
         ~ '<a href="' ~ path('app_group_report_risks') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.risks.title'|trans({}, 'group_report')) ~ '</a>'
-        ~ '<a href="' ~ path('app_group_report_kpi_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.kpi.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '<a href="' ~ path('app_group_report_comparison') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.comparison.title'|trans({}, 'group_report')) ~ '</a>'
         ~ '<a href="' ~ path('app_group_report_soa_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.soa.title'|trans({}, 'group_report')) ~ '</a>'
         ~ '<a href="' ~ path('app_group_report_suppliers') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.suppliers.title'|trans({}, 'group_report')) ~ '</a>'
         ~ '<a href="' ~ path('app_group_report_incidents') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.incidents.title'|trans({}, 'group_report')) ~ '</a>'
@@ -92,10 +92,10 @@
         },
         brand_name: root.name,
         key_findings: [
-            { label: ('group_report.kpi.col.tenant'|trans({}, 'group_report')) ~ ': ' ~ all_tenants|default([])|length, tone: 'ok' },
+            { label: ('group_report.comparison.col.organisation'|trans({}, 'group_report')) ~ ': ' ~ all_tenants|default([])|length, tone: 'ok' },
         ],
         kpis: [
-            { label: 'group_report.kpi.col.tenant'|trans({}, 'group_report'), value: all_tenants|default([])|length, tone: 'neutral' },
+            { label: 'group_report.comparison.col.organisation'|trans({}, 'group_report'), value: all_tenants|default([])|length, tone: 'neutral' },
         ],
         sections: [
             {
