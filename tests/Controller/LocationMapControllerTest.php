@@ -194,7 +194,11 @@ final class LocationMapControllerTest extends WebTestCase
 
         $this->em->clear();
         self::assertSame($this->user->getId(), $this->em->find(Location::class, $this->room->getId())->getResponsiblePersonUser()?->getId());
-        self::assertNull($this->em->find(Location::class, $this->foreignSite->getId())->getResponsiblePersonUser());
+        // The tenant filter hides the foreign row from the ORM; read it directly.
+        self::assertNull($this->em->getConnection()->fetchOne(
+            'SELECT responsible_person_user_id FROM location WHERE id = ?',
+            [$this->foreignSite->getId()],
+        ));
     }
 
     #[Test]
