@@ -14,6 +14,9 @@ or none at all (the 44-defect drift fixed in PR #788). This guard parses both
 files statically (no kernel needed) and fails when a panel route does not
 resolve to its own panel.
 
+Each route is linked at most once across all panels (one page, one place in
+the menu — UI review wave B). A second link to the same route fails.
+
 Intentional quick-action shortcuts (a "New X" link surfaced in another panel
 that should still highlight X's home area) are listed in SHORTCUTS.
 """
@@ -85,7 +88,19 @@ def main() -> int:
         print("check_nav_area_parity: could not parse _nav_map resolver", file=sys.stderr)
         return 1
 
-    routes = parse_panel_routes(PANEL.read_text(encoding="utf-8"))
+    panel_text = PANEL.read_text(encoding="utf-8")
+    counts: dict[str, int] = {}
+    for rm in re.finditer(r"path\('([a-zA-Z0-9_]+)'", panel_text):
+        counts[rm.group(1)] = counts.get(rm.group(1), 0) + 1
+    duplicates = sorted(r for r, n in counts.items() if n > 1)
+    if duplicates:
+        print(f"check_nav_area_parity: {len(duplicates)} route(s) linked more than once in the menu:")
+        for route in duplicates:
+            print(f"  FAIL {route} ({counts[route]}x)")
+        print("\nFix: keep one entry per page; hubs (import hub, reports) cover the variants.")
+        return 1
+
+    routes = parse_panel_routes(panel_text)
     violations = []
     for route, panel_area in routes:
         expected = SHORTCUTS.get(route, panel_area)

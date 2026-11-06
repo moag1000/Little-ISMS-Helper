@@ -1,15 +1,5 @@
 nav:
     bulk_import:
-        assets: 'Asset bulk import'
-        assets_desc: 'Import asset list from Excel/CSV'
-        suppliers: 'Supplier bulk import'
-        suppliers_desc: 'Import supplier list from Excel/CSV'
-        controls: 'Controls bulk import'
-        controls_desc: 'Import controls from Excel/CSV'
-        risks: 'Risk bulk import'
-        risks_desc: 'Import risk register from Excel/CSV'
-        business_processes: 'Business Process bulk import'
-        business_processes_desc: 'Import BIA process list from Excel/CSV'
         processing_activities: 'Processing activities import'
         processing_activities_desc: 'Import RoPA (Art. 30) from Excel/CSV'
         data_subject_requests: 'Data subject requests import'

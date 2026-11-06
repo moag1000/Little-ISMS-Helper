@@ -151,6 +151,7 @@ nav:
             continuity: Kontinuitätsplanung
             testing: 'Tests & Übungen'
             data_protection: Datenschutz
+            data_subjects_authorities: 'Betroffene & Meldungen'
             documents: Dokumentenverwaltung
             security_ops: Sicherheitsbetrieb
             auditing: 'Audits & Schulungen'
@@ -164,12 +165,9 @@ nav:
             frameworks_mapping: 'Frameworks & Mapping'
             wizards: 'Wizards & Assistenten'
             specialized_tools: 'DORA / NIS2 / MRIS / AI'
-            # V3 W2-H2: Persona-Dashboards (Compliance-Manager-Dashboard)
-            persona_dashboards: 'Persona-Dashboards'
             # Aurora v4 Welle 2 — neue Sektionen (2026-05-27)
             quick_actions: 'Schnellaktionen'
             cockpit_personas: 'Persona-Übersicht'
-            coverage: 'Framework-Abdeckung'
             eu_regulatory: 'EU-Regulatorik & DSGVO'
             bcm_continuity: 'Business Continuity'
             audits_reviews: 'Audits & Reviews'
@@ -177,7 +175,15 @@ nav:
             learning_paths: Lernpfade
             reference: Referenz
 
+        quick:
+            asset: 'Asset anlegen'
+            incident: 'Vorfall melden'
+            risk: 'Risiko erfassen'
+            data_breach: 'Datenpanne melden'
+            audit: 'Audit anlegen'
         dashboard:
+            isb: 'ISB-Dashboard'
+            bcm: 'BCM-Dashboard'
             compliance_manager: 'Compliance-Manager-Dashboard'
             ciso: 'CISO-Dashboard'
             risk_manager: 'Risk-Manager-Dashboard'
@@ -229,12 +235,6 @@ nav:
             audits: 'Interne und externe Audits'
             training: 'Sicherheitsbewusstseins-Schulungen'
             management_reviews: 'Managementbewertungs-Meetings'
-            compliance_manager_dashboard: 'Coverage-Heatmap, offene Findings, Audit-Plan, Doc-Approvals'
-            ciso_dashboard: 'Risiko-, Incident- und Control-Übersicht für CISOs'
-            risk_manager_dashboard: 'Top-Risiken, Treatments, Akzeptanzen, KRI-Trends'
-            auditor_dashboard: 'Findings, Nachweise, Audit-Plan, Stichprobenverfolgung'
-            board_dashboard: 'Strategische Risiken, ROI, Compliance-Status für Geschäftsführung'
-            dpo_dashboard: 'Datenpannen (Art. 33), DSFA-Status (Art. 35), Verfahrensverzeichnis'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
@@ -305,8 +305,6 @@ nav:
                 title: 'Datenschutz & DSGVO'
             cockpit:
                 title: 'Persona-Cockpit'
-            portfolio:
-                title: 'Portfolio & Konzern'
             operations:
                 title: 'Tägliche Arbeit & Betrieb'
             compliance:
