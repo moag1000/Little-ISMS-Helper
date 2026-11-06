@@ -736,6 +736,8 @@ final class ManagementReportService
             'supplier_management' => $this->translator->trans('dashboard.management_kpis.supplier_management.title', [], 'dashboard', $locale),
             'documentation' => $this->translator->trans('dashboard.management_kpis.documentation.title', [], 'dashboard', $locale),
             'risk_finance' => $this->translator->trans('dashboard.management_kpis.risk_finance.title', [], 'dashboard', $locale),
+            'locations' => $this->translator->trans('dashboard.management_kpis.locations.title', [], 'dashboard', $locale),
+            'efficiency' => $this->translator->trans('dashboard.management_kpis.efficiency.title', [], 'dashboard', $locale),
         ];
 
         // Status translations
