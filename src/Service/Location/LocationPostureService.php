@@ -390,9 +390,8 @@ class LocationPostureService implements ResetInterface
                 $gaps !== [] => 'warn',
                 default => 'ok',
             },
-            'checksRate' => $applicable !== []
-                ? (int) round(100 * (count($applicable) - count($gaps)) / count($applicable))
-                : null,
+            // The owner check always applies, so the rate is always defined.
+            'checksRate' => (int) round(100 * (count($applicable) - count($gaps)) / count($applicable)),
             'openIncidents' => count($site['incidents']),
             'levers' => $this->levers($risks, $protection),
             'ale' => array_sum(array_map(static fn (Risk $r): int => (int) $r->getAnnualLossExpectancy(), $risks)),

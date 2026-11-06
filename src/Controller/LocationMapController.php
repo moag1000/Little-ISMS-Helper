@@ -50,7 +50,7 @@ final class LocationMapController extends AbstractController
         $user = $this->getUser();
         $tenant = $user instanceof User ? $user->getTenant() : null;
         $view = $tenant instanceof Tenant
-            ? $this->mapView->build($tenant, $user instanceof User ? $user : null)
+            ? $this->mapView->build($tenant, $user)
             : ['sites' => [], 'unsaved' => 0, 'peers' => [], 'objectives' => [], 'levers' => [], 'money' => false];
         $sites = $view['sites'];
 
