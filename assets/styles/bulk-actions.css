@@ -45,23 +45,6 @@
     .bulk-action-bar { animation: none; transition: none; }
 }
 
-/* Optional Alva companion (legacy slot — fairy floats left of bar) */
-.bulk-action-bar .bulk-action-alva {
-    position: absolute;
-    left: -20px;
-    pointer-events: none;
-    animation: bulk-action-alva-float 2s ease-in-out infinite;
-}
-
-@keyframes bulk-action-alva-float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .bulk-action-bar .bulk-action-alva { animation: none; }
-}
-
 /* Selection Info — count + label */
 .bulk-selection-info {
     display: inline-flex;
@@ -284,13 +267,6 @@ html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
 .fa-bulk-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .fa-bulk-btn i,
 .fa-bulk-btn .fa-icon { font-size: 15px; }
-
-.fa-bulk-btn--primary { background: var(--primary); color: var(--on-primary); }
-.fa-bulk-btn--primary:hover {
-    background: var(--primary-strong, var(--primary));
-    color: var(--on-primary);
-    filter: brightness(1.04);
-}
 
 .fa-bulk-btn--danger  { color: var(--danger); }
 .fa-bulk-btn--danger:hover  {
