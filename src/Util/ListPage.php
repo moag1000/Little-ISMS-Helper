@@ -81,7 +81,7 @@ final readonly class ListPage implements \IteratorAggregate, \Countable
         $perPage = self::perPage($request);
 
         return new self(
-            array_values($slice),
+            $slice,
             min(self::pageNumber($request), max(1, (int) ceil($total / $perPage))),
             $perPage,
             $total,
