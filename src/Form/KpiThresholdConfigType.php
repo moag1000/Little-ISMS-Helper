@@ -25,6 +25,7 @@ final class KpiThresholdConfigType extends AbstractType
         'kpi_threshold.key.bia_coverage' => 'bia_coverage',
         'kpi_threshold.key.implementation_readiness' => 'implementation_readiness',
         'kpi_threshold.key.isms_health_score' => 'isms_health_score',
+        'kpi_threshold.key.location_checks_rate' => 'location_checks_rate',
     ];
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

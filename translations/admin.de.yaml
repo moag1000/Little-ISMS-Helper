@@ -1989,6 +1989,7 @@ kpi_threshold:
         bia_coverage: 'BIA-Abdeckung'
         implementation_readiness: 'ISMS Implementation-Readiness'
         isms_health_score: 'ISMS Health Score'
+        location_checks_rate: 'Erfüllte Standort-Prüfungen'
     flash:
         created: 'Schwellwert erstellt.'
         updated: 'Schwellwert aktualisiert.'

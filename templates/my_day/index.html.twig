@@ -18,6 +18,7 @@
 {% set meta = {
     'workflows_pending':                  { icon: 'ui-undo',                tone: 'warning' },
     'risk_acceptance_pending':            { icon: 'nav-shield-alert',       tone: 'warning' },
+    'location_gaps':                      { icon: 'nav-location',           tone: 'warning' },
     'workflows_overdue':                  { icon: 'status-critical',        tone: 'danger'  },
     'four_eyes':                          { icon: 'nav-people',             tone: 'warning' },
     'acknowledgements':                   { icon: 'ui-check',               tone: 'primary' },
@@ -48,7 +49,7 @@
 {# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
    default to [] when the aggregator did not provide them. Approvals and
    four-eyes requests come first: they are decided right here. #}
-{% set order = ['workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+{% set order = ['workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','location_gaps','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
 {# Build the active list and the zero counter in one pass — avoids relying on a
    lazy |filter iterator being consumed twice. #}
 {# Jargon categories that get a hover-tooltip (junior aid) — the ones a 9001-

@@ -1974,6 +1974,7 @@ kpi_threshold:
         bia_coverage: 'BIA Coverage'
         implementation_readiness: 'ISMS Implementation Readiness'
         isms_health_score: 'ISMS Health Score'
+        location_checks_rate: 'Site checks passed'
     flash:
         created: 'Threshold created.'
         updated: 'Threshold updated.'

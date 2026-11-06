@@ -404,15 +404,14 @@ class RiskController extends AbstractController
     public function new(Request $request): Response
     {
         $risk = new Risk();
-
-        // Set tenant from current user
         $user = $this->security->getUser();
         $tenant = null;
         if ($user instanceof UserInterface && $user->getTenant()) {
             $tenant = $user->getTenant();
             $risk->setTenant($tenant);
         }
-
+        $site = $this->entityManager->find(\App\Entity\Location::class, $request->query->getInt('location')); // quick action on the location map
+        $risk->setLocation($site !== null && $tenant !== null && $site->getTenant() === $tenant ? $site : null);
         // Pre-fill from Vulnerability (Data-Reuse: one-click derivation)
         $fromVulnerabilityId = $request->query->get('fromVulnerability');
         if ($fromVulnerabilityId !== null && $fromVulnerabilityId !== '') {

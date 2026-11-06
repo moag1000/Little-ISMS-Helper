@@ -165,4 +165,70 @@ final class LocationMapControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertStringNotContainsString($this->risk->getTitle(), (string) $this->client->getResponse()->getContent());
     }
+
+    #[Test]
+    public function bulkActionRequiresCsrfToken(): void
+    {
+        $this->client->loginUser($this->user);
+        $this->client->request('POST', '/en/location/map/bulk', [
+            'target' => 'owner:' . $this->user->getId(),
+            'ids' => [$this->room->getId()],
+        ]);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    #[Test]
+    public function bulkOwnerAssignmentStaysInsideTheOwnTenant(): void
+    {
+        $this->client->loginUser($this->user);
+        $crawler = $this->client->request('GET', '/en/location/map');
+        $token = $crawler->filter('#location-map-selection input[name="_token"]')->attr('value');
+
+        $this->client->request('POST', '/en/location/map/bulk', [
+            '_token' => $token,
+            'target' => 'owner:' . $this->user->getId(),
+            'ids' => [$this->room->getId(), $this->foreignSite->getId()],
+        ]);
+        self::assertResponseRedirects();
+
+        $this->em->clear();
+        self::assertSame($this->user->getId(), $this->em->find(Location::class, $this->room->getId())->getResponsiblePersonUser()?->getId());
+        self::assertNull($this->em->find(Location::class, $this->foreignSite->getId())->getResponsiblePersonUser());
+    }
+
+    #[Test]
+    public function exportsTheSituationReportAsExcelAndPdf(): void
+    {
+        $this->client->loginUser($this->user);
+
+        $this->client->request('GET', '/en/location/map/export.xlsx');
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        $this->client->request('GET', '/en/location/map/export.pdf?ids[]=' . $this->site->getId());
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('Content-Type', 'application/pdf');
+    }
+
+    #[Test]
+    public function locationPageShowsTheSiteProfile(): void
+    {
+        $this->client->loginUser($this->user);
+        $crawler = $this->client->request('GET', '/en/location/' . $this->room->getId());
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(1, $crawler->filter('#profile'));
+        self::assertStringContainsString('Werk ' . $this->uid, $crawler->filter('#profile')->ancestors()->first()->text());
+    }
+
+    #[Test]
+    public function myDayListsOwnSitesWithOpenChecks(): void
+    {
+        $this->client->loginUser($this->user);
+        $this->client->request('GET', '/en/my-day');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Werk ' . $this->uid, (string) $this->client->getResponse()->getContent());
+    }
 }

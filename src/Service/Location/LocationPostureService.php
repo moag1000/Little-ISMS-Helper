@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Location;
 
 use App\Entity\Asset;
+use App\Entity\EntityTag;
 use App\Entity\Incident;
 use App\Entity\Location;
 use App\Entity\Risk;
@@ -14,6 +15,7 @@ use App\Enum\IncidentStatus;
 use App\Enum\RiskStatus;
 use App\Risk\RiskMatrixThresholds;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * One posture row per top-level location (site) for the location map.
@@ -28,10 +30,13 @@ use Doctrine\ORM\EntityManagerInterface;
  *     an asset located there.
  *   - six checks on Location, Risk and Incident fields; a check that does not
  *     apply to the site is left out instead of counting as passed.
+ *   - levers = open risks whose treatment plan lowers the score: the planned
+ *     drop (inherent minus residual target) times the protection need.
+ *   - tags = active tags of the site, used for custom peer groups.
  *
  * All queries are scoped to the given tenant explicitly.
  */
-class LocationPostureService
+class LocationPostureService implements ResetInterface
 {
     public const array CHECKS = ['owner', 'deputy', 'access_control', 'camera', 'risks_treated', 'incidents_closed'];
 
@@ -47,6 +52,9 @@ class LocationPostureService
 
     private const array CONTROLLED_LEVELS = ['controlled', 'secure'];
 
+    /** @var array<string, list<array<string, mixed>>> "<tenant>:<viewer>" => rows, for the request */
+    private array $memo = [];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly LocationGeocoder $geocoder,
@@ -57,6 +65,19 @@ class LocationPostureService
      * @return list<array<string, mixed>>
      */
     public function forTenant(Tenant $tenant, ?User $viewer = null): array
+    {
+        return $this->memo[$tenant->getId() . ':' . $viewer?->getId()] ??= $this->compute($tenant, $viewer);
+    }
+
+    public function reset(): void
+    {
+        $this->memo = [];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function compute(Tenant $tenant, ?User $viewer): array
     {
         /** @var list<Location> $locations */
         $locations = $this->em->getRepository(Location::class)->findBy(['tenant' => $tenant], ['name' => 'ASC']);
@@ -86,10 +107,11 @@ class LocationPostureService
         $assetSite = $this->collectAssets($tenant, $rootOf, $sites);
         $this->collectRisks($tenant, $rootOf, $assetSite, $sites);
         $this->collectIncidents($tenant, $assetSite, $sites);
+        $tags = $this->siteTags(array_keys($sites));
 
         $rows = [];
-        foreach ($sites as $site) {
-            $rows[] = $this->finish($site);
+        foreach ($sites as $id => $site) {
+            $rows[] = $this->finish($site) + ['tags' => $tags[$id] ?? []];
         }
         return $rows;
     }
@@ -242,6 +264,61 @@ class LocationPostureService
         }
     }
 
+    /**
+     * @param list<int> $siteIds
+     * @return array<int, list<string>> site id => tag names
+     */
+    private function siteTags(array $siteIds): array
+    {
+        if ($siteIds === []) {
+            return [];
+        }
+        $rows = $this->em->createQueryBuilder()
+            ->select('et.entityId AS id', 't.name AS name')
+            ->from(EntityTag::class, 'et')
+            ->join('et.tag', 't')
+            ->where('et.entityClass = :class')
+            ->andWhere('et.entityId IN (:ids)')
+            ->andWhere('et.taggedUntil IS NULL')
+            ->setParameter('class', Location::class)
+            ->setParameter('ids', $siteIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        $tags = [];
+        foreach ($rows as $row) {
+            $tags[(int) $row['id']][] = (string) $row['name'];
+        }
+        return $tags;
+    }
+
+    /**
+     * Open risks whose treatment plan lowers the score, biggest effect first.
+     *
+     * @param list<Risk> $risks
+     * @return list<array{id: int|null, title: string, from: int, to: int, impact: int}>
+     */
+    private function levers(array $risks, int $protection): array
+    {
+        $levers = [];
+        foreach ($risks as $risk) {
+            $from = $risk->getInherentRiskLevel();
+            $to = $risk->getResidualRiskLevel();
+            if ($risk->getStatus()?->isHandled() === true || $to >= $from) {
+                continue;
+            }
+            $levers[] = [
+                'id' => $risk->getId(),
+                'title' => (string) $risk->getTitle(),
+                'from' => $from,
+                'to' => $to,
+                'impact' => ($from - $to) * max(1, $protection),
+            ];
+        }
+        usort($levers, static fn (array $a, array $b): int => $b['impact'] <=> $a['impact']);
+        return array_slice($levers, 0, 3);
+    }
+
     public static function currentScore(Risk $risk): int
     {
         return $risk->getStatus()?->isHandled() === true
@@ -313,7 +390,12 @@ class LocationPostureService
                 $gaps !== [] => 'warn',
                 default => 'ok',
             },
+            'checksRate' => $applicable !== []
+                ? (int) round(100 * (count($applicable) - count($gaps)) / count($applicable))
+                : null,
             'openIncidents' => count($site['incidents']),
+            'levers' => $this->levers($risks, $protection),
+            'ale' => array_sum(array_map(static fn (Risk $r): int => (int) $r->getAnnualLossExpectancy(), $risks)),
             'topRisks' => array_map(static fn (Risk $r): array => [
                 'id' => $r->getId(),
                 'title' => (string) $r->getTitle(),
