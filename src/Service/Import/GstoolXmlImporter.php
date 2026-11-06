@@ -9,6 +9,7 @@ use App\Entity\ImportRowEvent;
 use App\Entity\ImportSession;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Doctrine\EntityManagerRecovery;
 use App\Repository\AssetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
@@ -144,6 +145,7 @@ final class GstoolXmlImporter
         private readonly AssetRepository $assetRepository,
         private readonly ImportSessionRecorder $sessionRecorder,
         private readonly GstoolMigrationTable $migrationTable,
+        private readonly ?EntityManagerRecovery $entityManagerRecovery = null,
     ) {
     }
 
@@ -333,21 +335,55 @@ final class GstoolXmlImporter
                 continue;
             }
 
-            $asset = $this->assetRepository->findOneBy([
-                'tenant' => $tenant,
-                'name' => $row['name'],
-            ]);
-            $isNew = $asset === null;
-            $beforeState = $isNew ? null : $this->snapshot($asset);
-
-            if ($asset === null) {
-                $asset = new Asset();
-                $asset->setTenant($tenant);
-                $asset->setName($row['name']);
-            }
-            $this->applyRowToAsset($asset, $row);
-            $em->persist($asset);
+            // Persist the previous row's audit event on its own, so a rejected row
+            // below cannot take it down with it.
             $em->flush();
+
+            try {
+                $asset = $this->assetRepository->findOneBy([
+                    'tenant' => $tenant,
+                    'name' => $row['name'],
+                ]);
+                $isNew = $asset === null;
+                $beforeState = $isNew ? null : $this->snapshot($asset);
+
+                if ($asset === null) {
+                    $asset = new Asset();
+                    $asset->setTenant($tenant);
+                    $asset->setName($row['name']);
+                }
+                $this->applyRowToAsset($asset, $row);
+                $em->persist($asset);
+                $em->flush();
+            } catch (\Throwable $e) {
+                // One rejected Zielobjekt must not abort the file (nor leave the session
+                // open): record the row as an error, recover the closed EntityManager,
+                // re-attach what the next rows still need and carry on.
+                if (!$em->isOpen()) {
+                    $this->entityManagerRecovery?->recover();
+                }
+                if (!$em->isOpen()) {
+                    throw $e;
+                }
+                $em->clear();
+                $session = $em->find(ImportSession::class, $session->getId()) ?? $session;
+                $tenant = $em->find(Tenant::class, $tenant->getId()) ?? $tenant;
+                foreach ($assetByGstoolId as $gstoolId => $known) {
+                    $assetByGstoolId[$gstoolId] = $em->find(Asset::class, $known->getId()) ?? $known;
+                }
+                $this->sessionRecorder->recordRow(
+                    session: $session,
+                    lineNumber: (int) $row['line'],
+                    decision: ImportRowEvent::DECISION_ERROR,
+                    targetEntityType: Asset::class,
+                    targetEntityId: null,
+                    beforeState: null,
+                    afterState: null,
+                    sourceRowRaw: $this->sourceRowFor($row),
+                    errorMessage: $e->getMessage(),
+                );
+                continue;
+            }
 
             if ($row['id'] !== null) {
                 $assetByGstoolId[$row['id']] = $asset;

@@ -84,7 +84,7 @@
         {% block card_header %}
             <div class="card-header">
                 {%- set requestCount = change_requests|length -%}
-                <h2>{{ 'change_request.list.title'|trans({'count': requestCount}, 'change_requests') }}</h2>
+                <h2>{{ 'change_request.list.title'|trans({'%count%': requestCount}, 'change_requests') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}

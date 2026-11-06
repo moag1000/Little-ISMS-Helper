@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Policy-Wizard W4-A — DoraExtensionCatalogue unit tests.
  *
- * Verifies the 18-entry mapping (17 EXTENDS + 1 REPLACES) against the
+ * Verifies the 19-entry mapping (18 EXTENDS + 1 REPLACES) against the
  * §10 cross-mapping in `docs/plans/policy-wizard/03-dora-input.md`.
  */
 final class DoraExtensionCatalogueTest extends TestCase
@@ -22,11 +22,11 @@ final class DoraExtensionCatalogueTest extends TestCase
         $catalogue = new DoraExtensionCatalogue();
 
         // §10 cross-mapping: 17 EXTENDS + 1 REPLACES (network_security)
-        // = 18 ISO topics that grow a DORA-Erweiterung section.
+        // = 19 ISO topics that grow a DORA-Erweiterung section.
         self::assertSame(
-            18,
+            19,
             $catalogue->count(),
-            'catalogue must have exactly 18 entries per DORA §10 (17 EXTENDS + 1 REPLACES)',
+            'catalogue must have exactly 19 ISO topics (18 EXTENDS + 1 REPLACES)',
         );
 
         // Every entry must yield a non-empty article-ref list — defends

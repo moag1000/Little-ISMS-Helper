@@ -90,6 +90,45 @@ class PortfolioReportServiceTrendTest extends TestCase
     }
 
     #[Test]
+    public function testNonApplicableFulfillmentsAreExcludedFromCell(): void
+    {
+        $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
+        $frameworkRepo->method('findActiveFrameworks')->willReturn([$this->framework]);
+
+        // Two applicable (60, 80 -> avg 70) plus one N/A that must not count as 100 %.
+        $fulfillments = $this->fulfillmentsInCategory('Protect', [60, 80, 100]);
+        $fulfillments[2]->setApplicable(false);
+
+        $fulfillmentRepo = $this->createStub(ComplianceRequirementFulfillmentRepository::class);
+        $fulfillmentRepo->method('findByFrameworkAndTenant')->willReturn($fulfillments);
+
+        $service = new PortfolioReportService($frameworkRepo, $fulfillmentRepo, null);
+
+        $cell = $service->computeCellAggregate($this->framework, $this->tenant, 'Protect');
+
+        self::assertSame(70, $cell['pct']);
+        self::assertSame(2, $cell['count']);
+        self::assertSame(2, $cell['gaps']);
+    }
+
+    #[Test]
+    public function testCellWithOnlyNonApplicableFulfillmentsIsEmpty(): void
+    {
+        $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
+        $fulfillments = $this->fulfillmentsInCategory('Protect', [100]);
+        $fulfillments[0]->setApplicable(false);
+
+        $fulfillmentRepo = $this->createStub(ComplianceRequirementFulfillmentRepository::class);
+        $fulfillmentRepo->method('findByFrameworkAndTenant')->willReturn($fulfillments);
+
+        $service = new PortfolioReportService($frameworkRepo, $fulfillmentRepo, null);
+        $cell = $service->computeCellAggregate($this->framework, $this->tenant, 'Protect');
+
+        self::assertSame(0, $cell['pct']);
+        self::assertSame(0, $cell['count']);
+    }
+
+    #[Test]
     public function testDeltaIsComputedAgainstHistoricalSnapshot(): void
     {
         $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);

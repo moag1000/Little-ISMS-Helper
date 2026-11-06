@@ -120,7 +120,7 @@ final class SeedDoraPolicyTemplatesCommand extends Command
             'linked_dora_articles' => ['Art. 11'],
             'affected_functions' => ['IT_OPERATIONS', 'BCM', 'CRISIS_TEAM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         [

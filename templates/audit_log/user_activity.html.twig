@@ -18,7 +18,7 @@
 
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
     {% block alert_body %}
-        <div class="fa-alert__title">{{ 'audit_log.user_activity.header'|trans({userName: userName}, 'audit_log') }}</div>
+        <div class="fa-alert__title">{{ 'audit_log.user_activity.header'|trans({'%userName%': userName}, 'audit_log') }}</div>
         <p><strong>{{ 'audit_log.user_activity.count_label'|trans({}, 'audit_log') }}:</strong> {{ auditLogs|length }}</p>
     {% endblock %}
 {% endembed %}

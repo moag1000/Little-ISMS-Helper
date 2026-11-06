@@ -234,7 +234,7 @@ final class SeedBsiPolicyTemplatesCommand extends Command
             'linked_bsi_bausteine' => ['CON.3.A1', 'CON.3.A2', 'CON.3.A3', 'CON.3.A4', 'CON.3.A5', 'CON.3.A6'],
             'linked_annex_a_controls' => ['A.8.13'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
         // 11 — Lösch-/Vernichtungsrichtlinie
@@ -510,7 +510,7 @@ final class SeedBsiPolicyTemplatesCommand extends Command
             'linked_bsi_bausteine' => ['DER.4.A1', 'DER.4.A2', 'DER.4.A3', 'DER.4.A4'],
             'linked_annex_a_controls' => ['A.5.29', 'A.5.30'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         // 29 — Schutzbedarfsfeststellungs-Methodik (Methode-Doku, §4.1)

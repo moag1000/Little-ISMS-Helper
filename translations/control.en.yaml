@@ -78,6 +78,8 @@ control:
     framework_reference: 'e.g. A.5.1, A.5.2 (comma-separated)'
     framework_reference_example: 'e.g. %example% (comma-separated)'
   status:
+    planned: 'Planned'
+    verified: 'Verified'
     implemented: Implemented
     in_progress: In Progress
     not_started: Not Started

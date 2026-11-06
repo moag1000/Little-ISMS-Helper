@@ -48,6 +48,7 @@ final class CrossCoverageNis2SectionExtensionTest extends TestCase
     {
         $template = new PolicyTemplate();
         $template->setTopic($topic);
+        $template->setStandard('iso27001'); // extensions only extend ISO 27001 host policies
         $template->setLinkedAnnexAControls($linkedAnnexAControls);
         // NIS2 refs are NOT stored in a PolicyTemplate field — they come
         // exclusively from Nis2SectionCatalogue via the registry path.

@@ -4,7 +4,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>{{ 'emails.auto_reaction.risk.subject'|trans({}, 'emails')|default('Auto-Risk skeleton created') }}</title>
+    <title>{{ 'emails.auto_reaction.risk.subject'|trans({'%title%': risk.title|default('—')}, 'emails') }}</title>
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">

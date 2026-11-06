@@ -173,7 +173,7 @@ final class SeedSoc2PolicyTemplatesCommand extends Command
             'linked_annex_a_controls' => ['A.5.29', 'A.5.30', 'A.8.6', 'A.8.13', 'A.8.14'],
             'affected_functions' => ['IT_OPERATIONS', 'BCM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
         // 7 — Confidentiality (C1.x — Classification + Crypto + Disposal)

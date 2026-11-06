@@ -72,7 +72,7 @@ final class BulkImportController extends AbstractController
     {
         $module = $this->schemaRegistry?->getSchemaFor($entityTypePascal)?->module;
         if ($module !== null && $this->moduleConfiguration !== null && !$this->moduleConfiguration->isModuleActive($module)) {
-            $this->addFlash('warning', $this->translator->trans('common.module_not_active', [], 'messages'));
+            $this->addFlash('warning', $this->translator->trans('common.module_not_active', ['%module%' => $module], 'messages'));
             return $this->redirectToRoute('app_dashboard');
         }
 

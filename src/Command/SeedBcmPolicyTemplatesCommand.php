@@ -105,7 +105,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['TOP_MGMT', 'BCM', 'CRISIS_TEAM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         [
@@ -119,7 +119,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['TOP_MGMT', 'BCM'],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         [
@@ -133,7 +133,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'BUSINESS_PROCESS_OWNERS'],
             'review_interval_months' => 24,
-            'approval_chain' => ['ROLE_BCM'],
+            'approval_chain' => ['ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
         [
@@ -147,7 +147,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'RISK_MANAGEMENT'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_CISO'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_CISO'],
             'dpo_section_required' => false,
         ],
         [
@@ -161,7 +161,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'IT_OPERATIONS', 'TOP_MGMT'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         [
@@ -175,7 +175,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'BUSINESS_PROCESS_OWNERS'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM'],
+            'approval_chain' => ['ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
         [
@@ -189,7 +189,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'CRISIS_TEAM', 'COMMUNICATIONS'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_CISO'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_CISO'],
             'dpo_section_required' => false,
         ],
         [
@@ -203,7 +203,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['CRISIS_TEAM', 'TOP_MGMT', 'BCM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         [
@@ -217,7 +217,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'IT_OPERATIONS'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_CISO'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_CISO'],
             'dpo_section_required' => false,
         ],
         [
@@ -231,7 +231,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'CRISIS_TEAM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM'],
+            'approval_chain' => ['ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
         [
@@ -245,7 +245,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'INTERNAL_AUDIT'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_INTERNAL_AUDIT'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_INTERNAL_AUDIT'],
             'dpo_section_required' => false,
         ],
         [
@@ -259,7 +259,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['TOP_MGMT', 'BCM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         [
@@ -273,7 +273,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => null,
             'affected_functions' => ['BCM', 'INTERNAL_AUDIT'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM'],
+            'approval_chain' => ['ROLE_BCM_OFFICER'],
             'dpo_section_required' => false,
         ],
         [
@@ -287,7 +287,7 @@ final class SeedBcmPolicyTemplatesCommand extends Command
             'linked_bausteine' => ['DER.4'],
             'affected_functions' => ['BCM', 'CRISIS_TEAM', 'TOP_MGMT'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
     ];

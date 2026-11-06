@@ -513,6 +513,7 @@ corrective_action:
         effectiveness_evidence: 'Pflicht-Beleg (Re-Audit, Re-Test-Bericht, Evidenz-Dokument-ID) — wird beim Status "Wirksam/Unwirksam bestätigt" erzwungen.'
         status_readonly: 'Der Status wird über den Lifecycle-Workflow gesteuert (Geplant → In Umsetzung → Abgeschlossen → Wirksamkeit verifiziert). Direkte Bearbeitung ist deaktiviert; nutzen Sie die Status-Aktionen auf der Detailseite.'
     status:
+        verified: 'Verifiziert'
         planned: 'Geplant'
         in_progress: 'In Umsetzung'
         completed: 'Umgesetzt'

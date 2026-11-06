@@ -177,6 +177,8 @@ final class DataImportService
                     'output' => $result['output'] ?? null,
                 ];
             } elseif (isset($data['file'])) {
+                // One constraint violation closes the EM — recover before the next file.
+                $this->resetEntityManagerIfClosed();
                 $result = $this->importFromFile($data['file']);
                 $results[] = [
                     'name' => $data['name'],
@@ -532,6 +534,61 @@ final class DataImportService
     }
 
     /**
+     * Builds one entity from a YAML row and persists it (or merges the row into
+     * an existing record with the same natural key). Does not flush.
+     */
+    private function importRow(string $entityClass, mixed $entityData, ?string $naturalKeyField, ?Tenant $tenant): object
+    {
+        $entity = $this->createEntity($entityClass, $entityData);
+        // Setup-Imports ohne User-Session → Tenant aus DB setzen,
+        // sonst landen Entities mit tenant_id=NULL und sind durch
+        // TenantFilter im Modul unsichtbar.
+        if ($tenant && method_exists($entity, 'setTenant') && method_exists($entity, 'getTenant') && $entity->getTenant() === null) {
+            $entity->setTenant($tenant);
+        }
+
+        // Idempotenz: Datensatz mit gleichem Natural-Key bereits vorhanden →
+        // mergen statt Duplicate-Key-Violation, damit Re-Imports kaputte Felder
+        // (z. B. asset_id=NULL aus einem früheren Fehlimport) reparieren.
+        if ($naturalKeyField !== null) {
+            $getter = 'get' . ucfirst($naturalKeyField);
+            if (method_exists($entity, $getter)) {
+                $keyValue = $entity->$getter();
+                if ($keyValue !== null && $keyValue !== '') {
+                    $criteria = [$naturalKeyField => $keyValue];
+                    if ($tenant && method_exists($entity, 'getTenant')) {
+                        $criteria['tenant'] = $tenant;
+                    }
+                    $existing = $this->entityManager->getRepository($entityClass)->findOneBy($criteria);
+                    if ($existing !== null) {
+                        $this->createEntity($entityClass, $entityData, $existing);
+                        $this->addLog("Refreshed existing {$entityClass} where {$naturalKeyField}={$keyValue}");
+
+                        return $existing;
+                    }
+                }
+            }
+        }
+
+        $this->entityManager->persist($entity);
+
+        return $entity;
+    }
+
+    /**
+     * Re-load the tenant on the current EntityManager (it is detached after a reset).
+     */
+    private function rebindTenant(?Tenant $tenant): ?Tenant
+    {
+        if ($tenant === null || $tenant->getId() === null) {
+            return $tenant;
+        }
+        $managed = $this->entityManager->find(get_class($tenant), $tenant->getId());
+
+        return $managed instanceof Tenant ? $managed : $tenant;
+    }
+
+    /**
      * Importiert Entitäten aus Array
      */
     /**
@@ -544,6 +601,8 @@ final class DataImportService
         $tenant = $ctx['tenant'] ?? $this->resolveImportTenant();
         $created = [];
         $errors = [];
+        /** @var list<array{0: class-string, 1: mixed, 2: ?string}> $rows */
+        $rows = [];
 
         foreach ($data as $entityType => $entities) {
             $entityClass = $this->resolveEntityClass($entityType);
@@ -584,69 +643,52 @@ final class DataImportService
                 ?? null;
 
             foreach ($entities as $entityData) {
-                try {
-                    $entity = $this->createEntity($entityClass, $entityData);
-                    // Setup-Imports ohne User-Session → Tenant aus DB setzen,
-                    // sonst landen Entities mit tenant_id=NULL und sind durch
-                    // TenantFilter im Modul unsichtbar (nur in Count-Queries
-                    // ohne Filter noch zählbar).
-                    if ($tenant && method_exists($entity, 'setTenant') && method_exists($entity, 'getTenant') && $entity->getTenant() === null) {
-                        $entity->setTenant($tenant);
-                    }
+                $rows[] = [$entityClass, $entityData, $naturalKeyField];
+            }
+        }
 
-                    // Idempotenz: Wenn ein Datensatz mit gleichem Natural-Key
-                    // bereits existiert, überspringen statt Duplicate-Key-
-                    // Constraint-Violation auszulösen. So kann der User den
-                    // gleichen Sample mehrfach klicken ohne Fehler.
-                    if ($naturalKeyField !== null) {
-                        $criteria = [];
-                        $getter = 'get' . ucfirst($naturalKeyField);
-                        if (method_exists($entity, $getter)) {
-                            $keyValue = $entity->$getter();
-                            if ($keyValue !== null && $keyValue !== '') {
-                                $criteria[$naturalKeyField] = $keyValue;
-                                if ($tenant && method_exists($entity, 'getTenant')) {
-                                    $criteria['tenant'] = $tenant;
-                                }
-                                $existing = $this->entityManager->getRepository($entityClass)->findOneBy($criteria);
-                                if ($existing !== null) {
-                                    // Bestehende Entity mit YAML-Daten mergen, damit
-                                    // Re-Imports kaputte Felder (z. B. asset_id=NULL aus
-                                    // einem früher fehlgeschlagenen Import) reparieren.
-                                    // Ohne das würde die NEUE Entity verworfen und die
-                                    // existierende, kaputte überleben.
-                                    $this->createEntity($entityClass, $entityData, $existing);
-                                    $this->addLog("Refreshed existing {$entityClass} where {$naturalKeyField}={$keyValue}");
-                                    $created[] = $existing;
-                                    $count++;
-                                    continue;
-                                }
-                            }
-                        }
-                    }
-
-                    $this->entityManager->persist($entity);
-                    $created[] = $entity;
-                    $count++;
-                } catch (Exception $e) {
-                    $hint = $entityClass . ': ' . $e->getMessage();
-                    $this->addLog("Error creating entity {$entityClass}: " . $e->getMessage());
-                    $errors[] = $hint;
-                }
+        // Pass 1: build + persist everything, one flush for the whole file.
+        foreach ($rows as [$rowClass, $rowData, $rowKey]) {
+            try {
+                $created[] = $this->importRow($rowClass, $rowData, $rowKey, $tenant);
+                $count++;
+            } catch (Exception $e) {
+                $this->addLog("Error creating entity {$rowClass}: " . $e->getMessage());
+                $errors[] = $rowClass . ': ' . $e->getMessage();
             }
         }
 
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            $msg = 'Flush fehlgeschlagen: ' . $e->getMessage();
-            $this->addLog($msg);
-            $errors[] = $msg;
-            // EntityManager schließt nach Constraint-Violation — neu öffnen
-            // damit nachfolgende Tracking-Persists nicht ebenfalls scheitern.
+            // One bad row closes the EntityManager and would take every valid row
+            // of the file with it. Re-open and retry row by row, so only the
+            // offending rows are reported and skipped.
+            $this->addLog('Flush fehlgeschlagen (' . $e->getMessage() . ') — Einzelimport pro Datensatz');
+            $this->resetEntityManagerIfClosed();
             if (!$this->entityManager->isOpen()) {
+                $errors[] = 'Flush fehlgeschlagen: ' . $e->getMessage();
                 $this->addLog('EntityManager closed — bailing out for this import');
                 return 0;
+            }
+            $errors = [];
+            $created = [];
+            $count = 0;
+            foreach ($rows as [$rowClass, $rowData, $rowKey]) {
+                $tenant = $this->rebindTenant($tenant);
+                try {
+                    $entity = $this->importRow($rowClass, $rowData, $rowKey, $tenant);
+                    $this->entityManager->flush();
+                    $created[] = $entity;
+                    $count++;
+                } catch (Exception $rowException) {
+                    $this->addLog("Error importing {$rowClass}: " . $rowException->getMessage());
+                    $errors[] = $rowClass . ': ' . $rowException->getMessage();
+                    $this->resetEntityManagerIfClosed();
+                    if (!$this->entityManager->isOpen()) {
+                        break;
+                    }
+                }
             }
         }
 

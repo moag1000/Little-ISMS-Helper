@@ -161,6 +161,14 @@ wizard:
 
     # Gap messages
     gap:
+        no_risks: 'No risks recorded'
+        no_trainings: 'No trainings recorded'
+        no_audits: 'No audits recorded'
+        no_suppliers: 'No suppliers recorded'
+        no_documents: 'No matching documents available'
+        no_data_desc: 'Without recorded data this item counts as not evidenced.'
+        documents_review_pending: 'Documents not approved or overdue'
+        documents_review_pending_desc: 'Not all documents are approved and within their review date.'
         controls_not_implemented: "Controls not fully implemented"
         controls_description: "%count% controls are not yet or only partially implemented."
         maturity_not_assessed: "Maturity not yet assessed"

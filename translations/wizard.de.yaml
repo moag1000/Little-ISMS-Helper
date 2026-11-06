@@ -161,6 +161,14 @@ wizard:
 
     # Gap messages
     gap:
+        no_risks: 'Keine Risiken erfasst'
+        no_trainings: 'Keine Schulungen erfasst'
+        no_audits: 'Keine Audits erfasst'
+        no_suppliers: 'Keine Lieferanten erfasst'
+        no_documents: 'Keine passenden Dokumente vorhanden'
+        no_data_desc: 'Ohne erfasste Datensätze gilt der Punkt als nicht nachgewiesen.'
+        documents_review_pending: 'Dokumente nicht freigegeben oder überfällig'
+        documents_review_pending_desc: 'Nicht alle Dokumente sind freigegeben und innerhalb ihrer Prüffrist.'
         controls_not_implemented: "Controls nicht vollständig implementiert"
         controls_description: "%count% Controls sind noch nicht oder nur teilweise implementiert."
         maturity_not_assessed: "Reifegrad noch nicht bewertet"

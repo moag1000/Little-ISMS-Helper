@@ -426,7 +426,7 @@ final class SeedIsoPolicyTemplatesCommand extends Command
             'linked_annex_a_controls' => ['A.5.29', 'A.5.30', 'A.8.13', 'A.8.14'],
             'affected_functions' => ['CISO', 'BCM', 'IT_OPERATIONS', 'CRISIS_TEAM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
             'requires_works_council_evidence' => false,
             'target_audience' => 'specialists',

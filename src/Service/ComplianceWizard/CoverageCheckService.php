@@ -234,6 +234,9 @@ final class CoverageCheckService
             : $this->riskRepository->findAll();
 
         $totalRisks = count($risks);
+        if ($totalRisks === 0) {
+            return NoDataResult::build('wizard.gap.no_risks', 'app_risk_index', $check, ['total' => 0]);
+        }
         $treatedRisks = 0;
         $highUntreated = [];
 
@@ -253,9 +256,7 @@ final class CoverageCheckService
             }
         }
 
-        $score = $totalRisks > 0
-            ? round(($treatedRisks / $totalRisks) * 100, 1)
-            : 100; // No risks = 100% (not applicable)
+        $score = round(($treatedRisks / $totalRisks) * 100, 1);
 
         $gap = null;
         if (!empty($highUntreated)) {
@@ -527,6 +528,9 @@ final class CoverageCheckService
             : $this->trainingRepository->findAll();
 
         $totalTrainings = count($trainings);
+        if ($totalTrainings === 0) {
+            return NoDataResult::build('wizard.gap.no_trainings', 'app_training_index', $check, ['total' => 0]);
+        }
         $completed = 0;
         $overdue = [];
 
@@ -542,9 +546,7 @@ final class CoverageCheckService
             }
         }
 
-        $score = $totalTrainings > 0
-            ? round(($completed / $totalTrainings) * 100, 1)
-            : 100;
+        $score = round(($completed / $totalTrainings) * 100, 1);
 
         $gap = null;
         if (!empty($overdue)) {
@@ -580,6 +582,9 @@ final class CoverageCheckService
             : $this->auditRepository->findAll();
 
         $totalAudits = count($audits);
+        if ($totalAudits === 0) {
+            return NoDataResult::build('wizard.gap.no_audits', 'app_audit_index', $check, ['total_audits' => 0]);
+        }
         $completed = 0;
         $findingsClosed = 0;
         $totalFindings = 0;
@@ -608,7 +613,7 @@ final class CoverageCheckService
             }
         }
 
-        $completionRate = $totalAudits > 0 ? ($completed / $totalAudits) * 100 : 100;
+        $completionRate = ($completed / $totalAudits) * 100;
         $findingsClosureRate = $totalFindings > 0 ? ($findingsClosed / $totalFindings) * 100 : 100;
 
         $score = round(($completionRate * 0.5) + ($findingsClosureRate * 0.5), 1);
@@ -648,6 +653,9 @@ final class CoverageCheckService
             : $this->supplierRepository->findAll();
 
         $totalSuppliers = count($suppliers);
+        if ($totalSuppliers === 0) {
+            return NoDataResult::build('wizard.gap.no_suppliers', 'app_supplier_index', $check, ['total' => 0]);
+        }
         $assessed = 0;
         $criticalUnassessed = [];
 
@@ -667,9 +675,7 @@ final class CoverageCheckService
             }
         }
 
-        $score = $totalSuppliers > 0
-            ? round(($assessed / $totalSuppliers) * 100, 1)
-            : 100;
+        $score = round(($assessed / $totalSuppliers) * 100, 1);
 
         $gap = null;
         if (!empty($criticalUnassessed)) {
@@ -692,19 +698,6 @@ final class CoverageCheckService
                 'critical_unassessed' => count($criticalUnassessed),
             ],
             'gap' => $gap,
-        ];
-    }
-
-    /**
-     * Check document review status
-     */
-    public function checkDocumentReview(array $check, ?Tenant $tenant): array
-    {
-        // Placeholder for document review - implement based on Document entity
-        return [
-            'score' => 100,
-            'details' => ['type' => 'not_implemented'],
-            'gap' => null,
         ];
     }
 

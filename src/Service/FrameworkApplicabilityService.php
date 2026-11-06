@@ -229,13 +229,55 @@ final class FrameworkApplicabilityService
             'bucket' => $has('it_services') || $has('cloud_services') ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
             'reason_key' => 'setup.applicability.reason.soc2',
         ];
-        $result['NIST-CSF'] = [
+        $result['NIST-CSF-2.0'] = [
             'bucket' => self::BUCKET_OPTIONAL,
             'reason_key' => 'setup.applicability.reason.nist_csf',
         ];
         $result['CIS-CONTROLS'] = [
             'bucket' => self::BUCKET_OPTIONAL,
             'reason_key' => 'setup.applicability.reason.cis_controls',
+        ];
+
+        // Remaining registry frameworks. EUCS is loader-only (no UI entry), so it is not classified.
+        $result['ISO27017'] = [
+            'bucket' => $has('cloud_services') ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.iso27017',
+        ];
+        $result['ISO27018'] = [
+            'bucket' => $has('cloud_services') ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.iso27018',
+        ];
+        $result['ISO42001'] = [
+            'bucket' => $aiHighRisk ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.iso42001',
+        ];
+        $result['EU-CRA'] = [
+            'bucket' => $isEU && ($has('manufacturing') || $has('it_services')) ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.eu_cra',
+        ];
+        $result['PCI-DSS-4.0.1'] = [
+            'bucket' => self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.pci_dss',
+        ];
+        $result['BSI-GSPP'] = [
+            'bucket' => self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.bsi_gspp',
+        ];
+        $result['MRIS-v1.5'] = [
+            'bucket' => self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.mris',
+        ];
+        $result['NISG-AT'] = [
+            'bucket' => $country === 'AT' && $isNis2Sector ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.nisg_at',
+        ];
+        $result['REVDSG-CH'] = [
+            'bucket' => $country === 'CH' ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.revdsg_ch',
+        ];
+        $result['IKT-MINSTD-CH'] = [
+            'bucket' => $country === 'CH' && $isKritisSector ? self::BUCKET_RECOMMENDED : self::BUCKET_OPTIONAL,
+            'reason_key' => 'setup.applicability.reason.ikt_minstd_ch',
         ];
 
         return $result;

@@ -50,6 +50,7 @@ final class CrossCoverageBsiSectionExtensionTest extends TestCase
     {
         $template = new PolicyTemplate();
         $template->setTopic($topic);
+        $template->setStandard('iso27001'); // extensions only extend ISO 27001 host policies
         $template->setLinkedAnnexAControls($linkedAnnexAControls);
         // BSI refs are NOT stored in a PolicyTemplate field — they come
         // exclusively from BsiSectionCatalogue via the registry path.

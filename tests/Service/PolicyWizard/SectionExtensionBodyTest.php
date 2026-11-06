@@ -50,8 +50,36 @@ final class SectionExtensionBodyTest extends TestCase
     /** @return iterable<string, array{StandardSectionCatalogueInterface}> */
     public static function catalogues(): iterable
     {
-        foreach (self::bodyCatalogues() as $catalogue) {
+        foreach ([...self::bodyCatalogues(), new DoraExtensionCatalogue()] as $catalogue) {
             yield $catalogue->getStandard() => [$catalogue];
+        }
+    }
+
+    #[Test]
+    public function every_gdpr_section_has_authored_text_on_a_real_iso_topic(): void
+    {
+        $topics = array_column(SeedIsoPolicyTemplatesCommand::TEMPLATES, 'topic');
+        foreach (GdprSectionCatalogue::SECTIONS as $row) {
+            self::assertContains($row['iso_topic'], $topics, "GDPR section {$row['section_key']} targets no ISO topic");
+            foreach (['de', 'en'] as $lang) {
+                self::assertNotSame(
+                    '',
+                    self::lookup("policy_privacy_sections.{$lang}.yaml", GdprSectionCatalogue::bodyKey($row['iso_topic'], $row['section_key'])),
+                    "gdpr/{$lang}: {$row['section_key']}",
+                );
+            }
+        }
+        foreach (['de', 'en'] as $lang) {
+            self::assertNotSame('', self::lookup("policy_privacy_batch1.{$lang}.yaml", 'policy.gdpr.iso_a534_thin_host.v1.body'), "A.5.34 host/{$lang}");
+        }
+    }
+
+    #[Test]
+    public function every_dora_extension_targets_a_real_iso_policy_topic(): void
+    {
+        $topics = array_column(SeedIsoPolicyTemplatesCommand::TEMPLATES, 'topic');
+        foreach (array_keys(DoraExtensionCatalogue::EXTENSIONS) as $topic) {
+            self::assertContains($topic, $topics, "DORA extension for unknown ISO topic '{$topic}' would never render");
         }
     }
 

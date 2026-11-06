@@ -187,9 +187,7 @@ final class HubControllerTest extends WebTestCase
         $globalRoutes = [
             'admin_licensing_index',
             'admin_settings_index',
-            'admin_settings_api_rate_limits',
             'admin_settings_data_retention',
-            'admin_settings_workflow_slas',
             'admin_lifecycle_overrides_index',
             'admin_loader_fixer_index',
             'admin_industry_baselines_index',

@@ -42,6 +42,23 @@ class WizardRunRepository extends ServiceEntityRepository
     }
 
     /**
+     * The tenant's most recent completed run — its adopted standards are the
+     * organisation's current policy scope.
+     */
+    public function findLatestCompletedForTenant(Tenant $tenant): ?WizardRun
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.tenant = :tenant')
+            ->andWhere('r.status = :status')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('status', 'completed')
+            ->orderBy('r.completedAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * Sandbox runs older than `$cutoff` — for the auto-purge job
      * (architecture §6.4 says sandbox runs are purged after 7 days).
      *

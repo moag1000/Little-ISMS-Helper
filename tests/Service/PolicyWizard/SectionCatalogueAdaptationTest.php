@@ -67,7 +67,7 @@ final class SectionCatalogueAdaptationTest extends TestCase
         self::assertSame('gdpr', $ext->standard);
         self::assertSame(['Art. 6', 'Art. 9'], $ext->controlRefs);
         self::assertSame(DocumentSection::APPROVAL_ROLE_DPO, $ext->approvalRole);
-        self::assertSame('policy_wizard.gdpr_section.gdpr_lawful_basis_workplace.body', $ext->bodyTranslationKey);
+        self::assertSame('policy.iso27001.acceptable_use.v1.gdpr_section.gdpr_lawful_basis_workplace.body', $ext->bodyTranslationKey);
         self::assertSame('document_section', $ext->renderMode);
     }
 
@@ -82,7 +82,7 @@ final class SectionCatalogueAdaptationTest extends TestCase
         self::assertSame('gdpr', $ext->standard);
         self::assertSame(['Art. 33'], $ext->controlRefs);
         self::assertSame(DocumentSection::APPROVAL_ROLE_DPO, $ext->approvalRole);
-        self::assertSame('policy_wizard.gdpr_section.gdpr_breach_72h.body', $ext->bodyTranslationKey);
+        self::assertSame('policy.iso27001.incident_management.v1.gdpr_section.gdpr_breach_72h.body', $ext->bodyTranslationKey);
         self::assertSame('document_section', $ext->renderMode);
     }
 

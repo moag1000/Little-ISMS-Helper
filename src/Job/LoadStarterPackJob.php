@@ -89,11 +89,15 @@ final class LoadStarterPackJob implements AsyncJobInterface
         $mapResult = $this->mappingSeedService->seedAvailablePairs($loadedCodes);
         $step++;
 
-        $ctx->progress($step, $total, sprintf(
+        $summary = sprintf(
             'Fertig. %d Framework(s) geladen, %d neue Zuordnung(en) erstellt.',
             count($loadedCodes),
             $mapResult['seeded'],
-        ));
+        );
+        if ($mapResult['failed'] > 0) {
+            $summary .= sprintf(' %d Mapping-Seed(s) fehlgeschlagen.', $mapResult['failed']);
+        }
+        $ctx->progress($step, $total, $summary);
     }
 
     /**

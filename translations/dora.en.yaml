@@ -33,6 +33,7 @@ dora:
 
     # Metrics
     metric:
+        no_data: 'No data'
         ict_risks: "ICT Risks"
         high_critical_risks: "High / Critical"
         ict_assets: "ICT Assets"

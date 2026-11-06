@@ -15,7 +15,7 @@
         </div>
 
         <div style="background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-radius: 0 0 6px 6px;">
-            <p>{{ 'emails.auto_reaction.training.greeting'|trans({}, 'emails')|default('Welcome,') }} {{ user.firstName|default(user.email) }},</p>
+            <p>{{ 'emails.auto_reaction.training.greeting'|trans({'%name%': user.firstName|default(user.email)}, 'emails') }}</p>
             <p>{{ 'emails.auto_reaction.training.intro'|trans({}, 'emails')|default('You have been auto-enrolled in the following mandatory training(s):') }}</p>
 
             <ul style="background: white; padding: 12px 12px 12px 32px; border-left: 4px solid #0891b2; margin: 16px 0;">

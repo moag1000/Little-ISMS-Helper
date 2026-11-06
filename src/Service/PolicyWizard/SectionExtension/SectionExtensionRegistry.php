@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard\SectionExtension;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Registry that collects every {@see StandardSectionCatalogueInterface}
  * implementation via the `app.policy_section_catalogue` service tag
@@ -30,7 +32,11 @@ final class SectionExtensionRegistry
      * @param iterable<StandardSectionCatalogueInterface> $catalogues
      *        Tagged iterator collected via `!tagged_iterator app.policy_section_catalogue`.
      */
-    public function __construct(private readonly iterable $catalogues) {}
+    public function __construct(
+        private readonly iterable $catalogues,
+        private readonly ?LoggerInterface $logger = null,
+    ) {
+    }
 
     /**
      * Returns the catalogue responsible for the given standard token, or
@@ -74,6 +80,12 @@ final class SectionExtensionRegistry
                 }
                 $text = $translate($section->bodyTranslationKey, $standard);
                 if ($text === '' || $text === $section->bodyTranslationKey) {
+                    // Never print a raw key into a policy — but say so, a misnested
+                    // translation file must not silently drop a standard's text.
+                    $this->logger?->warning('Policy section text missing', [
+                        'standard' => $standard,
+                        'key' => $section->bodyTranslationKey,
+                    ]);
                     continue;
                 }
                 $body = rtrim($body) . "\n\n" . trim($text) . "\n";

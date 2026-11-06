@@ -1,4 +1,15 @@
 compliance_inheritance:
+    status:
+        pending_review: 'Prüfung offen'
+        confirmed: 'Bestätigt'
+        rejected: 'Abgelehnt'
+        overridden: 'Überschrieben'
+        source_updated: 'Quelle geändert'
+        implemented: 'Umgesetzt'
+    confidence:
+        low: 'Niedrig'
+        medium: 'Mittel'
+        high: 'Hoch'
     queue:
         title: 'Ableitungsvorschläge — %framework%'
         subtitle: '%count% Vorschläge warten auf Prüfung'

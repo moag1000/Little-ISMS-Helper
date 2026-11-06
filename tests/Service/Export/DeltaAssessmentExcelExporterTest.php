@@ -87,10 +87,9 @@ final class DeltaAssessmentExcelExporterTest extends TestCase
         );
 
         self::assertSame(3, $spreadsheet->getSheetCount());
-        // Titles are truncated to 31 chars by PhpSpreadsheet's validator (substr 0..31).
-        self::assertSame('compliance_wizard.delta.sheet.s', $spreadsheet->getSheet(0)->getTitle());
-        self::assertSame('compliance_wizard.delta.sheet.d', $spreadsheet->getSheet(1)->getTitle());
-        self::assertSame('compliance_wizard.delta.sheet.m', $spreadsheet->getSheet(2)->getTitle());
+        self::assertSame('delta.sheet.summary', $spreadsheet->getSheet(0)->getTitle());
+        self::assertSame('delta.sheet.detail', $spreadsheet->getSheet(1)->getTitle());
+        self::assertSame('delta.sheet.mapping', $spreadsheet->getSheet(2)->getTitle());
     }
 
     #[Test]

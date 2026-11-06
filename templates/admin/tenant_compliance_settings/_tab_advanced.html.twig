@@ -1,7 +1,7 @@
 {#
  # Tenant Compliance Settings — tab: advanced (structured configuration,
  # rendered by the JsonBuilderType form theme — no raw JSON)
- # Fields: supervisoryAuthorities, dataRetentionPolicies, notificationPreferences,
+ # Fields: supervisoryAuthorities, dataRetentionPolicies,
  #         csirtEndpoints, crisisTeamOnCall
  #}
 {% trans_default_domain 'admin' %}
@@ -9,7 +9,6 @@
 <div class="row g-3">
     <div class="col-12">{{ form_row(form.supervisoryAuthorities) }}</div>
     <div class="col-12">{{ form_row(form.dataRetentionPolicies) }}</div>
-    <div class="col-12">{{ form_row(form.notificationPreferences) }}</div>
     <div class="col-12">{{ form_row(form.csirtEndpoints) }}</div>
     <div class="col-12">{{ form_row(form.crisisTeamOnCall) }}</div>
 </div>

@@ -77,14 +77,18 @@ final class PolicyApprovalChainCompletedCheck implements PolicyWizardCheckInterf
 
         $total = count($policies);
         if ($total === 0) {
-            // No policies = nothing to assert; treat as "not started" but
-            // do not fail-out the wizard — the topic-checks will already
-            // surface that the policies are missing.
+            // No policies recorded is not evidence of an approval chain.
             return new PolicyWizardCheckResult(
                 checkId: self::CHECK_ID,
-                score: 100.0,
-                passed: true,
-                details: ['policies_total' => 0, 'policies_signed' => 0],
+                score: 0.0,
+                passed: false,
+                details: ['reason' => 'no_data', 'policies_total' => 0, 'policies_signed' => 0],
+                gap: [
+                    'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
+                    'priority' => 'critical',
+                    'route' => 'app_workflow_index',
+                    'translation_domain' => 'policy_wizard',
+                ],
             );
         }
 

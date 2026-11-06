@@ -152,7 +152,7 @@
                 <div class="text-center mt-3 pt-3 border-top">
                     <a href="{{ path('app_my_day') ~ '#workflows-pending' }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                        {{ 'workflow.widget.view_all'|trans({count: total_pending - 5}, 'workflows') }}
+                        {{ 'workflow.widget.view_all'|trans({'%count%': total_pending - 5}, 'workflows') }}
                     </a>
                 </div>
             {% endif %}

@@ -200,6 +200,42 @@ final class VariableCollectorTest extends TestCase
     }
 
     #[Test]
+    public function fillsTheNamesPolicyTextsUseForTheSameValues(): void
+    {
+        $tenant = $this->makeTenant();
+        $personRepo = $this->createStub(PersonRepository::class);
+        $personRepo->method('find')->willReturnCallback(fn (mixed $id): ?object => match ($id) {
+            101 => $this->makePerson(101, 'Anna Lieber', $tenant),
+            303 => $this->makePerson(303, 'Carla Notfall', $tenant),
+            default => null,
+        });
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepo->method('find')->willReturnCallback(fn (mixed $id): ?object => match ($id) {
+            11 => $this->makeUser(11, 'Gina', 'Geschäftsführung', 'gf@example.com', $tenant),
+            12 => $this->makeUser(12, 'Vera', 'Vorstand', 'v@example.com', $tenant),
+            default => null,
+        });
+
+        $run = $this->makeRun($tenant, [
+            WizardStepKeys::STEP_WELCOME => ['standards' => ['iso27001', 'bsi']],
+            WizardStepKeys::STEP_ROLES => [
+                'roles' => ['ciso' => 101, 'bcm_officer' => 303],
+                'approval_chain' => [11, 12],
+            ],
+            WizardStepKeys::STEP_LIFECYCLE => ['review_interval_months' => 12],
+        ]);
+        $vars = $this->makeCollector(userRepo: $userRepo, personRepo: $personRepo)->collectFor($run);
+
+        self::assertSame('Anna Lieber', $vars['roles.isb.fullName'], 'ISB = the CISO slot');
+        self::assertSame('Carla Notfall', $vars['roles.notfallbeauftragter.fullName']);
+        self::assertSame('Gina Geschäftsführung → Vera Vorstand', $vars['approval.chain']);
+        self::assertSame(12, $vars['review.interval_months']);
+        self::assertSame('ISO27001, BSI', $vars['standards_adopted_list']);
+        self::assertSame(VariableCollector::BSI_KOMPENDIUM_EDITION, $vars['bsi.kompendium_edition']);
+        self::assertMatchesRegularExpression('/^\d{2}\.\d{2}\.\d{4}$/', (string) $vars['generation_date']);
+    }
+
+    #[Test]
     public function roleHolderOfAnotherOrganisationIsNeverRendered(): void
     {
         $tenant = $this->makeTenant(7);

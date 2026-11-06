@@ -68,7 +68,7 @@
                         </td>
                         <td class="fa-table__cell">
                             <label class="form-check-label fw-semibold" for="topic-{{ topic_key }}">
-                                {{ ('policy_wizard.step.targeted.pick.topic.' ~ topic_key)|trans|default(topic_key) }}
+                                {{ documents|length > 0 ? ((documents|first).title|default(policy_title(null, null, topic_key))) : policy_title(null, null, topic_key) }}
                             </label>
                             {% if documents|length > 0 %}
                                 <ul class="list-unstyled small text-muted mb-0 mt-1">

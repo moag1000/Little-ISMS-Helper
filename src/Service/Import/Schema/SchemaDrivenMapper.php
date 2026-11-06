@@ -177,6 +177,20 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
         return $this->em->getRepository($this->schema->entityClass)->findOneBy($criteria);
     }
 
+    public function duplicateKey(array $row): ?string
+    {
+        $parts = [];
+        foreach (array_filter($this->activeFields(), fn(ImportFieldSpec $f): bool => $f->unique) as $field) {
+            $raw = $this->resolveField($row, $field->name, null);
+            if ($raw === null || $raw === '') {
+                return null;
+            }
+            $parts[] = mb_strtolower(trim((string) $raw));
+        }
+
+        return $parts === [] ? null : implode("\x1F", $parts);
+    }
+
     /**
      * Split a delimited cell ("a, b; c") into a trimmed, non-empty list.
      *

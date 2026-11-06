@@ -70,7 +70,7 @@
             <ul class="mb-0">
                 {% for field, fieldErrors in errors %}
                     {% for errKey in fieldErrors %}
-                        <li><strong>{{ field }}</strong>: {{ errKey|trans }}</li>
+                        <li><strong>{{ field }}</strong>: {{ errKey|trans({}, 'policy_wizard') }}</li>
                     {% endfor %}
                 {% endfor %}
             </ul>

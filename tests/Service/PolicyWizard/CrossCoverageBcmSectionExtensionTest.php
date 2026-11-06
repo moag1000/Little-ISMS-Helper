@@ -50,6 +50,7 @@ final class CrossCoverageBcmSectionExtensionTest extends TestCase
     {
         $template = new PolicyTemplate();
         $template->setTopic($topic);
+        $template->setStandard('iso27001'); // extensions only extend ISO 27001 host policies
         $template->setLinkedAnnexAControls($linkedAnnexAControls);
         // ISO 22301 refs are NOT stored in a PolicyTemplate field — they come
         // exclusively from BcmSectionCatalogue via the registry path.

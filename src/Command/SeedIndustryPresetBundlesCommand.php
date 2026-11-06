@@ -203,7 +203,7 @@ final class SeedIndustryPresetBundlesCommand
                     . 'industrial-IoT — aligned with IEC 62443 and NIS2. Defaults assume ISO 27001 baseline '
                     . 'with very conservative risk appetite and physical-heavy controls.',
                 'standard' => IndustryPresetBundle::STANDARD_ISO_ALL,
-                'preselected_standards' => ['iso27001', 'iec62443'],
+                'preselected_standards' => ['iso27001', 'nis2'],
                 'default_risk_appetite_tier' => 1,
                 'default_data_classification_levels' => 3,
                 'default_backup_rpo_hours' => 8,
@@ -329,7 +329,7 @@ final class SeedIndustryPresetBundlesCommand
                     . 'heitskatalog Strom/Gas). Defaults assume ISO 27001 + BSI + NIS-2 + BCM, very '
                     . 'conservative risk appetite, 4-hour backup RPO and physical-heavy controls.',
                 'standard' => IndustryPresetBundle::STANDARD_ISO_ALL,
-                'preselected_standards' => ['iso27001', 'bsi', 'kritis', 'nis2', 'bcm'],
+                'preselected_standards' => ['iso27001', 'bsi', 'nis2', 'bcm'],
                 'default_risk_appetite_tier' => 1,
                 'default_data_classification_levels' => 4,
                 'default_backup_rpo_hours' => 4,

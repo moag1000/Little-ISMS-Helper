@@ -65,8 +65,7 @@ framework:
                 # Used by PolicyDiffController::restorePrevious when supersession is undone.
                 # Scope removal (e.g. the organisation is no longer a GDPR
                 # subject): the document leaves the register from any live
-                # place and stays as historical evidence. Used by
-                # GdprToggleOffCleanupService.
+                # place and stays as historical evidence.
                 archive_out_of_scope:
                     from: [draft, in_review, approved, published]
                     to: archived

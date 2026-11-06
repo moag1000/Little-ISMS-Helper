@@ -7,6 +7,8 @@ namespace App\Command;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Catalog\FrameworkCode;
+use App\Service\MappingValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -25,6 +27,7 @@ final class EnsureMappingRequirementsCommand extends Command
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly EntityManagerInterface $em,
+        private readonly MappingValidatorService $mappingValidator,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -66,10 +69,11 @@ final class EnsureMappingRequirementsCommand extends Command
         $created = 0;
         $skippedFw = 0;
         $existing = 0;
-        $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
 
         foreach ($needed as $fwCode => $reqIds) {
+            $canonical = FrameworkCode::canonicalize($fwCode);
             $fw = $this->frameworkRepository->findOneBy(['code' => $fwCode])
+                ?? ($canonical !== null ? $this->frameworkRepository->findOneBy(['code' => $canonical]) : null)
                 ?? $this->frameworkRepository->findOneBy(['name' => $fwCode]);
             if ($fw === null) {
                 $io->warning(sprintf('Framework not found: %s (skipping %d requirements)', $fwCode, count($reqIds)));
@@ -77,7 +81,9 @@ final class EnsureMappingRequirementsCommand extends Command
                 continue;
             }
             foreach (array_keys($reqIds) as $reqId) {
-                $existingReq = $reqRepo->findOneBy(['framework' => $fw, 'requirementId' => $reqId]);
+                // Same resolution rules as the mapping loader (prefixed IDs, Baustein
+                // codes) — an exact-only lookup would stub rows that already exist.
+                $existingReq = $this->mappingValidator->resolveRequirement($fw, $reqId);
                 if ($existingReq !== null) {
                     $existing++;
                     continue;

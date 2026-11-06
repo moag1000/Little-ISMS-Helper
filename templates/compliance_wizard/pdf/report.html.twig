@@ -260,9 +260,9 @@
     <h2>Critical Gaps Requiring Immediate Action</h2>
     {% for gap in result.critical_gaps %}
     <div class="gap-item critical">
-        <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
+        <strong>{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}</strong>
         {% if gap.description is defined %}
-        <p>{{ gap.description|trans(gap.description_params|default({}), 'wizard') }}</p>
+        <p>{{ gap.description|trans(gap.description_params|default({}), gap.translation_domain|default('wizard')) }}</p>
         {% endif %}
         {% if gap.action is defined %}
         <p><strong>Recommended Action:</strong> {{ gap.action|trans({}, 'wizard') }}</p>
@@ -291,9 +291,9 @@
             {% for item_key, item in category.items %}
             <tr>
                 <td>
-                    {{ item.name|trans({}, 'wizard') }}
+                    {{ item.name|trans({}, item.translation_domain|default('wizard')) }}
                     {% if item.gap %}
-                    <br><small style="color: var(--danger);">Gap: {{ item.gap.title|trans({}, 'wizard') }}</small>
+                    <br><small style="color: var(--danger);">Gap: {{ item.gap.title|trans({}, item.gap.translation_domain|default(item.translation_domain|default('wizard'))) }}</small>
                     {% endif %}
                 </td>
                 <td>{{ item.score }}%</td>
@@ -311,9 +311,9 @@
     <p><strong>Gaps identified in this category:</strong></p>
     {% for gap in category.gaps %}
     <div class="gap-item {% if gap.priority == 'critical' %}critical{% endif %}">
-        <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
+        <strong>{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}</strong>
         {% if gap.description is defined %}
-        <p>{{ gap.description|trans(gap.description_params|default({}), 'wizard') }}</p>
+        <p>{{ gap.description|trans(gap.description_params|default({}), gap.translation_domain|default('wizard')) }}</p>
         {% endif %}
     </div>
     {% endfor %}

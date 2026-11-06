@@ -82,17 +82,18 @@ final class DoraValidityFromCheckTest extends TestCase
     {
         $tenant = $this->createMock(Tenant::class);
 
-        // Vacuous-pass case: no DORA documents at all.
+        // No DORA documents at all: no data is not evidence.
         $this->documentRepository->method('createQueryBuilder')
             ->willReturn($this->stubResultQueryBuilder([]));
 
         $check = new DoraValidityFromCheck($this->documentRepository, $this->entityTagRepository);
         $vacuous = $check->run($tenant);
 
-        self::assertTrue($vacuous->passed);
-        self::assertSame(100.0, $vacuous->score);
+        self::assertFalse($vacuous->passed);
+        self::assertSame(0.0, $vacuous->score);
+        self::assertSame('no_data', $vacuous->details['reason']);
         self::assertSame(0, $vacuous->details['dora_documents']);
-        self::assertNull($vacuous->gap);
+        self::assertNotNull($vacuous->gap);
 
         // Pin the validity-from tag name (regulatory anchor — bumping it is a
         // deliberate code change with audit trail).

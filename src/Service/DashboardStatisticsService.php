@@ -849,7 +849,8 @@ class DashboardStatisticsService
     /**
      * A4: Composite ISMS Health Score (0-100).
      *
-     * Mixes four dimensions, weighted:
+     * Mixes up to four dimensions, weighted; components of inactive modules are
+     * excluded and the remaining weights renormalised, empty active ones score 0:
      *  - Control compliance (weighted)   : 40%
      *  - Risk exposure inverse            : 25% (fewer critical/high risks → higher score)
      *  - Incident backlog inverse         : 20% (fewer open incidents → higher score)
@@ -861,17 +862,18 @@ class DashboardStatisticsService
     {
         $weightedCompliance = (float) ($coreKpis['control_compliance_weighted']['value'] ?? 0);
 
-        // Risk exposure component (invert; more critical = lower score)
-        $riskScore = 100.0;
+        // Inactive module: component is excluded and the weights renormalised.
+        // Active module with zero rows: component scores 0 (no data is no evidence).
+        $components = ['compliance_weighted' => [0.40, round($weightedCompliance, 1)]];
+
         if (in_array('risks', $activeModules, true)) {
             $risks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
             $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 16));
             $high = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 12 && $r->getResidualRiskLevel() < 16));
-            $riskScore = max(0.0, 100.0 - ($critical * 15.0) - ($high * 5.0));
+            $riskScore = $risks === [] ? 0.0 : max(0.0, 100.0 - ($critical * 15.0) - ($high * 5.0));
+            $components['risk_exposure'] = [0.25, round($riskScore, 1)];
         }
 
-        // Incident backlog component (open/total)
-        $incidentScore = 100.0;
         if (in_array('incidents', $activeModules, true)) {
             $incidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : []; // no tenant: fail closed
             $total = count($incidents);
@@ -880,35 +882,30 @@ class DashboardStatisticsService
                 \App\Enum\IncidentStatus::InInvestigation,
                 \App\Enum\IncidentStatus::InResolution,
             ], true)));
-            $incidentScore = $total > 0 ? max(0.0, 100.0 - (($open / $total) * 100.0)) : 100.0;
+            $incidentScore = $total > 0 ? max(0.0, 100.0 - (($open / $total) * 100.0)) : 0.0;
+            $components['incident_backlog'] = [0.20, round($incidentScore, 1)];
         }
 
         // Asset classification (recompute to avoid coupling to asset_management KPI shape)
-        $assetScore = 100.0;
         if (in_array('assets', $activeModules, true)) {
             $assets = $tenant ? $this->getAllAccessibleAssets($tenant) : [];
             $active = array_filter($assets, fn($a): bool => $a->isOperational());
             $total = count($active);
-            if ($total > 0) {
-                $classified = count(array_filter($active, fn($a): bool => $a->getConfidentialityValue() > 0 && $a->getIntegrityValue() > 0 && $a->getAvailabilityValue() > 0));
-                $assetScore = round(($classified / $total) * 100, 1);
-            }
+            $classified = $total > 0
+                ? count(array_filter($active, fn($a): bool => $a->getConfidentialityValue() > 0 && $a->getIntegrityValue() > 0 && $a->getAvailabilityValue() > 0))
+                : 0;
+            $components['asset_classification'] = [0.15, $total > 0 ? round(($classified / $total) * 100, 1) : 0.0];
         }
 
-        $score = ($weightedCompliance * 0.40)
-            + ($riskScore * 0.25)
-            + ($incidentScore * 0.20)
-            + ($assetScore * 0.15);
+        $weightSum = array_sum(array_column($components, 0));
+        $score = 0.0;
+        $breakdown = [];
+        foreach ($components as $key => [$weight, $value]) {
+            $score += $value * ($weight / $weightSum);
+            $breakdown[$key] = $value;
+        }
 
-        return [
-            'score' => (int) round($score),
-            'breakdown' => [
-                'compliance_weighted' => round($weightedCompliance, 1),
-                'risk_exposure' => round($riskScore, 1),
-                'incident_backlog' => round($incidentScore, 1),
-                'asset_classification' => round($assetScore, 1),
-            ],
-        ];
+        return ['score' => (int) round($score), 'breakdown' => $breakdown];
     }
 
     /**

@@ -134,7 +134,7 @@
             }) }}
             {% elseif tier == 'data_protection' %}
             {{ _fa_feature_card.render({
-                label: 'compliance.framework.tisax.tier_dp_label'|trans({}, 'compliance'),
+                label: 'compliance.framework.tisax.tier_dp_label'|trans({'%compliant%': tierData.compliant, '%total%': tierData.total}, 'compliance'),
                 value: 'compliance.framework.tisax.tier_dp_value'|trans({'%compliant%': tierData.compliant, '%total%': tierData.total, '%pct%': tierData.total > 0 ? ((tierData.compliant / tierData.total) * 100)|round : 0}, 'compliance'),
                 variant: tierData.total > 0 and tierData.compliant == tierData.total ? 'success' : 'warning',
                 icon: 'nav-shield-alert'

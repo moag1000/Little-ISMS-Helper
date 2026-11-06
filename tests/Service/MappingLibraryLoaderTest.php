@@ -48,15 +48,23 @@ class MappingLibraryLoaderTest extends TestCase
         ?ComplianceRequirement $sourceReq = null,
         ?ComplianceRequirement $targetReq = null,
         ?ComplianceMapping $existingMapping = null,
+        array $validationOverride = [],
     ): MappingLibraryLoader {
         $em = $this->createStub(EntityManagerInterface::class);
         // persist() + flush() sind void — kein willReturn nötig.
 
         $validator = $this->createStub(MappingValidatorService::class);
-        $validator->method('validate')->willReturn([
+        $validator->method('validate')->willReturn($validationOverride + [
             'errors' => $validatorOk ? [] : ['Schema-Error'],
             'warnings' => [],
         ]);
+        $validator->method('resolveFramework')->willReturnCallback(
+            static fn (string $code): ?ComplianceFramework => match ($code) {
+                'ISO27001' => $sourceFw,
+                'NIS2' => $targetFw,
+                default => null,
+            }
+        );
         // The loader resolves pair IDs through the validator so both agree on every pair.
         $validator->method('resolveRequirement')->willReturnCallback(
             fn (ComplianceFramework $fw, string $id): ?ComplianceRequirement => match ($id) {
@@ -155,6 +163,35 @@ YAML;
     }
 
     #[Test]
+    public function testLibraryWithUnloadedFrameworkIsSkippedNotFailed(): void
+    {
+        $path = $this->writeYaml('unloaded.yaml', $this->validYaml());
+        $loader = $this->makeLoader(validationOverride: [
+            'errors' => ["Target framework 'NIS2' not found in DB. Load it first."],
+            'missing_frameworks' => ['NIS2'],
+        ]);
+        $result = $loader->load($path);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame([], $result['errors']);
+        $this->assertSame(0, $result['imported']);
+        $this->assertSame(1, $result['skipped']);
+        $this->assertStringContainsString('framework not loaded', implode(' ', $result['warnings']));
+    }
+
+    #[Test]
+    public function testSchemaErrorBesideMissingFrameworkStillFails(): void
+    {
+        $path = $this->writeYaml('mixed.yaml', $this->validYaml());
+        $loader = $this->makeLoader(validationOverride: [
+            'errors' => ["Target framework 'NIS2' not found in DB. Load it first.", 'mappings[0] not an array.'],
+            'missing_frameworks' => ['NIS2'],
+        ]);
+
+        $this->assertFalse($loader->load($path)['success']);
+    }
+
+    #[Test]
     public function testNewMappingIsImported(): void
     {
         $sourceFw = (new ComplianceFramework())->setCode('ISO27001');
@@ -247,6 +284,9 @@ YAML;
 
         $validator = $this->createStub(MappingValidatorService::class);
         $validator->method('validate')->willReturn(['errors' => [], 'warnings' => []]);
+        $validator->method('resolveFramework')->willReturnCallback(
+            fn(string $code) => match ($code) { 'ISO27001' => $sourceFw, 'NIS2' => $targetFw, default => null },
+        );
         $validator->method('resolveRequirement')->willReturnCallback(
             fn(ComplianceFramework $fw, string $id) => match ($id) { 'A.5.7' => $sourceReq, '21.2.f' => $targetReq, default => null },
         );

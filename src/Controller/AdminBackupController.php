@@ -670,7 +670,7 @@ class AdminBackupController extends AbstractController
             return $this->redirectToRoute('data_import_preview');
         } catch (\Throwable $e) {
             $this->addFlash('error', $translator->trans('data.import.error.invalid_file', [
-                'error' => $e->getMessage(),
+                '%error%' => $e->getMessage(),
             ], 'messages'));
             return $this->redirectToRoute('data_import_index');
         }

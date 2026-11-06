@@ -53,6 +53,7 @@ final class CrossCoverageIso27701SectionExtensionTest extends TestCase
     {
         $template = new PolicyTemplate();
         $template->setTopic($topic);
+        $template->setStandard('iso27001'); // extensions only extend ISO 27001 host policies
         $template->setLinkedAnnexAControls($linkedAnnexAControls);
         // ISO 27701 refs come exclusively from Iso27701SectionCatalogue via the
         // registry path — NOT from a PolicyTemplate field.

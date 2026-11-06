@@ -511,6 +511,20 @@ policy:
                         label: 'Media policy'
                         placeholder: 'Example: "Reactive media engagement: statements only on concrete enquiries. Proactive media engagement: only for major incidents with industry-wide relevance, approved by management board. Social media: no independent posting until release."'
     iso27001:
+        top_level:
+            v1:
+                dora_extension:
+                    title: 'DORA supplement: ICT risk management framework (Art. 5-6 DORA)'
+                    body: |-
+                        This supplement extends the information security policy under clause 5.2 ISO/IEC 27001:2022 with the governance requirements of Art. 5 and Art. 6 Regulation (EU) 2022/2554 (DORA), applicable since {{ dora.validity_from }}.
+
+                        - **Accountability of the management body (Art. 5(2))**: The management body of {{ tenant.legal_name }} bears ultimate responsibility for ICT risk management. It approves the ICT risk management framework, the digital operational resilience strategy and the risk tolerance for ICT risk, oversees their implementation and provides adequate resources. Approval follows {{ approval.chain }}.
+                        - **Control function (Art. 6(4))**: Responsibility for managing and overseeing ICT risk lies with an independent control function ({{ roles.ciso.fullName }}); conflicts of interest with ICT operations are avoided.
+                        - **Framework and review (Art. 6(1), (5))**: The ICT risk management framework comprises strategies, policies, procedures, ICT protocols and tools. It is reviewed and documented at least yearly and after major ICT-related incidents.
+                        - **Digital operational resilience strategy (Art. 6(8))**: The strategy sets out how the framework is implemented and contains the risk tolerance, the information security objectives and the metrics that measure them.
+                        - **Audit (Art. 6(6))**: The framework is audited internally on a regular basis by auditors with sufficient expertise; findings are tracked with deadlines.
+
+                        Competent authority: {{ dora.competent_authority }}.
         asset_management:
             v1:
                 dora_extension:
@@ -675,7 +689,7 @@ policy:
                         **Recipients and channel.** Competent authority: {{ dora.competent_authority }}. Channel: per tenant-specific configuration. On a data-protection-relevant trigger: additional notification to the data protection supervisory authority pursuant to Art. 33 GDPR by {{ roles.dpo.fullName }}.
 
                         **Review cadence.** Annually and after every major incident and after publication of new RTS or ITS. Effective from: {{ dora.validity_from }}.
-        supplier_security:
+        supplier_relationships:
             v1:
                 dora_extension:
                     title: 'DORA extension: ICT third-party risk (DORA Art. 28-30)'
@@ -855,7 +869,7 @@ policy:
                         **Third-country transfer.** Data transfer to third countries observes GDPR requirements (standard contractual clauses, adequacy decisions, BCRs) and DORA third-party requirements pursuant to Art. 28 to 30 DORA. Data Protection Officer {{ roles.dpo.fullName }} is involved.
 
                         **Review cadence.** Annually and after algorithm deprecation. Effective from: {{ dora.validity_from }}.
-        mobile_teleworking:
+        mobile_device:
             v1:
                 dora_extension:
                     title: 'DORA extension: ICT operations beyond office boundaries (DORA Art. 9.4(h))'

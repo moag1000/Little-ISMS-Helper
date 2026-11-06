@@ -235,7 +235,7 @@ final class SeedNis2PolicyTemplatesCommandTest extends TestCase
         // BCM template has BCM role in approval chain (not just CISO).
         $bcm = $byKey['nis2.business_continuity_crisis_policy'] ?? null;
         self::assertInstanceOf(PolicyTemplate::class, $bcm);
-        self::assertContains('ROLE_BCM', $bcm->getApprovalChain() ?? []);
+        self::assertContains('ROLE_BCM_OFFICER', $bcm->getApprovalChain() ?? []);
 
         // Translation keys follow the policy.nis2.<topic>.v1.{title,body} schema.
         foreach ($this->persisted as $template) {

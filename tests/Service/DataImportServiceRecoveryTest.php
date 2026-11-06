@@ -73,6 +73,43 @@ final class DataImportServiceRecoveryTest extends KernelTestCase
         self::assertSame([$ownActivity], $visible, 'later queries are still tenant-scoped');
     }
 
+    #[Test]
+    public function oneRejectedRowDoesNotLoseTheValidRowsOfTheFile(): void
+    {
+        $uid = uniqid('', true);
+        $row = static fn (string $name, string $legalBasis): array => [
+            'name' => $name,
+            'purposes' => ['x'],
+            'dataSubjectCategories' => ['customers'],
+            'personalDataCategories' => ['contact_data'],
+            'legalBasis' => $legalBasis,
+        ];
+
+        $service = self::getContainer()->get(DataImportService::class);
+        $import = new \ReflectionMethod($service, 'importEntities');
+        $errors = [];
+        // legal_basis is VARCHAR(50): the middle row is rejected by the database at flush time.
+        $count = $import->invokeArgs($service, [[
+            'processing_activities' => [
+                $row('rowwise good 1 ' . $uid, 'contract'),
+                $row('rowwise bad ' . $uid, str_repeat('x', 80)),
+                $row('rowwise good 2 ' . $uid, 'consent'),
+            ],
+        ], &$errors]);
+
+        self::assertSame(2, $count, 'both valid rows are imported');
+        self::assertCount(1, $errors, 'only the rejected row is reported');
+
+        // The import binds the default/first tenant, so look the rows up by name and clean up here.
+        $conn = self::getContainer()->get(EntityManagerInterface::class)->getConnection();
+        $names = $conn->fetchFirstColumn(
+            'SELECT name FROM processing_activity WHERE name LIKE ? ORDER BY name',
+            ['rowwise % ' . $uid],
+        );
+        $conn->executeStatement('DELETE FROM processing_activity WHERE name LIKE ?', ['rowwise % ' . $uid]);
+        self::assertSame(['rowwise good 1 ' . $uid, 'rowwise good 2 ' . $uid], $names);
+    }
+
     private function tenant(string $label): Tenant
     {
         $uid = uniqid('', true);

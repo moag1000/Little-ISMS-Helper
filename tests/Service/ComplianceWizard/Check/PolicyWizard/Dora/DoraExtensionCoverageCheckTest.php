@@ -94,8 +94,7 @@ final class DoraExtensionCoverageCheckTest extends TestCase
     {
         $tenant = $this->createMock(Tenant::class);
 
-        // No ISO documents in the tenant — vacuously satisfied (orthogonal
-        // failure tracked by PolicyTopicPresentCheck, not this one).
+        // No ISO documents in the tenant: no data is not evidence.
         $this->documentRepository->method('createQueryBuilder')
             ->willReturn($this->stubResultQueryBuilder([]));
 
@@ -106,10 +105,11 @@ final class DoraExtensionCoverageCheckTest extends TestCase
         );
         $result = $check->run($tenant);
 
-        self::assertTrue($result->passed);
-        self::assertSame(100.0, $result->score);
+        self::assertFalse($result->passed);
+        self::assertSame(0.0, $result->score);
+        self::assertSame('no_data', $result->details['reason']);
         self::assertSame(0, $result->details['applicable_topics']);
-        self::assertNull($result->gap);
+        self::assertNotNull($result->gap);
 
         // Validate gap shape via a tenant with documents but no extension tag.
         $doc = $this->createMock(Document::class);
