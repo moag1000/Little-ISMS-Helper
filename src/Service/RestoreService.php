@@ -373,6 +373,9 @@ class RestoreService
                 }
 
                 $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
+                if ($targetScopeIds !== [] && $orderedEntity === 'Tenant') {
+                    $entities = $purger->pinOrganisationIdentity($entities);
+                }
 
                 if ($targetScopeIds !== [] && count($entities) < count($allEntities)) {
                     $this->logger->info('Tenant-scoped restore: filtered entities', [

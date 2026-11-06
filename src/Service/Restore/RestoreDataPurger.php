@@ -213,6 +213,44 @@ class RestoreDataPurger
     }
 
     /**
+     * Pin the identity fields of organisation records that already exist to their
+     * current database values: code, SSO binding (azureTenantId), active flag, status,
+     * holding flag and parent. The backup's SHA256 seal can be recomputed, so a
+     * crafted organisation backup must not rebind SSO or move the organisation into
+     * another group. Values are overwritten, not removed — the writer would set a
+     * missing field to its default.
+     *
+     * @param array<int, array<string, mixed>> $rows Serialized Tenant rows from the backup
+     * @return array<int, array<string, mixed>>
+     */
+    public function pinOrganisationIdentity(array $rows): array
+    {
+        foreach ($rows as $index => $row) {
+            if (!isset($row['id'])) {
+                continue;
+            }
+            $current = $this->entityManager->getRepository(Tenant::class)->find((int) $row['id']);
+            if (!$current instanceof Tenant) {
+                continue;
+            }
+
+            $row['code'] = $current->getCode();
+            $row['azureTenantId'] = $current->getAzureTenantId();
+            $row['isActive'] = $current->isActive();
+            $row['status'] = $current->getStatus();
+            $row['isCorporateParent'] = $current->isCorporateParent();
+            unset($row['parent_id']); // absent association key = existing parent stays
+            if ($current->getParent() instanceof Tenant) {
+                $row['parent_id'] = ['id' => $current->getParent()->getId()];
+            }
+
+            $rows[$index] = $row;
+        }
+
+        return $rows;
+    }
+
+    /**
      * Delete all ManyToMany pivot table rows for the entities that are about to be cleared.
      *
      * Called as first step of clearExistingData() so that the subsequent DQL DELETE FROM Entity

@@ -18,8 +18,9 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * the settings JSON with the map settings — was lost on restore; only the full
  * backup carried them. This test runs the real backup + scoped restore against the
  * database: the settings changed after the backup come back, a second organisation
- * stays untouched, and the existing record is updated in place (same id, no
- * optimistic-lock failure from the older lock version in the backup).
+ * stays untouched, the existing record is updated in place (same id, no
+ * optimistic-lock failure from the older lock version in the backup), and a
+ * crafted backup cannot change the organisation's identity fields.
  */
 #[Group('integration')]
 final class OrganisationBackupSettingsRoundTripTest extends KernelTestCase
@@ -59,6 +60,16 @@ final class OrganisationBackupSettingsRoundTripTest extends KernelTestCase
 
         self::assertSame([$ownId], array_column($backup['data']['Tenant'] ?? [], 'id'));
 
+        // A crafted backup with a recomputed seal must not change the organisation's
+        // identity: code, SSO binding, active flag, holding flag, parent.
+        $ownCode = $own->getCode();
+        $backup['data']['Tenant'][0]['code'] = 'hijacked';
+        $backup['data']['Tenant'][0]['azureTenantId'] = 'foreign-entra-id';
+        $backup['data']['Tenant'][0]['isActive'] = false;
+        $backup['data']['Tenant'][0]['isCorporateParent'] = true;
+        $backup['data']['Tenant'][0]['parent_id'] = ['id' => $foreignId];
+        $backup['metadata']['sha256'] = hash('sha256', (string) json_encode($backup['data']));
+
         // Settings drift after the backup (and the lock version moves on).
         $own->setTlpDefault('clear')
             ->setDpoContactName(null)
@@ -78,6 +89,11 @@ final class OrganisationBackupSettingsRoundTripTest extends KernelTestCase
         self::assertSame('Dana DSB', $restored->getDpoContactName());
         self::assertSame('Footer Original', $restored->getEmailFooterText());
         self::assertSame(['location_map' => ['peer_comparison' => 'anonymous']], $restored->getSettings());
+        self::assertSame($ownCode, $restored->getCode());
+        self::assertNull($restored->getAzureTenantId());
+        self::assertTrue($restored->isActive());
+        self::assertFalse($restored->isCorporateParent());
+        self::assertNull($restored->getParent());
 
         self::assertSame('amber', $this->em->find(Tenant::class, $foreignId)?->getTlpDefault(), 'foreign organisation untouched');
     }

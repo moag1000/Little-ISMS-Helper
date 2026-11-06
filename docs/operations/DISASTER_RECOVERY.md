@@ -252,7 +252,7 @@ php bin/console cache:clear
 **Einschränkungen:**
 - Nur Entitäten mit Tenant-Zuordnung werden wiederhergestellt
 - Globale Entitäten (Role, Permission, SystemSettings) werden im tenant-scoped Backup übersprungen
-- Der Organisationsdatensatz selbst ist enthalten und wird beim Restore an Ort und Stelle aktualisiert (nie gelöscht oder ersetzt): Branding und Logo, TLP-Standard, Behörden/CSIRT, Rufbereitschaft, DSB-Daten, Methodik, Reifegrad-Ziel, Standortkarten-Einstellungen, aktive Module. Bei einem Cross-Tenant-Restore bleiben die Einstellungen der Ziel-Organisation unverändert.
+- Der Organisationsdatensatz selbst ist enthalten und wird beim Restore an Ort und Stelle aktualisiert (nie gelöscht oder ersetzt): Branding und Logo, TLP-Standard, Behörden/CSIRT, Rufbereitschaft, DSB-Daten, Methodik, Reifegrad-Ziel, Standortkarten-Einstellungen, aktive Module. Bei einem Cross-Tenant-Restore bleiben die Einstellungen der Ziel-Organisation unverändert. Kennung, SSO-Bindung, Aktiv-Status, Konzernzuordnung und Muttergesellschaft behalten immer ihre aktuellen Werte.
 - `ROLE_ADMIN` kann nur den eigenen Mandanten wiederherstellen; `ROLE_SUPER_ADMIN` kann jeden Mandanten wählen
 
 ```bash
