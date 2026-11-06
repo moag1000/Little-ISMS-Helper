@@ -13,6 +13,7 @@ use App\Message\Schedule\SyncEuvdFeedMessage;
 use App\Repository\ScheduledTaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Messenger\RunCommandMessage;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
 use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule as SymfonySchedule;
@@ -28,6 +29,37 @@ use Throwable;
 #[AsSchedule]
 class Schedule implements ScheduleProviderInterface
 {
+    /**
+     * Console commands built for periodic runs. They used to be documented as
+     * separate crontab lines, which most installations never set up — the
+     * scheduler is now the single place, run by one worker or one cron line
+     * (docs/user-guide/HOSTING_WORKER.md). Each command scopes tenants itself.
+     *
+     * @var list<array{0: string, 1: string}> [cron expression, command line]
+     */
+    public const array COMMAND_TASKS = [
+        ['*/15 * * * *', 'app:process-timed-workflows'],
+        ['*/15 * * * *', 'app:nis2-notification-check'],
+        ['0 * * * *', 'app:process-scheduled-reports'],
+        ['0 1 * * *', 'app:kpi-snapshot'],
+        ['15 1 * * *', 'app:portfolio:capture-snapshot'],
+        ['30 1 * * *', 'app:reuse:capture-snapshot'],
+        ['0 2 * * *', 'app:backup:create'],
+        ['30 2 * * *', 'app:backup:prune'],
+        ['45 2 * * *', 'app:audit-log:cleanup'],
+        ['0 3 * * *', 'app:four-eyes:cleanup-expired'],
+        ['15 3 * * *', 'app:policy-wizard:purge-sandboxes'],
+        ['0 2 * * 0', 'app:tisax:purge-old-ip-addresses'],
+        ['0 7 * * *', 'app:notification:send-digests'],
+        ['0 8 * * *', 'app:send-notifications'],
+        ['5 8 * * *', 'app:review:send-reminders'],
+        ['10 8 * * *', 'app:training-send-reminders'],
+        ['15 8 * * *', 'app:dpia-reminder'],
+        ['20 8 * * *', 'app:risk:acceptance-expiry-reminder'],
+        ['25 8 * * *', 'app:risk:monitor-treatment-plans --send-notifications'],
+        ['30 8 * * *', 'app:notify-overdue-controls'],
+    ];
+
     public function __construct(
         private CacheInterface $cache,
         private ScheduledTaskRepository $taskRepository,
@@ -85,8 +117,12 @@ class Schedule implements ScheduleProviderInterface
             RecurringMessage::cron('0 5 * * *', new SyncEuvdFeedMessage())
         );
 
+        foreach (self::COMMAND_TASKS as [$cron, $command]) {
+            $schedule->add(RecurringMessage::cron($cron, new RunCommandMessage($command . ' --no-interaction')));
+        }
+
         $this->logger->info('Built-in scheduled tasks loaded', [
-            'count' => 5,
+            'count' => 5 + count(self::COMMAND_TASKS),
         ]);
     }
 
