@@ -400,8 +400,6 @@ class RiskController extends AbstractController
     public function new(Request $request): Response
     {
         $risk = new Risk();
-
-        // Set tenant from current user
         $user = $this->security->getUser();
         $tenant = null;
         if ($user instanceof UserInterface && $user->getTenant()) {

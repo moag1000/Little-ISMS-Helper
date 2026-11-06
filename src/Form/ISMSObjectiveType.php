@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ISMSObjective;
+use App\Entity\Location;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Service\Kpi\ObjectiveKpiProgress;
+use App\Service\ModuleConfigurationService;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -22,6 +27,7 @@ use App\Form\Util\LegacyFreeTextField;
 final class ISMSObjectiveType extends AbstractType implements SectionMapInterface
 {
     public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly ?Security $security = null,
     ) {
     }
@@ -32,12 +38,13 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
     }
 
     use OwnerPickerFormTrait;
+    use ModuleAwareFormTrait;
 
     public static function getSectionMap(): array
     {
         return [
             'overview'      => ['title', 'description', 'category'],
-            'target_metric' => ['measurableIndicators', 'targetValue', 'currentValue', 'unit'],
+            'target_metric' => ['measurableIndicators', 'kpiKey', 'kpiLocation', 'targetValue', 'currentValue', 'unit'],
             'monitoring'    => ['measurementFrequency', 'measurementMethod'],
             'responsibility'=> ['responsiblePersonUser', 'responsiblePersonRef', 'responsibleDeputyPersons', 'responsiblePerson', 'responsibleForMeasurement', 'targetDate'],
             'audit_metadata'=> ['status', 'progressNotes'],
@@ -91,6 +98,17 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
                     'rows' => 3,
                     'placeholder' => 'objective.placeholder.measurable_indicators'
                 ]
+            ])
+            ->add('kpiKey', ChoiceType::class, [
+                'label' => 'objective.field.kpi_key',
+                'required' => false,
+                'placeholder' => 'objective.placeholder.kpi_key',
+                'choices' => array_combine(
+                    array_map(static fn (string $k): string => 'dashboard.kpi.' . $k, ObjectiveKpiProgress::KEYS),
+                    ObjectiveKpiProgress::KEYS,
+                ),
+                'choice_translation_domain' => 'dashboard',
+                'help' => 'objective.help.kpi_key',
             ])
             ->add('targetValue', NumberType::class, [
                 'label' => 'objective.field.target_value',
@@ -226,7 +244,19 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
                 ]
             ])
         ;
+
         LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
+
+        if ($this->isModuleActive('locations')) {
+            $builder->add('kpiLocation', EntityType::class, [
+                'label' => 'objective.field.kpi_location',
+                'class' => Location::class,
+                'choice_label' => 'name',
+                'required' => false,
+                'placeholder' => 'objective.placeholder.kpi_location',
+                'help' => 'objective.help.kpi_location',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -8,6 +8,7 @@ use App\AlvaHint\AlvaHint;
 use App\AlvaHint\AlvaHintService;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Service\Location\LocationMyDayTasks;
 use App\Service\Risk\RiskAcceptanceInbox;
 use App\Service\Risk\RiskBusinessSummary;
 use App\Service\WorkflowService;
@@ -27,6 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   separate Alva inbox is no longer a second place to look.
  * - Requested risk acceptances the user may decide join as their own
  *   category; risk approvals carry a business line (band, €/year, asset).
+ * - Own sites with open checks join as their own category (location map).
  */
 readonly class MyDayInboxEnricher
 {
@@ -37,6 +39,7 @@ readonly class MyDayInboxEnricher
         private UrlGeneratorInterface $urls,
         private RiskAcceptanceInbox $riskAcceptances,
         private RiskBusinessSummary $riskSummary,
+        private LocationMyDayTasks $locationTasks,
     ) {
     }
 
@@ -56,7 +59,9 @@ readonly class MyDayInboxEnricher
 
         $inbox['alva_hints'] = $this->alvaItems();
         $inbox['risk_acceptance_pending'] = $user !== null ? $this->riskAcceptances->pendingFor($user) : [];
-        $inbox['total'] = ($inbox['total'] ?? 0) + count($inbox['alva_hints']) + count($inbox['risk_acceptance_pending']);
+        $inbox['location_gaps'] = $user !== null ? $this->locationTasks->openGapsFor($user) : [];
+        $inbox['total'] = ($inbox['total'] ?? 0) + count($inbox['alva_hints']) + count($inbox['risk_acceptance_pending'])
+            + count($inbox['location_gaps']);
 
         foreach ($inbox as $key => $items) {
             if (is_array($items) && array_is_list($items)) {
@@ -134,7 +139,8 @@ readonly class MyDayInboxEnricher
     /** Number of items enrich() adds (Alva hints, risk acceptances to decide), for the sidebar badge. */
     public function addedCount(User $user): int
     {
-        return count($this->priorityHints()) + count($this->riskAcceptances->pendingFor($user));
+        return count($this->priorityHints()) + count($this->riskAcceptances->pendingFor($user))
+            + count($this->locationTasks->openGapsFor($user));
     }
 
     /**

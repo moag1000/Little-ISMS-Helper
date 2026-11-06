@@ -285,7 +285,7 @@ fields and BC-Exercise result-fields among unrelated data.
 open on load are the first section, sections with an empty required field and sections with
 an error, the rest is collapsed with "n von m ausgefüllt". The `unsaved-changes` controller
 on `<body>` guards every Symfony POST form (opt out: `data-unsaved-guard="off"`). Context
-prefill for `/new` forms lives in `App\Service\Prefill\RecordPrefill` (`?fromAsset=`,
+prefill for `/new` forms lives in `App\Service\Prefill\RecordPrefill` (`?fromAsset=`, `?fromLocation=`,
 `?fromRisk=`, `?fromIncident=`, `?fromVulnerability=`, same tenant only); "derive" buttons on
 detail pages come from `EntityLinks::DERIVE`. Legacy free-text person fields go through
 `App\Form\Util\LegacyFreeTextField::hideWhenEmpty()`. Mapping screens include
