@@ -16,9 +16,7 @@ use DomainException;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\TenantOriginStatsTrait;
-use App\Entity\Incident;
 use App\Entity\Risk;
-use App\Entity\Vulnerability;
 use App\Form\RiskQuickType;
 use App\Form\RiskType;
 use App\Repository\AuditLogRepository;
@@ -26,7 +24,6 @@ use App\Repository\CommentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
-use App\Repository\VulnerabilityRepository;
 use App\Service\InverseCoverageService;
 use App\Service\RiskMatrixService;
 use App\Service\RiskService;
@@ -39,6 +36,7 @@ use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Clone\RiskCloner;
 use App\Service\TenantContext;
+use App\Service\Prefill\RecordPrefill;
 use App\Util\ListPage;
 use App\Risk\RiskMatrixThresholds;
 use App\Controller\Trait\BulkActionTrait;
@@ -71,7 +69,7 @@ class RiskController extends AbstractController
         private readonly RiskRegisterExporter $riskRegisterExporter,
         private readonly Security $security,
         private readonly TagFilterService $tagFilterService,
-        private readonly VulnerabilityRepository $vulnerabilityRepository,
+        private readonly RecordPrefill $recordPrefill,
         private readonly IncidentRepository $incidentRepository,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly \App\Service\Job\JobTenantScope $jobTenantScope,
@@ -408,64 +406,9 @@ class RiskController extends AbstractController
             $tenant = $user->getTenant();
             $risk->setTenant($tenant);
         }
-        $site = $this->entityManager->find(\App\Entity\Location::class, $request->query->getInt('location')); // quick action on the location map
-        $risk->setLocation($site !== null && $tenant !== null && $site->getTenant() === $tenant ? $site : null);
-        // Pre-fill from Vulnerability (Data-Reuse: one-click derivation)
-        $fromVulnerabilityId = $request->query->get('fromVulnerability');
-        if ($fromVulnerabilityId !== null && $fromVulnerabilityId !== '') {
-            $vulnerability = $this->vulnerabilityRepository->find($fromVulnerabilityId);
-            // Multi-tenancy: only allow prefill within the same tenant
-            if ($vulnerability instanceof Vulnerability
-                && $tenant !== null
-                && $vulnerability->getTenant() === $tenant
-            ) {
-                $risk->setTitle($this->translator->trans(
-                    'risk.prefill.title_from_vulnerability',
-                    ['%title%' => (string) $vulnerability->getTitle()],
-                    'risk'
-                ));
-                $risk->setDescription(
-                    (string) $vulnerability->getDescription()
-                    . "\n\n"
-                    . $this->translator->trans('risk.prefill.note_from_vulnerability',
-                        ['%id%' => (string) $vulnerability->getId()],
-                        'risk'
-                    )
-                );
-                $risk->setThreat($this->translator->trans(
-                    'risk.prefill.threat_from_vulnerability',
-                    ['%title%' => (string) $vulnerability->getTitle()],
-                    'risk'
-                ));
-                $risk->setCategory('security');
-                $risk->setLinkedVulnerability($vulnerability);
-            }
-        }
 
-        // Pre-fill from Incident (Data-Reuse)
-        $fromIncidentId = $request->query->get('fromIncident');
-        if ($fromIncidentId !== null && $fromIncidentId !== '') {
-            $incident = $this->incidentRepository->find($fromIncidentId);
-            if ($incident instanceof Incident
-                && $tenant !== null
-                && $incident->getTenant() === $tenant
-            ) {
-                $risk->setTitle($this->translator->trans(
-                    'risk.prefill.title_from_incident',
-                    ['%title%' => (string) $incident->getTitle()],
-                    'risk'
-                ));
-                $risk->setDescription(
-                    (string) $incident->getDescription()
-                    . "\n\n"
-                    . $this->translator->trans('risk.prefill.note_from_incident',
-                        ['%id%' => (string) $incident->getId()],
-                        'risk'
-                    )
-                );
-                $risk->setCategory('operational');
-            }
-        }
+        // Context prefill: ?fromVulnerability= / ?fromIncident= / ?fromAsset= (same tenant only)
+        $this->recordPrefill->risk($risk, $request, $tenant);
 
         $form = $this->createForm(RiskType::class, $risk);
         $form->handleRequest($request);

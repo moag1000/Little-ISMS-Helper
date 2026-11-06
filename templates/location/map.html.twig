@@ -341,7 +341,7 @@
             {% if not _read_only %}
             <h3 class="location-map__panel-sub">{{ 'location.map.actions.title'|trans({}, 'locations') }}</h3>
             <div class="location-map__actions">
-                <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_risk_new', { location: site.id }) }}">{{ 'location.map.actions.risk'|trans({}, 'locations') }}</a>
+                <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_risk_new', { fromLocation: site.id }) }}">{{ 'location.map.actions.risk'|trans({}, 'locations') }}</a>
                 <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_incident_new') }}">{{ 'location.map.actions.incident'|trans({}, 'locations') }}</a>
                 {% if is_granted('ROLE_MANAGER') %}
                     <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_location_edit', { id: site.id }) }}">{{ 'location.map.actions.owner'|trans({}, 'locations') }}</a>

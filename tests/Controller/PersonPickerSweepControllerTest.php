@@ -256,7 +256,9 @@ final class PersonPickerSweepControllerTest extends WebTestCase
         $userSelect = $crawler->filter('select[name$="[responsiblePersonUser]"]');
         $form = $userSelect->closest('form')->form();
         $prefix = preg_replace('/\[responsiblePersonUser\]$/', '', $userSelect->attr('name'));
-        $form[$prefix . '[responsiblePerson]'] = '';
+        if ($form->has($prefix . '[responsiblePerson]')) {
+            $form[$prefix . '[responsiblePerson]'] = '';
+        }
 
         $this->client->submit($form);
         self::assertResponseStatusCodeSame(422);

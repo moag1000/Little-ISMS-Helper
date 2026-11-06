@@ -231,6 +231,29 @@ Gruppen, deren Modul nicht aktiv ist, werden nicht angezeigt.
 
 ---
 
+## Formulare: Kern zuerst, nichts zweimal tippen
+
+- **Große Formulare** (ab 25 Feldern, z. B. Lieferant, VVT, DSFA, Vorfall,
+  Risiko) haben links eine Gliederung. Offen sind beim Laden nur der erste
+  Abschnitt (Kern), Abschnitte mit leeren Pflichtfeldern und Abschnitte mit
+  Fehlern. Die übrigen sind eingeklappt und zeigen „3 von 12 ausgefüllt".
+- **Ungespeicherte Änderungen**: Wer ein Formular geändert hat und die Seite
+  verlässt (Link, Zurück, Tab schließen), wird vorher gefragt. Speichern hebt
+  die Warnung auf. Filter-, Lösch- und Massenaktionsformulare sind ausgenommen.
+- **Vorbelegung aus dem Kontext**: „Risiko ableiten" auf einem Asset öffnet
+  das Risikoformular mit verknüpftem Asset, Titel und Auswirkung aus dem
+  Schutzbedarf (höchster CIA-Wert). Auf einem Risiko legt „Neuer
+  Behandlungsplan" den Plan mit Risiko, Titel und Risikoeigner als
+  Verantwortlichem an. Am Control werden Nachweise direkt hochgeladen
+  („Nachweis hochladen" springt dorthin). Vorbelegt wird nur aus Datensätzen
+  der eigenen Organisation. URL-Parameter: `fromAsset`, `fromLocation`, `fromRisk`,
+  `fromIncident`, `fromVulnerability`.
+- **Alte Freitextfelder für Personen** (Eigentümer, Verantwortliche,
+  Ansprechpartner aus der Zeit vor der Personenauswahl) erscheinen nur noch,
+  solange sie einen Wert haben.
+
+---
+
 ## Verwandte Dokumente
 
 - `docs/user-guide/MEIN_TAG.md` — Inbox-Aggregation fuer alle Rollen

@@ -1,0 +1,72 @@
+{#
+ # Mapping hub chrome (UI wave F): one entry point, four tabs, for the screens
+ # that used to be separate menu places. The controllers stay; every mapping
+ # page includes this bar first, so the user always sees where they are.
+ #
+ #   Übersicht  — hub landing, data-reuse heatmap, onboarding
+ #   Mappings   — list, detail, new/edit, wizard, seed packages, import
+ #   Qualität   — quality dashboard, review queue, gaps
+ #   Vergleich  — compare, cross-framework, transitive, wizard compare: views of
+ #                the same framework × framework matrix, switched by chips
+ #
+ # Usage: {% include 'compliance/mapping/_hub_tabs.html.twig' %}
+ #}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% set _route = app.request.attributes.get('_route')|default('') %}
+{% set _compare_views = [
+    { route: 'app_compliance_compare', key: 'compare' },
+    { route: 'app_compliance_cross_framework', key: 'cross_framework' },
+    { route: 'app_compliance_transitive', key: 'transitive' },
+] %}
+{% if is_granted('ROLE_AUDITOR') %}
+    {% set _compare_views = _compare_views|merge([{ route: 'app_compliance_wizard_compare', key: 'coverage' }]) %}
+{% endif %}
+{% set _compare_routes = _compare_views|map(v => v.route) %}
+{% set _active =
+    _route starts with 'app_mapping_quality_' ? 'quality'
+    : (_route in _compare_routes ? 'compare'
+    : (_route in ['app_compliance_mapping_hub', 'app_data_reuse_heatmap'] or _route starts with 'app_mapping_onboarding' ? 'overview'
+    : 'mappings')) %}
+{% set _tabs = [
+    { key: 'overview', route: 'app_compliance_mapping_hub' },
+    { key: 'mappings', route: 'app_compliance_mapping_index' },
+    { key: 'quality', route: 'app_mapping_quality_review_queue' },
+    { key: 'compare', route: 'app_compliance_compare' },
+] %}
+<nav class="fa-hub-tabs mb-3" aria-label="{{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}" data-testid="mapping-hub-tabs">
+    <ul class="fa-tabs__nav">
+        {% for tab in _tabs %}
+            <li>
+                <a href="{{ path(tab.route) }}"
+                   class="fa-tabs__nav-item{{ tab.key == _active ? ' is-active' : '' }}"
+                   {% if tab.key == _active %}aria-current="page"{% endif %}
+                   data-testid="mapping-hub-tab-{{ tab.key }}">
+                    {{- ('compliance.mapping.hub.tabs.' ~ tab.key)|trans({}, 'compliance') -}}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if _active == 'compare' %}
+        <div class="fa-hub-tabs__views mt-2" data-testid="mapping-hub-views">
+            {% for view in _compare_views %}
+                {{ _fa_filter_chip.render(('compliance.mapping.hub.views.' ~ view.key)|trans({}, 'compliance'), {
+                    active: view.route == _route,
+                    href: path(view.route),
+                }) }}
+            {% endfor %}
+        </div>
+    {% elseif _active == 'quality' %}
+        <div class="fa-hub-tabs__views mt-2" data-testid="mapping-hub-views">
+            {% for view in [
+                { route: 'app_mapping_quality_review_queue', key: 'review_queue' },
+                { route: 'app_mapping_quality_dashboard', key: 'quality_dashboard' },
+                { route: 'app_mapping_quality_gaps', key: 'gaps' },
+            ] %}
+                {{ _fa_filter_chip.render(('compliance.mapping.hub.views.' ~ view.key)|trans({}, 'compliance'), {
+                    active: view.route == _route,
+                    href: path(view.route),
+                }) }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</nav>

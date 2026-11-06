@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Form\Util\LegacyFreeTextField;
 
 final class InterestedPartyType extends AbstractType implements SectionMapInterface
 {
@@ -173,6 +174,7 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
                 'attr' => ['rows' => 3],
             ])
         ;
+        LegacyFreeTextField::hideWhenEmpty($builder, 'contactPerson');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

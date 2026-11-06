@@ -319,6 +319,19 @@ compliance:
                 warnings_heading: 'Warnungen (%count%)'
                 preview_ok_hint: 'Preview OK — jetzt erneut hochladen und "Importieren" drücken, um die Daten zu übernehmen.'
         hub:
+            tabs:
+                overview: 'Übersicht'
+                mappings: 'Mappings'
+                quality: 'Qualität'
+                compare: 'Vergleich'
+            views:
+                compare: 'Framework-Vergleich'
+                cross_framework: 'Cross-Framework'
+                transitive: 'Transitiv'
+                coverage: 'Abdeckung'
+                review_queue: 'Review-Queue'
+                quality_dashboard: 'Kennzahlen'
+                gaps: 'Lücken'
             title: 'Mapping-Hub'
             subtitle: 'Einstieg für Cross-Framework-Zuordnungen — Wizard, Seed-Pakete, Qualität, transitive Abdeckung.'
             badge:

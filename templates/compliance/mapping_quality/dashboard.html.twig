@@ -27,6 +27,7 @@
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_index') }
         ]
     }) }}
+    {% include 'compliance/mapping/_hub_tabs.html.twig' %}
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'quality' } %}
 

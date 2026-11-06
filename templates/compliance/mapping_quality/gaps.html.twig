@@ -13,6 +13,7 @@
             { label: 'compliance.mapping_quality.title'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_mapping_quality_dashboard') }
         ]
     }) }}
+    {% include 'compliance/mapping/_hub_tabs.html.twig' %}
 
     {# Remediation Effort Summary #}
     {% if remediation_effort %}

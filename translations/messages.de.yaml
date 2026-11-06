@@ -2452,6 +2452,7 @@ show:
             vulnerability: 'Schwachstellen'
         derive:
             risk: 'Risiko ableiten'
+            evidence: 'Nachweis hochladen'
             incident: 'Vorfall erfassen'
             vulnerability: 'Schwachstelle ableiten'
     status:

@@ -17,6 +17,7 @@
         { label: 'compliance.action.export_csv'|trans({}, 'compliance'), variant: 'ghost', icon: 'nav-document', href: path('app_compliance_export_transitive'), attrs: {'data-turbo': 'false'} }
     ]
 }) }}
+{% include 'compliance/mapping/_hub_tabs.html.twig' %}
 {# JS action button + PDF locale switch (not supported by macro actions array) #}
 <div class="d-flex justify-content-end gap-2 mb-3">
     <button id="createAllMappingsBtn" class="fa-cyber-btn fa-cyber-btn--primary">

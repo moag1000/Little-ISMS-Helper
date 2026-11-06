@@ -69,7 +69,6 @@ nav:
     cross_framework: Framework-übergreifend
     compare: Vergleichen
     mapping_hub: Mapping-Hub
-    mapping_quality: Mapping-Qualität
     mapping_tour: 'Mapping-Tour starten'
     mris_kpis: 'MRIS-KPIs'
     mris_baselines: 'MRIS-Baselines'
@@ -238,7 +237,6 @@ nav:
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
-            mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
             mapping_tour: 'Geführte Tour: Mapping, Vererbung, Coverage & Qualität in 6 Schritten'
             mris_kpis: 'Mythos-relevante Kennzahlen (MRIS v1.5 Kap. 10.6)'
             mris_baselines: 'Branchen-Baselines (KRITIS, Finance, Automotive, SaaS) — Soll-Stufen pro MHC'

@@ -95,7 +95,7 @@ Admin das eingeschaltet hat; der Vergleich lässt sich auch ganz abschalten.
 deren geplante Behandlung das Restrisiko am stärksten senkt (Differenz Ist → Ziel
 × Schutzbedarf).
 
-**Aktionen im Panel.** Risiko erfassen (Standort vorbelegt) und Vorfall melden,
+**Aktionen im Panel.** Risiko erfassen (Standort vorbelegt, `?fromLocation=`) und Vorfall melden,
 ab Manager zusätzlich Verantwortliche zuweisen, Audit planen und mit BCM-Modul
 Notfallübung planen.
 

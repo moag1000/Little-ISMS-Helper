@@ -404,6 +404,22 @@ class DataBreachControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testShowWritesViewAuditEntry(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId());
+
+        $entries = $this->entityManager->getRepository(\App\Entity\AuditLog::class)->findBy([
+            'action' => 'view',
+            'entityType' => 'DataBreach',
+            'entityId' => $this->testBreach->getId(),
+        ]);
+        self::assertNotEmpty($entries, 'opening a breach must leave a view entry (GDPR Art. 5(2))');
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[Test]
     public function testShowReturns404ForNonexistentBreach(): void
     {
         $this->loginAsUser($this->testUser);

@@ -11,6 +11,8 @@ risk_treatment_plan:
     days_overdue: 'Tage überfällig'
     due_today: 'Heute fällig'
     days_remaining: 'Tage verbleibend'
+    prefill:
+        title_from_risk: 'Maßnahme zu %title%'
     action:
         add_new: 'Neu anlegen'
         new: 'Neuer Behandlungsplan'

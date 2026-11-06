@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Url;
+use App\Form\Util\LegacyFreeTextField;
 
 final class PatchType extends AbstractType implements SectionMapInterface
 {
@@ -274,6 +275,7 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 ],
             ])
         ;
+        LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
     }
 
     /**

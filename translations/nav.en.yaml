@@ -69,7 +69,6 @@ nav:
     cross_framework: Cross-Framework
     compare: Compare
     mapping_hub: 'Mapping Hub'
-    mapping_quality: 'Mapping Quality'
     mapping_tour: 'Start mapping tour'
     mris_kpis: 'MRIS KPIs'
     mris_baselines: 'MRIS Baselines'
@@ -240,7 +239,6 @@ nav:
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
             mapping_hub: 'Entry point: wizard, seeds, quality, transitive coverage'
-            mapping_quality: 'Cross-framework mapping quality analysis'
             mapping_tour: 'Guided tour: mapping, inheritance, coverage & quality in 6 steps'
             mris_kpis: 'Mythos-relevant KPIs (MRIS v1.5 Ch. 10.6)'
             mris_baselines: 'Industry baselines (KRITIS, Finance, Automotive, SaaS) — target maturity per MHC'

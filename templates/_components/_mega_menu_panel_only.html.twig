@@ -717,25 +717,18 @@
                     <span class="fly-item__sub">{{ 'nav.mega.desc.compliance_frameworks'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_compliance_mapping_hub') }}" class="fly-item {% if current_route starts with 'app_compliance_mapping_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_compliance_mapping_hub') }}" class="fly-item {% if current_route starts with 'app_compliance_mapping_' or current_route starts with 'app_mapping_' or current_route in ['app_compliance_compare', 'app_compliance_cross_framework', 'app_compliance_transitive', 'app_compliance_wizard_compare', 'app_data_reuse_heatmap'] %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--coverage-matrix" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.mapping_hub'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.mapping_hub'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_data_reuse_hub') }}" class="fly-item {% if current_route starts with 'app_data_reuse_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+            <a href="{{ path('app_data_reuse_hub') }}" class="fly-item {% if current_route starts with 'app_data_reuse_' and current_route != 'app_data_reuse_heatmap' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--reuse-roi" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.data_reuse'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.data_reuse'|trans({}, 'nav') }}</span>
-                </span>
-            </a>
-            <a href="{{ path('app_mapping_quality_dashboard') }}" class="fly-item {% if current_route starts with 'app_mapping_quality_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
-                <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-patch-check" aria-hidden="true"></i></span>
-                <span class="fly-item__body">
-                    <span class="fly-item__title">{{ 'nav.mapping_quality'|trans({}, 'nav') }}</span>
-                    <span class="fly-item__sub">{{ 'nav.mega.desc.mapping_quality'|trans({}, 'nav') }}</span>
                 </span>
             </a>
             <a href="{{ path('app_industry_baseline_index') }}" class="fly-item {% if current_route starts with 'app_industry_baseline_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">

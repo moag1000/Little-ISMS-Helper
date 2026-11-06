@@ -299,7 +299,7 @@ final class LocationMapControllerTest extends WebTestCase
         $this->client->request('GET', '/en/location/map');
 
         self::assertResponseIsSuccessful();
-        self::assertStringNotContainsString('/risk/new?location=', (string) $this->client->getResponse()->getContent());
+        self::assertStringNotContainsString('/risk/new?fromLocation=', (string) $this->client->getResponse()->getContent());
     }
 
     #[Test]

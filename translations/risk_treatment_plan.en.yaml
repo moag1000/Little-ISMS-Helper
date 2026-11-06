@@ -11,6 +11,8 @@ risk_treatment_plan:
     days_overdue: 'days overdue'
     due_today: 'Due today'
     days_remaining: 'days remaining'
+    prefill:
+        title_from_risk: 'Treatment of %title%'
     action:
         add_new: 'Add new'
         new: 'New treatment plan'

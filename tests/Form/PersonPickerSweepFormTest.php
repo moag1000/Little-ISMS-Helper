@@ -51,13 +51,16 @@ final class PersonPickerSweepFormTest extends KernelTestCase
     {
         self::bootKernel();
         $deputies = str_starts_with($base, 'contact') ? 'contactDeputyPersons' : 'responsibleDeputyPersons';
-        $form = static::getContainer()->get(FormFactoryInterface::class)
-            ->create($type, new $entity(), ['csrf_protection' => false]);
+        $factory = static::getContainer()->get(FormFactoryInterface::class);
+        self::assertFalse($factory->create($type, new $entity(), ['csrf_protection' => false])->has($base), 'empty legacy free-text field is hidden');
+        $record = new $entity();
+        $record->{'set' . ucfirst($base)}('Team alt');
+        $form = $factory->create($type, $record, ['csrf_protection' => false]);
 
         self::assertTrue($form->has($base . 'User'));
         self::assertTrue($form->has($base . 'Ref'));
         self::assertTrue($form->has($deputies));
-        self::assertTrue($form->has($base), 'legacy free-text field must keep round-tripping');
+        self::assertTrue($form->has($base), 'a filled legacy free-text field stays visible');
 
         $sections = array_merge(...array_values($type::getSectionMap()));
         foreach ([$base . 'User', $base . 'Ref', $deputies, $base] as $field) {

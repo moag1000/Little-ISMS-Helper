@@ -374,7 +374,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
             'business_continuity_plan[name]' => 'New Test BC Plan',
             'business_continuity_plan[description]' => 'New plan description',
             'business_continuity_plan[businessProcess]' => $this->testProcess->getId(),
-            'business_continuity_plan[planOwner]' => 'New Owner',
             'business_continuity_plan[planOwnerUser]' => (string) $this->testUser->getId(),
             // Status is intentionally NOT submitted: BusinessContinuityPlanType marks
             // `status` as `disabled => true` (Lifecycle-bypass fix, Sprint Y.5). Status
@@ -405,7 +404,6 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/en/business-continuity-plan/new');
         $form = $crawler->filter('form[name="business_continuity_plan"]')->form([
             'business_continuity_plan[name]' => '', // Empty name - should fail validation
-            'business_continuity_plan[planOwner]' => 'Owner',
         ]);
 
         $this->client->submit($form);

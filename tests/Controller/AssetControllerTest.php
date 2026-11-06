@@ -354,7 +354,6 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'New Test Asset',
             'asset[assetType]' => 'Software',
-            'asset[owner]' => 'New Owner',
             'asset[ownerUser]' => (string) $this->testUser->getId(),
             'asset[description]' => 'New asset description',
             'asset[confidentialityValue]' => 2,
@@ -385,7 +384,6 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'Tenant Test Asset',
             'asset[assetType]' => 'Information',
-            'asset[owner]' => 'Tenant Owner',
             'asset[ownerUser]' => (string) $this->testUser->getId(),
             'asset[description]' => 'Testing tenant assignment',
             'asset[confidentialityValue]' => 3,
@@ -411,7 +409,6 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => '',  // Empty name should fail validation
             'asset[assetType]' => 'Hardware',
-            'asset[owner]' => 'Owner',
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
             'asset[availabilityValue]' => 2,
@@ -974,7 +971,6 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => '',  // Empty name should fail validation
             'asset[assetType]' => 'Hardware',
-            'asset[owner]' => 'Owner',
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
             'asset[availabilityValue]' => 2,
@@ -1001,7 +997,6 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form();
 
         $form['asset[name]'] = 'Test Name';
-        $form['asset[owner]'] = 'Owner';
         $form['asset[ownerUser]'] = (string) $this->testUser->getId();
         $form['asset[confidentialityValue]'] = '3';
         $form['asset[integrityValue]'] = '3';
@@ -1023,7 +1018,6 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'Test Name',
             'asset[assetType]' => 'Hardware',
-            'asset[owner]' => '',  // Empty legacy owner
             'asset[ownerUser]' => '',  // Override default_to_current_user pre-fill (#631) to assert validator-trigger
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
@@ -1049,7 +1043,6 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'Flash Test Asset',
             'asset[assetType]' => 'Software',
-            'asset[owner]' => 'Flash Owner',
             'asset[ownerUser]' => (string) $this->testUser->getId(),
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,

@@ -44,7 +44,7 @@
                     {% endif %}
                 {% endif %}
                 {% if g.derive %}
-                    <a href="{{ path(g.derive.route, g.derive.params) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-entity-links__derive">
+                    <a href="{{ g.derive.anchor ?: path(g.derive.route, g.derive.params) }}" data-testid="derive-{{ g.type }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-entity-links__derive">
                         {{ ('show.links.derive.' ~ g.type)|trans({}, 'messages') }}
                     </a>
                 {% endif %}

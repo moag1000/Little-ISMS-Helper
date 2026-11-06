@@ -66,7 +66,9 @@ final class SupplierTypeTest extends KernelTestCase
         // Core supplier info
         self::assertTrue($form->has('name'));
         self::assertTrue($form->has('description'));
-        self::assertTrue($form->has('contactPerson'));
+        // Legacy free-text contact: only offered when it already holds a value (UI wave F).
+        self::assertFalse($form->has('contactPerson'));
+        self::assertTrue($this->formFactory->create(SupplierType::class, (new Supplier())->setContactPerson('Team alt'))->has('contactPerson'));
         self::assertTrue($form->has('email'));
         self::assertTrue($form->has('serviceProvided'));
         self::assertTrue($form->has('criticality'));
