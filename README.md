@@ -275,6 +275,18 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
 
+### Bedienung: einheitlich, schnell, sinnvoll
+
+Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterverwendet werden:
+
+- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle
+- **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
+- **Ein Listen-Aufbau** -- Suche, Filter, Zusammenfassung, Tabelle, Seitenumbruch und Leerzustand gleich auf allen migrierten Listen
+- **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6
+- **Ein Detailseiten-Aufbau** -- Statusband, Ankerleiste, Nachweiskette Asset → Risiko → Control → Nachweis → Vorfall → Schwachstelle als erster Block, Historie und Kommentare
+- **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko), alte Freitext-Personenfelder nur noch wenn befüllt
+- **Mapping-Hub** -- alle Mapping-Werkzeuge hinter vier Tabs: Übersicht, Mappings, Qualität, Vergleich
+
 ### Design und Barrierefreiheit
 
 - **FairyAurora v4** -- Cyberpunk-Design-System mit Alva-Maskottchen (9 Stimmungen)
@@ -551,8 +563,8 @@ php bin/console isms:load-annex-a-controls --env=test
 
 | Dokument | Thema |
 |---|---|
-| [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Cross-Framework-Mapping-Hub |
-| [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Mega-Menu-Gating |
+| [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Mapping-Hub mit Tabs |
+| [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Kennzahlen, Detailseiten- und Formular-Aufbau |
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |

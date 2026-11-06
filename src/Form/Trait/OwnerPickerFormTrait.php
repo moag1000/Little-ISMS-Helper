@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use App\Form\Util\LegacyFreeTextField;
 
 /**
  * OwnerPickerFormTrait.
@@ -168,6 +169,7 @@ trait OwnerPickerFormTrait
                 ],
                 'help'     => $config['legacy_help'] ?? $prefix . '.help.owner_legacy',
             ]);
+            LegacyFreeTextField::hideWhenEmpty($builder, $legacyField);
         }
 
         // Owner pre-fill — UX-Polish.
@@ -191,6 +193,9 @@ trait OwnerPickerFormTrait
                             // either null (no data_class binding) or has no
                             // owner-user value yet.
                             if ($entity === null) {
+                                return;
+                            }
+                            if (method_exists($entity, 'getId') && $entity->getId() !== null) {
                                 return;
                             }
                             $accessor = PropertyAccess::createPropertyAccessor();

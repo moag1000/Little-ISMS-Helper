@@ -117,7 +117,16 @@ Beide KPIs fliessen in das ISMS-Health-Score-Dashboard ein.
 
 ## Cross-Framework-Mapping-Hub
 
-Unter `/de/compliance/mapping-hub` sind alle Cross-Framework-Mappings sichtbar.
+Unter `/de/compliance/mapping/hub` (Menü: Compliance → Mapping-Hub) liegen alle
+Mapping-Werkzeuge hinter einer Tab-Leiste, die jede Mapping-Seite oben zeigt:
+
+| Tab | Inhalt |
+|---|---|
+| Übersicht | Kennzahlen, Einstiege, Data-Reuse-Heatmap, Mapping-Onboarding |
+| Mappings | Liste, Detail, Anlegen/Bearbeiten, Wizard, Seed-Pakete, Import, Seed-Review |
+| Qualität | Review-Queue, Kennzahlen, Lücken |
+| Vergleich | Framework-Vergleich, Cross-Framework, Transitiv, Abdeckung (ab Auditor) als Ansichten derselben Matrix |
+
 
 | Kennzahl | Wert (v3.5) |
 |---|---|

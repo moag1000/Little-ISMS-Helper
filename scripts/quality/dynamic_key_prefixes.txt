@@ -69,6 +69,8 @@ compliance	2
 compliance.framework.flash	1
 compliance.industry	3
 compliance.iso9001_bridge.variant	1
+compliance.mapping.hub.tabs	1
+compliance.mapping.hub.views	1
 compliance.mapping.rel_type	1
 compliance.maturity.label	1
 compliance.severity	1

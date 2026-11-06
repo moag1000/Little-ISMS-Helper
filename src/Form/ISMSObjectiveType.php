@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\ISMSObjective;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\OwnerPickerFormTrait;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -16,9 +17,20 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Form\Util\LegacyFreeTextField;
 
 final class ISMSObjectiveType extends AbstractType implements SectionMapInterface
 {
+    public function __construct(
+        private readonly ?Security $security = null,
+    ) {
+    }
+
+    protected function getSecurityForOwnerPicker(): ?Security
+    {
+        return $this->security;
+    }
+
     use OwnerPickerFormTrait;
 
     public static function getSectionMap(): array
@@ -132,6 +144,8 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
             'user_help'          => 'objective.help.responsible_person_user',
             'person_help'        => 'objective.help.responsible_person_ref',
             'deputies_help'      => 'objective.help.responsible_deputies',
+            // New objectives start with the current user as responsible (data reuse).
+            'default_to_current_user' => true,
         ]);
 
         $builder
@@ -212,6 +226,7 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
                 ]
             ])
         ;
+        LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

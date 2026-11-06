@@ -252,6 +252,11 @@ ui:
             settings_imported: 'Dashboard-Einstellungen importiert.'
         error: 'Fehler'
         forbidden: 'Keine Berechtigung'
+        unsaved_changes:
+            title: 'Änderungen nicht gespeichert'
+            message: 'Wenn Sie die Seite verlassen, gehen Ihre Eingaben verloren.'
+            leave: 'Seite verlassen'
+            stay: 'Weiter bearbeiten'
         form_layout:
             draft_saved: 'Entwurf gespeichert'
             draft_saved_hours: 'Entwurf gespeichert vor %n% h'
@@ -259,7 +264,7 @@ ui:
             draft_saved_seconds: 'Entwurf gespeichert vor %n% s'
             progress: '%done% von %total% Abschnitten · %percent%%'
             section_complete: '%total% Felder · alle ausgefüllt'
-            section_progress: '%total% Felder · %filled% ausgefüllt · %pending% ausstehend'
+            section_progress: '%filled% von %total% ausgefüllt'
         form_validation:
             n_errors: 'Das Formular enthält %count% Fehler. Bitte korrigieren Sie die markierten Felder.'
             one_error: 'Das Formular enthält einen Fehler. Bitte korrigieren Sie das markierte Feld.'

@@ -18,6 +18,7 @@
  *     fields:     int,       — total fields in section
  *     filled:     int,       — currently filled
  *     body:       string|null  — pre-rendered HTML (use include(...))
+ *     open:       bool|null    — expanded on load (default: status == 'current')
  *     errorHint:  string|null
  *   }]
  *   actions {
@@ -66,7 +67,7 @@
                 {% if eyebrow %}
                     <div class="fa-form-layout__eyebrow">{{ eyebrow|raw }}</div>
                 {% endif %}
-                <h2 class="fa-form-layout__title">{{ title }}</h2>
+                {% if title %}<h2 class="fa-form-layout__title">{{ title }}</h2>{% endif %}
                 {% if subtitle %}
                     <p class="fa-form-layout__sub">{{ subtitle }}</p>
                 {% endif %}
@@ -140,7 +141,7 @@
                     {%- set sectionFilled   = section.filled ?? 0 -%}
                     {%- set sectionPending  = sectionFields - sectionFilled -%}
                     {%- set isCurrent       = (sectionStatus == 'current') -%}
-                    {%- set isOpen          = isCurrent -%}
+                    {%- set isOpen          = section.open ?? isCurrent -%}
                     <section id="{{ section.id }}"
                              class="fa-form-section{% if sectionStatus == 'done' %} fa-form-section--done{% elseif sectionStatus == 'current' %} fa-form-section--current{% elseif sectionStatus == 'error' %} fa-form-section--error{% endif %}{% if isOpen %} fa-form-section--open{% else %} fa-form-section--collapsed{% endif %}"
                              data-{{ controller }}-target="section"
@@ -199,6 +200,7 @@
         {% endif %}
 
         {# ── Footer ───────────────────────────────────────────────────────── #}
+        {% if actions is not empty %}
         <footer class="fa-form-layout__footer">
             <div class="fa-form-layout__footer-meta">
                 {% block formLayoutFooterMeta %}{% endblock %}
@@ -235,6 +237,7 @@
                 {% endif %}
             </div>
         </footer>
+        {% endif %}
 
     </div>{# /.fa-form-layout #}
 {% endmacro %}

@@ -28,6 +28,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Form\Util\LegacyFreeTextField;
 
 final class SupplierType extends AbstractType implements SectionMapInterface
 {
@@ -44,6 +45,8 @@ final class SupplierType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Legacy free text: shown only while it still holds a value (UI wave F).
+        LegacyFreeTextField::hideWhenEmpty($builder, 'contactPerson');
         // Build dynamic criticality choices from tenant-specific levels.
         $tenant = $this->tenantContext->getCurrentTenant();
         $criticalityChoices = $this->buildCriticalityChoices($tenant);

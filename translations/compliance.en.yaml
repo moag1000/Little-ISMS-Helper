@@ -319,6 +319,19 @@ compliance:
                 warnings_heading: 'Warnings (%count%)'
                 preview_ok_hint: 'Preview OK — re-upload and press "Import" to persist the data.'
         hub:
+            tabs:
+                overview: 'Overview'
+                mappings: 'Mappings'
+                quality: 'Quality'
+                compare: 'Compare'
+            views:
+                compare: 'Framework comparison'
+                cross_framework: 'Cross-framework'
+                transitive: 'Transitive'
+                coverage: 'Coverage'
+                review_queue: 'Review queue'
+                quality_dashboard: 'Metrics'
+                gaps: 'Gaps'
             title: 'Mapping Hub'
             subtitle: 'Entry point for cross-framework mappings — wizard, seed packs, quality, transitive coverage.'
             badge:

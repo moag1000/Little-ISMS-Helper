@@ -90,7 +90,10 @@
     - other_section_label (string, optional) — label for catch-all section
 
     Outline-rail-only:
-    - layout             ('flat'|'outline-rail', default 'flat')
+    - layout             ('flat'|'outline-rail'; default: 'outline-rail' from 25
+                          visible fields, else 'flat'. Rail sections: the first,
+                          those with an empty required field and those with an
+                          error are open, the rest collapsed with a fill counter)
     - eyebrow            (string, optional) — small-caps badge above title
     - title              (string, optional) — form heading (default 'Form')
     - subtitle           (string, optional) — sub-heading
@@ -115,7 +118,19 @@
 #}
 
 {# ─── Shared parameter initialisation ────────────────────────────────────── #}
-{% set layout          = layout|default('flat') %}
+{# From 25 visible fields a form gets the outline rail automatically (UI wave
+   F). An auto-switched caller renders its own buttons, so the rail then shows
+   no footer actions and no title unless they are passed. #}
+{% set _auto_layout = layout is not defined or layout is null %}
+{% if _auto_layout %}
+    {% set _visible_count = 0 %}
+    {% for child in form %}
+        {% if child.vars.block_prefixes[1]|default('') != 'hidden' and child.vars.name != '_token' and child.vars.name not in exclude|default([]) %}
+            {% set _visible_count = _visible_count + 1 %}
+        {% endif %}
+    {% endfor %}
+    {% set layout = _visible_count >= 25 ? 'outline-rail' : 'flat' %}
+{% endif %}
 {% set modal           = modal|default(false) %}
 {% set exclude_fields  = exclude|default([]) %}
 {% set help_texts      = help_texts|default({}) %}
@@ -206,11 +221,18 @@
     {% for section_key, section_def in sections %}
         {% set _present_fields = [] %}
         {% set section_filled = 0 %}
+        {% set _needs_input = false %}
+        {% set _has_error = false %}
         {% for field_name in section_def.fields %}
-            {% if form[field_name] is defined %}
+            {% if form[field_name] is defined and field_name not in exclude_fields %}
                 {% set _present_fields = _present_fields|merge([field_name]) %}
                 {% if form[field_name].vars.value is not empty %}
                     {% set section_filled = section_filled + 1 %}
+                {% elseif form[field_name].vars.required|default(false) %}
+                    {% set _needs_input = true %}
+                {% endif %}
+                {% if form[field_name].vars.valid is defined and not form[field_name].vars.valid %}
+                    {% set _has_error = true %}
                 {% endif %}
             {% endif %}
         {% endfor %}
@@ -222,7 +244,9 @@
            if-block. #}
         {% if section_field_count > 0 %}
             {# Derive status from fill ratio #}
-            {% if section_filled == section_field_count %}
+            {% if _has_error %}
+                {% set section_status = 'error' %}
+            {% elseif section_filled == section_field_count %}
                 {% set section_status = 'done' %}
             {% elseif section_filled > 0 %}
                 {% set section_status = 'current' %}
@@ -246,13 +270,17 @@
                 } %}
             {% endset %}
 
+            {# Core open, rest collapsed (UI wave F): the first section, every
+               section with an empty required field and every section with an
+               error stay open; the others show only their fill counter. #}
             {% set fa_form_sections = fa_form_sections|merge([{
                 'id':     'sec-' ~ section_key,
                 'title':  section_def.label,
                 'status': section_status,
                 'fields': section_field_count,
                 'filled': section_filled,
-                'body':   section_body
+                'body':   section_body,
+                'open':   fa_form_sections is empty or _needs_input or _has_error
             }]) %}
         {% endif %}
     {% endfor %}
@@ -269,6 +297,9 @@
     {% set _default_actions = {
         'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
     } %}
+    {% if _auto_layout and (actions is not defined or not actions) %}
+        {% set _default_actions = {} %}
+    {% endif %}
     {% if actions is defined and actions %}
         {# Translate string labels in passed actions (close/next/submit) #}
         {% set _resolved_actions = {} %}
@@ -284,7 +315,7 @@
 
     {{ _fa_form.render({
         'eyebrow':   eyebrow|default(null),
-        'title':     title|default('Form'),
+        'title':     title|default(_auto_layout ? '' : 'Form'),
         'subtitle':  subtitle|default(null),
         'progress':  {
             'done':  _done_count,

@@ -4,6 +4,7 @@
 {% block title %}{{ 'mapping_review.title'|trans({}, 'compliance') }} #{{ mapping.id }}{% endblock %}
 
 {% block body %}
+{% include 'compliance/mapping/_hub_tabs.html.twig' %}
 <div class="container">
     <div class="page-header">
         <div>

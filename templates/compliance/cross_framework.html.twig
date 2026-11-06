@@ -12,6 +12,7 @@
             { label: 'compliance.cross_framework.back'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_index') }
         ]
     }) }}
+    {% include 'compliance/mapping/_hub_tabs.html.twig' %}
 
     {# Coverage Matrix #}
     {% if coverage_matrix is not empty %}
