@@ -261,7 +261,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 - **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR plus Persona-Rollen ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER plus granulare Permissions
 - **Tenant-Scoped Admin** -- `TenantScopedAdminVoter` schraenkt `ROLE_ADMIN` strikt auf den eigenen Tenant ein; nur `ROLE_SUPER_ADMIN` darf tenant-uebergreifend agieren
-- **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, AEAD-verschluesselte Client-Secrets)
+- **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, globale Provider fuer alle Organisationen oder je Organisation, AEAD-verschluesselte Client-Secrets)
 - **MFA** -- TOTP mit Backup-Codes
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
@@ -279,7 +279,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterverwendet werden:
 
-- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle
+- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand
 - **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
 - **Ein Listen-Aufbau** -- Suche, Filter, Zusammenfassung, Tabelle, Seitenumbruch und Leerzustand gleich auf allen migrierten Listen
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6

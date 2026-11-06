@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Doctrine\SharedTenantRowsInterface;
 use App\Repository\IdentityProviderRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'uniq_idp_slug_tenant', columns: ['slug', 'tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
 #[IdentityProviderSlugAvailable]
-class IdentityProvider
+class IdentityProvider implements SharedTenantRowsInterface
 {
     public const TYPE_OIDC = 'oidc';
     public const TYPE_OAUTH2 = 'oauth2_generic';
