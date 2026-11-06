@@ -291,6 +291,12 @@ detail pages come from `EntityLinks::DERIVE`. Legacy free-text person fields go 
 `App\Form\Util\LegacyFreeTextField::hideWhenEmpty()`. Mapping screens include
 `compliance/mapping/_hub_tabs.html.twig` (one menu entry, four tabs).
 
+**Decisions (UI wave H).** Every approve/reject dialog (workflow step, four-eyes request,
+risk acceptance) is `decision_modal()` from `templates/_macros/workflow.html.twig` (record,
+business line, comment/reason) — no hand-written approve modal. Below 576 px `fa-modal.css`
+turns confirm/settings dialogs into a bottom sheet (full-width 44 px buttons, 16 px inputs);
+My Day swaps its KPI tiles for a jump-chip strip. Other lists keep horizontal table scroll.
+
 **UI copy (Gate 71, `check_copy_slop.py`).** A toast is a participle, not a sentence:
 "Gespeichert.", "Export gestartet." — no "erfolgreich"/"successfully", no "!" anywhere in
 UI text (urgency comes from the toast colour and the words). Help texts only when they add a
