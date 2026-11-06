@@ -125,16 +125,16 @@
                                 {% endif %}
                             </td>
                         <td class="fa-table__cell">
-                            <strong>{{ item.name|trans({}, 'wizard') }}</strong>
+                            <strong>{{ item.name|trans({}, item.translation_domain|default('wizard')) }}</strong>
                             {% if item.description is defined and item.description %}
-                                <br><small class="text-muted">{{ item.description|trans({}, 'wizard') }}</small>
+                                <br><small class="text-muted">{{ item.description|trans({}, item.translation_domain|default('wizard')) }}</small>
                             {% endif %}
                             {% if item.gap %}
                                 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'ui-flag', class: 'py-1 px-2 mt-2 mb-0 small' } } %}
                                     {% block alert_body %}
-                                        <strong>{{ item.gap.title|trans({}, 'wizard') }}</strong>
+                                        <strong>{{ item.gap.title|trans({}, item.gap.translation_domain|default(item.translation_domain|default('wizard'))) }}</strong>
                                         {% if item.gap.description is defined %}
-                                            <br>{{ item.gap.description|trans(item.gap.description_params|default({}), 'wizard') }}
+                                            <br>{{ item.gap.description|trans(item.gap.description_params|default({}), item.gap.translation_domain|default(item.translation_domain|default('wizard'))) }}
                                         {% endif %}
                                     {% endblock %}
                                 {% endembed %}
@@ -216,7 +216,7 @@
                 <div class="col-md-6 mb-3">
                     <div class="border rounded p-3 h-100 {% if gap.priority == 'critical' %}border-danger{% elseif gap.priority == 'high' %}border-warning{% else %}border-secondary{% endif %}">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
+                            <strong>{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}</strong>
                             {% set priority_variant = {
                                 'critical': 'danger',
                                 'high': 'warning'
@@ -224,7 +224,7 @@
                             {% include '_components/_badge.html.twig' with { variant: priority_variant, content: gap.priority|default('medium') } %}
                         </div>
                         {% if gap.description is defined %}
-                            <p class="text-muted small mb-2">{{ gap.description|trans(gap.description_params|default({}), 'wizard') }}</p>
+                            <p class="text-muted small mb-2">{{ gap.description|trans(gap.description_params|default({}), gap.translation_domain|default('wizard')) }}</p>
                         {% endif %}
                         {% if gap.action is defined %}
                             <p class="small mb-2">

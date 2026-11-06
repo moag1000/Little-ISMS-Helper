@@ -56,23 +56,6 @@ final class SeedSubRequirementsCommand extends Command
     private const LED_LEGAL_BASIS = 'LED-2016/680-NOT-GDPR';
 
     /**
-     * Filename-token → ComplianceFramework.code. Keyed by full basename (without
-     * the .json) because two tokens collide on a naive underscore split
-     * (decomp_nis2_nis2umsucg).
-     *
-     * @var array<string, array{source: string, target: string}>
-     */
-    private const FRAMEWORK_PAIRS = [
-        'decomp_gdpr_iso27701' => ['source' => 'GDPR', 'target' => 'ISO27701'],
-        'decomp_bdsg_gdpr' => ['source' => 'BDSG', 'target' => 'GDPR'],
-        'decomp_nis2_iso27001' => ['source' => 'NIS2', 'target' => 'ISO27001'],
-        'decomp_dora_iso27001' => ['source' => 'DORA', 'target' => 'ISO27001'],
-        'decomp_ai-act_iso42001' => ['source' => 'EU-AI-ACT', 'target' => 'ISO42001'],
-        'decomp_gdpr_iso27018' => ['source' => 'GDPR', 'target' => 'ISO27018'],
-        'decomp_nis2_nis2umsucg' => ['source' => 'NIS2', 'target' => 'NIS2-UmsuCG'],
-    ];
-
-    /**
      * Decomposition fixtures deliberately NOT seeded as sub-requirements.
      *
      * TISAX is a fixed 80-control catalogue (VDA-ISA 6.0). Materialising
@@ -135,7 +118,7 @@ final class SeedSubRequirementsCommand extends Command
                 $io->note(sprintf('%s: excluded from sub-requirement seeding (one-catalogue invariant). Skipping.', $base));
                 continue;
             }
-            $pair = self::FRAMEWORK_PAIRS[$base] ?? null;
+            $pair = $this->resolver->frameworkPairFor($base);
             if ($pair === null) {
                 $io->warning(sprintf('Unknown fixture %s — no framework mapping, skipping.', $base));
                 continue;

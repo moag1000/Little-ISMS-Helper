@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Service\MyDay\MyDayInboxEnricher;
+
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\AuditLogRepository;
@@ -36,6 +38,7 @@ class LiveCountAggregator
         private readonly AuditLogRepository $auditLogRepo,
         private readonly FourEyesApprovalRequestRepository $fourEyesRepo,
         private readonly WorkflowInstanceRepository $workflowInstanceRepo,
+        private readonly MyDayInboxEnricher $myDayEnricher,
     ) {
     }
 
@@ -65,7 +68,8 @@ class LiveCountAggregator
         }
         $payload = $this->myDayAggregator->aggregate($user);
 
-        return (int) ($payload['total'] ?? 0);
+        // Same total as the My Day page: the aggregated buckets plus Alva's priority hints.
+        return (int) ($payload['total'] ?? 0) + $this->myDayEnricher->alvaHintCount();
     }
 
     /**

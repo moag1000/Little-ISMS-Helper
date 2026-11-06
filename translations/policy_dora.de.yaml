@@ -511,6 +511,20 @@ policy:
                         label: 'Medien-Policy'
                         placeholder: 'Beispiel: "Reaktive Medienarbeit: Statements nur auf konkrete Anfragen. Proaktive Medienarbeit: nur bei major incidents mit branchenweitem Bezug, Freigabe durch Vorstand. Social Media: kein eigenstaendiges Posting bis Freigabe."'
     iso27001:
+        top_level:
+            v1:
+                dora_extension:
+                    title: 'DORA-Erweiterung: IKT-Risikomanagementrahmen (Art. 5-6 DORA)'
+                    body: |-
+                        Diese Erweiterung ergänzt die Informationssicherheitsleitlinie nach Klausel 5.2 ISO/IEC 27001:2022 um die Governance-Anforderungen aus Art. 5 und Art. 6 Verordnung (EU) 2022/2554 (DORA), anwendbar seit {{ dora.validity_from }}.
+
+                        - **Verantwortung des Leitungsorgans (Art. 5 Abs. 2)**: Das Leitungsorgan der {{ tenant.legal_name }} trägt die Letztverantwortung für das IKT-Risikomanagement. Es billigt den IKT-Risikomanagementrahmen, die Strategie für die digitale operationale Resilienz und die Risikotoleranz für IKT-Risiken, überwacht deren Umsetzung und stellt angemessene Mittel bereit. Die Freigabe erfolgt über {{ approval.chain }}.
+                        - **Kontrollfunktion (Art. 6 Abs. 4)**: Die Verantwortung für das Management und die Überwachung der IKT-Risiken liegt bei einer unabhängigen Kontrollfunktion ({{ roles.ciso.fullName }}); Interessenkonflikte mit dem IKT-Betrieb werden vermieden.
+                        - **Rahmen und Überprüfung (Art. 6 Abs. 1, 5)**: Der IKT-Risikomanagementrahmen umfasst Strategien, Leitlinien, Verfahren, IKT-Protokolle und Tools. Er wird mindestens jährlich sowie nach schwerwiegenden IKT-bezogenen Vorfällen überprüft und dokumentiert.
+                        - **Strategie für digitale operationale Resilienz (Art. 6 Abs. 8)**: Die Strategie legt fest, wie der Rahmen umgesetzt wird, und enthält die Risikotoleranz, die Ziele zur Informationssicherheit und die Kennzahlen zu ihrer Messung.
+                        - **Prüfung (Art. 6 Abs. 6)**: Der Rahmen wird regelmäßig von Prüfern mit ausreichendem Fachwissen intern geprüft; Feststellungen werden mit Fristen nachverfolgt.
+
+                        Zuständige Aufsichtsbehörde: {{ dora.competent_authority }}.
         asset_management:
             v1:
                 dora_extension:
@@ -675,7 +689,7 @@ policy:
                         **Empfaenger und Kanal.** Zustaendige Behoerde: {{ dora.competent_authority }}. Kanal: gemaess tenant-spezifischer Konfiguration. Bei datenschutzrelevantem Trigger: zusätzliche Meldung an Datenaufsichtsbehoerde gemaess Art. 33 DSGVO durch {{ roles.dpo.fullName }}.
 
                         **Pruefintervall.** Jaehrlich sowie nach jedem major incident und nach Veroeffentlichung neuer RTS oder ITS. Geltungsbeginn: {{ dora.validity_from }}.
-        supplier_security:
+        supplier_relationships:
             v1:
                 dora_extension:
                     title: 'DORA-Erweiterung: IKT-Drittparteien-Risiko (Art. 28-30 DORA)'
@@ -855,7 +869,7 @@ policy:
                         **Drittlaender-Transfer.** Datenuebertragung in Drittlaender erfolgt unter Beachtung der DSGVO-Anforderungen (Standardvertragsklauseln, Angemessenheitsbeschluss, BCR) und der DORA-Drittparteien-Anforderungen gemaess Art. 28 bis 30 DORA. Mitwirkung des Datenschutzbeauftragten {{ roles.dpo.fullName }}.
 
                         **Pruefintervall.** Jaehrlich sowie nach Algorithmus-Deprecation. Geltungsbeginn: {{ dora.validity_from }}.
-        mobile_teleworking:
+        mobile_device:
             v1:
                 dora_extension:
                     title: 'DORA-Erweiterung: IKT-Operationen ausserhalb des Bueros (Art. 9.4.h DORA)'

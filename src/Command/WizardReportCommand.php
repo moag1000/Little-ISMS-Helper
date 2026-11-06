@@ -35,15 +35,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class WizardReportCommand extends Command
 {
-    private const AVAILABLE_WIZARDS = [
-        'iso27001' => 'ISO 27001:2022 Information Security',
-        'nis2' => 'NIS2 Directive (EU 2022/2555)',
-        'dora' => 'DORA - Digital Operational Resilience Act',
-        'tisax' => 'TISAX - Automotive Information Security',
-        'gdpr' => 'GDPR/DSGVO - Data Protection',
-        'bsi_grundschutz' => 'BSI IT-Grundschutz',
-    ];
-
     public function __construct(
         private readonly ComplianceWizardService $wizardService,
         private readonly TenantRepository $tenantRepository,
@@ -57,7 +48,7 @@ class WizardReportCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('wizard', InputArgument::OPTIONAL, 'Wizard type (iso27001, nis2, dora, tisax, gdpr, bsi_grundschutz)')
+            ->addArgument('wizard', InputArgument::OPTIONAL, 'Wizard type (see --list)')
             ->addOption('tenant', 't', InputOption::VALUE_REQUIRED, 'Tenant ID to run assessment for')
             ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Output file path (PDF or JSON)')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'Output format: json, pdf, console (default: console)', 'console')
@@ -154,13 +145,8 @@ class WizardReportCommand extends Command
         }
 
         $rows = [];
-        foreach (self::AVAILABLE_WIZARDS as $code => $description) {
-            $available = isset($availableWizards[$code]);
-            $rows[] = [
-                $code,
-                $description,
-                $available ? '<fg=green>Available</>' : '<fg=yellow>Requires modules</>',
-            ];
+        foreach ($availableWizards as $code => $config) {
+            $rows[] = [$code, $config['name'] ?? $code, '<fg=green>Available</>'];
         }
 
         $io->table(['Code', 'Description', 'Status'], $rows);
@@ -275,14 +261,16 @@ class WizardReportCommand extends Command
         }
 
         $summaryRows = [];
+        $failed = 0;
         foreach (array_keys($availableWizards) as $wizardCode) {
-            $io->section("Running: " . self::AVAILABLE_WIZARDS[$wizardCode] ?? $wizardCode);
+            $io->section('Running: ' . ($availableWizards[$wizardCode]['name'] ?? $wizardCode));
 
             $results = $this->wizardService->runAssessment($wizardCode);
 
             if (!$results['success']) {
                 $io->warning("Failed: " . ($results['error'] ?? 'Unknown error'));
                 $summaryRows[] = [$wizardCode, 'Failed', '-', '-'];
+                ++$failed;
                 continue;
             }
 
@@ -299,7 +287,7 @@ class WizardReportCommand extends Command
         $io->section('Summary');
         $io->table(['Wizard', 'Status', 'Score', 'Critical Gaps'], $summaryRows);
 
-        return Command::SUCCESS;
+        return $failed === 0 ? Command::SUCCESS : Command::FAILURE;
     }
 
     /**
@@ -307,25 +295,15 @@ class WizardReportCommand extends Command
      */
     private function runWizard(SymfonyStyle $io, string $wizard, InputInterface $input): int
     {
-        if (!isset(self::AVAILABLE_WIZARDS[$wizard])) {
-            $io->error("Unknown wizard: $wizard");
+        // Single source of truth: the wizard config (already filtered by active modules).
+        $config = $this->wizardService->getWizardConfig($wizard);
+        if ($config === null) {
+            $io->error("Unknown or unavailable wizard: $wizard (required modules may not be active).");
             $io->note('Use --list to see available wizards.');
             return Command::FAILURE;
         }
 
-        $io->title(self::AVAILABLE_WIZARDS[$wizard] . ' Assessment');
-
-        // Check if wizard is available
-        if (!$this->wizardService->isWizardAvailable($wizard)) {
-            $io->error("Wizard '$wizard' is not available. Required modules may not be active.");
-
-            $config = $this->wizardService->getWizardConfig($wizard);
-            if ($config !== null && !empty($config['required_modules'])) {
-                $io->listing($config['required_modules']);
-            }
-
-            return Command::FAILURE;
-        }
+        $io->title(($config['name'] ?? $wizard) . ' Assessment');
 
         $io->text('Running assessment...');
         $io->newLine();
@@ -521,7 +499,7 @@ class WizardReportCommand extends Command
      */
     private function generateReportHtml(string $wizard, array $results): string
     {
-        $frameworkName = $results['framework_name'] ?? self::AVAILABLE_WIZARDS[$wizard] ?? $wizard;
+        $frameworkName = $results['framework_name'] ?? $this->wizardService->getWizardConfig($wizard)['name'] ?? $wizard;
         $score = $results['overall_score'] ?? 0;
         $status = $results['status'] ?? 'unknown';
         $statusLabel = match ($status) {

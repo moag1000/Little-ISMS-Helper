@@ -12,6 +12,8 @@ use App\Service\ComplianceWizard\CategoryProvider\IsoFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\CategoryProvider\OtherFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\CoverageCheckService;
 use App\Service\ComplianceWizard\EntityPresenceChecker;
+use App\Service\ComplianceWizard\DocumentReviewCheck;
+use App\Service\Catalog\FrameworkCode;
 
 /**
  * Compliance Wizard Service
@@ -31,6 +33,7 @@ use App\Service\ComplianceWizard\EntityPresenceChecker;
  * - DORA (bcm, incidents, controls, assets, suppliers)
  * - TISAX (controls, assets)
  * - BSI IT-Grundschutz (controls, assets, risks)
+ * - BSI Grundschutz++ (BSI-Standard 300-1)
  * - GDPR/DSGVO (processing activities, DPIA, data breaches)
  */
 final class ComplianceWizardService
@@ -46,6 +49,7 @@ final class ComplianceWizardService
         private readonly OtherFrameworkCategoryProvider $otherProvider,
         private readonly \App\Service\Tisax\TisaxMaturityAssessmentService $tisaxMaturityAssessmentService,
         private readonly EntityPresenceChecker $entityPresenceChecker,
+        private readonly DocumentReviewCheck $documentReviewCheck,
         private readonly ?\App\Repository\WizardManualConfirmationRepository $manualConfirmationRepository = null,
     ) {
     }
@@ -198,7 +202,7 @@ final class ComplianceWizardService
                 'icon' => 'asset-cloud',
                 'color' => 'primary',
                 'required_modules' => ['controls'],
-                'recommended_modules' => ['suppliers', 'assets', 'incidents', 'crypto', 'training'],
+                'recommended_modules' => ['suppliers', 'assets', 'incidents', 'controls', 'training'],
                 'categories' => $this->bsiProvider->getBsiC52026Categories(),
             ],
             'bsi_grundschutz_standard' => [
@@ -220,6 +224,16 @@ final class ComplianceWizardService
                 'required_modules' => ['controls'],
                 'recommended_modules' => ['assets', 'risks'],
                 'categories' => $this->bsiProvider->getBsiGrundschutzKernCategories(),
+            ],
+            'bsi_gspp' => [
+                'code' => 'BSI-GSPP',
+                'name' => 'BSI Grundschutz++ (BSI-Standard 300-1)',
+                'description' => 'wizard.bsi_gspp.description',
+                'icon' => 'ui-flag',
+                'color' => 'danger',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['assets', 'risks', 'audits', 'training', 'suppliers', 'incidents', 'bcm'],
+                'categories' => $this->bsiProvider->getBsiGsppCategories(),
             ],
             'nist_csf' => [
                 'code' => 'NIST-CSF-2.0',
@@ -272,13 +286,13 @@ final class ComplianceWizardService
                 'categories' => $this->euProvider->getEuAiActCategories(),
             ],
             'eucs' => [
-                'code' => 'ENISA-EUCS',
+                'code' => 'EUCS',
                 'name' => 'ENISA EUCS (European Cybersecurity Certification Scheme for Cloud Services)',
                 'description' => 'wizard.eucs.description',
                 'icon' => 'nav-shield',
                 'color' => 'info',
                 'required_modules' => ['controls'],
-                'recommended_modules' => ['suppliers', 'assets', 'incidents', 'crypto', 'bcm'],
+                'recommended_modules' => ['suppliers', 'assets', 'incidents', 'controls', 'bcm'],
                 'categories' => $this->euProvider->getEucsCategories(),
             ],
             'cra' => [
@@ -311,6 +325,24 @@ final class ComplianceWizardService
     {
         $available = $this->getAvailableWizards();
         return isset($available[$wizardKey]);
+    }
+
+    /**
+     * Wizard key (route parameter) for a framework code, or null when no
+     * available wizard serves that framework. Alias spellings (ISO22301,
+     * NIST-CSF, ENISA-EUCS, ...) resolve through FrameworkCode::canonicalize.
+     */
+    public function getWizardKeyForFrameworkCode(string $frameworkCode): ?string
+    {
+        $wanted = FrameworkCode::canonicalize($frameworkCode) ?? $frameworkCode;
+        foreach ($this->getAvailableWizards() as $key => $config) {
+            $code = (string) ($config['code'] ?? '');
+            if ($code === $frameworkCode || (FrameworkCode::canonicalize($code) ?? $code) === $wanted) {
+                return (string) $key;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -554,7 +586,7 @@ final class ComplianceWizardService
             'training_coverage' => $this->coverageCheckService->checkTrainingCoverage($check, $tenant),
             'audit_status' => $this->coverageCheckService->checkAuditStatus($check, $tenant),
             'supplier_assessment' => $this->coverageCheckService->checkSupplierAssessment($check, $tenant),
-            'document_review' => $this->coverageCheckService->checkDocumentReview($check, $tenant),
+            'document_review' => $this->documentReviewCheck->check($check, $tenant),
             'treatment_plan' => $this->coverageCheckService->checkTreatmentPlanStatus($check, $tenant),
             'consent_coverage' => $this->coverageCheckService->checkConsentCoverage($check, $tenant),
             'dsr_coverage' => $this->coverageCheckService->checkDsrCoverage($check, $tenant),
@@ -567,6 +599,7 @@ final class ComplianceWizardService
         return [
             'name' => $check['name'] ?? $type,
             'description' => $check['description'] ?? '',
+            'translation_domain' => $check['translation_domain'] ?? null,
             'score' => $result['score'],
             'status' => $this->coverageCheckService->getStatusFromScore($result['score']),
             'details' => $result['details'],

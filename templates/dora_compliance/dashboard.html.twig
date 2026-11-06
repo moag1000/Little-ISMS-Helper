@@ -126,7 +126,7 @@
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
                                 <div class="h3 mb-1 text-{{ ict_risk.treatment_rate >= 80 ? 'success' : (ict_risk.treatment_rate >= 60 ? 'warning' : 'danger') }}">
-                                    {{ ict_risk.treatment_rate }}%
+                                    {{ ict_risk.ict_risks > 0 ? ict_risk.treatment_rate ~ '%' : 'dora.metric.no_data'|trans({}, 'dora') }}
                                 </div>
                                 <small class="text-muted">{{ 'dora.metric.risk_treatment_rate'|trans }}</small>
                             </div>
@@ -198,7 +198,7 @@
                     </div>
                     <hr>
                     {% set reportingVariant = incidents.reporting_compliance_rate >= 80 ? 'success' : (incidents.reporting_compliance_rate >= 60 ? 'warning' : 'danger') %}
-                    {{ _fa_alert.render({ variant: reportingVariant, class: 'mb-0 py-2', body: '<strong>' ~ 'dora.metric.4h_reporting'|trans ~ ':</strong> ' ~ incidents.reporting_compliance_rate ~ '%<small class="d-block">' ~ 'dora.article_19_hint'|trans ~ '</small>' }) }}
+                    {{ _fa_alert.render({ variant: reportingVariant, class: 'mb-0 py-2', body: '<strong>' ~ 'dora.metric.4h_reporting'|trans ~ ':</strong> ' ~ (incidents.major_incidents > 0 ? incidents.reporting_compliance_rate ~ '%' : 'dora.metric.no_data'|trans) ~ '<small class="d-block">' ~ 'dora.article_19_hint'|trans ~ '</small>' }) }}
                 {% endblock %}
             {% endembed %}
         </div>
@@ -286,7 +286,7 @@
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
                                 <div class="h3 mb-1 text-{{ third_party.assessment_rate >= 80 ? 'success' : 'warning' }}">
-                                    {{ third_party.assessment_rate }}%
+                                    {{ third_party.critical_providers > 0 ? third_party.assessment_rate ~ '%' : 'dora.metric.no_data'|trans({}, 'dora') }}
                                 </div>
                                 <small class="text-muted">{{ 'dora.metric.assessment_rate'|trans }}</small>
                             </div>

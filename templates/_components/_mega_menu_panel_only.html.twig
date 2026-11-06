@@ -691,20 +691,22 @@
         </div>
         {% endif %}
 
-        {# Mein Posteingang — ISO 27001 Cl. 7.5.3 Audit-Log #}
+        {# Mein Posteingang. My Day (sidebar) holds everything waiting for the user,
+           acknowledgements and four-eyes requests included; their own inboxes stay
+           reachable on expert density. ISO 27001 Cl. 7.5.3 Audit-Log #}
         {% if app.user %}
         <div class="fly-section">
             <header class="fly-section__head">
                 <h3 class="fly-section__title">{{ 'nav.mega.section.my_inbox'|trans({}, 'nav') }}</h3>
             </header>
-            <a href="{{ path('app_policy_ack_inbox') }}" class="fly-item {% if current_route starts with 'app_policy_ack_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_policy_ack_inbox') }}" class="fly-item {% if current_route starts with 'app_policy_ack_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--policy" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.policy_ack_inbox'|trans({}, 'nav') }}</span>
                     <span class="fly-item__sub">{{ 'nav.mega.desc.policy_ack_inbox'|trans({}, 'nav') }}</span>
                 </span>
             </a>
-            <a href="{{ path('app_four_eyes_inbox') }}" class="fly-item {% if current_route starts with 'app_four_eyes_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+            <a href="{{ path('app_four_eyes_inbox') }}" class="fly-item {% if current_route starts with 'app_four_eyes_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
                     <span class="fly-item__title">{{ 'nav.four_eyes_inbox'|trans({}, 'nav') }}</span>

@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\Catalog\FrameworkCode;
 
 /**
  * Validiert YAML-Library-Mapping-Payloads bevor sie persistiert werden.
@@ -42,7 +43,9 @@ class MappingValidatorService
      * Validiert einen geparsten YAML-Mapping-Payload.
      *
      * @param array $payload Geparste YAML (top-level keys: schema_version, library, mappings)
-     * @return array{errors: list<string>, warnings: list<string>}
+     * @return array{errors: list<string>, warnings: list<string>, missing_frameworks?: list<string>}
+     *         `missing_frameworks` lists library frameworks that are not loaded in the DB; their
+     *         errors are environmental (nothing to fix in the file) — callers may skip the file.
      */
     /**
      * Normalises mapping entries to one source→target pair each.
@@ -74,6 +77,42 @@ class MappingValidatorService
         }
 
         return $out;
+    }
+
+    /**
+     * Why a single (already expanded) mapping entry cannot be imported, or null when it is fine.
+     * Shared by the validator and {@see MappingLibraryLoader} so both skip the same pairs.
+     */
+    public static function entryProblem(mixed $entry): ?string
+    {
+        if (!is_array($entry)) {
+            return 'not an array.';
+        }
+        if (empty($entry['source'])) {
+            return 'source required.';
+        }
+        $target = $entry['target'] ?? null;
+        if ($target === '') {
+            return "target empty (use 'null' for explicit no-equivalent gap markers).";
+        }
+        $rel = $entry['relationship'] ?? null;
+        if ($target === null && $rel !== null && !in_array($rel, ['superset', 'related'], true)) {
+            return "target=null only allowed with relationship 'superset' or 'related' (gap marker), got '" . self::scalar($rel) . "'.";
+        }
+        if ($rel !== null && !in_array($rel, self::ALLOWED_RELATIONSHIPS, true)) {
+            return "relationship '" . self::scalar($rel) . "' invalid; allowed: " . implode(', ', self::ALLOWED_RELATIONSHIPS) . '.';
+        }
+        $conf = $entry['confidence'] ?? null;
+        if ($conf !== null && !in_array($conf, self::ALLOWED_CONFIDENCES, true)) {
+            return "confidence '" . self::scalar($conf) . "' invalid; allowed: " . implode(', ', self::ALLOWED_CONFIDENCES) . '.';
+        }
+
+        return null;
+    }
+
+    private static function scalar(mixed $v): string
+    {
+        return is_scalar($v) ? (string) $v : get_debug_type($v);
     }
 
     public function validate(array $payload): array
@@ -144,11 +183,14 @@ class MappingValidatorService
         $targetCode = $library['target_framework'] ?? null;
         $sourceFw = $sourceCode ? $this->resolveFramework((string) $sourceCode) : null;
         $targetFw = $targetCode ? $this->resolveFramework((string) $targetCode) : null;
+        $missingFrameworks = [];
         if ($sourceCode && !$sourceFw) {
             $errors[] = "Source framework '{$sourceCode}' not found in DB. Load it first.";
+            $missingFrameworks[] = (string) $sourceCode;
         }
         if ($targetCode && !$targetFw) {
             $errors[] = "Target framework '{$targetCode}' not found in DB. Load it first.";
+            $missingFrameworks[] = (string) $targetCode;
         }
 
         // 7. Per-Eintrag-Validierung
@@ -157,34 +199,18 @@ class MappingValidatorService
             $unresolved = ['source' => [], 'target' => []];
             foreach ($mappings as $i => $entry) {
                 $prefix = "mappings[{$i}]";
-                if (!is_array($entry)) {
-                    $errors[] = "{$prefix} not an array.";
-                    continue;
-                }
-                if (empty($entry['source'])) {
-                    $errors[] = "{$prefix}.source required.";
+                // An invalid pair only disqualifies itself — MappingLibraryLoader skips it
+                // via the same entryProblem(). Rejecting the whole file would drop every
+                // valid pair of the library because of one bad entry.
+                $problem = self::entryProblem($entry);
+                if ($problem !== null) {
+                    $warnings[] = "{$prefix} skipped: {$problem}";
                     continue;
                 }
                 $targetValue = $entry['target'] ?? null;
                 $targetIsNull = $targetValue === null;
-                if (!$targetIsNull && $targetValue === '') {
-                    $errors[] = "{$prefix}.target empty (use 'null' for explicit no-equivalent gap markers).";
-                    continue;
-                }
-                if ($targetIsNull) {
-                    $rel = $entry['relationship'] ?? null;
-                    if ($rel !== null && !in_array($rel, ['superset', 'related'], true)) {
-                        $errors[] = "{$prefix}.target=null only allowed with relationship 'superset' or 'related' (gap marker), got '{$rel}'.";
-                    }
-                    if (empty($entry['gap_warning'])) {
-                        $warnings[] = "{$prefix}.target=null without gap_warning — please document why no equivalent exists.";
-                    }
-                }
-                if (isset($entry['relationship']) && !in_array($entry['relationship'], self::ALLOWED_RELATIONSHIPS, true)) {
-                    $errors[] = "{$prefix}.relationship '{$entry['relationship']}' invalid; allowed: " . implode(', ', self::ALLOWED_RELATIONSHIPS) . ".";
-                }
-                if (isset($entry['confidence']) && !in_array($entry['confidence'], self::ALLOWED_CONFIDENCES, true)) {
-                    $errors[] = "{$prefix}.confidence '{$entry['confidence']}' invalid; allowed: " . implode(', ', self::ALLOWED_CONFIDENCES) . ".";
+                if ($targetIsNull && empty($entry['gap_warning'])) {
+                    $warnings[] = "{$prefix}.target=null without gap_warning — please document why no equivalent exists.";
                 }
                 if (empty($entry['rationale'])) {
                     $warnings[] = "{$prefix}.rationale empty — Auditor-Argumentation fehlt.";
@@ -234,12 +260,20 @@ class MappingValidatorService
             }
         }
 
-        return ['errors' => $errors, 'warnings' => $warnings];
+        return ['errors' => $errors, 'warnings' => $warnings, 'missing_frameworks' => $missingFrameworks];
     }
 
-    private function resolveFramework(string $codeOrId): ?ComplianceFramework
+    /**
+     * Framework by code, canonical alias (ISO22301 -> ISO-22301, NIS2-UmsuCG -> NIS2UMSUCG) or name.
+     */
+    public function resolveFramework(string $codeOrId): ?ComplianceFramework
     {
+        $canonical = FrameworkCode::canonicalize($codeOrId);
+
         return $this->frameworkRepository->findOneBy(['code' => $codeOrId])
+            ?? ($canonical !== null && $canonical !== $codeOrId
+                ? $this->frameworkRepository->findOneBy(['code' => $canonical])
+                : null)
             ?? $this->frameworkRepository->findOneBy(['name' => $codeOrId]);
     }
 

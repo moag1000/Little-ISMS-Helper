@@ -51,6 +51,7 @@ final class CrossCoverageC5SectionExtensionTest extends TestCase
     {
         $template = new PolicyTemplate();
         $template->setTopic($topic);
+        $template->setStandard('iso27001'); // extensions only extend ISO 27001 host policies
         $template->setLinkedAnnexAControls($linkedAnnexAControls);
         // C5 refs are NOT stored in a PolicyTemplate field — they come
         // exclusively from C5SectionCatalogue via the registry path.

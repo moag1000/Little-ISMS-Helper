@@ -38,8 +38,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * Keys not declared in `fields` survive a round-trip untouched (the builder
  * edits only what it knows) and keys in `hidden_keys` are not shown at all —
- * e.g. the `_global` block of Tenant.notificationPreferences, which has its
- * own settings page.
+ * e.g. NotificationChannel's `delivery_mode`, which its own field edits.
  *
  * Wire-up:
  *   $builder->add('actionItemsWithDeadlines', JsonBuilderType::class, [

@@ -19,7 +19,7 @@
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
     {% block alert_body %}
         <div class="fa-alert__title">{{ entityType }} #{{ entityId }}</div>
-        <p><strong>{{ 'entity_history.entry_count'|trans({}, 'messages') }}</strong> {{ auditLogs|length }}</p>
+        <p><strong>{{ 'entity_history.entry_count'|trans({'%count%': auditLogs|length}, 'messages') }}</strong></p>
     {% endblock %}
 {% endembed %}
 

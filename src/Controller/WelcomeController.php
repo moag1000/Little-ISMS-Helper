@@ -330,7 +330,7 @@ class WelcomeController extends AbstractController
                     'color' => 'info',
                     'title' => 'welcome.tasks.pending_workflows',
                     'count' => count($pendingWorkflows),
-                    'route' => 'app_workflow_pending',
+                    'route' => 'app_my_day',
                     'route_params' => [],
                     'priority' => 2,
                     'top_item_name' => $workflowName,

@@ -141,7 +141,7 @@ final class SeedNis2PolicyTemplatesCommand extends Command
             'linked_dora_articles' => [],
             'affected_functions' => ['IT_OPERATIONS', 'TOP_MGMT', 'BCM'],
             'review_interval_months' => 12,
-            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM', 'ROLE_TOP_MGMT'],
+            'approval_chain' => ['ROLE_CISO', 'ROLE_BCM_OFFICER', 'ROLE_TOP_MGMT'],
             'dpo_section_required' => false,
         ],
         // 5 — Lieferkettensicherheit (Art. 21 Abs. 2 lit. d)

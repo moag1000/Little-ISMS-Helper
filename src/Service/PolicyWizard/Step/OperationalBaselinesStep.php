@@ -416,7 +416,7 @@ final class OperationalBaselinesStep extends AbstractStep
             } elseif (is_numeric($val) && (int) $val >= 1 && (int) $val <= 120) {
                 $loggingRetention[$cat] = (int) $val;
             } else {
-                $errors['logging_retention_months'][] = 'policy_wizard.error.logging_retention_invalid.' . $cat;
+                $errors['logging_retention_months'][] = 'policy_wizard.error.logging_retention_invalid';
                 $loggingRetention[$cat] = $loggingRetentionDefaults[$cat];
             }
         }

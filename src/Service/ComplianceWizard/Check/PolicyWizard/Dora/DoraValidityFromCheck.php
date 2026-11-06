@@ -72,12 +72,18 @@ final class DoraValidityFromCheck implements PolicyWizardCheckInterface
 
         $total = count($doraDocuments);
         if ($total === 0) {
-            // No DORA documents yet — vacuously satisfied.
+            // No DORA documents recorded is not evidence of a validity date.
             return new PolicyWizardCheckResult(
                 checkId: self::CHECK_ID,
-                score: 100.0,
-                passed: true,
-                details: ['dora_documents' => 0],
+                score: 0.0,
+                passed: false,
+                details: ['reason' => 'no_data', 'dora_documents' => 0],
+                gap: [
+                    'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
+                    'priority' => 'high',
+                    'route' => 'app_policy_wizard_index',
+                    'translation_domain' => 'policy_wizard',
+                ],
             );
         }
 

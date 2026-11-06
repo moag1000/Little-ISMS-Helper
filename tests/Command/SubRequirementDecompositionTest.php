@@ -298,4 +298,40 @@ final class SubRequirementDecompositionTest extends KernelTestCase
         // Short, already-clean ids pass through untouched.
         self::assertSame('GDPR-5.1.b', $resolver->compactId('GDPR-5.1.b'));
     }
+
+    #[Test]
+    public function resolverDerivesFrameworkPairsFromFixtureFileNames(): void
+    {
+        /** @var SubRequirementResolver $resolver */
+        $resolver = self::getContainer()->get(SubRequirementResolver::class);
+
+        self::assertSame(['source' => 'GDPR', 'target' => 'ISO27701'], $resolver->frameworkPairFor('decomp_gdpr_iso27701'));
+        self::assertSame(['source' => 'NIS2', 'target' => 'NIS2UMSUCG'], $resolver->frameworkPairFor('decomp_nis2_nis2umsucg'));
+        self::assertSame(['source' => 'EU-AI-ACT', 'target' => 'ISO42001'], $resolver->frameworkPairFor('decomp_ai-act_iso42001'));
+        self::assertSame(['source' => 'BSI-C5', 'target' => 'ISO27001'], $resolver->frameworkPairFor('decomp_bsi-c5_iso27001'));
+        self::assertSame(['source' => 'NIST-CSF-2.0', 'target' => 'ISO27001'], $resolver->frameworkPairFor('decomp_nist-csf_iso27001'));
+        self::assertSame(['source' => 'DORA', 'target' => 'ISO-22301'], $resolver->frameworkPairFor('decomp_dora_iso22301'));
+        // Extra filename suffix is ignored.
+        self::assertSame(['source' => 'NIS2', 'target' => 'DORA'], $resolver->frameworkPairFor('decomp_nis2_dora_lexspecialis'));
+        // Historic editions are not registered frameworks.
+        self::assertNull($resolver->frameworkPairFor('decomp_iso27001-2013_iso27001-2022'));
+        self::assertNull($resolver->frameworkPairFor('not_a_fixture'));
+    }
+
+    #[Test]
+    public function everyDecompositionFixtureEitherResolvesOrIsAHistoricEdition(): void
+    {
+        /** @var SubRequirementResolver $resolver */
+        $resolver = self::getContainer()->get(SubRequirementResolver::class);
+        $dir = dirname(__DIR__, 2) . '/fixtures/library/decompositions';
+
+        $resolved = 0;
+        foreach (glob($dir . '/decomp_*.json') ?: [] as $file) {
+            if ($resolver->frameworkPairFor(basename($file, '.json')) !== null) {
+                ++$resolved;
+            }
+        }
+        // 36 fixtures, 5 of them name a historic edition / sub-catalogue (31 resolve).
+        self::assertGreaterThanOrEqual(31, $resolved);
+    }
 }

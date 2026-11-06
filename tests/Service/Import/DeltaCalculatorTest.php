@@ -211,6 +211,32 @@ final class DeltaCalculatorTest extends TestCase
     }
 
     #[Test]
+    public function testSecondNewRowWithSameUniqueKeyBecomesRowError(): void
+    {
+        $rows = [
+            ['name' => 'Server A'],
+            ['name' => 'Server B'],
+            ['name' => 'server a'],
+        ];
+
+        $this->mapper->method('validate')->willReturn(['errors' => [], 'warnings' => []]);
+        $this->mapper->method('findExisting')->willReturn(null);
+        $this->mapper->method('duplicateKey')->willReturnCallback(
+            static fn (array $row): string => mb_strtolower((string) $row['name'])
+        );
+        $this->mapper->method('toEntityData')->willReturnCallback(
+            fn (array $row): array => $row
+        );
+
+        $result = $this->calculator->calculate($this->makeSheet($rows), $this->makeConfig());
+
+        self::assertCount(2, $result->creates);
+        self::assertCount(1, $result->errors);
+        self::assertSame(3, $result->errors[0]['rowNumber']);
+        self::assertStringContainsString('row 1', $result->errors[0]['errors'][0]);
+    }
+
+    #[Test]
     public function testRowWithValidationErrorsLandsInErrorsArray(): void
     {
         $row = ['name' => ''];

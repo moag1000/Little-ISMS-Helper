@@ -6,6 +6,7 @@ namespace App\Service\TenantSettingResolver;
 
 use App\Entity\PolicyTemplate;
 use App\Entity\Tenant;
+use App\Repository\WizardRunRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -87,6 +88,9 @@ final class PolicySettingProvider
     public function __construct(
         private readonly TenantSettingResolver $resolver,
         private readonly LoggerInterface $logger = new NullLogger(),
+        // Adopting ISO 27701 in the policy wizard enables the PIMS overlay —
+        // nothing else writes iso27701.enabled. Nullable for legacy tests.
+        private readonly ?WizardRunRepository $wizardRuns = null,
     ) {
     }
 
@@ -171,7 +175,11 @@ final class PolicySettingProvider
                 false,
             );
             $value = $resolution->getValue();
-            return $value === true || $value === 1 || $value === '1' || $value === 'true';
+            if ($value === true || $value === 1 || $value === '1' || $value === 'true') {
+                return true;
+            }
+
+            return in_array('iso27701', $this->wizardRuns?->findLatestCompletedForTenant($tenant)?->getStandardsAdopted() ?? [], true);
         } catch (Throwable $error) {
             $this->logger->warning(
                 'PolicySettingProvider: iso27701.enabled resolution failed; using default',
@@ -225,7 +233,7 @@ final class PolicySettingProvider
      * the tenant's PIMS opt-in state.
      *
      * Returns an empty list when:
-     *   • the tenant has not enabled `iso27701.enabled`, OR
+     *   • ISO 27701 is neither adopted in the generating run ($adoptedInRun) nor enabled for the tenant, OR
      *   • the template carries no clause mapping for the resolved version.
      *
      * The version-fallback rule is asymmetric per `06-dpo-input.md`
@@ -239,9 +247,9 @@ final class PolicySettingProvider
      *
      * @return list<string> e.g. `['iso27701:5.1','iso27701:7.2.8']`
      */
-    public function tagDocumentWithIso27701(PolicyTemplate $template, ?Tenant $tenant): array
+    public function tagDocumentWithIso27701(PolicyTemplate $template, ?Tenant $tenant, bool $adoptedInRun = false): array
     {
-        if (!$this->isIso27701Enabled($tenant)) {
+        if (!$adoptedInRun && !$this->isIso27701Enabled($tenant)) {
             return [];
         }
         $clauses = $this->resolveClausesForTemplate($template, $this->resolveIso27701Version($tenant));

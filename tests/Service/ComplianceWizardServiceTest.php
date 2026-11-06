@@ -113,6 +113,43 @@ class ComplianceWizardServiceTest extends KernelTestCase
     }
 
     #[Test]
+    public function testWizardKeyIsDerivedFromTheWizardConfigCode(): void
+    {
+        $this->requireDatabase();
+        $wizards = $this->wizardService->getAvailableWizards();
+
+        if ($wizards === []) {
+            $this->markTestSkipped('No wizards available — required modules may not be active in this environment');
+        }
+
+        // Every wizard is reachable from its own framework code (no hyphen/underscore munging).
+        foreach ($wizards as $key => $config) {
+            $this->assertSame($key, $this->wizardService->getWizardKeyForFrameworkCode($config['code']), "Wizard '$key'");
+        }
+        // Alias spellings of a wizard framework resolve as well.
+        if (isset($wizards['iso22301'])) {
+            $this->assertSame('iso22301', $this->wizardService->getWizardKeyForFrameworkCode('ISO22301'));
+        }
+        if (isset($wizards['nist_csf'])) {
+            $this->assertSame('nist_csf', $this->wizardService->getWizardKeyForFrameworkCode('NIST-CSF'));
+        }
+        $this->assertNull($this->wizardService->getWizardKeyForFrameworkCode('BAIT'));
+    }
+
+    #[Test]
+    public function testRecommendedModulesExistInModuleConfiguration(): void
+    {
+        $this->requireDatabase();
+        $known = array_keys($this->moduleService->getAllModules());
+
+        foreach ($this->wizardService->getAvailableWizards() as $key => $config) {
+            foreach ($config['recommended_modules'] as $module) {
+                $this->assertContains($module, $known, "Wizard '$key' recommends unknown module '$module'");
+            }
+        }
+    }
+
+    #[Test]
     public function testRunAssessmentReturnsSuccessArray(): void
     {
         $this->requireDatabase();
@@ -474,6 +511,21 @@ class ComplianceWizardServiceTest extends KernelTestCase
         }
         $this->assertSame('BSI-GRUNDSCHUTZ-KERN', $config['code']);
         $this->assertGreaterThanOrEqual(5, count($config['categories']));
+    }
+
+    #[Test]
+    public function testBsiGsppWizardScoresKernelPracticesFromMappedIsoControls(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('bsi_gspp');
+        if ($config === null) {
+            $this->markTestSkipped('bsi_gspp wizard requires the "controls" module');
+        }
+        $this->assertSame('BSI-GSPP', $config['code']);
+        $this->assertCount(14, $config['categories']);
+        $technology = $config['categories']['technology']['checks']['bsi_gspp_technology_soa'];
+        $this->assertSame('control_coverage', $technology['type']);
+        $this->assertContains('8.20', $technology['control_ids'], 'A.8.20 maps to ARCH (network design)');
     }
 
     #[Test]

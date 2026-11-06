@@ -75,21 +75,32 @@ final class PolicyAcknowledgementCoverageCheck implements PolicyWizardCheckInter
         if ($totalPolicies === 0) {
             return new PolicyWizardCheckResult(
                 checkId: self::CHECK_ID,
-                score: 100.0,
-                passed: true,
-                details: ['policies_total' => 0, 'audience_size' => 0],
+                score: 0.0,
+                passed: false,
+                details: ['reason' => 'no_data', 'policies_total' => 0, 'audience_size' => 0],
+                gap: [
+                    'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
+                    'priority' => 'high',
+                    'route' => 'app_policy_wizard_index',
+                    'translation_domain' => 'policy_wizard',
+                ],
             );
         }
 
         $audience = count($this->userRepository->findActiveUsers());
         if ($audience === 0) {
-            // Empty tenant — nothing to acknowledge. Treat as pass to avoid
-            // false-positive on a brand-new sandbox setup.
+            // No active users: acknowledgement coverage cannot be evidenced.
             return new PolicyWizardCheckResult(
                 checkId: self::CHECK_ID,
-                score: 100.0,
-                passed: true,
-                details: ['policies_total' => $totalPolicies, 'audience_size' => 0],
+                score: 0.0,
+                passed: false,
+                details: ['reason' => 'no_data', 'policies_total' => $totalPolicies, 'audience_size' => 0],
+                gap: [
+                    'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
+                    'priority' => 'high',
+                    'route' => 'app_policy_wizard_index',
+                    'translation_domain' => 'policy_wizard',
+                ],
             );
         }
 

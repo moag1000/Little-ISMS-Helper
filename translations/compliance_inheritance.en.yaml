@@ -1,4 +1,15 @@
 compliance_inheritance:
+    status:
+        pending_review: 'Review pending'
+        confirmed: 'Confirmed'
+        rejected: 'Rejected'
+        overridden: 'Overridden'
+        source_updated: 'Source changed'
+        implemented: 'Implemented'
+    confidence:
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
     queue:
         title: 'Inheritance suggestions — %framework%'
         subtitle: '%count% suggestions awaiting review'

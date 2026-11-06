@@ -38,9 +38,11 @@ class MappingSeedService
     /**
      * Registry of known cross-framework seed pairs.
      *
+     * Keep in sync with ComplianceMappingSeedController::seeds() (guarded by a test).
+     *
      * @var list<array{source: string, target: string, command: string}>
      */
-    private const PAIRS = [
+    public const PAIRS = [
         [
             'source' => 'BSI_GRUNDSCHUTZ',
             'target' => 'ISO27001',
@@ -50,6 +52,31 @@ class MappingSeedService
             'source' => 'GDPR',
             'target' => 'ISO27001',
             'command' => 'app:seed-gdpr-iso27001-mappings',
+        ],
+        [
+            'source' => 'SOC2',
+            'target' => 'ISO27001',
+            'command' => 'app:seed-soc2-iso27001-mappings',
+        ],
+        [
+            'source' => 'BSI-C5-2026',
+            'target' => 'ISO27001',
+            'command' => 'app:seed-c52026-iso27001-mappings',
+        ],
+        [
+            'source' => 'NIS2',
+            'target' => 'ISO27001',
+            'command' => 'app:seed-nis2-iso27001-mappings',
+        ],
+        [
+            'source' => 'DORA',
+            'target' => 'ISO27001',
+            'command' => 'app:seed-dora-iso27001-mappings',
+        ],
+        [
+            'source' => 'GDPR',
+            'target' => 'ISO27701',
+            'command' => 'app:seed-gdpr-iso27701-mappings',
         ],
     ];
 
@@ -63,12 +90,13 @@ class MappingSeedService
      * Seed every known pair whose BOTH frameworks are present in $loadedCodes.
      *
      * @param list<string> $loadedCodes Framework codes currently loaded
-     * @return array{seeded: int, skipped: int, pairs: list<array{source: string, target: string, seeded: int, skipped: int}>}
+     * @return array{seeded: int, skipped: int, failed: int, pairs: list<array{source: string, target: string, seeded: int, skipped: int, ok: bool}>}
      */
     public function seedAvailablePairs(array $loadedCodes): array
     {
         $totalSeeded = 0;
         $totalSkipped = 0;
+        $totalFailed = 0;
         $pairResults = [];
 
         foreach (self::PAIRS as $pair) {
@@ -79,17 +107,20 @@ class MappingSeedService
             $result = $this->runSeedCommand($pair['command']);
             $totalSeeded += $result['seeded'];
             $totalSkipped += $result['skipped'];
+            $totalFailed += $result['ok'] ? 0 : 1;
             $pairResults[] = [
                 'source' => $pair['source'],
                 'target' => $pair['target'],
                 'seeded' => $result['seeded'],
                 'skipped' => $result['skipped'],
+                'ok' => $result['ok'],
             ];
         }
 
         return [
             'seeded' => $totalSeeded,
             'skipped' => $totalSkipped,
+            'failed' => $totalFailed,
             'pairs' => $pairResults,
         ];
     }
@@ -103,7 +134,7 @@ class MappingSeedService
      * pre-existing total) — on a re-run this equals the full pair total and
      * `seeded` is 0, which is the idempotency guarantee callers assert on.
      *
-     * @return array{seeded: int, skipped: int}
+     * @return array{seeded: int, skipped: int, ok: bool}
      */
     private function runSeedCommand(string $commandName): array
     {
@@ -112,7 +143,7 @@ class MappingSeedService
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
 
-        $application->run(
+        $exitCode = $application->run(
             new ArrayInput([
                 'command' => $commandName,
                 '--no-interaction' => true,
@@ -123,7 +154,7 @@ class MappingSeedService
         $after = $this->countMappings();
         $seeded = max(0, $after - $before);
 
-        return ['seeded' => $seeded, 'skipped' => $before];
+        return ['seeded' => $seeded, 'skipped' => $before, 'ok' => $exitCode === 0];
     }
 
     private function countMappings(): int

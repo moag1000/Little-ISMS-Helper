@@ -53,6 +53,9 @@ bsi.cross_gap.state	1
 bsi.cross_gap.target	1
 bsi.cross_gap.tier	1
 bsi.cross_gap.trust	1
+bsi_200_4_exercise.exercise_type	3
+bsi_200_4_exercise.rating	2
+bsi_200_4_exercise.template	2
 bsi_check.stufe	1
 bsi_check.type	1
 bulk_import_batch.status	1
@@ -77,7 +80,6 @@ compliance_import.history.status	2
 compliance_import.status	1
 compliance_inheritance.confidence	2
 compliance_inheritance.status	1
-compliance_wizard.delta.action	1
 consent.channel	1
 consent.identifier_type	3
 consent.method	2
@@ -92,6 +94,7 @@ dashboard.kpi	2
 data_breach.data_categories	1
 data_breach.data_subject_categories	1
 data_breach.severity	1
+delta.action	1
 delta.export.category	1
 delta.export.inheritance	1
 delta.export.status	1
@@ -117,9 +120,8 @@ eu_authorities.hub.status	1
 eu_authorities.hub.type	1
 eu_authorities.nis2_registration.sector	1
 evidence_reverification.status	2
-exercise_type	3
 form.section	1
-four_eyes.action	2
+four_eyes.action	3
 framework_baseline.framework	2
 fte_tracking.op	1
 fte_tracking.source	2
@@ -144,7 +146,7 @@ journey.phase	1
 journey.status	1
 kpi_threshold.key	1
 lifecycle	2
-lifecycle.tenant_lifecycle	2
+lifecycle.tenant_lifecycle	1
 location.geo.source	1
 location.map.area	1
 location.map.check	1
@@ -163,6 +165,7 @@ mapping_gap_item.status	1
 mfa.token_type	1
 mfa_token.type	2
 mris.wizard.ai_risk.class	1
+my_day.badge_value	1
 my_day.hint	1
 my_day.kpi	1
 my_day.section	1
@@ -205,7 +208,6 @@ policy_wizard.step.operational_baselines.working_modes	1
 policy_wizard.step.roles.field	1
 policy_wizard.step.roles.tooltip	1
 policy_wizard.step.targeted.finding.severity	1
-policy_wizard.step.targeted.pick.topic	1
 policy_wizard.step.welcome.standard	1
 policy_wizard.step.welcome.standard_explainer	1
 policy_wizard.step.welcome.tooltip	1
@@ -224,16 +226,14 @@ processing_activity.risk_level	1
 processing_activity.status	1
 prototype_protection.label	2
 prototype_protection.result	4
-prototype_protection.section	3
+prototype_protection.section	2
 prototype_protection.status	4
-rating	2
 reauth.action.confirm_sso	1
 report.doc.audience	1
 report.doc.chart.type	1
+report_builder.widget	1
 risk.acceptance.approval_levels	1
 risk.export	1
-risk.export.status	1
-risk.export.treatment	1
 risk.index.treatment	2
 risk.level	1
 risk.link_incident.link_type	2
@@ -252,7 +252,7 @@ scheduled_report.type	3
 setup	1
 setup.applicability.bucket	1
 severity	3
-soa.category	4
+soa.category	3
 soa.status	1
 sso.domain_mode	2
 sso.mfa_inheritance	1
@@ -269,7 +269,6 @@ supplier.ict_library.category	1
 supplier.lksg_risk	1
 supplier.questionnaire.status	1
 tags.type	1
-template	2
 tenant.action	1
 threat_intelligence.tlp	1
 tia.mechanism	4
@@ -291,11 +290,10 @@ user.profile.alva.position	1
 user.profile.alva.size	1
 vulnerability.severity	3
 vulnerability.status	3
-widget	1
 wizard.status	4
 wizard_run.status	1
 wizard_session.status	1
-workflow.status	6
+workflow.status	5
 workflow.step_description	1
 workflow.step_label	1
 workflow_instance.status	1

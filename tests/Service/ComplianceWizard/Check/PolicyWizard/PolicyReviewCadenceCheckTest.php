@@ -28,6 +28,22 @@ final class PolicyReviewCadenceCheckTest extends TestCase
     }
 
     #[Test]
+    public function scoresZeroWhenNoPoliciesExist(): void
+    {
+        $this->documentRepository->method('createQueryBuilder')->willReturn(
+            $this->stubResultQueryBuilder([]),
+        );
+        $check = new PolicyReviewCadenceCheck($this->documentRepository, new DateTimeImmutable('2026-05-06'));
+
+        $result = $check->run($this->createMock(Tenant::class));
+
+        self::assertFalse($result->passed);
+        self::assertSame(0.0, $result->score);
+        self::assertSame('no_data', $result->details['reason']);
+        self::assertNotNull($result->gap);
+    }
+
+    #[Test]
     public function passesWhenAllPoliciesAreInsideReviewWindow(): void
     {
         $tenant = $this->createMock(Tenant::class);

@@ -1,0 +1,13 @@
+{# Four-eyes decision for one request; used by the four-eyes inbox and My Day. #}
+<form method="post" action="{{ path('app_four_eyes_approve', { id: requestId }) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_approve_' ~ requestId) }}">
+    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
+        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+        {{ 'four_eyes.approve'|trans({}, 'four_eyes') }}
+    </button>
+</form>
+<button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+        data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="fourEyesReject{{ requestId }}">
+    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+    {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
+</button>

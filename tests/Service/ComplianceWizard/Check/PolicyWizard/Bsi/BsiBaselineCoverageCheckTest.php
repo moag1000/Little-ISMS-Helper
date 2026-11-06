@@ -89,6 +89,19 @@ final class BsiBaselineCoverageCheckTest extends TestCase
     }
 
     #[Test]
+    public function testScoresZeroWhenNoBasisTemplatesSeeded(): void
+    {
+        $this->templateRepository->method('findBy')->willReturn([]);
+
+        $result = $this->check->run($this->createMock(Tenant::class));
+
+        self::assertFalse($result->passed);
+        self::assertSame(0.0, $result->score);
+        self::assertSame('no_basis_templates_seeded', $result->details['reason']);
+        self::assertNotNull($result->gap);
+    }
+
+    #[Test]
     public function testGapMessageActionable(): void
     {
         $tenant = $this->createMock(Tenant::class);

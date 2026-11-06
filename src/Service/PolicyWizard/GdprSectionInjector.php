@@ -15,6 +15,7 @@ use App\Repository\DocumentSectionRepository;
 use App\Repository\TagRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Injects the DPO addon's GDPR sections into generated ISO 27001 host
@@ -29,6 +30,10 @@ class GdprSectionInjector
         private readonly TagRepository $tagRepository,
         private readonly GdprSectionCatalogue $gdprSectionCatalogue,
         private readonly ?DocumentSectionRepository $documentSectionRepository = null,
+        // Autowired in production; legacy test construction without them keeps the
+        // labelled stub snapshot.
+        private readonly ?TranslatorInterface $translator = null,
+        private readonly ?VariableCollector $variableCollector = null,
     ) {
     }
 
@@ -136,18 +141,7 @@ class GdprSectionInjector
         $section->setTenant($tenant);
         $section->setApprovalRole($row['approval_role']);
 
-        // Capture a stub content snapshot pointing at the translation
-        // key so a draft export render shows "[GDPR Section: <key>
-        // (Art. X / Y)]" rather than an empty body. The full prose
-        // is supplied by the translation files — until it exists the snapshot
-        // labels the section so DPO reviewers can locate it.
-        $articles = implode(', ', $row['gdpr_articles']);
-        $section->setContentSnapshot(sprintf(
-            "[GDPR Section: %s — %s]\n\n_(Authoring pending: policy_wizard.gdpr_section.%s.body)_",
-            $sectionKey,
-            $articles,
-            $sectionKey,
-        ));
+        $section->setContentSnapshot($this->sectionText($row, $run));
 
         $this->entityManager->persist($section);
 
@@ -156,6 +150,33 @@ class GdprSectionInjector
         // sections grew from which run. Mirrors the
         // `dora-extension:applied` pattern.
         $this->tagGdprSectionApplied($document, $sectionKey, $run);
+    }
+
+    /**
+     * The authored prose of the section (policy_privacy_sections), with the run's
+     * variables substituted. Without a translator, or while a section has no text,
+     * a labelled stub keeps the section locatable for the DPO.
+     *
+     * @param array{iso_topic: string, section_key: string, gdpr_articles: list<string>, approval_role: string} $row
+     */
+    private function sectionText(array $row, WizardRun $run): string
+    {
+        $key = GdprSectionCatalogue::bodyKey($row['iso_topic'], $row['section_key']);
+        $text = $this->translator?->trans($key, [], 'policy_privacy_sections') ?? $key;
+        if ($text !== $key && $this->translator !== null) {
+            return PolicyVariableSubstitutor::apply(
+                $text,
+                $this->variableCollector?->collectFor($run) ?? [],
+                $this->translator,
+            );
+        }
+
+        return sprintf(
+            "[GDPR Section: %s — %s]\n\n_(Authoring pending: %s)_",
+            $row['section_key'],
+            implode(', ', $row['gdpr_articles']),
+            $key,
+        );
     }
 
     /**

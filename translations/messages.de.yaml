@@ -133,6 +133,8 @@ confirm:
     typing_hint: 'Geben Sie „%keyword%" ein, um zu bestätigen:'
 back: Zurück
 common:
+    tenant_required: 'Organisationskontext erforderlich.'
+    access_denied: 'Zugriff verweigert.'
     module_not_active: 'Modul "%module%" ist nicht aktiviert. Bitte Setup → Module aktivieren.'
     tenant_not_found: 'Kein aktiver Organisation — bitte zuerst in einen Workspace einloggen, bevor diese Funktion genutzt wird.'
     please_select: 'Bitte auswählen...'

@@ -161,6 +161,14 @@ wizard:
 
     # Gap messages
     gap:
+        no_risks: 'Keine Risiken erfasst'
+        no_trainings: 'Keine Schulungen erfasst'
+        no_audits: 'Keine Audits erfasst'
+        no_suppliers: 'Keine Lieferanten erfasst'
+        no_documents: 'Keine passenden Dokumente vorhanden'
+        no_data_desc: 'Ohne erfasste Datensätze gilt der Punkt als nicht nachgewiesen.'
+        documents_review_pending: 'Dokumente nicht freigegeben oder überfällig'
+        documents_review_pending_desc: 'Nicht alle Dokumente sind freigegeben und innerhalb ihrer Prüffrist.'
         controls_not_implemented: "Controls nicht vollständig implementiert"
         controls_description: "%count% Controls sind noch nicht oder nur teilweise implementiert."
         maturity_not_assessed: "Reifegrad noch nicht bewertet"
@@ -750,6 +758,20 @@ wizard:
         bsi_c5_2026_nis2_alignment: 'NIS2-Risikomanagement und Meldewege abgedeckt'
         bsi_c5_2026_iso_27001_integration: 'ISO 27001:2022 SoA als Quelle herangezogen'
         bsi_c5_2026_csa_ccm_alignment: 'CSA CCM v4 Cross-Mapping gepflegt'
+        bsi_gspp_context: 'ISMS-Kontext und Geltungsbereich dokumentiert'
+        bsi_gspp_soa: 'Zugeordnete ISO-Controls umgesetzt (SoA)'
+        bsi_gspp_structure_assets: 'Zielobjekte inventarisiert und bewertet'
+        bsi_gspp_risk_coverage: 'Risiken bewertet'
+        bsi_gspp_risk_treatment: 'Risikobehandlung geplant'
+        bsi_gspp_implementation: 'Umsetzungsstatus aller anwendbaren Controls'
+        bsi_gspp_audits: 'Interne Audits durchgeführt'
+        bsi_gspp_management_review: 'Managementbewertung durchgeführt'
+        bsi_gspp_improvement: 'Verbesserungsprozess etabliert'
+        bsi_gspp_improvement_desc: 'Manuell bestätigen: Nichtkonformitäten werden erfasst, Korrekturmaßnahmen geplant und auf Wirksamkeit geprüft (VRB.2, VRB.5, VRB.6).'
+        bsi_gspp_training: 'Schulung und Sensibilisierung nachgewiesen'
+        bsi_gspp_suppliers: 'Lieferanten bewertet'
+        bsi_gspp_incidents: 'Vorfallsbehandlung etabliert'
+        bsi_gspp_bcm: 'Notfallpläne vorhanden und geübt'
 
         # KRITIS checks
         kritis_scope: 'KRITIS-Schwellwert + Sektor geprueft'
@@ -1375,6 +1397,38 @@ wizard:
         kern_check_enhanced: 'Migrationspfad zu Standard-Absicherung definiert + jaehrliche Kronjuwelen-Re-Bewertung.'
         kern_realization_baseline: 'Kronjuwelen identifiziert, Basis-Schutz für kritische Bereiche erfuellt.'
         kern_realization_enhanced: 'Migrationspfad zu Standard-Absicherung definiert + jaehrliche Kronjuwelen-Re-Bewertung.'
+
+    # BSI Grundschutz++ (BSI-Standard 300-1) Categories
+    bsi_gspp:
+        description: 'Prüfung nach BSI-Standard 300-1 (Grundschutz++). Methodik-Praktiken werden aus den ISMS-Daten bewertet, Kernel-Praktiken aus dem SoA-Stand der ISO-Controls, die das BSI ihnen zuordnet.'
+        governance: 'Governance und Compliance (GC)'
+        governance_desc: 'ISMS-Kontext, Sicherheitsleitlinie, Geltungsbereich und Sicherheitsorganisation.'
+        structure: 'Strukturmodellierung (STM)'
+        structure_desc: 'Informationsverbund mit Zielobjekten, Sicherheitsniveau und Anforderungspaketen.'
+        risk: 'Risikomanagement (RISK)'
+        risk_desc: 'Risikobewertung und -behandlung, vor allem für Zielobjekte mit erhöhtem Sicherheitsniveau.'
+        implementation: 'Umsetzung (UMS)'
+        implementation_desc: 'Umsetzungsstatus, Planung, Fristen und Ausnahmen über alle anwendbaren Controls.'
+        performance: 'Monitoring und Evaluation (PERF)'
+        performance_desc: 'Interne Audits, Leistungsbewertung und Managementbewertung.'
+        improvement: 'Verbesserung (VRB)'
+        improvement_desc: 'Umgang mit Nichtkonformitäten, Korrekturmaßnahmen und Wirksamkeitsprüfung.'
+        personnel: 'Personal und Sensibilisierung (PERS, SENS)'
+        personnel_desc: 'Personalprozesse von Zugang bis Weggang sowie Schulung und Sensibilisierung.'
+        procurement: 'Beschaffung und Dienstleister (BES, DLS)'
+        procurement_desc: 'Auswahl, Steuerung und Kontrolle von Lieferanten und Dienstleistern.'
+        detection: 'Detektion und Vorfallsbehandlung (DET, REA)'
+        detection_desc: 'Protokollierung, Überwachung, Schwachstellen und Reaktion auf Sicherheitsvorfälle.'
+        continuity: 'Notfallplanung (NOT)'
+        continuity_desc: 'Notfallvorsorge, Notfallorganisation und Datensicherung.'
+        assets_access: 'Assets und Berechtigungen (ASST, BER)'
+        assets_access_desc: 'Inventar, Gebrauch, Transfer und Löschung von Assets sowie Identitäten, Zugänge und Authentisierung.'
+        technology: 'Architektur, Konfiguration und Entwicklung (ARCH, KONF, DEV, TEST)'
+        technology_desc: 'Netz- und Systemarchitektur, sichere Konfiguration, Softwareentwicklung, Änderungen und Tests.'
+        buildings: 'Gebäudemanagement (GEB)'
+        buildings_desc: 'Perimeter, Zutritt, Sicherheitsbereiche und Versorgung.'
+        gspp_policies: 'Richtlinien nach Grundschutz++'
+        gspp_policies_desc: 'ISO-27001-Richtlinien mit Grundschutz++-Abschnitt aus dem Policy-Wizard.'
 
     # BSI IT-Grundschutz Standard-Absicherung Categories
     bsi_grundschutz_standard:

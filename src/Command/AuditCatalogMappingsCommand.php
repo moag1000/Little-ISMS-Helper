@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\Catalog\FrameworkCode;
+use App\Service\Catalog\RequirementIdPrefixes;
 use App\Service\ComplianceFrameworkLoaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -417,13 +418,13 @@ final class AuditCatalogMappingsCommand extends Command
             if ($core === null || $core === '') {
                 continue;
             }
-            foreach ($this->prefixesFor($code) as $prefix) {
+            foreach (RequirementIdPrefixes::forFramework($code) as $prefix) {
                 $candidates[] = $prefix . '-' . $core;
                 $candidates[] = $prefix . '_' . $core;
             }
         }
 
-        foreach ($this->prefixesFor($code) as $prefix) {
+        foreach (RequirementIdPrefixes::forFramework($code) as $prefix) {
             if (preg_match('/^' . preg_quote($prefix, '/') . '[-_]/', $id)) {
                 $suffix = substr($id, strlen($prefix) + 1);
                 $candidates[] = 'Art.' . $suffix;
@@ -442,44 +443,13 @@ final class AuditCatalogMappingsCommand extends Command
         $stripped = preg_replace('/^(Art\.|§)/i', '', $id) ?? $id;
         $strippedAnnex = preg_replace('/^A\./i', '', $stripped) ?? $stripped;
         $candidates = [$stripped . '.', $strippedAnnex . '.'];
-        foreach ($this->prefixesFor($code) as $prefix) {
+        foreach (RequirementIdPrefixes::forFramework($code) as $prefix) {
             foreach ([$stripped, $strippedAnnex] as $core) {
                 $candidates[] = $prefix . '-' . $core . '.';
                 $candidates[] = $prefix . '-' . $core;
             }
         }
         return array_values(array_unique(array_filter($candidates)));
-    }
-
-    /**
-     * Known prefix variants per framework code — mirrors ImportMappingCsvCommand::prefixesFor().
-     *
-     * @return list<string>
-     */
-    private function prefixesFor(string $code): array
-    {
-        $map = [
-            'DORA'        => ['DORA'],
-            'ISO27701'    => ['27701', 'ISO27701'],
-            'ISO27001'    => ['ISO27001'],
-            'ISO27005'    => ['27005', 'ISO27005'],
-            'ISO-22301'   => ['ISO22301', 'ISO-22301', '22301'],
-            'EU-AI-ACT'   => ['AIACT', 'EUAIACT', 'EU-AI-ACT'],
-            'BSI-C5-2026' => ['C5-2026', 'C52026', 'BSI-C5-2026'],
-            'BSI-C5'      => ['C5', 'BSI-C5'],
-            'CIS-CONTROLS' => ['CIS', 'CIS-CONTROLS'],
-            'TKG-2024'    => ['TKG', 'TKG-2024'],
-            'KRITIS'      => ['KRITIS'],
-            'NIS2UMSUCG'  => ['NIS2UMSUCG', 'NIS2UmsuCG'],
-            'NIST-CSF-2.0' => ['NIST-CSF', 'NISTCSF', 'NIST-CSF-2.0'],
-            'BDSG'        => ['BDSG'],
-            'NIS2'        => ['NIS2'],
-        ];
-
-        if (isset($map[$code])) {
-            return $map[$code];
-        }
-        return array_values(array_unique([$code, str_replace(['-', '_'], '', $code)]));
     }
 
     /**

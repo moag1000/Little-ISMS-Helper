@@ -103,6 +103,21 @@ final class MappingLibraryLoader
         }
 
         $validation = $this->validator->validate($payload);
+        // A library whose framework simply is not loaded has nothing to fix in the
+        // file: skip it with a warning instead of failing the whole library import.
+        $missing = $validation['missing_frameworks'] ?? [];
+        if ($missing !== [] && count($validation['errors']) === count($missing)) {
+            $entryCount = is_array($payload['mappings'] ?? null) ? count($payload['mappings']) : 0;
+
+            return [
+                'success' => true,
+                'errors' => [],
+                'warnings' => array_merge($validation['warnings'], [
+                    sprintf('Skipped: framework not loaded (%s).', implode(', ', $missing)),
+                ]),
+                'imported' => 0, 'updated' => 0, 'skipped' => $entryCount,
+            ];
+        }
         if (!empty($validation['errors'])) {
             return [
                 'success' => false,
@@ -117,10 +132,8 @@ final class MappingLibraryLoader
         // `target:` — expand those to one entry per pair before importing.
         $entries = MappingValidatorService::expandEntries($payload['mappings'] ?? []);
 
-        $sourceFw = $this->frameworkRepository->findOneBy(['code' => $library['source_framework']])
-            ?? $this->frameworkRepository->findOneBy(['name' => $library['source_framework']]);
-        $targetFw = $this->frameworkRepository->findOneBy(['code' => $library['target_framework']])
-            ?? $this->frameworkRepository->findOneBy(['name' => $library['target_framework']]);
+        $sourceFw = $this->validator->resolveFramework((string) $library['source_framework']);
+        $targetFw = $this->validator->resolveFramework((string) $library['target_framework']);
 
         // Prefer explicit provenanceSource sentinel (e.g. 'official_bsi_c5_iso_crosswalk',
         // 'official_iso27701_gdpr_annex', 'lex_specialis_candidate') over the human-readable
@@ -143,7 +156,14 @@ final class MappingLibraryLoader
 
         $imported = 0;
         $updated = 0;
-        $skipped = 0;
+        $totalEntries = count($entries);
+
+        // Entries the validator flagged as unusable are skipped, never fatal for the file.
+        $entries = array_values(array_filter(
+            $entries,
+            static fn (mixed $entry): bool => MappingValidatorService::entryProblem($entry) === null,
+        ));
+        $skipped = $totalEntries - count($entries);
 
         foreach ($entries as $entry) {
             $sourceReq = $this->findRequirement($sourceFw, (string) $entry['source']);

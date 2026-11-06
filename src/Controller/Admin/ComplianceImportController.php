@@ -16,6 +16,8 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ImportSessionRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
+use App\Service\Catalog\FrameworkCode;
+use App\Service\Catalog\RequirementIdPrefixes;
 use App\Service\CompliancePolicyService;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\BsiProfileXmlImporter;
@@ -446,7 +448,11 @@ final class ComplianceImportController extends AbstractController
                 continue;
             }
             if ($headers === null) {
-                $headers = $row;
+                // Excel exports prepend a UTF-8 BOM to the first header cell.
+                $headers = array_map(
+                    static fn ($h): string => strtolower(trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $h) ?? '')),
+                    $row,
+                );
                 foreach (self::REQUIRED_HEADERS as $required) {
                     if (!in_array($required, $headers, true)) {
                         $headerError = 'compliance_import.preview.missing_header:' . $required;
@@ -593,7 +599,11 @@ final class ComplianceImportController extends AbstractController
                 continue;
             }
             if ($headers === null) {
-                $headers = $row;
+                // Excel exports prepend a UTF-8 BOM to the first header cell.
+                $headers = array_map(
+                    static fn ($h): string => strtolower(trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $h) ?? '')),
+                    $row,
+                );
                 foreach (self::REQUIRED_HEADERS as $required) {
                     if (!in_array($required, $headers, true)) {
                         fclose($handle);
@@ -791,7 +801,15 @@ final class ComplianceImportController extends AbstractController
     private function getFramework(string $code, array &$cache): ?ComplianceFramework
     {
         if (!array_key_exists($code, $cache)) {
-            $cache[$code] = $this->frameworkRepository->findOneBy(['code' => $code]);
+            // Literal code first, then the canonical alias (NIST-CSF -> NIST-CSF-2.0, ISO22301 -> ISO-22301).
+            $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+            if ($framework === null) {
+                $canonical = FrameworkCode::canonicalize($code);
+                if ($canonical !== null && $canonical !== $code) {
+                    $framework = $this->frameworkRepository->findOneBy(['code' => $canonical]);
+                }
+            }
+            $cache[$code] = $framework;
         }
 
         return $cache[$code];
@@ -851,7 +869,7 @@ final class ComplianceImportController extends AbstractController
         $stripped = preg_replace('/^(Art\.|§)/i', '', $id) ?? $id;
         $strippedAnnex = preg_replace('/^A\./i', '', $stripped) ?? $stripped;
         $candidates = [$stripped . '.', $strippedAnnex . '.'];
-        foreach ($this->prefixesFor($framework->getCode()) as $prefix) {
+        foreach (RequirementIdPrefixes::forFramework($framework->getCode()) as $prefix) {
             foreach ([$stripped, $strippedAnnex] as $core) {
                 $candidates[] = $prefix . '-' . $core . '.';
                 $candidates[] = $prefix . '-' . $core;
@@ -881,13 +899,13 @@ final class ComplianceImportController extends AbstractController
             if ($core === null || $core === '') {
                 continue;
             }
-            foreach ($this->prefixesFor($code) as $prefix) {
+            foreach (RequirementIdPrefixes::forFramework($code) as $prefix) {
                 $candidates[] = $prefix . '-' . $core;
                 $candidates[] = $prefix . '_' . $core;
             }
         }
 
-        foreach ($this->prefixesFor($code) as $prefix) {
+        foreach (RequirementIdPrefixes::forFramework($code) as $prefix) {
             if (preg_match('/^' . preg_quote($prefix, '/') . '[-_]/', $id)) {
                 $suffix = substr($id, strlen($prefix) + 1);
                 $candidates[] = 'Art.' . $suffix;
@@ -896,32 +914,5 @@ final class ComplianceImportController extends AbstractController
         }
 
         return array_values(array_unique(array_filter($candidates)));
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function prefixesFor(string $code): array
-    {
-        $map = [
-            'ISO27701' => ['27701', 'ISO27701'],
-            'ISO27001' => ['ISO27001'],
-            'ISO27005' => ['27005', 'ISO27005'],
-            'ISO-22301' => ['ISO22301', 'ISO-22301', '22301'],
-            'EU-AI-ACT' => ['AIACT', 'EUAIACT', 'EU-AI-ACT'],
-            'BSI-C5-2026' => ['C5-2026', 'C52026', 'BSI-C5-2026'],
-            'BSI-C5' => ['C5', 'BSI-C5'],
-            'CIS-CONTROLS' => ['CIS', 'CIS-CONTROLS'],
-            'TKG-2024' => ['TKG', 'TKG-2024'],
-            'KRITIS' => ['KRITIS'],
-            'NIS2UMSUCG' => ['NIS2UMSUCG', 'NIS2UmsuCG'],
-            'NIST-CSF' => ['NIST-CSF', 'NISTCSF'],
-        ];
-
-        if (isset($map[$code])) {
-            return $map[$code];
-        }
-
-        return array_values(array_unique([$code, str_replace(['-', '_'], '', $code)]));
     }
 }

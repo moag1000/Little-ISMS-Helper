@@ -281,6 +281,11 @@ document:
     clone:
         success: 'Dokument wurde dupliziert. Datei-Binary nicht mitkopiert — bitte ggf. neu hochladen.'
 evidence_reverification:
+    status:
+        pending: 'Offen'
+        in_progress: 'In Prüfung'
+        completed: 'Reverifiziert'
+        skipped: 'Übersprungen'
     title: 'Nachweis-Reverifikation'
     badge: 'Kl. 9.1'
     subtitle: 'Prüfen, ob Nachweise weiterhin aktuell sind und zu den verknüpften Controls passen.'

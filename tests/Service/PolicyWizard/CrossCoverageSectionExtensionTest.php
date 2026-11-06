@@ -56,6 +56,7 @@ final class CrossCoverageSectionExtensionTest extends TestCase
     {
         $template = new PolicyTemplate();
         $template->setTopic($topic);
+        $template->setStandard('iso27001'); // extensions only extend ISO 27001 host policies
         $template->setLinkedDoraArticles($doraArticles);
         return $template;
     }
@@ -189,7 +190,7 @@ final class CrossCoverageSectionExtensionTest extends TestCase
     public function standardWithNoCatalogueIsSkippedGracefully(): void
     {
         // Only DoraExtensionCatalogue registered; run adopts 'iso27001' + 'dora'
-        $template = $this->makeTemplate('monitoring', null);
+        $template = $this->makeTemplate('logging', null);
         $document = $this->makeDocument($template);
         $run = $this->makeRun(['iso27001', 'dora'], [999]);
 
@@ -198,7 +199,7 @@ final class CrossCoverageSectionExtensionTest extends TestCase
         $calculator = $this->makeCalculator([$document], $registry);
         $report = $calculator->calculateForRun($run);
 
-        // 'monitoring' → ['Art. 10'] per DoraExtensionCatalogue
+        // 'logging' → ['Art. 10'] per DoraExtensionCatalogue
         self::assertContains('Art. 10', $report->coverageByFramework['DORA']['covered_refs']);
         // No error for iso27001 standard having no catalogue
         self::assertArrayHasKey('ISO27001', $report->coverageByFramework);

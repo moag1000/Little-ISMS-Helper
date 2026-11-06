@@ -88,7 +88,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Start a specific wizard
      */
-    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
+    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function start(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -142,7 +142,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Run the assessment and show results
      */
-    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
+    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function assess(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -171,7 +171,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Show detailed category results
      */
-    #[Route('/{wizard}/category/{category}', name: 'app_compliance_wizard_category', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
+    #[Route('/{wizard}/category/{category}', name: 'app_compliance_wizard_category', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function category(string $wizard, string $category): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -201,7 +201,7 @@ class ComplianceWizardController extends AbstractController
      * ISO 27001 Cl. 5.1 leadership commitment). Marking it done stops the wizard
      * reporting it as a permanent critical gap; un-marking reverts it.
      */
-    #[Route('/{wizard}/check/{checkKey}/confirm', name: 'app_compliance_wizard_confirm_manual', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra', 'checkKey' => '[a-z0-9_]+'], methods: ['POST'])]
+    #[Route('/{wizard}/check/{checkKey}/confirm', name: 'app_compliance_wizard_confirm_manual', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra', 'checkKey' => '[a-z0-9_]+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid('wizard_manual_confirm')]
     public function confirmManual(
@@ -241,7 +241,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * API endpoint for real-time assessment (AJAX)
      */
-    #[Route('/{wizard}/api/assess', name: 'app_compliance_wizard_api_assess', methods: ['GET'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/api/assess', name: 'app_compliance_wizard_api_assess', methods: ['GET'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     public function apiAssess(string $wizard): JsonResponse
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -260,7 +260,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Export assessment as PDF — real PDF via PdfExportService (DomPDF).
      */
-    #[Route('/{wizard}/export/pdf', name: 'app_compliance_wizard_export_pdf', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
+    #[Route('/{wizard}/export/pdf', name: 'app_compliance_wizard_export_pdf', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function exportPdf(string $wizard): Response
     {
@@ -398,7 +398,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * WS-6: Gap-Report with FTE estimates (`sort=effort|quick-wins`).
      */
-    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
+    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function gapReport(string $wizard, Request $request): Response
     {
         if ($this->gapEffortCalculator === null || $this->frameworkRepository === null) {
@@ -410,8 +410,7 @@ class ComplianceWizardController extends AbstractController
 
         $tenant = $this->tenantContext->getCurrentTenant();
         $config = $this->wizardService->getWizardConfig($wizard);
-        $framework = $this->frameworkRepository->findOneBy(['code' => strtoupper((string) ($config['framework_code'] ?? $wizard))])
-            ?? $this->frameworkRepository->findOneBy(['code' => strtoupper($wizard)]);
+        $framework = $this->frameworkRepository->findOneBy(['code' => (string) ($config['code'] ?? strtoupper($wizard))]);
         if ($framework === null || $tenant === null) {
             throw $this->createNotFoundException();
         }
@@ -560,7 +559,7 @@ class ComplianceWizardController extends AbstractController
      * fixtures the loader surfaced; the controller verifies the chosen
      * file lives below fixtures/library/mappings/.
      */
-    #[Route('/{wizard}/import-mapping-library', name: 'app_compliance_wizard_import_mapping_library', methods: ['POST'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/import-mapping-library', name: 'app_compliance_wizard_import_mapping_library', methods: ['POST'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     #[IsGranted('ROLE_MANAGER')]
     public function importMappingLibrary(string $wizard, Request $request): Response
     {
@@ -630,7 +629,7 @@ class ComplianceWizardController extends AbstractController
      * Coverage + Gaps + KPIs als WizardSession, sodass Trend-Charts und
      * Stichtag-Vergleich möglich werden.
      */
-    #[Route('/{wizard}/snapshot', name: 'app_compliance_wizard_snapshot', methods: ['POST'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/snapshot', name: 'app_compliance_wizard_snapshot', methods: ['POST'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     public function snapshot(string $wizard, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('wizard_snapshot_' . $wizard, (string) $request->request->get('_token'))) {
@@ -697,7 +696,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Snapshot history with trend chart.
      */
-    #[Route('/{wizard}/history', name: 'app_compliance_wizard_history', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
+    #[Route('/{wizard}/history', name: 'app_compliance_wizard_history', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function history(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -742,7 +741,7 @@ class ComplianceWizardController extends AbstractController
         '/{wizard}/diff/{fromId}/{toId}',
         name: 'app_compliance_wizard_diff',
         requirements: [
-            'wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra',
+            'wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra',
             'fromId' => '\d+',
             'toId'   => '\d+',
         ],

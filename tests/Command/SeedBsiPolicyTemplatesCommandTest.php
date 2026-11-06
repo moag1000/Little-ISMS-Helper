@@ -228,7 +228,7 @@ final class SeedBsiPolicyTemplatesCommandTest extends TestCase
         self::assertSame(PolicyTemplate::BSI_TIER_BASIS, $emergency->getBsiTier());
         self::assertSame(['DER.4.A1', 'DER.4.A2', 'DER.4.A3', 'DER.4.A4'], $emergency->getLinkedBsiBausteine());
         self::assertSame(['A.5.29', 'A.5.30'], $emergency->getLinkedAnnexAControls());
-        self::assertContains('ROLE_BCM', $emergency->getApprovalChain() ?? []);
+        self::assertContains('ROLE_BCM_OFFICER', $emergency->getApprovalChain() ?? []);
 
         // §4.1 — Schutzbedarfsfeststellungs-Methodik: methodology doc-type,
         // no Annex A / Baustein anchors (it's a method, not a Richtlinie).

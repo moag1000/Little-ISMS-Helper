@@ -176,8 +176,8 @@ final class SeedKritisPolicyTemplatesCommandTest extends TestCase
         $energieBausteine = $energie->getLinkedBsiBausteine() ?? [];
         self::assertContains('IND.1.A1', $energieBausteine, 'Energie braucht IND-Baustein für OT');
         self::assertContains('NET.3.2.A1', $energieBausteine, 'Energie braucht NET.3.2 Firewall');
-        // ROLE_BCM ist in approval_chain weil Schwarzfall-Konzept BCM-relevant
-        self::assertContains('ROLE_BCM', $energie->getApprovalChain() ?? []);
+        // ROLE_BCM_OFFICER ist in approval_chain weil Schwarzfall-Konzept BCM-relevant
+        self::assertContains('ROLE_BCM_OFFICER', $energie->getApprovalChain() ?? []);
 
         // 4 — Finanz: DORA + MaRisk + KWG cross-references
         $finanz = $byKey['kritis.kritis_finanz_b3s'] ?? null;

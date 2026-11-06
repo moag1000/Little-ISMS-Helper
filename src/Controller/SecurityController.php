@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\LandingRoute;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use App\Security\SamlAuthFactory;
@@ -26,6 +27,7 @@ class SecurityController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly SsoProviderRegistry $ssoRegistry,
         private readonly TenantContext $tenantContext,
+        private readonly LandingRoute $landingRoute,
     ) {}
 
     // @csrf-exempt: form_login validates the authenticate CSRF token (security.yaml enable_csrf)
@@ -65,7 +67,7 @@ class SecurityController extends AbstractController
 
         // If user is already logged in, redirect to dashboard with locale
         if ($this->getUser() instanceof UserInterface) {
-            return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
+            return $this->redirectToRoute($this->landingRoute->routeFor($this->getUser()), ['_locale' => $locale]);
         }
 
         // Get the login error if there is one

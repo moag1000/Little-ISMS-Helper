@@ -184,7 +184,7 @@
             {% block card_footer %}
                 {% if mapping_group.mappings|length > 20 %}
                     <div class="card-footer text-center">
-                        {{ 'compliance.cross_framework.showing_of'|trans({'%total%': mapping_group.mappings|length}, 'compliance') }}
+                        {{ 'compliance.cross_framework.showing_of'|trans({'%current%': 20, '%total%': mapping_group.mappings|length}, 'compliance') }}
                     </div>
                 {% endif %}
             {% endblock %}

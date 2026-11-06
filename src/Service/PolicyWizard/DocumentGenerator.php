@@ -135,6 +135,9 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      */
     private array $doraExtensionApplied = [];
 
+    /** @var array<int, list<string>> standards whose body extension was appended, keyed on `spl_object_id($template)` */
+    private array $extensionsApplied = [];
+
     /**
      * @return array{document_ids: list<int>, sandbox_preview: array<string, mixed>|null}
      */
@@ -221,7 +224,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             }
 
             $body = $this->renderBody($template, $variables);
-            $body = $this->dispatchBodyExtensions($template, $body, $run);
+            $body = $this->substitute($this->dispatchBodyExtensions($template, $body, $run), $variables);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
             $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
 
@@ -442,7 +445,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $previews = [];
         foreach ($templates as $template) {
             $body = $this->renderBody($template, $variables);
-            $body = $this->dispatchBodyExtensions($template, $body, $run);
+            $body = $this->substitute($this->dispatchBodyExtensions($template, $body, $run), $variables);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
             $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
             $body = $this->prependNormAnkerHeader($template, $body);
@@ -661,44 +664,16 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * Per-standard candidate-domain map used by `resolvePolicyTranslation`
-     * — mirrors `App\Twig\PolicyTranslationExtension::DOMAINS_BY_STANDARD`.
-     * Translation keys like `policy.bcm.bcms_top_level.v1.title` live in
-     * domain `policy_bcm_batch1`, not `messages` — a bare trans() call
-     * returns the raw key. Walk the candidate domains for the standard
-     * and return the first match.
-     *
-     * @var array<string, list<string>>
+     * Policy prose lives in per-batch domains ({@see PolicyTranslationDomains});
+     * the messages domain is the legacy fallback.
      */
-    private const POLICY_DOMAINS_BY_STANDARD = [
-        'gdpr'      => ['policy_privacy_batch1', 'policy_privacy_sections'],
-        'iso27001'  => ['policy_iso27001', 'policy_iso27001_batch2', 'policy_iso27001_batch3', 'policy_iso27001_batch4', 'policy_iso27001_batch5'],
-        'iso27701'  => ['policy_iso27701'],
-        'bsi'       => ['policy_bsi_batch1', 'policy_bsi_batch2', 'policy_bsi_batch3', 'policy_bsi_batch4', 'policy_bsi_batch5'],
-        'bcm'       => ['policy_bcm_batch1', 'policy_bcm_batch2'],
-        'dora'      => ['policy_dora'],
-        'soc2'      => ['policy_soc2'],
-        'tisax'     => ['policy_tisax'],
-        'nis2'      => ['policy_nis2'],
-        'c5'        => ['policy_c5'],
-        'kritis'    => ['policy_kritis'],
-    ];
-
     private function resolvePolicyTranslation(string $key, ?string $standard): string
     {
         if ($key === '') {
             return '';
         }
-        $candidates = self::POLICY_DOMAINS_BY_STANDARD[$standard] ?? [];
-        foreach ($candidates as $domain) {
-            $resolved = $this->translator->trans($key, [], $domain);
-            if ($resolved !== $key) {
-                return $resolved;
-            }
-        }
-        // Fallback: try messages domain (legacy) so behaviour stays the
-        // same when no candidate matches.
-        return $this->translator->trans($key);
+
+        return PolicyTranslationDomains::translate($this->translator, $key, $standard) ?? $this->translator->trans($key);
     }
 
     // =========================================================================
@@ -706,48 +681,32 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     // =========================================================================
 
     /**
-     * Generic body-extension dispatch.
-     *
-     * When {@see SectionExtensionRegistry} is wired, iterates every catalogue
-     * registered under the `app.policy_section_catalogue` tag and applies all
-     * extensions with `renderMode = 'body_extension'` to the rendered body.
-     * Currently this covers DORA (`appendDoraExtensionIfApplicable`).
-     *
-     * Fall-back: when the registry is not wired (legacy unit tests instantiate
-     * `DocumentGenerator` without it) the old hard-coded DORA method is called
-     * directly so output is byte-identical to pre-registry runs.
-     *
-     * Skip rules (per catalogue):
-     *  - The template standard is not 'iso27001' (body extensions only
-     *    target ISO host policies — DORA-only templates are standalone).
-     *  - The standard token is not in `run.standardsAdopted` (for 'dora';
-     *    'gdpr' uses isGdprScopeActive because of the iso27701 alias).
-     *
-     * The GDPR standard is registered with `renderMode = 'document_section'`
-     * and is therefore NOT processed here; it goes through
-     * {@see dispatchDocumentSectionExtensions} instead.
+     * Body-extension dispatch: DORA first (own heading, validity tags), then every
+     * other `body_extension` catalogue of an adopted standard via
+     * {@see SectionExtensionRegistry::appendBodyExtensions()} (BSI, GS++, C5, NIS2,
+     * TISAX, SOC 2, ISO 27701, BCM). Only ISO 27001 host policies are extended;
+     * GDPR (`document_section`) goes through {@see dispatchDocumentSectionExtensions}.
+     * Each appended standard is tagged `<standard>-extension:applied`; callers run the
+     * result through {@see substitute()} because extension prose uses the same variables.
      */
     private function dispatchBodyExtensions(
         PolicyTemplate $template,
         string $body,
         WizardRun $run,
     ): string {
-        if ($this->sectionExtensionRegistry === null) {
-            // Legacy path — no registry wired. Call the hard-coded method directly.
-            return $this->appendDoraExtensionIfApplicable($template, $body, $run);
+        $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+        if ($this->sectionExtensionRegistry === null || $template->getStandard() !== 'iso27001') {
+            return $body;
         }
+        $result = $this->sectionExtensionRegistry->appendBodyExtensions(
+            $body,
+            (string) $template->getTopic(),
+            $run->getStandardsAdopted() ?? [],
+            fn (string $key, string $standard): string => $this->resolvePolicyTranslation($key, $standard),
+        );
+        $this->extensionsApplied[spl_object_id($template)] = $result['applied'];
 
-        // Registry path — iterate all catalogues; apply body_extension entries.
-        foreach ($this->sectionExtensionRegistry->all() as $catalogue) {
-            if ($catalogue->getStandard() === 'dora') {
-                // DORA body extension — delegate to the existing method
-                // so the $doraExtensionApplied side-effect fires (drives tag emission).
-                $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
-            }
-            // Other body_extension catalogues can be dispatched generically here in future.
-        }
-
-        return $body;
+        return $result['body'];
     }
 
     /**
@@ -870,12 +829,10 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $template->getVersion(),
         );
         $extensionBody = $this->resolvePolicyTranslation($extensionKey, 'iso27001');
-        // Translator returns the key verbatim when no translation is
-        // registered; in that case we still mark the extension applied
-        // so the audit-trail tag fires, but emit a stub heading rather
-        // than the raw key (keeps generated docs auditor-presentable).
+        // No text for this topic → nothing appended and no tag: the policy must
+        // never claim (or print as a stub) a DORA section it does not contain.
         if ($extensionBody === $extensionKey) {
-            $extensionBody = '_(translation pending: ' . $extensionKey . ')_';
+            return $body;
         }
 
         $heading = sprintf(
@@ -1098,21 +1055,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      */
     private function substitute(string $body, array $variables): string
     {
-        return (string) preg_replace_callback(
-            '/\{\{\s*([a-zA-Z0-9_.]+)\s*\}\}/u',
-            static function (array $match) use ($variables): string {
-                $key = $match[1];
-                if (!array_key_exists($key, $variables)) {
-                    return '';
-                }
-                $value = $variables[$key];
-                if ($value === null) {
-                    return '';
-                }
-                return (string) $value;
-            },
-            $body,
-        );
+        return PolicyVariableSubstitutor::apply($body, $variables, $this->translator);
     }
 
     /**
@@ -1458,6 +1401,13 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             }
         }
 
+        foreach ($this->extensionsApplied[spl_object_id($template)] ?? [] as $standard) {
+            $tagsToApply[] = $standard . '-extension:applied';
+        }
+        if (in_array('iso27701', $run->getStandardsAdopted() ?? [], true)) {
+            array_push($tagsToApply, ...($this->policySettingProvider?->tagDocumentWithIso27701($template, $tenant, true) ?? []));
+        }
+
         // Compliance-Manager / Auditor-External Wish — `climate-change:amended`
         // marker on top-level ISO 27001 Information-Security-Policy
         // renders. Mirrors the in-body Amd. 1:2024 wording assertion
@@ -1658,11 +1608,9 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      *  - Document is tagged `iso27001:A.5.34` + `policy-wizard:thin-host`
      *    + `wizard-run:<id>` so the audit-export view can pivot on it.
      *
-     * Body comes from the `policy.iso.iso_a534_thin_host.v1.body`
-     * translation key. While that key is untranslated the
-     * translator returns the key verbatim and we wrap it in a
-     * "_(authoring pending)_" stub so the generated docs stay
-     * auditor-presentable.
+     * Body comes from the `policy.gdpr.iso_a534_thin_host.v1.body`
+     * translation key (policy_privacy_batch1), with the run's variables
+     * substituted. Without that text no host is emitted.
      *
      * @param array<string, Tag> $tagCache
      * @return int|null id of the emitted Document, or null when the
@@ -1695,14 +1643,13 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             return $existing->getId();
         }
 
-        $bodyKey = 'policy.iso.iso_a534_thin_host.v1.body';
-        $body = $this->resolvePolicyTranslation($bodyKey, 'iso27001');
+        // Authored in policy_privacy_batch1 (SectionExtensionBodyTest guards it).
+        $bodyKey = 'policy.gdpr.iso_a534_thin_host.v1.body';
+        $body = $this->resolvePolicyTranslation($bodyKey, 'gdpr');
         if ($body === $bodyKey) {
-            // Translation not yet authored. Emit a
-            // stub body listing the 5 standalone privacy docs as
-            // cross-references so the host is still meaningful.
-            $body = $this->buildThinA534HostStub($bodyKey);
+            return null;
         }
+        $body = $this->substitute($body, $this->variableCollector->collectFor($run));
 
         $now = new DateTimeImmutable();
         $hash = $this->hashSubstitution([], $body);
@@ -1778,38 +1725,5 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         ]);
 
         return $documentId;
-    }
-
-    /**
-     * Stub body for the thin A.5.34 host when the translation key is
-     * not yet authored. Lists the 5 standalone privacy artefacts as
-     * cross-references plus a header tagging the document as a thin
-     * host (1-2 page only) per §0 v2 row 18.
-     */
-    private function buildThinA534HostStub(string $bodyKey): string
-    {
-        return <<<MARKDOWN
-            # ISO 27001 A.5.34 — Privacy / PII Handling
-
-            > Thin host (1-2 page cross-reference). Per ISO 27001 A.5.34
-            > "the organization shall maintain a topic-specific policy".
-            > This document satisfies that requirement by referencing the
-            > full set of standalone privacy artefacts maintained under
-            > the GDPR addon.
-
-            ## Cross-references
-
-            The privacy aspects of the ISMS are documented in:
-
-            1. **DPO Charter** (§2.13) — Data Protection Officer mandate, independence and tasks per GDPR Art. 37-39.
-            2. **RoPA Methodology** (§2.2) — Records of Processing Activities + Lawful-Basis + Consent Management per GDPR Art. 30 / 6 / 7.
-            3. **DPIA Methodology** (§2.3) — Data Protection Impact Assessment process per GDPR Art. 35-36.
-            4. **DSR Procedure** (§2.4) — Data Subject Rights handling per GDPR Art. 12-22 (1-month SLA).
-            5. **Retention Schedule** (§2.11) — Retention durations per data category, single-source-of-truth.
-
-            Operational privacy controls additionally live as embedded sections inside the ISO host policies (Cl. 5.2, A.5.24-28, A.5.19-22, A.5.14, A.8.13/15, A.5.8/A.8.27/28, A.6.3) — see the GDPR section catalogue for the per-topic injection map.
-
-            _(Authoring pending: $bodyKey — the W6-F translation deliverable replaces this stub with the full cross-reference matrix.)_
-            MARKDOWN;
     }
 }

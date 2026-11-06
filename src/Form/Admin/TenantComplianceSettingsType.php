@@ -11,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use App\Controller\Admin\SystemSettings\DataRetentionController;
 use App\Form\Type\JsonBuilderType;
@@ -52,16 +51,6 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
                     \DateTimeZone::listIdentifiers(\DateTimeZone::EUROPE),
                     \DateTimeZone::listIdentifiers(\DateTimeZone::EUROPE),
                 ),
-                'required' => true,
-                'translation_domain' => 'admin',
-            ])
-            ->add('financialYearStartMonth', ChoiceType::class, [
-                'label' => 'admin.tenant_settings.financial_year_start',
-                'choices' => [
-                    'Januar' => 1, 'Februar' => 2, 'März' => 3, 'April' => 4,
-                    'Mai' => 5, 'Juni' => 6, 'Juli' => 7, 'August' => 8,
-                    'September' => 9, 'Oktober' => 10, 'November' => 11, 'Dezember' => 12,
-                ],
                 'required' => true,
                 'translation_domain' => 'admin',
             ])
@@ -183,13 +172,6 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
                 'required' => true,
                 'translation_domain' => 'admin',
             ])
-            ->add('apiRateLimitPerMinute', IntegerType::class, [
-                'label' => 'admin.tenant_settings.api_rate_limit',
-                'help' => 'admin.tenant_settings.api_rate_limit_help',
-                'required' => false,
-                'translation_domain' => 'admin',
-                'attr' => ['min' => 0, 'max' => 100000],
-            ])
             // @no-module-gate-required: TenantComplianceSettingsType is a per-tenant *configuration*
             //   form — the DORA category itself drives the activation of the nis2_dora module,
             //   so the field must always be visible to admins.
@@ -240,24 +222,6 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
             ],
         ]);
 
-        // Delivery channels per event type. `_global` (digest, webhook timeout)
-        // belongs to /admin/settings/notifications and is kept untouched.
-        $builder->add('notificationPreferences', JsonBuilderType::class, [
-            'label' => 'admin.tenant_settings.notification_preferences',
-            'help' => 'admin.tenant_settings.notification_preferences_help',
-            'required' => false,
-            'shape' => 'map',
-            'hidden_keys' => ['_global'],
-            'key_label' => $tr . 'event_key',
-            'key_suggestions' => ['incident', 'breach', 'audit_finding', 'training_overdue'],
-            'add_label' => $tr . 'event_add',
-            'fields' => [
-                ['key' => 'email', 'type' => 'bool', 'label' => $tr . 'channel_email'],
-                ['key' => 'slack', 'type' => 'bool', 'label' => $tr . 'channel_slack'],
-                ['key' => 'teams', 'type' => 'bool', 'label' => $tr . 'channel_teams'],
-            ],
-        ]);
-
         // CSIRT endpoints for automated incident reporting (BSI, sectoral CSIRT, ENISA).
         $builder->add('csirtEndpoints', JsonBuilderType::class, [
             'label' => 'admin.tenant_settings.csirt_endpoints',
@@ -303,12 +267,12 @@ final class TenantComplianceSettingsType extends AbstractType implements Section
     public static function getSectionMap(): array
     {
         return [
-            'defaults'              => ['locale', 'timezone', 'financialYearStartMonth', 'tlpDefault'],
+            'defaults'              => ['locale', 'timezone', 'tlpDefault'],
             'address'               => ['addressStreet', 'addressPostalCode', 'addressCity', 'addressCountry'],
             'privacy'               => ['dpoContactName', 'dpoContactEmail', 'dpoAppointmentDate', 'dpoIsExternal', 'dpoAuthorityNotifiedAt', 'dpoDeputyName', 'representativeName', 'representativeContact'],
             'risk_assessment'       => ['riskMethodology', 'wizardMaturityTarget'],
             'entity_classification' => ['doraEntityCategory'],
-            'advanced'              => ['apiRateLimitPerMinute', 'supervisoryAuthorities', 'dataRetentionPolicies', 'notificationPreferences', 'csirtEndpoints', 'crisisTeamOnCall'],
+            'advanced'              => ['supervisoryAuthorities', 'dataRetentionPolicies', 'csirtEndpoints', 'crisisTeamOnCall'],
         ];
     }
 }

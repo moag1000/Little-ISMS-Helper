@@ -62,6 +62,7 @@ final readonly class CrossCoverageCalculator
         'ISO27701'        => ['label' => 'ISO/IEC 27701 (PIMS)', 'total' => 49],
         'NIS2'            => ['label' => 'EU-NIS2 (Art. 21)', 'total' => 10],
         'BSI-C5'          => ['label' => 'BSI C5:2020', 'total' => 114],
+        'BSI-GSPP'        => ['label' => 'BSI Grundschutz++', 'total' => 1000],
         'TISAX'           => ['label' => 'TISAX / VDA-ISA', 'total' => 80],
         'SOC2'            => ['label' => 'SOC 2 (TSC)', 'total' => 33],
         'ISO-22301'       => ['label' => 'ISO 22301 (BCMS)', 'total' => 30],
@@ -101,6 +102,7 @@ final readonly class CrossCoverageCalculator
         'nis2'     => 'NIS2',
         'bsi'      => 'BSI_GRUNDSCHUTZ',
         'c5'       => 'BSI-C5',
+        'gspp'     => 'BSI-GSPP',
         'iso27701' => 'ISO27701',
         'tisax'    => 'TISAX',
         'soc2'     => 'SOC2',
@@ -193,7 +195,9 @@ final readonly class CrossCoverageCalculator
             // is registered, union the SectionExtension::controlRefs into the
             // matching framework coverage bucket. array_unique() deduplicates
             // against refs already contributed by FIELD_ACCESSORS above.
-            if ($this->sectionExtensionRegistry !== null) {
+            // Only ISO 27001 host policies receive extensions (DocumentGenerator), so
+            // only they may count the extension refs as covered.
+            if ($this->sectionExtensionRegistry !== null && $template->getStandard() === 'iso27001') {
                 $topic = $template->getTopic() ?? '';
                 foreach ($run->getStandardsAdopted() ?? [] as $standardToken) {
                     $frameworkCode = self::SECTION_EXTENSION_FRAMEWORK_MAP[$standardToken] ?? null;

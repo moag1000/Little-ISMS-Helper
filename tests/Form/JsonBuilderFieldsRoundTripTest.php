@@ -61,10 +61,6 @@ final class JsonBuilderFieldsRoundTripTest extends KernelTestCase
             'incident' => ['retention_days' => 1825, 'auto_delete' => true],
             'crm' => ['retention_days' => 730, 'auto_delete' => false, 'basis' => 'HGB §257'],
         ]];
-        yield 'tenant notification preferences keep _global' => [TenantComplianceSettingsType::class, new Tenant(), 'notificationPreferences', [
-            'incident' => ['email' => true, 'slack' => false],
-            '_global' => ['digest_enabled' => true, 'digest_frequency' => 'daily', 'webhook_timeout' => 10],
-        ]];
         yield 'tenant csirt endpoints' => [TenantComplianceSettingsType::class, new Tenant(), 'csirtEndpoints', [
             'BSI-CERT' => ['url' => 'https://www.bsi.bund.de/meldung', 'contact' => 'certbund@bsi.bund.de', 'auth_type' => 'none'],
         ]];

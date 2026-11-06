@@ -35,7 +35,7 @@ final class PolicyApprovalChainCompletedCheckTest extends TestCase
     }
 
     #[Test]
-    public function passesWhenNoPoliciesYet(): void
+    public function scoresZeroWhenNoPoliciesYet(): void
     {
         $tenant = $this->createMock(Tenant::class);
         $this->documentRepository->method('createQueryBuilder')->willReturn(
@@ -44,9 +44,11 @@ final class PolicyApprovalChainCompletedCheckTest extends TestCase
 
         $result = $this->check->run($tenant);
 
-        self::assertTrue($result->passed);
-        self::assertSame(100.0, $result->score);
+        self::assertFalse($result->passed);
+        self::assertSame(0.0, $result->score);
+        self::assertSame('no_data', $result->details['reason']);
         self::assertSame(0, $result->details['policies_total']);
+        self::assertNotNull($result->gap);
     }
 
     #[Test]

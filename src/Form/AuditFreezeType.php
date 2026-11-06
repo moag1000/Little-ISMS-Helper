@@ -50,7 +50,8 @@ final class AuditFreezeType extends AbstractType
 
         $builder
             ->add('freezeName', TextType::class, [
-                'label' => 'audit_freeze.form.name',
+                'label' => 'audit_freeze.field.name',
+                'help' => 'audit_freeze.field.name_help',
                 'required' => true,
                 'attr' => ['maxlength' => 200],
                 'constraints' => [
@@ -59,7 +60,8 @@ final class AuditFreezeType extends AbstractType
                 ],
             ])
             ->add('stichtag', DateType::class, [
-                'label' => 'audit_freeze.form.stichtag',
+                'label' => 'audit_freeze.field.stichtag',
+                'help' => 'audit_freeze.field.stichtag_help',
                 'widget' => 'single_text',
                 'required' => true,
                 'input' => 'datetime_immutable',
@@ -75,7 +77,8 @@ final class AuditFreezeType extends AbstractType
                 ],
             ])
             ->add('frameworkCodes', ChoiceType::class, [
-                'label' => 'audit_freeze.form.frameworks',
+                'label' => 'audit_freeze.field.frameworks',
+                'help' => 'audit_freeze.field.frameworks_help',
                 'choices' => $frameworkChoices,
                 'multiple' => true,
                 'expanded' => true,
@@ -88,12 +91,13 @@ final class AuditFreezeType extends AbstractType
                 ],
             ])
             ->add('purpose', ChoiceType::class, [
-                'label' => 'audit_freeze.form.purpose',
+                'label' => 'audit_freeze.field.purpose',
                 'choices' => self::PURPOSE_CHOICES,
                 'required' => true,
             ])
             ->add('notes', TextareaType::class, [
-                'label' => 'audit_freeze.form.notes',
+                'label' => 'audit_freeze.field.notes',
+                'help' => 'audit_freeze.field.notes_help',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ]);

@@ -8,9 +8,8 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Exception\Import\ImportFailedException;
-use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
-use App\Repository\ComplianceRequirementRepository;
+use App\Service\MappingValidatorService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -61,9 +60,8 @@ final class CrossFrameworkMappingImporter
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ComplianceFrameworkRepository $frameworkRepository,
-        private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly ComplianceMappingRepository $mappingRepository,
+        private readonly MappingValidatorService $mappingValidator,
     ) {
     }
 
@@ -86,8 +84,9 @@ final class CrossFrameworkMappingImporter
     ): array {
         $result = $this->emptyResult();
 
-        $source = $this->frameworkRepository->findOneBy(['code' => $sourceFrameworkCode]);
-        $target = $this->frameworkRepository->findOneBy(['code' => $targetFrameworkCode]);
+        // Same code/alias/name resolution as the mapping library loader.
+        $source = $this->mappingValidator->resolveFramework($sourceFrameworkCode);
+        $target = $this->mappingValidator->resolveFramework($targetFrameworkCode);
 
         if (!$source instanceof ComplianceFramework) {
             $result['errors'][] = ['row' => 0, 'message' => sprintf('Source framework %s not loaded.', $sourceFrameworkCode)];
@@ -139,14 +138,9 @@ final class CrossFrameworkMappingImporter
                 continue;
             }
 
-            $srcReq = $this->requirementRepository->findOneBy([
-                'framework' => $source,
-                'requirementId' => $sourceId,
-            ]);
-            $tgtReq = $this->requirementRepository->findOneBy([
-                'framework' => $target,
-                'requirementId' => $targetId,
-            ]);
+            // Prefixed IDs (ISO27001-A.5.1) and Baustein codes resolve like in the library loader.
+            $srcReq = $this->mappingValidator->resolveRequirement($source, $sourceId);
+            $tgtReq = $this->mappingValidator->resolveRequirement($target, $targetId);
 
             if (!$srcReq instanceof ComplianceRequirement || !$tgtReq instanceof ComplianceRequirement) {
                 $result['skipped_missing']++;

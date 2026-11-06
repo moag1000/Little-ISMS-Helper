@@ -51,6 +51,7 @@ final class CrossCoverageSoc2SectionExtensionTest extends TestCase
     {
         $template = new PolicyTemplate();
         $template->setTopic($topic);
+        $template->setStandard('iso27001'); // extensions only extend ISO 27001 host policies
         $template->setLinkedAnnexAControls($linkedAnnexAControls);
         // SOC 2 TSC refs come exclusively from Soc2SectionCatalogue, not from
         // a PolicyTemplate field — the catalogue is the single source of truth.

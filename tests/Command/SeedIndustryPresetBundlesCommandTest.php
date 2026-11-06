@@ -7,6 +7,7 @@ namespace App\Tests\Command;
 use App\Command\SeedIndustryPresetBundlesCommand;
 use App\Entity\IndustryPresetBundle;
 use App\Repository\IndustryPresetBundleRepository;
+use App\Service\PolicyWizard\Step\WelcomeStandardsStep;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -60,6 +61,31 @@ class SeedIndustryPresetBundlesCommandTest extends TestCase
             ],
             $keys,
         );
+    }
+
+    #[Test]
+    public function testSeededPresetsOnlyPreselectStandardsStepOneAccepts(): void
+    {
+        $repo = $this->createMock(IndustryPresetBundleRepository::class);
+        $repo->method('findByKey')->willReturn(null);
+
+        $persisted = [];
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('persist')->willReturnCallback(static function (IndustryPresetBundle $b) use (&$persisted): void {
+            $persisted[] = $b;
+        });
+
+        (new SeedIndustryPresetBundlesCommand($em, $repo))->seed();
+
+        foreach ($persisted as $bundle) {
+            foreach ($bundle->getPreselectedStandards() as $standard) {
+                self::assertContains(
+                    $standard,
+                    WelcomeStandardsStep::ALLOWED_STANDARDS,
+                    sprintf('Preset "%s" preselects "%s", which Step 1 would reject.', $bundle->getKey(), $standard),
+                );
+            }
+        }
     }
 
     #[Test]

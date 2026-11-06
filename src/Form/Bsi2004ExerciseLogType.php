@@ -32,7 +32,7 @@ final class Bsi2004ExerciseLogType extends AbstractType implements SectionMapInt
             'translation_domain' => $translationDomain,
             'choices'         => array_combine(
                 array_map(
-                    static fn (string $t): string => 'exercise_type.' . $t,
+                    static fn (string $t): string => 'bsi_200_4_exercise.exercise_type.' . $t,
                     Bsi2004ExerciseLog::EXERCISE_TYPES
                 ),
                 Bsi2004ExerciseLog::EXERCISE_TYPES
@@ -45,7 +45,7 @@ final class Bsi2004ExerciseLogType extends AbstractType implements SectionMapInt
             'translation_domain' => $translationDomain,
             'choices'         => array_combine(
                 array_map(
-                    static fn (string $t): string => 'template.' . $t,
+                    static fn (string $t): string => 'bsi_200_4_exercise.template.' . $t,
                     Bsi2004ExerciseLog::TEMPLATES
                 ),
                 Bsi2004ExerciseLog::TEMPLATES
@@ -133,7 +133,7 @@ final class Bsi2004ExerciseLogType extends AbstractType implements SectionMapInt
             'placeholder'     => 'bsi_200_4_exercise.field.rating_placeholder',
             'choices'         => array_combine(
                 array_map(
-                    static fn (string $r): string => 'rating.' . $r,
+                    static fn (string $r): string => 'bsi_200_4_exercise.rating.' . $r,
                     Bsi2004ExerciseLog::RATINGS
                 ),
                 Bsi2004ExerciseLog::RATINGS

@@ -173,7 +173,7 @@ final class SeedBsiExtraBausteineCommandTest extends TestCase
         self::assertSame(PolicyTemplate::BSI_TIER_STANDARD, $dc->getBsiTier());
         self::assertSame('programme', $dc->getDocumentType());
         self::assertContains('A.7.11', $dc->getLinkedAnnexAControls() ?? []);
-        self::assertContains('ROLE_BCM', $dc->getApprovalChain() ?? []);
+        self::assertContains('ROLE_BCM_OFFICER', $dc->getApprovalChain() ?? []);
 
         // Spot-check: IND.1 OT/ICS → tier standard, IEC 62443 referenced via Cross-Ref.
         $ot = $byKey['bsi.bsi_ind_1_2_ot_network_architecture'] ?? null;
@@ -185,7 +185,7 @@ final class SeedBsiExtraBausteineCommandTest extends TestCase
         self::assertContains('A.5.7', $ot->getLinkedAnnexAControls() ?? []);
         self::assertContains('A.8.32', $ot->getLinkedAnnexAControls() ?? []);
         self::assertContains('ROLE_OT_LEAD', $ot->getApprovalChain() ?? []);
-        self::assertContains('ROLE_BCM', $ot->getApprovalChain() ?? []);
+        self::assertContains('ROLE_BCM_OFFICER', $ot->getApprovalChain() ?? []);
 
         // Spot-check: SYS.4.5 Removable Media → DPO required (data exfil risk).
         $rm = $byKey['bsi.bsi_sys_4_5_storage_systems'] ?? null;

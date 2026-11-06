@@ -1747,7 +1747,7 @@ class DeploymentWizardController extends AbstractController
         // Clear session
         $session->clear();
 
-        $this->addFlash('success', $this->translator->trans('deployment.success.reset', [], 'setup'));
+        $this->addFlash('success', $this->translator->trans('setup.reset_done', [], 'setup'));
         return $this->redirectToRoute('setup_wizard_index');
     }
 }

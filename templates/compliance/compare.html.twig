@@ -244,7 +244,7 @@
 <div class="module-grid mt-4">
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
-            <h3>{{ 'compliance.section.unique_to'|trans({}, 'compliance') }} {{ selectedFramework1.name }}</h3>
+            <h3>{{ 'compliance.section.unique_to'|trans({'%framework%': selectedFramework1.name}, 'compliance') }}</h3>
             <p class="text-muted-mt-xs-mb-md">
                 {{ 'compliance.description.unique_requirements'|trans({}, 'compliance') }}
             </p>

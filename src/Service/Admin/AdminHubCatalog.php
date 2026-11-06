@@ -434,15 +434,6 @@ final class AdminHubCatalog
                         'route' => 'admin_notification_template_index',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
-                    // scope: own-tenant notification preference defaults
-                    [
-                        'key' => 'notification_preferences',
-                        'icon' => 'fa-icon--nav-sliders',
-                        'label' => 'admin.hub.module.notification_preferences.label',
-                        'description' => 'admin.hub.module.notification_preferences.desc',
-                        'route' => 'admin_settings_notifications',
-                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
-                    ],
                 ],
             ],
             [
@@ -609,24 +600,6 @@ final class AdminHubCatalog
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
                     // Deferred system-settings sub-pages
-                    // scope: GLOBAL — API rate-limit defaults (instance-wide)
-                    [
-                        'key' => 'api_rate_limits',
-                        'icon' => 'fa-icon--nav-speedometer',
-                        'label' => 'admin.hub.module.api_rate_limits.label',
-                        'description' => 'admin.hub.module.api_rate_limits.desc',
-                        'route' => 'admin_settings_api_rate_limits',
-                        'requiredAttribute' => 'ADMIN_GLOBAL_OP',
-                    ],
-                    // scope: GLOBAL — backup-engine system config (storage, schedules)
-                    [
-                        'key' => 'backup_settings',
-                        'icon' => 'fa-icon--nav-database',
-                        'label' => 'admin.hub.module.backup_settings.label',
-                        'description' => 'admin.hub.module.backup_settings.desc',
-                        'route' => 'admin_settings_backups',
-                        'requiredAttribute' => 'ADMIN_GLOBAL_OP',
-                    ],
                     // scope: own-tenant location map (opt-in online geocoding)
                     [
                         'key' => 'location_map_settings',
@@ -636,15 +609,6 @@ final class AdminHubCatalog
                         'route' => 'admin_settings_location_map',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
-                    // scope: own-tenant fiscal year configuration
-                    [
-                        'key' => 'fiscal_year',
-                        'icon' => 'fa-icon--nav-calendar',
-                        'label' => 'admin.hub.module.fiscal_year.label',
-                        'description' => 'admin.hub.module.fiscal_year.desc',
-                        'route' => 'admin_settings_fiscal_year',
-                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
-                    ],
                     // scope: GLOBAL — instance-wide data retention defaults
                     [
                         'key' => 'data_retention_settings',
@@ -652,15 +616,6 @@ final class AdminHubCatalog
                         'label' => 'admin.hub.module.data_retention_settings.label',
                         'description' => 'admin.hub.module.data_retention_settings.desc',
                         'route' => 'admin_settings_data_retention',
-                        'requiredAttribute' => 'ADMIN_GLOBAL_OP',
-                    ],
-                    // scope: GLOBAL — workflow SLA defaults (instance-wide YAML edit)
-                    [
-                        'key' => 'workflow_sla_defaults',
-                        'icon' => 'fa-icon--ui-hourglass',
-                        'label' => 'admin.hub.module.workflow_sla_defaults.label',
-                        'description' => 'admin.hub.module.workflow_sla_defaults.desc',
-                        'route' => 'admin_settings_workflow_slas',
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
                     // scope: GLOBAL — lifecycle YAML edit (cross-tenant baseline)

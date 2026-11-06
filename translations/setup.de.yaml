@@ -1,4 +1,5 @@
 setup:
+    reset_done: 'Setup zurückgesetzt.'
     # Common keys used across setup templates
     common:
         close: 'Schließen'
@@ -143,6 +144,14 @@ setup:
 
     # Step 2: Database Configuration
     database:
+        user_help: 'Benutzername für die Datenbankverbindung'
+        unix_socket_help: 'Pfad zum MySQL/MariaDB Unix-Socket (leer lassen für TCP-Verbindung)'
+        type_help: 'Wählen Sie den Typ Ihrer Datenbank'
+        port_help: 'Port des Datenbankservers (wird automatisch gesetzt wenn leer)'
+        password_help_standalone: 'Das Passwort wurde automatisch generiert und ist bereits vorausgefüllt (siehe /var/www/html/var/mysql_credentials.txt)'
+        password_help: 'Passwort für die Datenbankverbindung'
+        name_help: 'Name der Datenbank (nur Buchstaben, Zahlen und Unterstriche)'
+        host_help: 'Hostname oder IP-Adresse des Datenbankservers'
         title: 'Schritt 2: Datenbank - Deployment Wizard'
         header: 'Schritt 2: Datenbank konfigurieren'
         description: 'Geben Sie Ihre Datenbank-Verbindungsdaten ein.'
@@ -237,6 +246,7 @@ setup:
 
     # Step 4: Admin User
     admin:
+        password_mismatch: 'Die Passwörter stimmen nicht überein.'
         title: 'Schritt 4: Administrator - Deployment Wizard'
         header: 'Schritt 4: Administrator-Konto erstellen'
         description: 'Erstellen Sie das erste Administrator-Konto für Ihre ISMS-Installation.'
@@ -267,6 +277,14 @@ setup:
 
     # Step 5: Email Configuration
     email:
+        username_help: 'SMTP-Benutzername für die Authentifizierung'
+        transport_help: 'Wählen Sie die Methode zum Versenden von E-Mails'
+        port_help: 'SMTP-Port (587 für TLS, 465 für SSL, 25 für unverschlüsselt)'
+        host_help: 'Hostname des SMTP-Servers (z.B. smtp.example.com)'
+        from_name_help: 'Name, der als Absender angezeigt wird'
+        from_address_help: 'E-Mail-Adresse, von der Nachrichten gesendet werden'
+        encryption_help: 'Verschlüsselungsmethode (TLS empfohlen)'
+        from_name_placeholder: 'z. B. ISMS Helper'
         title: 'Schritt 5: E-Mail - Deployment Wizard'
         header: 'Schritt 5: E-Mail-Konfiguration (Optional)'
         transport: 'E-Mail-Transport'
@@ -291,6 +309,11 @@ setup:
 
     # Step 6: Organisation Info
     organisation:
+        name_help: 'Der offizielle Name Ihrer Organisation'
+        description_label: 'Beschreibung'
+        description_help: 'Kurze Beschreibung Ihrer Geschäftstätigkeit (optional, hilft bei der Einschätzung)'
+        name_placeholder: 'z. B. Muster GmbH'
+        description_placeholder: 'z. B. Softwareentwicklung für den Gesundheitssektor'
         title: 'Schritt 6: Organisation - Deployment Wizard'
         header: 'Schritt 6: Organisationsinformationen'
         description: 'Diese Informationen helfen bei der Konfiguration Ihres ISMS.'
@@ -337,6 +360,8 @@ setup:
 
     # Step 8: Compliance Frameworks
     compliance:
+        frameworks_help: 'Die Vorauswahl richtet sich nach Branche und Größe und lässt sich später ändern.'
+        frameworks: 'Compliance-Frameworks'
         title: 'Schritt 8: Compliance Frameworks - Deployment Wizard'
         header: 'Schritt 8: Compliance Frameworks auswählen'
         description: 'Wählen Sie die Compliance-Frameworks aus, die für Ihre Organisation relevant sind.'
@@ -466,6 +491,16 @@ setup:
                 hint: 'Für spezifische Geschäftsfelder oder als zusätzlicher Nachweis.'
                 why: 'Optional weil'
         reason:
+            iso27017: 'Cloud-Dienste: ISO 27017 ergänzt ISO 27001 um Cloud-spezifische Controls.'
+            iso27018: 'Cloud-Dienste mit personenbezogenen Daten: ISO 27018 regelt den Schutz von PII in der Cloud.'
+            iso42001: 'KI-Governance-Standard — empfohlen, wenn Sie Hochrisiko-KI betreiben.'
+            eu_cra: 'Hersteller und IT-Dienstleister in der EU — Cyber Resilience Act mit Pflichten für Produkte mit digitalen Elementen.'
+            pci_dss: 'Nur relevant, wenn Sie Kartendaten verarbeiten, speichern oder übertragen.'
+            bsi_gspp: 'BSI Grundschutz++ (Standard 300-1) — Weiterentwicklung des IT-Grundschutzes.'
+            mris: 'MRIS — Nischen-Framework, nur bei ausdrücklichem Bedarf.'
+            nisg_at: 'Österreichische Einrichtung in einem NIS2-Sektor — NISG-Pflichten gelten.'
+            revdsg_ch: 'Schweizer Datenschutzrecht (revDSG) gilt bei Sitz oder Verarbeitung in der Schweiz.'
+            ikt_minstd_ch: 'Betreiber kritischer Infrastruktur in der Schweiz — IKT-Minimalstandard empfohlen.'
             iso27001: 'Kern-Ziel des Tools — die Anforderungen dienen als Fundament für alle anderen Frameworks.'
             gdpr_eu: 'Sie sind im EU-Raum ansässig — DSGVO gilt ohne Ausnahme für jede PII-Verarbeitung.'
             gdpr_non_eu: 'Auch außerhalb der EU relevant, sobald EU-Bürger-Daten verarbeitet werden (Marktortprinzip).'
