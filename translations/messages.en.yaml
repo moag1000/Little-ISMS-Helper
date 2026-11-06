@@ -1892,6 +1892,7 @@ bulk_actions:
     assign_owner: 'Assign owner'
     tag: 'Tag'
     approve: 'Approve'
+    review: 'Confirm review'
     delete: 'Delete'
     deselect: 'Clear selection'
     close: 'Clear selection'
@@ -1901,6 +1902,10 @@ bulk_actions:
         set_applicable: 'Applicable (yes)'
         set_not_applicable: 'N/A (not applicable)'
         default_reason: 'Bulk action via SoA table'
+
+periodic_review:
+    due_filter: 'Review due: %count%'
+    due_hint: 'Date passed or never reviewed'
 
 aria:
     notifications: 'Notifications'

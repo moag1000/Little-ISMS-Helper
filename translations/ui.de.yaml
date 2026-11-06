@@ -235,6 +235,13 @@ ui:
             export_success: Exportiert.
             items: 'Einträge'
             no_tags_selected: 'Keine Tags ausgewählt.'
+            review_confirm: 'Review für %count% Einträge mit Datum heute bestätigen? Der nächste Termin folgt dem Prüfintervall des jeweiligen Eintrags.'
+            review_error: 'Bestätigen fehlgeschlagen'
+            review_none: 'Nichts bestätigt: %rejected% Einträge ohne Berechtigung oder ohne periodisches Review (z. B. geschlossen, archiviert, nicht anwendbar)'
+            review_partial: '%changed% bestätigt, %rejected% übersprungen (ohne Berechtigung oder ohne periodisches Review)'
+            review_submit: 'Review bestätigen'
+            review_success: 'Review für %count% Einträge bestätigt.'
+            review_title: 'Review bestätigen'
             status_change_error: 'Aktualisierung fehlgeschlagen'
             status_change_partial: '%changed% aktualisiert, %rejected% abgelehnt'
             status_change_success: '%count% Einträge aktualisiert'

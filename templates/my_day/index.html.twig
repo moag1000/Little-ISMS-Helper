@@ -209,6 +209,13 @@
                         </div>
                     {% endfor %}
                 </div>
+                {# Overdue reviews: jump to the filtered list, where "Review bestätigen" confirms several at once. #}
+                {% set _reviewList = { risk_review_overdue: 'app_risk_index', documents_review_overdue: 'app_document_index', supplier_reassessment_due: 'app_supplier_index' }[c.key] ?? null %}
+                {% if _reviewList and is_granted('ROLE_MANAGER') %}
+                    <div class="mt-2 d-grid d-sm-block">
+                        <a href="{{ path(_reviewList, { review_overdue: '1' }) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'my_day.action.review_in_list'|trans({}, 'my_day') }}</a>
+                    </div>
+                {% endif %}
             </div>
         </details>
     {% endfor %}

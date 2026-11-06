@@ -234,7 +234,7 @@
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_soa_index'),
-    filter_keys: ['category', 'status', 'mris', 'view', 'tag', 'essential'],
+    filter_keys: ['category', 'status', 'mris', 'view', 'tag', 'essential', 'review_overdue'],
     search_placeholder: 'soa.filter.search_placeholder'|trans({}, 'soa'),
     form_id: 'soa-filter-form'
 } %}
@@ -242,6 +242,7 @@
         {% if app.request.query.get('view') %}
             <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
         {% endif %}
+        {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}
         <div class="col-md-4">
             <label for="category-filter" class="form-label">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
             <select id="category-filter" name="category" class="form-select fa-cyber-input__field">
@@ -297,6 +298,9 @@
         </div>
     {% endblock %}
 {% endembed %}
+
+{% set _review_chip %}{% include '_components/_review_due_chip.html.twig' with { type: 'control' } only %}{% endset %}
+{% if _review_chip|trim is not empty %}<div class="fa-list-page__summary d-flex flex-wrap gap-2 mb-3">{{ _review_chip }}</div>{% endif %}
 
 {# Canonical bulk-action wrapper (per design-system spec): provides row-level
    selection state for the fa-table below + tag-bulk integration. #}
@@ -433,7 +437,7 @@
        polymorphic tag-bar above (entity_class: Control). #}
     {% if controls|length > 0 %}
         {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['applicable_change', 'export']
+            actions: ['applicable_change', 'review', 'export']
         } %}
     {% endif %}
 </div>

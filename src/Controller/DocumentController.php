@@ -10,6 +10,7 @@ use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Control;
 use App\Entity\Document;
 use App\Util\ListPage;
+use App\Service\Review\PeriodicReviewService;
 use App\Entity\DocumentControlLink;
 use App\Enum\DocumentStatus;
 use App\Form\DocumentType;
@@ -85,7 +86,7 @@ class DocumentController extends AbstractController
     ) {}
 
     #[Route('/document', name: 'app_document_index', methods: ['GET'])]
-    public function index(Request $request): Response
+    public function index(Request $request, ?PeriodicReviewService $periodicReviewService = null): Response
     {
         // Get current tenant
         $user = $this->security->getUser();
@@ -198,7 +199,8 @@ class DocumentController extends AbstractController
             );
         }
 
-        // Sort by upload date descending
+        // "Review fällig" filter (PeriodicReviewService — one rule for all four lists), newest upload first
+        $documents = $periodicReviewService?->filterDueWhen($request->query->get('review_overdue') === '1', $documents) ?? $documents;
         usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());
 
         // Category filter (GET `category`) — replaces the old client-side select.
@@ -218,12 +220,8 @@ class DocumentController extends AbstractController
         $kpiDrafts   = count(array_filter($documents, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::Draft->value));
         $kpiInReview = count(array_filter($documents, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::InReview->value));
 
-        // Policy-Wizard — settings-drift map. For every Document in
-        // the listing, ask the SettingsDriftDetector whether the snapshot
-        // diverges from current tenant settings. Result map is keyed on
-        // Document.id so the template can render the badge inline. The
-        // service is optional in the DI graph; when missing, the map
-        // stays empty and no badge renders.
+        // Policy-Wizard settings-drift map, keyed on Document.id (template renders the badge inline).
+        // SettingsDriftDetector is optional in the DI graph; without it the map stays empty.
         $driftMap = [];
         if ($this->settingsDriftDetector !== null && $tenant !== null) {
             foreach ($documents as $document) {

@@ -38,6 +38,7 @@ use App\Service\Clone\RiskCloner;
 use App\Service\TenantContext;
 use App\Service\Prefill\RecordPrefill;
 use App\Util\ListPage;
+use App\Service\Review\PeriodicReviewService;
 use App\Risk\RiskMatrixThresholds;
 use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
@@ -104,7 +105,7 @@ class RiskController extends AbstractController
     }
     #[Route('/risk', name: 'app_risk_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request): Response
+    public function index(Request $request, PeriodicReviewService $periodicReviewService): Response
     {
         // Get current user's tenant
         $user = $this->security->getUser();
@@ -158,15 +159,8 @@ class RiskController extends AbstractController
         $risks = $this->riskRegisterExporter->filter($risks, $level, $status, $treatment, $owner);
         $risks = LocationScope::filter($risks, $request->query->getInt('location')); // drill-down from the location map
 
-        // Overdue reviews only (date passed or null) of risks requiring review (RiskStatus — never closed)
-        $reviewOverdue = $request->query->get('review_overdue');
-        if ($reviewOverdue === '1') {
-            $now = new \DateTime();
-            $risks = array_filter($risks, function (Risk $risk) use ($now): bool {
-                $due = $risk->getReviewDate() === null || $risk->getReviewDate() < $now;
-                return $due && $risk->getStatus()?->requiresPeriodicReview() !== false;
-            });
-        }
+        // "Review fällig" (date passed or never reviewed, never closed) — one rule for all four lists
+        $risks = $periodicReviewService->filterDueWhen($request->query->get('review_overdue') === '1', $risks);
 
         // Alva-hint deep-link: pre-filter to EXACTLY the set the matching hint
         // counts (shared repository finders).

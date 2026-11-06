@@ -235,6 +235,13 @@ ui:
             export_success: Exported.
             items: 'items'
             no_tags_selected: 'No tags selected.'
+            review_confirm: 'Confirm the review of %count% entries as of today? The next date follows each entry''s review interval.'
+            review_error: 'Confirming failed'
+            review_none: 'Nothing confirmed: %rejected% entries without permission or without periodic review (e.g. closed, archived, not applicable)'
+            review_partial: '%changed% confirmed, %rejected% skipped (no permission or no periodic review)'
+            review_submit: 'Confirm review'
+            review_success: 'Review confirmed for %count% entries.'
+            review_title: 'Confirm review'
             status_change_error: 'Update failed'
             status_change_partial: '%changed% updated, %rejected% rejected'
             status_change_success: '%count% entries updated'

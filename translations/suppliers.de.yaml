@@ -61,10 +61,7 @@ supplier:
         overdue_assessments: 'Überfällige Bewertungen'
         non_compliant: 'Nicht konform'
     alert:
-        overdue_assessments: 'Überfällige Bewertungen'
         non_compliant: 'Nicht-konforme Lieferanten'
-    next_assessment: 'Nächste Bewertung'
-    not_scheduled: 'Nicht geplant'
     risk_score: Risiko-Score
     list:
         title: 'Lieferantenliste (%count%)'

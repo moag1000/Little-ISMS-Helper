@@ -128,22 +128,6 @@
     </div>
     {% endif %}
 
-    {% if overdueAssessments|length > 0 %}
-    <div class="fa-alert fa-alert--warning" role="alert">
-        <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
-        <div class="fa-alert__body"><div class="fw-bold mb-2"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'supplier.alert.overdue_assessments'|trans({}, 'suppliers') }}</div>
-        <ul>
-            {% for supplier in overdueAssessments %}
-            <li>
-                <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                - {{ 'supplier.next_assessment'|trans({}, 'suppliers') }}: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.not_scheduled'|trans({}, 'suppliers')) }}
-            </li>
-            {% endfor %}
-        </ul>
-        </div>
-    </div>
-    {% endif %}
-
     {% if nonCompliant|length > 0 %}
     <div class="fa-alert fa-alert--danger" role="alert">
         <div class="fa-alert__body">
@@ -164,7 +148,7 @@
     {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
     {% embed '_components/_search_filter_form.html.twig' with {
         action: path('app_supplier_index'),
-        filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'dora_relevant', 'view', 'tag'],
+        filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'dora_relevant', 'view', 'tag', 'review_overdue'],
         form_id: 'supplier-filter-form'
     } %}
         {% block filters %}
@@ -172,6 +156,7 @@
             {% if app.request.query.get('view') %}
                 <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
             {% endif %}
+            {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}
             <div class="col-md-4">
                 <label for="filter-criticality" class="form-label">{{ 'supplier.table.criticality'|trans({}, 'suppliers') }}</label>
                 <select class="form-select fa-cyber-input__field" id="filter-criticality" name="criticality">
@@ -234,6 +219,9 @@
             available_tags: available_tags(),
         } only %}
     {% endif %}
+
+    {% set _review_chip %}{% include '_components/_review_due_chip.html.twig' with { type: 'supplier' } only %}{% endset %}
+    {% if _review_chip|trim is not empty %}<div class="fa-list-page__summary d-flex flex-wrap gap-2 mb-3">{{ _review_chip }}</div>{% endif %}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/supplier"{% endblock %}
@@ -310,7 +298,7 @@
             {# Bulk Action Bar #}
             {% if suppliers|length > 0 %}
             {% include '_components/_bulk_action_bar.html.twig' with {
-                actions: ['export', 'delete']
+                actions: ['export', 'review', 'delete']
             } %}
             {% endif %}
         {% endblock %}

@@ -605,6 +605,64 @@ export default class extends Controller {
     }
 
     /**
+     * Bulk "Review bestätigen" — confirms the periodic review of every
+     * selected row via POST {endpoint}/bulk-review (risk, soa, document,
+     * supplier). Server side: CSRF, ROLE_MANAGER, module gate, tenant scope,
+     * `edit` voter and one AuditLogger::logBulk batch; the next review date
+     * follows the record type's existing schedule (PeriodicReviewService).
+     */
+    async bulkReview(event) {
+        event?.preventDefault?.();
+
+        const ids = this.selectedIds();
+        if (ids.length === 0) {
+            return;
+        }
+
+        const confirmed = await faConfirm(faT('bulk_actions.review_confirm', { '%count%': ids.length }), {
+            title: faT('bulk_actions.review_title'),
+            confirmLabel: faT('bulk_actions.review_submit'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        const button = event?.currentTarget;
+        button?.classList.add('is-loading');
+        try {
+            const response = await fetch(this.endpointValue + '/bulk-review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ ids, _token: this._getCsrfToken() }),
+            });
+            const payload = await response.json().catch(() => ({}));
+            const changed = payload.changed ?? 0;
+            const rejected = (payload.rejected ?? []).length;
+
+            if (changed === 0) {
+                const reason = response.status === 403
+                    ? faT('forbidden')
+                    : (rejected > 0 ? faT('bulk_actions.review_none', { '%rejected%': rejected }) : faT('bulk_actions.review_error'));
+                this.showToast(reason, 'error');
+                return;
+            }
+            if (rejected > 0) {
+                this.showToast(faT('bulk_actions.review_partial', { '%changed%': changed, '%rejected%': rejected }), 'warning');
+            } else {
+                this.showToast(faT('bulk_actions.review_success', { '%count%': changed }), 'success');
+            }
+            setTimeout(() => window.location.reload(), 800);
+        } catch (error) {
+            this.showToast(faT('bulk_actions.review_error'), 'error');
+        } finally {
+            button?.classList.remove('is-loading');
+        }
+    }
+
+    /**
      * WS-5 Tag-Apply mode — open the inline tag-picker for adding tags.
      * Sets a data attribute on the picker so submitTagApply knows which URL to use.
      */

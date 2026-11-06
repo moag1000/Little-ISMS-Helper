@@ -61,10 +61,7 @@ supplier:
         overdue_assessments: 'Overdue Assessments'
         non_compliant: Non-compliant
     alert:
-        overdue_assessments: 'Overdue assessments'
         non_compliant: 'Non-compliant suppliers'
-    next_assessment: 'Next assessment'
-    not_scheduled: 'Not scheduled'
     risk_score: 'Risk Score'
     list:
         title: 'Supplier List (%count%)'

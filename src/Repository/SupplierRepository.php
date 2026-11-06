@@ -16,6 +16,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SupplierRepository extends ServiceEntityRepository
 {
+    /**
+     * Suppliers that take part in the periodic security assessment — a past
+     * next date of an inactive or terminated supplier is not "overdue".
+     * Same rule as {@see \App\Service\Review\PeriodicReviewService}.
+     */
+    private const array REVIEWABLE_STATUSES = ['active', 'evaluation'];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Supplier::class);
@@ -27,10 +34,10 @@ class SupplierRepository extends ServiceEntityRepository
     public function findOverdueAssessments(): array
     {
         return $this->createQueryBuilder('s')
-            ->where('s.nextAssessmentDate < :now')
-            ->orWhere('s.lastSecurityAssessment IS NULL AND s.status = :active')
+            ->where('(s.nextAssessmentDate < :now AND s.status IN (:reviewable)) OR (s.lastSecurityAssessment IS NULL AND s.status = :active)')
             ->setParameter('now', new DateTime())
             ->setParameter('active', SupplierStatus::Active->value)
+            ->setParameter('reviewable', self::REVIEWABLE_STATUSES)
             ->orderBy('s.criticality', 'DESC')
             ->getQuery()
             ->getResult();
@@ -100,9 +107,10 @@ class SupplierRepository extends ServiceEntityRepository
 
         $overdue = $this->createQueryBuilder('s')
             ->select('COUNT(s.id)')
-            ->where('s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active)')
+            ->where('(s.nextAssessmentDate < :now AND s.status IN (:reviewable)) OR (s.lastSecurityAssessment IS NULL AND s.status = :active)')
             ->setParameter('now', new DateTime())
             ->setParameter('active', SupplierStatus::Active->value)
+            ->setParameter('reviewable', self::REVIEWABLE_STATUSES)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -316,10 +324,11 @@ class SupplierRepository extends ServiceEntityRepository
         $overdueAssessments = $this->createQueryBuilder('s')
             ->select('COUNT(s.id)')
             ->where('s.tenant = :tenant')
-            ->andWhere('(s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active))')
+            ->andWhere('((s.nextAssessmentDate < :now AND s.status IN (:reviewable)) OR (s.lastSecurityAssessment IS NULL AND s.status = :active))')
             ->setParameter('tenant', $tenant)
             ->setParameter('now', new DateTime())
             ->setParameter('active', SupplierStatus::Active->value)
+            ->setParameter('reviewable', self::REVIEWABLE_STATUSES)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -366,24 +375,6 @@ class SupplierRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Find suppliers with overdue assessments for a specific tenant
-     *
-     * @param Tenant $tenant The tenant
-     * @return Supplier[] Array of suppliers with overdue assessments
-     */
-    public function findOverdueAssessmentsByTenant(Tenant $tenant): array
-    {
-        return $this->createQueryBuilder('s')
-            ->where('s.tenant = :tenant')
-            ->andWhere('(s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active))')
-            ->setParameter('tenant', $tenant)
-            ->setParameter('now', new DateTime())
-            ->setParameter('active', SupplierStatus::Active->value)
-            ->orderBy('s.criticality', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
 
     /**
      * Find non-compliant suppliers for a specific tenant

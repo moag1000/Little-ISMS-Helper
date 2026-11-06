@@ -253,8 +253,10 @@ class DocumentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find approved, non-archived Documents whose review-cycle is overdue —
-     * i.e. nextReviewDate < asOf. Surfaces in My-Day.
+     * Find approved or published, non-archived Documents whose review-cycle is
+     * overdue — i.e. nextReviewDate < asOf. Surfaces in My-Day. Published
+     * documents count too: `approved` is only the stage before publishing, so
+     * an approved-only filter dropped every live policy from the list.
      *
      * @return Document[] Sorted by nextReviewDate ASC (most overdue first)
      */
@@ -265,11 +267,11 @@ class DocumentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('d')
             ->where('d.tenant = :tenant')
             ->andWhere('d.isArchived = false')
-            ->andWhere('d.status = :approved')
+            ->andWhere('d.status IN (:reviewable)')
             ->andWhere('d.nextReviewDate IS NOT NULL')
             ->andWhere('d.nextReviewDate < :asOf')
             ->setParameter('tenant', $tenant)
-            ->setParameter('approved', 'approved')
+            ->setParameter('reviewable', ['approved', 'published'])
             ->setParameter('asOf', $asOf)
             ->orderBy('d.nextReviewDate', 'ASC')
             ->getQuery()

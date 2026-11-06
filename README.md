@@ -286,6 +286,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 - **Ein Detailseiten-Aufbau** -- Statusband, Ankerleiste, Nachweiskette Asset → Risiko → Control → Nachweis → Vorfall → Schwachstelle als erster Block, Historie und Kommentare
 - **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko), alte Freitext-Personenfelder nur noch wenn befüllt
 - **Mapping-Hub** -- alle Mapping-Werkzeuge hinter vier Tabs: Übersicht, Mappings, Qualität, Vergleich
+- **Review bestätigen** -- Risiken, Controls (SoA), Dokumente und Lieferanten: Chip "Review fällig" filtert die Liste, mehrere Einträge auswählen, ein Klick bestätigt das periodische Review (heutiges Datum, nächster Termin nach dem Prüfintervall des Eintrags, ein Audit-Log-Batch, ab Manager); aus "Mein Tag" führt "In der Liste bestätigen" direkt dorthin
 
 ### Design und Barrierefreiheit
 

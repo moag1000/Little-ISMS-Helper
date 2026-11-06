@@ -1364,7 +1364,8 @@ bulk_actions:
     assign: 'Zuweisen'
     assign_owner: 'Owner zuweisen'
     tag: 'Tag'
-    approve: 'Approven'
+    approve: 'Freigeben'
+    review: 'Review bestätigen'
     delete: 'Löschen'
     deselect: 'Auswahl aufheben'
     close: 'Auswahl aufheben'
@@ -1374,6 +1375,10 @@ bulk_actions:
         set_applicable: 'Applicable (ja)'
         set_not_applicable: 'N/A (nicht anwendbar)'
         default_reason: 'Bulk-Aktion via SoA-Tabelle'
+
+periodic_review:
+    due_filter: 'Review fällig: %count%'
+    due_hint: 'Termin überschritten oder noch nie geprüft'
 
 aria:
     notifications: 'Benachrichtigungen'
