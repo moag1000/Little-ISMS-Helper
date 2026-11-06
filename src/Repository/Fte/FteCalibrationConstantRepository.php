@@ -27,6 +27,7 @@ class FteCalibrationConstantRepository extends ServiceEntityRepository
         FteCalibrationConstant::OP_MANUAL_CONTROL_MAPPING => 4.0,
         FteCalibrationConstant::OP_SINGLE_FRAMEWORK_EVIDENCE_MAINTENANCE => 8.0,
         FteCalibrationConstant::OP_MANUAL_BUSINESS_PROCESS_CREATION => 3.0,
+        FteCalibrationConstant::OP_MANUAL_RECORD_UPDATE => 2.0,
     ];
 
     public function __construct(ManagerRegistry $registry)

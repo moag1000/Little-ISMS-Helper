@@ -116,6 +116,7 @@ location:
             region: 'Map position: area (country, EU/EEA or worldwide)'
     map:
         title: 'Location map'
+        open: 'Open map'
         aria: 'World map with %count% locations'
         attribution: 'Map: Natural Earth. Postal codes and places: GeoNames (CC BY 4.0).'
         show_on_map: 'Show on map'
@@ -206,6 +207,67 @@ location:
             risks: 'Risks (%count%)'
             assets: 'Assets (%count%)'
             incidents: Incidents
+        levers:
+            title: 'Biggest levers'
+            item: '%site%: %risk%'
+        peer:
+            title: 'Comparison with similar sites'
+            own_rate: 'Checks passed, %site%'
+            own_avg: 'Checks passed, average of my %count% sites'
+            own_gaps: '%count% of them with open checks'
+            median_hint: 'Median of similar sites: %median% % (%count% sites)'
+            none: 'No comparison: fewer than three similar sites.'
+            solved_at: 'Passed at:'
+            values: 'Passed %rate% %, median %median% %; risk %score%, median %median_score%'
+            rank_sentence:
+                top: 'Checks passed: top third of %count% similar sites.'
+                middle: 'Checks passed: middle third of %count% similar sites.'
+                bottom: 'Checks passed: bottom third of %count% similar sites.'
+            rank:
+                top: 'top third'
+                middle: 'middle third'
+                bottom: 'bottom third'
+            basis:
+                tag: 'group "%tag%"'
+                type: 'same type, similar protection need'
+                band: 'similar protection need'
+        objectives:
+            title: Objectives
+            line: 'Target %target%, current %current%, %months% months left'
+        actions:
+            title: Actions
+            risk: 'Record risk'
+            incident: 'Report incident'
+            owner: 'Assign owner'
+            audit: 'Plan audit'
+            exercise: 'Plan BC exercise'
+        bulk:
+            hint: 'Selection:'
+            action: 'Assign …'
+            owner: Owner
+            deputy: Deputy
+            tag: 'Group (tag)'
+            apply: Apply
+            select: Selection
+            select_site: 'Select %site%'
+            flash:
+                empty: 'No sites or no target selected.'
+                done: '%count% sites changed.'
+        export:
+            title: 'Location situation report'
+            sheet: Locations
+            scope: '%count% sites'
+            action_needed: 'Sites that need action'
+            xlsx: Excel
+            pdf: PDF
+            col:
+                rate: 'Passed (%)'
+                peer: Comparison
+                ale: 'Expected annual loss'
+    profile:
+        title: 'Site profile'
+        checks: 'Open checks'
+        not_site: 'Part of %site%. The profile covers the whole site.'
     title.list: Locations
     title.create: 'Create location'
     title.show: 'Location details'
