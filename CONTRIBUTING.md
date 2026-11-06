@@ -432,6 +432,10 @@ This project uses **release-please** for automated releases. The flow:
 1. Conventional commits land on `main` continuously.
 2. release-please opens (and keeps updating) a `chore(main): release X.Y.Z` PR
    that bumps `composer.json` + `CHANGELOG.md` from accumulated commits.
+   The same workflow then refreshes the `composer.lock` content-hash on that
+   branch (`composer update --lock`, no package changes) — the hash covers
+   the `version` field, so without it every release PR would ship a lock file
+   Composer reports as out of date.
 3. **Auto-merge runs every Monday at 09:00 UTC** via `.github/workflows/release-please-auto-merge.yml`.
    The job starts the CI pipeline on the release branch (workflow_dispatch —
    the PR's own bot-triggered runs stay "action required") and squash-merges
