@@ -69,15 +69,26 @@ export default class extends Controller {
         return type;
     }
 
+    /**
+     * Symfony flashes are rendered server-side as inline `.fa-alert` boxes in
+     * `#flash-messages` (base.html.twig), so they stay visible without JS.
+     * Confirmations (success/info) move into the toast stack; warnings and
+     * errors stay inline because they need attention and must not vanish
+     * after a few seconds. Flashes with links or actions stay inline too,
+     * a toast would drop them.
+     */
     _convertFlashMessages() {
         const flashContainer = document.querySelector('#flash-messages');
         if (!flashContainer) return;
         if (flashContainer.hasAttribute('data-skip-toast')) return;
 
-        const flashes = flashContainer.querySelectorAll('.alert');
+        const flashes = flashContainer.querySelectorAll('.fa-alert, .alert');
         flashes.forEach(flash => {
             const tone = this._toneFromAlertClass(flash.className);
-            const message = flash.textContent.trim();
+            if (tone !== 'success' && tone !== 'info') return;
+            if (flash.querySelector('a, button:not(.fa-alert__close), .fa-alert__actions')) return;
+            const messageEl = flash.querySelector('.fa-alert__message') || flash;
+            const message = messageEl.textContent.trim();
             if (message) {
                 this.show({
                     tone,
@@ -94,9 +105,9 @@ export default class extends Controller {
     }
 
     _toneFromAlertClass(className) {
-        if (className.includes('alert-success')) return 'success';
-        if (className.includes('alert-danger') || className.includes('alert-error')) return 'danger';
-        if (className.includes('alert-warning')) return 'warning';
+        if (/\b(fa-)?alert-{1,2}success\b/.test(className)) return 'success';
+        if (/\b(fa-)?alert-{1,2}(danger|error)\b/.test(className)) return 'danger';
+        if (/\b(fa-)?alert-{1,2}warning\b/.test(className)) return 'warning';
         return 'info';
     }
 
