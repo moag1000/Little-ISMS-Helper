@@ -2477,14 +2477,11 @@ show:
         period: 'Zeitraum'
         date: 'Datum'
         created: 'Erstellt'
-        last_review: 'Letzte Überprüfung'
         progress: 'Fortschritt'
         scope: 'Geltungsbereich'
         framework: 'Framework'
         active: 'Aktiv'
         inactive: 'Inaktiv'
-        yes: 'Ja'
-        no: 'Nein'
     history:
         none: 'Keine Einträge vorhanden.'
     anchor:
@@ -2492,4 +2489,6 @@ show:
         links: 'Verknüpfungen'
         details: 'Details'
         history: 'Historie'
+        fulfillment: 'Erfüllung'
+        requirements: 'Anforderungen'
         comments: 'Kommentare'

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ 'compliance.certificate.show.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -22,7 +23,19 @@
         ]
     }) }}
 
-    <section class="fa-section mb-4">
+    {% import '_components/_status_pill.html.twig' as _pill %}
+    {% set _status %}{{ _pill.render(('lifecycle.' ~ certificate.status)|trans({}, 'lifecycle'), {active: 'success', pending: 'warning', expired: 'danger', revoked: 'danger'}[certificate.status]|default('neutral')) }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.framework'|trans({}, 'messages'), value: certificate.frameworkCode },
+            { label: 'show.status.valid_until'|trans({}, 'messages'), value: certificate.validUntil ? certificate.validUntil|fa_date : null },
+        ],
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: certificate } only %}
+
+    <section class="fa-section fa-show-section mb-4" id="details">
         <div class="fa-section__body">
             <dl class="row">
                 <dt class="col-sm-3">{{ 'compliance.certificate.field.framework'|trans({}, 'compliance') }}</dt>
@@ -47,16 +60,16 @@
                 <dd class="col-sm-9">{{ certificate.scopeTags|join(', ') ?: '—' }}</dd>
 
                 <dt class="col-sm-3">{{ 'compliance.certificate.field.issue_date'|trans({}, 'compliance') }}</dt>
-                <dd class="col-sm-9">{{ certificate.issueDate ? certificate.issueDate|date('Y-m-d') : '—' }}</dd>
+                <dd class="col-sm-9">{{ certificate.issueDate|fa_date }}</dd>
 
                 <dt class="col-sm-3">{{ 'compliance.certificate.field.valid_until'|trans({}, 'compliance') }}</dt>
-                <dd class="col-sm-9">{{ certificate.validUntil ? certificate.validUntil|date('Y-m-d') : '—' }}</dd>
+                <dd class="col-sm-9">{{ certificate.validUntil|fa_date }}</dd>
 
-                <dt class="col-sm-3">{{ 'compliance.certificate.field.status'|trans({}, 'compliance') }}</dt>
-                <dd class="col-sm-9">{{ certificate.status }}</dd>
             </dl>
         </div>
     </section>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: certificate } only %}
 
     {% if is_granted(constant('App\\Security\\Voter\\ComplianceCertificateVoter::CERT_DELETE'), certificate) %}
         <form method="post"

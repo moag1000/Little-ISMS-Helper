@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}Mapping: {{ mapping.sourceRequirement.requirementId }} → {{ mapping.targetRequirement.requirementId }}{% endblock %}
@@ -35,8 +37,29 @@
     }) }}
     {% include 'compliance/mapping/_hub_tabs.html.twig' %}
 
+    {% set _status %}{% include '_components/_badge.html.twig' with { variant: mapping.reviewStatusBadgeClass, content: mapping.reviewStatus } %}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'compliance.mapping.field.mapping_type'|trans({}, 'compliance'), value: mapping.relationship in ['equivalent', 'subset', 'superset', 'partial_overlap', 'related'] ? ('compliance.mapping.rel_type.' ~ mapping.relationship ~ '.label')|trans({}, 'compliance') : mapping.mappingType },
+            { label: 'compliance.mapping.field.confidence'|trans({}, 'compliance'), value: mapping.confidence },
+            { label: 'show.status.progress'|trans({}, 'messages'), value: mapping.finalPercentage ~ ' %' },
+        ],
+        workflow: workflow_state(mapping),
+    }) }}
+
+    {% set _links = entity_links(mapping) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'compliance.mapping.overview'|trans({}, 'compliance') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: mapping } only %}
+
+
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 fa-show-section" id="details">
             {# Mapping Overview #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
@@ -218,7 +241,7 @@
                     </p>
                     {% if mapping.reviewedBy %}
                         <p><strong>Reviewed By:</strong> {{ mapping.reviewedBy }}</p>
-                        <p><strong>Review Date:</strong> {{ mapping.reviewedAt|date('Y-m-d H:i') }}</p>
+                        <p><strong>Review Date:</strong> {{ mapping.reviewedAt|fa_datetime }}</p>
                     {% endif %}
                     {% if mapping.reviewNotes %}
                         <hr>
@@ -245,15 +268,15 @@
                     <p><small><strong>Verified By:</strong> {{ mapping.verifiedBy|default('-') }}</small></p>
                     <p><small><strong>Verification Date:</strong>
                         {% if mapping.verificationDate %}
-                            {{ mapping.verificationDate|date('Y-m-d') }}
+                            {{ mapping.verificationDate|fa_date }}
                         {% else %}
                             -
                         {% endif %}
                     </small></p>
                     <p><small><strong>Algorithm:</strong> {{ mapping.analysisAlgorithmVersion|default('-') }}</small></p>
-                    <p><small><strong>Created:</strong> {{ mapping.createdAt|date('Y-m-d H:i') }}</small></p>
+                    <p><small><strong>Created:</strong> {{ mapping.createdAt|fa_datetime }}</small></p>
                     {% if mapping.updatedAt %}
-                        <p><small><strong>Updated:</strong> {{ mapping.updatedAt|date('Y-m-d H:i') }}</small></p>
+                        <p><small><strong>Updated:</strong> {{ mapping.updatedAt|fa_datetime }}</small></p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -277,6 +300,8 @@
             {% endembed %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: mapping } only %}
     {% endif %} {# /M-4 compliance module gate #}
 </div>
 {% endblock %}

@@ -3,7 +3,8 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ action.title }}{% endblock %}
 
@@ -32,11 +33,30 @@
         ]
     }) }}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\CorrectiveAction', status_key: action.status }) }}
-        {{ _lifecycle_actions.dropdown(action, 'corrective-action', 'corrective_action_lifecycle') }}
-    </div>
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\CorrectiveAction', status_key: action.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(action, 'corrective-action', 'corrective_action_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: action.effectiveResponsiblePerson },
+            { label: 'corrective_action.field.planned_completion_date'|trans({}, 'audits'), value: action.plannedCompletionDate ? action.plannedCompletionDate|fa_date : null },
+            { label: 'corrective_action.field.actual_completion_date'|trans({}, 'audits'), value: action.actualCompletionDate ? action.actualCompletionDate|fa_date : null },
+            { label: 'corrective_action.field.effectiveness_review_date'|trans({}, 'audits'), value: action.effectivenessReviewDate ? action.effectivenessReviewDate|fa_date : null },
+        ],
+        workflow: workflow_state(action),
+    }) }}
+
+    {% set _links = entity_links(action) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'corrective_action.section.description'|trans({}, 'audits') },
+        { id: 'verification', label: 'corrective_action.section.verification'|trans({}, 'audits'), show: action.status in ['verified_effective', 'verified_ineffective'] },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: action } only %}
 
     {# Tier-1 alert when CAPA is verified_ineffective and no Folge-CAPA yet.
        AlvaHintService would also surface this via the Show-template, but a hard
@@ -63,13 +83,7 @@
         </p>
     {% endif %}
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3"><strong>{{ 'corrective_action.field.status'|trans({}, 'audits') }}:</strong> {{ ('corrective_action.status.' ~ action.status)|trans({}, 'audits') }}</div>
-        <div class="col-md-3"><strong>{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}:</strong> {{ action.plannedCompletionDate ? action.plannedCompletionDate|date('Y-m-d') : '—' }}</div>
-        <div class="col-md-3"><strong>{{ 'corrective_action.field.actual_completion_date'|trans({}, 'audits') }}:</strong> {{ action.actualCompletionDate ? action.actualCompletionDate|date('Y-m-d') : '—' }}</div>
-        <div class="col-md-3"><strong>{{ 'corrective_action.field.effectiveness_review_date'|trans({}, 'audits') }}:</strong> {{ action.effectivenessReviewDate ? action.effectivenessReviewDate|date('Y-m-d') : '—' }}</div>
-    </div>
-
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0">{{ 'corrective_action.section.description'|trans({}, 'audits') }}</h2></div>
@@ -88,9 +102,11 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
 
     {# Verification details (only when verified_*). #}
     {% if action.status in ['verified_effective', 'verified_ineffective'] %}
+        <div id="verification" class="fa-show-section">
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
             {% block card_header %}
                 <div class="card-header"><h2 class="h5 mb-0">{{ 'corrective_action.section.verification'|trans({}, 'audits') }}</h2></div>
@@ -101,13 +117,14 @@
                     <dd class="col-sm-9">{{ action.verifiedBy ? action.verifiedBy.fullName : '—' }}</dd>
 
                     <dt class="col-sm-3">{{ 'corrective_action.field.verified_at'|trans({}, 'audits') }}</dt>
-                    <dd class="col-sm-9">{{ action.verifiedAt ? action.verifiedAt|date('Y-m-d H:i') : '—' }}</dd>
+                    <dd class="col-sm-9">{{ action.verifiedAt ? action.verifiedAt|fa_datetime : '—' }}</dd>
 
                     <dt class="col-sm-3">{{ 'corrective_action.field.effectiveness_evidence'|trans({}, 'audits') }}</dt>
                     <dd class="col-sm-9">{{ action.effectivenessEvidence ? action.effectivenessEvidence|nl2br : '—' }}</dd>
                 </dl>
             {% endblock %}
         {% endembed %}
+        </div>
     {% endif %}
 
     <form method="post" action="{{ path('app_corrective_action_delete', {id: action.id}) }}" class="mt-4"
@@ -121,7 +138,10 @@
         </button>
     </form>
 
+    {% include '_components/_fa_show_history.html.twig' with { entity: action, lifecycle: 'corrective-action' } only %}
+
     {# V4 LB-4: Comment-Thread adoption (C7 macro). #}
+    <div id="comments">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'CorrectiveAction',
@@ -130,9 +150,7 @@
         formAction: path('app_comment_post', {entityType: 'CorrectiveAction', entityId: action.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
-
-    {# Lifecycle X.3b — transition history tab #}
-    {{ _lifecycle_history.history('corrective-action', action.id) }}
+    </div>
     {% endif %} {# /M-4 corrective_actions module gate #}
 </div>
 {% endblock %}

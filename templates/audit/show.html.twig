@@ -4,7 +4,8 @@
 {% import '_components/_status_pill.html.twig' as pill %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'audit' %}
 {# Inline quick-capture modal #}
 {% import '_components/_fa_modal.html.twig' as _fa_modal %}
@@ -34,42 +35,42 @@
         subtitle: ('audit.status.' ~ audit.status)|trans({}, 'audit')
     }) }}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Audit', status_key: audit.status }) }}
-        {{ _lifecycle_actions.dropdown(audit, 'internal-audit', 'internal_audit_lifecycle') }}
-    </div>
+    {# Lifecycle X.3b + 4-eyes approval workflow (ISO 27001 Cl. 9.2.2 d) #}
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\InternalAudit', status_key: audit.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(audit, 'internal-audit', 'internal_audit_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'audit.lead_auditor'|trans({}, 'audit'), value: audit.leadAuditor },
+            { label: 'audit.planned_date'|trans({}, 'audit'), value: audit.plannedDate ? audit.plannedDate|fa_date : null },
+            { label: 'audit.field.reported_at'|trans({}, 'audit'), value: audit.reportedAt ? audit.reportedAt|fa_datetime : null },
+            { label: 'audit.field.approved_at'|trans({}, 'audit'), value: audit.approvedAt ? audit.approvedAt|fa_datetime : null },
+        ],
+        workflow: workflow_state(audit),
+    }) }}
 
-    {# Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d) #}
-    <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-        <span class="text-muted small">{{ 'audit.field.status'|trans({}, 'audit') }}:</span>
-        {{ pill.render(('audit.status.' ~ audit.status)|trans({}, 'audit'), audit.statusTone) }}
-        {% if audit.reportedAt %}
-            <span class="text-muted small ms-2">
-                <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
-                {{ 'audit.field.reported_at'|trans({}, 'audit') }}: {{ audit.reportedAt|date('d.m.Y H:i') }}
-            </span>
-        {% endif %}
-        {% if audit.approvedAt %}
-            <span class="text-muted small ms-2">
-                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                {{ 'audit.field.approved_at'|trans({}, 'audit') }}: {{ audit.approvedAt|date('d.m.Y H:i') }}
-            </span>
-        {% endif %}
-    </div>
+    {% set _links = entity_links(audit) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'coverage', label: 'audit.cross_framework_coverage.title'|trans({}, 'audit'), show: coverageReport is defined and coverageReport.multiFramework },
+        { id: 'findings', label: 'audit.section.findings'|trans({}, 'audit'), show: (audit.structuredFindings is defined and audit.structuredFindings|length > 0) or audit.nonConformities or audit.observations or audit.findings or audit.recommendations or audit.conclusion },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: audit } only %}
 
     <div class="row">
         <div class="col-lg-8">
             {# Main Audit Information #}
+            <div id="details" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">
                             <i class="fa-icon fa-icon--sop" aria-hidden="true"></i> {{ audit.title }}
                         </h2>
-                        <span class="{{ badge_status(audit.status) }} fs-6">
-                            {{ ('audit.status.' ~ audit.status)|trans({}, 'audit') }}
-                        </span>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -149,13 +150,13 @@
                             <div class="text-muted mb-2 fw-semibold">
                                 <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ 'audit.planned_date'|trans({}, 'audit') }}
                             </div>
-                            <p class="fs-5">{{ audit.plannedDate|date('d.m.Y') }}</p>
+                            <p class="fs-5">{{ audit.plannedDate|fa_date }}</p>
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">
                                 <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit.actual_date'|trans({}, 'audit') }}
                             </div>
-                            <p class="fs-5">{{ audit.actualDate ? audit.actualDate|date('d.m.Y') : '-' }}</p>
+                            <p class="fs-5">{{ audit.actualDate ? audit.actualDate|fa_date : '-' }}</p>
                         </div>
                     </div>
 
@@ -186,9 +187,11 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
 
             {# Cross-Framework Coverage Matrix (shown when audit covers >1 framework) #}
             {% if coverageReport is defined and coverageReport.multiFramework %}
+                <div id="coverage" class="fa-show-section">
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-info' } %}
                     {% block card_header %}
                         <div class="card-header">
@@ -284,8 +287,10 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
+                </div>
             {% endif %}
 
+            <div id="findings" class="fa-show-section">
             {# Findings Section #}
             {# Structured Findings (preferred over free-text) #}
             {% if audit.structuredFindings is defined and audit.structuredFindings|length > 0 %}
@@ -436,6 +441,7 @@
                 {% endblock %}
             {% endembed %}
             {% endif %}
+            </div>
         </div>
 
         <div class="col-lg-4">
@@ -548,7 +554,7 @@
                                 <dt class="col-sm-6 text-muted">{{ 'audit.field.closed_by'|trans({}, 'audit') }}</dt>
                                 <dd class="col-sm-6 text-end">{{ audit.closedBy.email|default('—') }}</dd>
                                 <dt class="col-sm-6 text-muted">{{ 'audit.field.closed_at'|trans({}, 'audit') }}</dt>
-                                <dd class="col-sm-6 text-end">{{ audit.closedAt|date('d.m.Y H:i') }}</dd>
+                                <dd class="col-sm-6 text-end">{{ audit.closedAt|fa_datetime }}</dd>
                             {% endif %}
                         </dl>
                     {% endif %}
@@ -649,7 +655,7 @@
 
                         {% if audit.reportDate %}
                         <dt class="col-sm-6 text-muted">{{ 'audit.report_date'|trans({}, 'audit') }}</dt>
-                        <dd class="col-sm-6 text-end">{{ audit.reportDate|date('d.m.Y') }}</dd>
+                        <dd class="col-sm-6 text-end">{{ audit.reportDate|fa_date }}</dd>
                         {% endif %}
                     </dl>
                 {% endblock %}
@@ -665,11 +671,11 @@
                 {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7">{{ audit.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-7">{{ audit.createdAt|fa_datetime }}</dd>
 
                         {% if audit.updatedAt %}
                         <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7">{{ audit.updatedAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-7">{{ audit.updatedAt|fa_datetime }}</dd>
                         {% endif %}
 
                         <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
@@ -681,43 +687,10 @@
     </div>
 </div>
 
-{# Audit Log History #}
-{% if auditLogs is defined and auditLogs|length > 0 %}
-<div class="container-fluid py-4">
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-        {% block card_header %}
-            <div class="card-header bg-body-secondary">
-                <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audit') }}
-                    ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            <div class="fa-audit-feed">
-                {% for log in auditLogs %}
-                <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
-                    <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
-                    <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
-                    <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
-                    <span class="fa-audit-row__action">{{ log.action|upper }}</span>
-                    <span class="fa-audit-row__target">{{ log.entityType|default('Audit') }}#{{ log.entityId|default('') }}</span>
-                    <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
-                </div>
-                {% endfor %}
-            </div>
-            {% if totalAuditLogs > 10 %}
-            <div class="text-center mt-3">
-                <small class="text-muted">
-                    {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit') }}
-                </small>
-            </div>
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
-</div>
-{# Audit log styles: .fa-audit-feed / .fa-audit-row — handled centrally in fairy-aurora-components.css #}
-{% endif %}
+{% include '_components/_fa_show_history.html.twig' with {
+    auditLogs: auditLogs|default([]), total: totalAuditLogs|default(0),
+    entityType: 'InternalAudit', entityId: audit.id, lifecycle: 'internal-audit'
+} only %}
 
 {# Reject Modal with rejection_reason form (only when current state allows reject) #}
 {% if audit.status == 'reported' and is_granted('ROLE_AUDITOR') and not _reported_by_current %}
@@ -896,7 +869,4 @@
 {% endif %} {# /is_granted ROLE_USER — quick-capture modal #}
 
 {% endif %} {# /M-4 audits module gate #}
-
-{# Lifecycle X.3b — transition history tab #}
-{{ _lifecycle_history.history('internal-audit', audit.id) }}
 {% endblock %}
