@@ -72,8 +72,8 @@ class WorkflowServiceTest extends TestCase
         $step = $this->createWorkflowStep(1, 'Review', 5);
         $workflow = $this->createWorkflow('Risk Review', 'Risk', [$step]);
 
-        $this->workflowRepository->method('findOneBy')
-            ->willReturn($workflow);
+        $this->workflowRepository->method('findBy')
+            ->willReturn([$workflow]);
 
         $this->workflowInstanceRepository->method('findOneBy')
             ->willReturn(null);
@@ -108,12 +108,33 @@ class WorkflowServiceTest extends TestCase
         $this->entityManager->method('find')->willReturnCallback(
             static fn (string $class, mixed $id): ?Risk => $class === Risk::class && $id === 123 ? $risk : null,
         );
-        $this->workflowRepository->method('findOneBy')
-            ->willReturn($this->createWorkflow('Risk Review', 'Risk', [$this->createWorkflowStep(1, 'Review', 5)]));
+        $this->workflowRepository->method('findBy')
+            ->willReturn([$this->createWorkflow('Risk Review', 'Risk', [$this->createWorkflowStep(1, 'Review', 5)])]);
 
         $instance = $this->service->startWorkflow('Risk', 123);
 
         $this->assertSame($tenant, $instance?->getTenant());
+    }
+
+    #[Test]
+    public function testStartWorkflowNeverUsesAnotherOrganisationsDefinition(): void
+    {
+        // Outside a web request the tenant filter is not armed: a custom
+        // definition of another organisation must not be picked up.
+        $own = $this->createStub(Tenant::class);
+        $own->method('getId')->willReturn(1);
+        $other = $this->createStub(Tenant::class);
+        $other->method('getId')->willReturn(2);
+        $risk = $this->createStub(Risk::class);
+        $risk->method('getTenant')->willReturn($own);
+        $this->entityManager->method('find')->willReturn($risk);
+
+        $foreign = $this->createWorkflow('Foreign', 'Risk', [$this->createWorkflowStep(1, 'Review', 5)]);
+        $foreign->method('getTenant')->willReturn($other);
+        $shared = $this->createWorkflow('Shared', 'Risk', [$this->createWorkflowStep(2, 'Review', 5)]);
+        $this->workflowRepository->method('findBy')->willReturn([$foreign, $shared]);
+
+        $this->assertSame($shared, $this->service->startWorkflow('Risk', 123)?->getWorkflow());
     }
 
     #[Test]
@@ -124,8 +145,8 @@ class WorkflowServiceTest extends TestCase
         $user->method('getTenant')->willReturn($tenant);
         $this->security->method('getUser')->willReturn($user);
         $this->entityManager->method('find')->willReturn(null);
-        $this->workflowRepository->method('findOneBy')
-            ->willReturn($this->createWorkflow('Risk Review', 'Risk', [$this->createWorkflowStep(1, 'Review', 5)]));
+        $this->workflowRepository->method('findBy')
+            ->willReturn([$this->createWorkflow('Risk Review', 'Risk', [$this->createWorkflowStep(1, 'Review', 5)])]);
 
         $instance = $this->service->startWorkflow('Risk', 123);
 
@@ -137,8 +158,8 @@ class WorkflowServiceTest extends TestCase
     {
         $existingInstance = $this->createMock(WorkflowInstance::class);
 
-        $this->workflowRepository->method('findOneBy')
-            ->willReturn($this->createWorkflow('Test', 'Risk'));
+        $this->workflowRepository->method('findBy')
+            ->willReturn([$this->createWorkflow('Test', 'Risk')]);
 
         // Mock the QueryBuilder chain that WorkflowService uses
         $query = $this->getMockBuilder(\Doctrine\ORM\Query::class)
@@ -167,8 +188,8 @@ class WorkflowServiceTest extends TestCase
     #[Test]
     public function testStartWorkflowReturnsNullIfNoWorkflowFound(): void
     {
-        $this->workflowRepository->method('findOneBy')
-            ->willReturn(null);
+        $this->workflowRepository->method('findBy')
+            ->willReturn([]);
 
         $instance = $this->service->startWorkflow('Risk', 123);
 
@@ -185,13 +206,13 @@ class WorkflowServiceTest extends TestCase
         $workflow = $this->createWorkflow('Critical Risk Review', 'Risk', [$step]);
 
         $this->workflowRepository->expects($this->once())
-            ->method('findOneBy')
+            ->method('findBy')
             ->with([
-                'name' => 'Critical Risk Review',
                 'entityType' => 'Risk',
-                'isActive' => true
+                'isActive' => true,
+                'name' => 'Critical Risk Review',
             ])
-            ->willReturn($workflow);
+            ->willReturn([$workflow]);
 
         $this->workflowInstanceRepository->method('findOneBy')
             ->willReturn(null);
@@ -381,8 +402,8 @@ class WorkflowServiceTest extends TestCase
         // Workflow with no steps
         $workflow = $this->createWorkflow('Empty Workflow', 'Risk', []);
 
-        $this->workflowRepository->method('findOneBy')
-            ->willReturn($workflow);
+        $this->workflowRepository->method('findBy')
+            ->willReturn([$workflow]);
 
         $this->workflowInstanceRepository->method('findOneBy')
             ->willReturn(null);

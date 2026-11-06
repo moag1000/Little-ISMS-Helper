@@ -421,9 +421,6 @@ class IncidentController extends AbstractController
             'totalAuditLogs' => count($auditLogs),
             'workflowStatus' => $workflowStatus,
             'canApproveWorkflow' => $canApproveWorkflow,
-            // Data-Reuse: one-click link matrix
-            'linkedRisks' => $incident->getRealizedRisks(),
-            'linkedVulnerabilities' => $incident->getRelatedVulnerabilities(),
             // Structured risk cross-links
             'riskIncidentLinks' => $riskIncidentLinks,
             // Comments thread

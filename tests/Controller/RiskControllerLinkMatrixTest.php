@@ -222,7 +222,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         // The entity link matrix component must be present on the vulnerability show page
         $this->assertGreaterThan(
             0,
-            $crawler->filter('.entity-link-matrix')->count(),
+            $crawler->filter('[data-testid="entity-links"]')->count(),
             'Vulnerability show page must contain the entity link matrix section'
         );
         // And the "Derive Risk from Vulnerability" button must link to /risk/new with the id

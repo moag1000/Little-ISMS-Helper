@@ -208,6 +208,29 @@ mehr über eigene Einträge je Modul.
 
 ---
 
+## Detailseiten: ein Aufbau
+
+Risiko, Asset, Control, Vorfall und Schwachstelle haben denselben Aufbau, die
+übrigen Detailseiten folgen schrittweise:
+
+1. **Statusband** unter dem Titel: Lebenszyklus-Status mit Statuswechsel,
+   Verantwortliche Person, nächste Fälligkeit bzw. Restrisiko oder Schweregrad
+   und, falls eine Freigabe läuft, ein Hinweis „Freigabe: Läuft/Überfällig" mit
+   Link auf den Workflow.
+2. **Ankerleiste**: Sprungmarken zu den Abschnitten, bleibt beim Scrollen oben.
+3. **Verknüpfungen** als erster Block: die Nachweiskette Asset → Risiko →
+   Control → Nachweis → Vorfall → Schwachstelle aus den vorhandenen
+   Verknüpfungen. Leere Gruppen bleiben sichtbar („Keine Verknüpfung."), damit
+   Lücken in der Kette auffallen. Nachweise eines Risikos oder Assets kommen
+   über die verknüpften Controls. Wo möglich gibt es „Risiko ableiten",
+   „Vorfall erfassen" oder „Schwachstelle ableiten" mit vorbelegtem Formular.
+4. Fachabschnitte, danach **Historie** (Audit-Log und Statuswechsel) und
+   **Kommentare**.
+
+Gruppen, deren Modul nicht aktiv ist, werden nicht angezeigt.
+
+---
+
 ## Verwandte Dokumente
 
 - `docs/user-guide/MEIN_TAG.md` — Inbox-Aggregation fuer alle Rollen
