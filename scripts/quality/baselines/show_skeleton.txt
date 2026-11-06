@@ -1,3 +1,1 @@
 # Detail pages not yet on the detail skeleton (Gate 75). May only shrink.
-templates/location/show.html.twig
-templates/objective/show.html.twig
