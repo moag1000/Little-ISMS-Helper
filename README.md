@@ -239,6 +239,14 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Policy-Vererbung** -- Mandatory-Policies durchmandatieren oder lokalen Override erlauben
 - **Portfolio-Report** -- Delta-Trends via Snapshots mit Drill-Down auf einzelne Requirements
 
+### Standorte und Standortkarte
+
+- **Standort-Lagebild** -- Weltkarte aller Standorte mit Ebenen Restrisiko und Prüfungen (ISO 27001 A.7), Sichten für CISO, ISB, Compliance und Standortverantwortliche, Drill-down bis zu Risiken, Assets und Vorfällen
+- **Offline-Geokodierung** -- Koordinaten aus PLZ (DE/AT/CH) oder Ort (weltweit) ohne Online-Dienst; optional eigener Nominatim-Dienst, Standard aus
+- **Steuerung** -- Standort-Kennzahlen aus dem KPI-Katalog, Vergleich mit ähnlichen Standorten (nur Standorte, keine Personen), größte Hebel, Sammelaktionen mit Audit-Log und FTE-Erfassung, Lagebild als Excel und einseitiges PDF
+- **Überall dieselben Zahlen** -- ISMS-Ziele mit Katalog-Kennzahl je Standort, offene Prüfungen in *Mein Tag*, Kachel auf den Dashboards von CISO, ISB und Compliance, Steckbrief auf der Standortseite
+- **Einstellungen je Organisation** -- Vergleich aus, ohne oder mit Namen der Verantwortlichen (§ 87 BetrVG), einzelne Prüfungen abschaltbar, Koordinaten auf Karte und im Export auf etwa 1 km gerundet; Auditoren sehen die Karte nur lesend
+
 ### KPI und Reporting
 
 - **KPI-Dashboard** -- ISMS Health Score, Framework-Compliance, Risk-Appetite, MTTR
@@ -279,7 +287,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 
 Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterverwendet werden:
 
-- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle
+- **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle; auf dem Smartphone mit Sprungleiste, daumengroßen Schaltflächen und Entscheidungsfenster als Blatt vom unteren Rand
 - **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
 - **Ein Listen-Aufbau** -- Suche, Filter, Zusammenfassung, Tabelle, Seitenumbruch und Leerzustand gleich auf allen migrierten Listen
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6
@@ -566,6 +574,7 @@ php bin/console isms:load-annex-a-controls --env=test
 |---|---|
 | [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Mapping-Hub mit Tabs |
 | [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Kennzahlen, Detailseiten- und Formular-Aufbau |
+| [Standortkarte](docs/user-guide/STANDORTKARTE.md) | Lagebild, Prüfungen, Sichten, Vergleich, Hebel, Sammelaktionen, Export, Geokodierung |
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |

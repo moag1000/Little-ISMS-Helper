@@ -33,6 +33,7 @@ fte_tracking:
         manual_calibration: 'Manuelle Kalibrierung'
         workflow_automation: 'Workflow-Automatisierung'
         notification_automation: 'Benachrichtigungs-Automatisierung'
+        bulk_action: 'Sammelaktion'
     empty:
         no_data: 'Noch keine FTE-Einsparungen erfasst. Starte SSO-JIT, Bulk-Import oder Evidence-Wiederverwendung.'
     calibration:
@@ -58,6 +59,8 @@ fte_tracking:
         single_framework_evidence_maintenance.desc: 'Aufwand für Nachweispflege in einem einzelnen Compliance-Framework'
         manual_business_process_creation: 'Manuelles Geschäftsprozess-Erfassen'
         manual_business_process_creation.desc: 'Aufwand für BIA-Erfassung, Owner, Kritikalität'
+        manual_record_update: 'Einzelne Datensatz-Änderung'
+        manual_record_update.desc: 'Aufwand, einen Datensatz zu öffnen, ein Feld zu ändern und zu speichern'
     report:
         badge: 'Board-Report'
         breadcrumb: 'Board-Report'

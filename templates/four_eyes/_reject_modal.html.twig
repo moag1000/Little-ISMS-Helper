@@ -1,28 +1,11 @@
 {# Four-eyes reject dialog for one request; used by the four-eyes inbox and My Day. #}
-<div class="fa-modal fa-modal--confirm fa-modal--danger" id="fourEyesReject{{ requestId }}"
-     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
-     role="alertdialog" aria-modal="true" aria-labelledby="fourEyesReject{{ requestId }}-label" aria-hidden="true">
-    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
-    <div class="fa-modal__container" data-fa-modal-target="dialog">
-        <form method="post" action="{{ path('app_four_eyes_reject', { id: requestId }) }}" data-fa-modal-target="form">
-            <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_reject_' ~ requestId) }}">
-            <header class="fa-modal__header">
-                <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span>
-                <div class="fa-modal__heading">
-                    <h2 class="fa-modal__title" id="fourEyesReject{{ requestId }}-label">
-                        {{ 'four_eyes.reject_modal.title'|trans({}, 'four_eyes') }}
-                    </h2>
-                </div>
-                <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
-            </header>
-            <div class="fa-modal__body">
-                <label class="form-label" for="fourEyesReject{{ requestId }}-reason">{{ 'four_eyes.reject_modal.reason'|trans({}, 'four_eyes') }}</label>
-                <textarea id="fourEyesReject{{ requestId }}-reason" name="reason" class="form-control fa-cyber-input__field" rows="3" minlength="20" required></textarea>
-            </div>
-            <footer class="fa-modal__footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">{{ 'four_eyes.reject'|trans({}, 'four_eyes') }}</button>
-            </footer>
-        </form>
-    </div>
-</div>
+{% import '_macros/workflow.html.twig' as workflow_macros %}
+{{ workflow_macros.decision_modal({
+    id: 'fourEyesReject' ~ requestId,
+    tone: 'danger',
+    title: 'four_eyes.reject_modal.title'|trans({}, 'four_eyes'),
+    submit_label: 'four_eyes.reject'|trans({}, 'four_eyes'),
+    action: path('app_four_eyes_reject', { id: requestId }),
+    token: csrf_token('four_eyes_reject_' ~ requestId),
+    field: { name: 'reason', label: 'four_eyes.reject_modal.reason'|trans({}, 'four_eyes'), required: true, minlength: 20 },
+}) }}
