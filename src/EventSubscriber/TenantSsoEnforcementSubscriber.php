@@ -118,16 +118,21 @@ final class TenantSsoEnforcementSubscriber
      * Tenant-level enforcement decision for $user: null = not enforced;
      * IdentityProvider = redirect target (the enforced provider, or the
      * provider the user is bound to — {@see SsoAccountLinkPolicy::resolveLoginProvider()});
-     * false = enforced but exempt (fail open). Also read by the SSO admin page.
+     * false = enforced but exempt (fail open). Also read by the SSO admin page,
+     * which passes the organisation's enabled providers it already loaded
+     * ($enabledProviders, as findEnabledForTenant() returns them) so the
+     * exemption list does not query once per account.
+     *
+     * @param list<IdentityProvider>|null $enabledProviders
      */
-    public function enforcementTarget(User $user): IdentityProvider|false|null
+    public function enforcementTarget(User $user, ?array $enabledProviders = null): IdentityProvider|false|null
     {
         $tenant = $user->getTenant();
         if ($tenant === null || !$tenant->isSsoEnforced()) {
             return null;
         }
         // Tenant-scoped provider first, then global (see resolveEnforcedProvider()).
-        $provider = $this->resolveEnforcedProvider($tenant);
+        $provider = $this->resolveEnforcedProvider($tenant, $enabledProviders);
         if ($provider === null) {
             return false;
         }
@@ -140,9 +145,12 @@ final class TenantSsoEnforcementSubscriber
      * should be redirected to. Tenant-scoped providers win over global ones;
      * the first candidate with a non-empty slug is used. Null = no usable IdP.
      */
-    private function resolveEnforcedProvider(\App\Entity\Tenant $tenant): ?IdentityProvider
+    /**
+     * @param list<IdentityProvider>|null $enabledProviders
+     */
+    private function resolveEnforcedProvider(\App\Entity\Tenant $tenant, ?array $enabledProviders = null): ?IdentityProvider
     {
-        $providers = $this->identityProviderRepository->findEnabledForTenant($tenant);
+        $providers = $enabledProviders ?? $this->identityProviderRepository->findEnabledForTenant($tenant);
 
         // Tenant-scoped first, global as fallback — stable within each group
         // because the repository already orders deterministically (tenant, name).
