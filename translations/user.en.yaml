@@ -227,6 +227,8 @@ user:
         risk_manager: 'Risk Manager'
         dpo: 'Data Protection Officer'
         compliance_manager: 'Compliance Manager'
+        isb: 'Information Security Officer (ISO)'
+        bcm_officer: 'BCM Officer'
     role_description:
         user: 'Basic access to ISMS modules. Can view data and edit own tasks.'
         auditor: 'Extended read permissions for audits and reviews. Can document audit findings and verify compliance.'
@@ -237,6 +239,8 @@ user:
         risk_manager: 'Risk Manager. Operational view of risk pipeline, risk-appetite monitoring and mitigation effectiveness. Unlocks the Risk-Manager dashboard.'
         dpo: 'Data Protection Officer. Sees only personally-assigned data subject requests in My-Day plus the Compliance-Manager dashboard. NO see-all access to DSARs.'
         compliance_manager: 'Head of GRC / Compliance Manager. Framework coverage, cross-mapping, audit schedule, and findings overview. Unlocks the Compliance-Manager dashboard.'
+        isb: 'Operational information security officer: controls, incidents, audits. Unlocks the ISB dashboard.'
+        bcm_officer: 'Business continuity manager: BC plans, crisis team, exercises, business processes. Unlocks the BCM dashboard.'
     role_hierarchy:
         title: 'Role Hierarchy'
         description: 'Each role automatically inherits the permissions of all lower roles.'
