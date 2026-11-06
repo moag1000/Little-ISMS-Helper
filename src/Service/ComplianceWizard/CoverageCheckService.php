@@ -42,6 +42,8 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
  */
 final class CoverageCheckService
 {
+    use PrivacyCoverageChecksTrait;
+
     public function __construct(
         private readonly ControlRepository $controlRepository,
         private readonly RiskRepository $riskRepository,
@@ -360,6 +362,10 @@ final class CoverageCheckService
             : $this->incidentRepository->findAll();
 
         $totalIncidents = count($incidents);
+        if ($totalIncidents === 0) {
+            return NoDataResult::build('wizard.gap.no_incidents', 'app_incident_index', $check, ['total' => 0]);
+        }
+
         $resolvedInTime = 0;
         $overdue = [];
 
@@ -394,9 +400,7 @@ final class CoverageCheckService
         }
 
         // Score based on SLA compliance and no overdue incidents
-        $score = $totalIncidents > 0
-            ? round((($resolvedInTime / max($totalIncidents, 1)) * 100) - (count($overdue) * 5), 1)
-            : 100;
+        $score = round((($resolvedInTime / $totalIncidents) * 100) - (count($overdue) * 5), 1);
 
         $score = max(0, min(100, $score));
 
@@ -711,6 +715,10 @@ final class CoverageCheckService
             : $this->treatmentPlanRepository->findAll();
 
         $totalPlans = count($plans);
+        if ($totalPlans === 0) {
+            return NoDataResult::build('wizard.gap.no_treatment_plans', 'app_risk_treatment_plan_index', $check, ['total' => 0]);
+        }
+
         $completed = 0;
         $overdue = [];
 
@@ -726,9 +734,7 @@ final class CoverageCheckService
             }
         }
 
-        $score = $totalPlans > 0
-            ? round(($completed / $totalPlans) * 100, 1)
-            : 100;
+        $score = round(($completed / $totalPlans) * 100, 1);
 
         $gap = null;
         if (!empty($overdue)) {
@@ -822,112 +828,6 @@ final class CoverageCheckService
         return [
             'score' => $score,
             'details' => ['total' => $total, 'active' => $active],
-            'gap' => $gap,
-        ];
-    }
-
-    /**
-     * Counts open vs. completed Data-Subject Requests (GDPR Art. 12-22).
-     * Score = % of requests in terminal status (completed or rejected),
-     * rounded to 1 decimal. When zero requests exist, score=100 + an
-     * advisory gap is emitted because GDPR doesn't require requests but
-     * the absence of any DSR records suggests the process is untested.
-     */
-    public function checkDsrCoverage(array $check, ?Tenant $tenant): array
-    {
-        $qbTotal = $this->dataSubjectRequestRepository->createQueryBuilder('d')->select('COUNT(d.id)');
-        $qbDone = $this->dataSubjectRequestRepository->createQueryBuilder('d')->select('COUNT(d.id)')
-            ->where('d.status IN (:done)')->setParameter('done', ['completed', 'rejected']);
-        if ($tenant !== null) {
-            $qbTotal->andWhere('d.tenant = :t')->setParameter('t', $tenant);
-            $qbDone->andWhere('d.tenant = :t')->setParameter('t', $tenant);
-        }
-
-        $total = (int) $qbTotal->getQuery()->getSingleScalarResult();
-        $done = (int) $qbDone->getQuery()->getSingleScalarResult();
-
-        if ($total === 0) {
-            return [
-                'score' => 100,
-                'details' => ['total' => 0, 'completed' => 0, 'message' => 'no_requests_yet'],
-                'gap' => [
-                    'title' => 'wizard.gap.no_dsr',
-                    'description' => 'wizard.gap.no_dsr_desc',
-                    'priority' => 'medium',
-                    'route' => $check['route'] ?? 'app_data_subject_request_index',
-                ],
-            ];
-        }
-
-        $score = round(($done / $total) * 100, 1);
-
-        $gap = null;
-        if ($score < 90) {
-            $gap = [
-                'title' => 'wizard.gap.dsr_open_high',
-                'description' => 'wizard.gap.dsr_open_high_desc',
-                'priority' => 'high',
-                'route' => $check['route'] ?? 'app_data_subject_request_index',
-            ];
-        }
-
-        return [
-            'score' => $score,
-            'details' => ['total' => $total, 'completed' => $done],
-            'gap' => $gap,
-        ];
-    }
-
-    /**
-     * Of all ProcessingActivity rows flagged isHighRisk=true (= DPIA required
-     * per Art. 35 DSGVO), how many have at least one linked Risk row whose
-     * requiresDPIA flag is also true? Lower bound: 0 (no DPIA performed).
-     * Upper bound: 100 (every high-risk activity has a documented DPIA risk).
-     * When no high-risk activities exist, score=100 (vacuously true).
-     */
-    public function checkDpiaCoverage(array $check, ?Tenant $tenant): array
-    {
-        $qbHighRisk = $this->processingActivityRepository->createQueryBuilder('p')
-            ->select('COUNT(p.id)')
-            ->where('p.isHighRisk = :hr')->setParameter('hr', true);
-        if ($tenant !== null) {
-            $qbHighRisk->andWhere('p.tenant = :t')->setParameter('t', $tenant);
-        }
-        $highRisk = (int) $qbHighRisk->getQuery()->getSingleScalarResult();
-
-        if ($highRisk === 0) {
-            return [
-                'score' => 100,
-                'details' => ['high_risk_activities' => 0, 'documented_dpias' => 0],
-                'gap' => null,
-            ];
-        }
-
-        $qbDpia = $this->riskRepository->createQueryBuilder('r')
-            ->select('COUNT(r.id)')
-            ->where('r.requiresDPIA = :rq')->setParameter('rq', true);
-        if ($tenant !== null) {
-            $qbDpia->andWhere('r.tenant = :t')->setParameter('t', $tenant);
-        }
-        $documented = (int) $qbDpia->getQuery()->getSingleScalarResult();
-
-        // Cap at 100 — a tenant might over-document (more DPIA-risks than
-        // high-risk activities); we don't want a score >100.
-        $score = round(min(100, ($documented / $highRisk) * 100), 1);
-
-        $gap = null;
-        if ($score < 100) {
-            $gap = [
-                'title' => 'wizard.gap.dpia_missing',
-                'description' => 'wizard.gap.dpia_missing_desc',
-                'priority' => 'critical',
-                'route' => $check['route'] ?? 'app_processing_activity_index',
-            ];
-        }
-
-        return [
-            'score' => $score,
-            'details' => ['high_risk_activities' => $highRisk, 'documented_dpias' => $documented],
             'gap' => $gap,
         ];
     }
