@@ -58,7 +58,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '1.2.1'
     levels:
@@ -72,7 +71,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '1.2.2'
     levels:
@@ -86,7 +84,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '1.2.3'
     levels:
@@ -100,7 +97,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '1.2.4'
     levels:
@@ -114,7 +110,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '1.3.1'
     levels:
@@ -128,7 +123,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '1.3.2'
     levels:
@@ -142,7 +136,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '1.3.3'
     levels:
@@ -156,7 +149,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '1.3.4'
     levels:
@@ -170,7 +162,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '1.4.1'
     levels:
@@ -184,7 +175,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '1.5.1'
     levels:
@@ -198,7 +188,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '1.5.2'
     levels:
@@ -212,7 +201,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '1.6.1'
     levels:
@@ -226,7 +214,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '1.6.2'
     levels:
@@ -240,7 +227,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '1.6.3'
     levels:
@@ -254,7 +240,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
 # ─── Kapitel 2 — Human Resources Security ─────────────────────────────────────
 
@@ -270,7 +255,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '2.1.2'
     levels:
@@ -284,7 +268,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '2.1.3'
     levels:
@@ -298,7 +281,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '2.1.4'
     levels:
@@ -312,7 +294,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
 # ─── Kapitel 3 — Physische Sicherheit ─────────────────────────────────────────
 
@@ -328,7 +309,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '3.1.2'
     levels:
@@ -342,7 +322,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '3.1.3'
     levels:
@@ -356,7 +335,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '3.1.4'
     levels:
@@ -370,7 +348,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
 # ─── Kapitel 4 — Identitaets- und Zugriffsmanagement ──────────────────────────
 
@@ -386,7 +363,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '4.1.2'
     levels:
@@ -400,7 +376,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '4.1.3'
     levels:
@@ -414,7 +389,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '4.2.1'
     levels:
@@ -428,7 +402,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
 # ─── Kapitel 5 — IT-Sicherheit und Kryptografie ───────────────────────────────
 
@@ -444,7 +417,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '5.1.2'
     levels:
@@ -458,7 +430,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '5.2.1'
     levels:
@@ -472,7 +443,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '5.2.2'
     levels:
@@ -486,7 +456,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '5.2.3'
     levels:
@@ -500,7 +469,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '5.2.4'
     levels:
@@ -514,7 +482,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '5.2.5'
     levels:
@@ -528,7 +495,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '5.2.6'
     levels:
@@ -542,7 +508,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '5.2.7'
     levels:
@@ -556,7 +521,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '5.2.8'
     levels:
@@ -570,7 +534,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '5.2.9'
     levels:
@@ -584,7 +547,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '5.3.1'
     levels:
@@ -598,7 +560,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '5.3.2'
     levels:
@@ -612,7 +573,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '5.3.3'
     levels:
@@ -626,7 +586,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '5.3.4'
     levels:
@@ -640,7 +599,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
 # ─── Kapitel 6 — Lieferanten- und Dienstleistermanagement ─────────────────────
 
@@ -656,7 +614,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '6.1.2'
     levels:
@@ -670,7 +627,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '7.1.1'
     levels:
@@ -684,7 +640,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '7.1.2'
     levels:
@@ -698,7 +653,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
 # ─── Kapitel 8 — Prototype Protection ─────────────────────────────────────────
 
@@ -714,7 +668,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.1.2'
     levels:
@@ -728,7 +681,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.1.3'
     levels:
@@ -742,7 +694,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '8.1.4'
     levels:
@@ -756,7 +707,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.1.5'
     levels:
@@ -770,7 +720,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '8.1.6'
     levels:
@@ -784,7 +733,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '8.1.7'
     levels:
@@ -798,7 +746,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.1.8'
     levels:
@@ -812,7 +759,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '8.2.1'
     levels:
@@ -826,7 +772,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '8.2.2'
     levels:
@@ -840,7 +785,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.2.3'
     levels:
@@ -854,7 +798,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.2.4'
     levels:
@@ -868,7 +811,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '8.2.5'
     levels:
@@ -882,7 +824,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.2.6'
     levels:
@@ -896,7 +837,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '8.2.7'
     levels:
@@ -910,7 +850,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '8.3.1'
     levels:
@@ -924,7 +863,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high']
 
   - controlId: '8.3.2'
     levels:
@@ -938,7 +876,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '8.4.1'
     levels:
@@ -952,7 +889,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '8.4.2'
     levels:
@@ -966,7 +902,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '8.4.3'
     levels:
@@ -980,7 +915,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '8.5.1'
     levels:
@@ -994,7 +928,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2', 'AL3']
-    protection_need_addenda: ['high', 'very_high']
 
   - controlId: '8.5.2'
     levels:
@@ -1008,7 +941,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
 # ─── Kapitel 9 — Data Protection ──────────────────────────────────────────────
 
@@ -1024,7 +956,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '9.2.1'
     levels:
@@ -1038,7 +969,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '9.3.1'
     levels:
@@ -1052,7 +982,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '9.4.1'
     levels:
@@ -1066,7 +995,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '9.5.1'
     levels:
@@ -1080,7 +1008,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '9.5.2'
     levels:
@@ -1094,7 +1021,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '9.5.3'
     levels:
@@ -1108,7 +1034,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '9.6.1'
     levels:
@@ -1122,7 +1047,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '9.6.2'
     levels:
@@ -1136,7 +1060,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '9.7.1'
     levels:
@@ -1150,7 +1073,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
 
   - controlId: '9.7.2'
     levels:
@@ -1164,7 +1086,6 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1']
-    protection_need_addenda: []
 
   - controlId: '9.8.1'
     levels:
@@ -1178,4 +1099,3 @@ controls:
       high: 0
       very_high: 0
     suggested_assessment_levels: ['AL1', 'AL2']
-    protection_need_addenda: []
