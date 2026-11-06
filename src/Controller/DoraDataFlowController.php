@@ -10,6 +10,7 @@ use App\Entity\DoraDataFlow;
 use App\Form\DoraDataFlowType;
 use App\Repository\DoraDataFlowRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -49,7 +50,7 @@ class DoraDataFlowController extends AbstractController
 
     #[Route('/dora/data-flow', name: 'app_dora_data_flow_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
             return $redirect;
@@ -59,7 +60,11 @@ class DoraDataFlowController extends AbstractController
         $flows = $tenant !== null ? $this->dataFlowRepository->findByTenant($tenant) : [];
 
         return $this->render('dora_data_flow/index.html.twig', [
-            'flows' => $flows,
+            'page' => ListPage::fromRequest(
+                $flows,
+                $request,
+                static fn(DoraDataFlow $f): array => [$f->getSupplier()?->getName(), $f->getReceivingCountry(), ...$f->getDataCategories()],
+            ),
         ]);
     }
 

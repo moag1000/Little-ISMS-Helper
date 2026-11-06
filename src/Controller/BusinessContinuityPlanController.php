@@ -17,6 +17,7 @@ use App\Service\BusinessContinuityPlanService;
 use App\Service\Clone\BusinessContinuityPlanCloner;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -48,7 +49,7 @@ class BusinessContinuityPlanController extends AbstractController
     ) {}
     #[Route('/business-continuity-plan', name: 'app_bc_plan_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
 
@@ -56,13 +57,15 @@ class BusinessContinuityPlanController extends AbstractController
         $bcPlans = $tenant ? $this->businessContinuityPlanRepository->findBy(['tenant' => $tenant]) : [];
         $overdueTests = $this->businessContinuityPlanRepository->findOverdueTests();
         $overdueReviews = $this->businessContinuityPlanRepository->findOverdueReviews();
-        $activePlans = $this->businessContinuityPlanRepository->findActivePlans();
 
         return $this->render('business_continuity_plan/index.html.twig', [
-            'bc_plans' => $bcPlans,
+            'page' => ListPage::fromRequest(
+                $bcPlans,
+                $request,
+                static fn(BusinessContinuityPlan $p): array => [$p->getName(), $p->getStatus()],
+            ),
             'overdue_tests' => $overdueTests,
             'overdue_reviews' => $overdueReviews,
-            'active_plans' => $activePlans,
         ]);
     }
     #[Route('/business-continuity-plan/new', name: 'app_bc_plan_new', methods: ['GET', 'POST'])]

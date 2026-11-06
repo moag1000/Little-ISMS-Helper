@@ -1,11 +1,11 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single DSR table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the
    same. The export-personal-data link is excluded from prefetch (identity-gated). #}
 {% trans_default_domain 'data_subject_request' %}
 <tr id="data-subject-request-row-{{ dsr.id }}"
-    class="fa-table__row"
-    data-filter-target="filterableRow">
+    class="fa-table__row">
     <td class="bulk-select-column fa-table__cell">
         <input type="checkbox"
                class="form-check-input"
@@ -20,6 +20,7 @@
            class="fa-row-link">
             <strong>#{{ dsr.id }}</strong>
         </a>
+           {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[dsr.id] ?? {}) : workflow_state(dsr)) }}
     </td>
     <td class="fa-table__cell">
         <span class="fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>

@@ -5,7 +5,6 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -22,52 +21,57 @@
     ]
 }) }}
 
-<main>
-    {% if snapshots is empty %}
-        {{ _fa_empty_state.render({
+<div class="container-fluid py-4">
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_soa_snapshot_index'),
+        list_title: 'soa.snapshot.page.title'|trans({}, 'soa'),
+        empty: {
             mood: 'thinking',
             title: 'soa.snapshot.empty.title'|trans({}, 'soa'),
             text: 'soa.snapshot.empty.text'|trans({}, 'soa'),
             actions: [
                 { label: 'soa.snapshot.action.new'|trans({}, 'soa'), variant: 'primary', icon: 'plus', href: path('app_soa_snapshot_new') }
             ]
-        }) }}
-    {% else %}
-        {% embed '_components/_fa_table.html.twig' %}
-            {% block table_head %}
-                <tr>
-                    <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.as_of_date'|trans({}, 'soa') }}</th>
-                    <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.purpose'|trans({}, 'soa') }}</th>
-                    <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.created_at'|trans({}, 'soa') }}</th>
-                    <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.created_by'|trans({}, 'soa') }}</th>
-                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'soa.snapshot.col.controls'|trans({}, 'soa') }}</th>
-                    <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.checksum'|trans({}, 'soa') }}</th>
-                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                </tr>
-            {% endblock %}
-            {% block table_body %}
-                {% for snapshot in snapshots %}
-                    <tr class="fa-table__row">
-                        <td class="fa-table__cell"><strong>{{ snapshot.asOfDate|date('Y-m-d') }}</strong></td>
-                        <td class="fa-table__cell">{{ snapshot.purpose|default('—') }}</td>
-                        <td class="fa-table__cell">{{ snapshot.createdAt|date('Y-m-d H:i') }}</td>
-                        <td class="fa-table__cell">{{ snapshot.createdBy ? snapshot.createdBy.email : '—' }}</td>
-                        <td class="fa-table__cell fa-table__cell--num">{{ snapshot.controlCount }}</td>
-                        <td class="fa-table__cell"><code class="small">{{ snapshot.checksumSha256|slice(0, 16) }}…</code></td>
-                        <td class="fa-table__cell fa-table__cell--actions">
-                            <a href="{{ path('app_soa_snapshot_show', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                <span class="fa-cyber-btn__label">{{ 'common.view'|trans({}, 'messages') }}</span>
-                            </a>
-                            <a href="{{ path('app_soa_snapshot_export_csv', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-turbo="false">
-                                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
-                                <span class="fa-cyber-btn__label">{{ 'soa.snapshot.action.export_csv'|trans({}, 'soa') }}</span>
-                            </a>
-                        </td>
+        },
+    } %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.as_of_date'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.purpose'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.created_at'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.created_by'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'soa.snapshot.col.controls'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.checksum'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
-                {% endfor %}
-            {% endblock %}
-        {% endembed %}
-    {% endif %}
-</main>
+                {% endblock %}
+                {% block table_body %}
+                    {% for snapshot in page %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell"><strong>{{ snapshot.asOfDate|fa_date }}</strong></td>
+                            <td class="fa-table__cell">{{ snapshot.purpose|default('—') }}</td>
+                            <td class="fa-table__cell">{{ snapshot.createdAt|fa_datetime }}</td>
+                            <td class="fa-table__cell">{{ snapshot.createdBy ? snapshot.createdBy.email : '—' }}</td>
+                            <td class="fa-table__cell fa-table__cell--num">{{ snapshot.controlCount }}</td>
+                            <td class="fa-table__cell"><code class="small">{{ snapshot.checksumSha256|slice(0, 16) }}…</code></td>
+                            <td class="fa-table__cell fa-table__cell--actions">
+                                <a href="{{ path('app_soa_snapshot_show', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                    <span class="fa-cyber-btn__label">{{ 'common.view'|trans({}, 'messages') }}</span>
+                                </a>
+                                <a href="{{ path('app_soa_snapshot_export_csv', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-turbo="false">
+                                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                                    <span class="fa-cyber-btn__label">{{ 'soa.snapshot.action.export_csv'|trans({}, 'soa') }}</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
+</div>
 {% endblock %}

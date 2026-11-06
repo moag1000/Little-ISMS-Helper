@@ -16,13 +16,10 @@ risk_treatment_plan:
     action:
         add_new: 'Neu anlegen'
         new: 'Neuer Behandlungsplan'
-    stats:
-        total: Gesamt
-        planned: Geplant
-        in_progress: 'In Bearbeitung'
-        completed: Abgeschlossen
-        overdue: Überfällig
-        avg_completion: Ø‑Fertigstellungsgrad
+    summary:
+        overdue: '%count% überfällig'
+        in_progress: '%count% in Umsetzung'
+        completed: '%count% abgeschlossen'
     list:
         title: Behandlungspläne
     filter:
@@ -71,7 +68,7 @@ risk_treatment_plan:
     delete:
         warning: 'Diese Aktion kann nicht rückgängig gemacht werden. Möchten Sie den Behandlungsplan wirklich löschen?'
         confirm: 'Sind Sie sicher, dass Sie diesen Behandlungsplan löschen möchten?'
-    no_plans: 'Keine Behandlungspläne vorhanden'
+    no_plans: 'Keine Behandlungspläne vorhanden.'
     placeholder:
         risk: '-- Risiko auswählen --'
         title: 'z.B. Implementierung einer Web Application Firewall'

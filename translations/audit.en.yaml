@@ -227,23 +227,21 @@ audit:
     confirm_delete: 'Delete audit?'
     delete_warning: 'Do you really want to delete the audit ''%title%''?'
     status_in_progress: 'In Progress'
-    status_overview: 'Status Overview'
     report_date: 'Report Date'
     upcoming_audits: 'Upcoming Audits'
     upcoming_audits_count: 'You have %count% upcoming audits planned.'
-    kpi:
-        total: 'Total Audits'
-        upcoming: Upcoming
-        in_progress: 'In Progress'
-        completed: Completed
+    status_count:
+        planned: '%count% planned'
+        in_progress: '%count% in progress'
+        completed: '%count% completed'
+        reported: '%count% reported'
     list:
         all: 'All Audits'
     filter:
         all_status: 'All Status'
         search_placeholder: 'Search audits...'
-        no_results: 'No audits found matching the filter criteria.'
     empty:
-        title: 'No Audits Yet'
+        title: 'No audits yet.'
         description: 'Create your first internal audit to start planning.'
     validation:
         title_required: 'Please provide a title for the audit'

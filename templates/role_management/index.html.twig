@@ -4,9 +4,6 @@
 
 {% block admin_content %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-{% import '_components/_status_pill.html.twig' as pill %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -25,32 +22,24 @@
     ] : [])
 }) }}
 
-<main>
-
-{# Statistics Cards #}
-<div class="kpi-grid">
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'role_management.stats.total'|trans({}, 'role_management'), value: roles|length, variant: 'primary' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'role_management.stats.system_roles'|trans({}, 'role_management'), value: roles|filter(r => r.systemRole)|length, variant: 'info' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'role_management.stats.with_users'|trans({}, 'role_management'), value: roles|filter(r => (visible_holder_counts[r.id] ?? 0) > 0)|length, variant: 'success' }) }}
-    </div>
-    <div class="col-auto">
-        {% set totalPerms = 0 %}
-        {% for role in roles %}
-            {% set totalPerms = totalPerms + role.permissions|length %}
-        {% endfor %}
-        {{ _fa_feature_card.render({ label: 'role_management.stats.avg_permissions'|trans({}, 'role_management'), value: roles|length > 0 ? (totalPerms / roles|length)|round : 0, variant: 'warning' }) }}
-    </div>
-</div>
-
-{# Roles Table #}
-<section class="fa-section">
-    <div class="fa-section__body">
-        {% if roles is not empty %}
+<div>
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('role_management_index'),
+    list_title: 'role_management.title.list'|trans({}, 'role_management'),
+    empty: {
+        mood: 'sleeping',
+        title: 'role_management.message.no_roles'|trans({}, 'role_management'),
+        actions: is_granted('role.create') ? [
+            { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus', href: path('role_management_new') }
+        ] : []
+    },
+} %}
+    {% block list_summary %}
+        {% if system_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'role_management.summary.system'|trans({'%count%': system_count}, 'role_management') }}</span>{% endif %}
+        {% if role_count - system_count > 0 %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'role_management.summary.custom'|trans({'%count%': role_count - system_count}, 'role_management') }}</span>{% endif %}
+    {% endblock %}
+    {% block list_table %}
         {% embed '_components/_fa_table.html.twig' with { hover: true } %}
             {% block table_head %}
                 <tr>
@@ -64,7 +53,7 @@
             {% endblock %}
             {% block table_body %}
                 {% import '_components/_status_pill.html.twig' as pill %}
-                {% for role in roles %}
+                {% for role in page %}
                 <tr class="fa-table__row">
                     <td class="fa-table__cell">
                         <strong>{{ role.name }}</strong>
@@ -106,16 +95,7 @@
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-        {% else %}
-            {{ _fa_empty_state.render({
-                mood: 'sleeping',
-                title: 'role_management.message.no_roles'|trans({}, 'role_management'),
-                actions: [
-                    { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus', href: path('role_management_new') }
-                ]
-            }) }}
-        {% endif %}
-    </div>
-</section>
-</main>
+    {% endblock %}
+{% endembed %}
+</div>
 {% endblock admin_content %}

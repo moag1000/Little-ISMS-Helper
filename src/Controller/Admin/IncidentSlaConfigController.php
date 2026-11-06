@@ -13,6 +13,7 @@ use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\IncidentSlaConfigResolver;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,7 +66,7 @@ class IncidentSlaConfigController extends AbstractController
         usort($configs, fn ($a, $b) => ($order[$a->getSeverity()] ?? 99) <=> ($order[$b->getSeverity()] ?? 99));
 
         return $this->render('admin/incident_sla_config/index.html.twig', [
-            'configs' => $configs,
+            'page' => ListPage::fromRequest($configs, $request),
         ]);
     }
 

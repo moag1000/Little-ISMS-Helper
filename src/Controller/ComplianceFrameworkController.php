@@ -13,6 +13,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use App\Service\Tisax\RequirementLevelMetadataLoader;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -74,7 +75,11 @@ class ComplianceFrameworkController extends AbstractController
             ->getScalarResult();
 
         return $this->render('compliance/framework/index.html.twig', [
-            'frameworks' => $frameworks,
+            'page' => ListPage::fromRequest(
+                $frameworks,
+                $request,
+                static fn(ComplianceFramework $f): array => [$f->getCode(), $f->getName(), $f->getApplicableIndustry()],
+            ),
             'filters' => $filters,
             'industries' => array_column($industries, 'applicableIndustry'),
         ]);

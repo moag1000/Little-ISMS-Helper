@@ -42,7 +42,7 @@ audit_freeze:
     payload:
         title: 'Payload (versiegelt)'
         show: 'Payload als JSON anzeigen'
-    empty: 'Noch keine Freezes angelegt. Starten Sie mit "Freeze erstellen" für Ihre nächste Audit-Vorbereitung.'
+    empty: 'Keine Freezes vorhanden.'
     field:
         name: 'Name des Freezes'
         name_help: 'Sprechender Name, z. B. "Q3 2026 Überwachungs-Audit"'

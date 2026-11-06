@@ -40,6 +40,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
+use App\Util\ListPage;
 
 class UserManagementController extends AbstractController
 {
@@ -55,7 +56,7 @@ class UserManagementController extends AbstractController
     }
     #[Route('/admin/users', name: 'user_management_index', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
-    public function index(UserRepository $userRepository, UserListScope $userListScope): Response
+    public function index(Request $request, UserRepository $userRepository, UserListScope $userListScope): Response
     {
         // Users the actor may view (UserListScope — shared with the exports
         // and the tour report; TenantFilter skips User).
@@ -64,14 +65,13 @@ class UserManagementController extends AbstractController
             ? $userRepository->getUserStatistics()
             : $userRepository->computeStatistics($users);
 
-        // Identify the initial admin for UI display
-        $initialAdmin = $this->initialAdminService->getInitialAdmin();
-        $initialAdminId = $initialAdmin?->getId();
-
         return $this->render('user_management/index.html.twig', [
-            'users' => $users,
+            'page' => ListPage::fromRequest(
+                $users,
+                $request,
+                static fn(User $u): array => [$u->getFirstName(), $u->getLastName(), $u->getEmail()],
+            ),
             'statistics' => $statistics,
-            'initial_admin_id' => $initialAdminId,
         ]);
     }
     #[Route('/admin/users/new', name: 'user_management_new', methods: ['GET', 'POST'])]

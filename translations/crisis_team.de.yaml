@@ -2,9 +2,11 @@ crisis_team:
     title: Krisenstäbe
     new: 'Neuer Krisenstab'
     edit: 'Krisenstab bearbeiten'
-    empty: 'Noch keine Krisenstäbe definiert.'
-    kpi:
-        active: 'Aktive Teams'
+    empty: 'Keine Krisenstäbe vorhanden.'
+    summary:
+        active: '%count% aktiv'
+        operational: '%count% operativ'
+        strategic: '%count% strategisch'
     section:
         basic_info: 'Grundinformationen'
         leadership: 'Führung'

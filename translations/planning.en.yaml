@@ -34,6 +34,8 @@ planning:
             open: Open
             due: Due
             recurring: Recurring
+        summary:
+            overdue: '%count% overdue'
         col:
             title: Item
             origin: Origin

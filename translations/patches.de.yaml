@@ -93,11 +93,11 @@ patch:
         responsible_person_user: 'Registrierter Benutzer mit Systemzugang als verantwortliche Person'
         responsible_person_ref: 'Kontakt ohne Systemzugang als verantwortliche Person'
         responsible_deputies: 'Weitere Personen, die die Verantwortung teilen (Vertretung)'
-    kpi:
-        pending: Ausstehend
-        deployed: Eingespielt
-        total: Gesamt
-    empty: Keine Patches vorhanden.
+    summary:
+        pending: '%count% ausstehend'
+        deployed: '%count% eingespielt'
+    list: Patches
+    empty: 'Keine Patches vorhanden.'
     show:
         metadata: Metadaten
         created_at: 'Erstellt am'

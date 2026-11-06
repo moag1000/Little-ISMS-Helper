@@ -10,6 +10,7 @@ use App\Repository\ImportSessionRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Util\ListPage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -36,7 +37,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 )]
 final class ImportHistoryController extends AbstractController
 {
-    private const PAGE_SIZE_SESSIONS = 20;
     private const PAGE_SIZE_EVENTS = 50;
 
     public function __construct(
@@ -54,22 +54,16 @@ final class ImportHistoryController extends AbstractController
             throw $this->createAccessDeniedException('No tenant context.');
         }
 
-        $page = max(1, (int) $request->query->get('page', 1));
-        $offset = ($page - 1) * self::PAGE_SIZE_SESSIONS;
-
+        $perPage = ListPage::perPage($request);
         $total = $this->importSessionRepository->countByTenant($tenant);
         $sessions = $this->importSessionRepository->findByTenantPaginated(
             $tenant,
-            self::PAGE_SIZE_SESSIONS,
-            $offset,
+            $perPage,
+            (ListPage::pageNumber($request) - 1) * $perPage,
         );
 
         return $this->render('admin/compliance_import/history/index.html.twig', [
-            'sessions' => $sessions,
-            'total' => $total,
-            'page' => $page,
-            'page_size' => self::PAGE_SIZE_SESSIONS,
-            'page_count' => (int) max(1, ceil($total / self::PAGE_SIZE_SESSIONS)),
+            'page' => ListPage::fromSlice($sessions, $total, $request),
         ]);
     }
 

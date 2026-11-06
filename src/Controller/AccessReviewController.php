@@ -16,6 +16,7 @@ use App\Service\AccessReviewCampaignService;
 use App\Service\Audit\AuditWorkbookGenerator;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,8 +70,21 @@ class AccessReviewController extends AbstractController
             ? $this->campaignRepository->findByTenant($tenant)
             : [];
 
+        $page = ListPage::fromRequest(
+            $campaigns,
+            $request,
+            static fn(AccessReviewCampaign $c): array => [$c->getName()],
+        );
+        $now = new \DateTimeImmutable();
+
         return $this->render('access_review/index.html.twig', [
-            'campaigns' => $campaigns,
+            'page' => $page,
+            'open_count' => count(array_filter($campaigns, static fn(AccessReviewCampaign $c): bool => $c->getStatus() === 'open')),
+            'closed_count' => count(array_filter($campaigns, static fn(AccessReviewCampaign $c): bool => $c->getStatus() === 'closed')),
+            'overdue_count' => count(array_filter(
+                $campaigns,
+                static fn(AccessReviewCampaign $c): bool => $c->getStatus() === 'open' && $c->getDueDate() !== null && $c->getDueDate() < $now,
+            )),
         ]);
     }
 

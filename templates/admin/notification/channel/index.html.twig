@@ -1,7 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'notification' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'notification.channel.index.title'|trans }}{% endblock %}
 {% block admin_title %}{{ 'notification.channel.index.title'|trans }}{% endblock %}
@@ -24,60 +23,60 @@
         ]
     }) }}
 
-    {% if channels is empty %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('admin_notification_channel_index'),
+        list_title: 'notification.channel.list'|trans({}, 'notification'),
+        empty: {
             mood: 'thinking',
-            title: 'notification.channel.empty.title'|trans,
-            body: 'notification.channel.empty.body'|trans,
-            actions: [
-                {
-                    label: 'notification.channel.action.new'|trans,
-                    href: path('admin_notification_channel_new'),
-                    variant: 'primary'
-                }
-            ]
-        }) }}
-    {% else %}
-        <section class="fa-section">
-            <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="fa-table" aria-label="{{ 'notification.channel.index.title'|trans }}">
+            title: 'notification.channel.empty.title'|trans({}, 'notification'),
+            text: 'notification.channel.empty.body'|trans({}, 'notification'),
+            actions: [{ label: 'notification.channel.action.new'|trans({}, 'notification'), href: path('admin_notification_channel_new'), variant: 'primary' }],
+        },
+    } %}
+        {% block list_summary %}
+            {% if active_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'notification.channel.summary.active'|trans({'%count%': active_count}, 'notification') }}</span>{% endif %}
+            {% if unverified_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'notification.channel.summary.unverified'|trans({'%count%': unverified_count}, 'notification') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            <div class="table-responsive">
+                    <table class="fa-table" aria-label="{{ 'notification.channel.list'|trans({}, 'notification') }}">
                         <thead>
                             <tr>
-                                <th>{{ 'notification.channel.field.name'|trans }}</th>
-                                <th>{{ 'notification.channel.field.type'|trans }}</th>
-                                <th>{{ 'notification.channel.field.is_active'|trans }}</th>
-                                <th>{{ 'notification.channel.field.verified_at'|trans }}</th>
+                                <th>{{ 'notification.channel.field.name'|trans({}, 'notification') }}</th>
+                                <th>{{ 'notification.channel.field.type'|trans({}, 'notification') }}</th>
+                                <th>{{ 'notification.channel.field.is_active'|trans({}, 'notification') }}</th>
+                                <th>{{ 'notification.channel.field.verified_at'|trans({}, 'notification') }}</th>
                                 <th>{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for channel in channels %}
+                        {% for channel in page %}
                             <tr>
                                 <td class="fw-semibold">{{ channel.name }}</td>
                                 <td>
                                     {% set typeClass = {
                                         'email': 'fa-status-pill--primary',
-                                        'webhook': 'fa-status-pill--info',
+                                        'webhook': 'fa-status-pill--primary',
                                         'in_app': 'fa-status-pill--success'
                                     } %}
-                                    <span class="fa-status-pill {{ typeClass[channel.type] ?? 'badge bg-secondary' }}">
-                                        {{ ('notification.channel.type.' ~ channel.type)|trans }}
+                                    <span class="fa-status-pill {{ typeClass[channel.type] ?? 'fa-status-pill fa-status-pill--neutral' }}">
+                                        {{ ('notification.channel.type.' ~ channel.type)|trans({}, 'notification') }}
                                     </span>
                                 </td>
                                 <td>
                                     {% if channel.isActive %}
                                         <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-muted small">
                                     {% if channel.verifiedAt %}
                                         <i class="fa-icon fa-icon--check text-success" aria-hidden="true"></i>
-                                        {{ channel.verifiedAt|date('Y-m-d') }}
+                                        {{ channel.verifiedAt|fa_date }}
                                     {% else %}
-                                        <span class="text-warning">{{ 'notification.channel.show.not_verified'|trans }}</span>
+                                        <span class="text-warning">{{ 'notification.channel.show.not_verified'|trans({}, 'notification') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -94,7 +93,7 @@
                                                    value="{{ csrf_token('notification_channel_verify_' ~ channel.id) }}">
                                             <button type="submit"
                                                     class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
-                                                    title="{{ 'notification.channel.action.verify'|trans }}">
+                                                    title="{{ 'notification.channel.action.verify'|trans({}, 'notification') }}">
                                                 <i class="fa-icon fa-icon--shield-check" aria-hidden="true"></i>
                                             </button>
                                         </form>
@@ -118,8 +117,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                </div>
             </div>
-        </section>
-    {% endif %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

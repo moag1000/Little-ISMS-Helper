@@ -12,6 +12,7 @@ use App\Repository\AnswerLibraryEntryRepository;
 use App\Service\AnswerLibraryService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -66,16 +67,12 @@ class AnswerLibraryController extends AbstractController
             ? $this->answerLibraryService->search($tenant, $keyword, $category ?: null)
             : [];
 
-        $totalEntries = $tenant ? $this->repository->countByTenant($tenant) : 0;
-        $totalReuses  = $tenant ? $this->repository->sumUseCountByTenant($tenant) : 0;
-
+        // The text search already ran in SQL; the page only cuts the result.
         return $this->render('answer_library/index.html.twig', [
-            'entries'       => $entries,
-            'keyword'       => $keyword,
+            'page'          => ListPage::fromRequest($entries, $request),
             'category'      => $category,
             'categories'    => AnswerLibraryEntry::VALID_CATEGORIES,
-            'total_entries' => $totalEntries,
-            'total_reuses'  => $totalReuses,
+            'total_reuses'  => array_sum(array_map(static fn(AnswerLibraryEntry $e): int => $e->getUseCount(), $entries)),
         ]);
     }
 

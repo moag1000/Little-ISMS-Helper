@@ -43,16 +43,14 @@ role_management:
     type:
         system: Systemrolle
         custom: 'Benutzerdefinierte Rolle'
-    stats:
-        total: Gesamt-Rollen
-        system_roles: Systemrollen
-        with_users: 'Mit Benutzern'
-        avg_permissions: 'Durchschn. Berechtigungen'
+    summary:
+        system: '%count% Systemrollen'
+        custom: '%count% benutzerdefiniert'
     message:
         no_permissions: 'Dieser Rolle sind keine Berechtigungen zugewiesen'
         no_users: 'Dieser Rolle sind keine Benutzer zugewiesen'
         hidden_holders: '%count% weitere Inhaber, die für Sie nicht sichtbar sind (z. B. in anderen Organisationen)'
-        no_roles: 'Noch keine Rollen erstellt'
+        no_roles: 'Keine Rollen vorhanden.'
     warning:
         system_role: Systemrolle
         system_role_desc: 'Dies ist eine Systemrolle und kann nicht gelöscht werden. Nur Berechtigungen können angepasst werden.'
@@ -74,7 +72,7 @@ role_management:
         search_placeholder: 'Berechtigungen suchen…'
         selected_count_label: 'ausgewählt'
         table_aria: 'Berechtigungstabelle'
-        no_results: 'Keine Berechtigungen gefunden.'
+        no_results: 'Keine Berechtigungen vorhanden.'
         category:
             user: 'Benutzerverwaltung'
             role: 'Rollenverwaltung'

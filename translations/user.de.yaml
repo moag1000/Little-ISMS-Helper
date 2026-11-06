@@ -19,15 +19,10 @@ user:
             title: 'Benutzerliste exportieren'
             body: 'Erstellt eine CSV-Datei mit allen Benutzern. Der Export läuft im Hintergrund, danach steht ein Download-Link zur Verfügung.'
             start: 'Export starten'
-    stats:
-        total: Gesamt
-        users: Benutzer
-        active: Aktiv
-        active_users: 'Aktive Benutzer'
-        admins: Admins
-        administrators: Administratoren
-        today_active: 'Heute aktiv'
-        logins_today: 'Anmeldungen heute'
+    summary:
+        active: '%count% aktiv'
+        admins: '%count% Administratoren'
+        today_active: '%count% heute angemeldet'
     table:
         name: Name
         email: E-Mail
@@ -44,7 +39,7 @@ user:
         no_custom_roles_assigned: 'Keine benutzerdefinierten Rollen zugewiesen.'
         no_specific_permissions: 'Keine spezifischen Berechtigungen zugewiesen. Berechtigungen werden durch Systemrollen vererbt.'
     empty:
-        title: 'Noch keine Benutzer vorhanden'
+        title: 'Keine Benutzer vorhanden.'
         description: 'Erstellen Sie Ihren ersten Benutzer, um mit der Benutzerverwaltung zu beginnen.'
     name: Benutzername
     email: E-Mail-Adresse

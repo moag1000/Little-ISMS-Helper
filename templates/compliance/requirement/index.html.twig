@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Compliance Requirements{% endblock %}
 
@@ -20,97 +19,72 @@
         ]
     }) }}
 
-    {# Framework Filter #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-        {% block card_body %}
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <label for="framework" class="form-label">{{ 'compliance.requirement.filter_by_framework'|trans({}, 'compliance') }}</label>
-                    <select name="framework" id="framework" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                        <option value="">{{ 'compliance.requirement.all_frameworks'|trans({}, 'compliance') }}</option>
-                        {% for framework in frameworks %}
-                            <option value="{{ framework.id }}" {% if selected_framework == framework.id %}selected{% endif %}>
-                                {{ framework.name }} ({{ framework.code }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="absicherungs_stufe" class="form-label">{{ 'compliance.requirement.filter_by_absicherungs_stufe'|trans({}, 'compliance') }}</label>
-                    <select name="absicherungs_stufe" id="absicherungs_stufe" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                        <option value="">{{ 'compliance.requirement.all_stufen'|trans({}, 'compliance') }}</option>
-                        <option value="basis" {% if selected_absicherungs_stufe == 'basis' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.basis'|trans({}, 'compliance') }}</option>
-                        <option value="standard" {% if selected_absicherungs_stufe == 'standard' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.standard'|trans({}, 'compliance') }}</option>
-                        <option value="kern" {% if selected_absicherungs_stufe == 'kern' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.kern'|trans({}, 'compliance') }}</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="anforderungs_typ" class="form-label">{{ 'compliance.requirement.filter_by_anforderungs_typ'|trans({}, 'compliance') }}</label>
-                    <select name="anforderungs_typ" id="anforderungs_typ" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                        <option value="">{{ 'compliance.requirement.all_typen'|trans({}, 'compliance') }}</option>
-                        <option value="MUSS" {% if selected_anforderungs_typ == 'MUSS' %}selected{% endif %}>MUSS</option>
-                        <option value="SOLLTE" {% if selected_anforderungs_typ == 'SOLLTE' %}selected{% endif %}>SOLLTE</option>
-                        <option value="KANN" {% if selected_anforderungs_typ == 'KANN' %}selected{% endif %}>KANN</option>
-                    </select>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
-                    </button>
-                    {% if selected_framework or selected_absicherungs_stufe or selected_anforderungs_typ %}
-                        <a href="{{ path('app_compliance_requirement_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost ms-2" title="{{ 'common.clear'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                        </a>
-                    {% endif %}
-                </div>
-            </form>
-        {% endblock %}
-    {% endembed %}
-
-    {# Requirements Table #}
-    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="mb-0">Requirements ({{ requirements|length }})</h2>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_compliance_requirement_index'),
+        filter_keys: ['framework', 'absicherungs_stufe', 'anforderungs_typ'],
+        list_title: 'compliance.requirement.list_heading'|trans({}, 'compliance'),
+        empty: {
+            mood: 'sleeping',
+            title: 'compliance.requirement.none'|trans({}, 'compliance'),
+            actions: selected_framework ? [] : [{ label: 'compliance.requirement.load_frameworks'|trans({}, 'compliance'), href: path('admin_compliance_index'), variant: 'primary' }],
+        },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-4">
+                <label for="framework" class="form-label">{{ 'compliance.requirement.filter_by_framework'|trans({}, 'compliance') }}</label>
+                <select name="framework" id="framework" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'compliance.requirement.all_frameworks'|trans({}, 'compliance') }}</option>
+                    {% for framework in frameworks %}
+                        <option value="{{ framework.id }}" {% if selected_framework == framework.id %}selected{% endif %}>
+                            {{ framework.name }} ({{ framework.code }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="absicherungs_stufe" class="form-label">{{ 'compliance.requirement.filter_by_absicherungs_stufe'|trans({}, 'compliance') }}</label>
+                <select name="absicherungs_stufe" id="absicherungs_stufe" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'compliance.requirement.all_stufen'|trans({}, 'compliance') }}</option>
+                    <option value="basis" {% if app.request.query.get('absicherungs_stufe') == 'basis' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.basis'|trans({}, 'compliance') }}</option>
+                    <option value="standard" {% if app.request.query.get('absicherungs_stufe') == 'standard' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.standard'|trans({}, 'compliance') }}</option>
+                    <option value="kern" {% if app.request.query.get('absicherungs_stufe') == 'kern' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.kern'|trans({}, 'compliance') }}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="anforderungs_typ" class="form-label">{{ 'compliance.requirement.filter_by_anforderungs_typ'|trans({}, 'compliance') }}</label>
+                <select name="anforderungs_typ" id="anforderungs_typ" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'compliance.requirement.all_typen'|trans({}, 'compliance') }}</option>
+                    {% for typ in ['MUSS', 'SOLLTE', 'KANN'] %}
+                        <option value="{{ typ }}" {% if app.request.query.get('anforderungs_typ') == typ %}selected{% endif %}>{{ typ }}</option>
+                    {% endfor %}
+                </select>
             </div>
         {% endblock %}
-        {% block card_body %}
-            {% if requirements is empty %}
-                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'm-3' } } %}
-                    {% block alert_body %}
-                        No requirements found.
-                        {% if selected_framework %}
-                            Try selecting a different framework.
-                        {% else %}
-                            <a href="{{ path('admin_compliance_index') }}" class="fa-alert__link">Load frameworks</a> to get started.
-                        {% endif %}
-                    {% endblock %}
-                {% endembed %}
-            {% else %}
-                {% embed '_components/_table.html.twig' with {
-                    'noMargin': true,
-                    'theadClass': 'table-light'
-                } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Framework</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Priority</th>
-                            <th scope="col">Fulfillment</th>
-                            <th scope="col">Applicable</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body_attrs %}id="compliance-requirement-rows"{% endblock %}
-                    {% block table_body %}
-                        {% for requirement in requirements %}
-                            {% include 'compliance/requirement/_row.html.twig' with { requirement: requirement, fulfillment: fulfillments[requirement.id]|default(null) } %}
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endif %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true,
+                'theadClass': 'table-light'
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Framework</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Fulfillment</th>
+                        <th scope="col">Applicable</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="compliance-requirement-rows"{% endblock %}
+                {% block table_body %}
+                    {% for requirement in page %}
+                        {% include 'compliance/requirement/_row.html.twig' with { requirement: requirement, fulfillment: fulfillments[requirement.id]|default(null) } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
 </div>

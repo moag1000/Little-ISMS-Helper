@@ -126,7 +126,7 @@ class TransferImpactAssessmentController extends AbstractController
      * (Used as a standalone TIA index page; the PA show page embeds the list inline.)
      */
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(int $paId): Response
+    public function index(Request $request, int $paId): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) {
             return $redirect;
@@ -137,7 +137,11 @@ class TransferImpactAssessmentController extends AbstractController
 
         return $this->render('tia/index.html.twig', [
             'processing_activity' => $pa,
-            'tias' => $tias,
+            'page' => \App\Util\ListPage::fromRequest(
+                $tias,
+                $request,
+                static fn(TransferImpactAssessment $t): array => [$t->getRecipientName(), $t->getDestinationCountry()],
+            ),
         ]);
     }
 

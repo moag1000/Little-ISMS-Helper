@@ -258,7 +258,7 @@ compliance:
         confirm:
             delete: 'Are you sure you want to delete this mapping?'
         empty:
-            title: 'No framework mappings yet'
+            title: 'No framework mappings yet.'
             description: 'Cross-framework mappings link requirements between standards (e.g. NIS2 Art. 21.2 ↔ ISO 27001 A.5.24). Once created — reused as audit evidence and for inheritance calculation.'
             action_wizard: 'Create with wizard (recommended)'
             action_seeds: 'Load pre-built seed catalogs (1-click)'
@@ -585,7 +585,7 @@ compliance:
         heading: 'Manage Compliance Frameworks'
         description: 'Load, activate and review frameworks such as ISO 27001, NIS2 and DORA'
         list: 'Framework List'
-        empty: 'No compliance frameworks available. Create your first framework.'
+        empty: 'No compliance frameworks yet.'
         no_requirements: 'No requirements defined for this framework'
         badge:
             mandatory: 'Mandatory'
@@ -719,6 +719,9 @@ compliance:
         all_frameworks: 'All Frameworks'
         all_stufen: 'All Levels'
         all_typen: 'All Types'
+        list_heading: Requirements
+        none: 'No requirements yet.'
+        load_frameworks: 'Load frameworks'
         absicherungs_stufe:
             basis: 'Basic Protection'
             standard: 'Standard Protection'
@@ -1114,7 +1117,7 @@ compliance:
             view_details: 'View Details'
             delete: 'Delete'
         empty:
-            title: 'No certificates yet'
+            title: 'No certificates yet.'
             text: 'Upload your first external compliance certificate to bulk-fulfil requirements.'
         flash:
             file_required: 'Please select a certificate file to upload.'

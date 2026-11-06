@@ -1,0 +1,59 @@
+# index.html.twig pages that are not lists (Gate 73 skips them). Path — reason.
+templates/activity_feed/index.html.twig # feed widget, not a record table
+templates/admin/compliance/index.html.twig # framework loader cards with stats
+templates/admin/compliance_policy/index.html.twig # settings form
+templates/admin/data_repair/index.html.twig # repair tool, many panels
+templates/admin/gstool_import/index.html.twig # upload form with result panels
+templates/admin/industry_baseline/index.html.twig # framework card hub
+templates/admin/industry_preset/index.html.twig # preset catalogue with apply actions
+templates/admin/library/index.html.twig # library loader cards plus small table
+templates/admin/licensing/index.html.twig # licence status page
+templates/admin/lifecycle_overrides/index.html.twig # small fixed workflow catalogue, no browse/filter
+templates/admin/loader_fixer/index.html.twig # fixed loader status/run-action table
+templates/admin/modules/index.html.twig # module activation hub
+templates/admin/notification/template/index.html.twig # grouped template gallery cards
+templates/admin/queue_status/index.html.twig # worker health status page
+templates/admin/sample_data/index.html.twig # fixed sample-data import catalogue
+templates/admin/settings/index.html.twig # settings form
+templates/admin/supplier_criticality/index.html.twig # criticality settings table
+templates/admin/tour_content/index.html.twig # fixed tour catalog picker grid
+templates/admin/workflows/index.html.twig # two static YAML workflow catalogs
+templates/audit/workbook/index.html.twig # export launcher, no records
+templates/authority/dora_roi/index.html.twig # report generator with submission history
+templates/authority/hub/index.html.twig # obligation status hub, fixed card set
+templates/authority/nis2_registration/index.html.twig # single-record registration profile page
+templates/authority/notification/index.html.twig # export launcher, cards per breach
+templates/bsi_grundschutz_check/index.html.twig # aggregate compliance report, not records
+templates/certification_bundle/index.html.twig # export launcher with preview counts
+templates/compliance/index.html.twig # compliance dashboard hub, framework cards
+templates/compliance_wizard/index.html.twig # wizard chooser card hub
+templates/context/index.html.twig # single-record context page
+templates/dashboard/fte_tracking/index.html.twig # FTE savings dashboard with charts
+templates/data_reuse_hub/index.html.twig # reuse hub/dashboard with hero KPIs
+templates/dora_subcontractor/index.html.twig # hierarchical supplier tier tree
+templates/effectiveness_monitor/index.html.twig # three-section monitor dashboard with KPIs
+templates/evidence/index.html.twig # upload form plus coverage hub
+templates/help/tour/index.html.twig # static tour picker cards
+templates/import_hub/index.html.twig # entity-type link hub
+templates/industry_baseline/index.html.twig # baseline card gallery with seeding
+templates/license/index.html.twig # NOTICE text viewer
+templates/management_reports/index.html.twig # report launcher with KPI tiles
+templates/mfa_token/index.html.twig # per-user grouped token cards
+templates/my_day/index.html.twig # personal inbox dashboard, accordion sections
+templates/planning/admin/index.html.twig # planning hub with several embedded sections
+templates/planning/roadmap/index.html.twig # editable week-grid, not record list
+templates/planning/sources/index.html.twig # per-row settings forms, config page
+templates/policy_profile/index.html.twig # settings/parameter form page
+templates/policy_wizard/diff/index.html.twig # single diff comparison page
+templates/policy_wizard/index.html.twig # wizard landing, run launcher
+templates/policy_wizard/konzern_rollup/index.html.twig # group rollup report dashboard
+templates/portfolio_report/index.html.twig # report with matrices
+templates/profile/index.html.twig # profile settings page
+templates/profile/mfa/index.html.twig # MFA settings page
+templates/quick_fix/index.html.twig # operator repair tool page
+templates/report_builder/index.html.twig # hub: quick start, favorites, sidebar
+templates/reports/index.html.twig # report launcher hub
+templates/security/index.html.twig # security report hub, nav and score cards
+templates/setup/index.html.twig # deployment setup wizard landing
+templates/share/index.html.twig # single share-target action page
+templates/workflow/index.html.twig # overview hub, latest-10 teaser, link cards

@@ -281,7 +281,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 
 - **Mein Tag als einzige Inbox** -- Freigaben, 4-Augen-Prüfungen und Risikoakzeptanzen direkt entscheidbar; Startseite je nach Rolle
 - **Eine Menüstelle pro Seite** -- Persona-Dashboards unter "Mein Cockpit", ein Import-Hub, CI-Gate gegen doppelte Menüeinträge
-- **Ein Listen-Aufbau** -- Suche, Filter, Zusammenfassung, Tabelle, Seitenumbruch und Leerzustand gleich auf allen migrierten Listen
+- **Ein Listen-Aufbau** -- alle 74 Listen mit derselben Reihenfolge: Suche und Filter (teilbare URL), Zusammenfassungs-Chips statt KPI-Kacheln, Tabelle, Seitenumbruch (25/50/100), Leerzustand "Keine X vorhanden."; laufende Freigaben stehen als "In Freigabe" / "Freigabe überfällig" direkt in der Zeile
 - **Eine Kennzahlenquelle** -- `KpiCatalog` mit mandantenspezifischen Schwellwerten, Euro-Kennzahlen (ALE) auf den Management-Dashboards, einheitliche Risikobänder 20/12/6
 - **Ein Detailseiten-Aufbau** -- Statusband, Ankerleiste, Nachweiskette Asset → Risiko → Control → Nachweis → Vorfall → Schwachstelle als erster Block, Historie und Kommentare
 - **Formulare** -- große Formulare zeigen zuerst den Kern (Rest eingeklappt mit Füllstand), Warnung bei ungespeicherten Änderungen, Vorbelegung aus dem Kontext ("Risiko ableiten" am Asset, "Behandlungsplan" am Risiko), alte Freitext-Personenfelder nur noch wenn befüllt

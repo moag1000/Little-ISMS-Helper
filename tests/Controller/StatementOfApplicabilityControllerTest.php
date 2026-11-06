@@ -364,12 +364,8 @@ class StatementOfApplicabilityControllerTest extends TestCase
             ->with(
                 'soa/index.html.twig',
                 $this->callback(function ($params) {
-                    // Verify that detailed stats structure exists
-                    $stats = $params['detailedStats'];
-                    return isset($stats['own'])
-                        && isset($stats['inherited'])
-                        && isset($stats['subsidiaries'])
-                        && isset($stats['total'])
+                    // The list renders through the list skeleton: one page over all three controls
+                    return $params['page']->total === 3
                         && count($params['controls']) === 3;  // We should have 3 total controls in the list
                 })
             )

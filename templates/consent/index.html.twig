@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% trans_default_domain 'consent' %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-{% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 {% block title %}{{ 'consent.header.title'|trans({}, 'consent') }}{% endblock %}
 
 {% block body %}
@@ -28,95 +26,26 @@
     {% endfor %}
 {% endif %}
 
-<main>
-
-{# KPI Cards Grid #}
-<div class="kpi-grid kpi-grid-responsive">
-    {{ _fa_feature_card.render({
-        icon: 'approve',
-        label: 'consent.kpi.total'|trans({}, 'consent'),
-        value: consents|length,
-        variant: 'primary'
-    }) }}
-
-    {% set activeConsents = consents|filter(c => c.status == 'active')|length %}
-    {{ _fa_feature_card.render({
-        icon: 'status-ok',
-        label: 'consent.kpi.active'|trans({}, 'consent'),
-        value: activeConsents,
-        variant: activeConsents > 0 ? 'success' : 'primary',
-        href: '#filter-active'
-    }) }}
-
-    {% set pendingConsents = consents|filter(c => c.status == 'pending_verification')|length %}
-    {{ _fa_feature_card.render({
-        icon: 'ui-hourglass',
-        label: 'consent.kpi.pending'|trans({}, 'consent'),
-        value: pendingConsents,
-        variant: pendingConsents > 0 ? 'warning' : 'primary',
-        href: '#filter-pending'
-    }) }}
-
-    {% set revokedConsents = consents|filter(c => c.status == 'revoked')|length %}
-    {{ _fa_feature_card.render({
-        icon: 'status-critical',
-        label: 'consent.kpi.revoked'|trans({}, 'consent'),
-        value: revokedConsents,
-        variant: revokedConsents > 0 ? 'danger' : 'primary'
-    }) }}
-</div>
-
-{# Status Overview #}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_header %}
-        <div class="card-header">
-            <h2 class="mb-0"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'consent.status.overview'|trans({}, 'consent') }}</h2>
-        </div>
-    {% endblock %}
-    {% block card_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-        <div class="row">
-            {# Aurora icons (dynamic via map below). #}
-            {% set statuses = {
-                'pending_verification': { label: 'consent.status.pending_verification'|trans({}, 'consent'), icon: 'ui-hourglass', color: 'warning' },
-                'active': { label: 'consent.status.active'|trans({}, 'consent'), icon: 'status-ok', color: 'success' },
-                'revoked': { label: 'consent.status.revoked'|trans({}, 'consent'), icon: 'status-critical', color: 'danger' }
-            } %}
-            {% for status, data in statuses %}
-                {% set count = consents|filter(c => c.status == status)|length %}
-                <div class="col-md-4 mb-3">
-                    <div class="status-card status-{{ status }}">
-                        <div class="status-icon text-{{ data.color }}" aria-hidden="true">
-                            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
-                            <i class="fa-icon fa-icon--{{ (data.icon starts with 'bi-') ? data.icon[3:] : data.icon }}" aria-hidden="true"></i>
-                        </div>
-                        <div class="status-info">
-                            <div class="status-label">{{ data.label }}</div>
-                            <div class="status-count">{{ count }}</div>
-                            {% if consents|length > 0 %}
-                                {{ _fa_progress.render({ value: (count / consents|length * 100)|round, tone: data.color, class: 'mt-2' }) }}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endblock %}
-{% endembed %}
-
-{# Filters #}
-{% embed '_components/_search_filter_form.html.twig' with {
-    action: path('app_consent_index'),
+<div class="container-fluid py-4">
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_consent_index'),
     filter_keys: ['status', 'verified'],
-    show_search: false,
-    form_id: 'consent-filter-form'
+    list_title: 'consent.list.all_consents'|trans({}, 'consent'),
+    empty: {
+        mood: 'sleeping',
+        title: 'consent.empty.title'|trans({}, 'consent'),
+        text: 'consent.empty.description'|trans({}, 'consent'),
+        actions: [{ label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary' }],
+    },
+    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/consent"',
 } %}
-    {% block filters %}
+    {% block list_filters %}
         {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
         <div class="col-md-4">
             {{ _fa_filter_select.render({
                 name: 'status',
-                label: 'consent.filter.all_status'|trans({}, 'consent'),
+                label: 'consent.field.status'|trans({}, 'consent'),
                 values: ['pending_verification', 'active', 'revoked', 'expired', 'rejected'],
                 prefix: 'consent.status.',
                 domain: 'consent',
@@ -125,7 +54,7 @@
             }) }}
         </div>
         <div class="col-md-4">
-            <label for="filter-verified" class="form-label">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</label>
+            <label for="filter-verified" class="form-label">{{ 'consent.field.verified'|trans({}, 'consent') }}</label>
             <select class="form-select fa-cyber-input__field" id="filter-verified" name="verified">
                 <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
                 <option value="verified" {{ app.request.query.get('verified') == 'verified' ? 'selected' : '' }}>{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
@@ -133,112 +62,44 @@
             </select>
         </div>
     {% endblock %}
-{% endembed %}
-
-{# Consents Table or Empty State #}
-{% if consents|length == 0 %}
-    {% include '_components/_empty_state.html.twig' with {
-        icon: 'approve',
-        title: 'consent.empty.title'|trans({}, 'consent'),
-        description: 'consent.empty.description'|trans({}, 'consent'),
-        action: { label: 'consent.header.action.new'|trans({}, 'consent'), url: path('app_consent_new'), icon: 'plus' }
-    } %}
-{% else %}
-{% embed '_components/_card.html.twig' %}
-    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/consent"{% endblock %}
-    {% block card_header %}
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': consents|length}, 'consent') }}</h2>
-        </div>
+    {% block list_summary %}
+        {% if active_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'consent.summary.active'|trans({'%count%': active_count}, 'consent') }}</span>{% endif %}
+        {% if pending_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'consent.summary.pending'|trans({'%count%': pending_count}, 'consent') }}</span>{% endif %}
+        {% if revoked_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'consent.summary.revoked'|trans({'%count%': revoked_count}, 'consent') }}</span>{% endif %}
     {% endblock %}
-    {% block card_body %}
-    {% embed '_components/_table.html.twig' with {
-        'class': 'table-hover table-bulk-selectable mb-0',
-        'noMargin': true,
-        'responsive': true
-    } %}
-        {% block table_head %}
-            <tr>
-                <th scope="col" class="bulk-select-column">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           data-action="bulk-actions#selectAll"
-                           data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                </th>
-                <th scope="col">{{ 'consent.field.id'|trans({}, 'consent') }}</th>
-                <th scope="col">{{ 'consent.field.data_subject'|trans({}, 'consent') }}</th>
-                <th scope="col">{{ 'consent.field.processing_activity'|trans({}, 'consent') }}</th>
-                <th scope="col">{{ 'consent.field.status'|trans({}, 'consent') }}</th>
-                <th scope="col">{{ 'consent.field.granted_at'|trans({}, 'consent') }}</th>
-                <th scope="col" class="text-center">{{ 'consent.field.verified'|trans({}, 'consent') }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
-            </tr>
-        {% endblock %}
-        {% block table_body_attrs %}id="consent-rows"{% endblock %}
-        {% block table_body %}
-            {% for consent in consents %}
-                {% include 'consent/_row.html.twig' with { consent: consent } %}
-            {% endfor %}
-        {% endblock %}
-    {% endembed %}
-
-    {# Bulk Action Bar #}
-    {% include '_components/_bulk_action_bar.html.twig' with {
-        actions: ['export', 'delete']
-    } %}
+    {% block list_table %}
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-hover table-bulk-selectable mb-0',
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col" class="bulk-select-column">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                    </th>
+                    <th scope="col">{{ 'consent.field.id'|trans({}, 'consent') }}</th>
+                    <th scope="col">{{ 'consent.field.data_subject'|trans({}, 'consent') }}</th>
+                    <th scope="col">{{ 'consent.field.processing_activity'|trans({}, 'consent') }}</th>
+                    <th scope="col">{{ 'consent.field.status'|trans({}, 'consent') }}</th>
+                    <th scope="col">{{ 'consent.field.granted_at'|trans({}, 'consent') }}</th>
+                    <th scope="col" class="text-center">{{ 'consent.field.verified'|trans({}, 'consent') }}</th>
+                    <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body_attrs %}id="consent-rows"{% endblock %}
+            {% block table_body %}
+                {% for consent in page %}
+                    {% include 'consent/_row.html.twig' with { consent: consent } %}
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+        {% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete'] } %}
     {% endblock %}
 {% endembed %}
-{% endif %}
-
-<style>
-/* Status Cards */
-.status-card {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background: var(--surface);
-    color: var(--fg);
-    border-radius: var(--r-md);
-    border: 2px solid var(--border);
-    transition: all var(--t-fast);
-}
-
-.status-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.status-icon {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    background: var(--surface-2);
-    border-radius: 50%;
-}
-
-.status-info {
-    flex: 1;
-}
-
-.status-label {
-    font-size: 0.875rem;
-    color: var(--fg-3);
-    margin-bottom: 4px;
-}
-
-.status-count {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--primary-strong);
-}
-</style>
-
-</main>
-
-
+</div>
 {% endblock %}

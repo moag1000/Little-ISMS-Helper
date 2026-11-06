@@ -22,35 +22,6 @@ class ChangeRequestRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find pending approval requests
-     */
-    public function findPendingApproval(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->where('c.status IN (:statuses)')
-            ->setParameter('statuses', [ChangeRequestStatus::Submitted->value, ChangeRequestStatus::UnderReview->value])
-            ->orderBy('c.priority', 'ASC')
-            ->addOrderBy('c.requestedDate', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Find overdue implementations
-     */
-    public function findOverdue(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->where('c.plannedImplementationDate < :now')
-            ->andWhere('c.status IN (:statuses)')
-            ->setParameter('now', new DateTime())
-            ->setParameter('statuses', [ChangeRequestStatus::Approved->value, ChangeRequestStatus::Scheduled->value])
-            ->orderBy('c.plannedImplementationDate', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Change requests pending approval, scoped
      * to a tenant. ISO 27001 Clause 6.3 (Planning of Changes) requires
      * approval-tracking; the bucket surfaces to Manager/Admin/CAB-members

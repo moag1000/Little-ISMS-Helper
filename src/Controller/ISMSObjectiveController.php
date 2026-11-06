@@ -14,6 +14,7 @@ use App\Enum\ISMSObjectiveStatus;
 use App\Form\ISMSObjectiveType;
 use App\Repository\ISMSObjectiveRepository;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,23 +39,21 @@ class ISMSObjectiveController extends AbstractController
         private readonly Security $security,
     ) {}
     #[Route('/objective', name: 'app_objective_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $objectives = $this->ismsObjectiveRepository->findAll();
-        $active = $this->ismsObjectiveRepository->findActive();
-
-        $statistics = [
-            'total' => count($objectives),
-            'active' => count($active),
-            'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => ISMSObjectiveStatus::Achieved->value])),
-            'delayed' => count(array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getStatus() === ISMSObjectiveStatus::InProgress->value &&
-                   $obj->getTargetDate() < new DateTime() &&
-                   !$obj->getAchievedDate())),
-        ];
+        $now = new DateTime();
 
         return $this->render('objective/index.html.twig', [
-            'objectives' => $objectives,
-            'statistics' => $statistics,
+            'page' => ListPage::fromRequest(
+                $objectives,
+                $request,
+                static fn(ISMSObjective $o): array => [$o->getTitle(), $o->getCategory()],
+            ),
+            'achieved_count' => count(array_filter($objectives, static fn(ISMSObjective $o): bool => $o->getStatus() === ISMSObjectiveStatus::Achieved->value)),
+            'delayed_count' => count(array_filter($objectives, static fn(ISMSObjective $o): bool => $o->getStatus() === ISMSObjectiveStatus::InProgress->value
+                && $o->getTargetDate() < $now
+                && !$o->getAchievedDate())),
         ]);
     }
     #[Route('/objective/new', name: 'app_objective_new', methods: ['GET', 'POST'])]

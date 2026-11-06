@@ -29,123 +29,7 @@
 {% endif %}
 
 
-<main>
 <div class="container-fluid py-4">
-
-    {# View Filter #}
-    {% if currentTenant %}
-    {% embed '_components/_card.html.twig' with {
-        'class': 'mb-3'
-    } %}
-        {% block card_body %}
-            <form method="get" action="{{ path('app_training_index') }}" class="d-flex align-items-center gap-2">
-                <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
-                </label>
-                <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans({}, 'messages') }}
-                    </option>
-                    {% if inheritanceInfo.hasParent %}
-                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
-                    </option>
-                    {% endif %}
-                    {% if inheritanceInfo.hasSubsidiaries %}
-                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
-                    </option>
-                    {% endif %}
-                </select>
-                <noscript>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
-                </noscript>
-            </form>
-        {% endblock %}
-    {% endembed %}
-    {% endif %}
-
-    {# Statistics Cards #}
-    <turbo-frame id="training-stats">
-        <div class="row mb-4">
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with {borderColor: 'primary'} %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--nav-collection text-primary icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.total'|trans({}, 'training') }}</div>
-                                <div class="h2 mb-0">
-                                    <span id="training-total-count">{{ detailedStats.total }}</span>
-                                </div>
-                                {% if currentTenant %}
-                                    <small class="text-muted d-block small opacity-75">
-                                        {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages') }}
-                                    </small>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with {borderColor: 'info'} %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--nav-calendar-check text-info icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.upcoming'|trans({}, 'training') }}</div>
-                                <div class="h3 mb-0">
-                                    <span id="training-upcoming-count">{{ statistics.upcoming ?? 0 }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with {borderColor: 'success'} %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--status-ok icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.completed'|trans({}, 'training') }}</div>
-                                <div class="h3 mb-0">
-                                    <span id="training-completed-count">{{ statistics.completed ?? 0 }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with {borderColor: 'warning'} %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--status-warning icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.mandatory'|trans({}, 'training') }}</div>
-                                <div class="h3 mb-0">
-                                    <span id="training-mandatory-count">{{ statistics.mandatory ?? 0 }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-        </div>
-    </turbo-frame>
 
     {# Upcoming Trainings Section #}
     {% if upcoming|length > 0 %}
@@ -185,7 +69,7 @@
                         </td>
                         <td>
                             <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
-                            {{ training.scheduledDate|date('d.m.Y') }}
+                            {{ training.scheduledDate|fa_date }}
                         </td>
                         <td>{{ ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') }}</td>
                         <td>
@@ -210,25 +94,42 @@
     {% endembed %}
     {% endif %}
 
-    {# All Trainings Section #}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/training"{% endblock %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list text-primary" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'training') }}</h2>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_training_index'),
+        filter_keys: ['view'],
+        list_title: 'training.all_trainings'|trans({}, 'training'),
+        empty: {
+            mood: 'sleeping',
+            title: 'training.no_trainings'|trans({}, 'training'),
+            actions: is_granted('ROLE_USER') ? [
+                { label: 'training.create_first'|trans({}, 'training'), variant: 'primary', icon: 'plus', href: path('app_training_new') }
+            ] : []
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/training"',
+    } %}
+        {% block list_filters %}
+            {% if currentTenant %}
+            <div class="col-md-4">
+                <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>{{ 'corporate.view.own_only'|trans({}, 'messages') }}</option>
+                    {% if inheritanceInfo.hasParent %}
+                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>{{ 'corporate.view.including_inherited'|trans({}, 'messages') }}</option>
+                    {% endif %}
+                    {% if inheritanceInfo.hasSubsidiaries %}
+                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>{{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}</option>
+                    {% endif %}
+                </select>
             </div>
+            {% endif %}
         {% endblock %}
-        {% block card_body %}
-            {% if trainings|length == 0 %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {{ _fa_empty_state.render({
-                mood: 'sleeping',
-                title: 'training.no_trainings'|trans({}, 'training'),
-                actions: is_granted('ROLE_USER') ? [
-                    { label: 'training.create_first'|trans({}, 'training'), variant: 'primary', icon: 'plus', href: path('app_training_new') }
-                ] : []
-            }) }}
-            {% else %}
+        {% block list_summary %}
+            {% if statistics.upcoming > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'training.summary.upcoming'|trans({'%count%': statistics.upcoming}, 'training') }}</span>{% endif %}
+            {% if statistics.completed > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'training.summary.completed'|trans({'%count%': statistics.completed}, 'training') }}</span>{% endif %}
+            {% if statistics.mandatory > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'training.summary.mandatory'|trans({'%count%': statistics.mandatory}, 'training') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
             {% embed '_components/_table.html.twig' with {
                 'variant': 'striped',
                 'class': 'table-bulk-selectable'
@@ -254,26 +155,23 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
-                    {% for training in trainings %}
+                    {% set workflowStates = workflow_states(page) %}
+                    {% for training in page %}
                     {% include 'training/_row.html.twig' with { training: training, currentTenant: currentTenant } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-            {% endif %}
-        {% endblock %}
-        {% block card_footer %}
+
             {# Bulk Action Bar #}
-            {% if trainings|length > 0 %}
             {% include '_components/_bulk_action_bar.html.twig' with {
                 actions: ['export', 'assign', 'delete']
             } %}
-            {% endif %}
         {% endblock %}
     {% endembed %}
 </div>
 
 {# Delete Modals #}
-{% for training in trainings %}
+{% for training in page %}
 <div class="fa-modal fa-modal--confirm fa-modal--danger" id="deleteModal{{ training.id }}"
      data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
      role="alertdialog" aria-modal="true" aria-labelledby="deleteModal{{ training.id }}Label" aria-hidden="true">
@@ -296,5 +194,4 @@
 </div>
 </div>
 {% endfor %}
-</main>
 {% endblock %}

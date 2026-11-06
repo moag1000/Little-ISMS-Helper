@@ -11,6 +11,7 @@ use App\Repository\PermissionRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\UserVoter;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,32 +28,20 @@ class PermissionController extends AbstractController
     ): Response {
         $categoryFilter = $request->query->get('category');
 
-        if ($categoryFilter) {
-            $permissions = $permissionRepository->findByCategory($categoryFilter);
-            $groupedPermissions = [$categoryFilter => $permissions];
-        } else {
-            $groupedPermissions = $permissionRepository->findAllGroupedByCategory();
-        }
-
-        $categories = $permissionRepository->getCategories();
-        $actions = $permissionRepository->getActions();
-
-        // Calculate statistics
-        $totalPermissions = $permissionRepository->count([]);
-        $systemPermissions = $permissionRepository->count(['isSystemPermission' => true]);
-        $customPermissions = $totalPermissions - $systemPermissions;
+        $groupedPermissions = $categoryFilter
+            ? [$categoryFilter => $permissionRepository->findByCategory($categoryFilter)]
+            : $permissionRepository->findAllGroupedByCategory();
+        $permissions = array_merge(...array_values($groupedPermissions) ?: [[]]);
 
         return $this->render('permission/index.html.twig', [
-            'groupedPermissions' => $groupedPermissions,
-            'categories' => $categories,
-            'actions' => $actions,
-            'currentCategory' => $categoryFilter,
-            'statistics' => [
-                'total' => $totalPermissions,
-                'system' => $systemPermissions,
-                'custom' => $customPermissions,
-                'categories_count' => count($categories),
-            ],
+            'page' => ListPage::fromRequest(
+                $permissions,
+                $request,
+                static fn(Permission $p): array => [$p->getName(), $p->getDescription(), $p->getCategory()],
+            ),
+            'categories' => $permissionRepository->getCategories(),
+            'system_count' => count(array_filter($permissions, static fn(Permission $p): bool => $p->isSystemPermission())),
+            'custom_count' => count(array_filter($permissions, static fn(Permission $p): bool => !$p->isSystemPermission())),
         ]);
     }
     #[Route('/admin/permissions/{id}', name: 'permission_show', requirements: ['id' => '\d+'], methods: ['GET'])]

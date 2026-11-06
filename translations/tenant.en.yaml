@@ -1,7 +1,7 @@
 tenant:
     title: 'Organization Management'
     subtitle: Create and maintain organizations in the ISMS scope (ISO 27001 Cl. 4.3).
-    empty: 'No organizations available'
+    empty: 'No organisations yet.'
     switch_hint: 'Switch'
     switch_header: 'Switch organization'
     switch_glossary_hint: 'Organization per ISO 27001 Cl. 4.1 — the independent unit with its own assets, risks, and users.'
@@ -10,10 +10,10 @@ tenant:
         body: 'These accounts can sign in but cannot see any ISMS data (controls, risks, processing activities) because every query is scoped to an organization. Assign the organization via User Management or use Data Repair in bulk mode.'
         cta_user_management: 'Open User Management'
         cta_data_repair: 'Open Data Repair'
+    summary:
+        active: '%count% active'
+        inactive: '%count% inactive'
     stats:
-        total: Total
-        active: Active
-        inactive: Inactive
         total_users: 'Total Users'
         active_users: 'Active Users'
         inactive_users: 'Inactive Users'
@@ -243,7 +243,6 @@ corporate:
         orphaned: 'Orphaned only (no organization)'
         all_tenants: 'Across all organizations'
     stats:
-        breakdown: Breakdown
         groups: Groups
         standalone: Standalone
         total: Total

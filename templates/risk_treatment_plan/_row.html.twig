@@ -29,7 +29,7 @@
         {{ _fa_progress.render({ value: plan.completionPercentage, tone: plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')), showText: true }) }}
     </td>
     <td>
-        {{ plan.targetCompletionDate|date('Y-m-d') }}
+        {{ plan.targetCompletionDate|fa_date }}
         <br>
         <small class="text-muted">
             {% set daysUntil = plan.daysUntilTarget %}

@@ -26,7 +26,7 @@ interested_party:
         title: 'Parteien mit hoher Bedeutung'
     engagement_score: Engagement‑Score
     list:
-        title: 'Liste ({{ count }})'
+        title: 'Interessierte Parteien'
     table:
         name: Name
         type: Typ
@@ -71,7 +71,7 @@ interested_party:
     empty:
         message: 'Keine interessierten Parteien vorhanden.'
         add_first: 'Erste Partei hinzufügen'
-        title: 'Noch keine interessierten Parteien erfasst'
+        title: 'Keine interessierten Parteien vorhanden.'
         body: 'Erfassen Sie Kunden, Aufsichtsbehörden, Lieferanten und andere Stakeholder, deren Anforderungen Sie im ISMS berücksichtigen müssen. Pro Partei dokumentieren Sie Anforderungen, Kommunikationsfrequenz und Engagement-Score.'
     help:
         empty_link: '/de/help/glossary#glossary-interested-parties'

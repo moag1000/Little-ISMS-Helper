@@ -11,16 +11,11 @@ session:
     last_activity: 'Letzte Aktivität'
     session_start: Sitzungsbeginn
     terminate: 'Sitzung beenden'
-    statistics:
-        total: 'Gesamt aktive Sitzungen'
-        today: Heute
-        hours_filter: 'Zeitfilter (Stunden)'
-        active_sessions: 'Aktive Sitzungen'
-        last_24h: 'Letzte 24h'
-        unique_users: 'Eindeutige Benutzer'
-        active_users: 'Aktive Benutzer'
-        limit_per_user: 'Limit pro Benutzer'
-        max_concurrent: 'Max. gleichzeitig'
+    summary:
+        active: '%count% aktive Sitzungen'
+        last_24h: '%count% in den letzten 24 h'
+        users: '%count% Benutzer'
+        max_concurrent: 'max. %count% gleichzeitig'
     status:
         active_now: 'Jetzt aktiv'
         minutes_ago: 'vor %minutes% Min.'

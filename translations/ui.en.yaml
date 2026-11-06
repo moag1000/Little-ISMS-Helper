@@ -149,6 +149,10 @@ ui:
         reset_aria_label: 'Clear all active filters'
         active_filters: 'Active filters'
         shareable_hint: 'This URL contains the current filters and can be shared or bookmarked.'
+    list_workflow:
+        running: 'In approval'
+        overdue: 'Approval overdue'
+        column: 'Approval'
     pager:
         nav_label: 'Pagination'
         previous: 'Previous page'

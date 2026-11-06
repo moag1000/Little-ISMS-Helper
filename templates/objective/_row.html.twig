@@ -24,7 +24,7 @@
     <td>
         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}
     </td>
-    <td>{{ objective.targetDate|date('d.m.Y') }}</td>
+    <td>{{ objective.targetDate|fa_date }}</td>
     <td>
         {{ _fa_progress.render({
             value: objective.progressPercentage,

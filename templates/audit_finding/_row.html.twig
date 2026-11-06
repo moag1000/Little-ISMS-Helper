@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single AuditFinding table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
@@ -13,6 +14,7 @@
         <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}"
            data-turbo-frame="fa-form-modal"
            class="fa-row-link"><strong>{{ finding.title }}</strong></a>
+           {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[finding.id] ?? {}) : workflow_state(finding)) }}
         <br><small class="text-muted">{{ _findingNumber }}</small>
     </td>
     <td class="fa-table__cell">
@@ -35,7 +37,7 @@
     <td class="fa-table__cell">
         {% if finding.dueDate %}
             <span class="{{ finding.isOverdue ? 'text-danger' : 'text-muted' }} small">
-                {{ finding.dueDate|date('Y-m-d') }}
+                {{ finding.dueDate|fa_date }}
             </span>
         {% endif %}
     </td>

@@ -268,9 +268,12 @@ Listen-Gerüst `_components/_fa_list_page.html.twig`: Filterleiste (Suche `q` +
 einklappbare Filter, alles GET), Kurzinfo-Chips, Tabelle, Pager, leerer Zustand.
 Listen auf dem Gerüst dürfen keine KPI-Kacheln (`_fa_feature_card`) tragen.
 
-**Baseline:** `scripts/quality/baselines/list_skeleton.txt` listet die noch nicht
-umgestellten Listen; sie darf nur schrumpfen, veraltete Einträge schlagen fehl.
+**Baseline:** `scripts/quality/baselines/list_skeleton.txt` ist seit der Umstellung
+aller Listen leer und darf leer bleiben: jede neue Liste läuft über das Gerüst.
 Neu schreiben: `--write-baseline scripts/quality/baselines/list_skeleton.txt`.
+`index.html.twig`-Dateien, die keine Liste sind (Hubs, Dashboards, Assistenten,
+Einstellungsformulare, Statusseiten), stehen mit Begründung in
+`scripts/quality/baselines/list_skeleton_not_lists.txt` und werden nicht geprüft.
 
 **CI-Integration:** Gate 73 im `code-quality`-Job.
 

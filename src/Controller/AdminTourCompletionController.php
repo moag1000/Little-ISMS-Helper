@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Util\CsvSanitizer;
+use App\Util\ListPage;
 
 /**
  * Admin-Report: Tour-Completion pro User.
@@ -57,17 +58,12 @@ class AdminTourCompletionController extends AbstractController
     {
         $roleFilter = $request->query->get('role');
         $onlyIncomplete = $request->query->getBoolean('only_incomplete');
-        $search = trim((string) $request->query->get('q', ''));
 
         $users = $this->visibleUsers();
         $tours = GuidedTourService::ALL_TOURS;
 
         $rows = [];
         foreach ($users as $user) {
-            if ($search !== '' && !$this->matchesSearch($user, $search)) {
-                continue;
-            }
-
             $autoRole = $this->autoRoleFor($user);
             if ($roleFilter !== null && $roleFilter !== '' && $autoRole !== $roleFilter) {
                 continue;
@@ -97,11 +93,14 @@ class AdminTourCompletionController extends AbstractController
         }
 
         return $this->render('admin/tour_completion/index.html.twig', [
-            'rows' => $rows,
+            'page' => ListPage::fromRequest(
+                $rows,
+                $request,
+                static fn(array $row): array => [$row['user']->getEmail(), $row['user']->getFullName()],
+            ),
             'tours' => $tours,
             'role_filter' => $roleFilter,
             'only_incomplete' => $onlyIncomplete,
-            'search' => $search,
             'total_users' => $totalUsers,
             'completion_count' => $completionCount,
         ]);
@@ -172,18 +171,6 @@ class AdminTourCompletionController extends AbstractController
         ], 'admin'));
 
         return $this->redirectToRoute('admin_tour_completion_index');
-    }
-
-    private function matchesSearch(User $user, string $q): bool
-    {
-        $needle = mb_strtolower($q);
-        if (str_contains(mb_strtolower((string) $user->getEmail()), $needle)) {
-            return true;
-        }
-        if (str_contains(mb_strtolower((string) $user->getFullName()), $needle)) {
-            return true;
-        }
-        return false;
     }
 
     /**

@@ -160,6 +160,7 @@
             {% endblock %}
             {% block table_body_attrs %}id="risk-rows"{% endblock %}
             {% block table_body %}
+                {% set workflowStates = workflow_states(page) %}
                 {% for risk in page %}
                     {% include 'risk/_row.html.twig' with { risk: risk, currentTenant: currentTenant } %}
                 {% endfor %}

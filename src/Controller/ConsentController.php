@@ -17,6 +17,7 @@ use App\Repository\ConsentRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -86,9 +87,9 @@ class ConsentController extends AbstractController
                 ->setParameter('status', $status);
         }
 
-        if ($verified !== null) {
+        if (in_array($verified, ['verified', 'unverified'], true)) {
             $qb->andWhere('c.isVerifiedByDpo = :verified')
-                ->setParameter('verified', $verified === '1');
+                ->setParameter('verified', $verified === 'verified');
         }
 
         if ($processingActivityId) {
@@ -100,15 +101,17 @@ class ConsentController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        // Get statistics for dashboard
-        $statistics = $this->consentRepository->getStatistics($tenant);
+        $statusCounts = array_count_values(array_map(static fn(Consent $c): ?string => $c->getStatus(), $consents));
 
         return $this->render('consent/index.html.twig', [
-            'consents' => $consents,
-            'statistics' => $statistics,
-            'current_status' => $status,
-            'current_verified' => $verified,
-            'current_processing_activity' => $processingActivityId,
+            'page' => ListPage::fromRequest(
+                $consents,
+                $request,
+                static fn(Consent $c): array => [$c->getDataSubjectIdentifier(), $c->getProcessingActivity()?->getName()],
+            ),
+            'active_count' => $statusCounts['active'] ?? 0,
+            'pending_count' => $statusCounts['pending_verification'] ?? 0,
+            'revoked_count' => $statusCounts['revoked'] ?? 0,
         ]);
     }
 

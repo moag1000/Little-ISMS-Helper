@@ -30,146 +30,87 @@
 {% endif %}
 
 
-    <main>
-
     {# Overdue Alert #}
-    {% if statistics.overdue_count > 0 %}
-        <div class="fa-alert fa-alert--danger" role="alert">
-            <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
-            <div class="fa-alert__body"><div class="alert-heading fw-bold">
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                {{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}
-            </div>
-            <p>{{ 'dsr.alert.overdue_text'|trans({'%count%': statistics.overdue_count}, 'data_subject_request') }}</p>
-            <a href="{{ path('app_data_subject_request_index', {status: 'overdue'}) }}" class="alert-link">
-                {{ 'dsr.alert.view_overdue'|trans({}, 'data_subject_request') }}
-            </a>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-            </div>
-            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}">
-                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
-            </button>
-        </div>
+    {% if overdue_count > 0 %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', dismissible: true } } %}
+            {% block alert_body %}
+                <div class="fa-alert__title">{{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}</div>
+                <p class="fa-alert__message">{{ 'dsr.alert.overdue_text'|trans({'%count%': overdue_count}, 'data_subject_request') }}</p>
+                <a href="{{ path('app_data_subject_request_index', {status: 'overdue'}) }}" class="fa-alert__link">
+                    {{ 'dsr.alert.view_overdue'|trans({}, 'data_subject_request') }}
+                </a>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
-    {# KPI Cards #}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-muted small">{{ 'dsr.kpi.total'|trans({}, 'data_subject_request') }}</div>
-                    <div class="fs-2 fw-bold">{{ statistics.total }}</div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-muted small">{{ 'dsr.kpi.in_progress'|trans({}, 'data_subject_request') }}</div>
-                    <div class="fs-2 fw-bold text-primary">{{ statistics.by_status.in_progress|default(0) + statistics.by_status.identity_verification|default(0) + statistics.by_status.received|default(0) + statistics.by_status.extended|default(0) }}</div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-muted small">{{ 'dsr.kpi.overdue'|trans({}, 'data_subject_request') }}</div>
-                    <div class="fs-2 fw-bold {% if statistics.overdue_count > 0 %}text-danger{% else %}text-success{% endif %}">{{ statistics.overdue_count }}</div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-muted small">{{ 'dsr.kpi.avg_response'|trans({}, 'data_subject_request') }}</div>
-                    <div class="fs-2 fw-bold">
-                        {% if statistics.avg_response_time is not null %}
-                            {{ statistics.avg_response_time }} {{ 'dsr.kpi.days'|trans({}, 'data_subject_request') }}
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
-    {# Filter Buttons #}
-    <div class="mb-3">
-        <div class="btn-group flex-wrap" role="group" aria-label="{{ 'dsr.filter.label'|trans({}, 'data_subject_request') }}">
-            <a href="{{ path('app_data_subject_request_index') }}"
-               class="fa-cyber-btn fa-cyber-btn--sm {% if current_status is null and current_type %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
-                {{ 'dsr.filter.all'|trans({}, 'data_subject_request') }}
-            </a>
-            {% for status in ['received', 'identity_verification', 'in_progress', 'extended', 'completed', 'rejected', 'overdue'] %}
-                <a href="{{ path('app_data_subject_request_index', {status: status}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--sm {% if current_status == status %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
-                    {{ ('dsr.status.' ~ status)|trans({}, 'data_subject_request') }}
-                </a>
-            {% endfor %}
-        </div>
-    </div>
-
-    {# Requests Table #}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions filter" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/data-subject-request"{% endblock %}
-        {% block card_header %}
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">{{ 'dsr.table.title'|trans({}, 'data_subject_request') }} ({{ requests|length }})</h2>
-                {% if requests|length > 0 %}
-                <input type="search" class="form-control form-control-sm w-250px fa-cyber-input__field"
-                       data-filter-target="searchInput"
-                       data-action="input->filter#filterRows"
-                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
-                {% endif %}
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_data_subject_request_index'),
+        filter_keys: ['status', 'type'],
+        list_title: 'dsr.table.title'|trans({}, 'data_subject_request'),
+        empty: {
+            mood: 'sleeping',
+            title: 'dsr.empty.title'|trans({}, 'data_subject_request'),
+            text: 'dsr.empty.message'|trans({}, 'data_subject_request'),
+            actions: [{ label: 'dsr.action.new'|trans({}, 'data_subject_request'), href: path('app_data_subject_request_new'), variant: 'primary' }],
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/data-subject-request"',
+    } %}
+        {% block list_filters %}
+            <div class="col-md-4">
+                <label for="filter-status" class="form-label">{{ 'dsr.filter.label'|trans({}, 'data_subject_request') }}</label>
+                <select class="form-select fa-cyber-input__field" id="filter-status" name="status">
+                    <option value="">{{ 'dsr.filter.all'|trans({}, 'data_subject_request') }}</option>
+                    {% for st in ['received', 'identity_verification', 'in_progress', 'extended', 'completed', 'rejected', 'overdue'] %}
+                        <option value="{{ st }}" {{ current_status == st ? 'selected' : '' }}>{{ ('dsr.status.' ~ st)|trans({}, 'data_subject_request') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="filter-type" class="form-label">{{ 'dsr.filter.type_label'|trans({}, 'data_subject_request') }}</label>
+                <select class="form-select fa-cyber-input__field" id="filter-type" name="type">
+                    <option value="">{{ 'dsr.filter.all_types'|trans({}, 'data_subject_request') }}</option>
+                    {% for ty in ['access', 'rectification', 'erasure', 'restriction', 'portability', 'objection', 'automated_decision'] %}
+                        <option value="{{ ty }}" {{ current_type == ty ? 'selected' : '' }}>{{ ('dsr.type.' ~ ty)|trans({}, 'data_subject_request') }}</option>
+                    {% endfor %}
+                </select>
             </div>
         {% endblock %}
-        {% block card_body %}
-            {% if requests|length > 0 %}
-                {# Migrated to fa-table Aurora pattern #}
-                {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="bulk-select-column fa-table__th">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       data-action="bulk-actions#selectAll"
-                                       data-bulk-actions-target="selectAllCheckbox"
-                                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                            </th>
-                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="id" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.id'|trans({}, 'data_subject_request') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'dsr.table.type'|trans({}, 'data_subject_request') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'dsr.table.data_subject'|trans({}, 'data_subject_request') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'dsr.table.status'|trans({}, 'data_subject_request') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="received" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.received'|trans({}, 'data_subject_request') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="deadline" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.deadline'|trans({}, 'data_subject_request') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'dsr.table.assigned_to'|trans({}, 'data_subject_request') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'dsr.table.actions'|trans({}, 'data_subject_request') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body_attrs %}id="data-subject-request-rows"{% endblock %}
-                    {% block table_body %}
-                        {% for dsr in requests %}
-                            {% include 'data_subject_request/_row.html.twig' with { dsr: dsr } %}
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-
-                {# Bulk Action Bar #}
-                {% include '_components/_bulk_action_bar.html.twig' with {
-                    actions: ['export', 'delete']
-                } %}
-            {% else %}
-                {% include '_components/_empty_state.html.twig' with {
-                    icon: 'ui-person',
-                    title: 'dsr.empty.title'|trans({}, 'data_subject_request'),
-                    message: 'dsr.empty.message'|trans({}, 'data_subject_request'),
-                    action_label: 'dsr.action.new'|trans({}, 'data_subject_request'),
-                    action_url: path('app_data_subject_request_new')
-                } only %}
-            {% endif %}
+        {% block list_summary %}
+            {% if open_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'dsr.summary.open'|trans({'%count%': open_count}, 'data_subject_request') }}</span>{% endif %}
+            {% if avg_response_time is not null %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'dsr.summary.avg_response'|trans({'%days%': avg_response_time}, 'data_subject_request') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="bulk-select-column fa-table__th">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="id" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.id'|trans({}, 'data_subject_request') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'dsr.table.type'|trans({}, 'data_subject_request') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'dsr.table.data_subject'|trans({}, 'data_subject_request') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'dsr.table.status'|trans({}, 'data_subject_request') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="received" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.received'|trans({}, 'data_subject_request') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="deadline" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.deadline'|trans({}, 'data_subject_request') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'dsr.table.assigned_to'|trans({}, 'data_subject_request') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'dsr.table.actions'|trans({}, 'data_subject_request') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="data-subject-request-rows"{% endblock %}
+                {% block table_body %}
+                    {% set workflowStates = workflow_states(page) %}
+                    {% for dsr in page %}
+                        {% include 'data_subject_request/_row.html.twig' with { dsr: dsr } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+            {% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete'] } %}
         {% endblock %}
     {% endembed %}
-    </main>
 </div>
 {% endblock %}

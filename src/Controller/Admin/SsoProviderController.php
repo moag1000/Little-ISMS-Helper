@@ -27,6 +27,7 @@ use App\Service\Sso\SsoAccountLinkPolicy;
 use App\Service\Sso\SsoEnforcementExemptions;
 use App\Service\Sso\SsoSecretEncryption;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -91,7 +92,7 @@ final class SsoProviderController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('authentication')) {
             return $redirect;
@@ -103,8 +104,16 @@ final class SsoProviderController extends AbstractController
 
         $pendingCount = count($this->approvalRepo->findPendingForTenant($this->tenantContext->getCurrentTenant()));
 
+        $enabledCount = count(array_filter($providers, static fn(IdentityProvider $p): bool => $p->isEnabled()));
+
         return $this->render('admin/sso/index.html.twig', [
-            'providers' => $providers,
+            'page' => ListPage::fromRequest(
+                $providers,
+                $request,
+                static fn(IdentityProvider $p): array => [$p->getName(), $p->getSlug(), $p->getType()],
+            ),
+            'enabled_count' => $enabledCount,
+            'disabled_count' => count($providers) - $enabledCount,
             'pending_count' => $pendingCount,
             'enforcement_exempt' => $this->enforcementExemptions->findVisible(),
         ]);

@@ -46,12 +46,9 @@ risk_appetite:
         max_acceptable_risk_range: 'Der Risikowert muss zwischen 1 und 25 liegen'
         review_buffer_multiplier_range: 'Der Review-Puffer-Faktor muss zwischen 1.0 und 3.0 liegen'
         description_required: 'Bitte geben Sie eine Beschreibung an'
-    stats:
-        total: 'Einträge gesamt'
-        global_threshold: 'Globaler Schwellwert'
-        categories: Kategorien
-        total_risks: 'Risiken gesamt'
-        exceeding: 'Über Schwellwert'
+    summary:
+        active: '%count% aktiv'
+        exceeding: '%count% Risiken über Schwelle'
     info:
         iso27005: 'Orientierung an ISO/IEC 27005 – Definition akzeptabler Risiken zur Steuerung der Behandlung.'
     show:
@@ -73,7 +70,7 @@ risk_appetite:
     delete:
         warning: 'Dieser Vorgang kann nicht rückgängig gemacht werden. Bitte bestätigen Sie das Löschen.'
         confirm: 'Wollen Sie diesen Eintrag wirklich löschen?'
-    no_appetites: 'Keine Risikobereitschaften definiert.'
+    no_appetites: 'Keine Risikobereitschaften vorhanden.'
     exceeding:
         title: Risikoüberschreitungen
         description: 'Risiken, die den definierten Risikoappetit überschreiten'

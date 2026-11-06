@@ -37,7 +37,7 @@
         {% include '_components/_badge.html.twig' with { variant: statusColors[consent.status] ?? 'secondary', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
     </td>
     <td>
-        {{ consent.grantedAt|date('d.m.Y H:i') }}
+        {{ consent.grantedAt|fa_datetime }}
         {% if consent.grantedAt %}
             {% set daysSince = (date().diff(consent.grantedAt).days) %}
             {% if daysSince == 0 %}

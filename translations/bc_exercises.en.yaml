@@ -5,10 +5,9 @@ bc_exercises:
     action:
         add_new: 'Add New Exercise'
         edit: 'Edit Exercise'
-    stats:
-        total: 'Total Exercises'
-        completed: Completed
-        planned: Planned
+    summary:
+        completed: '%count% completed'
+        planned: '%count% planned'
     section:
         upcoming: 'Upcoming Exercises'
         incomplete_reports: 'Incomplete Reports'
@@ -74,7 +73,7 @@ bc_exercises:
         'yes': 'Yes'
         'no': 'No'
     message:
-        no_exercises: No BC exercises available.
+        no_exercises: 'No BC exercises yet.'
         schedule_first: 'Schedule your first exercise'
         incomplete_reports: 'Incomplete Reports'
         upcoming: 'Upcoming Exercises'

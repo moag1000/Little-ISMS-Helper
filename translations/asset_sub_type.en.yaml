@@ -7,8 +7,10 @@ asset_sub_type:
       title: 'Apply industry preset'
       lead: 'Imports a predefined sub-type catalogue for an industry. Duplicates are skipped.'
     empty:
-      title: 'No sub-types defined yet'
+      title: 'No sub-types yet.'
       subtitle: 'Apply an industry preset or create custom sub-types.'
+  summary:
+    top_type: '%type%: %count%'
   preset:
     bsi-grundschutz: 'BSI IT-Grundschutz'
     tisax: 'TISAX (Automotive)'

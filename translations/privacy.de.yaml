@@ -62,14 +62,12 @@ privacy:
             completeness: Vollständigkeit
             summary: '%total% Gesamtfälle · %subjects% betroffene Personen'
         kpi:
-            total_breaches: Gesamtfälle
-            high_critical_risk: 'hoch/kritisch Risiko'
-            pending_authority: 'Ausstehend Behörde'
-            deadline_72h: 72h‑Frist
-            special_categories: 'Besondere Kategorien'
-            art9_data: 'Art. 9 Daten'
             affected_subjects: 'Betroffene Personen'
             total_count: 'Gesamtanzahl'
+        summary:
+            overdue: '%count% überfällig'
+            high_risk: '%count% hohes/kritisches Risiko'
+            special_categories: '%count% mit besonderen Kategorien'
         filter:
             title: 'Datenschutzverletzungen filtern'
             all: 'Alle (%count%)'
@@ -368,15 +366,11 @@ processing_activity:
             start: 'Export starten'
     confirm:
         clone: 'Möchten Sie diese Verarbeitungstätigkeit duplizieren?'
+    summary:
+        missing_dpia: '%count% ohne DSFA'
+        special_categories: '%count% besondere Kategorien'
+        third_country: '%count% Drittland'
     stat:
-        total: 'Gesamt'
-        active: 'aktiv'
-        compliance_score: 'Compliance-Score'
-        complete: 'vollständig'
-        high_risk: 'Hohes Risiko'
-        missing_dpia: 'fehlende DSFA'
-        special_categories: 'Besondere Kategorien'
-        art9_data: 'Art. 9 Daten'
         completeness: 'Vollständigkeit'
         status: 'Status'
         risk_level: 'Risikostufe'
@@ -391,7 +385,6 @@ processing_activity:
         third_country: 'Drittlandübermittlung'
     table:
         title: 'Verarbeitungstätigkeiten'
-        items: 'Einträge'
         name: 'Name'
         legal_basis: 'Rechtsgrundlage'
         data_subjects: 'Betroffene'
@@ -406,9 +399,8 @@ processing_activity:
         third_country: 'Drittland'
         dpia_required: 'DSFA erforderlich'
     empty:
-        title: Keine Verarbeitungstätigkeiten vorhanden.
+        title: 'Keine Verarbeitungstätigkeiten vorhanden.'
         description: 'Ein Verzeichnis von Verarbeitungstätigkeiten (VVT) dokumentiert, welche personenbezogenen Daten Sie verarbeiten, warum und wie. Es ist Pflicht nach DSGVO Art. 30.'
-        filter_hint: 'Versuchen Sie einen anderen Filter oder'
         create_hint: 'Beginnen Sie mit dem'
         create_first: 'Erstellen Ihrer ersten Verarbeitungstätigkeit'
     section:
@@ -740,7 +732,6 @@ processing_activity:
         archived: 'Archiviert'
         active: 'Aktiv (Legacy)'
     permanently_delete: 'Dauerhaft löschen'
-    view_all_activities: 'Alle Verarbeitungstätigkeiten anzeigen'
     confirm_delete: 'Möchten Sie diese Verarbeitungstätigkeit wirklich löschen?'
     dashboard:
         statistics: 'Statistik'
@@ -878,7 +869,7 @@ data_breach:
         reopen_reason_required: 'Begründung für die Wiedereröffnung ist erforderlich.'
     index:
         view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
-        no_breaches_found: 'Keine Datenschutzverletzungen gefunden'
+        no_breaches_found: 'Keine Datenschutzverletzungen vorhanden.'
         kpi_affected_subjects: 'Betroffene Personen'
         kpi_total_count: 'Gesamtanzahl'
         filter_title: 'Datenschutzverletzungen filtern'
@@ -1180,12 +1171,9 @@ dpia:
         of: 'von'
         dpias_approved: 'DSFA genehmigt'
         due_for_review: 'zur Überprüfung fällig'
-        total_dpias: 'Gesamt-DSFA'
         approved: 'genehmigt'
         in_review: 'In Prüfung'
-        awaiting_approval: 'Warten auf Genehmigung'
         high_risk: 'Hohes Risiko'
-        requires_attention: 'Erfordert Aufmerksamkeit'
         completeness: 'Vollständigkeit'
         filter_dpias: 'DSFA filtern'
         all: 'Alle'
@@ -1205,7 +1193,11 @@ dpia:
         actions: 'Aktionen'
         dpo_consulted: 'DSB konsultiert'
         dpo_not_yet_consulted: 'DSB noch nicht konsultiert'
-        no_dpias_found: 'Keine DSFA für den ausgewählten Filter gefunden.'
+        none: 'Keine DSFA vorhanden.'
+        summary:
+            approved: '%count% genehmigt'
+            in_review: '%count% in Prüfung'
+            high_risk: '%count% hohes Risiko'
         create_first_dpia: 'Erste Datenschutz-Folgenabschätzung erstellen'
     form:
         title: 'Titel der DSFA'

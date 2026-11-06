@@ -198,17 +198,16 @@ dsr:
         extension_reason_required: "A reason is required to extend the deadline."
 
     # KPI labels
-    kpi:
-        total: "Total Requests"
-        in_progress: "Open Requests"
-        overdue: "Overdue"
-        avg_response: "Avg. Response Time"
-        days: "days"
+    summary:
+        open: "%count% open"
+        avg_response: "%days% days average response time"
 
     # Filter labels
     filter:
         label: "Filter by status"
         all: "All"
+        type_label: "Filter by type"
+        all_types: "All types"
 
     # Table headers
     table:
@@ -234,7 +233,7 @@ dsr:
 
     # Empty state
     empty:
-        title: "No Data Subject Requests"
+        title: "No data subject requests yet."
         message: "No data subject requests have been recorded yet."
 
     # Confirmations

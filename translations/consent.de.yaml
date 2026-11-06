@@ -18,11 +18,10 @@ consent:
         document_revocation: 'Widerruf dokumentieren'
 
     # KPIs
-    kpi:
-        total: 'Gesamt'
-        active: 'Aktiv'
-        pending: 'Ausstehend'
-        revoked: 'Widerrufen'
+    summary:
+        active: '%count% aktiv'
+        pending: '%count% ausstehend'
+        revoked: '%count% widerrufen'
 
     # Sections
     section:
@@ -69,7 +68,6 @@ consent:
         revoked: Widerrufen
         expired: Abgelaufen
         rejected: Abgelehnt
-        overview: 'Statusübersicht'
 
     # Identifier types
     identifier_type:
@@ -117,7 +115,7 @@ consent:
 
     # Empty state
     empty:
-        title: 'Keine Einwilligungen vorhanden'
+        title: 'Keine Einwilligungen vorhanden.'
         description: 'Erfassen Sie die erste Einwilligung, um mit der DSGVO-konformen Dokumentation zu beginnen.'
 
     # Verification

@@ -29,7 +29,7 @@
     </td>
     <td class="fa-table__cell" data-sort-value="{{ report.nextRunAt ? report.nextRunAt|date('Y-m-d H:i') : '' }}">
         {% if report.nextRunAt %}
-            {{ report.nextRunAt|date('Y-m-d H:i') }}
+            {{ report.nextRunAt|fa_datetime }}
             {% if report.isDue() %}
                 {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
             {% endif %}

@@ -27,7 +27,7 @@ department:
         active: 'Active'
         inactive: 'Inactive'
     empty:
-        title: 'No departments yet'
+        title: 'No departments yet.'
         description: 'Create departments to track structured ownership across Processing Activities, Assets, and other ISMS entities.'
     confirm:
         delete: 'Delete this department? Existing references will be set to empty.'

@@ -11,6 +11,7 @@ use App\Entity\Location;
 use App\Form\LocationType;
 use App\Repository\LocationRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -34,7 +35,7 @@ class LocationController extends AbstractController
     ) {}
     #[Route('/location', name: 'app_location_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // Locations & Infrastructure — locations module (ISO 27001 A.7 Physical Controls)
         if ($redirect = $this->checkModuleActive('locations')) {
@@ -43,11 +44,25 @@ class LocationController extends AbstractController
 
         $tenant = $this->security->getUser()?->getTenant();
         $locations = $tenant ? $this->locationRepository->findBy(['tenant' => $tenant]) : [];
-        $topLevel = $this->locationRepository->findTopLevel();
+
+        $type = (string) $request->query->get('type', '');
+        if ($type !== '') {
+            $locations = array_values(array_filter(
+                $locations,
+                static fn (Location $l): bool => $l->getLocationType() === $type,
+            ));
+        }
 
         return $this->render('location/index.html.twig', [
-            'locations' => $locations,
-            'top_level' => $topLevel,
+            'page' => ListPage::fromRequest(
+                $locations,
+                $request,
+                static fn (Location $l): array => [$l->getName(), $l->getCode(), $l->getCity(), $l->getCountry()],
+            ),
+            'type' => $type,
+            'building_count' => count(array_filter($locations, static fn (Location $l): bool => $l->getLocationType() === 'building')),
+            'room_count' => count(array_filter($locations, static fn (Location $l): bool => $l->getLocationType() === 'room')),
+            'secure_count' => count(array_filter($locations, static fn (Location $l): bool => $l->requiresBadgeAccess())),
         ]);
     }
     #[Route('/location/new', name: 'app_location_new', methods: ['GET', 'POST'])]

@@ -48,9 +48,8 @@ dora_exit_plan:
         breach: 'Contract breach'
         insolvency: 'Insolvency'
 
-    kpi:
-        total: 'Active exit plans'
-        overdue: 'Rehearsal overdue'
+    summary:
+        overdue: '%count% rehearsal overdue'
 
     badge:
         overdue: 'overdue'
@@ -61,7 +60,7 @@ dora_exit_plan:
         edit: 'Edit Exit Plan'
 
     empty:
-        title: 'No exit plans on record yet'
+        title: 'No exit plans yet.'
         body: 'DORA Art. 28(8) requires a documented exit plan for every ICT-critical supplier.'
 
     flash:
