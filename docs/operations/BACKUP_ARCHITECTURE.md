@@ -122,6 +122,8 @@ return 'single';
 
 **Entities without tenant association** (e.g., `Role`, `Permission`, `SystemSettings`) are silently skipped in scoped backups and listed in `metadata.skipped_global_entities`. They are only included in global backups.
 
+**Exception: `Tenant` itself.** A scoped backup includes the Tenant rows of its scope (`id IN scope`), because the organisation's settings live there. On a scoped restore those rows are filtered by `id` and update the existing tenant in place: `code`, `azureTenantId`, `isActive`, `status` and `isCorporateParent` keep their current values, `parent` and `lockVersion` stay untouched (`RestoreDataPurger::pinProtectedTenantFields()`), and a scoped `clear_before_restore` never deletes Tenant rows.
+
 **Restore scope filtering** is performed in `RestoreService::filterEntitiesByScope()`: each serialized entity's `tenant_id` key (stored as `{"id": X}`) is checked against `$targetScopeIds`. Entities with no `tenant_id` key (global entities) are always included.
 
 ---

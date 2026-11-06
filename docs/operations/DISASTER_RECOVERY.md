@@ -249,7 +249,10 @@ php bin/console cache:clear
 **Anwendungsfall:** Einen einzelnen Mandanten aus einem Backup wiederherstellen, ohne andere Mandanten zu beeinflussen.
 
 **Einschränkungen:**
-- Nur Entitäten mit Tenant-Zuordnung werden wiederhergestellt
+- Nur Entitäten mit Tenant-Zuordnung werden wiederhergestellt, dazu der Datensatz
+  des Mandanten selbst mit seinen Einstellungen (Branding, TLP, Behörden,
+  DSB-Daten, KPI-Schwellen, Standortkarte usw.). Kennung (`code`), SSO-Tenant,
+  Status und Platz in der Konzernstruktur bleiben dabei unverändert
 - Globale Entitäten (Role, Permission, SystemSettings) werden im tenant-scoped Backup übersprungen
 - `ROLE_ADMIN` kann nur den eigenen Mandanten wiederherstellen; `ROLE_SUPER_ADMIN` kann jeden Mandanten wählen
 

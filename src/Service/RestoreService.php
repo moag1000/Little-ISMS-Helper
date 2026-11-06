@@ -364,7 +364,7 @@ class RestoreService
                     continue;
                 }
 
-                $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds);
+                $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
 
                 if ($targetScopeIds !== [] && count($entities) < count($allEntities)) {
                     $this->logger->info('Tenant-scoped restore: filtered entities', [
@@ -458,7 +458,7 @@ class RestoreService
                     if (!class_exists($entityClass) || $allEntities === []) {
                         continue;
                     }
-                    $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds);
+                    $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
                     if ($entities === []) {
                         continue;
                     }
