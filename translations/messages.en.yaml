@@ -234,7 +234,6 @@ common:
     id: ID
     inactive: Inactive
     last_updated: 'Last Updated'
-    loading: Loading...
     never: Never
     entries: Entries
     not_applicable: 'Not Applicable'

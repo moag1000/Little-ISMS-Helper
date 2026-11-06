@@ -15,6 +15,7 @@ use App\Service\Notification\SlaDeadlineWatcher;
 use App\Service\WorkflowService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityNotFoundException;
 use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -165,6 +166,16 @@ HELP
 
                 if (!$currentStep) {
                     continue; // No current step
+                }
+
+                // A step row removed since the instance started (legacy DB workflow) must not
+                // abort the run for every other instance.
+                try {
+                    $currentStep->getName();
+                } catch (EntityNotFoundException) {
+                    $io->warning(sprintf('Workflow #%d points at a missing step, skipped.', $workflowInstance->getId()));
+                    $skipped++;
+                    continue;
                 }
 
                 // Check for SLA breaches and escalation (GDPR 72h deadline)

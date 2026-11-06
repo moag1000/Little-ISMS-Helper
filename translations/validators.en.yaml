@@ -223,24 +223,9 @@ Error: Error
 'Please enter a valid week.': 'Please enter a valid week.'
 setup:
     admin:
-        email_required: 'Please enter an email address.'
-        email_invalid: 'Please enter a valid email address.'
-        first_name_required: 'Please enter a first name.'
-        first_name_min: 'The first name must be at least {{ limit }} characters long.'
-        last_name_required: 'Please enter a last name.'
-        last_name_min: 'The last name must be at least {{ limit }} characters long.'
-        password_required: 'Please enter a password.'
-        password_min: 'The password must be at least {{ limit }} characters long.'
-        password_strength: 'The password must contain at least one uppercase letter, one lowercase letter, and one digit.'
-    database:
-        name_invalid: 'The database name contains invalid characters.'
     organisation:
-        name_required: 'Please enter an organization name.'
-        name_min: 'The organization name must be at least {{ limit }} characters long.'
         industry_required: 'Please select an industry.'
         employee_count_required: 'Please select the employee count.'
-        industries_required: 'Please select at least one industry.'
-        industries_min: 'You must select at least {{ limit }} industry/industries.'
 document:
     validation:
         mime_types: 'Please upload a valid document (PDF, Word, Excel, Image or Text file).'
@@ -291,22 +276,11 @@ compliance_mapping:
         verified_by_max_length: 'The verified by field cannot exceed {{ limit }} characters.'
 risk_appetite:
     validation:
-        category_max_length: 'Category name cannot exceed {{ limit }} characters'
-        max_acceptable_risk_required: 'Maximum acceptable risk is required'
-        max_acceptable_risk_range: 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
-        description_required: 'Description is required'
         review_buffer_multiplier_range: 'Review buffer multiplier must be within the valid range'
 risk_treatment_plan:
     validation:
-        risk_required: 'Risk is required'
-        title_required: 'Title is required'
-        title_max_length: 'Title cannot exceed {{ limit }} characters'
-        description_required: 'Description is required'
-        target_completion_date_required: 'Target completion date is required'
-        completion_percentage_range: 'Completion percentage must be between {{ min }} and {{ max }}'
 training:
     validation:
-        title_required: 'Please enter a title.'
         date_required: 'Please select a date.'
         trainer_required: 'Trainer must be selected'
     error:

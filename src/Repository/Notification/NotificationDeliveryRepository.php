@@ -88,10 +88,11 @@ class NotificationDeliveryRepository extends ServiceEntityRepository
      */
     public function findChannelsWithPendingDigests(): array
     {
-        return $this->createQueryBuilder('d')
-            ->select('DISTINCT c')
-            ->join('d.channel', 'c')
-            ->where('d.status = :status')
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('c')
+            ->from(NotificationChannel::class, 'c')
+            ->where('EXISTS (SELECT 1 FROM ' . NotificationDelivery::class
+                . ' d WHERE d.channel = c AND d.status = :status)')
             ->setParameter('status', NotificationDelivery::STATUS_PENDING_DIGEST)
             ->getQuery()
             ->getResult();

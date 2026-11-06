@@ -37,6 +37,9 @@ Nicht nur Anforderungslisten — die eigentliche Vorgehensweise ist abgebildet:
   (Soll/Ist, MUSS/SOLLTE/KANN-Gewichtung) und **Schutzbedarfsvererbung nach dem Maximumprinzip** über den
   Abhängigkeitsgraph. Dazu **Branchen-Baselines** mit je über 100 regulatorisch begründeten Reifegrad-Zielen
   (Finanzen, Gesundheit, KRITIS, Fertigung, SaaS).
+- **BSI Grundschutz++ (BSI-Standard 300-1)** — der Anwenderkatalog aus dem offiziellen BSI-OSCAL, mit
+  eigenem Wizard (Praktiken STM/UMS/PERF/VRB, Wiederverwendung der ISO-27001-Nachweise über das amtliche
+  BSI-Mapping) und Grundschutz++-Abschnitten in den Policy-Vorlagen.
 - **BSI C5 (2020 + 2026)** — der **offizielle BSI-C5-Katalog**; die C5:2026-Neuerungen
   (Krypto-Agilität/PQC, SBOM, Confidential Computing, Container-Management) sind erfasst.
 - **KRITIS** — §8a/§8b BSIG rechtlich verankert, sektorspezifische Policy-Vorlagen (Energie, Wasser, IT-TK,
@@ -70,7 +73,7 @@ Nicht nur Anforderungslisten — die eigentliche Vorgehensweise ist abgebildet:
 
 ### 🚀 Einstieg auch ohne Security-Budget
 
-- **7-Phasen-Onboarding**, **22 Compliance-Wizards**, **Essential-Controls-Filter (31 statt 93)**,
+- **7-Phasen-Onboarding**, **23 Compliance-Wizards**, **Essential-Controls-Filter (31 statt 93)**,
   Branchen-Baselines mit Vorausfüllung und eine **ISO-9001-Brücke** im Glossar für Quereinsteiger.
 
 ### 🏠 Selbst gehostet & quelloffen
@@ -184,9 +187,9 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 ### Compliance und Frameworks
 
 - **ISO 27001:2022** -- Alle 93 Annex-A-Controls und Clauses 4-10 vollstaendig abgedeckt
-- **Compliance-Frameworks (vollstaendige Kataloge in der DB)** -- ISO 27001:2022 (93 Annex A), BSI IT-Grundschutz (111 Bausteine / 1834 Anforderungen, Kompendium 2023 vollstaendig), BSI C5:2020 (121), BSI C5:2026 (168, BSI YAML verbatim), NIS2 (85, alle 46 Articles + Art. 21(2) Sub-Letters + Art. 23 Timeline), NIS2-UmsuCG (47, BGBl. 2025 I Nr. 301), DORA (315, Level-1 Articles + Level-2 RTS/ITS/CIR), TISAX VDA-ISA 6 (80 Control-Nummern) + TISAX VDA-ISA 2027 (78, parallel zertifizierbar), GDPR (alle 99 Articles), EU AI Act (alle 113 Articles + 13 Annexe), EU CRA (Annex I + Operative Articles), NIST CSF 2.0 (alle 106 Subcategories), SOC 2 (50), PCI-DSS 4.0.1 (75), ISO 27701:2025 (Annex A + B + Klauseln), ISO 22301 (25), ISO 42001 (Annex A + Klauseln), ISO 27017 (CLD-Erweiterungen + 27002 Cloud-Guidance, 121), ISO 27018 (Annex A + 27002 PII-Guidance, 143), KRITIS, ENISA-EUCS (Mapping-derived bis ENISA Final), MRIS v1.5, BAIT (legacy via DORA obsolet)
+- **Compliance-Frameworks (vollstaendige Kataloge in der DB)** -- ISO 27001:2022 (93 Annex A), BSI IT-Grundschutz (111 Bausteine / 1834 Anforderungen, Kompendium 2023 vollstaendig), BSI Grundschutz++ (Anwenderkatalog, BSI-OSCAL), BSI C5:2020 (121), BSI C5:2026 (168, BSI YAML verbatim), NIS2 (85, alle 46 Articles + Art. 21(2) Sub-Letters + Art. 23 Timeline), NIS2-UmsuCG (47, BGBl. 2025 I Nr. 301), DORA (315, Level-1 Articles + Level-2 RTS/ITS/CIR), TISAX VDA-ISA 6 (80 Control-Nummern) + TISAX VDA-ISA 2027 (78, parallel zertifizierbar), GDPR (alle 99 Articles), EU AI Act (alle 113 Articles + 13 Annexe), EU CRA (Annex I + Operative Articles), NIST CSF 2.0 (alle 106 Subcategories), SOC 2 (50), PCI-DSS 4.0.1 (75), ISO 27701:2025 (Annex A + B + Klauseln), ISO 22301 (25), ISO 42001 (Annex A + Klauseln), ISO 27017 (CLD-Erweiterungen + 27002 Cloud-Guidance, 121), ISO 27018 (Annex A + 27002 PII-Guidance, 143), KRITIS, ENISA-EUCS (Mapping-derived bis ENISA Final), MRIS v1.5, BAIT (legacy via DORA obsolet)
 - **Cross-Framework-Mapping** -- kuratierte Mapping-Fixtures, Lex-Specialis-Markierung wo zutreffend (DORA <-> NIS2, NIS2-UmsuCG <-> DORA fuer DE-Finanzdienstleister), 4-stufiger Lifecycle (draft -> review -> approved -> published) mit Provenance-Block je Mapping. Transitive Compliance-Ableitung -- ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
-- **Compliance-Wizards** -- ISO 27001, NIS2, DORA, TISAX, GDPR, ISO 22301, ISO 27701, ISO 27017, ISO 27018, ISO 42001, BSI IT-Grundschutz, BSI C5:2020, BSI C5:2026, NIST CSF 2.0, KRITIS, PCI-DSS 4.0.1, SOC 2, EU AI Act, EUCS, EU CRA, MRIS v1.5, Industry-Preset-Express
+- **Compliance-Wizards** -- ISO 27001, NIS2, DORA, TISAX, GDPR, ISO 22301, ISO 27701, ISO 27017, ISO 27018, ISO 42001, BSI IT-Grundschutz, BSI Grundschutz++, BSI C5:2020, BSI C5:2026, NIST CSF 2.0, KRITIS, PCI-DSS 4.0.1, SOC 2, EU AI Act, EUCS, EU CRA, MRIS v1.5, Industry-Preset-Express
 - **Maturity-Reife je Wizard** -- Baseline (KMU-pragmatisch) und Enhanced (audit-ready) als ausklappbare Narrative pro Kategorie in NIS2, DORA, GDPR, EU AI Act
 - **Catalogue-Coverage-KPI** -- Wizard-Result zeigt zusaetzlich zur Score `X / Y Anforderungen aus dem Framework-Katalog erfuellt` als Fortschrittsbalken
 - **Branchen-Baselines** -- vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
@@ -227,7 +230,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Bulk-Status-Change** -- Canonical `_bulk_action_bar.html.twig` mit `actions: ['status_change', 'approve']` fuer Listen-Views
 - **AND/OR-Logik** -- Komplexe Bedingungen fuer Workflow-Schritte (z.B. `severity >= high AND count > 100 OR notification_required = true`)
 - **Zeitbasierte Schritte** -- Automatische Progression nach konfigurierbarer Wartezeit
-- **Cron-Integration** -- `app:process-timed-workflows` fuer vollautomatische Verarbeitung
+- **Geplante Aufgaben** -- Fristen-Workflows, Erinnerungen, Digests, Snapshots und Backup laufen ueber den Symfony-Scheduler (`src/Schedule.php`); eine Cron-Zeile genuegt, siehe [Worker-Setup](docs/user-guide/HOSTING_WORKER.md)
 
 ### Corporate Structure und Multi-Tenancy
 
@@ -423,6 +426,12 @@ php bin/console isms:load-annex-a-controls
 
 # Server starten
 symfony serve
+```
+
+Geplante Aufgaben (Fristen, Erinnerungen, Digests, Snapshots, Backup) brauchen eine Cron-Zeile — Docker bringt sie mit:
+
+```cron
+* * * * * cd /pfad/zur/app && php bin/console messenger:consume scheduler_default async --time-limit=55 --quiet
 ```
 
 Oeffnen: `http://localhost:8000/setup`

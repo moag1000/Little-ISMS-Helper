@@ -108,18 +108,13 @@ admin:
             notification_rules: { label: 'Notification rules', desc: 'Define event rules and assign delivery channels' }
             notification_channels: { label: 'Notification channels', desc: 'Configure email, webhook, and in-app channels' }
             notification_templates: { label: 'Template gallery', desc: 'Apply tier-1 templates for common compliance scenarios' }
-            notification_preferences: { label: 'Notification preferences', desc: 'Global delivery preferences and thresholds' }
             # Sprint 8 — EU Authority reporting
             authority_hub: { label: 'EU Authority Hub', desc: 'Reporting obligations and export templates for EU supervisory authorities' }
             nis2_registration: { label: 'NIS-2 BSI Registration', desc: 'Annual mandatory registration in the BSI notification portal' }
             dora_roi: { label: 'DORA RoI XBRL export', desc: 'Register of Information XBRL/CSV export for BaFin reporting' }
             # Sprint 6 deferred system-settings sub-pages
-            api_rate_limits: { label: 'API rate limits', desc: 'Request limits per route and token class' }
             location_map_settings: { label: 'Location map', desc: 'Online lookup of location positions (optional)' }
-            backup_settings: { label: 'Backup settings', desc: 'Retention windows and automated backup scheduling' }
-            fiscal_year: { label: 'Fiscal year', desc: 'Start month and fiscal year for reports and KPIs' }
             data_retention_settings: { label: 'Retention periods', desc: 'GDPR deletion schedules per data category' }
-            workflow_sla_defaults: { label: 'Lifecycle SLA defaults', desc: 'Default deadlines for approval steps' }
     section:
         overview: Overview
         user_access: 'Users & Access'
@@ -1052,7 +1047,6 @@ admin:
         tab:
             defaults: Defaults
             frameworks: Frameworks
-            modules: Modules
             contact: Contact
             advanced: Advanced
         no_tenant_in_context: 'No organization context active — please pick an organization from the list first.'
@@ -1061,7 +1055,6 @@ admin:
         global_help: 'Global security defaults — change via System Settings page.'
         locale: 'Language + region'
         timezone: 'Timezone'
-        financial_year_start: 'Financial year start'
         tlp_default: 'TLP default for incident sharing'
         tlp_default_help: 'Traffic Light Protocol — preselects the TLP classification for new threat intelligence entries (NIS2 Art. 29). CLEAR is preselected as WHITE, AMBER+STRICT as AMBER.'
         dpo_name: 'DPO contact (name)'
@@ -1098,11 +1091,8 @@ admin:
         risk_methodology_help: 'Documented risk assessment method (ISO 27001 Cl. 6.1.2) — shown in the header of the risk register exports.'
         wizard_maturity_target: 'Default wizard maturity target'
         wizard_maturity_target_help: 'Highlights the maturity level that counts as target in the category views of the compliance wizards.'
-        section_api: 'API limits'
         section_json: 'Structured JSON fields (supervisory / retention / notifications / CSIRT / crisis-team rotation)'
         json_help: 'Structured configuration per area. Empty = default behaviour.'
-        api_rate_limit: 'API rate limit (requests/minute)'
-        api_rate_limit_help: '0 = unlimited. 600 = 10/sec. Default for fair multi-tenant operation.'
         dora_entity_category: 'DORA obligation status (Art. 2)'
         dora_entity_category_help: 'Determines whether this tenant is subject to EU DORA. Shows or hides DORA-specific features.'
         dora_entity_category.none: 'Not DORA-obligated (default)'
@@ -1112,8 +1102,6 @@ admin:
         supervisory_authorities_help: 'Competent authority per role/jurisdiction (e.g. BSI, BaFin, state data protection authority) with contact details. Shown as reporting contact for data breaches (Art. 33 GDPR) and NIS2 incidents.'
         data_retention_policies: 'GDPR retention policies'
         data_retention_policies_help: 'Retention period per data category and whether expired records are deleted automatically (same values as Settings → Data retention).'
-        notification_preferences: 'Notification channels'
-        notification_preferences_help: 'Delivery channels per event type. Digest and webhook timeout are maintained under Settings → Notifications.'
         csirt_endpoints: 'CSIRT endpoints'
         csirt_endpoints_help: 'Reporting endpoints for incidents (BSI, sectoral CSIRT, ENISA) — shown in the NIS2 reporting section of an incident. No automatic transmission.'
         crisis_team_on_call: 'Crisis team on-call rotation'
@@ -1129,11 +1117,6 @@ admin:
             retention_add: 'Add category'
             retention_days: 'Retention (days)'
             auto_delete: 'Delete automatically'
-            event_key: 'Event type'
-            event_add: 'Add event type'
-            channel_email: 'Email'
-            channel_slack: 'Slack'
-            channel_teams: 'Microsoft Teams'
             csirt_key: 'Name'
             csirt_add: 'Add endpoint'
             url: 'URL'
@@ -1148,47 +1131,7 @@ admin:
         environment_label: 'Environment'
         telemetry: 'Telemetry'
 
-    # ── Notification Preferences ─────────────────────────────────────────────────
-    notification_preferences:
-        title: 'Notification Preferences'
-        subtitle: 'Configure tenant-level notification defaults and delivery settings.'
-        saved: Notification preferences saved.
-        csrf_invalid: 'Invalid security token. Please try again.'
-        help_text: 'These settings define how and when notifications are delivered to users in this tenant. Individual users can override their own preferences in their profile.'
-        digest_enabled:
-            label: 'Enable notification digest'
-            help: 'Bundle multiple notifications into periodic digests instead of sending each one immediately.'
-        digest_frequency:
-            label: 'Digest frequency'
-            instant: 'Instant (send immediately)'
-            hourly: 'Hourly digest'
-            daily: 'Daily digest'
-        webhook_timeout:
-            label: 'Webhook timeout (seconds)'
-            help: 'Maximum time to wait for a webhook response before marking the delivery as failed (1-120 seconds).'
-        email_from_name:
-            label: 'Email sender name'
-            placeholder: 'e.g. ISMS Team'
-            help: 'The display name shown in the "From" field of outgoing notification emails. Leave empty to use the system default.'
-
-    # ── API Rate Limits ───────────────────────────────────────────────────────────
-    api_rate_limits:
-        title: 'API Rate Limits'
-        subtitle: 'Control the maximum number of API requests allowed per minute for this tenant.'
-        saved: API rate limit settings saved.
-        csrf_invalid: 'Invalid security token. Please try again.'
-        help_text: 'Rate limits protect the platform against abuse and ensure fair resource sharing. Set to 0 to disable rate limiting (not recommended in production).'
-        rate_limit_per_minute:
-            label: 'Requests per minute'
-            help: '0 = unlimited. 600 = 10 requests/second. Default for fair multi-tenant operation.'
-        burst_limit:
-            label: 'Burst limit'
-            help: 'Allow this many requests immediately before throttling begins. Useful for clients that batch requests at startup.'
-        exclude_routes_regex:
-            label: 'Exclude routes (regex)'
-            help: 'Regular expression matching route paths that are exempt from rate limiting (e.g. health-check, metrics). Leave empty to apply limits globally.'
-
-    # ── Backup Settings ───────────────────────────────────────────────────────────
+    # ── Location Map ──────────────────────────────────────────────────────────
     location_map:
         title: 'Location map'
         geocoding_title: 'Location positions'
@@ -1204,61 +1147,6 @@ admin:
         saved: Saved.
         csrf_invalid: 'Session expired. Reload the page.'
         endpoint_invalid: 'Invalid URL. HTTPS only, without credentials.'
-    backups:
-        title: 'Backup Settings'
-        subtitle: 'Configure automated backup schedule and data retention.'
-        saved: Backup settings saved.
-        csrf_invalid: 'Invalid security token. Please try again.'
-        help_text: 'These settings control how long backup files are kept and whether automated backups run on a schedule. The "Run now" trigger and Messenger dispatch are coming in Wave 2.'
-        settings_title: 'Backup Configuration'
-        wave2_note:
-            title: 'Wave 2 note'
-            body: 'The "Run backup now" button and automated Messenger-based execution will be available in Wave 2. These settings are saved and will be picked up once the scheduler is active.'
-        retention_days:
-            label: 'Retention period (days)'
-            help: 'Backup files older than this number of days will be automatically removed. Minimum 1, maximum 10 years (3650 days).'
-        schedule:
-            label: 'Backup schedule'
-            off: 'Off (manual only)'
-            daily: 'Daily'
-            weekly: 'Weekly'
-            help: 'When the Messenger scheduler is active (Wave 2), backups will run according to this schedule.'
-        storage_path:
-            label: 'Storage path (read-only)'
-            help: 'Configured via the BACKUP_STORAGE_PATH environment variable. Contact your system administrator to change this value.'
-
-    # ── Fiscal Year ───────────────────────────────────────────────────────────────
-    fiscal_year:
-        title: 'Fiscal Year Configuration'
-        subtitle: 'Set the financial year start month and reporting cadence for this tenant.'
-        saved: Fiscal year configuration saved.
-        csrf_invalid: 'Invalid security token. Please try again.'
-        help_text: 'The fiscal year start month controls how KPI dashboards, management reports, and compliance reviews are grouped. Changes take effect on the next report generation.'
-        start_month:
-            label: 'Fiscal year start month'
-            help: 'Select the first month of your financial/fiscal year. January (1) is the calendar default.'
-        quarterly_grouping:
-            label: 'Enable quarterly grouping'
-            help: 'When enabled, dashboards and reports group data into fiscal quarters aligned to your start month.'
-        reporting_cadence:
-            label: 'Default reporting cadence'
-            help: 'Determines how frequently management reports are generated by default.'
-            monthly: 'Monthly'
-            quarterly: 'Quarterly'
-            yearly: 'Yearly'
-        month:
-            january: 'January'
-            february: 'February'
-            march: 'March'
-            april: 'April'
-            may: 'May'
-            june: 'June'
-            july: 'July'
-            august: 'August'
-            september: 'September'
-            october: 'October'
-            november: 'November'
-            december: 'December'
 
     # ── Data Retention ────────────────────────────────────────────────────────────
     data_retention:
@@ -1285,43 +1173,6 @@ admin:
             audit_finding: 'Audit Findings'
             workflow_instance: 'Workflow Instances'
         gdpr_cap: 'Max %days% days'
-
-    # ── Lifecycle SLA Defaults ────────────────────────────────────────────────────
-    workflow_slas:
-        title: 'Lifecycle SLA Defaults'
-        subtitle: 'Set default SLA durations (hours) for each lifecycle event type.'
-        saved: Lifecycle SLA defaults saved.
-        csrf_invalid: 'Invalid security token. Please try again.'
-        regulatory_minimum_enforced: 'One or more SLA values were below the regulatory minimum and were automatically adjusted.'
-        help_text: 'These SLA defaults will be used by the Sprint-6b SlaDeadlineMonitor (Wave 2) to generate deadline warnings and escalations. Regulatory minimums (GDPR Art. 33, ISO 27035) cannot be undercut.'
-        defaults_title: 'SLA Defaults by Event Type'
-        regulatory_badge: 'Regulatory'
-        wave2_note:
-            title: 'Wave 2 note'
-            body: 'The SlaDeadlineMonitor that evaluates these values is planned for Wave 2. Save your settings now — they will be activated automatically once the monitor is deployed.'
-        col:
-            event_type: 'Lifecycle event'
-            sla_hours: 'SLA (hours)'
-            regulatory_basis: 'Regulatory basis'
-        event:
-            data_breach: 'Data Breach Notification'
-            incident_high: 'Incident (High/Critical)'
-            incident_medium: 'Incident (Medium)'
-            incident_low: 'Incident (Low)'
-            risk_approval: 'Risk Treatment Approval'
-            policy_approval: 'Policy Approval'
-            dpia_review: 'DPIA Review'
-            audit_finding: 'Audit Finding Resolution'
-        basis:
-            data_breach: 'GDPR Art. 33 — 72 h supervisory authority notification'
-            incident_high: 'ISO 27035 — CISO response within 4 h'
-            incident_medium: 'ISO 27035 — CISO response within 72 h'
-            incident_low: 'ISO 27035 — standard handling'
-            risk_approval: 'ISO 27001 Clause 6.1.3 — treatment plan approval'
-            policy_approval: 'ISO 27001 Clause 5.2 — management review'
-            dpia_review: 'GDPR Art. 35/36 — DPA consultation'
-            audit_finding: 'ISO 27001 Clause 10.1 — nonconformity closure'
-
 
     policy_style:
         title: 'Policy appearance'
@@ -1762,7 +1613,6 @@ admin:
             label: 'Queue status'
             desc: 'Worker health, heartbeat, manual drain'
 
-
 data_management:
     backup:
         title: 'Backup & Restore'
@@ -2031,5 +1881,4 @@ industry_preset:
             priority: 'Priority'
             activate: 'Activate'
             optional: 'optional'
-
 

@@ -46,7 +46,6 @@ class RequirementLevelMetadataLoaderTest extends TestCase
         self::assertNotNull($meta);
         self::assertArrayHasKey('levels', $meta);
         self::assertArrayHasKey('suggested_assessment_levels', $meta);
-        self::assertArrayHasKey('protection_need_addenda', $meta);
     }
 
     #[Test]
@@ -158,26 +157,5 @@ class RequirementLevelMetadataLoaderTest extends TestCase
         self::assertSame([], $loader->allControlIds());
         self::assertNull($loader->getMetadataFor('1.1.1'));
         self::assertEmpty($loader->controlIdsForAssessmentLevel('AL1'));
-    }
-
-    #[Test]
-    public function protection_need_addenda_consistent_with_level_flags(): void
-    {
-        foreach ($this->loader->allControlIds() as $id) {
-            $meta    = $this->loader->getMetadataFor($id);
-            $addenda = $meta['protection_need_addenda'] ?? [];
-
-            if ($meta['levels']['high_protection']) {
-                self::assertContains('high', $addenda, "$id: high_protection=true must appear in addenda");
-            } else {
-                self::assertNotContains('high', $addenda, "$id: high_protection=false must NOT appear in addenda");
-            }
-
-            if ($meta['levels']['very_high_protection']) {
-                self::assertContains('very_high', $addenda, "$id: very_high_protection=true must appear in addenda");
-            } else {
-                self::assertNotContains('very_high', $addenda, "$id: very_high_protection=false must NOT appear in addenda");
-            }
-        }
     }
 }

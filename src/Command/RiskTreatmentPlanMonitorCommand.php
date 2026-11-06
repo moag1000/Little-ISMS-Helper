@@ -71,7 +71,7 @@ class RiskTreatmentPlanMonitorCommand
 
     public function __invoke(
         #[Option(name: 'tenant', shortcut: 't', description: 'Process only specific tenant ID')]
-        $tenant,
+        ?string $tenant = null,
         #[Option(name: 'days', shortcut: 'd', description: 'Days ahead to check for approaching deadlines')]
         int $days = 7,
         #[Option(name: 'send-notifications', description: 'Actually send email notifications (default: dry-run)')]

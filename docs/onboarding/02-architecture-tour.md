@@ -194,7 +194,8 @@ All state-changing forms use `#[IsCsrfTokenValid('token_id')]` attribute
 
 ### Input Validation
 
-Sanitize user input via `InputValidationService`. File uploads go through
+Validate user input with form constraints (`#[Assert\…]`); Twig auto-escaping covers output,
+so never apply `|raw` to user content. File uploads go through
 `FileUploadSecurityService`. Never trust raw `$request->get()` for data that
 will be persisted.
 
