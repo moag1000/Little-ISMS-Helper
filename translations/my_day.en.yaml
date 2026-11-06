@@ -9,6 +9,7 @@ my_day:
 
     kpi:
         workflows_pending: 'Approvals for me'
+        risk_acceptance_pending: 'Risk acceptances to decide'
         workflows_overdue: 'Approvals overdue'
         alva_hints: 'Alva recommendations'
         four_eyes: '4-eyes requests'
@@ -38,6 +39,7 @@ my_day:
 
     section:
         workflows_pending: 'Approvals — waiting for my decision'
+        risk_acceptance_pending: 'Risk acceptances — awaiting my decision (ISO 27005 8.4.4)'
         workflows_overdue: 'Approvals — overdue (started by me)'
         alva_hints: 'Alva recommendations — priority 1'
         four_eyes: '4-eyes approval'

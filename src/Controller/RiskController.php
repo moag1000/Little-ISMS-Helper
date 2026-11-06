@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\Location\LocationScope;
+use App\Security\Voter\RiskAcceptanceVoter;
 use App\Security\Voter\AsyncJobVoter;
 use App\Service\BulkDeleteService;
 use App\Entity\User;
@@ -948,11 +949,9 @@ class RiskController extends AbstractController
             'required_level' => $requiredLevel,
         ]);
     }
-    /**
-     * Approve risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
-     */
+    /** Approve a requested risk acceptance (ISO 27005 §8.4.4); tier check in RiskAcceptanceVoter. */
     #[Route('/risk/{id}/approve-acceptance', name: 'app_risk_approve_acceptance', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(RiskAcceptanceVoter::APPROVE, subject: 'risk')]
     public function approveAcceptance(Request $request, Risk $risk): Response
     {
         $user = $this->security->getUser();
@@ -962,22 +961,19 @@ class RiskController extends AbstractController
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
-        $comments = $request->request->get('comments', '');
-
         try {
-            $result = $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $user, $comments);
+            $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $user, (string) $request->request->get('comments', ''));
             $this->flashSuccess('risk.acceptance.success.approved');
         } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        $toMyDay = $request->request->get('_back') === 'my_day'; // decided inline in My Day
+        return $this->redirectToRoute($toMyDay ? 'app_my_day' : 'app_risk_show', $toMyDay ? [] : ['id' => $risk->getId()]);
     }
-    /**
-     * Reject risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
-     */
+    /** Reject a requested risk acceptance; a reason is required. */
     #[Route('/risk/{id}/reject-acceptance', name: 'app_risk_reject_acceptance', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(RiskAcceptanceVoter::APPROVE, subject: 'risk')]
     public function rejectAcceptance(Request $request, Risk $risk): Response
     {
         $user = $this->security->getUser();

@@ -469,8 +469,6 @@ ui:
         sidebar:
             closed: 'Navigation geschlossen'
             opened: 'Navigation geöffnet'
-        skeleton:
-            load_error: 'Fehler beim Laden der Inhalte.'
         sso_role_mapping:
             active: 'Aktiv'
             claim_key: 'Claim-Schlüssel'

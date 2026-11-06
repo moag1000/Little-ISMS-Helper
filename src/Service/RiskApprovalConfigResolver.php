@@ -32,6 +32,22 @@ final readonly class RiskApprovalConfigView
         return new self(3, 7, 25);
     }
 
+    /** Approval level for a residual risk score: 'automatic', 'manager' or 'executive'. */
+    public function levelFor(int $residualScore): string
+    {
+        return match (true) {
+            $residualScore <= $this->thresholdAutomatic => 'automatic',
+            $residualScore <= $this->thresholdManager => 'manager',
+            default => 'executive',
+        };
+    }
+
+    /** Minimum role that may approve an acceptance at this level (executive: ROLE_ADMIN). */
+    public static function approverRole(string $level): string
+    {
+        return $level === 'executive' ? 'ROLE_ADMIN' : 'ROLE_MANAGER';
+    }
+
     public static function fromEntity(RiskApprovalConfig $entity): self
     {
         return new self(

@@ -33,7 +33,7 @@ class MyDayController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $payload = $this->enricher->enrich($this->aggregator->aggregate($user));
+        $payload = $this->enricher->enrich($this->aggregator->aggregate($user), $user);
 
         return $this->render('my_day/index.html.twig', [
             'inbox' => $payload,

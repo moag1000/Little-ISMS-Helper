@@ -868,8 +868,8 @@ class DashboardStatisticsService
 
         if (in_array('risks', $activeModules, true)) {
             $risks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
-            $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 16));
-            $high = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 12 && $r->getResidualRiskLevel() < 16));
+            $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= \App\Risk\RiskMatrixThresholds::CRITICAL_MIN));
+            $high = count(array_filter($risks, fn($r): bool => \App\Risk\RiskMatrixThresholds::classify($r->getResidualRiskLevel()) === 'high'));
             $riskScore = $risks === [] ? 0.0 : max(0.0, 100.0 - ($critical * 15.0) - ($high * 5.0));
             $components['risk_exposure'] = [0.25, round($riskScore, 1)];
         }
@@ -1049,8 +1049,8 @@ class DashboardStatisticsService
         $allRisks = $tenant ? $this->getAllAccessibleRisks($tenant) : []; // no tenant: fail closed
 
         $totalRisks = count($allRisks);
-        $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 12));
-        $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 16));
+        $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::HIGH_MIN));
+        $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= \App\Risk\RiskMatrixThresholds::CRITICAL_MIN));
         $treatedRisks = count(array_filter($allRisks, fn($r): bool => $r->getTreatmentStrategy() !== null));
         $treatmentRate = $totalRisks > 0 ? (int) round(($treatedRisks / $totalRisks) * 100) : 0;
 
@@ -1065,9 +1065,9 @@ class DashboardStatisticsService
         foreach ($allRisks as $risk) {
             $residual = $risk->getResidualRiskLevel();
             $residualSum += $residual;
-            if ($residual >= 16) {
+            if ($residual >= \App\Risk\RiskMatrixThresholds::CRITICAL_MIN) {
                 $residualCritical++;
-            } elseif ($residual >= 12) {
+            } elseif ($residual >= \App\Risk\RiskMatrixThresholds::HIGH_MIN) {
                 $residualHigh++;
             }
             $category = $risk->getCategory();

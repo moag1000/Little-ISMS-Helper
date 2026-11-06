@@ -27,7 +27,7 @@ final class RiskExtensionTest extends TestCase
         $translator->method('trans')->willReturnCallback(
             static fn (string $key): string => 'translated:' . $key
         );
-        return new RiskExtension($translator);
+        return new RiskExtension($translator, $this->createMock(\App\Service\Risk\RiskBusinessSummary::class));
     }
 
     #[Test]

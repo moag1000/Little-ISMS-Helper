@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Audit\Generator;
 
+use App\Risk\RiskMatrixThresholds;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -34,8 +35,8 @@ final class WorkbookStyleHelper
 
     /** Risk colour coding (residual score cells). */
     public const RISK_GREEN  = 'C6EFCE'; // score ≤ 6
-    public const RISK_YELLOW = 'FFEB9C'; // score 7–12
-    public const RISK_ORANGE = 'FFBF86'; // score 13–19
+    public const RISK_YELLOW = 'FFEB9C'; // medium band (6–11)
+    public const RISK_ORANGE = 'FFBF86'; // high band (12–19)
     public const RISK_RED    = 'FF8080'; // score 20–25
 
     // ── Provenance ───────────────────────────────────────────────────────────
@@ -159,15 +160,15 @@ final class WorkbookStyleHelper
 
     /**
      * Apply risk-score fill colour to a single cell.
-     * Thresholds: ≤6 green, 7-12 yellow, 13-19 orange, 20-25 red.
+     * Bands per RiskMatrixThresholds: low green, medium yellow, high orange, critical red.
      */
     public static function applyRiskScoreColor(Worksheet $sheet, string $cellCoord, int $score): void
     {
-        $bgColor = match (true) {
-            $score <= 6  => self::RISK_GREEN,
-            $score <= 12 => self::RISK_YELLOW,
-            $score <= 19 => self::RISK_ORANGE,
-            default      => self::RISK_RED,
+        $bgColor = match (RiskMatrixThresholds::classify($score)) {
+            'low'    => self::RISK_GREEN,
+            'medium' => self::RISK_YELLOW,
+            'high'   => self::RISK_ORANGE,
+            default  => self::RISK_RED,
         };
 
         $sheet->getStyle($cellCoord)->applyFromArray([

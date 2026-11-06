@@ -443,6 +443,17 @@ risk:
       approval_requested: 'Acceptance request submitted. Approval required from %approver% (level: %level%).'
       approved: 'Risk acceptance has been approved.'
       rejected: 'Risk acceptance has been rejected.'
+    pending:
+      title: Risk acceptance requested
+      justification: Justification
+      comments: Comment (optional)
+      approve: Accept
+      reason: Rejection reason
+      reject: Reject
+      waiting: Waiting for a decision by the responsible approval level.
+  business:
+    ale_per_year: 'approx. €%amount%/year'
+    asset: 'Asset: %asset%'
   residual_assessment: Residual Assessment
   status:
     open: Open

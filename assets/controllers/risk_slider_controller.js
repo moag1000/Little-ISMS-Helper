@@ -38,7 +38,12 @@ export default class extends Controller {
 
     static values = {
         probability: { type: Number, default: 1 },
-        impact: { type: Number, default: 1 }
+        impact: { type: Number, default: 1 },
+        // Band minimums, rendered by _risk_slider.html.twig from App\Risk\RiskMatrixThresholds (SSoT).
+        // Defaults mirror that class and only apply if the attributes are missing.
+        criticalMin: { type: Number, default: 20 },
+        highMin: { type: Number, default: 12 },
+        mediumMin: { type: Number, default: 6 }
     };
 
     // Risk level labels (ISO 27005 aligned) — translated via faT()
@@ -60,10 +65,10 @@ export default class extends Controller {
 
     // Aurora severity tokens (no raw colours)
     riskLevelConfig = {
-        low: { color: 'var(--success)', bgColor: 'var(--success-tint)', label: () => faT('risk_slider.level.low'), max: 4 },
-        medium: { color: 'var(--warning-text)', bgColor: 'var(--warning-tint)', label: () => faT('risk_slider.level.medium'), max: 9 },
-        high: { color: 'var(--sev-critical-color)', bgColor: 'rgb(var(--sev-critical-rgb) / 0.16)', label: () => faT('risk_slider.level.high'), max: 14 },
-        critical: { color: 'var(--danger)', bgColor: 'var(--danger-tint)', label: () => faT('risk_slider.level.critical'), max: 25 }
+        low: { color: 'var(--success)', bgColor: 'var(--success-tint)', label: () => faT('risk_slider.level.low') },
+        medium: { color: 'var(--warning-text)', bgColor: 'var(--warning-tint)', label: () => faT('risk_slider.level.medium') },
+        high: { color: 'var(--sev-critical-color)', bgColor: 'rgb(var(--sev-critical-rgb) / 0.16)', label: () => faT('risk_slider.level.high') },
+        critical: { color: 'var(--danger)', bgColor: 'var(--danger-tint)', label: () => faT('risk_slider.level.critical') }
     };
 
     connect() {
@@ -136,17 +141,14 @@ export default class extends Controller {
     }
 
     getRiskLevel(score) {
-        if (score <= this.riskLevelConfig.low.max) return this.riskLevelConfig.low;
-        if (score <= this.riskLevelConfig.medium.max) return this.riskLevelConfig.medium;
-        if (score <= this.riskLevelConfig.high.max) return this.riskLevelConfig.high;
-        return this.riskLevelConfig.critical;
+        return this.riskLevelConfig[this.getRiskLevelName(score)];
     }
 
     getRiskLevelName(score) {
-        if (score <= 4) return 'low';
-        if (score <= 9) return 'medium';
-        if (score <= 14) return 'high';
-        return 'critical';
+        if (score >= this.criticalMinValue) return 'critical';
+        if (score >= this.highMinValue) return 'high';
+        if (score >= this.mediumMinValue) return 'medium';
+        return 'low';
     }
 
     renderMatrix(selectedProbability, selectedImpact) {

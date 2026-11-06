@@ -44,7 +44,7 @@ final class ScheduledReportService
         private readonly TranslatorInterface $translator,
         private readonly AuditLogger $auditLogger,
         private readonly PortfolioReportService $portfolioReportService,
-        private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly Kpi\KpiCatalog $kpiCatalog,
         private readonly RoleDashboardService $roleDashboardService,
         private readonly ComplianceAnalyticsService $complianceAnalyticsService,
         private readonly RiskRepository $riskRepository,
@@ -351,7 +351,7 @@ final class ScheduledReportService
         $tenant = $this->security->getUser()?->getTenant()
             ?? $this->tenantContext->getCurrentTenant()
             ?? throw new TenantOrphanException(null, 'Board report requires a tenant context.');
-        $kpis = $this->dashboardStatisticsService->getManagementKPIs($tenant); // explicit tenant (cron: no user)
+        $kpis = $this->kpiCatalog->managementKpis($tenant); // explicit tenant (cron: no user)
         $boardData = $this->roleDashboardService->getBoardDashboard();
         // Top 5 risks sorted by inherent risk level
         $allRisks = $this->riskRepository->findByTenant($tenant);

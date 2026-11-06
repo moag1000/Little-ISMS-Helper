@@ -8,6 +8,7 @@ use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\Trait\BusinessProcessOwnerTrait;
 use App\Repository\BusinessProcessRepository;
+use App\Risk\RiskMatrixThresholds;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -543,14 +544,14 @@ class BusinessProcess
         }
 
         $avgResidualRisk = $totalResidualRisk / $count;
-        if ($avgResidualRisk >= 16) {
+        if ($avgResidualRisk >= RiskMatrixThresholds::CRITICAL_MIN) {
             return 'critical';
         }
-        if ($avgResidualRisk >= 9) {
+        if ($avgResidualRisk >= RiskMatrixThresholds::HIGH_MIN) {
             return 'high';
         }
 
-        if ($avgResidualRisk >= 4) {
+        if ($avgResidualRisk >= RiskMatrixThresholds::MEDIUM_MIN) {
             return 'medium';
         }
         return 'low';
@@ -613,7 +614,7 @@ class BusinessProcess
     public function hasUnmitigatedHighRisks(): bool
     {
         foreach ($this->identifiedRisks as $identifiedRisk) {
-            if ($identifiedRisk->getStatus()?->isHandled() !== true && $identifiedRisk->getResidualRiskLevel() >= 16) {
+            if ($identifiedRisk->getStatus()?->isHandled() !== true && $identifiedRisk->getResidualRiskLevel() >= RiskMatrixThresholds::HIGH_MIN) {
                 return true;
             }
         }

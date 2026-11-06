@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Delete;
 use App\Enum\SupplierStatus;
 use App\Attribute\RequiresModule;
 use App\Repository\SupplierRepository;
+use App\Risk\RiskMatrixThresholds;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -747,16 +748,7 @@ class Supplier
 
         $avgRisk = $count > 0 ? $totalResidualRisk / $count : 0;
 
-        if ($avgRisk >= 16) {
-            return 'critical';
-        }
-        if ($avgRisk >= 9) {
-            return 'high';
-        }
-        if ($avgRisk >= 4) {
-            return 'medium';
-        }
-        return 'low';
+        return RiskMatrixThresholds::classify((int) floor($avgRisk));
     }
 
     /**

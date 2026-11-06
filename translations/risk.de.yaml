@@ -455,6 +455,17 @@ risk:
       approval_requested: 'Akzeptanzantrag eingereicht. Genehmigung erforderlich durch %approver% (Stufe: %level%).'
       approved: 'Risikoakzeptanz wurde genehmigt.'
       rejected: 'Risikoakzeptanz wurde abgelehnt.'
+    pending:
+      title: Risikoakzeptanz beantragt
+      justification: Begründung
+      comments: Kommentar (optional)
+      approve: Akzeptieren
+      reason: Ablehnungsgrund
+      reject: Ablehnen
+      waiting: Wartet auf Entscheidung durch die zuständige Genehmigungsstufe.
+  business:
+    ale_per_year: 'ca. %amount% €/Jahr'
+    asset: 'Asset: %asset%'
   residual_assessment: Restrisiko-Bewertung
   status:
     open: Offen

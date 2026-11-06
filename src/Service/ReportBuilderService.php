@@ -18,6 +18,7 @@ use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\DataBreachRepository;
+use App\Risk\RiskMatrixThresholds;
 use DateTimeImmutable;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -559,7 +560,7 @@ final class ReportBuilderService
     private function getKpiHighRisks(): array
     {
         $risks = $this->riskRepository->findAll();
-        $highRisks = array_filter($risks, fn($r) => $r->getRiskScore() >= 12);
+        $highRisks = array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::HIGH_MIN);
         $count = count($highRisks);
         return [
             'value' => $count,
@@ -1035,7 +1036,7 @@ final class ReportBuilderService
         $totalControls = count($controls);
         $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
         $implementationRate = $totalControls > 0 ? ($implemented / $totalControls) * 100 : 0;
-        $highRisks = count(array_filter($risks, fn($r) => $r->getRiskScore() >= 15));
+        $highRisks = count(array_filter($risks, fn($r) => $r->getRiskScore() >= RiskMatrixThresholds::HIGH_MIN));
         // Determine RAG status
         if ($implementationRate >= 80 && $highRisks <= 3) {
             $status = 'green';

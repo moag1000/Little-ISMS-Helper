@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use App\Entity\Risk;
 use App\Risk\RiskMatrixThresholds;
+use App\Service\Risk\RiskBusinessSummary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Attribute\AsTwigFunction;
 
@@ -27,7 +29,15 @@ final class RiskExtension
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
+        private readonly RiskBusinessSummary $businessSummary,
     ) {
+    }
+
+    /** "Hoch (16) · ca. 120.000 €/Jahr · Asset: Webshop" — {@see RiskBusinessSummary}. */
+    #[AsTwigFunction('risk_business_summary')]
+    public function riskBusinessSummary(Risk $risk): string
+    {
+        return $this->businessSummary->line($risk);
     }
 
     /**

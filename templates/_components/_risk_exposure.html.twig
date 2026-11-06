@@ -1,0 +1,47 @@
+{#
+ # Expected annual loss in euro (UI wave D): total over open risks plus the
+ # five largest. Data: KPI catalog keys risk_exposure_eur / risk_top5_eur,
+ # from the quantitative risk fields (module risk_quant). Shown only to roles
+ # that may see monetary risk fields; renders nothing otherwise.
+ #
+ #   {% include '_components/_risk_exposure.html.twig' %}
+ #}
+{% import '_components/_kpi_tile.html.twig' as _kpi_tile %}
+{% set _exposure = kpi('risk_exposure_eur') %}
+{% set _top = kpi('risk_top5_eur') %}
+{% if _exposure is not null %}
+<section class="card mb-4" aria-labelledby="risk-exposure-title">
+    <div class="card-header">
+        <h2 class="h5 mb-0" id="risk-exposure-title">{{ 'dashboard.risk_exposure.title'|trans({}, 'dashboard') }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                {{ _kpi_tile.render('risk_exposure_eur', {
+                    icon: 'nav-analytics',
+                    href: path('app_risk_index'),
+                    hint: 'dashboard.risk_exposure.coverage'|trans({
+                        '%quantified%': _exposure.details.quantified,
+                        '%open%': _exposure.details.open,
+                    }, 'dashboard'),
+                }) }}
+            </div>
+            <div class="col-md-8">
+                <h3 class="h6">{{ 'dashboard.kpi.risk_top5_eur'|trans({}, 'dashboard') }}</h3>
+                {% if _top is null or _top.details.top is empty %}
+                    <p class="text-body-secondary mb-0">{{ 'dashboard.risk_exposure.none'|trans({}, 'dashboard') }}</p>
+                {% else %}
+                    <ol class="list-unstyled mb-0">
+                        {% for r in _top.details.top %}
+                            <li class="d-flex justify-content-between gap-3 py-1{{ not loop.last ? ' border-bottom' }}">
+                                <a href="{{ path('app_risk_show', {id: r.id}) }}">{{ r.title }}</a>
+                                <span class="text-nowrap fw-semibold">{{ {value: r.ale, unit: '€'}|kpi_value }}</span>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}

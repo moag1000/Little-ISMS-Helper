@@ -126,6 +126,8 @@ dashboard:
     documentation:
       title: Dokumentation
       icon: bi-file-text
+    risk_finance:
+      title: Risiko in Euro
     bsi_stufen:
       title: 'BSI Absicherungsstufen'
       icon: bi-shield-shaded
@@ -190,6 +192,8 @@ dashboard:
     resilience_tests_ytd: Resilienz-Tests (YTD)
     ict_providers: ICT-Drittanbieter
     critical_ict_providers: Kritische ICT-Anbieter
+    risk_exposure_eur: Erwarteter Jahresschaden
+    risk_top5_eur: Top-5-Risiken nach Euro
   hint:
     weighted_compliance: 'Gewichtung: implementiert=1.0, teilweise=0.5, geplant=0'
     isms_health_score: 'Zusammengesetzt: Compliance 40%, Risiken 25%, Incidents 20%,
@@ -222,6 +226,10 @@ dashboard:
     total_documents: Dokumente gesamt
     documents_needing_review: Prüfung erforderlich
     documents_without_owner: Ohne Eigentümer
+  risk_exposure:
+    title: Risiko in Euro
+    coverage: '%quantified% von %open% offenen Risiken mit Schadenshöhe und Häufigkeit bewertet'
+    none: Kein offenes Risiko mit Schadenshöhe und Häufigkeit.
   my_tasks:
     title: Meine Aufgaben heute
     all_done: Keine Aufgaben — alles erledigt.

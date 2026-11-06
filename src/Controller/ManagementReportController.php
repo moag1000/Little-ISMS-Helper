@@ -12,8 +12,8 @@ use App\Repository\ControlRepository;
 use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\Kpi\KpiCatalog;
 use App\Service\ComplianceWizardService;
-use App\Service\DashboardStatisticsService;
 use App\Service\ManagementReportService;
 use App\Service\PdfExportService;
 use App\Service\ExcelExportService;
@@ -45,7 +45,7 @@ class ManagementReportController extends AbstractController
         private readonly ManagementReportService $reportService,
         private readonly PdfExportService $pdfExportService,
         private readonly ExcelExportService $excelExportService,
-        private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly KpiCatalog $kpiCatalog,
         private readonly RoleDashboardService $roleDashboardService,
         private readonly RiskRepository $riskRepository,
         private readonly ComplianceAnalyticsService $complianceAnalyticsService,
@@ -417,7 +417,7 @@ class ManagementReportController extends AbstractController
     public function boardOnePagerPdf(Request $request): Response
     {
         // Gather data from existing services
-        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
+        $kpis = $this->kpiCatalog->managementKpis();
         $boardData = $this->roleDashboardService->getBoardDashboard();
 
         // Top 5 risks sorted by inherent risk level
@@ -598,7 +598,7 @@ class ManagementReportController extends AbstractController
         }
 
         // Dashboard KPIs for additional context
-        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
+        $kpis = $this->kpiCatalog->managementKpis();
 
         return [
             'clause_compliance' => $clauseCompliance,
@@ -1202,7 +1202,7 @@ class ManagementReportController extends AbstractController
 
         // 6. Training completion
         $currentTraining = isset($previousData['training_completion']) ? (int) $previousData['training_completion'] : 0;
-        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
+        $kpis = $this->kpiCatalog->managementKpis();
         if (isset($kpis['training']['training_completion_rate'])) {
             $currentTraining = (int) $kpis['training']['training_completion_rate']['value'];
         }

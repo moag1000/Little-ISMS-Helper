@@ -4,6 +4,7 @@
 {% block title %}{{ 'isb.title'|trans }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_kpi_tile.html.twig' as _kpi_tile %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
@@ -19,6 +20,16 @@
             { label: 'isb.action.audits'|trans,         variant: 'primary', icon: 'audit-log',         href: path('app_audit_index') }
         ]
     }) }}
+
+    {# Key figures from the KPI catalog (same numbers and thresholds as every other dashboard) #}
+    <div class="row g-3 mt-2 mb-4">
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('control_compliance', { icon: 'toggles', href: path('app_soa_index') }) }}</div>
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('implementation_readiness', { icon: 'nav-shield-check' }) }}</div>
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('open_incidents', { icon: 'ui-exclamation-triangle', href: path('app_incident_index') }) }}</div>
+        <div class="col-6 col-md-3">{{ _kpi_tile.render('overdue_treatments', { icon: 'status-warning', href: path('app_risk_index') }) }}</div>
+    </div>
+
+    {% include '_components/_risk_exposure.html.twig' %}
 
     {# ── Workflow Transparency (Pending Approvals + Lifecycle Stuck) ── #}
     <div class="row g-4 mt-2">

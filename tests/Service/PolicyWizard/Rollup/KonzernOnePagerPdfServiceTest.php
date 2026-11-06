@@ -31,7 +31,7 @@ use Twig\Loader\FilesystemLoader;
  *
  * Verifies HTML rendering + dompdf-backed PDF generation:
  *  - HTML output contains konzern name, KPI tiles, sparkline SVG,
- *    Top-3 risks/gaps, ALE skeleton + footer
+ *    Top-3 risks/gaps, footer (ALE line only with quant data)
  *  - PDF output starts with `%PDF-` magic bytes
  *  - As-of date is honoured in both surfaces
  */
@@ -61,6 +61,11 @@ final class KonzernOnePagerPdfServiceTest extends TestCase
             }
             return $base;
         }));
+
+        $this->twig->addFilter(new \Twig\TwigFilter(
+            'kpi_value',
+            static fn (?array $kpi): string => (string) ($kpi['value'] ?? '') . ' ' . (string) ($kpi['unit'] ?? ''),
+        ));
 
         $this->twig->addGlobal('app', new class () {
             public function getRequest(): object
@@ -123,9 +128,8 @@ final class KonzernOnePagerPdfServiceTest extends TestCase
             'Lowest-score subsidiary must appear before higher-score one',
         );
 
-        // ALE skeleton block must be present (rendered via the .ale-skeleton paragraph).
-        $this->assertStringContainsString('ale-skeleton', $html);
-        $this->assertStringContainsString('Skeleton', $html);
+        // No risk carries SLE/ARO here: the ALE line stays out instead of printing "n/a".
+        $this->assertStringNotContainsString('<p class="ale-line">', $html);
 
         // Stichtag passthrough.
         $this->assertStringContainsString('2026-05-10', $html);

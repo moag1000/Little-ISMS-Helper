@@ -21,6 +21,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ComplianceWizardService;
 use App\Service\DashboardStatisticsService;
+use App\Service\Kpi\KpiCatalog;
 use App\Service\GuidedTourService;
 use App\Service\ImplementationJourneyService;
 use App\Service\InheritanceMetricsService;
@@ -40,6 +41,7 @@ class HomeController extends AbstractController
 {
     public function __construct(
         private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly KpiCatalog $kpiCatalog,
         private readonly ISOComplianceIntelligenceService $isoComplianceIntelligenceService,
         private readonly ComplianceWizardService $complianceWizardService,
         private readonly AssetRepository $assetRepository,
@@ -102,8 +104,8 @@ class HomeController extends AbstractController
         // Get all statistics from service (better separation of concerns)
         $stats = $this->dashboardStatisticsService->getDashboardStatistics();
 
-        // Get module-aware management KPIs for expanded dashboard
-        $managementKpis = $this->dashboardStatisticsService->getManagementKPIs();
+        // Management KPIs from the catalog: thresholds of the organisation + 30-day trend
+        $managementKpis = $this->kpiCatalog->managementKpis(withTrend: true);
 
         // Activity Feed Daten
         $activities = $this->getRecentActivities();
@@ -227,9 +229,6 @@ class HomeController extends AbstractController
                 // Compliance module may not be fully set up
             }
         }
-
-        // Add trend data to management KPIs (from KPI snapshots)
-        $managementKpis = $this->dashboardStatisticsService->addTrendData($managementKpis, $tenant);
 
         // R2 Ein-Zahl-KPI — Data-Reuse in FTE-Tagen (Board-taugliche Einzelzahl)
         $reuseFteSaved = null;

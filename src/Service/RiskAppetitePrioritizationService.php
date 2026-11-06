@@ -8,6 +8,7 @@ use App\Entity\Risk;
 use App\Entity\RiskAppetite;
 use App\Repository\RiskRepository;
 use App\Repository\RiskAppetiteRepository;
+use App\Risk\RiskMatrixThresholds;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -136,7 +137,7 @@ class RiskAppetitePrioritizationService
                 'priority' => $this->getAbsolutePriority($residualRisk),
                 'exceedance' => 0,
                 'percentage' => 0.0,
-                'requires_action' => $residualRisk >= 16,
+                'requires_action' => $residualRisk >= RiskMatrixThresholds::HIGH_MIN,
                 'recommendation' => 'No risk appetite defined. Please set organizational risk appetite.'
             ];
         }

@@ -74,7 +74,6 @@ class RoleDashboardService
 
         // High-level statistics
         $stats = $this->dashboardStatisticsService->getDashboardStatistics();
-        $managementKpis = $this->dashboardStatisticsService->getManagementKPIs();
 
         // Top risks requiring attention
         $criticalRisks = $this->getCriticalRisks(5);
@@ -118,7 +117,6 @@ class RoleDashboardService
             'critical_risks' => $criticalRisks,
             'pending_approvals' => $pendingApprovals,
             'recent_incidents' => $recentIncidents,
-            'management_kpis' => $managementKpis,
             'dora_kpis' => $doraKpis,
             'tisax_aggregate' => $tisaxAggregate,
         ];

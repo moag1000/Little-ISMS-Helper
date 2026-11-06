@@ -78,6 +78,7 @@ final class ManagementReportAuditFindingCountsTest extends TestCase
             $this->createStub(DataBreachRepository::class),
             $this->createStub(RiskTreatmentPlanRepository::class),
             $dashboard,
+            $this->createStub(\App\Service\Kpi\KpiCatalog::class),
             $this->createStub(TranslatorInterface::class),
         );
     }

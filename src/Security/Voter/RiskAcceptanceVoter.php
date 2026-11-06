@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace App\Security\Voter;
 
 use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\RiskApprovalConfigResolver;
+use App\Service\RiskApprovalConfigView;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
- * RiskAcceptanceVoter
+ * Who may approve or reject a requested risk acceptance (ISO 27005 §8.4.4).
  *
- * Controls who may formally accept (approve) a risk treatment decision.
- * Implements score-tier based minimum-role checks per ISO 31000 §6.5.4:
- *
- *  Score  1– 6  → ROLE_USER      (low risk — self-service)
- *  Score  7–12  → ROLE_MANAGER   (medium risk — manager sign-off)
- *  Score 13–19  → ROLE_ADMIN     (high risk — senior approval)
- *  Score 20–25  → ROLE_SUPER_ADMIN (critical risk — executive sign-off)
+ * Uses the same tiers that decide who is asked in the first place
+ * (admin → risk approval thresholds, per organisation, holding ceilings
+ * applied): residual score up to the manager threshold → ROLE_MANAGER,
+ * above it → ROLE_ADMIN. Role hierarchy applies, and the approver must
+ * belong to the risk's organisation.
  */
 final class RiskAcceptanceVoter extends Voter
 {
@@ -28,6 +29,7 @@ final class RiskAcceptanceVoter extends Voter
 
     public function __construct(
         private readonly RoleHierarchyInterface $roleHierarchy,
+        private readonly RiskApprovalConfigResolver $approvalConfig,
     ) {
     }
 
@@ -45,38 +47,20 @@ final class RiskAcceptanceVoter extends Voter
 
         /** @var Risk $risk */
         $risk = $subject;
+        $tenant = $risk->getTenant();
+        if ($tenant instanceof Tenant && $user->getTenant()?->getId() !== $tenant->getId()
+            && !$this->hasRole($user, 'ROLE_SUPER_ADMIN')) {
+            return false;
+        }
 
-        $score = $risk->getRiskScore();
-        $requiredRole = $this->resolveRequiredRole($score);
+        $config = $tenant instanceof Tenant ? $this->approvalConfig->resolveFor($tenant) : RiskApprovalConfigView::defaults();
 
-        return $this->hasRole($user, $requiredRole);
+        return $this->hasRole($user, RiskApprovalConfigView::approverRole($config->levelFor($risk->getResidualRiskLevel())));
     }
 
-    /**
-     * Returns the minimum role required to approve acceptance for a given score.
-     */
-    private function resolveRequiredRole(int $score): string
-    {
-        return match (true) {
-            $score >= 20 => 'ROLE_SUPER_ADMIN',
-            $score >= 13 => 'ROLE_ADMIN',
-            $score >= 7  => 'ROLE_MANAGER',
-            default      => 'ROLE_USER',
-        };
-    }
-
-    /**
-     * Returns true when the user holds $requiredRole or any role above it in
-     * Symfony's `role_hierarchy` (ROLE_ADMIN reaches ROLE_MANAGER, etc.).
-     *
-     * Expands the user's directly assigned roles via the configured
-     * RoleHierarchyInterface so an admin with only `ROLE_ADMIN` in the DB row
-     * still satisfies subordinate role checks (`ROLE_MANAGER`, `ROLE_USER`).
-     */
+    /** True when the user holds $requiredRole directly or through the role hierarchy. */
     private function hasRole(User $user, string $requiredRole): bool
     {
-        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
-
-        return in_array($requiredRole, $reachable, true);
+        return in_array($requiredRole, $this->roleHierarchy->getReachableRoleNames($user->getRoles()), true);
     }
 }

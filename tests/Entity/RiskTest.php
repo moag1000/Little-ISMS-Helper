@@ -8,6 +8,7 @@ use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Risk;
+use App\Risk\RiskMatrixThresholds;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -92,19 +93,18 @@ class RiskTest extends TestCase
     {
         $risk = new Risk();
 
-        // High risk (inherent >= 15)
+        // Critical band is also "high risk"
         $risk->setProbability(5);
         $risk->setImpact(5); // 25
         $this->assertTrue($risk->isHighRisk());
 
-        // Medium risk
-        $risk->setProbability(3);
-        $risk->setImpact(4); // 12
+        // Boundary: below RiskMatrixThresholds::HIGH_MIN (12) -> medium (11 is not a 5x5 product, 10 is the nearest)
+        $risk->setProbability(2);
+        $risk->setImpact(5); // 10
         $this->assertFalse($risk->isHighRisk());
-
-        // Boundary case: exactly 15
         $risk->setProbability(3);
-        $risk->setImpact(5); // 15
+        $risk->setImpact(4); // 12 == HIGH_MIN
+        $this->assertSame(RiskMatrixThresholds::HIGH_MIN, $risk->getInherentRiskLevel());
         $this->assertTrue($risk->isHighRisk());
     }
 

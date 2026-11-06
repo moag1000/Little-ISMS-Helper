@@ -12,6 +12,8 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\PolicyAcknowledgementRepository;
+use App\Service\Kpi\RiskExposure;
+use App\Service\ModuleConfigurationService;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Psr\Log\LoggerInterface;
@@ -50,6 +52,8 @@ final class KonzernTrendCalculator
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly LoggerInterface $logger = new NullLogger(),
+        private readonly ?RiskExposure $riskExposure = null,
+        private readonly ?ModuleConfigurationService $modules = null,
     ) {
     }
 
@@ -93,11 +97,32 @@ final class KonzernTrendCalculator
             quarters: $quarters,
             perSubsidiary: $perSubsidiary,
             konzernAverage: $konzernAverage,
-            // SKELETON: ALE/€-column is null until the risk-manager
-            // module exposes a per-tenant aggregate. Coupling point
-            // documented in docs/plans/* (followup).
-            estimatedAleEur: null,
+            estimatedAleEur: $this->groupAle($allTenants),
         );
+    }
+
+    /**
+     * Expected annual loss (€) over the open risks of every group company
+     * with module `risk_quant`; null when no risk carries SLE and ARO.
+     *
+     * @param list<Tenant> $tenants
+     */
+    private function groupAle(array $tenants): ?float
+    {
+        if ($this->riskExposure === null || $this->modules === null) {
+            return null;
+        }
+        $total = 0;
+        $quantified = 0;
+        foreach ($tenants as $tenant) {
+            if ($this->modules->isModuleActiveForTenant('risk_quant', $tenant)) {
+                $exposure = $this->riskExposure->forTenant($tenant);
+                $total += $exposure['total'];
+                $quantified += $exposure['quantified'];
+            }
+        }
+
+        return $quantified > 0 ? (float) $total : null;
     }
 
     // -----------------------------------------------------------------

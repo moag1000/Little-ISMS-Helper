@@ -11,7 +11,7 @@ use App\Repository\KpiSnapshotRepository;
 use App\Repository\SystemSettingsRepository;
 use App\Repository\TenantRepository;
 use App\Service\ComplianceAnalyticsService;
-use App\Service\DashboardStatisticsService;
+use App\Service\Kpi\KpiCatalog;
 use App\Service\ModuleConfigurationService;
 use App\Service\MrisKpiService;
 use App\Service\TenantContext;
@@ -63,7 +63,7 @@ class KpiSnapshotCommand
     public function __construct(
         private readonly TenantRepository $tenantRepository,
         private readonly KpiSnapshotRepository $kpiSnapshotRepository,
-        private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly KpiCatalog $kpiCatalog,
         private readonly EntityManagerInterface $entityManager,
         private readonly MrisKpiService $mrisKpiService,
         private readonly ?SystemSettingsRepository $systemSettingsRepository = null,
@@ -218,7 +218,7 @@ class KpiSnapshotCommand
         // that resolve the tenant from it (module set, framework comparison)
         // compute this tenant's values, not the global ones.
         $this->tenantContext?->setCurrentTenant($tenant);
-        $kpis = $this->dashboardStatisticsService->getManagementKPIs($tenant);
+        $kpis = $this->kpiCatalog->managementKpis($tenant);
 
         $data = [];
 

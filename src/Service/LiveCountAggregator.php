@@ -68,8 +68,8 @@ class LiveCountAggregator
         }
         $payload = $this->myDayAggregator->aggregate($user);
 
-        // Same total as the My Day page: the aggregated buckets plus Alva's priority hints.
-        return (int) ($payload['total'] ?? 0) + $this->myDayEnricher->alvaHintCount();
+        // Same total as the My Day page: the aggregated buckets plus what the enricher adds.
+        return (int) ($payload['total'] ?? 0) + $this->myDayEnricher->addedCount($user);
     }
 
     /**

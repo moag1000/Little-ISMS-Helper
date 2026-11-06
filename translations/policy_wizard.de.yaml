@@ -1088,7 +1088,7 @@ policy_wizard:
                 framework: 'Framework'
                 score: 'Score'
             ale:
-                skeleton: 'Geschätzter ALE (Annualized Loss Expectancy): %value% — Kopplung an Risk-Manager-Modul folgt.'
+                value: 'Erwarteter Jahresschaden aus offenen Risiken (ALE, Konzern): %value%'
             footer:
                 generated: 'Generiert von Little ISMS Helper am %date% — Version %version%.'
 

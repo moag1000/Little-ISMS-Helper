@@ -584,7 +584,7 @@
                                 <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
                                     <div>
                                         <strong>{{ risk.title }}</strong>
-                                        {% set riskClass = risk.inherentRiskLevel >= 16 ? 'danger' : (risk.inherentRiskLevel >= 9 ? 'warning' : 'success') %}
+                                        {% set riskClass = {critical: 'danger', high: 'danger', medium: 'warning', low: 'success'}[risk_level_band(risk.inherentRiskLevel)] %}
                                         {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'incident.reuse.risk_level'|trans({'%level%': risk.inherentRiskLevel}, 'incident') } %}
                                         <small>{{ 'incident.reuse.probability'|trans({'%value%': risk.probability}, 'incident') }}</small>
                                         {# Show audit-trail of last incident-driven reassessment #}

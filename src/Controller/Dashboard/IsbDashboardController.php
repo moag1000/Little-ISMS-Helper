@@ -25,8 +25,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *   - Quick-links to ISMS core, controls, incidents, audits
  *
  * Role gate: PERSONA_ISB (resolves to ROLE_ISB via TenantScopedAdminVoter).
- *
- * placeholder release: full KPI widgets planned in follow-up sprint.
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards/isb', name: 'app_dashboard_isb')]

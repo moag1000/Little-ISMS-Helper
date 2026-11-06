@@ -1,0 +1,24 @@
+{#
+ # kpi-tile — one KPI from the catalog as an fa-feature-card (UI wave D).
+ #
+ # Dashboards select KPIs by key; the number, its unit and its traffic light
+ # come from App\Service\Kpi\KpiCatalog (thresholds of the organisation applied).
+ # Renders nothing when the KPI is not available (module off, role may not see it).
+ #
+ #   {% import '_components/_kpi_tile.html.twig' as _kpi_tile %}
+ #   {{ _kpi_tile.render('control_compliance', { icon: 'nav-shield-check', href: path('app_soa_index') }) }}
+ #}
+{% macro render(key, opts = {}) %}
+    {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+    {% set _k = kpi(key) %}
+    {% if _k is not null %}
+        {{ _fa_feature_card.render({
+            label: opts.label ?? ('dashboard.kpi.' ~ key)|trans({}, 'dashboard'),
+            value: _k|kpi_value,
+            variant: {good: 'success', warning: 'warning', danger: 'danger'}[_k.status] ?? 'primary',
+            icon: opts.icon ?? null,
+            hint: opts.hint ?? null,
+            href: opts.href ?? null,
+        }) }}
+    {% endif %}
+{% endmacro %}

@@ -353,8 +353,8 @@ class BusinessProcessTest extends TestCase
 
         $this->assertSame(1, $process->getActiveRiskCount());
         $this->assertTrue($process->hasUnmitigatedHighRisks());
-        $this->assertSame('critical', $process->getProcessRiskLevel());
-        $this->assertSame(1, $process->getSuggestedRTO());
+        $this->assertSame('high', $process->getProcessRiskLevel()); // residual 16 -> high band (12-19)
+        $this->assertSame(4, $process->getSuggestedRTO()); // high band
     }
 
     #[Test]
