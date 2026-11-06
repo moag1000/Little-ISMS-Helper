@@ -158,23 +158,26 @@ Entitaeten (nur NC-Eintraege und Kommentare).
 
 ---
 
-## Mega-Menu-Sichtbarkeit per Rolle
+## Wo finde ich mein Dashboard?
 
-Das Haupt-Navigations-Mega-Menu blendet Bereiche aus, die fuer die aktive
-Persona-Rolle nicht relevant sind:
+Alle Persona-Dashboards stehen an genau einer Stelle: **Mein Cockpit** in der
+Seitenleiste. Jede Person sieht dort nur die Karten ihrer Rollen:
 
-| Bereich | Sichtbar fuer |
+| Karte | Sichtbar für |
 |---|---|
-| Risikomanagement | CISO, Risk-Manager, ISB |
-| GDPR / Datenschutz | DPO, Compliance-Manager (wenn `privacy` aktiv) |
-| BCM | ISB, CISO (wenn `bcm` aktiv) |
-| AI Governance | Compliance-Manager, CISO (wenn `ai_governance` aktiv) |
-| Supplier-Mgmt | ISB, CISO, Compliance-Manager |
-| Reports / Exports | Alle Rollen (unterschiedliche Tiefe) |
-| Admin / Tenant-Settings | Nur ADMIN / SUPER_ADMIN |
+| CISO, Risk-Manager, ISB, BCM | jeweilige Persona-Rolle |
+| DSB | DSB (wenn `privacy` aktiv) |
+| Compliance-Manager | Compliance-Manager (wenn `compliance` aktiv) |
+| Auditor | ab Rolle Auditor |
+| Board | CISO, Compliance-Manager |
 
-Die Sichtbarkeit wird serverseitig per Twig-Extension und Symfony-Security-Voter
-gesteuert; kein clientseitiges Ausblenden.
+Die Bereiche der Seitenleiste richten sich nach den aktiven Modulen; Admin nur
+für ADMIN / SUPER_ADMIN. **Portfolio** (Gruppenbericht) ist ein direkter Link
+für Group-CISO in Konzern-Mandanten.
+
+Jede Seite hat genau einen Menüeintrag (Gate `check_nav_area_parity.py`).
+Bulk-Importe laufen über "Bulk-Import – Übersicht" (ISMS Kern), nicht
+mehr über eigene Einträge je Modul.
 
 ---
 

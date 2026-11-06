@@ -30,9 +30,7 @@
  #}
 {% set nav_active = null %}
 {% set _nav_map = [
-    { p: 'app_dashboard_board', c: 'compliance' },
     { p: 'app_dashboard_', c: 'cockpit' },
-    { p: 'app_portfolio_', c: 'portfolio' },
     { p: 'app_group_report_', c: 'portfolio' },
     { p: 'app_analytics_', c: 'dashboard' },
     { p: 'analytics_fte_', c: 'dashboard' },
@@ -181,22 +179,17 @@
     </button>
     {% endif %}
 
-    {# Portfolio — multi-tenant only #}
+    {# Portfolio — multi-tenant only; one page (Gruppenbericht), so a direct link instead of a flyout #}
     {% set _is_corporate = app.user and app.user.tenant and app.user.tenant.isPartOfCorporateStructure() %}
-    {% if _is_corporate and (is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN')) %}
-    <button class="sb-link {% if nav_active == 'portfolio' %}is-active{% endif %}"
-            type="button"
-            role="menuitem"
-            data-mega-menu-target="trigger"
-            data-category="portfolio"
-            data-action="click->mega-menu#toggle"
-            aria-haspopup="menu"
-            aria-expanded="false"
-            aria-controls="flyout-portfolio">
+    {% if _is_corporate and is_granted('ROLE_GROUP_CISO') %}
+    <a class="sb-link {% if nav_active == 'portfolio' %}is-active{% endif %}"
+       href="{{ path('app_group_report_tree') }}"
+       role="menuitem"
+       data-turbo-action="advance"
+       {% if nav_active == 'portfolio' %}aria-current="page"{% endif %}>
         <span class="sb-link__icon"><i class="fa-icon fa-icon--portfolio" aria-hidden="true"></i></span>
         <span class="sb-link__label">{{ 'nav.mega.category.portfolio'|trans({}, 'nav') }}</span>
-        <i class="fa-icon fa-icon--util-chevron-right sb-link__chevron" aria-hidden="true"></i>
-    </button>
+    </a>
     {% endif %}
 
     {# Dashboard #}
