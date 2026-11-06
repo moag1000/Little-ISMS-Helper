@@ -66,7 +66,7 @@ final class KonzernTrendCalculatorTest extends TestCase
         $this->assertSame([0, 0, 0, 0], $row['approval_counts']);
         $this->assertSame(0.0, $row['latest_score']);
         $this->assertSame('stable', $row['direction']);
-        $this->assertNull($report->estimatedAleEur, 'ALE is skeleton — must stay null');
+        $this->assertNull($report->estimatedAleEur, 'no risk exposure source wired: no ALE');
     }
 
     #[Test]
@@ -143,7 +143,25 @@ final class KonzernTrendCalculatorTest extends TestCase
     // Service factory + fixture helpers
     // -----------------------------------------------------------------
 
-    private function makeCalculator(): KonzernTrendCalculator
+    #[Test]
+    public function groupAleSumsTheQuantifiedRisksOfAllGroupCompanies(): void
+    {
+        $tochter = $this->makeTenant(2, 'TA', 'Tochter A');
+        $konzern = $this->makeTenant(1, 'KZ', 'Holding AG', subsidiaries: [$tochter]);
+
+        $exposure = $this->createMock(\App\Service\Kpi\RiskExposure::class);
+        $exposure->method('forTenant')->willReturnCallback(static fn (Tenant $t): array => $t->getId() === 1
+            ? ['total' => 0, 'quantified' => 0, 'open' => 1, 'top' => []]
+            : ['total' => 120000, 'quantified' => 2, 'open' => 4, 'top' => []]);
+        $modules = $this->createMock(\App\Service\ModuleConfigurationService::class);
+        $modules->method('isModuleActiveForTenant')->willReturn(true);
+
+        $report = $this->makeCalculator($exposure, $modules)->calculateQuarterlyTrend($konzern, 4, new DateTimeImmutable('2026-05-01'));
+
+        $this->assertSame(120000.0, $report->estimatedAleEur);
+    }
+
+    private function makeCalculator(?\App\Service\Kpi\RiskExposure $exposure = null, ?\App\Service\ModuleConfigurationService $modules = null): KonzernTrendCalculator
     {
         $documentRepo = $this->createMock(DocumentRepository::class);
         $documentRepo->method('findBy')->willReturnCallback(
@@ -180,6 +198,8 @@ final class KonzernTrendCalculatorTest extends TestCase
             policyAcknowledgementRepository: $ackRepo,
             complianceFrameworkRepository: $frameworkRepo,
             complianceRequirementRepository: $reqRepo,
+            riskExposure: $exposure,
+            modules: $modules,
         );
     }
 

@@ -205,6 +205,20 @@ String nennt.
 
 ---
 
+### quality/check_kpi_catalog.py (Gate 74)
+
+**Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog
+(`App\Service\Kpi\KpiCatalog`). Er wendet die KPI-Schwellwerte der Organisation
+(Admin → KPI-Schwellwerte, im Konzern vererbt) auf die Ampel an und ergänzt die
+Euro-Kennzahlen aus den Quant-Feldern der Risiken. Ein direkter Aufruf von
+`DashboardStatisticsService::getManagementKPIs()` zeigt wieder die fest
+eingebauten Standard-Ampeln, die Einstellung wirkt dort also nicht. Dashboards
+wählen einzelne Kennzahlen mit `kpi('<key>')` bzw. `_components/_kpi_tile.html.twig`.
+
+**CI-Integration:** Gate 74 im `code-quality`-Job.
+
+---
+
 ### quality/check_list_skeleton.py (Gate 73)
 
 **Zweck:** Jede Listenseite (`templates/**/index.html.twig`) läuft über das eine

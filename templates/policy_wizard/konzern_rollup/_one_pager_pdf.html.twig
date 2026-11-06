@@ -87,10 +87,9 @@
             color: #555;
             margin: 0 0 8pt 0;
         }
-        .ale-skeleton {
-            font-size: 8pt;
-            color: #999;
-            font-style: italic;
+        .ale-line {
+            font-size: 9pt;
+            font-weight: bold;
         }
         .sparkline-wrap {
             text-align: center;
@@ -225,12 +224,14 @@
         </tr>
     </table>
 
-    {# ---- ALE Placeholder (skeleton — coupling to risk-manager later) ---- #}
-    <p class="ale-skeleton">
-        {{ 'policy_wizard.konzern_rollup.one_pager.ale.skeleton'|trans({
-            '%value%': estimated_ale_eur is not null ? estimated_ale_eur ~ ' EUR' : 'n/a',
+    {# ---- Expected annual loss of the open risks (module risk_quant), group-wide ---- #}
+    {% if estimated_ale_eur is not null %}
+    <p class="ale-line">
+        {{ 'policy_wizard.konzern_rollup.one_pager.ale.value'|trans({
+            '%value%': {value: estimated_ale_eur, unit: '€'}|kpi_value,
         }, 'policy_wizard') }}
     </p>
+    {% endif %}
 
     {# ---- Footer ---- #}
     <div class="footer">

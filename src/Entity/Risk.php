@@ -884,13 +884,13 @@ class Risk
             }
         }
         // High predicted risk should correlate with critical incidents
-        if ($predictedLevel >= 16) {
-            // High risk (4x4 or higher)
+        if ($predictedLevel >= RiskMatrixThresholds::HIGH_MIN) {
+            // High or critical band
             return $criticalIncidents > 0;
         }
 
         // High predicted risk should correlate with critical incidents
-        if ($predictedLevel >= 9) {
+        if ($predictedLevel >= RiskMatrixThresholds::MEDIUM_MIN) {
             // Medium risk
             return $criticalIncidents === 0;
             // Should NOT have critical incidents
@@ -928,7 +928,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function isHighRisk(): bool
     {
-        return $this->getInherentRiskLevel() >= 15;
+        return $this->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN;
     }
 
     /**

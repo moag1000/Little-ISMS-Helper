@@ -9,6 +9,7 @@ use App\Enum\IncidentStatus;
 use App\Enum\RiskStatus;
 use App\Enum\RiskTreatmentPlanStatus;
 use App\Service\Tisax\TisaxReportSectionBuilder;
+use App\Service\Kpi\KpiCatalog;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Risk;
@@ -57,6 +58,7 @@ final class ManagementReportService
         private readonly DataBreachRepository $dataBreachRepository,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly KpiCatalog $kpiCatalog,
         private readonly TranslatorInterface $translator,
         private readonly ?TisaxReportSectionBuilder $tisaxReportSection = null,
     ) {
@@ -719,7 +721,7 @@ final class ManagementReportService
      */
     public function getManagementKPIs(string $locale = 'de'): array
     {
-        $rawKpis = $this->dashboardStatisticsService->getManagementKPIs();
+        $rawKpis = $this->kpiCatalog->managementKpis();
         $translatedKpis = [];
 
         // Category translations
@@ -733,6 +735,7 @@ final class ManagementReportService
             'audits' => $this->translator->trans('dashboard.management_kpis.audits.title', [], 'dashboard', $locale),
             'supplier_management' => $this->translator->trans('dashboard.management_kpis.supplier_management.title', [], 'dashboard', $locale),
             'documentation' => $this->translator->trans('dashboard.management_kpis.documentation.title', [], 'dashboard', $locale),
+            'risk_finance' => $this->translator->trans('dashboard.management_kpis.risk_finance.title', [], 'dashboard', $locale),
         ];
 
         // Status translations
@@ -895,11 +898,14 @@ final class ManagementReportService
                     'overdue_treatments',
                     'training_completion_rate',
                     'bia_coverage',
+                    'risk_exposure_eur',
                 ])) {
                     $summaryKpis[] = [
                         'category' => $category['name'],
                         'label' => $kpi['label'],
-                        'value' => $kpi['value'] . $kpi['unit'],
+                        'value' => $kpi['unit'] === '€'
+                            ? number_format((float) $kpi['value'], 0, ...($locale === 'de' ? [',', '.'] : ['.', ','])) . ' €'
+                            : $kpi['value'] . $kpi['unit'],
                         'status' => $kpi['status'],
                         'status_label' => $kpi['status_label'],
                     ];

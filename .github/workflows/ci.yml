@@ -682,6 +682,10 @@ jobs:
         # Filter bar, table card, pager and empty state in one fixed order;
         # unmigrated lists are baselined and may only shrink. No KPI tiles in lists.
         run: python3 scripts/quality/check_list_skeleton.py --baseline scripts/quality/baselines/list_skeleton.txt --quiet
+      - name: "Gate 74: management KPIs only via the KPI catalog"
+        # Dashboards, reports and snapshots read KpiCatalog, which applies the
+        # organisation's KPI thresholds and adds the euro KPIs.
+        run: python3 scripts/quality/check_kpi_catalog.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

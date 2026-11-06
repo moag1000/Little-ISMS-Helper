@@ -118,7 +118,7 @@ final class KonzernOnePagerPdfService
             'top_compliance_gaps' => $topGaps,
             'trend'               => $trend,
             'sparkline_svg'       => $sparkline,
-            'estimated_ale_eur'   => $trend->estimatedAleEur, // SKELETON — null OK
+            'estimated_ale_eur'   => $trend->estimatedAleEur, // null: no risk with SLE/ARO
             'branding'            => $branding,
             'primary'             => $branding?->getPrimaryColor() ?? '#0d6efd',
             'secondary'           => $branding?->getSecondaryColor() ?? '#6c757d',

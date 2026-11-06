@@ -158,6 +158,33 @@ Entitaeten (nur NC-Eintraege und Kommentare).
 
 ---
 
+## Kennzahlen: eine Quelle, eine Ampel
+
+Alle Dashboards, die Startseite, Management-Reports, geplante Reports und die
+monatlichen KPI-Snapshots lesen dieselben Kennzahlen aus dem KPI-Katalog. Eine
+Kennzahl hat überall denselben Wert und dieselbe Ampel.
+
+- **Ampel-Schwellen:** Admin → KPI-Schwellwerte. Die Werte gelten sofort für alle
+  Seiten; im Konzern erbt eine Tochter die Werte der Holding, solange sie keine
+  eigenen setzt. Ohne Eintrag gelten 80/60 % (Compliance, Readiness, Health Score)
+  bzw. 90/70 % (Behandlungs-, Klassifizierungs-, Schulungs-, Lieferanten-, BIA-Quote).
+- **Risiko in Euro** (Modul „Quantitative Risikoanalyse“, sichtbar ab Rolle Manager):
+  erwarteter Jahresschaden über alle offenen Risiken (SLE × ARO, akzeptierte Risiken
+  zählen mit) und die fünf größten Einzelrisiken. Der Hinweis „x von y offenen
+  Risiken bewertet“ zeigt, wie viel des Registers die Summe abdeckt. Zu sehen auf
+  CISO-, Vorstands-, Risikomanager- und ISB-Dashboard, auf der Startseite und im
+  Konzern-One-Pager.
+- **Risikostufen:** überall dieselbe Skala wie in der Risikomatrix: kritisch ab 20,
+  hoch ab 12, mittel ab 6.
+
+## Risikoakzeptanz entscheiden
+
+Eine beantragte Risikoakzeptanz erscheint bei der zuständigen Person in **Mein Tag**
+(„Risikoakzeptanzen zu entscheiden“) mit einer Zeile wie „Hoch (12) · ca. 100.000 €/Jahr ·
+Asset: Kundenportal“. „Akzeptieren“ entscheidet direkt dort; „Ablehnen“ führt zur
+Risikoseite, weil ein Grund nötig ist. Zuständig ist bis zur Manager-Schwelle
+(Admin → Risiko-Genehmigungsschwellen) die Rolle Manager, darüber Admin.
+
 ## Wo finde ich mein Dashboard?
 
 Alle Persona-Dashboards stehen an genau einer Stelle: **Mein Cockpit** in der

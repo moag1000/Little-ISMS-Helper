@@ -43,7 +43,7 @@ use App\Entity\Tenant;
  *      direction: string,
  *  }
  *
- *  estimatedAleEur: ?float                // SKELETON — null until risk-manager couples
+ *  estimatedAleEur: ?float                // expected annual loss (€) of open risks, group-wide; null without quant data
  */
 final readonly class KonzernTrendReport
 {

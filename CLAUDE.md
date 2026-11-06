@@ -236,6 +236,10 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `WorkflowService` - Workflow instance management (facade — stable public API)
 - `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
 - `ModuleConfigurationService` - Module activation check (per tenant)
+- `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
+  euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
+  `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`
+  directly (Gate 74). Risk bands come only from `App\Risk\RiskMatrixThresholds` (20/12/6).
 
 **Core Entities:** Asset, Risk, Control (93 ISO 27001 controls), Incident, Document, ComplianceFramework, User, Tenant, Role, Permission, Workflow, WorkflowInstance, WorkflowStep, DataBreach
 

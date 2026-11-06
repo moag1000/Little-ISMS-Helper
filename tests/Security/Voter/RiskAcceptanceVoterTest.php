@@ -5,233 +5,102 @@ declare(strict_types=1);
 namespace App\Tests\Security\Voter;
 
 use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\Voter\RiskAcceptanceVoter;
+use App\Service\RiskApprovalConfigResolver;
+use App\Service\RiskApprovalConfigView;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 /**
- * Junior-ISB-Audit-2026-05-22 #582-followup: RiskAcceptanceVoter hierarchy-aware.
- *
- * Verifies the score-tier ladder honours Symfony's role_hierarchy, so an admin
- * with only `ROLE_ADMIN` in the DB still satisfies ROLE_MANAGER / ROLE_USER
- * checks via {@see VoterTestHelper::createRoleHierarchy()}.
+ * Approving a requested risk acceptance follows the organisation's approval
+ * thresholds (same tiers that pick the approver): residual score up to the
+ * manager threshold → ROLE_MANAGER, above → ROLE_ADMIN; role hierarchy applies.
  */
 #[AllowMockObjectsWithoutExpectations]
-class RiskAcceptanceVoterTest extends TestCase
+final class RiskAcceptanceVoterTest extends TestCase
 {
     private RiskAcceptanceVoter $voter;
+    private Tenant $tenant;
 
     protected function setUp(): void
     {
-        $this->voter = new RiskAcceptanceVoter(VoterTestHelper::createRoleHierarchy());
+        $resolver = $this->createMock(RiskApprovalConfigResolver::class);
+        $resolver->method('resolveFor')->willReturn(new RiskApprovalConfigView(3, 7, 25));
+        $this->voter = new RiskAcceptanceVoter(VoterTestHelper::createRoleHierarchy(), $resolver);
+
+        $this->tenant = $this->createMock(Tenant::class);
+        $this->tenant->method('getId')->willReturn(1);
     }
 
-    // ------------------------------------------------------------------
-    // Helpers
-    // ------------------------------------------------------------------
-
-    private function createUser(array $roles): User
+    private function user(array $roles, ?Tenant $tenant = null): User
     {
         $user = $this->createMock(User::class);
         $user->method('getRoles')->willReturn($roles);
+        $user->method('getTenant')->willReturn($tenant ?? $this->tenant);
+
         return $user;
     }
 
-    private function createRisk(int $score): Risk
+    private function risk(int $residual): Risk
     {
         $risk = $this->createMock(Risk::class);
-        $risk->method('getRiskScore')->willReturn($score);
+        $risk->method('getResidualRiskLevel')->willReturn($residual);
+        $risk->method('getTenant')->willReturn($this->tenant);
+
         return $risk;
     }
 
-    private function createToken(User $user): UsernamePasswordToken
+    private function vote(User $user, mixed $subject, string $attribute = RiskAcceptanceVoter::APPROVE): int
     {
-        return new UsernamePasswordToken($user, 'main', $user->getRoles());
+        return $this->voter->vote(new UsernamePasswordToken($user, 'main', $user->getRoles()), $subject, [$attribute]);
     }
 
-    // ------------------------------------------------------------------
-    // Score → required role mapping
-    // ------------------------------------------------------------------
-
-    #[Test]
-    public function testLowScoreGrantedForRoleUser(): void
+    /** @return iterable<string, array{int, list<string>, int}> */
+    public static function tiers(): iterable
     {
-        $user  = $this->createUser(['ROLE_USER']);
-        $risk  = $this->createRisk(5); // 1-6 tier → ROLE_USER
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        yield 'manager tier, user' => [6, ['ROLE_USER'], VoterInterface::ACCESS_DENIED];
+        yield 'manager tier, manager' => [7, ['ROLE_MANAGER'], VoterInterface::ACCESS_GRANTED];
+        yield 'executive tier, manager' => [8, ['ROLE_MANAGER'], VoterInterface::ACCESS_DENIED];
+        yield 'executive tier, admin' => [16, ['ROLE_ADMIN'], VoterInterface::ACCESS_GRANTED];
+        yield 'executive tier, super admin via hierarchy' => [25, ['ROLE_SUPER_ADMIN'], VoterInterface::ACCESS_GRANTED];
+        yield 'manager tier, admin via hierarchy' => [5, ['ROLE_ADMIN'], VoterInterface::ACCESS_GRANTED];
     }
 
     #[Test]
-    public function testMediumScoreDeniedForRoleUser(): void
+    #[DataProvider('tiers')]
+    public function followsTheApprovalThresholds(int $residual, array $roles, int $expected): void
     {
-        $user  = $this->createUser(['ROLE_USER']);
-        $risk  = $this->createRisk(10); // 7-12 tier → ROLE_MANAGER
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
+        self::assertSame($expected, $this->vote($this->user($roles), $this->risk($residual)));
     }
 
     #[Test]
-    public function testMediumScoreGrantedForRoleManager(): void
+    public function adminOfAnotherOrganisationIsDenied(): void
     {
-        $user  = $this->createUser(['ROLE_MANAGER']);
-        $risk  = $this->createRisk(10);
-        $token = $this->createToken($user);
+        $other = $this->createMock(Tenant::class);
+        $other->method('getId')->willReturn(2);
 
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->vote($this->user(['ROLE_ADMIN'], $other), $this->risk(5)));
     }
 
     #[Test]
-    public function testHighScoreDeniedForRoleManager(): void
+    public function abstainsOnOtherAttributesAndSubjects(): void
     {
-        $user  = $this->createUser(['ROLE_MANAGER']);
-        $risk  = $this->createRisk(15); // 13-19 tier → ROLE_ADMIN
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
+        $admin = $this->user(['ROLE_SUPER_ADMIN']);
+        self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->vote($admin, $this->risk(10), 'other'));
+        self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->vote($admin, new \stdClass()));
     }
 
     #[Test]
-    public function testHighScoreGrantedForRoleAdmin(): void
+    public function deniesWithoutAppUser(): void
     {
-        $user  = $this->createUser(['ROLE_ADMIN']);
-        $risk  = $this->createRisk(15);
-        $token = $this->createToken($user);
+        $token = new UsernamePasswordToken(new \Symfony\Component\Security\Core\User\InMemoryUser('anon', null, []), 'main', []);
 
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
-    }
-
-    #[Test]
-    public function testCriticalScoreDeniedForRoleAdmin(): void
-    {
-        $user  = $this->createUser(['ROLE_ADMIN']);
-        $risk  = $this->createRisk(22); // 20-25 tier → ROLE_SUPER_ADMIN
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
-    }
-
-    #[Test]
-    public function testCriticalScoreGrantedForRoleSuperAdmin(): void
-    {
-        $user  = $this->createUser(['ROLE_SUPER_ADMIN']);
-        $risk  = $this->createRisk(22);
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
-    }
-
-    // ------------------------------------------------------------------
-    // role_hierarchy expansion — the bug fixed by this voter rewrite
-    // ------------------------------------------------------------------
-
-    /**
-     * Admin user with ONLY `ROLE_ADMIN` in the DB row must satisfy
-     * a ROLE_MANAGER-tier check via role_hierarchy expansion.
-     */
-    #[Test]
-    public function testRoleAdminSatisfiesManagerTierViaHierarchy(): void
-    {
-        $user  = $this->createUser(['ROLE_ADMIN']);
-        $risk  = $this->createRisk(10); // requires ROLE_MANAGER
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
-    }
-
-    /**
-     * Admin user with ONLY `ROLE_ADMIN` must satisfy a ROLE_USER-tier
-     * check (lowest privilege).
-     */
-    #[Test]
-    public function testRoleAdminSatisfiesUserTierViaHierarchy(): void
-    {
-        $user  = $this->createUser(['ROLE_ADMIN']);
-        $risk  = $this->createRisk(3); // requires ROLE_USER
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
-    }
-
-    /**
-     * ROLE_SUPER_ADMIN reaches every other role — top of the ladder.
-     */
-    #[Test]
-    public function testRoleSuperAdminSatisfiesAllTiers(): void
-    {
-        $user = $this->createUser(['ROLE_SUPER_ADMIN']);
-
-        foreach ([3, 10, 15, 22] as $score) {
-            $risk   = $this->createRisk($score);
-            $token  = $this->createToken($user);
-            $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-            $this->assertSame(VoterInterface::ACCESS_GRANTED, $result, "Expected GRANTED for score $score");
-        }
-    }
-
-    // ------------------------------------------------------------------
-    // Subject + attribute filtering
-    // ------------------------------------------------------------------
-
-    #[Test]
-    public function testAbstainsOnUnsupportedAttribute(): void
-    {
-        $user  = $this->createUser(['ROLE_SUPER_ADMIN']);
-        $risk  = $this->createRisk(10);
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, $risk, ['some_other_attribute']);
-
-        $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
-    }
-
-    #[Test]
-    public function testAbstainsOnNonRiskSubject(): void
-    {
-        $user  = $this->createUser(['ROLE_SUPER_ADMIN']);
-        $token = $this->createToken($user);
-
-        $result = $this->voter->vote($token, new \stdClass(), [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
-    }
-
-    #[Test]
-    public function testDeniesWhenTokenHasNoUser(): void
-    {
-        $risk  = $this->createRisk(3);
-        $token = new UsernamePasswordToken(
-            new \Symfony\Component\Security\Core\User\InMemoryUser('anon', null, []),
-            'main',
-            [],
-        );
-
-        $result = $this->voter->vote($token, $risk, [RiskAcceptanceVoter::APPROVE]);
-
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $this->risk(3), [RiskAcceptanceVoter::APPROVE]));
     }
 }

@@ -44,7 +44,7 @@
                             <a href="{{ path('app_risk_show', {id: risk.id}) }}" data-turbo-action="advance">
                                 <strong>{{ risk.title }}</strong>
                             </a>
-                            {% set riskClass = risk.inherentRiskLevel >= 16 ? 'danger' : (risk.inherentRiskLevel >= 9 ? 'warning' : 'success') %}
+                            {% set riskClass = {critical: 'danger', high: 'danger', medium: 'warning', low: 'success'}[risk_level_band(risk.inherentRiskLevel)] %}
                             {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'Level ' ~ risk.inherentRiskLevel } only %}
                         </li>
                     {% endfor %}

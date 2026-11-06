@@ -42,7 +42,7 @@
             </div>
             {% endif %}
 
-            <div class="risk-score {{ risk_score >= 8 ? 'risk-score-high' : '' }}">
+            <div class="risk-score {{ risk_level_band(risk_score) in ['high', 'critical'] ? 'risk-score-high' : '' }}">
                 <div class="field">
                     <span class="label">{{ 'emails.risk_acceptance.residual_score'|trans({}, 'emails') }}:</span>
                     <span class="value" style="font-size: 24px; font-weight: bold;">{{ risk_score }}</span>

@@ -39,8 +39,6 @@ ciso:
     badge: 'CISO'
     kpi:
         overall_compliance: 'Overall Compliance'
-        control_implementation: 'Control Implementation'
-        high_risks: 'High Risks'
         risk_trend: 'Risk Trend'
     section:
         framework_compliance: 'Framework Compliance'
@@ -246,7 +244,7 @@ board:
     metric:
         compliance: 'Compliance'
         risks: 'Risks'
-        critical: 'Critical'
+        critical: 'High + critical'
         incidents: 'Incidents (YTD)'
         controls: 'Controls'
         audits: 'Audits'

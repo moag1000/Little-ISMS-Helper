@@ -17,6 +17,7 @@
    body[data-density] toggle. #}
 {% set meta = {
     'workflows_pending':                  { icon: 'ui-undo',                tone: 'warning' },
+    'risk_acceptance_pending':            { icon: 'nav-shield-alert',       tone: 'warning' },
     'workflows_overdue':                  { icon: 'status-critical',        tone: 'danger'  },
     'four_eyes':                          { icon: 'nav-people',             tone: 'warning' },
     'acknowledgements':                   { icon: 'ui-check',               tone: 'primary' },
@@ -47,7 +48,7 @@
 {# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
    default to [] when the aggregator did not provide them. Approvals and
    four-eyes requests come first: they are decided right here. #}
-{% set order = ['workflows_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+{% set order = ['workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
 {# Build the active list and the zero counter in one pass — avoids relying on a
    lazy |filter iterator being consumed twice. #}
 {# Jargon categories that get a hover-tooltip (junior aid) — the ones a 9001-
@@ -120,7 +121,7 @@
        <details> — keyboard-accessible, works without JavaScript. #}
     {% for c in activeCategories %}
         {% set hasHigh = c.items|filter(i => i.priority == 'high')|length > 0 %}
-        <details class="fa-section my-day-section mb-3" id="{{ c.anchor }}"{{ (c.tone == 'danger' or hasHigh or c.key in ['workflows_pending', 'four_eyes']) ? ' open' : '' }}>
+        <details class="fa-section my-day-section mb-3" id="{{ c.anchor }}"{{ (c.tone == 'danger' or hasHigh or c.key in ['workflows_pending', 'risk_acceptance_pending', 'four_eyes']) ? ' open' : '' }}>
             <summary class="fa-section__header my-day-section__summary">
                 <span class="fa-section__title d-flex align-items-center gap-2">
                     <i class="fa-icon fa-icon--{{ c.icon }}" aria-hidden="true"></i>
@@ -193,6 +194,16 @@
                                     <span class="my-day-item__actions">{{ workflow_macros.decision_buttons(item.decision.id) }}</span>
                                 {% elseif canDecideFourEyes %}
                                     <span class="my-day-item__actions">{% include 'four_eyes/_decision_buttons.html.twig' with { requestId: item.four_eyes_id } only %}</span>
+                                {% elseif item.acceptance_risk_id ?? false %}
+                                    {# Accept in one click; rejecting needs a reason → the risk page #}
+                                    <span class="my-day-item__actions">
+                                        <form method="post" action="{{ path('app_risk_approve_acceptance', {id: item.acceptance_risk_id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('approve-acceptance' ~ item.acceptance_risk_id) }}">
+                                            <input type="hidden" name="_back" value="my_day">
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'risk.acceptance.pending.approve'|trans({}, 'risk') }}</button>
+                                        </form>
+                                        <a href="{{ item.link }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'risk.acceptance.pending.reject'|trans({}, 'risk') }}</a>
+                                    </span>
                                 {% endif %}
                             </div>
                         </div>

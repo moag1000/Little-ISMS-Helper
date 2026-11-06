@@ -13,6 +13,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Repository\PortfolioSnapshotRepository;
 use App\Repository\RiskRepository;
+use App\Risk\RiskMatrixThresholds;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -293,8 +294,8 @@ final class AuditFreezeSnapshotBuilder
         $risks = $this->riskRepository->findByTenant($tenant);
         $breach = 0;
         foreach ($risks as $risk) {
-            // Risk >= 15 == high/critical (see Risk::getInherentRiskLevel threshold)
-            if ($risk->getResidualRiskLevel() >= 15) {
+            // High or critical band (RiskMatrixThresholds SSoT)
+            if ($risk->getResidualRiskLevel() >= RiskMatrixThresholds::HIGH_MIN) {
                 $breach++;
             }
         }

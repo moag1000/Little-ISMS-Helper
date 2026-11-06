@@ -3,7 +3,8 @@
  #
  # Visual risk scoring with interactive sliders and risk matrix.
  # ISO 27005 compliant risk levels (per App\Risk\RiskMatrixThresholds SSoT):
- # Low (1-5), Medium (6-11), High (12-19), Critical (20-25)
+ # Low (1-5), Medium (6-11), High (12-19), Critical (20-25); the JS controller
+ # receives the band minimums via data-risk-slider-*-min-value (no hard-coded bands).
  #
  # Parameters:
  # - probability: Current probability value (1-5), default 1
@@ -31,11 +32,18 @@
 {% set compact = compact|default(false) %}
 {% set prefix = prefix|default('') %}
 {% set score = probability * impact %}
+{% set band = risk_level_band(score) %}
+{% set band_border = {critical: 'border-danger', high: 'border-warning', medium: 'border-info', low: 'border-success'} %}
+{% set band_color = {critical: 'var(--danger)', high: 'var(--warning)', medium: 'var(--warning)', low: 'var(--success)'} %}
+{% set band_badge = {critical: 'bg-danger-subtle text-danger', high: 'bg-warning-subtle text-warning', medium: 'bg-warning-subtle text-warning', low: 'bg-success-subtle text-success'} %}
 
 <div class="risk-slider-component"
      data-controller="risk-slider"
      data-risk-slider-probability-value="{{ probability }}"
-     data-risk-slider-impact-value="{{ impact }}">
+     data-risk-slider-impact-value="{{ impact }}"
+     data-risk-slider-critical-min-value="{{ constant('App\\Risk\\RiskMatrixThresholds::CRITICAL_MIN') }}"
+     data-risk-slider-high-min-value="{{ constant('App\\Risk\\RiskMatrixThresholds::HIGH_MIN') }}"
+     data-risk-slider-medium-min-value="{{ constant('App\\Risk\\RiskMatrixThresholds::MEDIUM_MIN') }}">
 
     <div class="row g-3">
         {# Probability Slider #}
@@ -120,14 +128,14 @@
     {# Risk Score Display #}
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card fa-section {% if score >= 15 %}border-danger{% elseif score >= 10 %}border-warning{% elseif score >= 5 %}border-info{% else %}border-success{% endif %}">
+            <div class="card fa-section {{ band_border[band] }}">
                 <div class="card-body py-3">
                     <div class="row align-items-center">
                         <div class="col-auto">
                             <div class="text-center">
                                 <div class="small text-muted mb-1">{{ 'risk.field.score'|trans({}, 'risk') }}</div>
                                 <span class="display-4 fw-bold" data-risk-slider-target="score"
-                                      style="color: {% if score >= 15 %}var(--danger){% elseif score >= 10 %}var(--warning){% elseif score >= 5 %}var(--warning){% else %}var(--success){% endif %}">
+                                      style="color: {{ band_color[band] }}">
                                     {{ score }}
                                 </span>
                             </div>
@@ -135,16 +143,8 @@
                         <div class="col">
                             <div class="small text-muted mb-1">{{ 'risk.field.level'|trans({}, 'risk') }}</div>
                             <span data-risk-slider-target="level"
-                                  class="badge fs-6 {% if score >= 15 %}bg-danger-subtle text-danger{% elseif score >= 10 %}bg-warning-subtle text-warning{% elseif score >= 5 %}bg-warning-subtle text-warning{% else %}bg-success-subtle text-success{% endif %}">
-                                {% if score >= 15 %}
-                                    {{ 'risk.level.critical'|trans({}, 'risk') }}
-                                {% elseif score >= 10 %}
-                                    {{ 'risk.level.high'|trans({}, 'risk') }}
-                                {% elseif score >= 5 %}
-                                    {{ 'risk.level.medium'|trans({}, 'risk') }}
-                                {% else %}
-                                    {{ 'risk.level.low'|trans({}, 'risk') }}
-                                {% endif %}
+                                  class="badge fs-6 {{ band_badge[band] }}">
+                                {{ risk_level_label(band) }}
                             </span>
                         </div>
 

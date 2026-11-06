@@ -190,19 +190,12 @@ class RiskAcceptanceWorkflowService
      */
     public function determineApprovalLevel(Risk $risk): string
     {
-        $residualScore = $risk->getResidualRiskLevel();
         $tenant = $risk->getTenant();
         $config = $tenant instanceof Tenant
             ? $this->approvalConfigResolver->resolveFor($tenant)
             : RiskApprovalConfigView::defaults();
 
-        if ($residualScore <= $config->thresholdAutomatic) {
-            return 'automatic';
-        }
-        if ($residualScore <= $config->thresholdManager) {
-            return 'manager';
-        }
-        return 'executive';
+        return $config->levelFor($risk->getResidualRiskLevel());
     }
 
     /**
@@ -338,11 +331,7 @@ class RiskAcceptanceWorkflowService
      */
     private function getRequiredApprover(Tenant $tenant, string $approvalLevel): ?User
     {
-        $role = match($approvalLevel) {
-            'manager' => 'ROLE_MANAGER',
-            'executive' => 'ROLE_ADMIN',
-            default => 'ROLE_MANAGER'
-        };
+        $role = RiskApprovalConfigView::approverRole($approvalLevel);
 
         // Find user with required role in tenant
         $users = $this->userRepository->findBy(['tenant' => $tenant]);

@@ -1,0 +1,39 @@
+{#
+ # Requested risk acceptance waiting for a decision (ISO 27005 §8.4.4).
+ # Shows the business summary and the requester's justification; the approver
+ # (RiskAcceptanceVoter: tier from the organisation's approval thresholds)
+ # decides right here. My Day links to #acceptance.
+ #}
+{% if risk.acceptanceStatus == 'pending_approval' and risk.acceptanceJustification is not null %}
+<section class="fa-section mb-4" id="acceptance" aria-labelledby="acceptance-title">
+    <div class="fa-section__header">
+        <h2 class="fa-section__title" id="acceptance-title">{{ 'risk.acceptance.pending.title'|trans({}, 'risk') }}</h2>
+    </div>
+    <div class="fa-section__body">
+        <p class="fw-semibold mb-2">{{ risk_business_summary(risk) }}</p>
+        <p class="mb-3"><span class="text-body-secondary">{{ 'risk.acceptance.pending.justification'|trans({}, 'risk') }}:</span> {{ risk.acceptanceJustification }}</p>
+        {% if is_granted('risk_acceptance_approve', risk) %}
+            <div class="d-flex flex-wrap gap-3 align-items-start">
+                <form method="post" action="{{ path('app_risk_approve_acceptance', {id: risk.id}) }}" class="d-flex flex-wrap gap-2 align-items-end">
+                    <input type="hidden" name="_token" value="{{ csrf_token('approve-acceptance' ~ risk.id) }}">
+                    <div>
+                        <label for="acceptance-comments" class="form-label small mb-1">{{ 'risk.acceptance.pending.comments'|trans({}, 'risk') }}</label>
+                        <input type="text" id="acceptance-comments" name="comments" class="form-control form-control-sm" maxlength="500">
+                    </div>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'risk.acceptance.pending.approve'|trans({}, 'risk') }}</button>
+                </form>
+                <form method="post" action="{{ path('app_risk_reject_acceptance', {id: risk.id}) }}" class="d-flex flex-wrap gap-2 align-items-end">
+                    <input type="hidden" name="_token" value="{{ csrf_token('reject-acceptance' ~ risk.id) }}">
+                    <div>
+                        <label for="acceptance-reason" class="form-label small mb-1">{{ 'risk.acceptance.pending.reason'|trans({}, 'risk') }}</label>
+                        <input type="text" id="acceptance-reason" name="reason" class="form-control form-control-sm" maxlength="500" required>
+                    </div>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'risk.acceptance.pending.reject'|trans({}, 'risk') }}</button>
+                </form>
+            </div>
+        {% else %}
+            <p class="text-body-secondary small mb-0">{{ 'risk.acceptance.pending.waiting'|trans({}, 'risk') }}</p>
+        {% endif %}
+    </div>
+</section>
+{% endif %}

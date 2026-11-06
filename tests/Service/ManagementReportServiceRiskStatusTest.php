@@ -53,6 +53,7 @@ final class ManagementReportServiceRiskStatusTest extends TestCase
             $this->createMock(DataBreachRepository::class),
             $this->createMock(RiskTreatmentPlanRepository::class),
             $this->createMock(DashboardStatisticsService::class),
+            $this->createStub(\App\Service\Kpi\KpiCatalog::class),
             $this->createMock(TranslatorInterface::class),
         );
     }

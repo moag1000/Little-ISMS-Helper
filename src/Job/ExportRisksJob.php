@@ -38,6 +38,14 @@ use App\Util\CsvSanitizer;
  */
 final class ExportRisksJob implements AsyncJobInterface
 {
+    /** CSV band labels (de), keyed by RiskMatrixThresholds::classify() result; same as risk.level.<band>. */
+    private const array BAND_LABELS = [
+        'critical' => 'Kritisch',
+        'high' => 'Hoch',
+        'medium' => 'Mittel',
+        'low' => 'Niedrig',
+    ];
+
     public function __construct(
         private readonly RiskRepository $riskRepository,
         private readonly RiskService $riskService,
@@ -153,18 +161,8 @@ final class ExportRisksJob implements AsyncJobInterface
                 $riskScore = $risk->getRiskScore();
                 $residualScore = $risk->getResidualRiskLevel();
 
-                $riskLevel = match (true) {
-                    $riskScore >= 15 => 'Kritisch',
-                    $riskScore >= 8 => 'Hoch',
-                    $riskScore >= 4 => 'Mittel',
-                    default => 'Niedrig',
-                };
-                $residualRiskLevel = match (true) {
-                    $residualScore >= 15 => 'Kritisch',
-                    $residualScore >= 8 => 'Hoch',
-                    $residualScore >= 4 => 'Mittel',
-                    default => 'Niedrig',
-                };
+                $riskLevel = self::BAND_LABELS[RiskMatrixThresholds::classify($riskScore)];
+                $residualRiskLevel = self::BAND_LABELS[RiskMatrixThresholds::classify($residualScore)];
 
                 $treatmentValue = $risk->getTreatmentStrategy()?->value;
                 $statusValue = $risk->getStatus()?->value;

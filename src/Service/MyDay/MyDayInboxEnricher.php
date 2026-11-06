@@ -6,6 +6,10 @@ namespace App\Service\MyDay;
 
 use App\AlvaHint\AlvaHint;
 use App\AlvaHint\AlvaHintService;
+use App\Entity\Risk;
+use App\Entity\User;
+use App\Service\Risk\RiskAcceptanceInbox;
+use App\Service\Risk\RiskBusinessSummary;
 use App\Service\WorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -21,6 +25,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - Status badges are translated instead of showing raw codes.
  * - Alva's priority-1 hints join the inbox as their own category, so the
  *   separate Alva inbox is no longer a second place to look.
+ * - Requested risk acceptances the user may decide join as their own
+ *   category; risk approvals carry a business line (band, €/year, asset).
  */
 readonly class MyDayInboxEnricher
 {
@@ -29,6 +35,8 @@ readonly class MyDayInboxEnricher
         private AlvaHintService $alvaHints,
         private TranslatorInterface $translator,
         private UrlGeneratorInterface $urls,
+        private RiskAcceptanceInbox $riskAcceptances,
+        private RiskBusinessSummary $riskSummary,
     ) {
     }
 
@@ -36,7 +44,7 @@ readonly class MyDayInboxEnricher
      * @param array<string, mixed> $inbox MyDayAggregator::aggregate() payload
      * @return array<string, mixed>
      */
-    public function enrich(array $inbox): array
+    public function enrich(array $inbox, ?User $user = null): array
     {
         $labels = $this->subjectLabels(array_merge($inbox['workflows_pending'] ?? [], $inbox['workflows_overdue'] ?? []));
         foreach (['workflows_pending', 'workflows_overdue'] as $key) {
@@ -47,7 +55,8 @@ readonly class MyDayInboxEnricher
         ] + $item, $inbox['four_eyes'] ?? []);
 
         $inbox['alva_hints'] = $this->alvaItems();
-        $inbox['total'] = ($inbox['total'] ?? 0) + count($inbox['alva_hints']);
+        $inbox['risk_acceptance_pending'] = $user !== null ? $this->riskAcceptances->pendingFor($user) : [];
+        $inbox['total'] = ($inbox['total'] ?? 0) + count($inbox['alva_hints']) + count($inbox['risk_acceptance_pending']);
 
         foreach ($inbox as $key => $items) {
             if (is_array($items) && array_is_list($items)) {
@@ -60,7 +69,7 @@ readonly class MyDayInboxEnricher
 
     /**
      * @param list<array<string, mixed>> $items
-     * @return array<string, string> "<class>#<id>" => label
+     * @return array<string, array{label: string, business?: string}> "<class>#<id>" => label
      */
     private function subjectLabels(array $items): array
     {
@@ -78,7 +87,9 @@ readonly class MyDayInboxEnricher
             foreach ($this->entityManager->getRepository($class)->findBy(['id' => array_unique($ids)]) as $entity) {
                 $label = $this->labelOf($entity);
                 if ($label !== null && method_exists($entity, 'getId')) {
-                    $labels[$class . '#' . $entity->getId()] = $label;
+                    $labels[$class . '#' . $entity->getId()] = $entity instanceof Risk
+                        ? ['label' => $label, 'business' => $this->riskSummary->line($entity)]
+                        : ['label' => $label];
                 }
             }
         }
@@ -99,27 +110,30 @@ readonly class MyDayInboxEnricher
 
     /**
      * @param array<string, mixed>  $item
-     * @param array<string, string> $labels
+     * @param array<string, array{label: string, business?: string}> $labels
      * @return array<string, mixed>
      */
     private function labelWorkflow(array $item, array $labels): array
     {
         $class = WorkflowService::subjectClass($item['decision']['subject_type'] ?? null);
-        $label = $class !== null ? ($labels[$class . '#' . ($item['decision']['subject_id'] ?? '')] ?? null) : null;
-        if ($label === null) {
+        $subject = $class !== null ? ($labels[$class . '#' . ($item['decision']['subject_id'] ?? '')] ?? null) : null;
+        if ($subject === null) {
             return $item;
         }
+        $label = $subject['label'];
         $type = $this->translator->trans('my_day.subject.' . substr((string) strrchr('\\' . $class, '\\'), 1), [], 'my_day');
         $item['title'] = str_starts_with($type, 'my_day.subject.') ? $label : $type . ': ' . $label;
-        $item['subtitle'] = $item['decision']['name'] . ' · ' . $item['subtitle'];
+        $item['subtitle'] = isset($subject['business'])
+            ? $subject['business'] . ' · ' . $item['decision']['name']
+            : $item['decision']['name'] . ' · ' . $item['subtitle'];
 
         return $item;
     }
 
-    /** Number of Alva items enrich() adds, for the sidebar badge. */
-    public function alvaHintCount(): int
+    /** Number of items enrich() adds (Alva hints, risk acceptances to decide), for the sidebar badge. */
+    public function addedCount(User $user): int
     {
-        return count($this->priorityHints());
+        return count($this->priorityHints()) + count($this->riskAcceptances->pendingFor($user));
     }
 
     /**

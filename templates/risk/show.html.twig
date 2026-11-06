@@ -85,6 +85,8 @@
         {{ _lifecycle_actions.dropdown(risk, 'risk', 'risk_lifecycle') }}
     </div>
 
+    {% include 'risk/_acceptance_pending.html.twig' %}
+
     {# Data-Reuse: Entity Link Matrix #}
     {% include '_components/_entity_link_matrix.html.twig' with {
         source_type: 'risk',
@@ -126,7 +128,8 @@
             {% endif %}
 
             {# ISMS Risk-Score-Cards (Aurora-Pattern, replaces hand-rolled risk-matrix-mini) #}
-            {% set inherentLevel = risk.inherentRiskLevel >= 20 ? 5 : (risk.inherentRiskLevel >= 12 ? 4 : (risk.inherentRiskLevel >= 8 ? 3 : (risk.inherentRiskLevel >= 4 ? 2 : 1))) %}
+            {% set _level_steps = {critical: 5, high: 4, medium: 3, low: 2} %}
+            {% set inherentLevel = _level_steps[risk_level_band(risk.inherentRiskLevel)] %}
             <div class="risk-assessment-grid">
                 <div class="assessment-card">
                     <h3>{{ 'risk.assessment.inherent_risk'|trans({}, 'risk') }}</h3>
@@ -149,7 +152,7 @@
                 {% if risk.residualProbability and risk.residualImpact %}
                 {# ISO 27001 compliant thresholds: 20/12/6 #}
                 {% set residualClass = risk.residualRiskLevel >= 20 ? 'critical' : (risk.residualRiskLevel >= 12 ? 'high' : (risk.residualRiskLevel >= 6 ? 'medium' : 'low')) %}
-                {% set residualLevel = risk.residualRiskLevel >= 20 ? 5 : (risk.residualRiskLevel >= 12 ? 4 : (risk.residualRiskLevel >= 8 ? 3 : (risk.residualRiskLevel >= 4 ? 2 : 1))) %}
+                {% set residualLevel = _level_steps[risk_level_band(risk.residualRiskLevel)] %}
                 <div class="assessment-card">
                     <h3>{{ 'risk.assessment.residual_risk'|trans({}, 'risk') }}</h3>
                     <div class="isms-risk-score" data-level="{{ residualLevel }}">

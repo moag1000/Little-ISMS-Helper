@@ -6,9 +6,9 @@
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_kpi_tile.html.twig' as _kpi_tile %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_skel.html.twig' as _fa_skel %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard ciso-dashboard">
@@ -29,30 +29,9 @@
         {% endfor %}
     {% endif %}
 
-
-    {# Skeleton placeholder renders instantly, real content fades in after ~600ms — perceived-performance win for first paint. #}
-    <div data-controller="skeleton" data-skeleton-duration-value="600">
-        <div data-skeleton-target="skeleton" aria-busy="true">
-            <div class="row g-3 mb-4">
-                {% for i in 1..4 %}
-                    <div class="col-md-3">{{ _fa_skel.render({ variant: 'card' }) }}</div>
-                {% endfor %}
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-6">{{ _fa_skel.render({ variant: 'row' }) }}</div>
-                <div class="col-lg-6">{{ _fa_skel.render({ variant: 'row' }) }}</div>
-            </div>
-        </div>
-
-        <div data-skeleton-target="content" class="hidden">
-
     {# Executive Summary KPIs — Aurora _fa_feature_card with icon-chip #}
     {% set complianceVariant = dashboard.summary.overall_compliance >= 80 ? 'success'
                             : dashboard.summary.overall_compliance >= 60 ? 'warning' : 'danger' %}
-    {% set controlsVariant = dashboard.summary.control_implementation >= 80 ? 'success'
-                          : dashboard.summary.control_implementation >= 60 ? 'warning' : 'danger' %}
-    {% set risksVariant = dashboard.summary.high_risks > 10 ? 'danger'
-                       : dashboard.summary.high_risks > 5 ? 'warning' : 'success' %}
     {% set trendVariant = dashboard.summary.risk_trend == 'increasing' ? 'danger'
                        : dashboard.summary.risk_trend == 'decreasing' ? 'success' : 'warning' %}
     {% set trendLabel = dashboard.summary.risk_trend == 'increasing' ? 'trend.increasing'|trans({}, 'dashboards')
@@ -67,19 +46,9 @@
             variant: complianceVariant,
             icon:    'shield-check'
         }) }}</div>
-        <div class="col-md-3">{{ _fa_feature_card.render({
-            label:   'ciso.kpi.control_implementation'|trans({}, 'dashboards'),
-            value:   dashboard.summary.control_implementation,
-            unit:    '%',
-            variant: controlsVariant,
-            icon:    'toggles'
-        }) }}</div>
-        <div class="col-md-3">{{ _fa_feature_card.render({
-            label:   'ciso.kpi.high_risks'|trans({}, 'dashboards'),
-            value:   dashboard.summary.high_risks,
-            variant: risksVariant,
-            icon:    'exclamation-triangle'
-        }) }}</div>
+        {# From the KPI catalog: same number and traffic light as everywhere else #}
+        <div class="col-md-3">{{ _kpi_tile.render('control_compliance', { icon: 'toggles', href: path('app_soa_index') }) }}</div>
+        <div class="col-md-3">{{ _kpi_tile.render('high_risks', { icon: 'exclamation-triangle', href: path('app_risk_index') }) }}</div>
         <div class="col-md-3">{{ _fa_feature_card.render({
             label:   'ciso.kpi.risk_trend'|trans({}, 'dashboards'),
             value:   trendLabel,
@@ -88,6 +57,9 @@
                   : dashboard.summary.risk_trend == 'decreasing' ? 'arrow-down' : 'arrow-right'
         }) }}</div>
     </div>
+
+
+    {% include '_components/_risk_exposure.html.twig' %}
 
     <div class="row g-4">
         {# Framework Compliance #}
@@ -368,7 +340,5 @@
         {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
     </div>
 
-        </div>{# /skeleton-content #}
-    </div>{# /skeleton-controller #}
 </main>
 {% endblock %}

@@ -32,7 +32,7 @@
                 <td style="padding: 8px 0; font-weight: bold;">Current Risk Score:</td>
                 <td style="padding: 8px 0;">
                     {% set riskScore = risk.probability * risk.impact %}
-                    <span style="color: {% if riskScore >= 15 %}#dc3545{% elseif riskScore >= 10 %}#fd7e14{% elseif riskScore >= 5 %}#ffc107{% else %}#28a745{% endif %}; font-weight: bold;">
+                    <span style="color: {% set _band = risk_level_band(riskScore) %}{% if _band == 'critical' %}#dc3545{% elseif _band == 'high' %}#fd7e14{% elseif _band == 'medium' %}#ffc107{% else %}#28a745{% endif %}; font-weight: bold;">
                         {{ riskScore }}
                     </span>
                     (Probability: {{ risk.probability }}, Impact: {{ risk.impact }})
