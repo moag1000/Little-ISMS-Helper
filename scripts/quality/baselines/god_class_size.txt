@@ -43,7 +43,7 @@ src/Controller/AnalyticsController.php:LOC=671 deps=0
 src/Controller/MonitoringController.php:LOC=646 deps=0
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=625 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=21
-src/Controller/DataBreachController.php:LOC=611 deps=0
+src/Controller/DataBreachController.php:LOC=610 deps=0
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=453 deps=16
 src/Service/DataIntegrityService.php:LOC=438 deps=33
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=17
