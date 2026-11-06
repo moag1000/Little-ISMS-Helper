@@ -270,7 +270,8 @@ final class LocationMapControllerTest extends WebTestCase
         $this->client->loginUser($this->user);
         $crawler = $this->client->request('GET', '/en/admin/settings/location-map');
         self::assertResponseIsSuccessful();
-        $token = $crawler->filter('input[name="_token"]')->attr('value');
+        // The page has other forms (search, logout); take the token of the settings form.
+        $token = $crawler->filter('form[action$="/admin/settings/location-map"] input[name="_token"]')->attr('value');
 
         $this->client->request('POST', '/en/admin/settings/location-map', [
             '_token' => $token,
@@ -319,7 +320,8 @@ final class LocationMapControllerTest extends WebTestCase
         $this->tenant->setSettings(['location_map' => ['peer_mode' => 'named']]);
         $this->em->flush();
 
-        $backup = static::getContainer()->get(BackupService::class)->createBackup(false, false, false, $this->tenant);
+        // Full backup: a tenant-scoped one skips the Tenant row itself.
+        $backup = static::getContainer()->get(BackupService::class)->createBackup(false, false, false);
         // Same shape as the file on disk.
         $backup = json_decode((string) json_encode($backup), true, flags: JSON_THROW_ON_ERROR);
 
