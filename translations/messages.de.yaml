@@ -121,8 +121,6 @@ cancel: Abbrechen
 search: Suchen
 filter:
     _default: Filtern
-    remove_chip: 'Filter "%label%" entfernen'
-    clear_all: 'Alle Filter löschen'
 export: Exportieren
 import: Importieren
 view: Ansicht
@@ -130,7 +128,6 @@ details: Details
 close: Schließen
 confirm:
     _default: Bestätigen
-    typing_hint: 'Geben Sie „%keyword%" ein, um zu bestätigen:'
 back: Zurück
 common:
     tenant_required: 'Organisationskontext erforderlich.'
@@ -203,7 +200,6 @@ common:
     skip: Überspringen
     glossary_link: 'Im Glossar nachschlagen'
     more: Mehr
-    confirm_delete_entity: 'Möchten Sie dieses %entity% wirklich löschen?'
     all: Alle
     selected: Ausgewählt
     category: Kategorie
@@ -254,7 +250,6 @@ common:
     roles: Rollen
     close: Schließen
     preview: Vorschau
-    quick_view_hint: 'auf Listen-Items öffnet Vorschau'
     copy: Kopieren
     copied: Kopiert
     verifying: Überprüfe...
@@ -312,7 +307,6 @@ common:
         owner_user: '-- User wählen --'
         owner_person: '-- Person wählen --'
         owner_legacy: 'Name (veraltet, nur für Altdaten)'
-    reset_all_filters: 'Alle Filter zurücksetzen'
     time_savings: Zeitersparnis
     consistency: Konsistenz
     audit_evidence: Audit-Nachweis

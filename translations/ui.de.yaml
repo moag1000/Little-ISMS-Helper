@@ -481,13 +481,9 @@ ui:
         filter: 'Filter'
         change: 'Änderung'
         wizard: 'Assistent'
-        module: 'Modul'
         errors_count: '%count% Fehler'
         step: 'Schritt %n%: %label%'
         step_completed: 'Schritt %n%: %label% – abgeschlossen'
-        api_key:
-            reveal: 'Token anzeigen'
-            revoke: 'Widerrufen'
         modal:
             type_to_confirm: 'Tippe <code>%phrase%</code> zum Bestätigen'
         wizard_modal:
@@ -524,23 +520,12 @@ ui:
         glossary:
             definition: 'Definition: %text%'
             open: 'Im Glossar öffnen →'
-        maturity:
-            score: '%score% von 5 erreicht'
-            trend: 'Trend %trend% zum Vormonat'
-        mega_menu:
-            view_all: 'Alle anzeigen →'
-            view_all_count: 'Alle %count% anzeigen →'
         onboarding:
             hide: 'Ausblenden'
             later: 'Später'
         persona_cockpit:
             open: '%label% – Cockpit öffnen'
             cta: 'Zum Cockpit →'
-        reuse_roi:
-            cta: 'Mehr im Reuse-Cockpit →'
-        audit_timeline:
-            label: 'Audit-Programm-Zeitleiste'
-            audit_type: 'Audittyp'
         matrix_legend:
             rag: 'RAG-Legende'
             severity: 'Schweregrad-Legende'
@@ -552,7 +537,3 @@ ui:
             medium: 'Mittel (≤9)'
             high: 'Hoch (≤16)'
             critical: 'Kritisch (>16)'
-        industry_chip:
-            controls: '~%count% Controls'
-            risks: '%count% Risiken'
-            suppliers: '%count% Lieferanten'

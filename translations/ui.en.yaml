@@ -481,13 +481,9 @@ ui:
         filter: 'Filter'
         change: 'Change'
         wizard: 'Wizard'
-        module: 'Module'
         errors_count: '%count% errors'
         step: 'Step %n%: %label%'
         step_completed: 'Step %n%: %label% – completed'
-        api_key:
-            reveal: 'Reveal token'
-            revoke: 'Revoke'
         modal:
             type_to_confirm: 'Type <code>%phrase%</code> to confirm'
         wizard_modal:
@@ -524,23 +520,12 @@ ui:
         glossary:
             definition: 'Definition: %text%'
             open: 'Open in glossary →'
-        maturity:
-            score: '%score% of 5 reached'
-            trend: 'trend %trend% vs. previous month'
-        mega_menu:
-            view_all: 'View all →'
-            view_all_count: 'View all %count% →'
         onboarding:
             hide: 'Hide'
             later: 'Later'
         persona_cockpit:
             open: 'Open %label% cockpit'
             cta: 'Open cockpit →'
-        reuse_roi:
-            cta: 'More in the reuse cockpit →'
-        audit_timeline:
-            label: 'Audit programme timeline'
-            audit_type: 'Audit type'
         matrix_legend:
             rag: 'RAG legend'
             severity: 'Severity legend'
@@ -552,7 +537,3 @@ ui:
             medium: 'Medium (≤9)'
             high: 'High (≤16)'
             critical: 'Critical (>16)'
-        industry_chip:
-            controls: '~%count% controls'
-            risks: '%count% risks'
-            suppliers: '%count% suppliers'
