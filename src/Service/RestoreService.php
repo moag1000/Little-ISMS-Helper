@@ -301,13 +301,19 @@ class RestoreService
             $eventsToDisable   = [Events::prePersist, Events::preUpdate, Events::postPersist, Events::postUpdate];
 
             foreach ($eventsToDisable as $eventName) {
+                // Ask first: Symfony's ContainerAwareEventManager::getListeners() fails with a
+                // TypeError ("array + null") for an event nobody listens to.
+                if (!$eventManager->hasListeners($eventName)) {
+                    $originalListeners[$eventName] = [];
+                    continue;
+                }
                 try {
                     $listeners = $eventManager->getListeners($eventName);
                     $originalListeners[$eventName] = $listeners;
                     foreach ($listeners as $listener) {
                         $eventManager->removeEventListener($eventName, $listener);
                     }
-                } catch (Exception) {
+                } catch (\Throwable) {
                     $originalListeners[$eventName] = [];
                     $this->logger->debug('No listeners for event', ['event' => $eventName]);
                 }
