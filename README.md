@@ -265,7 +265,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **MFA** -- TOTP mit Backup-Codes
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
-- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping, DR-Runbook
+- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping (Organisations-Backup enthaelt auch die Organisations-Einstellungen), DR-Runbook
 
 ### Persona-Dashboards und Workflow-Inbox
 

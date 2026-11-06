@@ -53,14 +53,25 @@ class RestoreDataPurger
      *
      * When $scopeIds is empty (global restore) the original array is returned unchanged.
      *
-     * @param array $entities  Array of serialized entity arrays from the backup
-     * @param int[] $scopeIds  Tenant IDs that are allowed; empty = all
+     * Organisation records (`Tenant`) carry no tenant_id; they are kept when their
+     * own id is in scope, so an organisation restore never touches a foreign one.
+     *
+     * @param array       $entities   Array of serialized entity arrays from the backup
+     * @param int[]       $scopeIds   Tenant IDs that are allowed; empty = all
+     * @param string|null $entityName Short entity name (e.g. 'Tenant')
      * @return array Filtered entities
      */
-    public function filterEntitiesByScope(array $entities, array $scopeIds): array
+    public function filterEntitiesByScope(array $entities, array $scopeIds, ?string $entityName = null): array
     {
         if ($scopeIds === []) {
             return $entities;
+        }
+
+        if ($entityName === 'Tenant') {
+            return array_values(array_filter(
+                $entities,
+                static fn(array $data): bool => isset($data['id']) && in_array((int) $data['id'], $scopeIds, true),
+            ));
         }
 
         return array_values(array_filter($entities, function (array $data) use ($scopeIds): bool {
@@ -136,6 +147,16 @@ class RestoreDataPurger
                     ]);
                     $statistics[$entityName . '_cleared'] = $deleted;
                     // Do NOT reset AUTO_INCREMENT for scoped deletes (other tenants still have rows)
+                    continue;
+                }
+
+                // Tenant-scoped clear never empties a whole table: entities without a
+                // tenant association (the organisation records themselves, global
+                // catalogues) are updated in place by the restore instead.
+                if ($tenantScopeIds !== []) {
+                    $this->logger->info('Tenant-scoped clear: keeping entity without tenant association', [
+                        'entity' => $entityName,
+                    ]);
                     continue;
                 }
 

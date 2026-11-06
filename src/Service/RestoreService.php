@@ -232,6 +232,14 @@ class RestoreService
 
         $targetScopeIds = $purger->resolveTenantScopeIds($targetTenantScope);
 
+        // An organisation backup restored without a target scope (instance-wide restore,
+        // setup wizard) stays within the organisations it was made for — otherwise
+        // "clear before restore" would empty whole tables, other organisations included.
+        $recordedScope = $backup['metadata']['tenant_scope'] ?? [];
+        if ($targetTenantScope === null && is_array($recordedScope) && $recordedScope !== []) {
+            $targetScopeIds = array_values(array_map('intval', $recordedScope));
+        }
+
         // Collect warnings that must survive the validateBackup() reset
         $prependWarnings = array_filter([$integrityWarning]);
         if ($targetTenantScope !== null) {
@@ -364,7 +372,7 @@ class RestoreService
                     continue;
                 }
 
-                $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds);
+                $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
 
                 if ($targetScopeIds !== [] && count($entities) < count($allEntities)) {
                     $this->logger->info('Tenant-scoped restore: filtered entities', [
@@ -458,7 +466,7 @@ class RestoreService
                     if (!class_exists($entityClass) || $allEntities === []) {
                         continue;
                     }
-                    $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds);
+                    $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
                     if ($entities === []) {
                         continue;
                     }
