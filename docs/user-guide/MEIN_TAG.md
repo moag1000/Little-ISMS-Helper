@@ -26,6 +26,7 @@ Freigaben und Vier-Augen-Anfragen sind aufgeklappt, alle anderen zeigen nur den 
 | Freigaben für mich | Workflow-Schritte, die ich entscheiden darf: als namentlich eingetragene Person, über die Rolle des Schritts (inkl. vererbter Rollen) oder als Admin |
 | Freigaben überfällig | Von mir gestartete Workflows über der Frist |
 | 4-Augen-Anfragen | Vier-Augen-Freigaben, die auf mich warten (entscheiden ab Manager) |
+| Standorte mit offenen Prüfungen | Eigene Standorte (als verantwortliche Person eingetragen) mit offenen Prüfungen der Standortkarte, je Prüfung mit Normbezug; Link zum Steckbrief. Nur mit Modul Standorte, siehe `STANDORTKARTE.md` |
 | Alva-Empfehlungen | Alvas Hinweise der Priorität 1; die übrigen stehen im Alva-Posteingang |
 | Policy-Bestätigungen, Audit-Findings, Betroffenenanfragen, Korrekturmaßnahmen, Risiko-Akzeptanzen und -Reviews, Dokument-Reviews und -Freigaben, Nachweis-Reverifizierung, Wirksamkeitsprüfungen, Lieferanten-Reassessments, DSFA- und BC-Plan-Reviews, Schulungen, Vorfälle, Datenpannen (72h), kritische Schwachstellen, Audit-Checklisten, Change Requests, Management-Reviews, gestoppte Assessments, kritische Framework-Lücken | jeweils die mir zugewiesenen bzw. fälligen Punkte; Module ohne Aktivierung liefern nichts |
 
@@ -58,4 +59,5 @@ um. Vier-Augen- und Policy-Posteingang bleiben auf Dichte "Experte" erreichbar.
 ## Verwandte Dokumente
 
 - `docs/user-guide/ACTIVITY_FEED.md` — Aktivitäten
+- `docs/user-guide/STANDORTKARTE.md` — Standortkarte, Prüfungen je Standort
 - `docs/WORKFLOW_AUTO_PROGRESSION.md` — automatische Workflow-Progression

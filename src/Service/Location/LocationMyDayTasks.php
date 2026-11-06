@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Location;
 
+use App\Entity\Location;
 use App\Entity\User;
 use App\Service\ModuleConfigurationService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -21,6 +23,7 @@ readonly class LocationMyDayTasks
         private ModuleConfigurationService $modules,
         private UrlGeneratorInterface $urls,
         private TranslatorInterface $translator,
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -29,6 +32,11 @@ readonly class LocationMyDayTasks
     {
         $tenant = $user->getTenant();
         if ($tenant === null || !$this->modules->isModuleActive('locations')) {
+            return [];
+        }
+        // The live badge asks every 30 s: skip the posture when the user owns no site.
+        $owned = $this->em->getRepository(Location::class)->count(['tenant' => $tenant, 'responsiblePersonUser' => $user]);
+        if ($owned === 0) {
             return [];
         }
 

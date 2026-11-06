@@ -64,7 +64,8 @@ readonly class LocationKpis
     /** @return array<string, array<string, mixed>> */
     private function locations(Tenant $tenant): array
     {
-        $sites = $this->posture->forTenant($tenant);
+        // Closed sites (inactive) keep their history but no longer count.
+        $sites = array_values(array_filter($this->posture->forTenant($tenant), static fn (array $s): bool => $s['active']));
         if ($sites === []) {
             return [];
         }

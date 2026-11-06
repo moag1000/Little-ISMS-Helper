@@ -32,6 +32,8 @@ final class LocationPeers
      */
     public static function compare(array $rows): array
     {
+        // Closed sites are neither compared nor a comparison.
+        $rows = array_values(array_filter($rows, static fn (array $s): bool => $s['active'] ?? true));
         $result = [];
         foreach ($rows as $site) {
             [$basis, $tag, $group] = self::group($site, $rows);

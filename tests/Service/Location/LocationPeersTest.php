@@ -80,4 +80,19 @@ final class LocationPeersTest extends TestCase
 
         self::assertSame(['id' => 2, 'name' => 'Site 2'], $peers[1]['solvedAt']['camera']);
     }
+
+    #[Test]
+    public function closedSitesAreNeitherComparedNorPeers(): void
+    {
+        $closed = self::site(4, 'building', 3, 10);
+        $closed['active'] = false;
+
+        $peers = LocationPeers::compare([
+            self::site(1, 'building', 3, 60),
+            self::site(2, 'building', 3, 70),
+            $closed,
+        ]);
+
+        self::assertSame([], $peers, 'two open sites are below the minimum group');
+    }
 }

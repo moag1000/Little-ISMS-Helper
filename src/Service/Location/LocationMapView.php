@@ -117,6 +117,9 @@ class LocationMapView
     {
         $levers = [];
         foreach ($sites as $site) {
+            if (!($site['active'] ?? true)) {
+                continue;
+            }
             foreach ($site['levers'] as $lever) {
                 $levers[] = $lever + ['siteId' => $site['id'], 'siteName' => $site['name']];
             }
