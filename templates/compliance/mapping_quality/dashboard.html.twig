@@ -217,12 +217,13 @@
                 <hr>
                 <p class="fw-bold fs-5 mb-3">{{ 'compliance.mapping_quality.analysis_running'|trans({}, 'compliance') }}</p>
 
-                <div class="progress progress-h-30 mb-3">
-                    <div data-batch-analysis-target="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info"
-                         role="progressbar" style="width: 0%">
-                        <strong data-batch-analysis-target="progressText">0%</strong>
-                    </div>
-                </div>
+                {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                {{ _fa_progress.render({
+                    value: 0, tone: 'info', size: 'lg', striped: true, animated: true, class: 'progress-h-20 mb-1',
+                    label: 'compliance.mapping_quality.analysis_running'|trans({}, 'compliance'),
+                    barAttrs: {'data-batch-analysis-target': 'progressBar'}
+                }) }}
+                <div class="text-center fw-bold mb-3" data-batch-analysis-target="progressText">0%</div>
 
                 <div class="row text-center mb-3">
                     <div class="col-md-3">

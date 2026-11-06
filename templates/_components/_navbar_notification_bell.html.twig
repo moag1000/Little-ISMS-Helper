@@ -24,7 +24,7 @@
             aria-expanded="false"
             aria-haspopup="true">
         <i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i>
-        <span class="notification-badge d-none position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+        <span class="notification-badge d-none position-absolute top-0 start-100 translate-middle fa-status-pill fa-status-pill--danger fa-status-pill--sm"
               data-notification-bell-target="badge"
               aria-live="polite"
               aria-atomic="true">
@@ -38,7 +38,7 @@
          aria-label="{{ 'notification.bell.label'|trans }}">
         <div class="notification-bell-dropdown-header d-flex align-items-center justify-content-between p-2 border-bottom">
             <span class="fw-semibold small">{{ 'notification.bell.label'|trans }}</span>
-            <a href="{{ path('app_notification_center') }}" class="btn btn-link btn-sm p-0">
+            <a href="{{ path('app_notification_center') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0">
                 {{ 'notification.bell.view_all'|trans }}
             </a>
         </div>
@@ -50,7 +50,7 @@
                   action="{{ path('app_notification_mark_read') }}"
                   data-notification-bell-target="markReadForm">
                 <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_read') }}">
-                <button type="submit" class="btn btn-link btn-sm p-0">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0">
                     {{ 'notification.bell.mark_all_read'|trans }}
                 </button>
             </form>

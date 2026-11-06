@@ -389,9 +389,12 @@
             <fieldset class="mb-4">
                 <legend class="h5 mb-3">{{ other_section_label }}</legend>
                 {% if _has_section_map and app.environment == 'dev' %}
-                    <div class="alert alert-warning small mb-3" role="alert">
-                        <strong>{{ 'form.section.warning.unmapped_title'|trans({}, 'messages') }}</strong>
-                        {{ 'form.section.warning.unmapped_body'|trans({ '%fields%': other_fields|join(', ') }, 'messages') }}
+                    <div class="fa-alert fa-alert--warning small mb-3" role="alert">
+                        <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+                        <div class="fa-alert__body">
+                            <div class="fa-alert__title">{{ 'form.section.warning.unmapped_title'|trans({}, 'messages') }}</div>
+                            <p class="fa-alert__message">{{ 'form.section.warning.unmapped_body'|trans({ '%fields%': other_fields|join(', ') }, 'messages') }}</p>
+                        </div>
                     </div>
                 {% endif %}
 
@@ -427,22 +430,28 @@
             {% endif %}
         {% endfor %}
         {% if _unmapped_fields|length > 0 and strict_whitelist %}
-            <div class="alert alert-info small mb-3" role="alert">
-                <strong>[dev] H-03 strict whitelist:</strong>
-                {{ _unmapped_fields|length }} field(s) suppressed
-                (privilege-escalation safeguard):
-                <code>{{ _unmapped_fields|join(', ') }}</code>.
-                Add to a <code>sections</code> entry to render them.
+            <div class="fa-alert fa-alert--info small mb-3" role="alert">
+                <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                <div class="fa-alert__body">
+                    <strong>[dev] H-03 strict whitelist:</strong>
+                    {{ _unmapped_fields|length }} field(s) suppressed
+                    (privilege-escalation safeguard):
+                    <code>{{ _unmapped_fields|join(', ') }}</code>.
+                    Add to a <code>sections</code> entry to render them.
+                </div>
             </div>
         {% elseif _unmapped_fields|length > 0 and not skip_other %}
-            <div class="alert alert-warning small mb-3" role="alert">
-                <strong>[dev] NOTE H-03 section-policy:</strong>
-                {{ _unmapped_fields|length }} field(s) rendered via catch-all
-                (no section-policy whitelist):
-                <code>{{ _unmapped_fields|join(', ') }}</code>.
-                Privilege-escalation risk if any are sensitive (roles, permissions,
-                tenant, isActive). Add to <code>sections</code> or pass
-                <code>strict_whitelist: true</code>.
+            <div class="fa-alert fa-alert--warning small mb-3" role="alert">
+                <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+                <div class="fa-alert__body">
+                    <strong>[dev] NOTE H-03 section-policy:</strong>
+                    {{ _unmapped_fields|length }} field(s) rendered via catch-all
+                    (no section-policy whitelist):
+                    <code>{{ _unmapped_fields|join(', ') }}</code>.
+                    Privilege-escalation risk if any are sensitive (roles, permissions,
+                    tenant, isActive). Add to <code>sections</code> or pass
+                    <code>strict_whitelist: true</code>.
+                </div>
             </div>
         {% endif %}
     {% endif %}

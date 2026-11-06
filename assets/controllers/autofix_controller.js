@@ -71,8 +71,9 @@ export default class extends Controller {
                 window.faToast(msg, 'danger');
                 if (resultContainer) {
                     resultContainer.innerHTML = `
-                        <div class="alert alert-danger fix-result">
-                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${msg}
+                        <div class="fa-alert fa-alert--danger fix-result" role="alert">
+                            <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><p class="fa-alert__message">${msg}</p></div>
                         </div>
                     `;
                 }
@@ -90,10 +91,13 @@ export default class extends Controller {
                             '</ul>';
                     }
                     resultContainer.innerHTML = `
-                        <div class="alert alert-success fix-result fairy-magic-glow">
-                            <i class="fa-icon fa-icon--ui-stars fairy-icon-sparkle" aria-hidden="true"></i> ${result.message}
-                            ${detailsHtml}
-                            <div class="mt-1 small text-muted opacity-75">${faT('autofix.done_by_fairy')}</div>
+                        <div class="fa-alert fa-alert--success fix-result fairy-magic-glow" role="alert">
+                            <i class="fa-icon fa-icon--status-ok fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body">
+                                <p class="fa-alert__message">${result.message}</p>
+                                ${detailsHtml}
+                                <div class="mt-1 small text-muted opacity-75">${faT('autofix.done_by_fairy')}</div>
+                            </div>
                         </div>
                     `;
                 }
@@ -107,8 +111,9 @@ export default class extends Controller {
             } else {
                 if (resultContainer) {
                     resultContainer.innerHTML = `
-                        <div class="alert alert-danger fix-result">
-                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> ${result.message}
+                        <div class="fa-alert fa-alert--danger fix-result" role="alert">
+                            <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><p class="fa-alert__message">${result.message}</p></div>
                         </div>
                     `;
                 }
@@ -116,8 +121,9 @@ export default class extends Controller {
         } catch (error) {
             if (resultContainer) {
                 resultContainer.innerHTML = `
-                    <div class="alert alert-danger fix-result">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Error: ${error.message}
+                    <div class="fa-alert fa-alert--danger fix-result" role="alert">
+                        <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                        <div class="fa-alert__body"><p class="fa-alert__message">${error.message}</p></div>
                     </div>
                 `;
             }

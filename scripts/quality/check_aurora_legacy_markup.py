@@ -19,7 +19,7 @@ Bootstrap classes still render in Aurora style through the CSS bridges in
 fairy-aurora-components.css; the ratchet keeps new code on the components.
 
 Skipped: templates/dev/ (design-system showcase), emails/ and PDF/export
-templates (inline-styled for mail clients and dompdf), and the component
+templates (any pdf/ directory) (inline-styled for mail clients and dompdf), and the component
 files that implement the bridges themselves.
 
 Usage:
@@ -56,6 +56,9 @@ SKIP_FILES = {
     "_components/_badge.html.twig",
     "_components/_fa_table.html.twig",
     "_components/_fa_progress.html.twig",
+    # Stand-alone recovery page with its own inline CSS (no Bootstrap/Aurora loaded),
+    # so its .progress-bar is a local class, not Bootstrap markup.
+    "quick_fix/job_progress.html.twig",
 }
 
 RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)
@@ -63,7 +66,7 @@ RE_TWIG_COMMENT = re.compile(r"\{#.*?#\}", re.DOTALL)
 
 def skipped(rel: str) -> bool:
     parts = rel.split("/")
-    if parts[0] in SKIP_DIRS or rel in SKIP_FILES:
+    if parts[0] in SKIP_DIRS or "pdf" in parts[:-1] or rel in SKIP_FILES:
         return True
     name = parts[-1]
     return any(p in name for p in SKIP_NAME_PARTS)

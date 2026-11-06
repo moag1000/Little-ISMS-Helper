@@ -60,11 +60,12 @@
                                     {# Stacked bar: high (success) | medium (warning) | low (secondary) #}
                                     {% set total = r.high + r.medium + r.low %}
                                     {% if total > 0 %}
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-success" style="width: {{ (r.high / total * 100)|round }}%" title="{{ r.high }} high">{{ r.high }}</div>
-                                            <div class="progress-bar bg-warning" style="width: {{ (r.medium / total * 100)|round }}%" title="{{ r.medium }} medium">{{ r.medium }}</div>
-                                            <div class="progress-bar bg-secondary" style="width: {{ (r.low / total * 100)|round }}%" title="{{ r.low }} low">{{ r.low }}</div>
-                                        </div>
+                                        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                                        {{ _fa_progress.render({class: 'progress-h-20', label: r.high ~ ' / ' ~ r.medium ~ ' / ' ~ r.low, segments: [
+                                            {value: r.high, tone: 'success', text: r.high, label: r.high ~ ' ' ~ 'admin.mapping_quality.coverage.high'|trans({}, 'admin')},
+                                            {value: r.medium, tone: 'warning', text: r.medium, label: r.medium ~ ' ' ~ 'admin.mapping_quality.coverage.medium'|trans({}, 'admin')},
+                                            {value: r.low, tone: 'neutral', text: r.low, label: r.low ~ ' ' ~ 'admin.mapping_quality.coverage.low'|trans({}, 'admin')}
+                                        ]}) }}
                                         <div class="d-flex justify-content-between small text-muted mt-1">
                                             <span><span class="text-success">●</span> {{ r.high }} {{ 'admin.mapping_quality.coverage.high'|trans({}, 'admin') }}</span>
                                             <span><span class="text-warning">●</span> {{ r.medium }} {{ 'admin.mapping_quality.coverage.medium'|trans({}, 'admin') }}</span>

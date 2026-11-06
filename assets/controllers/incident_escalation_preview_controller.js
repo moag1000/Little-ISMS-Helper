@@ -158,8 +158,8 @@ export default class extends Controller {
                     </h4>
                     <div class="d-flex align-items-center gap-2">
                         <strong>${this.escapeHtml(preview.workflow_name)}</strong>
-                        <span class="badge ${levelBadgeClass}">${this.escapeHtml(levelText)}</span>
-                        <span class="badge bg-primary">
+                        <span class="fa-status-pill ${levelBadgeClass}">${this.escapeHtml(levelText)}</span>
+                        <span class="fa-status-pill fa-status-pill--primary">
                             <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                             ${this.escapeHtml(this.t('automatic'))}
                         </span>
@@ -197,7 +197,7 @@ export default class extends Controller {
             html += `
                     </ul>
                     <p class="mb-0 mt-2">
-                        <span class="badge bg-info">
+                        <span class="fa-status-pill fa-status-pill--primary">
                             ${preview.notified_users.length} ${this.escapeHtml(this.t('emails'))}
                         </span>
                     </p>
@@ -212,8 +212,9 @@ export default class extends Controller {
                     <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                     ${this.escapeHtml(this.t('sla_requirement'))}
                 </h4>
-                <div class="alert alert-info mb-0" role="alert">
-                    <strong>${this.escapeHtml(preview.sla_description)}</strong>
+                <div class="fa-alert fa-alert--info" role="alert">
+                    <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body"><p class="fa-alert__message"><strong>${this.escapeHtml(preview.sla_description)}</strong></p></div>
                 </div>
             </div>
         `;
@@ -222,18 +223,18 @@ export default class extends Controller {
         if (preview.is_gdpr_breach && preview.gdpr_deadline) {
             html += `
                 <div class="mb-3">
-                    <div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading h6">
-                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                            ${this.escapeHtml(this.t('gdpr_warning'))}
-                        </h4>
-                        <p class="mb-2">
-                            <strong>${this.escapeHtml(this.t('gdpr_deadline'))}</strong>
-                            ${this.formatDateTime(preview.gdpr_deadline)}
-                        </p>
-                        <p class="mb-0 small">
-                            ${this.escapeHtml(this.t('gdpr_reference'))}
-                        </p>
+                    <div class="fa-alert fa-alert--danger" role="alert">
+                        <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                        <div class="fa-alert__body">
+                            <div class="fa-alert__title">${this.escapeHtml(this.t('gdpr_warning'))}</div>
+                            <p class="fa-alert__message">
+                                <strong>${this.escapeHtml(this.t('gdpr_deadline'))}</strong>
+                                ${this.formatDateTime(preview.gdpr_deadline)}
+                            </p>
+                            <p class="fa-alert__message small">
+                                ${this.escapeHtml(this.t('gdpr_reference'))}
+                            </p>
+                        </div>
                     </div>
                 </div>
             `;
@@ -334,9 +335,9 @@ export default class extends Controller {
     showError() {
         this.isLoading = false;
         this.previewContentTarget.innerHTML = `
-            <div class="alert alert-danger" role="alert">
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                ${this.escapeHtml(this.t('error'))}
+            <div class="fa-alert fa-alert--danger" role="alert">
+                <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                <div class="fa-alert__body"><p class="fa-alert__message">${this.escapeHtml(this.t('error'))}</p></div>
             </div>
         `;
     }
@@ -354,13 +355,13 @@ export default class extends Controller {
      */
     getEscalationLevelBadgeClass(level) {
         const classes = {
-            'data_breach': 'bg-danger',
-            'critical': 'bg-dark',
-            'high': 'bg-danger',
-            'medium': 'bg-warning text-dark',
-            'low': 'bg-info'
+            'data_breach': 'fa-status-pill--danger',
+            'critical': 'fa-status-pill--danger',
+            'high': 'fa-status-pill--danger',
+            'medium': 'fa-status-pill--warning',
+            'low': 'fa-status-pill--primary'
         };
-        return classes[level] || 'bg-secondary';
+        return classes[level] || 'fa-status-pill--neutral';
     }
 
     /**

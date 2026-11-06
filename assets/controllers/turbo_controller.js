@@ -185,7 +185,7 @@ export default class extends Controller {
      */
     autoDismissNotifications() {
         setTimeout(() => {
-            const notifications = document.querySelectorAll('#notifications .alert');
+            const notifications = document.querySelectorAll('#notifications .alert, #notifications .fa-alert');
             notifications.forEach(notification => {
                 // Use Bootstrap's fade out
                 notification.classList.add('fade');

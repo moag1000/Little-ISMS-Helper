@@ -61,7 +61,7 @@ final class GstoolImportUploadType extends AbstractType
                 'label' => 'gstool_import.upload.submit',
                 'translation_domain' => 'gstool_import',
                 'attr' => [
-                    'class' => 'btn btn-primary',
+                    'class' => 'fa-cyber-btn fa-cyber-btn--primary',
                 ],
             ]);
     }

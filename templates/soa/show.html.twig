@@ -328,14 +328,14 @@
                         <span class="text-muted small"><em>{{ 'soa.label.never_tested'|trans({}, 'soa') }}</em></span>
                     {% endif %}
                     {% if isOverdue %}
-                        <span class="badge bg-danger">{{ 'soa.label.overdue'|trans({}, 'soa') }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger">{{ 'soa.label.overdue'|trans({}, 'soa') }}</span>
                     {% else %}
-                        <span class="badge bg-success">{{ 'soa.label.check_current'|trans({}, 'soa') }}</span>
+                        <span class="fa-status-pill fa-status-pill--success">{{ 'soa.label.check_current'|trans({}, 'soa') }}</span>
                     {% endif %}
                 </div>
             </div>
             {% if is_granted('ROLE_AUDITOR') %}
-            <a href="{{ path('app_effectiveness_monitor') }}" class="btn btn-sm btn-ghost">
+            <a href="{{ path('app_effectiveness_monitor') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                 <i class="fa-icon fa-icon--nav-speedometer" aria-hidden="true"></i>
                 {{ 'soa.action.open_monitor'|trans({}, 'soa') }}
             </a>

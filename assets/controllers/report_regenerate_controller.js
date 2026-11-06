@@ -54,8 +54,8 @@ export default class extends Controller {
 
             if (data.success) {
                 button.innerHTML = `<i class="fa-icon fa-icon--ui-check me-1"></i>${this.label('successText')}`;
-                button.classList.remove('btn-outline-warning');
-                button.classList.add('btn-success');
+                button.classList.remove('fa-cyber-btn--ghost');
+                button.classList.add('fa-cyber-btn--success');
 
                 // Reload after delay
                 setTimeout(() => {
@@ -71,13 +71,13 @@ export default class extends Controller {
 
     showError(button, originalHtml, message) {
         button.innerHTML = `<i class="fa-icon fa-icon--status-warning me-1"></i>${message}`;
-        button.classList.remove('btn-outline-warning');
-        button.classList.add('btn-danger');
+        button.classList.remove('fa-cyber-btn--ghost');
+        button.classList.add('fa-cyber-btn--danger');
 
         setTimeout(() => {
             button.innerHTML = originalHtml;
-            button.classList.remove('btn-danger');
-            button.classList.add('btn-outline-warning');
+            button.classList.remove('fa-cyber-btn--danger');
+            button.classList.add('fa-cyber-btn--ghost');
             button.disabled = false;
         }, 3000);
     }

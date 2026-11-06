@@ -74,7 +74,7 @@ final class ComplianceImportUploadType extends AbstractType
                 'label' => 'compliance_import.upload.submit',
                 'translation_domain' => 'compliance_import',
                 'attr' => [
-                    'class' => 'btn btn-primary',
+                    'class' => 'fa-cyber-btn fa-cyber-btn--primary',
                 ],
             ]);
     }

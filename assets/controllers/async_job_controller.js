@@ -15,9 +15,9 @@ import { faT } from '../js/fa-i18n.js';
  *   progressBar    — div.progress-bar (width %)
  *   progressNumbers — span showing "current / total"
  *   progressLabel  — span with label text (updated from message field)
- *   errorBox       — div.alert-danger (hidden until failure)
+ *   errorBox       — div.fa-alert--danger (hidden until failure)
  *   errorTrace     — pre inside errorBox for stack trace
- *   successBox     — div.alert-success (hidden until success)
+ *   successBox     — div.fa-alert--success (hidden until success)
  *   successMessage — span inside successBox
  *   backLink       — link shown after terminal state
  *

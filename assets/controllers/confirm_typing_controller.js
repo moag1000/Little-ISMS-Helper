@@ -28,7 +28,7 @@ export default class extends Controller {
             '';
         this.modal = this.element.closest('.modal') || this.element.closest('form');
         this.submitBtn =
-            this.modal?.querySelector('button[type="submit"], .btn-danger[type="submit"]') ?? null;
+            this.modal?.querySelector('button[type="submit"], .btn-danger[type="submit"], .fa-cyber-btn--danger[type="submit"]') ?? null;
         // Lock the destructive button until the keyword matches.
         if (this.submitBtn) {
             this.submitBtn.disabled = true;

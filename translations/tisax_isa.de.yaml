@@ -182,6 +182,7 @@ tisax:
         req_levels: 'Anforderungsebenen'
         req_levels_tooltip: 'M=Muss, S=Sollte, H=Hoher Schutzbedarf, VH=Sehr hoher Schutzbedarf. Farbige Badges = Inhalt vorhanden (nur ob ein Anforderungstext existiert).'
       save_button: 'Bewertung speichern'
+      footer_progress: '%assessed% / %total% bewertet. Zeilen ohne Auswahl zählen als offen.'
       saved: 'Bewertung gespeichert.'
       no_requirements: 'Keine Anforderungen gefunden. Bitte führen Sie zuerst den Import durch.'
       export_enx: 'ENX-Bewertungsplan exportieren (.xlsx)'

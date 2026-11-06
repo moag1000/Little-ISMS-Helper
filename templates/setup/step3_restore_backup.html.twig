@@ -114,7 +114,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                <button type="submit" class="btn btn-warning w-100">
+                                                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100">
                                                                     <i class="fa-icon me-2 fa-icon--nav-tools" aria-hidden="true"></i>
                                                                     {{ 'setup.step3.orphaned.repair.submit'|trans({}, 'setup') }}
                                                                 </button>
@@ -137,7 +137,7 @@
                                     {# Continue to Completion Button #}
                                     {% if backup_restore_result.orphaned_entities is not defined or backup_restore_result.orphaned_entities.total == 0 %}
                                         <div class="mt-4">
-                                            <a href="{{ path('setup_step11_complete') }}" class="btn btn-success btn-lg">
+                                            <a href="{{ path('setup_step11_complete') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--lg">
                                                 <i class="fa-icon me-2 fa-icon--ui-check" aria-hidden="true"></i>
                                                 {{ 'setup.step3.complete_setup'|trans({}, 'setup') }}
                                             </a>
@@ -179,7 +179,7 @@
                                       data-async-job-message-success-value="{{ 'setup.database.schema_created'|trans({}, 'setup') }}"
                                       data-action="submit->async-job#start">
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
-                                    <button type="submit" class="btn btn-warning btn-lg">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--lg">
                                         <span class="btn-text">
                                             <i class="fa-icon me-2 fa-icon--nav-tools" aria-hidden="true"></i>
                                             {{ 'setup.step3.schema.submit'|trans({}, 'setup') }}
@@ -251,7 +251,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-info btn-lg">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                                         <span class="btn-text">
                                             <i class="fa-icon me-2 fa-icon--nav-upload" aria-hidden="true"></i>
                                             {{ 'setup.restore.upload_and_restore'|trans({}, 'setup') }}
@@ -289,9 +289,8 @@
                                       data-async-job-redirect-url-value="{{ path('setup_step4_admin_user') }}"
                                       data-action="submit->async-job#start">
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_skip_restore') }}">
-                                    <button type="submit" class="btn btn-secondary btn-lg">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--lg">
                                         <span class="btn-text">
-                                            <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                             {{ 'setup.restore.skip_new_install'|trans({}, 'setup') }}
                                         </span>
                                         <span class="btn-loading d-none">

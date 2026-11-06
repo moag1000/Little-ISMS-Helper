@@ -13,10 +13,12 @@
     } %}
 
     {% if render_error is defined and render_error %}
-        <div class="alert alert-danger" role="alert">
-            <i class="fa-icon fa-icon--status-error" aria-hidden="true"></i>
-            <strong>{{ 'report_builder.error.preview_failed'|trans({},'report_builder') }}</strong>
-            <pre class="mb-0 mt-2 small">{{ render_error }}</pre>
+        <div class="fa-alert fa-alert--danger" role="alert">
+            <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+            <div class="fa-alert__body">
+                <div class="fa-alert__title">{{ 'report_builder.error.preview_failed'|trans({},'report_builder') }}</div>
+                <pre class="mb-0 mt-2 small">{{ render_error }}</pre>
+            </div>
         </div>
     {% endif %}
 

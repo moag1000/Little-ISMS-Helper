@@ -15,7 +15,7 @@
             <i class="fa-icon fa-icon--risk me-2" aria-hidden="true"></i>
             {{ 'risk.link_incident.section_title'|trans }}
             {% if riskIncidentLinks is defined and riskIncidentLinks|length > 0 %}
-                <span class="badge bg-secondary ms-1">{{ riskIncidentLinks|length }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm ms-1">{{ riskIncidentLinks|length }}</span>
             {% endif %}
         </h3>
         {% if is_granted('ROLE_MANAGER') %}

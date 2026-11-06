@@ -19,7 +19,7 @@
                 {{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}
             </span>
             {% if program.frequency %}
-                <span class="badge bg-secondary ms-1">{{ ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') }}</span>
             {% endif %}
         </div>
 

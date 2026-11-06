@@ -98,19 +98,17 @@
                                 {% endfor %}
 
                                 <div class="d-flex justify-content-between mt-4">
-                                    <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
-                                        <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
+                                    <a href="{{ path('setup_step9_base_data') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                         {{ 'setup.navigation.back'|trans({}, 'setup') }}
                                     </a>
                                     <div>
-                                        <button type="button" class="btn btn-outline-secondary me-2"
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost me-2"
                                                 data-controller="ui-actions"
                                                 data-action="click->ui-actions#submitForm"
                                                 data-ui-actions-form-id-param="skip-form">
-                                            <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                             {{ 'setup.common.skip'|trans({}, 'setup') }}
                                         </button>
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                             <i class="fa-icon me-2 fa-icon--nav-download" aria-hidden="true"></i>
                                             {{ 'setup.sample_data.import_selected'|trans({}, 'setup') }}
                                         </button>
@@ -127,11 +125,10 @@
                             {% endembed %}
 
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
-                                    <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
+                                <a href="{{ path('setup_step9_base_data') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                     {{ 'setup.navigation.back'|trans({}, 'setup') }}
                                 </a>
-                                <a href="{{ path('setup_step11_complete') }}" class="btn btn-primary">
+                                <a href="{{ path('setup_step11_complete') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                                     {{ 'setup.step10.next_button'|trans({}, 'setup') }}
                                     <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                 </a>

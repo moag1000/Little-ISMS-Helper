@@ -196,7 +196,7 @@ export default class extends Controller {
                 <i class="fa-icon fa-icon--status-warning text-danger" style="font-size: 3rem;" aria-hidden="true"></i>
                 <p class="mt-3 mb-2">${this.label('errorTitle')}</p>
                 <p class="text-muted small">${this.label('errorSubtitle')}</p>
-                <button class="btn btn-sm btn-primary mt-3" data-action="click->quick-view#close">
+                <button class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm mt-3" data-action="click->quick-view#close">
                     ${this.label('closeText')}
                 </button>
             </div>

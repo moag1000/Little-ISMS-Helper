@@ -119,8 +119,7 @@
     <div class="isms-journey__footer">
         <form method="post" action="{{ path('app_dashboard_dismiss_journey') }}" class="d-inline">
             <input type="hidden" name="_token" value="{{ csrf_token('dismiss_journey') }}">
-            <button type="submit" class="btn btn-link btn-sm text-muted p-0">
-                <i class="fa-icon me-1 fa-icon--ui-eye-off" aria-hidden="true"></i>
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm text-muted p-0">
                 {{ 'journey.dismiss'|trans }}
             </button>
         </form>

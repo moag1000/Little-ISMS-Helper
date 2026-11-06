@@ -27,8 +27,8 @@
                 {{ form_row(form.teams) }}
             </div>
             <div class="card-footer d-flex justify-content-end gap-2">
-                <a class="btn btn-ghost" href="{{ path('app_planning_admin') }}">{{ 'common.cancel'|trans({}, 'messages') }}</a>
-                {{ form_widget(form.save, { attr: { class: 'btn btn-primary' } }) }}
+                <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_planning_admin') }}">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+                {{ form_widget(form.save, { attr: { class: 'fa-cyber-btn fa-cyber-btn--primary' } }) }}
             </div>
         </div>
     {{ form_end(form) }}

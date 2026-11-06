@@ -224,9 +224,8 @@
 
         {% if show_strength %}
         <div class="password-strength-meter mt-2 d-none" data-password-strength-target="meter">
-            <div class="progress progress-h-5">
-                <div class="progress-bar" data-password-strength-target="bar" role="progressbar"></div>
-            </div>
+            {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+            {{ _fa_progress.render({value: 0, size: 'sm', class: 'progress-h-5', barAttrs: {'data-password-strength-target': 'bar'}}) }}
             <small class="form-text" data-password-strength-target="feedback"></small>
         </div>
         {% endif %}

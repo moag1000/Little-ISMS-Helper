@@ -198,6 +198,7 @@ tisax:
         schutzbedarf_note: 'Protection-need addendum available'
         byo_hint: 'Read text in your licensed ENX workbook (BYO wizard)'
       save_button: 'Save Assessment'
+      footer_progress: '%assessed% / %total% assessed. Rows without a selection count as open.'
       saved: 'Assessment saved.'
       no_requirements: 'No requirements found. Please complete the import first.'
       export_enx: 'Export ENX Schedule (.xlsx)'
