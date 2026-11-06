@@ -150,6 +150,9 @@ class DataSubjectRequestController extends AbstractController
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
+        // GDPR Art. 5(2) accountability: who opened which request (no content logged).
+        $this->auditLogger?->logView('DataSubjectRequest', $dsr->getId());
+
         // In-modal → condensed read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('data_subject_request/_detail_modal.html.twig', [

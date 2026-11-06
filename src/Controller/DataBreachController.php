@@ -201,12 +201,11 @@ class DataBreachController extends AbstractController
         ], new Response(status: $status));
     }
 
-    /**
-     * Show data breach details
-     */
+    /** Show data breach details; GDPR Art. 5(2): logs who opened it (no content). */
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Request $request, DataBreach $dataBreach): Response
     {
+        $this->auditLogger?->logView('DataBreach', $dataBreach->getId());
         // In-modal → condensed read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('data_breach/_detail_modal.html.twig', [
