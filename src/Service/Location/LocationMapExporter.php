@@ -37,8 +37,12 @@ readonly class LocationMapExporter
         $headers = [
             $t('location.field.name'), $t('location.map.col.place'), $t('location.map.col.protection'),
             $t('location.map.col.risk'), $t('location.map.col.gaps'), $t('location.map.export.col.rate'),
-            $t('location.map.export.col.peer'), $t('location.map.col.incidents'),
         ];
+        $withPeers = $view['peerMode'] !== LocationMapSettings::PEER_OFF;
+        if ($withPeers) {
+            $headers[] = $t('location.map.export.col.peer');
+        }
+        $headers[] = $t('location.map.col.incidents');
         if ($view['money']) {
             $headers[] = $t('location.map.export.col.ale');
         }
@@ -53,9 +57,11 @@ readonly class LocationMapExporter
                 $site['riskBand'] === 'none' ? '' : $site['score'],
                 implode(', ', array_map(fn (string $c): string => $t('location.map.check.' . $c), $site['gaps'])),
                 $site['checksRate'] ?? '',
-                $peer !== null && $peer['rank'] !== null ? $t('location.map.peer.rank.' . $peer['rank']) : '',
-                $site['openIncidents'],
             ];
+            if ($withPeers) {
+                $row[] = $peer !== null && $peer['rank'] !== null ? $t('location.map.peer.rank.' . $peer['rank']) : '';
+            }
+            $row[] = $site['openIncidents'];
             if ($view['money']) {
                 $row[] = $site['ale'] ?? 0;
             }

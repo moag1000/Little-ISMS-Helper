@@ -9,6 +9,8 @@ access_review.scope	2
 access_review.status	1
 admin.data_repair.cascade.category	1
 admin.data_retention.entity	1
+admin.location_map.peer	1
+admin.location_map.precision	1
 admin.queue.job_status	1
 admin.queue.status	1
 admin.report_style.chart	1
@@ -148,7 +150,7 @@ lifecycle.tenant_lifecycle	1
 location.geo.source	1
 location.map.area	1
 location.map.bulk	1
-location.map.check	5
+location.map.check	6
 location.map.fix	1
 location.map.layer	1
 location.map.lens	1

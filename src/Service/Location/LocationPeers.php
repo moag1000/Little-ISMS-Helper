@@ -27,7 +27,7 @@ final class LocationPeers
      *
      * @return array<int, array{
      *     basis: string, tag: ?string, size: int, rate: ?int, medianRate: ?int, medianScore: int,
-     *     rank: ?string, solvedAt: array<string, array{id: int, name: string}>
+     *     rank: ?string, solvedAt: array<string, array{id: int, name: string, owner: ?string}>
      * }> site id => comparison; sites without a large enough group are missing
      */
     public static function compare(array $rows): array
@@ -124,7 +124,7 @@ final class LocationPeers
      * @param array<string, mixed>       $site
      * @param list<array<string, mixed>> $group
      *
-     * @return array<string, array{id: int, name: string}>
+     * @return array<string, array{id: int, name: string, owner: ?string}>
      */
     private static function solvedAt(array $site, array $group): array
     {
@@ -133,7 +133,12 @@ final class LocationPeers
         foreach ($site['gaps'] as $check) {
             foreach ($group as $peer) {
                 if ($peer['id'] !== $site['id'] && ($peer['checks'][$check] ?? null) === true) {
-                    $solved[$check] = ['id' => (int) $peer['id'], 'name' => (string) $peer['name']];
+                    $solved[$check] = [
+                        'id' => (int) $peer['id'],
+                        'name' => (string) $peer['name'],
+                        // Present only when the tenant names owners in the comparison.
+                        'owner' => $peer['ownerName'] ?? null,
+                    ];
                     break;
                 }
             }

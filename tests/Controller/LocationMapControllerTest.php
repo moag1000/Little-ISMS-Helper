@@ -11,6 +11,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
+use App\Service\BackupService;
 use App\Service\Location\LocationGeocoder;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -205,12 +206,18 @@ final class LocationMapControllerTest extends WebTestCase
     public function exportsTheSituationReportAsExcelAndPdf(): void
     {
         $this->client->loginUser($this->user);
+        $crawler = $this->client->request('GET', '/en/location/map');
+        $token = $crawler->filter('#location-map-selection input[name="_token"]')->attr('value');
 
+        // A GET (token in the URL) is not offered.
         $this->client->request('GET', '/en/location/map/export.xlsx');
+        self::assertFalse($this->client->getResponse()->isSuccessful());
+
+        $this->client->request('POST', '/en/location/map/export.xlsx', ['_token' => $token]);
         self::assertResponseIsSuccessful();
         self::assertResponseHeaderSame('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-        $this->client->request('GET', '/en/location/map/export.pdf?ids[]=' . $this->site->getId());
+        $this->client->request('POST', '/en/location/map/export.pdf', ['_token' => $token, 'ids' => [$this->site->getId()]]);
         self::assertResponseIsSuccessful();
         self::assertResponseHeaderSame('Content-Type', 'application/pdf');
     }
@@ -234,5 +241,95 @@ final class LocationMapControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('Werk ' . $this->uid, (string) $this->client->getResponse()->getContent());
+    }
+
+    #[Test]
+    public function tenantSettingsSwitchChecksOffRoundCoordinatesAndHideOwners(): void
+    {
+        $site = $this->em->find(Location::class, $this->site->getId());
+        $site->setLatitude(48.137154)->setLongitude(11.576124);
+        $this->tenant->setSettings(['location_map' => ['disabled_checks' => ['camera'], 'precision' => 'city']]);
+        $this->em->flush();
+
+        $this->client->loginUser($this->user);
+        $crawler = $this->client->request('GET', '/en/location/map');
+        self::assertResponseIsSuccessful();
+        $sites = json_decode((string) $crawler->filter('[data-controller="location-map"]')->attr('data-location-map-sites-value'), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertNull($sites[0]['checks']['camera'], 'switched off: neither gap nor pass');
+        self::assertNotContains('camera', $sites[0]['gaps']);
+        self::assertSame(48.14, $sites[0]['lat'], 'rounded to about 1 km');
+        self::assertArrayNotHasKey('ownerName', $sites[0], 'owners are named only when the tenant chose so');
+    }
+
+    #[Test]
+    public function adminSavesTheMapSettings(): void
+    {
+        $this->user->setRoles(['ROLE_ADMIN']);
+        $this->em->flush();
+        $this->client->loginUser($this->user);
+        $crawler = $this->client->request('GET', '/en/admin/settings/location-map');
+        self::assertResponseIsSuccessful();
+        $token = $crawler->filter('input[name="_token"]')->attr('value');
+
+        $this->client->request('POST', '/en/admin/settings/location-map', [
+            '_token' => $token,
+            'peer_mode' => 'off',
+            'precision' => 'exact',
+            'active_checks' => ['deputy', 'access_control', 'risks_treated', 'incidents_closed'],
+            'endpoint' => '',
+        ]);
+        self::assertResponseRedirects();
+
+        $this->em->clear();
+        $settings = $this->em->find(Tenant::class, $this->tenant->getId())->getSettings()['location_map'] ?? [];
+        self::assertSame('off', $settings['peer_mode']);
+        self::assertSame('exact', $settings['precision']);
+        self::assertSame(['camera'], $settings['disabled_checks']);
+        self::assertFalse($settings['online_geocoding']);
+    }
+
+    #[Test]
+    public function auditorsSeeTheMapWithoutQuickActions(): void
+    {
+        $this->user->setRoles(['ROLE_AUDITOR']);
+        $this->em->flush();
+        $this->client->loginUser($this->user);
+        $this->client->request('GET', '/en/location/map');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringNotContainsString('/risk/new?location=', (string) $this->client->getResponse()->getContent());
+    }
+
+    #[Test]
+    public function theChosenLensIsKeptForTheSession(): void
+    {
+        $this->client->loginUser($this->user);
+        $this->client->request('GET', '/en/location/map?lens=cm');
+        $crawler = $this->client->request('GET', '/en/location/map');
+
+        self::assertSame('true', $crawler->filter('[data-controller="location-map"]')->attr('data-location-map-focus-value'), 'cm lens again');
+    }
+
+    #[Test]
+    public function backupCarriesCoordinatesAndMapSettings(): void
+    {
+        $site = $this->em->find(Location::class, $this->site->getId());
+        $site->setLatitude(48.2)->setLongitude(11.6);
+        $this->tenant->setSettings(['location_map' => ['peer_mode' => 'named']]);
+        $this->em->flush();
+
+        $backup = static::getContainer()->get(BackupService::class)->createBackup(false, false, false, $this->tenant);
+        // Same shape as the file on disk.
+        $backup = json_decode((string) json_encode($backup), true, flags: JSON_THROW_ON_ERROR);
+
+        $rows = array_values(array_filter($backup['data']['Location'] ?? [], fn (array $r): bool => ($r['id'] ?? null) === $this->site->getId()));
+        self::assertCount(1, $rows);
+        self::assertEqualsWithDelta(48.2, $rows[0]['latitude'], 0.0001);
+        self::assertEqualsWithDelta(11.6, $rows[0]['longitude'], 0.0001);
+        self::assertSame(LocationGeocoder::SOURCE_MANUAL, $rows[0]['geoSource']);
+
+        $tenants = array_values(array_filter($backup['data']['Tenant'] ?? [], fn (array $r): bool => ($r['id'] ?? null) === $this->tenant->getId()));
+        self::assertSame('named', $tenants[0]['settings']['location_map']['peer_mode'] ?? null);
     }
 }

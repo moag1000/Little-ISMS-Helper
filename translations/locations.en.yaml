@@ -213,6 +213,8 @@ location:
         peer:
             title: 'Comparison with similar sites'
             own_rate: 'Checks passed, %site%'
+            own_avg: 'Checks passed, average of my %count% sites'
+            own_gaps: '%count% of them with open checks'
             median_hint: 'Median of similar sites: %median% % (%count% sites)'
             none: 'No comparison: fewer than three similar sites.'
             solved_at: 'Passed at:'

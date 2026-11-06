@@ -213,6 +213,8 @@ location:
         peer:
             title: 'Vergleich mit ähnlichen Standorten'
             own_rate: 'Erfüllte Prüfungen, %site%'
+            own_avg: 'Erfüllte Prüfungen, Ø meiner %count% Standorte'
+            own_gaps: '%count% davon mit offenen Prüfungen'
             median_hint: 'Median ähnlicher Standorte: %median% % (%count% Standorte)'
             none: 'Kein Vergleich: weniger als drei ähnliche Standorte.'
             solved_at: 'Erfüllt bei:'

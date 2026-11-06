@@ -31,12 +31,14 @@ class LocationMapView
     /**
      * @return array{
      *     sites: list<array<string, mixed>>, unsaved: int, peers: array<int, array<string, mixed>>,
-     *     objectives: array<int, list<array<string, mixed>>>, levers: list<array<string, mixed>>, money: bool
+     *     objectives: array<int, list<array<string, mixed>>>, levers: list<array<string, mixed>>, money: bool,
+     *     peerMode: string
      * }
      */
     public function build(Tenant $tenant, ?User $viewer): array
     {
         $sites = $this->posture->forTenant($tenant, $viewer);
+        $settings = LocationMapSettings::of($tenant);
 
         // Old rows have no coordinates yet: place them for display from the
         // offline tables. Stored on the next save or via "Koordinaten ermitteln".
@@ -47,7 +49,11 @@ class LocationMapView
                     ? $this->geocoder->locateArea($site['country'])
                     : $this->geocoder->locate($site['postalCode'], $site['city'], $site['country']);
                 if ($point !== null) {
-                    [$site['lat'], $site['lng'], $site['geoSource']] = [$point->latitude, $point->longitude, $point->source];
+                    [$site['lat'], $site['lng'], $site['geoSource']] = [
+                        $settings->display($point->latitude),
+                        $settings->display($point->longitude),
+                        $point->source,
+                    ];
                     ++$unsaved;
                 }
             }
@@ -64,10 +70,21 @@ class LocationMapView
             unset($site);
         }
 
+        // Peer comparison per tenant setting; other sites' owners are named
+        // only when the tenant chose so (§ 87 Abs. 1 Nr. 6 BetrVG).
+        if (!$settings->namesOwners()) {
+            foreach ($sites as &$site) {
+                unset($site['ownerName']);
+            }
+            unset($site);
+        }
+        $peers = $settings->comparesPeers() ? LocationPeers::compare($sites) : [];
+
         return [
             'sites' => $sites,
             'unsaved' => $unsaved,
-            'peers' => LocationPeers::compare($sites),
+            'peers' => $peers,
+            'peerMode' => $settings->peerMode,
             'objectives' => $this->objectives->forSites($tenant, $sites),
             'levers' => self::levers($sites),
             'money' => $money,

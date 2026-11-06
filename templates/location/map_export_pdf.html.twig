@@ -56,7 +56,7 @@
                     <th class="num">{{ 'location.map.col.protection'|trans({}, 'locations') }}</th>
                     <th class="num">{{ 'location.map.col.risk'|trans({}, 'locations') }}</th>
                     <th>{{ 'location.map.col.gaps'|trans({}, 'locations') }}</th>
-                    <th>{{ 'location.map.export.col.peer'|trans({}, 'locations') }}</th>
+                    {% if peerMode != 'off' %}<th>{{ 'location.map.export.col.peer'|trans({}, 'locations') }}</th>{% endif %}
                     {% if money %}<th class="num">{{ 'location.map.export.col.ale'|trans({}, 'locations') }}</th>{% endif %}
                 </tr>
             </thead>
@@ -68,7 +68,7 @@
                         <td class="num">{{ site.protection ?: '–' }}</td>
                         <td class="num">{{ site.riskBand == 'none' ? '–' : site.score }}</td>
                         <td>{% for _c in site.gaps %}{{ ('location.map.check.' ~ _c)|trans({}, 'locations') }} ({{ check_norms[_c] }}){{ not loop.last ? ', ' }}{% else %}–{% endfor %}</td>
-                        <td>{{ _peer and _peer.rank ? ('location.map.peer.rank.' ~ _peer.rank)|trans({}, 'locations') : '–' }}</td>
+                        {% if peerMode != 'off' %}<td>{{ _peer and _peer.rank ? ('location.map.peer.rank.' ~ _peer.rank)|trans({}, 'locations') : '–' }}</td>{% endif %}
                         {% if money %}<td class="num">{{ (site.ale ?? 0)|number_format(0, ',', '.') }} €</td>{% endif %}
                     </tr>
                 {% endfor %}

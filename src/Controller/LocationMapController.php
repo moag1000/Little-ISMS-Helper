@@ -32,6 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class LocationMapController extends AbstractController
 {
     public const array LENSES = ['ciso', 'isb', 'cm', 'owner'];
+    private const string LENS_SESSION_KEY = 'location_map_lens';
 
     public function __construct(
         private readonly LocationMapView $mapView,
@@ -51,13 +52,17 @@ final class LocationMapController extends AbstractController
         $tenant = $user instanceof User ? $user->getTenant() : null;
         $view = $tenant instanceof Tenant
             ? $this->mapView->build($tenant, $user)
-            : ['sites' => [], 'unsaved' => 0, 'peers' => [], 'objectives' => [], 'levers' => [], 'money' => false];
+            : ['sites' => [], 'unsaved' => 0, 'peers' => [], 'objectives' => [], 'levers' => [], 'money' => false, 'peerMode' => 'off'];
         $sites = $view['sites'];
 
         $hasOwnSite = array_filter($sites, static fn (array $s): bool => $s['mine']) !== [];
-        $lens = (string) $request->query->get('lens', '');
+        // The chosen lens is kept for the session; without a choice the role decides.
+        $session = $request->getSession();
+        $lens = (string) $request->query->get('lens', (string) $session->get(self::LENS_SESSION_KEY, ''));
         if (!in_array($lens, self::LENSES, true) || ($lens === 'owner' && !$hasOwnSite)) {
             $lens = $this->defaultLens($hasOwnSite);
+        } elseif ($request->query->has('lens')) {
+            $session->set(self::LENS_SESSION_KEY, $lens);
         }
 
         $unplaced = array_values(array_filter(
@@ -77,6 +82,7 @@ final class LocationMapController extends AbstractController
             'coarse' => $coarse,
             'unsaved' => $view['unsaved'],
             'peers' => $view['peers'],
+            'peer_mode' => $view['peerMode'],
             'objectives' => $view['objectives'],
             'levers' => LocationMapView::levers($lens === 'owner' ? array_values(array_filter($sites, static fn (array $s): bool => $s['mine'])) : $sites),
             'money' => $view['money'],
@@ -111,7 +117,9 @@ final class LocationMapController extends AbstractController
     }
 
     /** Situation report of the selected (or all) sites as Excel or PDF one-pager. */
-    #[Route('/location/map/export.{format}', name: 'app_location_map_export', requirements: ['format' => 'xlsx|pdf'], methods: ['GET'])]
+    // POST from the selection form, so the token stays out of URLs and logs.
+    #[Route('/location/map/export.{format}', name: 'app_location_map_export', requirements: ['format' => 'xlsx|pdf'], methods: ['POST'])]
+    #[IsCsrfTokenValid('location_map_bulk')]
     public function export(Request $request, string $format): Response
     {
         $user = $this->getUser();
@@ -119,7 +127,7 @@ final class LocationMapController extends AbstractController
         if (!$user instanceof User || !$tenant instanceof Tenant) {
             return $this->redirectToRoute('app_location_map');
         }
-        $ids = array_values(array_filter(array_map('intval', $request->query->all('ids'))));
+        $ids = array_values(array_filter(array_map('intval', $request->request->all('ids'))));
         $request->getSession()->save();
 
         return $format === 'pdf'

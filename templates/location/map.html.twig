@@ -16,6 +16,7 @@
     cm: ['location_checks_rate', 'location_open_gaps', 'control_compliance', 'fte_saved_days'],
     owner: []
 } %}
+{% set _read_only = is_granted('ROLE_AUDITOR') and not is_granted('ROLE_MANAGER') %}
 {% set _gap_fix = {
     owner: 'edit', deputy: 'edit', access_control: 'edit', camera: 'edit',
     risks_treated: 'risks', incidents_closed: 'incidents'
@@ -53,36 +54,27 @@
         {% for _key in _lens_kpis[lens] %}
             {{ _kpi_tile.render(_key, { href: _key == 'fte_saved_days' ? path('analytics_fte_index') : null }) }}
         {% endfor %}
-        {% if lens == 'owner' %}
+        {% if lens == 'owner' and _sites|length > 3 %}
+            {# Many own sites: one tile instead of a wall; the table lists each site. #}
+            {% set _rates = _sites|map(s => s.checksRate) %}
+            {{ _fa_feature_card.render({
+                label: 'location.map.peer.own_avg'|trans({ '%count%': _sites|length }, 'locations'),
+                value: ((_rates|reduce((carry, r) => carry + r, 0)) / _rates|length)|round ~ ' %',
+                variant: _sites|filter(s => s.gaps is not empty)|length == 0 ? 'success' : 'warning',
+                hint: 'location.map.peer.own_gaps'|trans({ '%count%': _sites|filter(s => s.gaps is not empty)|length }, 'locations')
+            }) }}
+        {% elseif lens == 'owner' %}
             {% for site in _sites %}
                 {% set _peer = peers[site.id] ?? null %}
                 {{ _fa_feature_card.render({
                     label: 'location.map.peer.own_rate'|trans({ '%site%': site.name }, 'locations'),
                     value: site.checksRate is not null ? site.checksRate ~ ' %' : '–',
                     variant: site.gaps is empty ? 'success' : (site.gaps|length >= 3 ? 'danger' : 'warning'),
-                    hint: _peer and _peer.medianRate is not null ? 'location.map.peer.median_hint'|trans({ '%median%': _peer.medianRate, '%count%': _peer.size }, 'locations') : 'location.map.peer.none'|trans({}, 'locations')
+                    hint: peer_mode == 'off' ? null : (_peer and _peer.medianRate is not null ? 'location.map.peer.median_hint'|trans({ '%median%': _peer.medianRate, '%count%': _peer.size }, 'locations') : 'location.map.peer.none'|trans({}, 'locations'))
                 }) }}
             {% endfor %}
         {% endif %}
     </div>
-
-    {% if levers|length > 0 %}
-        <section class="fa-section location-map__levers">
-            <div class="fa-section__header">
-                <h2 class="fa-section__title">{{ 'location.map.levers.title'|trans({}, 'locations') }}</h2>
-            </div>
-            <div class="fa-section__body">
-                <ol class="mb-0">
-                    {% for _l in levers %}
-                        <li>
-                            <a href="{{ path('app_risk_show', { id: _l.id }) }}">{{ 'location.map.levers.item'|trans({ '%site%': _l.siteName, '%risk%': _l.title }, 'locations') }}</a>
-                            <span class="text-muted-color">{{ _l.from }} → {{ _l.to }}</span>
-                        </li>
-                    {% endfor %}
-                </ol>
-            </div>
-        </section>
-    {% endif %}
 
     <div class="location-map__toolbar">
         {% set _lens_items = [] %}
@@ -176,6 +168,24 @@
         </aside>
     </div>
 
+    {% if levers|length > 0 %}
+        <section class="fa-section location-map__levers">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'location.map.levers.title'|trans({}, 'locations') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <ol class="mb-0">
+                    {% for _l in levers %}
+                        <li>
+                            <a href="{{ path('app_risk_show', { id: _l.id }) }}">{{ 'location.map.levers.item'|trans({ '%site%': _l.siteName, '%risk%': _l.title }, 'locations') }}</a>
+                            <span class="text-muted-color">{{ _l.from }} → {{ _l.to }}</span>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </section>
+    {% endif %}
+
     {% if lens == 'cm' %}
         {% set _same = [] %}
         {% for _check in ['owner', 'deputy', 'access_control', 'camera', 'risks_treated', 'incidents_closed'] %}
@@ -210,8 +220,8 @@
         <input type="hidden" name="lens" value="{{ lens }}">
         <div class="location-map__bulk">
             <span class="text-muted-color">{{ 'location.map.bulk.hint'|trans({}, 'locations') }}</span>
-            <button type="submit" formmethod="get" formaction="{{ path('app_location_map_export', { format: 'xlsx' }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'location.map.export.xlsx'|trans({}, 'locations') }}</button>
-            <button type="submit" formmethod="get" formaction="{{ path('app_location_map_export', { format: 'pdf' }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'location.map.export.pdf'|trans({}, 'locations') }}</button>
+            <button type="submit" data-turbo="false" formaction="{{ path('app_location_map_export', { format: 'xlsx' }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'location.map.export.xlsx'|trans({}, 'locations') }}</button>
+            <button type="submit" data-turbo="false" formaction="{{ path('app_location_map_export', { format: 'pdf' }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'location.map.export.pdf'|trans({}, 'locations') }}</button>
             {% if bulk %}
                 <label class="visually-hidden" for="location-map-bulk-target">{{ 'location.map.bulk.action'|trans({}, 'locations') }}</label>
                 <select name="target" id="location-map-bulk-target" class="form-select form-select-sm location-map__bulk-select">
@@ -296,9 +306,9 @@
                                 <span class="visually-hidden">{{ (_ok ? 'location.map.check_ok' : 'location.map.check_gap')|trans({}, 'locations') }}</span>
                                 {% if not _ok %}
                                     {% set _fix = _gap_fix[_key] %}
-                                    <br><a href="{{ _fix == 'edit' ? path('app_location_edit', { id: site.id }) : (_fix == 'risks' ? path('app_risk_index', { location: site.id }) : path('app_incident_index', { location: site.id })) }}">{{ ('location.map.fix.' ~ _key)|trans({}, 'locations') }}</a>
+                                    {% if not _read_only %}<br><a href="{{ _fix == 'edit' ? path('app_location_edit', { id: site.id }) : (_fix == 'risks' ? path('app_risk_index', { location: site.id }) : path('app_incident_index', { location: site.id })) }}">{{ ('location.map.fix.' ~ _key)|trans({}, 'locations') }}</a>{% endif %}
                                     {% set _solved = (peers[site.id].solvedAt ?? {})[_key] ?? null %}
-                                    {% if _solved %}<br><small>{{ 'location.map.peer.solved_at'|trans({}, 'locations') }} <a href="{{ path('app_location_show', { id: _solved.id }) }}">{{ _solved.name }}</a></small>{% endif %}
+                                    {% if _solved %}<br><small>{{ 'location.map.peer.solved_at'|trans({}, 'locations') }} <a href="{{ path('app_location_show', { id: _solved.id }) }}">{{ _solved.name }}</a>{% if _solved.owner ?? null %} ({{ _solved.owner }}){% endif %}</small>{% endif %}
                                 {% endif %}
                             </span>
                         </li>
@@ -306,16 +316,18 @@
                 {% endfor %}
             </ul>
 
-            {% set _peer = peers[site.id] ?? null %}
-            <h3 class="location-map__panel-sub">{{ 'location.map.peer.title'|trans({}, 'locations') }}</h3>
-            {% if _peer and _peer.rank %}
-                <p class="mb-1">{{ ('location.map.peer.rank_sentence.' ~ _peer.rank)|trans({ '%count%': _peer.size }, 'locations') }}</p>
-                <p class="text-muted-color small mb-2">
-                    {{ 'location.map.peer.values'|trans({ '%rate%': _peer.rate, '%median%': _peer.medianRate, '%score%': site.score, '%median_score%': _peer.medianScore }, 'locations') }}
-                    · {{ ('location.map.peer.basis.' ~ _peer.basis)|trans({ '%tag%': _peer.tag }, 'locations') }}
-                </p>
-            {% else %}
-                <p class="text-muted-color small">{{ 'location.map.peer.none'|trans({}, 'locations') }}</p>
+            {% if peer_mode != 'off' %}
+                {% set _peer = peers[site.id] ?? null %}
+                <h3 class="location-map__panel-sub">{{ 'location.map.peer.title'|trans({}, 'locations') }}</h3>
+                {% if _peer and _peer.rank %}
+                    <p class="mb-1">{{ ('location.map.peer.rank_sentence.' ~ _peer.rank)|trans({ '%count%': _peer.size }, 'locations') }}</p>
+                    <p class="text-muted-color small mb-2">
+                        {{ 'location.map.peer.values'|trans({ '%rate%': _peer.rate, '%median%': _peer.medianRate, '%score%': site.score, '%median_score%': _peer.medianScore }, 'locations') }}
+                        · {{ ('location.map.peer.basis.' ~ _peer.basis)|trans({ '%tag%': _peer.tag }, 'locations') }}
+                    </p>
+                {% else %}
+                    <p class="text-muted-color small">{{ 'location.map.peer.none'|trans({}, 'locations') }}</p>
+                {% endif %}
             {% endif %}
 
             {% for _o in objectives[site.id] ?? [] %}
@@ -325,6 +337,8 @@
                 {% if loop.last %}</ul>{% endif %}
             {% endfor %}
 
+            {# Auditors see the map read-only: no quick actions. #}
+            {% if not _read_only %}
             <h3 class="location-map__panel-sub">{{ 'location.map.actions.title'|trans({}, 'locations') }}</h3>
             <div class="location-map__actions">
                 <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_risk_new', { location: site.id }) }}">{{ 'location.map.actions.risk'|trans({}, 'locations') }}</a>
@@ -335,6 +349,7 @@
                     {% if is_module_active('bcm') %}<a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_bc_exercise_new') }}">{{ 'location.map.actions.exercise'|trans({}, 'locations') }}</a>{% endif %}
                 {% endif %}
             </div>
+            {% endif %}
 
             <div class="location-map__links">
                 <a href="{{ path('app_location_show', { id: site.id }) }}">{{ 'location.map.link.location'|trans({}, 'locations') }}</a>

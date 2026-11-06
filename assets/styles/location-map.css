@@ -266,7 +266,7 @@
 
 .location-map__kpis:empty { display: none; }
 
-.location-map__levers { margin-bottom: 1rem; }
+.location-map__levers { margin-bottom: 1.5rem; }
 
 .location-map__bulk {
     display: flex;

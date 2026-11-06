@@ -78,7 +78,7 @@ final class LocationPeersTest extends TestCase
 
         $peers = LocationPeers::compare($rows);
 
-        self::assertSame(['id' => 2, 'name' => 'Site 2'], $peers[1]['solvedAt']['camera']);
+        self::assertSame(['id' => 2, 'name' => 'Site 2', 'owner' => null], $peers[1]['solvedAt']['camera']);
     }
 
     #[Test]

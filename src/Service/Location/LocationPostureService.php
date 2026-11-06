@@ -109,9 +109,10 @@ class LocationPostureService implements ResetInterface
         $this->collectIncidents($tenant, $assetSite, $sites);
         $tags = $this->siteTags(array_keys($sites));
 
+        $settings = LocationMapSettings::of($tenant);
         $rows = [];
         foreach ($sites as $id => $site) {
-            $rows[] = $this->finish($site) + ['tags' => $tags[$id] ?? []];
+            $rows[] = $this->finish($site, $settings) + ['tags' => $tags[$id] ?? []];
         }
         return $rows;
     }
@@ -330,7 +331,7 @@ class LocationPostureService implements ResetInterface
      * @param array<string, mixed> $site
      * @return array<string, mixed>
      */
-    private function finish(array $site): array
+    private function finish(array $site, LocationMapSettings $settings): array
     {
         /** @var Location $root */
         $root = $site['location'];
@@ -358,6 +359,10 @@ class LocationPostureService implements ResetInterface
             $checks['access_control'] = null;
             $checks['camera'] = null;
         }
+        foreach ($settings->disabledChecks as $check) {
+            // Switched off by the tenant admin: neither a gap nor a pass.
+            $checks[$check] = null;
+        }
         $applicable = array_filter($checks, static fn (?bool $ok): bool => $ok !== null);
         $gaps = array_keys(array_filter($applicable, static fn (bool $ok): bool => !$ok));
 
@@ -370,8 +375,8 @@ class LocationPostureService implements ResetInterface
             'postalCode' => $root->getPostalCode(),
             'city' => $root->getCity(),
             'country' => $root->getCountry(),
-            'lat' => $root->getLatitude(),
-            'lng' => $root->getLongitude(),
+            'lat' => $settings->display($root->getLatitude()),
+            'lng' => $settings->display($root->getLongitude()),
             'geoSource' => $root->getGeoSource(),
             'securityLevel' => $root->getSecurityLevel(),
             'children' => $site['children'],
@@ -400,6 +405,9 @@ class LocationPostureService implements ResetInterface
                 'title' => (string) $r->getTitle(),
                 'score' => self::currentScore($r),
             ], array_slice($risks, 0, 3)),
+            'ownerName' => $root->getResponsiblePersonUser()?->getFullName()
+                ?? $root->getResponsiblePersonRef()?->getDisplayName()
+                ?? (trim((string) $root->getResponsiblePerson()) ?: null),
             'mine' => $site['mine'],
             'active' => $root->isActive() !== false,
         ];
