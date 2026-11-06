@@ -252,6 +252,11 @@ ui:
             settings_imported: 'Dashboard settings imported.'
         error: 'Error'
         forbidden: 'Permission denied'
+        unsaved_changes:
+            title: 'Unsaved changes'
+            message: 'If you leave this page, your entries are lost.'
+            leave: 'Leave page'
+            stay: 'Keep editing'
         form_layout:
             draft_saved: 'Draft saved'
             draft_saved_hours: 'Draft saved %n% h ago'
@@ -259,7 +264,7 @@ ui:
             draft_saved_seconds: 'Draft saved %n% s ago'
             progress: '%done% of %total% sections · %percent%%'
             section_complete: '%total% fields · all filled in'
-            section_progress: '%total% fields · %filled% filled in · %pending% pending'
+            section_progress: '%filled% of %total% filled in'
         form_validation:
             n_errors: 'The form contains %count% errors. Please correct the highlighted fields.'
             one_error: 'The form contains an error. Please correct the highlighted field.'

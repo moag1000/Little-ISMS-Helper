@@ -5,6 +5,7 @@
 {% block title %}{{ 'compliance.mapping.seed_review.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
+{% include 'compliance/mapping/_hub_tabs.html.twig' %}
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [

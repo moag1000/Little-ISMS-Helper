@@ -126,7 +126,7 @@
         {# Legacy free-text owner behind a collapsed disclosure. #}
         <details class="mt-2">
             <summary class="text-muted small">{{ 'control.disclosure.legacy_owner'|trans({}, 'control') }}</summary>
-            <div class="mt-2">{% include '_components/_form_field.html.twig' with { field: form.responsiblePerson, label_key: form.responsiblePerson.vars.label, translation_domain: 'control', required: form.responsiblePerson.vars.required } %}</div>
+            {% if form.responsiblePerson is defined %}<div class="mt-2">{% include '_components/_form_field.html.twig' with { field: form.responsiblePerson, label_key: form.responsiblePerson.vars.label, translation_domain: 'control', required: form.responsiblePerson.vars.required } %}</div>{% endif %}
         </details>
     {% endset %}
 
@@ -189,7 +189,8 @@
                 status: status,
                 fields: present,
                 filled: filled,
-                body: sd.body
+                body: sd.body,
+                open: fa_sections is empty
             }]) %}
         {% endif %}
     {% endfor %}

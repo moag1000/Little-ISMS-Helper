@@ -2452,6 +2452,7 @@ show:
             vulnerability: 'Vulnerabilities'
         derive:
             risk: 'Derive risk'
+            evidence: 'Upload evidence'
             incident: 'Record incident'
             vulnerability: 'Derive vulnerability'
     status:

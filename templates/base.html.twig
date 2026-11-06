@@ -178,7 +178,7 @@
     {% endblock %}
 </head>
 {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
-<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder notifications' ~ (app.user ? ' guided-tour' : '') }}"
+<body data-turbo="true" data-controller="modal-manager unsaved-changes{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder notifications' ~ (app.user ? ' guided-tour' : '') }}"
       data-session-reminder-warning-value="3300000"
       data-session-reminder-timeout-value="3600000"
       {% if not is_setup_route %}

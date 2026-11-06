@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Form\Util\LegacyFreeTextField;
 
 final class ISMSObjectiveType extends AbstractType implements SectionMapInterface
 {
@@ -212,6 +213,7 @@ final class ISMSObjectiveType extends AbstractType implements SectionMapInterfac
                 ]
             ])
         ;
+        LegacyFreeTextField::hideWhenEmpty($builder, 'responsiblePerson');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

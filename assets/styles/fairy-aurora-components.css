@@ -10248,3 +10248,14 @@ html[data-theme="system"] .fa-pager__btn:hover {
 .fa-entity-links__list a { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fa-entity-links__note { margin: 0; color: var(--fg-3); font-size: 0.85rem; }
 .fa-entity-links__derive { align-self: flex-start; margin-top: var(--space-1); }
+
+/* ── Mapping hub tabs (UI wave F): route links styled as fa-tabs ─────── */
+a.fa-tabs__nav-item {
+    text-decoration: none;
+}
+
+.fa-hub-tabs__views {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}

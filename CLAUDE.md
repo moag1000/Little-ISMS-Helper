@@ -281,6 +281,16 @@ six fields implements it at all. Existing offenders are listed in
 because the previous catch-all silently buried ISO 22301 Cl. 8.2.2 RTO/RPO
 fields and BC-Exercise result-fields among unrelated data.
 
+**Forms (UI wave F).** From 25 visible fields `_auto_form` uses the outline rail on its own;
+open on load are the first section, sections with an empty required field and sections with
+an error, the rest is collapsed with "n von m ausgefüllt". The `unsaved-changes` controller
+on `<body>` guards every Symfony POST form (opt out: `data-unsaved-guard="off"`). Context
+prefill for `/new` forms lives in `App\Service\Prefill\RecordPrefill` (`?fromAsset=`,
+`?fromRisk=`, `?fromIncident=`, `?fromVulnerability=`, same tenant only); "derive" buttons on
+detail pages come from `EntityLinks::DERIVE`. Legacy free-text person fields go through
+`App\Form\Util\LegacyFreeTextField::hideWhenEmpty()`. Mapping screens include
+`compliance/mapping/_hub_tabs.html.twig` (one menu entry, four tabs).
+
 **UI copy (Gate 71, `check_copy_slop.py`).** A toast is a participle, not a sentence:
 "Gespeichert.", "Export gestartet." — no "erfolgreich"/"successfully", no "!" anywhere in
 UI text (urgency comes from the toast colour and the words). Help texts only when they add a

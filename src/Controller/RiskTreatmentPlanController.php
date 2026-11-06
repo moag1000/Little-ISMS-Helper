@@ -11,6 +11,7 @@ use App\Entity\RiskTreatmentPlan;
 use App\Form\RiskTreatmentPlanType;
 use App\Repository\AuditLogRepository;
 use App\Repository\RiskTreatmentPlanRepository;
+use App\Service\Prefill\RecordPrefill;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +31,8 @@ class RiskTreatmentPlanController extends AbstractController
         private readonly AuditLogRepository $auditLogRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly RecordPrefill $recordPrefill,
     ) {}
     #[Route('/risk-treatment-plan', name: 'app_risk_treatment_plan_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -100,6 +102,8 @@ class RiskTreatmentPlanController extends AbstractController
     {
         $riskTreatmentPlan = new RiskTreatmentPlan();
         $riskTreatmentPlan->setTenant($this->tenantContext->getCurrentTenant());
+        // "Maßnahme ableiten" from a risk page: ?fromRisk= (same tenant only)
+        $this->recordPrefill->treatmentPlan($riskTreatmentPlan, $request, $this->tenantContext->getCurrentTenant());
 
         $form = $this->createForm(RiskTreatmentPlanType::class, $riskTreatmentPlan);
         $form->handleRequest($request);

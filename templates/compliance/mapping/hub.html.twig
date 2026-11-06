@@ -4,6 +4,7 @@
 {% block title %}{{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
+{% include 'compliance/mapping/_hub_tabs.html.twig' %}
   {% from '_components/_fa_onboarding_banner.html.twig' import fa_onboarding_banner %}
   {# "Ausblenden" persists on the user, "Später" only for this session — both are
      written by app_preferences_dismiss and have to be honoured here, otherwise the

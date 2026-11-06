@@ -37,8 +37,14 @@ class EntityLinks
         'vulnerability' => ['vulnerability_intel', 'app_vulnerability_show'],
     ];
 
-    /** "Derive X from this record" links that the /new forms already understand. */
+    /**
+     * "Derive X from this record" links that the /new forms understand
+     * (`App\Service\Prefill\RecordPrefill`). A route starting with `#` is an
+     * anchor on the same page (control evidence is uploaded in place).
+     */
     private const array DERIVE = [
+        'asset' => ['risk' => ['app_risk_new', 'fromAsset']],
+        'control' => ['evidence' => ['#evidence', null]],
         'vulnerability' => ['risk' => ['app_risk_new', 'fromVulnerability']],
         'incident' => [
             'risk' => ['app_risk_new', 'fromIncident'],
@@ -56,7 +62,7 @@ class EntityLinks
     /**
      * @return list<array{type: string, total: int, via: ?string, route: string,
      *     items: list<array{id: int, label: string, code: ?string, tone: string, meta: ?string}>,
-     *     derive: ?array{route: string, params: array<string, int>}}>
+     *     derive: ?array{route: ?string, params: array<string, int>, anchor: ?string}}>
      */
     public function for(object $entity): array
     {
@@ -82,10 +88,11 @@ class EntityLinks
                 'via' => $via,
                 'route' => $route,
                 'items' => array_map(self::item(...), array_slice($records, 0, self::LIMIT)),
-                'derive' => $derive === null ? null : [
-                    'route' => $derive[0],
-                    'params' => [$derive[1] => (int) $entity->getId()],
-                ],
+                'derive' => match (true) {
+                    $derive === null => null,
+                    $derive[1] === null => ['route' => null, 'params' => [], 'anchor' => $derive[0]],
+                    default => ['route' => $derive[0], 'params' => [$derive[1] => (int) $entity->getId()], 'anchor' => null],
+                },
             ];
         }
 

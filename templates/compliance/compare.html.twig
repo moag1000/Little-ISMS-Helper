@@ -11,6 +11,7 @@
     title: 'compliance.title.compare'|trans({}, 'compliance'),
     subtitle: 'compliance.description.compare'|trans({}, 'compliance')
 }) }}
+{% include 'compliance/mapping/_hub_tabs.html.twig' %}
 
 {% set _haveBoth = selectedFramework1 and selectedFramework2 %}
 {% set _f1Id     = selectedFramework1 ? selectedFramework1.id : '' %}

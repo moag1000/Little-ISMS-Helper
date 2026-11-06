@@ -72,7 +72,7 @@ final class EntityLinksTest extends TestCase
         self::assertSame('success', $byType['control']['items'][0]['tone']);
         self::assertSame('control', $byType['evidence']['via']);
         self::assertSame('pentest.pdf', $byType['evidence']['items'][0]['label']);
-        self::assertSame(['route' => 'app_incident_new', 'params' => ['fromRisk' => 42]], $byType['incident']['derive']);
+        self::assertSame(['route' => 'app_incident_new', 'params' => ['fromRisk' => 42], 'anchor' => null], $byType['incident']['derive']);
         self::assertSame(0, $byType['vulnerability']['total']);
     }
 
