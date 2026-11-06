@@ -123,6 +123,7 @@ readonly class MyDayInboxEnricher
         $label = $subject['label'];
         $type = $this->translator->trans('my_day.subject.' . substr((string) strrchr('\\' . $class, '\\'), 1), [], 'my_day');
         $item['title'] = str_starts_with($type, 'my_day.subject.') ? $label : $type . ': ' . $label;
+        $item['decision']['summary'] = $subject['business'] ?? null; // business line for the decision dialog
         $item['subtitle'] = isset($subject['business'])
             ? $subject['business'] . ' · ' . $item['decision']['name']
             : $item['decision']['name'] . ' · ' . $item['subtitle'];

@@ -120,6 +120,8 @@ my_day:
 
     tiles:
         all_clear: '%count% more categories with nothing to do'
+    jump:
+        label: 'Open categories'
 
     priority:
         high: 'High'
