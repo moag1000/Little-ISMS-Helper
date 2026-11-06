@@ -124,47 +124,6 @@ final class RestoreDataPurgerTest extends TestCase
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // Tenant rows in a scoped restore
-    // ────────────────────────────────────────────────────────────────────────
-
-    #[Test]
-    public function scoped_tenant_rows_are_filtered_by_id_and_keep_their_identity(): void
-    {
-        $current = (new Tenant())->setCode('acme')->setName('Acme')->setAzureTenantId('sso-acme');
-        $this->entityManager->method('find')->willReturnCallback(
-            static fn (string $class, int $id): ?Tenant => $id === 5 ? $current : null,
-        );
-
-        $rows = $this->purger->filterEntitiesByScope([
-            ['id' => 5, 'code' => 'evil', 'azureTenantId' => 'sso-other', 'status' => 'archived', 'isActive' => false,
-                'parent_id' => ['id' => 99], 'lockVersion' => 7, 'settings' => ['location_map' => ['peer_mode' => 'off']]],
-            ['id' => 6, 'code' => 'other', 'settings' => []],
-        ], [5], 'Tenant');
-
-        self::assertCount(1, $rows, 'only the scope\'s own organisation');
-        self::assertSame(['location_map' => ['peer_mode' => 'off']], $rows[0]['settings'], 'settings come back');
-        self::assertSame('acme', $rows[0]['code']);
-        self::assertSame('sso-acme', $rows[0]['azureTenantId']);
-        self::assertSame(Tenant::STATUS_DRAFT, $rows[0]['status']);
-        self::assertTrue($rows[0]['isActive']);
-        self::assertArrayNotHasKey('parent_id', $rows[0], 'place in the group stays untouched');
-        self::assertArrayNotHasKey('lockVersion', $rows[0]);
-    }
-
-    #[Test]
-    public function scoped_clear_never_deletes_tenants(): void
-    {
-        $this->entityManager->expects(self::never())->method('createQuery');
-        $this->entityManager->expects(self::never())->method('createQueryBuilder');
-
-        $statistics = [];
-        $warnings = [];
-        $this->purger->clearExistingData(['Tenant'], [], [5], $statistics, $warnings);
-
-        self::assertArrayNotHasKey('Tenant_cleared', $statistics);
-    }
-
-    // ────────────────────────────────────────────────────────────────────────
     // Helpers
     // ────────────────────────────────────────────────────────────────────────
 

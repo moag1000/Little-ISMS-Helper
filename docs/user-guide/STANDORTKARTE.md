@@ -165,5 +165,5 @@ Jede Änderung steht im Audit-Log.
 ## Backup
 
 Die Felder `latitude`, `longitude`, `geo_source` am Standort sind Teil des
-normalen Backups, ebenso die Einstellungen in `Tenant.settings['location_map']`,
-auch im Backup einer einzelnen Organisation (Tests prüfen beides).
+normalen Backups, ebenso die Einstellungen in `Tenant.settings['location_map']`
+(ein Test prüft beides).

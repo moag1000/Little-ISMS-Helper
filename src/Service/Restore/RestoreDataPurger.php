@@ -57,25 +57,10 @@ class RestoreDataPurger
      * @param int[] $scopeIds  Tenant IDs that are allowed; empty = all
      * @return array Filtered entities
      */
-    public function filterEntitiesByScope(array $entities, array $scopeIds, ?string $entityName = null): array
+    public function filterEntitiesByScope(array $entities, array $scopeIds): array
     {
         if ($scopeIds === []) {
             return $entities;
-        }
-
-        // Tenant rows carry no tenant_id: the row itself is in scope by its id.
-        // A scoped restore brings back the organisation's settings, never its
-        // identity, SSO binding, lifecycle or place in the group structure.
-        if ($entityName === 'Tenant') {
-            $rows = [];
-            foreach ($entities as $data) {
-                $id = (int) ($data['id'] ?? 0);
-                $current = in_array($id, $scopeIds, true) ? $this->entityManager->find(Tenant::class, $id) : null;
-                if ($current instanceof Tenant) {
-                    $rows[] = self::pinProtectedTenantFields($data, $current);
-                }
-            }
-            return $rows;
         }
 
         return array_values(array_filter($entities, function (array $data) use ($scopeIds): bool {
@@ -91,26 +76,6 @@ class RestoreDataPurger
 
             return $tenantId !== null && in_array($tenantId, $scopeIds, true);
         }));
-    }
-
-    /**
-     * Fields a tenant-scoped restore must not change: they decide who the
-     * organisation is (code, SSO tenant), whether it is live and where it sits
-     * in the group. They keep their current values; the parent stays untouched.
-     *
-     * @param array<string, mixed> $data
-     * @return array<string, mixed>
-     */
-    public static function pinProtectedTenantFields(array $data, Tenant $current): array
-    {
-        $data['code'] = $current->getCode();
-        $data['azureTenantId'] = $current->getAzureTenantId();
-        $data['isActive'] = $current->isActive();
-        $data['status'] = $current->getStatus();
-        $data['isCorporateParent'] = $current->isCorporateParent();
-        unset($data['parent_id'], $data['lockVersion']);
-
-        return $data;
     }
 
     /**
@@ -155,12 +120,6 @@ class RestoreDataPurger
             try {
                 $classMetadata = $this->entityManager->getClassMetadata($entityClass);
                 $tableName = $classMetadata->getTableName();
-
-                // Never delete organisations in a scoped clear: the backup's own
-                // Tenant rows are updated in place, every other tenant stays.
-                if ($tenantScopeIds !== [] && $entityClass === Tenant::class) {
-                    continue;
-                }
 
                 // Tenant-scoped clear: use WHERE tenant_id IN (:scope) when possible
                 if ($tenantScopeIds !== [] && $this->entityHasTenantAssociation($entityClass)) {

@@ -325,16 +325,6 @@ class BackupService
                 continue;
             }
 
-            // A tenant-scoped backup keeps the organisations of its scope themselves:
-            // their settings (branding, TLP, authorities, KPI thresholds, map, ...) live
-            // on the Tenant row, which has no tenant association of its own.
-            if ($tenantScope !== null && $entityClass === Tenant::class) {
-                $entities = $this->entityManager->getRepository(Tenant::class)->findBy(['id' => $scopeIds]);
-                $backup['data'][$entityName] = $this->serializeEntities($entities);
-                $backup['statistics'][$entityName] = count($entities);
-                continue;
-            }
-
             // When a tenant scope is active, skip entities without a tenant association
             if ($tenantScope !== null && !$this->entityHasTenantField($entityClass)) {
                 $skippedGlobalEntities[] = $entityName;
