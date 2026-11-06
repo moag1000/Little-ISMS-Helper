@@ -366,6 +366,62 @@ final class SsoAccountTakeoverTest extends WebTestCase
     }
 
     #[Test]
+    public function adminLinksAndUnlinksAnAccountByHandOnTheUserPage(): void
+    {
+        // #1059: no UI existed to bind an existing account to an SSO identity.
+        $this->globalProvider->setEnabled(true);
+        $this->em->flush();
+        $this->client->loginUser($this->adminA);
+
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $this->userChildA->getId());
+        self::assertResponseIsSuccessful();
+        $form = $crawler->filter('#sso-link form[action$="/sso-link"]')->form();
+        $form['provider']->select((string) $this->globalProvider->getId());
+        $form['subject'] = 'manual-sub-' . $this->uid;
+        $this->client->submit($form);
+        self::assertResponseRedirects();
+
+        $linked = $this->reload($this->userChildA);
+        self::assertSame($this->globalProvider->getId(), $linked->getSsoProvider()?->getId());
+        self::assertSame('manual-sub-' . $this->uid, $linked->getSsoExternalId());
+        $events = (int) $this->em->getConnection()->fetchOne(
+            'SELECT COUNT(*) FROM audit_log WHERE action = ? AND entity_type = ? AND entity_id = ?',
+            [AuditLogger::ACTION_SSO_ACCOUNT_LINKED, 'IdentityProvider', $this->globalProvider->getId()],
+        );
+        self::assertSame(1, $events, 'the manual link is in the provider audit trail');
+
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $this->userChildA->getId());
+        $this->client->submit($crawler->filter('#sso-link form[action$="/sso-unlink"]')->form());
+        self::assertResponseRedirects();
+        self::assertNull($this->reload($this->userChildA)->getSsoProvider());
+    }
+
+    #[Test]
+    public function organisationAdminCannotLinkAPrivilegedAccount(): void
+    {
+        $this->globalProvider->setEnabled(true);
+        $this->em->flush();
+        $this->client->loginUser($this->adminA);
+
+        // The page of a SUPER_ADMIN offers no link form to an organisation admin …
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $this->super->getId());
+        if ($this->client->getResponse()->isSuccessful()) {
+            self::assertCount(0, $crawler->filter('#sso-link form'));
+        }
+
+        // … and a forged post is refused (CSRF token valid, rule enforced server-side).
+        $token = static::getContainer()->get('security.csrf.token_manager')
+            ->getToken('user_sso_link_' . $this->super->getId())->getValue();
+        $this->client->request('POST', '/en/admin/users/' . $this->super->getId() . '/sso-link', [
+            '_token' => $token,
+            'provider' => (string) $this->globalProvider->getId(),
+            'subject' => 'forged',
+        ]);
+        self::assertResponseRedirects(); // token accepted — the refusal comes from the linking rule, not CSRF
+        self::assertNull($this->reload($this->super)->getSsoProvider());
+    }
+
+    #[Test]
     public function ssoPageListsEnforcementExemptAccountsTheAdminMayView(): void
     {
         // #1059 M-d: organisation A enforces SSO through its own provider.
