@@ -205,6 +205,32 @@ String nennt.
 
 ---
 
+### quality/check_trans_default_masking.py (Gate 76)
+
+**Zweck:** `'key'|trans({}, 'domain')|default('Text')` maskiert fehlende
+Übersetzungen: Symfony liefert bei fehlendem Key den Key selbst zurück, `default`
+greift also nie und der Nutzer sieht den rohen Key. Das Gate prüft jede Stelle
+in `templates/` mit literalem Key und literaler Domain und scheitert, wenn der Key in
+`translations/<domain>.de.yaml` oder `.en.yaml` fehlt (verschachtelt oder als
+flacher Punkt-Key, auf jeder Ebene). Dynamische Keys (`('a.' ~ x)|trans`) sind
+nicht prüfbar und werden übersprungen. `--list-missing` gibt die Treffer als TSV aus.
+
+**CI-Integration:** Gate 76 im `code-quality`-Job, keine Baseline.
+
+---
+
+### quality/check_translation_nesting.py (Gate 26)
+
+**Zweck:** (1) Top-Level-Keys einer `<domain>.<locale>.yaml` müssen zur Domain
+passen (Baseline `baselines/translation_nesting.txt`, darf nur schrumpfen).
+(2) Kollisionen: Symfony flacht verschachtelte und flache Punkt-Keys zu einem
+Katalog ab. Definiert eine Datei denselben Endschlüssel zweimal (z. B. `common: {loading: A}`
+und ein flaches `common.loading: B`, auf beliebiger Ebene), gewinnt die spätere
+Definition, die frühere ist tot. Das Gate meldet die frühere. Ein Skalar `a.b` neben
+einem Teilbaum `a.b.c` ist keine Kollision. Kollisionen werden nicht baselined.
+
+---
+
 ### quality/check_show_skeleton.py (Gate 75)
 
 **Zweck:** Jede Detailseite (`templates/**/show.html.twig`) läuft über das eine

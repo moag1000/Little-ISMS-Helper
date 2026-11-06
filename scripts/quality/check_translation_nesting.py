@@ -12,6 +12,13 @@ This catches the `no_tenant:` was-at-top-level bug pattern — a sub-section
 key bleeding to the outer scope, where `|trans('no_tenant.title')` would
 silently resolve to the messages fallback instead of the intended file.
 
+Second check (collisions): Symfony flattens nested trees and flat dotted keys
+into one catalogue, so `common: {loading: A}` plus a flat `common.loading: B`
+(any level, also a flat dotted key at the root) define the SAME message; the
+later one silently wins and the earlier is unreachable. The gate reports every
+final dotted key that is defined more than once in a file. (A scalar `a.b`
+next to a subtree `a.b.c` is NOT a collision: both flatten to different keys.)
+
 Top-level allowlist (per CLAUDE.md): alva, inbox, global, data_breach,
 processing_activity, common, app, breadcrumb. New tooling keys should be
 nested under the domain.
@@ -22,6 +29,8 @@ import argparse
 import re
 import sys
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 TR_DIR = ROOT / "translations"
@@ -47,6 +56,31 @@ def parse_top_keys(path: Path) -> list[tuple[int, str]]:
         if m:
             out.append((idx, m.group(1)))
     return out
+
+
+def find_collisions(path: Path) -> list[tuple[int, str]]:
+    """(line of the shadowed/earlier definition, dotted key) for each key defined twice."""
+    try:
+        root = yaml.compose(path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+        return []
+    seen: dict[tuple[str, ...], list[int]] = {}
+
+    def walk(node: yaml.Node, prefix: tuple[str, ...]) -> None:
+        if not isinstance(node, yaml.MappingNode):
+            return
+        for knode, vnode in node.value:
+            full = prefix + tuple(str(knode.value).split("."))
+            if isinstance(vnode, yaml.MappingNode):
+                walk(vnode, full)
+            elif isinstance(vnode, yaml.SequenceNode):
+                continue
+            else:
+                seen.setdefault(full, []).append(knode.start_mark.line + 1)
+
+    if root is not None:
+        walk(root, ())
+    return [(lines[0], ".".join(k)) for k, lines in seen.items() if len(lines) > 1]
 
 
 def load_baseline(path: Path | None) -> set[str]:
@@ -90,6 +124,11 @@ def main() -> int:
             if key == domain or key in ALLOWLIST:
                 continue
             violations.append((path, ln, f"top-level key '{key}' not domain '{domain}'"))
+
+    # Collisions apply to every file, messages.* included.
+    for path in sorted(TR_DIR.glob("*.yaml")):
+        for ln, key in find_collisions(path):
+            violations.append((path, ln, f"key '{key}' defined twice (nested + flat dotted); the earlier one is shadowed"))
 
     if args.write_baseline is not None:
         args.write_baseline.parent.mkdir(parents=True, exist_ok=True)
