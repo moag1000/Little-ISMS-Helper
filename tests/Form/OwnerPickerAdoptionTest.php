@@ -42,20 +42,21 @@ final class OwnerPickerAdoptionTest extends KernelTestCase
     #[Test]
     public function assetFormExposesOwnerCluster(): void
     {
-        $form = $this->formFactory->create(AssetType::class, new Asset(), [
+        self::assertFalse($this->formFactory->create(AssetType::class, new Asset(), ['csrf_protection' => false])->has('owner'), 'empty legacy "owner" is hidden');
+        $form = $this->formFactory->create(AssetType::class, (new Asset())->setOwner('Team alt'), [
             'csrf_protection' => false,
         ]);
 
         self::assertTrue($form->has('ownerUser'));
         self::assertTrue($form->has('ownerPerson'));
         self::assertTrue($form->has('ownerDeputyPersons'));
-        self::assertTrue($form->has('owner'), 'Asset keeps legacy free-text "owner" field via OwnerPicker');
+        self::assertTrue($form->has('owner'), 'a filled legacy "owner" stays visible');
     }
 
     #[Test]
     public function businessProcessFormExposesProcessOwnerCluster(): void
     {
-        $form = $this->formFactory->create(BusinessProcessType::class, new BusinessProcess(), [
+        $form = $this->formFactory->create(BusinessProcessType::class, (new BusinessProcess())->setProcessOwner('Team alt'), [
             'csrf_protection' => false,
         ]);
 
@@ -97,7 +98,7 @@ final class OwnerPickerAdoptionTest extends KernelTestCase
     #[Test]
     public function incidentFormExposesReportedByClusterPlusResponsiblePerson(): void
     {
-        $form = $this->formFactory->create(IncidentType::class, new Incident(), [
+        $form = $this->formFactory->create(IncidentType::class, (new Incident())->setReportedBy('Team alt'), [
             'csrf_protection' => false,
         ]);
 

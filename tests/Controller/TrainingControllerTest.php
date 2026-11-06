@@ -292,7 +292,6 @@ class TrainingControllerTest extends WebTestCase
             'training[trainingType]' => 'security_awareness',
             'training[deliveryMethod]' => 'in_person',
             'training[scheduledDate]' => $scheduledDate,
-            'training[trainer]' => 'Test Trainer',
             'training[trainerUser]' => (string) $this->testUser->getId(),
             // Status is intentionally NOT submitted: TrainingType marks `status`
             // as `disabled => true` (Lifecycle-bypass fix, Sprint Y.5). Status

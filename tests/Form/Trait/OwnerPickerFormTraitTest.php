@@ -51,7 +51,10 @@ final class OwnerPickerFormTraitTest extends KernelTestCase
         self::assertTrue($form->has('ownerUser'), 'ownerUser child must be present');
         self::assertTrue($form->has('ownerPerson'), 'ownerPerson child must be present');
         self::assertTrue($form->has('ownerDeputyPersons'), 'deputies child must be present when configured');
-        self::assertTrue($form->has('owner'), 'legacy child must be present when configured');
+        self::assertFalse($form->has('owner'), 'empty legacy child is hidden');
+
+        $filled = $this->formFactory->create(OwnerPickerTraitFixtureType_Full::class, ['owner' => 'Team alt']);
+        self::assertTrue($filled->has('owner'), 'filled legacy child is present when configured');
     }
 
     #[Test]

@@ -297,7 +297,6 @@ class SupplierControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="supplier"]')->form([
             'supplier[name]' => 'New Test Supplier',
             'supplier[email]' => 'new@supplier.com',
-            'supplier[contactPerson]' => 'New Contact',
             'supplier[address]' => '456 New Street',
             'supplier[criticality]' => 'medium',
             // Status is intentionally NOT submitted: SupplierType marks `status`

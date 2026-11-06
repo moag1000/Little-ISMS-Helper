@@ -195,6 +195,9 @@ trait OwnerPickerFormTrait
                             if ($entity === null) {
                                 return;
                             }
+                            if (method_exists($entity, 'getId') && $entity->getId() !== null) {
+                                return;
+                            }
                             $accessor = PropertyAccess::createPropertyAccessor();
                             if (!$accessor->isReadable($entity, $userField)) {
                                 return;
