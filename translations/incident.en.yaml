@@ -93,6 +93,7 @@ incident:
     hours_remaining: '%hours% hours remaining'
     days_remaining: '%days% days remaining'
   field:
+    assigned_to: 'Assigned to'
     category: Category
     detected: Detected
     reported_by: Reported By
@@ -163,13 +164,9 @@ incident:
     nis2_info: 'Enable this section if the incident is NIS2-relevant.'
     classification_containment: Classification & Containment (ISO 27001 A.5.24–A.5.28)
     dora_reporting: DORA ICT Incident Reporting (Art. 17-19)
-    history: History
     closure: Closure
     root_cause: Root Cause Analysis
-    affected_assets: 'Affected Assets (%count%)'
     bcm_impact: Business Continuity Impact
-    realized_risks: 'Realized Risks (%count%)'
-    related_controls: 'Related Controls (%count%)'
   status_help: 'Current processing status of the incident'
   analysis_resolution: Analysis Resolution
   update: Update
@@ -229,7 +226,6 @@ incident:
     nis2: '%count% NIS2 reportable'
   list:
     title: Incident List
-  controls_should_prevent: 'Controls that should have prevented this incident'
   workflow:
     active: Active Workflow
     data_breach_active: Data Breach Workflow Active
@@ -362,7 +358,6 @@ incident:
     affected_processes: Affected Processes
     recovery_priority: Recovery Priority
     est_impact_24h: Est. Impact (24h)
-    value: Value
     owner: Owner
     detailed_analysis: Detailed BCM Impact Analysis
     auto_detect_more: Auto-Detect More Processes
@@ -372,9 +367,6 @@ incident:
   reuse:
     risk_realization: Risk Realization
     risk_realization_detail: 'This incident realized %count% identified risk(s). Consider reviewing risk probability assessments.'
-    risk_level: 'Risk Level: %level%'
-    probability: 'Probability: %value%/5'
-    control_not_implemented: Control not fully implemented
   feedback:
     risk_re_evaluation_triggered: Risk re-evaluation has been triggered for linked
       risks

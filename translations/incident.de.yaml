@@ -74,13 +74,9 @@ incident:
     nis2_info: Aktivieren Sie diesen Abschnitt, wenn der Vorfall NIS2‑relevant ist.
     classification_containment: Klassifizierung & Eindämmung (ISO 27001 A.5.24–A.5.28)
     dora_reporting: DORA ICT-Incident-Reporting (Art. 17-19)
-    history: History
     closure: Abschluss
     root_cause: Ursachenanalyse
-    affected_assets: 'Betroffene Assets (%count%)'
     bcm_impact: Business-Continuity-Auswirkungen
-    realized_risks: 'Realisierte Risiken (%count%)'
-    related_controls: 'Zugehörige Maßnahmen (%count%)'
   modern:
     breadcrumb: Vorfallsmanagement
     header:
@@ -119,6 +115,7 @@ incident:
     hours_remaining: '%hours% Stunden verbleibend'
     days_remaining: '%days% Tage verbleibend'
   field:
+    assigned_to: 'Zugewiesen an'
     title: Titel
     description: Beschreibung
     category: Kategorie
@@ -231,7 +228,6 @@ incident:
     nis2: '%count% NIS2-meldepflichtig'
   list:
     title: Vorfallsliste
-  controls_should_prevent: Maßnahmen, die diesen Vorfall hätten verhindern sollen
   workflow:
     active: Aktiver Workflow
     data_breach_active: Datenschutzverletzungs-Workflow aktiv
@@ -372,7 +368,6 @@ incident:
     affected_processes: Betroffene Prozesse
     recovery_priority: Wiederherstellungspriorität
     est_impact_24h: Gesch. Auswirkung (24h)
-    value: Wert
     owner: Eigentümer
     detailed_analysis: Detaillierte BCM-Auswirkungsanalyse
     auto_detect_more: Weitere Prozesse erkennen
@@ -382,9 +377,6 @@ incident:
   reuse:
     risk_realization: Risikorealisierung
     risk_realization_detail: 'Dieser Vorfall hat %count% identifizierte(s) Risiko/Risiken realisiert. Überprüfen Sie die Risikowahrscheinlichkeiten.'
-    risk_level: 'Risikostufe: %level%'
-    probability: 'Wahrscheinlichkeit: %value%/5'
-    control_not_implemented: Maßnahme nicht vollständig umgesetzt
   feedback:
     risk_re_evaluation_triggered: Risiko-Neubewertung wurde für verknüpfte Risiken
       ausgelöst

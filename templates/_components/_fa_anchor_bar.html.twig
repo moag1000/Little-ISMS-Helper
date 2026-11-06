@@ -1,0 +1,29 @@
+{#
+ # FairyAurora v4 — Anchor bar (detail-page skeleton, UI wave E)
+ #
+ # Sticky jump links to the sections of a long detail page. Plain anchors,
+ # nothing is reloaded; items without a target (`show: false`) are skipped.
+ #
+ # Usage:
+ #   {% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+ #   {{ _fa_anchor_bar.render([
+ #       { id: 'links', label: 'show.anchor.links'|trans({}, 'messages') },
+ #       { id: 'history', label: '…', count: totalAuditLogs },
+ #   ]) }}
+ #}
+{% macro render(items) %}
+<nav class="fa-anchor-bar" aria-label="{{ 'show.anchor.label'|trans({}, 'messages') }}" data-testid="anchor-bar">
+    <ul class="fa-anchor-bar__list">
+        {% for item in items %}
+            {% if item.show|default(true) %}
+                <li>
+                    <a href="#{{ item.id }}" class="fa-anchor-bar__link">
+                        {{- item.label -}}
+                        {% if item.count is defined and item.count is not null %} <span class="fa-anchor-bar__count">{{ item.count }}</span>{% endif %}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endmacro %}

@@ -205,6 +205,22 @@ String nennt.
 
 ---
 
+### quality/check_show_skeleton.py (Gate 75)
+
+**Zweck:** Jede Detailseite (`templates/**/show.html.twig`) läuft über das eine
+Detail-Gerüst: Statusband (`_fa_status_band`: Status, Verantwortlich, nächste
+Fälligkeit, laufende Freigabe), Ankerleiste (`_fa_anchor_bar`), Block
+„Verknüpfungen" (`_fa_entity_links`, Nachweiskette Asset → Risiko → Control →
+Nachweis → Vorfall → Schwachstelle aus `App\Service\Detail\EntityLinks`), dann
+die Fachabschnitte, zuletzt Historie (`_fa_show_history`) und Kommentare. Eine
+Seite auf dem Gerüst darf die alte `_entity_link_matrix` nicht mehr enthalten.
+Noch nicht umgestellte Seiten stehen in `baselines/show_skeleton.txt` und dürfen
+nur weniger werden.
+
+**CI-Integration:** Gate 75 im `code-quality`-Job.
+
+---
+
 ### quality/check_kpi_catalog.py (Gate 74)
 
 **Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog

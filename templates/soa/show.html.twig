@@ -3,6 +3,8 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'soa' %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ control.controlId }} - {{ control.name }}{% endblock %}
 
@@ -96,7 +98,32 @@
     {% endembed %}
 {% endif %}
 
+{# Detail skeleton (UI wave E): status band → anchor bar → links → sections → comments #}
+{% set _impl = control.implementationStatus %}
+{% set _status %}{% if not control.applicable %}{{ pill.render('soa.status.not_applicable'|trans({}, 'soa'), 'neutral', {size: 'sm'}) }}{% elseif _impl in ['implemented', 'verified'] %}{{ pill.render('soa.status.implemented'|trans({}, 'soa'), 'success', {size: 'sm'}) }}{% elseif _impl in ['in_progress', 'partial', 'planned'] %}{{ pill.render('soa.status.in_progress'|trans({}, 'soa'), 'warning', {size: 'sm'}) }}{% elseif _impl == 'not_started' %}{{ pill.render('soa.status.not_started'|trans({}, 'soa'), 'danger', {size: 'sm'}) }}{% else %}{{ pill.render('soa.value.na'|trans({}, 'soa'), 'neutral', {size: 'sm'}) }}{% endif %}{% endset %}
+{{ _fa_status_band.render({
+    status: _status,
+    facts: [
+        { label: 'show.status.owner'|trans({}, 'messages'), value: control.responsiblePerson },
+        { label: 'show.status.target_date'|trans({}, 'messages'), value: control.targetDate ? control.targetDate|fa_date : null },
+        { label: 'show.status.next_review'|trans({}, 'messages'), value: control.nextReviewDate ? control.nextReviewDate|fa_date : null },
+    ],
+    workflow: workflow_state(control),
+}) }}
+
+{{ _fa_anchor_bar.render([
+    { id: 'links', label: 'show.anchor.links'|trans({}, 'messages') },
+    { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+    { id: 'implementation', label: 'soa.section.implementation_details'|trans({}, 'soa'), show: control.applicable },
+    { id: 'effectiveness', label: 'soa.section.effectiveness_check'|trans({}, 'soa'), show: control.applicable },
+    { id: 'evidence', label: 'soa.section.evidence'|trans({}, 'soa') },
+    { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages'), count: comments|default([])|length },
+]) }}
+
+{% include '_components/_fa_entity_links.html.twig' with { entity: control } only %}
+
 {# Control Description #}
+<div id="details" class="fa-show-section">
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         <h2>{{ 'soa.section.description'|trans({}, 'soa') }}</h2>
@@ -171,8 +198,11 @@
     {% endblock %}
 {% endembed %}
 
+</div>
+
 {% if control.applicable %}
 {# Implementation Details #}
+<div id="implementation" class="fa-show-section">
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         <h2>{{ 'soa.section.implementation_details'|trans({}, 'soa') }}</h2>
@@ -227,71 +257,7 @@
         </div>
     {% endblock %}
 {% endembed %}
-{% endif %}
-
-{# Data Reuse: Protected Assets #}
-{% if control.protectedAssets is defined and control.protectedAssets|length > 0 %}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_body %}
-        <h2><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-warning', class: 'mt-2' } } %}
-            {% block alert_body %}<strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }} {% if control.highRiskAssetCount > 0 %} <br><strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }} {% endif %}{% endblock %}
-        {% endembed %}
-        <div class="data-reuse-list">
-            {% for asset in control.protectedAssets %}
-                <div class="data-reuse-item">
-                    <strong>{{ asset.name }}</strong>
-                    {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
-                    <small>{{ 'soa.field.cia'|trans({}, 'soa') }}: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
-                </div>
-            {% endfor %}
-        </div>
-    {% endblock %}
-{% endembed %}
-{% endif %}
-
-{# Data Reuse: Related Risks #}
-{% if control.risks is defined and control.risks|length > 0 %}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_body %}
-        <h2><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
-        <p class="text-light">{{ 'soa.message.related_risks_info'|trans({}, 'soa') }}</p>
-        <div class="data-reuse-list">
-            {% for risk in control.risks %}
-                <div class="data-reuse-item">
-                    <strong>{{ risk.title }}</strong>
-                    <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
-                        {{ 'soa.field.risk_level'|trans({}, 'soa') }}: {{ risk.inherentRiskLevel }}
-                    </span>
-                    <small>{{ 'soa.field.status'|trans({}, 'soa') }}: {{ (risk.status ? risk.status.value : '')|upper }}</small>
-                </div>
-            {% endfor %}
-        </div>
-    {% endblock %}
-{% endembed %}
-{% endif %}
-
-{# Data Reuse: Related Incidents #}
-{% if control.incidents is defined and control.incidents|length > 0 %}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_body %}
-        <h2><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
-            {% block alert_body %}<strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }} {% if control.isReviewNeeded %} <br><strong>{{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }} {% endif %}{% endblock %}
-        {% endembed %}
-        <div class="data-reuse-list">
-            {% for incident in control.incidents %}
-                <div class="data-reuse-item">
-                    <strong>{{ incident.title }}</strong>
-                    <span class="{{ badge_severity(incident.severity) }}">
-                        {{ incident.severity ? incident.severity.value|upper : '' }}
-                    </span>
-                    <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
-                </div>
-            {% endfor %}
-        </div>
-    {% endblock %}
-{% endembed %}
+</div>
 {% endif %}
 
 {# Data Reuse: Training Coverage #}
@@ -317,13 +283,16 @@
 {% endif %}
 
 {# Evidence Documents #}
+<div id="evidence" class="fa-show-section">
 {% include 'evidence/_upload_widget.html.twig' with {
     entityType: 'control',
     entityId: control.id,
     documents: control.evidenceDocuments
 } %}
+</div>
 
 {# Control Effectiveness Score #}
+<div id="effectiveness" class="fa-show-section">
 {% if control.applicable and control.implementationPercentage == 100 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
@@ -375,6 +344,7 @@
     {% endblock %}
 {% endembed %}
 {% endif %}
+</div>
 
 {# Metadata #}
 {% embed '_components/_card.html.twig' %}
@@ -503,6 +473,7 @@
 </div>
 
 {# V4 LB-4: Comment-Thread adoption (C7 macro). #}
+<div id="comments" class="fa-show-section">
 {% include '_components/_isms_comment_thread.html.twig' with {
     comments: comments|default([]),
     entityType: 'Control',
@@ -511,6 +482,7 @@
     formAction: path('app_comment_post', {entityType: 'Control', entityId: control.id}),
     csrfToken: csrf_token('isms-comment')
 } only %}
+</div>
 {% endif %} {# /M-4 controls module gate #}
 
 <style>

@@ -686,6 +686,10 @@ jobs:
         # Dashboards, reports and snapshots read KpiCatalog, which applies the
         # organisation's KPI thresholds and adds the euro KPIs.
         run: python3 scripts/quality/check_kpi_catalog.py --quiet
+      - name: "Gate 75: detail pages use the detail skeleton"
+        # Status band, links block (evidence chain), sections, history, comments;
+        # unmigrated show pages are baselined and may only shrink.
+        run: python3 scripts/quality/check_show_skeleton.py --baseline scripts/quality/baselines/show_skeleton.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

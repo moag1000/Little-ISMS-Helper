@@ -166,9 +166,7 @@ class WorkflowService
         // Find appropriate workflow — DB lookup (backwards-compat for tenant-custom workflows).
         // Even when a YAML workflow is used, we still look up the DB row so that
         // WorkflowInstance.workflow_id FK is set (required for history display).
-        $workflow = $workflowName
-            ? $this->workflowRepository->findOneBy(['name' => $workflowName, 'entityType' => $entityType, 'isActive' => true])
-            : $this->workflowRepository->findOneBy(['entityType' => $entityType, 'isActive' => true]);
+        $workflow = $this->findDefinition($entityType, $workflowName, $this->resolveOwningTenant($entityType, $entityId, null));
 
         // If neither YAML steps nor a DB workflow was found, give up
         if ($yamlSteps === null && !$workflow) {
@@ -749,6 +747,26 @@ class WorkflowService
         $class = 'App\\Entity\\' . (self::ENTITY_TYPE_CLASS_ALIASES[$short] ?? $short);
 
         return class_exists($class) ? $class : null;
+    }
+
+    /**
+     * Active workflow definition for the record's organisation: its own custom
+     * definition first, else a shared one (no tenant). Never another
+     * organisation's — outside a web request the tenant filter is not armed.
+     */
+    private function findDefinition(string $entityType, ?string $name, ?Tenant $tenant): ?Workflow
+    {
+        $criteria = ['entityType' => $entityType, 'isActive' => true] + ($name !== null ? ['name' => $name] : []);
+        $shared = null;
+        foreach ($this->workflowRepository->findBy($criteria, ['id' => 'ASC']) as $candidate) {
+            $owner = $candidate->getTenant();
+            if ($owner !== null && $tenant !== null && $owner->getId() === $tenant->getId()) {
+                return $candidate;
+            }
+            $shared ??= $owner === null ? $candidate : null;
+        }
+
+        return $shared;
     }
 
     /**

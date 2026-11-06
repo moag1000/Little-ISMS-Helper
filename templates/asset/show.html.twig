@@ -5,7 +5,8 @@
 {% import '_components/_status_pill.html.twig' as pill %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ asset.name }}{% endblock %}
 
@@ -69,18 +70,37 @@
         </div>
     {% endif %}
 
-    {# Lifecycle X.3 — status chip + transition dropdown (asset_lifecycle: 7 places, 9 transitions) #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Asset', status_key: asset.status }) }}
-        {{ _lifecycle_actions.dropdown(asset, 'asset', 'asset_lifecycle') }}
-    </div>
-
     {% if isInherited is defined and isInherited %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-3' } } %}
             {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--status-info me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong> <p class="mb-0">{{ 'corporate.inheritance.asset_inherited_message'|trans({}, 'messages') }}</p> </div> </div>{% endblock %}
         {% endembed %}
     {% endif %}
 
+    {# Detail skeleton (UI wave E): status band → anchor bar → links → sections → history → comments #}
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Asset', status_key: asset.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(asset, 'asset', 'asset_lifecycle') }}{% endset %}
+    {% set _max_cia = max(asset.confidentialityValue|default(0), asset.integrityValue|default(0), asset.availabilityValue|default(0)) %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: asset.effectiveOwner },
+            { label: 'show.status.classification'|trans({}, 'messages'), value: asset.dataClassification ? ('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset') : null },
+            { label: 'show.status.protection'|trans({}, 'messages'), value: 'CIA ' ~ _max_cia ~ '/5' },
+        ],
+        workflow: workflow_state(asset),
+    }) }}
+
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages') },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages'), count: totalAuditLogs|default(0) },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages'), count: comments|default([])|length },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: asset } only %}
+
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             {% import '_components/_status_pill.html.twig' as pill %}
@@ -250,7 +270,7 @@
                 {% set valuationItems = valuationItems|merge([
                     { label: 'asset.label.total_value'|trans({}, 'asset'), value: asset.totalValue ~ ' EUR', dataReuse: true },
                     { label: 'asset.label.risks'|trans({}, 'asset'), raw: true, dataReuse: true, value: asset.risks|length > 0
-                        ? '<a href="#related-risks" class="' ~ badge_score(asset.risks|length, 5, 3) ~ '">' ~ asset.risks|length ~ '</a>'
+                        ? '<a href="#links" class="' ~ badge_score(asset.risks|length, 5, 3) ~ '">' ~ asset.risks|length ~ '</a>'
                         : '<span class="text-muted">0</span>' }
                 ]) %}
                 {% include '_components/_detail_group.html.twig' with { items: valuationItems } only %}
@@ -539,38 +559,6 @@
                 </div>
             {% endif %}
 
-            {# Data Reuse: Protecting Controls #}
-            {% if asset.protectingControls is defined and asset.protectingControls|length > 0 %}
-                <div class="detail-section">
-                    <h3>{{ 'asset.section.protecting_controls'|trans({}, 'asset') }} ({{ asset.protectingControls|length }})</h3>
-                    <div class="controls-list">
-                        {% for control in asset.protectingControls %}
-                            <div class="control-item">
-                                {% include '_components/_iso_reference_label.html.twig' with { control: control, code_class: 'fw-bold' } only %}
-                                {{ pill.render(control.implementationStatus|upper, pill_tone_status(control.implementationStatus)) }}
-                                <small>({{ control.implementationPercentage }}%)</small>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
-            {# Data Reuse: Related Risks #}
-            {% if asset.risks is defined and asset.risks|length > 0 %}
-                <div class="detail-section">
-                    <h3>{{ 'asset.section.related_risks'|trans({}, 'asset') }} ({{ asset.risks|length }})</h3>
-                    <div class="risks-list">
-                        {% for risk in asset.risks %}
-                            <div class="risk-item">
-                                <strong>{{ risk.title }}</strong>
-                                {{ pill.render('asset.risk_item.risk_level'|trans({'%value%': risk.inherentRiskLevel}, 'asset'), pill_tone_score(risk.inherentRiskLevel, 16, 9)) }}
-                                <small>{{ 'asset.risk_item.status'|trans({'%value%': (risk.status ? risk.status.value : '')|upper}, 'asset') }}</small>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
             {# Linked Processing Activities (M:N inverse) — privacy module (GDPR Art. 30 RoPA) #}
             {% if is_module_active('privacy') and asset.processingActivities is defined and asset.processingActivities|length > 0 %}
                 <div class="detail-section">
@@ -590,49 +578,9 @@
                 </div>
             {% endif %}
 
-            {# Data Reuse: Related Incidents #}
-            {% if asset.incidents is defined and asset.incidents|length > 0 %}
-                <div class="detail-section">
-                    <h3>{{ 'asset.section.related_incidents'|trans({}, 'asset') }} ({{ asset.incidents|length }})</h3>
-                    <div class="incidents-list">
-                        {% for incident in asset.incidents %}
-                            <div class="incident-item">
-                                <strong>{{ incident.title }}</strong>
-                                {{ pill.render(incident.severity ? incident.severity.value|upper : '', pill_tone_severity(incident.severity)) }}
-                                <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
-            {# Asset History: Audit Log #}
-            {% if auditLogs is defined and auditLogs|length > 0 %}
-                <div class="detail-section">
-                    <h3>{{ 'asset.section.history'|trans({}, 'asset') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
-                    <div class="fa-audit-feed">
-                        {% for log in auditLogs %}
-                            <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
-                                <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
-                                <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
-                                <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
-                                <span class="fa-audit-row__action">{{ log.action|upper }}</span>
-                                <span class="fa-audit-row__target">{{ log.entityType|default('Asset') }}#{{ log.entityId|default('') }}</span>
-                                <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    {% if totalAuditLogs > 10 %}
-                        <div class="text-center mt-3">
-                            <a href="{{ path('app_audit_log_index', {entity: 'Asset', entityId: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit_log.view_all'|trans({}, 'audit_log') }} ({{ totalAuditLogs }})
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
 
     {# Inverse-Coverage Impact-Analyse #}
     {% include '_components/_impact_coverage.html.twig' with {
@@ -640,7 +588,12 @@
         entity_label: 'asset'
     } %}
 
-    {# V4 LB-4: Comment-Thread adoption (C7 macro). #}
+    {% include '_components/_fa_show_history.html.twig' with {
+        auditLogs: auditLogs|default([]), total: totalAuditLogs|default(0),
+        entityType: 'Asset', entityId: asset.id, lifecycle: 'asset'
+    } only %}
+
+    <div id="comments" class="fa-show-section">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'Asset',
@@ -649,9 +602,7 @@
         formAction: path('app_comment_post', {entityType: 'Asset', entityId: asset.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
-
-    {# Lifecycle X.3 — transition history tab #}
-    {{ _lifecycle_history.history('asset', asset.id) }}
+    </div>
 </div>
 
 <style>
@@ -671,18 +622,6 @@
 }
 /* .badge-classification-* removed: dead code (BadgeExtension renders
    "badge bg-<color>" via Aurora). */
-/* Data Reuse Sections */
-.controls-list, .risks-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; }
-.control-item, .risk-item, .incident-item {
-    padding: 0.75rem;
-    background: var(--bs-tertiary-bg);
-    color: var(--bs-body-color);
-    border-left: 3px solid var(--primary);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
 /* Badge styles now handled by BadgeExtension helper functions */
 /* Audit log styles: .fa-audit-feed / .fa-audit-row — handled centrally in fairy-aurora-components.css */
 /* .badge-action-* removed: dead code. */
