@@ -465,14 +465,12 @@ Workflows can auto-progress after a time delay:
 **Setup**:
 
 1. **Add to workflow step metadata** when creating workflow
-2. **Run cron job** to process timed workflows:
+2. **Scheduler** runs `app:process-timed-workflows` every 15 minutes (`src/Schedule.php`);
+   the one scheduler cron line from `docs/user-guide/HOSTING_WORKER.md` is enough:
 
 ```bash
 # Test it first
 php bin/console app:process-timed-workflows --dry-run
-
-# Add to crontab (every 15 minutes)
-0,15,30,45 * * * * cd /path/to/app && php bin/console app:process-timed-workflows
 ```
 
 **Supported time units**:
