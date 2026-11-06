@@ -9,6 +9,7 @@ use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Control;
 use App\Entity\Document;
+use App\Util\ListPage;
 use App\Entity\DocumentControlLink;
 use App\Enum\DocumentStatus;
 use App\Form\DocumentType;
@@ -200,29 +201,22 @@ class DocumentController extends AbstractController
         // Sort by upload date descending
         usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());
 
-        // KPI counts: computed from the full operational pool (before status filter)
-        // so the KPI tiles always reflect the real totals regardless of active chip.
-        $allOperational = ($currentStatus === 'archived')
-            ? array_filter($allDocuments, fn(Document $d): bool => $d->isOperational())
-            : $documents;
-
-        // Recompute on unfiltered operational set if a status-filter is active.
-        $kpiPool = ($currentStatus !== null)
-            ? array_filter($allDocuments, fn(Document $d): bool => $d->isOperational())
-            : $documents;
-
-        $kpiDrafts   = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::Draft->value));
-        $kpiInReview = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::InReview->value));
-
-        // Calculate detailed statistics based on origin
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats(
-                $currentStatus !== null ? array_values($kpiPool) : array_values($documents),
-                $tenant,
-            );
-        } else {
-            $detailedStats = ['own' => count($documents), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($documents)];
+        // Category filter (GET `category`) — replaces the old client-side select.
+        $categories = array_values(array_unique(array_filter(
+            array_map(static fn(Document $d): ?string => $d->getCategory(), $documents),
+        )));
+        sort($categories);
+        $category = (string) $request->query->get('category', '');
+        if ($category !== '') {
+            $documents = array_values(array_filter(
+                $documents,
+                static fn(Document $document): bool => $document->getCategory() === $category,
+            ));
         }
+
+        // Summary chips count the list as shown (all filters applied).
+        $kpiDrafts   = count(array_filter($documents, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::Draft->value));
+        $kpiInReview = count(array_filter($documents, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::InReview->value));
 
         // Policy-Wizard — settings-drift map. For every Document in
         // the listing, ask the SettingsDriftDetector whether the snapshot
@@ -253,10 +247,15 @@ class DocumentController extends AbstractController
         }
 
         return $this->render('document/index.html.twig', [
-            'documents' => $documents,
+            'page' => ListPage::fromRequest(
+                $documents,
+                $request,
+                static fn(Document $d): array => [$d->getOriginalFilename(), $d->getCategory(), $d->getDescription()],
+            ),
+            'categories' => $categories,
+            'currentCategory' => $category,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
             'includeHistory' => $includeHistory,
             'driftMap' => $driftMap,
             'auditorScores' => $auditorScores,
@@ -1083,48 +1082,6 @@ class DocumentController extends AbstractController
             'type' => $type,
             'currentTenant' => $tenant,
         ]);
-    }
-
-    /**
-     * Calculate detailed statistics showing breakdown by origin
-     */
-    private function calculateDetailedStats(array $items, $currentTenant): array
-    {
-        $ownCount = 0;
-        $inheritedCount = 0;
-        $subsidiariesCount = 0;
-
-        // Get ancestors and subsidiaries for comparison
-        $ancestors = $currentTenant->getAllAncestors();
-        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
-
-        $subsidiaries = $currentTenant->getAllSubsidiaries();
-        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
-
-        foreach ($items as $item) {
-            $itemTenant = $item->getTenant();
-            if (!$itemTenant) {
-                continue;
-            }
-
-            $itemTenantId = $itemTenant->getId();
-            $currentTenantId = $currentTenant->getId();
-
-            if ($itemTenantId === $currentTenantId) {
-                $ownCount++;
-            } elseif (in_array($itemTenantId, $ancestorIds)) {
-                $inheritedCount++;
-            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
-                $subsidiariesCount++;
-            }
-        }
-
-        return [
-            'own' => $ownCount,
-            'inherited' => $inheritedCount,
-            'subsidiaries' => $subsidiariesCount,
-            'total' => $ownCount + $inheritedCount + $subsidiariesCount
-        ];
     }
 
     // ── Evidence-Versioning endpoints ──────────────────────────────────────

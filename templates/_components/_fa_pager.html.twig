@@ -1,0 +1,57 @@
+{#
+ # fa-pager — page navigation for a App\Util\ListPage (UI wave C).
+ #
+ # Usage:
+ #   {% import '_components/_fa_pager.html.twig' as _fa_pager %}
+ #   {{ _fa_pager.render(page) }}
+ #
+ # Links keep the current route, route params and every query parameter
+ # (filters, search, view) and only swap `page` / `per_page`. Renders nothing
+ # while everything fits on one page at the smallest page size.
+ #}
+{% macro render(page) %}
+    {% set _route = app.request.attributes.get('_route') %}
+    {% set _params = app.request.attributes.get('_route_params')|default({})|merge(app.request.query.all) %}
+    {% if page.total > 25 %}
+    <div class="fa-pager-bar mt-3">
+        <div class="fa-pager-bar__info">
+            {{ 'ui.pager.range'|trans({'%first%': page.firstItem, '%last%': page.lastItem, '%total%': page.total}, 'ui') }}
+        </div>
+        {% if page.pages > 1 %}
+        <nav class="fa-pager" aria-label="{{ 'ui.pager.nav_label'|trans({}, 'ui') }}">
+            {% if page.page > 1 %}
+                <a class="fa-pager__btn" href="{{ path(_route, _params|merge({page: page.page - 1})) }}" rel="prev" aria-label="{{ 'ui.pager.previous'|trans({}, 'ui') }}"><i class="fa-icon fa-icon--util-chevron-left" aria-hidden="true"></i></a>
+            {% else %}
+                <span class="fa-pager__btn" aria-disabled="true" aria-label="{{ 'ui.pager.previous'|trans({}, 'ui') }}"><i class="fa-icon fa-icon--util-chevron-left" aria-hidden="true"></i></span>
+            {% endif %}
+            {% for p in page.window %}
+                {% if p is null %}
+                    <span class="fa-pager__ellipsis" aria-hidden="true">…</span>
+                {% elseif p == page.page %}
+                    <span class="fa-pager__btn is-active" aria-current="page" aria-label="{{ 'ui.pager.page'|trans({'%page%': p}, 'ui') }}">{{ p }}</span>
+                {% else %}
+                    <a class="fa-pager__btn" href="{{ path(_route, _params|merge({page: p})) }}" aria-label="{{ 'ui.pager.page'|trans({'%page%': p}, 'ui') }}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page.page < page.pages %}
+                <a class="fa-pager__btn" href="{{ path(_route, _params|merge({page: page.page + 1})) }}" rel="next" aria-label="{{ 'ui.pager.next'|trans({}, 'ui') }}"><i class="fa-icon fa-icon--util-chevron-right" aria-hidden="true"></i></a>
+            {% else %}
+                <span class="fa-pager__btn" aria-disabled="true" aria-label="{{ 'ui.pager.next'|trans({}, 'ui') }}"><i class="fa-icon fa-icon--util-chevron-right" aria-hidden="true"></i></span>
+            {% endif %}
+        </nav>
+        {% endif %}
+        <form method="get" action="{{ path(_route, app.request.attributes.get('_route_params')|default({})) }}" class="fa-pager-perpage">
+            {% for _k, _v in app.request.query.all|filter((v, k) => k not in ['page', 'per_page'] and v is not iterable) %}
+                <input type="hidden" name="{{ _k }}" value="{{ _v }}">
+            {% endfor %}
+            {% set _sel_id = 'per-page-' ~ random() %}
+            <label for="{{ _sel_id }}">{{ 'ui.pager.per_page'|trans({}, 'ui') }}</label>
+            <select id="{{ _sel_id }}" name="per_page" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                {% for n in [25, 50, 100] %}
+                    <option value="{{ n }}" {{ n == page.perPage ? 'selected' }}>{{ n }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    {% endif %}
+{% endmacro %}

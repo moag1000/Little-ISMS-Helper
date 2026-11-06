@@ -182,10 +182,9 @@ class DocumentControllerTest extends TestCase
             ->with(
                 'document/index.html.twig',
                 $this->callback(function ($params) {
-                    return isset($params['documents'])
+                    return isset($params['page'])
                         && isset($params['inheritanceInfo'])
-                        && isset($params['currentTenant'])
-                        && isset($params['detailedStats']);
+                        && isset($params['currentTenant']);
                 })
             )
             ->willReturn('rendered content');
@@ -250,7 +249,7 @@ class DocumentControllerTest extends TestCase
                 'document/index.html.twig',
                 $this->callback(function ($params) {
                     return $params['inheritanceInfo']['currentView'] === 'subsidiaries'
-                        && count($params['documents']) === 2;
+                        && count($params['page']) === 2;
                 })
             )
             ->willReturn('rendered');
@@ -286,8 +285,8 @@ class DocumentControllerTest extends TestCase
                 'document/index.html.twig',
                 $this->callback(function ($params) {
                     // Only active document should be included
-                    return count($params['documents']) === 1
-                        && $params['documents'][0]->getStatus() === 'active';
+                    return count($params['page']) === 1
+                        && $params['page']->items[0]->getStatus() === 'active';
                 })
             )
             ->willReturn('rendered');

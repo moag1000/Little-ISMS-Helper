@@ -678,6 +678,10 @@ jobs:
         # need SharedTenantRowsInterface on the entity. Findings keyed by
         # file::rule::detail; baseline entries carry a reason.
         run: python3 scripts/quality/check_tenant_null_rows.py --baseline scripts/quality/baselines/tenant_null_rows.txt --quiet
+      - name: "Gate 73: list pages use the list skeleton (_fa_list_page)"
+        # Filter bar, table card, pager and empty state in one fixed order;
+        # unmigrated lists are baselined and may only shrink. No KPI tiles in lists.
+        run: python3 scripts/quality/check_list_skeleton.py --baseline scripts/quality/baselines/list_skeleton.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

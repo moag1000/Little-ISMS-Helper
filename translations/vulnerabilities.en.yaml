@@ -16,6 +16,10 @@ vulnerability:
         remediation: Remediation
         basic_info: 'Basic Information'
         scoring: 'Scoring & CVSS'
+    summary:
+        critical: '%count% critical'
+        high: '%count% high'
+        overdue: '%count% overdue'
     kpi:
         total: 'Total Vulnerabilities'
         critical: 'Critical Vulnerabilities'

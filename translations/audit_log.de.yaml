@@ -31,8 +31,6 @@ audit_log:
         user: Benutzer
         date_from: 'Von Datum'
         date_to: 'Bis Datum'
-        apply: Filtern
-        reset: 'Filter zurücksetzen'
         statistics: Statistiken
         quick:
             all: Alle
@@ -49,10 +47,6 @@ audit_log:
         view_details: 'Details anzeigen'
         ip_address: IP‑Adresse
         changes: Änderungen
-    pagination:
-        prev: '« Zurück'
-        next: 'Weiter »'
-        page_counter: 'Seite %current% von %total%'
     message:
         no_entries: Keine Protokolleinträge vorhanden.
         no_entries_filtered: 'Keine Protokolleinträge für den ausgewählten Filter gefunden.'

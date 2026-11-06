@@ -17,6 +17,10 @@ vulnerability:
         severity: Schweregrad
         status: Status
         exploit: Exploit
+    summary:
+        critical: '%count% kritisch'
+        high: '%count% hoch'
+        overdue: '%count% überfällig'
     kpi:
         total: Gesamt‑Schwachstellen
         critical: 'Kritische Schwachstellen'

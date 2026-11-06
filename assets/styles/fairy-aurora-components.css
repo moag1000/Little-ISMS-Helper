@@ -6644,6 +6644,7 @@ html[data-theme="dark"] .fa-pager {
     color: var(--fg-2);
     font: 700 13px var(--font-mono);
     cursor: pointer;
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -6688,7 +6689,9 @@ html[data-theme="dark"] .fa-pager {
     .fa-pager__btn.is-active::after { animation: none; }
 }
 
-.fa-pager__btn[disabled] { opacity: 0.32; cursor: not-allowed; }
+.fa-pager__btn[disabled],
+.fa-pager__btn[aria-disabled="true"] { opacity: 0.32; cursor: not-allowed; }
+.fa-pager__btn[aria-disabled="true"]:hover,
 .fa-pager__btn[disabled]:hover { background: transparent; border-color: transparent; color: var(--fg-3); box-shadow: none; }
 
 .fa-pager__ellipsis {

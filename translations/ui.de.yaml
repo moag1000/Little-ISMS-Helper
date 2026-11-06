@@ -149,6 +149,15 @@ ui:
         reset_aria_label: 'Alle aktiven Filter entfernen'
         active_filters: 'Aktive Filter'
         shareable_hint: 'Diese URL enthält die aktuellen Filter und kann geteilt oder als Lesezeichen gespeichert werden.'
+    pager:
+        nav_label: 'Seitennavigation'
+        previous: 'Vorherige Seite'
+        next: 'Nächste Seite'
+        page: 'Seite %page%'
+        range: '%first%–%last% von %total%'
+        per_page: 'Pro Seite'
+        search_no_match: 'Keine Treffer für „%q%“.'
+        no_match: 'Keine Treffer.'
     # Generic strings for JavaScript helpers (assets/js/fa-i18n.js), rendered
     # once per page into <script id="fa-i18n"> by base.html.twig.
     js:

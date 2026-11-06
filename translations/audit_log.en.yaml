@@ -31,8 +31,6 @@ audit_log:
         user: User
         date_from: 'From date'
         date_to: 'To date'
-        apply: 'Apply filters'
-        reset: 'Reset filters'
         statistics: Statistics
         quick:
             all: All
@@ -49,10 +47,6 @@ audit_log:
         view_details: 'View details'
         ip_address: 'IP Address'
         changes: Changes
-    pagination:
-        prev: '« Previous'
-        next: 'Next »'
-        page_counter: 'Page %current% of %total%'
     message:
         no_entries: No log entries available.
         no_entries_filtered: 'No audit log entries found for the selected filter.'

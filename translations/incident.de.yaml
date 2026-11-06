@@ -224,11 +224,13 @@ incident:
     title: Noch keine Sicherheitsvorfaelle
     description: 'Hier werden Sicherheitsvorfaelle dokumentiert und verfolgt. Bei einem Vorfall klicken Sie auf ''Vorfall melden''.'
     action: Vorfall melden
-  severity_distribution:
-    title: Schweregrade
+  summary:
+    critical: '%count% kritisch'
+    open: '%count% offen'
+    data_breach: '%count% Datenschutzverletzungen'
+    nis2: '%count% NIS2-meldepflichtig'
   list:
     title: Vorfallsliste
-    all_incidents: Alle Vorfälle (%count%)
   controls_should_prevent: Maßnahmen, die diesen Vorfall hätten verhindern sollen
   workflow:
     active: Aktiver Workflow

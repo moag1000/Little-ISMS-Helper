@@ -39,6 +39,8 @@ use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Clone\RiskCloner;
 use App\Service\TenantContext;
+use App\Util\ListPage;
+use App\Risk\RiskMatrixThresholds;
 use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -112,7 +114,6 @@ class RiskController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get filter parameters
-        $q = trim((string) $request->query->get('q', ''));
         $level = $request->query->get('level'); // critical, high, medium, low
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
@@ -140,10 +141,6 @@ class RiskController extends AbstractController
                 // Own + inherited from parents (default behavior)
                 default => $this->riskService->getRisksForTenant($tenant),
             };
-            // Filter high risks from the selected risk set
-            $highRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 12);
-            // Calculate detailed statistics based on origin
-            $detailedStats = $this->calculateDetailedStats($risks, $tenant);
             $inheritanceInfo = $this->riskService->getRiskInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
@@ -151,8 +148,6 @@ class RiskController extends AbstractController
         } else {
             // No organisation: only a SUPER_ADMIN gets the instance-wide register
             $risks = $this->isGranted('ROLE_SUPER_ADMIN') ? $this->riskRepository->findAll() : [];
-            $highRisks = [];
-            $detailedStats = ['own' => count($risks), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($risks)];
             $inheritanceInfo = [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -173,20 +168,6 @@ class RiskController extends AbstractController
             $risks = array_filter($risks, function (Risk $risk) use ($now): bool {
                 $due = $risk->getReviewDate() === null || $risk->getReviewDate() < $now;
                 return $due && $risk->getStatus()?->requiresPeriodicReview() !== false;
-            });
-        }
-
-        // Free-text search across title, description, threat (q=...) — URL-persisted (UXC-11)
-        if ($q !== '') {
-            $needle = mb_strtolower($q);
-            $risks = array_filter($risks, function (Risk $risk) use ($needle): bool {
-                $haystack = mb_strtolower(
-                    ($risk->getTitle() ?? '')
-                    . ' ' . ($risk->getDescription() ?? '')
-                    . ' ' . ($risk->getThreat() ?? '')
-                    . ' ' . (string) $risk->getId()
-                );
-                return str_contains($haystack, $needle);
             });
         }
 
@@ -213,15 +194,23 @@ class RiskController extends AbstractController
             $risks = $this->tagFilterService->filterByTagName($risks, Risk::class, $tagFilter);
         }
 
-        $treatmentStats = $tenant ? $this->riskRepository->countByTreatmentStrategy($tenant) : [];
+        // Summary chips count the list as shown (view + filters + focus applied).
+        $criticalCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::CRITICAL_MIN));
+        $highCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskScore() >= RiskMatrixThresholds::HIGH_MIN
+            && $r->getRiskScore() < RiskMatrixThresholds::CRITICAL_MIN));
+        $unownedCount = count(array_filter($risks, static fn(Risk $r): bool => $r->getRiskOwner() === null));
 
         return $this->render('risk/index.html.twig', [
-            'risks' => $risks,
-            'highRisks' => $highRisks,
-            'treatmentStats' => $treatmentStats,
+            'page' => ListPage::fromRequest(
+                $risks,
+                $request,
+                static fn(Risk $r): array => [$r->getTitle(), $r->getDescription(), $r->getThreat(), (string) $r->getId()],
+            ),
+            'critical_count' => $criticalCount,
+            'high_count' => $highCount,
+            'unowned_count' => $unownedCount,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
             'focus' => $focus,
         ]);
     }

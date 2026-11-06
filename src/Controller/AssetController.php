@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\Location\LocationScope;
+use App\Util\ListPage;
 use App\Attribute\RequiresModule;
 use App\Service\BulkDeleteService;
 use Exception;
@@ -92,7 +93,6 @@ class AssetController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get filter parameters
-        $q = trim((string) $request->query->get('q', ''));
         $type = $request->query->get('type');
         $classification = $request->query->get('classification');
         $owner = $request->query->get('owner');
@@ -162,20 +162,6 @@ class AssetController extends AbstractController
             $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getStatus() === $status);
         }
 
-        if ($q !== '') {
-            $needle = mb_strtolower($q);
-            $assets = array_filter($assets, function (Asset $asset) use ($needle): bool {
-                $haystack = mb_strtolower(
-                    ($asset->getName() ?? '')
-                    . ' ' . ($asset->getDescription() ?? '')
-                    . ' ' . ($asset->getAssetType() ?? '')
-                    . ' ' . ($asset->getOwner() ?? '')
-                    . ' ' . (string) $asset->getId()
-                );
-                return str_contains($haystack, $needle);
-            });
-        }
-
         // Re-index array after filtering to avoid gaps in keys
         $assets = array_values($assets);
 
@@ -197,9 +183,27 @@ class AssetController extends AbstractController
             ? $this->assetRepository->countByType($tenant)
             : [];
 
-        // Calculate BCM-based suggestions and risk count for each asset
+        // Summary chips count the list as shown (view + filters applied).
+        $criticalCount = count(array_filter(
+            $assets,
+            static fn(Asset $a): bool => $a->getConfidentialityValue() >= 4
+                || $a->getIntegrityValue() >= 4
+                || $a->getAvailabilityValue() >= 4,
+        ));
+        $restrictedCount = count(array_filter(
+            $assets,
+            static fn(Asset $a): bool => $a->getDataClassification() === 'restricted',
+        ));
+
+        $page = ListPage::fromRequest(
+            $assets,
+            $request,
+            static fn(Asset $a): array => [$a->getName(), $a->getDescription(), $a->getAssetType(), $a->getOwner(), (string) $a->getId()],
+        );
+
+        // BCM-based suggestions and risk count, only for the rows on this page
         $assetRecommendations = [];
-        foreach ($assets as $asset) {
+        foreach ($page as $asset) {
             $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
             $processes = $this->businessProcessRepository->findByAsset($asset->getId());
             $risks = $this->riskRepository->findBy(['asset' => $asset]);
@@ -213,20 +217,14 @@ class AssetController extends AbstractController
             ];
         }
 
-        // Calculate detailed statistics based on origin
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($assets, $tenant);
-        } else {
-            $detailedStats = ['own' => count($assets), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($assets)];
-        }
-
         return $this->render('asset/index.html.twig', [
-            'assets' => $assets,
+            'page' => $page,
             'typeStats' => $typeStats,
             'recommendations' => $assetRecommendations,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
+            'critical_count' => $criticalCount,
+            'restricted_count' => $restrictedCount,
         ]);
     }
     #[Route('/asset/new', name: 'app_asset_new', methods: ['GET', 'POST'])]

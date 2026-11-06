@@ -1,9 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% trans_default_domain 'risk' %}
-{% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk')}}{% endblock %}
 
@@ -26,7 +23,7 @@
     ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_risk_register') }] : [])
      |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'risk', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
-    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: risks|default([])|length } %}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: page.total } %}
 {% set _global_hints = alva_hints('risk_index') %}
 {% if _global_hints|length > 0 %}
     {% for _h in _global_hints %}
@@ -35,201 +32,57 @@
 {% endif %}
 
 
-<main>
-
-{# View Filter #}
-{% if currentTenant %}
-{% embed '_components/_card.html.twig' with {class: 'mb-3'} %}
-    {% block card_body %}
-        <form method="get" action="{{ path('app_risk_index') }}" class="d-flex align-items-center gap-2 py-0">
-            <label for="view-filter" class="mb-0 fw-bold">
-                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
-            </label>
-            <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                    {{ 'corporate.view.own_only'|trans({}, 'messages') }}
-                </option>
-                {% if inheritanceInfo.hasParent %}
-                <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
-                </option>
-                {% endif %}
-                {% if inheritanceInfo.hasSubsidiaries %}
-                <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
-                </option>
-                {% endif %}
-                {% if inheritanceInfo.isAdmin %}
-                <option value="orphaned" {{ inheritanceInfo.currentView == 'orphaned' ? 'selected' : '' }}>
-                    {{ 'corporate.view.orphaned'|trans({}, 'tenant') }}
-                </option>
-                <option value="all" {{ inheritanceInfo.currentView == 'all' ? 'selected' : '' }}>
-                    {{ 'corporate.view.all_tenants'|trans({}, 'tenant') }}
-                </option>
-                {% endif %}
-            </select>
-            <noscript>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
-            </noscript>
-        </form>
-    {% endblock %}
-{% endembed %}
+{# WS-5 Bulk tag actions bar (polymorphic) #}
+{% if is_granted('TAG_APPLY') %}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        entity_class:   'App\\Entity\\Risk',
+        action_urls: {
+            tag_add: path('admin_tag_bulk_apply', {entityClass: 'Risk'}),
+        },
+        available_tags: available_tags(),
+    } only %}
 {% endif %}
 
-{# KPI Cards Grid #}
-<div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
-    {{ _fa_feature_card.render({
-        icon: 'status-warning',
-        label: 'risk.modern.kpi.total'|trans({}, 'risk'),
-        value: detailedStats.total,
-        hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
-        variant: 'primary',
-        href: '#all-risks'
-    }) }}
-
-    {# ISO 27001 compliant thresholds #}
-    {% set criticalRisks = risks|filter(r => r.getRiskScore() >= 20)|length %}
-    {{ _fa_feature_card.render({
-        icon: 'nav-shield-alert',
-        label: 'risk.modern.kpi.critical'|trans({}, 'risk'),
-        value: criticalRisks,
-        variant: 'danger',
-        hint: criticalRisks > 0 ? '↓' : '↑ 0',
-        href: '#filter-critical'
-    }) }}
-
-    {% set highRisks = risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length %}
-    {{ _fa_feature_card.render({
-        icon: 'status-critical',
-        label: 'risk.modern.kpi.high'|trans({}, 'risk'),
-        value: highRisks,
-        variant: 'warning',
-        href: '#filter-high'
-    }) }}
-
-    {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRiskLevel(), 0) / risks|length)|round(1) : 0 %}
-    {{ _fa_feature_card.render({
-        icon: 'nav-bar-chart',
-        label: 'risk.modern.kpi.avg_residual'|trans({}, 'risk'),
-        value: avgResidualRisk,
-        unit: 'risk.modern.kpi.unit.max'|trans({}, 'risk'),
-        variant: avgResidualRisk < 8 ? 'success' : 'warning'
-    }) }}
-</div>
-
-{# Risk Matrix Overview #}
-{% embed '_components/_card.html.twig' with {
-    'title': 'risk.modern.matrix_overview'|trans({}, 'risk'),
-    'headerIcon': 'nav-grid',
-    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i></a>',
-    'class': 'mb-4'
+<div class="container-fluid py-4">
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_risk_index'),
+    filter_keys: ['level', 'status', 'treatment', 'owner', 'view', 'review_overdue', 'tag', 'location', 'focus'],
+    list_title: 'risk.index.all_risks'|trans({}, 'risk'),
+    empty: {
+        mood: 'sleeping',
+        title: 'risk.index.empty.title'|trans({}, 'risk'),
+        text: 'risk.index.empty.description'|trans({}, 'risk'),
+        actions: [{ label: 'risk.index.empty.action'|trans({}, 'risk'), variant: 'primary', icon: 'plus', href: path('app_risk_new') }],
+        norm_ref: 'ISO 27001 Clause 6.1.2',
+        help_link: path('app_help_glossary') ~ '#glossary-risk',
+    },
+    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/risk"',
 } %}
-    {% block card_body %}
-        <div class="risk-matrix-preview">
-            {# Risk Distribution by Severity #}
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="risk-level-card risk-critical">
-                        <div class="risk-level-icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></div>
-                        {# Risk-Schwellen single-source-of-truth via RiskMatrixThresholds #}
-                        <div class="risk-level-label">{{ risk_level_label('critical') }} ({{ risk_threshold('critical') }})</div>
-                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 20)|length }}</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="risk-level-card risk-high">
-                        <div class="risk-level-icon">🟠</div>
-                        <div class="risk-level-label">{{ risk_level_label('high') }} ({{ risk_threshold('high') }})</div>
-                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length }}</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="risk-level-card risk-medium">
-                        <div class="risk-level-icon">🟡</div>
-                        <div class="risk-level-label">{{ risk_level_label('medium') }} ({{ risk_threshold('medium') }})</div>
-                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 6 and r.getRiskScore() < 12)|length }}</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="risk-level-card risk-low">
-                        <div class="risk-level-icon">🟢</div>
-                        <div class="risk-level-label">{{ risk_level_label('low') }} ({{ risk_threshold('low') }})</div>
-                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() < 6)|length }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endblock %}
-{% endembed %}
-
-{# Treatment Status #}
-{% embed '_components/_card.html.twig' with {
-    'title': 'risk.index.treatment_status'|trans({}, 'risk'),
-    'headerIcon': 'shield-check',
-    'class': 'mb-4'
-} %}
-    {% block card_body %}
-        <div class="row">
-            {# ISO 27001 Cl. 6.1.3 treatment strategies → Aurora mask-icon mapping. #}
-            {% set treatments = {
-                'mitigate': { label: 'risk.index.treatment.mitigate'|trans({}, 'risk'), icon: 'shield-check', color: 'success' },
-                'accept': { label: 'risk.index.treatment.accept'|trans({}, 'risk'), icon: 'status-ok', color: 'info' },
-                'transfer': { label: 'risk.index.treatment.transfer'|trans({}, 'risk'), icon: 'ui-arrow-right', color: 'warning' },
-                'avoid': { label: 'risk.index.treatment.avoid'|trans({}, 'risk'), icon: 'status-critical', color: 'danger' }
-            } %}
-            {% for strategy, data in treatments %}
-                {% set count = risks|filter(r => r.treatmentStrategy and r.treatmentStrategy.value == strategy)|length %}
-                <div class="col-md-3 mb-3">
-                    <div class="treatment-stat">
-                        <div class="treatment-icon text-{{ data.color }}" aria-hidden="true">
-                            <i class="fa-icon fa-icon--{{ data.icon }}" aria-hidden="true"></i>
-                        </div>
-                        <div class="treatment-info">
-                            <div class="treatment-label">{{ data.label }}</div>
-                            <div class="treatment-count">{{ count }}</div>
-                            {% if risks|length > 0 %}
-                                <div class="treatment-percent">{{ (count / risks|length * 100)|round }}%</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endblock %}
-{% endembed %}
-
-{# Aurora filter-chip quick row — quick toggles for level filter #}
-{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
-{% set _activeLevel = app.request.query.get('level') %}
-{% set _baseUrl = path('app_risk_index') %}
-{# Chip-row labels now flow through risk_level_label() (SSoT) #}
-{{ _fa_filter_chip.group([
-    { label: 'risk.filter.all_risks'|trans({}, 'risk'),     href: _baseUrl },
-    { label: risk_level_label('critical') ~ ' (' ~ risk_threshold('critical') ~ ')', href: _baseUrl ~ '?level=critical' },
-    { label: risk_level_label('high')     ~ ' (' ~ risk_threshold('high')     ~ ')', href: _baseUrl ~ '?level=high' },
-    { label: risk_level_label('medium')   ~ ' (' ~ risk_threshold('medium')   ~ ')', href: _baseUrl ~ '?level=medium' },
-    { label: risk_level_label('low')      ~ ' (' ~ risk_threshold('low')      ~ ')', href: _baseUrl ~ '?level=low' }
-],
-    _activeLevel == 'critical' ? 1
-    : (_activeLevel == 'high' ? 2
-    : (_activeLevel == 'medium' ? 3
-    : (_activeLevel == 'low' ? 4 : 0))),
-    { class: 'mb-3', ariaLabel: 'risk.filter.level_label'|trans({}, 'risk') }
-) }}
-
-{# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
-{% embed '_components/_search_filter_form.html.twig' with {
-    action: path('app_risk_index'),
-    filter_keys: ['level', 'status', 'treatment', 'owner', 'view', 'review_overdue', 'tag', 'location'],
-    form_id: 'risk-filter-form'
-} %}
-    {% block filters %}
-        {% if app.request.query.getInt('location') > 0 %}
-            <input type="hidden" name="location" value="{{ app.request.query.getInt('location') }}">
-        {% endif %}
+    {% block list_filters %}
+        {% for _hk in ['location', 'tag', 'review_overdue', 'focus'] %}
+            {% if app.request.query.get(_hk) is not null and app.request.query.get(_hk) != '' %}
+                <input type="hidden" name="{{ _hk }}" value="{{ app.request.query.get(_hk) }}">
+            {% endif %}
+        {% endfor %}
         {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
-        {% if app.request.query.get('view') %}
-            <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
+        {% if currentTenant %}
+        <div class="col-md-3">
+            <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
+            <select class="form-select fa-cyber-input__field" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>{{ 'corporate.view.own_only'|trans({}, 'messages') }}</option>
+                {% if inheritanceInfo.hasParent %}
+                <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>{{ 'corporate.view.including_inherited'|trans({}, 'messages') }}</option>
+                {% endif %}
+                {% if inheritanceInfo.hasSubsidiaries %}
+                <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>{{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}</option>
+                {% endif %}
+                {% if inheritanceInfo.isAdmin %}
+                <option value="orphaned" {{ inheritanceInfo.currentView == 'orphaned' ? 'selected' : '' }}>{{ 'corporate.view.orphaned'|trans({}, 'tenant') }}</option>
+                <option value="all" {{ inheritanceInfo.currentView == 'all' ? 'selected' : '' }}>{{ 'corporate.view.all_tenants'|trans({}, 'tenant') }}</option>
+                {% endif %}
+            </select>
+        </div>
         {% endif %}
         <div class="col-md-3">
             <label for="filter-level" class="form-label">{{ 'risk.filter.level_label'|trans({}, 'risk') }}</label>
@@ -276,31 +129,51 @@
             }) }}
         </div>
     {% endblock %}
+    {% block list_summary %}
+        {% if critical_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'risk.summary.critical'|trans({'%count%': critical_count}, 'risk') }}</span>{% endif %}
+        {% if high_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'risk.summary.high'|trans({'%count%': high_count}, 'risk') }}</span>{% endif %}
+        {% if unowned_count > 0 %}<span class="fa-status-pill fa-status-pill--info">{{ 'risk.summary.unowned'|trans({'%count%': unowned_count}, 'risk') }}</span>{% endif %}
+    {% endblock %}
+    {% block list_table %}
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-hover table-bulk-selectable mb-0',
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col" class="bulk-select-column">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                    </th>
+                    <th scope="col">{{ 'risk.index.table.title'|trans({}, 'risk') }}</th>
+                    <th scope="col">{{ 'risk.index.table.threat'|trans({}, 'risk') }}</th>
+                    <th scope="col" class="text-center">{{ 'risk.index.table.risk_score'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-inherent-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
+                    <th scope="col" class="text-center">{{ 'risk.index.table.residual_risk'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-residual-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
+                    <th scope="col">{{ 'risk.index.table.treatment'|trans({}, 'risk') }}</th>
+                    <th scope="col" class="text-center">{{ 'risk.index.table.risk_subject'|trans({}, 'risk') }}</th>
+                    <th scope="col" class="text-center">{{ 'risk.index.table.actions'|trans({}, 'risk') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body_attrs %}id="risk-rows"{% endblock %}
+            {% block table_body %}
+                {% for risk in page %}
+                    {% include 'risk/_row.html.twig' with { risk: risk, currentTenant: currentTenant } %}
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+        {% include '_components/_bulk_action_bar.html.twig' with {
+            actions: ['export', 'assign', 'delete'],
+            variant: 'brand'
+        } %}
+    {% endblock %}
 {% endembed %}
 
-{# WS-5 Bulk tag actions bar (polymorphic) #}
-{% if is_granted('TAG_APPLY') %}
-    {% include '_components/_bulk_action_bar.html.twig' with {
-        entity_class:   'App\\Entity\\Risk',
-        action_urls: {
-            tag_add: path('admin_tag_bulk_apply', {entityClass: 'Risk'}),
-        },
-        available_tags: available_tags(),
-    } only %}
-{% endif %}
-
-{# Risks Table or Empty State #}
-{% if risks|length == 0 %}
-    {# "Create from template" (ISO 27005 catalog, BSI hazards) #}
+{% if page.total == 0 %}
     {% set _system_templates = system_templates('App\\Entity\\Risk') %}
-    {% include '_components/_empty_state.html.twig' with {
-        icon: 'status-warning',
-        title: 'risk.index.empty.title'|trans({}, 'risk'),
-        description: 'risk.index.empty.description'|trans({}, 'risk'),
-        action: { label: 'risk.index.empty.action'|trans({}, 'risk'), url: path('app_risk_new'), icon: 'plus' },
-        norm_ref: 'ISO 27001 Clause 6.1.2 · ISO 9001: Risiken & Chancen (6.1)',
-        help_link: path('app_help_glossary') ~ '#glossary-risk'
-    } %}
     {% if _system_templates|length > 0 %}
         <div class="text-center mt-3">
             <button type="button" class="btn btn-outline-primary"
@@ -321,132 +194,10 @@
             modal_id: 'systemTemplateModalRisk'
         } %}
     {% endif %}
-{% else %}
-{% embed '_components/_card.html.twig' %}
-    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/risk"{% endblock %}
-    {% block card_header %}
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h2>
-        </div>
-    {% endblock %}
-    {% block card_body %}
-    {% embed '_components/_table.html.twig' with {
-        'class': 'table-hover table-bulk-selectable mb-0',
-        'noMargin': true,
-        'responsive': true
-    } %}
-        {% block table_head %}
-            <tr>
-                <th scope="col" class="bulk-select-column">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           data-action="bulk-actions#selectAll"
-                           data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                </th>
-                <th scope="col">{{ 'risk.index.table.title'|trans({}, 'risk') }}</th>
-                <th scope="col">{{ 'risk.index.table.threat'|trans({}, 'risk') }}</th>
-                <th scope="col" class="text-center">{{ 'risk.index.table.risk_score'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-inherent-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
-                <th scope="col" class="text-center">{{ 'risk.index.table.residual_risk'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-residual-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
-                <th scope="col">{{ 'risk.index.table.treatment'|trans({}, 'risk') }}</th>
-                <th scope="col" class="text-center">{{ 'risk.index.table.risk_subject'|trans({}, 'risk') }}</th>
-                <th scope="col" class="text-center">{{ 'risk.index.table.actions'|trans({}, 'risk') }}</th>
-            </tr>
-        {% endblock %}
-        {% block table_body_attrs %}id="risk-rows"{% endblock %}
-        {% block table_body %}
-            {% for risk in risks %}
-                {% include 'risk/_row.html.twig' with { risk: risk, currentTenant: currentTenant } %}
-            {% endfor %}
-        {% endblock %}
-    {% endembed %}
-
-    {# Bulk Action Bar #}
-    {% include '_components/_bulk_action_bar.html.twig' with {
-        actions: ['export', 'assign', 'delete'],
-        variant: 'brand'
-    } %}
-    {% endblock %}
-{% endembed %}
 {% endif %}
+</div>
 
 <style>
-/* Risk Level Cards */
-.risk-level-card {
-    text-align: center;
-    padding: var(--spacing-lg);
-    background: var(--surface);
-    color: var(--fg);
-    border-radius: var(--r-md);
-    border: 2px solid var(--border);
-    transition: all var(--t-fast);
-}
-
-.risk-level-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.risk-level-card.risk-critical { border-color: var(--danger); }
-.risk-level-card.risk-high { border-color: var(--warning); }
-.risk-level-card.risk-medium { border-color: var(--warning); }
-.risk-level-card.risk-low { border-color: var(--success); }
-
-.risk-level-icon {
-    font-size: 2.5rem;
-    margin-bottom: var(--spacing-sm);
-}
-
-.risk-level-label {
-    font-size: 0.875rem;
-    color: var(--fg-3);
-    margin-bottom: var(--spacing-xs);
-}
-
-.risk-level-count {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary-strong);
-}
-
-/* Treatment Stats */
-.treatment-stat {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-}
-
-.treatment-icon {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    background: var(--surface);
-    color: var(--fg);
-    border-radius: 50%;
-}
-
-.treatment-label {
-    font-size: 0.875rem;
-    color: var(--fg-3);
-}
-
-.treatment-count {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-strong);
-}
-
-.treatment-percent {
-    font-size: 0.75rem;
-    color: var(--fg-3);
-}
-
 /* Risk Score Badges */
 .risk-score {
     display: inline-flex;
@@ -485,6 +236,4 @@
     color: var(--success);
 }
 </style>
-
-</main>
 {% endblock %}

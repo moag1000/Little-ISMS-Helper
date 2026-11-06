@@ -15,6 +15,7 @@ use Exception;
 use DateTime;
 use App\Entity\CorrectiveAction;
 use App\Entity\Incident;
+use App\Util\ListPage;
 use App\Entity\Risk;
 use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
@@ -89,7 +90,6 @@ class IncidentController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get filter parameters
-        $q = trim((string) $request->query->get('q', ''));
         $severity = $request->query->get('severity');
         $category = $request->query->get('category');
         $status = $request->query->get('status');
@@ -111,28 +111,23 @@ class IncidentController extends AbstractController
                 case 'own':
                     // Only own incidents
                     $allIncidents = $this->incidentRepository->findByTenant($tenant);
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
                 case 'subsidiaries':
                     // Own + from all subsidiaries (for parent companies)
                     $allIncidents = $this->incidentRepository->findByTenantIncludingSubsidiaries($tenant);
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
                 case 'orphaned':
                     // Tenant-less (orphan) incidents — admin only
                     $allIncidents = $this->incidentRepository->findOrphaned();
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
                 case 'all':
                     // Cross-tenant overview — admin only
                     $allIncidents = $this->incidentRepository->findAllAcrossTenants();
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
                 case 'inherited':
                 default:
                     // Own + inherited from parents (default behavior)
                     $allIncidents = $this->incidentRepository->findByTenantIncludingParent($tenant);
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
             }
 
@@ -145,7 +140,6 @@ class IncidentController extends AbstractController
         } else {
             // Fallback for users without tenant (e.g., super admins)
             $allIncidents = $this->incidentRepository->findAll();
-            $openIncidents = [];
             $inheritanceInfo = [
                 'hasParent' => false,
                 'hasSubsidiaries' => false,
@@ -176,21 +170,6 @@ class IncidentController extends AbstractController
             $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->requiresNis2Reporting());
         }
 
-        // Free-text search across title/description (q=...) — URL-persisted (UXC-11)
-        if ($q !== '') {
-            $needle = mb_strtolower($q);
-            $allIncidents = array_filter($allIncidents, function (Incident $incident) use ($needle): bool {
-                $haystack = mb_strtolower(
-                    ($incident->getTitle() ?? '')
-                    . ' ' . ($incident->getDescription() ?? '')
-                    . ' ' . ($incident->getCategory() ?? '')
-                    . ' ' . ($incident->getIncidentNumber() ?? '')
-                    . ' ' . (string) $incident->getId()
-                );
-                return str_contains($haystack, $needle);
-            });
-        }
-
         // Alva-hint deep-link: pre-filter to EXACTLY the privacy-SLA early-warning
         // set OpenIncidentOhneSlaRule counts (shared repository finder).
         if ($focus === 'privacy_sla' && $tenant) {
@@ -206,30 +185,30 @@ class IncidentController extends AbstractController
 
         // Re-index arrays after filtering to avoid gaps in keys
         $allIncidents = array_values($allIncidents);
-        $openIncidents = array_values($openIncidents);
 
-        $categoryStats = $tenant
-            ? $this->incidentRepository->countByCategory($tenant)
-            : [];
-        $severityStats = $tenant
-            ? $this->incidentRepository->countBySeverity($tenant)
-            : [];
-
-        // Calculate detailed statistics based on origin
-        if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($allIncidents, $tenant);
-        } else {
-            $detailedStats = ['own' => count($allIncidents), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($allIncidents)];
-        }
+        // Summary chips count the list as shown (view + filters + focus applied).
+        $criticalCount = count(array_filter($allIncidents, static fn(Incident $i): bool => $i->getSeverity() === IncidentSeverity::Critical));
+        $openCount = count(array_filter($allIncidents, static fn(Incident $i): bool => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true)));
+        $dataBreachCount = count(array_filter($allIncidents, static fn(Incident $i): bool => $i->isDataBreachOccurred() === true));
+        $nis2Count = count(array_filter($allIncidents, static fn(Incident $i): bool => $i->requiresNis2Reporting()));
 
         return $this->render('incident/index.html.twig', [
-            'openIncidents' => $openIncidents,
-            'allIncidents' => $allIncidents,
-            'categoryStats' => $categoryStats,
-            'severityStats' => $severityStats,
+            'page' => ListPage::fromRequest(
+                $allIncidents,
+                $request,
+                static fn(Incident $i): array => [
+                    $i->getTitle(),
+                    $i->getIncidentNumber(),
+                    $i->getCategory(),
+                    $i->getDescription(),
+                ],
+            ),
+            'critical_count' => $criticalCount,
+            'open_count' => $openCount,
+            'data_breach_count' => $dataBreachCount,
+            'nis2_count' => $nis2Count,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats,
             'focus' => $focus,
         ]);
     }

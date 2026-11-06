@@ -203,6 +203,9 @@ asset:
   warning:
     delete_irreversible: Deleting this asset cannot be undone. Related links may be
       removed.
+  summary:
+    critical: '%count% critical'
+    restricted: '%count% restricted'
   modern:
     breadcrumb: Assets
     header:
@@ -211,15 +214,6 @@ asset:
       action:
         new: New Asset
         export: Export
-    kpi:
-      total: Total Assets
-      critical: Critical Assets
-      avg_cia: Avg. CIA Score
-      with_risks: Assets with Risks
-      unit:
-        out_of_5: / 5
-    chart:
-      type_distribution: Distribution by asset type
     empty:
       title: No assets yet
       description: Create your first asset to start asset management. Assets are the
