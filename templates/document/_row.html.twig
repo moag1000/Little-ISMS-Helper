@@ -13,10 +13,7 @@
 {% set supersededIds = supersededIds|default({}) %}
 {% set auditorScores = auditorScores|default({}) %}
 <tr id="document-row-{{ document.id }}"
-    class="fa-table__row document-row"
-    data-document-filter-target="row"
-    data-category="{{ document.category|lower }}"
-    data-name="{{ document.originalFilename|lower }}">
+    class="fa-table__row document-row">
     <td class="fa-table__cell fa-table__cell--checkbox bulk-select-column">
         <input type="checkbox"
                data-bulk-actions-target="item"

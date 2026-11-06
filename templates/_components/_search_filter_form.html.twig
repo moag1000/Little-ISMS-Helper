@@ -17,6 +17,8 @@
  *   - advanced_open:       Force <details> to start open (default: false)
  *   - wrapper_class:       Extra CSS class on the outer wrapper (default: '')
  *   - form_id:             Optional ID for the form element
+ *   - filters_html:        Pre-rendered filter fields (alternative to the block, used by
+ *                          _fa_list_page, whose callers cannot reach this embed's block)
  *
  * Blocks:
  *   - filters: Your filter dropdowns / inputs go here. They live inside the same
@@ -108,7 +110,8 @@
             {% endif %}
 
             {# Advanced filters - collapsible to keep the UI calm when there are many #}
-            {% if block('filters') is defined or block('filters') is not empty %}
+            {% set _filters_markup = filters_html|default('') is not empty ? filters_html : block('filters') %}
+            {% if _filters_markup|trim is not empty %}
                 <details class="search-filter-advanced mt-3"
                          {% if advanced_open or active_count > 0 %}open{% endif %}>
                     <summary class="search-filter-advanced-toggle text-body-secondary"
@@ -120,7 +123,7 @@
                         {% endif %}
                     </summary>
                     <div class="row g-3 mt-2" id="{{ form_id }}-advanced">
-                        {% block filters %}{% endblock %}
+                        {% if filters_html|default('') is not empty %}{{ filters_html|raw }}{% else %}{% block filters %}{% endblock %}{% endif %}
                     </div>
                 </details>
             {% endif %}

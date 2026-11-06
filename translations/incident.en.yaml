@@ -222,11 +222,13 @@ incident:
     title: No security incidents yet
     description: 'Security incidents are documented and tracked here. When an incident occurs, click ''Report Incident''.'
     action: Report Incident
-  severity_distribution:
-    title: Severity Distribution
+  summary:
+    critical: '%count% critical'
+    open: '%count% open'
+    data_breach: '%count% data breaches'
+    nis2: '%count% NIS2 reportable'
   list:
     title: Incident List
-    all_incidents: All Incidents (%count%)
   controls_should_prevent: 'Controls that should have prevented this incident'
   workflow:
     active: Active Workflow

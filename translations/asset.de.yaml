@@ -204,6 +204,9 @@ asset:
   warning:
     delete_irreversible: Das Löschen dieses Assets kann nicht rückgängig gemacht werden.
       Zugehörige Verknüpfungen können entfernt werden.
+  summary:
+    critical: '%count% kritisch'
+    restricted: '%count% streng vertraulich'
   modern:
     breadcrumb: Assets
     header:
@@ -212,15 +215,6 @@ asset:
       action:
         new: Neues Asset
         export: Export
-    kpi:
-      total: Gesamt-Assets
-      critical: Kritische Assets
-      avg_cia: Ø CIA-Score
-      with_risks: Assets mit Risiken
-      unit:
-        out_of_5: / 5
-    chart:
-      type_distribution: Verteilung nach Asset-Typ
     empty:
       title: Noch keine Assets vorhanden
       description: Legen Sie Ihr erstes Asset an, um mit dem Asset Management zu beginnen.

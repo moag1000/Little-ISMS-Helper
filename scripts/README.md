@@ -205,6 +205,21 @@ String nennt.
 
 ---
 
+### quality/check_list_skeleton.py (Gate 73)
+
+**Zweck:** Jede Listenseite (`templates/**/index.html.twig`) läuft über das eine
+Listen-Gerüst `_components/_fa_list_page.html.twig`: Filterleiste (Suche `q` +
+einklappbare Filter, alles GET), Kurzinfo-Chips, Tabelle, Pager, leerer Zustand.
+Listen auf dem Gerüst dürfen keine KPI-Kacheln (`_fa_feature_card`) tragen.
+
+**Baseline:** `scripts/quality/baselines/list_skeleton.txt` listet die noch nicht
+umgestellten Listen; sie darf nur schrumpfen, veraltete Einträge schlagen fehl.
+Neu schreiben: `--write-baseline scripts/quality/baselines/list_skeleton.txt`.
+
+**CI-Integration:** Gate 73 im `code-quality`-Job.
+
+---
+
 ### quality/check_tenant_null_rows.py (Gate 72)
 
 **Zweck:** Datensätze ohne Mandant, die der `TenantFilter` versteckt. Zwei Regeln:

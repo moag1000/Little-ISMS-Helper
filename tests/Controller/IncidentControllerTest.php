@@ -199,8 +199,8 @@ class IncidentControllerTest extends TestCase
             ->with(
                 'incident/index.html.twig',
                 $this->callback(function ($params) {
-                    return isset($params['allIncidents'])
-                        && isset($params['openIncidents'])
+                    return isset($params['page'])
+                        && isset($params['open_count'])
                         && isset($params['inheritanceInfo']);
                 })
             )
@@ -235,8 +235,8 @@ class IncidentControllerTest extends TestCase
                 'incident/index.html.twig',
                 $this->callback(function ($params) {
                     // Only high severity should be included after filtering
-                    return count($params['allIncidents']) === 1
-                        && $params['allIncidents'][0]->getSeverity() === \App\Enum\IncidentSeverity::High;
+                    return $params['page']->total === 1
+                        && $params['page']->items[0]->getSeverity() === \App\Enum\IncidentSeverity::High;
                 })
             )
             ->willReturn('rendered');
@@ -269,8 +269,8 @@ class IncidentControllerTest extends TestCase
             ->with(
                 'incident/index.html.twig',
                 $this->callback(function ($params) {
-                    return count($params['allIncidents']) === 1
-                        && $params['allIncidents'][0]->isDataBreachOccurred() === true;
+                    return $params['page']->total === 1
+                        && $params['page']->items[0]->isDataBreachOccurred() === true;
                 })
             )
             ->willReturn('rendered');

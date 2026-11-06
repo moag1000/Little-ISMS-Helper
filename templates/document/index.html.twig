@@ -1,15 +1,12 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% trans_default_domain 'document' %}
-{% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'document.title'|trans({}, 'document') }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
+<div class="container-fluid py-4">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -40,16 +37,13 @@
             </button>
         </form>
     {% endif %}
-    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: documents|default([])|length } %}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: page.total } %}
 {% set _global_hints = alva_hints('document_index') %}
 {% if _global_hints|length > 0 %}
     {% for _h in _global_hints %}
         {{ _fa_alva_hint.render(_h) }}
     {% endfor %}
 {% endif %}
-
-
-    <main>
 
     {# Alva-Tipp: Policy-Wizard generates ISO 27001 / DORA / BSI / BCM / GDPR mandatory policies — Aurora alert migration #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-3' } } %}
@@ -68,354 +62,135 @@
         {% endblock %}
     {% endembed %}
 
-    {# View Filter #}
-    {% if currentTenant %}
-    {% embed '_components/_card.html.twig' with {class: 'mb-3'} %}
-        {% block card_body %}
-            <form method="get" action="{{ path('app_document_index') }}" class="d-flex flex-wrap align-items-center gap-2 py-0">
-                <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
-                </label>
-                <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans({}, 'messages') }}
-                    </option>
+
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_document_index'),
+        filter_keys: ['view', 'status', 'category', 'include_history', 'focus'],
+        list_title: 'document.section.all_documents'|trans({}, 'document'),
+        empty: {
+            mood: 'sleeping',
+            title: 'document.message.no_documents'|trans({}, 'document'),
+            text: 'document.message.upload_first'|trans({}, 'document'),
+            actions: [{ label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'ui-upload', href: path('app_document_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }],
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/document"',
+    } %}
+        {% block list_filters %}
+            {% if currentTenant %}
+            <div class="col-md-3">
+                <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>{{ 'corporate.view.own_only'|trans({}, 'messages') }}</option>
                     {% if inheritanceInfo.hasParent %}
-                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
-                    </option>
+                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>{{ 'corporate.view.including_inherited'|trans({}, 'messages') }}</option>
                     {% endif %}
                     {% if inheritanceInfo.hasSubsidiaries %}
-                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
-                    </option>
+                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>{{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}</option>
                     {% endif %}
                 </select>
-
-                {# Policy-Wizard — history toggle (default OFF). #}
-                <span class="ms-3 text-muted">|</span>
-                <label for="include-history-toggle" class="mb-0 fw-bold">
-                    <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
-                    {{ 'policy_wizard.history_toggle.label'|trans({}, 'policy_wizard') }}:
-                </label>
-                <select class="form-select fa-cyber-input__field form-select-sm w-auto"
-                        id="include-history-toggle"
-                        name="include_history"
-                        data-controller="ui-actions"
-                        data-action="change->ui-actions#autoSubmit">
-                    <option value="0" {{ includeHistory ? '' : 'selected' }}>
-                        {{ 'policy_wizard.history_toggle.current_only'|trans({}, 'policy_wizard') }}
-                    </option>
-                    <option value="1" {{ includeHistory ? 'selected' : '' }}>
-                        {{ 'policy_wizard.history_toggle.with_history'|trans({}, 'policy_wizard') }}
-                    </option>
+            </div>
+            {% endif %}
+            <div class="col-md-3">
+                <label for="status-filter" class="form-label">{{ 'common.status'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="status-filter" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    {% for _st in ['draft', 'in_review', 'approved', 'published', 'archived'] %}
+                        <option value="{{ _st }}" {{ currentStatus == _st ? 'selected' : '' }}>{{ ('document.status.' ~ _st)|trans({}, 'document') }}</option>
+                    {% endfor %}
                 </select>
-
-                <noscript>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
-                </noscript>
-            </form>
-        {% endblock %}
-    {% endembed %}
-    {% endif %}
-
-    {# Calculate Stats #}
-    {% set total = detailedStats.total %}
-    {% set totalSize = documents|reduce((carry, doc) => carry + doc.fileSize, 0) %}
-    {% set totalSizeMB = (totalSize / 1024 / 1024)|number_format(2) %}
-    {% set pdfDocs = documents|filter(d => d.mimeType == 'application/pdf')|length %}
-    {% set imageDocs = documents|filter(d => d.mimeType starts with 'image/')|length %}
-    {% set excelDocs = documents|filter(d => d.mimeType matches '/spreadsheet/')|length %}
-
-    {# KPI Cards #}
-    <div class="kpi-grid">
-        {{ _fa_feature_card.render({
-            icon: 'nav-file-earmark-text',
-            label: 'document.kpi.total_documents'|trans({}, 'document'),
-            value: total,
-            hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
-            variant: 'primary'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'nav-hdd',
-            label: 'document.kpi.total_size'|trans({}, 'document'),
-            value: totalSizeMB,
-            unit: 'MB',
-            variant: 'primary'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'nav-file-pdf',
-            label: 'document.type.pdf'|trans({}, 'document'),
-            value: pdfDocs,
-            variant: 'danger'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'nav-file-earmark-spreadsheet',
-            label: 'document.type.excel'|trans({}, 'document'),
-            value: excelDocs,
-            variant: 'success'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'nav-file-earmark-text',
-            label: 'document.kpi.drafts'|trans({}, 'document'),
-            value: kpiDrafts,
-            variant: 'secondary'
-        }) }}
-
-        {{ _fa_feature_card.render({
-            icon: 'ui-hourglass',
-            label: 'document.kpi.in_review'|trans({}, 'document'),
-            value: kpiInReview,
-            variant: 'warning'
-        }) }}
-    </div>
-
-    {# Document Type Distribution #}
-    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--nav-pie-chart" aria-hidden="true"></i>
-                    {{ 'document.section.type_overview'|trans({}, 'document') }}
-                </h2>
             </div>
-        {% endblock %}
-        {% block card_body %}
-            <div class="row g-4">
-                {# PDF #}
-                <div class="col-md-3">
-                    <div class="type-card text-center p-4 bg-pdf-light">
-                        <div class="type-icon mb-3 fs-25 color-pdf">
-                            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                        </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans({}, 'document') }}</div>
-                        <div class="type-count fs-2 fw-700 color-pdf">
-                            {{ pdfDocs }}
-                        </div>
-                    </div>
-                </div>
-
-                {# Images #}
-                <div class="col-md-3">
-                    <div class="type-card text-center p-4 bg-image-light">
-                        <div class="type-icon mb-3 fs-25 color-image">
-                            <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
-                        </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans({}, 'document') }}</div>
-                        <div class="type-count fs-2 fw-700 color-image">
-                            {{ imageDocs }}
-                        </div>
-                    </div>
-                </div>
-
-                {# Excel/Spreadsheets #}
-                <div class="col-md-3">
-                    <div class="type-card text-center p-4 bg-excel-light">
-                        <div class="type-icon mb-3 fs-25 color-excel">
-                            <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
-                        </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans({}, 'document') }}</div>
-                        <div class="type-count fs-2 fw-700 color-excel">
-                            {{ excelDocs }}
-                        </div>
-                    </div>
-                </div>
-
-                {# Other #}
-                <div class="col-md-3">
-                    <div class="type-card text-center p-4 bg-other-light">
-                        <div class="type-icon mb-3 fs-25 color-other">
-                            <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
-                        </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans({}, 'document') }}</div>
-                        <div class="type-count fs-2 fw-700 color-other">
-                            {{ total - pdfDocs - imageDocs - excelDocs }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endblock %}
-    {% endembed %}
-
-    {# Aurora filter-chip quick row — quick toggles for status #}
-    {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
-    {% set _activeDocStatus = currentStatus %}
-    {% set _baseDocUrl = path('app_document_index') %}
-    {{ _fa_filter_chip.group([
-        { label: 'common.all'|trans({}, 'messages'),                    href: _baseDocUrl },
-        { label: 'document.status.draft'|trans({}, 'document'),         href: _baseDocUrl ~ '?status=draft' },
-        { label: 'document.status.in_review'|trans({}, 'document'),     href: _baseDocUrl ~ '?status=in_review' },
-        { label: 'document.status.approved'|trans({}, 'document'),      href: _baseDocUrl ~ '?status=approved' },
-        { label: 'document.status.published'|trans({}, 'document'),     href: _baseDocUrl ~ '?status=published' },
-        { label: 'document.status.archived'|trans({}, 'document'),      href: _baseDocUrl ~ '?status=archived' }
-    ],
-        _activeDocStatus == 'draft' ? 1
-        : (_activeDocStatus == 'in_review' ? 2
-        : (_activeDocStatus == 'approved' ? 3
-        : (_activeDocStatus == 'published' ? 4
-        : (_activeDocStatus == 'archived' ? 5 : 0)))),
-        { class: 'mb-3', ariaLabel: 'document.section.all_documents'|trans({}, 'document') }
-    ) }}
-
-    {# Document List with Bulk Actions #}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions document-filter" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/document"{% endblock %}
-        {% block card_header %}
-            <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">
-                <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i>
-                {{ 'document.section.all_documents'|trans({}, 'document') }}
-            </h2>
-
-            {# Filter Controls #}
-            <div class="d-flex gap-2">
-                <select class="form-select fa-cyber-input__field form-select-sm" id="categoryFilter"
-                        data-document-filter-target="categoryFilter"
-                        data-action="change->document-filter#filter">
+            <div class="col-md-3">
+                <label for="category-filter" class="form-label">{{ 'common.category'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="category-filter" name="category" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'document.filter.all_categories'|trans({}, 'document') }}</option>
-                {% set categories = [] %}
-                    {% for doc in documents %}
-                        {% if doc.category not in categories %}
-                            {% set categories = categories|merge([doc.category]) %}
-                        {% endif %}
-                    {% endfor %}
-                    {% for category in categories %}
-                        <option value="{{ category }}">{{ category|capitalize }}</option>
+                    {% for _cat in categories %}
+                        <option value="{{ _cat }}" {{ currentCategory == _cat ? 'selected' : '' }}>{{ _cat|capitalize }}</option>
                     {% endfor %}
                 </select>
-
-                <label for="documentSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-                <input type="search"
-                       class="form-control form-control-sm w-250px fa-cyber-input__field"
-                       id="documentSearch"
-                       placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'document') }}"
-                       data-document-filter-target="searchInput"
-                       data-action="input->document-filter#filter">
             </div>
+            <div class="col-md-3">
+                <label for="include-history-toggle" class="form-label">{{ 'policy_wizard.history_toggle.label'|trans({}, 'policy_wizard') }}</label>
+                <select class="form-select fa-cyber-input__field" id="include-history-toggle" name="include_history" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="0" {{ includeHistory ? '' : 'selected' }}>{{ 'policy_wizard.history_toggle.current_only'|trans({}, 'policy_wizard') }}</option>
+                    <option value="1" {{ includeHistory ? 'selected' : '' }}>{{ 'policy_wizard.history_toggle.with_history'|trans({}, 'policy_wizard') }}</option>
+                </select>
             </div>
         {% endblock %}
-        {% block card_body %}
-            {% if documents|length > 0 %}
+        {% block list_summary %}
+            {% if kpiDrafts > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'document.summary.drafts'|trans({'%count%': kpiDrafts}, 'document') }}</span>{% endif %}
+            {% if kpiInReview > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'document.summary.in_review'|trans({'%count%': kpiInReview}, 'document') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
             {% embed '_components/_fa_table.html.twig' with {
-                'stickyHead': true,
-                'hover': true,
-                'id': 'documentTable'
-            } %}
-                {% block table_head %}
-                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-                    {% import '_components/_status_pill.html.twig' as pill %}
-                    <tr>
-                        <th scope="col" class="fa-table__th fa-table__th--checkbox bulk-select-column">
-                            <input type="checkbox"
-                                   data-action="bulk-actions#selectAll"
-                                   data-bulk-actions-target="selectAllCheckbox"
-                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                        </th>
-                        <th scope="col" class="fa-table__th w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans({}, 'document') }}</span></th>
-                        <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="fa-table__th w-130px">{{ 'common.status'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="fa-table__th w-150px">{{ 'common.category'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="fa-table__th w-100px">{{ 'common.size'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="fa-table__th w-150px">{{ 'document.table.uploaded_by'|trans({}, 'document') }}</th>
-                        <th scope="col" class="fa-table__th w-130px">{{ 'common.date'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="fa-table__th w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                    </tr>
-                {% endblock %}
-                {% block table_body_attrs %}id="documentTableBody" data-document-filter-target="tableBody"{% endblock %}
-                {% block table_body %}
-                    {% for document in documents %}
-                        {% include 'document/_row.html.twig' with {
-                            document: document,
-                            currentTenant: currentTenant,
-                            driftMap: driftMap|default({}),
-                            supersededIds: supersededIds|default({}),
-                            auditorScores: auditorScores|default({})
-                        } %}
-                    {% endfor %}
-                {% endblock %}
-            {% endembed %}
-
-            {# No Results Message #}
-            <div id="noResults" class="text-center p-5 d-none" data-document-filter-target="noResults">
-                <i class="fa-icon fa-icon--ui-search icon-search-empty" aria-hidden="true"></i>
-                <p class="text-muted mt-3">{{ 'document.message.no_results'|trans({}, 'document') }}</p>
-            </div>
-
-            {# Bulk Action Bar #}
+            'stickyHead': true,
+            'hover': true,
+            'id': 'documentTable'
+        } %}
+            {% block table_head %}
+                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+                {% import '_components/_status_pill.html.twig' as pill %}
+                <tr>
+                    <th scope="col" class="fa-table__th fa-table__th--checkbox bulk-select-column">
+                        <input type="checkbox"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                    </th>
+                    <th scope="col" class="fa-table__th w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans({}, 'document') }}</span></th>
+                    <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                    <th scope="col" class="fa-table__th w-130px">{{ 'common.status'|trans({}, 'messages') }}</th>
+                    <th scope="col" class="fa-table__th w-150px">{{ 'common.category'|trans({}, 'messages') }}</th>
+                    <th scope="col" class="fa-table__th w-100px">{{ 'common.size'|trans({}, 'messages') }}</th>
+                    <th scope="col" class="fa-table__th w-150px">{{ 'document.table.uploaded_by'|trans({}, 'document') }}</th>
+                    <th scope="col" class="fa-table__th w-130px">{{ 'common.date'|trans({}, 'messages') }}</th>
+                    <th scope="col" class="fa-table__th w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body_attrs %}id="documentTableBody"{% endblock %}
+            {% block table_body %}
+                {% for document in page %}
+                    {% include 'document/_row.html.twig' with {
+                        document: document,
+                        currentTenant: currentTenant,
+                        driftMap: driftMap|default({}),
+                        supersededIds: supersededIds|default({}),
+                        auditorScores: auditorScores|default({})
+                    } %}
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
             {% include '_components/_bulk_action_bar.html.twig' with {
                 actions: ['status_change', 'approve', 'export', 'delete'],
                 variant: 'brand'
             } %}
-            {% else %}
-            {# Empty State #}
-            {% set _system_templates = system_templates('App\\Entity\\Document') %}
-            {% include '_components/_empty_state.html.twig' with {
-                icon: 'nav-file-earmark-text',
-                title: 'document.message.no_documents'|trans({}, 'document'),
-                description: 'document.message.upload_first'|trans({}, 'document'),
-                action: {
-                    label: 'document.action.upload'|trans({}, 'document'),
-                    url: path('app_document_new'),
-                    icon: 'ui-upload'
-                }
-            } %}
-            {# ISO 27001 policy starter set #}
-            {% if _system_templates|length > 0 %}
-                <div class="text-center mt-3">
-                    <button type="button" class="btn btn-outline-primary"
-                            data-controller="fa-modal-dispatcher"
-                            data-action="click->fa-modal-dispatcher#open"
-                            data-fa-modal-id="systemTemplateModalDocument">
-                        <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
-                        {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
-                    </button>
-                    <div class="form-text small">
-                        {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
-                    </div>
-                </div>
-                {% include '_components/_system_template_selector.html.twig' with {
-                    templates: _system_templates,
-                    entity_class: 'App\\Entity\\Document',
-                    redirect_to: 'app_document_index',
-                    modal_id: 'systemTemplateModalDocument'
-                } %}
-            {% endif %}
-            {% endif %}
         {% endblock %}
     {% endembed %}
-    </main>
+
+    {% if page.isEmpty and app.request.query.count == 0 %}
+        {% set _system_templates = system_templates('App\\Entity\\Document') %}
+        {# ISO 27001 policy starter set #}
+        {% if _system_templates|length > 0 %}
+            <div class="text-center mt-3">
+                <button type="button" class="btn btn-outline-primary"
+                        data-controller="fa-modal-dispatcher"
+                        data-action="click->fa-modal-dispatcher#open"
+                        data-fa-modal-id="systemTemplateModalDocument">
+                    <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
+                    {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                </button>
+                <div class="form-text small">
+                    {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+                </div>
+            </div>
+            {% include '_components/_system_template_selector.html.twig' with {
+                templates: _system_templates,
+                entity_class: 'App\\Entity\\Document',
+                redirect_to: 'app_document_index',
+                modal_id: 'systemTemplateModalDocument'
+            } %}
+        {% endif %}
+    {% endif %}
 </div>
-
-<style>
-/* Type Cards Hover Effect */
-.type-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: default;
-}
-
-.type-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-/* Table Row Hover */
-.table tbody tr:hover {
-    background-color: rgba(52, 152, 219, 0.05);
-    transition: background-color 0.2s;
-}
-
-/* Filter Controls */
-#categoryFilter:focus,
-#documentSearch:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 0.2rem rgba(60, 141, 188, 0.25);
-}
-
-
-</style>
 
 {% endblock %}

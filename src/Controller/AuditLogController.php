@@ -9,6 +9,7 @@ use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
 use App\Service\AuditLogIntegrityService;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,9 +71,8 @@ class AuditLogController extends AbstractController
     #[Route('/admin/audit-log', name: 'app_audit_log_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $page = max(1, $request->query->getInt('page', 1));
-        $limit = 50;
-        $offset = ($page - 1) * $limit;
+        $limit = ListPage::perPage($request);
+        $offset = (ListPage::pageNumber($request) - 1) * $limit;
 
         // Get filter parameters
         $filters = [
@@ -97,8 +97,6 @@ class AuditLogController extends AbstractController
             $totalLogs = $this->auditLogRepository->countAll();
         }
 
-        $totalPages = ceil($totalLogs / $limit);
-
         // Get statistics
         $actionStats = $this->auditLogRepository->getActionStatistics();
         $entityTypeStats = $this->auditLogRepository->getEntityTypeStatistics();
@@ -113,9 +111,7 @@ class AuditLogController extends AbstractController
         sort($actions);
 
         return $this->render('audit_log/index.html.twig', [
-            'auditLogs' => $auditLogs,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
+            'page' => ListPage::fromSlice($auditLogs, $totalLogs, $request),
             'totalLogs' => $totalLogs,
             'actionStats' => $actionStats,
             'entityTypeStats' => $entityTypeStats,

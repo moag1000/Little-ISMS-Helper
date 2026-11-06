@@ -63,7 +63,6 @@ risk:
     # Junior-ISB-Audit-2026-05-22 M-03: risk_level.{critical,high,medium,low} removed —
     # templates now resolve band labels via risk_level_label() (Twig fn) which
     # reads the canonical risk.level.<band> block. SSoT: App\Risk\RiskMatrixThresholds.
-    treatment_status: Treatment Status
     treatment:
       mitigate: Mitigate
       accept: Accept
@@ -94,6 +93,10 @@ risk:
       location: Location
       supplier: Supplier
       none: None
+  summary:
+    critical: '%count% critical'
+    high: '%count% high'
+    unowned: '%count% without owner'
   modern:
     breadcrumb: Risk Management
     header:
@@ -106,15 +109,6 @@ risk:
         export_pdf: PDF Report
         export_excel: Excel Export
         export_csv: CSV Export
-    kpi:
-      total: Identified Risks
-      critical: Critical Risks
-      high: High Risks
-      avg_residual: Avg. Residual Risk
-      unit:
-        max: / 25
-    matrix_overview: Risk Matrix Overview
-    view_full_matrix: View full matrix
     status:
       open: Open
       in_progress: In Progress

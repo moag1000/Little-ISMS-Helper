@@ -6,39 +6,9 @@
 {% block admin_title %}{% endblock %}
 {% block admin_subtitle %}{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .pagination a {
-            padding: 0.5rem 1rem;
-            background: var(--primary-strong);
-            color: var(--on-primary);
-            text-decoration: none;
-            border-radius: 4px;
-            margin: 0 0.25rem;
-            transition: all 0.3s ease;
-        }
-        .pagination a:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        /* Dark Mode Pagination */
-        [data-theme="dark"] .pagination a {
-            background: var(--primary);
-            box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
-        }
-        [data-theme="dark"] .pagination a:hover {
-            background: var(--primary-hover);
-            box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
-        }
-    </style>
-{% endblock %}
-
 {% block admin_content %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
@@ -53,7 +23,7 @@
         { label: 'audit_log.filter.statistics'|trans({}, 'audit_log'), href: path('app_audit_log_statistics'), variant: 'ghost', icon: 'nav-bar-chart' }
     ]
 }) }}
-<main>
+<div class="container-fluid py-4">
 
 {# HMAC-Chain Verify button — Auditor's "manipulationssicher?" answer #}
 <div class="d-flex justify-content-end mb-3">
@@ -93,201 +63,143 @@
     {% endblock %}
 {% endembed %}
 
-{# Skip link for filters section - WCAG 2.4.1 #}
-<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
-
-<div class="filter-container" id="filter-section" tabindex="-1">
-    <h2>{{ 'audit_log.section.filters'|trans({}, 'audit_log') }}</h2>
-    <form method="get" action="{{ path('app_audit_log_index') }}" role="search" aria-label="{{ 'audit_log.section.filters'|trans({}, 'audit_log') }}">
-        <div class="d-grid grid-responsive-200 gap-1 mb-md">
-            <div>
-                <label for="entityType">{{ 'audit_log.filter.entity_type'|trans({}, 'audit_log') }}:</label>
-                <select name="entityType" id="entityType" class="form-control fa-cyber-input__field">
-                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    {% for entityType in entityTypes %}
-                    <option value="{{ entityType }}" {% if filters.entityType|default('') == entityType %}selected{% endif %}>
-                        {{ entityType }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div>
-                <label for="action">{{ 'audit_log.filter.action'|trans({}, 'audit_log') }}:</label>
-                <select name="action" id="action" class="form-control fa-cyber-input__field">
-                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    {% for action in actions %}
-                    <option value="{{ action }}" {% if filters.action|default('') == action %}selected{% endif %}>
-                        {{ action|capitalize }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div>
-                {{ _fa_cyber.text('userName', {
-                    id: 'userName',
-                    label: 'audit_log.filter.user'|trans({}, 'audit_log'),
-                    value: filters.userName ?? ''
-                }) }}
-            </div>
-
-            <div>
-                {{ _fa_cyber.text('dateFrom', {
-                    id: 'dateFrom',
-                    type: 'date',
-                    label: 'audit_log.filter.date_from'|trans({}, 'audit_log'),
-                    value: filters.dateFrom ?? ''
-                }) }}
-            </div>
-
-            <div>
-                {{ _fa_cyber.text('dateTo', {
-                    id: 'dateTo',
-                    type: 'date',
-                    label: 'audit_log.filter.date_to'|trans({}, 'audit_log'),
-                    value: filters.dateTo ?? ''
-                }) }}
-            </div>
-        </div>
-
-        <div class="d-flex gap-1">
-            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'audit_log.filter.apply'|trans({}, 'audit_log') }}
-            </button>
-            <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'audit_log.filter.reset'|trans({}, 'audit_log') }}
-            </a>
-            <a href="{{ path('app_audit_log_statistics') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'audit_log.filter.statistics'|trans({}, 'audit_log') }}
-            </a>
-        </div>
-    </form>
-</div>
-
-{% if auditLogs|length > 0 %}
-<div class="mt-2">
-    <h2>{{ 'audit_log.section.entries'|trans({}, 'audit_log') }}</h2>
-
-    {% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
-
-    {# Tab Navigation #}
-    <ul class="nav nav-tabs mt-md" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active"
-                    data-bs-toggle="tab"
-                    data-bs-target="#table-view"
-                    type="button"
-                    role="tab">
-                <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i> {{ 'audit_log.section.table'|trans({}, 'audit_log') }}
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link"
-                    data-bs-toggle="tab"
-                    data-bs-target="#timeline-view"
-                    type="button"
-                    role="tab">
-                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link"
-                    data-bs-toggle="tab"
-                    data-bs-target="#compact-view"
-                    type="button"
-                    role="tab">
-                <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'audit_log.section.compact'|trans({}, 'audit_log') }}
-            </button>
-        </li>
-    </ul>
-
-    {# Tab Content #}
-    <div class="tab-content mt-md">
-        {# Table View — fa-audit-feed (CRUD change-log) #}
-        <div class="tab-pane fade show active" id="table-view" role="tabpanel">
-            <div class="fa-audit-feed">
-                {% for log in auditLogs %}
-                    {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
-                        : (log.action in ['error', 'failed'] ? 'danger'
-                        : (log.action in ['update', 'login_failed'] ? 'warning'
-                        : 'info')) -%}
-                    {{ _fa_audit_row.render({
-                        ts:     log.createdAt|date('Y-m-d H:i:s'),
-                        sev:    sev,
-                        actor:  log.userName|default('system'),
-                        action: log.action,
-                        target: log.entityType ~ (log.entityId ? '#' ~ log.entityId : ''),
-                        pill:   log.description|default('')|slice(0, 60),
-                        hash:   log.id|default('')|slice(0, 12)
-                    }) }}
-                    {# Actor + entity + detail links per row #}
-                    <div class="small ps-1 pb-1 d-flex gap-3">
-                        <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}" class="link-primary">
-                            <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
-                            {{ log.userName }}
-                        </a>
-                        {% if log.entityId %}
-                        <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}" class="link-primary">
-                            {{ log.entityType }} #{{ log.entityId }}
-                        </a>
-                        {% endif %}
-                        <a href="{{ path('app_audit_log_detail', {id: log.id}) }}" class="link-primary">
-                            {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
-                        </a>
-                    </div>
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_audit_log_index'),
+    show_search: false,
+    filter_keys: ['entityType', 'action', 'userName', 'dateFrom', 'dateTo'],
+    list_title: 'audit_log.section.entries'|trans({}, 'audit_log'),
+    empty: { mood: 'sleeping', title: 'audit_log.message.no_entries'|trans({}, 'audit_log') },
+} %}
+    {% block list_filters %}
+        {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+        <div class="col-md-3">
+            <label for="entityType" class="form-label">{{ 'audit_log.filter.entity_type'|trans({}, 'audit_log') }}</label>
+            <select name="entityType" id="entityType" class="form-select fa-cyber-input__field">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                {% for entityType in entityTypes %}
+                <option value="{{ entityType }}" {% if filters.entityType|default('') == entityType %}selected{% endif %}>{{ entityType }}</option>
                 {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="action" class="form-label">{{ 'audit_log.filter.action'|trans({}, 'audit_log') }}</label>
+            <select name="action" id="action" class="form-select fa-cyber-input__field">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                {% for action in actions %}
+                <option value="{{ action }}" {% if filters.action|default('') == action %}selected{% endif %}>{{ action|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            {{ _fa_cyber.text('userName', { id: 'userName', label: 'audit_log.filter.user'|trans({}, 'audit_log'), value: filters.userName ?? '' }) }}
+        </div>
+        <div class="col-md-2">
+            {{ _fa_cyber.text('dateFrom', { id: 'dateFrom', type: 'date', label: 'audit_log.filter.date_from'|trans({}, 'audit_log'), value: filters.dateFrom ?? '' }) }}
+        </div>
+        <div class="col-md-2">
+            {{ _fa_cyber.text('dateTo', { id: 'dateTo', type: 'date', label: 'audit_log.filter.date_to'|trans({}, 'audit_log'), value: filters.dateTo ?? '' }) }}
+        </div>
+    {% endblock %}
+    {% block list_table %}
+        {% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
+        <div class="p-3">
+            {# Tab Navigation #}
+            <ul class="nav nav-tabs mt-md" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active"
+                            data-bs-toggle="tab"
+                            data-bs-target="#table-view"
+                            type="button"
+                            role="tab">
+                        <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i> {{ 'audit_log.section.table'|trans({}, 'audit_log') }}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            data-bs-toggle="tab"
+                            data-bs-target="#timeline-view"
+                            type="button"
+                            role="tab">
+                        <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            data-bs-toggle="tab"
+                            data-bs-target="#compact-view"
+                            type="button"
+                            role="tab">
+                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'audit_log.section.compact'|trans({}, 'audit_log') }}
+                    </button>
+                </li>
+            </ul>
+
+            {# Tab Content #}
+            <div class="tab-content mt-md">
+                {# Table View — fa-audit-feed (CRUD change-log) #}
+                <div class="tab-pane fade show active" id="table-view" role="tabpanel">
+                    <div class="fa-audit-feed">
+                        {% for log in page %}
+                            {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
+                                : (log.action in ['error', 'failed'] ? 'danger'
+                                : (log.action in ['update', 'login_failed'] ? 'warning'
+                                : 'info')) -%}
+                            {{ _fa_audit_row.render({
+                                ts:     log.createdAt|date('Y-m-d H:i:s'),
+                                sev:    sev,
+                                actor:  log.userName|default('system'),
+                                action: log.action,
+                                target: log.entityType ~ (log.entityId ? '#' ~ log.entityId : ''),
+                                pill:   log.description|default('')|slice(0, 60),
+                                hash:   log.id|default('')|slice(0, 12)
+                            }) }}
+                            {# Actor + entity + detail links per row #}
+                            <div class="small ps-1 pb-1 d-flex gap-3">
+                                <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}" class="link-primary">
+                                    <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
+                                    {{ log.userName }}
+                                </a>
+                                {% if log.entityId %}
+                                <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}" class="link-primary">
+                                    {{ log.entityType }} #{{ log.entityId }}
+                                </a>
+                                {% endif %}
+                                <a href="{{ path('app_audit_log_detail', {id: log.id}) }}" class="link-primary">
+                                    {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# Timeline View #}
+                <div class="tab-pane fade" id="timeline-view" role="tabpanel">
+                    {% include '_components/_audit_timeline.html.twig' with {
+                        auditLogs: page.items
+                    } %}
+                </div>
+
+                {# Compact View — tamper-evident log line per entry, mono-typed #}
+                <div class="tab-pane fade" id="compact-view" role="tabpanel">
+                    {% for log in page %}
+                        {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
+                            : (log.action in ['update', 'login_failed'] ? 'warning'
+                            : (log.action in ['create', 'login', 'export', 'import'] ? 'info'
+                            : 'info')) -%}
+                        {{ _fa_audit_row.render({
+                            ts: log.createdAt|date('H:i:s.') ~ (log.createdAt|date('u')|slice(0, 3)),
+                            sev: sev,
+                            actor: log.userName|default('system'),
+                            action: log.action,
+                            target: log.entityType ~ (log.entityId ? '#' ~ log.entityId : ''),
+                            hash: log.id|default('')
+                        }) }}
+                    {% endfor %}
+                </div>
             </div>
         </div>
-
-        {# Timeline View #}
-        <div class="tab-pane fade" id="timeline-view" role="tabpanel">
-            {% include '_components/_audit_timeline.html.twig' with {
-                auditLogs: auditLogs
-            } %}
-        </div>
-
-        {# Compact View — tamper-evident log line per entry, mono-typed #}
-        <div class="tab-pane fade" id="compact-view" role="tabpanel">
-            {% for log in auditLogs %}
-                {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
-                    : (log.action in ['update', 'login_failed'] ? 'warning'
-                    : (log.action in ['create', 'login', 'export', 'import'] ? 'info'
-                    : 'info')) -%}
-                {{ _fa_audit_row.render({
-                    ts: log.createdAt|date('H:i:s.') ~ (log.createdAt|date('u')|slice(0, 3)),
-                    sev: sev,
-                    actor: log.userName|default('system'),
-                    action: log.action,
-                    target: log.entityType ~ (log.entityId ? '#' ~ log.entityId : ''),
-                    hash: log.id|default('')
-                }) }}
-            {% endfor %}
-        </div>
-    </div>
-
-    {% if totalPages > 1 %}
-    <div class="mt-2 text-center">
-        <div class="pagination">
-            {% if currentPage > 1 %}
-                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage - 1})) }}">{{ 'audit_log.pagination.prev'|trans({}, 'audit_log') }}</a>
-            {% endif %}
-
-            <span class="mx-1rem">{{ 'audit_log.pagination.page_counter'|trans({'%current%': currentPage, '%total%': totalPages}, 'audit') }}</span>
-
-            {% if currentPage < totalPages %}
-                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage + 1})) }}">{{ 'audit_log.pagination.next'|trans({}, 'audit_log') }}</a>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
+    {% endblock %}
+{% endembed %}
 </div>
-{% else %}
-{{ _fa_empty_state.render({
-    mood: 'sleeping',
-    title: 'audit_log.message.no_entries'|trans({}, 'audit_log')
-}) }}
-{% endif %}
-
-</main>
 {% endblock %}
