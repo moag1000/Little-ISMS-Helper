@@ -2,7 +2,6 @@
 {% trans_default_domain 'suppliers' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
-{% form_theme form 'supplier/_supplier_form_theme.html.twig' %}
 
 {% block title %}{{ 'supplier.page.new_title'|trans({}, 'suppliers')}}{% endblock %}
 
@@ -93,11 +92,11 @@
             },
             'privacy': {
                 'label': 'supplier.section.privacy'|trans({}, 'suppliers'),
-                'fields': ['gdprProcessorStatus', 'gdprTransferMechanism', 'gdprAvContractSigned', 'gdprAvContractDate']
+                'fields': ['gdprProcessorStatus', 'gdprTransferMechanism']
             },
             'tier_classification': {
                 'label': 'supplier.section.tier_classification'|trans({}, 'suppliers'),
-                'fields': ['isDoraRelevant', 'leiCode', 'naceCode', 'countryOfHeadOffice', 'ictCriticality', 'ictFunctionType', 'substitutability', 'hasSubcontractors', 'subcontractorChain', 'processingLocations', 'lastDoraAuditDate', 'hasExitStrategy']
+                'fields': ['isDoraRelevant', 'leiCode', 'naceCode', 'countryOfHeadOffice', 'ictCriticality', 'ictFunctionType', 'substitutability', 'hasSubcontractors', 'processingLocations', 'lastDoraAuditDate', 'hasExitStrategy']
             },
             'lksg': {
                 'label': 'supplier.section.lksg'|trans({}, 'suppliers'),
@@ -134,8 +133,6 @@
             'supportedAssets': 12,
             'gdprProcessorStatus': 6,
             'gdprTransferMechanism': 6,
-            'gdprAvContractSigned': 6,
-            'gdprAvContractDate': 6,
             'isDoraRelevant': 4,
             'leiCode': 4,
             'naceCode': 4,
@@ -144,7 +141,6 @@
             'ictFunctionType': 6,
             'substitutability': 6,
             'hasSubcontractors': 6,
-            'subcontractorChain': 12,
             'processingLocations': 12,
             'lastDoraAuditDate': 6,
             'hasExitStrategy': 6,

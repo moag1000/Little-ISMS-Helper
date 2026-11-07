@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Restore;
 
 use App\Doctrine\EntityManagerRecovery;
+use App\Service\Supplier\SubcontractorChainRows;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -535,6 +536,10 @@ class RestoreEntityWriter
      */
     private function restoreMergedLists(string $entityName, array $entities, array &$m2mStats): void
     {
+        if ($entityName === 'Supplier') {
+            $this->restoreSubcontractorChains($entities, $m2mStats);
+            return;
+        }
         $sql = match ($entityName) {
             'Incident' => ['realizedRisks_ids', "INSERT IGNORE INTO risk_incident_link (tenant_id, risk_id, incident_id, link_type, linked_at)
                 SELECT COALESCE(i.tenant_id, r.tenant_id), r.id, i.id, 'materialized', :linkedAt
@@ -566,6 +571,41 @@ class RestoreEntityWriter
         }
         if ($tuples > 0) {
             $m2mStats[$idsKey] = ['pivot' => 'merged (P5)', 'tuples' => $tuples, 'inserted' => $count];
+        }
+    }
+
+    /**
+     * Pre-P5 backups carry Supplier.subcontractorChain (JSON), which becomes dora_subcontractor rows,
+     * and a second AVV flag (gdprAvContract*), which folds into has_dpa / dpa_signed_date.
+     *
+     * @param array<int, array<string, mixed>> $entities
+     * @param array<string, mixed>             $m2mStats
+     */
+    private function restoreSubcontractorChains(array $entities, array &$m2mStats): void
+    {
+        $connection = $this->entityManager->getConnection();
+        $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $inserted = 0;
+        foreach ($entities as $data) {
+            if (isset($data['id']) && !empty($data['gdprAvContractSigned'])) {
+                // The second AVV flag of old backups folds into has_dpa (one flag).
+                $date = is_string($data['gdprAvContractDate'] ?? null) ? substr($data['gdprAvContractDate'], 0, 10) : null;
+                $connection->executeStatement(
+                    'UPDATE supplier SET has_dpa = 1, dpa_signed_date = COALESCE(dpa_signed_date, ?) WHERE id = ?',
+                    [$date, (int) $data['id']],
+                );
+            }
+            $chain = $data['subcontractorChain'] ?? null;
+            if (!isset($data['id']) || !is_array($chain) || $chain === []) {
+                continue;
+            }
+            $tenantId = $connection->fetchOne('SELECT tenant_id FROM supplier WHERE id = ?', [(int) $data['id']]);
+            $inserted += SubcontractorChainRows::insert(
+                $connection, (int) $data['id'], $tenantId !== false && $tenantId !== null ? (int) $tenantId : null, $chain, $now,
+            );
+        }
+        if ($inserted > 0) {
+            $m2mStats['subcontractorChain'] = ['pivot' => 'dora_subcontractor (P5)', 'tuples' => $inserted, 'inserted' => $inserted];
         }
     }
 

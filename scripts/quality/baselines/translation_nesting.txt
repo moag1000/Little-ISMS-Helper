@@ -333,11 +333,11 @@ translations/security.en.yaml:23:reauth
 translations/setup_wizard.de.yaml:1:existing_frameworks
 translations/setup_wizard.en.yaml:1:existing_frameworks
 translations/suppliers.de.yaml:1:supplier
-translations/suppliers.de.yaml:413:corporate
-translations/suppliers.de.yaml:426:iso_9001_bridge
+translations/suppliers.de.yaml:397:corporate
+translations/suppliers.de.yaml:410:iso_9001_bridge
 translations/suppliers.en.yaml:1:supplier
-translations/suppliers.en.yaml:412:corporate
-translations/suppliers.en.yaml:425:iso_9001_bridge
+translations/suppliers.en.yaml:396:corporate
+translations/suppliers.en.yaml:409:iso_9001_bridge
 translations/tenant.de.yaml:235:corporate
 translations/tenant.en.yaml:235:corporate
 translations/threat.de.yaml:124:field

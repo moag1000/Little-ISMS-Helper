@@ -31,6 +31,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Trait\IsmsScopeTrait;
 use App\Entity\Trait\SupplierContactPersonTrait;
+use App\Entity\Trait\SupplierSubcontractorsTrait;
 
 /**
  * Supplier/Vendor Entity for ISO 27001 A.15 Supplier Relationships
@@ -83,6 +84,7 @@ class Supplier
 {
     use SupplierContactPersonTrait;
     use IsmsScopeTrait;
+    use SupplierSubcontractorsTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -269,6 +271,7 @@ class Supplier
         $this->supportedAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
         $this->documents = new ArrayCollection();
+        $this->subcontractors = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -811,9 +814,6 @@ class Supplier
     private bool $hasSubcontractors = false;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $subcontractorChain = null;
-
-    #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $processingLocations = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -831,12 +831,6 @@ class Supplier
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $gdprTransferMechanism = null;
-
-    #[ORM\Column]
-    private bool $gdprAvContractSigned = false;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $gdprAvContractDate = null;
 
     // ── MINOR-6: DORA ITS Register of Information additional fields ──────────
 
@@ -953,11 +947,9 @@ class Supplier
     public function getSubstitutability(): ?string { return $this->substitutability; }
     public function setSubstitutability(?string $v): self { $this->substitutability = $v; return $this; }
 
-    public function hasSubcontractors(): bool { return $this->hasSubcontractors; }
+    public function hasSubcontractors(): bool { return $this->hasSubcontractors || !$this->subcontractors->isEmpty(); }
     public function setHasSubcontractors(bool $v): self { $this->hasSubcontractors = $v; return $this; }
 
-    public function getSubcontractorChain(): ?array { return $this->subcontractorChain; }
-    public function setSubcontractorChain(?array $v): self { $this->subcontractorChain = $v; return $this; }
 
     public function getProcessingLocations(): ?array { return $this->processingLocations; }
     public function setProcessingLocations(?array $v): self { $this->processingLocations = $v; return $this; }
@@ -977,11 +969,12 @@ class Supplier
     public function getGdprTransferMechanism(): ?string { return $this->gdprTransferMechanism; }
     public function setGdprTransferMechanism(?string $v): self { $this->gdprTransferMechanism = $v; return $this; }
 
-    public function getGdprAvContractSigned(): bool { return $this->gdprAvContractSigned; }
-    public function setGdprAvContractSigned(bool $v): self { $this->gdprAvContractSigned = $v; return $this; }
+    // P5: the AVV (GDPR Art. 28) is one flag — hasDPA / dpaSignedDate. The DORA RoI keeps its names.
+    public function getGdprAvContractSigned(): bool { return $this->hasDPA; }
+    public function setGdprAvContractSigned(bool $v): self { $this->hasDPA = $v; return $this; }
 
-    public function getGdprAvContractDate(): ?\DateTimeInterface { return $this->gdprAvContractDate; }
-    public function setGdprAvContractDate(?\DateTimeInterface $v): self { $this->gdprAvContractDate = $v; return $this; }
+    public function getGdprAvContractDate(): ?\DateTimeInterface { return $this->dpaSignedDate; }
+    public function setGdprAvContractDate(?\DateTimeInterface $v): self { $this->dpaSignedDate = $v; return $this; }
 
     // BCM Supplier Getters/Setters
 

@@ -128,8 +128,9 @@ final class SupplierTypeTest extends KernelTestCase
         self::assertTrue($form->has('dpaSignedDate'));
         self::assertTrue($form->has('gdprProcessorStatus'));
         self::assertTrue($form->has('gdprTransferMechanism'));
-        self::assertTrue($form->has('gdprAvContractSigned'));
-        self::assertTrue($form->has('gdprAvContractDate'));
+        // P5: one AVV flag — the duplicate gdprAvContract* fields are gone.
+        self::assertFalse($form->has('gdprAvContractSigned'));
+        self::assertFalse($form->has('gdprAvContractDate'));
 
         // Other modules still off
         self::assertFalse($form->has('isDoraRelevant'));
@@ -155,7 +156,7 @@ final class SupplierTypeTest extends KernelTestCase
         self::assertTrue($form->has('ictFunctionType'));
         self::assertTrue($form->has('substitutability'));
         self::assertTrue($form->has('hasSubcontractors'));
-        self::assertTrue($form->has('subcontractorChain'));
+        self::assertFalse($form->has('subcontractorChain'), 'P5: subcontractors are DoraSubcontractor rows');
         self::assertTrue($form->has('processingLocations'));
         self::assertTrue($form->has('lastDoraAuditDate'));
         self::assertTrue($form->has('hasExitStrategy'));

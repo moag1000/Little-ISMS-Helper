@@ -9,7 +9,6 @@ use App\Entity\Supplier;
 use App\Entity\SupplierCriticalityLevel;
 use App\Entity\Tenant;
 use App\Form\DataTransformer\CommaOrLinesListTransformer;
-use App\Form\DataTransformer\SubcontractorChainTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonOrLinesTextareaType;
 use App\Repository\AssetRepository;
@@ -294,14 +293,8 @@ final class SupplierType extends AbstractType implements SectionMapInterface
             $this->addMariskFields($builder);
         }
 
-        // SubcontractorChain + processingLocations are now mapped JSON
-        // fields with dedicated DataTransformers. The previous POST_SUBMIT
-        // listener + finishView() hydration is no longer needed — the
-        // transformers handle both directions (array<->textarea) and surface
-        // invalid JSON as a user-friendly TransformationFailedException.
-        if ($builder->has('subcontractorChain')) {
-            $builder->get('subcontractorChain')->addModelTransformer(new SubcontractorChainTransformer());
-        }
+        // processingLocations is a mapped JSON field with a DataTransformer. The
+        // subcontractor chain is no field any more: it is the DoraSubcontractor list (P5).
         if ($builder->has('processingLocations')) {
             $builder->get('processingLocations')->addModelTransformer(new CommaOrLinesListTransformer());
         }
@@ -344,17 +337,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'help' => 'supplier.help.gdpr_transfer_mechanism',
                 'required' => false,
                 'attr' => ['maxlength' => 50, 'placeholder' => 'supplier.placeholder.gdpr_transfer_mechanism'],
-            ])
-            ->add('gdprAvContractSigned', CheckboxType::class, [
-                'label' => 'supplier.field.gdpr_av_contract_signed',
-                'help' => 'supplier.help.gdpr_av_contract_signed',
-                'required' => false,
-            ])
-            ->add('gdprAvContractDate', DateType::class, [
-                'label' => 'supplier.field.gdpr_av_contract_date',
-                'help' => 'supplier.help.gdpr_av_contract_date',
-                'widget' => 'single_text',
-                'required' => false,
             ])
         ;
     }
@@ -472,16 +454,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.has_subcontractors',
                 'help' => 'supplier.help.has_subcontractors',
                 'required' => false,
-            ])
-            // Mapped JSON field — SubcontractorChainTransformer (attached
-            // in buildForm tail) handles both JSON-array and newline-delimited
-            // input shapes and raises TransformationFailedException on invalid
-            // JSON instead of silently writing null.
-            ->add('subcontractorChain', JsonOrLinesTextareaType::class, [
-                'label' => 'supplier.field.subcontractor_chain',
-                'help' => 'supplier.help.subcontractor_chain',
-                'required' => false,
-                'attr' => ['rows' => 3, 'placeholder' => 'supplier.placeholder.subcontractor_chain'],
             ])
             // Mapped JSON field — CommaOrLinesListTransformer handles
             // comma/semicolon/newline-delimited input.
@@ -692,8 +664,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'dpaSignedDate',
                 'gdprProcessorStatus',
                 'gdprTransferMechanism',
-                'gdprAvContractSigned',
-                'gdprAvContractDate',
             ],
             'tier_classification' => [
                 'isDoraRelevant',
@@ -706,7 +676,6 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'ictFunctionType',
                 'substitutability',
                 'hasSubcontractors',
-                'subcontractorChain',
                 'processingLocations',
                 'lastDoraAuditDate',
                 'hasExitStrategy',

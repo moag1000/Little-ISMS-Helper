@@ -226,11 +226,11 @@ src/Controller/DoraExitPlanController.php:113
 src/Controller/DoraExitPlanController.php:175
 src/Controller/DoraExitPlanController.php:216
 src/Controller/DoraExitPlanController.php:217
-src/Controller/DoraSubcontractorController.php:83
-src/Controller/DoraSubcontractorController.php:84
-src/Controller/DoraSubcontractorController.php:131
-src/Controller/DoraSubcontractorController.php:161
-src/Controller/DoraSubcontractorController.php:162
+src/Controller/DoraSubcontractorController.php:92
+src/Controller/DoraSubcontractorController.php:93
+src/Controller/DoraSubcontractorController.php:140
+src/Controller/DoraSubcontractorController.php:170
+src/Controller/DoraSubcontractorController.php:171
 src/Controller/EvidenceReverificationController.php:136
 src/Controller/EvidenceReverificationController.php:177
 src/Controller/FourEyesController.php:89

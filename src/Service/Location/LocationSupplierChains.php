@@ -103,7 +103,7 @@ class LocationSupplierChains
         }
 
         $chain = [];
-        foreach ($supplier->getSubcontractorChain() ?? [] as $entry) {
+        foreach ($supplier->getSubcontractorChain() as $entry) {
             if (!is_array($entry) || trim((string) ($entry['name'] ?? '')) === '') {
                 continue;
             }

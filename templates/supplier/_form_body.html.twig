@@ -35,7 +35,7 @@
     {% set form_sections = form_sections|merge({
         'privacy': {
             'label': 'supplier.section.privacy'|trans({}, 'suppliers'),
-            'fields': ['hasDPA', 'dpaSignedDate', 'gdprProcessorStatus', 'gdprTransferMechanism', 'gdprAvContractSigned', 'gdprAvContractDate']
+            'fields': ['hasDPA', 'dpaSignedDate', 'gdprProcessorStatus', 'gdprTransferMechanism']
         }
     }) %}
 {% endif %}
@@ -43,7 +43,7 @@
     {% set form_sections = form_sections|merge({
         'tier_classification': {
             'label': 'supplier.section.tier_classification'|trans({}, 'suppliers'),
-            'fields': ['isDoraRelevant', 'leiCode', 'naceCode', 'countryOfHeadOffice', 'thirdCountryTransfer', 'transferSafeguards', 'ictCriticality', 'ictFunctionType', 'substitutability', 'hasSubcontractors', 'subcontractorChain', 'processingLocations', 'lastDoraAuditDate', 'hasExitStrategy']
+            'fields': ['isDoraRelevant', 'leiCode', 'naceCode', 'countryOfHeadOffice', 'thirdCountryTransfer', 'transferSafeguards', 'ictCriticality', 'ictFunctionType', 'substitutability', 'hasSubcontractors', 'processingLocations', 'lastDoraAuditDate', 'hasExitStrategy']
         }
     }) %}
 {% endif %}
@@ -100,8 +100,6 @@
         'dpaSignedDate': 6,
         'gdprProcessorStatus': 6,
         'gdprTransferMechanism': 6,
-        'gdprAvContractSigned': 6,
-        'gdprAvContractDate': 6,
         'isDoraRelevant': 6,
         'leiCode': 6,
         'naceCode': 6,
@@ -112,7 +110,6 @@
         'ictFunctionType': 6,
         'substitutability': 6,
         'hasSubcontractors': 6,
-        'subcontractorChain': 12,
         'processingLocations': 12,
         'lastDoraAuditDate': 6,
         'hasExitStrategy': 6,

@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DoraSubcontractor;
+use App\Entity\Supplier;
 use App\Form\DoraSubcontractorType;
 use App\Repository\DoraSubcontractorRepository;
 use App\Service\ModuleConfigurationService;
@@ -74,6 +75,14 @@ class DoraSubcontractorController extends AbstractController
         $user = $this->security->getUser();
         if ($user instanceof User && $user->getTenant()) {
             $subcontractor->setTenant($user->getTenant());
+        }
+        // Prefill from the supplier page ("Unterauftragnehmer erfassen"), same organisation only.
+        $supplierId = $request->query->getInt('supplier');
+        if ($supplierId > 0) {
+            $supplier = $this->entityManager->find(Supplier::class, $supplierId);
+            if ($supplier instanceof Supplier && $supplier->getTenant() === $subcontractor->getTenant()) {
+                $subcontractor->setParentSupplier($supplier);
+            }
         }
 
         $form = $this->createForm(DoraSubcontractorType::class, $subcontractor);

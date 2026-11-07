@@ -121,7 +121,7 @@ class DpaGeneratorService
         $now    = new DateTimeImmutable();
         $tenant = $supplier->getTenant();
 
-        // Sub-processors: structured subcontractorChain from supplier entity.
+        // Sub-processors: the supplier's DoraSubcontractor rows (P5: one list).
         $subProcessors = [];
         if ($supplier->hasSubcontractors()) {
             foreach ((array) $supplier->getSubcontractorChain() as $sub) {

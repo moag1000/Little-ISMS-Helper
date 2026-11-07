@@ -77,7 +77,7 @@ framework:
                         auto_progress_conditions:
                             type: field_completion
                             entity: Supplier
-                            fields: [gdprAvContractSigned]
+                            fields: [hasDPA]
                             condition: "gdprProcessorStatus != none"
                     -   name: "Contract & SLA Verification"
                         description: "Verify security requirements in contract: SLAs, audit rights, incident notification, exit strategy"
