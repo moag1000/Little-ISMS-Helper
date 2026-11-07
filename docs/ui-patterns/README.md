@@ -87,11 +87,9 @@ This pattern library provides comprehensive guidelines for implementing UI compo
 
 | File | Purpose |
 |------|---------|
-| `assets/styles/app.css` | Core styles, badges, buttons |
-| `assets/styles/ui-components.css` | Component-specific styles |
-| `assets/styles/dark-mode.css` | Dark mode overrides |
+| `assets/styles/app.css` | App layer: layout, badges, legacy components, dark-mode residue (merged from five sheets, 2026-11) |
+| `assets/styles/fairy-aurora-components.css` | Aurora components |
 | `assets/styles/analytics.css` | Chart and analytics styles |
-| `assets/styles/premium.css` | Premium feature styles |
 
 ---
 

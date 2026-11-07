@@ -818,6 +818,14 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-audit-program-timeline` | Horizontal Gantt-style audit-program timeline (today-line, overdue pulse, milestone pins). | `_fa_audit_program_timeline.html.twig` |
 | `fa-maturity-heat-map` | Inline maturity score widget (0–5 dot row with heat-level BEM modifier). | `_fa_maturity_heat_map.html.twig` |
 
+**Stylesheets** (`assets/styles/`): `fairy-aurora.css` = tokens (light + dark), `fairy-aurora-components.css` =
+all Aurora components (new UI goes here), `app.css` = app layer (layout, nav, legacy components, dark-mode residue;
+merged from five sheets in 2026-11, do not add components), plus area sheets (admin-panel, policy-doc, report-doc,
+location-map, …). Every sheet is listed in `templates/_aurora_styles.html.twig` AND `assets/styles.css` in the same
+order — `tests/js/styles/stylesheet_wiring.test.js` fails otherwise. `no_duplicate_css_rules.test.js` rejects a property
+declared twice for the same selector in `app.css` / `fairy-aurora-components.css`. Bootstrap utilities carry
+`!important`; redefining `.mt-2`, `.d-flex`, … without it is dead code.
+
 Import pattern for macros: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
 Gate 62 (`check_aurora_legacy_markup.py`) ratchets Bootstrap markup that has an Aurora replacement: counts per template may only go down.
 For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...], variant: 'neutral' } %}` (it is a plain include, not a macro). `variant: 'brand'` for hero lists (risk, document). The canonical CSS class set is `.fa-bulk-bar*` (BEM); the old `.bulk-action-bar*` is a deprecated shim.
