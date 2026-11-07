@@ -236,7 +236,7 @@ src/Controller/EvidenceReverificationController.php:177
 src/Controller/FourEyesController.php:89
 src/Controller/GuidedTourController.php:90
 src/Controller/GuidedTourController.php:119
-src/Controller/HomeController.php:340
+src/Controller/HomeController.php:342
 src/Controller/ISMSObjectiveController.php:75
 src/Controller/ISMSObjectiveController.php:76
 src/Controller/ISMSObjectiveController.php:135
