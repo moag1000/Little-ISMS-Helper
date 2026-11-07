@@ -202,6 +202,32 @@
     table: { headers: [ 'board_one_pager.metric.health'|trans({}, 'reports'), '#' ], rows: _ops_rows },
 }]) %}
 
+{# Decisions of top management: open and taken in the last 12 months (ISO 27001 5.1, 9.3.3). #}
+{% set _bd = board_decisions() %}
+{% set _decision_rows = [] %}
+{% for d in _bd.pending %}
+    {% set _decision_rows = _decision_rows|merge([[ d.title|length > 45 ? d.title[:45] ~ '…' : d.title, d.statusEnum.label|trans({}, 'management_decision'), d.dueDate|fa_date ]]) %}
+{% endfor %}
+{% for d in _bd.recent|slice(0, 5) %}
+    {% set _decision_rows = _decision_rows|merge([[ d.title|length > 45 ? d.title[:45] ~ '…' : d.title, d.statusEnum.label|trans({}, 'management_decision'), d.decidedAt|fa_date ]]) %}
+{% endfor %}
+{% for t in _bd.missing %}
+    {% set _decision_rows = _decision_rows|merge([[ t.label|trans({}, 'management_decision'), 'management_decision.board.missing_short'|trans({}, 'management_decision'), '—' ]]) %}
+{% endfor %}
+{% if _decision_rows is not empty %}
+    {% set _sections = [{
+        heading: 'management_decision.board.section'|trans({}, 'management_decision'),
+        table: {
+            headers: [
+                'management_decision.field.title'|trans({}, 'management_decision'),
+                'management_decision.field.status'|trans({}, 'management_decision'),
+                'management_decision.field.date'|trans({}, 'management_decision'),
+            ],
+            rows: _decision_rows,
+        },
+    }]|merge(_sections) %}
+{% endif %}
+
 {{ _fa_report_doc.render({
     report: {
         title:          'board_one_pager.title'|trans({}, 'reports'),

@@ -14,7 +14,7 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
 
 /**
  * Auto-Eskalation auf
- * `corrective_action_lifecycle.verify_ineffective`.
+ * `corrective_action_lifecycle.confirm_ineffective`.
  *
  * ISO 27001 Cl. 10.1 (d) verlangt bei unwirksamen Korrekturmaßnahmen
  * eine erneute Bewertung und Behandlung. Die `AlvaHint`-Regel
@@ -30,8 +30,8 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
  * Toggle: {@see AutoReactionService::KEY_RECAPA_ON_INEFFECTIVE} (Default ON).
  *
  * Wird per `workflow.completed`-Event aufgerufen. Filter auf
- * `corrective_action_lifecycle` + Transition `verify_ineffective` —
- * andere Transitions (verify_effective, retry etc.) sind No-Ops.
+ * `corrective_action_lifecycle` + Transition `confirm_ineffective` —
+ * andere Transitions (confirm_effective, retry etc.) sind No-Ops.
  *
  * Priority 10 — lower than AuditLogListener (50) and AlvaHintInvalidator (30)
  * so the status-change is already logged when we spawn the Folge-CAPA.
@@ -40,7 +40,7 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
 final class AutoReactionRecapaOnIneffectiveListener
 {
     private const WORKFLOW_NAME = 'corrective_action_lifecycle';
-    private const TRIGGER_TRANSITION = 'verify_ineffective';
+    private const TRIGGER_TRANSITION = 'confirm_ineffective';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -98,12 +98,12 @@ final class AutoReactionRecapaOnIneffectiveListener
             $this->entityManager->persist($followUp);
             $this->entityManager->flush();
 
-            $this->logger->info('Auto re-CAPA created after verify_ineffective transition', [
+            $this->logger->info('Auto re-CAPA created after confirm_ineffective transition', [
                 'original_ca_id' => $subject->getId(),
                 'followup_ca_id' => $followUp->getId(),
             ]);
         } catch (\Throwable $e) {
-            // Re-CAPA failure must not block the verify_ineffective transition
+            // Re-CAPA failure must not block the confirm_ineffective transition
             // itself — the AlvaHint rule will surface the gap on the next render.
             $this->logger->warning('Auto re-CAPA failed', [
                 'original_ca_id' => $subject->getId(),

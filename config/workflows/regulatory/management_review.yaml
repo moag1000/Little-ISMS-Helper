@@ -25,14 +25,14 @@ framework:
                     from: in_progress
                     to: approved
                     metadata:
-                        roles: [ROLE_CISO, ROLE_ADMIN]
+                        roles: [ROLE_CISO, ROLE_TOP_MGMT]
                         four_eyes: true
                         tone_target: success
                 reject:
                     from: in_progress
                     to: rejected
                     metadata:
-                        roles: [ROLE_CISO, ROLE_ADMIN]
+                        roles: [ROLE_CISO, ROLE_TOP_MGMT]
                         reason_required: true
                         tone_target: danger
                 cancel:
@@ -70,7 +70,7 @@ framework:
                     -   name: "Review Execution"
                         description: "Management conducts the review meeting and documents decisions (Cl. 9.3.3)"
                         order: 2
-                        approver_role: ROLE_ADMIN
+                        approver_role: ROLE_TOP_MGMT
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
@@ -79,16 +79,12 @@ framework:
                             entity: ManagementReview
                             fields: [decisions, reviewDate]
                     -   name: "Action Planning"
-                        description: "Document improvement actions, assign owners and deadlines"
+                        description: "Create the tasks decided in the review with owner and due date (Cl. 9.3.3)"
                         order: 3
                         approver_role: ROLE_CISO
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
-                        auto_progress_conditions:
-                            type: field_completion
-                            entity: ManagementReview
-                            fields: [actionItems]
                     -   name: "Follow-up Verification"
                         description: "Verify action items are implemented as planned"
                         order: 4

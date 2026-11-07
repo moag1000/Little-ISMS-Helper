@@ -140,7 +140,7 @@ import_session.status	1
 incident.category	4
 incident.nis2_category	1
 incident.nis2_compliance	1
-incident.severity	3
+incident.severity	4
 incident.status	3
 incident.workflow.escalation	1
 incident_sla.severity	2
@@ -173,12 +173,18 @@ location.map.zone.basis	1
 location.map.zone.site	1
 location.security	4
 location.type	4
+management_decision	1
+management_decision.board.missing	1
+management_decision.subject	1
 management_reports.category	1
 management_reports.report	1
 management_review	1
 management_review.dora_category	1
+management_review.field	1
+management_review.input	1
 management_review.pdf.input	1
 management_review.pdf.output	1
+management_review.section	1
 management_review.status	6
 mapping_gap_item.status	1
 mfa.token_type	2
@@ -187,7 +193,7 @@ mris.wizard.ai_risk.class	1
 my_day.badge_value	1
 my_day.hint	1
 my_day.kpi	1
-my_day.section	1
+my_day.section	2
 nis2.art21.measure	1
 nis2.dashboard.letter	1
 nis2.dashboard.status	1
@@ -196,7 +202,7 @@ notification.event_type	1
 notification.severity	3
 notification.template.desc	1
 notification_delivery.status	1
-objective.status	3
+objective.status	4
 onboarding.mapping.step	1
 party	1
 patch.priority	2
@@ -205,7 +211,7 @@ patch.type	3
 person.type	2
 persona_competence	1
 planning.action_item.origin	1
-planning.action_item.status	1
+planning.action_item.status	4
 planning.roadmap.mode	1
 planning.team.type	1
 planning.visibility	3
@@ -245,6 +251,7 @@ privacy.sdm.risk_level	1
 processing_activity.legal_basis	3
 processing_activity.risk_level	1
 processing_activity.status	1
+proposal.title	1
 prototype_protection.label	2
 prototype_protection.result	4
 prototype_protection.section	2

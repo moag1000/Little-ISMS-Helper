@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
  * Uses the same tiers that decide who is asked in the first place
  * (admin → risk approval thresholds, per organisation, holding ceilings
  * applied): residual score up to the manager threshold → ROLE_MANAGER,
- * above it → ROLE_ADMIN. Role hierarchy applies, and the approver must
+ * above it → ROLE_TOP_MGMT. Role hierarchy applies, and the approver must
  * belong to the risk's organisation.
  */
 final class RiskAcceptanceVoter extends Voter

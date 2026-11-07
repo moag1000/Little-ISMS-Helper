@@ -13,16 +13,16 @@ framework:
                 - completed
                 - follow_up_required
             transitions:
-                # ISO 27001 Cl. 9.3 — Management Review ist eine der kritischsten
-                # Aufzeichnungspflichten des ISMS. Die `complete`-Transition
-                # versiegelt die Aufzeichnung → 4-Augen-Pflicht.
+                # Top management reviews the ISMS (ISO 27001 9.3.1) — completing
+                # the review is its decision on the results (9.3.3), recorded as
+                # a ManagementDecision by ManagementReviewCompletedListener.
+                # The decision itself is the second pair of eyes; the CISO
+                # prepares the inputs.
                 complete:
                     from: planned
                     to: completed
                     metadata:
-                        roles: [ROLE_CISO, ROLE_TOP_MGMT]
-                        four_eyes: true
-                        reason_required: true
+                        roles: [ROLE_TOP_MGMT]
                 mark_follow_up_required:
                     from: completed
                     to: follow_up_required

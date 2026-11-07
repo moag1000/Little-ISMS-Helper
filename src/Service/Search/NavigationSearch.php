@@ -241,6 +241,16 @@ class NavigationSearch
                 'roles' => ['ROLE_USER'],
                 'requiresModule' => null,
             ],
+            // ── Top-management decisions (ISO 27001 5.1, 9.3.3; NIS-2 Art. 20) ──
+            [
+                'route' => 'app_management_decision_index',
+                'label' => 'search_nav.app_management_decision_index.label',
+                'description' => 'search_nav.app_management_decision_index.description',
+                'aliases' => ['Leitungsentscheidung', 'Beschluss', 'Beschlüsse', 'Billigung', 'Freigabe Leitung', 'Geschäftsleitung', 'Vorstand', 'Board decision', 'Management decision', 'Akzeptanzkriterien'],
+                'icon' => 'fa-icon--regulator',
+                'roles' => ['ROLE_AUDITOR'],
+                'requiresModule' => null,
+            ],
             // ── Risk ──────────────────────────────────────────────────────────
             [
                 'route' => 'app_risk_appetite_index',

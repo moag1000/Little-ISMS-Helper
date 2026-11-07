@@ -45,8 +45,8 @@ src/Controller/Admin/Notification/NotificationRuleController.php:217
 src/Controller/Admin/Notification/NotificationRuleController.php:249
 src/Controller/Admin/Notification/NotificationRuleController.php:250
 src/Controller/Admin/Notification/NotificationTemplateController.php:92
-src/Controller/Admin/RiskApprovalConfigController.php:86
-src/Controller/Admin/RiskApprovalConfigController.php:87
+src/Controller/Admin/RiskApprovalConfigController.php:88
+src/Controller/Admin/RiskApprovalConfigController.php:89
 src/Controller/Admin/SampleDataController.php:203
 src/Controller/Admin/SampleDataController.php:204
 src/Controller/Admin/SsoProviderController.php:157
@@ -259,11 +259,11 @@ src/Controller/LocationController.php:94
 src/Controller/LocationController.php:162
 src/Controller/LocationController.php:206
 src/Controller/LocationController.php:207
-src/Controller/ManagementReviewController.php:90
-src/Controller/ManagementReviewController.php:91
-src/Controller/ManagementReviewController.php:139
-src/Controller/ManagementReviewController.php:238
-src/Controller/ManagementReviewController.php:239
+src/Controller/ManagementReviewController.php:93
+src/Controller/ManagementReviewController.php:94
+src/Controller/ManagementReviewController.php:149
+src/Controller/ManagementReviewController.php:251
+src/Controller/ManagementReviewController.php:252
 src/Controller/MappingQualityController.php:202
 src/Controller/MappingQualityController.php:239
 src/Controller/MappingQualityController.php:345

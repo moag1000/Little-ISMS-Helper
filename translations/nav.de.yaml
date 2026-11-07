@@ -48,6 +48,7 @@ nav:
     tenants: Organisationen
     data_repair: Datenreparatur
     management_reviews: Managementbewertungen
+    management_decisions: Leitungsentscheidungen
     bc_plans: BC-Pläne
     bc_exercises: BC-Übungen
     incidents: Vorfälle
@@ -236,6 +237,7 @@ nav:
             audits: 'Interne und externe Audits'
             training: 'Sicherheitsbewusstseins-Schulungen'
             management_reviews: 'Managementbewertungs-Meetings'
+            management_decisions: 'Beschlüsse und Billigungen der Leitung mit Nachweis'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'

@@ -8,6 +8,8 @@ use App\Entity\ManagementReview;
 use App\Entity\Tenant;
 use App\Enum\CorrectiveActionStatus;
 use App\Repository\CorrectiveActionRepository;
+use App\Repository\ManagementReviewRepository;
+use App\Service\ManagementReview\ReviewInputNarratives;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -27,6 +29,8 @@ final class ManagementReviewAutoCollector
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
         private readonly CorrectiveActionRepository $correctiveActionRepository,
+        private readonly ManagementReviewRepository $reviewRepository,
+        private readonly ReviewInputNarratives $narratives,
     ) {
     }
 
@@ -63,37 +67,37 @@ final class ManagementReviewAutoCollector
         $review->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'planned' is the management_review_lifecycle initial_marking, replacing legacy 'draft' value which was never a valid management_review status)
         $review->setCreatedAt(new DateTimeImmutable());
 
-        // Lettering of ISO/IEC 27001:2022 Cl. 9.3.2.
+        // ISO/IEC 27001:2022 9.3.2 a–g, each from the records since the previous review.
+        $previous = $this->reviewRepository->findPreviousForTenant($tenant, $referenceDate);
+        $since = $previous?->getReviewDate();
+
         // (a) Status of actions from previous management reviews
-        // (left blank initially; user fills based on previous-review tracking)
-
+        $review->setPreviousReviewActions($this->narratives->previousActions($previous, $locale));
         // (b) Changes in external and internal issues relevant to the ISMS
-        $review->setChangesRelevantToISMS($this->buildContextChangesNarrative($locale));
-
+        $review->setChangesRelevantToISMS($this->narratives->contextChanges($tenant, $since, $locale));
         // (c) Changes in needs and expectations of interested parties
-        // (d) Feedback on information security performance:
-        // (d.1) Nonconformities and corrective actions
+        $review->setInterestedPartyNeedsChanges($this->narratives->interestedPartyChanges($tenant, $since, $locale));
+        // (d 1) Nonconformities and corrective actions
         $review->setNonConformitiesStatus($this->buildNcStatusNarrative($report, $locale));
         $review->setCorrectiveActionsStatus($this->buildCorrectiveActionsNarrative($tenant, $locale));
-        // (d.2) Monitoring and measurement results
+        // (d 2) Monitoring and measurement results, incidents
         $review->setPerformanceEvaluation($this->buildPerformanceNarrative($report, $locale));
-        // (d.3) Audit results
+        $review->setIncidentsReview($this->narratives->incidents($tenant, $since, $locale));
+        // (d 3) Audit results
         $review->setAuditResults($this->buildAuditResultsNarrative($report, $locale));
-        // (d.4) Fulfilment of information security objectives
-        // (mapped via objectives review later)
-
+        // (d 4) Fulfilment of information security objectives
+        $review->setObjectivesReview($this->narratives->objectives($tenant, $locale));
         // (e) Feedback from interested parties
-        // (left blank — user fills based on interested-parties roster)
-
+        $review->setFeedbackFromInterestedParties($this->narratives->interestedPartyFeedback($tenant, $since, $locale));
         // (f) Results of risk assessment and status of risk treatment plan
         $review->setRisksReview($this->buildRiskNarrative($report, $locale));
-
+        $review->setRiskTreatmentEffectiveness($this->buildTreatmentNarrative($report, $locale));
         // (g) Opportunities for continual improvement
         $review->setOpportunitiesForImprovement($this->buildImprovementOpportunitiesNarrative($report, $locale));
+        // 9.3 asks for planned intervals — the next one a year on.
+        $review->setNextReviewDate(DateTimeImmutable::createFromInterface($referenceDate)->modify('+12 months'));
 
-        // §9.3 outputs — decisions & action items (initially empty; filled in meeting)
-        $review->setDecisions('');
-        $review->setActionItems('');
+        // 9.3.3 outputs (decisions, resulting tasks) are taken in the meeting.
 
         $this->entityManager->persist($review);
         $this->entityManager->flush();
@@ -236,14 +240,6 @@ final class ManagementReviewAutoCollector
         );
     }
 
-    private function buildContextChangesNarrative(string $locale): string
-    {
-        if ($locale === 'de') {
-            return "Kontext-Änderungen seit letztem Review\n\n[Vom CISO/Compliance-Manager auszufüllen — relevante Änderungen extern (Recht, Markt, Lieferkette) und intern (Org-Struktur, IT-Landschaft, Prozesse, Personen).]";
-        }
-        return "Context changes since last review\n\n[To be filled by CISO/Compliance Manager — relevant changes external (legal, market, supply chain) and internal (org structure, IT landscape, processes, people).]";
-    }
-
     private function buildImprovementOpportunitiesNarrative(array $report, string $locale): string
     {
         $treatment = $report['treatment_data'];
@@ -258,7 +254,6 @@ final class ManagementReviewAutoCollector
             foreach ($criticalKpis as $kpi) {
                 $body .= sprintf("- KPI '%s' im kritischen Bereich (%s)\n", $kpi['label'], $kpi['value']);
             }
-            $body .= "\n[Manuell ergänzen: weitere Verbesserungschancen aus Mitarbeiter-Feedback, Audits, Vorfällen.]";
             return $body;
         }
         $body = "Improvement opportunities (auto-detected)\n\n";
@@ -268,7 +263,18 @@ final class ManagementReviewAutoCollector
         foreach ($criticalKpis as $kpi) {
             $body .= sprintf("- KPI '%s' in critical range (%s)\n", $kpi['label'], $kpi['value']);
         }
-        $body .= "\n[Manually extend: additional opportunities from staff feedback, audits, incidents.]";
         return $body;
+    }
+
+    /** 9.3.2 f — status of the risk treatment plans. */
+    private function buildTreatmentNarrative(array $report, string $locale): string
+    {
+        $treatment = $report['treatment_data'] ?? [];
+
+        return $this->translator->trans('management_review.input.f.treatment', [
+            '%total%' => (int) ($treatment['total'] ?? 0),
+            '%active%' => (int) ($treatment['active'] ?? 0),
+            '%overdue%' => (int) ($treatment['overdue'] ?? 0),
+        ], 'management_review', $locale);
     }
 }

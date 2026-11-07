@@ -137,6 +137,7 @@ class BackupService
         'CorrectiveAction',         // FK: Tenant, AuditFinding, User
         'AuditFreeze',              // H-01 tamper-evident — FK: Tenant, User
         'ManagementReview',
+        'ManagementDecision',       // FK: Tenant, ManagementReview, User, self (basis)
 
         // DORA / Penetration Testing
         'ThreatLedPenetrationTest', // DORA Art. 26 — FK: Tenant; ManyToMany: AuditFinding

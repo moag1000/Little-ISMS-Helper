@@ -54,7 +54,7 @@ class AutoReactionRecapaOnIneffectiveListenerTest extends TestCase
         $event = $this->createEvent(
             $capa,
             workflowName: 'document_lifecycle',
-            transitionName: 'verify_ineffective',
+            transitionName: 'confirm_ineffective',
         );
 
         $this->listener->onCompleted($event);
@@ -85,7 +85,7 @@ class AutoReactionRecapaOnIneffectiveListenerTest extends TestCase
         $event = $this->createEvent(
             new \stdClass(),
             workflowName: 'corrective_action_lifecycle',
-            transitionName: 'verify_ineffective',
+            transitionName: 'confirm_ineffective',
         );
 
         $this->listener->onCompleted($event);
@@ -101,7 +101,7 @@ class AutoReactionRecapaOnIneffectiveListenerTest extends TestCase
         $event = $this->createEvent(
             $capa,
             workflowName: 'corrective_action_lifecycle',
-            transitionName: 'verify_ineffective',
+            transitionName: 'confirm_ineffective',
         );
 
         $this->listener->onCompleted($event);
@@ -124,7 +124,7 @@ class AutoReactionRecapaOnIneffectiveListenerTest extends TestCase
         $event = $this->createEvent(
             $capa,
             workflowName: 'corrective_action_lifecycle',
-            transitionName: 'verify_ineffective',
+            transitionName: 'confirm_ineffective',
         );
 
         $this->listener->onCompleted($event);
@@ -152,7 +152,7 @@ class AutoReactionRecapaOnIneffectiveListenerTest extends TestCase
         $event = $this->createEvent(
             $capa,
             workflowName: 'corrective_action_lifecycle',
-            transitionName: 'verify_ineffective',
+            transitionName: 'confirm_ineffective',
         );
 
         $this->listener->onCompleted($event);
@@ -190,7 +190,7 @@ class AutoReactionRecapaOnIneffectiveListenerTest extends TestCase
         $event = $this->createEvent(
             $capa,
             workflowName: 'corrective_action_lifecycle',
-            transitionName: 'verify_ineffective',
+            transitionName: 'confirm_ineffective',
         );
 
         // Must NOT throw — the transition itself must remain successful.
@@ -234,7 +234,7 @@ class AutoReactionRecapaOnIneffectiveListenerTest extends TestCase
 
         return new CompletedEvent(
             $subject,
-            new Marking([$transitionName === 'verify_ineffective' ? 'verified_ineffective' : 'verified_effective' => 1]),
+            new Marking([$transitionName === 'confirm_ineffective' ? 'verified_ineffective' : 'verified_effective' => 1]),
             new Transition($transitionName, ['completed'], ['verified_ineffective']),
             $workflow,
             [],

@@ -1,0 +1,8 @@
+<button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
+        data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="mdApprove{{ decision.id }}">
+    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'management_decision.action.approve'|trans({}, 'management_decision') }}
+</button>
+<button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+        data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="mdReject{{ decision.id }}">
+    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'management_decision.action.reject'|trans({}, 'management_decision') }}
+</button>

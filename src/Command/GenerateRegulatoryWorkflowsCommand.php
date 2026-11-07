@@ -826,7 +826,7 @@ HELP
                     'name' => 'Review Execution',
                     'description' => 'Management conducts the review meeting and documents decisions (Cl. 9.3.3)',
                     'stepType' => 'approval',
-                    'approverRole' => 'ROLE_ADMIN',
+                    'approverRole' => 'ROLE_TOP_MGMT',
                     'daysToComplete' => 7,
                     'sortOrder' => 2,
                     'isRequired' => true,
@@ -838,17 +838,12 @@ HELP
                 ],
                 [
                     'name' => 'Action Planning',
-                    'description' => 'Document improvement actions, assign owners and deadlines',
+                    'description' => 'Create the tasks decided in the review with owner and due date (Cl. 9.3.3)',
                     'stepType' => 'approval',
                     'approverRole' => 'ROLE_CISO',
                     'daysToComplete' => 7,
                     'sortOrder' => 3,
                     'isRequired' => true,
-                    'autoProgressConditions' => [
-                        'type' => 'field_completion',
-                        'entity' => 'ManagementReview',
-                        'fields' => ['actionItems'],
-                    ],
                 ],
                 [
                     'name' => 'Follow-up Verification',

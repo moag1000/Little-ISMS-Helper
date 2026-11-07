@@ -24,6 +24,7 @@ imports:
     - { resource: '../workflows/business_continuity_plan.yaml' }
     - { resource: '../workflows/patch.yaml' }
     - { resource: '../workflows/management_review.yaml' }
+    - { resource: '../workflows/management_decision.yaml' }
     - { resource: '../workflows/change_request.yaml' }
     - { resource: '../workflows/threat_intelligence.yaml' }
     - { resource: '../workflows/bc_exercise.yaml' }

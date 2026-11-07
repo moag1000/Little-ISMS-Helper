@@ -30,8 +30,6 @@ suggestions:
         note: Notiz (optional)
         reason: Begründung (optional)
         reject_intro: Abgelehnte Vorschläge kommen für denselben Stand nicht wieder.
-    my_day:
-        link: '{1}1 Vorschlag offen|]1,Inf[%count% Vorschläge offen'
     hint:
         record: '{1}Ein offener Vorschlag: %title%|]1,Inf[%count% offene Vorschläge, zuerst: %title%'
         open: Vorschläge ansehen

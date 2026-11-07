@@ -48,6 +48,7 @@ nav:
     tenants: Tenants
     data_repair: 'Data Repair'
     management_reviews: 'Management Reviews'
+    management_decisions: Management decisions
     bc_plans: 'BC Plans'
     bc_exercises: 'BC Exercises'
     incidents: Incidents
@@ -238,6 +239,7 @@ nav:
             audits: 'Internal and external audits'
             training: 'Security awareness training'
             management_reviews: 'Management review meetings'
+            management_decisions: 'Decisions and approvals of top management with evidence'
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
             mapping_hub: 'Entry point: wizard, seeds, quality, transitive coverage'

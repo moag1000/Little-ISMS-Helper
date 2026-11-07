@@ -1,0 +1,85 @@
+{#
+ # Board dashboard: what top management has to decide (pending proposals,
+ # standing approvals that are missing or end soon) and what it decided.
+ #}
+{% set _bd = board_decisions() %}
+{% set _canDecide = is_granted('ROLE_TOP_MGMT') %}
+<div class="row g-3 mb-4" id="decisions">
+    <div class="col-lg-7">
+        {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+            {% block card_header %}
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">{{ 'management_decision.board.to_decide'|trans({}, 'management_decision') }}</h2>
+                    <a href="{{ path('app_my_day') }}" class="small">{{ 'management_decision.board.more_in_my_day'|trans({}, 'management_decision') }}</a>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                {% if _bd.pending is empty and _bd.missing is empty and _bd.expiring is empty %}
+                    <p class="text-muted mb-0">{{ 'management_decision.board.nothing'|trans({}, 'management_decision') }}</p>
+                {% endif %}
+                {% for d in _bd.pending %}
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 border-bottom">
+                        <div>
+                            <a href="{{ path('app_management_decision_show', {id: d.id}) }}" class="fw-semibold">{{ d.title }}</a>
+                            <div class="small {{ d.overdue ? 'text-danger' : 'text-muted' }}">
+                                {{ d.type.label|trans({}, 'management_decision') }} · {{ 'management_decision.due'|trans({'%date%': d.dueDate|fa_date}, 'management_decision') }}
+                            </div>
+                        </div>
+                        {% if _canDecide %}
+                            <div class="d-flex gap-2">{% include 'management_decision/_decide_buttons.html.twig' with { decision: d } only %}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% for t in _bd.missing %}
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 border-bottom">
+                        <div>
+                            <span class="fw-semibold">{{ t.label|trans({}, 'management_decision') }}</span>
+                            <div class="small text-muted">{{ ('management_decision.board.missing.' ~ t.value)|trans({}, 'management_decision') }}</div>
+                        </div>
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <a href="{{ path('app_management_decision_new', {type: t.value}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'management_decision.new.prepare'|trans({}, 'management_decision') }}</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% for d in _bd.expiring %}
+                    <div class="py-2 border-bottom">
+                        <a href="{{ path('app_management_decision_show', {id: d.id}) }}" class="fw-semibold">{{ d.title }}</a>
+                        <div class="small text-warning">{{ 'management_decision.board.expires'|trans({'%date%': d.validUntil|fa_date}, 'management_decision') }}</div>
+                    </div>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    </div>
+    <div class="col-lg-5">
+        {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+            {% block card_header %}
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">{{ 'management_decision.board.recent'|trans({}, 'management_decision') }}</h2>
+                    <a href="{{ path('app_management_decision_index') }}" class="small">{{ 'management_decision.board.all'|trans({}, 'management_decision') }}</a>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                {% if _bd.recent is empty %}
+                    <p class="text-muted mb-0">{{ 'management_decision.empty'|trans({}, 'management_decision') }}</p>
+                {% else %}
+                    <ul class="list-unstyled mb-0">
+                        {% for d in _bd.recent %}
+                            <li class="py-1">
+                                <a href="{{ path('app_management_decision_show', {id: d.id}) }}">{{ d.title }}</a>
+                                <div class="small text-muted">
+                                    {{ d.statusEnum.label|trans({}, 'management_decision') }} · {{ d.decidedAt|fa_date }}
+                                    · {{ d.decidedBy and app.user and d.decidedBy.id == app.user.id ? 'management_decision.board.by_me'|trans({}, 'management_decision') : (d.decidedBy ? d.decidedBy.fullName : '—') }}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    </div>
+</div>
+{% if _canDecide %}
+    {% for d in _bd.pending %}
+        {% include 'management_decision/_decide_modals.html.twig' with { decision: d, back: 'board' } only %}
+    {% endfor %}
+{% endif %}

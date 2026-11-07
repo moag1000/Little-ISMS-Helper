@@ -62,6 +62,10 @@ class ManagementReview
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $feedbackFromInterestedParties = null;
 
+    /** ISO 27001 9.3.2 c — changes in needs and expectations of interested parties. */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $interestedPartyNeedsChanges = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $auditResults = null;
 
@@ -108,7 +112,6 @@ class ManagementReview
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $updatedAt = null;
 
-
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
@@ -133,9 +136,6 @@ class ManagementReview
     private Collection $reviewedByDeputyPersons;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $nonconformitiesReview = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $incidentsReview = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -145,16 +145,7 @@ class ManagementReview
     private ?string $objectivesReview = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $contextChanges = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $summary = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $improvementOpportunities = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $resourcesNeeded = null;
 
     // ── ISO 27001 §9.3 norm fields (T31.2.5) ──────────────────────────────
 
@@ -183,11 +174,7 @@ class ManagementReview
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $frameworkComplianceStatus = null;
 
-    /** Structured action items: [{action: string, owner: string, deadline: ISO-date, status: 'open'|'in_progress'|'done'}] */
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $actionItemsWithDeadlines = null;
-
-public function __construct()
+    public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
         $this->participants = new ArrayCollection();
@@ -333,6 +320,17 @@ public function __construct()
     public function setFeedbackFromInterestedParties(?string $feedbackFromInterestedParties): static
     {
         $this->feedbackFromInterestedParties = $feedbackFromInterestedParties;
+        return $this;
+    }
+
+    public function getInterestedPartyNeedsChanges(): ?string
+    {
+        return $this->interestedPartyNeedsChanges;
+    }
+
+    public function setInterestedPartyNeedsChanges(?string $interestedPartyNeedsChanges): static
+    {
+        $this->interestedPartyNeedsChanges = $interestedPartyNeedsChanges;
         return $this;
     }
 
@@ -540,17 +538,6 @@ public function __construct()
         return OwnerResolver::resolveAll($this->reviewedBy, $this->reviewedByPerson, null, $this->reviewedByDeputyPersons);
     }
 
-    public function getNonconformitiesReview(): ?string
-    {
-        return $this->nonconformitiesReview;
-    }
-
-    public function setNonconformitiesReview(?string $nonconformitiesReview): static
-    {
-        $this->nonconformitiesReview = $nonconformitiesReview;
-        return $this;
-    }
-
     public function getIncidentsReview(): ?string
     {
         return $this->incidentsReview;
@@ -584,17 +571,6 @@ public function __construct()
         return $this;
     }
 
-    public function getContextChanges(): ?string
-    {
-        return $this->contextChanges;
-    }
-
-    public function setContextChanges(?string $contextChanges): static
-    {
-        $this->contextChanges = $contextChanges;
-        return $this;
-    }
-
     public function getSummary(): ?string
     {
         return $this->summary;
@@ -603,28 +579,6 @@ public function __construct()
     public function setSummary(?string $summary): static
     {
         $this->summary = $summary;
-        return $this;
-    }
-
-    public function getImprovementOpportunities(): ?string
-    {
-        return $this->improvementOpportunities;
-    }
-
-    public function setImprovementOpportunities(?string $improvementOpportunities): static
-    {
-        $this->improvementOpportunities = $improvementOpportunities;
-        return $this;
-    }
-
-    public function getResourcesNeeded(): ?string
-    {
-        return $this->resourcesNeeded;
-    }
-
-    public function setResourcesNeeded(?string $resourcesNeeded): static
-    {
-        $this->resourcesNeeded = $resourcesNeeded;
         return $this;
     }
 
@@ -693,17 +647,6 @@ public function __construct()
     public function setFrameworkComplianceStatus(?array $frameworkComplianceStatus): static
     {
         $this->frameworkComplianceStatus = $frameworkComplianceStatus;
-        return $this;
-    }
-
-    public function getActionItemsWithDeadlines(): ?array
-    {
-        return $this->actionItemsWithDeadlines;
-    }
-
-    public function setActionItemsWithDeadlines(?array $actionItemsWithDeadlines): static
-    {
-        $this->actionItemsWithDeadlines = $actionItemsWithDeadlines;
         return $this;
     }
 

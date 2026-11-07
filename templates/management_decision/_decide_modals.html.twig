@@ -1,0 +1,26 @@
+{# Approve / reject dialogs of one pending decision (top management). #}
+{% import '_macros/workflow.html.twig' as _workflow %}
+{{ _workflow.decision_modal({
+    id: 'mdApprove' ~ decision.id,
+    tone: 'success',
+    title: 'management_decision.action.approve'|trans({}, 'management_decision'),
+    action: path('app_management_decision_approve', {id: decision.id}),
+    token: csrf_token('md_approve_' ~ decision.id),
+    question: 'management_decision.confirm.approve'|trans({}, 'management_decision'),
+    subject: decision.title,
+    summary: decision.type.normReference,
+    field: { name: 'comment', label: 'management_decision.field.comment'|trans({}, 'management_decision') },
+    hidden: back is defined and back ? { _back: back } : {},
+}) }}
+{{ _workflow.decision_modal({
+    id: 'mdReject' ~ decision.id,
+    tone: 'danger',
+    title: 'management_decision.action.reject'|trans({}, 'management_decision'),
+    action: path('app_management_decision_reject', {id: decision.id}),
+    token: csrf_token('md_reject_' ~ decision.id),
+    question: 'management_decision.confirm.reject'|trans({}, 'management_decision'),
+    subject: decision.title,
+    summary: decision.type.normReference,
+    field: { name: 'comment', label: 'management_decision.field.reason'|trans({}, 'management_decision'), required: true, rows: 4 },
+    hidden: back is defined and back ? { _back: back } : {},
+}) }}

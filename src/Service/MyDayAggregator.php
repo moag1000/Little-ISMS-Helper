@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\AuditChecklist;
 use App\Entity\Document;
 use App\Entity\FourEyesApprovalRequest;
+use App\Entity\ManagementDecision;
 use App\Entity\PolicyAcknowledgement;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -165,7 +166,10 @@ final class MyDayAggregator
             'subtitle'    => $obligation->profile()->normReference ?? $obligation->source->label(),
             'badge'       => $badge,
             'hours_countdown' => $obligation->profile()->urgentHours !== null,
-        ];
+        ] + ($record instanceof ManagementDecision
+            // decided right here with the decision dialog (top management)
+            ? ['management_decision_id' => $record->getId()]
+            : []);
     }
 
     /**
