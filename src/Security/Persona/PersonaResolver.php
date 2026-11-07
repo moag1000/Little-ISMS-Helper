@@ -96,7 +96,14 @@ final class PersonaResolver
             return true;
         }
 
-        return array_intersect($persona->dashboardAudience(), $this->personasOf($user)) !== [];
+        $own = $this->personasOf($user);
+        foreach ($persona->dashboardAudience() as $audience) {
+            if (in_array($audience, $own, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** May the user download this report ({@see \App\Security\Voter\ReportAccessVoter})? */
