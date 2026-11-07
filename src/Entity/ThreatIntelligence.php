@@ -102,7 +102,7 @@ class ThreatIntelligence
     private ?string $mitigationRecommendations = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['threat:read', 'threat:write'])]
+    #[Groups(['threat:read'])]
     #[Assert\Choice(choices: ['new', 'analyzing', 'mitigated', 'monitoring', 'closed'])]
     private string $status = 'new';
 

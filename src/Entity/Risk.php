@@ -274,7 +274,7 @@ class Risk
     private ?User $riskOwner = null;
 
     #[ORM\Column(type: 'string', length: 50, enumType: RiskStatus::class)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read'])]
     #[Assert\NotNull(message: 'risk.validation.status_required')]
     private ?RiskStatus $status = RiskStatus::Identified;
 

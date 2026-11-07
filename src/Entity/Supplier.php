@@ -142,7 +142,7 @@ class Supplier
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['active', 'inactive', 'evaluation', 'terminated'])]
-    #[Groups(['supplier:read', 'supplier:write'])]
+    #[Groups(['supplier:read'])]
     private string $status = 'evaluation';
 
     /**

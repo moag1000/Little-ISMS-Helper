@@ -166,7 +166,7 @@ class ISMSObjective
     private ?Location $kpiLocation = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Groups(['isms_objective:read'])]
     #[Assert\Choice(choices: ['not_started', 'in_progress', 'achieved', 'delayed', 'cancelled'])]
     private string $status = 'in_progress';
 

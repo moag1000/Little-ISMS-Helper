@@ -118,7 +118,7 @@ open http://localhost:8000/api
 
 ## API Endpoints
 
-All endpoints available at `/api`:
+All endpoints available at `/api` (the complete, current list is the Swagger UI):
 
 | Entity | Endpoint | Operations |
 |--------|----------|------------|
@@ -128,6 +128,23 @@ All endpoints available at `/api`:
 | Incident | `/api/incidents` | GET, POST, PUT, DELETE |
 | Internal Audit | `/api/internal_audits` | GET, POST, PUT, DELETE |
 | Training | `/api/trainings` | GET, POST, PUT, DELETE |
+| Supplier, Location, Person, BC plan, BC exercise, change request, interested party, threat intelligence, ISMS context, ISMS objective | `/api/suppliers`, `/api/locations`, … | GET, POST, PUT, DELETE (each behind its module) |
+| Physical access log, cryptographic operation | `/api/physical_access_logs`, `/api/cryptographic_operations` | GET, POST |
+| Top-management decision (ISO 27001 5.1, 6.1.3, 9.3; NIS-2 Art. 20) | `/api/management_decisions` | GET only, ROLE_AUDITOR and above; filters `type`, `status` |
+| Register entry (ISO 27001 4.1–7.4) | `/api/isms_register_entries` | GET only; filter `type` |
+| Requirement fulfilment | `/api/compliance_requirement_fulfillments` | GET only, module `compliance`; filters `framework` (code, e.g. `ISO27001`), `status`, `overrideSource` |
+
+**What the API does not write.** The REST API follows the same rules as the UI:
+
+- `status` of every lifecycle-managed record (risk, incident, objective, supplier, BC plan, …) is
+  read-only. Transitions go through the lifecycle actions in the UI (roles, four-eyes, top-management
+  approval, audit log); a `status` in a POST/PUT body is ignored.
+- Fulfilment values are derived from controls, records and mappings
+  (`FulfillmentDerivationService`); hand values are overrides with reason and review date in the UI.
+  Saving a control or record over the API triggers the same recomputation as in the UI.
+- Decisions of top management, register entries and suggestions are not created over the API.
+- Reviewer roles (`ROLE_AUDITOR`, `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) and API tokens are
+  read-only: write calls answer 403 (session) or 405 (token).
 
 ### Swagger UI
 
@@ -167,9 +184,7 @@ curl -X POST http://localhost:8000/api/risks \
     "impact": 5,
     "residualProbability": 2,
     "residualImpact": 3,
-    "treatmentStrategy": "mitigate",
-    "status": "identified",
-    "riskOwner": "John Doe"
+    "treatmentStrategy": "mitigate"
   }'
 ```
 
@@ -346,30 +361,23 @@ Entities expose computed properties for business intelligence:
 
 #### Role-Based Access Control
 
-- **ROLE_USER**: Read, Create, Update
-- **ROLE_ADMIN**: All operations including Delete
+- Every operation carries its own security expression; tenant isolation is enforced by the
+  Doctrine tenant filter (collections) and the entity voters (`ApiTenantVoter`, `RiskVoter`, …)
+  for single records. A POST always lands in the caller's own organisation.
+- **ROLE_USER** and above: read, create, update inside the own organisation.
+- **ROLE_ADMIN**: delete as well.
+- **Reviewer roles** (`ROLE_AUDITOR`, `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`): read only
+  (`ReadOnlyRoleSubscriber`). **API tokens**: read only (`ReadOnlyApiSubscriber`).
+- Module-owned resources answer 403 `module_not_active` while their module is off
+  (`ApiResourceModuleListener`, also for sub-requests).
+- Field-level gates: the risk owner and the quantitative risk fields need ROLE_MANAGER.
 
-Configure in `config/packages/security.yaml`:
-```yaml
-security:
-    access_control:
-        - { path: ^/api, roles: ROLE_USER }
-```
+#### Serialization
 
-#### Entity-Level Security
-
-Already configured in all entities:
-```php
-#[ApiResource(
-    operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
-    ]
-)]
-```
+Every resource names its read and write groups (`normalizationContext` /
+`denormalizationContext`). Linked user accounts and the organisation are never serialized with their own fields; the new read-only resources name people by display name only.
+`tests/Api/ApiResourceContractTest.php` fails when a resource has no groups or a
+lifecycle-managed `status` is writable.
 
 ## Performance Optimizations
 

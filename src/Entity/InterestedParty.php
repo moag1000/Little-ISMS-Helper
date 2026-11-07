@@ -43,6 +43,8 @@ use App\Util\LegalPeriod;
         new Put(security: "is_granted('API_EDIT', object)"),
         new Delete(security: "is_granted('API_DELETE', object)"),
     ],
+    normalizationContext: ['groups' => ['interested_party:read']],
+    denormalizationContext: ['groups' => ['interested_party:write']],
     processor: TenantAwareStateProcessor::class
 )]
 #[ORM\Entity(repositoryClass: InterestedPartyRepository::class)]

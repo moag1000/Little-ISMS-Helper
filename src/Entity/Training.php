@@ -151,7 +151,7 @@ class Training
     private bool $mandatory = false;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['training:read', 'training:write'])]
+    #[Groups(['training:read'])]
     #[Assert\NotBlank(message: 'training.validation.status_required')]
     #[Assert\Choice(
         choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],

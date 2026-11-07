@@ -26,9 +26,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Business Continuity Plan Entity for ISO 22301
- *
- * Documents recovery procedures and strategies for business processes
+ * Business Continuity Plan Entity for ISO 22301: recovery procedures and strategies for business processes
  *
  * 3-team-worlds consolidation —
  * responseTeamMembers canonical, crisisTeams reusable, bcTeam deprecated.
@@ -42,6 +40,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(security: "is_granted('API_EDIT', object)"),
         new Delete(security: "is_granted('API_DELETE', object)"),
     ],
+    normalizationContext: ['groups' => ['bc_plan:read']],
+    denormalizationContext: ['groups' => ['bc_plan:write']],
     processor: TenantAwareStateProcessor::class
 )]
 #[ORM\Entity(repositoryClass: BusinessContinuityPlanRepository::class)]
@@ -119,7 +119,7 @@ class BusinessContinuityPlan
      */
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['draft', 'active', 'under_review', 'archived'])]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read'])]
     private string $status = 'draft';
 
     /**
