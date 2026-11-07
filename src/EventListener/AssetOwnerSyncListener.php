@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Doctrine\PostFlushWriter;
 use App\Entity\Asset;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
@@ -33,6 +34,8 @@ use Psr\Log\LoggerInterface;
  * yet have linked assets; user removal would orphan via SET NULL on
  * the FK so no string-sync is needed.
  *
+ * Changed assets are written after the flush via PostFlushWriter (no flush inside the listener).
+ *
  * Operates strictly within the User's tenant. Cross-tenant assets
  * cannot reference this user (FK guard).
  */
@@ -41,6 +44,7 @@ final class AssetOwnerSyncListener
 {
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly PostFlushWriter $postFlushWriter,
     ) {
     }
 
@@ -79,11 +83,10 @@ final class AssetOwnerSyncListener
                     continue;
                 }
                 $asset->setOwner($newDisplayName);
-                $em->persist($asset);
+                $this->postFlushWriter->persist($asset);
                 $updated++;
             }
             if ($updated > 0) {
-                $em->flush();
                 $this->logger->info('Asset owner-string synced after User name-change', [
                     'user_id' => $user->getId(),
                     'asset_count' => $updated,

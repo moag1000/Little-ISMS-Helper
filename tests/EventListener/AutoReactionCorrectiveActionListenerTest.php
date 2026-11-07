@@ -9,14 +9,17 @@ use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
 use App\EventListener\AutoReactionCorrectiveActionListener;
 use App\Service\AutoReactionService;
+use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * V3 W2-M5 — AutoReactionCorrectiveActionListener tests.
@@ -28,13 +31,15 @@ class AutoReactionCorrectiveActionListenerTest extends TestCase
 {
     private MockObject $reactions;
     private MockObject $logger;
+    private PostFlushWriter $writer;
     private AutoReactionCorrectiveActionListener $listener;
 
     protected function setUp(): void
     {
         $this->reactions = $this->createMock(AutoReactionService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->listener = new AutoReactionCorrectiveActionListener($this->reactions, $this->logger);
+        $this->writer = new PostFlushWriter(new NullLogger());
+        $this->listener = new AutoReactionCorrectiveActionListener($this->reactions, $this->logger, $this->writer);
     }
 
     #[Test]
@@ -80,10 +85,18 @@ class AutoReactionCorrectiveActionListenerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
-        $em->method('flush');
+        $em->expects($this->once())->method('flush');
 
         $args = new PostPersistEventArgs($finding, $em);
         $this->listener->postPersist($finding, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $caInstances = array_values(array_filter(
             $persisted,
@@ -113,10 +126,18 @@ class AutoReactionCorrectiveActionListenerTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
-        $em->method('flush');
+        $em->expects($this->once())->method('flush');
 
         $args = new PostPersistEventArgs($finding, $em);
         $this->listener->postPersist($finding, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $caInstances = array_values(array_filter(
             $persisted,

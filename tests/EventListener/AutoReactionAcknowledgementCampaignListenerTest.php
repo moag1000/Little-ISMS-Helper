@@ -12,7 +12,9 @@ use App\EventListener\AutoReactionAcknowledgementCampaignListener;
 use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
+use App\Doctrine\PostFlushWriter;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -20,6 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * V3 W2-M5 / W2-C4 / W2-Bug2 — AutoReactionAcknowledgementCampaignListener tests.
@@ -35,13 +38,15 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
 {
     private MockObject $reactions;
     private MockObject $logger;
+    private PostFlushWriter $writer;
     private AutoReactionAcknowledgementCampaignListener $listener;
 
     protected function setUp(): void
     {
         $this->reactions = $this->createMock(AutoReactionService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->listener = new AutoReactionAcknowledgementCampaignListener($this->reactions, $this->logger);
+        $this->writer = new PostFlushWriter(new NullLogger());
+        $this->listener = new AutoReactionAcknowledgementCampaignListener($this->reactions, $this->logger, $this->writer);
     }
 
     #[Test]
@@ -174,9 +179,18 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
 
         $persisted = [];
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
+        $em->expects($this->once())->method('flush');
 
         $args = $this->createPostUpdateArgs($document, $em);
         $this->listener->postUpdate($document, $args);
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $ackRows = array_values(array_filter(
             $persisted,
@@ -238,6 +252,7 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
 
         $persisted = [];
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
+        $em->expects($this->once())->method('flush');
 
         $args = $this->createPostUpdateArgs($document, $em);
         $this->listener->postUpdate($document, $args);
@@ -246,6 +261,14 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
             $userRepoSentinel,
             'Listener must NOT query User repo when explicit audience is present',
         );
+
+        // The listener only hands the entity to the writer; nothing is persisted or flushed yet.
+
+        $this->assertSame([], $persisted);
+
+        $em->method('isOpen')->willReturn(true);
+        $this->writer->postFlush(new PostFlushEventArgs($em));
+
 
         $ackRows = array_values(array_filter(
             $persisted,

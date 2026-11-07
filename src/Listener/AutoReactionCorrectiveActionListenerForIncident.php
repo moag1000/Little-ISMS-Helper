@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Listener;
 
+use App\Doctrine\PostFlushWriter;
 use App\Entity\CorrectiveAction;
 use App\Entity\Incident;
 use App\Enum\CorrectiveActionStatus;
@@ -38,6 +39,8 @@ use Psr\Log\LoggerInterface;
  *     actionType='corrective', status='planned', planned completion = +N days
  *     (resolved via SystemSettings auto_reactions.auto_ca_due_days, severity-aware).
  *
+ * Derived rows are written after the flush via PostFlushWriter (no flush inside the listener).
+ *
  * Feature flag: {@see AutoReactionService::KEY_CA_ON_INCIDENT} (default ON).
  *
  * @see docs/decisions/2026-05-23-capa-canonical-process.md
@@ -61,6 +64,7 @@ final class AutoReactionCorrectiveActionListenerForIncident
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly PostFlushWriter $postFlushWriter,
         private readonly ?SystemSettingsRepository $systemSettings = null,
     ) {
     }
@@ -117,13 +121,11 @@ final class AutoReactionCorrectiveActionListenerForIncident
             );
             $ca->setStatus(CorrectiveActionStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist entity)
 
-            $em->persist($ca);
-            $em->flush();
+            $this->postFlushWriter->persist($ca);
 
             $this->logger->info('Auto-CorrectiveAction created for incident', [
                 'incident_id' => $incident->getId(),
                 'incident_severity' => $severity?->value,
-                'ca_id' => $ca->getId(),
                 'source_type' => CorrectiveAction::SOURCE_TYPE_INCIDENT,
             ]);
         } catch (\Throwable $e) {
