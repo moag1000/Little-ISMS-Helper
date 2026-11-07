@@ -1182,6 +1182,8 @@ admin:
         locale: 'Language + region'
         timezone: 'Timezone'
         tlp_default: 'TLP default for incident sharing'
+        reminder_digest_hour: 'Daily digest at'
+        reminder_digest_hour_help: 'Time of the daily digest with each person''s open deadlines (organisation local time). Statutory hour deadlines (GDPR 72 h, NIS-2 24/72 h) are sent immediately.'
         tlp_default_help: 'Traffic Light Protocol — preselects the TLP classification for new threat intelligence entries (NIS2 Art. 29). CLEAR is preselected as WHITE, AMBER+STRICT as AMBER.'
         dpo_name: 'DPO contact (name)'
         dpo_email: 'DPO contact (email)'
@@ -1642,7 +1644,7 @@ admin:
             lifecycle_overrides: 'Lifecycle Overrides'
         form:
             approver_role: 'Approver role'
-            approver_role_help: 'ROLE_* value that overrides the YAML approver role for this step. Leave empty to use YAML default.'
+            approver_role_help: 'ROLE_* value or "owner" (whoever is responsible for the record, e.g. the risk owner) that overrides the YAML approver role for this step. Leave empty to use YAML default.'
             approver_users: 'Approvers'
             approver_users_help: 'Users of this organisation who may approve the step. Leave empty to use the YAML default.'
             days_to_complete: 'Days to complete'

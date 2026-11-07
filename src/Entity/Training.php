@@ -250,11 +250,10 @@ class Training
      *
      * ISO 27001 A.6.3 expects awareness training to recur on a defined
      * cadence (typically annually). This integer holds the cadence in
-     * months. NULL disables the recurrence/reminder cron for this
-     * training (one-off events). Typical values: 12 (annual), 6
-     * (semi-annual), 3 (quarterly). The cron command
-     * `app:training-send-reminders` reads this field together with
-     * {@see $lastReminderSentAt} to decide when to re-fire reminders.
+     * months. NULL = one-off event. Typical values: 12 (annual), 6
+     * (semi-annual), 3 (quarterly). The deadline source
+     * TrainingRefreshSource reminds the trainer when the next session is due
+     * (scheduled date, else {@see $lastReminderSentAt}, plus the cadence).
      */
     #[ORM\Column(name: 'recurrence_months', type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
@@ -263,11 +262,8 @@ class Training
     /**
      * Last reminder timestamp.
      *
-     * Updated by `app:training-send-reminders` on every successful run.
-     * The cron computes `lastReminderSentAt + recurrenceMonths` and re-
-     * fires reminders once that point lies in the past. NULL means
-     * "no reminder ever sent" — the cron then fires immediately on the
-     * next run (subject to recurrenceMonths being set).
+     * Kept from the former reminder cron; base date for the next session
+     * when the training has no scheduled date.
      */
     #[ORM\Column(name: 'last_reminder_sent_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['training:read'])]

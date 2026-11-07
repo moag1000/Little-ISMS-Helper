@@ -249,9 +249,9 @@ modules:
       - risks
 
   notifications:
-    name: 'Notification-Rules + Webhooks'
-    description: 'Tenant-konfigurierbare Notification-Rules pro Event-Typ, Channels (Email-Digest, Webhook+HMAC, In-App-Center), SLA-Timer-Events für DORA Art. 19 + NIS-2 Art. 23 + GDPR Art. 33 Deadlines'
-    required: false
+    name: 'Benachrichtigungen'
+    description: 'Kern: Fristen-Erinnerungen (Sammelmail, Sofortmeldung bei Stundenfristen, persönliche Glocke) plus Notification-Rules pro Event-Typ mit Channels (E-Mail-Digest, Webhook+HMAC, In-App), SLA-Timer für DORA Art. 19, NIS-2 Art. 23 und DSGVO Art. 33'
+    required: true
     icon: 'bell'
     entities:
       - NotificationRule

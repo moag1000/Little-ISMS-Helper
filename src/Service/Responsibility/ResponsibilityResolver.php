@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Security\Persona\PersonaResolver;
 use App\Service\Deadline\DeadlineSourceRegistry;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * The one answer to "who has to act on this?".
@@ -25,7 +26,7 @@ use App\Service\Deadline\DeadlineSourceRegistry;
  * My Day, the digest mail, the urgent mail and workflow approvers ask only
  * this class. Persona questions ("which dashboard") stay with PersonaResolver.
  */
-class ResponsibilityResolver
+class ResponsibilityResolver implements ResetInterface
 {
     /** Roles that reach everything; holding them is not a reason to be the fallback. */
     private const array ADMIN_ROLES = ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'];
@@ -38,6 +39,12 @@ class ResponsibilityResolver
         private readonly PersonaResolver $personaResolver,
         private readonly DeadlineSourceRegistry $sources,
     ) {
+    }
+
+    /** Long-running workers (Messenger, scheduler) start each message with fresh user lists. */
+    public function reset(): void
+    {
+        $this->usersByTenant = [];
     }
 
     /**

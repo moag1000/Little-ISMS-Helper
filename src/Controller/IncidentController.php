@@ -394,7 +394,7 @@ class IncidentController extends AbstractController
             $workflowInstance = $workflowStatus['workflow_instance'];
             $currentStep = $workflowInstance->getCurrentStep();
             if ($currentStep) {
-                $canApproveWorkflow = $this->workflowService->canUserApprove($this->currentUser(), $currentStep);
+                $canApproveWorkflow = $this->workflowService->canUserApprove($this->currentUser(), $currentStep, $workflowInstance);
             }
         }
 

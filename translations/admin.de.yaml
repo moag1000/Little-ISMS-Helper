@@ -1198,6 +1198,8 @@ admin:
         locale: 'Sprache + Region'
         timezone: 'Zeitzone'
         tlp_default: 'TLP-Default für Incident-Sharing'
+        reminder_digest_hour: 'Sammelmail um'
+        reminder_digest_hour_help: 'Uhrzeit der täglichen Sammelmail mit den offenen Fristen jeder Person (Ortszeit der Organisation). Gesetzliche Stundenfristen (DSGVO 72 h, NIS-2 24/72 h) gehen sofort raus.'
         tlp_default_help: 'Traffic Light Protocol — Vorbelegung der TLP-Klassifikation bei neuen Bedrohungsinformationen (NIS2 Art. 29). CLEAR wird als WHITE, AMBER+STRICT als AMBER vorbelegt.'
         dpo_name: 'DPO-Kontakt (Name)'
         dpo_email: 'DPO-Kontakt (E-Mail)'
@@ -1658,7 +1660,7 @@ admin:
             lifecycle_overrides: 'Lifecycle-Overrides'
         form:
             approver_role: 'Genehmiger-Rolle'
-            approver_role_help: 'ROLE_*-Wert, der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
+            approver_role_help: 'ROLE_*-Wert oder „owner“ (die oder der Verantwortliche des Datensatzes, z. B. Risk Owner), der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
             approver_users: 'Genehmiger'
             approver_users_help: 'Benutzer dieser Organisation, die den Schritt genehmigen dürfen. Leer lassen für YAML-Standard.'
             days_to_complete: 'Tage bis Abschluss'

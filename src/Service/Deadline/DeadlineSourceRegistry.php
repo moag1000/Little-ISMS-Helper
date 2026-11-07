@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Deadline;
 
+use App\Entity\Tenant;
 use App\Service\ModuleConfigurationService;
 
 /**
@@ -33,17 +34,22 @@ final class DeadlineSourceRegistry
     }
 
     /**
-     * Sources whose module is active for the current tenant.
+     * Sources whose module is active for the tenant (current tenant when null).
      *
      * @return list<DeadlineSource>
      */
-    public function active(): array
+    public function active(?Tenant $tenant = null): array
     {
+        if ($this->modules === null) {
+            return $this->all();
+        }
+        $active = $tenant !== null
+            ? $this->modules->getActiveModulesForTenant($tenant)
+            : $this->modules->getActiveModules();
+
         return array_values(array_filter(
             $this->bySlug,
-            fn (DeadlineSource $s): bool => $s->requiredModule() === null
-                || $this->modules === null
-                || $this->modules->isModuleActive($s->requiredModule()),
+            static fn (DeadlineSource $s): bool => $s->requiredModule() === null || in_array($s->requiredModule(), $active, true),
         ));
     }
 

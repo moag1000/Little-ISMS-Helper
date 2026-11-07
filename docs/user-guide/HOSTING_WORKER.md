@@ -20,8 +20,13 @@ Verpasste Läufe holt der Scheduler einmal nach. Docker bringt den Worker per
 `supervisord` mit, dort ist nichts zu tun.
 
 **Umstieg von Einzel-Crons:** Wer bisher einzelne Zeilen wie
-`app:process-timed-workflows`, `app:send-notifications` oder `app:audit-log:cleanup`
-im Crontab hatte, entfernt sie — sonst laufen sie doppelt (doppelte Mails).
+`app:process-timed-workflows` oder `app:audit-log:cleanup` im Crontab hatte,
+entfernt sie — sonst laufen sie doppelt. Die alten Erinnerungs-Commands
+(`app:send-notifications`, `app:review:send-reminders`, `app:training-send-reminders`,
+`app:dpia-reminder`, `app:risk:acceptance-expiry-reminder`,
+`app:risk:monitor-treatment-plans`, `app:nis2-registration-reminder`) gibt es nicht mehr;
+eigene Cron-Zeilen dafür schlagen fehl und gehören gelöscht. Alle Erinnerungen
+verschickt jetzt `app:send-reminders` über den Scheduler.
 
 ## Warum braucht der Helper einen "Worker"?
 

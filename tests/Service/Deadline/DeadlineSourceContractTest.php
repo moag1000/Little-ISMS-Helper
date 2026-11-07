@@ -31,7 +31,7 @@ final class DeadlineSourceContractTest extends TestCase
                 continue;
             }
             $class = 'App\\' . str_replace(['/', '.php'], ['\\', ''], substr($file->getPathname(), strlen($root)));
-            if (class_exists($class) && is_subclass_of($class, DeadlineSource::class)) {
+            if (class_exists($class) && is_subclass_of($class, DeadlineSource::class) && !(new \ReflectionClass($class))->isAbstract()) {
                 yield substr((string) strrchr($class, '\\'), 1) => [$class];
             }
         }

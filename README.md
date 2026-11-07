@@ -208,6 +208,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Risikobehandlungsplaene** -- Formaler Akzeptanzprozess mit Genehmigungsworkflow und Audit-Trail
 - **Risk-Appetite** -- Organisationsweite Schwellenwerte mit automatischer Warnung
 - **Periodische Reviews** -- Automatisierte Erinnerungen nach ISO 27001 Clause 6.1.3.d
+- **Erinnerungen** -- Jede Frist erscheint einmal, bei der zuständigen Person: in „Mein Tag“, als tägliche Sammelmail (Uhrzeit je Organisation, im Profil abwählbar) und in der Glocke; Meldefristen in Stunden gehen sofort raus
 - **Vulnerability- und Patch-Management** -- CVE/CVSS-Tracking (NIS2-konform)
 
 ### GDPR / Datenschutz

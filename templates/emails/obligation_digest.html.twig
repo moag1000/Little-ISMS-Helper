@@ -1,0 +1,24 @@
+{# Daily digest: every duty on the person's My Day, decisions first (ObligationReminderService). #}
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}{{ 'emails.obligation.digest.subject'|trans({'%count%': count, '%overdue%': overdue}, 'emails', locale) }}{% endblock %}
+
+{% block content %}
+    <h1 style="font-size: 20px; margin: 0 0 8px 0;">{{ 'emails.obligation.digest.title'|trans({}, 'emails', locale) }}</h1>
+    <p style="margin: 0 0 16px 0;">
+        {{ 'emails.obligation.digest.intro'|trans({}, 'emails', locale) }}
+        {% if overdue > 0 %}<strong style="color: #b91c1c;">{{ 'emails.obligation.digest.overdue_note'|trans({'%overdue%': overdue}, 'emails', locale) }}</strong>{% endif %}
+    </p>
+
+    {% for group in groups %}
+        <h2 style="font-size: 15px; margin: 20px 0 6px 0;">{{ group.label }} ({{ group.items|length }})</h2>
+        {% include 'emails/_obligation_rows.html.twig' with { items: group.items, locale: locale } only %}
+    {% endfor %}
+
+    <p style="margin: 24px 0 8px 0;">
+        <a href="{{ my_day_url }}" style="display: inline-block; background: #4f46e5; color: #ffffff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: 600;">{{ 'emails.obligation.digest.open_my_day'|trans({}, 'emails', locale) }}</a>
+    </p>
+    <p style="margin: 16px 0 0 0; font-size: 12px; color: #6d6b92;">
+        <a href="{{ profile_url }}" style="color: #6d6b92;">{{ 'emails.obligation.digest.opt_out'|trans({}, 'emails', locale) }}</a>
+    </p>
+{% endblock %}

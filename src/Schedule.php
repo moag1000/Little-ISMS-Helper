@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Message\Schedule\CheckRiskReviewsMessage;
 use App\Message\Schedule\CleanupExpiredSessionsMessage;
 use App\Message\Schedule\EnforceRetentionMessage;
 use App\Message\Schedule\ExecuteScheduledTaskMessage;
@@ -39,6 +38,9 @@ class Schedule implements ScheduleProviderInterface
      */
     public const array COMMAND_TASKS = [
         ['*/15 * * * *', 'app:process-timed-workflows'],
+        // The one reminder path: urgent hour deadlines every run, the daily
+        // digest at each organisation's digest hour (default 07:00).
+        ['*/15 * * * *', 'app:send-reminders'],
         ['*/15 * * * *', 'app:nis2-notification-check'],
         ['0 * * * *', 'app:process-scheduled-reports'],
         ['0 1 * * *', 'app:kpi-snapshot'],
@@ -52,13 +54,9 @@ class Schedule implements ScheduleProviderInterface
         ['0 2 * * 0', 'app:tisax:purge-old-ip-addresses'],
         ['30 5 * * *', 'app:suggestions:generate'],
         ['0 7 * * *', 'app:notification:send-digests'],
-        ['0 8 * * *', 'app:send-notifications'],
-        ['5 8 * * *', 'app:review:send-reminders'],
-        ['10 8 * * *', 'app:training-send-reminders'],
-        ['15 8 * * *', 'app:dpia-reminder'],
-        ['20 8 * * *', 'app:risk:acceptance-expiry-reminder'],
-        ['25 8 * * *', 'app:risk:monitor-treatment-plans --send-notifications'],
         ['30 8 * * *', 'app:notify-overdue-controls'],
+        ['0 5 * * *', 'app:evidence:expire'],
+        ['30 5 * * *', 'app:risk:schedule-reviews'],
     ];
 
     public function __construct(
@@ -95,12 +93,6 @@ class Schedule implements ScheduleProviderInterface
             RecurringMessage::cron('0 3 * * *', new CleanupExpiredSessionsMessage())
         );
 
-        // Check for risks due for review daily at 8:00 AM
-        // ISO 27001:2022 Clause 6.1.3.d compliance
-        $schedule->add(
-            RecurringMessage::cron('0 8 * * *', new CheckRiskReviewsMessage())
-        );
-
         // Generate compliance report weekly (Mondays at 6:00 AM)
         $schedule->add(
             RecurringMessage::cron('0 6 * * 1', new GenerateComplianceReportMessage())
@@ -123,7 +115,7 @@ class Schedule implements ScheduleProviderInterface
         }
 
         $this->logger->info('Built-in scheduled tasks loaded', [
-            'count' => 5 + count(self::COMMAND_TASKS),
+            'count' => 4 + count(self::COMMAND_TASKS),
         ]);
     }
 

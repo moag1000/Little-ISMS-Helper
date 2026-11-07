@@ -94,6 +94,25 @@ class NavigationSearch
                 'roles' => ['ROLE_ADMIN'],
                 'requiresModule' => null,
             ],
+            // ── Profile / reminders ───────────────────────────────────────────
+            [
+                'route' => 'app_profile',
+                'label' => 'search_nav.app_profile.label',
+                'description' => 'search_nav.app_profile.description',
+                'aliases' => ['Profil', 'Profile', 'Erinnerungen', 'Reminders', 'Sammelmail', 'Digest', 'Konto', 'Account'],
+                'icon' => 'fa-icon--nav-users',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_notification_center',
+                'label' => 'search_nav.app_notification_center.label',
+                'description' => 'search_nav.app_notification_center.description',
+                'aliases' => ['Benachrichtigungen', 'Notifications', 'Glocke', 'Bell', 'Erinnerungen', 'Reminders', 'Meldungen'],
+                'icon' => 'fa-icon--nav-bell',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
+            ],
             // ── MFA / Session ─────────────────────────────────────────────────
             [
                 'route' => 'app_profile_mfa_index',

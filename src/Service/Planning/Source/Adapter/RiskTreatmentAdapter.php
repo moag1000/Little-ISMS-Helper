@@ -86,7 +86,11 @@ final class RiskTreatmentAdapter implements SourceAdapter
     /** @return iterable<Risk> */
     public function findOpen(Tenant $tenant): iterable
     {
-        return $this->findConvertible($tenant);
+        foreach ($this->findConvertible($tenant) as $item) {
+            if ($this->dueDateOf($item) !== null) {
+                yield $item; // no date, no duty to remind of
+            }
+        }
     }
 
     public function supports(object $item): bool

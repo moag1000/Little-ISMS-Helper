@@ -114,6 +114,6 @@ final class DpiaAdapter implements SourceAdapter
 
     public function profile(): DeadlineProfile
     {
-        return new DeadlineProfile(bucket: 'dpia_review_overdue', leadDays: 30, normReference: 'DSGVO Art. 35 Abs. 11');
+        return new DeadlineProfile(bucket: 'dpias_open', leadDays: null, normReference: 'DSGVO Art. 35 Abs. 11');
     }
 }
