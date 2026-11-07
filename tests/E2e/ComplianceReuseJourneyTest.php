@@ -272,7 +272,7 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
             self::assertSame(ComplianceRequirementFulfillment::OVERRIDE_MANUAL, $row->getOverrideSource());
             self::assertSame($overrideReason, $row->getOverrideReason());
             self::assertSame(FulfillmentRuleEngine::KIND_MAPPING, $row->getDerivationKind());
-            $derivation->apply($row);
+            call_user_func([$derivation, 'apply'], $row); // the service, not a controller action of that name
             self::assertSame(75, $row->getFulfillmentPercentage(), 'A recompute must not overwrite the override.');
         }
 
