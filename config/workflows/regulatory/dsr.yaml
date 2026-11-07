@@ -72,7 +72,7 @@ framework:
                     -   name: "Request Processing"
                         description: "Process the data subject request: gather data, prepare response"
                         order: 2
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_DPO
                         step_type: approval
                         days_to_complete: 14
                         is_required: true

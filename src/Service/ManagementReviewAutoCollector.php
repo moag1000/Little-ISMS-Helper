@@ -6,6 +6,8 @@ namespace App\Service;
 
 use App\Entity\ManagementReview;
 use App\Entity\Tenant;
+use App\Enum\CorrectiveActionStatus;
+use App\Repository\CorrectiveActionRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -24,6 +26,7 @@ final class ManagementReviewAutoCollector
         private readonly TranslatorInterface $translator,
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
+        private readonly CorrectiveActionRepository $correctiveActionRepository,
     ) {
     }
 
@@ -60,30 +63,32 @@ final class ManagementReviewAutoCollector
         $review->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'planned' is the management_review_lifecycle initial_marking, replacing legacy 'draft' value which was never a valid management_review status)
         $review->setCreatedAt(new DateTimeImmutable());
 
-        // §9.3 (a) — Status of actions from previous management reviews
+        // Lettering of ISO/IEC 27001:2022 Cl. 9.3.2.
+        // (a) Status of actions from previous management reviews
         // (left blank initially; user fills based on previous-review tracking)
 
-        // §9.3 (b) — Changes in external/internal issues relevant to ISMS
+        // (b) Changes in external and internal issues relevant to the ISMS
         $review->setChangesRelevantToISMS($this->buildContextChangesNarrative($locale));
 
-        // §9.3 (c) — Feedback on ISMS performance
-        // §9.3 (c.1) — Nonconformities & corrective actions
+        // (c) Changes in needs and expectations of interested parties
+        // (d) Feedback on information security performance:
+        // (d.1) Nonconformities and corrective actions
         $review->setNonConformitiesStatus($this->buildNcStatusNarrative($report, $locale));
-        $review->setCorrectiveActionsStatus($this->buildCorrectiveActionsNarrative($report, $locale));
-        // §9.3 (c.2) — Monitoring & measurement results
+        $review->setCorrectiveActionsStatus($this->buildCorrectiveActionsNarrative($tenant, $locale));
+        // (d.2) Monitoring and measurement results
         $review->setPerformanceEvaluation($this->buildPerformanceNarrative($report, $locale));
-        // §9.3 (c.3) — Audit results
+        // (d.3) Audit results
         $review->setAuditResults($this->buildAuditResultsNarrative($report, $locale));
-        // §9.3 (c.4) — Fulfilment of information security objectives
+        // (d.4) Fulfilment of information security objectives
         // (mapped via objectives review later)
 
-        // §9.3 (d) — Feedback from interested parties
+        // (e) Feedback from interested parties
         // (left blank — user fills based on interested-parties roster)
 
-        // §9.3 (e) — Risks and opportunities
+        // (f) Results of risk assessment and status of risk treatment plan
         $review->setRisksReview($this->buildRiskNarrative($report, $locale));
 
-        // §9.3 (f) — Opportunities for improvement
+        // (g) Opportunities for continual improvement
         $review->setOpportunitiesForImprovement($this->buildImprovementOpportunitiesNarrative($report, $locale));
 
         // §9.3 outputs — decisions & action items (initially empty; filled in meeting)
@@ -132,22 +137,41 @@ final class ManagementReviewAutoCollector
         );
     }
 
-    private function buildCorrectiveActionsNarrative(array $report, string $locale): string
+    /**
+     * 9.3.2 d.1: the corrective actions (CAPA, Cl. 10.2) of this
+     * organisation — not the risk treatment plans, which belong to (f).
+     */
+    private function buildCorrectiveActionsNarrative(Tenant $tenant, string $locale): string
     {
-        $treatment = $report['treatment_data'];
+        $all = $this->correctiveActionRepository->findBy(['tenant' => $tenant]);
+        $open = array_filter($all, static fn($ca): bool => in_array(
+            $ca->getStatus(),
+            [CorrectiveActionStatus::Planned->value, CorrectiveActionStatus::InProgress->value],
+            true,
+        ));
+        $ineffective = array_filter(
+            $all,
+            static fn($ca): bool => $ca->getStatus() === CorrectiveActionStatus::VerifiedIneffective->value,
+        );
+        $overdue = count($this->correctiveActionRepository->findOverdue($tenant));
+
         if ($locale === 'de') {
             return sprintf(
-                "Korrekturmaßnahmen-Status\n\nGesamt: %d Treatment-Pläne\nAktiv: %d\nÜberfällig: %d",
-                $treatment['total'],
-                $treatment['active'],
-                $treatment['overdue']
+                "Korrekturmaßnahmen-Status\n\nGesamt: %d Korrekturmaßnahmen\nOffen: %d\nÜberfällig: %d\n"
+                . 'Als unwirksam bewertet: %d',
+                count($all),
+                count($open),
+                $overdue,
+                count($ineffective)
             );
         }
         return sprintf(
-            "Corrective actions status\n\nTotal: %d treatment plans\nActive: %d\nOverdue: %d",
-            $treatment['total'],
-            $treatment['active'],
-            $treatment['overdue']
+            "Corrective actions status\n\nTotal: %d corrective actions\nOpen: %d\nOverdue: %d\n"
+            . 'Verified ineffective: %d',
+            count($all),
+            count($open),
+            $overdue,
+            count($ineffective)
         );
     }
 

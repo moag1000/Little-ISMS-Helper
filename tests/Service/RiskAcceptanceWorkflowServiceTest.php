@@ -264,7 +264,8 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $user->method('getEmail')->willReturn('john@example.com');
 
         $risk->expects($this->once())->method('setFormallyAccepted')->with(true);
-        $risk->expects($this->once())->method('setAcceptanceApprovedBy')->with('John Doe');
+        $risk->expects($this->once())->method('setAcceptanceApprovedByUser')->with($user);
+        $risk->expects($this->never())->method('setAcceptanceApprovedBy');
         $risk->expects($this->once())->method('setAcceptanceApprovedAt');
         // X.6: setStatus() is now called via LifecycleService::transition('accept') instead
         // of directly. The mock transition() is a no-op; verify the surrounding logic is correct.

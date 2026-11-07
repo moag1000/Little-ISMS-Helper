@@ -322,12 +322,12 @@ class DocumentApprovalService
      */
     private function extractWhatIsIt(Document $document): ?string
     {
-        $description = method_exists($document, 'getDescription') ? $document->getDescription() : null;
+        $description = $document->getDescription();
         if (is_string($description) && trim($description) !== '') {
             return $this->trimToSentence($description, 240);
         }
 
-        $body = method_exists($document, 'getPolicyBody') ? $document->getPolicyBody() : null;
+        $body = $document->getPolicyBody();
         if (is_string($body) && trim($body) !== '') {
             // Strip Markdown headings and lists, then take the first sentence.
             $plain = preg_replace('/^[#>\-*]\s*/m', '', $body) ?? $body;

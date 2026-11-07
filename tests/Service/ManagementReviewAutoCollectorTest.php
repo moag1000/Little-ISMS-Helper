@@ -88,6 +88,35 @@ final class ManagementReviewAutoCollectorTest extends KernelTestCase
         self::assertStringContainsString('Open: 1', $nc);
     }
 
+    /**
+     * 9.3.2 d.1 counts the organisation's corrective actions (CAPA), not
+     * its risk treatment plans.
+     */
+    #[Test]
+    public function correctiveActionsNarrativeCountsCorrectiveActions(): void
+    {
+        $tenant = $this->tenant('capa');
+        $other = $this->tenant('capa_other');
+        foreach ([[$tenant, 'planned'], [$tenant, 'verified_ineffective'], [$other, 'planned']] as [$t, $status]) {
+            $ca = new \App\Entity\CorrectiveAction();
+            $ca->setTenant($t);
+            $ca->setTitle('CAPA ' . $status);
+            $ca->setDescription('Fix');
+            $ca->setStatus($status); // @phpstan-ignore lifecycle.directSetStatus (test fixture)
+            $this->em->persist($ca);
+        }
+        $this->em->flush();
+
+        $collector = self::getContainer()->get(ManagementReviewAutoCollector::class);
+        $review = $collector->createManagementReviewFromReport($tenant, new \DateTimeImmutable('today'), 'en');
+
+        $text = (string) $review->getCorrectiveActionsStatus();
+        self::assertStringContainsString('Total: 2 corrective actions', $text);
+        self::assertStringContainsString('Open: 1', $text);
+        self::assertStringContainsString('Verified ineffective: 1', $text);
+        self::assertStringNotContainsString('treatment plans', $text);
+    }
+
     private function tenant(string $label): Tenant
     {
         $suffix = substr(uniqid(), -6);

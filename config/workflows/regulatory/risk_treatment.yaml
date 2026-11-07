@@ -59,7 +59,7 @@ framework:
                     -   name: "Risk Owner Approval"
                         description: "Risk owner reviews and approves proposed treatment plan"
                         order: 1
-                        approver_role: ROLE_RISK_OWNER
+                        approver_role: ROLE_RISK_MANAGER
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
@@ -85,14 +85,14 @@ framework:
                     -   name: "CFO Budget Approval"
                         description: "CFO approves budget for risk treatment measures"
                         order: 4
-                        approver_role: ROLE_CFO
+                        approver_role: ROLE_TOP_MGMT
                         step_type: approval
                         days_to_complete: 3
                         is_required: false
                     -   name: "CEO/Board Approval"
                         description: "Executive approval for high-value risk treatment plans"
                         order: 5
-                        approver_role: ROLE_CEO
+                        approver_role: ROLE_TOP_MGMT
                         step_type: approval
                         days_to_complete: 3
                         is_required: false

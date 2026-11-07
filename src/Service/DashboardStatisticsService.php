@@ -1420,11 +1420,11 @@ class DashboardStatisticsService
         $allSuppliers = $this->tenantRecords->all($this->supplierRepository, $tenant);
         $criticalSuppliers = array_filter(
             $allSuppliers,
-            fn($s): bool => method_exists($s, 'getCriticality') && ($s->getCriticality() === 'critical' || $s->getCriticality() === 'high')
+            fn($s): bool => $s->getCriticality() === 'critical' || $s->getCriticality() === 'high'
         );
         $assessedSuppliers = array_filter(
             $criticalSuppliers,
-            fn($s): bool => method_exists($s, 'getLastSecurityAssessment') && $s->getLastSecurityAssessment() !== null
+            fn($s): bool => $s->getLastSecurityAssessment() !== null
         );
         $hasCriticalSuppliers = count($criticalSuppliers) > 0;
         $assessmentRate = $hasCriticalSuppliers
@@ -1433,10 +1433,8 @@ class DashboardStatisticsService
         // Check for overdue assessments (> 12 months)
         $overdueAssessments = count(array_filter(
             $criticalSuppliers,
-            fn($s): bool => method_exists($s, 'getLastSecurityAssessment') && (
-                $s->getLastSecurityAssessment() === null ||
+            fn($s): bool => $s->getLastSecurityAssessment() === null ||
                 $s->getLastSecurityAssessment()->diff(new \DateTime())->days > 365
-            )
         ));
         return [
             'total_suppliers' => [
@@ -1478,7 +1476,7 @@ class DashboardStatisticsService
         $activeDocuments = array_filter(
             $allDocuments,
             // 'active' is a legacy/pre-migration value kept for backward-compat; not a DocumentStatus enum case.
-            fn($d): bool => method_exists($d, 'getStatus') && ($d->getStatus() === DocumentStatus::Approved->value || $d->getStatus() === 'active' || $d->getStatus() === null)
+            fn($d): bool => $d->getStatus() === DocumentStatus::Approved->value || $d->getStatus() === 'active' || $d->getStatus() === null
         );
         // Documents needing review (> 12 months since last review)
         $documentsNeedingReview = count(array_filter(
@@ -1659,7 +1657,7 @@ class DashboardStatisticsService
         );
         $criticalIctProviders = array_filter(
             $ictProviders,
-            fn($s): bool => method_exists($s, 'getCriticality') && $s->getCriticality() === 'critical'
+            fn($s): bool => $s->getCriticality() === 'critical'
         );
         return [
             'ict_providers' => [

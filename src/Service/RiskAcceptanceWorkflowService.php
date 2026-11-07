@@ -378,7 +378,9 @@ class RiskAcceptanceWorkflowService
         $now = new DateTime();
 
         $risk->setFormallyAccepted(true);
-        $risk->setAcceptanceApprovedBy($user->getFullName());
+        // ISO 27001 6.1.3 f: the approver is a user, not a typed name
+        // (the free-text column is legacy and only read as a fallback).
+        $risk->setAcceptanceApprovedByUser($user);
         $risk->setAcceptanceApprovedAt($now);
 
         $this->entityManager->persist($risk);

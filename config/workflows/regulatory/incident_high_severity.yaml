@@ -66,14 +66,14 @@ framework:
                     -   name: "Crisis Management (Crisis Team)"
                         description: "Coordinate all response measures, management briefing, external communication"
                         order: 2
-                        approver_role: ROLE_CRISIS_MANAGER
+                        approver_role: ROLE_BCM_OFFICER
                         step_type: approval
                         days_to_complete: 0
                         is_required: true
                     -   name: "Technical Response (Security + IT)"
                         description: "Forensic preservation, incident containment, system recovery"
                         order: 3
-                        approver_role: ROLE_SECURITY_MANAGER
+                        approver_role: ROLE_ISB
                         step_type: approval
                         days_to_complete: 0
                         is_required: true

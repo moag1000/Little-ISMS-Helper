@@ -58,7 +58,7 @@ framework:
                     -   name: "Root Cause Analysis"
                         description: "Analyze the root cause of the nonconformity"
                         order: 1
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 14
                         is_required: true
@@ -76,7 +76,7 @@ framework:
                     -   name: "Implementation"
                         description: "Execute the corrective actions as planned"
                         order: 3
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 30
                         is_required: true

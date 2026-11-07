@@ -155,14 +155,7 @@ final class AutoReactionTrainingAssignListener
 
     private function shouldAssign(Training $training, User $user): bool
     {
-        // If training entity carries mandatoryForRoles or similar, intersect.
-        if (method_exists($training, 'getMandatoryForRoles')) {
-            $roles = $training->getMandatoryForRoles();
-            if (is_array($roles) && !empty($roles)) {
-                return count(array_intersect($roles, $user->getRoles())) > 0;
-            }
-        }
-        // Default: every mandatory training is assigned to every new user.
+        // Training has no role audience; every mandatory training goes to every new user.
         return true;
     }
 }

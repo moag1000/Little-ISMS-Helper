@@ -22,10 +22,6 @@ use DateTimeImmutable;
  */
 final class Nis2MusExportService
 {
-    private const int EARLY_WARNING_DEADLINE_HOURS = 24;
-    private const int DETAILED_NOTIFICATION_DEADLINE_HOURS = 72;
-    private const int FINAL_REPORT_DEADLINE_DAYS = 30;
-
     /**
      * @return array<string, mixed>
      */
@@ -40,7 +36,9 @@ final class Nis2MusExportService
                 'occurred_at' => $incident->getOccurredAt()?->format(DATE_ATOM),
                 'preliminary_severity' => $incident->getSeverity()?->value,
                 'nis2_category' => $incident->getNis2Category(),
-                'suspected_malicious' => true,
+                // Art. 23 (4) (a): the person's assessment; null = "unknown",
+                // never an assumed yes.
+                'suspected_malicious' => $incident->getNis2SuspectedMalicious(),
                 'cross_border_impact' => $incident->isCrossBorderImpact(),
                 'significant_incident_indicator' => $this->isSignificant($incident),
                 'description_short' => $this->shortDescription($incident),
@@ -110,10 +108,10 @@ final class Nis2MusExportService
             ];
         }
 
-        $earlyWarningDue = $detected->modify('+' . self::EARLY_WARNING_DEADLINE_HOURS . ' hours');
-        $detailedDue = $detected->modify('+' . self::DETAILED_NOTIFICATION_DEADLINE_HOURS . ' hours');
-        $finalDue = ($incident->getDetailedNotificationReportedAt() ?? $detailedDue)
-            ->modify('+' . self::FINAL_REPORT_DEADLINE_DAYS . ' days');
+        // One computation of the three NIS-2 Art. 23 deadlines: the entity's.
+        $earlyWarningDue = $incident->getEarlyWarningDeadline() ?? $detected;
+        $detailedDue = $incident->getDetailedNotificationDeadline() ?? $detected;
+        $finalDue = $incident->getFinalReportDeadline() ?? $detected;
 
         return [
             'early_warning' => $this->deadlineEntry(

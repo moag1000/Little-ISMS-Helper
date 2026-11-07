@@ -461,6 +461,14 @@ Workflows can auto-progress after a time delay:
   approval.
 - There is no extra field condition; use `field_completion` steps for
   data-dependent progression.
+- Approver roles are real roles (Gate 82): every `approver_role`, transition
+  `roles` entry and `escalation_role` exists in `security.yaml`, and no
+  approval step is open to `ROLE_USER`. Since 2026-11 the formerly invented
+  roles map to ISB (security analysis/investigation), RISK_MANAGER (risk
+  owner steps), BCM_OFFICER (crisis), DPO (data-subject requests), MANAGER
+  (implementation, root cause, revision drafts) and TOP_MGMT (budget and
+  executive approval); migration `Version20261107110000` rewrites existing
+  `workflow_steps` rows. The owner of a record is a relation, not a role.
 
 **Setup**:
 

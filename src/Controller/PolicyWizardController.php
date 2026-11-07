@@ -738,9 +738,6 @@ final class PolicyWizardController extends AbstractController
             $topicMap = [];
             $matchMap = [];
             foreach ($templates as $tpl) {
-                if (!method_exists($tpl, 'getTopic') || !method_exists($tpl, 'getKey')) {
-                    continue;
-                }
                 $topic = $tpl->getTopic();
                 $tplKey = $tpl->getKey();
                 if (!is_string($tplKey) || $tplKey === '') {

@@ -107,7 +107,7 @@ final class IndustryBaselineApplier
                 ->setConfidentialityValue((int) ($data['confidentiality'] ?? 3))
                 ->setIntegrityValue((int) ($data['integrity'] ?? 3))
                 ->setAvailabilityValue((int) ($data['availability'] ?? 3));
-            if (!empty($data['description']) && method_exists($asset, 'setDescription')) {
+            if (!empty($data['description'])) {
                 $asset->setDescription((string) $data['description']);
             }
             $this->entityManager->persist($asset);

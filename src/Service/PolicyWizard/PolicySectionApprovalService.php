@@ -182,7 +182,7 @@ final class PolicySectionApprovalService
         $document = $section->getDocument();
         if ($document instanceof Document) {
             $template = $document->getGeneratedFromTemplate();
-            if ($template !== null && method_exists($template, 'getTopic')) {
+            if ($template !== null) {
                 $topic = $template->getTopic();
                 if (is_string($topic) && $topic !== '') {
                     return $topic;

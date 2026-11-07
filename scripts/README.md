@@ -332,6 +332,33 @@ solche Zeilen tragen `// @dbal-order`. Keine Baseline.
 
 ---
 
+### quality/check_workflow_roles.py (Gate 82)
+
+**Zweck:** Freigeber und Empfänger in Workflows sind echte Rollen. Geprüft werden
+`config/workflows/**/*.yaml` (Transition-`roles`, `approver_role`, `escalation_role`),
+die PHP-Seeder der Workflow-Schritte und Empfänger-Abfragen (`findByRoleInTenant('ROLE_…')`
+u. a.) gegen `role_hierarchy` in `config/packages/security.yaml`. Eine unbekannte Rolle
+wird nie vergeben: der Schritt wartet auf niemanden, niemand wird benachrichtigt. Außerdem
+darf kein Freigabeschritt und keine approve/reject/verify-Transition `ROLE_USER` tragen
+(das hat jede angemeldete Person). Ein Eigner am Datensatz ist eine Beziehung, keine Rolle.
+`PENDING` im Skript nimmt Rollen auf, die eine andere Änderung gerade einführt. Keine Baseline.
+
+**CI-Integration:** Gate 82 im `code-quality`-Job.
+
+---
+
+### quality/check_entity_method_exists.py (Gate 83)
+
+**Zweck:** Kein `method_exists()` auf Variablen, die als `App\Entity`-Klasse typisiert
+sind (Parametertyp, `@var`, `instanceof`, `new`). Ist die Methode vorhanden, ist der Aufruf
+toter Code; fehlt sie, läuft das Feature still nie (so fehlten Findings in „Mein Tag“).
+PHPStan meldet nur den „immer wahr“-Fall. Das Gate scheitert auch, wenn
+`phpstan-baseline.neon` einen `method_exists`-Fund auf einer Entity schluckt. Keine Baseline.
+
+**CI-Integration:** Gate 83 im `code-quality`-Job.
+
+---
+
 ### quality/check_kpi_catalog.py (Gate 74)
 
 **Zweck:** Management-Kennzahlen kommen nur aus dem KPI-Katalog

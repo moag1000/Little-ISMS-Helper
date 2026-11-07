@@ -83,7 +83,7 @@ class ComplianceManagerDashboardController extends AbstractController
         $findingsBySeverity = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
         if ($tenant) {
             foreach ($this->findingRepo->findOpenByTenant($tenant) as $finding) {
-                $sev = method_exists($finding, 'getSeverity') ? $finding->getSeverity() : 'medium';
+                $sev = $finding->getSeverity();
                 if (isset($findingsBySeverity[$sev])) {
                     $findingsBySeverity[$sev]++;
                 }
@@ -200,9 +200,7 @@ class ComplianceManagerDashboardController extends AbstractController
                 $mappedControls = $req->getMappedControls();
                 $hasCoveredControl = false;
                 foreach ($mappedControls as $control) {
-                    $implStatus = method_exists($control, 'getImplementationStatus')
-                        ? $control->getImplementationStatus()
-                        : null;
+                    $implStatus = $control->getImplementationStatus();
                     if (in_array($implStatus, ['implemented', 'operational', 'partially_implemented'], true)) {
                         $hasCoveredControl = true;
                         break;

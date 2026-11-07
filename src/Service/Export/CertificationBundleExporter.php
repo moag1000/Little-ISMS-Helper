@@ -1044,7 +1044,7 @@ final class CertificationBundleExporter
                 $zip->addFromString($zipPath, $pdfBinary);
                 $documentCount++;
 
-                $driftFlag = method_exists($doc, 'hasPostGenerationEdits') && $doc->hasPostGenerationEdits()
+                $driftFlag = $doc->hasPostGenerationEdits()
                     ? 'edited'
                     : 'pristine';
 
@@ -1311,7 +1311,7 @@ final class CertificationBundleExporter
             }
         }
 
-        $body = method_exists($doc, 'getPolicyBody') ? (string) ($doc->getPolicyBody() ?? '') : '';
+        $body = (string) ($doc->getPolicyBody() ?? '');
         if ($body !== '') {
             return hash('sha256', $body);
         }

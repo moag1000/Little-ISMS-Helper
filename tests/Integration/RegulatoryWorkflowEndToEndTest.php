@@ -190,7 +190,7 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
 
         $step1 = $steps[0];
         $this->assertSame('Risk Owner Approval', $step1['name']);
-        $this->assertSame('ROLE_RISK_OWNER', $step1['approver_role']);
+        $this->assertSame('ROLE_RISK_MANAGER', $step1['approver_role']);
 
         $cond = $step1['auto_progress_conditions'];
         $this->assertSame('risk_appetite', $cond['type']);
@@ -417,8 +417,8 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
                     'escalation_role' => 'ROLE_ADMIN',
                     'steps' => [
                         ['name' => 'Immediate Response (CISO)', 'order' => 1, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
-                        ['name' => 'Crisis Management (Crisis Team)', 'order' => 2, 'approver_role' => 'ROLE_CRISIS_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
-                        ['name' => 'Technical Response (Security + IT)', 'order' => 3, 'approver_role' => 'ROLE_SECURITY_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
+                        ['name' => 'Crisis Management (Crisis Team)', 'order' => 2, 'approver_role' => 'ROLE_BCM_OFFICER', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
+                        ['name' => 'Technical Response (Security + IT)', 'order' => 3, 'approver_role' => 'ROLE_ISB', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
                         ['name' => 'Legal/Compliance Check (Legal + DPO)', 'order' => 4, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 0, 'is_required' => true],
                         ['name' => 'Recovery Validation (CISO + IT Manager)', 'order' => 5, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 1, 'is_required' => true],
                         ['name' => 'Post-Incident Review (Management)', 'order' => 6, 'approver_role' => 'ROLE_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true],
@@ -432,11 +432,11 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
                     'escalation_threshold_hours' => null,
                     'escalation_role' => 'ROLE_ADMIN',
                     'steps' => [
-                        ['name' => 'Risk Owner Approval', 'order' => 1, 'approver_role' => 'ROLE_RISK_OWNER', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'risk_appetite', 'entity' => 'Risk', 'risk_score_field' => 'residualRisk']],
+                        ['name' => 'Risk Owner Approval', 'order' => 1, 'approver_role' => 'ROLE_RISK_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'risk_appetite', 'entity' => 'Risk', 'risk_score_field' => 'residualRisk']],
                         ['name' => 'CISO Technical Review', 'order' => 2, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
                         ['name' => 'DPO Privacy Impact Review', 'order' => 3, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 2, 'is_required' => false],
-                        ['name' => 'CFO Budget Approval', 'order' => 4, 'approver_role' => 'ROLE_CFO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
-                        ['name' => 'CEO/Board Approval', 'order' => 5, 'approver_role' => 'ROLE_CEO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
+                        ['name' => 'CFO Budget Approval', 'order' => 4, 'approver_role' => 'ROLE_TOP_MGMT', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
+                        ['name' => 'CEO/Board Approval', 'order' => 5, 'approver_role' => 'ROLE_TOP_MGMT', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => false],
                         ['name' => 'Audit Committee Notification', 'order' => 6, 'approver_role' => 'ROLE_AUDITOR', 'step_type' => 'notification', 'days_to_complete' => 0, 'is_required' => false, 'auto_progress_conditions' => ['type' => 'auto', 'condition' => 'residualRisk >= high']],
                     ],
                 ],
@@ -449,7 +449,7 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
                     'escalation_role' => 'ROLE_DPO',
                     'module' => 'privacy',
                     'steps' => [
-                        ['name' => 'DPIA Creation (Data Owner)', 'order' => 1, 'approver_role' => 'ROLE_DATA_OWNER', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true],
+                        ['name' => 'DPIA Creation (Data Owner)', 'order' => 1, 'approver_role' => 'ROLE_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true],
                         ['name' => 'DPO Review', 'order' => 2, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true],
                         ['name' => 'Technical Security Review (CISO)', 'order' => 3, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 5, 'is_required' => true],
                         ['name' => 'Risk Assessment', 'order' => 4, 'approver_role' => 'ROLE_RISK_MANAGER', 'step_type' => 'approval', 'days_to_complete' => 5, 'is_required' => true],
@@ -467,7 +467,7 @@ final class RegulatoryWorkflowEndToEndTest extends TestCase
                     'module' => 'privacy',
                     'steps' => [
                         ['name' => 'Identity Verification', 'order' => 1, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['identityVerified', 'identityVerificationMethod']]],
-                        ['name' => 'Request Processing', 'order' => 2, 'approver_role' => 'ROLE_USER', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['responseDescription']]],
+                        ['name' => 'Request Processing', 'order' => 2, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['responseDescription']]],
                         ['name' => 'DPO Review & Approval', 'order' => 3, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 5, 'is_required' => true],
                         ['name' => 'Response Delivery', 'order' => 4, 'approver_role' => 'ROLE_DPO', 'step_type' => 'approval', 'days_to_complete' => 3, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['completedAt']]],
                         ['name' => 'Deadline Extension (Art. 12(3))', 'order' => 5, 'approver_role' => 'ROLE_DPO', 'step_type' => 'notification', 'days_to_complete' => 0, 'is_required' => false, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'DataSubjectRequest', 'fields' => ['extensionReason', 'extendedDeadlineAt'], 'condition' => 'extensionReason != null']],

@@ -135,12 +135,6 @@ parameters:
 			path: src/Command/CaptureReuseSnapshotCommand.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Tenant and ''setCreatedAt'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Command/CreateScreenshotUserCommand.php
-
-		-
 			message: '#^Instanceof between DateTime and DateTime will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -584,12 +578,6 @@ parameters:
 			path: src/Controller/CertificationBundleController.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Asset\|App\\Entity\\AuditFinding\|App\\Entity\\Control\|App\\Entity\\CorrectiveAction\|App\\Entity\\DataBreach\|App\\Entity\\DataProtectionImpactAssessment\|App\\Entity\\DataSubjectRequest\|App\\Entity\\Document\|App\\Entity\\Incident\|App\\Entity\\Risk and ''getTenant'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/CommentController.php
-
-		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.expr
 			count: 4
@@ -633,40 +621,10 @@ parameters:
 			path: src/Controller/ComplianceMappingSeedController.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ComplianceRequirementFulfillment and ''getAdjustedEffortDa…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/ComplianceWizardController.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ComplianceRequirementFulfillment and ''setAdjustedEffortDa…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/ComplianceWizardController.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ComplianceRequirementFulfillment and ''setAdjustedEffortRe…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/ComplianceWizardController.php
-
-		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Controller/Component/PoliciesYouOwnWidgetController.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getSeverity'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/Dashboard/ComplianceManagerDashboardController.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Control and ''getImplementationSt…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/Dashboard/ComplianceManagerDashboardController.php
 
 		-
 			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
@@ -759,22 +717,10 @@ parameters:
 			path: src/Controller/DoraComplianceController.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getTenant'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/DoraDataFlowController.php
-
-		-
 			message: '#^Offset ''status'' on array\{id\: string, name\: string, status\: string, message\: string\|null, progress_current\: int, progress_total\: int, started_at\: int\|null, updated_at\: int\|null, \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Controller/DoraRegisterExportController.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getTenant'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/DoraSubcontractorController.php
 
 		-
 			message: '#^Property App\\Controller\\EffectivenessMonitorController\:\:\$auditLogger is never read, only written\.$#'
@@ -953,18 +899,6 @@ parameters:
 
 		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/PolicyWizardController.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\PolicyTemplate and ''getKey'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Controller/PolicyWizardController.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\PolicyTemplate and ''getTopic'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Controller/PolicyWizardController.php
@@ -1262,12 +1196,6 @@ parameters:
 			path: src/EventListener/AssetOwnerSyncListener.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Asset and ''getProcessingActivi…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AssetSchutzbedarfDpiaListener.php
-
-		-
 			message: '#^Cannot use array destructuring on Doctrine\\ORM\\PersistentCollection\|list\<mixed\>\.$#'
 			identifier: offsetAccess.nonArray
 			count: 1
@@ -1278,120 +1206,6 @@ parameters:
 			identifier: instanceof.alwaysTrue
 			count: 1
 			path: src/EventListener/AssetSchutzbedarfDpiaListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getAssignedTo'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getSeverity'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getTenant'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getType'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\CorrectiveAction and ''getResponsiblePerso…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\CorrectiveAction and ''setActionType'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\CorrectiveAction and ''setDescription'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\CorrectiveAction and ''setPlannedCompletio…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\CorrectiveAction and ''setStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionCorrectiveActionListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\DataProtectionImpactAssessment and ''setProcessingDescri…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionDpiaSuggestListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ProcessingActivity and ''getAutomatedDecisio…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/EventListener/AutoReactionDpiaSuggestListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ProcessingActivity and ''getDataSubjectCateg…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionDpiaSuggestListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ProcessingActivity and ''getEstimatedDataSub…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/EventListener/AutoReactionDpiaSuggestListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ProcessingActivity and ''getProcessesSpecial…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/EventListener/AutoReactionDpiaSuggestListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''getTenant'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionRiskSkeletonListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''setDescription'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionRiskSkeletonListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''setImpact'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionRiskSkeletonListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''setProbability'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionRiskSkeletonListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Vulnerability and ''getTenant'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/AutoReactionRiskSkeletonListener.php
 
 		-
 			message: '#^Instanceof between App\\Entity\\ComplianceRequirement and App\\Entity\\ComplianceRequirement will always evaluate to true\.$#'
@@ -1416,12 +1230,6 @@ parameters:
 			identifier: booleanAnd.alwaysTrue
 			count: 1
 			path: src/EventListener/ComplianceFrameworkImportListener.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getId'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/EventListener/DocumentApprovalListener.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -1726,12 +1534,6 @@ parameters:
 
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getEmail'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Repository/AuditChecklistRepository.php
-
-		-
 			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
 			identifier: greater.alwaysTrue
 			count: 2
@@ -1743,13 +1545,6 @@ parameters:
 			identifier: arrayValues.list
 			count: 1
 			path: src/Repository/IdentityProviderRepository.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getEmail'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Repository/IncidentRepository.php
-
 
 		-
 			message: '#^Offset ''critical''\|''high''\|''low''\|''medium'' on array\{critical\: 4, high\: 3, medium\: 2, low\: 1\} on left side of \?\? always exists and is not nullable\.$#'
@@ -1782,24 +1577,6 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Security/GenericOidcAuthenticator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getUpdatedAt'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/ActivityFeed.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''getStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/ActivityFeed.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''getUpdatedAt'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/ActivityFeed.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -1844,12 +1621,6 @@ parameters:
 			path: src/Service/Audit/Generator/RiskRegisterWorkbookGenerator.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getCategory'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/Audit/Generator/SoaWorkbookGenerator.php
-
-		-
 			message: '#^Parameter \#1 \$array \(list\<string\>\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
 			count: 1
@@ -1890,36 +1661,6 @@ parameters:
 			identifier: identical.alwaysFalse
 			count: 1
 			path: src/Service/BackupService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getType'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/CertBundleReadinessService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/CertBundleReadinessService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ManagementReview and ''getReviewDate'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/CertBundleReadinessService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\ManagementReview and ''getStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/CertBundleReadinessService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''getUpdatedAt'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/CertBundleReadinessService.php
 
 		-
 			message: '#^Instanceof between App\\Entity\\Asset and App\\Entity\\Asset will always evaluate to true\.$#'
@@ -2107,30 +1848,6 @@ parameters:
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: src/Service/DashboardStatisticsService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/DashboardStatisticsService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''getFindings'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/DashboardStatisticsService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Supplier and ''getCriticality'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/Service/DashboardStatisticsService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Supplier and ''getLastSecurityAsse…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
 			path: src/Service/DashboardStatisticsService.php
 
 		-
@@ -2362,18 +2079,6 @@ parameters:
 			path: src/Service/DocumentApprovalService.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getDescription'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/DocumentApprovalService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getPolicyBody'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/DocumentApprovalService.php
-
-		-
 			message: '#^Offset 5 on array\{0\: non\-falsy\-string, 1\: non\-empty\-string, 2\: non\-empty\-string, 3\: non\-empty\-string, 4\: non\-empty\-string, 5\: ''''\|numeric\-string, 6\: non\-empty\-string, 7\?\: non\-empty\-string\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
@@ -2414,18 +2119,6 @@ parameters:
 			identifier: return.unusedType
 			count: 1
 			path: src/Service/Export/AuditPackageExporter.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getPolicyBody'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/Export/CertificationBundleExporter.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''hasPostGenerationEd…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/Export/CertificationBundleExporter.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -2512,12 +2205,6 @@ parameters:
 			path: src/Service/GroupAuditProgramService.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getTenant'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/Service/ISMSContextService.php
-
-		-
 			message: '#^Comparison operation "\>" between 11 and 0 is always true\.$#'
 			identifier: greater.alwaysTrue
 			count: 1
@@ -2568,113 +2255,10 @@ parameters:
 			path: src/Service/IncidentRiskFeedbackService.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Asset and ''setDescription'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/IndustryBaselineApplier.php
-
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''getAuditTeam'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''getLeadAuditor'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''getObjectives'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''getScope'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''getScopeType'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setAuditTeam'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setAuditType'' will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setFramework'' will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setLeadAuditor'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setObjectives'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setScope'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setScopeType'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setScopedFramework'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setStandard'' will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\InternalAudit and ''setStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InternalAuditCloner.php
-
-		-
 			message: '#^Instanceof between App\\Entity\\ComplianceFramework and App\\Entity\\ComplianceFramework will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
 			path: src/Service/InternalAuditCloner.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''getControls'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/InverseCoverageService.php
 
 		-
 			message: '#^Instanceof between App\\Entity\\Control and App\\Entity\\Control will always evaluate to true\.$#'
@@ -2693,12 +2277,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Service/LiveCountAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''isActive'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/Service/Mail/RecipientFilter.php
 
 		-
 			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
@@ -2761,84 +2339,6 @@ parameters:
 			path: src/Service/MrisScoreService.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getDueDate'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getSeverity'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\CorrectiveAction and ''getPlannedCompletio…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\CorrectiveAction and ''getResponsiblePerso…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\DataSubjectRequest and ''getAssignedTo'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\DataSubjectRequest and ''getDataSubjectName'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\DataSubjectRequest and ''getRequestType'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\DataSubjectRequest and ''getStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getRequiresAcknowle…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getUploadedBy'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Document and ''getVersion'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Training and ''getTitle'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getEmail'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.expr
 			count: 3
@@ -2891,42 +2391,6 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: src/Service/Nis2Art21CoverageService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Asset and ''getConfidentialityV…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/Nis2ComplianceService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Incident and ''getDetailedNotifica…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/Service/Nis2ComplianceService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Incident and ''getEarlyWarningRepo…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/Service/Nis2ComplianceService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Incident and ''getFinalReportSubmi…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: src/Service/Nis2ComplianceService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Supplier and ''getLastSecurityAsse…'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/Nis2ComplianceService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Training and ''getStatus'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/Nis2ComplianceService.php
 
 		-
 			message: '#^Property App\\Service\\Nis2ComplianceService\:\:\$frameworkRepository is never read, only written\.$#'
@@ -3085,24 +2549,6 @@ parameters:
 			path: src/Service/PolicyWizard/Export/PolicyPdfExporter.php
 
 		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Control and ''getEvidenceDocuments'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/PolicyWizard/Export/PolicyZipExporter.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\WorkflowInstance and ''getCompletedAt'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/PolicyWizard/Export/PolicyZipExporter.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\WorkflowInstance and ''getStartedAt'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/PolicyWizard/Export/PolicyZipExporter.php
-
-		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.expr
 			count: 1
@@ -3149,12 +2595,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Service/PolicyWizard/PolicyAudienceResolver.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\PolicyTemplate and ''getTopic'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/PolicyWizard/PolicySectionApprovalService.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -3311,18 +2751,6 @@ parameters:
 			identifier: instanceof.alwaysTrue
 			count: 1
 			path: src/Service/PortfolioReportService.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\DataProtectionImpactAssessment and ''setDataSubjectRisks'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/PreFiller/DpiaPreFiller.php
-
-		-
-			message: '#^Call to function method_exists\(\) with App\\Entity\\Risk and ''getDataSubjectImpact'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/PreFiller/DpiaPreFiller.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'

@@ -238,9 +238,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
     {
         $deadline = new \DateTimeImmutable("+{$windowDays} days");
         $needle = strtolower($user->getUserIdentifier());
-        $needleEmail = method_exists($user, 'getEmail')
-            ? strtolower((string) $user->getEmail())
-            : '';
+        $needleEmail = strtolower((string) $user->getEmail());
 
         return $this->createQueryBuilder('ac')
             ->join('ac.audit', 'a')

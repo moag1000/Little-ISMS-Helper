@@ -151,19 +151,13 @@ final class AutoReactionTrainingAudienceAssignListener
     }
 
     /**
-     * Audience resolution: role-intersect when the training carries an
-     * explicit mandatory-for-roles list, fan-out otherwise. Mirrors
+     * Audience resolution: fan-out to every user. Mirrors
      * {@see AutoReactionTrainingAssignListener::shouldAssign()} so both
      * directions stay consistent.
      */
     private function shouldAssign(Training $training, User $user): bool
     {
-        if (method_exists($training, 'getMandatoryForRoles')) {
-            $roles = $training->getMandatoryForRoles();
-            if (is_array($roles) && !empty($roles)) {
-                return count(array_intersect($roles, $user->getRoles())) > 0;
-            }
-        }
+        // Training has no role audience; every mandatory training goes to every user.
         return true;
     }
 

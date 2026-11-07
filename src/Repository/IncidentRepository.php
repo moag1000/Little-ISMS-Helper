@@ -227,7 +227,7 @@ class IncidentRepository extends ServiceEntityRepository
     public function findOpenAssignedToUser(\App\Entity\User $user, Tenant $tenant): array
     {
         $needle = $user->getUserIdentifier();
-        $needleEmail = method_exists($user, 'getEmail') ? (string) $user->getEmail() : '';
+        $needleEmail = (string) $user->getEmail();
 
         $qb = $this->createQueryBuilder('i')
             ->andWhere('i.tenant = :tenant')

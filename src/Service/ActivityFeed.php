@@ -150,7 +150,7 @@ final class ActivityFeed
                     'title'     => sprintf('Document %s · v%s', $doc->getOriginalFilename() ?? '—', $doc->getVersion() ?? '—'),
                     'subtitle'  => $doc->getStatus() ?? '',
                     'link'      => $this->safeUrl('app_document_show', ['id' => $doc->getId()]),
-                    'timestamp' => method_exists($doc, 'getUpdatedAt') ? $doc->getUpdatedAt() : null,
+                    'timestamp' => $doc->getUpdatedAt(),
                     'actor'     => '—',
                     'source'    => 'document',
                 ];
@@ -172,11 +172,9 @@ final class ActivityFeed
                     'tone'      => 'warning',
                     'icon'      => 'fa-icon--status-warning',
                     'title'     => 'Risk · ' . ($risk->getTitle() ?? '—'),
-                    'subtitle'  => method_exists($risk, 'getStatus')
-                        ? (is_object($risk->getStatus()) ? $risk->getStatus()->value : (string) $risk->getStatus())
-                        : '',
+                    'subtitle'  => is_object($risk->getStatus()) ? $risk->getStatus()->value : (string) $risk->getStatus(),
                     'link'      => $this->safeUrl('app_risk_show', ['id' => $risk->getId()]),
-                    'timestamp' => method_exists($risk, 'getUpdatedAt') ? $risk->getUpdatedAt() : null,
+                    'timestamp' => $risk->getUpdatedAt(),
                     'actor'     => '—',
                     'source'    => 'risk',
                 ];
