@@ -3,7 +3,8 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'data_subject_request' %}
 
 {% block title %}{{ 'dsr.page.show_title'|trans({'%id%': dsr.id}, 'data_subject_request') }}{% endblock %}
@@ -31,11 +32,29 @@
         ]
     }) }}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataSubjectRequest', status_key: dsr.status }) }}
-        {{ _lifecycle_actions.dropdown(dsr, 'data-subject-request', 'data_subject_request_lifecycle') }}
-    </div>
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataSubjectRequest', status_key: dsr.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(dsr, 'data-subject-request', 'data_subject_request_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: dsr.requestType ? ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') : null },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: dsr.assignedTo ? dsr.assignedTo.firstName ~ ' ' ~ dsr.assignedTo.lastName : null },
+            { label: 'dsr.field.deadline'|trans({}, 'data_subject_request'), value: dsr.effectiveDeadline ? dsr.effectiveDeadline|fa_date : null },
+            { label: 'dsr.field.received_at'|trans({}, 'data_subject_request'), value: dsr.receivedAt ? dsr.receivedAt|fa_date : null },
+        ],
+        workflow: workflow_state(dsr),
+    }) }}
+
+    {% set _links = entity_links(dsr) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: dsr } only %}
 
     {# Overdue Warning #}
     {% if dsr.overdue %}
@@ -48,7 +67,7 @@
         {% endembed %}
     {% endif %}
 
-    <div class="row">
+    <div class="row fa-show-section" id="details">
         {# Left Column: Details #}
         <div class="col-lg-8">
             {# Status & Request Info #}
@@ -65,31 +84,20 @@
                                 <span class="fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
                                 <small class="text-muted ms-1">({{ dsr.gdprArticle }})</small>
                             </p>
-                            <p><strong>{{ 'dsr.field.status'|trans({}, 'data_subject_request') }}:</strong><br>
-                                {% set status_class = {
-                                    'received': 'secondary',
-                                    'identity_verification': 'info',
-                                    'in_progress': 'primary',
-                                    'completed': 'success',
-                                    'rejected': 'danger',
-                                    'extended': 'warning'
-                                }[dsr.status]|default('secondary') %}
-                                {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
-                            </p>
-                            <p><strong>{{ 'dsr.field.received_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.receivedAt|date('Y-m-d H:i') }}</p>
+                            <p><strong>{{ 'dsr.field.received_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.receivedAt|fa_datetime }}</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>{{ 'dsr.field.deadline'|trans({}, 'data_subject_request') }}:</strong>
                                 <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
-                                    {{ dsr.effectiveDeadline|date('Y-m-d') }}
+                                    {{ dsr.effectiveDeadline|fa_date }}
                                 </span>
                                 {% if dsr.extendedDeadlineAt %}
-                                    <br><small class="text-muted">{{ 'dsr.field.original_deadline'|trans({}, 'data_subject_request') }}: {{ dsr.deadlineAt|date('Y-m-d') }}</small>
+                                    <br><small class="text-muted">{{ 'dsr.field.original_deadline'|trans({}, 'data_subject_request') }}: {{ dsr.deadlineAt|fa_date }}</small>
                                     <br><small class="text-warning">{{ 'dsr.field.extended'|trans({}, 'data_subject_request') }}</small>
                                 {% endif %}
                             </p>
                             {% if dsr.completedAt %}
-                                <p><strong>{{ 'dsr.field.completed_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.completedAt|date('Y-m-d H:i') }}</p>
+                                <p><strong>{{ 'dsr.field.completed_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.completedAt|fa_datetime }}</p>
                             {% endif %}
                             {% if dsr.assignedTo %}
                                 <p><strong>{{ 'dsr.field.assigned_to'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.assignedTo.firstName }} {{ dsr.assignedTo.lastName }}</p>
@@ -160,7 +168,7 @@
                         </p>
                     {% endif %}
                     {% if dsr.identityVerifiedAt %}
-                        <p><strong>{{ 'dsr.field.verified_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.identityVerifiedAt|date('Y-m-d H:i') }}</p>
+                        <p><strong>{{ 'dsr.field.verified_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.identityVerifiedAt|fa_datetime }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -182,7 +190,7 @@
                             {% if dsr.responseAt %}
                                 <div class="col-md-6">
                                     <p><strong>{{ 'dsr.field.response_at'|trans({}, 'data_subject_request') }}:</strong><br>
-                                        <span class="text-success fw-semibold">{{ dsr.responseAt|date('Y-m-d H:i') }}</span>
+                                        <span class="text-success fw-semibold">{{ dsr.responseAt|fa_datetime }}</span>
                                     </p>
                                 </div>
                             {% endif %}
@@ -355,16 +363,19 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <p><strong>{{ 'dsr.field.created_at'|trans({}, 'data_subject_request') }}:</strong><br>{{ dsr.createdAt|date('Y-m-d H:i') }}</p>
+                    <p><strong>{{ 'dsr.field.created_at'|trans({}, 'data_subject_request') }}:</strong><br>{{ dsr.createdAt|fa_datetime }}</p>
                     {% if dsr.updatedAt %}
-                        <p><strong>{{ 'dsr.field.updated_at'|trans({}, 'data_subject_request') }}:</strong><br>{{ dsr.updatedAt|date('Y-m-d H:i') }}</p>
+                        <p><strong>{{ 'dsr.field.updated_at'|trans({}, 'data_subject_request') }}:</strong><br>{{ dsr.updatedAt|fa_datetime }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
         </div>
     </div>
 
+    {% include '_components/_fa_show_history.html.twig' with { entity: dsr, lifecycle: 'data-subject-request' } only %}
+
     {# V4 LB-4: Comment-Thread adoption (C7 macro). #}
+    <div id="comments" class="fa-show-section">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'DataSubjectRequest',
@@ -373,8 +384,6 @@
         formAction: path('app_comment_post', {entityType: 'DataSubjectRequest', entityId: dsr.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
-
-    {# Lifecycle X.3b — transition history tab #}
-    {{ _lifecycle_history.history('data-subject-request', dsr.id) }}
+    </div>
 </div>
 {% endblock %}

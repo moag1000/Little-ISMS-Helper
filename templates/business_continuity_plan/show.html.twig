@@ -3,18 +3,16 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ bc_plan.name }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
-    {# Lifecycle — status transition dropdown (business_continuity_plan_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: bc_plan,
-        entity_type: 'business-continuity-plan',
-        workflow_name: 'business_continuity_plan_lifecycle'
-    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
@@ -27,13 +25,34 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-check', label: ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') },
         title: bc_plan.name,
         actions: [
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_bc_plan_edit', {id: bc_plan.id}) },
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_bc_plan_index') }
         ]
     }) }}
+
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\BusinessContinuityPlan', status_key: bc_plan.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(bc_plan, 'business-continuity-plan', 'business_continuity_plan_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: bc_plan.effectivePlanOwner },
+            { label: 'show.status.version'|trans({}, 'messages'), value: bc_plan.version },
+            { label: 'show.status.next_review'|trans({}, 'messages'), value: bc_plan.nextReviewDate ? bc_plan.nextReviewDate|fa_date : null },
+        ],
+        workflow: workflow_state(bc_plan),
+    }) }}
+
+    {% set _links = entity_links(bc_plan) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: bc_plan } only %}
 
     {# 9001-bridge: BC-Plan is part of risk treatment (9001 6.1) and mandatory in 22301 8.4. #}
     {{ _fa_norm_bridge.render({
@@ -64,11 +83,11 @@
         </div>
     {% endif %}
 
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">
                 <h2>{{ 'bc_plans.section.details'|trans({}, 'bc_plans') }}</h2>
-                <span class="{{ badge_status(bc_plan.status) }}">{{ ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') }}</span>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -146,23 +165,23 @@
                 <div class="detail-grid">
                     <div class="detail-item">
                         <span class="label">{{ 'bc_plans.field.last_tested'|trans({}, 'bc_plans') }}:</span>
-                        <span class="value">{{ bc_plan.lastTested ? bc_plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</span>
+                        <span class="value">{{ bc_plan.lastTested ? bc_plan.lastTested|fa_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</span>
                     </div>
                     <div class="detail-item">
                         <span class="label">{{ 'bc_plans.field.next_test'|trans({}, 'bc_plans') }}:</span>
                         <span class="value {{ bc_plan.isTestOverdue() ? 'text-danger' : '' }}">
-                            {{ bc_plan.nextTestDate ? bc_plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
+                            {{ bc_plan.nextTestDate ? bc_plan.nextTestDate|fa_date : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
                             {{ bc_plan.isTestOverdue() ? ('bc_plans.badge.overdue'|trans({}, 'bc_plans')) : '' }}
                         </span>
                     </div>
                     <div class="detail-item">
                         <span class="label">{{ 'bc_plans.field.last_review'|trans({}, 'bc_plans') }}:</span>
-                        <span class="value">{{ bc_plan.lastReviewDate ? bc_plan.lastReviewDate|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</span>
+                        <span class="value">{{ bc_plan.lastReviewDate ? bc_plan.lastReviewDate|fa_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</span>
                     </div>
                     <div class="detail-item">
                         <span class="label">{{ 'bc_plans.field.next_review'|trans({}, 'bc_plans') }}:</span>
                         <span class="value {{ bc_plan.isReviewOverdue() ? 'text-danger' : '' }}">
-                            {{ bc_plan.nextReviewDate ? bc_plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
+                            {{ bc_plan.nextReviewDate ? bc_plan.nextReviewDate|fa_date : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
                             {{ bc_plan.isReviewOverdue() ? ('bc_plans.badge.overdue'|trans({}, 'bc_plans')) : '' }}
                         </span>
                     </div>
@@ -208,6 +227,9 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: bc_plan, lifecycle: 'business-continuity-plan' } only %}
 </div>
 
 <style>

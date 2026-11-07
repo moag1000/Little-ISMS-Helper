@@ -5,11 +5,28 @@ declare(strict_types=1);
 namespace App\Service\Detail;
 
 use App\Entity\Asset;
+use App\Entity\AuditFinding;
+use App\Entity\BusinessContinuityPlan;
+use App\Entity\BusinessProcess;
+use App\Entity\ChangeRequest;
+use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
+use App\Entity\CorrectiveAction;
+use App\Entity\DataBreach;
+use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\Document;
 use App\Entity\Incident;
+use App\Entity\InternalAudit;
+use App\Entity\Location;
+use App\Entity\Patch;
+use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
+use App\Entity\RiskTreatmentPlan;
+use App\Entity\Supplier;
+use App\Entity\ThreatIntelligence;
+use App\Entity\Training;
 use App\Entity\Vulnerability;
+use App\Repository\ControlRepository;
 use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
 use App\Service\ModuleConfigurationService;
@@ -21,6 +38,8 @@ use App\Service\ModuleConfigurationService;
  * (`_components/_fa_entity_links.html.twig`), so an auditor sees the chain
  * without scrolling and a gap shows up as an empty group.
  *
+ * Records outside the chain (supplier, BC plan, processing activity, …) show
+ * the chain types they relate to; a type they cannot relate to is not shown.
  * Groups whose module is off are left out; the record's own type is skipped.
  */
 class EntityLinks
@@ -56,6 +75,7 @@ class EntityLinks
     public function __construct(
         private readonly ModuleConfigurationService $modules,
         private readonly RiskRepository $riskRepository,
+        private readonly ?ControlRepository $controlRepository = null,
     ) {
     }
 
@@ -66,12 +86,11 @@ class EntityLinks
      */
     public function for(object $entity): array
     {
-        $source = self::typeOf($entity);
-        if ($source === null) {
+        $related = $this->related($entity);
+        if ($related === []) {
             return [];
         }
-
-        $related = $this->related($entity);
+        $source = self::typeOf($entity);
         $groups = [];
         foreach (self::GROUPS as $type => [$module, $route]) {
             if ($type === $source || !array_key_exists($type, $related)) {
@@ -107,6 +126,7 @@ class EntityLinks
             $entity instanceof Control => 'control',
             $entity instanceof Incident => 'incident',
             $entity instanceof Vulnerability => 'vulnerability',
+            $entity instanceof Document => 'evidence',
             default => null,
         };
     }
@@ -145,8 +165,105 @@ class EntityLinks
                 'risk' => [self::unique($this->riskRepository->findBy(['linkedVulnerability' => $entity])), null],
                 'incident' => [self::unique([...$entity->getIncidents()]), null],
             ],
+            default => $this->relatedOutsideChain($entity),
+        };
+    }
+
+    /**
+     * Records that are not links of the chain themselves but point into it.
+     *
+     * @return array<string, array{0: list<object>, 1: ?string}>
+     */
+    private function relatedOutsideChain(object $entity): array
+    {
+        return match (true) {
+            $entity instanceof Document => [
+                'control' => [self::unique($this->controlsUsingEvidence($entity)), null],
+            ],
+            $entity instanceof AuditFinding => [
+                'control' => [self::unique([$entity->getRelatedControl(), ...$entity->getRelatedControls()]), null],
+            ],
+            $entity instanceof CorrectiveAction => [
+                'control' => [self::unique([...$entity->getRelatedControls()]), null],
+                'incident' => [self::unique([$entity->getSourceIncident()]), null],
+            ],
+            $entity instanceof RiskTreatmentPlan => [
+                'risk' => [self::unique([$entity->getRisk()]), null],
+                'control' => [self::unique([...$entity->getControls()]), null],
+                'evidence' => [self::unique([...$entity->getEvidenceDocuments()]), null],
+            ],
+            $entity instanceof ComplianceRequirement => [
+                'control' => [self::unique([...$entity->getMappedControls()]), null],
+                'evidence' => [self::unique([...$entity->getEvidenceDocuments()]), null],
+            ],
+            $entity instanceof BusinessProcess => [
+                'asset' => [self::unique([...$entity->getSupportingAssets()]), null],
+                'risk' => [self::unique([...$entity->getIdentifiedRisks()]), null],
+                'incident' => [self::unique([...$entity->getIncidents()]), null],
+            ],
+            $entity instanceof BusinessContinuityPlan => [
+                'asset' => [self::unique([...$entity->getCriticalAssets()]), null],
+                'evidence' => [self::unique([...$entity->getDocuments()]), null],
+            ],
+            $entity instanceof ChangeRequest => [
+                'asset' => [self::unique([...$entity->getAffectedAssets()]), null],
+                'risk' => [self::unique([...$entity->getAssociatedRisks()]), null],
+                'control' => [self::unique([...$entity->getAffectedControls()]), null],
+                'evidence' => [self::unique([...$entity->getDocuments()]), null],
+            ],
+            $entity instanceof Supplier => [
+                'asset' => [self::unique([...$entity->getSupportedAssets()]), null],
+                'risk' => [self::unique([...$entity->getIdentifiedRisks()]), null],
+                'evidence' => [self::unique([...$entity->getDocuments()]), null],
+            ],
+            $entity instanceof ProcessingActivity => [
+                'asset' => [self::unique([...$entity->getAssets()]), null],
+                'control' => [self::unique([...$entity->getImplementedControls()]), null],
+            ],
+            $entity instanceof DataProtectionImpactAssessment => [
+                'asset' => [self::unique([$entity->getRelatedAsset()]), null],
+                'control' => [self::unique([...$entity->getImplementedControls()]), null],
+            ],
+            $entity instanceof DataBreach => [
+                'incident' => [self::unique([$entity->getIncident()]), null],
+            ],
+            $entity instanceof Patch => [
+                'asset' => [self::unique([...$entity->getAffectedAssets()]), null],
+                'vulnerability' => [self::unique([$entity->getVulnerability()]), null],
+            ],
+            $entity instanceof ThreatIntelligence => [
+                'asset' => [self::unique([...$entity->getAffectedAssets()]), null],
+                'incident' => [self::unique([...$entity->getResultingIncidents()]), null],
+            ],
+            $entity instanceof Location => [
+                'asset' => [self::unique([...$entity->getAssets()]), null],
+            ],
+            $entity instanceof InternalAudit => [
+                'asset' => [self::unique([...$entity->getScopedAssets()]), null],
+            ],
+            $entity instanceof Training => [
+                'control' => [self::unique([...$entity->getCoveredControls()]), null],
+            ],
             default => [],
         };
+    }
+
+    /** @return list<Control> controls that hold the document as evidence */
+    private function controlsUsingEvidence(Document $document): array
+    {
+        if ($this->controlRepository === null || $document->getId() === null) {
+            return [];
+        }
+        $qb = $this->controlRepository->createQueryBuilder('c')
+            ->innerJoin('c.evidenceDocuments', 'd')
+            ->andWhere('d.id = :document')
+            ->setParameter('document', $document->getId())
+            ->orderBy('c.controlId', 'ASC');
+        if ($document->getTenant() !== null) {
+            $qb->andWhere('c.tenant = :tenant')->setParameter('tenant', $document->getTenant());
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

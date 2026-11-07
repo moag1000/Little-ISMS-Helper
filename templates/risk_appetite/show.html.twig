@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans({}, 'risk_appetite') }}{% endblock %}
 
 {% block body %}
@@ -34,8 +36,7 @@
         actions: _show_actions
     }) }}
 
-    {# Status badges (active / approved) kept below header — multi-badge subtitle not supported by macro #}
-    <div class="d-flex flex-wrap gap-2 mb-3">
+    {% set _status %}
         {% if appetite.isActive() %}
             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'risk_appetite.status.active'|trans({}, 'risk_appetite') } %}
         {% else %}
@@ -44,7 +45,27 @@
         {% if appetite.isApproved() %}
             {% include '_components/_badge.html.twig' with { variant: 'info', content: 'risk_appetite.approved'|trans({}, 'risk_appetite') } %}
         {% endif %}
-    </div>
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'risk_appetite.field.max_acceptable_risk'|trans({}, 'risk_appetite'), value: appetite.maxAcceptableRisk },
+            { label: 'risk_appetite.field.approved_by'|trans({}, 'risk_appetite'), value: appetite.approvedBy ? appetite.approvedBy.fullName : null },
+            { label: 'risk_appetite.field.approved_at'|trans({}, 'risk_appetite'), value: appetite.approvedAt ? appetite.approvedAt|fa_datetime : null },
+        ],
+        workflow: workflow_state(appetite),
+    }) }}
+
+    {% set _links = entity_links(appetite) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'risk_appetite.section.details'|trans({}, 'risk_appetite') },
+        { id: 'exceeding', label: 'risk_appetite.risks_exceeding_title'|trans({}, 'risk_appetite'), show: risksExceedingAppetite|length > 0 },
+        { id: 'within', label: 'risk_appetite.risks_within_title'|trans({}, 'risk_appetite'), show: risksWithinAppetite|length > 0 },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: appetite } only %}
 </div>
 
 {# Key Metrics #}
@@ -90,6 +111,7 @@
 </div>
 
 {# Appetite Details #}
+<div id="details" class="fa-show-section">
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_header %}
         <div class="card-header">
@@ -122,7 +144,7 @@
                 <div class="detail-item">
                     <strong>{{ 'risk_appetite.field.approved_at'|trans({}, 'risk_appetite') }}:</strong>
                     {% if appetite.approvedAt %}
-                        {{ appetite.approvedAt|date('Y-m-d H:i:s') }}
+                        {{ appetite.approvedAt|fa_datetime }}
                     {% else %}
                         <span class="text-warning">{{ 'common.not_approved'|trans({}, 'messages') }}</span>
                     {% endif %}
@@ -130,7 +152,7 @@
 
                 <div class="detail-item">
                     <strong>{{ 'risk_appetite.field.created_at'|trans({}, 'risk_appetite') }}:</strong>
-                    {{ appetite.createdAt|date('Y-m-d H:i:s') }}
+                    {{ appetite.createdAt|fa_datetime }}
                 </div>
             </div>
         </div>
@@ -143,9 +165,11 @@
         </div>
     {% endblock %}
 {% endembed %}
+</div>
 
 {# Risks Exceeding Appetite #}
 {% if risksExceedingAppetite|length > 0 %}
+<div id="exceeding" class="fa-show-section">
 {% embed '_components/_card.html.twig' with { 'class': 'border-danger mb-4' } %}
     {% block card_header %}
         <div class="card-header">
@@ -196,10 +220,12 @@
         {% endembed %}
     {% endblock %}
 {% endembed %}
+</div>
 {% endif %}
 
 {# Risks Within Appetite #}
 {% if risksWithinAppetite|length > 0 %}
+<div id="within" class="fa-show-section">
 {% embed '_components/_card.html.twig' with { 'class': 'border-success mb-4' } %}
     {% block card_header %}
         <div class="card-header">
@@ -258,37 +284,13 @@
         {% endembed %}
     {% endblock %}
 {% endembed %}
+</div>
 {% endif %}
 
-{# Audit Log History #}
-{% if auditLogs is defined and auditLogs|length > 0 %}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_header %}
-        <div class="card-header">
-            <h2><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'risk_appetite.section.history'|trans({}, 'risk_appetite') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h2>
-        </div>
-    {% endblock %}
-    {% block card_body %}
-        <div class="fa-audit-feed">
-            {% for log in auditLogs %}
-            <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
-                <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
-                <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
-                <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
-                <span class="fa-audit-row__action">{{ log.action|upper }}</span>
-                <span class="fa-audit-row__target">{{ log.entityType|default('RiskAppetite') }}#{{ log.entityId|default('') }}</span>
-                <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
-            </div>
-            {% endfor %}
-        </div>
-        {% if totalAuditLogs > 10 %}
-        <div class="text-center mt-3">
-            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit') }}</small>
-        </div>
-        {% endif %}
-    {% endblock %}
-{% endembed %}
-{% endif %}
+{% include '_components/_fa_show_history.html.twig' with {
+    auditLogs: auditLogs|default([]), total: totalAuditLogs|default(0),
+    entityType: 'RiskAppetite', entityId: appetite.id
+} only %}
 
 {# Delete Section - Admin Only #}
 {% if is_granted('ROLE_ADMIN') %}

@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'suppliers' %}
 
 {% block title %}{{ supplier.name }}{% endblock %}
@@ -8,12 +12,6 @@
 {% block body %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
-    {# Lifecycle — status transition dropdown (supplier_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: supplier,
-        entity_type: 'supplier',
-        workflow_name: 'supplier_lifecycle'
-    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.suppliers'|trans({}, 'nav'), url: path('app_supplier_index') },
@@ -34,6 +32,28 @@
         title: supplier.name,
         actions: _show_actions
     }) }}
+
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Supplier', status_key: supplier.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(supplier, 'supplier', 'supplier_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.criticality'|trans({}, 'messages'), value: supplier.criticality ? supplier.criticality|upper : null },
+            { label: 'supplier.field.contact_person'|trans({}, 'suppliers'), value: supplier.effectiveContactPerson },
+            { label: 'supplier.field.next_assessment'|trans({}, 'suppliers'), value: supplier.nextAssessmentDate ? supplier.nextAssessmentDate|fa_date : null },
+            { label: 'show.status.valid_until'|trans({}, 'messages'), value: supplier.contractEndDate ? supplier.contractEndDate|fa_date : null },
+        ],
+        workflow: workflow_state(supplier),
+    }) }}
+
+    {% set _links = entity_links(supplier) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'supplier.section.details'|trans({}, 'suppliers') },
+        { id: 'coverage', label: 'inverse_coverage.supplier.heading'|trans({}, 'control'), show: inverse_coverage is defined },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
 
     {# Inline disabled-edit + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) or is_granted('ROLE_USER') %}
@@ -113,14 +133,16 @@
         {% endembed %}
     {% endif %}
 
+    {% include '_components/_fa_entity_links.html.twig' with { entity: supplier } only %}
+
     {# ── Header summary card (always visible above tabs) ──────────────────── #}
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
                 <div>
                     {% include '_components/_badge.html.twig' with { variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')), content: supplier.criticality|upper } %}
-                    <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
                 </div>
             </div>
         {% endblock %}
@@ -264,12 +286,12 @@
                             </div>
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.last_assessment'|trans({}, 'suppliers') }}:</span>
-                                <span class="value">{{ supplier.lastSecurityAssessment ? supplier.lastSecurityAssessment|date('Y-m-d') : ('supplier.value.never'|trans({}, 'suppliers')) }}</span>
+                                <span class="value">{{ supplier.lastSecurityAssessment ? supplier.lastSecurityAssessment|fa_date : ('supplier.value.never'|trans({}, 'suppliers')) }}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="label">{{ 'supplier.field.next_assessment'|trans({}, 'suppliers') }}:</span>
                                 <span class="value {{ supplier.isAssessmentOverdue() ? 'text-danger' : '' }}">
-                                    {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.value.not_scheduled'|trans({}, 'suppliers')) }}
+                                    {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|fa_date : ('supplier.value.not_scheduled'|trans({}, 'suppliers')) }}
                                     {{ supplier.isAssessmentOverdue() ? ('supplier.badge.overdue'|trans({}, 'suppliers')) : '' }}
                                 </span>
                             </div>
@@ -313,9 +335,9 @@
 
                     <div class="detail-section">
                         <p class="text-muted">
-                            {{ 'common.created_at'|trans({}, 'messages') }}: {{ supplier.createdAt|date('Y-m-d H:i') }}
+                            {{ 'common.created_at'|trans({}, 'messages') }}: {{ supplier.createdAt|fa_datetime }}
                             {% if supplier.updatedAt %}
-                                | {{ 'common.updated_at'|trans({}, 'messages') }}: {{ supplier.updatedAt|date('Y-m-d H:i') }}
+                                | {{ 'common.updated_at'|trans({}, 'messages') }}: {{ supplier.updatedAt|fa_datetime }}
                             {% endif %}
                         </p>
                     </div>
@@ -646,8 +668,10 @@
             </div>
         {% endblock %}
     {% endembed %}
+    </div>
 
     {% if inverse_coverage is defined %}
+        <div id="coverage" class="fa-show-section">
         {% embed '_components/_card.html.twig' with { class: 'mt-4 border-info' } %}
             {% block card_header %}
                 <div class="card-header">
@@ -664,7 +688,10 @@
                 } %}
             {% endblock %}
         {% endembed %}
+        </div>
     {% endif %}
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: supplier, lifecycle: 'supplier' } only %}
 </div>
 
 <style>

@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'patches' %}
 {% block title %}{{ patch.title }}{% endblock %}
 {% block body %}
@@ -14,12 +17,6 @@
             body: 'common.module_not_active'|trans({'%module%': 'Patches'}, 'messages')
         }) }}
     {% else %}
-    {# Lifecycle — status transition dropdown (patch_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: patch,
-        entity_type: 'patch',
-        workflow_name: 'patch_lifecycle'
-    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.patches'|trans({}, 'nav'), url: path('app_patch_index') },
@@ -40,12 +37,7 @@
         ]
     }) }}
 
-    {# Status badges (priority/status/overdue) kept below header — multi-badge title row not supported by macro #}
-    <div class="d-flex flex-wrap gap-2 mb-3">
-        {% include '_components/_badge.html.twig' with {
-            variant: patch.priority == 'critical' ? 'danger' : (patch.priority == 'high' ? 'warning' : (patch.priority == 'medium' ? 'info' : 'secondary')),
-            content: ('patch.priority.' ~ patch.priority)|trans({}, 'patches')
-        } only %}
+    {% set _status %}
         {% include '_components/_badge.html.twig' with {
             variant: patch.status == 'deployed' ? 'success' : (patch.status == 'failed' or patch.status == 'rolled_back' ? 'danger' : 'info'),
             content: ('patch.status.' ~ patch.status)|trans({}, 'patches')
@@ -53,11 +45,33 @@
         {% if patch.overdue %}
             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'patch.status.overdue'|trans({}, 'patches') } only %}
         {% endif %}
-    </div>
+    {% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(patch, 'patch', 'patch_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.priority'|trans({}, 'messages'), value: ('patch.priority.' ~ patch.priority)|trans({}, 'patches') },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: patch.effectiveResponsiblePerson },
+            { label: 'show.status.due_date'|trans({}, 'messages'), value: patch.deploymentDeadline ? patch.deploymentDeadline|fa_date : null },
+        ],
+        workflow: workflow_state(patch),
+    }) }}
+
+    {% set _links = entity_links(patch) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'deployment', label: 'patch.section.deployment'|trans({}, 'patches') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: patch } only %}
 
     <div class="row">
         <div class="col-md-8">
 
+            <div id="details" class="fa-show-section">
             {# Description #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
@@ -109,6 +123,9 @@
                 {% endblock %}
             {% endembed %}
 
+            </div>
+
+            <div id="deployment" class="fa-show-section">
             {# Deployment #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
@@ -122,7 +139,7 @@
                             <dt class="col-sm-4">{{ 'patch.field.deployment_deadline'|trans({}, 'patches') }}</dt>
                             <dd class="col-sm-8">
                                 <span class="{{ patch.overdue ? 'text-danger fw-bold' : '' }}">
-                                    {{ patch.deploymentDeadline|date('Y-m-d') }}
+                                    {{ patch.deploymentDeadline|fa_date }}
                                 </span>
                                 {% if patch.overdue %}
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'patch.status.overdue'|trans({}, 'patches') } only %}
@@ -132,7 +149,7 @@
 
                         {% if patch.deployedDate %}
                             <dt class="col-sm-4">{{ 'patch.field.deployed_date'|trans({}, 'patches') }}</dt>
-                            <dd class="col-sm-8">{{ patch.deployedDate|date('Y-m-d') }}</dd>
+                            <dd class="col-sm-8">{{ patch.deployedDate|fa_date }}</dd>
                         {% endif %}
 
                         {% if patch.effectiveResponsiblePerson or patch.responsibleDeputyPersons|length > 0 %}
@@ -164,6 +181,8 @@
                     </dl>
                 {% endblock %}
             {% endembed %}
+
+            </div>
 
             {# Testing & Deployment Notes #}
             {% if patch.testingNotes or patch.deploymentNotes %}
@@ -308,15 +327,15 @@
                 {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-5 small">{{ 'patch.show.created_at'|trans({}, 'patches') }}</dt>
-                        <dd class="col-sm-7 small">{{ patch.createdAt|date('Y-m-d H:i') }}</dd>
+                        <dd class="col-sm-7 small">{{ patch.createdAt|fa_datetime }}</dd>
 
                         {% if patch.updatedAt %}
                             <dt class="col-sm-5 small">{{ 'patch.show.updated_at'|trans({}, 'patches') }}</dt>
-                            <dd class="col-sm-7 small">{{ patch.updatedAt|date('Y-m-d H:i') }}</dd>
+                            <dd class="col-sm-7 small">{{ patch.updatedAt|fa_datetime }}</dd>
                         {% endif %}
 
                         <dt class="col-sm-5 small">{{ 'patch.show.release_date'|trans({}, 'patches') }}</dt>
-                        <dd class="col-sm-7 small">{{ patch.releaseDate|date('Y-m-d') }}</dd>
+                        <dd class="col-sm-7 small">{{ patch.releaseDate|fa_date }}</dd>
 
                         {% if patch.daysUntilDeadline is not null %}
                             <dt class="col-sm-5 small">{{ 'patch.show.days_until_deadline'|trans({}, 'patches') }}</dt>
@@ -332,6 +351,8 @@
 
         </div>{# /col-md-4 #}
     </div>{# /row #}
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: patch, lifecycle: 'patch' } only %}
     {% endif %} {# /M-4 patches module gate #}
 </div>
 {% endblock %}

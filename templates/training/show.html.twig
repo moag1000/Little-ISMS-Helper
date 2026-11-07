@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'training' %}
 
 {% block title %}{{ training.title }}{% endblock %}
@@ -16,12 +19,6 @@
             body: 'common.module_not_active'|trans({'%module%': 'Training'}, 'messages')
         }) }}
     {% else %}
-    {# Lifecycle — status transition dropdown (training_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: training,
-        entity_type: 'training',
-        workflow_name: 'training_lifecycle'
-    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.training'|trans({}, 'nav'), url: path('app_training_index') },
@@ -37,18 +34,39 @@
         subtitle: ('training.status.' ~ training.status)|trans({}, 'training')
     }) }}
 
+    {% set _status %}<span class="{{ badge_status(training.status) }}">{{ ('training.status.' ~ training.status)|trans({}, 'training') }}</span>{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(training, 'training', 'training_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'training.scheduled_date'|trans({}, 'training'), value: training.scheduledDate ? training.scheduledDate|fa_date : null },
+            { label: 'training.type_label'|trans({}, 'training'), value: training.trainingType ? ('training.type.' ~ training.trainingType)|trans({}, 'training') : null },
+            { label: 'training.trainer'|trans({}, 'training'), value: training.trainer ? training.effectiveTrainer : null },
+        ],
+        workflow: workflow_state(training),
+    }) }}
+
+    {% set _links = entity_links(training) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'participants', label: 'training.participants'|trans({}, 'training') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: training } only %}
+
     <div class="row">
         <div class="col-lg-8">
+            <div id="details" class="fa-show-section">
             {# Main Training Information #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-header">
                         <h2 class="mb-0">
                             <i class="fa-icon fa-icon--training" aria-hidden="true"></i> {{ 'training.section.details'|trans({}, 'training') }}
                         </h2>
-                        <span class="{{ badge_status(training.status) }} fs-6">
-                            {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
-                        </span>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -93,7 +111,7 @@
                             <div class="text-muted mb-2 fw-semibold">
                                 <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ 'training.scheduled_date'|trans({}, 'training')}}
                             </div>
-                            <p class="fs-5">{{ training.scheduledDate|date('d.m.Y') }}</p>
+                            <p class="fs-5">{{ training.scheduledDate|fa_date }}</p>
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">
@@ -123,6 +141,9 @@
                 {% endblock %}
             {% endembed %}
 
+            </div>
+
+            <div id="participants" class="fa-show-section">
             {# Participants Section #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
@@ -143,6 +164,8 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+
+            </div>
 
             {# Materials Section — structured file uploads + legacy free-text #}
             {% if training.materialFiles or training.materials %}
@@ -313,7 +336,7 @@
                     {% if training.completionDate %}
                     <div class="d-flex justify-content-between small mt-2">
                         <span class="text-muted">{{ 'training.completed_on'|trans({}, 'training') }}:</span>
-                        <span class="fw-bold">{{ training.completionDate|date('d.m.Y') }}</span>
+                        <span class="fw-bold">{{ training.completionDate|fa_date }}</span>
                     </div>
                     {% endif %}
                 {% endblock %}
@@ -330,17 +353,19 @@
                 {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7">{{ training.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-7">{{ training.createdAt|fa_datetime }}</dd>
 
                         {% if training.updatedAt %}
                         <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7">{{ training.updatedAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-7">{{ training.updatedAt|fa_datetime }}</dd>
                         {% endif %}
                     </dl>
                 {% endblock %}
             {% endembed %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: training, lifecycle: 'training' } only %}
     {% endif %} {# /M-4 training module gate #}
 </div>
 
