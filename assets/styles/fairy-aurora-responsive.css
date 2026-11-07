@@ -28,9 +28,6 @@
         backdrop-filter: blur(2px);
     }
 
-    /* Topbar Alva mini im Hamburger-Drawer-Header sichtbar (statt im Topbar) */
-    .header-alva { display: none !important; }
-
     /* System-Status-Pill verschwindet (platz) */
     .header-system-status { display: none !important; }
 
@@ -41,7 +38,6 @@
     }
 
     /* Tables horizontal-scroll */
-    .table-responsive-aurora,
     .content > table,
     .content .fa-kpi-card {
         overflow-x: auto;
@@ -154,9 +150,7 @@
     .container { max-width: 1840px; }
 
     /* Content-Bereich der App-Shell deckeln + zentrieren */
-    .main-content > .container,
-    .page-content,
-    .ds-main { max-width: 1840px; margin-inline: auto; }
+    .main-content > .container { max-width: 1840px; margin-inline: auto; }
 
     /* Fließtext-Blöcke bleiben lesbar (≈ 80–90 Zeichen) */
     .fa-form-layout__sections,
@@ -166,9 +160,7 @@
 @media (min-width: 2560px) {
     /* 4K/5K: nicht weiter dehnen — Rand wächst, Content bleibt konstant */
     .container,
-    .main-content > .container,
-    .page-content,
-    .ds-main { max-width: 2200px; }
+    .main-content > .container { max-width: 2200px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
