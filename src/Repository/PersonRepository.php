@@ -29,7 +29,7 @@ class PersonRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.active = :active')
             ->setParameter('active', true)
-            ->orderBy('p.fullName', 'ASC')
+            ->orderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -42,7 +42,7 @@ class PersonRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.personType = :type')
             ->setParameter('type', $type)
-            ->orderBy('p.fullName', 'ASC')
+            ->orderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -74,7 +74,7 @@ class PersonRepository extends ServiceEntityRepository
             ->setParameter('active', true)
             ->setParameter('futureDate', $futureDate)
             ->setParameter('now', new DateTime())
-            ->orderBy('p.accessValidUntil', 'ASC')
+            ->orderBy('p.accessValidUntil', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -88,7 +88,7 @@ class PersonRepository extends ServiceEntityRepository
             ->andWhere('p.accessValidUntil IS NOT NULL')
             ->andWhere('p.accessValidUntil < :now')
             ->setParameter('now', new DateTime())
-            ->orderBy('p.accessValidUntil', 'DESC')
+            ->orderBy('p.accessValidUntil', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -101,7 +101,7 @@ class PersonRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.company LIKE :company')
             ->setParameter('company', '%' . $company . '%')
-            ->orderBy('p.fullName', 'ASC')
+            ->orderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -114,7 +114,7 @@ class PersonRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.fullName LIKE :name')
             ->setParameter('name', '%' . $name . '%')
-            ->orderBy('p.fullName', 'ASC')
+            ->orderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -159,7 +159,7 @@ class PersonRepository extends ServiceEntityRepository
             ->andWhere('p.active = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('p.fullName', 'ASC')
+            ->orderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -195,8 +195,8 @@ class PersonRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
             ->setParameter('preferred', $preferredType)
-            ->orderBy('matchOrder', 'ASC')
-            ->addOrderBy('p.fullName', 'ASC')
+            ->orderBy('matchOrder', \SortDirection::Ascending)
+            ->addOrderBy('p.fullName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -249,8 +249,8 @@ class PersonRepository extends ServiceEntityRepository
             ->andWhere('p.id IS NULL')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC');
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending);
 
         return $qb->getQuery()->getResult();
     }

@@ -77,8 +77,8 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
             ->where('f.tenant = :tenant OR f.tenant = :parent')
             ->setParameter('tenant', $tenant)
             ->setParameter('parent', $parent)
-            ->orderBy('f.tenant', 'DESC') // Own fulfillments first
-            ->addOrderBy('f.id', 'ASC')
+            ->orderBy('f.tenant', \SortDirection::Descending) // Own fulfillments first
+            ->addOrderBy('f.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -96,7 +96,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
             ->andWhere('f.tenant = :tenant')
             ->setParameter('framework', $complianceFramework)
             ->setParameter('tenant', $tenant)
-            ->orderBy('r.requirementId', 'ASC')
+            ->orderBy('r.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -133,7 +133,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
             ->andWhere('f.nextReviewDate < :now')
             ->setParameter('tenant', $tenant)
             ->setParameter('now', new DateTimeImmutable())
-            ->orderBy('f.nextReviewDate', 'ASC')
+            ->orderBy('f.nextReviewDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

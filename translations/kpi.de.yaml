@@ -99,3 +99,6 @@ kpi:
     location_open_gaps: "Offene Standort-Prüfungen"
     location_critical_sites: "Standorte mit kritischem Risiko"
     fte_saved_days: "Eingesparte Personentage (12 Monate)"
+    location_emergency_gaps: 'Standorte mit Notfall-Lücke'
+    location_audit_overdue: 'Standorte ohne Audit seit 3 Jahren'
+    location_third_country_chains: 'Lieferketten mit Drittland ohne Garantie'

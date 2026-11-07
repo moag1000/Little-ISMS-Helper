@@ -119,7 +119,7 @@ final class TenantType extends AbstractType implements SectionMapInterface
                     $qb = $repository->createQueryBuilder('t')
                         ->where('t.isActive = :active')
                         ->setParameter('active', true)
-                        ->orderBy('t.name', 'ASC');
+                        ->orderBy('t.name', \SortDirection::Ascending);
 
                     // Prevent self-selection
                     if ($options['data']->getId()) {

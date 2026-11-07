@@ -45,7 +45,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             ->innerJoin('cr.evidenceDocuments', 'd')
             ->where('d = :document')
             ->setParameter('document', $document)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -78,7 +78,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             )
             ->setParameter('framework', $complianceFramework)
             ->setParameter('tenant', $tenant)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -94,7 +94,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.framework = :framework')
             ->setParameter('framework', $complianceFramework)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -123,7 +123,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             ->andWhere('cr.parentRequirement IS NULL')
             ->setParameter('framework', $framework)
             ->setParameter('tiers', $tiers)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -148,7 +148,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     public function findTopLevelByFramework(ComplianceFramework $complianceFramework): array
     {
         return $this->topLevelQueryBuilder($complianceFramework)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -181,7 +181,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->andWhere($notJunk)
                 ->setParameter('framework', $complianceFramework)
                 ->setParameter('tenant', $tenant)
-                ->orderBy('cr.requirementId', 'ASC')
+                ->orderBy('cr.requirementId', \SortDirection::Ascending)
                 ->getQuery()
                 ->getResult();
             if ($uploaded !== []) {
@@ -191,7 +191,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
         return $this->topLevelQueryBuilder($complianceFramework)
             ->andWhere($notJunk)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -208,7 +208,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.parentRequirement IS NULL')
             ->andWhere("cr.requirementType IN ('core', 'detailed')")
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -267,7 +267,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.framework = :framework')
             ->setParameter('framework', $complianceFramework)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -302,7 +302,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->setParameter('maxFulfillment', $maxFulfillment);
         }
 
-        return $qb->orderBy('cr.priority', 'ASC')
+        return $qb->orderBy('cr.priority', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -326,7 +326,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             ->andWhere("cr.requirementType IN ('core', 'detailed')")
             ->setParameter('framework', $complianceFramework)
             ->setParameter('priority', $priority)
-            ->orderBy('cr.requirementId', 'ASC')
+            ->orderBy('cr.requirementId', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

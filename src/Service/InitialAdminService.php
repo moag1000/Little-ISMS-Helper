@@ -63,7 +63,7 @@ class InitialAdminService
                     ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
                     ->setParameter('role_admin', self::ROLE_ADMIN_LIKE)
                     ->setParameter('role_super_admin', self::ROLE_SUPER_ADMIN_LIKE)
-                    ->orderBy('u.id', 'ASC')
+                    ->orderBy('u.id', \SortDirection::Ascending)
                     ->setMaxResults(1)
                     ->getQuery()
                     ->getOneOrNullResult();

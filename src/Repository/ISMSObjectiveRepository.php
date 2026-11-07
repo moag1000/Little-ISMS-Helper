@@ -38,7 +38,7 @@ class ISMSObjectiveRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('o')
             ->where('o.status IN (:statuses)')
             ->setParameter('statuses', [ISMSObjectiveStatus::InProgress->value, ISMSObjectiveStatus::NotStarted->value])
-            ->orderBy('o.targetDate', 'ASC')
+            ->orderBy('o.targetDate', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

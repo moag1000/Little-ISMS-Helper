@@ -28,7 +28,7 @@ class ScheduledTaskRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('st')
             ->where('st.enabled = :enabled')
             ->setParameter('enabled', true)
-            ->orderBy('st.name', 'ASC')
+            ->orderBy('st.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -45,7 +45,7 @@ class ScheduledTaskRepository extends ServiceEntityRepository
             ->andWhere('st.tenantId = :tenantId')
             ->setParameter('enabled', true)
             ->setParameter('tenantId', $tenantId)
-            ->orderBy('st.name', 'ASC')
+            ->orderBy('st.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

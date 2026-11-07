@@ -32,7 +32,7 @@ class IndustryPresetBundleRepository extends ServiceEntityRepository
         $rows = $this->createQueryBuilder('b')
             ->andWhere('b.isActive = :active')
             ->setParameter('active', true)
-            ->orderBy('b.label', 'ASC')
+            ->orderBy('b.label', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

@@ -8,6 +8,7 @@ use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\Document;
 use App\Entity\Incident;
+use App\Entity\Location;
 use App\Entity\Risk;
 use App\Entity\Supplier;
 use App\Entity\RiskTreatmentPlan;
@@ -126,5 +127,18 @@ final class EntityLinksTest extends TestCase
 
         self::assertSame(['risk', 'control', 'evidence'], array_column($groups, 'type'));
         self::assertSame(42, $groups[0]['items'][0]['id']);
+    }
+
+    #[Test]
+    public function locationOffersRiskDerivedFromTheSite(): void
+    {
+        $location = $this->createStub(Location::class);
+        $location->method('getId')->willReturn(9);
+        $location->method('getAssets')->willReturn(new ArrayCollection());
+
+        $groups = array_column($this->service()->for($location), null, 'type');
+
+        self::assertSame(['asset', 'risk'], array_keys($groups));
+        self::assertSame(['route' => 'app_risk_new', 'params' => ['fromLocation' => 9], 'anchor' => null], $groups['risk']['derive']);
     }
 }

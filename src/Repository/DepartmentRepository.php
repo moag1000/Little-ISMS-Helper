@@ -36,7 +36,7 @@ class DepartmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('d')
             ->where('d.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('d.name', 'ASC')
+            ->orderBy('d.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class DepartmentRepository extends ServiceEntityRepository
             ->andWhere('d.isActive = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('d.name', 'ASC')
+            ->orderBy('d.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -91,7 +91,7 @@ final class NotificationRuleType extends AbstractType implements SectionMapInter
                 'query_builder' => static function ($repo) use ($tenant) {
                     $qb = $repo->createQueryBuilder('c')
                         ->andWhere('c.isActive = true')
-                        ->orderBy('c.name', 'ASC');
+                        ->orderBy('c.name', \SortDirection::Ascending);
                     if ($tenant !== null) {
                         $qb->andWhere('c.tenant = :tenant')
                            ->setParameter('tenant', $tenant);

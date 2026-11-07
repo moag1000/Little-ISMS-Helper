@@ -61,7 +61,7 @@ final class DepartmentType extends AbstractType
                 'query_builder' => function (DepartmentRepository $repo) use ($currentId) {
                     $tenant = $this->tenantContext->getCurrentTenant();
                     $queryBuilder = $repo->createQueryBuilder('d')
-                        ->orderBy('d.name', 'ASC');
+                        ->orderBy('d.name', \SortDirection::Ascending);
                     if ($tenant !== null) {
                         $queryBuilder->andWhere('d.tenant = :tenant')->setParameter('tenant', $tenant);
                     }

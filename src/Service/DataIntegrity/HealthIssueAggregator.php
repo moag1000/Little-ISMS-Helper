@@ -395,7 +395,7 @@ final class HealthIssueAggregator
                     ->andWhere('wi.startedAt < :cutoff')
                     ->setParameter('status', 'in_progress')
                     ->setParameter('cutoff', $cutoff)
-                    ->orderBy('wi.startedAt', 'ASC')
+                    ->orderBy('wi.startedAt', \SortDirection::Ascending)
                     ->getQuery()
                     ->getResult();
                 if (count($stuckWorkflows) > 0) {
@@ -410,7 +410,7 @@ final class HealthIssueAggregator
                 ->where('(r.probability = 0 OR r.probability IS NULL)')
                 ->andWhere('r.status NOT IN (:excludedStatuses)')
                 ->setParameter('excludedStatuses', [\App\Enum\RiskStatus::Closed->value])
-                ->orderBy('r.id', 'ASC')
+                ->orderBy('r.id', \SortDirection::Ascending)
                 ->getQuery()
                 ->getResult();
             if (count($risksZeroValues) > 0) {
@@ -424,7 +424,7 @@ final class HealthIssueAggregator
                 ->where('i.status = :status')
                 ->andWhere('i.rootCause IS NULL')
                 ->setParameter('status', 'closed')
-                ->orderBy('i.id', 'ASC')
+                ->orderBy('i.id', \SortDirection::Ascending)
                 ->getQuery()
                 ->getResult();
             if (count($incidentsNoRca) > 0) {
@@ -439,7 +439,7 @@ final class HealthIssueAggregator
                     ->where('rtp.status = :status')
                     ->andWhere('rtp.actualCompletionDate IS NULL')
                     ->setParameter('status', 'completed')
-                    ->orderBy('rtp.id', 'ASC')
+                    ->orderBy('rtp.id', \SortDirection::Ascending)
                     ->getQuery()
                     ->getResult();
                 if (count($unreviewedTreatments) > 0) {

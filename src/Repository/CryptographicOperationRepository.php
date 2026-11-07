@@ -28,7 +28,7 @@ class CryptographicOperationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->andWhere('c.operationType = :type')
             ->setParameter('type', $type)
-            ->orderBy('c.timestamp', 'DESC')
+            ->orderBy('c.timestamp', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -41,7 +41,7 @@ class CryptographicOperationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->andWhere('c.status = :status')
             ->setParameter('status', CryptographicOperationStatus::Failure->value)
-            ->orderBy('c.timestamp', 'DESC')
+            ->orderBy('c.timestamp', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -56,7 +56,7 @@ class CryptographicOperationRepository extends ServiceEntityRepository
             ->andWhere('c.timestamp <= :end')
             ->setParameter('start', $start)
             ->setParameter('end', $end)
-            ->orderBy('c.timestamp', 'DESC')
+            ->orderBy('c.timestamp', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

@@ -31,7 +31,7 @@ class BCExerciseRepository extends ServiceEntityRepository
             ->andWhere('e.status IN (:statuses)')
             ->setParameter('now', new DateTime())
             ->setParameter('statuses', [BCExerciseStatus::Planned->value, BCExerciseStatus::InProgress->value])
-            ->orderBy('e.exerciseDate', 'ASC');
+            ->orderBy('e.exerciseDate', \SortDirection::Ascending);
 
         // null = every tenant; only callers that resolved a SUPER_ADMIN
         // without tenant context may pass it.
@@ -52,7 +52,7 @@ class BCExerciseRepository extends ServiceEntityRepository
             ->andWhere('e.reportCompleted = :false')
             ->setParameter('completed', BCExerciseStatus::Completed->value)
             ->setParameter('false', false)
-            ->orderBy('e.exerciseDate', 'DESC')
+            ->orderBy('e.exerciseDate', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

@@ -38,7 +38,7 @@ class PermissionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.category = :category')
             ->setParameter('category', $category)
-            ->orderBy('p.action', 'ASC')
+            ->orderBy('p.action', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -51,8 +51,8 @@ class PermissionRepository extends ServiceEntityRepository
     public function findAllGroupedByCategory(): array
     {
         $permissions = $this->createQueryBuilder('p')
-            ->orderBy('p.category', 'ASC')
-            ->addOrderBy('p.action', 'ASC')
+            ->orderBy('p.category', \SortDirection::Ascending)
+            ->addOrderBy('p.action', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -88,7 +88,7 @@ class PermissionRepository extends ServiceEntityRepository
     {
         $result = $this->createQueryBuilder('p')
             ->select('DISTINCT p.category')
-            ->orderBy('p.category', 'ASC')
+            ->orderBy('p.category', \SortDirection::Ascending)
             ->getQuery()
             ->getScalarResult();
 
@@ -104,7 +104,7 @@ class PermissionRepository extends ServiceEntityRepository
     {
         $result = $this->createQueryBuilder('p')
             ->select('DISTINCT p.action')
-            ->orderBy('p.action', 'ASC')
+            ->orderBy('p.action', \SortDirection::Ascending)
             ->getQuery()
             ->getScalarResult();
 

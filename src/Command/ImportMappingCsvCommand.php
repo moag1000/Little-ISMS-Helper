@@ -274,7 +274,7 @@ final class ImportMappingCsvCommand extends Command
                 ->andWhere('r.requirementId LIKE :p')
                 ->setParameter('f', $framework)
                 ->setParameter('p', $prefix . '%')
-                ->orderBy('r.requirementId', 'ASC')
+                ->orderBy('r.requirementId', \SortDirection::Ascending)
                 ->setMaxResults(1);
             $hit = $qb->getQuery()->getOneOrNullResult();
             if ($hit instanceof ComplianceRequirement) {

@@ -41,7 +41,7 @@ class AssetRepository extends ServiceEntityRepository
             ->andWhere('a.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', AssetStatus::Active->value)
-            ->orderBy('a.name', 'ASC')
+            ->orderBy('a.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -75,7 +75,7 @@ class AssetRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('a.name', 'ASC')
+            ->orderBy('a.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -98,7 +98,7 @@ class AssetRepository extends ServiceEntityRepository
             ->andWhere('a.isDoraRelevant = :dora')
             ->setParameter('tenant', $tenant)
             ->setParameter('dora', true)
-            ->orderBy('a.name', 'ASC')
+            ->orderBy('a.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -127,7 +127,7 @@ class AssetRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('a.name', 'ASC')
+            ->orderBy('a.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -176,7 +176,7 @@ class AssetRepository extends ServiceEntityRepository
             ->andWhere('a.status = :status')
             ->setParameter('tenant', $tenant)
             ->setParameter('status', AssetStatus::Active->value)
-            ->orderBy('a.name', 'ASC')
+            ->orderBy('a.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -204,7 +204,7 @@ class AssetRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('a.name', 'ASC')
+            ->orderBy('a.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -224,7 +224,7 @@ class AssetRepository extends ServiceEntityRepository
         return $this->withoutTenantFilter(
             fn() => $this->createQueryBuilder('a')
                 ->where('a.tenant IS NULL')
-                ->orderBy('a.name', 'ASC')
+                ->orderBy('a.name', \SortDirection::Ascending)
                 ->getQuery()
                 ->getResult()
         );
@@ -243,7 +243,7 @@ class AssetRepository extends ServiceEntityRepository
     {
         return $this->withoutTenantFilter(
             fn() => $this->createQueryBuilder('a')
-                ->orderBy('a.name', 'ASC')
+                ->orderBy('a.name', \SortDirection::Ascending)
                 ->getQuery()
                 ->getResult()
         );

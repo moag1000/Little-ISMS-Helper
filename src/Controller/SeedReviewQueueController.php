@@ -114,8 +114,8 @@ class SeedReviewQueueController extends AbstractController
         $qb = $this->mappingRepository->createQueryBuilder('cm')
             ->where('cm.reviewStatus = :status')
             ->setParameter('status', 'unreviewed')
-            ->orderBy('cm.verifiedBy', 'ASC')
-            ->addOrderBy('cm.id', 'ASC');
+            ->orderBy('cm.verifiedBy', \SortDirection::Ascending)
+            ->addOrderBy('cm.id', \SortDirection::Ascending);
 
         if ($filter !== 'all') {
             $qb->andWhere('cm.verifiedBy = :origin')

@@ -59,7 +59,7 @@ class SlaDeadlineMonitorRepository extends ServiceEntityRepository
             ->setParameter('status', SlaDeadlineStatus::Active)
             ->setParameter('now', $now)
             ->setParameter('cutoff', $cutoff)
-            ->orderBy('s.deadlineAt', 'ASC')
+            ->orderBy('s.deadlineAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -81,7 +81,7 @@ class SlaDeadlineMonitorRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('status', SlaDeadlineStatus::Active)
             ->setParameter('now', $now)
-            ->orderBy('s.deadlineAt', 'ASC')
+            ->orderBy('s.deadlineAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -99,7 +99,7 @@ class SlaDeadlineMonitorRepository extends ServiceEntityRepository
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.triggeredAt', 'DESC')
+            ->orderBy('s.triggeredAt', \SortDirection::Descending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

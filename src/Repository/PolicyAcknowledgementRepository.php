@@ -50,7 +50,7 @@ class PolicyAcknowledgementRepository extends ServiceEntityRepository
             ->andWhere('a.status = :status')
             ->setParameter('document', $document)
             ->setParameter('status', PolicyAcknowledgement::STATUS_ACKNOWLEDGED)
-            ->orderBy('a.acknowledgedAt', 'DESC')
+            ->orderBy('a.acknowledgedAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -65,7 +65,7 @@ class PolicyAcknowledgementRepository extends ServiceEntityRepository
             ->andWhere('a.status = :status')
             ->setParameter('document', $document)
             ->setParameter('status', PolicyAcknowledgement::STATUS_PENDING)
-            ->orderBy('a.requestedAt', 'ASC')
+            ->orderBy('a.requestedAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

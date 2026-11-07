@@ -38,7 +38,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->setParameter('now', new DateTime())
             ->setParameter('active', SupplierStatus::Active->value)
             ->setParameter('reviewable', self::REVIEWABLE_STATUSES)
-            ->orderBy('s.criticality', 'DESC')
+            ->orderBy('s.criticality', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.status = :active')
             ->setParameter('criticalities', ['critical', 'high'])
             ->setParameter('active', SupplierStatus::Active->value)
-            ->orderBy('s.criticality', 'DESC')
+            ->orderBy('s.criticality', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -146,7 +146,7 @@ class SupplierRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -169,7 +169,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.isDoraRelevant = :dora')
             ->setParameter('tenant', $tenant)
             ->setParameter('dora', true)
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -207,7 +207,7 @@ class SupplierRepository extends ServiceEntityRepository
         $suppliers = $this->createQueryBuilder('s')
             ->where('s.tenant IN (:tenants)')
             ->setParameter('tenants', $tenants)
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -276,7 +276,7 @@ class SupplierRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -370,7 +370,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('criticalities', ['critical', 'high'])
             ->setParameter('active', SupplierStatus::Active->value)
-            ->orderBy('s.criticality', 'DESC')
+            ->orderBy('s.criticality', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -420,7 +420,7 @@ class SupplierRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -453,8 +453,8 @@ class SupplierRepository extends ServiceEntityRepository
         }
 
         return $qb
-            ->orderBy('s.lksgRiskCategory', 'DESC')
-            ->addOrderBy('s.name', 'ASC')
+            ->orderBy('s.lksgRiskCategory', \SortDirection::Descending)
+            ->addOrderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

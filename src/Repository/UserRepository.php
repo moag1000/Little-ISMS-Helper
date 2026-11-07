@@ -66,8 +66,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->createQueryBuilder('u')
             ->leftJoin('u.customRoles', 'cr')
             ->addSelect('cr')
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -90,8 +90,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->addSelect('cr')
             ->where('IDENTITY(u.tenant) IN (:tenantIds)')
             ->setParameter('tenantIds', $tenantIds)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -142,8 +142,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->createQueryBuilder('u')
             ->andWhere('u.isActive = :active')
             ->setParameter('active', true)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -186,8 +186,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->andWhere('u.isActive = :active')
             ->setParameter('role', '%"' . $role . '"%')
             ->setParameter('active', true)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->andWhere('u.tenant = :tenantId')
             ->setParameter('tenantId', $tenantId);
 
@@ -213,8 +213,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->andWhere('u.isActive = :active')
             ->setParameter('role', '%"ROLE_SUPER_ADMIN"%')
             ->setParameter('active', true)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -289,8 +289,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                ->setParameter('tenantId', $tenantId);
         }
 
-        $qb->orderBy('u.lastName', 'ASC')
-           ->addOrderBy('u.firstName', 'ASC');
+        $qb->orderBy('u.lastName', \SortDirection::Ascending)
+           ->addOrderBy('u.firstName', \SortDirection::Ascending);
 
         /** @var list<User> $rows */
         $rows = $qb->getQuery()->getResult();
@@ -306,8 +306,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->innerJoin('u.customRoles', 'r')
             ->andWhere('r.name = :roleName')
             ->setParameter('roleName', $roleName)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -325,8 +325,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 $queryBuilder->expr()->like('u.email', ':query')
             ))
             ->setParameter('query', '%' . $query . '%')
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -415,7 +415,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.lastLoginAt IS NOT NULL')
-            ->orderBy('u.lastLoginAt', 'DESC')
+            ->orderBy('u.lastLoginAt', \SortDirection::Descending)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
@@ -518,8 +518,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->andWhere('u.isActive = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('u.lastName', 'ASC')
-            ->addOrderBy('u.firstName', 'ASC')
+            ->orderBy('u.lastName', \SortDirection::Ascending)
+            ->addOrderBy('u.firstName', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -548,7 +548,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.tenant IS NULL')
-            ->orderBy('u.email', 'ASC')
+            ->orderBy('u.email', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

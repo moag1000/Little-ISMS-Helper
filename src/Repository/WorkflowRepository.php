@@ -39,7 +39,7 @@ class WorkflowRepository extends ServiceEntityRepository
             ->where('w.entityType = :entityType')
             ->andWhere('w.isActive = true')
             ->setParameter('entityType', $entityType)
-            ->orderBy('w.name', 'ASC')
+            ->orderBy('w.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class WorkflowRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('w')
             ->where('w.isActive = true')
-            ->orderBy('w.name', 'ASC')
+            ->orderBy('w.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

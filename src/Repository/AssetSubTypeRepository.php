@@ -37,8 +37,8 @@ class AssetSubTypeRepository extends ServiceEntityRepository
             ->andWhere('s.isActive = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('active', true)
-            ->orderBy('s.topType', 'ASC')
-            ->addOrderBy('s.name', 'ASC')
+            ->orderBy('s.topType', \SortDirection::Ascending)
+            ->addOrderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
@@ -56,8 +56,8 @@ class AssetSubTypeRepository extends ServiceEntityRepository
         $rows = $this->createQueryBuilder('s')
             ->andWhere('s.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.topType', 'ASC')
-            ->addOrderBy('s.name', 'ASC')
+            ->orderBy('s.topType', \SortDirection::Ascending)
+            ->addOrderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

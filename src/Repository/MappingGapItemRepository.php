@@ -52,8 +52,8 @@ class MappingGapItemRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('g')
             ->where('g.mapping = :mapping')
             ->setParameter('mapping', $complianceMapping)
-            ->orderBy('g.priority', 'ASC')
-            ->addOrderBy('g.percentageImpact', 'DESC')
+            ->orderBy('g.priority', \SortDirection::Ascending)
+            ->addOrderBy('g.percentageImpact', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -72,8 +72,8 @@ class MappingGapItemRepository extends ServiceEntityRepository
             ->andWhere('g.status NOT IN (:resolvedStatuses)')
             ->setParameter('priorities', ['critical', 'high'])
             ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
-            ->orderBy('g.priority', 'ASC')
-            ->addOrderBy('g.percentageImpact', 'DESC')
+            ->orderBy('g.priority', \SortDirection::Ascending)
+            ->addOrderBy('g.percentageImpact', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -88,7 +88,7 @@ class MappingGapItemRepository extends ServiceEntityRepository
         return $queryBuilder
             ->select('g.gapType, COUNT(g.id) as count, SUM(g.percentageImpact) as totalImpact')
             ->groupBy('g.gapType')
-            ->orderBy('count', 'DESC')
+            ->orderBy('count', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -121,7 +121,7 @@ class MappingGapItemRepository extends ServiceEntityRepository
             ->andWhere('g.status = :status')
             ->setParameter('threshold', $confidenceThreshold)
             ->setParameter('status', 'identified')
-            ->orderBy('g.confidence', 'ASC')
+            ->orderBy('g.confidence', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

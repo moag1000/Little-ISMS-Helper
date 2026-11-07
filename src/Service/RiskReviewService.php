@@ -77,7 +77,7 @@ final class RiskReviewService
             ->setParameter('reviewable', RiskStatus::periodicReviewValues())
             ->setParameter('tenant', $tenant)
             ->setParameter('today', new DateTime())
-            ->orderBy('r.reviewDate', 'ASC');
+            ->orderBy('r.reviewDate', \SortDirection::Ascending);
 
         return $queryBuilder->getQuery()->getResult();
     }
@@ -102,7 +102,7 @@ final class RiskReviewService
             ->setParameter('tenant', $tenant)
             ->setParameter('today', $today)
             ->setParameter('futureDate', $futureDate)
-            ->orderBy('r.reviewDate', 'ASC');
+            ->orderBy('r.reviewDate', \SortDirection::Ascending);
 
         return $queryBuilder->getQuery()->getResult();
     }

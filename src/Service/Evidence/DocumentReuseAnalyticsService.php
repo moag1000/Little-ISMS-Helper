@@ -82,7 +82,7 @@ final class DocumentReuseAnalyticsService
             ->where('d.tenant = :tenant')
             ->setParameter('tenant', $tenant)
             ->groupBy('d.id')
-            ->orderBy('ctrl_count', 'DESC')
+            ->orderBy('ctrl_count', \SortDirection::Descending)
             ->setMaxResults($topN)
             ->getQuery()
             ->getResult();

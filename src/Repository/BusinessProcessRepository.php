@@ -38,8 +38,8 @@ class BusinessProcessRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('bp')
             ->where('bp.criticality IN (:criticalities)')
             ->setParameter('criticalities', ['critical', 'high'])
-            ->orderBy('bp.criticality', 'DESC')
-            ->addOrderBy('bp.name', 'ASC')
+            ->orderBy('bp.criticality', \SortDirection::Descending)
+            ->addOrderBy('bp.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -55,7 +55,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('bp')
             ->where('bp.rto <= :maxRto')
             ->setParameter('maxRto', $maxRto)
-            ->orderBy('bp.rto', 'ASC')
+            ->orderBy('bp.rto', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -72,7 +72,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
             ->join('bp.supportingAssets', 'a')
             ->where('a.id = :assetId')
             ->setParameter('assetId', $assetId)
-            ->orderBy('bp.name', 'ASC')
+            ->orderBy('bp.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -133,8 +133,8 @@ class BusinessProcessRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('bp')
             ->where('bp.financialImpactPerHour >= :threshold OR bp.reputationalImpact >= :threshold OR bp.operationalImpact >= :threshold')
             ->setParameter('threshold', $threshold)
-            ->orderBy('bp.financialImpactPerHour', 'DESC')
-            ->addOrderBy('bp.reputationalImpact', 'DESC')
+            ->orderBy('bp.financialImpactPerHour', \SortDirection::Descending)
+            ->addOrderBy('bp.reputationalImpact', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -150,7 +150,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('bp')
             ->where('bp.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('bp.name', 'ASC')
+            ->orderBy('bp.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -179,7 +179,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('bp.name', 'ASC')
+            ->orderBy('bp.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -207,7 +207,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder
-            ->orderBy('bp.name', 'ASC')
+            ->orderBy('bp.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

@@ -24,8 +24,8 @@ class IndustryBaselineRepository extends ServiceEntityRepository
     public function findAllOrdered(): array
     {
         return $this->createQueryBuilder('b')
-            ->orderBy('b.industry', 'ASC')
-            ->addOrderBy('b.name', 'ASC')
+            ->orderBy('b.industry', \SortDirection::Ascending)
+            ->addOrderBy('b.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

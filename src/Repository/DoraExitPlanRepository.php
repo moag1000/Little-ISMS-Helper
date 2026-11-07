@@ -30,7 +30,7 @@ class DoraExitPlanRepository extends ServiceEntityRepository
             ->addSelect('s')
             ->where('p.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -56,7 +56,7 @@ class DoraExitPlanRepository extends ServiceEntityRepository
             ->andWhere('s.isDoraRelevant = :dora')
             ->setParameter('tenant', $tenant)
             ->setParameter('dora', true)
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

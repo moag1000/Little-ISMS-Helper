@@ -33,7 +33,7 @@ class CommentRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('type', $entityType)
             ->setParameter('id', $entityId)
-            ->orderBy('c.createdAt', 'ASC')
+            ->orderBy('c.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

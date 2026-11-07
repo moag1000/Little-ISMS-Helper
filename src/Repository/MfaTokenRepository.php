@@ -48,8 +48,8 @@ class MfaTokenRepository extends ServiceEntityRepository
             ->andWhere('m.isActive = :active')
             ->setParameter('user', $user)
             ->setParameter('active', true)
-            ->orderBy('m.isPrimary', 'DESC')
-            ->addOrderBy('m.enrolledAt', 'DESC')
+            ->orderBy('m.isPrimary', \SortDirection::Descending)
+            ->addOrderBy('m.enrolledAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -82,7 +82,7 @@ class MfaTokenRepository extends ServiceEntityRepository
 
         return $queryBuilder
             ->where(implode(' OR ', $conditions))
-            ->orderBy('m.createdAt', 'DESC')
+            ->orderBy('m.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -116,7 +116,7 @@ class MfaTokenRepository extends ServiceEntityRepository
             ->andWhere('m.isActive = :active')
             ->setParameter('type', $tokenType)
             ->setParameter('active', true)
-            ->orderBy('m.enrolledAt', 'DESC')
+            ->orderBy('m.enrolledAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

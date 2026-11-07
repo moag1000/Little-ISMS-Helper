@@ -34,8 +34,8 @@ class AuditFreezeRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('f')
             ->where('f.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('f.stichtag', 'DESC')
-            ->addOrderBy('f.createdAt', 'DESC')
+            ->orderBy('f.stichtag', \SortDirection::Descending)
+            ->addOrderBy('f.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -62,8 +62,8 @@ class AuditFreezeRepository extends ServiceEntityRepository
                 ->setParameter('yearEnd', new \DateTimeImmutable(sprintf('%d-12-31', $year)));
         }
 
-        return $qb->orderBy('f.stichtag', 'DESC')
-            ->addOrderBy('f.createdAt', 'DESC')
+        return $qb->orderBy('f.stichtag', \SortDirection::Descending)
+            ->addOrderBy('f.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -79,7 +79,7 @@ class AuditFreezeRepository extends ServiceEntityRepository
             ->select('f.stichtag')
             ->where('f.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->orderBy('f.stichtag', 'DESC')
+            ->orderBy('f.stichtag', \SortDirection::Descending)
             ->getQuery()
             ->getArrayResult();
 

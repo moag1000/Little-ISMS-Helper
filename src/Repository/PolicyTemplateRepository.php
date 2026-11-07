@@ -35,7 +35,7 @@ class PolicyTemplateRepository extends ServiceEntityRepository
             ->andWhere('t.isActive = :active')
             ->setParameter('standard', $standard)
             ->setParameter('active', true)
-            ->orderBy('t.topic', 'ASC')
+            ->orderBy('t.topic', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

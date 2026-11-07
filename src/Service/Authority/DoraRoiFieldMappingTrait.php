@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Authority;
 
+use App\Privacy\GdprTransferZones;
+
 /**
  * Shared ESA-RoI field-mapping helpers used by both the XBRL-XML exporter
  * ({@see DoraRoiXbrlExporter}) and the xBRL-CSV (OIM) exporter
@@ -25,22 +27,12 @@ trait DoraRoiFieldMappingTrait
     }
 
     /**
-     * EEA = EU-27 + Iceland (IS) + Liechtenstein (LI) + Norway (NO).
-     * Switzerland (CH) is EFTA but NOT EEA. Unknown → false (stricter signal).
+     * EEA = EU-27 + Iceland (IS) + Liechtenstein (LI) + Norway (NO), from the
+     * shared list in config/gdpr_transfer_zones.yaml. Switzerland (CH) is EFTA
+     * but NOT EEA. Unknown → false (stricter signal).
      */
     private function isEeaCountryCode(?string $code): bool
     {
-        if ($code === null || $code === '') {
-            return false;
-        }
-
-        $eea = [
-            'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
-            'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-            'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
-            'IS', 'LI', 'NO',
-        ];
-
-        return in_array(strtoupper($code), $eea, true);
+        return GdprTransferZones::isEea($code);
     }
 }
