@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Doctrine\TenantFilter;
 use App\Entity\AuditLog;
 use App\Entity\IdentityProvider;
 use App\Entity\IdentityProviderRoleMapping;
@@ -69,6 +70,21 @@ final class SsoAccountTakeoverTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        try {
+            $this->cleanUp();
+        } finally {
+            parent::tearDown();
+        }
+    }
+
+    private function cleanUp(): void
+    {
+        // A request leaves the tenant filter armed for the signed-in admin —
+        // the clean-up must see global providers and every organisation.
+        $filters = $this->em->getFilters();
+        if ($filters->isEnabled('tenant_filter')) {
+            $filters->getFilter('tenant_filter')->setParameter('tenant_id', TenantFilter::UNSCOPED);
+        }
         $this->em->clear();
         foreach (['admina', 'userchilda', 'userb', 'super', 'jit', 'operator'] as $label) {
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $this->email($label)]);
@@ -97,7 +113,6 @@ final class SsoAccountTakeoverTest extends WebTestCase
                 $this->em->flush();
             }
         }
-        parent::tearDown();
     }
 
     #[Test]
@@ -390,7 +405,11 @@ final class SsoAccountTakeoverTest extends WebTestCase
         );
         self::assertSame(1, $events, 'the manual link is in the provider audit trail');
 
+        // The global provider is hidden by adminA's tenant filter; the page
+        // still shows the binding (UserSsoProviderLoader) instead of a 500.
         $crawler = $this->client->request('GET', '/en/admin/users/' . $this->userChildA->getId());
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('manual-sub-' . $this->uid, $crawler->filter('#sso-link')->text());
         $this->client->submit($crawler->filter('#sso-link form[action$="/sso-unlink"]')->form());
         self::assertResponseRedirects();
         self::assertNull($this->reload($this->userChildA)->getSsoProvider());
