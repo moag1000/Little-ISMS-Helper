@@ -7,6 +7,9 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
 use App\Repository\CorrectiveActionRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -76,5 +79,36 @@ final class CorrectiveActionAdapter implements SourceAdapter
     {
         assert($item instanceof CorrectiveAction);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<CorrectiveAction> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof CorrectiveAction;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof CorrectiveAction);
+
+        return Responsibility::holders($item->getResponsiblePersonUser(), $item->getResponsiblePerson())
+            ->orRoles('ROLE_ISB', 'ROLE_CISO');
+    }
+
+    public function linkOf(object $item): RecordLink
+    {
+        assert($item instanceof CorrectiveAction);
+
+        return new RecordLink('app_corrective_action_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'corrective_actions_overdue', leadDays: 7, normReference: 'ISO 27001 10.2');
     }
 }

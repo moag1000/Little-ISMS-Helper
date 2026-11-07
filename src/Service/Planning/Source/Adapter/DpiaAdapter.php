@@ -8,6 +8,9 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\Tenant;
 use App\Enum\DpiaStatus;
 use App\Repository\DataProtectionImpactAssessmentRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -80,5 +83,37 @@ final class DpiaAdapter implements SourceAdapter
     {
         assert($item instanceof DataProtectionImpactAssessment);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<DataProtectionImpactAssessment> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof DataProtectionImpactAssessment;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof DataProtectionImpactAssessment);
+
+        return Responsibility::holders($item->getConductor(), $item->getConductorPerson())
+            ->withDeputies(...$item->getConductorDeputyPersons())
+            ->orRoles('ROLE_DPO');
+    }
+
+    public function linkOf(object $item): RecordLink
+    {
+        assert($item instanceof DataProtectionImpactAssessment);
+
+        return new RecordLink('app_dpia_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'dpia_review_overdue', leadDays: 30, normReference: 'DSGVO Art. 35 Abs. 11');
     }
 }

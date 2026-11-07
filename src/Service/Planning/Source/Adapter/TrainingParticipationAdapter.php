@@ -7,6 +7,9 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\Tenant;
 use App\Entity\TrainingParticipation;
 use App\Repository\TrainingParticipationRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -80,5 +83,37 @@ final class TrainingParticipationAdapter implements SourceAdapter
     {
         assert($item instanceof TrainingParticipation);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<TrainingParticipation> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof TrainingParticipation;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof TrainingParticipation);
+
+        return Responsibility::holders($item->getUser());
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof TrainingParticipation);
+
+        $trainingId = $item->getTraining()?->getId();
+
+        return $trainingId !== null ? new RecordLink('app_training_show', ['id' => $trainingId]) : null;
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'trainings_pending', leadDays: null, normReference: 'ISO 27001 7.2 / 7.3');
     }
 }
