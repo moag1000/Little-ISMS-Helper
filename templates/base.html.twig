@@ -389,7 +389,7 @@
                     <div id="flash-messages" class="fa-flash-messages" aria-live="polite" aria-atomic="true">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
-                                {{ faAlert.render(message is iterable ? message|join(', ')|e : message|e, flashToneMap[label]|default('info'), { withAlva: true, dismissible: true })|raw }}
+                                {{ faAlert.render(message|fa_flash|e, flashToneMap[label]|default('info'), { withAlva: true, dismissible: true })|raw }}
                             {% endfor %}
                         {% endfor %}
                     </div>

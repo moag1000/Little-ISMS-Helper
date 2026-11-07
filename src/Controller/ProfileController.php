@@ -34,6 +34,7 @@ class ProfileController extends AbstractController
         private readonly SluggerInterface $slugger,
         private readonly LoggerInterface $logger,
         private readonly AuditLogger $auditLogger,
+        private readonly TranslatorInterface $translator,
         private readonly string $uploadsDirectory = 'uploads/users',
     ) {
     }
@@ -93,19 +94,21 @@ class ProfileController extends AbstractController
             /** @var UploadedFile|null $avatarFile */
             $avatarFile = $form->get('avatarFile')->getData();
             if ($avatarFile) {
-                // Delete old avatar if exists
-                if ($oldAvatarPath) {
-                    $this->deleteOldAvatar($oldAvatarPath);
-                }
-
+                // The old file is only removed once the new upload passed validation
+                // and the new path is persisted (see below).
                 $avatarPath = $this->handleAvatarUpload($avatarFile, $user);
                 if ($avatarPath) {
                     $user->setProfilePicture($avatarPath);
+                    $replacedAvatarPath = $oldAvatarPath;
                 }
             }
 
             $user->setUpdatedAt(new DateTimeImmutable());
             $entityManager->flush();
+
+            if (!empty($replacedAvatarPath)) {
+                $this->deleteOldAvatar($replacedAvatarPath);
+            }
 
             // Audit log with before/after values
             $newValues = [
@@ -225,7 +228,7 @@ class ProfileController extends AbstractController
             $validation = $this->fileUploadSecurityService->validateUpload($uploadedFile);
 
             if (!$validation['valid']) {
-                $this->addFlash('warning', 'Avatar upload failed: ' . $validation['error']);
+                $this->addFlash('warning', $this->translator->trans('profile.error.avatar_upload_invalid', ['%error%' => (string) $validation['error']], 'user'));
                 $this->logger->warning('Avatar upload validation failed', [
                     'user_email' => $user->getEmail(),
                     'error' => $validation['error'],
@@ -265,7 +268,7 @@ class ProfileController extends AbstractController
                 'user_email' => $user->getEmail(),
                 'error' => $e->getMessage(),
             ]);
-            $this->addFlash('warning', 'Avatar upload failed. Please try again.');
+            $this->addFlash('warning', 'profile.error.avatar_upload_failed');
             return null;
         }
     }

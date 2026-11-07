@@ -107,6 +107,11 @@ class EvidenceReverificationController extends AbstractController
     {
         $this->denyAccessUnlessGranted('complete', $task);
 
+        if (!in_array($task->getStatus(), [EvidenceReverificationTask::STATUS_PENDING, EvidenceReverificationTask::STATUS_IN_PROGRESS], true)) {
+            $this->addFlash('error', $this->translator->trans('evidence_reverification.error.not_open', [], 'document'));
+            return $this->redirectToRoute('app_evidence_reverification_show', ['id' => $task->getId()]);
+        }
+
         if (!$this->isCsrfTokenValid('revtask_complete_' . $task->getId(), (string) $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('evidence_reverification.error.invalid_token', [], 'document'));
             return $this->redirectToRoute('app_evidence_reverification_show', ['id' => $task->getId()]);
@@ -152,6 +157,11 @@ class EvidenceReverificationController extends AbstractController
     public function skip(EvidenceReverificationTask $task, Request $request): Response
     {
         $this->denyAccessUnlessGranted('skip', $task);
+
+        if (!in_array($task->getStatus(), [EvidenceReverificationTask::STATUS_PENDING, EvidenceReverificationTask::STATUS_IN_PROGRESS], true)) {
+            $this->addFlash('error', $this->translator->trans('evidence_reverification.error.not_open', [], 'document'));
+            return $this->redirectToRoute('app_evidence_reverification_show', ['id' => $task->getId()]);
+        }
 
         if (!$this->isCsrfTokenValid('revtask_skip_' . $task->getId(), (string) $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('evidence_reverification.error.invalid_token', [], 'document'));

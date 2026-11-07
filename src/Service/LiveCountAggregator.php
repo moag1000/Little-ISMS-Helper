@@ -82,25 +82,7 @@ class LiveCountAggregator
             return 0;
         }
 
-        $entries = $this->auditLogRepo->getRecentActivity(24);
-
-        // Filter to tenant scope (AuditLogRepository.getRecentActivity returns global —
-        // we filter in PHP to avoid adding a new repo method for this cheap operation)
-        $tenantId = $tenant->getId();
-        $count = 0;
-        foreach ($entries as $entry) {
-            if (method_exists($entry, 'getTenantId') && $entry->getTenantId() === $tenantId) {
-                $count++;
-            }
-        }
-
-        // If the entity does not expose getTenantId, fall back to unfiltered count
-        // (safe — audit log entries are already visible to any authenticated user)
-        if ($count === 0 && !empty($entries)) {
-            $count = count($entries);
-        }
-
-        return $count;
+        return $this->auditLogRepo->countRecentActivityForTenant($tenant, 24);
     }
 
     /**

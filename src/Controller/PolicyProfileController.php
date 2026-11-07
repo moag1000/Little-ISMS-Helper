@@ -66,9 +66,9 @@ class PolicyProfileController extends AbstractController
         if (\in_array($sector, $this->baselines->sectors(), true)) {
             $this->profileManager->applySector($profile, $sector);
             $this->repository->save($profile);
-            $this->addFlash('success', 'Branchen-Baseline angewendet — Profil vorbelegt.');
+            $this->addFlash('success', 'policy_wizard.profile_flash.sector_applied');
         } else {
-            $this->addFlash('error', 'Unbekannte Branche.');
+            $this->addFlash('error', 'policy_wizard.profile_flash.sector_unknown');
         }
 
         return $this->redirectToRoute('app_policy_profile_index', ['_locale' => $request->getLocale()]);
@@ -92,7 +92,7 @@ class PolicyProfileController extends AbstractController
             }
         }
         $this->repository->save($profile);
-        $this->addFlash('success', 'Parameter gespeichert.');
+        $this->addFlash('success', 'policy_wizard.profile_flash.saved');
 
         return $this->redirectToRoute('app_policy_profile_index', ['_locale' => $request->getLocale()]);
     }

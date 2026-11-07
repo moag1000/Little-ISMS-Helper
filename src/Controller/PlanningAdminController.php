@@ -143,7 +143,7 @@ final class PlanningAdminController extends AbstractController
                 'required' => false,
                 'attr' => ['data-controller' => 'tom-select'],
             ])
-            ->add('save', SubmitType::class, ['label' => 'common.save'])
+            ->add('save', SubmitType::class, ['label' => 'common.save', 'translation_domain' => 'messages'])
             ->getForm();
 
         $form->handleRequest($request);

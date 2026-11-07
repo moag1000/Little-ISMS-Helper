@@ -1,4 +1,10 @@
 compliance_inheritance:
+    flash:
+        framework_activated: 'Framework aktiviert.'
+        bulk_no_selection: 'Keine Einträge ausgewählt.'
+        confirmed: 'Bestätigt.'
+        rejected: 'Abgelehnt.'
+        overridden: 'Überschrieben.'
     status:
         pending_review: 'Prüfung offen'
         confirmed: 'Bestätigt'

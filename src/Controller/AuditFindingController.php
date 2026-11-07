@@ -435,6 +435,7 @@ class AuditFindingController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, AuditFinding $finding): Response
     {
         $this->denyIfWrongTenant($finding);

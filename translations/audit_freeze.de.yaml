@@ -59,6 +59,8 @@ audit_freeze:
         stichtag_future: 'Stichtag darf nicht in der Zukunft liegen.'
         pdf_generated: PDF erzeugt.
         pdf_failed: 'PDF-Generierung fehlgeschlagen.'
+        no_pdf: 'Kein PDF vorhanden. Erzeugen Sie es zuerst.'
+        pdf_missing_on_disk: 'PDF-Datei fehlt auf dem Server. Bitte neu erzeugen.'
         pdf_not_found: 'PDF nicht gefunden. Erzeuge es zuerst.'
         invalid_csrf: 'Ungültiges CSRF-Token.'
     pdf:

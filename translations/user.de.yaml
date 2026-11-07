@@ -176,6 +176,13 @@ user:
         privileged_role_forbidden: 'Nur ein Super-Administrator darf die Rollen Super-Admin, Konzern-CISO und Konzern-Auditor vergeben oder entziehen. Die Änderung wurde nicht gespeichert.'
         tenant_not_assignable: 'Sie können nur Organisationen zuweisen, die Sie selbst verwalten. Die Änderung wurde nicht gespeichert.'
         import_email_unavailable: 'Übersprungen: %email% kann nicht importiert werden (E-Mail-Adresse nicht verfügbar).'
+        import_invalid_email: 'Übersprungen: Ungültige E-Mail-Adresse „%email%“.'
+        import_duplicate_in_file: 'Übersprungen: %email% kommt in der Datei mehrfach vor.'
+        import_file_rejected: 'Die Datei wurde abgelehnt.'
+        import_missing_fields: 'Zeile übersprungen: E-Mail, Vorname oder Nachname fehlt.'
+        import_no_organisation: 'Übersprungen: Für %email% ist keine Organisation zuweisbar.'
+        import_role_skipped: 'Privilegierte Rolle %role% für %email% nicht zugewiesen.'
+        import_row_failed: 'Zeile nicht importiert: %error%'
     auth_provider:
         local: 'Lokale Authentifizierung'
     auth:
@@ -331,6 +338,9 @@ user_management:
 
 # Flat profile keys (for ProfileController compatibility)
 profile:
+    error:
+        avatar_upload_invalid: 'Profilbild nicht hochgeladen: %error%'
+        avatar_upload_failed: 'Profilbild konnte nicht hochgeladen werden. Bitte erneut versuchen.'
     success:
         updated: Profil aktualisiert
         password_changed: Passwort geändert

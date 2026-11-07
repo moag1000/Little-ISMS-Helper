@@ -1,6 +1,8 @@
 supplier:
     title: Lieferanten
     ict_library:
+        applied: 'Lieferant „%name%“ aus der ICT-Provider-Bibliothek angelegt. Bitte Angaben prüfen und ergänzen.'
+        already_exists: 'Lieferant „%name%“ ist bereits vorhanden.'
         title: 'ICT-Provider-Bibliothek'
         intro: 'Kuratierte Liste gängiger ICT-Drittanbieter (DORA Art. 28). Übernehmen erstellt einen vorausgefüllten, DORA-relevanten Lieferanten zur Prüfung.'
         empty: 'Bibliothek noch nicht geladen. Admin: app:load-ict-provider-library ausführen.'

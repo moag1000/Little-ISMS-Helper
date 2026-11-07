@@ -298,7 +298,18 @@ class ComplianceFrameworkController extends AbstractController
     {
         if ($this->isCsrfTokenValid('duplicate' . $complianceFramework->id, $request->request->get('_token'))) {
             $newFramework = new ComplianceFramework();
-            $newFramework->setCode($complianceFramework->getCode() . '_COPY');
+            // Codes are unique: probe _COPY, _COPY2, … until a free one is found (max length 100)
+            $baseCode = (string) $complianceFramework->getCode();
+            $frameworkRepo = $this->entityManager->getRepository(ComplianceFramework::class);
+            $copyCode = '';
+            for ($n = 1; $n <= 1000; $n++) {
+                $suffix = $n === 1 ? '_COPY' : '_COPY' . $n;
+                $copyCode = mb_substr($baseCode, 0, 100 - strlen($suffix)) . $suffix;
+                if ($frameworkRepo->findOneBy(['code' => $copyCode]) === null) {
+                    break;
+                }
+            }
+            $newFramework->setCode($copyCode);
             $newFramework->setName($complianceFramework->getName() . ' (Copy)');
             $newFramework->setDescription($complianceFramework->getDescription());
             $newFramework->setVersion($complianceFramework->getVersion());

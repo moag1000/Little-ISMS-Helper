@@ -195,22 +195,29 @@ php bin/console app:data:repair-orphans
 
 ---
 
-## QuickFixGuard-Konfiguration
+## Zugriffsschutz (QuickFixGuard)
 
-Der Guard wird ueber Umgebungsvariablen gesteuert. Setzen Sie diese in Ihrer
-`.env.local` oder in der Docker-Compose-Datei:
+`/quick-fix` braucht keine Anmeldung, damit ein Betreiber ein Instanz retten kann,
+deren Login nach einem Update an einer ausstehenden Migration scheitert. Es gibt
+zwei Stufen:
 
-| Variable | Standardwert | Beschreibung |
+| Stufe | Aktionen | Voraussetzung |
 |---|---|---|
-| `QUICK_FIX_ENABLED` | `true` | Guard global aktivieren / deaktivieren |
-| `QUICK_FIX_TOKEN` | _(leer)_ | Optionaler Bearer-Token als Zugangsschutz |
-| `QUICK_FIX_IP_ALLOWLIST` | _(leer)_ | Kommagetrennte IP-Adressen/-CIDR-Bloecke (z. B. `192.168.1.0/24,10.0.0.1`) |
-| `QUICK_FIX_DEV_ONLY` | `false` | `true` = UI nur im `APP_ENV=dev` sichtbar |
+| Ansehen + Migrationen | Statusseite, „Ausstehende Migrationen anwenden“, additiver Schema-Abgleich, Job-Fortschritt | Guard-Einstellungen unten (Standard: offen) |
+| Daten und destruktives Schema | destruktiver Schema-Abgleich (DROP/TRUNCATE), Migration als ausgeführt markieren, Phantom-Diff markieren, Schema-Force-Update, alle Daten-Reparaturen | zusätzlich Anmeldung als Super-Admin **oder** Installer-Token aus `var/setup-token` (Feld auf der Sperrseite, wird als Sitzungs-Cookie gemerkt) |
 
-**Empfehlung fuer Produktionssysteme:** `QUICK_FIX_TOKEN` auf einen langen
-Zufallswert setzen und `QUICK_FIX_IP_ALLOWLIST` auf Ihr Verwaltungsnetz
-beschraenken. So ist die UI auch bei versehentlichem Trigger nicht oeffentlich
-zugaenglich.
+Die erste Stufe lässt sich unter **Admin > Einstellungen > Quick-Fix** weiter
+einschränken (Kategorie `quick_fix` der Systemeinstellungen):
+
+| Einstellung | Standard | Wirkung |
+|---|---|---|
+| Installer-Token verlangen | aus | Auch Statusseite und Migrationen nur mit Token |
+| Nur in Entwicklungsumgebung | aus | UI nur bei `APP_ENV=dev` |
+| IP-Allowlist | leer | Kommagetrennte IPs/CIDR-Blöcke, z. B. `192.168.1.0/24, 10.0.0.1` |
+
+**Empfehlung für Produktivsysteme:** IP-Allowlist auf das Verwaltungsnetz setzen.
+Hinter einem Proxy/CDN muss `SYMFONY_TRUSTED_PROXIES` stimmen, sonst sieht der
+Guard die Proxy-IP.
 
 ---
 

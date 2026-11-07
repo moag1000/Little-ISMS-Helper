@@ -38,11 +38,11 @@
     <main class="card">
         <div class="icon">🔒</div>
         <h1>{{ 'quick_fix.locked.title'|trans({}, 'quick_fix') }}</h1>
-        <p>{{ 'quick_fix.locked.body'|trans({}, 'quick_fix') }}</p>
+        <p>{{ (privileged_only|default(false) ? 'quick_fix.locked.privileged_body' : 'quick_fix.locked.body')|trans({}, 'quick_fix') }}</p>
 
         {% if token_required %}
             <p style="font-size: 13px; margin-top: 16px;">{{ 'quick_fix.locked.token_hint'|trans({}, 'quick_fix') }}</p>
-            <form method="GET" action="">
+            <form method="GET" action="{{ privileged_only|default(false) ? path('app_quick_fix_index') : '' }}">
                 <input type="text" name="token" placeholder="{{ 'quick_fix.locked.token_placeholder'|trans({}, 'quick_fix') }}" autofocus>
                 <button type="submit">{{ 'quick_fix.locked.token_submit'|trans({}, 'quick_fix') }}</button>
             </form>

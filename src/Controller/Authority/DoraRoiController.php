@@ -140,8 +140,12 @@ class DoraRoiController extends AbstractController
             $this->entityManager->persist($roiRecord);
         }
 
-        $roiRecord->setPayloadHash($payloadHash);
-        $roiRecord->setReportingScope(DoraRegisterOfInformation::SCOPE_YEARLY_FULL);
+        // A submitted record is a frozen audit artefact: re-exporting must not
+        // overwrite the hash/scope that was filed with the authority.
+        if ($roiRecord->getSubmittedAt() === null) {
+            $roiRecord->setPayloadHash($payloadHash);
+            $roiRecord->setReportingScope(DoraRegisterOfInformation::SCOPE_YEARLY_FULL);
+        }
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
@@ -210,8 +214,12 @@ class DoraRoiController extends AbstractController
             $roiRecord->setReportingDate(new DateTimeImmutable($reportingDate->format('Y') . '-12-31'));
             $this->entityManager->persist($roiRecord);
         }
-        $roiRecord->setPayloadHash($payloadHash);
-        $roiRecord->setReportingScope(DoraRegisterOfInformation::SCOPE_YEARLY_FULL);
+        // A submitted record is a frozen audit artefact: re-exporting must not
+        // overwrite the hash/scope that was filed with the authority.
+        if ($roiRecord->getSubmittedAt() === null) {
+            $roiRecord->setPayloadHash($payloadHash);
+            $roiRecord->setReportingScope(DoraRegisterOfInformation::SCOPE_YEARLY_FULL);
+        }
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
@@ -273,6 +281,15 @@ class DoraRoiController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(DoraRoiVoter::MARK_SUBMITTED, $record);
+
+        if ($record->getSubmittedAt() !== null) {
+            $this->addFlash('warning', $this->translator->trans(
+                'eu_authorities.dora_roi.error.already_submitted',
+                [],
+                'eu_authorities'
+            ));
+            return $this->redirectToRoute('dora_roi_index');
+        }
 
         $confirmationNumber = trim((string) $request->request->get('confirmation_number', ''));
         if ($confirmationNumber === '') {

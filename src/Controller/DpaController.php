@@ -90,6 +90,7 @@ final class DpaController extends AbstractController
         requirements: ['supplierId' => '\d+', 'paId' => '\d+'],
         methods: ['POST'],
     )]
+    #[IsGranted('ROLE_MANAGER')]
     public function generate(int $supplierId, int $paId, Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) {

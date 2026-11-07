@@ -719,6 +719,43 @@ class DocumentControllerTest extends TestCase
     }
 
     /**
+     * The edit form's file field used to be ignored — a chosen replacement
+     * file was silently dropped. It now goes to DocumentFileReplacer
+     * (new document version, previous file kept).
+     */
+    #[Test]
+    public function testEditHandsReplacementFileToTheReplacer(): void
+    {
+        $tenant = $this->createTenant(1);
+        $user = $this->createUser(1, $tenant);
+        $document = $this->createDocument(1, 'active');
+        $form = $this->createMock(FormInterface::class);
+        $fileField = $this->createMock(FormInterface::class);
+        $uploaded = $this->createMock(UploadedFile::class);
+
+        $this->security->method('getUser')->willReturn($user);
+        $this->authorizationChecker->method('isGranted')->willReturn(true);
+        $this->documentService->method('canEditDocument')->willReturn(true);
+        $this->formFactory->method('create')->willReturn($form);
+        $form->method('handleRequest')->willReturnSelf();
+        $form->method('isSubmitted')->willReturn(true);
+        $form->method('isValid')->willReturn(true);
+        $form->method('has')->willReturnCallback(static fn (string $name): bool => $name === 'file');
+        $form->method('get')->willReturn($fileField);
+        $fileField->method('getData')->willReturn($uploaded);
+        $this->translator->method('trans')->willReturn('Updated');
+
+        $replacer = $this->createMock(\App\Service\Document\DocumentFileReplacer::class);
+        $replacer->expects($this->once())->method('replaceOrError')
+            ->with($document, $uploaded, $user)
+            ->willReturn(null);
+
+        $response = $this->controller->edit($this->createRequestWithSession(), $document, $replacer);
+
+        $this->assertEquals(302, $response->getStatusCode());
+    }
+
+    /**
      * Test delete action removes document
      */
     #[Test]

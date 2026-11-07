@@ -50,3 +50,4 @@ existing_frameworks:
     flash:
         saved: '%count% new frameworks queued for reuse activation.'
         skipped: 'Portfolio query skipped — reuse forecast not active.'
+    saved: 'Selection saved.'

@@ -19,7 +19,7 @@
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
-                    {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|e }) }}
+                    {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|fa_flash|e }) }}
                 {% endfor %}
             {% endfor %}
 

@@ -75,18 +75,20 @@ class DataSubjectRequestController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         $filterStatus = $request->query->get('status');
+        $filterStatus = is_string($filterStatus) && $filterStatus !== '' ? $filterStatus : null;
         $filterType = $request->query->get('type');
+        $filterType = is_string($filterType) && $filterType !== '' ? $filterType : null;
 
         if ($filterStatus === 'overdue') {
             $requests = $this->dataSubjectRequestService->findOverdue();
-        } elseif ($filterStatus !== null && $filterStatus !== '') {
+        } elseif ($filterStatus !== null) {
             $requests = $this->dataSubjectRequestService->findByStatus($filterStatus);
         } else {
             $requests = $this->dataSubjectRequestService->findAll();
         }
 
         // Apply type filter in-memory if set
-        if ($filterType !== null && $filterType !== '') {
+        if ($filterType !== null) {
             $requests = array_values(array_filter(
                 $requests,
                 fn(DataSubjectRequest $r): bool => $r->getRequestType() === $filterType
@@ -114,6 +116,7 @@ class DataSubjectRequestController extends AbstractController
      * Create a new data subject request
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
@@ -185,6 +188,7 @@ class DataSubjectRequestController extends AbstractController
      * Edit a data subject request
      */
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
@@ -238,6 +242,7 @@ class DataSubjectRequestController extends AbstractController
      * Mark request as completed
      */
     #[Route('/{id}/complete', name: 'complete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function complete(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
@@ -305,6 +310,7 @@ class DataSubjectRequestController extends AbstractController
      * Reject a request (Art. 12(5): manifestly unfounded or excessive)
      */
     #[Route('/{id}/reject', name: 'reject', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function reject(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
@@ -335,6 +341,7 @@ class DataSubjectRequestController extends AbstractController
      * Extend deadline to 90 days (Art. 12(3))
      */
     #[Route('/{id}/extend', name: 'extend', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function extend(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

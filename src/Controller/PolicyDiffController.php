@@ -68,6 +68,7 @@ final class PolicyDiffController extends AbstractController
         methods: ['POST'],
     )]
     #[IsCsrfTokenValid('policy_wizard_diff_restore')]
+    #[IsGranted('ROLE_MANAGER')]
     public function restorePrevious(int $currentDocId, Request $request): Response
     {
         $current = $this->loadDocumentOr404($currentDocId);

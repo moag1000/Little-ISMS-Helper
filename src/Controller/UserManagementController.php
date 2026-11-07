@@ -478,7 +478,6 @@ class UserManagementController extends AbstractController
         RoleRepository $roleRepository,
         TranslatorInterface $translator
     ): Response {
-
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('user_import', $request->request->get('_token'))) {
                 $this->addFlash('danger', $translator->trans('common.csrf_error', [], 'messages'));
@@ -492,11 +491,17 @@ class UserManagementController extends AbstractController
                 return $this->redirectToRoute('user_management_import');
             }
 
-            $handle = fopen($file->getPathname(), 'r');
+            $validation = $this->fileUploadSecurityService->validateUpload($file, FileUploadSecurityService::PROFILE_TABULAR_IMPORT);
+            $handle = $validation['valid'] ? fopen($file->getPathname(), 'r') : false;
+            if ($handle === false) {
+                $this->addFlash('danger', $translator->trans('user.validation.import_file_rejected', [], 'user'));
+                return $this->redirectToRoute('user_management_import');
+            }
             $header = fgetcsv($handle, escape: '\\'); // Skip header
 
             $imported = 0;
             $errors = [];
+            $seenEmails = [];
 
             while (($row = fgetcsv($handle, escape: '\\')) !== false) {
                 try {
@@ -509,20 +514,25 @@ class UserManagementController extends AbstractController
                     $roleNames = isset($row[5]) ? explode(',', $row[5]) : [];
 
                     if (!$email || !$firstName || !$lastName) {
-                        $errors[] = "Skipped row: Missing required fields (email, first_name, last_name)";
+                        $errors[] = $translator->trans('user.validation.import_missing_fields', [], 'user');
                         continue;
                     }
+
+                    // Invalid address or the same e-mail twice in one file (both rows would hit the unique key).
+                    $email = trim((string) $email);
+                    $emailKey = mb_strtolower($email);
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL) === false || isset($seenEmails[$emailKey])) {
+                        $errors[] = $translator->trans(isset($seenEmails[$emailKey]) ? 'user.validation.import_duplicate_in_file' : 'user.validation.import_invalid_email', ['%email%' => $email], 'user');
+                        continue;
+                    }
+                    $seenEmails[$emailKey] = true;
 
                     // Check if user already exists. Security hotfix: e-mail is
                     // unique instance-wide, so the message must not tell a
                     // tenant admin whether the account lives in another tenant.
                     $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
                     if ($existingUser instanceof User) {
-                        $errors[] = $translator->trans(
-                            'user.validation.import_email_unavailable',
-                            ['%email%' => $email],
-                            'user',
-                        );
+                        $errors[] = $translator->trans('user.validation.import_email_unavailable', ['%email%' => $email], 'user');
                         continue;
                     }
 
@@ -537,29 +547,19 @@ class UserManagementController extends AbstractController
                     if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
                         $actorTenant = $this->userAdministrationGuard->getActorTenant();
                         if (!$this->userAdministrationGuard->canAssignTenant($actorTenant)) {
-                            $errors[] = "Skipped {$email}: no organisation available to assign";
+                            $errors[] = $translator->trans('user.validation.import_no_organisation', ['%email%' => $email], 'user');
                             continue;
                         }
                         $user->setTenant($actorTenant);
                     }
 
-                    // Set password
-                    if ($password) {
-                        $hashedPassword = $userPasswordHasher->hashPassword($user, $password);
-                        $user->setPassword($hashedPassword);
-                    } else {
-                        // Generate random password if not provided
-                        $randomPassword = bin2hex(random_bytes(16));
-                        $hashedPassword = $userPasswordHasher->hashPassword($user, $randomPassword);
-                        $user->setPassword($hashedPassword);
-                    }
+                    $user->setPassword($userPasswordHasher->hashPassword($user, $password ?: bin2hex(random_bytes(16))));
 
-                    // Assign roles
                     foreach ($roleNames as $roleName) {
                         $roleName = trim($roleName);
                         $role = $roleRepository->findOneBy(['name' => $roleName]);
                         if ($role && !$this->userAdministrationGuard->mayAssignRoleName((string) $role->getName())) {
-                            $errors[] = "Skipped privileged role {$roleName} for {$email}";
+                            $errors[] = $translator->trans('user.validation.import_role_skipped', ['%role%' => $roleName, '%email%' => $email], 'user');
                             continue;
                         }
                         if ($role) {
@@ -570,12 +570,11 @@ class UserManagementController extends AbstractController
                     $entityManager->persist($user);
                     $imported++;
                 } catch (Exception $e) {
-                    $errors[] = "Error importing row: " . $e->getMessage();
+                    $errors[] = $translator->trans('user.validation.import_row_failed', ['%error%' => $e->getMessage()], 'user');
                 }
             }
 
             fclose($handle);
-
             $entityManager->flush();
 
             $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported], 'messages'));

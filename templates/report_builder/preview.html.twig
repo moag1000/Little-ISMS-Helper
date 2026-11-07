@@ -181,7 +181,7 @@
                 {% elseif widgetType == 'text_summary' %}
                 <p class="lead">{{ data.text }}</p>
                 {% else %}
-                <div>{{ data.text|default(meta.config.text|default(''))|raw }}</div>
+                <div>{{ data.text|default(meta.config.text|default(''))|e|nl2br }}</div>
                 {% endif %}
             </div>
 

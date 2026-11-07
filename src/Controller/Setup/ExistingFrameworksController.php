@@ -45,7 +45,7 @@ final class ExistingFrameworksController extends AbstractController
             $session->set('setup.newly_added_frameworks', (array) ($data['newlyAdded'] ?? []));
             $session->set('setup.certification_dates', (array) ($data['certificationDates'] ?? []));
 
-            $this->addFlash('success', 'setup_wizard.existing_frameworks.saved');
+            $this->addFlash('success', 'existing_frameworks.saved');
             return $this->redirectToRoute('setup_step8_compliance_frameworks');
         }
 

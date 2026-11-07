@@ -190,6 +190,7 @@ planning:
             effort: 'Effort (PD)'
         success:
             saved: 'Setting saved.'
+            invalid_effort: 'Invalid effort (0 to 999.9 PD allowed).'
     roadmap:
         title: 'Capacity roadmap'
         subtitle: 'Plan effort (PD) per calendar week and reconcile against available capacity'

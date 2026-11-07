@@ -312,7 +312,12 @@ class ConsentController extends AbstractController
 
         if ($currentUser instanceof User) {
             $revocationMethod = $request->request->get('revocation_method', 'other');
-            $revocationNotes = $request->request->get('revocation_notes', '');
+            $revocationMethod = is_string($revocationMethod)
+                && in_array($revocationMethod, ['email', 'written_form', 'oral', 'website', 'phone', 'in_person', 'other'], true)
+                ? $revocationMethod : 'other';
+            // The revoke modal posts `revocationReason`; accept the legacy name as fallback
+            $revocationNotes = $request->request->get('revocationReason', $request->request->get('revocation_notes', ''));
+            $revocationNotes = is_string($revocationNotes) ? trim($revocationNotes) : '';
 
             // Single source of truth — sets revocation AND withdrawal groups
             // atomically (GDPR Art. 7(3)); the edit form no longer offers a

@@ -1,5 +1,9 @@
 admin:
+    compliance_policy:
+        saved: '%count% setting(s) saved.'
+        reset: 'Setting "%key%" reset.'
     industry_preset:
+        applied: 'Preset "%name%" applied: %modules% modules, %frameworks% frameworks, %controls% controls, %documents% documents.'
         error:
             not_found: 'Preset not found.'
             invalid_csrf: 'Invalid CSRF token.'
@@ -25,6 +29,8 @@ admin:
             approval_approved: 'Approved: %email%'
             approval_rejected: 'Rejected: %email%'
         error:
+            approval_not_pending: 'Approval request is no longer pending.'
+            approval_user_exists: 'A user with the email %email% already exists.'
             discovery_failed: 'Discovery failed: %message%'
             privileged_role_mapping: 'Role mappings not saved: only instance administrators (super admin) may assign privileged roles (%roles%).'
     title: Administration
@@ -396,6 +402,7 @@ admin:
         quick_fix:
             title: 'Quick-Fix Settings'
             description: 'Auto-fallback behaviour and schema-reconcile configuration for the operator UI'
+        saved: 'Settings saved.'
     compliance:
         framework: Framework
         total_requirements: 'Total Requirements'
@@ -491,6 +498,8 @@ admin:
         transition_confirm: 'Really set lifecycle to "%state%"?'
         transition_reason_placeholder: 'Reason for the transition (optional, recorded in audit log)'
         transition_success: 'Lifecycle set to "%state%".'
+        transition_failed: 'Transition not possible: %message%'
+        recomputed: '%count% mapping MQS scores recomputed.'
         coverage_title: 'Coverage Overview'
         coverage_button: 'Coverage Overview'
         coverage_description: 'Aggregate per framework pair — coverage %, confidence distribution, gaps. Answers "How much of Y is covered by X — and how confident are we?"'
@@ -558,6 +567,9 @@ admin:
             vulnerability: 'Vulnerability – responsible'
             patch: 'Patch – responsible'
     sample_data:
+        framework_not_found: 'Framework %code% not found – nothing to remove.'
+        framework_removed: '%code% removed: framework and %count% requirements.'
+        framework_remove_failed: 'Could not remove %code%: %message%'
         title: 'Sample Data'
         description: 'Import or remove demo datasets (assets, risks, business processes, …) for the current tenant.'
         tenant_label: 'Current tenant'

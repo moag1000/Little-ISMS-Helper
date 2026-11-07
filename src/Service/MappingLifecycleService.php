@@ -47,7 +47,7 @@ final class MappingLifecycleService
     /**
      * Transitioniert das Mapping zum neuen Lifecycle-State.
      *
-     * @throws \DomainException bei verbotenen Übergängen oder fehlenden Berechtigungen
+     * @throws \App\Exception\AppException bei verbotenen Übergängen oder fehlenden Berechtigungen
      */
     public function transition(
         ComplianceMapping $mapping,

@@ -397,7 +397,8 @@ class ComplianceRequirementController extends AbstractController
         $applicable = $request->request->get('applicable') === '1';
 
         if ($fulfillmentPercentage !== null) {
-            $fulfillment->setFulfillmentPercentage((int) $fulfillmentPercentage);
+            $fulfillmentPercentage = max(0, min(100, (int) $fulfillmentPercentage));
+            $fulfillment->setFulfillmentPercentage($fulfillmentPercentage);
 
             // Auto-update status based on percentage
             if ($fulfillmentPercentage >= 100) {
