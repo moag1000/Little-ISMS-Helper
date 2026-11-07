@@ -28,7 +28,7 @@ final class ObjectiveSource extends EntityDeadlineSource
         return 'ISMS-Ziel';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'objectives';
     }

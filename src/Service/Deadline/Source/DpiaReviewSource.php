@@ -28,7 +28,7 @@ final class DpiaReviewSource extends EntityDeadlineSource
         return 'DSFA-Review';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'privacy';
     }

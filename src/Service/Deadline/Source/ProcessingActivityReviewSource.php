@@ -28,7 +28,7 @@ final class ProcessingActivityReviewSource extends EntityDeadlineSource
         return 'VVT-Review';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'privacy';
     }

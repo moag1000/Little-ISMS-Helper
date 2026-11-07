@@ -28,7 +28,7 @@ final class InterestedPartyCommunicationSource extends EntityDeadlineSource
         return 'Kommunikation interessierte Partei';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'interested_parties';
     }

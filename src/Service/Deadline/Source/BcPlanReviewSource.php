@@ -28,7 +28,7 @@ final class BcPlanReviewSource extends EntityDeadlineSource
         return 'BC-Plan-Review';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'bcm';
     }

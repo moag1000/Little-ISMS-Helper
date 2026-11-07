@@ -28,12 +28,12 @@ final class Nis2RegistrationSource extends EntityDeadlineSource
         return 'NIS-2-Registrierung';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'nis2_dora';
     }
 
-    public function dueDateOf(object $item): ?DateTimeInterface
+    public function dueDateOf(object $item): DateTimeInterface
     {
         assert($item instanceof Nis2RegistrationProfile);
 

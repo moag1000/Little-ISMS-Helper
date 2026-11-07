@@ -18,7 +18,7 @@ final class ReminderSettings
     {
         $hour = ($tenant->getNotificationPreferences() ?? [])['digest']['hour'] ?? self::DEFAULT_DIGEST_HOUR;
 
-        return is_numeric($hour) ? max(0, min(23, (int) $hour)) : self::DEFAULT_DIGEST_HOUR;
+        return max(0, min(23, (int) $hour));
     }
 
     public static function setDigestHour(Tenant $tenant, int $hour): void

@@ -28,7 +28,7 @@ final class AuditProgramSource extends EntityDeadlineSource
         return 'Auditprogramm';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'audits';
     }

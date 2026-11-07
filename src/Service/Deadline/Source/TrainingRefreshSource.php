@@ -29,7 +29,7 @@ final class TrainingRefreshSource extends EntityDeadlineSource
         return 'Schulungsauffrischung';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'training';
     }

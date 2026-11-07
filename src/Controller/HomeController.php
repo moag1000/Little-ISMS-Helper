@@ -133,7 +133,9 @@ class HomeController extends AbstractController
 
         // Workflow Approvals (UX High Priority #1 - Single-pane visibility)
         $user = $this->getUser();
-        $pendingWorkflows = $user instanceof UserInterface ? ($user instanceof \App\Entity\User && $this->workflowService !== null ? $this->workflowService->getPendingApprovals($user) : $this->workflowInstanceRepository->findPendingForUser($user)) : [];
+        $pendingWorkflows = $user instanceof User
+            ? ($this->workflowService?->getPendingApprovals($user) ?? $this->workflowInstanceRepository->findPendingForUser($user))
+            : [];
         $overdueWorkflows = $this->workflowInstanceRepository->findOverdue();
         $upcomingDeadlines = $this->workflowInstanceRepository->findUpcomingDeadlines(
             new DateTimeImmutable('+24 hours')

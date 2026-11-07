@@ -590,7 +590,7 @@ class WorkflowService
                 ?? $this->userRepository->findByRoleInTenant($approverRole, $tenant);
         }
 
-        return array_values($recipients);
+        return $recipients;
     }
 
     /**

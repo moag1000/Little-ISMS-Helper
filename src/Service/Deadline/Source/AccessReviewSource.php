@@ -28,7 +28,7 @@ final class AccessReviewSource extends EntityDeadlineSource
         return 'Zugriffsreview';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'access_review';
     }
