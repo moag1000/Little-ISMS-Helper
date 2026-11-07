@@ -8,14 +8,14 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceRequirementFulfillment;
-use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\ImportRowEvent;
 use App\Entity\ImportSession;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ImportRowEventRepository;
-use App\Service\ComplianceInheritanceService;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Service\GapEffortCalculator;
 use App\Service\Import\ImportSessionRecorder;
 use App\Service\PortfolioReportService;
@@ -35,9 +35,9 @@ use PHPUnit\Framework\Attributes\Test;
  *
  *   1. Fresh tenant with core + assets + controls + compliance modules active
  *   2. Load ISO 27001 framework, set 30 requirements implemented + 20 partial
- *   3. Activate NIS2 framework -> >=40 fulfillments get derivedFrom set
+ *   3. Activate NIS2 framework -> >=40 fulfillments derived from mappings (rule)
  *   4. Cross-framework portfolio report shows both frameworks
- *   5. Override 5 fulfillments -> inheritance metadata preserved, reason stored
+ *   5. Override 5 fulfillments -> rule value + mapping source preserved, reason stored
  *   6. Gap report total effort sum plausible (>0, < absurd cap)
  *
  * The whole journey runs in one test method (per plan wording) and is
@@ -197,33 +197,33 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
         }
         $this->em->flush();
 
-        // Run the inheritance service directly — bypasses the activation-gate
-        // feature flag (ComplianceFrameworkActivationService) and exercises
-        // the behaviour the plan requires.
-        /** @var ComplianceInheritanceService $inheritanceService */
-        $inheritanceService = self::getContainer()->get(ComplianceInheritanceService::class);
-        $result = $inheritanceService->createInheritanceSuggestions($this->tenant, $nis2, $this->actor);
+        // The mapping rule derives every mapped NIS2 requirement live from the
+        // ISO 27001 fulfilments (Paket 3) — no review queue in between.
+        /** @var FulfillmentDerivationService $derivation */
+        $derivation = self::getContainer()->get(FulfillmentDerivationService::class);
+        $stats = $derivation->refreshFramework($this->tenant, $nis2);
+        $derivation->flush();
 
         self::assertGreaterThanOrEqual(
             40,
-            $result['created'],
+            $stats['derived'],
             sprintf(
-                'Plan requires >=40 NIS2 fulfillments with derivedFrom after activation (got %d, mappings=%d).',
-                $result['created'],
+                'Plan requires >=40 NIS2 fulfillments derived from mappings after activation (got %d, mappings=%d).',
+                $stats['derived'],
                 $mappingsCreated,
             ),
         );
 
-        // Assert derivedFrom actually stored on the logs.
-        $pendingLogs = $this->em->getRepository(FulfillmentInheritanceLog::class)
-            ->findBy(['tenant' => $this->tenant, 'reviewStatus' => FulfillmentInheritanceLog::STATUS_PENDING_REVIEW]);
-        self::assertGreaterThanOrEqual(40, count($pendingLogs));
-        foreach ($pendingLogs as $log) {
-            self::assertInstanceOf(
-                ComplianceMapping::class,
-                $log->getDerivedFromMapping(),
-                'Each inheritance log must carry a derivedFromMapping reference.',
-            );
+        $derivedRows = array_values(array_filter(
+            $this->em->getRepository(ComplianceRequirementFulfillment::class)->findBy(['tenant' => $this->tenant]),
+            static fn (ComplianceRequirementFulfillment $f): bool =>
+                $f->getRequirement()?->getFramework()?->getId() === $nis2->getId()
+                && $f->getDerivationKind() === FulfillmentRuleEngine::KIND_MAPPING,
+        ));
+        self::assertGreaterThanOrEqual(40, count($derivedRows));
+        foreach ($derivedRows as $row) {
+            self::assertSame('mapping', $row->getDerivationBasis()[0]['type'] ?? null, 'Each derived row names its mapping source.');
+            self::assertGreaterThan(0, $row->getFulfillmentPercentage());
         }
 
         // ── Step 4 — Cross-framework portfolio matrix ────────────────────────
@@ -250,55 +250,30 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
             'At least one ISO27001 matrix cell must report a plausible percentage.',
         );
 
-        // ── Step 5 — Override 5 fulfillments, preserve derivedFrom metadata ──
-        $logsToOverride = array_slice($pendingLogs, 0, 5);
-        self::assertCount(5, $logsToOverride, 'Need 5 pending logs to simulate the consultant override.');
+        // ── Step 5 — Override 5 fulfillments, rule value and source preserved ──
+        $toOverride = array_slice($derivedRows, 0, 5);
+        self::assertCount(5, $toOverride, 'Need 5 derived rows to simulate the consultant override.');
 
         $overrideReason = 'Override via consultant Excel import — evidence collected in audit folder, WS-2 import stepper row 42.';
-
-        foreach ($logsToOverride as $log) {
-            $mappingBefore = $log->getDerivedFromMapping();
-            self::assertInstanceOf(ComplianceMapping::class, $mappingBefore);
-
-            $inheritanceService->overrideInheritance(
-                log: $log,
-                reviewer: $this->actor,
-                newValue: 75,
-                reason: $overrideReason,
-                fourEyesApprover: $this->approver,
-            );
-
-            self::assertSame(
-                FulfillmentInheritanceLog::STATUS_OVERRIDDEN,
-                $log->getReviewStatus(),
-                'Override must transition the log to STATUS_OVERRIDDEN.',
-            );
-            self::assertSame(
-                $overrideReason,
-                $log->getOverrideReason(),
-                'Override reason must be persisted on the log.',
-            );
-            self::assertSame(75, $log->getOverrideValue());
-            self::assertSame(
-                $mappingBefore->getId(),
-                $log->getDerivedFromMapping()?->getId(),
-                'derivedFromMapping metadata must be preserved through override.',
-            );
+        foreach ($toOverride as $row) {
+            $ruleValue = $row->getDerivedPercentage();
+            $derivation->override($row, 75, $overrideReason, new DateTimeImmutable('+6 months'), $this->actor);
+            self::assertSame(75, $row->getFulfillmentPercentage());
+            self::assertSame($ruleValue, $row->getDerivedPercentage(), 'The rule value stays visible next to the override.');
         }
-        $this->em->flush();
+        $derivation->flush();
+        $overriddenIds = array_map(static fn (ComplianceRequirementFulfillment $f): ?int => $f->getId(), $toOverride);
         $this->em->clear();
 
-        // Re-fetch a sample and re-assert after clear() to ensure persistence.
-        $reloaded = $this->em->getRepository(FulfillmentInheritanceLog::class)
-            ->findBy(['tenant' => $this->em->getReference(Tenant::class, $this->tenant->getId()),
-                      'reviewStatus' => FulfillmentInheritanceLog::STATUS_OVERRIDDEN]);
-        self::assertCount(5, $reloaded, 'Exactly 5 logs should be in STATUS_OVERRIDDEN after the batch.');
-        foreach ($reloaded as $log) {
-            self::assertNotNull(
-                $log->getDerivedFromMapping(),
-                'Reloaded overridden log must still carry the derivedFromMapping.',
-            );
-            self::assertSame($overrideReason, $log->getOverrideReason());
+        // Re-fetch after clear() to ensure persistence; a re-run keeps the override.
+        $reloaded = $this->em->getRepository(ComplianceRequirementFulfillment::class)->findBy(['id' => $overriddenIds]);
+        self::assertCount(5, $reloaded);
+        foreach ($reloaded as $row) {
+            self::assertSame(ComplianceRequirementFulfillment::OVERRIDE_MANUAL, $row->getOverrideSource());
+            self::assertSame($overrideReason, $row->getOverrideReason());
+            self::assertSame(FulfillmentRuleEngine::KIND_MAPPING, $row->getDerivationKind());
+            $derivation->apply($row);
+            self::assertSame(75, $row->getFulfillmentPercentage(), 'A recompute must not overwrite the override.');
         }
 
         // ── Step 6 — Gap report total effort plausible ───────────────────────

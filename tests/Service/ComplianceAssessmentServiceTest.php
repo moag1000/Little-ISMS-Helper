@@ -117,7 +117,8 @@ class ComplianceAssessmentServiceTest extends TestCase
             $this->mappingService,
             $this->entityManager,
             $fulfillmentService,
-            $this->tenantContext
+            $this->tenantContext,
+            $this->derivationService,
         );
 
         $result = $testService->assessRequirement($requirement);
