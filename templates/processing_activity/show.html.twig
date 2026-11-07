@@ -8,7 +8,8 @@
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 <div class="container-fluid mt-4">
     {# Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -33,11 +34,27 @@
         ]
     }) }}
 
-    {# Lifecycle X.3 — status pill + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ProcessingActivity', status_key: processing_activity.status }) }}
-        {{ _lifecycle_actions.dropdown(processing_activity, 'processing-activity', 'processing_activity_lifecycle') }}
-    </div>
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ProcessingActivity', status_key: processing_activity.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(processing_activity, 'processing-activity', 'processing_activity_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: processing_activity.responsibleDepartmentEntity ?: processing_activity.responsibleDepartment },
+            { label: 'show.status.next_review'|trans({}, 'messages'), value: processing_activity.nextReviewDate ? processing_activity.nextReviewDate|fa_date : null },
+            { label: 'show.status.level'|trans({}, 'messages'), value: processing_activity.riskLevel ? processing_activity.riskLevel|upper : null },
+        ],
+        workflow: workflow_state(processing_activity),
+    }) }}
+
+    {% set _links = entity_links(processing_activity) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: processing_activity } only %}
 
     {# Compliance Status Banner #}
     {% if not compliance_report.is_compliant %}
@@ -56,7 +73,7 @@
 
     {# Quick Stats #}
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
@@ -67,17 +84,7 @@
                 {% endblock %}
             {% endembed %}
         </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.kpi.status'|trans({}, 'privacy') }}</div>
-                        <div class="fs-4 fw-bold mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
@@ -91,7 +98,7 @@
                 {% endblock %}
             {% endembed %}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
@@ -99,7 +106,7 @@
                         {% if processing_activity.requiresDPIA %}
                             {% if processing_activity.dpiaCompleted %}
                                 <div class="fs-4 fw-bold mb-0 text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
-                                <small class="text-muted">{{ processing_activity.dpiaDate|date('Y-m-d') }}</small>
+                                <small class="text-muted">{{ processing_activity.dpiaDate|fa_date }}</small>
                             {% else %}
                                 <div class="fs-4 fw-bold mb-0 text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></div>
                                 <small class="text-danger">{{ 'processing_activity.kpi.required'|trans({}, 'privacy') }}</small>
@@ -114,6 +121,7 @@
     </div>
 
     {# Main Content Tabs #}
+    <div id="details" class="fa-show-section">
     <ul class="nav nav-tabs" id="processingActivityTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
@@ -404,6 +412,8 @@
         {% endif %}
     </div>
 
+    </div>
+
     {# ── DPA-Generator — Art. 28 GDPR AVV action block ───────────────── #}
     {% if is_module_active('privacy') and processing_activity.processorSuppliers|length > 0 %}
     <div class="row mb-4">
@@ -450,6 +460,5 @@ document.querySelector('[data-action="clone"]')?.addEventListener('click', async
 });
 </script>
 
-{# Lifecycle X.3 — status history tab #}
-{{ _lifecycle_history.history('processing-activity', processing_activity.id) }}
+    {% include '_components/_fa_show_history.html.twig' with { entity: processing_activity, lifecycle: 'processing-activity' } only %}
 {% endblock %}

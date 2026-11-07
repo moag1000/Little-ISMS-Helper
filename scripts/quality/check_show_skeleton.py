@@ -11,18 +11,24 @@ that leaves the baseline is reported as stale.
 A page on the skeleton must not keep the old link matrix
 (`_entity_link_matrix`) next to the new links block.
 
+A `show.html.twig` that does not show one record (a workflow definition read
+from YAML, a session aggregate) carries `{# show-skeleton: no record — <why> #}`
+and is skipped; the reason is required.
+
     python3 scripts/quality/check_show_skeleton.py --baseline scripts/quality/baselines/show_skeleton.txt
     python3 scripts/quality/check_show_skeleton.py --write-baseline scripts/quality/baselines/show_skeleton.txt
 """
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATES = ROOT / "templates"
 SKELETON = "_components/_fa_entity_links.html.twig"
+NO_RECORD = re.compile(r"\{#\s*show-skeleton:\s*no record\s*[—-]\s*\S")
 PARTS = ("_fa_status_band",)
 EXCLUDE_DIRS = {"dev", "emails", "pdf", "bundles"}
 
@@ -49,6 +55,8 @@ def main() -> int:
     for p in show_templates():
         rel = str(p.relative_to(ROOT))
         text = p.read_text(encoding="utf-8")
+        if NO_RECORD.search(text):
+            continue
         if SKELETON in text:
             migrated += 1
             if "_entity_link_matrix" in text or not all(p_ in text for p_ in PARTS):

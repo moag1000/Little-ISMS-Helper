@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block admin_title %}{{ permission.name }}{% endblock %}
 {% block admin_subtitle %}
@@ -21,7 +22,21 @@
         ]
     }) }}
 
+    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ permission.status == 'active' ? 'success' : 'neutral' }}">{{ ('lifecycle.' ~ permission.status)|trans({}, 'lifecycle') }}</span>{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'permission.category'|trans({}, 'messages'), value: permission.category|title },
+            { label: 'permission.action'|trans({}, 'messages'), value: permission.action|title },
+            { label: 'show.status.type'|trans({}, 'messages'), value: permission.isSystemPermission ? 'System-Berechtigung' : 'Benutzerdefiniert' },
+        ],
+        workflow: workflow_state(permission),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: permission } only %}
+
     {# Permission Details #}
+    <div class="fa-show-section" id="details">
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
@@ -68,7 +83,10 @@
         {% endblock %}
     {% endembed %}
 
+    </div>
+
     {# Roles using this permission #}
+    <div class="fa-show-section" id="roles">
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
@@ -124,4 +142,7 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: permission } only %}
 {% endblock %}

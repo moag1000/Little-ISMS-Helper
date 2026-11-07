@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ 'compliance_import.history.detail.title'|trans({ '%filename%': session.originalFilename }, 'compliance_import') }}{% endblock %}
 
@@ -21,8 +22,22 @@
         ]
     }) }}
 
+    {% set _status %}{{ pill.render(('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import'), 'neutral') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'compliance_import.history.col_uploader'|trans({}, 'compliance_import'), value: session.uploadedBy ? session.uploadedBy.email : null },
+            { label: 'compliance_import.history.detail.uploaded_at'|trans({}, 'compliance_import'), value: session.uploadedAt|fa_datetime },
+            { label: 'compliance_import.history.col_committed_at'|trans({}, 'compliance_import'), value: session.committedAt ? session.committedAt|fa_datetime : null },
+            { label: 'compliance_import.history.col_total'|trans({}, 'compliance_import'), value: session.rowCountTotal },
+        ],
+        workflow: workflow_state(session),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: session } only %}
+
     {# Session meta #}
-    <section class="fa-section mb-3">
+    <section class="fa-section fa-show-section mb-3" id="details">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
@@ -136,7 +151,7 @@
     </section>
 
     {# Events table #}
-    <section class="fa-section mb-3">
+    <section class="fa-section fa-show-section mb-3" id="events">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i>
@@ -233,4 +248,6 @@
             {% endif %}
         </div>
     </section>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: session } only %}
 {% endblock %}

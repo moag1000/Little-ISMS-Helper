@@ -2,7 +2,8 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% import '_components/_lifecycle_pending_banner.html.twig' as _lifecycle_pending_banner %}
 {% trans_default_domain 'privacy' %}
 
@@ -36,13 +37,35 @@
     {# Z.0 — Workflow pending action banner #}
     {{ _lifecycle_pending_banner.render(workflow_info|default({})) }}
 
-    {# Lifecycle X.3b — status chip + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataProtectionImpactAssessment', status_key: dpia.status }) }}
-        {{ _lifecycle_actions.dropdown(dpia, 'dpia', 'dpia_lifecycle') }}
-    </div>
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataProtectionImpactAssessment', status_key: dpia.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(dpia, 'dpia', 'dpia_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'dpia.show.field.conductor'|trans({}, 'privacy'), value: dpia.conductor ? dpia.conductor.firstName ~ ' ' ~ dpia.conductor.lastName : null },
+            { label: 'show.status.next_review'|trans({}, 'messages'), value: dpia.nextReviewDate ? dpia.nextReviewDate|fa_date : null },
+            { label: 'show.status.version'|trans({}, 'messages'), value: dpia.version },
+            { label: 'dpia.index.completeness'|trans({}, 'privacy'), value: dpia.completenessPercentage ~ '%' },
+        ],
+        workflow: workflow_state(dpia),
+    }) }}
+
+    {% set _links = entity_links(dpia) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'risk', label: 'dpia.show.section.risk_assessment'|trans({}, 'privacy') },
+        { id: 'processing', label: 'dpia.new.section_processing_operations'|trans({}, 'privacy') },
+        { id: 'measures', label: 'dpia.new.section_measures'|trans({}, 'privacy') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: dpia } only %}
 
     {# Status & Workflow Actions #}
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--policy" aria-hidden="true"></i> {{ 'dpia.show.section.status_workflow'|trans({}, 'privacy') }}</h2>
@@ -51,16 +74,6 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>{{ 'dpia.index.status'|trans({}, 'privacy') }}:</strong>
-                        {% set status_class = {
-                            'draft': 'secondary',
-                            'in_review': 'info',
-                            'approved': 'success',
-                            'rejected': 'danger',
-                            'requires_revision': 'warning'
-                        }[dpia.status] %}
-                        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dpia.status.' ~ dpia.status)|trans({}, 'privacy') } %}
-                    </p>
                     <p><strong>{{ 'dpia.index.completeness'|trans({}, 'privacy') }}:</strong> {{ dpia.completenessPercentage }}%</p>
                     {% if dpia.conductor %}
                         <p><strong>{{ 'dpia.show.field.conductor'|trans({}, 'privacy') }}:</strong> {{ dpia.conductor.firstName }} {{ dpia.conductor.lastName }}</p>
@@ -69,10 +82,10 @@
                 <div class="col-md-6">
                     {% if dpia.approver %}
                         <p><strong>{{ 'dpia.show.field.approver'|trans({}, 'privacy') }}:</strong> {{ dpia.approver.firstName }} {{ dpia.approver.lastName }}</p>
-                        <p><strong>{{ 'dpia.show.field.approval_date'|trans({}, 'privacy') }}:</strong> {{ dpia.approvalDate|date('d.m.Y') }}</p>
+                        <p><strong>{{ 'dpia.show.field.approval_date'|trans({}, 'privacy') }}:</strong> {{ dpia.approvalDate|fa_date }}</p>
                     {% endif %}
                     {% if dpia.nextReviewDate %}
-                        <p><strong>{{ 'dpia.form.next_review_date'|trans({}, 'privacy') }}:</strong> {{ dpia.nextReviewDate|date('d.m.Y') }}</p>
+                        <p><strong>{{ 'dpia.form.next_review_date'|trans({}, 'privacy') }}:</strong> {{ dpia.nextReviewDate|fa_date }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -137,8 +150,10 @@
         {% endblock %}
     {% endembed %}
 
+    </div>
+
     {# Risk Assessment #}
-    <div class="row mb-4">
+    <div id="risk" class="row mb-4 fa-show-section">
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
@@ -227,7 +242,7 @@
                 {% block card_body %}
                     <p><strong>{{ 'dpia.show.field.dpo_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.dpoConsultationDate %}
-                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ dpia.dpoConsultationDate|date('d.m.Y') }}</span>
+                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ dpia.dpoConsultationDate|fa_date }}</span>
                         {% else %}
                             <span class="text-muted">{{ 'dpia.show.not_yet_consulted'|trans({}, 'privacy') }}</span>
                         {% endif %}
@@ -246,7 +261,7 @@
                     <p><strong>{{ 'dpia.show.field.supervisory_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.requiresSupervisoryConsultation %}
                             {% if dpia.supervisoryConsultationDate %}
-                                <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ dpia.supervisoryConsultationDate|date('d.m.Y') }}</span>
+                                <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ dpia.supervisoryConsultationDate|fa_date }}</span>
                             {% else %}
                                 <span class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.show.required_not_completed'|trans({}, 'privacy') }}</span>
                             {% endif %}
@@ -271,6 +286,7 @@
     </div>
 
     {# Processing Description #}
+    <div id="processing" class="fa-show-section">
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</h2>
@@ -292,7 +308,10 @@
         {% endblock %}
     {% endembed %}
 
+    </div>
+
     {# Measures #}
+    <div id="measures" class="fa-show-section">
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'dpia.new.section_measures'|trans({}, 'privacy') }}</h2>
@@ -310,7 +329,12 @@
         {% endblock %}
     {% endembed %}
 
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: dpia, lifecycle: 'dpia' } only %}
+
     {# Comment-Thread adoption (C7 macro). #}
+    <div id="comments" class="fa-show-section">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'DataProtectionImpactAssessment',
@@ -319,9 +343,7 @@
         formAction: path('app_comment_post', {entityType: 'DataProtectionImpactAssessment', entityId: dpia.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
-
-    {# Lifecycle X.3b — transition history tab #}
-    {{ _lifecycle_history.history('dpia', dpia.id) }}
+    </div>
 </div>
 
 {# Approve Modal — fa-modal--confirm/success #}

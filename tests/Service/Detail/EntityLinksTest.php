@@ -9,6 +9,8 @@ use App\Entity\Control;
 use App\Entity\Document;
 use App\Entity\Incident;
 use App\Entity\Risk;
+use App\Entity\Supplier;
+use App\Entity\RiskTreatmentPlan;
 use App\Repository\RiskRepository;
 use App\Service\Detail\EntityLinks;
 use App\Service\ModuleConfigurationService;
@@ -88,5 +90,41 @@ final class EntityLinksTest extends TestCase
     public function unknownRecordsHaveNoChain(): void
     {
         self::assertSame([], $this->service()->for(new \stdClass()));
+    }
+
+    #[Test]
+    public function aSupplierShowsOnlyTheChainTypesItCanRelateTo(): void
+    {
+        $asset = $this->createStub(Asset::class);
+        $asset->method('getId')->willReturn(7);
+        $asset->method('getName')->willReturn('Kundenportal');
+
+        $supplier = $this->createStub(Supplier::class);
+        $supplier->method('getId')->willReturn(9);
+        $supplier->method('getSupportedAssets')->willReturn(new ArrayCollection([$asset]));
+        $supplier->method('getIdentifiedRisks')->willReturn(new ArrayCollection());
+        $supplier->method('getDocuments')->willReturn(new ArrayCollection());
+
+        $groups = $this->service()->for($supplier);
+
+        self::assertSame(['asset', 'risk', 'evidence'], array_column($groups, 'type'));
+        self::assertSame(0, $groups[1]['total'], 'a supplier without risks shows the gap');
+        self::assertNull($groups[0]['derive']);
+    }
+
+    #[Test]
+    public function aTreatmentPlanLinksItsRiskAndControls(): void
+    {
+        $risk = $this->risk();
+        $plan = $this->createStub(RiskTreatmentPlan::class);
+        $plan->method('getId')->willReturn(4);
+        $plan->method('getRisk')->willReturn($risk);
+        $plan->method('getControls')->willReturn($risk->getControls());
+        $plan->method('getEvidenceDocuments')->willReturn(new ArrayCollection());
+
+        $groups = $this->service()->for($plan);
+
+        self::assertSame(['risk', 'control', 'evidence'], array_column($groups, 'type'));
+        self::assertSame(42, $groups[0]['items'][0]['id']);
     }
 }

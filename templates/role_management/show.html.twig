@@ -3,6 +3,8 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ role.name }} - {{ 'role_management.title.show'|trans({}, 'role_management') }}{% endblock %}
 
@@ -21,6 +23,25 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_index') }
         ])
     }) }}
+
+    {% set _status %}<span class="fa-status-pill fa-status-pill--{{ role.status == 'active' ? 'success' : 'neutral' }}">{{ ('lifecycle.' ~ role.status)|trans({}, 'lifecycle') }}</span>{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: role.systemRole ? 'role_management.badge.system'|trans({}, 'role_management') : 'role_management.badge.custom'|trans({}, 'role_management') },
+            { label: 'role_management.field.permissions'|trans({}, 'role_management'), value: role.permissions|length },
+            { label: 'role_management.field.users'|trans({}, 'role_management'), value: visible_holders|length },
+        ],
+        workflow: workflow_state(role),
+    }) }}
+
+    {{ _fa_anchor_bar.render([
+        { id: 'permissions', label: 'role_management.section.permissions'|trans({}, 'role_management') },
+        { id: 'users', label: 'role_management.section.users'|trans({}, 'role_management') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: role } only %}
 
     {# Stats #}
     <div class="row g-3 mb-4">
@@ -42,7 +63,7 @@
     {% endif %}
 
     {# Permissions #}
-    <section class="fa-section mb-4">
+    <section class="fa-section fa-show-section mb-4" id="permissions">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--ui-key" aria-hidden="true"></i>
@@ -77,7 +98,7 @@
     </section>
 
     {# Assigned Users #}
-    <section class="fa-section mb-4">
+    <section class="fa-section fa-show-section mb-4" id="users">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
@@ -113,6 +134,8 @@
             {% endif %}
         </div>
     </section>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: role } only %}
 
     {# Action Buttons #}
     <div class="d-flex gap-2 mt-4">

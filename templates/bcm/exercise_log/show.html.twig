@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ 'bsi_200_4_exercise.page.show_title'|trans({}, 'bsi_200_4_exercise') }} — {{ log.bcExercise.name ?? '' }}{% endblock %}
 
@@ -34,37 +36,58 @@
         {{ _fa_alva_hint.render(_h) }}
     {% endfor %}
 
-    {# Status bar #}
-    <div class="d-flex align-items-center gap-3 mb-4">
+    {# Status band: lifecycle state + submit / confirm action #}
+    {% set _status %}
         {% if log.isConfirmed %}
             <span class="fa-status-pill fa-status-pill--success">{{ 'bsi_200_4_exercise.status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
-            <span class="text-muted small">{{ 'bsi_200_4_exercise.table.header_confirmed'|trans({}, 'bsi_200_4_exercise') }}: {{ log.confirmedAt|date('d.m.Y H:i') }}</span>
         {% elseif log.isSubmitted %}
             <span class="fa-status-pill fa-status-pill--info">{{ 'bsi_200_4_exercise.status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
-            <span class="text-muted small">{{ 'bsi_200_4_exercise.table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}: {{ log.submittedAt|date('d.m.Y H:i') }}</span>
-            {% if is_granted('ROLE_AUDITOR') and not log.isConfirmed %}
-            <form method="post" action="{{ path('bcm_exercise_log_confirm', {id: log.id}) }}" class="ms-auto">
+        {% else %}
+            <span class="badge bg-light text-muted border fs-6">{{ 'bsi_200_4_exercise.status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
+        {% endif %}
+    {% endset %}
+    {% set _actions %}
+        {% if log.isSubmitted and not log.isConfirmed and is_granted('ROLE_AUDITOR') %}
+            <form method="post" action="{{ path('bcm_exercise_log_confirm', {id: log.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_confirm_' ~ log.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'bsi_200_4_exercise.action.confirmed'|trans({}, 'bsi_200_4_exercise') }}
                 </button>
             </form>
-            {% endif %}
-        {% else %}
-            <span class="badge bg-light text-muted border fs-6">{{ 'bsi_200_4_exercise.status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
-            {% if is_granted('ROLE_MANAGER') %}
-            <form method="post" action="{{ path('bcm_exercise_log_submit', {id: log.id}) }}" class="ms-auto">
+        {% elseif not log.isSubmitted and is_granted('ROLE_MANAGER') %}
+            <form method="post" action="{{ path('bcm_exercise_log_submit', {id: log.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_submit_' ~ log.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="fa-icon fa-icon--send" aria-hidden="true"></i>
                     {{ 'bsi_200_4_exercise.action.submitted'|trans({}, 'bsi_200_4_exercise') }}
                 </button>
             </form>
-            {% endif %}
         {% endif %}
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'bsi_200_4_exercise.table.header_submitted'|trans({}, 'bsi_200_4_exercise'), value: log.isSubmitted and log.submittedAt ? log.submittedAt|fa_datetime : null },
+            { label: 'bsi_200_4_exercise.table.header_confirmed'|trans({}, 'bsi_200_4_exercise'), value: log.isConfirmed and log.confirmedAt ? log.confirmedAt|fa_datetime : null },
+        ],
+        workflow: workflow_state(log),
+    }) }}
+
+    {% set _links = entity_links(log) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: log } only %}
+
+    <div id="details" class="fa-show-section">
+        {% include 'bcm/exercise_log/_log_details.html.twig' with { log: log } %}
     </div>
 
-    {% include 'bcm/exercise_log/_log_details.html.twig' with { log: log } %}
+    {% include '_components/_fa_show_history.html.twig' with { entity: log } only %}
 </div>
 {% endblock %}

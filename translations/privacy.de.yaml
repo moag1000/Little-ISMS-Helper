@@ -112,7 +112,6 @@ privacy:
             high: 'Hoch'
             critical: 'Kritisch'
         field:
-            status: Status
             completeness: Vollständigkeit
             detected: 'Erkennungszeitpunkt'
             incident: 'Sicherheitsvorfall'
@@ -329,7 +328,6 @@ processing_activity:
     clone_suffix: '(Kopie)'
     kpi:
         completeness: 'Vollständigkeit'
-        status: 'Status'
         risk_level: 'Risikostufe'
         dpia_status: 'DSFA-Status'
         required: 'Erforderlich'

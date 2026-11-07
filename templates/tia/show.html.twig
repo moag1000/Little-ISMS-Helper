@@ -2,6 +2,7 @@
 {% trans_default_domain 'tia' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 {% block title %}{{ tia.displayName }} – TIA{% endblock %}
 
 {% block body %}
@@ -26,22 +27,25 @@
         ]|filter(a => a is not null)
     }) }}
 
-    {# Status chip #}
-    <div class="d-flex align-items-center gap-2 mb-3">
+    {% set _status %}
         {% if tia.status == 'assessed' %}
             {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'tia.status.assessed'|trans({}, 'tia') } %}
         {% else %}
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tia.status.draft'|trans({}, 'tia') } %}
         {% endif %}
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'tia.field.residual_risk_rating'|trans({}, 'tia'), value: tia.residualRiskRating ? ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia') : null },
+            { label: 'tia.field.destination_country'|trans({}, 'tia'), value: tia.destinationCountry },
+            { label: 'tia.field.assessed_at'|trans({}, 'tia'), value: tia.assessedAt ? tia.assessedAt|fa_date : null },
+            { label: 'tia.field.assessed_by'|trans({}, 'tia'), value: tia.assessedBy ? tia.assessedBy.userIdentifier : null },
+        ],
+        workflow: workflow_state(tia),
+    }) }}
 
-        {% if tia.residualRiskRating == 'high' %}
-            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'tia.risk.high'|trans({}, 'tia') } %}
-        {% elseif tia.residualRiskRating == 'medium' %}
-            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'tia.risk.medium'|trans({}, 'tia') } %}
-        {% elseif tia.residualRiskRating == 'low' %}
-            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'tia.risk.low'|trans({}, 'tia') } %}
-        {% endif %}
-    </div>
+    {% include '_components/_fa_entity_links.html.twig' with { entity: tia } only %}
 
     {# High-risk warning banner #}
     {% if tia.residualRiskRating == 'high' %}
@@ -55,7 +59,7 @@
     {% endif %}
 
     {# TIA detail card #}
-    {% embed '_components/_card.html.twig' %}
+    {% embed '_components/_card.html.twig' with { class: 'fa-show-section' } %}
         {% block card_body %}
             {% trans_default_domain 'tia' %}
 
@@ -129,7 +133,7 @@
                 <hr>
                 <dl class="row">
                     <dt class="col-sm-4">{{ 'tia.field.assessed_at'|trans({}, 'tia') }}:</dt>
-                    <dd class="col-sm-8">{{ tia.assessedAt ? tia.assessedAt|date('Y-m-d') : '—' }}</dd>
+                    <dd class="col-sm-8">{{ tia.assessedAt|fa_date }}</dd>
 
                     <dt class="col-sm-4">{{ 'tia.field.assessed_by'|trans({}, 'tia') }}:</dt>
                     <dd class="col-sm-8">{{ tia.assessedBy ? tia.assessedBy.userIdentifier : '—' }}</dd>
@@ -174,5 +178,7 @@
             </form>
         </div>
     {% endif %}
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: tia, lifecycle: 'transfer-impact-assessment' } only %}
 </div>
 {% endblock %}

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'answer_library' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ 'answer_library.page.show_title'|trans({}, 'answer_library') }}{% endblock %}
 
@@ -21,10 +22,21 @@
     ] : []
 }) }}
 
-<main>
+{% import '_components/_status_pill.html.twig' as _pill %}
+{% set _category %}{{ _pill.render(('answer_library.category.' ~ entry.category)|trans({}, 'answer_library'), 'neutral') }}{% endset %}
 <div class="container-fluid py-4" style="max-width: 900px;">
+    {{ _fa_status_band.render({
+        status: _category,
+        facts: [
+            { label: 'answer_library.field.use_count'|trans({}, 'answer_library'), value: entry.useCount },
+            { label: 'answer_library.field.last_used_at'|trans({}, 'answer_library'), value: entry.lastUsedAt ? entry.lastUsedAt|fa_date : null },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: entry.createdBy ? (entry.createdBy.fullName ?? entry.createdBy.email) : null },
+        ],
+    }) }}
 
-    <div class="row g-4">
+    {% include '_components/_fa_entity_links.html.twig' with { entity: entry } only %}
+
+    <div class="row g-4 fa-show-section" id="details">
         {# Main content #}
         <div class="col-lg-8">
             <div class="card mb-4">
@@ -91,11 +103,11 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="text-muted small">{{ 'answer_library.field.last_used_at'|trans({}, 'answer_library') }}</span>
-                        <span>{{ entry.lastUsedAt ? entry.lastUsedAt|date('d.m.Y') : '—' }}</span>
+                        <span>{{ entry.lastUsedAt|fa_date }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="text-muted small">{{ 'answer_library.field.created_at'|trans({}, 'answer_library') }}</span>
-                        <span>{{ entry.createdAt|date('d.m.Y') }}</span>
+                        <span>{{ entry.createdAt|fa_date }}</span>
                     </li>
                     {% if entry.createdBy %}
                         <li class="list-group-item d-flex justify-content-between">
@@ -124,6 +136,6 @@
         </div>
     </div>
 
+    {% include '_components/_fa_show_history.html.twig' with { entity: entry } only %}
 </div>
-</main>
 {% endblock %}

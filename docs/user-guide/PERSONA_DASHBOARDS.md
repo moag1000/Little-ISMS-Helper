@@ -210,8 +210,9 @@ mehr über eigene Einträge je Modul.
 
 ## Detailseiten: ein Aufbau
 
-Risiko, Asset, Control, Vorfall und Schwachstelle haben denselben Aufbau, die
-übrigen Detailseiten folgen schrittweise:
+Alle Detailseiten haben denselben Aufbau, von Risiko, Asset und Control über
+Lieferant, BC-Plan, Verarbeitungstätigkeit und Audit bis zu den
+Verwaltungsseiten (Benutzer, Rollen, SSO, Mandanten):
 
 1. **Statusband** unter dem Titel: Lebenszyklus-Status mit Statuswechsel,
    Verantwortliche Person, nächste Fälligkeit bzw. Restrisiko oder Schweregrad
@@ -226,6 +227,16 @@ Risiko, Asset, Control, Vorfall und Schwachstelle haben denselben Aufbau, die
    „Vorfall erfassen" oder „Schwachstelle ableiten" mit vorbelegtem Formular.
 4. Fachabschnitte, danach **Historie** (Audit-Log und Statuswechsel) und
    **Kommentare**.
+
+Datensätze außerhalb der Kette zeigen die Kettenglieder, mit denen sie verknüpft
+werden können: ein Lieferant seine unterstützten Assets, Risiken und Dokumente,
+ein Behandlungsplan Risiko, Controls und Nachweise, eine Anforderung ihre
+Controls und Nachweise, ein Dokument die Controls, die es als Nachweis nutzen,
+eine Verarbeitungstätigkeit oder DSFA Assets und Controls, eine
+Datenschutzverletzung den Vorfall, ein Patch Assets und Schwachstelle.
+Konfigurationsseiten ohne Bezug zur Kette (Rollen, SSO, Sitzungen) haben keinen
+Verknüpfungsblock. Die Historie zeigt auf jeder Seite die letzten zehn
+Audit-Log-Einträge des Datensatzes.
 
 Gruppen, deren Modul nicht aktiv ist, werden nicht angezeigt.
 
