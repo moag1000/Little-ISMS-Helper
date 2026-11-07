@@ -39,6 +39,9 @@ my_day:
         documents_pending_approval_for_me: 'Dokumente zur Freigabe'
         wizard_overdue: 'Wizard-Assessments gestoppt'
         framework_gaps_critical: 'Framework-Gaps kritisch'
+        change_requests_due: 'Changes fällig'
+        audits_upcoming: 'Audits anstehend'
+        vulnerabilities_due: 'Schwachstellen fällig'
 
     section:
         register_review: 'Register — Prüfung fällig (ISO 27001 4.1–7.4)'
@@ -71,6 +74,9 @@ my_day:
         documents_pending_approval_for_me: 'Dokumente in Prüfung — warten auf Freigabe (CM)'
         wizard_overdue: 'Wizard-Assessments — gestoppt (90+ Tage)'
         framework_gaps_critical: 'Framework-Coverage-Gaps — kritisch (< 60 %)'
+        change_requests_due: 'Changes — Umsetzung fällig (ISO 27001 6.3)'
+        audits_upcoming: 'Interne Audits — anstehend (ISO 27001 9.2)'
+        vulnerabilities_due: 'Schwachstellen — Behebung fällig (A.8.8)'
 
     bucket:
         risk_acceptance_expiring:

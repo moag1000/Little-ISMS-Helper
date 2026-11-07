@@ -8,6 +8,9 @@ use App\Entity\InternalAudit;
 use App\Entity\Tenant;
 use App\Enum\InternalAuditStatus;
 use App\Repository\InternalAuditRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -79,5 +82,37 @@ final class InternalAuditAdapter implements SourceAdapter
     {
         assert($item instanceof InternalAudit);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<InternalAudit> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof InternalAudit;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof InternalAudit);
+
+        return Responsibility::holders($item->getLeadAuditorUser(), $item->getLeadAuditorPerson())
+            ->withDeputies(...$item->getAuditTeamMembers())
+            ->orRoles('ROLE_ISB', 'ROLE_CISO');
+    }
+
+    public function linkOf(object $item): RecordLink
+    {
+        assert($item instanceof InternalAudit);
+
+        return new RecordLink('app_audit_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'audits_upcoming', leadDays: 14, normReference: 'ISO 27001 9.2');
     }
 }

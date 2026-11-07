@@ -245,6 +245,12 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Register\RegisterCatalog` - the norm registers (ISO 27001 4.1–7.4): one entity `IsmsRegisterEntry`, types in
   `App\Enum\RegisterType` (a new register = a new case, not a new table), proposals from existing records in
   `RegisterProposalProvider`; guide `docs/user-guide/REGISTER.md`
+- `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
+  (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
+  inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
+- `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
+  `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
+  My Day and reminder mails read only from these; a new norm = new sources. Doc: `docs/DEADLINES_AND_RESPONSIBILITY.md`
 - `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
   euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
   `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`
