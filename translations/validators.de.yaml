@@ -677,7 +677,6 @@ gstool_import:
 'incident.validation.reported_by_max_length': 'Name des Melders darf maximal {{ limit }} Zeichen lang sein.'
 'incident.validation.assigned_to_max_length': 'Name des Bearbeiters darf maximal {{ limit }} Zeichen lang sein.'
 'incident.validation.data_breach_flag_required': 'Datenpanne-Flag ist erforderlich.'
-'incident.validation.notification_required_flag_required': 'Meldepflicht-Flag ist erforderlich.'
 'incident.validation.nis2_category_invalid': 'NIS2-Kategorie muss eine der folgenden sein: {{ choices }}.'
 
 # InterestedParty

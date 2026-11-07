@@ -15,8 +15,8 @@ use App\Entity\User;
  * "Datenpanne aufgetreten = Ja". Surfaces an inline notice directly under
  * the `dataBreachOccurred` radio explaining what will happen on save:
  *
- * - A DataBreach record will be auto-created (FollowUpTrigger payload is
- *   prefilled from the incident — see {@see \App\EventListener\IncidentFollowUpListener}).
+ * - A DataBreach draft is created on save, prefilled from the incident
+ *   ({@see \App\EventListener\IncidentDataBreachDraftListener}).
  * - The DSGVO Art. 33 72-hour clock starts at the `detectedAt` timestamp.
  * - The user can navigate to the DataBreach form straight after save via
  *   the show-page AlvaHint

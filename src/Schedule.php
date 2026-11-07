@@ -41,7 +41,6 @@ class Schedule implements ScheduleProviderInterface
         // The one reminder path: urgent hour deadlines every run, the daily
         // digest at each organisation's digest hour (default 07:00).
         ['*/15 * * * *', 'app:send-reminders'],
-        ['*/15 * * * *', 'app:nis2-notification-check'],
         ['0 * * * *', 'app:process-scheduled-reports'],
         ['45 0 * * *', 'app:compliance:refresh-fulfillments'],
         ['0 1 * * *', 'app:kpi-snapshot'],

@@ -1,0 +1,60 @@
+{# Reporting duties on the incident page (NIS-2 Art. 23, DORA Art. 19).
+   Macros: mark() = "Als gemeldet markieren" for one report,
+   assessment() = pre-check + the organisation's decision,
+   dora() = DORA report list from reporting_duties(). #}
+
+{% macro mark(incident, field) %}
+    {% if is_granted('ROLE_USER') %}
+        <form method="post" action="{{ path('app_incident_reporting_mark', {id: incident.id, field: field}) }}" class="d-inline mt-2">
+            <input type="hidden" name="_token" value="{{ csrf_token('incident_reporting_' ~ incident.id) }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-testid="mark-reported-{{ field }}">
+                {{ 'incident.reporting.mark_reported'|trans({}, 'incident') }}
+            </button>
+        </form>
+    {% endif %}
+{% endmacro %}
+
+{% macro assessment(incident) %}
+    {% if incident.nis2AssessmentConfirmed %}
+        <p class="text-muted mb-2" data-testid="nis2-assessment">
+            {{ 'incident.reporting.assessed'|trans({'%result%': ('incident.nis2_assessment.' ~ (incident.notificationRequired ? 'reportable' : 'not_reportable'))|trans({}, 'incident')}, 'incident') }}
+        </p>
+    {% else %}
+        {% set reasons = incident.nis2SignificanceReasons|map(r => ('incident.nis2_reason.' ~ r)|trans({}, 'incident')) %}
+        <div class="fa-alert fa-alert--warning mb-3" role="status" data-testid="nis2-precheck">
+            <div>
+                <strong>{{ 'incident.reporting.precheck_title'|trans({}, 'incident') }}</strong>
+                <p class="mb-1">{{ 'incident.reporting.precheck_body'|trans({'%reasons%': reasons|join(', ')}, 'incident') }}</p>
+                {% if is_granted('ROLE_MANAGER') %}
+                    <form method="post" action="{{ path('app_incident_reporting_assess', {id: incident.id}) }}" class="d-flex flex-wrap gap-2 mt-2">
+                        <input type="hidden" name="_token" value="{{ csrf_token('incident_reporting_' ~ incident.id) }}">
+                        <button type="submit" name="reportable" value="1" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'incident.reporting.confirm_reportable'|trans({}, 'incident') }}</button>
+                        <button type="submit" name="reportable" value="0" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'incident.reporting.confirm_not_reportable'|trans({}, 'incident') }}</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro dora(incident, duties) %}
+    {% import _self as _rep %}
+    {% import '_components/_status_pill.html.twig' as pill %}
+    <div id="dora-reporting" class="detail-section fa-show-section">
+        <h3 class="h5">{{ 'incident.reporting.dora_title'|trans({}, 'incident') }}</h3>
+        <ul class="list-unstyled mb-0">
+            {% for duty in duties %}
+                <li class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <strong>{{ ('incident.reporting.duty.' ~ duty.type.value)|trans({}, 'incident') }}</strong>
+                    <span class="text-muted">{{ 'incident.timeline.deadline'|trans({}, 'incident') }}: {{ duty.deadline|fa_datetime }}</span>
+                    {% if duty.reported %}
+                        {{ pill.render('incident.timeline.reported_at'|trans({}, 'incident') ~ ': ' ~ duty.reportedAt|fa_datetime, 'success') }}
+                    {% else %}
+                        {% if duty.overdue %}{{ pill.render('incident.timeline.overdue'|trans({}, 'incident'), 'danger') }}{% endif %}
+                        {{ _rep.mark(incident, duty.field) }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}

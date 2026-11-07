@@ -68,6 +68,7 @@
         { id: 'links', label: 'show.anchor.links'|trans({}, 'messages') },
         { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
         { id: 'nis2-reporting', label: 'incident.nis2_timeline.title'|trans({}, 'incident'), show: is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt },
+        { id: 'dora-reporting', label: 'incident.reporting.dora_title'|trans({}, 'incident'), show: is_module_active('nis2_dora') and reporting_duties(incident)|filter(d => d.type.value starts with 'dora_')|length > 0 },
         { id: 'bcm-impact', label: 'incident.section.bcm_impact'|trans({}, 'incident'), show: is_module_active('bcm') },
         { id: 'incident-risk-links', label: 'incident.link.section_title'|trans({}, 'incident') },
         { id: 'history', label: 'show.anchor.history'|trans({}, 'messages'), count: totalAuditLogs|default(0) },
@@ -192,6 +193,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import 'incident/_reporting.html.twig' as _rep %}
             {# Standardised via _detail_group component #}
             {% set incidentItems = [
                 { label: 'incident.field.category'|trans({}, 'incident'), value: incident.category|upper|replace({'_': ' '}) },
@@ -212,6 +214,7 @@
                         {{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}
                     </h3>
                     <p class="text-muted">{{ 'incident.nis2_timeline.description'|trans({}, 'incident') }}</p>
+                    {{ _rep.assessment(incident) }}
                     {% include '_components/_tenant_reporting_contacts.html.twig' with { authorities: incident.tenant.supervisoryAuthorities, csirts: incident.tenant.csirtEndpoints } only %}
 
                     <div class="timeline-container">
@@ -250,6 +253,7 @@
                                         {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}, 'incident') }}
                                     </div>
                                 {% endif %}
+                                {% if not incident.earlyWarningReportedAt %}{{ _rep.mark(incident, 'earlyWarningReportedAt') }}{% endif %}
                             </div>
                         </div>
 
@@ -288,6 +292,7 @@
                                         {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}, 'incident') }}
                                     </div>
                                 {% endif %}
+                                {% if not incident.detailedNotificationReportedAt %}{{ _rep.mark(incident, 'detailedNotificationReportedAt') }}{% endif %}
                             </div>
                         </div>
 
@@ -326,6 +331,7 @@
                                         {{ 'incident.timeline.days_remaining'|trans({'%days%': daysRemaining}, 'incident') }}
                                     </div>
                                 {% endif %}
+                                {% if not incident.finalReportSubmittedAt %}{{ _rep.mark(incident, 'finalReportSubmittedAt') }}{% endif %}
                             </div>
                         </div>
                     </div>
@@ -378,6 +384,11 @@
                         {% endif %}
                     </div>
                 </div>
+            {% endif %}
+
+            {% set _doraDuties = is_module_active('nis2_dora') ? reporting_duties(incident)|filter(d => d.type.value starts with 'dora_') : [] %}
+            {% if _doraDuties|length > 0 %}
+                {{ _rep.dora(incident, _doraDuties) }}
             {% endif %}
 
             {% if incident.description %}

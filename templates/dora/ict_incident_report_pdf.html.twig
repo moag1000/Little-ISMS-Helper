@@ -292,45 +292,23 @@
                 <td>{{ incident.detectedAt|fa_datetime }}</td>
                 <td><span class="compliant">{{ 'dora.ict_incident_report.timeline.completed'|trans({}, 'dora') }}</span></td>
             </tr>
-            <tr>
-                <td>{{ 'dora.ict_incident_report.timeline.initial_report'|trans({}, 'dora') }}</td>
-                <td>{{ incident.earlyWarningDeadline|fa_datetime }}</td>
-                <td>
-                    {% if incident.earlyWarningReportedAt %}
-                        <span class="compliant">{{ incident.earlyWarningReportedAt|fa_datetime }}</span>
-                    {% elseif incident.earlyWarningOverdue %}
-                        <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
-                    {% else %}
-                        <span class="pending">{{ 'dora.ict_incident_report.timeline.pending'|trans({}, 'dora') }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td>{{ 'dora.ict_incident_report.timeline.intermediate'|trans({}, 'dora') }}</td>
-                <td>{{ incident.detailedNotificationDeadline|fa_datetime }}</td>
-                <td>
-                    {% if incident.detailedNotificationReportedAt %}
-                        <span class="compliant">{{ incident.detailedNotificationReportedAt|fa_datetime }}</span>
-                    {% elseif incident.detailedNotificationOverdue %}
-                        <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
-                    {% else %}
-                        <span class="pending">{{ 'dora.ict_incident_report.timeline.pending'|trans({}, 'dora') }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td>{{ 'dora.ict_incident_report.timeline.final_report'|trans({}, 'dora') }}</td>
-                <td>{{ incident.finalReportDeadline|fa_datetime }}</td>
-                <td>
-                    {% if incident.finalReportSubmittedAt %}
-                        <span class="compliant">{{ incident.finalReportSubmittedAt|fa_datetime }}</span>
-                    {% elseif incident.finalReportOverdue %}
-                        <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
-                    {% else %}
-                        <span class="pending">{{ 'dora.ict_incident_report.timeline.pending'|trans({}, 'dora') }}</span>
-                    {% endif %}
-                </td>
-            </tr>
+            {# The DORA reports from the one planner (initial / 72 h / 1 month),
+               never the NIS-2 fields. #}
+            {% for duty in reporting_duties(incident)|filter(d => d.type.value starts with 'dora_') %}
+                <tr>
+                    <td>{{ ('incident.reporting.duty.' ~ duty.type.value)|trans({}, 'incident') }}</td>
+                    <td>{{ duty.deadline|fa_datetime }}</td>
+                    <td>
+                        {% if duty.reported %}
+                            <span class="compliant">{{ duty.reportedAt|fa_datetime }}</span>
+                        {% elseif duty.overdue %}
+                            <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
+                        {% else %}
+                            <span class="pending">{{ 'dora.ict_incident_report.timeline.pending'|trans({}, 'dora') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
         </table>
     </div>
 

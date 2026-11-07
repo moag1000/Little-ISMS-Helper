@@ -210,7 +210,8 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame("Session revoked.\n\nMFA enforced.", $breach->getMeasuresTaken());
         $this->assertSame('Phishing drill twice a year.', $breach->getLessonsLearned());
         $this->assertSame('Already assessed by the DPO.', $breach->getRootCause(), 'Filled fields are kept.');
-        $this->assertNotNull($breach->getDetectedAt());
+        $this->assertEquals(new DateTime('2026-11-05 10:00'), $breach->getDetectedAt(), 'The GDPR clock starts at the incident detection.');
+        $this->assertTrue($breach->getRequiresAuthorityNotification());
     }
 
     #[Test]

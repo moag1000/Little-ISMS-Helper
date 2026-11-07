@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Attribute\RequiresModule;
 use App\Enum\BCExerciseStatus;
-use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Enum\TreatmentStrategy;
 use DateTime;
@@ -25,6 +24,8 @@ use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use App\Enum\SlaDeadlineType;
+use App\Service\Incident\ReportingPlanner;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,6 +68,7 @@ class DoraComplianceController extends AbstractController
         private readonly Security $security,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
+        private readonly ReportingPlanner $reportingPlanner,
     ) {
     }
 
@@ -252,32 +254,25 @@ class DoraComplianceController extends AbstractController
 
         $totalIctIncidents = count($ictIncidents);
 
-        // Major incidents (high/critical severity)
-        $majorIncidents = array_filter($ictIncidents, fn($i) => in_array($i->getSeverity(), [IncidentSeverity::Critical, IncidentSeverity::High], true));
+        // Major ICT-related incidents: the DORA Art. 18 classification, not the severity.
+        $isMajor = static fn ($i): bool => $i->getIctIncidentClassification() === ReportingPlanner::DORA_MAJOR;
+        $majorIncidents = array_filter($ictIncidents, $isMajor);
         $totalMajorIncidents = count($majorIncidents);
 
         // Incidents this year
         $incidentsThisYear = array_filter($ictIncidents, fn($i) => $i->getDetectedAt() !== null && $i->getDetectedAt()->format('Y') === $thisYear
         );
-        $majorIncidentsYtd = count(array_filter($incidentsThisYear, fn($i) => in_array($i->getSeverity(), [IncidentSeverity::Critical, IncidentSeverity::High], true)));
+        $majorIncidentsYtd = count(array_filter($incidentsThisYear, $isMajor));
 
         // Open incidents
         $openIncidents = array_filter($ictIncidents, fn($i) => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
         $openMajorIncidents = array_filter($majorIncidents, fn($i) => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
 
-        // 4h initial notification compliance (Art. 19)
-        $reportedIn4h = count(array_filter($majorIncidents, function ($i) {
-            if ($i->getDetectedAt() === null) {
-                return false;
-            }
-            // Check if reported within 4 hours (DORA Art. 19 — early warning deadline)
-            $reportedAt = $i->getEarlyWarningReportedAt() ?? $i->getCreatedAt();
-            if ($reportedAt === null) {
-                return false;
-            }
-            $diff = $i->getDetectedAt()->diff($reportedAt);
-            return ($diff->days === 0 && $diff->h <= 4);
-        }));
+        // Initial notification in time (Art. 19 (4) (a)), from the DORA reporting duties
+        $reportedIn4h = count(array_filter(
+            $majorIncidents,
+            fn ($i): bool => $this->reportingPlanner->duty($i, SlaDeadlineType::DoraInitialNotification4h)?->isReportedInTime() === true,
+        ));
         $reportingComplianceRate = $totalMajorIncidents > 0 ? round(($reportedIn4h / $totalMajorIncidents) * 100) : 0;
 
         // Mean Time To Resolve (MTTR)

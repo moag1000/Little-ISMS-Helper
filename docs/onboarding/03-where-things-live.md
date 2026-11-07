@@ -45,7 +45,6 @@ Business logic lives in `src/Service/`. Grouped by namespace prefix:
 | `Document/` | Document versioning, approval pipeline |
 | `Evidence/` | Evidence collection for control assessments |
 | `Export/` | CSV/Excel/PDF/XBRL/OSCAL exporters |
-| `FollowUpTrigger/` | Automated follow-up creation after lifecycle events |
 | `Fte/` | FTE tracking service |
 | `Import/` | CSV/XML import pipeline services |
 | `Job/` | Async job infrastructure (dispatcher, runner, status store) |

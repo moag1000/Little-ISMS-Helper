@@ -68,7 +68,7 @@ final class SlaDeadlineMonitorRetryTest extends KernelTestCase
         $irrelevant = $this->incident(notificationRequired: false, detectedAt: $now->modify('-1 hour'));
 
         // The spawner started the clocks on flush; simulate the failed spawns.
-        self::assertSame(1, $this->monitorsFor($failed), 'the spawner runs on flush');
+        self::assertSame(3, $this->monitorsFor($failed), 'the spawner starts one clock per NIS-2 report on flush');
         $this->conn->executeStatement(
             "DELETE FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id IN (?, ?, ?)",
             [$failed, $recentlyMissed, $historic],
@@ -77,27 +77,27 @@ final class SlaDeadlineMonitorRetryTest extends KernelTestCase
         $this->retry->spawnMissing($now);
         $this->em->clear();
 
-        self::assertSame(1, $this->monitorsFor($failed), 'the failed spawn is retried');
+        self::assertSame(3, $this->monitorsFor($failed), 'the failed spawn is retried');
         self::assertSame(
-            SlaDeadlineType::Nis2EarlyWarning24h->value,
-            $this->conn->fetchOne("SELECT deadline_type FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id = ?", [$failed]),
+            [SlaDeadlineType::Nis2EarlyWarning24h->value, SlaDeadlineType::Nis2Notification72h->value, SlaDeadlineType::Nis2FinalReport1mo->value],
+            $this->conn->fetchFirstColumn("SELECT deadline_type FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id = ? ORDER BY deadline_at", [$failed]),
         );
-        self::assertSame(1, $this->monitorsFor($recentlyMissed), 'a deadline missed within the grace window still gets its clock');
+        self::assertSame(3, $this->monitorsFor($recentlyMissed), 'a deadline missed within the grace window still gets its clock');
         self::assertSame(0, $this->monitorsFor($historic), 'no back-fill of long-past deadlines');
         self::assertSame(0, $this->monitorsFor($irrelevant));
 
         self::assertSame(0, $this->retry->spawnMissing($now), 'a second run finds nothing to do');
-        self::assertSame(1, $this->monitorsFor($failed), 'no duplicate monitor');
+        self::assertSame(3, $this->monitorsFor($failed), 'no duplicate monitor');
 
         // The watcher then fires the "missed" alert once for the recently missed clock.
         self::getContainer()->get(\App\Service\Notification\SlaDeadlineWatcher::class)->tickAll();
         self::assertSame(
             'missed',
-            $this->conn->fetchOne("SELECT status FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id = ?", [$recentlyMissed]),
+            $this->conn->fetchOne("SELECT status FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id = ? AND deadline_type = 'nis2_24h'", [$recentlyMissed]),
         );
         self::assertSame(
             'active',
-            $this->conn->fetchOne("SELECT status FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id = ?", [$failed]),
+            $this->conn->fetchOne("SELECT status FROM sla_deadline_monitor WHERE entity_type = 'Incident' AND entity_id = ? AND deadline_type = 'nis2_24h'", [$failed]),
         );
     }
 
@@ -109,7 +109,7 @@ final class SlaDeadlineMonitorRetryTest extends KernelTestCase
     public function databaseRejectsADuplicateClock(): void
     {
         $incident = $this->incident(notificationRequired: true, detectedAt: new DateTimeImmutable('-1 hour'));
-        self::assertSame(1, $this->monitorsFor($incident));
+        self::assertSame(3, $this->monitorsFor($incident));
 
         $this->expectException(\Doctrine\DBAL\Exception\UniqueConstraintViolationException::class);
         $this->conn->executeStatement(
@@ -163,7 +163,7 @@ final class SlaDeadlineMonitorRetryTest extends KernelTestCase
 
         self::assertTrue($this->em->isOpen(), 'the closed manager was recovered');
         self::assertSame(0, $this->monitorsFor($bad));
-        self::assertSame(1, $this->monitorsFor($after), 'the record after the bad one still got its clock');
+        self::assertSame(3, $this->monitorsFor($after), 'the record after the bad one still got its clocks');
     }
 
     private function incident(bool $notificationRequired, DateTimeImmutable $detectedAt): int

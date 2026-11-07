@@ -80,22 +80,30 @@ Alle Felder sind hinter dem Modul `nis2_dora` gesperrt (T31.2.2).
 
 | Feld | Typ | Norm-Referenz |
 |---|---|---|
-| `ictIncidentClassification` | ?string | Art. 18 (Klassifizierung Major/Minor) |
-| `doraClassification` | ?string | CIR 2024/1772 (Major ICT Incident) |
-| `doraClientsImpacted` | ?int | Art. 18 Abs. 1 lit. a (Betroffene Kunden) |
-| `doraReputationImpact` | ?string | Art. 18 Abs. 1 lit. b (Reputationsschaden) |
-| `doraServiceDowntimeMinutes` | ?int | Art. 18 Abs. 1 lit. c (Ausfallzeit) |
-| `doraGeographicalSpread` | ?array | Art. 18 Abs. 1 lit. d (Geografische Ausbreitung) |
-| `doraDataLossOccurred` | ?bool | Art. 18 Abs. 1 lit. e (Datenverlust) |
-| `doraEconomicImpactEur` | ?int | Art. 18 Abs. 1 lit. f (Wirtschaftlicher Schaden EUR) |
+| `ictIncidentClassification` | ?string | Art. 18 (Klassifizierung `major_ict_incident` / `significant_cyber_threat`) |
+| `clientsAffected`, `clientsAffectedFinancialVolume` | ?int / ?decimal | Art. 18 Abs. 1 lit. a (Betroffene Kunden) |
+| `reputationalImpact` | ?int 1–5 | Art. 18 Abs. 1 lit. b (Reputationsschaden) |
+| `criticalServicesAffected` | BusinessProcess[] | Art. 18 Abs. 1 lit. c/e (kritische Dienste) |
+| `crossBorderImpact` | bool | Art. 18 Abs. 1 lit. d (Geografische Ausbreitung) |
+| `dataLossOccurred`, `dataLeakageOccurred` | bool | Art. 18 Abs. 1 lit. e (Datenverlust) |
+| `estimatedFinancialImpact` | ?decimal | Art. 18 Abs. 1 lit. f (Wirtschaftlicher Schaden EUR) — dasselbe Feld wie bei NIS-2 |
+
+Die frühere zweite Feldreihe (`doraClassification`, `doraClientsImpacted`, …,
+`economicImpact`) war nie in einem Formular; sie ist entfernt, vorhandene Werte
+sind in die Felder oben übernommen (Migration `Version20261107160000`).
 
 ### 4.2 Melde-Fristen (Art. 19 DORA)
 
-| Frist | DORA-Referenz | SLA-Entitaet |
+| Meldung | Frist | „gemeldet“-Feld |
 |---|---|---|
-| 4 Stunden | Art. 19 Abs. 4 lit. a (Erstmeldung) | `IncidentSlaConfig` |
-| 24 Stunden | Art. 19 Abs. 4 lit. b (Zwischenmeldung) | `IncidentSlaConfig` |
-| 1 Monat | Art. 19 Abs. 4 lit. c (Schlussmeldung) | `IncidentSlaConfig` |
+| Erstmeldung | 4 h nach Klassifizierung als schwerwiegend, spätestens 24 h nach Kenntnis | `initialReportSubmittedAt` |
+| Zwischenbericht | 72 h nach der Erstmeldung | `intermediateReportSubmittedAt` |
+| Abschlussbericht | 1 Monat nach dem Zwischenbericht | `doraFinalReportSubmittedAt` |
+
+Die Fristen berechnet `ReportingPlanner` (siehe `docs/NIS2.md` Abschnitt 10),
+nur für Finanzunternehmen (`doraEntityCategory = financial_entity`) und
+Vorfälle mit Klassifizierung „schwerwiegend“. Die Vorfallseite zeigt sie unter
+„DORA-Meldungen“ mit „Als gemeldet markieren“.
 
 Gegenueber NIS2: DORA Art. 19 Abs. 4 lit. a (4h) ist scharfer als NIS2 Art. 23 (24h).
 Bei Ueberschneidung gilt DORA als lex specialis gemaess Art. 4 Abs. 1 NIS2-RL.
@@ -336,9 +344,9 @@ Twig:
 | Norm | Artikel | Implementierung |
 |---|---|---|
 | DORA (EU) 2022/2554 | Art. 5–16 | ICT-RMF, ComplianceWizard |
-| DORA | Art. 17–19 | `Incident::$doraClassification` usw. |
+| DORA | Art. 17–19 | `Incident::$ictIncidentClassification` usw. |
 | DORA | Art. 18 | `Incident::$ictIncidentClassification` |
-| DORA | Art. 19 Abs. 4 | `IncidentSlaConfig` (4h/24h/1M) |
+| DORA | Art. 19 Abs. 4 | `ReportingPlanner` (Erstmeldung / 72 h / 1 Monat) |
 | DORA | Art. 28 Abs. 3 | `DoraRegisterOfInformationExporter` |
 | CIR (EU) 2024/1772 | Art. 18-Klassifizierung | `LoadDoraRtsItsFullCommand` |
 | CIR (EU) 2024/2956 | ITS Register-Templates | `DoraRegisterExportController` |

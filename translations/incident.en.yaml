@@ -93,6 +93,8 @@ incident:
     hours_remaining: '%hours% hours remaining'
     days_remaining: '%days% days remaining'
   field:
+    nis2_notification_required: Reporting assessment (NIS-2)
+    dora_final_report_submitted_at: DORA final report submitted at
     assigned_to: 'Assigned to'
     category: Category
     detected: Detected
@@ -134,7 +136,6 @@ incident:
     ict_incident_classification: ICT Incident Classification (DORA Art. 18)
     data_loss_occurred: Data Loss Occurred (DORA Art. 19)
     data_leakage_occurred: Data Leakage Occurred (DORA Art. 19)
-    economic_impact: Economic Impact in EUR (DORA Art. 19)
     reputational_impact: Reputational Impact 1–5 (DORA Art. 19)
     critical_services_affected: Critical Services Affected (DORA Art. 19)
     recurring_incident: Recurring Incident (DORA Art. 19)
@@ -260,9 +261,10 @@ incident:
     classification: -- Event or Incident --
     containment_actions: 'e.g. system isolated, access revoked, backup restored...'
     ict_classification: -- ICT incident classification --
-    economic_impact: '0.00'
     reputational_impact: -- Assess reputational impact --
   help:
+    nis2_notification_required: 'NIS-2 Art. 23 (3): the entity assesses whether the incident is significant. Until then the pre-check applies and the deadlines run from detection.'
+    dora_final_report_submitted_at: 'DORA Art. 19 (4) (c): one month after the intermediate report.'
     status_readonly: 'Status is driven by the Incident lifecycle workflow (detected → analyzed → contained → resolved → closed). Direct edit disabled; use the status actions on the show page (LifecycleService::transition).'
     visible_to_holding: 'Default on: holding / group CISO can see this incident to coordinate group-level response. Disable only for confidential cases (e.g. HR).'
     severity: Assess severity based on impact and scope (ISO 27001 A.16.1.4)
@@ -297,7 +299,6 @@ incident:
     containment_actions: 'Short-term containment measures and long-term remediation actions per A.5.26.'
     evidence_preserved: 'Confirm that digital evidence has been preserved with integrity protection per A.5.28.'
     ict_incident_classification: 'Classification per DORA Art. 18 and EBA/ESMA/EIOPA RTS: Major ICT Incident or significant cyber threat.'
-    economic_impact: 'Estimated total economic damage in EUR (direct + consequential costs) per DORA Art. 19(1)(b).'
     critical_services_affected: 'Critical or important functions/services impacted (DORA Art. 19(1)(e)).'
     clients_affected_financial_volume: 'Total transaction or contract volume of affected clients in EUR (DORA Art. 19).'
     replication_of_impact: 'Was a service replica or failover activated to limit impact?'
@@ -430,6 +431,37 @@ incident:
       rto_compliant: 'Compliant'
       rto_violations: '%count% Violations'
 
+  nis2_assessment:
+    reportable: Reportable
+    not_reportable: Not reportable
+    not_assessed: Not assessed yet
+  nis2_reason:
+    severity: severity high or critical
+    critical_process: critical business process affected
+    cross_border: cross-border impact
+    affected_persons: at least 100 persons affected
+    financial_loss: loss of EUR 500,000 or more
+    malicious: suspected malicious act
+  reporting:
+    mark_reported: Mark as reported
+    assessed: 'Assessment of the entity: %result%.'
+    precheck_title: 'Pre-check: probably a significant incident'
+    precheck_body: 'Met: %reasons%. The deadlines run from detection; the entity makes the assessment (NIS-2 Art. 23 (3)).'
+    confirm_reportable: Confirm reportable
+    confirm_not_reportable: Not reportable
+    dora_title: DORA reports (Art. 19)
+    duty:
+      nis2_24h: NIS-2 early warning (24 h)
+      nis2_72h: NIS-2 notification (72 h)
+      nis2_1mo: NIS-2 final report (1 month)
+      dora_4h: 'Initial notification (4 h after classification, 24 h at the latest)'
+      dora_72h: Intermediate report (72 h after the initial notification)
+      dora_1mo: Final report (1 month after the intermediate report)
+      gdpr_72h: GDPR notification to the authority (72 h)
+  flash:
+    assessed_reportable: Assessed as reportable.
+    assessed_not_reportable: Assessed as not reportable.
+    marked_reported: Marked as reported.
 # Junior-ISB-Audit P-12 rollout — 9001 bridge for Incident form.
 iso_9001_bridge:
     incident: 'In ISO 9001 incidents are covered by Clause 8.7 (control of nonconforming outputs) + 10.2 (nonconformity & corrective action). ISO 27001 A.5.24-27 extends the cycle (plan / assess / respond / learn) — same 9001 logic: what happened, what do we do now, what do we learn from it.'

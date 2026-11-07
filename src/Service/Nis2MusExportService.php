@@ -40,7 +40,8 @@ final class Nis2MusExportService
                 // never an assumed yes.
                 'suspected_malicious' => $incident->getNis2SuspectedMalicious(),
                 'cross_border_impact' => $incident->isCrossBorderImpact(),
-                'significant_incident_indicator' => $this->isSignificant($incident),
+                // The one definition: the entity's assessment, else the pre-check.
+                'significant_incident_indicator' => $incident->requiresNis2Reporting(),
                 'description_short' => $this->shortDescription($incident),
             ],
         ];
@@ -184,13 +185,6 @@ final class Nis2MusExportService
         }
 
         return $iocs;
-    }
-
-    private function isSignificant(Incident $incident): bool
-    {
-        return $incident->isCrossBorderImpact()
-            || ($incident->getAffectedUsersCount() ?? 0) > 0
-            || ($incident->getEstimatedFinancialImpact() !== null && (float) $incident->getEstimatedFinancialImpact() > 0);
     }
 
     /**
