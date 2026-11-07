@@ -232,6 +232,14 @@ class RestoreService
 
         $targetScopeIds = $purger->resolveTenantScopeIds($targetTenantScope);
 
+        // An organisation backup restored without a target scope (instance-wide restore,
+        // setup wizard) stays within the organisations it was made for — otherwise
+        // "clear before restore" would empty whole tables, other organisations included.
+        $recordedScope = $backup['metadata']['tenant_scope'] ?? [];
+        if ($targetTenantScope === null && is_array($recordedScope) && $recordedScope !== []) {
+            $targetScopeIds = array_values(array_map('intval', $recordedScope));
+        }
+
         // Collect warnings that must survive the validateBackup() reset
         $prependWarnings = array_filter([$integrityWarning]);
         if ($targetTenantScope !== null) {
@@ -293,13 +301,19 @@ class RestoreService
             $eventsToDisable   = [Events::prePersist, Events::preUpdate, Events::postPersist, Events::postUpdate];
 
             foreach ($eventsToDisable as $eventName) {
+                // Ask first: Symfony's ContainerAwareEventManager::getListeners() fails with a
+                // TypeError ("array + null") for an event nobody listens to.
+                if (!$eventManager->hasListeners($eventName)) {
+                    $originalListeners[$eventName] = [];
+                    continue;
+                }
                 try {
                     $listeners = $eventManager->getListeners($eventName);
                     $originalListeners[$eventName] = $listeners;
                     foreach ($listeners as $listener) {
                         $eventManager->removeEventListener($eventName, $listener);
                     }
-                } catch (Exception) {
+                } catch (\Throwable) {
                     $originalListeners[$eventName] = [];
                     $this->logger->debug('No listeners for event', ['event' => $eventName]);
                 }
@@ -364,7 +378,10 @@ class RestoreService
                     continue;
                 }
 
-                $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds);
+                $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
+                if ($targetScopeIds !== [] && $orderedEntity === 'Tenant') {
+                    $entities = $purger->pinOrganisationIdentity($entities);
+                }
 
                 if ($targetScopeIds !== [] && count($entities) < count($allEntities)) {
                     $this->logger->info('Tenant-scoped restore: filtered entities', [
@@ -458,7 +475,7 @@ class RestoreService
                     if (!class_exists($entityClass) || $allEntities === []) {
                         continue;
                     }
-                    $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds);
+                    $entities = $purger->filterEntitiesByScope($allEntities, $targetScopeIds, $orderedEntity);
                     if ($entities === []) {
                         continue;
                     }

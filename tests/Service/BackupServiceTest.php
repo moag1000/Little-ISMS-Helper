@@ -564,6 +564,55 @@ class BackupServiceTest extends TestCase
     }
 
     /**
+     * An organisation backup must contain the organisation record itself: it holds all
+     * organisation settings (branding, TLP, authorities, on-call, DPO, map, …).
+     */
+    #[Test]
+    public function testTenantScopedBackupContainsOwnOrganisationRecord(): void
+    {
+        $tenant = $this->createMock(Tenant::class);
+        $tenant->method('getId')->willReturn(7);
+        $tenant->method('getAllSubsidiaries')->willReturn([]);
+
+        $tenantRepo = $this->createMock(EntityRepository::class);
+        $tenantRepo->expects($this->once())
+            ->method('findBy')
+            ->with(['id' => [7]])
+            ->willReturn([$tenant]);
+
+        $tenantMetadata = $this->createMock(ClassMetadata::class);
+        $tenantMetadata->method('getFieldNames')->willReturn(['id', 'tlpDefault']);
+        $tenantMetadata->method('getAssociationNames')->willReturn([]);
+        $tenantMetadata->method('getFieldValue')->willReturnCallback(
+            fn($entity, string $field): mixed => $field === 'id' ? 7 : 'red'
+        );
+
+        $globalMetadata = $this->createMock(ClassMetadata::class);
+        $globalMetadata->method('getFieldNames')->willReturn(['id']);
+        $globalMetadata->method('getAssociationNames')->willReturn([]);
+
+        $this->entityManager->method('getRepository')->willReturnCallback(
+            function (string $class) use ($tenantRepo) {
+                if ($class === Tenant::class) {
+                    return $tenantRepo;
+                }
+                $emptyRepo = $this->createMock(EntityRepository::class);
+                $emptyRepo->method('findAll')->willReturn([]);
+                return $emptyRepo;
+            }
+        );
+        $this->entityManager->method('getClassMetadata')->willReturnCallback(
+            fn(string $class) => in_array($class, [Tenant::class, $tenant::class], true) ? $tenantMetadata : $globalMetadata
+        );
+
+        $backup = $this->service->createBackup(false, false, false, $tenant);
+
+        $this->assertSame([['id' => 7, 'tlpDefault' => 'red']], $backup['data']['Tenant']);
+        $this->assertSame(1, $backup['statistics']['Tenant']);
+        $this->assertNotContains('Tenant', $backup['metadata']['skipped_global_entities'] ?? []);
+    }
+
+    /**
      * C1 T2: Holding-tenant scoped backup must include both parent and all subsidiaries.
      *
      * Setup:

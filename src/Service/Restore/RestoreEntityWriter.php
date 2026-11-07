@@ -312,7 +312,11 @@ class RestoreEntityWriter
                         $stats['skipped']++;
                         continue;
                     }
-                    if ($options['existing_data_strategy'] === RestoreOptions::EXISTING_UPDATE) {
+                    // The organisation record is always updated in place: replacing it
+                    // would give it a new id and orphan every row that references it.
+                    if ($options['existing_data_strategy'] === RestoreOptions::EXISTING_UPDATE
+                        || $entityName === 'Tenant'
+                    ) {
                         $entity = $existingEntity;
                     } else {
                         $this->entityManager->remove($existingEntity);
@@ -749,6 +753,13 @@ class RestoreEntityWriter
     ): void {
         foreach ($meta->getFieldNames() as $fieldName) {
             if ($fieldName === 'id' && $existingEntity !== null) {
+                continue;
+            }
+
+            // Keep the live optimistic-lock version of an existing row: Doctrine puts
+            // it into the UPDATE's WHERE clause, so an older version from the backup
+            // makes the update hit zero rows (OptimisticLockException).
+            if ($existingEntity !== null && $meta->isVersioned && $fieldName === $meta->versionField) {
                 continue;
             }
 
