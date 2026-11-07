@@ -110,7 +110,7 @@ final class RegisterLinkTypes
             return [];
         }
 
-        return $this->entityManager->getRepository($this->classOf($field))->findBy(['id' => $ids]);
+        return $this->entityManager->getRepository(self::classOf($field))->findBy(['id' => $ids]);
     }
 
     /**

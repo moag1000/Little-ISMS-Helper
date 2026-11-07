@@ -174,7 +174,7 @@ final class IsmsRegisterEntryType extends AbstractType implements SectionMapInte
         $entryTypes = $this->linkTypes->entryTypesOf($field);
         $builder->add(self::LINK_PREFIX . $field, EntityType::class, [
             'label' => 'register.link.' . $field,
-            'class' => $this->linkTypes->classOf($field),
+            'class' => RegisterLinkTypes::classOf($field),
             'choice_label' => RegisterLinkTypes::labelOf(...),
             'multiple' => true,
             'required' => false,
