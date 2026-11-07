@@ -305,7 +305,6 @@ evidence_reverification:
         title: 'Reverifikations-Details'
         details: 'Details'
         document: 'Dokument'
-        status: 'Status'
         linked_control: 'Verknüpftes Control'
         linked_fulfillment: 'Verknüpfte Erfüllung'
         assigned_to: 'Zugewiesen an'

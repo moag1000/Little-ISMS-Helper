@@ -138,7 +138,7 @@ Use for audit log actions and user activity tracking.
 <span class="badge badge-import">Imported</span>
 ```
 
-**Location:** `assets/styles/ui-components.css` lines 2218-2283
+**Location:** `assets/styles/app.css` lines 2218-2283
 **Dark Mode:** ✅ Vibrant colors with 8px glow
 
 **Example - Audit Log:**
@@ -326,8 +326,8 @@ All badges meet WCAG 2.1 AA standards:
 ## CSS Files
 
 - **Base Styles:** `assets/styles/app.css` (lines 1249-1306)
-- **Dark Mode:** `assets/styles/dark-mode.css` (lines 225-301)
-- **Action Badges:** `assets/styles/ui-components.css` (lines 2218-2283)
+- **Dark Mode:** `assets/styles/app.css` (lines 225-301)
+- **Action Badges:** `assets/styles/app.css` (lines 2218-2283)
 
 ---
 

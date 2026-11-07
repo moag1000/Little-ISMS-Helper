@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'risk_treatment_plan' %}
 
 {% block title %}{{ plan.title }} - {{ 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') }}{% endblock %}
@@ -16,12 +19,6 @@
             body: 'common.module_not_active'|trans({'%module%': 'Risk Treatment Plans'}, 'messages')
         }) }}
     {% else %}
-    {# Lifecycle — status transition dropdown (risk_treatment_plan_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: plan,
-        entity_type: 'risk-treatment-plan',
-        workflow_name: 'risk_treatment_plan_lifecycle'
-    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },
@@ -40,27 +37,33 @@
     ]
 }) }}
 
-{# Status Cards #}
+{% set _status %}{% set status_variant = plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) %}{% include '_components/_badge.html.twig' with { variant: status_variant, class: 'fa-status-pill--lg', content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}{% endset %}
+{% set _actions %}{{ _lifecycle_actions.dropdown(plan, 'risk-treatment-plan', 'risk_treatment_plan_lifecycle') }}{% endset %}
+{{ _fa_status_band.render({
+    status: _status,
+    actions: _actions,
+    facts: [
+        { label: 'show.status.owner'|trans({}, 'messages'), value: plan.effectiveResponsiblePerson },
+        { label: 'show.status.priority'|trans({}, 'messages'), value: plan.priority ? ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan') : null },
+        { label: 'show.status.target_date'|trans({}, 'messages'), value: plan.targetCompletionDate ? plan.targetCompletionDate|fa_date : null },
+    ],
+    workflow: workflow_state(plan),
+}) }}
+
+{% set _links = entity_links(plan) %}
+{{ _fa_anchor_bar.render([
+    { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+    { id: 'details', label: 'risk_treatment_plan.section.details'|trans({}, 'risk_treatment_plan') },
+    { id: 'controls', label: 'risk_treatment_plan.section.controls'|trans({}, 'risk_treatment_plan'), show: plan.controls|length > 0 },
+    { id: 'evidence', label: 'evidence.widget.title'|trans({}, 'evidence') },
+    { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+]) }}
+
+{% include '_components/_fa_entity_links.html.twig' with { entity: plan } only %}
+
+{# Progress cards #}
 <div class="row mb-4">
-    <div class="col-md-3">
-        <div class="info-card">
-            <div class="info-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</div>
-            <div class="info-value">
-                {% set status_variant = plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) %}
-                {% include '_components/_badge.html.twig' with { variant: status_variant, class: 'fa-status-pill--lg', content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="info-card">
-            <div class="info-label">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan') }}</div>
-            <div class="info-value">
-                {% set priority_variant = plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) %}
-                {% include '_components/_badge.html.twig' with { variant: priority_variant, class: 'fa-status-pill--lg', content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
+    <div class="col-md-6">
         <div class="info-card">
             <div class="info-label">{{ 'risk_treatment_plan.field.completion'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
@@ -68,7 +71,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6">
         <div class="info-card {{ plan.isOverdue() ? 'info-card--danger' : '' }}">
             <div class="info-label">{{ 'risk_treatment_plan.days_until_target'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
@@ -86,6 +89,7 @@
 </div>
 
 {# Main Details #}
+<div id="details" class="fa-show-section">
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_header %}
         <div class="card-header">
@@ -128,7 +132,7 @@
                 <div class="detail-item">
                     <strong>{{ 'risk_treatment_plan.field.start_date'|trans({}, 'risk_treatment_plan') }}:</strong>
                     {% if plan.startDate %}
-                        {{ plan.startDate|date('Y-m-d') }}
+                        {{ plan.startDate|fa_date }}
                     {% else %}
                         <span class="text-muted">{{ 'common.not_started'|trans({}, 'messages') }}</span>
                     {% endif %}
@@ -136,13 +140,13 @@
 
                 <div class="detail-item">
                     <strong>{{ 'risk_treatment_plan.field.target_completion_date'|trans({}, 'risk_treatment_plan') }}:</strong>
-                    {{ plan.targetCompletionDate|date('Y-m-d') }}
+                    {{ plan.targetCompletionDate|fa_date }}
                 </div>
 
                 <div class="detail-item">
                     <strong>{{ 'risk_treatment_plan.field.actual_completion_date'|trans({}, 'risk_treatment_plan') }}:</strong>
                     {% if plan.actualCompletionDate %}
-                        {{ plan.actualCompletionDate|date('Y-m-d') }}
+                        {{ plan.actualCompletionDate|fa_date }}
                     {% else %}
                         <span class="text-muted">{{ 'common.not_completed'|trans({}, 'messages') }}</span>
                     {% endif %}
@@ -166,9 +170,11 @@
         {% endif %}
     {% endblock %}
 {% endembed %}
+</div>
 
 {# Linked Controls #}
 {% if plan.controls|length > 0 %}
+<div id="controls" class="fa-show-section">
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_header %}
         <div class="card-header">
@@ -205,44 +211,22 @@
         {% endembed %}
     {% endblock %}
 {% endembed %}
+</div>
 {% endif %}
 
 {# Evidence Documents #}
+<div id="evidence" class="fa-show-section">
 {% include 'evidence/_upload_widget.html.twig' with {
     entityType: 'risk_treatment_plan',
     entityId: plan.id,
     documents: plan.evidenceDocuments
 } %}
+</div>
 
-{# Audit Log History #}
-{% if auditLogs is defined and auditLogs|length > 0 %}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_header %}
-        <div class="card-header">
-            <h2><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans({}, 'risk_treatment_plan') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h2>
-        </div>
-    {% endblock %}
-    {% block card_body %}
-        <div class="fa-audit-feed">
-            {% for log in auditLogs %}
-            <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
-                <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
-                <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
-                <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
-                <span class="fa-audit-row__action">{{ log.action|upper }}</span>
-                <span class="fa-audit-row__target">{{ log.entityType|default('RiskTreatmentPlan') }}#{{ log.entityId|default('') }}</span>
-                <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
-            </div>
-            {% endfor %}
-        </div>
-        {% if totalAuditLogs > 10 %}
-        <div class="text-center mt-3">
-            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit_log') }}</small>
-        </div>
-        {% endif %}
-    {% endblock %}
-{% endembed %}
-{% endif %}
+{% include '_components/_fa_show_history.html.twig' with {
+    auditLogs: auditLogs|default([]), total: totalAuditLogs|default(0),
+    entityType: 'RiskTreatmentPlan', entityId: plan.id, lifecycle: 'risk-treatment-plan'
+} only %}
 
 {# Delete Section - Admin Only #}
 {% if is_granted('ROLE_ADMIN') %}

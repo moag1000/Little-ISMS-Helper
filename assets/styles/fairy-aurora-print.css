@@ -65,8 +65,7 @@
         color: #0e0a1f;
         background: #fff !important;
     }
-    h1, h2, h3, h4, h5, h6,
-    .ds-eyebrow, .fa-page-header__title,
+    h1, h2, h3, h4, h5, h6, .fa-page-header__title,
     table, thead, .fa-cyber-btn, .fa-status-pill, .badge,
     code, pre, .font-monospace {
         font-family: var(--font-sans, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
@@ -97,39 +96,25 @@
     .footer,
     .sidebar-backdrop,
     .mobile-menu-btn,
-    .mega-menu-panel,
     .command-palette,
-    .guided-tour-overlay,
     .toast-container,
     .fa-global-banner,
     .fa-alva,
     .fa-onboarding-fairy,
     .fa-tech-backdrop,
-    .header-alva,
     .header-system-status,
     .pwa-install-btn,
     .turbo-progress-bar,
     .skip-link,
-    .mode-switch,
     .fa-mode-switch,
     .bulk-action-bar,
     .alva-dock,
-    .tweaks-panel,
     .floating-toolbar,
-    .fa-floating-toolbar,
     .no-print,
     [data-controller*="tour"],
     [data-controller*="guided"] {
         display: none !important;
     }
-
-    /* Print-only elements: hidden by default in screen, visible only in print.
-       Apply to print-headers, footers, watermarks, signature-blocks etc. */
-    .print-only {
-        display: block !important;
-    }
-    .print-only-inline { display: inline !important; }
-    .print-only-flex   { display: flex !important; }
 
     /* ─────────────────────────────────────────────────────────
        Layout — full width, no chrome
@@ -182,16 +167,13 @@
        ───────────────────────────────────────────────────────── */
     .page-break-before { break-before: page; page-break-before: always; }
     .page-break-after  { break-after: page;  page-break-after: always; }
-    .page-break-avoid  { break-inside: avoid; page-break-inside: avoid; }
 
     /* Auto-page-break before each top-level section heading */
-    h1, .print-section {
+    h1 {
         break-before: page;
         page-break-before: always;
     }
     /* But: NOT for the very first H1 in a print-doc */
-    .print-doc > h1:first-child,
-    .print-doc > *:first-child h1:first-child,
     article > h1:first-child {
         break-before: auto;
         page-break-before: auto;
@@ -300,21 +282,5 @@
     }
     body[data-print-watermark="ARCHIVIERT"]::after {
         color: rgba(94, 88, 120, 0.10);  /* grau */
-    }
-
-    /* Optional: print-doc landscape */
-    .print-landscape {
-        page: landscape;
-    }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   Screen-Mode: hide elements that are .print-only
-   ═══════════════════════════════════════════════════════════════════ */
-@media screen {
-    .print-only,
-    .print-only-inline,
-    .print-only-flex {
-        display: none !important;
     }
 }

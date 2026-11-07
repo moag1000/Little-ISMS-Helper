@@ -11,7 +11,6 @@ use App\Entity\IdentityProviderRoleMapping;
 use App\Entity\SsoUserApproval;
 use App\Entity\User;
 use App\Form\IdentityProviderType;
-use App\Repository\AuditLogRepository;
 use App\Repository\IdentityProviderRepository;
 use App\Repository\IdentityProviderRoleMappingRepository;
 use App\Repository\SsoUserApprovalRepository;
@@ -84,7 +83,6 @@ final class SsoProviderController extends AbstractController
         private readonly AuditLogger $audit,
         private readonly ModuleConfigurationService $moduleService,
         private readonly IdentityProviderRoleMappingRepository $roleMappingRepo,
-        private readonly AuditLogRepository $auditLogRepo,
         private readonly TranslatorInterface $translator,
         private readonly UserAdministrationGuard $userAdministrationGuard,
         private readonly SsoEnforcementExemptions $enforcementExemptions,
@@ -289,13 +287,10 @@ final class SsoProviderController extends AbstractController
         $this->denyAccessUnlessGranted(IdentityProviderVoter::VIEW, $provider);
 
         $mappings   = $this->roleMappingRepo->findActiveByProvider($provider);
-        $auditTrail = $this->auditLogRepo->findByEntity('IdentityProvider', (int) $provider->getId());
-        $last50     = array_slice(array_reverse($auditTrail), 0, 50);
 
         return $this->render('admin/sso/show.html.twig', [
             'provider'    => $provider,
             'mappings'    => $mappings,
-            'audit_trail' => $last50,
             'ignored_privileged_roles' => SsoAccountLinkPolicy::ignoredPrivilegedRoles($provider, $mappings),
         ]);
     }

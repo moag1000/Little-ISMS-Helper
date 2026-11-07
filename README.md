@@ -273,7 +273,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **MFA** -- TOTP mit Backup-Codes
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
-- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping, DR-Runbook
+- **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping (Organisations-Backup enthaelt auch die Organisations-Einstellungen), DR-Runbook
 
 ### Persona-Dashboards und Workflow-Inbox
 
@@ -299,6 +299,7 @@ Ein Aufbau für alle Seiten, damit Eingaben einmal erfolgen und überall weiterv
 
 - **FairyAurora v4** -- Cyberpunk-Design-System mit Alva-Maskottchen (9 Stimmungen)
 - **Dark Mode** -- Vollstaendige Theme-Unterstuetzung
+- **Aufgeräumtes CSS** -- Tokens in `fairy-aurora.css`, Komponenten in `fairy-aurora-components.css`, App-Layer in einer `app.css` (früher fünf Dateien); ungenutzte Klassen und überschriebene Doppel-Deklarationen entfernt, ein Test prüft, dass jedes Stylesheet geladen wird
 - **WCAG 2.2 AA** -- ARIA, Keyboard-Navigation, Focus-Management, Skip-Links
 - **i18n** -- Deutsch und Englisch, 276 Uebersetzungsdateien in 138 Domaenen
 
@@ -483,6 +484,7 @@ src/
   Security/Voter/     Authorization-Voter (inkl. TenantScopedAdminVoter)
 
 templates/        Twig-Templates mit Aurora v4 Macros
+assets/styles/    Stylesheets (Tokens, Aurora-Komponenten, App-Layer, Dokumente); Ladeliste in templates/_aurora_styles.html.twig
 translations/     eine YAML-Datei je Domaene und Sprache (DE/EN)
 tests/            Unit + WebTestCase + Lifecycle
 config/

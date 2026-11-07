@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% trans_default_domain 'interested_parties' %}
 
 {% block title %}{{ 'interested_party.page.show_title'|trans({}, 'interested_parties') }}: {{ interested_party.name }}{% endblock %}
@@ -30,6 +33,26 @@
         ]
     }) }}
 
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\InterestedParty', status_key: interested_party.status }) }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: interested_party.partyType },
+            { label: 'show.status.level'|trans({}, 'messages'), value: interested_party.importance ? interested_party.importance|upper : null },
+            { label: 'interested_party.field.next_communication'|trans({}, 'interested_parties'), value: interested_party.nextCommunication ? interested_party.nextCommunication|fa_date : null },
+        ],
+        workflow: workflow_state(interested_party),
+    }) }}
+
+    {% set _links = entity_links(interested_party) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: interested_party } only %}
+
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if is_granted('ROLE_ADMIN') %}
         <div class="d-flex justify-content-end mb-3">
@@ -43,6 +66,7 @@
         </div>
     {% endif %}
 
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -106,12 +130,12 @@
                     </div>
                     <div class="detail-item">
                         <span class="label">{{ 'interested_party.field.last_communication'|trans({}, 'interested_parties') }}:</span>
-                        <span class="value">{{ interested_party.lastCommunication ? interested_party.lastCommunication|date('Y-m-d') : 'interested_party.never'|trans({}, 'interested_parties') }}</span>
+                        <span class="value">{{ interested_party.lastCommunication ? interested_party.lastCommunication|fa_date : 'interested_party.never'|trans({}, 'interested_parties') }}</span>
                     </div>
                     <div class="detail-item">
                         <span class="label">{{ 'interested_party.field.next_communication'|trans({}, 'interested_parties') }}:</span>
                         <span class="value {{ interested_party.isCommunicationOverdue() ? 'text-danger' : '' }}">
-                            {{ interested_party.nextCommunication ? interested_party.nextCommunication|date('Y-m-d') : 'interested_party.not_scheduled'|trans({}, 'interested_parties') }}
+                            {{ interested_party.nextCommunication ? interested_party.nextCommunication|fa_date : 'interested_party.not_scheduled'|trans({}, 'interested_parties') }}
                             {{ interested_party.isCommunicationOverdue() ? '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ' ~ ('interested_party.badge.overdue'|trans({}, 'interested_parties')) : '' }}
                         </span>
                     </div>
@@ -143,12 +167,15 @@
 
             <div class="detail-section">
                 <p class="text-muted">
-                    {{ 'common.created_at'|trans({}, 'messages') }}: {{ interested_party.createdAt|date('Y-m-d H:i') }}
-                    {% if interested_party.updatedAt %}| {{ 'common.updated_at'|trans({}, 'messages') }}: {{ interested_party.updatedAt|date('Y-m-d H:i') }}{% endif %}
+                    {{ 'common.created_at'|trans({}, 'messages') }}: {{ interested_party.createdAt|fa_datetime }}
+                    {% if interested_party.updatedAt %}| {{ 'common.updated_at'|trans({}, 'messages') }}: {{ interested_party.updatedAt|fa_datetime }}{% endif %}
                 </p>
             </div>
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: interested_party, lifecycle: 'interested-party' } only %}
     {% endif %} {# /M-4 interested_parties module gate #}
 </div>
 

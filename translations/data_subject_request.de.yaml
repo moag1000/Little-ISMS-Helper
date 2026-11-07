@@ -125,7 +125,6 @@ dsr:
     # Feldbezeichnungen (Detailseite)
     field:
         request_type: "Antragsart"
-        status: "Status"
         received_at: "Eingegangen"
         deadline: "Frist"
         original_deadline: "Urspruengliche Frist"

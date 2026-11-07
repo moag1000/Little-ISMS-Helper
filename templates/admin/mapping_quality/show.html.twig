@@ -4,6 +4,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ 'admin.mapping_quality.detail_title'|trans({}, 'admin') }}{% endblock %}
 
@@ -22,9 +23,23 @@
         subtitle: '#' ~ mapping.id,
     }) }}
 
+    {% set _status %}{{ pill.render(mapping.lifecycleState, mapping.lifecycleBadgeClass in ['info'] ? 'primary' : (mapping.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : mapping.lifecycleBadgeClass), {size: 'sm'}) }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'admin.mapping_quality.mqs_score'|trans({}, 'admin'), value: mapping.qualityScore is not null ? mapping.qualityScore ~ ' / 100' : null },
+            { label: 'admin.mapping_quality.field.confidence'|trans({}, 'admin'), value: mapping.confidence },
+            { label: 'show.status.version'|trans({}, 'messages'), value: 'v' ~ mapping.version },
+            { label: 'show.status.valid_until'|trans({}, 'messages'), value: mapping.validUntil ? mapping.validUntil|fa_date : null },
+        ],
+        workflow: workflow_state(mapping),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: mapping } only %}
+
     <div class="row mb-4">
         <div class="col-md-8">
-            <section class="fa-section">
+            <section class="fa-section fa-show-section" id="details">
                 <div class="fa-section__header">
                     <div>
                         <h2 class="fa-section__title">
@@ -93,7 +108,7 @@
                 </div>
                 <div class="fa-section__body">
                     <div class="text-center mb-3">
-                        <h1 class="display-4 mb-0 text-{{ scoreClass }}">{{ mapping.qualityScore ?? '–' }}</h1>
+                        <div class="display-4 mb-0 text-{{ scoreClass }}">{{ mapping.qualityScore ?? '–' }}</div>
                         <small class="text-muted">{{ 'admin.mapping_quality.mqs_max'|trans({}, 'admin') }}</small>
                     </div>
                     {% if mapping.mqsBreakdown %}
@@ -144,5 +159,7 @@
             {% endif %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: mapping } only %}
 </div>
 {% endblock %}

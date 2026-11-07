@@ -135,8 +135,6 @@ sso:
             save: 'Mappings speichern'
     audit:
         section:
-            title: 'SSO Audit-Trail (letzte 50 Ereignisse)'
-        empty: 'Noch keine SSO-Audit-Einträge für diesen Provider.'
         event:
             sso_login_success: 'SSO-Login erfolgreich'
             sso_login_failure: 'SSO-Login fehlgeschlagen'

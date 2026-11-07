@@ -28,7 +28,6 @@ risk_treatment_plan:
     section:
         details: Details
         controls: 'Zugeordnete Maßnahmen'
-        history: Verlauf
         basic_info: Basisinformationen
         status_progress: 'Status & Fortschritt'
         timeline: Zeitplan

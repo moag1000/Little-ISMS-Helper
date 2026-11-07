@@ -2,6 +2,8 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'business_process' %}
 
 {% block title %}{{ business_process.name }}{% endblock %}
@@ -35,6 +37,24 @@
         ]
     }) }}
 
+    {{ _fa_status_band.render({
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: business_process.effectiveProcessOwner },
+            { label: 'show.status.criticality'|trans({}, 'messages'), value: business_process.criticality ? ('business_process.criticality.' ~ business_process.criticality)|trans({}, 'business_process') : null },
+            { label: 'business_process.show.rto'|trans({}, 'business_process'), value: business_process.rto is not null ? business_process.rto ~ ' ' ~ 'business_process.show.hours'|trans({}, 'business_process') : null },
+        ],
+        workflow: workflow_state(business_process),
+    }) }}
+
+    {% set _links = entity_links(business_process) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: business_process } only %}
+
     {# 9001-bridge: Business-Process = Prozesslandkarte (9001 Cl. 4.4). #}
     {{ _fa_norm_bridge.render({
         from_norm: 'ISO 22301 8.3',
@@ -57,7 +77,7 @@
     </div>
 
     {# KPI Cards with Data Reuse #}
-    <div class="row mb-4">
+    <div class="row mb-4 fa-show-section" id="details">
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
@@ -340,6 +360,8 @@
             </turbo-frame>
         {% endblock %}
     {% endembed %}
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: business_process } only %}
 </div>
 
 <style>

@@ -1,7 +1,6 @@
 audit_log:
     pagination:
         page_counter: 'Page %current% of %total%'
-    showing_recent: 'Showing the latest %count% entries'
 audit:
     success:
         created: Audit created.
@@ -39,7 +38,6 @@ audit:
         findings: Findings
         recommendations: 'Recommendations & Actions'
         documentation: Documentation
-        history: History
         structured_findings: 'Structured findings'
         structured_findings_help: 'Findings are captured here in a structured way and automatically flow into the corrective-action pipeline.'
         # Junior-ISB-Audit-2026-05-22 C2-04 — Legacy free-text deprecation

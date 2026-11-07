@@ -140,7 +140,6 @@ audit:
         findings: Feststellungen
         recommendations: 'Empfehlungen & Maßnahmen'
         documentation: Dokumentation
-        history: Verlauf
         structured_findings: 'Strukturierte Findings'
         structured_findings_help: 'Findings werden hier strukturiert erfasst und gehen automatisch in die Korrekturmaßnahmen-Pipeline.'
         # Junior-ISB-Audit-2026-05-22 C2-04 — Legacy free-text deprecation
@@ -246,7 +245,6 @@ audit:
 audit_log:
     pagination:
         page_counter: 'Seite %current% von %total%'
-    showing_recent: 'Neueste %count% Einträge werden angezeigt'
 audit_management:
     title: 'Internes Audit'
     subtitle: 'Planung und Durchführung interner ISMS-Audits gemäß ISO 27001'

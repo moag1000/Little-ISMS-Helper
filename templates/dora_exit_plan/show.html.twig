@@ -2,6 +2,7 @@
 {% trans_default_domain 'dora_exit_plan' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ plan.supplier ? plan.supplier.name : 'dora_exit_plan.title'|trans }}{% endblock %}
 
@@ -26,7 +27,18 @@
         ]
     }) }}
 
-    {% embed '_components/_card.html.twig' %}
+    {{ _fa_status_band.render({
+        facts: [
+            { label: 'dora_exit_plan.field.exit_trigger'|trans({}, 'dora_exit_plan'), value: plan.exitTrigger ? ('dora_exit_plan.trigger.' ~ plan.exitTrigger)|trans({}, 'dora_exit_plan') : null },
+            { label: 'dora_exit_plan.field.tested_at'|trans({}, 'dora_exit_plan'), value: plan.testedAt ? plan.testedAt|fa_date : null },
+            { label: 'dora_exit_plan.field.estimated_duration_days'|trans({}, 'dora_exit_plan'), value: plan.estimatedDurationDays },
+        ],
+        workflow: workflow_state(plan),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: plan } only %}
+
+    {% embed '_components/_card.html.twig' with { class: 'fa-show-section' } %}
         {% block card_body %}
             <dl class="row">
                 <dt class="col-sm-4">{{ 'dora_exit_plan.field.supplier'|trans({}, 'dora_exit_plan') }}</dt>
@@ -62,7 +74,7 @@
                 <dt class="col-sm-4">{{ 'dora_exit_plan.field.tested_at'|trans({}, 'dora_exit_plan') }}</dt>
                 <dd class="col-sm-8">
                     {% if plan.testedAt %}
-                        {{ plan.testedAt|date('Y-m-d H:i') }}
+                        {{ plan.testedAt|fa_datetime }}
                         {% if plan.isRehearsalOverdue() %}
                             {% include '_components/_badge.html.twig' with {
                                 variant: 'warning',
@@ -96,5 +108,7 @@
             {{ 'common.delete'|trans({}, 'messages') }}
         </button>
     </form>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: plan } only %}
 </div>
 {% endblock %}
