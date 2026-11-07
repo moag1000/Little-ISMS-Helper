@@ -52,7 +52,7 @@ final class RegisterLinkTypes
     }
 
     /** @return class-string */
-    public function classOf(string $field): string
+    public static function classOf(string $field): string
     {
         // @intentional-assertion: link fields come from RegisterType, an unknown one is a programming error
         return self::KINDS[$field][0] ?? throw new InvalidArgumentException('Unknown register link field ' . $field);
