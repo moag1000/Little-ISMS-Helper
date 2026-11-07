@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\Trait\InternalAuditLeadAuditorTrait;
@@ -139,6 +140,12 @@ class InternalAudit
     #[Groups(['audit:read'])]
     #[MaxDepth(1)]
     private Collection $scopedAssets;
+
+    /** Site the audit covers (scopeType "location"); feeds the audit layer of the location map. */
+    #[ORM\ManyToOne(targetEntity: Location::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read', 'audit:write'])]
+    private ?Location $location = null;
 
     /**
      * @var Collection<int, Tenant>
@@ -555,6 +562,17 @@ public function __construct()
     public function setAuditedDepartments(?string $auditedDepartments): static
     {
         $this->auditedDepartments = $auditedDepartments;
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
         return $this;
     }
 

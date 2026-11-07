@@ -7,8 +7,8 @@ src/Form/BCExerciseType.php:158:observers
 src/Form/DataSubjectRequestType.php:76:dataSubjectEmail
 src/Form/IncidentType.php:223:affectedSystems
 src/Form/InterestedPartyType.php:92:contactPerson
-src/Form/InternalAuditType.php:176:leadAuditor
-src/Form/InternalAuditType.php:196:auditTeam
+src/Form/InternalAuditType.php:182:leadAuditor
+src/Form/InternalAuditType.php:202:auditTeam
 src/Form/LocationType.php:111:country
 src/Form/SupplierType.php:91:contactPerson
 src/Form/SupplierType.php:410:countryOfHeadOffice

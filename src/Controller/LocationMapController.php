@@ -7,6 +7,11 @@ namespace App\Controller;
 use App\Attribute\RequiresModule;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Privacy\GdprTransferZones;
+use App\Service\Location\LocationEventView;
+use App\Service\Location\LocationGroupView;
+use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use App\Service\Location\LocationBulkChoices;
 use App\Service\Location\LocationBulkService;
 use App\Service\Location\LocationCoordinateUpdater;
@@ -31,7 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 final class LocationMapController extends AbstractController
 {
-    public const array LENSES = ['ciso', 'isb', 'cm', 'owner'];
+    public const array LENSES = ['ciso', 'isb', 'cm', 'bcm', 'dpo', 'auditor', 'owner', 'group'];
     private const string LENS_SESSION_KEY = 'location_map_lens';
 
     public function __construct(
@@ -41,6 +46,10 @@ final class LocationMapController extends AbstractController
         private readonly LocationMapExporter $exporter,
         private readonly OnlineGeocoder $onlineGeocoder,
         private readonly LocationCoordinateUpdater $coordinateUpdater,
+        private readonly LocationGroupView $groupView,
+        private readonly LocationEventView $eventView,
+        private readonly ModuleConfigurationService $modules,
+        private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -52,18 +61,24 @@ final class LocationMapController extends AbstractController
         $tenant = $user instanceof User ? $user->getTenant() : null;
         $view = $tenant instanceof Tenant
             ? $this->mapView->build($tenant, $user)
-            : ['sites' => [], 'unsaved' => 0, 'peers' => [], 'objectives' => [], 'levers' => [], 'money' => false, 'peerMode' => 'off'];
+            : ['sites' => [], 'unsaved' => 0, 'peers' => [], 'objectives' => [], 'levers' => [], 'money' => false,
+                'peerMode' => 'off', 'layers' => ['risk', 'gaps'], 'suppliers' => null, 'sample' => ['size' => 0, 'ids' => []]];
         $sites = $view['sites'];
 
         $hasOwnSite = array_filter($sites, static fn (array $s): bool => $s['mine']) !== [];
+        $lenses = $this->availableLenses($hasOwnSite, $tenant);
         // The chosen lens is kept for the session; without a choice the role decides.
         $session = $request->getSession();
         $lens = (string) $request->query->get('lens', (string) $session->get(self::LENS_SESSION_KEY, ''));
-        if (!in_array($lens, self::LENSES, true) || ($lens === 'owner' && !$hasOwnSite)) {
-            $lens = $this->defaultLens($hasOwnSite);
+        if (!in_array($lens, $lenses, true)) {
+            $lens = $this->defaultLens($lenses);
         } elseif ($request->query->has('lens')) {
             $session->set(self::LENS_SESSION_KEY, $lens);
         }
+
+        // Group view: every organisation of the holding's subtree, read-only.
+        $group = $lens === 'group' ? $this->groupView->build($this->tenantContext->getAccessibleTenants()) : null;
+        $mapSites = $group['sites'] ?? $sites;
 
         $unplaced = array_values(array_filter(
             $sites,
@@ -74,19 +89,35 @@ final class LocationMapController extends AbstractController
             static fn (array $s): bool => $s['geoSource'] === LocationGeocoder::SOURCE_COUNTRY,
         ));
 
+        // Event mode (BCM lens): which sites, assets, processes, plans and
+        // crisis teams a country-wide event hits.
+        $eventCountries = $tenant instanceof Tenant && $lens === 'bcm'
+            ? $this->eventView->countries($sites) : [];
+        $eventCode = strtoupper((string) $request->query->get('event', ''));
+        $event = $tenant instanceof Tenant && isset($eventCountries[$eventCode])
+            ? $this->eventView->forCountry($tenant, $sites, $eventCode) : null;
+
         return $this->render('location/map.html.twig', [
-            'sites' => $sites,
+            'sites' => $mapSites,
             'lens' => $lens,
-            'lenses' => $hasOwnSite ? self::LENSES : array_values(array_diff(self::LENSES, ['owner'])),
+            'lenses' => $lenses,
+            'layers' => $group !== null ? ['risk', 'gaps'] : $view['layers'],
+            'group' => $group,
             'unplaced' => $unplaced,
             'coarse' => $coarse,
             'unsaved' => $view['unsaved'],
             'peers' => $view['peers'],
             'peer_mode' => $view['peerMode'],
             'objectives' => $view['objectives'],
-            'levers' => LocationMapView::levers($lens === 'owner' ? array_values(array_filter($sites, static fn (array $s): bool => $s['mine'])) : $sites),
+            'levers' => $group !== null ? [] : LocationMapView::levers($lens === 'owner' ? array_values(array_filter($sites, static fn (array $s): bool => $s['mine'])) : $sites),
             'money' => $view['money'],
-            'bulk' => $tenant instanceof Tenant && $this->isGranted('ROLE_MANAGER') ? $this->bulkChoices->forTenant($tenant) : null,
+            'suppliers' => $group !== null ? null : $view['suppliers'],
+            'sample' => $view['sample'],
+            'zones' => GdprTransferZones::all(),
+            'zones_as_of' => GdprTransferZones::asOf(),
+            'event_countries' => $eventCountries,
+            'event' => $event,
+            'bulk' => $group === null && $tenant instanceof Tenant && $this->isGranted('ROLE_MANAGER') ? $this->bulkChoices->forTenant($tenant) : null,
             'online_enabled' => $tenant instanceof Tenant && $this->onlineGeocoder->isEnabled($tenant),
             'check_norms' => LocationPostureService::CHECK_NORM,
         ]);
@@ -156,14 +187,48 @@ final class LocationMapController extends AbstractController
         return $this->redirectToRoute('app_location_map');
     }
 
-    private function defaultLens(bool $hasOwnSite): string
+    /**
+     * Lenses this user may pick: each persona lens behind its module, the
+     * auditor lens for auditors, the owner lens with an own site, the group
+     * view for holding roles with at least one subsidiary.
+     *
+     * @return list<string>
+     */
+    private function availableLenses(bool $hasOwnSite, ?Tenant $tenant): array
     {
-        return match (true) {
-            $this->isGranted('ROLE_CISO') => 'ciso',
-            $this->isGranted('ROLE_COMPLIANCE_MANAGER') => 'cm',
-            $this->isGranted('ROLE_MANAGER') => 'isb',
-            $hasOwnSite => 'owner',
-            default => 'ciso',
-        };
+        $available = [
+            'ciso' => true,
+            'isb' => true,
+            'cm' => true,
+            'bcm' => $this->modules->isModuleActive('bcm'),
+            'dpo' => $this->modules->isModuleActive('privacy'),
+            'auditor' => $this->modules->isModuleActive('audits') && $this->isGranted('ROLE_AUDITOR'),
+            'owner' => $hasOwnSite,
+            'group' => $tenant instanceof Tenant
+                && ($this->isGranted('ROLE_GROUP_CISO') || $this->isGranted('ROLE_KONZERN_AUDITOR'))
+                && $tenant->getSubsidiaries()->count() > 0,
+        ];
+
+        return array_values(array_filter(self::LENSES, static fn (string $l): bool => $available[$l]));
+    }
+
+    /** @param list<string> $lenses */
+    private function defaultLens(array $lenses): string
+    {
+        $byRole = [
+            'ROLE_CISO' => 'ciso',
+            'ROLE_DPO' => 'dpo',
+            'ROLE_BCM_OFFICER' => 'bcm',
+            'ROLE_COMPLIANCE_MANAGER' => 'cm',
+            'ROLE_MANAGER' => 'isb',
+            'ROLE_AUDITOR' => 'auditor',
+        ];
+        foreach ($byRole as $role => $lens) {
+            if (in_array($lens, $lenses, true) && $this->isGranted($role)) {
+                return $lens;
+            }
+        }
+
+        return in_array('owner', $lenses, true) ? 'owner' : 'ciso';
     }
 }

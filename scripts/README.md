@@ -272,6 +272,22 @@ nicht prüfbar und werden übersprungen. `--list-missing` gibt die Treffer als T
 
 ---
 
+### quality/check_gdpr_transfer_zones.py (Gate 80)
+
+**Zweck:** `config/gdpr_transfer_zones.yaml` ist die eine Länderliste für EU, EWR,
+Angemessenheitsbeschlüsse (Art. 45 DSGVO) und das EU-US Data Privacy Framework
+(`App\Privacy\GdprTransferZones`). Sie speist die Ebene „Drittland“ der
+Standortkarte, die Lieferkettenprüfung, das EWR-Kennzeichen im DORA-Register und
+die Framework-Empfehlungen. Das Gate scheitert, wenn `as_of` fehlt oder älter als
+12 Monate ist (Liste mit der Seite der EU-Kommission abgleichen, Datum hochsetzen),
+wenn ein Code kein ISO-3166-Alpha-2-Code ist oder in zwei Zonen steht, oder wenn
+eine PHP-Datei unter `src/` wieder eine eigene EU-Liste (fünf oder mehr EU-Codes
+in einem Listen-Literal) enthält.
+
+**CI-Integration:** Gate 80 im `code-quality`-Job, keine Baseline.
+
+---
+
 ### quality/check_translation_nesting.py (Gate 26)
 
 **Zweck:** (1) Top-Level-Keys einer `<domain>.<locale>.yaml` müssen zur Domain

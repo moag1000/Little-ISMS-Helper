@@ -8,9 +8,14 @@ Inputs (download first, see NOTICE.md for licences):
                zauberware/postal-codes-json-xml-csv (GeoNames, CC BY 4.0)
   --cities     JSON list of {country, name, pop, lat, lon} decoded from the
                npm package all-the-cities (GeoNames cities1000, CC BY 4.0)
+  --countries  countries-50m.json from the npm package world-atlas 2.0.2
+               (Natural Earth, public domain) plus --numeric, a JSON map
+               {"_276": "DE", ...} (symfony/intl regions meta NumericToAlpha2)
 
 Outputs:
-  assets/data/world-map.json      Equal Earth, width 1000, crop 84N..58S
+  assets/data/world-map.json      Equal Earth, width 1000, crop 84N..58S;
+                                  "laender" = one path per ISO alpha-2 country
+                                  (GDPR country zones of the map)
   fixtures/geo/postal_dach.csv.gz country, postal_code, place, lat, lng
   fixtures/geo/cities.csv.gz      country, name, lat, lng (largest place per name, DACH excluded)
 
@@ -67,6 +72,35 @@ def path(rings,eps,closed,minarea=0):
     return ''.join(out)
 
 
+# Natural Earth areas without an ISO numeric code.
+NO_NUMERIC = {'Kosovo': 'XK', 'Somaliland': 'SO', 'N. Cyprus': 'CY'}
+
+
+def topo_rings(topo, numeric):
+    """TopoJSON countries -> {alpha2: [outer rings as [[lon, lat], ...]]}."""
+    sx, sy = topo['transform']['scale']; tx, ty = topo['transform']['translate']
+    arcs = []
+    for arc in topo['arcs']:
+        x = y = 0; pts = []
+        for dx, dy in arc:
+            x += dx; y += dy
+            pts.append((x * sx + tx, y * sy + ty))
+        arcs.append(pts)
+    out = {}
+    for g in topo['objects']['countries']['geometries']:
+        code = numeric.get('_' + str(g.get('id'))) if g.get('id') else NO_NUMERIC.get(g['properties']['name'])
+        if not code or 'arcs' not in g:
+            continue
+        polys = g['arcs'] if g['type'] == 'MultiPolygon' else [g['arcs']]
+        for poly in polys:
+            ring = []
+            for r in poly[0]:
+                seg = arcs[r] if r >= 0 else arcs[~r][::-1]
+                ring += seg if not ring else seg[1:]
+            out.setdefault(code, []).append(ring)
+    return out
+
+
 def write_csv_gz(path, header, rows):
     buf = io.StringIO(); w = csv.writer(buf, lineterminator='\n')
     w.writerow(header); w.writerows(rows)
@@ -76,12 +110,26 @@ def write_csv_gz(path, header, rows):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--welt'); ap.add_argument('--postal'); ap.add_argument('--cities')
+    ap.add_argument('--countries'); ap.add_argument('--numeric')
     a = ap.parse_args()
+    target = Path('assets/data/world-map.json')
     if a.welt:
         d = json.load(open(a.welt))
         out = {'w': 1000, 'h': round((TOP - BOTTOM) * SCALE, 1),
                'land': path(d['land'], 0.35, True, 1.5), 'grenzen': path(d['grenzen'], 0.5, False)}
-        Path('assets/data/world-map.json').write_text(json.dumps(out, separators=(',', ':')))
+        if target.exists():
+            out['laender'] = json.loads(target.read_text()).get('laender', {})
+        target.write_text(json.dumps(out, separators=(',', ':')))
+    if a.countries:
+        out = json.loads(target.read_text())
+        rings = topo_rings(json.load(open(a.countries)), json.load(open(a.numeric)))
+        laender = {}
+        for code in sorted(rings):
+            d = path(rings[code], 0.5, True, 0.05)
+            if d:
+                laender[code] = d
+        out['laender'] = laender
+        target.write_text(json.dumps(out, separators=(',', ':')))
     if a.postal:
         rows = set()
         for cc in ('de', 'at', 'ch'):

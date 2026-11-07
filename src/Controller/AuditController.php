@@ -21,6 +21,7 @@ use App\Service\AuditLogger;
 use App\Service\ExcelExportService;
 use App\Service\InternalAuditCloner;
 use App\Service\PdfExportService;
+use App\Service\Prefill\RecordPrefill;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\Trait\InPageFormTrait;
@@ -50,6 +51,7 @@ class AuditController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly LifecycleService $lifecycleService,
         private readonly CrossFrameworkCoverageService $crossFrameworkCoverage,
+        private readonly RecordPrefill $recordPrefill,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
     #[Route('/audit', name: 'app_audit_index', methods: ['GET'])]
@@ -101,7 +103,7 @@ class AuditController extends AbstractController
         $internalAudit->setTenant($this->tenantContext->getCurrentTenant());
         // Auto-generate audit number before form handling (required for validation)
         $internalAudit->setAuditNumber($this->generateAuditNumber());
-
+        $this->recordPrefill->internalAudit($internalAudit, $request, $this->tenantContext->getCurrentTenant());
         $form = $this->createForm(InternalAuditType::class, $internalAudit);
         $form->handleRequest($request);
 
@@ -163,10 +165,7 @@ class AuditController extends AbstractController
             'Content-Disposition' => 'attachment; filename="audits_' . date('Y-m-d') . '.xlsx"',
         ]);
     }
-    /**
-     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
-     * Audits have no blocking FK relations — returns empty dependencies.
-     */
+    /** Dependency check for the bulk-delete modal: audits have no blocking FK relations. */
     // @csrf-exempt: read-only dependency check for the bulk-delete confirmation modal
     #[Route('/audit/bulk-delete-check', name: 'app_audit_bulk_delete_check', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -660,10 +659,7 @@ class AuditController extends AbstractController
             'Content-Disposition' => 'attachment; filename="audit_' . $internalAudit->getId() . '.pdf"',
         ]);
     }
-    /**
-     * Generate unique audit number
-     * Format: AUDIT-YYYY-NNN (e.g., AUDIT-2025-001)
-     */
+    /** Unique audit number, format AUDIT-YYYY-NNN (e.g. AUDIT-2025-001). */
     private function generateAuditNumber(): string
     {
         $year = date('Y');
