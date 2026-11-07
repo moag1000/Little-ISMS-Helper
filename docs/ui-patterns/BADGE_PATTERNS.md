@@ -383,7 +383,7 @@ All badge colors use CSS variables for dark mode compatibility:
 .badge.bg-primary { background-color: var(--bs-primary) !important; }
 .badge.bg-success { background-color: var(--bs-success) !important; }
 
-/* Custom badge colors are defined in dark-mode.css */
+/* Custom badge colors are defined in app.css */
 [data-theme="dark"] {
     --bs-primary: #60a5fa;
     --bs-success: #22c55e;

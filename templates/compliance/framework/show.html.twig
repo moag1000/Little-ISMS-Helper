@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}{{ framework.name }}{% endblock %}
@@ -44,36 +46,56 @@
         actions: _show_actions
     }) }}
 
-    {# Status badges + POST forms (toggle/duplicate) kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <div class="d-flex align-items-center gap-2">
-            {% if framework.active %}
-                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
-            {% else %}
-                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
-            {% endif %}
-            {% if framework.mandatory %}
-                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.framework.badge.mandatory'|trans({}, 'compliance') } %}
-            {% endif %}
-        </div>
-        {% if is_granted('ROLE_ADMIN') %}
-            <div class="d-flex gap-2">
-                <form method="post" action="{{ path('app_compliance_framework_toggle', {id: framework.id}) }}" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ framework.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ framework.active ? 'ghost' : 'success' }}">
-                        <i class="fa-icon fa-icon--{{ framework.active ? 'pause' : 'play' }}" aria-hidden="true"></i>
-                        {{ framework.active ? 'common.deactivate'|trans({}, 'messages') : 'common.activate'|trans({}, 'messages') }}
-                    </button>
-                </form>
-                <form method="post" action="{{ path('app_compliance_framework_duplicate', {id: framework.id}) }}" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token('duplicate' ~ framework.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'common.duplicate'|trans({}, 'messages') }}
-                    </button>
-                </form>
-            </div>
+    {% set _status %}
+        {% if framework.active %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
+        {% else %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
         {% endif %}
-    </div>
+        {% if framework.mandatory %}
+            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.framework.badge.mandatory'|trans({}, 'compliance') } %}
+        {% endif %}
+    {% endset %}
+    {# POST forms (toggle/duplicate) cannot be expressed via _fa_page_header GET-only actions #}
+    {% set _actions %}
+        {% if is_granted('ROLE_ADMIN') %}
+<div class="d-flex gap-2">
+    <form method="post" action="{{ path('app_compliance_framework_toggle', {id: framework.id}) }}" class="d-inline">
+        <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ framework.id) }}">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ framework.active ? 'ghost' : 'success' }}">
+            <i class="fa-icon fa-icon--{{ framework.active ? 'pause' : 'play' }}" aria-hidden="true"></i>
+            {{ framework.active ? 'common.deactivate'|trans({}, 'messages') : 'common.activate'|trans({}, 'messages') }}
+        </button>
+    </form>
+    <form method="post" action="{{ path('app_compliance_framework_duplicate', {id: framework.id}) }}" class="d-inline">
+        <input type="hidden" name="_token" value="{{ csrf_token('duplicate' ~ framework.id) }}">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'common.duplicate'|trans({}, 'messages') }}
+        </button>
+    </form>
+</div>
+        {% endif %}
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.version'|trans({}, 'messages'), value: framework.version },
+            { label: 'compliance.framework.field.regulatory_body'|trans({}, 'compliance'), value: framework.regulatoryBody },
+            { label: 'compliance.framework.stats.compliance'|trans({}, 'compliance'), value: compliance_percentage|round ~ ' %' },
+        ],
+        workflow: workflow_state(framework),
+    }) }}
+
+    {% set _links = entity_links(framework) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'requirements', label: 'show.anchor.requirements'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: framework } only %}
 
     {# Statistics Row #}
     <div class="row mb-4">
@@ -164,9 +186,10 @@
 
     <div class="row">
         <div class="col-lg-8">
+            <div id="details" class="fa-show-section">
             {# Framework Details #}
             {% embed '_components/_card.html.twig' with {
-                'title': 'compliance.framework.details',
+                'title': 'show.anchor.details',
                 'headerIcon': 'status-info',
                 'class': 'mb-4'
             } %}
@@ -189,10 +212,10 @@
                         <div class="col-md-6">
                             <dl>
                                 <dt>{{ 'common.created_at'|trans({}, 'messages') }}</dt>
-                                <dd>{{ framework.createdAt|date('d.m.Y H:i') }}</dd>
+                                <dd>{{ framework.createdAt|fa_datetime }}</dd>
 
                                 <dt>{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
-                                <dd>{{ framework.updatedAt ? framework.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
+                                <dd>{{ framework.updatedAt|fa_datetime }}</dd>
                             </dl>
                         </div>
                     </div>
@@ -204,9 +227,12 @@
                 {% endblock %}
             {% endembed %}
 
+            </div>
+
+            <div id="requirements" class="fa-show-section">
             {# Requirements by Category #}
             {% embed '_components/_card.html.twig' with {
-                'title': 'compliance.framework.requirements_by_category',
+                'title': 'show.anchor.requirements',
                 'headerIcon': 'nav-list-check',
                 'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans({}, 'messages') ~ '</a>',
                 'class': 'mb-4'
@@ -274,6 +300,7 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+            </div>
         </div>
 
         <div class="col-lg-4">
@@ -342,6 +369,8 @@
             {% endembed %}
         </div>
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: framework } only %}
     {% endif %} {# /M-4 compliance module gate #}
 </div>
 {% endblock %}

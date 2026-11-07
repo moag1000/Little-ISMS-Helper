@@ -127,13 +127,8 @@ php bin/console cache:clear
 ```
 
 ### Styling fehlt
-Prüfe ob in `base.html.twig` die neuen CSS-Dateien importiert sind:
-```twig
-<link rel="stylesheet" href="{{ asset('styles/ui-components.css') }}">
-<link rel="stylesheet" href="{{ asset('styles/command-palette.css') }}">
-<link rel="stylesheet" href="{{ asset('styles/toast.css') }}">
-<link rel="stylesheet" href="{{ asset('styles/keyboard-shortcuts.css') }}">
-```
+Prüfe, ob die CSS-Datei in `templates/_aurora_styles.html.twig` (und in gleicher Reihenfolge in
+`assets/styles.css`) steht. `tests/js/styles/stylesheet_wiring.test.js` meldet fehlende Einträge.
 
 ---
 

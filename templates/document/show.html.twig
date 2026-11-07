@@ -14,7 +14,8 @@
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
-{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -49,11 +50,20 @@
         prominence: 'subtle'
     }) }}
 
-    {# Lifecycle X.3 — status pill + transition dropdown #}
-    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
-        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Document', status_key: document.status }) }}
-        {{ _lifecycle_actions.dropdown(document, 'document', 'document_lifecycle') }}
-    </div>
+    {# Lifecycle X.3 — status chip + transition dropdown #}
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Document', status_key: document.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(document, 'document', 'document_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: document.ownerPerson ? document.ownerPerson.fullName : null },
+            { label: 'show.status.next_review'|trans({}, 'messages'), value: document.nextReviewDate ? document.nextReviewDate|fa_date : null },
+            { label: 'show.status.version'|trans({}, 'messages'), value: document.version },
+            { label: 'show.status.category'|trans({}, 'messages'), value: document.category ? document.category|upper|replace({'_': ' '}) : null },
+        ],
+        workflow: workflow_state(document),
+    }) }}
 
     {# Inline disabled-edit + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) or is_granted('ROLE_USER') %}
@@ -99,7 +109,7 @@
         <div class="d-flex flex-wrap gap-2 mb-3" data-test="document-norm-anchor-chips">
             {% if _show_dora_validity %}
                 <span data-test="document-dora-validity-badge">
-                    {{ pill.render('document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document'), 'primary', {icon: 'ui-calendar-event', title: 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document')}) }}
+                    {{ pill.render('document.dora_validity.badge'|trans({'%date%': doraValidityDate|fa_date}, 'document'), 'primary', {icon: 'ui-calendar-event', title: 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|fa_date}, 'document')}) }}
                 </span>
             {% endif %}
             {% if climateChangeAware is defined and climateChangeAware %}
@@ -113,7 +123,7 @@
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'ui-calendar-event', class: 'mb-3' } } %}
                 {% block alert_body %}
                     <div class="fa-alert__title">{{ 'document.dora_validity.heading'|trans({}, 'document') }}</div>
-                    <p class="fa-alert__message mb-0 small">{{ 'document.dora_validity.body'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}</p>
+                    <p class="fa-alert__message mb-0 small">{{ 'document.dora_validity.body'|trans({'%date%': doraValidityDate|fa_date}, 'document') }}</p>
                 {% endblock %}
             {% endembed %}
         {% endif %}
@@ -177,6 +187,20 @@
         {% endembed %}
     {% endif %}
 
+    {% set _links = entity_links(document) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'document.details.title'|trans({}, 'document') },
+        { id: 'effectiveness', label: 'document.effectiveness.section_title'|trans({}, 'document') },
+        { id: 'controls', label: 'document.evidence.controls.heading'|trans({}, 'document'), show: controlLinks is defined and controlLinks|length > 0 },
+        { id: 'requirements', label: 'document.evidence.requirements.heading'|trans({}, 'document'), show: requirementsByFramework is defined and requirementsByFramework|length > 0 },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+        { id: 'comments', label: 'show.anchor.comments'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: document } only %}
+
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">
@@ -211,12 +235,12 @@
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.uploaded_at'|trans({}, 'document') }}</span>
-                    <span class="value">{{ document.uploadedAt|date('d.m.Y H:i') }}</span>
+                    <span class="value">{{ document.uploadedAt|fa_datetime }}</span>
                 </div>
                 {% if document.updatedAt %}
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.last_updated'|trans({}, 'document') }}</span>
-                    <span class="value">{{ document.updatedAt|date('d.m.Y H:i') }}</span>
+                    <span class="value">{{ document.updatedAt|fa_datetime }}</span>
                 </div>
                 {% endif %}
             </div>
@@ -245,7 +269,7 @@
                             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                             {{ 'document.policy_body.edited_by'|trans({
                                 '%name%': document.policyBodyEditedBy ? document.policyBodyEditedBy.fullName : '—',
-                                '%date%': document.policyBodyEditedAt ? document.policyBodyEditedAt|date('d.m.Y H:i') : '—',
+                                '%date%': document.policyBodyEditedAt ? document.policyBodyEditedAt|fa_datetime : '—',
                             }, 'document') }}
                         </p>
                     {% endif %}
@@ -261,14 +285,14 @@
                             title:               document.originalFilename,
                             kicker:              document.generatedFromTemplate ? (document.generatedFromTemplate.standard|upper ~ ' · ' ~ document.generatedFromTemplate.topic|replace({'_': ' '})) : 'ISMS-Policy',
                             version:             document.version,
-                            valid_from:          document.uploadedAt ? document.uploadedAt|date('d.m.Y') : null,
-                            next_review:         document.nextReviewDate ? document.nextReviewDate|date('d.m.Y') : null,
+                            valid_from:          document.uploadedAt ? document.uploadedAt|fa_date : null,
+                            next_review:         document.nextReviewDate ? document.nextReviewDate|fa_date : null,
                             owner:               document.effectiveOwnerName,
                             classification:      document.tisaxInformationClassification,
                             standard:            document.generatedFromTemplate ? document.generatedFromTemplate.standard : null,
                             topic:               document.generatedFromTemplate ? document.generatedFromTemplate.topic : null,
-                            generated_on:        document.uploadedAt ? document.uploadedAt|date('d.m.Y') : null,
-                            dora_validity_date:  doraValidityDate ? doraValidityDate|date('d.m.Y') : null,
+                            generated_on:        document.uploadedAt ? document.uploadedAt|fa_date : null,
+                            dora_validity_date:  doraValidityDate ? doraValidityDate|fa_date : null,
                             climate_change_aware: climateChangeAware|default(false),
                             owner_label:         'policy_wizard.export.cover.owner'|trans({}, 'policy_wizard'),
                             version_label:       'policy_wizard.export.cover.version'|trans({}, 'policy_wizard'),
@@ -319,7 +343,7 @@
                with a notes textarea. Visible to all readers; the
                action button is gated to ROLE_AUDITOR (server-side
                enforcement still wins). #}
-            <div class="detail-section">
+            <div class="detail-section fa-show-section" id="effectiveness">
                 <h3>
                     <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                     {{ 'document.effectiveness.section_title'|trans({}, 'document') }}
@@ -327,7 +351,7 @@
                 {% if document.lastEffectivenessReviewAt %}
                     <dl class="row mb-2 small">
                         <dt class="col-sm-4">{{ 'document.effectiveness.last_reviewed_at'|trans({}, 'document') }}</dt>
-                        <dd class="col-sm-8">{{ document.lastEffectivenessReviewAt|date('d.m.Y H:i') }}</dd>
+                        <dd class="col-sm-8">{{ document.lastEffectivenessReviewAt|fa_datetime }}</dd>
                         <dt class="col-sm-4">{{ 'document.effectiveness.last_reviewed_by'|trans({}, 'document') }}</dt>
                         <dd class="col-sm-8">{{ document.lastEffectivenessReviewBy ? document.lastEffectivenessReviewBy.fullName : '—' }}</dd>
                         {% if document.effectivenessReviewNotes %}
@@ -369,7 +393,7 @@
 
             {# Linked ISO 27001 Controls (DocumentControlLink rows) #}
             {% if controlLinks is defined and controlLinks|length > 0 %}
-                <div class="detail-section" data-test="document-control-links">
+                <div class="detail-section fa-show-section" id="controls" data-test="document-control-links">
                     <h3>
                         <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                         {{ 'document.evidence.controls.heading'|trans({}, 'document') }}
@@ -406,7 +430,7 @@
 
             {# Linked Requirements (other frameworks) #}
             {% if requirementsByFramework is defined and requirementsByFramework|length > 0 %}
-                <div class="detail-section" data-test="document-requirement-links">
+                <div class="detail-section fa-show-section" id="requirements" data-test="document-requirement-links">
                     <h3>
                         <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                         {{ 'document.evidence.requirements.heading'|trans({}, 'document') }}
@@ -429,8 +453,12 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: document, lifecycle: 'document' } only %}
 
     {# Comment-Thread adoption (C7 macro). #}
+    <div id="comments">
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
         entityType: 'Document',
@@ -439,6 +467,7 @@
         formAction: path('app_comment_post', {entityType: 'Document', entityId: document.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
+    </div>
 
     {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
         {# Effectiveness-Review Modal — Bootstrap modal (lazy-loaded
@@ -494,8 +523,5 @@
             </div>
         </div>
     {% endif %}
-
-    {# Lifecycle X.3 — status history tab #}
-    {{ _lifecycle_history.history('document', document.id) }}
 </div>
 {% endblock %}

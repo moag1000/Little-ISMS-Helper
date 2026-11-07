@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'document' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ 'evidence_reverification.show.title'|trans({}, 'document') }}{% endblock %}
 
@@ -21,8 +22,19 @@
         ]
     }) }}
 
+    {% set _status %}<span class="badge bg-{{ task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'secondary' : 'warning') }}">{{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}</span>{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'show.status.owner'|trans({}, 'messages'), value: task.assignedTo ? (task.assignedTo.fullName ?? task.assignedTo.email) : null },
+            { label: 'show.status.due_date'|trans({}, 'messages'), value: task.dueDate ? task.dueDate|fa_date : null },
+        ],
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: task } only %}
+
     <div class="row g-4">
-        <div class="col-lg-8">
+        <div class="col-lg-8 fa-show-section" id="details">
             {# Task details card #}
             <div class="card mb-4">
                 <div class="card-header">
@@ -39,15 +51,8 @@
                             {% endif %}
                             <small class="text-muted d-block">
                                 {{ 'document.version.label'|trans({}, 'document') }} {{ task.documentVersion.versionNumber }}
-                                · {{ task.documentVersion.uploadedAt|date('Y-m-d H:i') }}
+                                · {{ task.documentVersion.uploadedAt|fa_datetime }}
                             </small>
-                        </dd>
-
-                        <dt class="col-sm-4">{{ 'evidence_reverification.show.status'|trans({}, 'document') }}</dt>
-                        <dd class="col-sm-8">
-                            <span class="badge bg-{{ task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'secondary' : 'warning') }}">
-                                {{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}
-                            </span>
                         </dd>
 
                         {% if task.control is not null %}
@@ -71,7 +76,7 @@
 
                         <dt class="col-sm-4">{{ 'evidence_reverification.show.due_date'|trans({}, 'document') }}</dt>
                         <dd class="col-sm-8">
-                            {{ task.dueDate ? task.dueDate|date('Y-m-d') : '—' }}
+                            {{ task.dueDate ? task.dueDate|fa_date : '—' }}
                             {% if task.isOverdue %}
                                 <span class="fa-status-pill fa-status-pill--danger ms-1">{{ 'evidence_reverification.overdue'|trans({}, 'document') }}</span>
                             {% endif %}
@@ -84,7 +89,7 @@
 
                         {% if task.completedAt is not null %}
                         <dt class="col-sm-4">{{ 'evidence_reverification.show.completed_at'|trans({}, 'document') }}</dt>
-                        <dd class="col-sm-8">{{ task.completedAt|date('Y-m-d H:i') }}</dd>
+                        <dd class="col-sm-8">{{ task.completedAt|fa_datetime }}</dd>
                         {% endif %}
                     </dl>
                 </div>
@@ -138,5 +143,7 @@
         </div>
         {% endif %}
     </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: task } only %}
 </div>
 {% endblock %}

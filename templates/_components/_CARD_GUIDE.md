@@ -101,7 +101,7 @@ The `_card.html.twig` component provides a flexible, reusable card system based 
 </div>
 ```
 
-**CSS:** Bootstrap 5 `.card` + dark mode in `dark-mode.css`
+**CSS:** Bootstrap 5 `.card` + dark mode in `app.css`
 
 ---
 
@@ -130,7 +130,7 @@ The `_card.html.twig` component provides a flexible, reusable card system based 
 
 **Border Colors:** `primary`, `success`, `warning`, `danger`, `info`
 
-**CSS:** `ui-components.css` lines 56-229
+**CSS:** `app.css` lines 56-229
 
 **Child Elements:**
 - `.kpi-card-icon` - Icon container (56x56px circle)
@@ -167,7 +167,7 @@ The `_card.html.twig` component provides a flexible, reusable card system based 
 } %}
 ```
 
-**CSS:** `premium.css` lines 110-206
+**CSS:** `app.css` lines 110-206
 
 **Migration Path:** Replace `stat-card-*` classes with `kpi-card-*` equivalents
 
@@ -191,7 +191,7 @@ The `_card.html.twig` component provides a flexible, reusable card system based 
 } %}
 ```
 
-**CSS:** `premium.css` lines 211-247
+**CSS:** `app.css` lines 211-247
 
 **Features:**
 - Gradient top border on hover
@@ -219,7 +219,7 @@ The `_card.html.twig` component provides a flexible, reusable card system based 
 } %}
 ```
 
-**CSS:** `premium.css` lines 429-443
+**CSS:** `app.css` lines 429-443
 
 **Characteristics:**
 - Centered text
@@ -406,9 +406,9 @@ All card variants have comprehensive dark mode support:
 
 **CSS Files:**
 - Base: `assets/styles/app.css`
-- Dark Mode: `assets/styles/dark-mode.css` (lines 134-142)
-- KPI Cards: `assets/styles/ui-components.css` (lines 56-229)
-- Premium Cards: `assets/styles/premium.css` (lines 110-443)
+- Dark Mode: `assets/styles/app.css` (lines 134-142)
+- KPI Cards: `assets/styles/app.css` (lines 56-229)
+- Premium Cards: `assets/styles/app.css` (lines 110-443)
 
 ---
 

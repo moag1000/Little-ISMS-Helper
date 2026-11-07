@@ -39,9 +39,9 @@ project/
 │   │   ├── modal_controller.js
 │   │   └── ...
 │   ├── styles/
-│   │   ├── app.css           # Main stylesheet
-│   │   ├── dark-mode.css     # Theme overrides
-│   │   └── premium.css       # Feature-specific
+│   │   ├── fairy-aurora.css  # Design tokens (light + dark)
+│   │   ├── fairy-aurora-components.css  # Aurora components
+│   │   └── app.css           # App layer
 │   └── images/               # Static images
 ├── public/
 │   └── assets/               # Compiled/versioned assets

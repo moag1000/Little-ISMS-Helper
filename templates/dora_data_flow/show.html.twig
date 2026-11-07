@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'dora_data_flow' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 
 {% block title %}{{ flow.displayLabel }} - {{ 'dora_data_flow.title.show'|trans({}, 'dora_data_flow') }}{% endblock %}
 
@@ -22,8 +23,21 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_dora_data_flow_index') }
         ]
     }) }}
+
+    {{ _fa_status_band.render({
+        facts: [
+            { label: 'dora_data_flow.field.direction'|trans({}, 'dora_data_flow'), value: flow.direction ? ('dora_data_flow.direction.' ~ flow.direction)|trans({}, 'dora_data_flow') : null },
+            { label: 'dora_data_flow.field.supplier'|trans({}, 'dora_data_flow'), value: flow.supplier ? flow.supplier.name : null },
+            { label: 'dora_data_flow.field.cross_border'|trans({}, 'dora_data_flow'), value: flow.crossBorder ? 'common.yes'|trans({}, 'messages') : null },
+            { label: 'dora_data_flow.field.receiving_country'|trans({}, 'dora_data_flow'), value: flow.receivingCountry },
+        ],
+        workflow: workflow_state(flow),
+    }) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: flow } only %}
 </div>
 
+<div class="container fa-show-section" id="details">
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_body %}
     <h2>{{ 'dora_data_flow.section.overview'|trans({}, 'dora_data_flow') }}</h2>
@@ -130,5 +144,8 @@
         </button>
     </form>
     {% endif %}
+</div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: flow } only %}
 </div>
 {% endblock %}

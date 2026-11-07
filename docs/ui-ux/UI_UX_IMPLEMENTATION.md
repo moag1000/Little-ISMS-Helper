@@ -65,7 +65,7 @@ document.dispatchEvent(new CustomEvent('toast:show', {
 
 **Files**:
 - `assets/controllers/toast_controller.js`
-- `assets/styles/toast.css`
+- `_components/_fa_toast.html.twig` (toast.css removed 2026-11)
 
 ---
 
@@ -202,7 +202,7 @@ shortcuts = [
 - `templates/_components/_empty_state.html.twig`
 - `templates/_components/_floating_toolbar.html.twig`
 - `templates/_components/_related_items.html.twig`
-- `assets/styles/ui-components.css`
+- `assets/styles/app.css` (formerly ui-components.css)
 
 ---
 
@@ -225,9 +225,8 @@ Little-ISMS-Helper/
 │   │   └── keyboard_shortcuts_controller.js    ⭐ NEW
 │   └── styles/
 │       ├── command-palette.css                  ⭐ NEW
-│       ├── toast.css                            ⭐ NEW
 │       ├── keyboard-shortcuts.css               ⭐ NEW
-│       └── ui-components.css                    ⭐ NEW
+│       └── app.css                              (incl. former ui-components.css)
 ├── templates/
 │   ├── _components/                             ⭐ NEW
 │   │   ├── _breadcrumb.html.twig

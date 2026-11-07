@@ -963,7 +963,7 @@ Pfad-Navigation am oberen Rand jeder Detail-Seite. `Startseite` als erster Crumb
   </ol>
 </nav>
 ```
-**Twig-Macro:** `{% include '_components/_breadcrumb.html.twig' with { breadcrumbs: [...] } %}` — Home-Crumb wird auto-prepended, übergib nur die Pfad-Levels. CSS-Canon in `assets/styles/ui-components.css`.
+**Twig-Macro:** `{% include '_components/_breadcrumb.html.twig' with { breadcrumbs: [...] } %}` — Home-Crumb wird auto-prepended, übergib nur die Pfad-Levels. CSS-Canon in `assets/styles/app.css`.
 
 ### fa-pager — Pagination
 ```html

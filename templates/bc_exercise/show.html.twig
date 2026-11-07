@@ -4,17 +4,15 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 
 {% block title %}{{ bc_exercise.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
-    {# Lifecycle — status transition dropdown (bc_exercise_lifecycle) #}
-    {% include '_components/_lifecycle_toolbar.html.twig' with {
-        entity: bc_exercise,
-        entity_type: 'bc-exercise',
-        workflow_name: 'bc_exercise_lifecycle'
-    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
@@ -30,12 +28,33 @@
     {{ _fa_page_header.render({
         badge: { icon: 'play', label: ('bc_exercises.exercise_type.' ~ bc_exercise.exerciseType)|trans({}, 'bc_exercises') },
         title: bc_exercise.name,
-        subtitle: ('bc_exercises.status.' ~ bc_exercise.status)|trans({}, 'bc_exercises'),
         actions: [
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_bc_exercise_edit', {id: bc_exercise.id}) },
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', href: path('app_bc_exercise_index') }
         ]
     }) }}
+
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\BCExercise', status_key: bc_exercise.status }) }}{% endset %}
+    {% set _actions %}{{ _lifecycle_actions.dropdown(bc_exercise, 'bc-exercise', 'bc_exercise_lifecycle') }}{% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        actions: _actions,
+        facts: [
+            { label: 'show.status.type'|trans({}, 'messages'), value: ('bc_exercises.exercise_type.' ~ bc_exercise.exerciseType)|trans({}, 'bc_exercises') },
+            { label: 'show.status.date'|trans({}, 'messages'), value: bc_exercise.exerciseDate ? bc_exercise.exerciseDate|fa_date : null },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: bc_exercise.effectiveExerciseLeaderName ?? bc_exercise.facilitator },
+        ],
+        workflow: workflow_state(bc_exercise),
+    }) }}
+
+    {% set _links = entity_links(bc_exercise) %}
+    {{ _fa_anchor_bar.render([
+        { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: bc_exercise } only %}
 
     {# 9001-bridge: BC-Exercise = process verification (9001 9.1 evaluation) + 22301 8.5 mandatory test. #}
     {{ _fa_norm_bridge.render({
@@ -66,6 +85,7 @@
         </div>
     {% endif %}
 
+    <div id="details" class="fa-show-section">
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">
@@ -87,7 +107,7 @@
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'bc_exercises.field.exercise_date'|trans({}, 'bc_exercises') }}:</span>
-                    <span class="value">{{ bc_exercise.exerciseDate|date('Y-m-d') }}</span>
+                    <span class="value">{{ bc_exercise.exerciseDate|fa_date }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'bc_exercises.field.duration'|trans({}, 'bc_exercises') }}:</span>
@@ -210,7 +230,7 @@
                 <div class="detail-section">
                     <p><strong>{{ 'bc_exercises.field.report_completed'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.reportCompleted ? ('bc_exercises.badge.yes'|trans({}, 'bc_exercises')) : ('bc_exercises.badge.no'|trans({}, 'bc_exercises')) }}</p>
                     {% if bc_exercise.reportDate %}
-                    <p><strong>{{ 'bc_exercises.field.report_date'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.reportDate|date('Y-m-d') }}</p>
+                    <p><strong>{{ 'bc_exercises.field.report_date'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.reportDate|fa_date }}</p>
                     {% endif %}
                 </div>
             {% endif %}
@@ -227,5 +247,8 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </div>
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: bc_exercise, lifecycle: 'bc-exercise' } only %}
 </div>
 {% endblock %}
