@@ -298,7 +298,7 @@ class DPIAController extends AbstractController
      * Approve DPIA (in_review → approved)
      */
     #[Route('/dpia/{id}/approve', name: 'app_dpia_approve', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function approve(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('approve' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -322,7 +322,7 @@ class DPIAController extends AbstractController
      * Reject DPIA (in_review → rejected)
      */
     #[Route('/dpia/{id}/reject', name: 'app_dpia_reject', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function reject(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('reject' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -351,7 +351,7 @@ class DPIAController extends AbstractController
      * Request revision (in_review/approved → requires_revision)
      */
     #[Route('/dpia/{id}/request-revision', name: 'app_dpia_request_revision', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function requestRevision(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('revision' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -405,7 +405,7 @@ class DPIAController extends AbstractController
      * Record DPO consultation (Art. 35(4))
      */
     #[Route('/dpia/{id}/dpo-consultation', name: 'app_dpia_dpo_consultation', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function dpConsultation(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('dpo' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -486,7 +486,7 @@ class DPIAController extends AbstractController
      * Complete review (Art. 35(11))
      */
     #[Route('/dpia/{id}/complete-review', name: 'app_dpia_complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_AUDITOR')]
+    #[IsGranted('ROLE_MANAGER')]
     public function completeReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('complete-review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {

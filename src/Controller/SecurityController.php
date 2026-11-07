@@ -14,7 +14,6 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -22,7 +21,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SecurityController extends AbstractController
 {
     public function __construct(
-        private readonly RateLimiterFactory $loginLimiter,
         private readonly SamlAuthFactory $samlAuthFactory,
         private readonly TranslatorInterface $translator,
         private readonly SsoProviderRegistry $ssoRegistry,
@@ -34,28 +32,6 @@ class SecurityController extends AbstractController
     #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
-        // Security: Rate limit login attempts to prevent brute force attacks
-        $limiter = $this->loginLimiter->create($request->getClientIp());
-
-        if (false === $limiter->consume(1)->isAccepted()) {
-            $this->addFlash('error', $this->translator->trans('security.error.too_many_attempts', [], 'messages'));
-
-            $response = $this->render('security/login.html.twig', [
-                'last_username' => '',
-                'error' => null,
-                'rate_limited' => true,
-                'sso_providers' => $this->ssoRegistry->getLoginButtons($this->tenantContext->getCurrentTenant(), null),
-            ]);
-
-            // Prevent caching of login page to ensure fresh CSRF tokens
-            $response->setSharedMaxAge(0);
-            $response->headers->addCacheControlDirective('no-cache', true);
-            $response->headers->addCacheControlDirective('no-store', true);
-            $response->headers->addCacheControlDirective('must-revalidate', true);
-
-            return $response;
-        }
-
         // Store locale preference from query parameter or browser preference
         $locale = $request->query->get('locale')
             ?? $request->getSession()->get('_locale')
@@ -79,7 +55,6 @@ class SecurityController extends AbstractController
         $response = $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
-            'rate_limited' => false,
             'sso_providers' => $this->ssoRegistry->getLoginButtons(
                 $this->tenantContext->getCurrentTenant(),
                 $lastUsername !== '' ? $lastUsername : null

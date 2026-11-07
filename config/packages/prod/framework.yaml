@@ -10,7 +10,14 @@ framework:
     # an HTTPS request — and inversely, a hardcoded 'true' would set secure
     # over plain HTTP and the browser would silently drop the cookie (every
     # request gets a new session, CSRF tokens never match).
-    trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+    #
+    # Only loopback and private networks count as proxy (Docker bridge, Plesk's
+    # nginx in front of Apache, Traefik in the same LAN). The former value
+    # 'REMOTE_ADDR' trusted EVERY peer: a client on the internet could send its
+    # own X-Forwarded-For per request and get a fresh rate-limit bucket each
+    # time (login throttling, API limit), or forge X-Forwarded-Host. A public
+    # proxy (CDN) in front: list its ranges in SYMFONY_TRUSTED_PROXIES.
+    trusted_proxies: '%env(default:default_trusted_proxies:SYMFONY_TRUSTED_PROXIES)%'
     trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix']
 
     # Security: Secure session cookie configuration

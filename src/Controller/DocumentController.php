@@ -280,8 +280,8 @@ class DocumentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Security: Rate limit document uploads to prevent abuse
-            $limiter = $this->documentUploadLimiter->create($request->getClientIp());
+            $limiter = $this->documentUploadLimiter // per user: an IP key gave a whole office one budget
+                ->create('upload-' . $this->security->getUser()?->getUserIdentifier());
 
             if (false === $limiter->consume(1)->isAccepted()) {
                 // Security: Log rate limit hit for monitoring

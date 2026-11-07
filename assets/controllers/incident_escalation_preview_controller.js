@@ -186,8 +186,6 @@ export default class extends Controller {
                             ${user.avatar ? `<img src="${user.avatar}" alt="${this.escapeHtml(user.name)}" class="rounded-circle" width="32" height="32">` : '<i class="fa-icon fa-icon--ui-person" style="font-size: 32px;" aria-hidden="true"></i>'}
                             <div>
                                 <strong>${this.escapeHtml(user.name)}</strong>
-                                <br>
-                                <small class="text-muted">${this.escapeHtml(user.email)}</small>
                             </div>
                         </div>
                     </li>

@@ -6,6 +6,7 @@ namespace App\Service\Export;
 
 use App\Entity\Tenant;
 use App\Repository\SupplierRepository;
+use App\Util\CsvSanitizer;
 
 /**
  * BAFA LkSG annual-report CSV export.
@@ -51,7 +52,7 @@ final class LksgAnnualReportExporter
         ], ',', '"', '\\');
 
         foreach ($suppliers as $supplier) {
-            fputcsv($stream, [
+            fputcsv($stream, array_map(CsvSanitizer::sanitize(...), [
                 (string) ($supplier->getId() ?? ''),
                 (string) ($supplier->getName() ?? ''),
                 (string) ($supplier->getCountryOfHeadOffice() ?? ''),
@@ -72,7 +73,7 @@ final class LksgAnnualReportExporter
                 $supplier->getLastSecurityAssessment()?->format('Y-m-d') ?? '',
                 $supplier->getNextAssessmentDate()?->format('Y-m-d') ?? '',
                 $supplier->hasSubcontractors() ? '1' : '0',
-            ], ',', '"', '\\');
+            ]), ',', '"', '\\');
         }
 
         rewind($stream);

@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
 use App\Service\ExcelExportService;
+use App\Util\CsvSanitizer;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -184,14 +185,14 @@ final class EnxScheduleExporter
             $gap        = ($currentInt !== '' && $targetInt !== '') ? ($targetInt - $currentInt) : '';
 
             $worksheet = $spreadsheet->getActiveSheet();
-            $worksheet->setCellValue('A' . $row, $req->getRequirementId());
-            $worksheet->setCellValue('B' . $row, $req->getTitle());
-            $worksheet->setCellValue('C' . $row, $mapping['tisax_must'] ?? '');
-            $worksheet->setCellValue('D' . $row, $mapping['tisax_should'] ?? '');
-            $worksheet->setCellValue('E' . $row, $mapping['tisax_high'] ?? '');
-            $worksheet->setCellValue('F' . $row, $mapping['tisax_veryHigh'] ?? '');
-            $worksheet->setCellValue('G' . $row, $mapping['iso27001'] ?? '');
-            $worksheet->setCellValue('H' . $row, $mapping['auditEvidence'] ?? '');
+            $worksheet->setCellValue('A' . $row, CsvSanitizer::sanitize($req->getRequirementId()));
+            $worksheet->setCellValue('B' . $row, CsvSanitizer::sanitize($req->getTitle()));
+            $worksheet->setCellValue('C' . $row, CsvSanitizer::sanitize($mapping['tisax_must'] ?? ''));
+            $worksheet->setCellValue('D' . $row, CsvSanitizer::sanitize($mapping['tisax_should'] ?? ''));
+            $worksheet->setCellValue('E' . $row, CsvSanitizer::sanitize($mapping['tisax_high'] ?? ''));
+            $worksheet->setCellValue('F' . $row, CsvSanitizer::sanitize($mapping['tisax_veryHigh'] ?? ''));
+            $worksheet->setCellValue('G' . $row, CsvSanitizer::sanitize($mapping['iso27001'] ?? ''));
+            $worksheet->setCellValue('H' . $row, CsvSanitizer::sanitize($mapping['auditEvidence'] ?? ''));
             $worksheet->setCellValue('I' . $row, $currentInt);
             $worksheet->setCellValue('J' . $row, $targetInt);
             $worksheet->setCellValue('K' . $row, $gap);
@@ -235,11 +236,11 @@ final class EnxScheduleExporter
             $stateLabel = $dpState !== null ? (self::DP_STATE_LABELS[$dpState] ?? $dpState) : '';
 
             $worksheet = $spreadsheet->getActiveSheet();
-            $worksheet->setCellValue('A' . $row, $req->getRequirementId());
-            $worksheet->setCellValue('B' . $row, $req->getTitle());
-            $worksheet->setCellValue('C' . $row, $mapping['iso27001'] ?? '');
-            $worksheet->setCellValue('D' . $row, $mapping['auditEvidence'] ?? '');
-            $worksheet->setCellValue('E' . $row, $stateLabel);
+            $worksheet->setCellValue('A' . $row, CsvSanitizer::sanitize($req->getRequirementId()));
+            $worksheet->setCellValue('B' . $row, CsvSanitizer::sanitize($req->getTitle()));
+            $worksheet->setCellValue('C' . $row, CsvSanitizer::sanitize($mapping['iso27001'] ?? ''));
+            $worksheet->setCellValue('D' . $row, CsvSanitizer::sanitize($mapping['auditEvidence'] ?? ''));
+            $worksheet->setCellValue('E' . $row, CsvSanitizer::sanitize($stateLabel));
             $worksheet->setCellValue('F' . $row, 'OK'); // target is always compliant per assessmentModels
 
             // Traffic-light cell fill on the Konformitaet column (E)

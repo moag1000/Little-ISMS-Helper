@@ -56,7 +56,8 @@ final class PolicyAcknowledgementCoverageCheckTest extends TestCase
             $this->stubResultQueryBuilder([$policy]),
         );
         // 19/20 = 95.0 % exactly — must still pass (>= threshold).
-        $this->userRepository->method('findActiveUsers')->willReturn(array_fill(0, 20, $this->createMock(User::class)));
+        // The audience is the checked organisation's users, not the instance's.
+        $this->userRepository->expects(self::once())->method('findActiveByTenant')->with($tenant)->willReturn(array_fill(0, 20, $this->createMock(User::class)));
         $this->ackRepository->method('findByDocument')->willReturn(array_fill(0, 19, new \stdClass()));
 
         $result = $this->check->run($tenant);
@@ -78,7 +79,7 @@ final class PolicyAcknowledgementCoverageCheckTest extends TestCase
             $this->stubResultQueryBuilder([$policy]),
         );
         // 18/20 = 90 % — below threshold.
-        $this->userRepository->method('findActiveUsers')->willReturn(array_fill(0, 20, $this->createMock(User::class)));
+        $this->userRepository->method('findActiveByTenant')->willReturn(array_fill(0, 20, $this->createMock(User::class)));
         $this->ackRepository->method('findByDocument')->willReturn(array_fill(0, 18, new \stdClass()));
 
         $result = $this->check->run($tenant);
@@ -98,7 +99,7 @@ final class PolicyAcknowledgementCoverageCheckTest extends TestCase
         $this->documentRepository->method('createQueryBuilder')->willReturn(
             $this->stubResultQueryBuilder([$policy]),
         );
-        $this->userRepository->method('findActiveUsers')->willReturn([]);
+        $this->userRepository->method('findActiveByTenant')->willReturn([]);
 
         $result = $this->check->run($tenant);
 

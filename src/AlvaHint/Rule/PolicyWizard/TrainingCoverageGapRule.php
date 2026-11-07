@@ -136,7 +136,9 @@ final class TrainingCoverageGapRule extends AbstractAlvaHintRule
             return null;
         }
 
-        $audience = count($this->userRepository->findActiveUsers());
+        // Own organisation only — the tenant filter does not cover User, so
+        // findActiveUsers() counted every active account of the instance.
+        $audience = count($this->userRepository->findActiveByTenant($tenant));
         if ($audience === 0) {
             // Brand-new sandbox tenant — no users to acknowledge yet.
             return null;

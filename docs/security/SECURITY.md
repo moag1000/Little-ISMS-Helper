@@ -24,6 +24,13 @@ This document describes the security features implemented in Little ISMS Helper,
   - `#[IsGranted('ROLE_USER')]` on all controllers
   - `$this->denyAccessUnlessGranted('view', $entity)` for resource-level permissions
   - Multi-tenancy support in all voters
+  - `ROLE_AUDITOR` (and `ROLE_GROUP_CISO` / `ROLE_KONZERN_AUDITOR`, which inherit it) is
+    read-only: state-changing actions need `ROLE_MANAGER` or a persona role. GDPR breach
+    actions, DPIA decisions and the Art. 15/20 personal-data export are `ROLE_MANAGER`
+    (incl. DPO); `tests/Security/WriteActionRoleGateTest.php` pins them.
+  - `^/api` (REST API, OpenAPI docs, JSON-LD contexts) requires a session or API token.
+  - The lifecycle history (`/lifecycle/{type}/{id}/history`) checks the record's
+    organisation itself — the tenant filter does not cover every lifecycle type.
 
 **Testing:**
 ```bash
@@ -66,6 +73,8 @@ bin/console debug:voter AssetVoter
    - Twig auto-escaping enabled (`autoescape: 'html'`)
    - CSP headers in production
    - No `|raw` on user content
+   - Flash messages are escaped where they are rendered (`message|e`): the alert macros
+     output their body raw, and flashes can carry record names or exception text
 
 3. **File Upload Injection:**
    - `FileUploadSecurityService`:
@@ -80,8 +89,10 @@ bin/console debug:voter AssetVoter
    - Removes control characters from email subjects
 
 5. **CSV/Excel Formula Injection:**
-   - `ExcelExportService::sanitizeFormulaInjection()`
-   - Prefixes dangerous characters with single quote
+   - `ExcelExportService::sanitizeFormulaInjection()` and `App\Util\CsvSanitizer::sanitize()`
+   - Prefixes dangerous characters (`= + - @`, TAB, CR) with a single quote
+   - Every exporter that writes record text with `setCellValue()` / `fputcsv()` runs it
+     through `CsvSanitizer` (audit workbooks, VVT, list exports, bulk CSV, LkSG, TISAX)
 
 6. **Path Traversal:**
    - `DocumentController::download()` with realpath validation
@@ -91,10 +102,15 @@ bin/console debug:voter AssetVoter
 
 **Implementation:**
 - Rate limiting for brute force prevention:
-  - Login: 5 attempts per 15 minutes
-  - API: 100 requests per minute
-  - Password reset: 3 attempts per hour
-  - Document upload: 20 uploads per hour
+  - Login: firewall `login_throttling` — 5 failed attempts per username+IP and 25 per IP
+    in 15 minutes (form login, API token, SSO)
+  - Re-authentication (password confirm): 5 attempts per user in 15 minutes
+  - MFA codes: 5 attempts per token in 15 minutes (TOTP and backup codes)
+  - API: 100 requests per minute per IP
+  - Public token URLs (Trust Center, supplier questionnaire): 60 requests per minute per IP
+  - Document upload: 20 uploads per hour per user
+  - Client IPs come from `X-Forwarded-For` only behind trusted proxies (loopback and
+    private networks by default, `SYMFONY_TRUSTED_PROXIES` for public proxies)
 - Security event logging for monitoring
 
 ### A05:2021 – Security Misconfiguration ✅
@@ -136,10 +152,10 @@ symfony check:security
 ### A07:2021 – Identification and Authentication Failures ✅
 
 **Implementation:**
-- **Login Rate Limiting** (`config/packages/rate_limiter.yaml`):
-  - 5 attempts per 15 minutes
-  - Automatic 429 responses when limit exceeded
-  - IP-based tracking
+- **Login Rate Limiting** (`config/packages/security.yaml`, firewall `login_throttling`):
+  - 5 failed attempts per username+IP, 25 per IP, within 15 minutes; reset on success
+  - Checked while the firewall verifies the credentials. A limiter inside the login
+    controller (before 2026-11) never saw the POST and only counted page views.
 
 - **Session Security** (see A02 above):
   - 1-hour session lifetime with garbage collection
@@ -201,6 +217,8 @@ $this->securityLogger->logAccessDenied($resource, $action, $user);
 **Implementation:**
 - PDF generation: `isRemoteEnabled: false` (prevents SSRF)
 - User-configurable outbound URLs (webhooks) validated by `#[NoInternalIp]` (`src/Validator/Constraint/NoInternalIp.php`)
+- Webhooks do not follow redirects (`max_redirects: 0`), so a 302 cannot carry the POST
+  to an internal address after the URL check
 
 ## Services Overview
 
@@ -264,7 +282,8 @@ curl -H "Cookie: PHPSESSID=..." http://localhost/asset/1
 3. **Rate Limiting:**
 ```bash
 # Try brute forcing login
-for i in {1..10}; do curl -X POST http://localhost/login; done
+# (the 6th failed POST to /de/login within 15 minutes is refused)
+for i in {1..10}; do curl -X POST http://localhost/de/login -d '_username=x@example.com&_password=wrong'; done
 ```
 
 ### Automated Testing

@@ -1693,7 +1693,6 @@ workflow:
         no_overdue_desc: 'Alle Workflow-Instanzen liegen derzeit innerhalb ihrer Fristen'
 security:
     error:
-        too_many_attempts: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.'
         saml_login_error: SAML-Anmeldefehler
         saml_logout_error: SAML-Abmeldefehler
     csrf_token_invalid: 'Ungültiges CSRF-Token - bitte laden Sie die Seite neu'

@@ -14,6 +14,7 @@ use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleService;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,7 @@ class LifecycleController extends AbstractController
         private readonly Registry $workflowRegistry,
         private readonly AuditLogRepository $auditLogRepository,
         private readonly UserRepository $userRepository,
+        private readonly TenantContext $tenantContext,
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
@@ -246,7 +248,7 @@ class LifecycleController extends AbstractController
         }
 
         $entity = $this->em->getRepository($mapping['class'])->find($id);
-        if ($entity === null) {
+        if ($entity === null || !$this->isHistoryInScope($entity)) {
             return $this->jsonError(404, 'not_found', 'Entity nicht gefunden.');
         }
 
@@ -293,5 +295,29 @@ class LifecycleController extends AbstractController
             'message' => $message,
             'details' => $details,
         ], $code);
+    }
+
+    /**
+     * The tenant filter does not cover every lifecycle type (Tenant itself is
+     * exempt), so the history checks the owning organisation explicitly: own
+     * organisation or below, like the record's show page. Global catalogue
+     * rows (role, permission) have no owner and stay readable.
+     */
+    private function isHistoryInScope(object $entity): bool
+    {
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+
+        $owner = match (true) {
+            $entity instanceof Tenant => $entity,
+            method_exists($entity, 'getTenant') => $entity->getTenant(),
+            default => null,
+        };
+        if ($owner === null) {
+            return !method_exists($entity, 'getTenant') && !$entity instanceof Tenant;
+        }
+
+        return $owner instanceof Tenant && $this->tenantContext->canAccessTenant($owner);
     }
 }

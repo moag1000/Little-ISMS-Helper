@@ -3,7 +3,7 @@
    includes a "Vollansicht" link to the full page and an edit button.
    Edit is only shown for breaches in draft or under_assessment status. #}
 {% trans_default_domain 'privacy' %}
-{% set can_edit = breach.status in ['draft', 'under_assessment'] and is_granted('ROLE_AUDITOR') %}
+{% set can_edit = breach.status in ['draft', 'under_assessment'] and is_granted('ROLE_MANAGER') %}
 {% set status_class = {
     'draft': 'secondary',
     'under_assessment': 'info',

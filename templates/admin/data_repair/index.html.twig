@@ -69,19 +69,19 @@
     {% endembed %}
 
     {% for message in app.flashes('success') %}
-        {{ _fa_alert.render({ variant: 'success', dismissible: true, body: message }) }}
+        {{ _fa_alert.render({ variant: 'success', dismissible: true, body: message|e }) }}
     {% endfor %}
 
     {% for message in app.flashes('error') %}
-        {{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}
+        {{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message|e }) }}
     {% endfor %}
 
     {% for message in app.flashes('warning') %}
-        {{ _fa_alert.render({ variant: 'warning', dismissible: true, body: message }) }}
+        {{ _fa_alert.render({ variant: 'warning', dismissible: true, body: message|e }) }}
     {% endfor %}
 
     {% for message in app.flashes('info') %}
-        {{ _fa_alert.render({ variant: 'info', dismissible: true, body: message }) }}
+        {{ _fa_alert.render({ variant: 'info', dismissible: true, body: message|e }) }}
     {% endfor %}
 
     {# Full integrity-scan banner — cache state + run-now CTA. #}

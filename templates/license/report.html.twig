@@ -62,6 +62,7 @@
                         <a href="{{ asset('docs/reports/license-report.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>Report.md
                         </a>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <button class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm"
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
@@ -71,6 +72,7 @@
                                 data-report-regenerate-success-text-value="{{ 'common.report_regenerated'|trans({}, 'messages') }}">
                             <i class="fa-icon fa-icon--ui-refresh me-1" aria-hidden="true"></i>{{ 'common.regenerate'|trans({}, 'messages') }}
                         </button>
+                        {% endif %}
                     </div>
                     <div class="mt-3">
                         <small class="text-muted">

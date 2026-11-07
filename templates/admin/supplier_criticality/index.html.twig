@@ -22,7 +22,7 @@
     {% for flash_type, messages in app.flashes %}
         {% for message in messages %}
             {% set faVariant = flash_type in ['danger','error'] ? 'danger' : (flash_type == 'success' ? 'success' : (flash_type == 'warning' ? 'warning' : 'info')) %}
-            {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|trans({}, 'supplier_criticality') }) }}
+            {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|trans({}, 'supplier_criticality')|e }) }}
         {% endfor %}
     {% endfor %}
 

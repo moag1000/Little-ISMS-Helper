@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Throwable;
 
 class SecurityReportController extends AbstractController
@@ -76,6 +77,8 @@ class SecurityReportController extends AbstractController
         ]);
     }
 
+    // Runs the shell-backed generators and returns their raw output — admins only.
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/about/security/generate', name: 'app_security_report_generate', methods: ['POST'])]
     #[IsCsrfTokenValid('report_regenerate', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function generate(SecurityAuditService $securityAuditService): JsonResponse

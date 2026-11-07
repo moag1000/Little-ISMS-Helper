@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Tenant;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -46,5 +49,51 @@ final class LifecycleControllerHistoryTest extends WebTestCase
             $client->getResponse()->getStatusCode(),
             [302, 403, 404],
         );
+    }
+
+    /**
+     * The tenant filter exempts the Tenant entity, so the history endpoint
+     * must check the owning organisation itself: another organisation's
+     * history answers like a missing record.
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function historyOfAnotherOrganisationIsNotFound(): void
+    {
+        $client = static::createClient();
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $uid = bin2hex(random_bytes(4));
+
+        $own = (new Tenant())->setName('Own ' . $uid)->setCode('own_' . $uid);
+        $other = (new Tenant())->setName('Other ' . $uid)->setCode('other_' . $uid);
+        $user = new User();
+        $user->setEmail('history_' . $uid . '@example.com');
+        $user->setFirstName('His');
+        $user->setLastName('Tory');
+        $user->setRoles(['ROLE_USER']);
+        $user->setPassword('x');
+        $user->setIsActive(true);
+        $user->setTenant($own);
+        foreach ([$own, $other, $user] as $row) {
+            $em->persist($row);
+        }
+        $em->flush();
+
+        try {
+            $client->loginUser($user);
+
+            $client->request('GET', '/lifecycle/tenant/' . $other->getId() . '/history');
+            self::assertResponseStatusCodeSame(404);
+
+            $client->request('GET', '/lifecycle/tenant/' . $own->getId() . '/history');
+            self::assertResponseIsSuccessful();
+        } finally {
+            foreach ([$user, $other, $own] as $row) {
+                $managed = $em->find($row::class, $row->getId());
+                if ($managed !== null) {
+                    $em->remove($managed);
+                }
+            }
+            $em->flush();
+        }
     }
 }

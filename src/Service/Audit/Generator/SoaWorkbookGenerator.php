@@ -7,6 +7,7 @@ namespace App\Service\Audit\Generator;
 use App\Entity\Control;
 use App\Entity\Tenant;
 use App\Repository\ControlRepository;
+use App\Util\CsvSanitizer;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -95,12 +96,12 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
             // Explicitly set as string to prevent PhpSpreadsheet auto-casting
             // ISO control IDs like "5.1" to floats.
             $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
-            $sheet->setCellValue('B' . $row, $control->getName());
-            $sheet->setCellValue('C' . $row, $control->getCategory());
+            $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($control->getName()));
+            $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($control->getCategory()));
             $sheet->setCellValue('D' . $row, $control->isApplicable() ? 'Yes' : 'No');
-            $sheet->setCellValue('E' . $row, $control->getJustification() ?? '');
+            $sheet->setCellValue('E' . $row, CsvSanitizer::sanitize($control->getJustification() ?? ''));
             $sheet->setCellValue('F' . $row, $control->getImplementationStatus() ?? 'not_started');
-            $sheet->setCellValue('G' . $row, $control->getImplementationNotes() ?? '');
+            $sheet->setCellValue('G' . $row, CsvSanitizer::sanitize($control->getImplementationNotes() ?? ''));
 
             // Shade non-applicable rows in light grey
             if (!$control->isApplicable()) {
@@ -144,8 +145,8 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
         $row = 2;
         foreach ($controls as $control) {
             $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
-            $sheet->setCellValue('B' . $row, $control->getName());
-            $sheet->setCellValue('C' . $row, $control->getEffectiveResponsiblePerson() ?? '');
+            $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($control->getName()));
+            $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($control->getEffectiveResponsiblePerson() ?? ''));
             $sheet->setCellValue('D' . $row, $control->getImplementationPercentage() ?? 0);
             $sheet->setCellValue('E' . $row, $control->getLastReviewDate()?->format('Y-m-d') ?? '');
             $sheet->setCellValue('F' . $row, $control->getEvidenceDocuments()->count());
@@ -198,7 +199,7 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
             $evidenceDocs = $control->getEvidenceDocuments();
             if ($evidenceDocs->isEmpty()) {
                 $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
-                $sheet->setCellValue('B' . $row, $control->getName());
+                $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($control->getName()));
                 $sheet->setCellValue('C' . $row, '(no evidence linked)');
                 $row++;
                 continue;
@@ -206,10 +207,16 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
 
             foreach ($evidenceDocs as $doc) {
                 $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
-                $sheet->setCellValue('B' . $row, $control->getName());
-                $sheet->setCellValue('C' . $row, $doc->getOriginalFilename());
-                $sheet->setCellValue('D' . $row, method_exists($doc, 'getDocumentType') ? (string) $doc->getDocumentType() : '');
-                $sheet->setCellValue('E' . $row, method_exists($doc, 'getCategory') ? (string) $doc->getCategory() : '');
+                $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($control->getName()));
+                $sheet->setCellValue('C' . $row, CsvSanitizer::sanitize($doc->getOriginalFilename()));
+                $sheet->setCellValue(
+                    'D' . $row,
+                    CsvSanitizer::sanitize(method_exists($doc, 'getDocumentType') ? (string) $doc->getDocumentType() : ''),
+                );
+                $sheet->setCellValue(
+                    'E' . $row,
+                    CsvSanitizer::sanitize(method_exists($doc, 'getCategory') ? (string) $doc->getCategory() : ''),
+                );
                 $sheet->setCellValue('F' . $row, method_exists($doc, 'getCreatedAt') ? $doc->getCreatedAt()?->format('Y-m-d') ?? '' : '');
                 $row++;
             }
@@ -243,7 +250,7 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
         $row = 2;
         foreach ($controls as $control) {
             $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
-            $sheet->setCellValue('B' . $row, $control->getName());
+            $sheet->setCellValue('B' . $row, CsvSanitizer::sanitize($control->getName()));
             $sheet->setCellValue('C' . $row, $control->isApplicable() ? 'Yes' : 'No');
             $sheet->setCellValue('D' . $row, $control->getImplementationStatus() ?? 'not_started');
             // Columns E-I left empty for the auditor
