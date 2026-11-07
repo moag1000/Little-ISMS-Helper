@@ -196,7 +196,7 @@ final class Nis2ComplianceService
         $critical = $this->supplierRepository->findBy(['criticality' => ['critical', 'high']]);
         $assessed = 0;
         foreach ($critical as $supplier) {
-            if (method_exists($supplier, 'getLastSecurityAssessment') && $supplier->getLastSecurityAssessment() !== null) {
+            if ($supplier->getLastSecurityAssessment() !== null) {
                 $assessed++;
             }
         }
@@ -209,11 +209,17 @@ final class Nis2ComplianceService
         );
     }
 
-    /** Art. 21(2)(e) — security in system acquisition, development and maintenance. */
+    /**
+     * Art. 21(2)(e) — security in acquisition, development and maintenance,
+     * incl. vulnerability handling. The same controls the NIS-2 wizard checks
+     * (A.8.8 and A.8.25–8.33); a prefix match on "8.2" also counted A.8.2
+     * privileged access and A.8.20–8.24.
+     */
     private function secureSdlc(?Tenant $tenant): array
     {
-        $implemented = $this->controlsImplementedMatching('8.2');
-        $applicable = $this->controlsApplicableMatching('8.2');
+        $controls = ['8.8', '8.25', '8.26', '8.27', '8.28', '8.29', '8.30', '8.31', '8.32', '8.33'];
+        $implemented = $this->controlsImplementedMatching($controls);
+        $applicable = $this->controlsApplicableMatching($controls);
         $ratio = $applicable > 0 ? round(($implemented / $applicable) * 100, 1) : null;
         return $this->metric(
             '21.2.e', 'Security in development & acquisition',
@@ -265,7 +271,7 @@ final class Nis2ComplianceService
         $allTrainings = $this->trainingRepository->findAll();
         $completed = 0;
         foreach ($allTrainings as $training) {
-            if (method_exists($training, 'getStatus') && $training->getStatus() === TrainingStatus::Completed->value) {
+            if ($training->getStatus() === TrainingStatus::Completed->value) {
                 $completed++;
             }
         }
@@ -284,8 +290,8 @@ final class Nis2ComplianceService
      */
     private function cryptographicControls(?Tenant $tenant): array
     {
-        $implemented = $this->controlsImplementedMatching('8.24');
-        $applicable = $this->controlsApplicableMatching('8.24');
+        $implemented = $this->controlsImplementedMatching(['8.24']);
+        $applicable = $this->controlsApplicableMatching(['8.24']);
         $ratio = $applicable > 0 ? round(($implemented / $applicable) * 100, 1) : null;
         return $this->metric(
             '21.2.h', 'Cryptographic controls policy',
@@ -319,8 +325,7 @@ final class Nis2ComplianceService
             $totalAssets = $this->assetRepository->count([]);
             $classified = 0;
             foreach ($this->assetRepository->findAll() as $asset) {
-                if (method_exists($asset, 'getConfidentialityValue')
-                    && $asset->getConfidentialityValue() !== null
+                if ($asset->getConfidentialityValue() !== null
                     && $asset->getConfidentialityValue() > 0) {
                     $classified++;
                 }
@@ -508,98 +513,69 @@ final class Nis2ComplianceService
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    private function controlsImplementedMatching(string $controlIdPrefix): int
+    /** @param list<string> $controlIds Annex A ids, matched exactly */
+    private function controlsImplementedMatching(array $controlIds): int
     {
         if ($this->controlRepository === null) {
             return 0;
         }
         $qb = $this->controlRepository->createQueryBuilder('c')
             ->select('COUNT(c.id)')
-            ->where('c.controlId LIKE :prefix')
+            ->where('c.controlId IN (:ids)')
             ->andWhere('c.applicable = true')
             ->andWhere('c.implementationStatus = :status')
-            ->setParameter('prefix', $controlIdPrefix . '%')
+            ->setParameter('ids', ControlRepository::annexAIdVariants($controlIds))
             ->setParameter('status', 'implemented');
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    private function controlsApplicableMatching(string $controlIdPrefix): int
+    /** @param list<string> $controlIds Annex A ids, matched exactly */
+    private function controlsApplicableMatching(array $controlIds): int
     {
         if ($this->controlRepository === null) {
             return 0;
         }
         $qb = $this->controlRepository->createQueryBuilder('c')
             ->select('COUNT(c.id)')
-            ->where('c.controlId LIKE :prefix')
+            ->where('c.controlId IN (:ids)')
             ->andWhere('c.applicable = true')
-            ->setParameter('prefix', $controlIdPrefix . '%');
+            ->setParameter('ids', ControlRepository::annexAIdVariants($controlIds));
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
+    /*
+     * The deadlines come from the incident (IncidentNis2ReportingTrait), the
+     * one place that counts them: 24 h and 72 h from detection, the final
+     * report one calendar month after the notification (Art. 23 (4) (d)).
+     */
     private function incidentMetEarlyWarning(Incident $incident): bool
     {
-        if (!method_exists($incident, 'getEarlyWarningReportedAt')) {
-            return false;
-        }
-        $detected = $incident->getDetectedAt();
-        $reported = $incident->getEarlyWarningReportedAt();
-        if ($detected === null || $reported === null) {
-            return false;
-        }
-        return $reported->getTimestamp() - $detected->getTimestamp() <= 24 * 3600;
+        return self::reportedBy($incident->getEarlyWarningReportedAt(), $incident->getEarlyWarningDeadline());
     }
 
     private function incidentMetDetailedNotification(Incident $incident): bool
     {
-        if (!method_exists($incident, 'getDetailedNotificationReportedAt')) {
-            return false;
-        }
-        $detected = $incident->getDetectedAt();
-        $reported = $incident->getDetailedNotificationReportedAt();
-        if ($detected === null || $reported === null) {
-            return false;
-        }
-        return $reported->getTimestamp() - $detected->getTimestamp() <= 72 * 3600;
+        return self::reportedBy(
+            $incident->getDetailedNotificationReportedAt(),
+            $incident->getDetailedNotificationDeadline(),
+        );
     }
 
     private function incidentMetFinalReport(Incident $incident): bool
     {
-        if (!method_exists($incident, 'getFinalReportSubmittedAt')) {
-            return false;
-        }
-        $detected = $incident->getDetectedAt();
-        $reported = $incident->getFinalReportSubmittedAt();
-        if ($detected === null || $reported === null) {
-            return false;
-        }
-        return $reported->getTimestamp() - $detected->getTimestamp() <= 30 * 86400;
+        return self::reportedBy($incident->getFinalReportSubmittedAt(), $incident->getFinalReportDeadline());
     }
 
     private function incidentIsReportingOverdue(Incident $incident): bool
     {
-        $detected = $incident->getDetectedAt();
-        if ($detected === null) {
-            return false;
-        }
-        $now = new \DateTimeImmutable();
-        $ageSeconds = $now->getTimestamp() - $detected->getTimestamp();
+        return $incident->isEarlyWarningOverdue()
+            || $incident->isDetailedNotificationOverdue()
+            || $incident->isFinalReportOverdue();
+    }
 
-        if ($ageSeconds > 24 * 3600
-            && method_exists($incident, 'getEarlyWarningReportedAt')
-            && $incident->getEarlyWarningReportedAt() === null) {
-            return true;
-        }
-        if ($ageSeconds > 72 * 3600
-            && method_exists($incident, 'getDetailedNotificationReportedAt')
-            && $incident->getDetailedNotificationReportedAt() === null) {
-            return true;
-        }
-        if ($ageSeconds > 30 * 86400
-            && method_exists($incident, 'getFinalReportSubmittedAt')
-            && $incident->getFinalReportSubmittedAt() === null) {
-            return true;
-        }
-        return false;
+    private static function reportedBy(?\DateTimeInterface $reported, ?\DateTimeInterface $deadline): bool
+    {
+        return $reported !== null && $deadline !== null && $reported <= $deadline;
     }
 
     private function metric(string $letter, string $title, mixed $value, string $unit, string $status, array $details = []): array

@@ -19,13 +19,13 @@ framework:
                     from: pending_verification
                     to: active
                     metadata:
-                        roles: [ROLE_USER]
+                        roles: [ROLE_DPO]
                         module: privacy
                 reject:
                     from: pending_verification
                     to: rejected
                     metadata:
-                        roles: [ROLE_USER, ROLE_DPO]
+                        roles: [ROLE_DPO]
                         module: privacy
                         reason_required: true
                 revoke:

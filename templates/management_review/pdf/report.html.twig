@@ -150,15 +150,15 @@
     {% set inputs = [
         { key: 'previous_actions',    value: review.previousReviewActions,        ref: '9.3.2 a' },
         { key: 'context_changes',     value: review.contextChanges|default(review.changesRelevantToISMS), ref: '9.3.2 b' },
-        { key: 'interested_parties',  value: review.feedbackFromInterestedParties, ref: '9.3.2 b' },
-        { key: 'performance',         value: review.performanceEvaluation,         ref: '9.3.2 c' },
-        { key: 'nonconformities',     value: review.nonconformitiesReview|default(review.nonConformitiesStatus), ref: '9.3.2 c(1)' },
-        { key: 'corrective_actions',  value: review.correctiveActionsStatus,       ref: '9.3.2 c(2)' },
-        { key: 'incidents',           value: review.incidentsReview|default(''),   ref: '9.3.2 c(3)' },
-        { key: 'audit_results',       value: review.auditResults,                   ref: '9.3.2 c(4)' },
-        { key: 'objectives',          value: review.objectivesReview|default(''),  ref: '9.3.2 c(5)' },
-        { key: 'risks',               value: review.risksReview|default(''),       ref: '9.3.2 e' },
-        { key: 'opportunities',       value: review.improvementOpportunities|default(review.opportunitiesForImprovement), ref: '9.3.2 f' },
+        { key: 'interested_parties',  value: review.feedbackFromInterestedParties, ref: '9.3.2 e' },
+        { key: 'performance',         value: review.performanceEvaluation,         ref: '9.3.2 d 2' },
+        { key: 'nonconformities',     value: review.nonconformitiesReview|default(review.nonConformitiesStatus), ref: '9.3.2 d 1' },
+        { key: 'corrective_actions',  value: review.correctiveActionsStatus,       ref: '9.3.2 d 1' },
+        { key: 'incidents',           value: review.incidentsReview|default(''),   ref: '9.3.2 d' },
+        { key: 'audit_results',       value: review.auditResults,                   ref: '9.3.2 d 3' },
+        { key: 'objectives',          value: review.objectivesReview|default(''),  ref: '9.3.2 d 4' },
+        { key: 'risks',               value: review.risksReview|default(''),       ref: '9.3.2 f' },
+        { key: 'opportunities',       value: review.improvementOpportunities|default(review.opportunitiesForImprovement), ref: '9.3.2 g' },
     ] %}
 
     {% for input in inputs %}

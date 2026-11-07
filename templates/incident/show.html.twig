@@ -339,6 +339,10 @@
                             </div>
                         {% endif %}
                         <div class="impact-item">
+                            <span class="label">{{ 'incident.field.nis2_suspected_malicious'|trans({}, 'incident') }}:</span>
+                            <span class="value">{{ ('incident.suspected_malicious.' ~ (incident.nis2SuspectedMalicious is same as(true) ? 'suspected' : (incident.nis2SuspectedMalicious is same as(false) ? 'not_suspected' : 'unknown')))|trans({}, 'incident') }}</span>
+                        </div>
+                        <div class="impact-item">
                             <span class="label">{{ 'incident.field.cross_border_impact'|trans({}, 'incident') }}:</span>
                             <span class="value">
                                 {% if incident.isCrossBorderImpact %}

@@ -215,7 +215,7 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
                 );
                 $sheet->setCellValue(
                     'E' . $row,
-                    CsvSanitizer::sanitize(method_exists($doc, 'getCategory') ? (string) $doc->getCategory() : ''),
+                    CsvSanitizer::sanitize((string) $doc->getCategory()),
                 );
                 $sheet->setCellValue('F' . $row, method_exists($doc, 'getCreatedAt') ? $doc->getCreatedAt()?->format('Y-m-d') ?? '' : '');
                 $row++;

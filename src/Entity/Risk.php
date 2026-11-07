@@ -1069,7 +1069,7 @@ class Risk
         }
 
         return $this->formallyAccepted
-            && $this->acceptanceApprovedBy !== null
+            && $this->getEffectiveAcceptanceApprovedBy() !== null
             && $this->acceptanceApprovedAt instanceof DateTimeInterface
             && $this->acceptanceJustification !== null;
     }

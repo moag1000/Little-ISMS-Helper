@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
+use App\Entity\Trait\IncidentNis2ReportingTrait;
 use App\Entity\Trait\IncidentReporterTrait;
 use App\Entity\Trait\IncidentResponsiblePersonTrait;
 use App\Enum\IncidentSeverity;
@@ -82,6 +83,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Incident
 {
     use IncidentReporterTrait;
+    use IncidentNis2ReportingTrait;
     use IncidentResponsiblePersonTrait;
 
     #[ORM\Id]
@@ -987,161 +989,6 @@ class Incident
     {
         $this->authorityReferenceNumber = $authorityReferenceNumber;
         return $this;
-    }
-
-    // NIS2 Article 23 - Timeline Helper Methods
-
-    /**
-     * Get early warning deadline (24 hours from detection)
-     */
-    #[Groups(['incident:read'])]
-    public function getEarlyWarningDeadline(): ?DateTimeImmutable
-    {
-        if (!$this->detectedAt instanceof DateTimeInterface) {
-            return null;
-        }
-        return $this->detectedAt instanceof DateTimeImmutable
-            ? $this->detectedAt->modify('+24 hours')
-            : DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+24 hours');
-    }
-
-    /**
-     * Get detailed notification deadline (72 hours from detection)
-     */
-    #[Groups(['incident:read'])]
-    public function getDetailedNotificationDeadline(): ?DateTimeImmutable
-    {
-        if (!$this->detectedAt instanceof DateTimeInterface) {
-            return null;
-        }
-        return $this->detectedAt instanceof DateTimeImmutable
-            ? $this->detectedAt->modify('+72 hours')
-            : DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+72 hours');
-    }
-
-    /**
-     * Get final report deadline (1 month from detection)
-     */
-    #[Groups(['incident:read'])]
-    public function getFinalReportDeadline(): ?DateTimeImmutable
-    {
-        if (!$this->detectedAt instanceof DateTimeInterface) {
-            return null;
-        }
-        return $this->detectedAt instanceof DateTimeImmutable
-            ? $this->detectedAt->modify('+1 month')
-            : DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+1 month');
-    }
-
-    #[Groups(['incident:read'])]
-    public function isEarlyWarningOverdue(): bool
-    {
-        if ($this->earlyWarningReportedAt instanceof DateTimeImmutable) {
-            return false; // Already reported
-        }
-        $deadline = $this->getEarlyWarningDeadline();
-        if (!$deadline instanceof DateTimeImmutable) {
-            return false; // No deadline if detectedAt is not set
-        }
-        return new DateTimeImmutable() > $deadline;
-    }
-
-    #[Groups(['incident:read'])]
-    public function isDetailedNotificationOverdue(): bool
-    {
-        if ($this->detailedNotificationReportedAt instanceof DateTimeImmutable) {
-            return false; // Already reported
-        }
-        $deadline = $this->getDetailedNotificationDeadline();
-        if (!$deadline instanceof DateTimeImmutable) {
-            return false; // No deadline if detectedAt is not set
-        }
-        return new DateTimeImmutable() > $deadline;
-    }
-
-    #[Groups(['incident:read'])]
-    public function isFinalReportOverdue(): bool
-    {
-        if ($this->finalReportSubmittedAt instanceof DateTimeImmutable) {
-            return false; // Already submitted
-        }
-        $deadline = $this->getFinalReportDeadline();
-        if (!$deadline instanceof DateTimeImmutable) {
-            return false; // No deadline if detectedAt is not set
-        }
-        return new DateTimeImmutable() > $deadline;
-    }
-
-    /**
-     * Get hours remaining until early warning deadline
-     */
-    #[Groups(['incident:read'])]
-    public function getHoursUntilEarlyWarningDeadline(): int
-    {
-        if ($this->earlyWarningReportedAt instanceof DateTimeImmutable) {
-            return 0;
-        }
-        $deadline = $this->getEarlyWarningDeadline();
-        if (!$deadline instanceof DateTimeImmutable) {
-            return 0; // No deadline if detectedAt is not set
-        }
-        $now = new DateTimeImmutable();
-        $diff = $now->diff($deadline);
-        return $diff->invert ? 0 : ($diff->days * 24 + $diff->h);
-    }
-
-    /**
-     * Get hours remaining until detailed notification deadline
-     */
-    #[Groups(['incident:read'])]
-    public function getHoursUntilDetailedNotificationDeadline(): int
-    {
-        if ($this->detailedNotificationReportedAt instanceof DateTimeImmutable) {
-            return 0;
-        }
-        $deadline = $this->getDetailedNotificationDeadline();
-        if (!$deadline instanceof DateTimeImmutable) {
-            return 0; // No deadline if detectedAt is not set
-        }
-        $now = new DateTimeImmutable();
-        $diff = $now->diff($deadline);
-        return $diff->invert ? 0 : ($diff->days * 24 + $diff->h);
-    }
-
-    /**
-     * Get days remaining until final report deadline
-     */
-    #[Groups(['incident:read'])]
-    public function getDaysUntilFinalReportDeadline(): int
-    {
-        if ($this->finalReportSubmittedAt instanceof DateTimeImmutable) {
-            return 0;
-        }
-        $deadline = $this->getFinalReportDeadline();
-        if (!$deadline instanceof DateTimeImmutable) {
-            return 0; // No deadline if detectedAt is not set
-        }
-        $now = new DateTimeImmutable();
-        $diff = $now->diff($deadline);
-        return $diff->invert ? 0 : $diff->days;
-    }
-
-    /**
-     * Get hours until final report deadline (for NIS2 one-month deadline)
-     */
-    #[Groups(['incident:read'])]
-    public function getHoursUntilFinalReportDeadline(): float
-    {
-        if ($this->finalReportSubmittedAt instanceof DateTimeImmutable) {
-            return 0;
-        }
-        $deadline = $this->getFinalReportDeadline();
-        if (!$deadline instanceof DateTimeImmutable) {
-            return 0; // No deadline if detectedAt is not set
-        }
-        $now = new DateTimeImmutable();
-        $diff = $deadline->getTimestamp() - $now->getTimestamp();
-        return $diff / 3600; // Convert seconds to hours
     }
 
     /**

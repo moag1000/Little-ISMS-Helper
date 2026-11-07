@@ -76,6 +76,43 @@ class Nis2MusExportServiceTest extends TestCase
         $this->assertFalse($status['final_report']['submitted']);
     }
 
+    #[Test]
+    public function finalReportDeadlineIsOneMonthAfterTheSubmittedNotification(): void
+    {
+        // NIS-2 Art. 23 (4) (d): anchor is the submitted notification, not
+        // detection; counted in calendar months (31 Jan → 28 Feb).
+        $incident = $this->buildIncident();
+        $incident->setDetectedAt(new DateTimeImmutable('2027-01-28 09:00:00'));
+        $incident->setDetailedNotificationReportedAt(new DateTimeImmutable('2027-01-31 15:00:00'));
+
+        $status = $this->service->getDeadlineStatus($incident, new DateTimeImmutable('2027-02-01 00:00:00'));
+
+        $this->assertSame('2027-02-28 15:00', $incident->getFinalReportDeadline()?->format('Y-m-d H:i'));
+        $this->assertSame(
+            $incident->getFinalReportDeadline()?->format(DATE_ATOM),
+            $status['final_report']['due_at'],
+        );
+    }
+
+    #[Test]
+    public function finalReportDeadlineFallsBackToTheNotificationDeadline(): void
+    {
+        $incident = $this->buildIncident();
+        $incident->setDetectedAt(new DateTimeImmutable('2027-03-01 08:00:00'));
+
+        $this->assertSame('2027-04-04 08:00', $incident->getFinalReportDeadline()?->format('Y-m-d H:i'));
+    }
+
+    #[Test]
+    public function earlyWarningReportsSuspectedMaliciousOnlyWhenAssessed(): void
+    {
+        $incident = $this->buildIncident();
+        $this->assertNull($this->service->buildEarlyWarningPayload($incident)['incident']['suspected_malicious']);
+
+        $incident->setNis2SuspectedMalicious(false);
+        $this->assertFalse($this->service->buildEarlyWarningPayload($incident)['incident']['suspected_malicious']);
+    }
+
     private function buildIncident(): Incident
     {
         $tenant = new Tenant();

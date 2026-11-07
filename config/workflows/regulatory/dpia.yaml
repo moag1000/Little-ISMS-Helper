@@ -62,7 +62,7 @@ framework:
                     -   name: "DPIA Creation (Data Owner)"
                         description: "Systematic description of processing, necessity assessment, risk evaluation"
                         order: 1
-                        approver_role: ROLE_DATA_OWNER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 14
                         is_required: true

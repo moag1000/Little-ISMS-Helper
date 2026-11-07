@@ -55,7 +55,7 @@ class SeedPolicyApprovalWorkflowCommand extends Command
             'name' => 'prepared',
             'description' => 'Author prepares the policy draft and submits it for review.',
             'stepType' => 'approval',
-            'approverRole' => 'ROLE_USER',
+            'approverRole' => 'ROLE_MANAGER',
             'daysToComplete' => 3,
             'isRequired' => true,
             'metadata' => ['stage' => 'prepared'],

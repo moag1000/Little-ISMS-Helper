@@ -151,7 +151,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($incidentManager, $ciso) {
                 return match ($role) {
-                    'ROLE_INCIDENT_MANAGER' => [$incidentManager],
+                    'ROLE_ISB' => [$incidentManager],
                     'ROLE_CISO' => [$ciso],
                     default => []
                 };
@@ -190,7 +190,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($incidentManager, $ciso, $manager1, $manager2) {
                 return match ($role) {
-                    'ROLE_INCIDENT_MANAGER' => [$incidentManager],
+                    'ROLE_ISB' => [$incidentManager],
                     'ROLE_CISO' => [$ciso],
                     'ROLE_MANAGER' => [$manager1, $manager2],
                     default => []
@@ -229,7 +229,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
                 return match ($role) {
                     'ROLE_DPO' => [$dpo],
                     'ROLE_CISO' => [$ciso],
-                    'ROLE_CEO' => [$ceo],
+                    'ROLE_TOP_MGMT' => [$ceo],
                     default => []
                 };
             });
@@ -361,7 +361,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
     {
         $incident = $this->createIncident(9, 'INC-009', 'critical', false);
 
-        // Same user has multiple roles (ROLE_INCIDENT_MANAGER + ROLE_CISO + ROLE_MANAGER)
+        // Same user has multiple roles (ROLE_ISB + ROLE_CISO + ROLE_MANAGER)
         $multiRoleUser = $this->createUser(60, 'multi@example.com', 'Multi', 'Role');
 
         $this->userRepository->method('findByRoleInTenant')
@@ -396,7 +396,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->userRepository->method('findByRoleInTenant')
             ->willReturnCallback(function ($role) use ($incidentManager) {
                 return match ($role) {
-                    'ROLE_INCIDENT_MANAGER' => [$incidentManager],
+                    'ROLE_ISB' => [$incidentManager],
                     'ROLE_CISO' => [$incidentManager], // Reuse same user for simplicity
                     'ROLE_MANAGER' => [$incidentManager],
                     default => []

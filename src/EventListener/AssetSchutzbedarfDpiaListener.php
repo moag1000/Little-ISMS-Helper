@@ -75,10 +75,8 @@ final class AssetSchutzbedarfDpiaListener
         }
 
         try {
-            $activities = method_exists($asset, 'getProcessingActivities')
-                ? $asset->getProcessingActivities()
-                : null;
-            if ($activities === null || $activities->isEmpty()) {
+            $activities = $asset->getProcessingActivities();
+            if ($activities->isEmpty()) {
                 return;
             }
 

@@ -25,13 +25,13 @@ framework:
                     from: in_progress
                     to: approved
                     metadata:
-                        roles: [ROLE_SECURITY_MANAGER, ROLE_MANAGER]
+                        roles: [ROLE_ISB, ROLE_MANAGER]
                         tone_target: success
                 reject:
                     from: in_progress
                     to: rejected
                     metadata:
-                        roles: [ROLE_SECURITY_MANAGER, ROLE_MANAGER]
+                        roles: [ROLE_ISB, ROLE_MANAGER]
                         reason_required: true
                         tone_target: danger
                 cancel:
@@ -58,28 +58,28 @@ framework:
                     -   name: "Triage (Security Analyst)"
                         description: "Classify incident, perform initial containment, escalate if needed"
                         order: 1
-                        approver_role: ROLE_SECURITY_ANALYST
+                        approver_role: ROLE_ISB
                         step_type: approval
                         days_to_complete: 0
                         is_required: true
                     -   name: "Investigation (Security Team)"
                         description: "Root cause analysis, identify affected systems, plan remediation"
                         order: 2
-                        approver_role: ROLE_SECURITY_MANAGER
+                        approver_role: ROLE_ISB
                         step_type: approval
                         days_to_complete: 1
                         is_required: true
                     -   name: "Remediation (IT Operations)"
                         description: "Fix vulnerability, apply patches, document changes"
                         order: 3
-                        approver_role: ROLE_IT_MANAGER
+                        approver_role: ROLE_MANAGER
                         step_type: approval
                         days_to_complete: 3
                         is_required: true
                     -   name: "Review (Security Manager)"
                         description: "Lessons learned, process improvement recommendations"
                         order: 4
-                        approver_role: ROLE_SECURITY_MANAGER
+                        approver_role: ROLE_ISB
                         step_type: approval
                         days_to_complete: 7
                         is_required: true

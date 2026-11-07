@@ -342,6 +342,19 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'help' => $nis2CategoryHelp,
                     'choice_translation_domain' => 'incident',
                 ])
+                // NIS-2 Art. 23 (4) (a): the early warning says whether
+                // unlawful or malicious acts are suspected.
+                ->add('nis2SuspectedMalicious', ChoiceType::class, [
+                    'label' => 'incident.field.nis2_suspected_malicious',
+                    'choices' => [
+                        'incident.suspected_malicious.suspected' => true,
+                        'incident.suspected_malicious.not_suspected' => false,
+                    ],
+                    'required' => false,
+                    'placeholder' => 'incident.placeholder.nis2_suspected_malicious',
+                    'help' => 'incident.help.nis2_suspected_malicious',
+                    'choice_translation_domain' => 'incident',
+                ])
                 ->add('earlyWarningReportedAt', DateTimeType::class, [
                     'label' => 'incident.field.early_warning_reported_at',
                     'widget' => 'single_text',
@@ -531,7 +544,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             'overview'          => ['title', 'description', 'category', 'severity', 'status', 'detectedAt', 'occurredAt', 'closedAt'],
             'responsibility'    => ['responsiblePerson', 'reportedByUser', 'reportedByPerson', 'reportedByDeputyPersons', 'reportedBy', 'visibleToHolding'],
             'affected_assets'   => ['affectedSystems', 'affectedAssets', 'criticalServicesAffected'],
-            'classification'    => ['incidentClassification', 'nis2Category', 'ictIncidentClassification'],
+            'classification'    => ['incidentClassification', 'nis2Category', 'nis2SuspectedMalicious', 'ictIncidentClassification'],
             'impact_assessment' => ['crossBorderImpact', 'affectedUsersCount', 'estimatedFinancialImpact', 'economicImpact', 'reputationalImpact', 'clientsAffected', 'clientsAffectedFinancialVolume', 'replicationOfImpact', 'recurringIncident'],
             'privacy'           => ['dataBreachOccurred', 'dataLossOccurred', 'dataLeakageOccurred'],
             'notification'      => ['nationalAuthorityNotified', 'authorityReferenceNumber', 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt', 'initialReportSubmittedAt', 'intermediateReportSubmittedAt'],

@@ -121,7 +121,7 @@ class CertBundleReadinessService
         $unapproved = 0;
 
         foreach ($documents as $doc) {
-            $status = method_exists($doc, 'getStatus') ? $doc->getStatus() : null;
+            $status = $doc->getStatus();
             if ($status !== null && !in_array($status, ['approved', 'archived'], true)) {
                 $unapproved++;
             }
@@ -189,7 +189,7 @@ class CertBundleReadinessService
         $minorAndObs = 0;
 
         foreach ($openFindings as $finding) {
-            $type = method_exists($finding, 'getType') ? $finding->getType() : 'observation';
+            $type = $finding->getType();
             if ($type === AuditFinding::TYPE_MAJOR_NC) {
                 $majorNcs++;
             } else {
@@ -246,7 +246,7 @@ class CertBundleReadinessService
 
         $latestDate = null;
         foreach ($risks as $risk) {
-            $updated = method_exists($risk, 'getUpdatedAt') ? $risk->getUpdatedAt() : null;
+            $updated = $risk->getUpdatedAt();
             if ($updated instanceof \DateTimeInterface) {
                 if ($latestDate === null || $updated > $latestDate) {
                     $latestDate = $updated;
@@ -290,8 +290,8 @@ class CertBundleReadinessService
 
         $recentCompleted = false;
         foreach ($reviews as $review) {
-            $date = method_exists($review, 'getReviewDate') ? $review->getReviewDate() : null;
-            $status = method_exists($review, 'getStatus') ? $review->getStatus() : 'completed';
+            $date = $review->getReviewDate();
+            $status = $review->getStatus();
             if ($date instanceof \DateTimeInterface && $date >= $threshold
                 && in_array($status, ['completed', 'approved', null], true)) {
                 $recentCompleted = true;

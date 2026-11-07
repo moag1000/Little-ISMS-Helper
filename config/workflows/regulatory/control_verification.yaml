@@ -58,7 +58,7 @@ framework:
                     -   name: "Risk Owner Certification"
                         description: "Risk owner confirms the control is implemented as designed"
                         order: 1
-                        approver_role: ROLE_USER
+                        approver_role: ROLE_RISK_MANAGER
                         step_type: approval
                         days_to_complete: 7
                         is_required: true
