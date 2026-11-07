@@ -18,6 +18,7 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701ClauseTagsA
 use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701SchremsIIClauseInTransfersCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701VersionConfiguredCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardTopicCatalogue;
+use App\Service\ComplianceWizard\RecordCheck;
 use App\Service\TenantContext;
 use App\Service\TenantSettingResolver\PolicySettingProvider;
 
@@ -79,6 +80,7 @@ final class IsoFrameworkCategoryProvider
                         'route' => 'app_context_index',
                         'action' => 'wizard.action.define_context',
                     ],
+                    'issues_register' => RecordCheck::register('iso_4_1_issues_register', ['issue_external', 'issue_internal'], '4.1', 'critical'),
                     'interested_parties' => [
                         'name' => 'wizard.check.iso_4_2_interested_parties',
                         'description' => 'wizard.check.iso_4_2_interested_parties_desc',
@@ -89,6 +91,7 @@ final class IsoFrameworkCategoryProvider
                         'route' => 'app_interested_party_index',
                         'action' => 'wizard.action.identify_parties',
                     ],
+                    'legal_register' => RecordCheck::register('iso_4_2_legal_register', ['legal_requirement'], '4.2', 'critical'),
                     'isms_scope' => [
                         'name' => 'wizard.check.iso_4_3_scope',
                         'description' => 'wizard.check.iso_4_3_scope_desc',
@@ -99,6 +102,7 @@ final class IsoFrameworkCategoryProvider
                         'route' => 'app_context_index',
                         'action' => 'wizard.action.define_scope',
                     ],
+                    'scope_interfaces' => RecordCheck::register('iso_4_3_scope_interfaces', ['scope_interface'], '4.3', 'high'),
                     'isms_established' => [
                         'name' => 'wizard.check.iso_4_4_isms',
                         'description' => 'wizard.check.iso_4_4_isms_desc',
@@ -122,9 +126,12 @@ final class IsoFrameworkCategoryProvider
                     'leadership_commitment' => [
                         'name' => 'wizard.check.iso_5_1_commitment',
                         'description' => 'wizard.check.iso_5_1_commitment_desc',
-                        'type' => 'manual',
+                        // Commitment shows in what top management approved: policy, resources, objectives.
+                        'type' => 'management_decision',
+                        'decision_types' => ['policy', 'resources', 'objectives'],
                         'priority' => 'critical',
                         'clause' => '5.1',
+                        'route' => 'app_management_decision_index',
                     ],
                     'information_security_policy' => [
                         'name' => 'wizard.check.iso_5_2_policy',
@@ -146,6 +153,8 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '5.3',
                         'route' => 'app_soa_index',
                     ],
+                    'policy_approval' => RecordCheck::decision('iso_5_2_policy_approval', ['policy'], '5.2', 'critical'),
+                    'roles_register' => RecordCheck::register('iso_5_3_roles_register', ['role'], '5.3', 'high', ['count_proposals' => true]),
                 ],
             ],
 
@@ -168,6 +177,8 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '6.1.1/6.1.2',
                         'route' => 'app_risk_index',
                     ],
+                    'opportunities_register' => RecordCheck::register('iso_6_1_1_opportunities', ['opportunity'], '6.1.1', 'medium'),
+                    'risk_criteria_approval' => RecordCheck::decision('iso_6_1_2_criteria_approval', ['risk_criteria'], '6.1.2', 'critical'),
                     'risk_treatment' => [
                         'name' => 'wizard.check.iso_6_1_3_treatment',
                         'description' => 'wizard.check.iso_6_1_3_treatment_desc',
@@ -186,6 +197,7 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '6.1.3 d)',
                         'route' => 'app_soa_index',
                     ],
+                    'soa_approval' => RecordCheck::decision('iso_6_1_3_soa_approval', ['soa'], '6.1.3', 'critical'),
                     'security_objectives' => [
                         'name' => 'wizard.check.iso_6_2_objectives',
                         'description' => 'wizard.check.iso_6_2_objectives_desc',
@@ -196,6 +208,7 @@ final class IsoFrameworkCategoryProvider
                         'route' => 'app_objective_index',
                         'action' => 'wizard.action.define_objectives',
                     ],
+                    'objectives_approval' => RecordCheck::decision('iso_6_2_objectives_approval', ['objectives'], '6.2', 'high'),
                     'planning_changes' => [
                         'name' => 'wizard.check.iso_6_3_changes',
                         'description' => 'wizard.check.iso_6_3_changes_desc',
@@ -220,13 +233,7 @@ final class IsoFrameworkCategoryProvider
                 'weight' => 1.5,
                 'clause' => '7',
                 'checks' => [
-                    'resources' => [
-                        'name' => 'wizard.check.iso_7_1_resources',
-                        'description' => 'wizard.check.iso_7_1_resources_desc',
-                        'type' => 'manual',
-                        'priority' => 'high',
-                        'clause' => '7.1',
-                    ],
+                    'resources' => RecordCheck::decision('iso_7_1_resources', ['resources'], '7.1', 'high'),
                     'competence' => [
                         'name' => 'wizard.check.iso_7_2_competence',
                         'description' => 'wizard.check.iso_7_2_competence_desc',
@@ -236,6 +243,7 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '7.2',
                         'route' => 'app_training_index',
                     ],
+                    'competence_register' => RecordCheck::register('iso_7_2_competence_register', ['competence'], '7.2', 'high'),
                     'awareness' => [
                         'name' => 'wizard.check.iso_7_3_awareness',
                         'description' => 'wizard.check.iso_7_3_awareness_desc',
@@ -245,13 +253,16 @@ final class IsoFrameworkCategoryProvider
                         'clause' => '7.3',
                         'route' => 'app_training_index',
                     ],
-                    'communication' => [
-                        'name' => 'wizard.check.iso_7_4_communication',
-                        'description' => 'wizard.check.iso_7_4_communication_desc',
-                        'type' => 'manual',
-                        'priority' => 'medium',
-                        'clause' => '7.4',
+                    'awareness_participation' => [
+                        'name' => 'wizard.check.iso_7_3_participation',
+                        'description' => 'wizard.check.iso_7_3_participation_desc',
+                        'type' => 'training_participation',
+                        'module' => 'training',
+                        'priority' => 'high',
+                        'clause' => '7.3',
+                        'route' => 'app_training_index',
                     ],
+                    'communication' => RecordCheck::register('iso_7_4_communication', ['communication'], '7.4', 'medium'),
                     'documented_information' => [
                         'name' => 'wizard.check.iso_7_5_documentation',
                         'description' => 'wizard.check.iso_7_5_documentation_desc',
@@ -337,6 +348,7 @@ final class IsoFrameworkCategoryProvider
                         'route' => 'app_management_review_index',
                         'action' => 'wizard.action.management_review',
                     ],
+                    'review_results' => RecordCheck::decision('iso_9_3_3_review_results', ['mgmt_review'], '9.3.3', 'high'),
                 ],
             ],
 
@@ -351,23 +363,24 @@ final class IsoFrameworkCategoryProvider
                 'clause' => '10',
                 'checks' => [
                     'nonconformity' => [
-                        'name' => 'wizard.check.iso_10_1_nonconformity',
-                        'description' => 'wizard.check.iso_10_1_nonconformity_desc',
+                        'name' => 'wizard.check.iso_10_2_nonconformity',
+                        'description' => 'wizard.check.iso_10_2_nonconformity_desc',
+                        // Cl. 10.2 (2022): nonconformities from audits are closed.
                         'type' => 'audit_status',
                         'module' => 'audits',
                         'priority' => 'high',
-                        'clause' => '10.1',
+                        'clause' => '10.2',
                         'route' => 'app_audit_index',
                     ],
                     'continual_improvement' => [
-                        'name' => 'wizard.check.iso_10_2_improvement',
-                        'description' => 'wizard.check.iso_10_2_improvement_desc',
-                        // Cl. 10.2: nonconformities are answered by corrective actions.
+                        'name' => 'wizard.check.iso_10_1_improvement',
+                        'description' => 'wizard.check.iso_10_1_improvement_desc',
+                        // Cl. 10.1 (2022): continual improvement, evidenced by improvement actions.
                         'type' => 'entity_presence',
                         'entity' => 'corrective_action',
                         'module' => 'corrective_actions',
                         'priority' => 'medium',
-                        'clause' => '10.2',
+                        'clause' => '10.1',
                         'route' => 'app_corrective_action_index',
                     ],
                 ],
@@ -414,6 +427,16 @@ final class IsoFrameworkCategoryProvider
                         'module' => 'controls',
                         'priority' => 'high',
                         'route' => 'app_soa_index',
+                    ],
+                    'awareness_participation' => [
+                        'name' => 'wizard.check.iso_annex_a6_3_participation',
+                        'description' => 'wizard.check.iso_annex_a6_3_participation_desc',
+                        // A.6.3 follows the control and who actually completed their training.
+                        'type' => 'training_participation',
+                        'module' => 'training',
+                        'priority' => 'high',
+                        'clause' => 'A.6.3',
+                        'route' => 'app_training_index',
                     ],
                 ],
             ],

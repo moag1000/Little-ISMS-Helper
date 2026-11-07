@@ -346,6 +346,7 @@ ui.component.density_toggle	1
 ui.condition_builder.keyword	2
 user.profile.alva.position	1
 user.profile.alva.size	1
+verification_status	1
 vulnerability.severity	3
 vulnerability.status	3
 wizard.status	4

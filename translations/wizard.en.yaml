@@ -169,6 +169,18 @@ wizard:
         no_treatment_plans: 'No treatment plans recorded'
         no_processing_activities: 'No processing activities recorded'
         no_documents: 'No matching documents available'
+        no_register_entries: 'Register has no entries'
+        register_incomplete: 'Register incomplete'
+        register_incomplete_desc: '%overdue% entries are overdue for review, %missing% proposals have not been adopted.'
+        no_management_decision: 'No top-management decision recorded'
+        management_decision_missing: 'Top-management decision missing or expiring'
+        management_decision_missing_desc: '%effective% of %total% top-management decisions are in force.'
+        no_training_participation: 'No training participation recorded'
+        training_participation_open: 'Training participation open'
+        training_participation_open_desc: '%completed% of %total% assigned people completed their training.'
+        no_reporting_duty: 'No reporting duty due'
+        reporting_late: 'Reports late or missing'
+        reporting_late_desc: '%late% of %total% due reports were late or are missing, %overdue% of them still open.'
         no_data_desc: 'Without recorded data this item counts as not evidenced.'
         documents_review_pending: 'Documents not approved or overdue'
         documents_review_pending_desc: 'Not all documents are approved and within their review date.'
@@ -438,6 +450,32 @@ wizard:
         bcm_coverage_desc: "Business Impact Analysis and BC plans for critical processes"
 
         # ISO 27001 specific checks
+        iso_4_1_issues_register: "Register of internal and external issues"
+        iso_4_1_issues_register_desc: "Issues recorded and within their review date"
+        iso_4_2_legal_register: "Register of legal and contractual requirements"
+        iso_4_2_legal_register_desc: "Requirements of interested parties, laws and contracts recorded"
+        iso_4_3_scope_interfaces: "Interfaces of the scope"
+        iso_4_3_scope_interfaces_desc: "Interfaces and dependencies on third parties recorded (4.3 c)"
+        iso_5_2_policy_approval: "Policy approved by top management"
+        iso_5_2_policy_approval_desc: "Approval of the information security policy in the register of top-management decisions"
+        iso_5_3_roles_register: "Role register"
+        iso_5_3_roles_register_desc: "Every assigned ISMS role is in the role register with its duties"
+        iso_6_1_1_opportunities: "Register of opportunities"
+        iso_6_1_1_opportunities_desc: "Opportunities recorded and within their review date"
+        iso_6_1_2_criteria_approval: "Risk criteria approved by top management"
+        iso_6_1_2_criteria_approval_desc: "Acceptance criteria and thresholds in the register of top-management decisions"
+        iso_6_1_3_soa_approval: "Statement of Applicability approved"
+        iso_6_1_3_soa_approval_desc: "Approval of the SoA by top management (6.1.3 d)"
+        iso_6_2_objectives_approval: "Objectives approved by top management"
+        iso_6_2_objectives_approval_desc: "Information security objectives in the register of top-management decisions"
+        iso_7_2_competence_register: "Competence register"
+        iso_7_2_competence_register_desc: "Required competences per role recorded"
+        iso_7_3_participation: "Training participation"
+        iso_7_3_participation_desc: "Assigned people completed their training"
+        iso_9_3_3_review_results: "Management review results decided"
+        iso_9_3_3_review_results_desc: "Top-management decisions from the management review"
+        iso_annex_a6_3_participation: "A.6.3 Training participation"
+        iso_annex_a6_3_participation_desc: "Awareness evidenced by completed training participation"
         iso_4_1_organization: "Understanding the organization and its context"
         iso_4_1_organization_desc: "External and internal issues relevant to the organization's purpose"
         iso_4_2_interested_parties: "Understanding needs of interested parties"
@@ -447,7 +485,7 @@ wizard:
         iso_4_4_isms: "Information security management system"
         iso_4_4_isms_desc: "ISMS established, implemented, maintained and improved"
         iso_5_1_commitment: "Leadership and commitment"
-        iso_5_1_commitment_desc: "Top management demonstrates leadership and engagement"
+        iso_5_1_commitment_desc: "Top management approved policy, resources and objectives"
         iso_5_2_policy: "Information security policy"
         iso_5_2_policy_desc: "Documented information security policy"
         iso_5_3_roles: "Roles, responsibilities and authorities"
@@ -463,13 +501,13 @@ wizard:
         iso_6_3_changes: "Planning of changes"
         iso_6_3_changes_desc: "Planned execution of ISMS changes"
         iso_7_1_resources: "Resources"
-        iso_7_1_resources_desc: "Provision of required resources"
+        iso_7_1_resources_desc: "Resources for the ISMS provided by top management"
         iso_7_2_competence: "Competence"
         iso_7_2_competence_desc: "Competence of persons affecting ISMS performance"
         iso_7_3_awareness: "Awareness"
         iso_7_3_awareness_desc: "Awareness of policy, own contribution and consequences"
         iso_7_4_communication: "Communication"
-        iso_7_4_communication_desc: "Internal and external communication about the ISMS"
+        iso_7_4_communication_desc: "Communication register: what, when, to whom, how"
         iso_7_5_documentation: "Documented information"
         iso_7_5_documentation_desc: "Creation, updating and control of documents"
         iso_8_1_planning: "Operational planning and control"
@@ -484,10 +522,10 @@ wizard:
         iso_9_2_audit_desc: "Planned internal audits at regular intervals"
         iso_9_3_review: "Management review"
         iso_9_3_review_desc: "Regular review by top management"
-        iso_10_1_nonconformity: "Nonconformity and corrective action"
-        iso_10_1_nonconformity_desc: "Response to nonconformities with corrective actions"
-        iso_10_2_improvement: "Continual improvement"
-        iso_10_2_improvement_desc: "Continuous improvement of the ISMS"
+        iso_10_2_nonconformity: "Nonconformity and corrective action"
+        iso_10_2_nonconformity_desc: "Response to nonconformities with corrective actions"
+        iso_10_1_improvement: "Continual improvement"
+        iso_10_1_improvement_desc: "Continuous improvement of the ISMS"
         iso_annex_a5: "Organizational Controls (A.5)"
         iso_annex_a5_desc: "37 organizational measures implemented"
         iso_annex_a6: "People Controls (A.6)"

@@ -110,6 +110,7 @@ suggestions:
             progress: Treatment plan progress
         control:
             effectiveness: Rate effectiveness
+            downgrade: Downgrade control
             requirement_link: Map requirement
         register:
             issue_external: 'Register: external issue'
@@ -139,6 +140,7 @@ suggestions:
             progress: Share of implemented controls.
         control:
             effectiveness: From tests, incidents and protected assets.
+            downgrade: Open audit nonconformity against a control marked as implemented.
             requirement_link: Text similarity between control and requirement.
         register:
             issue_external: From the external issues in the context.
@@ -181,9 +183,22 @@ suggestions:
         treatment_plan_progress:
             title: 'Update progress of %plan%'
             rationale: '%done% of %total% controls implemented, progress %from% % → %to% %.'
+        control_downgrade:
+            title: 'Downgrade %control% after nonconformity'
+            rationale: 'Finding %finding% (%type%) is open. Implementation %from% → %to%.'
+            type:
+                major_nc: 'major nonconformity'
+                minor_nc: 'minor nonconformity'
+            status:
+                not_started: 'not started'
+                planned: 'planned'
+                in_progress: 'in progress'
+                implemented: 'implemented'
+                verified: 'verified'
         control_effectiveness:
             title: 'Rate effectiveness of %control%'
             rationale: 'Score %score% of 100 → %rating%. Last test %tested%, %incidents% incidents since the test, %assets% protected assets.'
+            failed: '{1} One incident names the control as failed.|]1,Inf[ %count% incidents name the control as failed.'
         risk_after_incident:
             title: '%risk% occurred, raise likelihood'
             rationale: 'Incident %incident% was closed on %closed%. Likelihood %from% → %to%.'

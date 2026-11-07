@@ -187,6 +187,11 @@
                             <div class="col-md-12">
                                 {{ form_row(form.rootCause) }}
                             </div>
+                            {% if form.failedControls is defined %}
+                            <div class="col-md-12">
+                                {{ form_row(form.failedControls) }}
+                            </div>
+                            {% endif %}
                             <div class="col-md-12">
                                 {{ form_row(form.correctiveActions) }}
                             </div>

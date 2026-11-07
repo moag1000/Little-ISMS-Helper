@@ -169,6 +169,18 @@ wizard:
         no_treatment_plans: 'Keine Behandlungspläne erfasst'
         no_processing_activities: 'Keine Verarbeitungstätigkeiten erfasst'
         no_documents: 'Keine passenden Dokumente vorhanden'
+        no_register_entries: 'Register ohne Einträge'
+        register_incomplete: 'Register unvollständig'
+        register_incomplete_desc: '%overdue% Einträge sind überfällig zur Prüfung, %missing% Vorschläge sind noch nicht übernommen.'
+        no_management_decision: 'Keine Leitungsentscheidung erfasst'
+        management_decision_missing: 'Leitungsentscheidung fehlt oder läuft ab'
+        management_decision_missing_desc: '%effective% von %total% Entscheidungen der Leitung sind in Kraft.'
+        no_training_participation: 'Keine Schulungsteilnahmen erfasst'
+        training_participation_open: 'Schulungsteilnahmen offen'
+        training_participation_open_desc: '%completed% von %total% zugewiesenen Personen haben ihre Schulung abgeschlossen.'
+        no_reporting_duty: 'Keine fällige Meldepflicht'
+        reporting_late: 'Meldungen verspätet oder offen'
+        reporting_late_desc: '%late% von %total% fälligen Meldungen kamen zu spät oder fehlen, davon %overdue% noch offen.'
         no_data_desc: 'Ohne erfasste Datensätze gilt der Punkt als nicht nachgewiesen.'
         documents_review_pending: 'Dokumente nicht freigegeben oder überfällig'
         documents_review_pending_desc: 'Nicht alle Dokumente sind freigegeben und innerhalb ihrer Prüffrist.'
@@ -438,6 +450,32 @@ wizard:
         bcm_coverage_desc: "Business Impact Analysis und BC-Pläne für kritische Prozesse"
 
         # ISO 27001 specific checks
+        iso_4_1_issues_register: "Register der internen und externen Themen"
+        iso_4_1_issues_register_desc: "Themen erfasst und innerhalb ihrer Prüffrist"
+        iso_4_2_legal_register: "Register der rechtlichen und vertraglichen Anforderungen"
+        iso_4_2_legal_register_desc: "Anforderungen interessierter Parteien, Gesetze und Verträge erfasst"
+        iso_4_3_scope_interfaces: "Schnittstellen des Anwendungsbereichs"
+        iso_4_3_scope_interfaces_desc: "Schnittstellen und Abhängigkeiten zu Dritten erfasst (4.3 c)"
+        iso_5_2_policy_approval: "Leitlinie von der Leitung freigegeben"
+        iso_5_2_policy_approval_desc: "Freigabe der Informationssicherheitsleitlinie im Register der Leitungsentscheidungen"
+        iso_5_3_roles_register: "Rollenregister"
+        iso_5_3_roles_register_desc: "Jede zugewiesene ISMS-Rolle steht mit Aufgaben im Rollenregister"
+        iso_6_1_1_opportunities: "Register der Chancen"
+        iso_6_1_1_opportunities_desc: "Chancen erfasst und innerhalb ihrer Prüffrist"
+        iso_6_1_2_criteria_approval: "Risikokriterien von der Leitung gebilligt"
+        iso_6_1_2_criteria_approval_desc: "Akzeptanzkriterien und Schwellen im Register der Leitungsentscheidungen"
+        iso_6_1_3_soa_approval: "Erklärung zur Anwendbarkeit gebilligt"
+        iso_6_1_3_soa_approval_desc: "Freigabe der SoA durch die Leitung (6.1.3 d)"
+        iso_6_2_objectives_approval: "Ziele von der Leitung gebilligt"
+        iso_6_2_objectives_approval_desc: "Informationssicherheitsziele im Register der Leitungsentscheidungen"
+        iso_7_2_competence_register: "Kompetenzregister"
+        iso_7_2_competence_register_desc: "Erforderliche Kompetenzen je Rolle erfasst"
+        iso_7_3_participation: "Teilnahme an Schulungen"
+        iso_7_3_participation_desc: "Zugewiesene Personen haben ihre Schulung abgeschlossen"
+        iso_9_3_3_review_results: "Ergebnisse der Managementbewertung entschieden"
+        iso_9_3_3_review_results_desc: "Entscheidungen der Leitung aus der Managementbewertung"
+        iso_annex_a6_3_participation: "A.6.3 Teilnahme an Schulungen"
+        iso_annex_a6_3_participation_desc: "Sensibilisierung belegt durch abgeschlossene Schulungsteilnahmen"
         iso_4_1_organization: "Verstehen der Organisation und ihres Kontexts"
         iso_4_1_organization_desc: "Externe und interne Themen, die für den Zweck der Organisation relevant sind"
         iso_4_2_interested_parties: "Verstehen der Erfordernisse interessierter Parteien"
@@ -447,7 +485,7 @@ wizard:
         iso_4_4_isms: "Informationssicherheitsmanagementsystem"
         iso_4_4_isms_desc: "ISMS eingerichtet, implementiert, aufrechterhalten und verbessert"
         iso_5_1_commitment: "Führung und Verpflichtung"
-        iso_5_1_commitment_desc: "Top-Management demonstriert Führung und Engagement"
+        iso_5_1_commitment_desc: "Leitung hat Leitlinie, Ressourcen und Ziele freigegeben"
         iso_5_2_policy: "Informationssicherheitsrichtlinie"
         iso_5_2_policy_desc: "Dokumentierte Informationssicherheitsrichtlinie"
         iso_5_3_roles: "Rollen, Verantwortlichkeiten und Befugnisse"
@@ -463,13 +501,13 @@ wizard:
         iso_6_3_changes: "Planung von Änderungen"
         iso_6_3_changes_desc: "Geplante Durchführung von ISMS-Änderungen"
         iso_7_1_resources: "Ressourcen"
-        iso_7_1_resources_desc: "Bereitstellung erforderlicher Ressourcen"
+        iso_7_1_resources_desc: "Ressourcen für das ISMS von der Leitung bereitgestellt"
         iso_7_2_competence: "Kompetenz"
         iso_7_2_competence_desc: "Kompetenz der Personen, die die ISMS-Leistung beeinflussen"
         iso_7_3_awareness: "Bewusstsein"
         iso_7_3_awareness_desc: "Bewusstsein für Richtlinie, eigenen Beitrag und Konsequenzen"
         iso_7_4_communication: "Kommunikation"
-        iso_7_4_communication_desc: "Interne und externe Kommunikation zum ISMS"
+        iso_7_4_communication_desc: "Kommunikationsregister: was, wann, an wen, wie"
         iso_7_5_documentation: "Dokumentierte Information"
         iso_7_5_documentation_desc: "Erstellung, Aktualisierung und Lenkung von Dokumenten"
         iso_8_1_planning: "Betriebliche Planung und Steuerung"
@@ -484,10 +522,10 @@ wizard:
         iso_9_2_audit_desc: "Geplante interne Audits in regelmäßigen Abständen"
         iso_9_3_review: "Managementbewertung"
         iso_9_3_review_desc: "Regelmäßige Bewertung durch das Top-Management"
-        iso_10_1_nonconformity: "Nichtkonformität und Korrekturmaßnahmen"
-        iso_10_1_nonconformity_desc: "Reaktion auf Nichtkonformitäten mit Korrekturmaßnahmen"
-        iso_10_2_improvement: "Fortlaufende Verbesserung"
-        iso_10_2_improvement_desc: "Kontinuierliche Verbesserung des ISMS"
+        iso_10_2_nonconformity: "Nichtkonformität und Korrekturmaßnahmen"
+        iso_10_2_nonconformity_desc: "Reaktion auf Nichtkonformitäten mit Korrekturmaßnahmen"
+        iso_10_1_improvement: "Fortlaufende Verbesserung"
+        iso_10_1_improvement_desc: "Kontinuierliche Verbesserung des ISMS"
         iso_annex_a5: "Organisatorische Controls (A.5)"
         iso_annex_a5_desc: "37 organisatorische Maßnahmen implementiert"
         iso_annex_a6: "Personelle Controls (A.6)"

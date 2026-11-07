@@ -12,6 +12,7 @@ use App\Entity\Tenant;
 use App\Entity\WizardRun;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use App\Service\PolicyWizard\PolicyFulfillmentSyncService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -120,7 +121,12 @@ final class PolicyFulfillmentSyncServiceTest extends TestCase
 
         $em ??= $this->createMock(EntityManagerInterface::class);
 
-        return new PolicyFulfillmentSyncService($fulfillmentService, $requirementRepo, $em);
+        $derivation = $this->createStub(FulfillmentDerivationService::class);
+        $derivation->method('setManual')->willReturnCallback(
+            static fn (ComplianceRequirementFulfillment $f, int $percentage): bool => (bool) $f->setFulfillmentPercentage($percentage),
+        );
+
+        return new PolicyFulfillmentSyncService($fulfillmentService, $requirementRepo, $em, $derivation);
     }
 
     /** Helper: build a ComplianceRequirement stub with a given requirementId. */

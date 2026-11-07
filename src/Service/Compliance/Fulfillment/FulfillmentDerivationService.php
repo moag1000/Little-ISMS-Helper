@@ -87,7 +87,7 @@ class FulfillmentDerivationService
                 );
             }
             if (!$fulfillment->isOverridden()) {
-                $this->setEffective($fulfillment, $derivation->percentage);
+                $this->setEffective($fulfillment, $derivation->percentage, $derivation->verified);
             }
         }
 
@@ -179,6 +179,50 @@ class FulfillmentDerivationService
         $this->engine->forgetTenant($tenant);
 
         return $this->refreshWaves($tenant, $this->finder->wavesForControls($controls));
+    }
+
+    /**
+     * Recomputes every requirement the organisation's records of these check
+     * types answer (register entries → register_coverage, top-management
+     * decisions → management_decision, …), after such records changed.
+     *
+     * @param list<string> $checkTypes
+     * @return int number of fulfilments whose effective value changed
+     */
+    public function refreshForRecords(Tenant $tenant, array $checkTypes): int
+    {
+        $this->engine->forgetTenant($tenant);
+        $requirements = [];
+        foreach ($this->engine->recordReferences($tenant, $checkTypes) as $code => $refs) {
+            $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+            if (!$framework instanceof ComplianceFramework) {
+                continue;
+            }
+            foreach ($this->requirementRepository->findBy(['framework' => $framework]) as $requirement) {
+                $number = RecordCheckRule::requirementNumber($code, (string) $requirement->getRequirementId());
+                foreach ($refs as $ref) {
+                    if ($number !== '' && RecordCheckRule::covers($ref, $number)) {
+                        $requirements[] = $requirement;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $requirements === [] ? 0 : $this->refreshRequirements($tenant, $requirements);
+    }
+
+    /**
+     * After an audit verdict changed (checklist save): drops the cached
+     * verdicts and recomputes the audited requirements.
+     *
+     * @param list<ComplianceRequirement> $requirements
+     */
+    public function refreshAudited(Tenant $tenant, array $requirements): int
+    {
+        $this->engine->forgetTenant($tenant);
+
+        return $requirements === [] ? 0 : $this->refreshRequirements($tenant, $requirements);
     }
 
     /**
@@ -306,12 +350,12 @@ class FulfillmentDerivationService
         return $changed;
     }
 
-    private function setEffective(ComplianceRequirementFulfillment $fulfillment, int $percentage): void
+    private function setEffective(ComplianceRequirementFulfillment $fulfillment, int $percentage, bool $auditVerified = false): void
     {
         $percentage = max(0, min(100, $percentage));
         $fulfillment->setFulfillmentPercentage($percentage);
 
-        $verified = $fulfillment->getStatus() === ComplianceRequirementFulfillmentStatus::Verified->value;
+        $verified = $auditVerified || $fulfillment->getStatus() === ComplianceRequirementFulfillmentStatus::Verified->value;
         $fulfillment->setStatus(match (true) {
             $percentage >= 100 && $verified => ComplianceRequirementFulfillmentStatus::Verified,
             $percentage >= 100 => ComplianceRequirementFulfillmentStatus::Implemented,
