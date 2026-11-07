@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Tenant;
 use App\Entity\Risk;
+use App\Entity\User;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -99,6 +100,28 @@ class RiskRepository extends ServiceEntityRepository
             ->orderBy('r.createdAt', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Risks of the user's organisation the user owns — as login (riskOwner) or
+     * as the person record linked to the login (riskOwnerPerson). A risk owner is
+     * whoever owns a risk, not only who holds ROLE_FUNCTION_OWNER (ISO 27001 6.1.2 c).
+     */
+    public function countOwnedBy(User $user): int
+    {
+        if ($user->getId() === null || $user->getTenant() === null) {
+            return 0;
+        }
+
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(DISTINCT r.id)')
+            ->leftJoin('r.riskOwnerPerson', 'op')
+            ->where('r.tenant = :tenant')
+            ->andWhere('r.riskOwner = :user OR op.linkedUser = :user')
+            ->setParameter('tenant', $user->getTenant())
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

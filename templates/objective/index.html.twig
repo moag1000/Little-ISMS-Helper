@@ -15,7 +15,7 @@
 
     {{ _fa_page_header.render({
         title: 'objective.page.title'|trans({}, 'objective'),
-        actions: is_granted('ROLE_ADMIN') ? [
+        actions: is_granted('ISMS_STEERING_EDIT') ? [
             { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
         ] : []
     }) }}
@@ -33,7 +33,7 @@
         empty: {
             mood: 'sleeping',
             title: 'objective.message.no_objectives'|trans({}, 'objective'),
-            actions: is_granted('ROLE_ADMIN') ? [
+            actions: is_granted('ISMS_STEERING_EDIT') ? [
                 { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new') }
             ] : []
         },
@@ -47,7 +47,7 @@
             {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
                 {% block table_head %}
                     <tr>
-                        {% if is_granted('ROLE_ADMIN') %}
+                        {% if is_granted('ISMS_STEERING_EDIT') %}
                         <th scope="col" class="bulk-select-column">
                             <input type="checkbox"
                                    class="form-check-input"
@@ -71,7 +71,7 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-            {% if is_granted('ROLE_ADMIN') %}
+            {% if is_granted('ISMS_STEERING_EDIT') %}
                 {% include '_components/_bulk_action_bar.html.twig' with { actions: ['delete'] } %}
             {% endif %}
         {% endblock %}

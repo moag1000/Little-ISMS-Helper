@@ -8,6 +8,7 @@ use App\Form\ISMSContextType;
 use App\Repository\AuditLogRepository;
 use App\Repository\InterestedPartyRepository;
 use App\Repository\ISMSObjectiveRepository;
+use App\Security\Voter\IsmsSteeringVoter;
 use App\Service\ISMSContextService;
 use App\Service\ISMSObjectiveService;
 use App\Service\Register\IsmsScopeSummary;
@@ -79,7 +80,7 @@ class ContextController extends AbstractController
         ]);
     }
     #[Route('/context/edit', name: 'app_context_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(IsmsSteeringVoter::EDIT)]
     public function edit(Request $request): Response
     {
         $context = $this->ismsContextService->getCurrentContext();

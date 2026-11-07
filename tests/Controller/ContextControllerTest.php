@@ -142,4 +142,15 @@ class ContextControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
     }
+
+    /** ISO 27001 4.1–4.3: the ISB maintains the context, not only the admin. */
+    #[Test]
+    public function testEditDisplaysForIsb(): void
+    {
+        $this->testUser->setRoles(['ROLE_ISB']);
+        $this->entityManager->flush();
+        $this->client->loginUser($this->testUser);
+        $this->client->request('GET', '/en/context/edit');
+        $this->assertResponseIsSuccessful();
+    }
 }

@@ -18,7 +18,7 @@
     } %}
 
     {% set _show_actions = [] %}
-    {% if is_granted('ROLE_ADMIN') %}
+    {% if is_granted('ISMS_STEERING_EDIT') %}
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_objective_edit', {id: objective.id}) }]) %}
     {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_objective_index') }]) %}

@@ -2,6 +2,14 @@ soa:
     page:
         title: 'Anwendbarkeitserklärung (SoA)'
         subtitle: 'ISO/IEC 27001:2022 Anhang A Controls – Übersicht und Anwendbarkeit'
+    governance:
+        approval: 'Freigabe durch die Leitung'
+        approved_on: 'freigegeben am %date%'
+        not_approved: 'nicht freigegeben'
+        propose: 'Zur Billigung vorlegen'
+        review: 'Jährliche Überprüfung'
+        review_link: 'im Pflichtenkalender'
+        snapshots: 'Eingefrorene Stände'
     action:
         export_html: 'HTML Export'
         export_pdf: 'PDF Export'
