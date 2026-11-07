@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\BusinessProcess;
+use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Person;
 use App\Entity\User;
@@ -323,6 +324,20 @@ final class IncidentType extends AbstractType implements SectionMapInterface
         // KRITIS-operator (`org.is_kritis_operator`), the help-text on the entry
         // field guides the user to set the KRITIS flag for sector-specific
         // mandatory-field detection. See isKritisOperator() above.
+        // ISO 27001 9.1 / A.5.27: controls that did not prevent the incident feed
+        // the effectiveness proposal (ControlEffectivenessKind).
+        if ($this->isModuleActive('controls')) {
+            $builder->add('failedControls', EntityType::class, [
+                'label' => 'incident.field.failed_controls',
+                'class' => Control::class,
+                'choice_label' => static fn (Control $c): string => trim(($c->getControlId() ?? '') . ' ' . ($c->getName() ?? '')),
+                'multiple' => true,
+                'required' => false,
+                'help' => 'incident.help.failed_controls',
+                'attr' => ['data-controller' => 'tom-select'],
+            ]);
+        }
+
         $nis2CategoryHelp = $this->isModuleActive('nis2_dora') && !$this->isKritisOperator()
             ? 'incident.help.nis2_category_kritis_hint'
             : 'incident.help.nis2_category';
@@ -570,7 +585,7 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             'privacy'           => ['dataBreachOccurred', 'dataLossOccurred', 'dataLeakageOccurred'],
             'notification'      => ['reportSummary', 'nationalAuthorityNotified', 'authorityReferenceNumber', 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt', 'initialReportSubmittedAt', 'intermediateReportSubmittedAt', 'doraFinalReportSubmittedAt'],
             'corrective_action' => ['containmentActions', 'correctiveActions', 'dataRecoveryStrategy'],
-            'root_cause'        => ['rootCause', 'evidencePreserved'],
+            'root_cause'        => ['rootCause', 'failedControls', 'evidencePreserved'],
             'lessons_learned'   => ['lessonsLearned'],
         ];
     }

@@ -131,6 +131,7 @@ suggestions:
             progress: Fortschritt Behandlungsplan
         control:
             effectiveness: Wirksamkeit bewerten
+            downgrade: Control herabstufen
             requirement_link: Anforderung zuordnen
         register:
             issue_external: 'Register: externes Thema'
@@ -168,6 +169,7 @@ suggestions:
             progress: Anteil umgesetzter Maßnahmen.
         control:
             effectiveness: Aus Tests, Vorfällen und geschützten Werten.
+            downgrade: Offene Abweichung aus einem Audit gegen ein Control, das als umgesetzt gilt.
             requirement_link: Textähnlichkeit zwischen Maßnahme und Anforderung.
         register:
             issue_external: Aus den externen Themen im Kontext.
@@ -218,9 +220,22 @@ suggestions:
         treatment_plan_progress:
             title: 'Fortschritt von %plan% aktualisieren'
             rationale: '%done% von %total% Maßnahmen umgesetzt, Fortschritt %from% % → %to% %.'
+        control_downgrade:
+            title: '%control% nach Abweichung herabstufen'
+            rationale: 'Feststellung %finding% (%type%) ist offen. Umsetzung %from% → %to%.'
+            type:
+                major_nc: 'Hauptabweichung'
+                minor_nc: 'Nebenabweichung'
+            status:
+                not_started: 'nicht begonnen'
+                planned: 'geplant'
+                in_progress: 'in Umsetzung'
+                implemented: 'umgesetzt'
+                verified: 'verifiziert'
         control_effectiveness:
             title: 'Wirksamkeit von %control% bewerten'
             rationale: 'Bewertung %score% von 100 → %rating%. Letzter Test %tested%, %incidents% Vorfälle seit dem Test, %assets% geschützte Werte.'
+            failed: '{1} Ein Vorfall nennt das Control als versagt.|]1,Inf[ %count% Vorfälle nennen das Control als versagt.'
         risk_after_incident:
             title: '%risk% ist eingetreten, Wahrscheinlichkeit erhöhen'
             rationale: 'Vorfall %incident% wurde am %closed% geschlossen. Wahrscheinlichkeit %from% → %to%.'

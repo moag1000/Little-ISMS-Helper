@@ -15,7 +15,8 @@ annimmt. Jede Entscheidung steht mit Person, Zeit und Begründung im Audit-Log
 | Restrisiko einschätzen | Regel: umgesetzte und wirksame Maßnahmen des Risikos | Restwahrscheinlichkeit/-auswirkung werden eingetragen | Risikomanager, Manager |
 | Behandlung abschließen | Regel: alle Maßnahmen des Plans umgesetzt | Risiko wechselt über den Lebenszyklus auf „behandelt“ | Risikomanager, Manager |
 | Fortschritt Behandlungsplan | Regel: Anteil umgesetzter Maßnahmen | Fortschritt in Prozent wird gesetzt | Risikomanager, Manager |
-| Wirksamkeit bewerten | Regel: Test, Vorfälle seit dem Test, geschützte Werte | Wirksamkeit wird gesetzt (nur Erstbewertung oder Abwertung) | ISB, Manager |
+| Wirksamkeit bewerten | Regel: Test, Vorfälle seit dem Test, geschützte Werte, Vorfälle, die das Control als „versagt“ nennen (einer: höchstens teilweise wirksam, ab zwei: unwirksam) | Wirksamkeit wird gesetzt (nur Erstbewertung oder Abwertung) | ISB, Manager |
+| Control herabstufen | Regel: offene Abweichung aus einem Audit gegen ein Control, das als umgesetzt gilt (ISO 27001 10.2) | Hauptabweichung: Umsetzung „in Arbeit“ (50 %); Nebenabweichung: „verifiziert“ wird zu „umgesetzt“. Die Erfüllung der Anforderungen dahinter rechnet sofort neu | ISB, Manager |
 | Risiko nach Vorfall | Regel: Vorfall als eingetretenes Risiko geschlossen (90 Tage) | Wahrscheinlichkeit +1 (ISO 27001 6.1.2) | Risikomanager, Manager |
 | Risiko aus Schwachstelle | Regel: offene Schwachstelle ab CVSS 7 ohne Risiko | Risiko wird angelegt und verknüpft | Risikomanager, Manager |
 | Verantwortliche zuordnen | Import: Freitext-Verantwortliche passen zu einer Person | Person wird als Verantwortliche eingetragen | Admin |

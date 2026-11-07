@@ -63,12 +63,18 @@ class FulfillmentRuleEngine implements ResetInterface
         private readonly ComplianceMappingRepository $mappingRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
         private readonly ?RecordCheckRule $recordRule = null,
+        private readonly ?AuditResultRule $auditRule = null,
     ) {
     }
 
     public function derive(ComplianceRequirement $requirement, Tenant $tenant): ?FulfillmentDerivation
     {
-        return $this->deriveAt($requirement, $tenant, 0, []);
+        $derivation = $this->deriveAt($requirement, $tenant, 0, []);
+
+        // the auditor's verdict caps what the data say (mapping sources read the stored, capped value)
+        return $this->auditRule instanceof AuditResultRule
+            ? $this->auditRule->apply($derivation, $requirement, $tenant)
+            : $derivation;
     }
 
     /**
@@ -170,6 +176,7 @@ class FulfillmentRuleEngine implements ResetInterface
     {
         unset($this->controlsByTenant[(int) $tenant->getId()]);
         $this->recordRule?->forgetTenant($tenant);
+        $this->auditRule?->forgetTenant($tenant);
     }
 
     /**

@@ -87,7 +87,7 @@ class FulfillmentDerivationService
                 );
             }
             if (!$fulfillment->isOverridden()) {
-                $this->setEffective($fulfillment, $derivation->percentage);
+                $this->setEffective($fulfillment, $derivation->percentage, $derivation->verified);
             }
         }
 
@@ -208,6 +208,19 @@ class FulfillmentDerivationService
                 }
             }
         }
+
+        return $requirements === [] ? 0 : $this->refreshRequirements($tenant, $requirements);
+    }
+
+    /**
+     * After an audit verdict changed (checklist save): drops the cached
+     * verdicts and recomputes the audited requirements.
+     *
+     * @param list<ComplianceRequirement> $requirements
+     */
+    public function refreshAudited(Tenant $tenant, array $requirements): int
+    {
+        $this->engine->forgetTenant($tenant);
 
         return $requirements === [] ? 0 : $this->refreshRequirements($tenant, $requirements);
     }
@@ -337,12 +350,12 @@ class FulfillmentDerivationService
         return $changed;
     }
 
-    private function setEffective(ComplianceRequirementFulfillment $fulfillment, int $percentage): void
+    private function setEffective(ComplianceRequirementFulfillment $fulfillment, int $percentage, bool $auditVerified = false): void
     {
         $percentage = max(0, min(100, $percentage));
         $fulfillment->setFulfillmentPercentage($percentage);
 
-        $verified = $fulfillment->getStatus() === ComplianceRequirementFulfillmentStatus::Verified->value;
+        $verified = $auditVerified || $fulfillment->getStatus() === ComplianceRequirementFulfillmentStatus::Verified->value;
         $fulfillment->setStatus(match (true) {
             $percentage >= 100 && $verified => ComplianceRequirementFulfillmentStatus::Verified,
             $percentage >= 100 => ComplianceRequirementFulfillmentStatus::Implemented,

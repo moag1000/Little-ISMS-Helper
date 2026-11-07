@@ -77,6 +77,9 @@
                     {% elseif row.type == 'record' %}
                         {% if row.route %}<a href="{{ path(row.route) }}">{% else %}<span>{% endif %}<code>{{ row.ref }}</code> {{ row.label|trans({}, row.domain) }}{% if row.route %}</a>{% else %}</span>{% endif %}
                         <span class="text-nowrap">{{ row.value }} %</span>
+                    {% elseif row.type == 'audit' %}
+                        <a href="{{ path('app_audit_checklist', {id: row.id}) }}"><code>{{ row.ref }}</code> {{ 'compliance.fulfillment_rule.why.audit_row'|trans({'%status%': ('verification_status.' ~ row.status)|trans({}, 'audits'), '%date%': row.verified_at|fa_date}, 'compliance') }}</a>
+                        <span class="text-nowrap">≤ {{ row.value }} %</span>
                     {% elseif row.type == 'maturity' %}
                         <span>{{ 'compliance.fulfillment_rule.why.maturity_level'|trans({'%level%': row.level}, 'compliance') }}</span>
                         <span class="text-nowrap">{{ row.value }} %</span>

@@ -11,12 +11,19 @@
     <div class="page-header">
         <div>
             <h1>{{ 'checklist.title'|trans({}, 'audit') }}</h1>
-            <p class="text-muted">{{ audit.title }} - {{ audit.scopeDescription }}</p>
+            <p class="text-muted">{{ audit.title }}{% if frameworks is not empty %} · {{ 'checklist.scope'|trans({'%frameworks%': frameworks|map(f => f.name)|join(', ')}, 'audit') }}{% endif %}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 ← {{ 'common.back'|trans({}, 'messages') }}
             </a>
+            {% if not locked %}
+                <form method="post" action="{{ path('app_audit_checklist_generate', {id: audit.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('audit_checklist_generate_' ~ audit.id) }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'checklist.action.generate'|trans({}, 'audit') }}</button>
+                </form>
+            {% endif %}
+            {% if stats.total > 0 and not locked %}
             <button class="fa-cyber-btn fa-cyber-btn--success"
                     type="button"
                     id="saveProgress"
@@ -25,8 +32,19 @@
                     data-saving-text="{{ 'checklist.saving'|trans({}, 'audit') }}">
                 {{ 'checklist.save_progress'|trans({}, 'audit') }}
             </button>
+            {% endif %}
         </div>
     </div>
+
+    {% if stats.total == 0 %}
+        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'checklist.empty.title'|trans({}, 'audit'),
+            text: 'checklist.empty.text'|trans({}, 'audit'),
+        }) }}
+    {% else %}
+    <p class="small text-body-secondary">{{ 'checklist.feeds_fulfillment'|trans({}, 'audit') }}</p>
 
     {# Quick Progress Bar #}
     <div class="progress-card">
@@ -77,6 +95,7 @@
                 </div>
             {% endfor %}
         </div>
+    {% endif %}
     {% endif %}
 </div>
 
