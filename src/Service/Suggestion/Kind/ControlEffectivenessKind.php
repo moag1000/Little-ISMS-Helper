@@ -51,7 +51,7 @@ final class ControlEffectivenessKind extends AbstractSuggestionKind
         return ['ROLE_ISB', 'ROLE_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'controls';
     }

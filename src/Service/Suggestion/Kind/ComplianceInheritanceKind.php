@@ -50,7 +50,7 @@ final class ComplianceInheritanceKind extends AbstractSuggestionKind
         return ['ROLE_COMPLIANCE_MANAGER', 'ROLE_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'compliance';
     }

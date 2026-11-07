@@ -55,7 +55,7 @@ final class RiskTreatmentCompleteKind extends AbstractSuggestionKind
         return ['ROLE_RISK_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'risks';
     }

@@ -47,7 +47,7 @@ final class TreatmentPlanProgressKind extends AbstractSuggestionKind
         return ['ROLE_RISK_MANAGER', 'ROLE_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'risk_treatment_plans';
     }

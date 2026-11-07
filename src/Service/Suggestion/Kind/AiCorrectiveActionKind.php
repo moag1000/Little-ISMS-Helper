@@ -47,7 +47,7 @@ final class AiCorrectiveActionKind extends AbstractAiKind
         return ['ROLE_ISB', 'ROLE_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'corrective_actions';
     }

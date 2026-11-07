@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Suggestion\Kind;
 
-use App\Entity\Control;
 use App\Entity\Risk;
 use App\Entity\Suggestion;
 use App\Entity\Tenant;
@@ -54,7 +53,7 @@ final class RiskResidualKind extends AbstractSuggestionKind
         return ['ROLE_RISK_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'risks';
     }
@@ -84,7 +83,7 @@ final class RiskResidualKind extends AbstractSuggestionKind
         $effective = [];
         $lowersImpact = false;
         foreach ($risk->getControls() as $control) {
-            if (!$control instanceof Control || !ControlState::isImplemented($control)) {
+            if (!ControlState::isImplemented($control)) {
                 continue;
             }
             $implemented[] = ControlState::label($control);

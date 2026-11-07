@@ -48,7 +48,7 @@ final class AiRiskFromIncidentKind extends AbstractAiKind
         return ['ROLE_RISK_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'risks';
     }

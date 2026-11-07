@@ -47,7 +47,7 @@ final class ControlRequirementLinkKind extends AbstractSuggestionKind
         return ['ROLE_COMPLIANCE_MANAGER', 'ROLE_ISB', 'ROLE_MANAGER'];
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'compliance';
     }

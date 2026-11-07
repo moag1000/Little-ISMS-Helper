@@ -97,7 +97,7 @@ class AiSettingsController extends AbstractController
         $this->auditLogger->logUpdate(
             entityType: 'Tenant',
             entityId: $tenant->getId(),
-            oldValues: null,
+            oldValues: [],
             newValues: ['ai' => $stored],
             description: 'AI suggestion settings updated',
         );
