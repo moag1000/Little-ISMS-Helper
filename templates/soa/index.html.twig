@@ -173,7 +173,7 @@
 {% embed '_components/_fa_list_page.html.twig' with {
     page: page,
     search_action: path('app_soa_index'),
-    filter_keys: ['category', 'status', 'mris', 'view', 'tag', 'essential'],
+    filter_keys: ['category', 'status', 'mris', 'view', 'tag', 'essential', 'review_overdue'],
     search_placeholder: 'soa.filter.search_placeholder'|trans({}, 'soa'),
     list_title: 'soa.section.all_controls'|trans({}, 'soa'),
     empty: {
@@ -189,6 +189,7 @@
     card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/soa" data-bulk-actions-applicability-url-value="' ~ path('app_soa_bulk_applicability') ~ '" data-bulk-actions-applicability-csrf-token-value="' ~ csrf_token('soa_bulk_applicability') ~ '"',
 } %}
     {% block list_filters %}
+        {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}
             {% if currentTenant %}
             <div class="col-md-4">
                 <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
@@ -265,6 +266,7 @@
             <span class="fa-status-pill fa-status-pill--success">{{ 'soa.summary.implemented'|trans({'%count%': _implemented}, 'soa') }}</span>
             <span class="fa-status-pill fa-status-pill--warning">{{ 'soa.summary.rate'|trans({'%rate%': (_implemented / _applicable * 100)|round}, 'soa') }}</span>
         {% endif %}
+        {% include '_components/_review_due_chip.html.twig' with { type: 'control' } only %}
     {% endblock %}
     {% block list_table %}
         {% embed '_components/_fa_table.html.twig' with {
@@ -395,7 +397,7 @@
         {# Canonical bulk-action-bar (export + delete). Tag-bulk lives in the
            polymorphic tag-bar above (entity_class: Control). #}
         {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['applicable_change', 'export']
+            actions: ['applicable_change', 'review', 'export']
         } %}
     {% endblock %}
 {% endembed %}

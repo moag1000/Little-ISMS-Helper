@@ -71,22 +71,6 @@
 
 <div class="container">
 
-    {% if overdueAssessments|length > 0 %}
-    <div class="fa-alert fa-alert--warning" role="alert">
-        <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
-        <div class="fa-alert__body"><div class="fw-bold mb-2"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'supplier.alert.overdue_assessments'|trans({}, 'suppliers') }}</div>
-        <ul>
-            {% for supplier in overdueAssessments %}
-            <li>
-                <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                - {{ 'supplier.next_assessment'|trans({}, 'suppliers') }}: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|fa_date : ('supplier.not_scheduled'|trans({}, 'suppliers')) }}
-            </li>
-            {% endfor %}
-        </ul>
-        </div>
-    </div>
-    {% endif %}
-
     {% if nonCompliant|length > 0 %}
     <div class="fa-alert fa-alert--danger" role="alert">
         <div class="fa-alert__body">
@@ -118,7 +102,7 @@
     {% embed '_components/_fa_list_page.html.twig' with {
         page: page,
         search_action: path('app_supplier_index'),
-        filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'dora_relevant', 'view', 'tag'],
+        filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'dora_relevant', 'view', 'tag', 'review_overdue'],
         list_title: 'supplier.list.title'|trans({'%count%': page.total}, 'suppliers'),
         empty: {
             mood: 'sleeping',
@@ -131,6 +115,7 @@
     } %}
         {% block list_filters %}
             {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
+            {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}
             {% if currentTenant %}
             <div class="col-md-4">
                 <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
@@ -197,10 +182,9 @@
         {% endblock %}
         {% block list_summary %}
             {% set _critical = suppliers|filter(s => s.criticality == 'critical')|length %}
-            {% set _overdue = suppliers|filter(s => s in overdueAssessments)|length %}
             {% set _non_compliant = suppliers|filter(s => s in nonCompliant)|length %}
             {% if _critical > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'supplier.summary.critical'|trans({'%count%': _critical}, 'suppliers') }}</span>{% endif %}
-            {% if _overdue > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'supplier.summary.overdue_assessments'|trans({'%count%': _overdue}, 'suppliers') }}</span>{% endif %}
+            {% include '_components/_review_due_chip.html.twig' with { type: 'supplier' } only %}
             {% if _non_compliant > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'supplier.summary.non_compliant'|trans({'%count%': _non_compliant}, 'suppliers') }}</span>{% endif %}
         {% endblock %}
         {% block list_table %}
@@ -235,7 +219,7 @@
                 {% endblock %}
             {% endembed %}
             {% include '_components/_bulk_action_bar.html.twig' with {
-                actions: ['export', 'delete']
+                actions: ['export', 'review', 'delete']
             } %}
         {% endblock %}
     {% endembed %}

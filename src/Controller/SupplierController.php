@@ -57,7 +57,7 @@ class SupplierController extends AbstractController
     ) {}
     #[Route('/supplier', name: 'app_supplier_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request): Response
+    public function index(Request $request, ?\App\Service\Review\PeriodicReviewService $reviews = null): Response
     {
         if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         // Get current tenant
@@ -78,14 +78,12 @@ class SupplierController extends AbstractController
                 // Own + inherited from parents (default behavior)
                 default => $this->supplierService->getSuppliersForTenant($tenant),
             };
-            $overdueAssessments = $this->supplierRepository->findOverdueAssessmentsByTenant($tenant);
             $nonCompliant = $this->supplierRepository->findNonCompliantByTenant($tenant);
             $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
         } else {
             $suppliers = $this->supplierRepository->findAll();
-            $overdueAssessments = [];
             $nonCompliant = [];
             $inheritanceInfo = [
                 'hasParent' => false,
@@ -130,6 +128,9 @@ class SupplierController extends AbstractController
             ));
         }
 
+        // "Review fällig" via ?review_overdue=1 — PeriodicReviewService, one rule for all four lists
+        $dueOnly = $request->query->get('review_overdue') === '1';
+        $suppliers = array_values($reviews?->filterDueWhen($dueOnly, $suppliers) ?? $suppliers);
         // MINOR-6: DORA Register-of-Information export only when framework is active.
         $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA']);
         $doraActive = $doraFramework !== null && $doraFramework->isActive()
@@ -142,7 +143,6 @@ class SupplierController extends AbstractController
                 $request,
                 static fn(Supplier $s): array => [$s->getName(), $s->getServiceProvided()],
             ),
-            'overdueAssessments' => $overdueAssessments,
             'nonCompliant' => $nonCompliant,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
