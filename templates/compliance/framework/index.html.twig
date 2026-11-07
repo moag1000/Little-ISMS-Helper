@@ -14,7 +14,7 @@
     {% set _header_actions = [
         { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_index') }
     ] %}
-    {% if is_granted('ROLE_ADMIN') %}
+    {% if is_granted('ADMIN_GLOBAL_OP') %}
         {% set _header_actions = _header_actions|merge([
             { label: 'compliance.framework.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'ui-plus', href: path('app_compliance_framework_new') }
         ]) %}
@@ -35,7 +35,7 @@
             title: 'compliance.framework.empty'|trans({}, 'compliance'),
             norm_ref: 'ISO 27001 Clause 4.2, 6.1.3',
             help_link: path('app_help_glossary') ~ '#glossary-framework',
-            actions: is_granted('ROLE_ADMIN') ? [
+            actions: is_granted('ADMIN_GLOBAL_OP') ? [
                 { label: 'compliance.framework.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'plus', href: path('app_compliance_framework_new') }
             ] : []
         },
@@ -127,7 +127,7 @@
                                            class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
                                         </a>
-                                        {% if is_granted('ROLE_ADMIN') %}
+                                        {% if is_granted('ADMIN_GLOBAL_OP') %}
                                             <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}"
                                                class="fa-cyber-btn fa-cyber-btn--warning" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>

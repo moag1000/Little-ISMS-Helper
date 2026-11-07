@@ -160,7 +160,7 @@ class BackfillMappingQualityScoreCommandTest extends KernelTestCase
         $fwA = $this->createFramework('TEST-FW-A-' . uniqid());
         $fwB = $this->createFramework('TEST-FW-B-' . uniqid());
 
-        $statsBefore = $this->repository->getQualityStatistics();
+        $statsBefore = self::getContainer()->get(\App\Service\Compliance\MappingStatistics::class)->getQualityStatistics(global: true);
         $baseWaiting = $statsBefore['unanalyzed_mappings'];
 
         // One MQS-scored (must NOT count as waiting), one genuinely poor (must).
@@ -179,7 +179,7 @@ class BackfillMappingQualityScoreCommandTest extends KernelTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $statsAfter = $this->repository->getQualityStatistics();
+        $statsAfter = self::getContainer()->get(\App\Service\Compliance\MappingStatistics::class)->getQualityStatistics(global: true);
 
         // Only the metadata-poor row should have increased the waiting count.
         self::assertSame($baseWaiting + 1, $statsAfter['unanalyzed_mappings']);

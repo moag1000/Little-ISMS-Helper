@@ -94,22 +94,6 @@ class MappingGapItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get gap statistics by priority
-     */
-    public function getGapStatisticsByPriority(): array
-    {
-        $queryBuilder = $this->createQueryBuilder('g');
-
-        return $queryBuilder
-            ->select('g.priority, COUNT(g.id) as count, SUM(g.percentageImpact) as totalImpact, AVG(g.estimatedEffort) as avgEffort')
-            ->where('g.status NOT IN (:resolvedStatuses)')
-            ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
-            ->groupBy('g.priority')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Find gaps with low confidence that need manual review
      *
      * @return MappingGapItem[]
@@ -126,41 +110,4 @@ class MappingGapItemRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Calculate total effort required to close all gaps
-     *
-     * @return array{total_gaps: int, total_effort: int, by_priority: array}
-     */
-    public function calculateTotalRemediationEffort(): array
-    {
-        $queryBuilder = $this->createQueryBuilder('g');
-
-        $totalGaps = $queryBuilder
-            ->select('COUNT(g.id)')
-            ->where('g.status NOT IN (:resolvedStatuses)')
-            ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $totalEffort = $this->createQueryBuilder('g')
-            ->select('SUM(g.estimatedEffort)')
-            ->where('g.status NOT IN (:resolvedStatuses)')
-            ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $byPriority = $this->createQueryBuilder('g')
-            ->select('g.priority, COUNT(g.id) as count, SUM(g.estimatedEffort) as effort')
-            ->where('g.status NOT IN (:resolvedStatuses)')
-            ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
-            ->groupBy('g.priority')
-            ->getQuery()
-            ->getResult();
-
-        return [
-            'total_gaps' => (int) $totalGaps,
-            'total_effort' => (int) ($totalEffort ?? 0),
-            'by_priority' => $byPriority,
-        ];
-    }
 }

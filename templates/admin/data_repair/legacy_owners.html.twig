@@ -11,11 +11,9 @@
 {% block admin_content %}
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'admin.data_repair.title'|trans({}, 'admin'), url: path('admin_data_repair_index') },
-            { label: 'admin.legacy_owners.title'|trans({}, 'admin') }
-        ]
+        breadcrumbs: [{ label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') }]
+            |merge(is_granted('ADMIN_GLOBAL_OP') ? [{ label: 'admin.data_repair.title'|trans({}, 'admin'), url: path('admin_data_repair_index') }] : [])
+            |merge([{ label: 'admin.legacy_owners.title'|trans({}, 'admin') }])
     } %}
 
     {{ _fa_page_header.render({

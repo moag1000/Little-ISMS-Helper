@@ -27,6 +27,7 @@ use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityResultCache;
 use App\Service\DataIntegrityService;
+use App\Service\DataRepair\RepairTenantScope;
 use App\Service\Job\AsyncJobDispatcher;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
@@ -44,17 +45,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Admin UI for data repair / integrity / schema operations.
  *
- * Role-Scope:
- *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — tenant
- *    admins repair orphans / duplicates / tenant-mismatches inside their
- *    own tenant tree (`W own orphans/dupes` per spec §3.1).
- *  - Schema-level routes (`/schema/migrations`, `/schema/reconcile`) AND
- *    cross-tenant duplicate merging are upgraded to
- *    {@see TenantScopedAdminVoter::ADMIN_GLOBAL_OP} / ROLE_SUPER_ADMIN
- *    — these touch global DDL or merge records across tenants and must
- *    not be reachable by a tenant-scoped admin.
+ * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_GLOBAL_OP}
+ * (SUPER_ADMIN). The scans, the repairs and the schema tools read and write
+ * every tenant of the instance, so a tenant admin must not reach them; their
+ * own-organisation clean-up is the Freitext-Verantwortliche page
+ * (LegacyOwnerController). The per-action ADMIN_GLOBAL_OP attributes below
+ * stay as explicit markers for the destructive ones.
  */
-#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
 class DataRepairController extends AbstractController
 {
     public function __construct(
@@ -74,6 +72,7 @@ class DataRepairController extends AbstractController
         private readonly DataIntegrityResultCache $integrityResultCache,
         private readonly SectionScanResultCache $sectionScanCache,
         private readonly AsyncJobDispatcher $asyncJobDispatcher,
+        private readonly RepairTenantScope $repairScope,
     ) {
     }
 
@@ -414,18 +413,9 @@ class DataRepairController extends AbstractController
         );
     }
 
-    /**
-     * Bulk-assigns orphaned entities (tenant_id IS NULL) to a target tenant.
-     *
-     * Was synchronous and looped {@see AuditLogger::logCustom()} per entity
-     * (each call flushes the EM). On tenants with thousands of orphans this
-     * exceeded the PHP-FPM 30 s timeout and the operator saw a blank page.
-     *
-     * Now dispatches {@see AssignOrphansJob} via {@see JobDispatcher} — the
-     * worker batches flushes (50 entities per commit) and the polling page
-     * surfaces live progress without blocking PHP-FPM.
-     */
+    /** Bulk-assigns orphaned entities (tenant_id IS NULL) to a tenant via {@see AssignOrphansJob} (instance-wide, super admin only). */
     #[Route('/admin/data-repair/assign-orphans', name: 'admin_data_repair_assign_orphans', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function assignOrphans(
         Request $request,
         #[CurrentUser] User $user,
@@ -476,17 +466,7 @@ class DataRepairController extends AbstractController
         );
     }
 
-    /**
-     * Reassign a single orphan entity to a tenant.
-     *
-     * Was synchronous: one flush + one audit-log flush per request. On slow
-     * shared-hosting MySQL (fsync-heavy disk) the operator could still wait
-     * 10–30 s, which felt indistinguishable from the bulk-assign timeout.
-     *
-     * Now dispatches {@see ReassignEntityJob} — the polling page renders
-     * immediately and the job refreshes the orphan-cache so the index page
-     * reflects the new state when the operator returns.
-     */
+    /** Reassigns one entity to a tenant via {@see ReassignEntityJob}; tenant admins only inside their own tenant tree. */
     #[Route('/admin/data-repair/reassign-entity/{type}/{id}', name: 'admin_data_repair_reassign_entity', methods: ['POST'])]
     public function reassignEntity(
         Request $request,
@@ -504,6 +484,10 @@ class DataRepairController extends AbstractController
         if ($tenant === null) {
             $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_orphans');
+        }
+        // Tenant admins may only move data inside their own tenant tree (the job re-checks the source entity).
+        if (!$this->repairScope->canAccess($tenant)) {
+            throw $this->createAccessDeniedException();
         }
 
         // Verify the entity type slug maps to a real Doctrine entity before
@@ -544,6 +528,7 @@ class DataRepairController extends AbstractController
                 'entityId' => $id,
                 'tenantId' => $tenantId,
                 'userId' => $user->getId(),
+                RepairTenantScope::ARG => $this->repairScope->jobArg(),
             ],
             $jobId,
             $response,
@@ -739,6 +724,7 @@ class DataRepairController extends AbstractController
      * CSRF-protected (token id `fix_all_orphans`).
      */
     #[Route('/admin/data-repair/fix-all-orphans-async/{tenantId}', name: 'admin_data_repair_fix_all_orphans_async', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function fixAllOrphansAsync(Request $request, int $tenantId): Response
     {
         if (!$this->isCsrfTokenValid('fix_all_orphans', $request->request->get('_token'))) {
@@ -798,6 +784,7 @@ class DataRepairController extends AbstractController
      * risked the PHP-FPM 30 s timeout on large broken-reference lists.
      */
     #[Route('/admin/data-repair/fix-tenant-mismatches', name: 'admin_data_repair_fix_tenant_mismatches', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function fixTenantMismatches(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('fix_tenant_mismatches', $request->request->get('_token'))) {
@@ -947,6 +934,7 @@ class DataRepairController extends AbstractController
      * a single batch_id (ISO 27001 Clause 7.5.3).
      */
     #[Route('/admin/data-repair/quarantine-uploads', name: 'admin_data_repair_quarantine_uploads', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function quarantineOrphanedUploads(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('quarantine_uploads', (string) $request->request->get('_token'))) {
@@ -1032,6 +1020,7 @@ class DataRepairController extends AbstractController
      * answer "show me the cleanup of $batch_id" in one query.
      */
     #[Route('/admin/data-repair/cleanup-dangling-refs', name: 'admin_data_repair_cleanup_dangling_refs', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function cleanupDanglingRefs(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('cleanup_dangling_refs', (string) $request->request->get('_token'))) {

@@ -118,7 +118,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
         $this->adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $this->adminUser->setFirstName('Admin');
         $this->adminUser->setLastName('User');
-        $this->adminUser->setRoles(['ROLE_ADMIN']);
+        $this->adminUser->setRoles(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN']); // catalogue writes are super-admin only
         $this->adminUser->setPassword('hashed_password');
         $this->adminUser->setTenant($this->testTenant);
         $this->adminUser->setIsActive(true);

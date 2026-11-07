@@ -160,10 +160,9 @@ class DataBreachController extends AbstractController
             // Just save it
             $this->dataBreachService->update($breach, $this->currentUser());
 
-            $this->addFlash('success', sprintf(
-                'Data breach %s created successfully.',
-                $breach->getReferenceNumber()
-            ));
+            $this->addFlash('success', $this->translator->trans('data_breach.flash.created', [
+                '%ref%' => $breach->getReferenceNumber(),
+            ], 'privacy'));
 
             if ($this->isTurboFrameRequest($request)) {
                 return $this->dataBreachStreamSave($breach, isNew: true);

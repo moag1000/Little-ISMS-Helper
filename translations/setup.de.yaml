@@ -1,5 +1,14 @@
 setup:
     reset_done: 'Setup zurückgesetzt.'
+    flash:
+        no_backup_file: 'Keine Backup-Datei hochgeladen.'
+        invalid_backup_format: 'Ungültiges Dateiformat. Nur .json oder .gz Dateien sind erlaubt.'
+        schema_first: 'Bitte erstellen Sie zuerst die Datenbank-Struktur, bevor Sie ein Backup wiederherstellen.'
+        select_target_tenant: 'Bitte wählen Sie einen Ziel-Mandanten aus.'
+        target_tenant_not_found: 'Ziel-Mandant nicht gefunden.'
+        orphans_assigned: '%count% verwaiste Entitäten dem Mandanten "%tenant%" zugewiesen.'
+        repair_failed: 'Reparatur fehlgeschlagen. Details stehen im Log.'
+        admin_failed: 'Administrator konnte nicht angelegt werden. Details stehen im Log.'
     # Common keys used across setup templates
     common:
         close: 'Schließen'

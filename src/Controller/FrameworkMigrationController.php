@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Security\Voter\TenantScopedAdminVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -54,6 +55,11 @@ class FrameworkMigrationController extends AbstractController
             $token = (string) $request->request->get('_token');
             if (!$this->isCsrfTokenValid('framework_migrate_' . $id, $token)) {
                 throw $this->createAccessDeniedException('Invalid CSRF token.');
+            }
+
+            if ($commit) {
+                // Bridge mappings are shared catalogue rows (no owner tenant).
+                $this->denyAccessUnlessGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
             }
 
             $new = $targetId > 0 ? $this->frameworkRepository->find($targetId) : null;

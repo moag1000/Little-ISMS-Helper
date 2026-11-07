@@ -1,4 +1,6 @@
 admin:
+    global_op:
+        readonly_hint: 'Instance-wide setting: only super admins can change it.'
     compliance_policy:
         saved: '%count% setting(s) saved.'
         reset: 'Setting "%key%" reset.'

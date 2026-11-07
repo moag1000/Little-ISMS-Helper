@@ -29,6 +29,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Security\Voter\TenantScopedAdminVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -51,6 +52,30 @@ class ComplianceRequirementController extends AbstractController
         private readonly PersonRepository $personRepository,
         private readonly TranslatorInterface $translator,
     ) {}
+
+    /** A requirement uploaded by another tenant does not exist for this tenant (SUPER_ADMIN sees all). */
+    private function assertRequirementVisible(ComplianceRequirement $requirement): void
+    {
+        $owner = $requirement->getUploadTenant();
+        if ($owner !== null && !$this->isGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)
+            && $owner->getId() !== $this->tenantContext->getCurrentTenant()?->getId()) {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    /**
+     * Shared catalogue rows (no upload tenant): super admin only. Rows uploaded by the
+     * current tenant: its ROLE_MANAGER. Other tenants' rows: 404.
+     */
+    private function assertCanEditRequirement(ComplianceRequirement $requirement): void
+    {
+        $this->assertRequirementVisible($requirement);
+        if ($requirement->getUploadTenant() === null) {
+            $this->denyAccessUnlessGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
+        } elseif (!$this->isGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)) {
+            $this->denyAccessUnlessGranted('ROLE_MANAGER');
+        }
+    }
 
     protected function getFlashDomain(): string
     {
@@ -131,7 +156,7 @@ class ComplianceRequirementController extends AbstractController
     }
 
     #[Route('/compliance/requirement/new', name: 'app_compliance_requirement_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)] // creates a row of the shared catalogue
     public function new(Request $request): Response
     {
         $complianceRequirement = new ComplianceRequirement();
@@ -183,6 +208,7 @@ class ComplianceRequirementController extends AbstractController
     #[Route('/compliance/requirement/{id}', name: 'app_compliance_requirement_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
+        $this->assertRequirementVisible($complianceRequirement);
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
@@ -296,6 +322,7 @@ class ComplianceRequirementController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
+        $this->assertCanEditRequirement($complianceRequirement);
         $form = $this->createForm(ComplianceRequirementType::class, $complianceRequirement);
         $form->handleRequest($request);
 
@@ -344,6 +371,7 @@ class ComplianceRequirementController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
+        $this->assertCanEditRequirement($complianceRequirement);
         if ($this->isCsrfTokenValid('delete'.$complianceRequirement->getId(), $request->request->get('_token'))) {
             $frameworkId = $complianceRequirement->getFramework()?->getId();
 
@@ -363,9 +391,10 @@ class ComplianceRequirementController extends AbstractController
     }
 
     #[Route('/compliance/requirement/{id}/quick-update', name: 'app_compliance_requirement_quick_update', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_MANAGER')]
     public function quickUpdate(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
+        $this->assertRequirementVisible($complianceRequirement);
         if (!$this->isCsrfTokenValid('quick-update'.$complianceRequirement->getId(), $request->request->get('_token'))) {
             $this->flashError('compliance.flash.error.invalid_csrf');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);

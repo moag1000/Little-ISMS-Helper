@@ -46,6 +46,9 @@ class SystemSettingsController extends AbstractController
     #[IsGranted('ADMIN_EDIT')]
     public function application(Request $request): Response
     {
+        if ($request->isMethod('POST')) {
+            $this->denyAccessUnlessGranted(\App\Security\Voter\TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
+        }
         $settings = [
             'timezone' => $this->systemSettingsRepository->getSetting('application', 'timezone', 'Europe/Berlin'),
             'date_format' => $this->systemSettingsRepository->getSetting('application', 'date_format', 'd.m.Y'),
@@ -104,6 +107,9 @@ class SystemSettingsController extends AbstractController
     #[IsGranted('ADMIN_EDIT')]
     public function security(Request $request): Response
     {
+        if ($request->isMethod('POST')) {
+            $this->denyAccessUnlessGranted(\App\Security\Voter\TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
+        }
         $settings = [
             'password_min_length' => $this->systemSettingsRepository->getSetting('security', 'password_min_length', 8),
         ];

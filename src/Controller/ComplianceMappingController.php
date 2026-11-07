@@ -18,6 +18,8 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceMappingService;
+use App\Service\Compliance\MappingAccessGuard;
+use App\Service\Compliance\MappingStatistics;
 use App\Service\TenantContext;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,6 +60,8 @@ class ComplianceMappingController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly LifecycleService $lifecycleService,
         private readonly Registry $workflowRegistry,
+        private readonly MappingAccessGuard $accessGuard,
+        private readonly MappingStatistics $statistics,
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?TranslatorInterface $translator = null,
         private readonly ?AuditLogger $auditLogger = null,
@@ -77,8 +81,8 @@ class ComplianceMappingController extends AbstractController
     #[Route('/compliance/mapping/hub', name: 'app_compliance_mapping_hub', methods: ['GET'])]
     public function hub(): Response
     {
-        $stats = $this->complianceMappingRepository->getMappingStatistics();
-        $unreviewed = count($this->complianceMappingRepository->findMappingsRequiringReview());
+        $stats = $this->statistics->getMappingStatistics();
+        $unreviewed = count($this->accessGuard->filterVisible($this->complianceMappingRepository->findMappingsRequiringReview()));
         $frameworkCount = $this->frameworkRepository !== null
             ? count($this->frameworkRepository->findBy(['active' => true]))
             : 0;
@@ -135,20 +139,19 @@ class ComplianceMappingController extends AbstractController
     {
         $requirementId = $request->query->get('requirement');
 
-        $tenant = $this->tenantContext->getCurrentTenant();
-
         if ($requirementId) {
             $requirement = $this->complianceRequirementRepository->find($requirementId);
-            $mappings = $requirement
-                ? $this->complianceMappingRepository->findBySourceRequirement($requirement)
+            $mappings = $this->accessGuard->isRequirementUsable($requirement)
+                ? array_values(array_filter(
+                    $this->complianceMappingRepository->findBySourceRequirement($requirement),
+                    $this->accessGuard->isVisible(...),
+                ))
                 : [];
         } else {
             // E-6 bug-fix: was findAll() — leaks cross-tenant rows.
             // Use tenant-scoped finder: returns global (system) mappings
             // plus any tenant-uploaded requirement mappings for this tenant.
-            $mappings = $tenant !== null
-                ? $this->complianceMappingRepository->findAllForTenant($tenant)
-                : [];
+            $mappings = $this->accessGuard->visibleMappings();
         }
 
         // Facet filters (GET, server-side): options come from the unfiltered set.
@@ -224,10 +227,12 @@ class ComplianceMappingController extends AbstractController
             $errors = [];
             $source = $sourceId > 0 ? $this->complianceRequirementRepository->find($sourceId) : null;
             $target = $targetId > 0 ? $this->complianceRequirementRepository->find($targetId) : null;
-            if (!$source instanceof ComplianceRequirement) {
+            if (!$this->accessGuard->isRequirementUsable($source)) {
+                $source = null;
                 $errors[] = 'mapping.wizard.error.source_required';
             }
-            if (!$target instanceof ComplianceRequirement) {
+            if (!$this->accessGuard->isRequirementUsable($target)) {
+                $target = null;
                 $errors[] = 'mapping.wizard.error.target_required';
             }
             if ($source instanceof ComplianceRequirement
@@ -297,7 +302,8 @@ class ComplianceMappingController extends AbstractController
             $fw = $req->getFramework();
             $fwId = $fw?->getId();
             $rId = $req->getId();
-            if ($fwId === null || !isset($requirementsByFramework[$fwId]) || $rId === null) {
+            if ($fwId === null || !isset($requirementsByFramework[$fwId]) || $rId === null
+                || !$this->accessGuard->isOwnOrGlobal($req)) {
                 continue;
             }
             $requirementsByFramework[$fwId][] = [
@@ -324,7 +330,7 @@ class ComplianceMappingController extends AbstractController
         $sourceId = $request->query->get('source');
         if ($sourceId) {
             $source = $this->complianceRequirementRepository->find($sourceId);
-            if ($source) {
+            if ($this->accessGuard->isRequirementUsable($source)) {
                 $complianceMapping->setSourceRequirement($source);
             }
         }
@@ -356,6 +362,7 @@ class ComplianceMappingController extends AbstractController
     #[Route('/compliance/mapping/{id}', name: 'app_compliance_mapping_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ComplianceMapping $complianceMapping): Response
     {
+        $this->accessGuard->assertVisible($complianceMapping);
         // Calculate transitive fulfillment
         $transitiveFulfillment = $complianceMapping->calculateTransitiveFulfillment();
 
@@ -370,6 +377,7 @@ class ComplianceMappingController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, ComplianceMapping $complianceMapping): Response
     {
+        $this->accessGuard->assertVisible($complianceMapping);
         $form = $this->createForm(ComplianceMappingType::class, $complianceMapping);
         $form->handleRequest($request);
 
@@ -398,6 +406,7 @@ class ComplianceMappingController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ComplianceMapping $complianceMapping): Response
     {
+        $this->accessGuard->assertVisible($complianceMapping);
         if ($this->isCsrfTokenValid('delete'.$complianceMapping->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($complianceMapping);
             $this->entityManager->flush();
@@ -455,7 +464,7 @@ class ComplianceMappingController extends AbstractController
             $id = (int) $rawId;
             $mapping = $this->complianceMappingRepository->find($id);
 
-            if (!$mapping instanceof ComplianceMapping) {
+            if (!$mapping instanceof ComplianceMapping || !$this->accessGuard->isVisible($mapping)) {
                 $rejected[] = ['id' => $id, 'reason' => 'not_found'];
                 continue;
             }
@@ -545,9 +554,10 @@ class ComplianceMappingController extends AbstractController
     }
 
     #[Route('/compliance/mapping/{id}/analyze', name: 'app_compliance_mapping_analyze', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_MANAGER')]
     public function analyze(Request $request, ComplianceMapping $complianceMapping): Response
     {
+        $this->accessGuard->assertVisible($complianceMapping);
         if (!$this->isCsrfTokenValid('analyze'.$complianceMapping->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator?->trans('compliance.flash.error.invalid_csrf', [], 'compliance') ?? 'compliance.flash.error.invalid_csrf');
             return $this->redirectToRoute('app_compliance_mapping_show', ['id' => $complianceMapping->getId()]);

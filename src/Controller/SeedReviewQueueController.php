@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceMappingRepository;
+use App\Service\Compliance\MappingAccessGuard;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +45,7 @@ class SeedReviewQueueController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceMappingRepository $mappingRepository,
+        private readonly MappingAccessGuard $accessGuard,
     ) {
     }
 
@@ -84,7 +86,7 @@ class SeedReviewQueueController extends AbstractController
         }
 
         $mapping = $this->mappingRepository->find($id);
-        if (!$mapping instanceof ComplianceMapping) {
+        if (!$mapping instanceof ComplianceMapping || !$this->accessGuard->isVisible($mapping)) {
             throw $this->createNotFoundException();
         }
 
@@ -117,6 +119,7 @@ class SeedReviewQueueController extends AbstractController
             ->orderBy('cm.verifiedBy', \SortDirection::Ascending)
             ->addOrderBy('cm.id', \SortDirection::Ascending);
 
+        $this->accessGuard->scopeQuery($qb);
         if ($filter !== 'all') {
             $qb->andWhere('cm.verifiedBy = :origin')
                 ->setParameter('origin', $filter);
@@ -137,14 +140,13 @@ class SeedReviewQueueController extends AbstractController
     /** @return array<string, int> */
     private function countsByOrigin(): array
     {
-        $rows = $this->mappingRepository->createQueryBuilder('cm')
+        $qb = $this->mappingRepository->createQueryBuilder('cm')
             ->select('cm.verifiedBy AS origin, COUNT(cm.id) AS n')
             ->where('cm.reviewStatus = :status')
             ->andWhere('cm.verifiedBy IS NOT NULL')
             ->setParameter('status', 'unreviewed')
-            ->groupBy('cm.verifiedBy')
-            ->getQuery()
-            ->getArrayResult();
+            ->groupBy('cm.verifiedBy');
+        $rows = $this->accessGuard->scopeQuery($qb)->getQuery()->getArrayResult();
 
         $out = ['all' => 0];
         foreach ($rows as $row) {

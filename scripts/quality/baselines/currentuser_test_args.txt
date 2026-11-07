@@ -1,6 +1,6 @@
 # check_currentuser_test_args.py baseline
 # Format: <relative-path>:<line>
-tests/Controller/ComplianceControllerTest.php:174
+tests/Controller/ComplianceControllerTest.php:177
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:138
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:168
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:193

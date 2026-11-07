@@ -892,53 +892,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get comprehensive mapping statistics for system overview.
-     *
-     * CROSS-TENANT aggregate — acceptable for hub KPI strip (counts are global
-     * infrastructure, not tenant-private data). See class docblock.
-     *
-     * @return array{total_mappings: int, full_mappings: int, exceeds_mappings: int, partial_mappings: int, bidirectional_mappings: int} Mapping statistics
-     */
-    public function getMappingStatistics(): array
-    {
-        $queryBuilder = $this->createQueryBuilder('cm');
-
-        return [
-            'total_mappings' => $queryBuilder->select('COUNT(cm.id)')
-                ->getQuery()
-                ->getSingleScalarResult(),
-
-            'full_mappings' => $this->createQueryBuilder('cm')
-                ->select('COUNT(cm.id)')
-                ->where('cm.mappingType = :type')
-                ->setParameter('type', 'full')
-                ->getQuery()
-                ->getSingleScalarResult(),
-
-            'exceeds_mappings' => $this->createQueryBuilder('cm')
-                ->select('COUNT(cm.id)')
-                ->where('cm.mappingType = :type')
-                ->setParameter('type', 'exceeds')
-                ->getQuery()
-                ->getSingleScalarResult(),
-
-            'partial_mappings' => $this->createQueryBuilder('cm')
-                ->select('COUNT(cm.id)')
-                ->where('cm.mappingType = :type')
-                ->setParameter('type', 'partial')
-                ->getQuery()
-                ->getSingleScalarResult(),
-
-            'bidirectional_mappings' => $this->createQueryBuilder('cm')
-                ->select('COUNT(cm.id)')
-                ->where('cm.bidirectional = :bidirectional')
-                ->setParameter('bidirectional', true)
-                ->getQuery()
-                ->getSingleScalarResult(),
-        ];
-    }
-
-    /**
      * Calculate impact score for a framework relationship.
      *
      * Impact score quantifies the business value of a framework relationship based on:
@@ -1384,102 +1337,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get quality statistics for all mappings.
-     *
-     * CROSS-TENANT aggregate — for quality dashboards and admin use only.
-     * See class docblock for tenant-isolation guidance.
-     */
-    public function getQualityStatistics(): array
-    {
-        $queryBuilder = $this->createQueryBuilder('cm');
-
-        $totalMappings = $queryBuilder->select('COUNT(cm.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        // "Analyzed" via the text-similarity heuristic (legacy column).
-        $analyzedMappings = $this->createQueryBuilder('cm')
-            ->select('COUNT(cm.id)')
-            ->where('cm.calculatedPercentage IS NOT NULL')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        // "Scored" = has EITHER a heuristic percentage OR an MQS quality score.
-        // Metadata-rich decomposition mappings get an authoritative MQS at
-        // import/backfill time and must NOT be treated as "waiting for analysis"
-        // just because the slow text-similarity column is still NULL.
-        $scoredMappings = $this->createQueryBuilder('cm')
-            ->select('COUNT(cm.id)')
-            ->where('cm.calculatedPercentage IS NOT NULL OR cm.qualityScore IS NOT NULL')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $highConfidence = $this->createQueryBuilder('cm')
-            ->select('COUNT(cm.id)')
-            ->where('cm.analysisConfidence >= 80')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $mediumConfidence = $this->createQueryBuilder('cm')
-            ->select('COUNT(cm.id)')
-            ->where('cm.analysisConfidence >= 60 AND cm.analysisConfidence < 80')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $lowConfidence = $this->createQueryBuilder('cm')
-            ->select('COUNT(cm.id)')
-            ->where('cm.analysisConfidence < 60')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $requiresReview = $this->createQueryBuilder('cm')
-            ->select('COUNT(cm.id)')
-            ->where('cm.requiresReview = :requiresReview')
-            ->andWhere('cm.reviewStatus = :status')
-            ->setParameter('requiresReview', true)
-            ->setParameter('status', 'unreviewed')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $withGaps = $this->createQueryBuilder('cm')
-            ->select('COUNT(DISTINCT cm.id)')
-            ->join('cm.gapItems', 'gi')
-            ->where('gi.status NOT IN (:resolvedStatuses)')
-            ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $avgQualityScore = $this->createQueryBuilder('cm')
-            ->select('AVG(cm.qualityScore)')
-            ->where('cm.qualityScore IS NOT NULL')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $avgConfidence = $this->createQueryBuilder('cm')
-            ->select('AVG(cm.analysisConfidence)')
-            ->where('cm.analysisConfidence IS NOT NULL')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        return [
-            'total_mappings' => (int) $totalMappings,
-            'analyzed_mappings' => (int) $analyzedMappings,
-            'scored_mappings' => (int) $scoredMappings,
-            // "Waiting for analysis" = genuinely metadata-poor: lacks BOTH the
-            // heuristic percentage AND an MQS quality score.
-            'unanalyzed_mappings' => (int) ($totalMappings - $scoredMappings),
-            'analysis_coverage' => (int) $totalMappings > 0 ? round(((int) $scoredMappings / (int) $totalMappings) * 100, 1) : 0,
-            'high_confidence' => (int) $highConfidence,
-            'medium_confidence' => (int) $mediumConfidence,
-            'low_confidence' => (int) $lowConfidence,
-            'requires_review' => (int) $requiresReview,
-            'with_unresolved_gaps' => (int) $withGaps,
-            'avg_quality_score' => round((float) $avgQualityScore, 1),
-            'avg_confidence' => round((float) $avgConfidence, 1),
-        ];
-    }
-
-    /**
      * Add the "genuinely metadata-poor" filter to a query builder: mappings
      * that have NEITHER a heuristic calculatedPercentage NOR an MQS qualityScore.
      * These are the only rows the slow text-similarity batch should target.
@@ -1487,18 +1344,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     public function applyMetadataPoorFilter(QueryBuilder $qb, string $alias = 'cm'): QueryBuilder
     {
         return $qb->andWhere(sprintf('%s.calculatedPercentage IS NULL AND %s.qualityScore IS NULL', $alias, $alias));
-    }
-
-    /**
-     * Count mappings that still require the text-similarity heuristic, i.e. they
-     * lack BOTH a calculatedPercentage and an MQS qualityScore.
-     */
-    public function countMetadataPoorUnscored(): int
-    {
-        $qb = $this->createQueryBuilder('cm')->select('COUNT(cm.id)');
-        $this->applyMetadataPoorFilter($qb);
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -1543,28 +1388,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get quality distribution by confidence levels
-     */
-    public function getQualityDistribution(): array
-    {
-        return $this->createQueryBuilder('cm')
-            ->select('
-                CASE
-                    WHEN cm.analysisConfidence >= 80 THEN \'high\'
-                    WHEN cm.analysisConfidence >= 60 THEN \'medium\'
-                    ELSE \'low\'
-                END as confidence_level,
-                COUNT(cm.id) as count,
-                AVG(cm.calculatedPercentage) as avg_percentage,
-                AVG(cm.qualityScore) as avg_quality
-            ')
-            ->where('cm.analysisConfidence IS NOT NULL')
-            ->groupBy('confidence_level')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Find mappings with significant discrepancies between calculated and original percentage
      *
      * @param int $discrepancyThreshold Minimum percentage point difference
@@ -1597,32 +1420,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->setParameter('framework', $complianceFramework)
             ->orderBy('cm.qualityScore', \SortDirection::Descending)
             ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Get framework quality comparison
-     */
-    public function getFrameworkQualityComparison(): array
-    {
-        return $this->createQueryBuilder('cm')
-            ->select('
-                sf.code as source_framework,
-                tf.code as target_framework,
-                COUNT(cm.id) as mapping_count,
-                AVG(cm.calculatedPercentage) as avg_percentage,
-                AVG(cm.qualityScore) as avg_quality,
-                AVG(cm.analysisConfidence) as avg_confidence,
-                SUM(CASE WHEN cm.requiresReview = 1 THEN 1 ELSE 0 END) as review_count
-            ')
-            ->join('cm.sourceRequirement', 'sr')
-            ->join('sr.framework', 'sf')
-            ->join('cm.targetRequirement', 'tr')
-            ->join('tr.framework', 'tf')
-            ->where('cm.calculatedPercentage IS NOT NULL')
-            ->groupBy('sf.code, tf.code')
-            ->orderBy('avg_quality', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
@@ -1739,25 +1536,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             }
         }
         return $matched / count($forward);
-    }
-
-    public function getSimilarityDistribution(): array
-    {
-        return $this->createQueryBuilder('cm')
-            ->select('
-                CASE
-                    WHEN cm.textualSimilarity >= 0.8 THEN \'very_high\'
-                    WHEN cm.textualSimilarity >= 0.6 THEN \'high\'
-                    WHEN cm.textualSimilarity >= 0.4 THEN \'medium\'
-                    WHEN cm.textualSimilarity >= 0.2 THEN \'low\'
-                    ELSE \'very_low\'
-                END as similarity_level,
-                COUNT(cm.id) as count
-            ')
-            ->where('cm.textualSimilarity IS NOT NULL')
-            ->groupBy('similarity_level')
-            ->getQuery()
-            ->getResult();
     }
 
     /**

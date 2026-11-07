@@ -119,7 +119,7 @@ class SampleDataController extends AbstractController
                 'modules_ok' => $modulesOk,
                 'count' => $rawCount,
                 'imported' => $imported,
-                'removable' => isset($data['file']) || ($isCommandWithMappedFramework && $imported),
+                'removable' => isset($data['file']) || ($isCommandWithMappedFramework && $imported && $this->isGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)),
             ];
         }
 
@@ -188,6 +188,8 @@ class SampleDataController extends AbstractController
         ];
         if ($sampleConfig !== null && isset($sampleConfig['command'])
             && isset($commandFrameworkMap[$sampleConfig['command']])) {
+            // Global catalogue row (shared by all tenants): super admin only.
+            $this->denyAccessUnlessGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
             $code = $commandFrameworkMap[$sampleConfig['command']];
             $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)
                 ->findOneBy(['code' => $code]);

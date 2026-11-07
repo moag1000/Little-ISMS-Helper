@@ -438,7 +438,7 @@ class NavigationSearch
                 'description' => 'search_nav.admin_data_repair_index.description',
                 'aliases' => ['Daten-Reparatur', 'Data-Repair', 'Orphan', 'Verwaiste Daten', 'Duplikate', 'Bereinigung', 'Repair'],
                 'icon' => 'fa-icon--nav-wrench',
-                'roles' => ['ROLE_ADMIN'],
+                'roles' => ['ADMIN_GLOBAL_OP'],
                 'requiresModule' => null,
             ],
             [

@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Security\Voter\TenantScopedAdminVoter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -85,7 +86,7 @@ class ComplianceFrameworkController extends AbstractController
         ]);
     }
     #[Route('/compliance/framework/new', name: 'app_compliance_framework_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function new(Request $request): Response
     {
         $complianceFramework = new ComplianceFramework();
@@ -224,7 +225,7 @@ class ComplianceFrameworkController extends AbstractController
         ]);
     }
     #[Route('/compliance/framework/{id}/edit', name: 'app_compliance_framework_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function edit(Request $request, ComplianceFramework $complianceFramework): Response
     {
         $form = $this->createForm(ComplianceFrameworkType::class, $complianceFramework);
@@ -249,7 +250,7 @@ class ComplianceFrameworkController extends AbstractController
         ], new Response(status: $status));
     }
     #[Route('/compliance/framework/{id}/delete', name: 'app_compliance_framework_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function delete(Request $request, ComplianceFramework $complianceFramework): Response
     {
         if ($this->isCsrfTokenValid('delete' . $complianceFramework->id, $request->request->get('_token'))) {
@@ -276,7 +277,7 @@ class ComplianceFrameworkController extends AbstractController
         return $this->redirectToRoute('app_compliance_framework_index');
     }
     #[Route('/compliance/framework/{id}/toggle', name: 'app_compliance_framework_toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function toggle(Request $request, ComplianceFramework $complianceFramework): Response
     {
         if ($this->isCsrfTokenValid('toggle' . $complianceFramework->id, $request->request->get('_token'))) {
@@ -293,7 +294,7 @@ class ComplianceFrameworkController extends AbstractController
         return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
     }
     #[Route('/compliance/framework/{id}/duplicate', name: 'app_compliance_framework_duplicate', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function duplicate(Request $request, ComplianceFramework $complianceFramework): Response
     {
         if ($this->isCsrfTokenValid('duplicate' . $complianceFramework->id, $request->request->get('_token'))) {
