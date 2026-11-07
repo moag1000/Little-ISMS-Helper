@@ -62,6 +62,8 @@ class AuditLogger
     public const string ACTION_SSO_ROLE_CHANGED        = 'sso.role.changed';
     public const string ACTION_SSO_CONFIG_CHANGED      = 'sso.config.changed';
     public const string ACTION_SSO_ENFORCEMENT_CHANGED = 'sso.enforcement.changed';
+    public const string ACTION_SSO_ACCOUNT_LINKED      = 'sso.account.linked';
+    public const string ACTION_SSO_ACCOUNT_UNLINKED    = 'sso.account.unlinked';
 
     // Risk-Incident cross-link audit events
     public const string ACTION_RISK_INCIDENT_LINKED                  = 'risk_incident.linked';

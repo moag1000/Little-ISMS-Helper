@@ -356,23 +356,6 @@ ui:
             just_now: 'Gerade eben'
             minutes_ago: 'vor %n% Min.'
             view_details: 'Details anzeigen'
-        password_strength:
-            all_met: '✓ Alle Kriterien erfüllt'
-            announce: 'Passwortstärke: %label%'
-            avoid_common: 'Vermeiden Sie häufige Passwörter'
-            avoid_digits_only: 'Vermeiden Sie reine Zahlenkombinationen'
-            avoid_repeats: 'Vermeiden Sie sich wiederholende Zeichen'
-            lowercase: 'Kleinbuchstaben (a-z)'
-            medium: 'Mittel'
-            min_length: 'Mindestens 8 Zeichen'
-            missing: 'Fehlend: %items%'
-            numbers: 'Zahlen (0-9)'
-            special: 'Sonderzeichen (!@#$%^&*)'
-            strong: 'Stark'
-            uppercase: 'Großbuchstaben (A-Z)'
-            very_strong: 'Sehr stark'
-            very_weak: 'Sehr schwach'
-            weak: 'Schwach'
         persona_switcher:
             failed: 'Persona-Wechsel fehlgeschlagen.'
         preferences:
@@ -384,11 +367,6 @@ ui:
             created: 'Angelegt: %label%'
             name_required: 'Name ist erforderlich.'
             network: 'Netzwerkfehler. Bitte erneut versuchen.'
-        quick_view:
-            close: 'Schließen'
-            error_subtitle: 'Bitte erneut versuchen.'
-            error_title: 'Vorschau konnte nicht geladen werden'
-            loading: 'Vorschau wird geladen …'
         radar_chart:
             load_error: 'Das Compliance-Radar konnte nicht geladen werden. Bitte erneut versuchen.'
         reauth:
@@ -416,28 +394,6 @@ ui:
             loading: 'Wird erzeugt …'
             success: 'Bericht neu erzeugt.'
         retry: 'Erneut versuchen'
-        reuse_drawer:
-            load_failed: 'Der Versionsverlauf konnte nicht geladen werden.'
-        risk_slider:
-            axis_impact: 'Auswirkung →'
-            axis_probability: 'Wahrscheinlichkeit ↑'
-            impact:
-                1: 'Vernachlässigbar'
-                2: 'Gering'
-                3: 'Moderat'
-                4: 'Erheblich'
-                5: 'Schwerwiegend'
-            level:
-                critical: 'Kritisches Risiko'
-                high: 'Hohes Risiko'
-                low: 'Niedriges Risiko'
-                medium: 'Mittleres Risiko'
-            probability:
-                1: 'Selten'
-                2: 'Unwahrscheinlich'
-                3: 'Möglich'
-                4: 'Wahrscheinlich'
-                5: 'Fast sicher'
         save_failed: 'Speichern fehlgeschlagen.'
         saved: 'Gespeichert.'
         saving: 'Wird gespeichert …'
@@ -532,13 +488,9 @@ ui:
         filter: 'Filter'
         change: 'Änderung'
         wizard: 'Assistent'
-        module: 'Modul'
         errors_count: '%count% Fehler'
         step: 'Schritt %n%: %label%'
         step_completed: 'Schritt %n%: %label% – abgeschlossen'
-        api_key:
-            reveal: 'Token anzeigen'
-            revoke: 'Widerrufen'
         modal:
             type_to_confirm: 'Tippe <code>%phrase%</code> zum Bestätigen'
         wizard_modal:
@@ -575,23 +527,12 @@ ui:
         glossary:
             definition: 'Definition: %text%'
             open: 'Im Glossar öffnen →'
-        maturity:
-            score: '%score% von 5 erreicht'
-            trend: 'Trend %trend% zum Vormonat'
-        mega_menu:
-            view_all: 'Alle anzeigen →'
-            view_all_count: 'Alle %count% anzeigen →'
         onboarding:
             hide: 'Ausblenden'
             later: 'Später'
         persona_cockpit:
             open: '%label% – Cockpit öffnen'
             cta: 'Zum Cockpit →'
-        reuse_roi:
-            cta: 'Mehr im Reuse-Cockpit →'
-        audit_timeline:
-            label: 'Audit-Programm-Zeitleiste'
-            audit_type: 'Audittyp'
         matrix_legend:
             rag: 'RAG-Legende'
             severity: 'Schweregrad-Legende'
@@ -603,7 +544,3 @@ ui:
             medium: 'Mittel (≤9)'
             high: 'Hoch (≤16)'
             critical: 'Kritisch (>16)'
-        industry_chip:
-            controls: '~%count% Controls'
-            risks: '%count% Risiken'
-            suppliers: '%count% Lieferanten'

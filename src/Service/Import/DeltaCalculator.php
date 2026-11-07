@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\Import;
 
+use App\Exception\Import\ImportRowInvalidException;
 use App\Service\Import\Dto\DeltaConfig;
 use App\Service\Import\Dto\DeltaResult;
 use App\Service\Import\Dto\ParsedSpreadsheet;
+use App\Service\Import\Mapper\EntityMapperInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -80,10 +82,13 @@ final class DeltaCalculator
                     ];
                     continue;
                 }
+                $newValues = $this->mapRow($mapper, $row, $columnMapping, $config, $rowNumber, $errors);
+                if ($newValues === null) {
+                    continue;
+                }
                 if ($key !== null) {
                     $newKeys[$key] = $rowNumber;
                 }
-                $newValues = $mapper->toEntityData($row, $columnMapping);
 
                 $creates[] = [
                     'rowNumber' => $rowNumber,
@@ -94,9 +99,12 @@ final class DeltaCalculator
                     'diff'      => null,
                 ];
             } else {
+                $newValues = $this->mapRow($mapper, $row, $columnMapping, $config, $rowNumber, $errors);
+                if ($newValues === null) {
+                    continue;
+                }
                 $entityId  = $existing->getId();
                 $oldValues = $this->getEntityValues($existing);
-                $newValues = $mapper->toEntityData($row, $columnMapping);
                 $diff      = $this->computeDiff($oldValues, $newValues, $config->ignoredFields);
 
                 if ($diff === []) {
@@ -144,6 +152,39 @@ final class DeltaCalculator
         }
 
         return new DeltaResult($creates, $updates, $unchanged, $deletes, $errors);
+    }
+
+    /**
+     * Map one row with the organisation in scope, so the preview refuses what
+     * the commit would refuse (e.g. an owner that does not resolve in this
+     * organisation) and reports it against the row number instead of failing
+     * the whole preview.
+     *
+     * @param array<string, mixed>       $row
+     * @param array<string, string>|null $columnMapping
+     * @param list<array<string, mixed>> $errors
+     *
+     * @return array<string, mixed>|null null when the row was recorded as an error
+     */
+    private function mapRow(
+        EntityMapperInterface $mapper,
+        array $row,
+        ?array $columnMapping,
+        DeltaConfig $config,
+        int $rowNumber,
+        array &$errors,
+    ): ?array {
+        try {
+            return $mapper->toEntityData($row, $columnMapping, $config->tenant);
+        } catch (ImportRowInvalidException $e) {
+            $errors[] = [
+                'rowNumber' => $rowNumber,
+                'data'      => $row,
+                'errors'    => $e->getErrors() !== [] ? $e->getErrors() : [$e->getMessage()],
+            ];
+
+            return null;
+        }
     }
 
     /**

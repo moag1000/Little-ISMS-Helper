@@ -131,10 +131,10 @@
 
     {# Evidence Reuse Badge + Version History link #}
     {% if document.currentVersion is not null or document.versions is not empty %}
-        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap" data-controller="reuse-drawer">
+        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
             <a href="{{ path('app_document_versions', {id: document.id}) }}"
                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-               data-turbo-frame="version-drawer"
+               data-turbo-frame="fa-drawer"
                aria-label="{{ 'document.version.history.title'|trans({}, 'document') }}">
                 <i class="fa-icon fa-icon--document-history me-1" aria-hidden="true"></i>
                 {{ 'document.version.history.title'|trans({}, 'document') }}

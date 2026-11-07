@@ -157,6 +157,11 @@ export default class extends Controller {
     updateActionBar() {
         const selectedCount = this.getSelectedItems().length;
 
+        // Mark selected rows (Aurora fa-table / legacy tables alike).
+        this.itemTargets.forEach(item => {
+            item.closest('tr')?.classList.toggle('fa-table__row--selected', item.checked);
+        });
+
         if (selectedCount > 0) {
             this.showActionBar(selectedCount);
         } else {

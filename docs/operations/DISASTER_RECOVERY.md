@@ -34,6 +34,7 @@
 | Alle produktiven DB-Zeilen (54 Entities) | Ja | Vollständige Wiederherstellung aller ISMS-Daten |
 | Audit-Log (`AuditLog`) | Ja, wenn `--include-audit-log` | Standard: aktiviert in Admin-UI |
 | User-Sessions (`UserSession`) | Nur wenn explizit gewählt | Standard: deaktiviert |
+| Organisations-Einstellungen (Datensatz `Tenant`) | Ja, auch im Organisations-Backup | Seit 2026-11; ältere Organisations-Backups enthalten sie nicht |
 | Hochgeladene Dateien (Dokumente, Tenant-Logos) | Ja, wenn Backup als ZIP erstellt | `files_included: true` in Metadaten |
 | ManyToMany-Pivot-Tabellen | Ja | Zweiter Pass im Restore |
 
@@ -251,6 +252,7 @@ php bin/console cache:clear
 **Einschränkungen:**
 - Nur Entitäten mit Tenant-Zuordnung werden wiederhergestellt
 - Globale Entitäten (Role, Permission, SystemSettings) werden im tenant-scoped Backup übersprungen
+- Der Organisationsdatensatz selbst ist enthalten und wird beim Restore an Ort und Stelle aktualisiert (nie gelöscht oder ersetzt): Branding und Logo, TLP-Standard, Behörden/CSIRT, Rufbereitschaft, DSB-Daten, Methodik, Reifegrad-Ziel, Standortkarten-Einstellungen, aktive Module. Bei einem Cross-Tenant-Restore bleiben die Einstellungen der Ziel-Organisation unverändert. Kennung, SSO-Bindung, Aktiv-Status, Konzernzuordnung und Muttergesellschaft behalten immer ihre aktuellen Werte.
 - `ROLE_ADMIN` kann nur den eigenen Mandanten wiederherstellen; `ROLE_SUPER_ADMIN` kann jeden Mandanten wählen
 
 ```bash

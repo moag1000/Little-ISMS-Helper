@@ -135,15 +135,16 @@ final class SchemaDrivenMapper extends AbstractEntityMapper
             };
 
             if ($value === null && $tenant !== null && $field->refuseIfUnresolved && trim((string) $raw) !== '') {
-                // Commit path: a given owner that does not resolve in this organisation
-                // (unknown, or belonging to another one) must not be dropped silently.
+                // Preview and commit: a given owner that does not resolve in this
+                // organisation (unknown, or belonging to another one) must not be
+                // dropped silently.
                 $message = sprintf(
                     'Field "%s": "%s" could not be resolved in this organisation.',
                     $field->label ?? $field->name,
                     trim((string) $raw),
                 );
 
-                // The orchestrator records the message against its own row number.
+                // The delta calculator / orchestrator record it against their row number.
                 throw new ImportRowInvalidException(0, [$message], $message);
             }
 

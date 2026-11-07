@@ -20,11 +20,14 @@ import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
     static targets = ['option']
-    static values  = { endpoint: String }
+    static values  = { endpoint: String, csrf: String, initial: String }
 
     connect() {
         // Restore persisted density; sync button states
-        const saved = localStorage.getItem('isms-density') ?? 'standard';
+        // This browser's choice first, then the one saved on the account (other device).
+        let saved = null;
+        try { saved = localStorage.getItem('isms-density'); } catch { /* storage blocked */ }
+        saved = saved ?? (this.initialValue || 'standard');
         this._apply(saved, false);
     }
 
@@ -36,7 +39,10 @@ export default class extends Controller {
      */
     set(event) {
         const density = event.currentTarget.dataset.density;
-        if (density) this._apply(density, true);
+        if (density) {
+            this._apply(density, true);
+            this._persist(density);
+        }
     }
 
     // ── Legacy action (change->density-toggle#submit) ──────────────────────
@@ -46,21 +52,23 @@ export default class extends Controller {
         const density = radio.value;
 
         this._apply(density, true);
+        this._persist(density);
+    }
 
-        // Optional server-side persist (legacy callers provide endpointValue)
-        if (this.endpointValue) {
-            try {
-                await fetch(this.endpointValue, {
-                    method:  'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    body: new URLSearchParams({ density }),
-                });
-            } catch {
-                // Non-critical — body attribute drives CSS immediately
-            }
+    /** Save the choice on the account (POST /preferences/density, CSRF density_toggle_<user>). */
+    async _persist(density) {
+        if (!this.endpointValue) return;
+        try {
+            await fetch(this.endpointValue, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: new URLSearchParams({ density, _token: this.csrfValue }),
+            });
+        } catch {
+            // Non-critical — body attribute drives CSS immediately
         }
     }
 
@@ -93,7 +101,7 @@ export default class extends Controller {
             ?.classList.add('is-active');
 
         if (persist) {
-            localStorage.setItem('isms-density', density);
+            try { localStorage.setItem('isms-density', density); } catch { /* storage blocked */ }
         }
     }
 }
