@@ -64,7 +64,7 @@
                                 <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i>
                                 {{ document.category }}
                                 {% if document.uploadedAt %}
-                                    &middot; {{ document.uploadedAt|date('Y-m-d') }}
+                                    &middot; {{ document.uploadedAt|fa_date }}
                                 {% endif %}
                             </small>
                             <small class="d-none fa-bulk-mobile-row__hint" data-bulk-approval-mobile-target="hint">

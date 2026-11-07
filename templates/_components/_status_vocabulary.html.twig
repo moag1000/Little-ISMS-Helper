@@ -1,0 +1,23 @@
+{#
+ # One status → tone map per vocabulary (UI wave G). Statuses without a
+ # lifecycle workflow (workflow instances, consents, import rows, compliance
+ # results) get their pill tone here instead of a local colour map in each
+ # template. Lifecycle entities use _fa_status_chip (tone from the registry).
+ #
+ # Usage:
+ #   {% import '_components/_status_vocabulary.html.twig' as _status %}
+ #   {{ _status.pill('workflow', instance.status, ('workflow.status.' ~ instance.status)|trans({}, 'workflows')) }}
+ #   {{ _status.pill('consent', consent.status, label, { size: 'sm' }) }}
+ #
+ # Unknown vocabulary or status → neutral. Props are those of _status_pill.
+ #}
+{% macro pill(vocabulary, status, label, props = {}) %}
+    {% set _tones = {
+        workflow: { pending: 'warning', in_progress: 'primary', approved: 'success', rejected: 'danger', cancelled: 'neutral' },
+        consent: { pending_verification: 'warning', active: 'success', revoked: 'danger' },
+        import_row: { new: 'success', update: 'primary', conflict: 'warning', error: 'danger' },
+        compliance_result: { compliant: 'success', partial: 'warning', in_progress: 'primary', needs_work: 'danger', not_started: 'danger', non_compliant: 'danger' },
+    } %}
+    {% import '_components/_status_pill.html.twig' as _pill %}
+    {{ _pill.render(label, (_tones[vocabulary] ?? {})[status] ?? 'neutral', props) }}
+{% endmacro %}

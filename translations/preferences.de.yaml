@@ -12,7 +12,7 @@ preferences:
     shortcuts:
         title: 'Tastaturkürzel'
         enable: 'Tastaturkürzel aktivieren'
-        hint: 'Cmd+K für Suche, Space für Vorschau, etc.'
+        hint: 'Cmd+K für Suche, Leertaste für Vorschau'
     language:
         title: 'Sprache'
     backup:

@@ -42,14 +42,14 @@
         {% if action.plannedCompletionDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}</span>
-                <span>{{ action.plannedCompletionDate|date('Y-m-d') }}</span>
+                <span>{{ action.plannedCompletionDate|fa_date }}</span>
             </div>
         {% endif %}
 
         {% if action.effectivenessReviewDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'corrective_action.field.effectiveness_review_date'|trans({}, 'audits') }}</span>
-                <span>{{ action.effectivenessReviewDate|date('Y-m-d') }}</span>
+                <span>{{ action.effectivenessReviewDate|fa_date }}</span>
             </div>
         {% endif %}
 

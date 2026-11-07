@@ -180,7 +180,7 @@
                 <td class="label">{{ 'wizard.export.pdf.tenant'|trans({}, 'wizard') }}:</td>
                 <td>{{ tenant ? tenant.name : 'N/A' }}</td>
                 <td class="label">{{ 'wizard.export.pdf.cutoff_date'|trans({}, 'wizard') }}:</td>
-                <td>{{ generated_at|date('d.m.Y H:i') }}</td>
+                <td>{{ generated_at|fa_datetime }}</td>
             </tr>
             <tr>
                 <td class="label">{{ 'wizard.export.pdf.frameworks'|trans({}, 'wizard') }}:</td>
@@ -287,7 +287,7 @@
     {# Footer #}
     <div class="footer">
         <p>
-            {{ 'wizard.export.pdf.generated_at'|trans({}, 'wizard') }}: {{ generated_at|date('d.m.Y H:i') }}<br>
+            {{ 'wizard.export.pdf.generated_at'|trans({}, 'wizard') }}: {{ generated_at|fa_datetime }}<br>
             {{ 'wizard.export.pdf.audit_notice'|trans({}, 'wizard') }}
         </p>
     </div>

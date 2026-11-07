@@ -225,7 +225,7 @@
     </div>
     <div class="meta-row">
         <div class="meta-cell meta-label">{{ 'mris.audit_report.meta.created_at'|trans({}, 'mris') }}:</div>
-        <div class="meta-cell">{{ generated_at|date('d.m.Y H:i') }} {{ 'mris.audit_report.meta.local'|trans({}, 'mris') }}</div>
+        <div class="meta-cell">{{ generated_at|fa_datetime }} {{ 'mris.audit_report.meta.local'|trans({}, 'mris') }}</div>
     </div>
     <div class="meta-row">
         <div class="meta-cell meta-label">{{ 'mris.audit_report.meta.created_by'|trans({}, 'mris') }}:</div>
@@ -516,7 +516,7 @@
     <h3 style="margin-top: 0;">{{ 'mris.audit_report.signature.title'|trans({}, 'mris') }}</h3>
     <p class="small">
         {{ 'mris.audit_report.signature.text'|trans({
-            '%date%': generated_at|date('d.m.Y'),
+            '%date%': generated_at|fa_date,
             '%time%': generated_at|date('H:i'),
             '%user%': generated_by,
             '%tenant%': tenant_name

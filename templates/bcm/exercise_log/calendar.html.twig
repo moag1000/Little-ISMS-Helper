@@ -53,7 +53,7 @@
                                 <div>
                                     <div class="fw-semibold">{{ exercise.name }}</div>
                                     <small class="text-muted">
-                                        {{ exercise.exerciseDate ? exercise.exerciseDate|date('d.m.Y') : '—' }}
+                                        {{ exercise.exerciseDate ? exercise.exerciseDate|fa_date : '—' }}
                                         {# Render exerciseType via i18n choice-label, not raw enum value. #}
                                         · <span class="badge bg-secondary">{{ ('bsi_200_4_exercise.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bsi_200_4_exercise') }}</span>
                                     </small>

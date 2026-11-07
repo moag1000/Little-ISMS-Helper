@@ -10,7 +10,7 @@
     subtitle: 'privacy_import.hub.subtitle'|trans({}, 'data_import'),
 }) }}
 
-<main>
+<div>
     <div class="row g-3">
         {% for import in imports %}
             <div class="col-md-4">
@@ -33,5 +33,5 @@
         <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
         {{ 'privacy_import.hub.help'|trans({}, 'data_import') }}
     </p>
-</main>
+</div>
 {% endblock %}

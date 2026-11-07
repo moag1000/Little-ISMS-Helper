@@ -104,7 +104,7 @@
     <div class="header">
         <h1>{{ 'nis2.incident_report.title'|trans({}, 'nis2') }}</h1>
         <div class="subtitle">{{ 'nis2.incident_report.subtitle'|trans({}, 'nis2') }}</div>
-        <div class="date">{{ 'nis2.incident_report.generated_at'|trans({}, 'nis2') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
+        <div class="date">{{ 'nis2.incident_report.generated_at'|trans({}, 'nis2') }}: {{ generated_at|fa_datetime }}</div>
     </div>
 
     {# Incident Meta Information #}
@@ -200,7 +200,7 @@
             <div class="field-value">
                 {% if incident.earlyWarningReportedAt %}
                     <span class="compliant">{{ 'nis2.incident_report.section1.compliant'|trans({}, 'nis2') }}</span>
-                    &mdash; {{ 'nis2.incident_report.section1.reported_at'|trans({}, 'nis2') }}: {{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}
+                    &mdash; {{ 'nis2.incident_report.section1.reported_at'|trans({}, 'nis2') }}: {{ incident.earlyWarningReportedAt|fa_datetime }}
                 {% elseif incident.earlyWarningOverdue %}
                     <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
                 {% else %}
@@ -212,7 +212,7 @@
 
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section1.deadline'|trans({}, 'nis2') }}</div>
-            <div class="field-value">{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+            <div class="field-value">{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|fa_datetime : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
         </div>
     </div>
 
@@ -302,7 +302,7 @@
             <div class="field-value">
                 {% if incident.detailedNotificationReportedAt %}
                     <span class="compliant">{{ 'nis2.incident_report.section1.compliant'|trans({}, 'nis2') }}</span>
-                    &mdash; {{ 'nis2.incident_report.section2.reported_at'|trans({}, 'nis2') }}: {{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}
+                    &mdash; {{ 'nis2.incident_report.section2.reported_at'|trans({}, 'nis2') }}: {{ incident.detailedNotificationReportedAt|fa_datetime }}
                 {% elseif incident.detailedNotificationOverdue %}
                     <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
                 {% else %}
@@ -313,7 +313,7 @@
 
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section2.deadline'|trans({}, 'nis2') }}</div>
-            <div class="field-value">{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+            <div class="field-value">{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|fa_datetime : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
         </div>
     </div>
 
@@ -372,12 +372,12 @@
 
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section3.resolved_at'|trans({}, 'nis2') }}</div>
-            <div class="field-value">{{ incident.resolvedAt ? incident.resolvedAt|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+            <div class="field-value">{{ incident.resolvedAt ? incident.resolvedAt|fa_datetime : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
         </div>
 
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section3.closed_at'|trans({}, 'nis2') }}</div>
-            <div class="field-value">{{ incident.closedAt ? incident.closedAt|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+            <div class="field-value">{{ incident.closedAt ? incident.closedAt|fa_datetime : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
         </div>
 
         <div class="field-group">
@@ -385,7 +385,7 @@
             <div class="field-value">
                 {% if incident.finalReportSubmittedAt %}
                     <span class="compliant">{{ 'nis2.incident_report.section1.compliant'|trans({}, 'nis2') }}</span>
-                    &mdash; {{ 'nis2.incident_report.section3.submitted_at'|trans({}, 'nis2') }}: {{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}
+                    &mdash; {{ 'nis2.incident_report.section3.submitted_at'|trans({}, 'nis2') }}: {{ incident.finalReportSubmittedAt|fa_datetime }}
                 {% elseif incident.finalReportOverdue %}
                     <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
                 {% else %}
@@ -396,7 +396,7 @@
 
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section3.deadline'|trans({}, 'nis2') }}</div>
-            <div class="field-value">{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+            <div class="field-value">{{ incident.finalReportDeadline ? incident.finalReportDeadline|fa_datetime : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
         </div>
     </div>
 
@@ -411,10 +411,10 @@
             </tr>
             <tr>
                 <td>{{ 'nis2.incident_report.timeline.early_warning'|trans({}, 'nis2') }} (24h)</td>
-                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|fa_datetime : '-' }}</td>
                 <td>
                     {% if incident.earlyWarningReportedAt %}
-                        <span class="compliant">{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</span>
+                        <span class="compliant">{{ incident.earlyWarningReportedAt|fa_datetime }}</span>
                     {% elseif incident.earlyWarningOverdue %}
                         <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
                     {% else %}
@@ -424,10 +424,10 @@
             </tr>
             <tr>
                 <td>{{ 'nis2.incident_report.timeline.notification'|trans({}, 'nis2') }} (72h)</td>
-                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|fa_datetime : '-' }}</td>
                 <td>
                     {% if incident.detailedNotificationReportedAt %}
-                        <span class="compliant">{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</span>
+                        <span class="compliant">{{ incident.detailedNotificationReportedAt|fa_datetime }}</span>
                     {% elseif incident.detailedNotificationOverdue %}
                         <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
                     {% else %}
@@ -437,10 +437,10 @@
             </tr>
             <tr>
                 <td>{{ 'nis2.incident_report.timeline.final_report'|trans({}, 'nis2') }} (1 month)</td>
-                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|fa_datetime : '-' }}</td>
                 <td>
                     {% if incident.finalReportSubmittedAt %}
-                        <span class="compliant">{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</span>
+                        <span class="compliant">{{ incident.finalReportSubmittedAt|fa_datetime }}</span>
                     {% elseif incident.finalReportOverdue %}
                         <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
                     {% else %}
@@ -452,7 +452,7 @@
     </div>
 
     <div class="footer">
-        {{ 'nis2.incident_report.footer'|trans({}, 'nis2') }} | {{ incident.incidentNumber }} | {{ generated_at|date('d.m.Y') }}
+        {{ 'nis2.incident_report.footer'|trans({}, 'nis2') }} | {{ incident.incidentNumber }} | {{ generated_at|fa_date }}
     </div>
 </body>
 </html>

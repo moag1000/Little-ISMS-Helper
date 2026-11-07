@@ -1,86 +1,167 @@
-{# Command Palette Component - Modern ⌘P Interface #}
-{# Icons use Aurora fa-icon names (no `bi-` prefix). Renderer in
-   command_palette_controller.js emits <i class="fa-icon fa-icon--{icon}">. #}
-{% set commands = [
-    { id: 'goto-dashboard', label: 'ui.command_palette.command.goto_dashboard'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-dashboard', url: '/dashboard', keywords: ['home', 'start', 'übersicht', 'overview'] },
-    { id: 'goto-assets', label: 'ui.command_palette.command.goto_assets'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-assets', url: '/asset', keywords: ['asset', 'inventory', 'bestände'] },
-    { id: 'goto-risks', label: 'ui.command_palette.command.goto_risks'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'risk-register', url: '/risk', keywords: ['risk', 'risiko'] },
-    { id: 'goto-incidents', label: 'ui.command_palette.command.goto_incidents'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'incident', url: '/incident', keywords: ['incident', 'vorfall'] },
-    { id: 'goto-soa', label: 'ui.command_palette.command.goto_soa'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'soa', url: '/soa', keywords: ['soa', 'controls', 'iso', '27001'] },
-    { id: 'goto-trainings', label: 'ui.command_palette.command.goto_trainings'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'training', url: '/training', keywords: ['training', 'schulung'] },
-    { id: 'goto-audits', label: 'ui.command_palette.command.goto_audits'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'audit-internal', url: '/audit', keywords: ['audit', 'prüfung'] },
-    { id: 'goto-compliance', label: 'ui.command_palette.command.goto_compliance'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'compliance-shield', url: '/compliance', keywords: ['compliance', 'tisax', 'dora'] },
-    { id: 'goto-bcm', label: 'ui.command_palette.command.goto_bcm'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-bar-chart', url: '/bcm/business-process', keywords: ['bcm', 'bia', 'continuity'] },
-    { id: 'create-asset', label: 'ui.command_palette.command.create_asset'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: '/asset/new', keywords: ['new', 'create', 'neu'] },
-    { id: 'create-risk', label: 'ui.command_palette.command.create_risk'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: '/risk/new', keywords: ['new', 'create', 'neu'] },
-    { id: 'create-incident', label: 'ui.command_palette.command.create_incident'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: '/incident/new', keywords: ['new', 'create', 'melden'] },
-    { id: 'create-training', label: 'ui.command_palette.command.create_training'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: '/training/new', keywords: ['new', 'training', 'schulung'] },
-    { id: 'create-audit', label: 'ui.command_palette.command.create_audit'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: '/audit/new', keywords: ['new', 'audit'] },
-    { id: 'export-dashboard', label: 'ui.command_palette.command.export_dashboard'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'export', url: '/reports/dashboard/export', keywords: ['export', 'pdf', 'report'] },
-    { id: 'export-soa', label: 'ui.command_palette.command.export_soa'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'export', url: '/soa/export', keywords: ['export', 'soa', 'pdf'] },
-    { id: 'export-risks', label: 'ui.command_palette.command.export_risks'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'export', url: '/reports/risks/export', keywords: ['export', 'risks', 'pdf'] },
-    { id: 'goto-users', label: 'ui.command_palette.command.goto_users'|trans({}, 'ui'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-people', url: '/admin/users', keywords: ['user', 'benutzer', 'admin'] },
-    { id: 'goto-audit-log', label: 'ui.command_palette.command.goto_audit_log'|trans({}, 'ui'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'audit-trail', url: '/admin/audit-log', keywords: ['log', 'history'] },
-    { id: 'admin-dashboard', label: 'admin.nav.dashboard'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-dashboard', url: '/admin', keywords: ['admin', 'dashboard', 'verwaltung'] },
-    { id: 'admin-tenants', label: 'admin.nav.tenants'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-building', url: '/admin/tenants', keywords: ['tenant', 'mandant', 'organisation'] },
-    { id: 'admin-roles', label: 'admin.nav.roles'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'role', url: '/admin/roles', keywords: ['role', 'rolle', 'rbac'] },
-    { id: 'admin-permissions', label: 'admin.nav.permissions'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'permission', url: '/admin/permissions', keywords: ['permission', 'berechtigung'] },
-    { id: 'admin-sessions', label: 'admin.nav.sessions'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-sessions', url: '/admin/sessions', keywords: ['session', 'sitzung'] },
-    { id: 'admin-mfa', label: 'admin.nav.mfa'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'mfa', url: '/admin/mfa', keywords: ['mfa', 'totp', '2fa'] },
-    { id: 'admin-settings', label: 'admin.nav.settings'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-gear', url: '/admin/settings', keywords: ['settings', 'einstellungen', 'configuration'] },
-    { id: 'admin-kpi-thresholds', label: 'admin.nav.kpi_thresholds'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-rulers', url: '/admin/kpi-thresholds/', keywords: ['kpi', 'schwellwert', 'threshold'] },
-    { id: 'admin-tags', label: 'admin.nav.tags'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-tags', url: '/admin/tags', keywords: ['tag', 'label'] },
-    { id: 'admin-modules', label: 'admin.nav.module_management'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-puzzle', url: '/admin/modules', keywords: ['module', 'modul', 'feature'] },
-    { id: 'admin-backup', label: 'admin.nav.backup'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-hdd', url: '/admin/backup', keywords: ['backup', 'sicherung'] },
-    { id: 'admin-export', label: 'admin.nav.export'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'export', url: '/admin/export', keywords: ['export', 'download'] },
-    { id: 'admin-import', label: 'admin.nav.import'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'import', url: '/admin/import', keywords: ['import', 'upload'] },
-    { id: 'admin-data-repair', label: 'admin.nav.data_repair'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-tools', url: '/admin/data-repair/', keywords: ['repair', 'reparatur', 'integrity'] },
-    { id: 'admin-health', label: 'admin.nav.system_health'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-heart-pulse', url: '/monitoring/health', keywords: ['health', 'status'] },
-    { id: 'admin-licensing', label: 'admin.nav.licensing'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'certificate', url: '/admin/licensing', keywords: ['license', 'lizenz'] },
-    { id: 'admin-compliance-catalog', label: 'admin.nav.compliance_management'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'compliance-shield', url: '/admin/compliance', keywords: ['compliance', 'framework', 'katalog'] },
-    { id: 'admin-compliance-policy', label: 'admin.nav.compliance_policy'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-sliders', url: '/admin/compliance/settings', keywords: ['policy', 'richtlinie', 'compliance'] },
-    { id: 'admin-loader-fixer', label: 'admin.nav.loader_fixer'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'ui-refresh', url: '/admin/loader-fixer', keywords: ['loader', 'fixer', 'idempotent'] },
-    { id: 'admin-compliance-import', label: 'admin.nav.compliance_import'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'import', url: '/admin/import/compliance/upload', keywords: ['compliance', 'import', 'csv'] },
-    { id: 'admin-import-history', label: 'admin.nav.compliance_import_history'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'audit-trail', url: '/admin/import/history', keywords: ['import', 'history', 'historie'] },
-] %}
+{# One overlay for search and commands (UI wave G).
+   ⌘K, ⌘P (Ctrl+K / Ctrl+P), "/" and the navbar trigger all open it.
+   Empty query: commands (navigation, create, export, administration).
+   Two or more characters: records and pages from app_api_search, plus the
+   matching commands. Commands are gated by module and role here, so the
+   palette offers nothing the user cannot open.
+   Icons use Aurora fa-icon names. #}
+{% set _cmds = [] %}
+{% set _cmds = _cmds|merge([
+    { id: 'goto-dashboard', label: 'ui.command_palette.command.goto_dashboard'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-dashboard', url: path('app_dashboard'), keywords: ['home', 'start', 'übersicht', 'overview']  }
+]) %}
+{% if is_module_active('assets') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-assets', label: 'ui.command_palette.command.goto_assets'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-assets', url: path('app_asset_index'), keywords: ['asset', 'inventory', 'bestände']  }
+]) %}{% endif %}
+{% if is_module_active('risks') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-risks', label: 'ui.command_palette.command.goto_risks'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'risk-register', url: path('app_risk_index'), keywords: ['risk', 'risiko']  }
+]) %}{% endif %}
+{% if is_module_active('incidents') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-incidents', label: 'ui.command_palette.command.goto_incidents'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'incident', url: path('app_incident_index'), keywords: ['incident', 'vorfall']  }
+]) %}{% endif %}
+{% if is_module_active('controls') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-soa', label: 'ui.command_palette.command.goto_soa'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'soa', url: path('app_soa_index'), keywords: ['soa', 'controls', 'iso', '27001']  }
+]) %}{% endif %}
+{% if is_module_active('training') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-trainings', label: 'ui.command_palette.command.goto_trainings'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'training', url: path('app_training_index'), keywords: ['training', 'schulung']  }
+]) %}{% endif %}
+{% if is_module_active('audits') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-audits', label: 'ui.command_palette.command.goto_audits'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'audit-internal', url: path('app_audit_index'), keywords: ['audit', 'prüfung']  }
+]) %}{% endif %}
+{% if is_module_active('compliance') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-compliance', label: 'ui.command_palette.command.goto_compliance'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'compliance-shield', url: path('app_compliance_index'), keywords: ['compliance', 'tisax', 'dora']  }
+]) %}{% endif %}
+{% if is_module_active('bcm') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-bcm', label: 'ui.command_palette.command.goto_bcm'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-bar-chart', url: path('app_business_process_index'), keywords: ['bcm', 'bia', 'continuity']  }
+]) %}{% endif %}
+{% if is_module_active('assets') %}{% set _cmds = _cmds|merge([
+    { id: 'create-asset', label: 'ui.command_palette.command.create_asset'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_asset_new'), keywords: ['new', 'create', 'neu']  }
+]) %}{% endif %}
+{% if is_module_active('risks') %}{% set _cmds = _cmds|merge([
+    { id: 'create-risk', label: 'ui.command_palette.command.create_risk'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_risk_new'), keywords: ['new', 'create', 'neu']  }
+]) %}{% endif %}
+{% if is_module_active('incidents') %}{% set _cmds = _cmds|merge([
+    { id: 'create-incident', label: 'ui.command_palette.command.create_incident'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_incident_new'), keywords: ['new', 'create', 'melden']  }
+]) %}{% endif %}
+{% if is_module_active('training') %}{% set _cmds = _cmds|merge([
+    { id: 'create-training', label: 'ui.command_palette.command.create_training'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_training_new'), keywords: ['new', 'training', 'schulung']  }
+]) %}{% endif %}
+{% if is_module_active('audits') %}{% set _cmds = _cmds|merge([
+    { id: 'create-audit', label: 'ui.command_palette.command.create_audit'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'ui-plus', url: path('app_audit_new'), keywords: ['new', 'audit']  }
+]) %}{% endif %}
+{% set _cmds = _cmds|merge([
+    { id: 'export-dashboard', label: 'ui.command_palette.command.export_dashboard'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'export', url: path('app_reports_dashboard_pdf'), keywords: ['export', 'pdf', 'report'] , download: true }
+]) %}
+{% if is_module_active('controls') %}{% set _cmds = _cmds|merge([
+    { id: 'export-soa', label: 'ui.command_palette.command.export_soa'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'export', url: path('app_soa_export_pdf'), keywords: ['export', 'soa', 'pdf'] , download: true }
+]) %}{% endif %}
+{% if is_module_active('risks') %}{% set _cmds = _cmds|merge([
+    { id: 'export-risks', label: 'ui.command_palette.command.export_risks'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'export', url: path('app_reports_risks_pdf'), keywords: ['export', 'risks', 'pdf'] , download: true }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-users', label: 'ui.command_palette.command.goto_users'|trans({}, 'ui'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-people', url: path('user_management_index'), keywords: ['user', 'benutzer', 'admin']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'goto-audit-log', label: 'ui.command_palette.command.goto_audit_log'|trans({}, 'ui'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'audit-trail', url: path('app_audit_log_index'), keywords: ['log', 'history']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-dashboard', label: 'admin.nav.dashboard'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-dashboard', url: path('admin_dashboard'), keywords: ['admin', 'dashboard', 'verwaltung']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-tenants', label: 'admin.nav.tenants'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-building', url: path('tenant_management_index'), keywords: ['tenant', 'mandant', 'organisation']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-roles', label: 'admin.nav.roles'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'role', url: path('role_management_index'), keywords: ['role', 'rolle', 'rbac']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-permissions', label: 'admin.nav.permissions'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'permission', url: path('permission_index'), keywords: ['permission', 'berechtigung']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-sessions', label: 'admin.nav.sessions'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-sessions', url: path('session_index'), keywords: ['session', 'sitzung']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-mfa', label: 'admin.nav.mfa'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'mfa', url: path('admin_mfa_index'), keywords: ['mfa', 'totp', '2fa']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-settings', label: 'admin.nav.settings'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-gear', url: path('admin_settings_index'), keywords: ['settings', 'einstellungen', 'configuration']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-kpi-thresholds', label: 'admin.nav.kpi_thresholds'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-rulers', url: path('admin_kpi_threshold_index'), keywords: ['kpi', 'schwellwert', 'threshold']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-tags', label: 'admin.nav.tags'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-tags', url: path('admin_tag_index'), keywords: ['tag', 'label']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-modules', label: 'admin.nav.module_management'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-puzzle', url: path('admin_modules_index'), keywords: ['module', 'modul', 'feature']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-backup', label: 'admin.nav.backup'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-hdd', url: path('data_backup_index'), keywords: ['backup', 'sicherung']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-export', label: 'admin.nav.export'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'export', url: path('data_export_index'), keywords: ['export', 'download']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-import', label: 'admin.nav.import'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'import', url: path('data_import_index'), keywords: ['import', 'upload']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-data-repair', label: 'admin.nav.data_repair'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-tools', url: path('admin_data_repair_index'), keywords: ['repair', 'reparatur', 'integrity']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-health', label: 'admin.nav.system_health'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-heart-pulse', url: path('monitoring_health'), keywords: ['health', 'status']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-licensing', label: 'admin.nav.licensing'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'certificate', url: path('admin_licensing_index'), keywords: ['license', 'lizenz']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-compliance-catalog', label: 'admin.nav.compliance_management'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'compliance-shield', url: path('admin_compliance_index'), keywords: ['compliance', 'framework', 'katalog']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-compliance-policy', label: 'admin.nav.compliance_policy'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-sliders', url: path('admin_compliance_policy_index'), keywords: ['policy', 'richtlinie', 'compliance']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-loader-fixer', label: 'admin.nav.loader_fixer'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'ui-refresh', url: path('admin_loader_fixer_index'), keywords: ['loader', 'fixer', 'idempotent']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-compliance-import', label: 'admin.nav.compliance_import'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'import', url: path('admin_compliance_import_upload'), keywords: ['compliance', 'import', 'csv']  }
+]) %}{% endif %}
+{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+    { id: 'admin-import-history', label: 'admin.nav.compliance_import_history'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'audit-trail', url: path('admin_import_history_index'), keywords: ['import', 'history', 'historie']  }
+]) %}{% endif %}
 <div data-controller="command-palette"
-     data-command-palette-commands-value="{{ commands|json_encode|e('html_attr') }}">
-    {# Modal Backdrop #}
-    <div class="command-palette-modal" data-command-palette-target="modal">
+     data-command-palette-commands-value="{{ _cmds|json_encode|e('html_attr') }}"
+     data-command-palette-search-url-value="{{ path('app_api_search') }}">
+    <div class="command-palette-modal" data-command-palette-target="modal"
+         role="dialog" aria-modal="true" aria-label="{{ 'ui.global_search.label'|trans({}, 'ui') }}">
         <div class="command-palette-container">
-            {# Alva mascot #}
             {% import '_components/_alva.html.twig' as faAlva %}
             <span class="command-palette-alva" aria-hidden="true">{{ faAlva.render('thinking', { size: 24 })|raw }}</span>
-            {# Search Input #}
             <div class="command-palette-search">
                 <i class="fa-icon fa-icon--ui-search command-palette-search-icon" aria-hidden="true"></i>
-                <label>
-                    <input
-                        type="text"
-                        class="command-palette-input"
-                        placeholder="{{ 'ui.command_palette.placeholder'|trans({}, 'ui') }}"
-                        data-command-palette-target="input"
-                        data-action="input->command-palette#search"
-                        autocomplete="off"
-                        spellcheck="false"
-                    >
-                </label>
+                <label class="visually-hidden" for="command-palette-input">{{ 'ui.global_search.label'|trans({}, 'ui') }}</label>
+                <input
+                    type="text"
+                    id="command-palette-input"
+                    class="command-palette-input"
+                    placeholder="{{ 'ui.command_palette.placeholder'|trans({}, 'ui') }}"
+                    data-command-palette-target="input"
+                    data-action="input->command-palette#search"
+                    data-testid="command-palette-input"
+                    role="combobox"
+                    aria-expanded="true"
+                    aria-controls="command-palette-results"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
                 <kbd class="command-palette-hint">ESC</kbd>
             </div>
 
-            {# Results List #}
-            <div class="command-palette-results" data-command-palette-target="results">
-                {# Dynamically populated by Stimulus controller #}
-            </div>
+            <div class="command-palette-results" id="command-palette-results" role="listbox"
+                 data-command-palette-target="results" aria-live="polite"></div>
 
-            {# No Results State #}
             <div class="command-palette-no-results hidden" data-command-palette-target="noResults">
                 <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                 <p>{{ 'ui.command_palette.no_results'|trans({}, 'ui') }}</p>
-                <small>{{ 'ui.command_palette.no_results_hint'|trans({}, 'ui') }}</small>
             </div>
 
-            {# Footer with Shortcuts #}
             <div class="command-palette-footer">
                 <div class="command-palette-shortcuts">
                     <span><kbd>↑</kbd> <kbd>↓</kbd> {{ 'ui.keyboard.navigation'|trans({}, 'ui') }}</span>

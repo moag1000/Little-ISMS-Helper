@@ -16,12 +16,12 @@
 {% block footer_left %}DOC-CERT-OVW | Version {{ version }}{% endblock %}
 {% block footer_center %}{{ tenant_name }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
-{% block created_date %}{{ generated_at|date('d.m.Y') }}{% endblock %}
-{% block modified_date %}{{ generated_at|date('d.m.Y H:i') }}{% endblock %}
+{% block created_date %}{{ generated_at|fa_date }}{% endblock %}
+{% block modified_date %}{{ generated_at|fa_datetime }}{% endblock %}
 
 {% block document_content %}
 <h1>{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}</h1>
-<p class="text-muted">{{ 'certification_bundle.pdf.generated'|trans({}, 'certification_bundle') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'certification_bundle.pdf.organization'|trans({}, 'certification_bundle') }}: {{ tenant_name }}</p>
+<p class="text-muted">{{ 'certification_bundle.pdf.generated'|trans({}, 'certification_bundle') }}: {{ generated_at|fa_datetime }} | {{ 'certification_bundle.pdf.organization'|trans({}, 'certification_bundle') }}: {{ tenant_name }}</p>
 
 <h2>{{ 'certification_bundle.pdf.overview.section_1'|trans({}, 'certification_bundle') }}</h2>
 <table>
@@ -124,7 +124,7 @@
             </td>
             <td>{{ plan.status|replace({'_': ' '})|capitalize }}</td>
             <td>{{ plan.completionPercentage }}%</td>
-            <td>{{ plan.targetCompletionDate ? plan.targetCompletionDate|date('d.m.Y') : '-' }}</td>
+            <td>{{ plan.targetCompletionDate ? plan.targetCompletionDate|fa_date : '-' }}</td>
         </tr>
         {% endfor %}
     </tbody>

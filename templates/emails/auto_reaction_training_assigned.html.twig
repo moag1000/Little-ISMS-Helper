@@ -23,7 +23,7 @@
                     <li style="margin: 4px 0;">
                         <strong>{{ training.title|default('—') }}</strong>
                         {% if training.dueDate is defined and training.dueDate %}
-                            — Due {{ training.dueDate|date('Y-m-d') }}
+                            — Due {{ training.dueDate|fa_date }}
                         {% endif %}
                     </li>
                 {% endfor %}

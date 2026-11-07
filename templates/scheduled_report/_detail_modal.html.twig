@@ -44,7 +44,7 @@
         {% if report.nextRunAt %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'scheduled_report.next_run'|trans({}, 'scheduled_reports') }}</span>
-                <span>{{ report.nextRunAt|date('Y-m-d H:i') }}
+                <span>{{ report.nextRunAt|fa_datetime }}
                     {% if report.isDue() %}
                         {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
                     {% endif %}

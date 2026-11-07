@@ -62,7 +62,7 @@
         {% if asset.returnDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'asset.field.return_date'|trans({}, 'asset') }}</span>
-                <span>{{ asset.returnDate|date('Y-m-d') }}</span>
+                <span>{{ asset.returnDate|fa_date }}</span>
             </div>
         {% endif %}
         {% if asset.description %}

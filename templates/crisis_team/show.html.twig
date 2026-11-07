@@ -58,7 +58,7 @@
                     <dd class="col-sm-9">
                         {{ _on_call.primary|default('—') }}
                         {% if _on_call.deputy|default %}<span class="text-muted">({{ 'admin.tenant_settings.json_builder.on_call_deputy'|trans({}, 'admin') }}: {{ _on_call.deputy }})</span>{% endif %}
-                        <span class="text-muted">· {{ _on_call.date|date('d.m.Y') }}</span>
+                        <span class="text-muted">· {{ _on_call.date|fa_date }}</span>
                     </dd>
                 {% endif %}
                 {% if crisis_team.description %}<dt class="col-sm-3">{{ 'crisis_team.field.description'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.description|nl2br }}</dd>{% endif %}

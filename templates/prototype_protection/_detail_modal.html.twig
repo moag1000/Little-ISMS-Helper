@@ -51,14 +51,14 @@
         {% if assessment.assessmentDate %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</span>
-                <span>{{ assessment.assessmentDate|date('d.m.Y') }}</span>
+                <span>{{ assessment.assessmentDate|fa_date }}</span>
             </div>
         {% endif %}
 
         {% if assessment.nextAssessmentDue %}
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</span>
-                <span>{{ assessment.nextAssessmentDue|date('d.m.Y') }}</span>
+                <span>{{ assessment.nextAssessmentDue|fa_date }}</span>
             </div>
         {% endif %}
 

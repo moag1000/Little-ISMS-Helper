@@ -88,7 +88,7 @@
                 <div class="card-body py-2">
                     <dl class="row mb-0 small">
                         <dt class="col-5">{{ 'wizard.history.field.completed_at'|trans({}, 'wizard') }}</dt>
-                        <dd class="col-7">{{ from_session.completedAt ? from_session.completedAt|date('Y-m-d H:i') : '—' }}</dd>
+                        <dd class="col-7">{{ from_session.completedAt ? from_session.completedAt|fa_datetime : '—' }}</dd>
                         <dt class="col-5">{{ 'wizard.history.field.user'|trans({}, 'wizard') }}</dt>
                         <dd class="col-7">{{ from_session.user ? from_session.user.email : '—' }}</dd>
                         <dt class="col-5">{{ 'wizard.history.field.score'|trans({}, 'wizard') }}</dt>
@@ -106,7 +106,7 @@
                 <div class="card-body py-2">
                     <dl class="row mb-0 small">
                         <dt class="col-5">{{ 'wizard.history.field.completed_at'|trans({}, 'wizard') }}</dt>
-                        <dd class="col-7">{{ to_session.completedAt ? to_session.completedAt|date('Y-m-d H:i') : '—' }}</dd>
+                        <dd class="col-7">{{ to_session.completedAt ? to_session.completedAt|fa_datetime : '—' }}</dd>
                         <dt class="col-5">{{ 'wizard.history.field.user'|trans({}, 'wizard') }}</dt>
                         <dd class="col-7">{{ to_session.user ? to_session.user.email : '—' }}</dd>
                         <dt class="col-5">{{ 'wizard.history.field.score'|trans({}, 'wizard') }}</dt>

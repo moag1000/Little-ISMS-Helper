@@ -40,7 +40,7 @@
                                 {{ doc.originalFilename }}
                             </a>
                             <small class="text-muted ms-2">{{ doc.fileSizeFormatted }}</small>
-                            <small class="text-muted ms-2">{{ doc.uploadedAt|date('d.m.Y') }}</small>
+                            <small class="text-muted ms-2">{{ doc.uploadedAt|fa_date }}</small>
                         </div>
                         <div class="d-flex gap-1">
                             <a href="{{ path('app_document_show', {id: doc.id}) }}"

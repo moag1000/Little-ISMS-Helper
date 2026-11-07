@@ -28,7 +28,7 @@
 <table>
     <tr><td class="label">Titel</td><td>{{ title }}</td></tr>
     <tr><td class="label">Schweregrad</td><td>{{ severity }}</td></tr>
-    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at ? detected_at|date('d.m.Y H:i') : '—' }}</td></tr>
+    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at ? detected_at|fa_datetime : '—' }}</td></tr>
     <tr><td class="label">Status</td><td>{{ status }}</td></tr>
 </table>
 
@@ -38,7 +38,7 @@
 </table>
 
 <div class="footer">
-    Erstellt am: {{ generated_at|date('d.m.Y H:i') }} — Vertraulich / NIS-2-Meldung
+    Erstellt am: {{ generated_at|fa_datetime }} — Vertraulich / NIS-2-Meldung
 </div>
 </body>
 </html>

@@ -113,10 +113,10 @@
                         {% endif %}
 
                         <dt class="col-sm-4">{{ 'notification.rule.field.created_at'|trans }}</dt>
-                        <dd class="col-sm-8">{{ rule.createdAt ? rule.createdAt|date('Y-m-d H:i') : '—' }}</dd>
+                        <dd class="col-sm-8">{{ rule.createdAt ? rule.createdAt|fa_datetime : '—' }}</dd>
 
                         <dt class="col-sm-4">{{ 'notification.rule.field.last_evaluated'|trans }}</dt>
-                        <dd class="col-sm-8">{{ rule.lastEvaluatedAt ? rule.lastEvaluatedAt|date('Y-m-d H:i') : '—' }}</dd>
+                        <dd class="col-sm-8">{{ rule.lastEvaluatedAt ? rule.lastEvaluatedAt|fa_datetime : '—' }}</dd>
                     </dl>
 
                     <div class="d-flex gap-2 mt-3">

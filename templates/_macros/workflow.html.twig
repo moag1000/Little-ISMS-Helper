@@ -147,7 +147,7 @@
                     </div>
                     <div class="sla-deadline" title="{{ 'workflow.field.due_date'|trans({}, 'workflows') }}">
                         <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
-                        <span>{{ deadline|date('d.m.Y H:i') }}</span>
+                        <span>{{ deadline|fa_datetime }}</span>
                     </div>
                 </div>
             </div>
@@ -179,17 +179,8 @@
                         <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                         <strong>{{ workflowInstance.workflow.name }}</strong>
 
-                        {% set statusColors = {
-                            'pending': 'warning',
-                            'in_progress': 'info',
-                            'approved': 'success',
-                            'rejected': 'danger',
-                            'cancelled': 'secondary'
-                        } %}
-                        {% include '_components/_badge.html.twig' with {
-                            variant: statusColors[workflowInstance.status] ?? 'secondary',
-                            content: ('workflow.status.' ~ workflowInstance.status)|trans({}, 'workflows')
-                        } %}
+                        {% import '_components/_status_vocabulary.html.twig' as _status %}
+                        {{ _status.pill('workflow', workflowInstance.status, ('workflow.status.' ~ workflowInstance.status)|trans({}, 'workflows')) }}
 
                         {% if isOverdue %}
                             {% include '_components/_badge.html.twig' with {

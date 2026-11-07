@@ -42,7 +42,7 @@
                             {% endif %}
                         </div>
                         <div class="text-muted">
-                            {{ entry.createdAt|date('d.m.Y H:i') }}
+                            {{ entry.createdAt|fa_datetime }}
                             {% if entry.action %}
                                 &middot; <code class="small">{{ entry.action }}</code>
                             {% endif %}

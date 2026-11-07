@@ -193,13 +193,13 @@
                             {% set severity = breach.severity|default('medium') %}
                             {% include '_components/_badge.html.twig' with { variant: severity == 'critical' ? 'danger' : (severity == 'high' ? 'warning' : (severity == 'medium' ? 'info' : 'success')), content: severity } %}
                         </td>
-                        <td class="fa-table__cell">{{ breach.discoveredAt ? breach.discoveredAt|date('Y-m-d') : '-' }}</td>
+                        <td class="fa-table__cell">{{ breach.discoveredAt ? breach.discoveredAt|fa_date : '-' }}</td>
                         <td class="fa-table__cell">
                             {% include '_components/_badge.html.twig' with { variant: breach.notificationRequired ? 'danger' : 'secondary', content: breach.notificationRequired ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') } %}
                         </td>
                         <td class="fa-table__cell">
                             {% if breach.notificationDate %}
-                            <span class="text-success">{{ breach.notificationDate|date('Y-m-d') }}</span>
+                            <span class="text-success">{{ breach.notificationDate|fa_date }}</span>
                             {% elseif breach.notificationRequired %}
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.gdpr.pending'|trans({}, 'management_reports') } %}
                             {% else %}
@@ -245,7 +245,7 @@
     {# Report Generated Info #}
     <div class="text-muted small text-end">
         <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
-        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|fa_datetime }}
     </div>
 </div>
 {% endblock %}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Doctrine\TenantFilter;
 use App\Entity\AuditLog;
 use App\Entity\IdentityProvider;
 use App\Entity\IdentityProviderRoleMapping;
@@ -19,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 /**
  * Security hotfix (C1): a tenant admin controls the issuer/JWKS of a
@@ -69,6 +71,21 @@ final class SsoAccountTakeoverTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        try {
+            $this->cleanUp();
+        } finally {
+            parent::tearDown();
+        }
+    }
+
+    private function cleanUp(): void
+    {
+        // A request leaves the tenant filter armed for the signed-in admin —
+        // the clean-up must see global providers and every organisation.
+        $filters = $this->em->getFilters();
+        if ($filters->isEnabled('tenant_filter')) {
+            $filters->getFilter('tenant_filter')->setParameter('tenant_id', TenantFilter::UNSCOPED);
+        }
         $this->em->clear();
         foreach (['admina', 'userchilda', 'userb', 'super', 'jit', 'operator'] as $label) {
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $this->email($label)]);
@@ -97,7 +114,6 @@ final class SsoAccountTakeoverTest extends WebTestCase
                 $this->em->flush();
             }
         }
-        parent::tearDown();
     }
 
     #[Test]
@@ -363,6 +379,69 @@ final class SsoAccountTakeoverTest extends WebTestCase
             [AuditLogger::ACTION_SSO_LOGIN_FAILURE, 'IdentityProvider', $this->tenantProvider->getId(), '%subject_changed%'],
         );
         self::assertSame(1, $events, 'security event for the subject change');
+    }
+
+    #[Test]
+    public function adminLinksAndUnlinksAnAccountByHandOnTheUserPage(): void
+    {
+        // #1059: no UI existed to bind an existing account to an SSO identity.
+        $this->globalProvider->setEnabled(true);
+        $this->em->flush();
+        $this->client->loginUser($this->adminA);
+
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $this->userChildA->getId());
+        self::assertResponseIsSuccessful();
+        $form = $crawler->filter('#sso-link form[action$="/sso-link"]')->form();
+        $form['provider']->select((string) $this->globalProvider->getId());
+        $form['subject'] = 'manual-sub-' . $this->uid;
+        $this->client->submit($form);
+        self::assertResponseRedirects();
+
+        $linked = $this->reload($this->userChildA);
+        self::assertSame($this->globalProvider->getId(), $linked->getSsoProvider()?->getId());
+        self::assertSame('manual-sub-' . $this->uid, $linked->getSsoExternalId());
+        $events = (int) $this->em->getConnection()->fetchOne(
+            'SELECT COUNT(*) FROM audit_log WHERE action = ? AND entity_type = ? AND entity_id = ?',
+            [AuditLogger::ACTION_SSO_ACCOUNT_LINKED, 'IdentityProvider', $this->globalProvider->getId()],
+        );
+        self::assertSame(1, $events, 'the manual link is in the provider audit trail');
+
+        // The page shows the new binding and offers to remove it.
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $this->userChildA->getId());
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('manual-sub-' . $this->uid, $crawler->filter('#sso-link')->text());
+        $this->client->submit($crawler->filter('#sso-link form[action$="/sso-unlink"]')->form());
+        self::assertResponseRedirects();
+        self::assertNull($this->reload($this->userChildA)->getSsoProvider());
+    }
+
+    #[Test]
+    public function organisationAdminCannotLinkAPrivilegedAccount(): void
+    {
+        $this->globalProvider->setEnabled(true);
+        $this->em->flush();
+        $this->client->loginUser($this->adminA);
+
+        // The page of a SUPER_ADMIN offers no link form to an organisation admin …
+        $crawler = $this->client->request('GET', '/en/admin/users/' . $this->super->getId());
+        if ($this->client->getResponse()->isSuccessful()) {
+            self::assertCount(0, $crawler->filter('#sso-link form'));
+        }
+
+        // … and a forged post is refused (CSRF token valid, rule enforced server-side).
+        // Token written into the session the way SessionTokenStorage does
+        // (pattern of QuickCreateControllerTest::csrfToken()).
+        $token = (new UriSafeTokenGenerator())->generateToken();
+        $session = $this->client->getRequest()->getSession();
+        $session->set('_csrf/user_sso_link_' . $this->super->getId(), $token);
+        $session->save();
+        $this->client->request('POST', '/en/admin/users/' . $this->super->getId() . '/sso-link', [
+            '_token' => $token,
+            'provider' => (string) $this->globalProvider->getId(),
+            'subject' => 'forged',
+        ]);
+        self::assertResponseRedirects(); // token accepted — the refusal comes from the linking rule, not CSRF
+        self::assertNull($this->reload($this->super)->getSsoProvider());
     }
 
     #[Test]
