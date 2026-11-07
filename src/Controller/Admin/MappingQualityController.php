@@ -124,7 +124,7 @@ class MappingQualityController extends AbstractController
                 ['%state%' => $newState],
                 'admin',
             ));
-        } catch (AppException | \DomainException $e) {
+        } catch (AppException $e) {
             $this->addFlash('error', $this->translator->trans(
                 'admin.mapping_quality.transition_failed',
                 ['%message%' => $e->getMessage()],

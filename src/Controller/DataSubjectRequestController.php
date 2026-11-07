@@ -81,14 +81,14 @@ class DataSubjectRequestController extends AbstractController
 
         if ($filterStatus === 'overdue') {
             $requests = $this->dataSubjectRequestService->findOverdue();
-        } elseif ($filterStatus !== null && $filterStatus !== '') {
+        } elseif ($filterStatus !== null) {
             $requests = $this->dataSubjectRequestService->findByStatus($filterStatus);
         } else {
             $requests = $this->dataSubjectRequestService->findAll();
         }
 
         // Apply type filter in-memory if set
-        if ($filterType !== null && $filterType !== '') {
+        if ($filterType !== null) {
             $requests = array_values(array_filter(
                 $requests,
                 fn(DataSubjectRequest $r): bool => $r->getRequestType() === $filterType

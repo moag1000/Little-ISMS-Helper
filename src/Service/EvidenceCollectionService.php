@@ -41,7 +41,7 @@ final class EvidenceCollectionService
     /**
      * Upload a document and link it to an entity.
      *
-     * @throws \InvalidArgumentException if entity type is unsupported or entity not found
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException if entity type is unsupported or entity not found
      * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException on upload validation failure
      */
     public function uploadAndLink(
@@ -100,7 +100,7 @@ final class EvidenceCollectionService
     /**
      * Link an existing document to an entity.
      *
-     * @throws \InvalidArgumentException if entity type is unsupported or entity not found
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException if entity type is unsupported or entity not found
      */
     public function linkToEntity(Document $document, string $entityType, int $entityId): void
     {
@@ -118,7 +118,7 @@ final class EvidenceCollectionService
     /**
      * Unlink a document from an entity.
      *
-     * @throws \InvalidArgumentException if entity type is unsupported or entity not found
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException if entity type is unsupported or entity not found
      */
     public function unlinkFromEntity(Document $document, string $entityType, int $entityId): void
     {
@@ -193,7 +193,7 @@ final class EvidenceCollectionService
      * Get evidence documents for an entity.
      *
      * @return Document[]
-     * @throws \InvalidArgumentException if entity type is unsupported or entity not found
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException if entity type is unsupported or entity not found
      */
     public function getEvidenceForEntity(string $entityType, int $entityId): array
     {
@@ -264,7 +264,7 @@ final class EvidenceCollectionService
     /**
      * Resolve an entity from type and ID.
      *
-     * @throws \InvalidArgumentException if entity type is unsupported or entity not found
+     * @throws \App\Exception\InvalidArgument\InvalidArgumentException if entity type is unsupported or entity not found
      */
     private function resolveEntity(string $entityType, int $entityId): Control|ComplianceRequirement|RiskTreatmentPlan
     {
