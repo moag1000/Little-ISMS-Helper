@@ -7,15 +7,15 @@ namespace App\Entity;
 use DateTimeInterface;
 use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Metadata\Delete;
 use App\Entity\Trait\IncidentReporterTrait;
 use App\Entity\Trait\IncidentResponsiblePersonTrait;
@@ -47,7 +47,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new GetCollection(
             description: 'Retrieve the collection of security incidents with filtering by severity, status, and category',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'title' => new QueryParameter(filter: new PartialSearchFilter()),
+                'incidentNumber' => new QueryParameter(filter: new ExactFilter()),
+                'severity' => new QueryParameter(filter: new ExactFilter()),
+                'status' => new QueryParameter(filter: new ExactFilter()),
+                'category' => new QueryParameter(filter: new ExactFilter()),
+                'dataBreachOccurred' => new QueryParameter(filter: new ExactFilter(), schema: ['type' => 'boolean'], castToArray: false, castToNativeType: true),
+                'notificationRequired' => new QueryParameter(filter: new ExactFilter(), schema: ['type' => 'boolean'], castToArray: false, castToNativeType: true),
+                'detectedAt' => new QueryParameter(filter: new DateFilter()),
+                'resolvedAt' => new QueryParameter(filter: new DateFilter()),
+                'closedAt' => new QueryParameter(filter: new DateFilter()),
+                'order[:property]' => new QueryParameter(filter: new SortFilter(), properties: ['detectedAt', 'severity', 'status'], castToArray: false),
+            ],
         ),
         new Post(
             description: 'Create a new security incident report',
@@ -66,10 +79,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['incident:write']],
     processor: TenantAwareStateProcessor::class
 )]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'incidentNumber' => 'exact', 'severity' => 'exact', 'status' => 'exact', 'category' => 'exact'])]
-#[ApiFilter(BooleanFilter::class, properties: ['dataBreachOccurred', 'notificationRequired'])]
-#[ApiFilter(OrderFilter::class, properties: ['detectedAt', 'severity', 'status'])]
-#[ApiFilter(DateFilter::class, properties: ['detectedAt', 'resolvedAt', 'closedAt'])]
 class Incident
 {
     use IncidentReporterTrait;
@@ -1024,9 +1033,6 @@ class Incident
             : DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+1 month');
     }
 
-    /**
-     * Check if early warning is overdue
-     */
     #[Groups(['incident:read'])]
     public function isEarlyWarningOverdue(): bool
     {
@@ -1040,9 +1046,6 @@ class Incident
         return new DateTimeImmutable() > $deadline;
     }
 
-    /**
-     * Check if detailed notification is overdue
-     */
     #[Groups(['incident:read'])]
     public function isDetailedNotificationOverdue(): bool
     {
@@ -1056,9 +1059,6 @@ class Incident
         return new DateTimeImmutable() > $deadline;
     }
 
-    /**
-     * Check if final report is overdue
-     */
     #[Groups(['incident:read'])]
     public function isFinalReportOverdue(): bool
     {

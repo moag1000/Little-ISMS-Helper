@@ -63,7 +63,7 @@ class DocumentController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
-        private readonly RateLimiterFactory $rateLimiterFactory,
+        private readonly RateLimiterFactory $documentUploadLimiter,
         private readonly FileUploadSecurityService $fileUploadSecurityService,
         private readonly SecurityEventLogger $securityEventLogger,
         private readonly TranslatorInterface $translator,
@@ -281,7 +281,7 @@ class DocumentController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Security: Rate limit document uploads to prevent abuse
-            $limiter = $this->rateLimiterFactory->create($request->getClientIp());
+            $limiter = $this->documentUploadLimiter->create($request->getClientIp());
 
             if (false === $limiter->consume(1)->isAccepted()) {
                 // Security: Log rate limit hit for monitoring

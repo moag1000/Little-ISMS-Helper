@@ -90,7 +90,7 @@ class AuditProgram
      * @var Collection<int, InternalAudit>
      */
     #[ORM\OneToMany(targetEntity: InternalAudit::class, mappedBy: 'auditProgram')]
-    #[ORM\OrderBy(['plannedDate' => 'ASC'])]
+    #[ORM\OrderBy(['plannedDate' => \SortDirection::Ascending])]
     private Collection $internalAudits;
 
     /**
