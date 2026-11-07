@@ -1,0 +1,198 @@
+suggestions:
+    page:
+        title: Suggestions
+        subtitle: What the tool derives from your data, inherits, imports or proposes with AI. You decide; nothing changes until you accept.
+    list:
+        open: Open suggestions
+        decided: Decided (last 90 days)
+    empty:
+        open: No open suggestions.
+        decided: No decided suggestions.
+    filter:
+        kind: Kind
+        origin: Origin
+        all: All
+    view:
+        open: Open
+        decided: Decided
+    action:
+        accept: Accept
+        reject: Reject
+        refresh: Check now
+        ai_settings: AI settings
+        not_a_match: Not a match
+    row:
+        confidence: '%pct% % confidence'
+        proposed_text: Proposed text
+        result: Open result
+    dialog:
+        text: Text (editable before it is applied)
+        note: Note (optional)
+        reason: Reason (optional)
+        reject_intro: A rejected suggestion does not come back for the same state.
+    my_day:
+        link: '{1}1 suggestion open|]1,Inf[%count% suggestions open'
+    hint:
+        record: '{1}One open suggestion: %title%|]1,Inf[%count% open suggestions, first: %title%'
+        open: View suggestions
+    flash:
+        accepted: Suggestion applied.
+        rejected: Suggestion rejected.
+        stale: Suggestion is out of date, the record has changed. It was withdrawn.
+        rule_failed: 'Not applied: %reason%'
+    job:
+        label: Checking suggestions
+        subtitle: Rules, inheritance and AI run for this organisation.
+        running: Checking suggestions …
+        done: '%created% new suggestions, %superseded% resolved.'
+    ai:
+        title: AI suggestions
+        subtitle: Sets whether and which language model writes suggestions for the queue.
+        org:
+            title: For this organisation
+            mode: Mode
+        mode:
+            'off': 'Off'
+            local: Local model of this instance
+            external: External API (OpenAI-compatible, e.g. Mistral)
+            local_target: '%model% at %endpoint%'
+            local_missing: Not set up yet, the operator does that below.
+        external:
+            title: External API
+            endpoint: Endpoint
+            endpoint_help: 'https and public addresses only. Default: %default%'
+            model: Model
+            api_key: API key
+            key_stored: A key is stored encrypted. Leave empty to keep it.
+            key_missing: No key stored yet.
+            clear_key: Delete stored key
+            allow_personal_data: Send personal data to the external API
+            allow_personal_data_help: Off = names, e-mail addresses, phone numbers, IBANs and IP addresses are replaced before sending (GDPR Art. 5(1)(c)). Only switch on with a data processing agreement in place.
+        use_cases:
+            title: Use cases
+            none: No AI use case is available in the active modules.
+        instance:
+            title: Local model of this instance (operator)
+            intro: A model in your own network that every organisation on this instance can use, e.g. Ollama, LM Studio or vLLM. Data stays in house.
+            endpoint: Endpoint
+            endpoint_help: 'OpenAI-compatible address, e.g. %default%. Empty = no local model.'
+            api_key: API key (optional)
+            key_optional: Only needed when the local server asks for a key.
+        privacy:
+            title: Privacy
+            local: Locally, all data stays on your servers.
+            external: Externally, only the fields of the record in question are sent, personal data replaced by default. The audit log records every call without content.
+            human: The AI only writes suggestions. Nothing is applied until an authorised person accepts.
+        test: Test connection
+        flash:
+            saved: Saved.
+            endpoint_invalid: Invalid endpoint. Allowed are http(s) addresses without credentials, external ones https to public addresses only.
+            test_ok: 'Connected, model %model% answers.'
+            test_failed: 'Connection failed: %error%'
+            test_not_configured: AI is off or not set up for this organisation.
+        origin:
+            rule: Rule
+            inheritance: Inheritance
+            import: Import
+            ai: AI
+        status:
+            pending: Open
+            accepted: Accepted
+            rejected: Rejected
+            superseded: Withdrawn
+        kind:
+            asset:
+                protection_need: Raise protection need
+            risk:
+                residual: Assess residual risk
+                treatment_complete: Complete treatment
+                after_incident: Risk after incident
+                from_vulnerability: Risk from vulnerability
+            treatment_plan:
+                progress: Treatment plan progress
+            control:
+                effectiveness: Rate effectiveness
+                requirement_link: Map requirement
+            legacy_owner:
+                match: Assign owners
+            compliance:
+                inheritance: Take over fulfilment
+            ai:
+                risk_from_incident: Risk from incident (AI)
+                soa_justification: SoA justification (AI)
+                corrective_action: Corrective action (AI)
+        kind_help:
+            asset:
+                protection_need: Dependencies (maximum principle) and the BIA raise the protection need.
+            risk:
+                residual: Implemented and effective controls lower the likelihood.
+                treatment_complete: All controls of the plan are implemented.
+                after_incident: An incident made the risk occur.
+                from_vulnerability: Open vulnerability from CVSS 7 without a risk.
+            treatment_plan:
+                progress: Share of implemented controls.
+            control:
+                effectiveness: From tests, incidents and protected assets.
+                requirement_link: Text similarity between control and requirement.
+            legacy_owner:
+                match: Free-text owners match a person.
+            compliance:
+                inheritance: A fulfilled requirement covers a mapped one.
+            ai:
+                risk_from_incident: Writes a risk for incidents of the last 90 days without a linked risk.
+                soa_justification: Writes a justification for applicable controls without one (ISO 27001 6.1.3 d).
+                corrective_action: Writes a corrective action for open findings without one (ISO 27001 10.2).
+        text:
+            dimension:
+                confidentiality: Confidentiality
+                integrity: Integrity
+                availability: Availability
+            effectiveness:
+                effective: effective
+                partially_effective: partially effective
+                ineffective: ineffective
+            asset_protection:
+                title: 'Raise protection need of %asset%'
+                change: '%dimension% %from% → %to% (%reason%)'
+                reason_dependency: 'inherits from %asset%'
+                reason_bia: 'BIA %process%, RTO %rto% h'
+            risk_residual:
+                title: 'Enter residual risk for %risk%'
+                rationale: 'Inherent %inherent%, residual %from% → %to%. %basis%'
+                no_controls: No implemented control, residual risk equals inherent risk.
+                controls: 'Implemented: %implemented%. Effective: %effective%.'
+            risk_treatment_complete:
+                title: 'Complete treatment of %risk%'
+                rationale: 'All controls are implemented: %controls%.'
+            treatment_plan_progress:
+                title: 'Update progress of %plan%'
+                rationale: '%done% of %total% controls implemented, progress %from% % → %to% %.'
+            control_effectiveness:
+                title: 'Rate effectiveness of %control%'
+                rationale: 'Score %score% of 100 → %rating%. Last test %tested%, %incidents% incidents since the test, %assets% protected assets.'
+            risk_after_incident:
+                title: '%risk% occurred, raise likelihood'
+                rationale: 'Incident %incident% was closed on %closed%. Likelihood %from% → %to%.'
+            risk_from_vulnerability:
+                title: 'Create risk for %cve%'
+                rationale: 'CVSS %cvss%, affected: %asset%. Proposed likelihood %probability%, impact %impact%.'
+                risk_title: '%cve%: %title%'
+            legacy_owner:
+                title: 'Assign owners for %record%'
+                rationale: 'Free text "%legacy%" matches %match%.'
+            inheritance:
+                title: 'Take over %target% from %source%: %title%'
+                rationale: '%source% is fulfilled, mapping confidence %confidence%. Proposed %percent% % fulfilment for %target%.'
+                comment: 'Taken over from %source% (mapping confidence %confidence%), reviewed for %target%.'
+            requirement_link:
+                title: '%control% covers %requirement%'
+                rationale: '"%title%", text similarity %pct% %.'
+            ai_risk:
+                title: 'Create risk: %risk%'
+                rationale: 'From incident %incident%. Threat: %threat%. Vulnerability: %vulnerability%. Likelihood %probability%, impact %impact%.'
+            ai_soa:
+                title: 'Justification for %control%'
+                rationale: 'Related risks: %risks%. %reasoning%'
+            ai_capa:
+                title: 'Corrective action: %action%'
+                rationale: 'For finding %finding%. Cause: %cause%. %reasoning%'

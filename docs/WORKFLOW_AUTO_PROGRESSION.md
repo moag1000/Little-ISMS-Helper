@@ -16,6 +16,11 @@ The Workflow Auto-Progression System enables **event-driven workflows** where wo
 
 ![Workflows-Inbox](sichtwechsel/img/risk-owner-business/workflows-inbox.png)
 
+> **Related:** auto-progression moves a running workflow when fields are filled. Changes the tool
+> derives itself (residual risk, protection need, effectiveness, risk from a CVE, …) are not written
+> automatically but proposed in the suggestion queue and applied after a person accepts — see
+> `docs/features/SUGGESTION_QUEUE.md`.
+
 ## Architecture
 
 ### Components

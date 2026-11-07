@@ -6,10 +6,27 @@
  # from App\Service\Detail\EntityLinks via `entity_links(entity)`; a group
  # without records stays visible, so a gap in the chain is a visible gap.
  #
+ # Above the block: a one-line hint when the queue holds suggestions about
+ # the record (pending_suggestions(entity), Paket 5).
+ #
  # Usage:
  #   {% include '_components/_fa_entity_links.html.twig' with { entity: risk } only %}
  #}
 {% import '_components/_status_pill.html.twig' as _pill %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{# Open suggestions about this record (Paket 5) — one line with a link into the queue. #}
+{% set _suggestions = pending_suggestions(entity) %}
+{% if _suggestions is not empty %}
+    {% set _first = _suggestions|first %}
+    {{ _fa_alert.render({
+        variant: 'info',
+        icon: 'nav-magic',
+        class: 'mb-3',
+        body: ('suggestions.hint.record'|trans({'%count%': _suggestions|length, '%title%': _first.title}, 'suggestions'))|e
+            ~ ' <a href="' ~ path('app_suggestion_index', {subject: _first.subjectClass ~ '#' ~ _first.subjectId})|e('html_attr') ~ '">'
+            ~ ('suggestions.hint.open'|trans({}, 'suggestions'))|e ~ '</a>',
+    }) }}
+{% endif %}
 {% set _groups = entity_links(entity) %}
 {% set _icons = { asset: 'asset', risk: 'risk', control: 'control', evidence: 'evidence', incident: 'incident', vulnerability: 'vulnerability' } %}
 {% if _groups is not empty %}

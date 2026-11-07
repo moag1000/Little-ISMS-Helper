@@ -2,7 +2,7 @@
  # One status → tone map per vocabulary (UI wave G). Statuses without a
  # lifecycle workflow (workflow instances, consents, import rows, compliance
  # results, coverage levels, protection levels, security zones, requirement
- # results) get their pill tone here instead of a local colour map in each
+ # results, suggestions) get their pill tone here instead of a local colour map in each
  # template. Lifecycle entities use _fa_status_chip (tone from the registry).
  #
  # Usage:
@@ -33,6 +33,8 @@
         person_type: { employee: 'success', contractor: 'primary', visitor: 'warning', vendor: 'primary', auditor: 'danger', consultant: 'primary' },
         action_item: { open: 'neutral', planned: 'primary', in_progress: 'primary', done: 'success', dismissed: 'neutral' },
         requirement_result: { not_applicable: 'neutral', not_met: 'danger', partial: 'warning', met: 'success', exceeded: 'success' },
+        suggestion: { pending: 'warning', accepted: 'success', rejected: 'danger', superseded: 'neutral' },
+        suggestion_origin: { rule: 'primary', inheritance: 'primary', import: 'neutral', ai: 'accent' },
     } %}
     {{- (_tones[vocabulary] ?? {})[status] ?? 'neutral' -}}
 {% endmacro %}

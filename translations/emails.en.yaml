@@ -197,11 +197,6 @@ emails:
 
     # Auto-Reaction emails (event-driven)
     auto_reaction:
-        risk:
-            subject: 'Auto-reaction: risk %title% requires attention'
-            title: 'Risk trigger fired'
-            intro: 'An event-driven auto-reaction has flagged a risk in your area.'
-            footer: 'This reaction was triggered automatically by the ISMS.'
         ca:
             subject: 'Auto-reaction: corrective action created'
             title: 'Corrective action created'

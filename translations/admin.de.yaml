@@ -138,6 +138,7 @@ admin:
             nis2_registration: { label: 'NIS-2-BSI-Registrierung', desc: 'Jährliche Stammdaten-Registrierung beim BSI-Meldeportal' }
             dora_roi: { label: 'DORA RoI XBRL-Export', desc: 'Register-of-Information XBRL/CSV-Export für die BaFin-Meldung' }
             # Sprint 6 System-Settings Folgeseiten
+            ai_settings: { label: 'KI-Vorschläge', desc: 'Lokales Modell oder Mistral-API, Datenschutz, Anwendungsfälle' }
             location_map_settings: { label: 'Standortkarte', desc: 'Standortvergleich, Prüfungen, Genauigkeit und Online-Nachschlagen' }
             data_retention_settings: { label: 'Aufbewahrungsfristen', desc: 'DSGVO-Löschfristen pro Datenkategorie' }
     section:

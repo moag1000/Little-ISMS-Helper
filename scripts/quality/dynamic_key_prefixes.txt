@@ -280,6 +280,11 @@ sso.preset	3
 sso.preset.help	1
 sso.type	1
 status_type	3
+suggestions.ai.mode	1
+suggestions.kind	3
+suggestions.kind_help	1
+suggestions.origin	2
+suggestions.status	1
 supplier.criticality	2
 supplier.dora.ict_criticality	1
 supplier.dora.substitutability	1

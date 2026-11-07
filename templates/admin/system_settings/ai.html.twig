@@ -1,0 +1,178 @@
+{% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+
+{% block admin_title %}{{ 'suggestions.ai.title'|trans({}, 'suggestions') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_hub_index') }}">{{ 'admin.settings.title'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'suggestions.ai.title'|trans({}, 'suggestions') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        title: 'suggestions.ai.title'|trans({}, 'suggestions'),
+        subtitle: 'suggestions.ai.subtitle'|trans({}, 'suggestions'),
+        actions: [{ label: 'suggestions.page.title'|trans({}, 'suggestions'), href: path('app_suggestion_index'), variant: 'ghost' }],
+    }) }}
+
+    <div class="row g-4 mt-2">
+        <div class="col-lg-8">
+            <form method="post" action="{{ path('admin_settings_ai_save') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_ai') }}">
+                <section class="fa-section mb-4">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ 'suggestions.ai.org.title'|trans({}, 'suggestions') }}</h2>
+                    </div>
+                    <div class="fa-section__body">
+                        <fieldset class="mb-3">
+                            <legend class="visually-hidden">{{ 'suggestions.ai.org.mode'|trans({}, 'suggestions') }}</legend>
+                            {% for _mode in ['off', 'local', 'external'] %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="mode" id="ai_mode_{{ _mode }}" value="{{ _mode }}" {{ org.mode == _mode ? 'checked' : '' }}{{ _mode == 'local' and not instance.configured ? ' disabled' : '' }}>
+                                    <label class="form-check-label" for="ai_mode_{{ _mode }}">
+                                        {{ ('suggestions.ai.mode.' ~ _mode)|trans({}, 'suggestions') }}
+                                        {% if _mode == 'local' %}
+                                            <small class="text-muted-color">{{ instance.configured
+                                                ? 'suggestions.ai.mode.local_target'|trans({'%model%': instance.model, '%endpoint%': instance.endpoint}, 'suggestions')
+                                                : 'suggestions.ai.mode.local_missing'|trans({}, 'suggestions') }}</small>
+                                        {% endif %}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </fieldset>
+
+                        <h3 class="h6 mt-4">{{ 'suggestions.ai.external.title'|trans({}, 'suggestions') }}</h3>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                {{ _fa_cyber.text('endpoint', {
+                                    id: 'ai_endpoint',
+                                    label: 'suggestions.ai.external.endpoint'|trans({}, 'suggestions'),
+                                    value: org.endpoint,
+                                    type: 'url',
+                                    help: 'suggestions.ai.external.endpoint_help'|trans({'%default%': default_external_endpoint}, 'suggestions'),
+                                }) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ _fa_cyber.text('model', {
+                                    id: 'ai_model',
+                                    label: 'suggestions.ai.external.model'|trans({}, 'suggestions'),
+                                    value: org.model,
+                                }) }}
+                            </div>
+                            <div class="col-md-8">
+                                {{ _fa_cyber.text('api_key', {
+                                    id: 'ai_api_key',
+                                    label: 'suggestions.ai.external.api_key'|trans({}, 'suggestions'),
+                                    type: 'password',
+                                    extra_attrs: { autocomplete: 'off' },
+                                    help: (org.has_key ? 'suggestions.ai.external.key_stored' : 'suggestions.ai.external.key_missing')|trans({}, 'suggestions'),
+                                }) }}
+                            </div>
+                            {% if org.has_key %}
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="clear_key" value="1" id="ai_clear_key">
+                                        <label class="form-check-label" for="ai_clear_key">{{ 'suggestions.ai.external.clear_key'|trans({}, 'suggestions') }}</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-check form-switch mt-3">
+                            <input class="form-check-input" type="checkbox" role="switch" name="allow_personal_data" value="1" id="ai_allow_personal" {{ org.allow_personal_data ? 'checked' : '' }}>
+                            <label class="form-check-label" for="ai_allow_personal">{{ 'suggestions.ai.external.allow_personal_data'|trans({}, 'suggestions') }}</label>
+                        </div>
+                        <div class="form-text">{{ 'suggestions.ai.external.allow_personal_data_help'|trans({}, 'suggestions') }}</div>
+
+                        <h3 class="h6 mt-4">{{ 'suggestions.ai.use_cases.title'|trans({}, 'suggestions') }}</h3>
+                        {% for _key in use_cases %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="use_cases[]" value="{{ _key }}" id="ai_uc_{{ loop.index }}" {{ _key in org.disabled_use_cases ? '' : 'checked' }}>
+                                <label class="form-check-label" for="ai_uc_{{ loop.index }}">
+                                    {{ ('suggestions.kind.' ~ _key)|trans({}, 'suggestions') }}
+                                    <small class="text-muted-color">{{ ('suggestions.kind_help.' ~ _key)|trans({}, 'suggestions') }}</small>
+                                </label>
+                            </div>
+                        {% else %}
+                            <p class="text-muted-color small">{{ 'suggestions.ai.use_cases.none'|trans({}, 'suggestions') }}</p>
+                        {% endfor %}
+                    </div>
+                </section>
+                <div class="d-flex gap-2 mb-4">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                    </button>
+                </div>
+            </form>
+
+            <form method="post" action="{{ path('admin_settings_ai_test') }}" class="mb-4">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_ai_test') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost"{{ org.mode == 'off' ? ' disabled' : '' }}>{{ 'suggestions.ai.test'|trans({}, 'suggestions') }}</button>
+            </form>
+
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                <form method="post" action="{{ path('admin_settings_ai_instance') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_ai_instance') }}">
+                    <section class="fa-section mb-4">
+                        <div class="fa-section__header">
+                            <h2 class="fa-section__title">{{ 'suggestions.ai.instance.title'|trans({}, 'suggestions') }}</h2>
+                        </div>
+                        <div class="fa-section__body">
+                            <p class="small">{{ 'suggestions.ai.instance.intro'|trans({}, 'suggestions') }}</p>
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    {{ _fa_cyber.text('local_endpoint', {
+                                        id: 'ai_local_endpoint',
+                                        label: 'suggestions.ai.instance.endpoint'|trans({}, 'suggestions'),
+                                        value: instance.configured ? instance.endpoint : '',
+                                        placeholder: default_local_endpoint,
+                                        help: 'suggestions.ai.instance.endpoint_help'|trans({'%default%': default_local_endpoint}, 'suggestions'),
+                                    }) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ _fa_cyber.text('local_model', {
+                                        id: 'ai_local_model',
+                                        label: 'suggestions.ai.external.model'|trans({}, 'suggestions'),
+                                        value: instance.model,
+                                    }) }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ _fa_cyber.text('local_api_key', {
+                                        id: 'ai_local_api_key',
+                                        label: 'suggestions.ai.instance.api_key'|trans({}, 'suggestions'),
+                                        type: 'password',
+                                        extra_attrs: { autocomplete: 'off' },
+                                        help: (instance.has_key ? 'suggestions.ai.external.key_stored' : 'suggestions.ai.instance.key_optional')|trans({}, 'suggestions'),
+                                    }) }}
+                                </div>
+                                {% if instance.has_key %}
+                                    <div class="col-md-4 d-flex align-items-end">
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="clear_local_key" value="1" id="ai_clear_local_key">
+                                            <label class="form-check-label" for="ai_clear_local_key">{{ 'suggestions.ai.external.clear_key'|trans({}, 'suggestions') }}</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+        <div class="col-lg-4">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'suggestions.ai.privacy.title'|trans({}, 'suggestions') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p class="small">{{ 'suggestions.ai.privacy.local'|trans({}, 'suggestions') }}</p>
+                    <p class="small">{{ 'suggestions.ai.privacy.external'|trans({}, 'suggestions') }}</p>
+                    <p class="small mb-0">{{ 'suggestions.ai.privacy.human'|trans({}, 'suggestions') }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

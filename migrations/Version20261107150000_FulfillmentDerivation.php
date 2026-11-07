@@ -17,7 +17,7 @@ use Doctrine\Migrations\AbstractMigration;
  * value that differs from the rule into an override with source "legacy", listed
  * under Compliance > Übersteuerungen prüfen.
  */
-final class Version20261107140000_FulfillmentDerivation extends AbstractMigration
+final class Version20261107150000_FulfillmentDerivation extends AbstractMigration
 {
     public function getDescription(): string
     {

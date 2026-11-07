@@ -8,6 +8,8 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Repository\ComplianceRequirementRepository;
+use App\Repository\SuggestionRepository;
+use App\Service\Suggestion\Kind\ControlRequirementLinkKind;
 
 /**
  * Auto-Mapping Suggestion Service (A2).
@@ -52,6 +54,7 @@ class MappingSuggestionService
 
     public function __construct(
         private readonly ComplianceRequirementRepository $requirementRepository,
+        private readonly ?SuggestionRepository $suggestionRepository = null,
     ) {
     }
 
@@ -75,10 +78,19 @@ class MappingSuggestionService
             return [];
         }
 
+        // Pairs someone already rejected stay away (suggestion queue memory).
+        $tenant = $control->getTenant();
+        $rejected = $tenant !== null && $this->suggestionRepository !== null
+            ? $this->suggestionRepository->rejectedKeys($tenant, ControlRequirementLinkKind::KEY)
+            : [];
+
         $byFramework = [];
         foreach ($this->requirementRepository->findAll() as $req) {
             $id = $req->getId();
             if ($id === null) {
+                continue;
+            }
+            if ($rejected !== [] && isset($rejected[ControlRequirementLinkKind::storedKey((int) $control->getId(), $id)])) {
                 continue;
             }
             // Skip requirements already mapped to this Control.

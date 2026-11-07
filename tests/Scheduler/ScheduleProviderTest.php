@@ -22,7 +22,7 @@ use Symfony\Contracts\Cache\CacheInterface;
  */
 final class ScheduleProviderTest extends TestCase
 {
-    private const BUILT_IN_TASKS = 27; // 6 message tasks + 21 Schedule::COMMAND_TASKS
+    private const BUILT_IN_TASKS = 27; // 5 message tasks + 22 Schedule::COMMAND_TASKS
 
     #[Test]
     public function databaseTasksAreAddedNextToTheBuiltInTasks(): void

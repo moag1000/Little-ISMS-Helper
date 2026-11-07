@@ -77,12 +77,15 @@
 {% endfor %}
 
 <div class="fa-aurora-surface my-day">
+    {% set _open_suggestions = open_suggestion_count() %}
     {{ _fa_page_header.render({
         title:    'my_day.title'|trans({}, 'my_day'),
         subtitle: 'my_day.subtitle'|trans({'%generated_at%': inbox.generated_at|fa_datetime}, 'my_day'),
-        actions: [
+        actions: (_open_suggestions > 0 ? [
+            { label: 'suggestions.my_day.link'|trans({'%count%': _open_suggestions}, 'suggestions'), variant: 'secondary', href: path('app_suggestion_index') }
+        ] : [])|merge([
             { label: 'my_day.action.standard_dashboard'|trans({}, 'my_day'), variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
-        ]
+        ])
     }) }}
 
     {% if inbox.total == 0 %}
