@@ -5,13 +5,13 @@ import { faT } from '../js/fa-i18n.js';
  * Enhanced Sidebar Toggle Controller
  *
  * Provides modern mobile UX for sidebar navigation with:
- * - Touch swipe gestures (left/right)
+ * - Swipe left on the open sidebar to close it (horizontal swipes only, so
+ *   vertical scrolling inside the menu is never blocked). No edge swipe to
+ *   open: on iOS Safari the left edge is the browser's back gesture.
  * - Hardware-accelerated animations
- * - Focus trap for accessibility
+ * - Focus trap + inert off-canvas sidebar for accessibility
  * - Keyboard navigation (Arrow keys)
- * - Pull-to-reveal visual feedback
  * - Persistent state (localStorage)
- * - Elastic bounce effect
  *
  * Usage:
  * <body data-controller="sidebar-toggle">
@@ -24,15 +24,17 @@ export default class extends Controller {
     static targets = ['sidebar', 'backdrop', 'menuBtn'];
     static values = {
         storageKey: { type: String, default: 'sidebar_mobile_state' },
-        swipeThreshold: { type: Number, default: 50 },
-        pullThreshold: { type: Number, default: 20 }
+        swipeThreshold: { type: Number, default: 50 }
     };
 
     connect() {
         this.isOpen = false;
         this.touchStartX = 0;
+        this.touchStartY = 0;
         this.touchCurrentX = 0;
         this.isDragging = false;
+        this.swipeAxis = null;
+        this.mobileQuery = window.matchMedia('(max-width: 767.98px)');
         this.focusedIndex = -1;
         this.navLinks = [];
 
@@ -42,21 +44,19 @@ export default class extends Controller {
         this.handleTouchEnd = this.handleTouchEnd.bind(this);
         this.handleKeydown = this.handleKeydown.bind(this);
         this.handleResize = this.handleResize.bind(this);
+        this.handleSidebarClick = this.handleSidebarClick.bind(this);
 
-        // Setup touch gestures (mobile only)
-        if (this.isMobile()) {
-            this.setupTouchGestures();
-        }
+        // Swipe-to-close (touch only fires on touch devices)
+        this.setupTouchGestures();
 
         // Setup keyboard navigation
         this.setupKeyboardNavigation();
 
-        // Auto-close on link click (mobile only)
-        if (this.isMobile()) {
-            this.sidebarTarget.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => this.close());
-            });
-        }
+        // Auto-close on link click (mobile only, checked per click)
+        this.sidebarTarget.addEventListener('click', this.handleSidebarClick);
+
+        // Closed off-canvas sidebar must not be reachable by Tab / VoiceOver
+        this.syncInert();
 
         // Window resize handler
         window.addEventListener('resize', this.handleResize);
@@ -72,11 +72,12 @@ export default class extends Controller {
 
     disconnect() {
         // Remove touch event listeners
-        if (this.isMobile()) {
-            document.removeEventListener('touchstart', this.handleTouchStart);
-            document.removeEventListener('touchmove', this.handleTouchMove);
-            document.removeEventListener('touchend', this.handleTouchEnd);
-        }
+        this.sidebarTarget.removeEventListener('touchstart', this.handleTouchStart);
+        this.sidebarTarget.removeEventListener('touchmove', this.handleTouchMove);
+        this.sidebarTarget.removeEventListener('touchend', this.handleTouchEnd);
+        this.sidebarTarget.removeEventListener('click', this.handleSidebarClick);
+
+        this.unlockScroll();
 
         // Remove keyboard listener
         document.removeEventListener('keydown', this.handleKeydown);
@@ -111,9 +112,11 @@ export default class extends Controller {
         this.menuBtnTarget.setAttribute('aria-expanded', 'true');
         this.sidebarTarget.setAttribute('aria-hidden', 'false');
 
-        // Prevent body scroll on mobile
+        this.sidebarTarget.inert = false;
+
+        // Prevent page scroll behind the menu on mobile
         if (this.isMobile()) {
-            document.body.style.overflow = 'hidden';
+            this.lockScroll();
         }
 
         // Focus first link for accessibility
@@ -149,11 +152,12 @@ export default class extends Controller {
         this.menuBtnTarget.setAttribute('aria-expanded', 'false');
         this.sidebarTarget.setAttribute('aria-hidden', 'true');
 
-        // Restore body scroll
-        document.body.style.overflow = '';
+        this.unlockScroll();
+        this.syncInert();
 
         // Reset transform if any
         this.sidebarTarget.style.transform = '';
+        this.backdropTarget.style.opacity = '';
 
         // Return focus to menu button
         this.menuBtnTarget.focus();
@@ -169,102 +173,89 @@ export default class extends Controller {
     }
 
     /**
-     * Setup touch gesture detection
+     * Setup swipe-to-close on the sidebar itself
      */
     setupTouchGestures() {
-        // Listen on document for edge swipe detection
-        document.addEventListener('touchstart', this.handleTouchStart, { passive: true });
-        document.addEventListener('touchmove', this.handleTouchMove, { passive: false });
-        document.addEventListener('touchend', this.handleTouchEnd, { passive: true });
+        this.sidebarTarget.addEventListener('touchstart', this.handleTouchStart, { passive: true });
+        this.sidebarTarget.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+        this.sidebarTarget.addEventListener('touchend', this.handleTouchEnd, { passive: true });
     }
 
-    /**
-     * Handle touch start
-     */
     handleTouchStart(event) {
+        if (!this.isOpen || !this.isMobile()) return;
         this.touchStartX = event.touches[0].clientX;
+        this.touchStartY = event.touches[0].clientY;
         this.touchCurrentX = this.touchStartX;
-
-        // Enable dragging if:
-        // - Sidebar is open and touch starts on sidebar
-        // - Sidebar is closed and touch starts near left edge
-        if (this.isOpen && this.sidebarTarget.contains(event.target)) {
-            this.isDragging = true;
-        } else if (!this.isOpen && this.touchStartX < this.pullThresholdValue) {
-            this.isDragging = true;
-            this.sidebarTarget.classList.add('pull-revealing');
-        }
+        this.swipeAxis = null;
+        this.isDragging = true;
     }
 
-    /**
-     * Handle touch move
-     */
     handleTouchMove(event) {
         if (!this.isDragging) return;
 
-        this.touchCurrentX = event.touches[0].clientX;
-        const deltaX = this.touchCurrentX - this.touchStartX;
+        const deltaX = event.touches[0].clientX - this.touchStartX;
+        const deltaY = event.touches[0].clientY - this.touchStartY;
 
-        // Prevent default to avoid page scroll during swipe
-        if (Math.abs(deltaX) > 10) {
-            event.preventDefault();
+        // Decide once per gesture: vertical = let the menu scroll, horizontal = swipe
+        if (this.swipeAxis === null) {
+            if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return;
+            this.swipeAxis = Math.abs(deltaX) > Math.abs(deltaY) ? 'x' : 'y';
         }
+        if (this.swipeAxis !== 'x') return;
 
-        if (this.isOpen) {
-            // Swipe to close (left swipe)
-            if (deltaX < 0) {
-                const translateX = Math.max(deltaX, -280);
-                this.sidebarTarget.style.transform = `translateX(${translateX}px)`;
-
-                // Adjust backdrop opacity
-                const opacity = Math.max(0, 1 + (deltaX / 280));
-                this.backdropTarget.style.opacity = opacity;
-            }
-        } else {
-            // Pull to reveal (right swipe from edge)
-            if (deltaX > 0) {
-                const translateX = Math.min(deltaX, 280);
-                this.sidebarTarget.style.transform = `translateX(calc(-100% + ${translateX}px))`;
-
-                // Show backdrop gradually
-                const opacity = Math.min(0.8, deltaX / 280);
-                this.backdropTarget.style.opacity = opacity;
-                this.backdropTarget.classList.add('active');
-            }
+        event.preventDefault();
+        this.touchCurrentX = event.touches[0].clientX;
+        if (deltaX < 0) {
+            const width = this.sidebarTarget.offsetWidth || 280;
+            this.sidebarTarget.classList.add('pull-revealing');
+            this.sidebarTarget.style.transform = `translateX(${Math.max(deltaX, -width)}px)`;
+            this.backdropTarget.style.opacity = Math.max(0, 1 + (deltaX / width));
         }
     }
 
-    /**
-     * Handle touch end
-     */
-    handleTouchEnd(event) {
+    handleTouchEnd() {
         if (!this.isDragging) return;
 
         this.isDragging = false;
         this.sidebarTarget.classList.remove('pull-revealing');
 
         const deltaX = this.touchCurrentX - this.touchStartX;
-
-        if (this.isOpen) {
-            // If swiped more than threshold to left, close
-            if (deltaX < -this.swipeThresholdValue) {
-                this.close();
-            } else {
-                // Reset position with bounce
-                this.sidebarTarget.style.transform = '';
-                this.backdropTarget.style.opacity = '';
-            }
+        if (this.swipeAxis === 'x' && deltaX < -this.swipeThresholdValue) {
+            this.close();
         } else {
-            // If pulled more than threshold to right, open
-            if (deltaX > this.swipeThresholdValue) {
-                this.open();
-            } else {
-                // Reset position
-                this.sidebarTarget.style.transform = '';
-                this.backdropTarget.style.opacity = '';
-                this.backdropTarget.classList.remove('active');
-            }
+            this.sidebarTarget.style.transform = '';
+            this.backdropTarget.style.opacity = '';
         }
+        this.swipeAxis = null;
+    }
+
+    /**
+     * Close the drawer after a link inside it was tapped (mobile)
+     */
+    handleSidebarClick(event) {
+        if (this.isOpen && this.isMobile() && event.target.closest('a[href]')) {
+            this.close();
+        }
+    }
+
+    /**
+     * iOS Safari ignores overflow:hidden on <body> alone; lock <html> too
+     */
+    lockScroll() {
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    unlockScroll() {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
+    /**
+     * Off-canvas (mobile, closed) sidebar is inert; on desktop it is always reachable
+     */
+    syncInert() {
+        this.sidebarTarget.inert = this.isMobile() && !this.isOpen;
     }
 
     /**
@@ -278,8 +269,9 @@ export default class extends Controller {
      * Handle keyboard events
      */
     handleKeydown(event) {
-        // ESC - Close sidebar
+        // ESC - Close sidebar (an open flyout closes first, mega-menu handles that)
         if (event.key === 'Escape' && this.isOpen) {
+            if (event.defaultPrevented || document.querySelector('.flyout.is-open')) return;
             event.preventDefault();
             this.close();
             return;
@@ -416,13 +408,14 @@ export default class extends Controller {
         if (!this.isMobile() && this.isOpen) {
             this.close();
         }
+        this.syncInert();
     }
 
     /**
      * Check if viewport is mobile
      */
     isMobile() {
-        return window.innerWidth <= 768;
+        return this.mobileQuery.matches;
     }
 
     /**

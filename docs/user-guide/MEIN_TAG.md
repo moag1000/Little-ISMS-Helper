@@ -74,6 +74,21 @@ Bildschirme ausgelegt (bis 575 px Breite):
   die Schaltflächen bleiben auch bei offener Tastatur sichtbar; Eingaben in 16 px, damit
   iOS nicht hineinzoomt. Das gilt für alle Bestätigungs- und Einstellungsdialoge der App.
 
+### Navigation auf dem Smartphone (bis 767 px)
+
+- Kopfzeile: ☰ Menü, Logo, Suche, **Mein Tag** (mit Zähler, ein Tipp von jeder Seite),
+  Benachrichtigungen, Farbmodus, Nutzermenü. Sie bleibt beim Scrollen oben stehen.
+- ☰ öffnet die Seitenleiste unter der Kopfzeile; die Seite dahinter scrollt nicht mit.
+  Schließen per ✕, Tipp daneben, Wischen nach links oder Tipp auf einen Eintrag.
+- Ein Tipp auf einen Bereich (z. B. "Assets & Risiken") öffnet dessen Untermenü über die
+  ganze Breite; der Pfeil ← oben führt zurück zur Seitenleiste.
+- Suche: Fenster oben am Bildschirmrand, damit die Treffer über der Tastatur bleiben;
+  ✕ schließt (die iOS-Tastatur hat kein ESC).
+- Deutsch/English steht im Nutzermenü; das Menü scrollt, wenn es länger als der
+  Bildschirm ist.
+- Alle Tippziele sind mindestens 44 px groß. Das Wischen vom linken Rand bleibt die
+  Zurück-Geste von Safari und öffnet das Menü nicht.
+
 Andere Seiten (Listen, Tabellen) scrollen auf dem Smartphone weiterhin seitlich; eine
 eigene Kartenansicht dafür ist bewusst nicht vorgesehen.
 

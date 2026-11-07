@@ -348,6 +348,10 @@ risk acceptance) is `decision_modal()` from `templates/_macros/workflow.html.twi
 business line, comment/reason) — no hand-written approve modal. Below 576 px `fa-modal.css`
 turns confirm/settings dialogs into a bottom sheet (full-width 44 px buttons, 16 px inputs);
 My Day swaps its KPI tiles for a jump-chip strip. Other lists keep horizontal table scroll.
+Phone navigation (< 768 px) is the same header + sidebar + flyouts, made touch-usable in the
+"Phone navigation" block of `fairy-aurora-responsive.css` (sticky header, `--fa-header-h`, flyout
+as full sheet with ← back); hover handlers in `mega-menu` react to `pointerType === 'mouse'` only
+(a touch tap fires enter + click), `sidebar-toggle` swipes only to close. No second nav system.
 
 **UI copy (Gate 71, `check_copy_slop.py`).** A toast is a participle, not a sentence:
 "Gespeichert.", "Export gestartet." — no "erfolgreich"/"successfully", no "!" anywhere in
