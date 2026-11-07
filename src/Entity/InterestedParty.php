@@ -26,6 +26,8 @@ use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Validator\Constraint\SameTenantOwner;
+use App\Util\Cadence;
+use App\Util\LegalPeriod;
 
 /**
  * Interested Party Entity for ISO 27001 Chapter 4.2
@@ -513,11 +515,26 @@ class InterestedParty
      */
     public function isCommunicationOverdue(): bool
     {
-        if (!$this->nextCommunication instanceof DateTimeInterface) {
-            return false;
+        $next = $this->getEffectiveNextCommunication();
+
+        return $next instanceof DateTimeInterface && $next < new DateTime();
+    }
+
+    /**
+     * ISO 27001 4.2 / 7.4: the planned date, or else the last communication
+     * plus the communication frequency (in months, {@see Cadence}).
+     */
+    public function getEffectiveNextCommunication(): ?DateTimeInterface
+    {
+        if ($this->nextCommunication instanceof DateTimeInterface) {
+            return $this->nextCommunication;
+        }
+        $months = Cadence::months($this->communicationFrequency);
+        if ($months === null || !$this->lastCommunication instanceof DateTimeInterface) {
+            return null;
         }
 
-        return $this->nextCommunication < new DateTime();
+        return LegalPeriod::addMonths(DateTimeImmutable::createFromInterface($this->lastCommunication), $months);
     }
 
     /**
@@ -533,9 +550,10 @@ class InterestedParty
             return 'overdue';
         }
 
-        if ($this->nextCommunication instanceof DateTimeInterface) {
+        $next = $this->getEffectiveNextCommunication();
+        if ($next instanceof DateTimeInterface) {
             $sevenDaysFromNow = new DateTime('+7 days');
-            if ($this->nextCommunication < $sevenDaysFromNow) {
+            if ($next < $sevenDaysFromNow) {
                 return 'due_soon';
             }
         }

@@ -105,6 +105,9 @@ search_nav:
     app_my_day:
         label: 'My Day'
         description: 'Due tasks, approvals and reviews at a glance'
+    app_recurring_duty_index:
+        label: 'Duty calendar'
+        description: 'Recurring duties of the standards without a date on a record: mark done, attach evidence, set the interval'
     app_suggestion_index:
         label: 'Suggestions'
         description: 'Accept or reject derived, inherited, imported and AI suggestions'

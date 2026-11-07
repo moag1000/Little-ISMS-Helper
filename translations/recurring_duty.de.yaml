@@ -1,0 +1,86 @@
+recurring_duty:
+    page:
+        title: 'Pflichtenkalender'
+        subtitle: 'Wiederkehrende Pflichten der Normen, für die kein Datensatz ein Datum trägt. Erledigt mit Nachweis schiebt die nächste Fälligkeit um das Intervall.'
+    empty:
+        title: 'Keine wiederkehrenden Pflichten vorhanden.'
+        description: 'Pflichten erscheinen, sobald das zugehörige Modul aktiv ist.'
+    column:
+        duty: 'Pflicht'
+        owner: 'Zuständig'
+        interval: 'Intervall'
+        last_done: 'Zuletzt erledigt'
+        next_due: 'Fällig'
+        actions: 'Aktionen'
+    field:
+        done_at: 'Erledigt am'
+        evidence: 'Nachweis'
+        evidence_placeholder: 'Kein Dokument'
+        note: 'Notiz'
+        interval_months: 'Intervall (Monate)'
+        owner: 'Zuständige Person'
+        owner_placeholder: 'Nach Rolle'
+        next_due_at: 'Nächste Fälligkeit'
+    help:
+        evidence: 'Protokoll, Bericht oder Teilnehmerliste, die das Audit als Nachweis sieht.'
+        interval_months: 'Ein neues Intervall zählt ab der letzten Erledigung.'
+        owner: 'Ohne Person geht die Erinnerung an die Standardrolle der Pflicht.'
+    action:
+        done: 'Erledigt'
+        confirm_done: 'Als erledigt speichern'
+        edit: 'Einstellungen'
+    status:
+        overdue: 'Überfällig'
+        due_soon: 'Bald fällig'
+    interval_value: '{1}1 Monat|]1,Inf[%count% Monate'
+    done:
+        subtitle: 'Nächste Fälligkeit danach: %count% Monate ab dem Erledigt-Datum. Bisher fällig: %due%.'
+    edit:
+        subtitle: 'Standardintervall der Norm: %count% Monate.'
+    flash:
+        done: 'Erledigt gespeichert.'
+        saved: 'Gespeichert.'
+    role:
+        role_isb: 'ISB'
+        role_ciso: 'CISO'
+        role_risk_manager: 'Risikomanagement'
+        role_bcm_officer: 'BCM-Beauftragte'
+        role_dpo: 'Datenschutzbeauftragte'
+        role_compliance_manager: 'Compliance-Management'
+    duty:
+        risk_acceptance_criteria:
+            title: 'Risikoakzeptanzkriterien überprüfen'
+            body: 'Kriterien und Risikoappetit von der Leitung bestätigen lassen.'
+        soa_review:
+            title: 'Erklärung zur Anwendbarkeit überprüfen'
+            body: 'Anwendbarkeit und Begründungen aller Controls gesamthaft prüfen und freigeben.'
+        objectives_measurement:
+            title: 'Informationssicherheitsziele messen'
+            body: 'Zielwerte erheben und Zielerreichung bewerten. Das Standardintervall richtet sich nach der kürzesten Messfrequenz der offenen Ziele.'
+        crypto_key_rotation:
+            title: 'Kryptografische Schlüssel rotieren'
+            body: 'Schlüssel und Zertifikate nach Kryptokonzept erneuern und die Rotation dokumentieren.'
+        access_review_campaign:
+            title: 'Zugriffsrechte rezertifizieren'
+            body: 'Eine Zugriffsreview-Kampagne über alle kritischen Systeme starten.'
+        bia_review:
+            title: 'Business-Impact-Analyse aktualisieren'
+            body: 'Kritikalität, RTO und RPO der Geschäftsprozesse prüfen.'
+        bc_exercise:
+            title: 'BC-Übung durchführen'
+            body: 'Mindestens eine Übung oder einen Test der Notfallpläne durchführen und auswerten.'
+        tom_review:
+            title: 'TOM überprüfen'
+            body: 'Wirksamkeit der technischen und organisatorischen Maßnahmen überprüfen, bewerten und evaluieren.'
+        nis2_management_training:
+            title: 'Leitungsschulung NIS-2'
+            body: 'Die Mitglieder der Leitung nehmen an einer Schulung zum Cyber-Risikomanagement teil.'
+        nis2_measures_review:
+            title: 'NIS-2-Risikomanagementmaßnahmen überprüfen'
+            body: 'Die Maßnahmen nach Art. 21 auf Angemessenheit prüfen und von der Leitung billigen lassen.'
+        dora_register_of_information:
+            title: 'DORA-Informationsregister aktualisieren'
+            body: 'Register aller IKT-Drittdienstleister prüfen und der Aufsicht auf Anfrage bereitstellen.'
+        dora_exit_plans:
+            title: 'DORA-Exit-Strategien testen'
+            body: 'Ausstiegsstrategien für kritische IKT-Dienstleister prüfen und dokumentieren.'

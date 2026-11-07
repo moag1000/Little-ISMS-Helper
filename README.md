@@ -213,6 +213,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Risk-Appetite** -- Organisationsweite Schwellenwerte mit automatischer Warnung
 - **Periodische Reviews** -- Automatisierte Erinnerungen nach ISO 27001 Clause 6.1.3.d
 - **Meldepflichten** -- Ein Planer für NIS-2 (24 h / 72 h / 1 Monat), DORA (4–24 h / 72 h / 1 Monat) und DSGVO Art. 33 (72 h ab Entdeckung): das Tool prüft „erheblich“ mit sichtbaren Gründen vor, der ISB bestätigt, „Als gemeldet markieren“ schließt die Frist; eine Datenpanne am Vorfall legt den Entwurf der Datenschutzverletzung automatisch an
+- **Pflichtenkalender** -- Wiederkehrende Normpflichten ohne Datum am Datensatz (Risikoakzeptanzkriterien, SoA-Review, BIA, BC-Übung, Schlüsselrotation, TOM-Review, NIS-2-Leitungsschulung, DORA-Register u. a.) erscheinen je aktivem Modul automatisch; „Erledigt“ mit Nachweis schiebt die nächste Fälligkeit, Intervall und Zuständigkeit je Organisation einstellbar
 - **Erinnerungen** -- Jede Frist erscheint einmal, bei der zuständigen Person: in „Mein Tag“, als tägliche Sammelmail (Uhrzeit je Organisation, im Profil abwählbar) und in der Glocke; Meldefristen in Stunden gehen sofort raus
 - **Vulnerability- und Patch-Management** -- CVE/CVSS-Tracking (NIS2-konform)
 

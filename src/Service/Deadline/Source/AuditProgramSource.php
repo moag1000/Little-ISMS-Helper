@@ -8,9 +8,15 @@ use App\Entity\AuditProgram;
 use App\Service\Deadline\DeadlineProfile;
 use App\Service\Deadline\RecordLink;
 use App\Service\Responsibility\Responsibility;
+use App\Util\Cadence;
+use App\Util\LegalPeriod;
 use DateTimeInterface;
 
-/** Auditprogramm: getEndDate() of AuditProgram. */
+/**
+ * Auditprogramm (ISO 27001 9.2.2): the end of a running programme; after a
+ * completed one with a frequency, the next programme is due one interval
+ * after its end ({@see Cadence}) until a successor programme exists.
+ */
 final class AuditProgramSource extends EntityDeadlineSource
 {
     protected function entityClass(): string
@@ -37,21 +43,59 @@ final class AuditProgramSource extends EntityDeadlineSource
     {
         assert($item instanceof AuditProgram);
 
-        return $item->getEndDate();
+        $end = $item->getEndDate();
+        $months = $this->followUpMonths($item);
+
+        return $end !== null && $months !== null ? LegalPeriod::addMonths($end, $months) : $end;
     }
 
     public function titleOf(object $item): string
     {
         assert($item instanceof AuditProgram);
 
-        return (string) ($item->getName() ?? 'Audit programme #' . $item->getId());
+        $name = (string) ($item->getName() ?? 'Audit programme #' . $item->getId());
+
+        return $this->followUpMonths($item) !== null ? 'Folgeprogramm nach ' . $name : $name;
     }
 
     public function isCompleted(object $item): bool
     {
         assert($item instanceof AuditProgram);
 
-        return $item->getStatus() === \App\Entity\AuditProgram::STATUS_COMPLETED || $item->getArchivedAt() !== null;
+        if ($item->getArchivedAt() !== null || $item->getStatus() === AuditProgram::STATUS_ARCHIVED) {
+            return true;
+        }
+        if ($item->getStatus() !== AuditProgram::STATUS_COMPLETED) {
+            return false;
+        }
+
+        return $this->followUpMonths($item) === null || $this->hasSuccessor($item);
+    }
+
+    /** Months to the next programme of a completed one, null when it does not recur. */
+    private function followUpMonths(AuditProgram $program): ?int
+    {
+        return $program->getStatus() === AuditProgram::STATUS_COMPLETED ? Cadence::months($program->getFrequency()) : null;
+    }
+
+    private function hasSuccessor(AuditProgram $program): bool
+    {
+        $end = $program->getEndDate();
+        if ($end === null) {
+            return false;
+        }
+
+        return (int) $this->entityManager->createQueryBuilder()
+            ->select('COUNT(p.id)')
+            ->from(AuditProgram::class, 'p')
+            ->where('p.tenant = :tenant')
+            ->andWhere('p.id != :id')
+            ->andWhere('p.startDate >= :end')
+            ->setParameter('tenant', $program->getTenant())
+            ->setParameter('id', $program->getId())
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
     }
 
     public function responsibleOf(object $item): Responsibility

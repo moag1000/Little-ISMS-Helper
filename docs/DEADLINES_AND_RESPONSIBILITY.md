@@ -29,6 +29,33 @@ Example of a recurring review without a planner step: `App\Service\Register\Regi
 `my_day.section.<bucket>` / `my_day.kpi.<bucket>` is required;
 `tests/Service/Deadline/DeadlineSourceContractTest.php` checks every source.
 
+## Duty calendar (`App\Service\RecurringDuty`)
+
+Duties the norms repeat but no record carries a date for live in
+`RecurringDutyCatalog` (key, module, NIS-2/DORA scope, norm reference, default
+interval, fallback roles): risk acceptance criteria (6.1.2), SoA review
+(6.1.3 d), objective measurement (6.2 / 9.1), key rotation (A.8.24), access
+recertification (A.5.18), BIA (ISO 22301 8.2.2), BC exercise (8.5), TOM review
+(DSGVO Art. 32), NIS-2 management training (Art. 20) and measures review
+(Art. 21), DORA register of information and exit plans (Art. 28).
+
+`RecurringDutyService::applicable()` seeds one `RecurringDuty` row per
+organisation the first time a duty applies (module active, organisation in
+scope; first due one month later) and hides rows whose module is off.
+`RecurringDutyAdapter` is the deadline source (bucket `recurring_duties`,
+30 days lead, `ownsRecurrence`). "Erledigt" (`/recurring-duties/{id}/done`, the
+responsible person or a manager) stores date, evidence document and note and
+moves `nextDueAt` by the interval; managers set interval, owner and due date
+per organisation. Both are audit-logged. Duties with a date on a record get a
+normal source instead — a catalogue entry for them would remind twice.
+
+Cadence words stored on records (`AuditProgram.frequency`,
+`InterestedParty.communicationFrequency`, `ISMSObjective.measurementFrequency`)
+are read as months only through `App\Util\Cadence`: the next communication
+falls back to last communication + frequency, a completed audit programme
+with a frequency asks for its successor, and the objective measurement duty
+takes the shortest measurement frequency on record as its default interval.
+
 ## Responsibility (`App\Service\Responsibility\ResponsibilityResolver`)
 
 The resolver turns a `Responsibility` into user accounts, in a fixed order.

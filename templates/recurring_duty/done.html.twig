@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'recurring_duty.page.title'|trans({}, 'recurring_duty'), url: path('app_recurring_duty_index') },
+        { label: 'recurring_duty.action.done'|trans({}, 'recurring_duty') }
+    ]
+} %}
+{{ _fa_page_header.render({
+    title: title,
+    badge: { icon: 'nav-calendar-check', label: meta.norm },
+    subtitle: 'recurring_duty.done.subtitle'|trans({'%count%': duty.intervalMonths, '%due%': duty.nextDueAt|fa_date}, 'recurring_duty'),
+}) }}
+
+<div class="container-fluid py-4">
+    <div class="fa-section">
+        <p class="text-muted">{{ ('recurring_duty.duty.' ~ duty.dutyKey ~ '.body')|trans({}, 'recurring_duty') }}</p>
+        {{ form_start(form) }}
+            {{ form_row(form.doneAt) }}
+            {{ form_row(form.evidence) }}
+            {{ form_row(form.note) }}
+            <div class="d-flex gap-2">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'recurring_duty.action.confirm_done'|trans({}, 'recurring_duty') }}</button>
+                <a href="{{ path('app_recurring_duty_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

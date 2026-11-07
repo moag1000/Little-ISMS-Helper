@@ -458,6 +458,15 @@ class NavigationSearch
                 'requiresModule' => null,
             ],
             [
+                'route' => 'app_recurring_duty_index',
+                'label' => 'search_nav.app_recurring_duty_index.label',
+                'description' => 'search_nav.app_recurring_duty_index.description',
+                'aliases' => ['Pflichtenkalender', 'Duty calendar', 'Wiederkehrende Pflichten', 'Recurring duties', 'BIA', 'BC-Übung', 'Schlüsselrotation', 'TOM', 'Leitungsschulung', 'Informationsregister'],
+                'icon' => 'fa-icon--nav-calendar-check',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
+            ],
+            [
                 'route' => 'admin_settings_ai',
                 'label' => 'search_nav.admin_settings_ai.label',
                 'description' => 'search_nav.admin_settings_ai.description',

@@ -259,6 +259,9 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Reminder\ObligationReminderService` - the one reminder path (`app:send-reminders`, scheduler every 15 min):
   daily digest at the tenant's hour (`ReminderSettings`, default 07:00, user opt-out), hour deadlines at once,
   each sent duty stored as `ObligationNotice` (bell "Meine Erinnerungen"). Never add a per-duty reminder command.
+- `RecurringDuty\RecurringDutyCatalog` - recurring norm duties without a date on a record (duty calendar
+  `/recurring-duties`); a duty with a date field gets a `DeadlineSource`, never a catalogue entry. Cadence words
+  on records become months only via `App\Util\Cadence`.
 - `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
   euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
   `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`

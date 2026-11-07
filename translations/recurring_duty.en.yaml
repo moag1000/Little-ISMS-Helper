@@ -1,0 +1,86 @@
+recurring_duty:
+    page:
+        title: 'Duty calendar'
+        subtitle: 'Recurring duties of the standards that no record carries a date for. Done with evidence moves the next due date by the interval.'
+    empty:
+        title: 'No recurring duties.'
+        description: 'Duties appear as soon as their module is active.'
+    column:
+        duty: 'Duty'
+        owner: 'Responsible'
+        interval: 'Interval'
+        last_done: 'Last done'
+        next_due: 'Due'
+        actions: 'Actions'
+    field:
+        done_at: 'Done on'
+        evidence: 'Evidence'
+        evidence_placeholder: 'No document'
+        note: 'Note'
+        interval_months: 'Interval (months)'
+        owner: 'Responsible person'
+        owner_placeholder: 'By role'
+        next_due_at: 'Next due date'
+    help:
+        evidence: 'Minutes, report or attendance list the audit sees as evidence.'
+        interval_months: 'A new interval counts from the last completion.'
+        owner: 'Without a person the reminder goes to the duty''s default role.'
+    action:
+        done: 'Done'
+        confirm_done: 'Save as done'
+        edit: 'Settings'
+    status:
+        overdue: 'Overdue'
+        due_soon: 'Due soon'
+    interval_value: '{1}1 month|]1,Inf[%count% months'
+    done:
+        subtitle: 'Next due date afterwards: %count% months from the completion date. Due until now: %due%.'
+    edit:
+        subtitle: 'Default interval of the standard: %count% months.'
+    flash:
+        done: 'Completion saved.'
+        saved: 'Saved.'
+    role:
+        role_isb: 'ISO'
+        role_ciso: 'CISO'
+        role_risk_manager: 'Risk management'
+        role_bcm_officer: 'BCM officer'
+        role_dpo: 'Data protection officer'
+        role_compliance_manager: 'Compliance management'
+    duty:
+        risk_acceptance_criteria:
+            title: 'Review risk acceptance criteria'
+            body: 'Have top management confirm the criteria and the risk appetite.'
+        soa_review:
+            title: 'Review the Statement of Applicability'
+            body: 'Check applicability and justification of all controls as a whole and approve them.'
+        objectives_measurement:
+            title: 'Measure information security objectives'
+            body: 'Collect target values and evaluate achievement. The default interval follows the shortest measurement frequency of the open objectives.'
+        crypto_key_rotation:
+            title: 'Rotate cryptographic keys'
+            body: 'Renew keys and certificates according to the cryptography concept and record the rotation.'
+        access_review_campaign:
+            title: 'Recertify access rights'
+            body: 'Start an access review campaign covering all critical systems.'
+        bia_review:
+            title: 'Update the business impact analysis'
+            body: 'Check criticality, RTO and RPO of the business processes.'
+        bc_exercise:
+            title: 'Run a BC exercise'
+            body: 'Run and evaluate at least one exercise or test of the continuity plans.'
+        tom_review:
+            title: 'Review technical and organisational measures'
+            body: 'Test, assess and evaluate the effectiveness of the technical and organisational measures.'
+        nis2_management_training:
+            title: 'NIS-2 management training'
+            body: 'Members of the management body attend training on cyber risk management.'
+        nis2_measures_review:
+            title: 'Review NIS-2 risk management measures'
+            body: 'Check the Art. 21 measures for adequacy and have management approve them.'
+        dora_register_of_information:
+            title: 'Update the DORA register of information'
+            body: 'Check the register of all ICT third-party providers and provide it to the authority on request.'
+        dora_exit_plans:
+            title: 'Test DORA exit strategies'
+            body: 'Check and document exit strategies for critical ICT providers.'

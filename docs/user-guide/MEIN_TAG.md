@@ -31,8 +31,10 @@ Freigaben und Vier-Augen-Anfragen sind aufgeklappt, alle anderen zeigen nur den 
 | Freigaben überfällig | Von mir gestartete Workflows über der Frist |
 | 4-Augen-Anfragen | Vier-Augen-Freigaben, die auf mich warten (entscheiden ab Manager) |
 | Standorte mit offenen Prüfungen | Eigene Standorte (als verantwortliche Person eingetragen) mit offenen Prüfungen der Standortkarte, je Prüfung mit Normbezug; Link zum Steckbrief. Nur mit Modul Standorte, siehe `STANDORTKARTE.md` |
+| Meldepflichten | Behördenmeldungen mit Stundenfrist: NIS-2 (24 h / 72 h / 1 Monat), DORA (bis 24 h / 72 h / 1 Monat), DSGVO Art. 33 (72 h ab Entdeckung); „Als gemeldet markieren“ am Vorfall schließt die Frist |
+| Pflichtenkalender | Wiederkehrende Pflichten ohne Datum am Datensatz (Risikoakzeptanzkriterien, SoA-Review, BIA, BC-Übung, Schlüsselrotation, TOM-Review, NIS-2-Leitungsschulung, DORA-Register …), 30 Tage vor Fälligkeit; „Erledigt“ mit Nachweis unter Pflichtenkalender |
 | Alva-Empfehlungen | Alvas Hinweise der Priorität 1; die übrigen stehen im Alva-Posteingang |
-| Policy-Bestätigungen, Audit-Findings, Betroffenenanfragen, Korrekturmaßnahmen, Risiko-Akzeptanzen und -Reviews, Dokument-Reviews und -Freigaben, Nachweis-Reverifizierung, Wirksamkeitsprüfungen, Lieferanten-Reassessments, DSFA- und BC-Plan-Reviews, Schulungen, Vorfälle, Datenpannen (72h), kritische Schwachstellen, Audit-Checklisten, Change Requests, Management-Reviews, gestoppte Assessments, kritische Framework-Lücken | jeweils die mir zugewiesenen bzw. fälligen Punkte; Module ohne Aktivierung liefern nichts |
+| Policy-Bestätigungen, Audit-Findings, Betroffenenanfragen, Korrekturmaßnahmen, Risiko-Akzeptanzen und -Reviews, Dokument-Reviews und -Freigaben, Nachweis-Reverifizierung, Wirksamkeitsprüfungen, Lieferanten-Reassessments, DSFA- und BC-Plan-Reviews, Schulungen, Vorfälle, Datenpannen in Bearbeitung, kritische Schwachstellen, Audit-Checklisten, Change Requests, Management-Reviews, gestoppte Assessments, kritische Framework-Lücken | jeweils die mir zugewiesenen bzw. fälligen Punkte; Module ohne Aktivierung liefern nichts |
 
 Audit-Findings erscheinen bei der zugewiesenen Person, Dokument-Reviews beim
 Dokument-Eigner (verknüpfte Person mit Benutzerkonto, sonst die hochladende Person).

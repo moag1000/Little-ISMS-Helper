@@ -217,6 +217,7 @@ final class AuditLogSubscriber
             'InterestedParty',
             'BusinessContinuityPlan',
             'BCExercise',
+            'RecurringDuty',
             'ChangeRequest',
             // SSO — config changes emit ACTION_SSO_CONFIG_CHANGED via postUpdate
             'IdentityProvider',

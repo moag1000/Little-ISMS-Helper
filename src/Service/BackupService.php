@@ -126,6 +126,7 @@ class BackupService
         'TrainingParticipation',    // FK: Tenant, Training, User — sign-offs
         'AccessReviewCampaign',     // FK: Tenant, User
         'AccessReviewItem',         // FK: Tenant, AccessReviewCampaign, User
+        'RecurringDuty',            // FK: Tenant, User, Document — duty calendar (last completion + evidence)
 
         // Comments (polymorphic, after all target entities)
         'Comment',                  // FK: Tenant, User — polymorphic threads
