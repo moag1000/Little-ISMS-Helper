@@ -31,6 +31,10 @@ This document describes the security features implemented in Little ISMS Helper,
   - `^/api` (REST API, OpenAPI docs, JSON-LD contexts) requires a session or API token.
   - The lifecycle history (`/lifecycle/{type}/{id}/history`) checks the record's
     organisation itself — the tenant filter does not cover every lifecycle type.
+  - Holding actions that read or write subsidiary rows go through
+    `App\Service\Group\HoldingScope` (`read()` for explicitly scoped lookups,
+    `asTenant()` per subsidiary): Konzern push-down, applying an industry baseline to
+    the subtree (`ROLE_ADMIN` of the holding), Konzern certification bundle.
 
 **Testing:**
 ```bash
