@@ -1,0 +1,79 @@
+{# One suggestion in the queue. Vars: s (Suggestion), row ({subject_url, result_url, can_decide, bulk}). #}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
+{% import '_macros/workflow.html.twig' as _wf %}
+{% set _id = 'suggestion-' ~ s.id %}
+<div id="{{ _id }}" class="fa-entity-card d-flex align-items-start gap-2" data-testid="suggestion-row">
+    {% if row.can_decide and row.bulk %}
+        <input type="checkbox" class="form-check-input mt-1"
+               data-bulk-actions-target="item" data-action="bulk-actions#selectItem"
+               value="{{ s.id }}" aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ s.title }}">
+    {% endif %}
+    <div class="fa-entity-card__body flex-grow-1">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+            {{ _status.pill('suggestion_origin', s.origin.value, ('suggestions.origin.' ~ s.origin.value)|trans({}, 'suggestions'), { size: 'sm' }) }}
+            <span class="small text-body-secondary">{{ ('suggestions.kind.' ~ s.kind)|trans({}, 'suggestions') }}</span>
+            {% if s.confidence is not null %}
+                <span class="small text-body-secondary">· {{ 'suggestions.row.confidence'|trans({'%pct%': (s.confidence * 100)|round}, 'suggestions') }}</span>
+            {% endif %}
+            {% if s.model %}<span class="small text-body-secondary">· {{ s.model }}</span>{% endif %}
+        </div>
+        {% if row.subject_url %}
+            <a href="{{ row.subject_url }}" class="fa-row-link fa-entity-card__title">{{ s.title }}</a>
+        {% else %}
+            <span class="fa-entity-card__title">{{ s.title }}</span>
+        {% endif %}
+        <p class="small mb-1 fa-suggestion__text">{{ s.rationale }}</p>
+        {% if s.editableText %}
+            <details class="small">
+                <summary>{{ 'suggestions.row.proposed_text'|trans({}, 'suggestions') }}</summary>
+                <p class="mb-0 mt-1 fa-suggestion__text">{{ s.editableText }}</p>
+            </details>
+        {% endif %}
+        <div class="fa-entity-card__meta">
+            <span>{{ s.createdAt|fa_date }}</span>
+            {% if not s.pending %}
+                <span>{{ s.decidedBy ? s.decidedBy.fullName : '—' }} · {{ s.decidedAt|fa_date }}</span>
+                {% if s.decisionNote and s.status.value != 'superseded' %}<span>{{ s.decisionNote }}</span>{% endif %}
+                {% if row.result_url %}<a href="{{ row.result_url }}">{{ 'suggestions.row.result'|trans({}, 'suggestions') }}</a>{% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% if s.pending and row.can_decide %}
+        <div class="d-flex gap-2 flex-shrink-0">
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm"
+                    data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open"
+                    data-fa-modal-id="{{ _id }}-accept">{{ 'suggestions.action.accept'|trans({}, 'suggestions') }}</button>
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                    data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open"
+                    data-fa-modal-id="{{ _id }}-reject">{{ 'suggestions.action.reject'|trans({}, 'suggestions') }}</button>
+        </div>
+        {% set _token = csrf_token('suggestion_decide_' ~ s.id) %}
+        {% set _back = app.request.requestUri %}
+        {{ _wf.decision_modal({
+            id: _id ~ '-accept',
+            tone: 'success',
+            title: 'suggestions.action.accept'|trans({}, 'suggestions'),
+            action: path('app_suggestion_accept', {id: s.id}),
+            token: _token,
+            subject: s.title,
+            summary: s.rationale,
+            hidden: { _back: _back },
+            field: s.editableText
+                ? { name: 'text', label: 'suggestions.dialog.text'|trans({}, 'suggestions'), value: s.editableText, rows: 6, required: true }
+                : { name: 'note', label: 'suggestions.dialog.note'|trans({}, 'suggestions'), rows: 2 },
+        }) }}
+        {{ _wf.decision_modal({
+            id: _id ~ '-reject',
+            tone: 'danger',
+            title: 'suggestions.action.reject'|trans({}, 'suggestions'),
+            action: path('app_suggestion_reject', {id: s.id}),
+            token: _token,
+            subject: s.title,
+            hidden: { _back: _back },
+            intro: 'suggestions.dialog.reject_intro'|trans({}, 'suggestions'),
+            field: { name: 'reason', label: 'suggestions.dialog.reason'|trans({}, 'suggestions'), rows: 3 },
+        }) }}
+    {% elseif not s.pending %}
+        {{ _status.pill('suggestion', s.status.value, ('suggestions.status.' ~ s.status.value)|trans({}, 'suggestions'), { size: 'sm' }) }}
+    {% endif %}
+</div>

@@ -1357,6 +1357,7 @@ bulk_actions:
     assign_owner: 'Owner zuweisen'
     tag: 'Tag'
     approve: 'Freigeben'
+    reject: 'Ablehnen'
     review: 'Review bestätigen'
     delete: 'Löschen'
     deselect: 'Auswahl aufheben'
