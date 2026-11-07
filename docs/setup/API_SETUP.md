@@ -142,6 +142,8 @@ All endpoints available at `/api` (the complete, current list is the Swagger UI)
 - Fulfilment values are derived from controls, records and mappings
   (`FulfillmentDerivationService`); hand values are overrides with reason and review date in the UI.
   Saving a control or record over the API triggers the same recomputation as in the UI.
+- Approval evidence is read-only: risk acceptance and decision approver/date, `formallyAccepted`,
+  supplier board acceptance, change-request approval and verification.
 - Decisions of top management, register entries and suggestions are not created over the API.
 - Reviewer roles (`ROLE_AUDITOR`, `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) and API tokens are
   read-only: write calls answer 403 (session) or 405 (token).

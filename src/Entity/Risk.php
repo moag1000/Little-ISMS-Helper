@@ -299,11 +299,11 @@ class Risk
      * Required when treatmentStrategy = 'accept'
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read'])]
     private ?string $acceptanceApprovedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read'])]
     private ?DateTimeInterface $acceptanceApprovedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -359,7 +359,7 @@ class Risk
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'decision_approved_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read'])]
     #[SameTenantOwner]
     private ?User $decisionApprovedByUser = null;
 
@@ -367,7 +367,7 @@ class Risk
      * Date when the risk treatment decision was approved.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['risk:read', 'risk:write'])]
+    #[Groups(['risk:read'])]
     private ?\DateTimeImmutable $decisionApprovalDate = null;
 
     /**

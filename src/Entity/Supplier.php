@@ -1097,7 +1097,7 @@ class Supplier
      * Whether the management board has explicitly accepted this outsourcing risk (MaRisk AT 4.3).
      */
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['supplier:read', 'supplier:write'])]
+    #[Groups(['supplier:read'])]
     private bool $boardLevelRiskAcceptance = false;
 
     /**

@@ -30,6 +30,20 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 final class ApiResourceContractTest extends TestCase
 {
+    /**
+     * Approval evidence: who approved/verified, when, board acceptance. Written by
+     * the acceptance and lifecycle flows, never by an API client (MCP writes go
+     * through these operations too).
+     */
+    private const array APPROVAL_FIELDS = [
+        \App\Entity\Risk::class => [
+            'formallyAccepted', 'acceptanceApprovedBy', 'acceptanceApprovedByUser', 'acceptanceApprovedAt',
+            'decisionApprovedByUser', 'decisionApprovalDate',
+        ],
+        \App\Entity\Supplier::class => ['boardLevelRiskAcceptance'],
+        \App\Entity\ChangeRequest::class => ['approvedBy', 'approvedDate', 'verifiedBy', 'verifiedDate'],
+    ];
+
     private const array READ_ONLY_RESOURCES = [
         ManagementDecision::class,
         IsmsRegisterEntry::class,
@@ -101,6 +115,22 @@ final class ApiResourceContractTest extends TestCase
             }
         }
         self::assertTrue(true);
+    }
+
+    #[Test]
+    public function approvalEvidenceIsNotWritableOverTheApi(): void
+    {
+        foreach (self::APPROVAL_FIELDS as $class => $properties) {
+            $ref = new ReflectionClass($class);
+            foreach ($properties as $property) {
+                self::assertTrue($ref->hasProperty($property), sprintf('%s::$%s no longer exists.', $class, $property));
+                foreach ($ref->getProperty($property)->getAttributes(Groups::class) as $attribute) {
+                    foreach ($attribute->newInstance()->groups as $group) {
+                        self::assertStringEndsNotWith(':write', $group, sprintf('%s::$%s is API-writable.', $class, $property));
+                    }
+                }
+            }
+        }
     }
 
     /** @return iterable<string, array{class-string}> */

@@ -244,11 +244,11 @@ class ChangeRequest
      * Approver
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read'])]
     private ?string $approvedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read'])]
     private ?DateTimeInterface $approvedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -270,11 +270,11 @@ class ChangeRequest
      * Verification
      */
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read'])]
     private ?string $verifiedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['change_request:read', 'change_request:write'])]
+    #[Groups(['change_request:read'])]
     private ?DateTimeInterface $verifiedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
