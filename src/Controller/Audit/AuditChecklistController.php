@@ -104,7 +104,7 @@ final class AuditChecklistController extends AbstractController
         }
 
         $user = $this->getUser();
-        $auditor = $user instanceof User ? ($user->getFullName() ?: $user->getEmail()) : (string) $user?->getUserIdentifier();
+        $auditor = $user instanceof User ? ($user->getFullName() ?: (string) $user->getEmail()) : '';
         $updated = 0;
         foreach (is_array($data['items'] ?? null) ? $data['items'] : [] as $itemData) {
             $item = is_array($itemData) ? $this->checklists->find((int) ($itemData['id'] ?? 0)) : null;

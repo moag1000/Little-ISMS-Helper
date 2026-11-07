@@ -78,7 +78,7 @@ final class AuditChecklistGenerator
         $added = 0;
         foreach ($this->frameworksFor($audit) as $framework) {
             foreach ($this->requirements->findInScopeForFrameworkListing($framework, $tenant) as $requirement) {
-                if (!$requirement instanceof ComplianceRequirement || isset($existing[(int) $requirement->getId()])) {
+                if (isset($existing[(int) $requirement->getId()])) {
                     continue;
                 }
                 $existing[(int) $requirement->getId()] = true;

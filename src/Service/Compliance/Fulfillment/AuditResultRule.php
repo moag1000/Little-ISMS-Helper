@@ -63,7 +63,7 @@ class AuditResultRule implements ResetInterface
             return new FulfillmentDerivation(
                 $value,
                 self::KIND_AUDIT,
-                [...($derivation?->basis ?? []), $row],
+                [...($derivation->basis ?? []), $row],
                 $derivation?->applicable,
                 $derivation?->applicabilityJustification,
                 $value >= 100,
