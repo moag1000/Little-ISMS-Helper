@@ -151,6 +151,7 @@
             {% endblock %}
             {% block table_body_attrs %}id="documentTableBody"{% endblock %}
             {% block table_body %}
+                {% set workflowStates = workflow_states(page) %}
                 {% for document in page %}
                     {% include 'document/_row.html.twig' with {
                         document: document,

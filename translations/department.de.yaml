@@ -27,7 +27,7 @@ department:
         active: 'Aktiv'
         inactive: 'Inaktiv'
     empty:
-        title: 'Noch keine Abteilungen erfasst'
+        title: 'Keine Abteilungen vorhanden.'
         description: 'Lege Abteilungen an, um Verantwortlichkeiten in VVT, Assets und weiteren ISMS-Entitäten strukturiert zu erfassen.'
     confirm:
         delete: 'Abteilung wirklich löschen? Vorhandene Verknüpfungen werden auf „leer" gesetzt.'

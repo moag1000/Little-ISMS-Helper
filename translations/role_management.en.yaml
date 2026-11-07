@@ -43,16 +43,14 @@ role_management:
     type:
         system: 'System Role'
         custom: 'Custom Role'
-    stats:
-        total: 'Total Roles'
-        system_roles: 'System Roles'
-        with_users: 'With Users'
-        avg_permissions: 'Avg. Permissions'
+    summary:
+        system: '%count% system roles'
+        custom: '%count% custom'
     message:
         no_permissions: 'No permissions assigned to this role'
         no_users: 'No users assigned to this role'
         hidden_holders: '%count% further holder(s) not visible to you (e.g. in other organizations)'
-        no_roles: 'No roles created yet'
+        no_roles: 'No roles yet.'
     warning:
         system_role: 'System Role'
         system_role_desc: 'This is a system role and cannot be deleted. Only permissions can be modified.'
@@ -74,7 +72,7 @@ role_management:
         search_placeholder: 'Search permissions…'
         selected_count_label: 'selected'
         table_aria: 'Permissions table'
-        no_results: 'No permissions found.'
+        no_results: 'No permissions yet.'
         category:
             user: 'User Management'
             role: 'Role Management'

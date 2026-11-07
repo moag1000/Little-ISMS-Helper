@@ -10,18 +10,10 @@ answer_library:
   badge: Questionnaires
 
   # Junior-UX tooltip
-  tooltip:
-    title: What is the Answer Library?
-    body: >
-      The Answer Library stores pre-written answers to common security-questionnaire questions
-      (RFP, customer audits, due-diligence reviews). Select a stored answer, copy it into your
-      questionnaire, and the system automatically counts the reuse as saved FTE time — visible
-      in the ROI dashboard (F11). Answer once, reuse forever.
 
-  # KPI card labels
-  kpi:
-    total_entries: Stored Answers
-    total_reuses: Total Reuses
+  # Summary chips
+  summary:
+    reuses: '%count% reuses'
 
   # Field labels
   field:
@@ -71,7 +63,6 @@ answer_library:
 
   # Search/filter
   search:
-    label: Search question text
     placeholder: 'Search questions or answers…'
   filter:
     all_categories: All Categories
@@ -89,7 +80,7 @@ answer_library:
 
   # Empty state
   empty:
-    title: No Answers Yet
+    title: 'No answers yet.'
     body: >
       Store frequently used answers to security questionnaires and reuse them for every
       customer questionnaire. This saves time and ensures consistent, reviewed wording.

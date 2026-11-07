@@ -15,6 +15,7 @@ use App\Form\TenantType;
 use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
 use App\Service\TenantStatusService;
+use App\Util\ListPage;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\CorporateStructureService;
@@ -78,22 +79,16 @@ class TenantManagementController extends AbstractController
             $this->tenantRepository->findBy([], ['createdAt' => 'DESC']),
             fn(Tenant $tenant): bool => $isOperator || $this->tenantContext->canAccessTenant($tenant),
         ));
-        $activeCount = count(array_filter($scope, fn(Tenant $tenant): bool => $tenant->isActive()));
-        $tenants = array_filter($scope, fn(Tenant $tenant): bool => match ($filter) {
-            'active' => $tenant->isActive(),
-            'inactive' => !$tenant->isActive(),
-            default => true,
-        });
+        $tenants = array_values(array_filter($scope, static fn(Tenant $t): bool => match ($filter) {
+            'active' => $t->isActive(), 'inactive' => !$t->isActive(), default => true,
+        }));
+        $activeCount = count(array_filter($tenants, static fn(Tenant $t): bool => $t->isActive()));
 
         return $this->render('admin/tenants/index.html.twig', [
-            'tenants' => array_map(
-                static fn(Tenant $tenant): array => ['tenant' => $tenant, 'userCount' => $tenant->getUsers()->count()],
-                array_values($tenants),
-            ),
+            'page' => ListPage::fromRequest($tenants, $request, static fn(Tenant $t): array => [$t->getCode(), $t->getName()]),
             'filter' => $filter,
-            'totalCount' => count($scope),
             'activeCount' => $activeCount,
-            'inactiveCount' => count($scope) - $activeCount,
+            'inactiveCount' => count($tenants) - $activeCount,
             'orphanUserCount' => $isOperator ? $this->userRepository->countOrphan() : 0,
         ]);
     }

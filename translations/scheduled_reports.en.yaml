@@ -57,11 +57,10 @@ scheduled_report.table.status: Status
 scheduled_report.table.next_run: 'Next Run'
 scheduled_report.table.recipients: Recipients
 scheduled_report.table.actions: Actions
-scheduled_report.stats.total: Total
-scheduled_report.stats.active: Active
-scheduled_report.stats.inactive: Inactive
-scheduled_report.stats.due: Due
-scheduled_report.empty.title: 'No Scheduled Reports'
+scheduled_report.summary.active: '%count% active'
+scheduled_report.summary.inactive: '%count% inactive'
+scheduled_report.summary.due: '%count% due'
+scheduled_report.empty.title: 'No scheduled reports yet.'
 scheduled_report.empty.text: 'Create your first scheduled report to receive regular reports automatically via email.'
 scheduled_report.info.activation_required: 'Scheduled reports must be manually activated before they will run.'
 scheduled_report.info.cron_hint: 'Make sure the cron job for report processing is set up.'

@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'tia' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% block title %}TIA – {{ processing_activity.name }}{% endblock %}
 
 {% block body %}
@@ -26,37 +25,39 @@
         ]
     }) }}
 
-    {% if tias is empty %}
-        {{ _fa_empty_state.render({
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_tia_index', {paId: processing_activity.id}),
+        list_title: 'tia.page.title'|trans({}, 'tia'),
+        empty: {
+            mood: 'sleeping',
             title: 'tia.empty.title'|trans({}, 'tia'),
-            body:  'tia.empty.body'|trans({}, 'tia'),
-            cta:   { label: 'tia.action.new'|trans({}, 'tia'), href: path('app_tia_new', {paId: processing_activity.id}), variant: 'primary' }
-        }) }}
-    {% else %}
-        {% embed '_components/_card.html.twig' %}
-            {% block card_body %}
-                {% trans_default_domain 'tia' %}
-                {% embed '_components/_table.html.twig' with { noMargin: true } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col">{{ 'tia.field.recipient_name'|trans({}, 'tia') }}</th>
-                            <th scope="col">{{ 'tia.field.destination_country'|trans({}, 'tia') }}</th>
-                            <th scope="col">{{ 'tia.field.transfer_mechanism'|trans({}, 'tia') }}</th>
-                            <th scope="col">{{ 'tia.field.residual_risk_rating'|trans({}, 'tia') }}</th>
-                            <th scope="col">{{ 'tia.field.status'|trans({}, 'tia') }}</th>
-                            <th scope="col"></th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body_attrs %}id="tia-rows"{% endblock %}
-                    {% block table_body %}
-                        {% trans_default_domain 'tia' %}
-                        {% for tia in tias %}
-                            {% include 'tia/_row.html.twig' with { tia: tia, processing_activity: processing_activity } %}
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endblock %}
-        {% endembed %}
-    {% endif %}
+            text: 'tia.empty.body'|trans({}, 'tia'),
+            actions: [
+                { label: 'tia.action.new'|trans({}, 'tia'), variant: 'primary', icon: 'plus', href: path('app_tia_new', {paId: processing_activity.id}) }
+            ]
+        },
+    } %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with { noMargin: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'tia.field.recipient_name'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.destination_country'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.transfer_mechanism'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.residual_risk_rating'|trans({}, 'tia') }}</th>
+                        <th scope="col">{{ 'tia.field.status'|trans({}, 'tia') }}</th>
+                        <th scope="col"></th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="tia-rows"{% endblock %}
+                {% block table_body %}
+                    {% for tia in page %}
+                        {% include 'tia/_row.html.twig' with { tia: tia, processing_activity: processing_activity } %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

@@ -5,7 +5,6 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -22,85 +21,40 @@
     ] : []
 }) }}
 
-<main>
+<div>
 
-<div class="stats-grid mb-4">
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.total'|trans({}, 'risk_appetite'), value: appetites|length, variant: 'primary' }) }}
-    </div>
-    {% if globalAppetite %}
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.global_threshold'|trans({}, 'risk_appetite'), value: globalAppetite.maxAcceptableRisk, variant: 'primary' }) }}
-    </div>
-    {% endif %}
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.categories'|trans({}, 'risk_appetite'), value: categories|length, variant: 'info' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.total_risks'|trans({}, 'risk_appetite'), value: totalRisks, variant: 'success' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.exceeding'|trans({}, 'risk_appetite'), value: risksExceedingAppetite|length, variant: risksExceedingAppetite|length > 0 ? 'danger' : 'primary' }) }}
-    </div>
-</div>
-
-{# Skip link for filters section - WCAG 2.4.1 #}
-<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
-
-{# Filter Section #}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_header %}
-        <div class="card-header">
-            <h2><i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}</h2>
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_risk_appetite_index'),
+    filter_keys: ['category', 'active_only'],
+    list_title: 'risk_appetite.list.title'|trans({}, 'risk_appetite'),
+    empty: { mood: 'sleeping', title: 'risk_appetite.no_appetites'|trans({}, 'risk_appetite') },
+} %}
+    {% block list_filters %}
+        <div class="col-md-6">
+            <label for="filter-category" class="form-label">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</label>
+            <select class="form-select fa-cyber-input__field" id="filter-category" name="category" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                <option value="global" {{ app.request.query.get('category') == 'global' ? 'selected' : '' }}>{{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {{ app.request.query.get('category') == cat ? 'selected' : '' }}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="filter-active" class="form-label">{{ 'risk_appetite.field.status'|trans({}, 'risk_appetite') }}</label>
+            <select class="form-select fa-cyber-input__field" id="filter-active" name="active_only" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                <option value="1" {{ app.request.query.get('active_only') == '1' ? 'selected' : '' }}>{{ 'risk_appetite.filter.active_only'|trans({}, 'risk_appetite') }}</option>
+            </select>
         </div>
     {% endblock %}
-    {% block card_body %}
-        <div id="filter-section" tabindex="-1">
-            <form method="get" action="{{ path('app_risk_appetite_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
-                <div class="col-md-6">
-                    <label for="filter-category" class="form-label">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</label>
-                    <select class="form-select fa-cyber-input__field" id="filter-category" name="category" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                        <option value="global" {{ app.request.query.get('category') == 'global' ? 'selected' : '' }}>{{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}</option>
-                        {% for cat in categories %}
-                            <option value="{{ cat }}" {{ app.request.query.get('category') == cat ? 'selected' : '' }}>{{ cat }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="filter-active" class="form-label">{{ 'risk_appetite.field.status'|trans({}, 'risk_appetite') }}</label>
-                    <select class="form-select fa-cyber-input__field" id="filter-active" name="active_only" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                        <option value="1" {{ app.request.query.get('active_only') == '1' ? 'selected' : '' }}>{{ 'risk_appetite.filter.active_only'|trans({}, 'risk_appetite') }}</option>
-                    </select>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
-                    </button>
-                    <a href="{{ path('app_risk_appetite_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            </form>
-        </div>
+    {% block list_summary %}
+        {% if active_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'risk_appetite.summary.active'|trans({'%count%': active_count}, 'risk_appetite') }}</span>{% endif %}
+        {% if risksExceedingAppetite|length > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'risk_appetite.summary.exceeding'|trans({'%count%': risksExceedingAppetite|length}, 'risk_appetite') }}</span>{% endif %}
     {% endblock %}
-{% endembed %}
-
-{# Risk Appetites Table #}
-{% embed '_components/_card.html.twig' %}
-    {% block card_header %}
-        <div class="card-header">
-            <h2><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'risk_appetite.list.title'|trans({}, 'risk_appetite') }} ({{ appetites|length }})</h2>
-        </div>
-    {% endblock %}
-    {% block card_body %}
-        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-        {% if appetites is not empty %}
-        {% embed '_components/_table.html.twig' with {
-            'class': 'table-hover',
-            'noMargin': true
-        } %}
+    {% block list_table %}
+        {% embed '_components/_table.html.twig' with { 'class': 'table-hover', 'noMargin': true } %}
             {% block table_head %}
                 <tr>
                     <th scope="col">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</th>
@@ -114,17 +68,11 @@
             {% endblock %}
             {% block table_body_attrs %}id="risk-appetite-rows"{% endblock %}
             {% block table_body %}
-                {% for appetite in appetites %}
+                {% for appetite in page %}
                     {% include 'risk_appetite/_row.html.twig' with { appetite: appetite } %}
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-        {% else %}
-            {{ _fa_empty_state.render({
-                mood: 'sleeping',
-                title: 'risk_appetite.no_appetites'|trans({}, 'risk_appetite')
-            }) }}
-        {% endif %}
     {% endblock %}
 {% endembed %}
 
@@ -155,5 +103,5 @@
     {% endblock %}
 {% endembed %}
 {% endif %}
-</main>
+</div>
 {% endblock %}

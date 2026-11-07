@@ -25,6 +25,10 @@ soa:
         essential_only: 'Nur wesentliche Controls (KMU)'
         essential_hint: '31 von 93 Controls — empfohlen für Unternehmen unter 50 Mitarbeitern'
         reset: 'Filter zurücksetzen'
+    summary:
+        applicable: '%count% anwendbar'
+        implemented: '%count% umgesetzt'
+        rate: '%rate% % umgesetzt'
     kpi:
         total_controls: 'Gesamt Controls'
         applicable_controls: 'Anwendbare Controls'
@@ -207,7 +211,7 @@ soa:
         show:
             title: 'SoA-Snapshot %date%'
         empty:
-            title: 'Noch keine SoA-Snapshots'
+            title: 'Keine SoA-Snapshots vorhanden.'
             text: 'Sobald Sie einen Snapshot erstellen, wird die Anwendbarkeitserklärung zum gewählten Stichtag eingefroren und kann beim Zertifizierungs-Bundle wieder genau so exportiert werden.'
         section:
             integrity: 'Integrität'

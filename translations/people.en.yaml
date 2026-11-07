@@ -8,11 +8,10 @@ person:
         overview: 'Maintain employees, contractors and other persons'
     action:
         create: 'Create person'
-    stats:
-        total: 'Total people'
-        employees: Employees
-        contractors: Contractors
-        with_badge: 'With badge'
+    summary:
+        employees: '%count% employees'
+        contractors: '%count% contractors'
+        with_badge: '%count% with badge'
     field:
         name: Name
         full_name: 'Full Name'
@@ -58,7 +57,7 @@ person:
     actions:
         label: 'Person Actions'
     message:
-        no_persons: 'No people available.'
+        no_persons: 'No people yet.'
     section:
         basic_info: 'Basic information'
         organization: Organization

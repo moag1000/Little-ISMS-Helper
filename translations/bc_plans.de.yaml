@@ -11,7 +11,7 @@ bc_plans:
     quick_create_business_process: Geschäftsprozess schnell anlegen
     new_business_process: Neuen Geschäftsprozess anlegen
   empty:
-    title: Noch keine Business-Continuity-Pläne hinterlegt
+    title: 'Keine Notfallpläne vorhanden.'
     body: 'BC-Pläne sichern die Wiederanlauffähigkeit kritischer Geschäftsprozesse. Pro Prozess dokumentieren Sie Aktivierungskriterien, Wiederanlaufverfahren, Team und Kommunikationsplan — Voraussetzung für ISO 22301 §8.4.'
   alert:
     overdue_tests: ⚠️ Überfällige BC‑Plan‑Tests

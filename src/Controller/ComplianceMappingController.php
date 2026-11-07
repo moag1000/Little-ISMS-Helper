@@ -17,6 +17,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceMappingService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -113,8 +114,39 @@ class ComplianceMappingController extends AbstractController
                 : [];
         }
 
+        // Facet filters (GET, server-side): options come from the unfiltered set.
+        $facets = [
+            'source_fw' => static fn(ComplianceMapping $m): ?string => $m->getSourceRequirement()?->getFramework()?->getCode(),
+            'target_fw' => static fn(ComplianceMapping $m): ?string => $m->getTargetRequirement()?->getFramework()?->getCode(),
+            'type' => static fn(ComplianceMapping $m): string => $m->getMappingType(),
+            'confidence' => static fn(ComplianceMapping $m): string => $m->getConfidence(),
+            'status' => static fn(ComplianceMapping $m): string => $m->getReviewStatus(),
+        ];
+        $options = [];
+        foreach ($facets as $key => $value) {
+            $values = array_values(array_unique(array_filter(array_map($value, $mappings))));
+            sort($values);
+            $options[$key] = $values;
+        }
+        foreach ($facets as $key => $value) {
+            $selected = (string) $request->query->get($key, '');
+            if ($selected !== '') {
+                $mappings = array_values(array_filter($mappings, static fn(ComplianceMapping $m): bool => $value($m) === $selected));
+            }
+        }
+
         return $this->render('compliance/mapping/index.html.twig', [
-            'mappings' => $mappings,
+            'page' => ListPage::fromRequest(
+                $mappings,
+                $request,
+                static fn(ComplianceMapping $m): array => [
+                    $m->getSourceRequirement()?->getFramework()?->getCode(),
+                    $m->getSourceRequirement()?->getRequirementId(),
+                    $m->getTargetRequirement()?->getFramework()?->getCode(),
+                    $m->getTargetRequirement()?->getRequirementId(),
+                ],
+            ),
+            'facet_options' => $options,
             'selected_requirement' => $requirementId,
         ]);
     }

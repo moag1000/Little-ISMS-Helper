@@ -252,7 +252,7 @@ compliance:
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
         empty:
-            title: 'Noch keine Framework-Mappings angelegt'
+            title: 'Keine Framework-Mappings vorhanden.'
             description: 'Cross-Framework-Mappings verknüpfen Anforderungen zwischen Normen (z. B. NIS2 Art. 21.2 ↔ ISO 27001 A.5.24). Einmal angelegt — mehrfach genutzt als Audit-Nachweis und für Inheritance-Berechnung.'
             action_wizard: 'Mit Wizard anlegen (empfohlen)'
             action_seeds: 'Fertige Seed-Kataloge laden (1-Klick)'
@@ -589,7 +589,7 @@ compliance:
         heading: 'Compliance-Frameworks verwalten'
         description: 'Frameworks wie ISO 27001, NIS2 und DORA laden, aktivieren und prüfen'
         list: Framework-Liste
-        empty: 'Keine Compliance-Frameworks vorhanden. Erstellen Sie Ihr erstes Framework.'
+        empty: 'Keine Compliance-Frameworks vorhanden.'
         no_requirements: 'Keine Anforderungen für dieses Framework definiert'
         badge:
             mandatory: Verpflichtend
@@ -723,6 +723,9 @@ compliance:
         all_frameworks: 'Alle Frameworks'
         all_stufen: 'Alle Stufen'
         all_typen: 'Alle Typen'
+        list_heading: Anforderungen
+        none: 'Keine Anforderungen vorhanden.'
+        load_frameworks: 'Frameworks laden'
         absicherungs_stufe:
             basis: 'Basis-Absicherung'
             standard: 'Standard-Absicherung'
@@ -1120,7 +1123,7 @@ compliance:
         confirm:
             delete: 'Dieses Zertifikat löschen?'
         empty:
-            title: 'Noch keine Zertifikate'
+            title: 'Keine Zertifikate vorhanden.'
             text: 'Laden Sie Ihr erstes externes Compliance-Zertifikat hoch, um Anforderungen gesammelt zu erfüllen.'
         flash:
             file_required: 'Bitte wählen Sie eine Zertifikatsdatei zum Hochladen aus.'

@@ -8,6 +8,7 @@ use App\Entity\ApiToken;
 use App\Entity\User;
 use App\Repository\ApiTokenRepository;
 use App\Service\ApiTokenManager;
+use App\Util\ListPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,12 +29,12 @@ final class ApiTokenController extends AbstractController
     }
 
     #[Route('/profile/api-tokens', name: 'app_api_tokens', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $user = $this->currentUser();
 
         return $this->render('api_token/index.html.twig', [
-            'tokens'    => $this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']),
+            'page'      => ListPage::fromRequest($this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']), $request),
             'new_token' => null,
         ]);
     }
@@ -51,7 +52,7 @@ final class ApiTokenController extends AbstractController
 
         // Render the list with the freshly-minted plaintext shown ONCE.
         return $this->render('api_token/index.html.twig', [
-            'tokens'    => $this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']),
+            'page'      => ListPage::fromRequest($this->repository->findBy(['user' => $user], ['createdAt' => 'DESC']), $request),
             'new_token' => $plain,
         ]);
     }

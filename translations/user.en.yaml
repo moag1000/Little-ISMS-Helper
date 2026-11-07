@@ -19,15 +19,10 @@ user:
             title: 'Export user list'
             body: 'Generates a CSV file with all users. The export runs in the background; once complete a download link will appear.'
             start: 'Start export'
-    stats:
-        total: Total
-        users: Users
-        active: Active
-        active_users: 'Active Users'
-        admins: Admins
-        administrators: Administrators
-        today_active: 'Active Today'
-        logins_today: 'Logins today'
+    summary:
+        active: '%count% active'
+        admins: '%count% administrators'
+        today_active: '%count% signed in today'
     table:
         name: Name
         email: Email
@@ -44,7 +39,7 @@ user:
         no_custom_roles_assigned: 'No custom roles assigned.'
         no_specific_permissions: 'No specific permissions assigned. Permissions are inherited from system roles.'
     empty:
-        title: 'No users yet'
+        title: 'No users yet.'
         description: 'Create your first user to start managing users.'
     name: Name
     email: Email

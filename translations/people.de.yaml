@@ -8,11 +8,10 @@ person:
         overview: 'Mitarbeiter, Auftragnehmer und weitere Personen pflegen'
     action:
         create: 'Person anlegen'
-    stats:
-        total: Gesamt‑Personen
-        employees: Mitarbeiter
-        contractors: Auftragnehmer
-        with_badge: 'Mit Ausweis'
+    summary:
+        employees: '%count% Mitarbeiter'
+        contractors: '%count% Auftragnehmer'
+        with_badge: '%count% mit Ausweis'
     field:
         name: Name
         full_name: 'Vollständiger Name'

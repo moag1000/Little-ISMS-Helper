@@ -3,7 +3,6 @@
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 {% trans_default_domain 'soa' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% block title %}{{ 'soa.page.title'|trans({}, 'soa') }}{% endblock %}
 
@@ -50,64 +49,7 @@
     prominence: 'subtle'
 }) }}
 
-<main>
-
-{# View Filter #}
-{% if currentTenant %}
-{% embed '_components/_card.html.twig' with {
-    'class': 'mb-3'
-} %}
-    {% block card_body %}
-        <form method="get" action="{{ path('app_soa_index') }}" class="d-flex align-items-center gap-2">
-            <label for="view-filter" class="mb-0 fw-bold">
-                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
-            </label>
-            <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                    {{ 'corporate.view.own_only'|trans({}, 'messages') }}
-                </option>
-                {% if inheritanceInfo.hasParent %}
-                <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
-                </option>
-                {% endif %}
-                {% if inheritanceInfo.hasSubsidiaries %}
-                <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
-                </option>
-                {% endif %}
-            </select>
-            <noscript>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'common.apply'|trans({}, 'messages') }}</button>
-            </noscript>
-        </form>
-    {% endblock %}
-{% endembed %}
-{% endif %}
-
-{# KPI Cards — compute applicable/implemented ONCE (perf fix T-1: was 6 redundant filter passes) #}
-{% set _kpi_applicable = controls|filter(c => c.applicable)|length %}
-{% set _kpi_implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
-{% set _kpi_percentage = _kpi_applicable > 0 ? (_kpi_implemented / _kpi_applicable * 100)|round : 0 %}
-<div class="kpi-grid">
-    <div class="col-auto">
-        {% if currentTenant %}
-            {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages') %}
-            {{ _fa_feature_card.render({ label: 'soa.kpi.total_controls'|trans({}, 'soa'), value: detailedStats.total, hint: subtitle, variant: 'primary' }) }}
-        {% else %}
-            {{ _fa_feature_card.render({ label: 'soa.kpi.total_controls'|trans({}, 'soa'), value: detailedStats.total, variant: 'primary' }) }}
-        {% endif %}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'soa.kpi.applicable_controls'|trans({}, 'soa'), value: _kpi_applicable, variant: 'success' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'soa.kpi.implemented_controls'|trans({}, 'soa'), value: _kpi_implemented, hint: ('soa.kpi.of'|trans({}, 'soa')) ~ ' ' ~ _kpi_applicable, variant: 'info' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'soa.kpi.compliance_rate'|trans({}, 'soa'), value: _kpi_percentage ~ '%', variant: 'warning' }) }}
-    </div>
-</div>
+<div>
 
 {# Category Overview #}
 <h2>{{ 'soa.section.by_category'|trans({}, 'soa') }}</h2>
@@ -160,9 +102,6 @@
     {% endfor %}
 </div>
 
-{# Filter and Table #}
-<h2>{{ 'soa.section.all_controls'|trans({}, 'soa') }}</h2>
-
 {# WS-5 Bulk tag actions bar (polymorphic) #}
 {% if is_granted('TAG_APPLY') %}
     {% include '_components/_bulk_action_bar.html.twig' with {
@@ -186,7 +125,7 @@
             <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
             <strong>{{ 'control.bulk.title'|trans({}, 'control') }}</strong>
             <small class="text-muted ms-2">{{ 'control.bulk.hint'|trans({}, 'control') }}</small>
-            <span class="badge bg-secondary ms-2">{{ 'control.bulk.power_user_badge'|trans({}, 'control') }}</span>
+            <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ 'control.bulk.power_user_badge'|trans({}, 'control') }}</span>
         </summary>
         <div class="card-body">
             <form method="post" action="{{ path('app_soa_bulk_applicability') }}" class="row g-2 align-items-end"
@@ -231,229 +170,236 @@
     </details>
 {% endif %}
 
-{# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
-{% embed '_components/_search_filter_form.html.twig' with {
-    action: path('app_soa_index'),
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_soa_index'),
     filter_keys: ['category', 'status', 'mris', 'view', 'tag', 'essential', 'review_overdue'],
     search_placeholder: 'soa.filter.search_placeholder'|trans({}, 'soa'),
-    form_id: 'soa-filter-form'
+    list_title: 'soa.section.all_controls'|trans({}, 'soa'),
+    empty: {
+        mood: 'thinking',
+        title: 'soa.empty.title'|trans({}, 'soa'),
+        text: 'soa.empty.body'|trans({}, 'soa'),
+        norm_ref: 'ISO 27001 Klausel 6.1.3 d · A.5.1ff',
+        actions: [
+            { label: 'soa.empty.create_first'|trans({}, 'soa'), variant: 'primary', icon: 'plus', href: path('app_soa_index') }
+        ],
+        help_link: path('app_help_glossary') ~ '#glossary-soa'
+    },
+    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/soa" data-bulk-actions-applicability-url-value="' ~ path('app_soa_bulk_applicability') ~ '" data-bulk-actions-applicability-csrf-token-value="' ~ csrf_token('soa_bulk_applicability') ~ '"',
 } %}
-    {% block filters %}
-        {% if app.request.query.get('view') %}
-            <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
-        {% endif %}
+    {% block list_filters %}
         {% if app.request.query.get('review_overdue') == '1' %}<input type="hidden" name="review_overdue" value="1">{% endif %}
-        <div class="col-md-4">
-            <label for="category-filter" class="form-label">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
-            <select id="category-filter" name="category" class="form-select fa-cyber-input__field">
-                <option value="">{{ 'soa.filter.all_categories'|trans({}, 'soa') }}</option>
-                {# T7.7 (UX-P1): values lowercased to match the FormType-persisted
-                   Control.category values; capitalized label key kept for backward
-                   compat with existing soa.category.{Organizational,People,...} entries. #}
-                <option value="organizational" {{ (app.request.query.get('category')|lower) == 'organizational' ? 'selected' : '' }}>{{ 'soa.category.Organizational'|trans({}, 'soa') }}</option>
-                <option value="people" {{ (app.request.query.get('category')|lower) == 'people' ? 'selected' : '' }}>{{ 'soa.category.People'|trans({}, 'soa') }}</option>
-                <option value="physical" {{ (app.request.query.get('category')|lower) == 'physical' ? 'selected' : '' }}>{{ 'soa.category.Physical'|trans({}, 'soa') }}</option>
-                <option value="technological" {{ (app.request.query.get('category')|lower) == 'technological' ? 'selected' : '' }}>{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label for="status-filter" class="form-label">{{ 'soa.filter.status'|trans({}, 'soa') }}</label>
-            <select id="status-filter" name="status" class="form-select fa-cyber-input__field">
-                <option value="">{{ 'soa.filter.all_status'|trans({}, 'soa') }}</option>
-                <option value="implemented" {{ app.request.query.get('status') == 'implemented' ? 'selected' : '' }}>{{ 'soa.status.implemented'|trans({}, 'soa') }}</option>
-                <option value="in_progress" {{ app.request.query.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'soa.status.in_progress'|trans({}, 'soa') }}</option>
-                <option value="not_started" {{ app.request.query.get('status') == 'not_started' ? 'selected' : '' }}>{{ 'soa.status.not_started'|trans({}, 'soa') }}</option>
-                <option value="not_applicable" {{ app.request.query.get('status') == 'not_applicable' ? 'selected' : '' }}>{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</option>
-            </select>
-        </div>
-        {# MRIS-Filter gegated on tenant opt-in
-           (mris.kpis_enabled). MRIS is a tenant-scoped custom framework. #}
-        {% if mrisEnabled|default(true) %}
-        <div class="col-md-4">
-            <label for="mris-filter" class="form-label">{{ 'soa.filter.mris'|trans({}, 'soa') }}
-                <small class="text-muted" title="{{ 'soa.mris.source_attribution'|trans({}, 'soa') }}">ⓘ</small>
-            </label>
-            <select id="mris-filter" name="mris" class="form-select fa-cyber-input__field">
-                <option value="">{{ 'soa.filter.mris_all'|trans({}, 'soa') }}</option>
-                <option value="standfest" {{ mrisFilter == 'standfest' ? 'selected' : '' }}>{{ 'soa.mris.standfest'|trans({}, 'soa') }} ({{ mrisStats.standfest|default(0) }})</option>
-                <option value="degradiert" {{ mrisFilter == 'degradiert' ? 'selected' : '' }}>{{ 'soa.mris.degradiert'|trans({}, 'soa') }} ({{ mrisStats.degradiert|default(0) }})</option>
-                <option value="reibung" {{ mrisFilter == 'reibung' ? 'selected' : '' }}>{{ 'soa.mris.reibung'|trans({}, 'soa') }} ({{ mrisStats.reibung|default(0) }})</option>
-                <option value="nicht_betroffen" {{ mrisFilter == 'nicht_betroffen' ? 'selected' : '' }}>{{ 'soa.mris.nicht_betroffen'|trans({}, 'soa') }} ({{ mrisStats.nicht_betroffen|default(0) }})</option>
-            </select>
-        </div>
-        {% endif %}
-        <div class="col-md-4">
-            <div class="form-check form-switch mt-4">
-                <input class="form-check-input" type="checkbox" role="switch"
-                       id="essential-filter" name="essential" value="1"
-                       {{ essentialFilter == '1' ? 'checked' : '' }}
-                       data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                <label class="form-check-label" for="essential-filter">
-                    {{ 'soa.filter.essential_only'|trans({}, 'soa') }}
+            {% if currentTenant %}
+            <div class="col-md-4">
+                <label for="view-filter" class="form-label">{{ 'common.view'|trans({}, 'messages') }}</label>
+                <select class="form-select fa-cyber-input__field" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>{{ 'corporate.view.own_only'|trans({}, 'messages') }}</option>
+                    {% if inheritanceInfo.hasParent %}
+                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>{{ 'corporate.view.including_inherited'|trans({}, 'messages') }}</option>
+                    {% endif %}
+                    {% if inheritanceInfo.hasSubsidiaries %}
+                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>{{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}</option>
+                    {% endif %}
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-md-4">
+                <label for="category-filter" class="form-label">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
+                <select id="category-filter" name="category" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'soa.filter.all_categories'|trans({}, 'soa') }}</option>
+                    {# T7.7 (UX-P1): values lowercased to match the FormType-persisted
+                       Control.category values; capitalized label key kept for backward
+                       compat with existing soa.category.{Organizational,People,...} entries. #}
+                    <option value="organizational" {{ (app.request.query.get('category')|lower) == 'organizational' ? 'selected' : '' }}>{{ 'soa.category.Organizational'|trans({}, 'soa') }}</option>
+                    <option value="people" {{ (app.request.query.get('category')|lower) == 'people' ? 'selected' : '' }}>{{ 'soa.category.People'|trans({}, 'soa') }}</option>
+                    <option value="physical" {{ (app.request.query.get('category')|lower) == 'physical' ? 'selected' : '' }}>{{ 'soa.category.Physical'|trans({}, 'soa') }}</option>
+                    <option value="technological" {{ (app.request.query.get('category')|lower) == 'technological' ? 'selected' : '' }}>{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="status-filter" class="form-label">{{ 'soa.filter.status'|trans({}, 'soa') }}</label>
+                <select id="status-filter" name="status" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'soa.filter.all_status'|trans({}, 'soa') }}</option>
+                    <option value="implemented" {{ app.request.query.get('status') == 'implemented' ? 'selected' : '' }}>{{ 'soa.status.implemented'|trans({}, 'soa') }}</option>
+                    <option value="in_progress" {{ app.request.query.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'soa.status.in_progress'|trans({}, 'soa') }}</option>
+                    <option value="not_started" {{ app.request.query.get('status') == 'not_started' ? 'selected' : '' }}>{{ 'soa.status.not_started'|trans({}, 'soa') }}</option>
+                    <option value="not_applicable" {{ app.request.query.get('status') == 'not_applicable' ? 'selected' : '' }}>{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</option>
+                </select>
+            </div>
+            {# MRIS-Filter gegated on tenant opt-in
+               (mris.kpis_enabled). MRIS is a tenant-scoped custom framework. #}
+            {% if mrisEnabled|default(true) %}
+            <div class="col-md-4">
+                <label for="mris-filter" class="form-label">{{ 'soa.filter.mris'|trans({}, 'soa') }}
+                    <small class="text-muted" title="{{ 'soa.mris.source_attribution'|trans({}, 'soa') }}">ⓘ</small>
                 </label>
+                <select id="mris-filter" name="mris" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'soa.filter.mris_all'|trans({}, 'soa') }}</option>
+                    <option value="standfest" {{ mrisFilter == 'standfest' ? 'selected' : '' }}>{{ 'soa.mris.standfest'|trans({}, 'soa') }} ({{ mrisStats.standfest|default(0) }})</option>
+                    <option value="degradiert" {{ mrisFilter == 'degradiert' ? 'selected' : '' }}>{{ 'soa.mris.degradiert'|trans({}, 'soa') }} ({{ mrisStats.degradiert|default(0) }})</option>
+                    <option value="reibung" {{ mrisFilter == 'reibung' ? 'selected' : '' }}>{{ 'soa.mris.reibung'|trans({}, 'soa') }} ({{ mrisStats.reibung|default(0) }})</option>
+                    <option value="nicht_betroffen" {{ mrisFilter == 'nicht_betroffen' ? 'selected' : '' }}>{{ 'soa.mris.nicht_betroffen'|trans({}, 'soa') }} ({{ mrisStats.nicht_betroffen|default(0) }})</option>
+                </select>
             </div>
-            <div class="form-text small text-muted">
-                {{ 'soa.filter.essential_hint'|trans({}, 'soa') }}
-            </div>
-        </div>
-    {% endblock %}
-{% endembed %}
-
-{% set _review_chip %}{% include '_components/_review_due_chip.html.twig' with { type: 'control' } only %}{% endset %}
-{% if _review_chip|trim is not empty %}<div class="fa-list-page__summary d-flex flex-wrap gap-2 mb-3">{{ _review_chip }}</div>{% endif %}
-
-{# Canonical bulk-action wrapper (per design-system spec): provides row-level
-   selection state for the fa-table below + tag-bulk integration. #}
-<div data-controller="bulk-actions"
-     data-bulk-actions-endpoint-value="/{{ app.request.locale }}/soa"
-     data-bulk-actions-applicability-url-value="{{ path('app_soa_bulk_applicability') }}"
-     data-bulk-actions-applicability-csrf-token-value="{{ csrf_token('soa_bulk_applicability') }}">
-{% embed '_components/_fa_table.html.twig' with {
-    stickyHead: true,
-    bulkSelect: false,
-    sortable: false,
-    id: 'soa-controls-list',
-    class: 'table-bulk-selectable',
-    wrapStyle: 'max-height: 70vh'
-} %}
-    {% block table_head %}
-        {% trans_default_domain 'soa' %}
-        <tr>
-            <th scope="col" class="fa-table__th fa-table__th--checkbox">
-                <input type="checkbox"
-                       class="form-check-input"
-                       data-action="bulk-actions#selectAll"
-                       data-bulk-actions-target="selectAllCheckbox"
-                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-            </th>
-            <th scope="col" class="fa-table__th" style="min-width: 100px;">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
-            <th scope="col" class="fa-table__th" style="min-width: 250px;">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
-            <th scope="col" class="fa-table__th" style="min-width: 120px;">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
-            {% if mrisEnabled|default(true) %}
-            <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 130px;" title="{{ 'soa.table.mris_help'|trans({}, 'soa') }}" data-tour="mris-soa-column">{{ 'soa.table.mris'|trans({}, 'soa') }}</th>
             {% endif %}
-            <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
-            <th scope="col" class="fa-table__th" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
-            <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 120px;">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
-            <th scope="col" class="fa-table__th fa-table__th--actions" style="min-width: 180px;"><span class="visually-hidden">{{ 'soa.table.actions'|trans({}, 'soa') }}</span></th>
-        </tr>
-    {% endblock %}
-    {% block table_body %}
-        {% trans_default_domain 'soa' %}
-        {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-        {% for control in controls %}
-        <tr class="fa-table__row" data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
-            <td class="fa-table__cell fa-table__cell--checkbox">
-                <input type="checkbox"
-                       class="form-check-input"
-                       data-bulk-actions-target="item"
-                       data-action="bulk-actions#selectItem"
-                       value="{{ control.id }}"
-                       aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ control.name }}">
-            </td>
-            <td class="fa-table__cell">{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false, code_class: 'fw-bold' } only %}</td>
-            <td class="fa-table__cell">
-                {{ control.name }}
-                {{ inheritance.small_badge(control, currentTenant) }}
-            </td>
-            <td class="fa-table__cell">
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: ('soa.category.' ~ control.category)|trans({}, 'soa') } %}
-            </td>
-            {% if mrisEnabled|default(true) %}
-            <td class="fa-table__cell fa-table__cell--center">
-                {% set mrisLocale = app.request.locale|default('de') %}
-                {% if control.mythosResilience == 'standfest' %}
-                    <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
-                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
-                    </span>
-                {% elseif control.mythosResilience == 'degradiert' %}
-                    <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
-                    </span>
-                {% elseif control.mythosResilience == 'reibung' %}
-                    <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
-                    </span>
-                {% elseif control.mythosResilience == 'nicht_betroffen' %}
-                    <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
-                    </span>
-                {% else %}
-                    <span class="text-muted small">—</span>
-                {% endif %}
-                {% if control.mythosFlankingMhcs is not empty %}
-                    <div class="small text-muted mt-1" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.flanking_mhcs', 'tooltip', mrisLocale) }}">{{ control.mythosFlankingMhcs|join(', ') }}</div>
-                {% endif %}
-            </td>
-            {% endif %}
-            <td class="fa-table__cell fa-table__cell--center">
-                {% if control.applicable %}
-                    {% include '_components/_badge.html.twig' with { variant: 'success', content: '✓ ' ~ 'soa.value.yes'|trans({}, 'soa') } %}
-                {% else %}
-                    {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: '✗ ' ~ 'soa.value.no'|trans({}, 'soa') } %}
-                {% endif %}
-            </td>
-            <td class="fa-table__cell">
-                {% if control.applicable %}
-                    {% if control.implementationStatus == 'verified' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'nav-patch-check', content: 'soa.status.verified'|trans({}, 'soa') } %}
-                    {% elseif control.implementationStatus == 'implemented' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'soa.status.implemented'|trans({}, 'soa') } %}
-                    {% elseif control.implementationStatus == 'in_progress' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'util-refresh', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
-                    {% elseif control.implementationStatus == 'planned' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'ui-calendar-event', content: 'soa.status.planned'|trans({}, 'soa') } %}
-                    {% elseif control.implementationStatus == 'not_started' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'pause', content: 'soa.status.not_started'|trans({}, 'soa') } %}
-                    {% else %}
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.value.na'|trans({}, 'soa') } %}
-                    {% endif %}
-                {% else %}
-                    {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.status.not_applicable'|trans({}, 'soa') } %}
-                {% endif %}
-            </td>
-            <td class="fa-table__cell">
-                {% if control.applicable %}
-                    {{ _fa_progress.render({ value: control.implementationPercentage, showText: true, size: 'sm' }) }}
-                {% else %}
-                    <span class="text-center-block-light">-</span>
-                {% endif %}
-            </td>
-            <td class="fa-table__cell fa-table__cell--actions">
-                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
-                    {% if is_granted('edit', control) %}
-                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
-                    {% endif %}
+            <div class="col-md-4">
+                <div class="form-check form-switch mt-4">
+                    <input class="form-check-input" type="checkbox" role="switch"
+                           id="essential-filter" name="essential" value="1"
+                           {{ essentialFilter == '1' ? 'checked' : '' }}
+                           data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <label class="form-check-label" for="essential-filter">
+                        {{ 'soa.filter.essential_only'|trans({}, 'soa') }}
+                    </label>
                 </div>
-            </td>
-        </tr>
-        {% endfor %}
+                <div class="form-text small text-muted">
+                    {{ 'soa.filter.essential_hint'|trans({}, 'soa') }}
+                </div>
+            </div>
     {% endblock %}
-{% endembed %}
+    {% block list_summary %}
+        {% set _applicable = controls|filter(c => c.applicable)|length %}
+        {% set _implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+        {% if _applicable > 0 %}
+            <span class="fa-status-pill fa-status-pill--primary">{{ 'soa.summary.applicable'|trans({'%count%': _applicable}, 'soa') }}</span>
+            <span class="fa-status-pill fa-status-pill--success">{{ 'soa.summary.implemented'|trans({'%count%': _implemented}, 'soa') }}</span>
+            <span class="fa-status-pill fa-status-pill--warning">{{ 'soa.summary.rate'|trans({'%rate%': (_implemented / _applicable * 100)|round}, 'soa') }}</span>
+        {% endif %}
+        {% include '_components/_review_due_chip.html.twig' with { type: 'control' } only %}
+    {% endblock %}
+    {% block list_table %}
+        {% embed '_components/_fa_table.html.twig' with {
+            stickyHead: true,
+            bulkSelect: false,
+            sortable: false,
+            id: 'soa-controls-list',
+            class: 'table-bulk-selectable',
+            wrapStyle: 'max-height: 70vh'
+        } %}
+            {% block table_head %}
+                {% trans_default_domain 'soa' %}
+                <tr>
+                    <th scope="col" class="fa-table__th fa-table__th--checkbox">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                    </th>
+                    <th scope="col" class="fa-table__th" style="min-width: 100px;">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="fa-table__th" style="min-width: 250px;">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="fa-table__th" style="min-width: 120px;">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+                    {% if mrisEnabled|default(true) %}
+                    <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 130px;" title="{{ 'soa.table.mris_help'|trans({}, 'soa') }}" data-tour="mris-soa-column">{{ 'soa.table.mris'|trans({}, 'soa') }}</th>
+                    {% endif %}
+                    <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="fa-table__th" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 120px;">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions" style="min-width: 180px;"><span class="visually-hidden">{{ 'soa.table.actions'|trans({}, 'soa') }}</span></th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% trans_default_domain 'soa' %}
+                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+                {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                {% for control in page %}
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell fa-table__cell--checkbox">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ control.id }}"
+                               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ control.name }}">
+                    </td>
+                    <td class="fa-table__cell">{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false, code_class: 'fw-bold' } only %}</td>
+                    <td class="fa-table__cell">
+                        {{ control.name }}
+                        {{ inheritance.small_badge(control, currentTenant) }}
+                    </td>
+                    <td class="fa-table__cell">
+                        {% include '_components/_badge.html.twig' with { variant: 'info', content: ('soa.category.' ~ control.category)|trans({}, 'soa') } %}
+                    </td>
+                    {% if mrisEnabled|default(true) %}
+                    <td class="fa-table__cell fa-table__cell--center">
+                        {% set mrisLocale = app.request.locale|default('de') %}
+                        {% if control.mythosResilience == 'standfest' %}
+                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
+                            </span>
+                        {% elseif control.mythosResilience == 'degradiert' %}
+                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
+                            </span>
+                        {% elseif control.mythosResilience == 'reibung' %}
+                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
+                            </span>
+                        {% elseif control.mythosResilience == 'nicht_betroffen' %}
+                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
+                            </span>
+                        {% else %}
+                            <span class="text-muted small">—</span>
+                        {% endif %}
+                        {% if control.mythosFlankingMhcs is not empty %}
+                            <div class="small text-muted mt-1" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.flanking_mhcs', 'tooltip', mrisLocale) }}">{{ control.mythosFlankingMhcs|join(', ') }}</div>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    <td class="fa-table__cell fa-table__cell--center">
+                        {% if control.applicable %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: '✓ ' ~ 'soa.value.yes'|trans({}, 'soa') } %}
+                        {% else %}
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: '✗ ' ~ 'soa.value.no'|trans({}, 'soa') } %}
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell">
+                        {% if control.applicable %}
+                            {% if control.implementationStatus == 'verified' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'nav-patch-check', content: 'soa.status.verified'|trans({}, 'soa') } %}
+                            {% elseif control.implementationStatus == 'implemented' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'soa.status.implemented'|trans({}, 'soa') } %}
+                            {% elseif control.implementationStatus == 'in_progress' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'util-refresh', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
+                            {% elseif control.implementationStatus == 'planned' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'ui-calendar-event', content: 'soa.status.planned'|trans({}, 'soa') } %}
+                            {% elseif control.implementationStatus == 'not_started' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'pause', content: 'soa.status.not_started'|trans({}, 'soa') } %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.value.na'|trans({}, 'soa') } %}
+                            {% endif %}
+                        {% else %}
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.status.not_applicable'|trans({}, 'soa') } %}
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell">
+                        {% if control.applicable %}
+                            {{ _fa_progress.render({ value: control.implementationPercentage, showText: true, size: 'sm' }) }}
+                        {% else %}
+                            <span class="text-center-block-light">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--actions">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                            <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
+                            {% if is_granted('edit', control) %}
+                            <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
 
-    {# Canonical bulk-action-bar (export + delete). Tag-bulk lives in the
-       polymorphic tag-bar above (entity_class: Control). #}
-    {% if controls|length > 0 %}
+        {# Canonical bulk-action-bar (export + delete). Tag-bulk lives in the
+           polymorphic tag-bar above (entity_class: Control). #}
         {% include '_components/_bulk_action_bar.html.twig' with {
             actions: ['applicable_change', 'review', 'export']
         } %}
-    {% endif %}
+    {% endblock %}
+{% endembed %}
 </div>
-
-{% if controls|length == 0 %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-{{ _fa_empty_state.render({
-    mood: 'thinking',
-    title: 'soa.empty.title'|trans({}, 'soa'),
-    text: 'soa.empty.body'|trans({}, 'soa'),
-    norm_ref: 'ISO 27001 Klausel 6.1.3 d · A.5.1ff',
-    actions: [
-        { label: 'soa.empty.create_first'|trans({}, 'soa'), variant: 'primary', icon: 'plus', href: path('app_soa_index') }
-    ],
-    help_link: path('app_help_glossary') ~ '#glossary-soa'
-}) }}
-{% endif %}
-</main>
 {% endblock %}

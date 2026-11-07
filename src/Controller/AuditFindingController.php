@@ -19,6 +19,7 @@ use App\Controller\Trait\InPageFormTrait;
 use App\Service\Clone\AuditFindingCloner;
 use App\Service\Nonconformity\AutoTaskCreator;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -118,9 +119,18 @@ class AuditFindingController extends AbstractController
             $findings = $this->repository->findBy($criteria, ['createdAt' => 'DESC']);
         }
 
+        // Summary chips count the list as shown (status, severity and focus applied).
+        $overdueIds = array_map(static fn(AuditFinding $f): ?int => $f->getId(), $overdue);
+
         return $this->render('audit_finding/index.html.twig', [
-            'findings' => $findings,
-            'overdue_count' => count($overdue),
+            'page' => ListPage::fromRequest(
+                $findings,
+                $request,
+                static fn(AuditFinding $f): array => [$f->getTitle(), $f->getFindingNumber()],
+            ),
+            'overdue_count' => count(array_filter($findings, static fn(AuditFinding $f): bool => in_array($f->getId(), $overdueIds, true))),
+            'critical_count' => count(array_filter($findings, static fn(AuditFinding $f): bool => $f->getSeverity() === 'critical')),
+            'high_count' => count(array_filter($findings, static fn(AuditFinding $f): bool => $f->getSeverity() === 'high')),
             'selected_status' => $status,
             'selected_severity' => $severity,
             'focus' => $focus,

@@ -76,13 +76,11 @@ objective:
         target_value: 'Target value to be reached by the target date. Serves as reference for success evaluation and monitoring.'
         category: 'Assign the objective to an ISMS area (e.g. Availability, Compliance). Enables filtered reporting and facilitates mapping to ISO 27001 clauses.'
         status: 'Current processing status of the objective. "At risk" or "Delayed" signals the need for action to the ISB. Status is evaluated for management reviews and KPI dashboards.'
-    stats:
-        total: Total
-        active: Active
-        achieved: Achieved
-        delayed: Delayed
+    summary:
+        achieved: '%count% achieved'
+        delayed: '%count% delayed'
     list:
-        title: 'All Objectives (%count%)'
+        title: 'All Objectives'
     table:
         title: Title
         category: Category
@@ -90,7 +88,7 @@ objective:
         progress: Progress
         status: Status
     message:
-        no_objectives: 'No objectives defined yet.'
+        no_objectives: 'No objectives yet.'
     status:
         not_started: 'Not started'
         in_progress: 'In progress'

@@ -9,6 +9,8 @@ use App\Service\AiAgentInventoryService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Util\ListPage;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -34,7 +36,7 @@ final class AiAgentInventoryController extends AbstractController
     }
 
     #[Route('/ai-agents', name: 'app_ai_agents_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('ai_governance')) {
             return $redirect;
@@ -50,14 +52,20 @@ final class AiAgentInventoryController extends AbstractController
         $stats = $this->inventoryService->inventoryStats($tenant);
         $highRiskIncomplete = $this->inventoryService->findHighRiskWithIncompleteDocumentation($tenant);
 
-        // Compliance-Vollständigkeit pro Agent für die Tabelle
+        $page = ListPage::fromRequest(
+            $agents,
+            $request,
+            static fn($a): array => [$a->getName(), $a->getAiAgentProvider(), $a->getAiAgentModelVersion()],
+        );
+
+        // Compliance-Vollständigkeit pro Agent der aktuellen Seite
         $completeness = [];
-        foreach ($agents as $agent) {
+        foreach ($page as $agent) {
             $completeness[$agent->getId()] = $this->inventoryService->complianceCompleteness($agent);
         }
 
         return $this->render('ai_agent/index.html.twig', [
-            'agents' => $agents,
+            'page' => $page,
             'stats' => $stats,
             'completeness' => $completeness,
             'high_risk_incomplete' => $highRiskIncomplete,

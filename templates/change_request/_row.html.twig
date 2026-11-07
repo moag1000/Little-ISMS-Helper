@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single ChangeRequest table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell and eye/edit
    actions open inside the fa-form-modal frame. Status badge preserved. #}
@@ -16,6 +17,7 @@
         <a href="{{ path('app_change_request_show', {id: change.id}) }}"
            data-turbo-frame="fa-form-modal"
            class="fa-row-link"><strong>{{ change.changeNumber }}</strong></a>
+           {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[change.id] ?? {}) : workflow_state(change)) }}
     </td>
     <td>
         <a href="{{ path('app_change_request_show', {id: change.id}) }}"
@@ -32,7 +34,7 @@
         <span class="{{ badge_status(change.status) }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span>
     </td>
     <td>{{ change.getComplexityScore() }}</td>
-    <td>{{ change.requestedDate|date('Y-m-d') }}</td>
+    <td>{{ change.requestedDate|fa_date }}</td>
     <td>
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
             <a href="{{ path('app_change_request_show', {id: change.id}) }}"

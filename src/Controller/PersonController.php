@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Form\PersonType;
 use App\Repository\PersonRepository;
 use App\Repository\UserRepository;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -32,15 +33,25 @@ class PersonController extends AbstractController
     ) {}
     #[Route('/person', name: 'app_person_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->security->getUser()?->getTenant();
         $persons = $tenant ? $this->personRepository->findBy(['tenant' => $tenant]) : [];
-        $statistics = $this->personRepository->getStatistics();
+
+        $type = (string) $request->query->get('type', '');
+        if ($type !== '') {
+            $persons = array_values(array_filter($persons, static fn(Person $p): bool => $p->getPersonType() === $type));
+        }
 
         return $this->render('person/index.html.twig', [
-            'persons' => $persons,
-            'statistics' => $statistics,
+            'page' => ListPage::fromRequest(
+                $persons,
+                $request,
+                static fn(Person $p): array => [$p->getFullName(), $p->getJobTitle(), $p->getCompany(), $p->getEmail(), $p->getDepartment(), $p->getBadgeId()],
+            ),
+            'employee_count' => count(array_filter($persons, static fn(Person $p): bool => $p->getPersonType() === 'employee')),
+            'contractor_count' => count(array_filter($persons, static fn(Person $p): bool => $p->getPersonType() === 'contractor')),
+            'badge_count' => count(array_filter($persons, static fn(Person $p): bool => (bool) $p->getBadgeId())),
         ]);
     }
     #[Route('/person/new', name: 'app_person_new', methods: ['GET', 'POST'])]

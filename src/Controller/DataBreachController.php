@@ -23,6 +23,7 @@ use App\Service\DataBreachService;
 use App\Service\PdfExportService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -68,9 +69,7 @@ class DataBreachController extends AbstractController
     ) {
     }
 
-    /**
-     * List all data breaches with filters
-     */
+    /** List all data breaches with filters */
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
@@ -93,6 +92,7 @@ class DataBreachController extends AbstractController
         };
 
         return $this->render('data_breach/index.html.twig', [
+            'page' => ListPage::fromRequest($breaches, $request, static fn(DataBreach $b): array => [$b->getReferenceNumber(), $b->getTitle()]),
             'breaches' => $breaches,
             'current_filter' => $filter,
             'statistics' => $this->dataBreachService->getDashboardStatistics(),

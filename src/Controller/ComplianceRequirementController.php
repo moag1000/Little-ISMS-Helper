@@ -23,6 +23,7 @@ use App\Service\MrisMaturityService;
 use App\Service\TenantContext;
 use App\Service\CrossFrameworkLookupService;
 use App\Service\TransitiveCoverageService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,25 +106,27 @@ class ComplianceRequirementController extends AbstractController
             ));
         }
 
-        $frameworks = $this->complianceFrameworkRepository->findAll();
+        $page = ListPage::fromRequest(
+            $requirements,
+            $request,
+            static fn(ComplianceRequirement $r): array => [$r->getRequirementId(), $r->getTitle(), $r->getFramework()?->getCode()],
+        );
 
-        // Load tenant-specific fulfillments for all requirements (batch)
+        // Load tenant-specific fulfillments for the rows of the current page only.
         // For SUPER_ADMIN without tenant, show empty fulfillments
         $fulfillments = [];
         if ($tenant instanceof Tenant) {
-            foreach ($requirements as $requirement) {
+            foreach ($page as $requirement) {
                 $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $requirement);
                 $fulfillments[$requirement->getId()] = $fulfillment;
             }
         }
 
         return $this->render('compliance/requirement/index.html.twig', [
-            'requirements' => $requirements,
+            'page' => $page,
             'fulfillments' => $fulfillments,
-            'frameworks' => $frameworks,
+            'frameworks' => $this->complianceFrameworkRepository->findAll(),
             'selected_framework' => $frameworkId,
-            'selected_absicherungs_stufe' => $absicherungsStufe,
-            'selected_anforderungs_typ' => $anforderungsTyp,
         ]);
     }
 

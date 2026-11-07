@@ -72,12 +72,13 @@ mris:
             title: 'AI agent inventory'
             intro: 'Asset subtype <code>ai_agent</code>. Simultaneously covers <strong>EU AI Act Art. 6/9-16</strong>, <strong>ISO 42001 Annex A</strong>, <strong>MRIS MHC-13</strong> and <strong>ISO 27001 A.5.16/A.8.27</strong>.'
             source: 'MRIS source: Peddi, R. (2026). MRIS v1.5. CC BY 4.0.'
-            stat_total: 'AI agents total'
-            stat_high_risk: 'High risk (AI Act Art. 6)'
-            stat_unclassified: 'Not classified'
-            stat_completeness: 'Avg. documentation completeness'
+            summary:
+                high_risk: '%count% high risk'
+                unclassified: '%count% not classified'
+                completeness: 'Avg. documentation %pct% %'
             high_risk_incomplete: '<strong>%count% high-risk agent(s) with incomplete documentation.</strong><br>EU AI Act Art. 11 requires complete technical documentation for high-risk systems. Complete it before first use.'
-            empty: 'No AI agents in the inventory yet. Create an asset with <code>assetType=ai_agent</code> (e.g. GitHub Copilot, Cursor, Claude Code, your own MCP server).'
+            empty: 'No AI agents yet.'
+            empty_hint: 'Create an asset of type ai_agent, e.g. GitHub Copilot, Cursor, Claude Code or your own MCP server.'
             col:
                 name: 'Name'
                 provider: 'Provider'

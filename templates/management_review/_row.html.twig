@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single ManagementReview table row — shared by the index and the Turbo Stream
    that replaces/appends a row after an in-modal save. The title cell opens the
    read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
@@ -23,8 +24,9 @@
         <a href="{{ path('app_management_review_show', {id: review.id, _locale: app.request.locale}) }}"
            data-turbo-frame="fa-form-modal"
            class="fa-row-link"><strong>{{ review.title }}</strong></a>
+           {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[review.id] ?? {}) : workflow_state(review)) }}
     </td>
-    <td>{{ review.reviewDate|date('d.m.Y') }}</td>
+    <td>{{ review.reviewDate|fa_date }}</td>
     <td>
         {% include '_components/_badge.html.twig' with {
             variant: statusClass[review.status] ?? 'secondary',

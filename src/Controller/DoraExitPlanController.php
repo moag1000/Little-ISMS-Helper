@@ -10,6 +10,7 @@ use App\Entity\DoraExitPlan;
 use App\Form\DoraExitPlanType;
 use App\Repository\DoraExitPlanRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -43,7 +44,7 @@ class DoraExitPlanController extends AbstractController
     ) {}
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
             return $redirect;
@@ -56,12 +57,13 @@ class DoraExitPlanController extends AbstractController
             ? $this->exitPlanRepository->findByTenant($tenant)
             : [];
 
-        $overdue = array_filter($plans, fn(DoraExitPlan $p): bool => $p->isRehearsalOverdue());
-
         return $this->render('dora_exit_plan/index.html.twig', [
-            'plans' => $plans,
-            'overdue_count' => count($overdue),
-            'total_count' => count($plans),
+            'page' => ListPage::fromRequest(
+                $plans,
+                $request,
+                static fn(DoraExitPlan $p): array => [$p->getSupplier()?->getName(), $p->getExitTrigger()],
+            ),
+            'overdue_count' => count(array_filter($plans, static fn(DoraExitPlan $p): bool => $p->isRehearsalOverdue())),
         ]);
     }
 

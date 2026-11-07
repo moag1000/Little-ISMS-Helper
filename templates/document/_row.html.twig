@@ -1,3 +1,4 @@
+{% import '_components/_fa_workflow_pill.html.twig' as _fa_workflow_pill %}
 {# Single Document table row — shared by the index and the Turbo Stream that
    replaces/appends a row after an in-modal save. The title cell + eye action
    open the read-only detail in the fa-form-modal frame; the edit pencil opens
@@ -40,6 +41,7 @@
            class="fa-row-link"
            data-turbo-frame="fa-form-modal"><strong>{{ document.originalFilename }}</strong></a>
         {{ inheritance.small_badge(document, currentTenant) }}
+        {{ _fa_workflow_pill.render(workflowStates is defined ? (workflowStates[document.id] ?? {}) : workflow_state(document)) }}
         {# Policy-Wizard — settings-drift badge. #}
         {% if driftMap[document.id] is defined and driftMap[document.id] %}
             {{ pill.render('policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard'), 'warning', {size: 'sm', icon: 'status-warning', class: 'ms-1', title: 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard')}) }}
@@ -99,7 +101,7 @@
     </td>
     <td class="fa-table__cell">
         <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-        {{ document.uploadedAt|date('d.m.Y') }}
+        {{ document.uploadedAt|fa_date }}
         <br>
         <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
     </td>

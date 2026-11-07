@@ -71,7 +71,7 @@ dora_data_flow:
         security: "Sicherheit"
         transfer: "Transfer"
     message:
-        no_flows: "Noch keine Datenflüsse erfasst."
+        no_flows: "Keine Datenflüsse vorhanden."
     success:
         created: Datenfluss angelegt.
         updated: "Datenfluss wurde aktualisiert."

@@ -72,11 +72,12 @@ bcm:
         benefit_consistency: 'Konsistenz: Einheitliche Daten in allen Modulen'
         benefit_compliance: 'Compliance: Automatische Verknüpfung mit Anforderungen'
         benefit_quality: 'Qualität: Geprüfte Daten aus validierter Quelle'
+    summary:
+        critical: '%count% kritisch'
+        high: '%count% hoch'
     stats:
-        total_processes: 'Prozesse gesamt'
         critical_processes: 'Kritische Prozesse'
         avg_rto: 'Durchschnittliches RTO'
-        avg_mtpd: 'Durchschnittliches MTPD'
         high_priority: 'Hohe Priorität'
     badge:
         immediate: Sofort
@@ -93,7 +94,7 @@ bcm:
         impact: 'Impact'
         assets: 'Assets'
     empty:
-        title: 'Noch keine Geschäftsprozesse definiert'
+        title: 'Keine Geschäftsprozesse vorhanden.'
         description: 'Legen Sie Ihren ersten kritischen Prozess an, um zu beginnen.'
     criticality:
         critical: 'Kritisch'

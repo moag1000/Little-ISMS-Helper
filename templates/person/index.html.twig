@@ -2,12 +2,10 @@
 {% trans_default_domain 'people' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'person.title.list'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'person.title.list'|trans({}, 'people') }}{% endblock %}
 
 {% block body %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -18,10 +16,10 @@
 </div>
 
 {{ _fa_page_header.render({
-    title: 'person.title.list'|trans({}, 'messages'),
-    subtitle: 'person.description.overview'|trans({}, 'messages'),
+    title: 'person.title.list'|trans({}, 'people'),
+    subtitle: 'person.description.overview'|trans({}, 'people'),
     actions: [
-        { label: 'person.action.create'|trans({}, 'messages'), variant: 'primary', icon: 'plus', href: path('app_person_new') }
+        { label: 'person.action.create'|trans({}, 'people'), variant: 'primary', icon: 'plus', href: path('app_person_new') }
     ]
 }) }}
 {% set _global_hints = alva_hints('person_index') %}
@@ -31,51 +29,50 @@
     {% endfor %}
 {% endif %}
 
-
-<main>
-
-{# Statistics Cards #}
-<div class="kpi-grid">
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'person.stats.total'|trans({}, 'messages'), value: persons|length, variant: 'primary' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'person.stats.employees'|trans({}, 'messages'), value: persons|filter(p => p.personType == 'employee')|length, variant: 'success' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'person.stats.contractors'|trans({}, 'messages'), value: persons|filter(p => p.personType == 'contractor')|length, variant: 'info' }) }}
-    </div>
-    <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'person.stats.with_badge'|trans({}, 'messages'), value: persons|filter(p => p.badgeId)|length, variant: 'warning' }) }}
-    </div>
-</div>
-
-{# Persons Table #}
-{% if persons is not empty %}
-{% embed '_components/_table.html.twig' with {
-    'wrapperClass': 'table-container'
+<div class="container-fluid py-3">
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_person_index'),
+    filter_keys: ['type'],
+    list_title: 'person.title.list'|trans({}, 'people'),
+    empty: {
+        mood: 'sleeping',
+        title: 'person.message.no_persons'|trans({}, 'people'),
+        actions: [
+            { label: 'person.action.create'|trans({}, 'people'), variant: 'primary', icon: 'plus', href: path('app_person_new') }
+        ]
+    },
 } %}
-    {% block table_head %}
-        <tr>
-            <th scope="col">{{ 'person.field.name'|trans({}, 'messages') }}</th>
-            <th scope="col">{{ 'person.field.type'|trans({}, 'messages') }}</th>
-            <th scope="col">{{ 'person.field.badge_id'|trans({}, 'messages') }}</th>
-            <th scope="col">{{ 'person.field.company'|trans({}, 'messages') }}</th>
-            <th scope="col">{{ 'person.field.email'|trans({}, 'messages') }}</th>
-            <th scope="col">{{ 'person.field.department'|trans({}, 'messages') }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
-        </tr>
+    {% block list_filters %}
+        <div class="col-md-3">
+            <label for="person-type" class="form-label">{{ 'person.field.type'|trans({}, 'people') }}</label>
+            <select class="form-select fa-cyber-input__field" id="person-type" name="type" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                {% for t in ['employee', 'contractor', 'visitor', 'vendor', 'auditor', 'consultant', 'other'] %}
+                    <option value="{{ t }}"{{ app.request.query.get('type') == t ? ' selected' : '' }}>{{ ('person.type.' ~ t)|trans({}, 'people') }}</option>
+                {% endfor %}
+            </select>
+        </div>
     {% endblock %}
-    {% block table_body %}
-        {% for person in persons %}
-        <tr>
-            <td>
-                <strong>{{ person.fullName }}</strong>
-                {% if person.jobTitle %}
-                    <br><small class="text-muted-color">{{ person.jobTitle }}</small>
-                {% endif %}
-            </td>
-            <td>
+    {% block list_summary %}
+        {% if employee_count > 0 %}<span class="fa-status-pill fa-status-pill--success">{{ 'person.summary.employees'|trans({'%count%': employee_count}, 'people') }}</span>{% endif %}
+        {% if contractor_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'person.summary.contractors'|trans({'%count%': contractor_count}, 'people') }}</span>{% endif %}
+        {% if badge_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'person.summary.with_badge'|trans({'%count%': badge_count}, 'people') }}</span>{% endif %}
+    {% endblock %}
+    {% block list_table %}
+        {% embed '_components/_table.html.twig' with { 'noMargin': true } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">{{ 'person.field.name'|trans({}, 'people') }}</th>
+                    <th scope="col">{{ 'person.field.type'|trans({}, 'people') }}</th>
+                    <th scope="col">{{ 'person.field.badge_id'|trans({}, 'people') }}</th>
+                    <th scope="col">{{ 'person.field.company'|trans({}, 'people') }}</th>
+                    <th scope="col">{{ 'person.field.email'|trans({}, 'people') }}</th>
+                    <th scope="col">{{ 'person.field.department'|trans({}, 'people') }}</th>
+                    <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
                 {% set typeColors = {
                     'employee': 'success',
                     'contractor': 'info',
@@ -84,46 +81,48 @@
                     'auditor': 'danger',
                     'consultant': 'info'
                 } %}
-                {% include '_components/_badge.html.twig' with { variant: typeColors[person.personType]|default('secondary'), content: ('person.type.' ~ person.personType)|trans({}, 'people') } %}
-            </td>
-            <td>
-                {% if person.badgeId %}
-                    <code>{{ person.badgeId }}</code>
-                {% else %}
-                    <span class="text-muted-color">-</span>
-                {% endif %}
-            </td>
-            <td>{{ person.company ?? '-' }}</td>
-            <td>
-                {% if person.email %}
-                    <a href="mailto:{{ person.email }}">{{ person.email }}</a>
-                {% else %}
-                    <span class="text-muted-color">-</span>
-                {% endif %}
-            </td>
-            <td>{{ person.department ?? '-' }}</td>
-            <td class="text-center">
-                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans({}, 'messages') }}">
-                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ person.fullName }}">
-                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }} {{ person.fullName }}">
-                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
+                {% for person in page %}
+                <tr>
+                    <td>
+                        <strong>{{ person.fullName }}</strong>
+                        {% if person.jobTitle %}
+                            <br><small class="text-muted-color">{{ person.jobTitle }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% include '_components/_badge.html.twig' with { variant: typeColors[person.personType]|default('secondary'), content: ('person.type.' ~ person.personType)|trans({}, 'people') } %}
+                    </td>
+                    <td>
+                        {% if person.badgeId %}
+                            <code>{{ person.badgeId }}</code>
+                        {% else %}
+                            <span class="text-muted-color">-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ person.company ?? '-' }}</td>
+                    <td>
+                        {% if person.email %}
+                            <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+                        {% else %}
+                            <span class="text-muted-color">-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ person.department ?? '-' }}</td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans({}, 'people') }}">
+                            <a href="{{ path('app_person_show', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ person.fullName }}">
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                            </a>
+                            <a href="{{ path('app_person_edit', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }} {{ person.fullName }}">
+                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
     {% endblock %}
 {% endembed %}
-{% else %}
-    {{ _fa_empty_state.render({
-        mood: 'sleeping',
-        title: 'person.message.no_persons'|trans({}, 'messages'),
-        actions: [
-            { label: 'person.action.create'|trans({}, 'messages'), variant: 'primary', icon: 'plus', href: path('app_person_new') }
-        ]
-    }) }}
-{% endif %}
-</main>
+</div>
 {% endblock %}

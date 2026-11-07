@@ -13,6 +13,7 @@ use App\Entity\CrisisTeam;
 use App\Form\CrisisTeamType;
 use App\Repository\CrisisTeamRepository;
 use App\Service\ModuleConfigurationService;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -48,7 +49,7 @@ class CrisisTeamController extends AbstractController
     }
 
     #[Route('/crisis-team', name: 'app_crisis_team_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
 
@@ -58,16 +59,15 @@ class CrisisTeamController extends AbstractController
             ? $this->crisisTeamRepository->findBy(['tenant' => $tenant])
             : $this->crisisTeamRepository->findAll();
 
-        // Statistics
-        $activeTeams = array_filter($crisisTeams, fn(CrisisTeam $crisisTeam): bool => $crisisTeam->isActive());
-        $operationalTeams = array_filter($crisisTeams, fn(CrisisTeam $crisisTeam): bool => $crisisTeam->getTeamType() === 'operational');
-        $strategicTeams = array_filter($crisisTeams, fn(CrisisTeam $crisisTeam): bool => $crisisTeam->getTeamType() === 'strategic');
-
         return $this->render('crisis_team/index.html.twig', [
-            'crisis_teams' => $crisisTeams,
-            'active_count' => count($activeTeams),
-            'operational_count' => count($operationalTeams),
-            'strategic_count' => count($strategicTeams),
+            'page' => ListPage::fromRequest(
+                $crisisTeams,
+                $request,
+                static fn(CrisisTeam $t): array => [$t->getTeamName(), $t->getTeamType()],
+            ),
+            'active_count' => count(array_filter($crisisTeams, static fn(CrisisTeam $t): bool => $t->isActive())),
+            'operational_count' => count(array_filter($crisisTeams, static fn(CrisisTeam $t): bool => $t->getTeamType() === 'operational')),
+            'strategic_count' => count(array_filter($crisisTeams, static fn(CrisisTeam $t): bool => $t->getTeamType() === 'strategic')),
         ]);
     }
 

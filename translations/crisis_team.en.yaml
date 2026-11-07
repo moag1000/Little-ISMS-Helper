@@ -2,9 +2,11 @@ crisis_team:
     title: 'Crisis Teams'
     new: 'New Crisis Team'
     edit: 'Edit Crisis Team'
-    empty: 'No crisis teams defined yet.'
-    kpi:
-        active: 'Active Teams'
+    empty: 'No crisis teams yet.'
+    summary:
+        active: '%count% active'
+        operational: '%count% operational'
+        strategic: '%count% strategic'
     section:
         basic_info: 'Basic Information'
         leadership: Leadership

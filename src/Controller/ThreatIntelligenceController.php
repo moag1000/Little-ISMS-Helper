@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\BulkDeleteService;
+use App\Util\ListPage;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
@@ -100,8 +101,8 @@ class ThreatIntelligenceController extends AbstractController
         ];
 
         return $this->render('threat_intelligence/index.html.twig', [
-            'threats' => $threats,
-            'stats'   => $stats,
+            'page'  => ListPage::fromRequest($threats, $request), // `q` is applied above, the chips count the same set
+            'stats' => $stats,
         ]);
     }
 

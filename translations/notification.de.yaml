@@ -25,6 +25,10 @@ notification:
 
     # Sprint 6b: Rule CRUD
     rule:
+        list: 'Regeln'
+        summary:
+            active: '%count% aktiv'
+            inactive: '%count% inaktiv'
         index:
             title: 'Benachrichtigungsregeln'
             subtitle: 'Regeln definieren, welche Ereignisse eine Benachrichtigung auslösen und über welche Kanäle.'
@@ -40,7 +44,7 @@ notification:
         edit:
             title: 'Regel bearbeiten: %name%'
         empty:
-            title: 'Noch keine Regeln vorhanden'
+            title: 'Keine Regeln vorhanden.'
             body: 'Erstellen Sie Ihre erste Benachrichtigungsregel, um über wichtige Ereignisse informiert zu werden.'
         field:
             name: 'Name'
@@ -77,6 +81,10 @@ notification:
 
     # Sprint 6b: Channel CRUD
     channel:
+        list: 'Kanäle'
+        summary:
+            active: '%count% aktiv'
+            unverified: '%count% nicht verifiziert'
         index:
             title: 'Benachrichtigungskanäle'
             subtitle: 'Konfigurieren Sie E-Mail-, Webhook- und In-App-Kanäle für ausgehende Benachrichtigungen.'
@@ -90,7 +98,7 @@ notification:
             not_verified_hint: 'Dieser Kanal wurde noch nicht verifiziert. Klicken Sie auf „Verifizieren", um die Erreichbarkeit zu testen.'
             verified_at: 'Zuletzt verifiziert: %date%'
         empty:
-            title: 'Noch keine Kanäle vorhanden'
+            title: 'Keine Kanäle vorhanden.'
             body: 'Legen Sie einen Kanal an, bevor Sie Regeln konfigurieren.'
         field:
             name: 'Kanalname'
@@ -200,11 +208,19 @@ notification:
         tab:
             all: 'Alle'
         empty:
-            title: 'Keine Benachrichtigungen'
+            title: 'Keine Benachrichtigungen vorhanden.'
             body: 'Aktuell sind keine Benachrichtigungen vorhanden.'
-            severity: 'Keine Benachrichtigungen mit Schweregrad „%severity%".'
         badge:
             new: 'Neu'
+        col:
+            rule: 'Regel'
+            event: 'Ereignis'
+            severity: 'Schweregrad'
+            time: 'Zeitpunkt'
+
+    summary:
+        critical: '%count% kritisch'
+        high: '%count% hoch'
 
     # Sprint 6b: Severity labels
     severity:

@@ -89,7 +89,7 @@ tia:
     delete: 'Delete TIA'
 
   empty:
-    title: 'No TIA on record'
+    title: 'No TIAs yet.'
     body: 'No Transfer Impact Assessment has been created for this processing activity. Create a TIA now to document the third-country transfer.'
 
   success:

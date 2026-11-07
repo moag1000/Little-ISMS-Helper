@@ -99,8 +99,11 @@ prototype_protection:
         meta: 'Metadaten'
     expiring:
         heading: '%count% Bewertung(en) laufen in den nächsten 60 Tagen ab:'
+    summary:
+        not_met: '%count% nicht erfüllt'
+        in_review: '%count% in Prüfung'
     empty:
-        title: 'Noch keine Prototype-Protection-Bewertungen'
+        title: 'Keine Prototypenschutz-Bewertungen vorhanden.'
         message: 'Starten Sie mit einem neuen Assessment, sobald Prototypen, Erprobungsträger oder Events in Ihrem TISAX-Scope liegen.'
     flash:
         created: 'Prototype-Protection-Assessment erstellt.'

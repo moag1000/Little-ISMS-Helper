@@ -222,8 +222,6 @@ common:
     export: Export
     export_excel: 'Export as Excel'
     filter: Filter
-    filters: Filters
-    clear: Clear
     from: From
     help_label: Help
     history: History
@@ -298,7 +296,6 @@ common:
     info: 'Information'
     activities: 'Activities'
     no_items_found: 'No items found'
-    items: 'Items'
     pdf_export: 'PDF export'
     placeholder:
         case_number_from_authority: 'Supervisory authority case number (e.g. AZ-2024-123)'
@@ -368,11 +365,6 @@ person:
     action:
         create: 'Create Person'
         view_details: 'View person details'
-    stats:
-        total: 'Total People'
-        employees: Employees
-        contractors: Contractors
-        with_badge: 'With Badge'
     type:
         employee: Employee
         contractor: Contractor
@@ -573,10 +565,11 @@ permission:
     affected_users: 'Affected Users'
     system_permission: 'System Permission'
     statistics:
-        total: Total
         system: System
         custom: Custom
-        categories: Categories
+    summary:
+        system: '%count% system'
+        custom: '%count% custom'
     subtitle: 'Permission management and access control'
 data:
     title: 'Data Management'
@@ -1257,7 +1250,6 @@ corporate:
         own: Own
         inherited: Inherited
         subsidiaries: Subsidiaries
-        breakdown: 'Own: %own% | Inherited: %inherited% | Subs: %subsidiaries%'
         groups: 'Corporate Groups'
     view:
         own_only: 'Own Only'
@@ -1367,7 +1359,6 @@ governance:
 accessibility:
     skip_to_content: 'Skip to main content'
     skip_to_navigation: 'Skip to navigation'
-    skip_to_filters: 'Skip to filters'
 nis2:
     notification:
         early_warning: 'NIS2 Early Warning for incident "%incident%" due in %hours% hours. Deadline: %deadline%'
@@ -2251,8 +2242,6 @@ reuse:
 # data_breach index table/filter keys (used in data_breach/index.html.twig with messages domain)
 data_breach:
     index:
-        kpi_affected_subjects: 'Total affected persons'
-        kpi_total_count: 'Total incidents'
         filter_title: 'Filter by status'
         filter_all: 'All'
         filter_overdue: 'Overdue'

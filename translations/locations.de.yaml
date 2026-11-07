@@ -5,11 +5,10 @@ location:
     action:
         create: 'Standort anlegen'
         view_details: 'Details anzeigen'
-    stats:
-        total: Gesamt‑Standorte
-        buildings: Gebäude
-        rooms: Räume
-        secure: Zutrittsgesichert
+    summary:
+        buildings: '%count% Gebäude'
+        rooms: '%count% Räume'
+        secure: '%count% zutrittsgesichert'
     field:
         name: Name
         type: Typ

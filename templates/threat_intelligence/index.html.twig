@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'threat' %}
-{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'threat.title.index'|trans({}, 'threat') }}{% endblock %}
 
@@ -21,143 +20,105 @@
     ]
 }) }}
 
-<main>
-
-{# KPI Cards #}
-<div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
-    {{ _fa_feature_card.render({
-        icon: 'nav-shield',
-        label: 'threat.kpi.total'|trans({}, 'threat'),
-        value: stats.total,
-        variant: 'primary'
-    }) }}
-    {{ _fa_feature_card.render({
-        icon: 'status-critical',
-        label: 'threat.kpi.critical'|trans({}, 'threat'),
-        value: stats.critical,
-        variant: 'danger'
-    }) }}
-    {{ _fa_feature_card.render({
-        icon: 'status-warning',
-        label: 'threat.kpi.high'|trans({}, 'threat'),
-        value: stats.high,
-        variant: 'warning'
-    }) }}
-    {{ _fa_feature_card.render({
-        icon: 'nav-heart-pulse',
-        label: 'threat.kpi.open'|trans({}, 'threat'),
-        value: stats.open,
-        variant: 'info'
-    }) }}
-</div>
-
-{# Filter Form #}
-{% embed '_components/_search_filter_form.html.twig' with {
-    action: path('app_threat_intelligence_index'),
+<div class="container-fluid py-4">
+{% embed '_components/_fa_list_page.html.twig' with {
+    page: page,
+    search_action: path('app_threat_intelligence_index'),
     filter_keys: ['severity', 'threatType', 'status'],
-    form_id: 'threat-filter-form'
-} %}
-    {% block filters %}
-        <div class="col-md-3">
-            <label for="filter-severity" class="form-label">{{ 'threat.field.severity'|trans({}, 'threat') }}</label>
-            <select class="form-select fa-cyber-input__field" id="filter-severity" name="severity">
-                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                <option value="critical" {{ app.request.query.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'severity.critical'|trans({}, 'threat') }}</option>
-                <option value="high"     {{ app.request.query.get('severity') == 'high'     ? 'selected' : '' }}>{{ 'severity.high'|trans({}, 'threat') }}</option>
-                <option value="medium"   {{ app.request.query.get('severity') == 'medium'   ? 'selected' : '' }}>{{ 'severity.medium'|trans({}, 'threat') }}</option>
-                <option value="low"      {{ app.request.query.get('severity') == 'low'      ? 'selected' : '' }}>{{ 'severity.low'|trans({}, 'threat') }}</option>
-                <option value="informational" {{ app.request.query.get('severity') == 'informational' ? 'selected' : '' }}>{{ 'severity.informational'|trans({}, 'threat') }}</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label for="filter-type" class="form-label">{{ 'threat.field.threat_type'|trans({}, 'threat') }}</label>
-            <select class="form-select fa-cyber-input__field" id="filter-type" name="threatType">
-                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                <option value="malware"            {{ app.request.query.get('threatType') == 'malware'            ? 'selected' : '' }}>{{ 'type.malware'|trans({}, 'threat') }}</option>
-                <option value="phishing"           {{ app.request.query.get('threatType') == 'phishing'           ? 'selected' : '' }}>{{ 'type.phishing'|trans({}, 'threat') }}</option>
-                <option value="ransomware"         {{ app.request.query.get('threatType') == 'ransomware'         ? 'selected' : '' }}>{{ 'type.ransomware'|trans({}, 'threat') }}</option>
-                <option value="ddos"               {{ app.request.query.get('threatType') == 'ddos'               ? 'selected' : '' }}>{{ 'type.ddos'|trans({}, 'threat') }}</option>
-                <option value="zero_day"           {{ app.request.query.get('threatType') == 'zero_day'           ? 'selected' : '' }}>{{ 'type.zero_day'|trans({}, 'threat') }}</option>
-                <option value="apt"                {{ app.request.query.get('threatType') == 'apt'                ? 'selected' : '' }}>{{ 'type.apt'|trans({}, 'threat') }}</option>
-                <option value="insider_threat"     {{ app.request.query.get('threatType') == 'insider_threat'     ? 'selected' : '' }}>{{ 'type.insider_threat'|trans({}, 'threat') }}</option>
-                <option value="social_engineering" {{ app.request.query.get('threatType') == 'social_engineering' ? 'selected' : '' }}>{{ 'type.social_engineering'|trans({}, 'threat') }}</option>
-                <option value="data_breach"        {{ app.request.query.get('threatType') == 'data_breach'        ? 'selected' : '' }}>{{ 'type.data_breach'|trans({}, 'threat') }}</option>
-                <option value="vulnerability"      {{ app.request.query.get('threatType') == 'vulnerability'      ? 'selected' : '' }}>{{ 'type.vulnerability'|trans({}, 'threat') }}</option>
-                <option value="other"              {{ app.request.query.get('threatType') == 'other'              ? 'selected' : '' }}>{{ 'type.other'|trans({}, 'threat') }}</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label for="filter-status" class="form-label">{{ 'threat.field.status'|trans({}, 'threat') }}</label>
-            <select class="form-select fa-cyber-input__field" id="filter-status" name="status">
-                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                <option value="new"       {{ app.request.query.get('status') == 'new'       ? 'selected' : '' }}>{{ 'status_type.new'|trans({}, 'threat') }}</option>
-                <option value="analyzing" {{ app.request.query.get('status') == 'analyzing' ? 'selected' : '' }}>{{ 'status_type.analyzing'|trans({}, 'threat') }}</option>
-                <option value="mitigated" {{ app.request.query.get('status') == 'mitigated' ? 'selected' : '' }}>{{ 'status_type.mitigated'|trans({}, 'threat') }}</option>
-                <option value="monitoring"{{ app.request.query.get('status') == 'monitoring' ? 'selected' : '' }}>{{ 'status_type.monitoring'|trans({}, 'threat') }}</option>
-                <option value="closed"    {{ app.request.query.get('status') == 'closed'    ? 'selected' : '' }}>{{ 'status_type.closed'|trans({}, 'threat') }}</option>
-            </select>
-        </div>
-    {% endblock %}
-{% endembed %}
-
-{# List or Empty State #}
-{% if threats|length == 0 %}
-    {% include '_components/_empty_state.html.twig' with {
-        icon: 'nav-shield-alert',
+    list_title: 'threat.title.index'|trans({}, 'threat'),
+    empty: {
+        mood: 'sleeping',
         title: 'threat.empty.title'|trans({}, 'threat'),
-        description: 'threat.empty.description'|trans({}, 'threat'),
-        action: { label: 'threat.action.create'|trans({}, 'threat'), url: path('app_threat_intelligence_new'), icon: 'plus' }
-    } %}
-{% else %}
-{% embed '_components/_card.html.twig' %}
-    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/threat-intelligence"{% endblock %}
-    {% block card_header %}
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">
-                <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
-                {{ 'threat.title.index'|trans({}, 'threat') }} ({{ threats|length }})
-            </h2>
-        </div>
+        text: 'threat.empty.description'|trans({}, 'threat'),
+        actions: [
+            { label: 'threat.action.create'|trans({}, 'threat'), variant: 'primary', icon: 'plus', href: path('app_threat_intelligence_new') }
+        ]
+    },
+    card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/threat-intelligence"',
+} %}
+    {% block list_filters %}
+            <div class="col-md-3">
+                <label for="filter-severity" class="form-label">{{ 'threat.field.severity'|trans({}, 'threat') }}</label>
+                <select class="form-select fa-cyber-input__field" id="filter-severity" name="severity">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="critical" {{ app.request.query.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'severity.critical'|trans({}, 'threat') }}</option>
+                    <option value="high"     {{ app.request.query.get('severity') == 'high'     ? 'selected' : '' }}>{{ 'severity.high'|trans({}, 'threat') }}</option>
+                    <option value="medium"   {{ app.request.query.get('severity') == 'medium'   ? 'selected' : '' }}>{{ 'severity.medium'|trans({}, 'threat') }}</option>
+                    <option value="low"      {{ app.request.query.get('severity') == 'low'      ? 'selected' : '' }}>{{ 'severity.low'|trans({}, 'threat') }}</option>
+                    <option value="informational" {{ app.request.query.get('severity') == 'informational' ? 'selected' : '' }}>{{ 'severity.informational'|trans({}, 'threat') }}</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-type" class="form-label">{{ 'threat.field.threat_type'|trans({}, 'threat') }}</label>
+                <select class="form-select fa-cyber-input__field" id="filter-type" name="threatType">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="malware"            {{ app.request.query.get('threatType') == 'malware'            ? 'selected' : '' }}>{{ 'type.malware'|trans({}, 'threat') }}</option>
+                    <option value="phishing"           {{ app.request.query.get('threatType') == 'phishing'           ? 'selected' : '' }}>{{ 'type.phishing'|trans({}, 'threat') }}</option>
+                    <option value="ransomware"         {{ app.request.query.get('threatType') == 'ransomware'         ? 'selected' : '' }}>{{ 'type.ransomware'|trans({}, 'threat') }}</option>
+                    <option value="ddos"               {{ app.request.query.get('threatType') == 'ddos'               ? 'selected' : '' }}>{{ 'type.ddos'|trans({}, 'threat') }}</option>
+                    <option value="zero_day"           {{ app.request.query.get('threatType') == 'zero_day'           ? 'selected' : '' }}>{{ 'type.zero_day'|trans({}, 'threat') }}</option>
+                    <option value="apt"                {{ app.request.query.get('threatType') == 'apt'                ? 'selected' : '' }}>{{ 'type.apt'|trans({}, 'threat') }}</option>
+                    <option value="insider_threat"     {{ app.request.query.get('threatType') == 'insider_threat'     ? 'selected' : '' }}>{{ 'type.insider_threat'|trans({}, 'threat') }}</option>
+                    <option value="social_engineering" {{ app.request.query.get('threatType') == 'social_engineering' ? 'selected' : '' }}>{{ 'type.social_engineering'|trans({}, 'threat') }}</option>
+                    <option value="data_breach"        {{ app.request.query.get('threatType') == 'data_breach'        ? 'selected' : '' }}>{{ 'type.data_breach'|trans({}, 'threat') }}</option>
+                    <option value="vulnerability"      {{ app.request.query.get('threatType') == 'vulnerability'      ? 'selected' : '' }}>{{ 'type.vulnerability'|trans({}, 'threat') }}</option>
+                    <option value="other"              {{ app.request.query.get('threatType') == 'other'              ? 'selected' : '' }}>{{ 'type.other'|trans({}, 'threat') }}</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-status" class="form-label">{{ 'threat.field.status'|trans({}, 'threat') }}</label>
+                <select class="form-select fa-cyber-input__field" id="filter-status" name="status">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="new"       {{ app.request.query.get('status') == 'new'       ? 'selected' : '' }}>{{ 'status_type.new'|trans({}, 'threat') }}</option>
+                    <option value="analyzing" {{ app.request.query.get('status') == 'analyzing' ? 'selected' : '' }}>{{ 'status_type.analyzing'|trans({}, 'threat') }}</option>
+                    <option value="mitigated" {{ app.request.query.get('status') == 'mitigated' ? 'selected' : '' }}>{{ 'status_type.mitigated'|trans({}, 'threat') }}</option>
+                    <option value="monitoring"{{ app.request.query.get('status') == 'monitoring' ? 'selected' : '' }}>{{ 'status_type.monitoring'|trans({}, 'threat') }}</option>
+                    <option value="closed"    {{ app.request.query.get('status') == 'closed'    ? 'selected' : '' }}>{{ 'status_type.closed'|trans({}, 'threat') }}</option>
+                </select>
+            </div>
     {% endblock %}
-    {% block card_body %}
-    {% embed '_components/_table.html.twig' with {
-        'class': 'table-hover mb-0',
-        'noMargin': true,
-        'responsive': true
-    } %}
-        {% block table_head %}
-            <tr>
-                <th scope="col" class="bulk-select-column">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           data-action="bulk-actions#selectAll"
-                           data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
-                </th>
-                <th scope="col">{{ 'threat.field.title'|trans({}, 'threat') }}</th>
-                <th scope="col">{{ 'threat.field.threat_type'|trans({}, 'threat') }}</th>
-                <th scope="col" class="text-center">{{ 'threat.field.severity'|trans({}, 'threat') }}</th>
-                <th scope="col" class="text-center">{{ 'threat.field.status'|trans({}, 'threat') }}</th>
-                <th scope="col">{{ 'threat.label.assignee'|trans({}, 'threat') }}</th>
-                <th scope="col">{{ 'threat.field.detection_date'|trans({}, 'threat') }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
-            </tr>
-        {% endblock %}
-        {% block table_body_attrs %}id="threat-intelligence-rows"{% endblock %}
-        {% block table_body %}
-            {% for threat in threats %}
-                {% include 'threat_intelligence/_row.html.twig' with { threat: threat } %}
-            {% endfor %}
-        {% endblock %}
-    {% endembed %}
+    {% block list_summary %}
+        {% if stats.critical > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'threat.summary.critical'|trans({'%count%': stats.critical}, 'threat') }}</span>{% endif %}
+        {% if stats.high > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'threat.summary.high'|trans({'%count%': stats.high}, 'threat') }}</span>{% endif %}
+        {% if stats.open > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'threat.summary.open'|trans({'%count%': stats.open}, 'threat') }}</span>{% endif %}
+    {% endblock %}
+    {% block list_table %}
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-hover mb-0',
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col" class="bulk-select-column">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                    </th>
+                    <th scope="col">{{ 'threat.field.title'|trans({}, 'threat') }}</th>
+                    <th scope="col">{{ 'threat.field.threat_type'|trans({}, 'threat') }}</th>
+                    <th scope="col" class="text-center">{{ 'threat.field.severity'|trans({}, 'threat') }}</th>
+                    <th scope="col" class="text-center">{{ 'threat.field.status'|trans({}, 'threat') }}</th>
+                    <th scope="col">{{ 'threat.label.assignee'|trans({}, 'threat') }}</th>
+                    <th scope="col">{{ 'threat.field.detection_date'|trans({}, 'threat') }}</th>
+                    <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body_attrs %}id="threat-intelligence-rows"{% endblock %}
+            {% block table_body %}
+                {% for threat in page %}
+                    {% include 'threat_intelligence/_row.html.twig' with { threat: threat } %}
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
 
-    {# Bulk Action Bar #}
-    {% include '_components/_bulk_action_bar.html.twig' with {
-        actions: ['export', 'delete']
-    } %}
+        {# Bulk Action Bar #}
+        {% include '_components/_bulk_action_bar.html.twig' with {
+            actions: ['export', 'delete']
+        } %}
     {% endblock %}
 {% endembed %}
-{% endif %}
-
-</main>
+</div>
 {% endblock %}

@@ -3,8 +3,8 @@
 # Remove an entry once the call passes an explicit domain
 # or is migrated to a LocalizedFlashTrait helper.
 src/Controller/Admin/SampleDataController.php:168
-src/Controller/ComplianceFrameworkController.php:96
-src/Controller/ComplianceFrameworkController.php:232
+src/Controller/ComplianceFrameworkController.php:101
+src/Controller/ComplianceFrameworkController.php:237
 src/Controller/ContextController.php:107
 src/Controller/CrisisTeamController.php:80
 src/Controller/CrisisTeamController.php:115

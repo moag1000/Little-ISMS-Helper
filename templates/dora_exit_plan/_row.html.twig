@@ -19,7 +19,7 @@
     </td>
     <td>
         {% if plan.testedAt %}
-            {{ plan.testedAt|date('Y-m-d') }}
+            {{ plan.testedAt|fa_date }}
             {% if plan.isRehearsalOverdue() %}
                 {% include '_components/_badge.html.twig' with {
                     variant: 'warning',

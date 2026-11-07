@@ -17,6 +17,7 @@ use App\Repository\AuditProgramRepository;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,7 +67,7 @@ class AuditProgramController extends AbstractController
     // ── Index ──────────────────────────────────────────────────────────────────
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('audits')) {
             return $redirect;
@@ -77,8 +78,15 @@ class AuditProgramController extends AbstractController
             ? $this->auditProgramRepository->findAllByTenant($tenant)
             : [];
 
+        $statusCounts = array_count_values(array_map(static fn(AuditProgram $p): string => $p->getStatus(), $programs));
+
         return $this->render('audit_program/index.html.twig', [
-            'programs' => $programs,
+            'page' => ListPage::fromRequest(
+                $programs,
+                $request,
+                static fn(AuditProgram $p): array => [$p->getName(), $p->getDescription()],
+            ),
+            'status_counts' => $statusCounts,
         ]);
     }
 

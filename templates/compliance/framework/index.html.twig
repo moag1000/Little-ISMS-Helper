@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% block title %}{{ 'compliance.framework.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
@@ -26,71 +25,52 @@
         actions: _header_actions
     }) }}
 
-    {# Skip link for filters section - WCAG 2.4.1 #}
-    <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
-
-    {# Filters #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-        {% block card_header %}
-            <div class="card-header">
-                <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_compliance_framework_index'),
+        filter_keys: ['active', 'mandatory', 'industry'],
+        list_title: 'compliance.framework.list'|trans({}, 'compliance'),
+        empty: {
+            mood: 'sleeping',
+            title: 'compliance.framework.empty'|trans({}, 'compliance'),
+            norm_ref: 'ISO 27001 Clause 4.2, 6.1.3',
+            help_link: path('app_help_glossary') ~ '#glossary-framework',
+            actions: is_granted('ROLE_ADMIN') ? [
+                { label: 'compliance.framework.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'plus', href: path('app_compliance_framework_new') }
+            ] : []
+        },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-3">
+                <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans({}, 'compliance') }}</label>
+                <select name="active" id="filter-active" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="1" {{ filters.active == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
+                    <option value="0" {{ filters.active == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="filter-mandatory">{{ 'compliance.framework.field.mandatory'|trans({}, 'compliance') }}</label>
+                <select name="mandatory" id="filter-mandatory" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="1" {{ filters.mandatory == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
+                    <option value="0" {{ filters.mandatory == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="filter-industry">{{ 'compliance.framework.field.industry'|trans({}, 'compliance') }}</label>
+                <select name="industry" id="filter-industry" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    {% for industry in industries %}
+                        <option value="{{ industry }}" {{ filters.industry == industry ? 'selected' }}>{{ industry }}</option>
+                    {% endfor %}
+                </select>
             </div>
         {% endblock %}
-        {% block card_body %}
-            <div id="filter-section" tabindex="-1">
-            <form method="get" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
-                <div class="col-md-3">
-                    <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans({}, 'compliance') }}</label>
-                    <select name="active" id="filter-active" class="form-select fa-cyber-input__field">
-                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                        <option value="1" {{ filters.active == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
-                        <option value="0" {{ filters.active == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label" for="filter-mandatory">{{ 'compliance.framework.field.mandatory'|trans({}, 'compliance') }}</label>
-                    <select name="mandatory" id="filter-mandatory" class="form-select fa-cyber-input__field">
-                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                        <option value="1" {{ filters.mandatory == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
-                        <option value="0" {{ filters.mandatory == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label" for="filter-industry">{{ 'compliance.framework.field.industry'|trans({}, 'compliance') }}</label>
-                    <select name="industry" id="filter-industry" class="form-select fa-cyber-input__field">
-                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                        {% for industry in industries %}
-                            <option value="{{ industry }}" {{ filters.industry == industry ? 'selected' }}>{{ industry }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary me-2">
-                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
-                    </button>
-                    <a href="{{ path('app_compliance_framework_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            </form>
-            </div>
-        {% endblock %}
-    {% endembed %}
-
-    {# Frameworks List #}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'compliance.framework.list'|trans({}, 'compliance') }}</span>
-                {% include '_components/_badge.html.twig' with { variant: 'primary', content: frameworks|length ~ ' ' ~ ('common.items'|trans({}, 'messages')) } %}
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {% if frameworks|length > 0 %}
-                {% embed '_components/_table.html.twig' with {
-                    'noMargin': true
-                } %}
+        {% block list_table %}
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true
+            } %}
                     {% block table_head %}
                         <tr>
                             <th scope="col">{{ 'compliance.framework.field.code'|trans({}, 'compliance') }}</th>
@@ -105,8 +85,8 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-                        {% for framework in frameworks %}
+                        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                        {% for framework in page %}
                             <tr>
                                 <td><code>{{ framework.code }}</code></td>
                                 <td>
@@ -158,18 +138,7 @@
                             </tr>
                         {% endfor %}
                     {% endblock %}
-                {% endembed %}
-            {% else %}
-                {{ _fa_empty_state.render({
-                    mood: 'sleeping',
-                    title: 'compliance.framework.empty'|trans({}, 'compliance'),
-                    norm_ref: 'ISO 27001 Clause 4.2, 6.1.3',
-                    help_link: path('app_help_glossary') ~ '#glossary-framework',
-                    actions: is_granted('ROLE_ADMIN') ? [
-                        { label: 'compliance.framework.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'plus', href: path('app_compliance_framework_new') }
-                    ] : []
-                }) }}
-            {% endif %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
 </div>

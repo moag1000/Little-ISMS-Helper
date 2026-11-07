@@ -11,6 +11,7 @@ use App\Repository\ActionItemRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\Planning\ActionItemStatusService;
 use App\Service\Planning\InvalidActionItemTransitionException;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -79,10 +80,22 @@ class ActionItemController extends AbstractController
             }
         }
 
+        $now = new DateTimeImmutable();
+
         return $this->render('planning/action_item/index.html.twig', [
-            'items'       => array_values($items),
-            'filter'      => $filter,
-            'transitions' => $transitions,
+            'page'          => ListPage::fromRequest(
+                $items,
+                $request,
+                static fn (ActionItem $i): array => [$i->getTitle(), $i->getRoadmapTask()?->getName()],
+            ),
+            'filter'        => $filter,
+            'transitions'   => $transitions,
+            'overdue_count' => count(array_filter(
+                $items,
+                static fn (ActionItem $i): bool => $i->getDueDate() !== null
+                    && $i->getDueDate() < $now
+                    && in_array($i->getStatus(), ['open', 'planned', 'in_progress'], true),
+            )),
         ]);
     }
 

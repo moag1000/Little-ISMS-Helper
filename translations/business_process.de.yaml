@@ -1,4 +1,7 @@
 business_process:
+  summary:
+    critical: '%count% kritisch'
+    with_risks: '%count% mit Risiken'
   new: Neuer Geschäftsprozess
   edit: Geschäftsprozess bearbeiten
   bia:
@@ -124,7 +127,7 @@ business_process:
     impact_unset: '— noch nicht bewertet —'
     owner_legacy: 'Name (veraltet, nur für Altdaten)'
   empty:
-    title: Noch keine Geschäftsprozesse vorhanden
+    title: 'Keine Geschäftsprozesse vorhanden.'
     description: Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse
       zu beginnen.
     body: 'Geschäftsprozesse bilden das Rückgrat der BIA (Business-Impact-Analyse) und der BC-Pläne. Erfassen Sie hier alle wertschöpfenden Prozesse mit RTO, RPO, MTPD und Kritikalität — Voraussetzung für ISO 22301 §8.2.2.'
@@ -143,16 +146,6 @@ business_process:
     title: Business Continuity Management
     page_title: Business Continuity Management (BCM)
     new_process: Neuer Geschäftsprozess
-    stats:
-      total: Gesamt
-      total_subtitle: Geschäftsprozesse
-      critical: Kritisch
-      critical_subtitle: Höchste Priorität
-      avg_rto: Ø RTO
-      rto_unit: h
-      rto_subtitle: Recovery Time Objective
-      with_risks: Mit Risiken
-      with_risks_subtitle: Aktive Risiken
     table:
       title: Geschäftsprozesse
       name: Name

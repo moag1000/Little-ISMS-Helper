@@ -11,6 +11,7 @@ use App\Form\ScheduledReportType;
 use App\Repository\ScheduledReportRepository;
 use App\Service\ScheduledReportService;
 use App\Service\TenantContext;
+use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +41,7 @@ class ScheduledReportController extends AbstractController
     }
 
     #[Route('/', name: 'app_scheduled_report_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenantId = $this->tenantContext->getCurrentTenantId();
         $reports = $this->repository->findByTenant($tenantId);
@@ -48,7 +49,11 @@ class ScheduledReportController extends AbstractController
         $dueReports = $this->repository->findDueReports();
 
         return $this->render('scheduled_report/index.html.twig', [
-            'reports' => $reports,
+            'page' => ListPage::fromRequest(
+                $reports,
+                $request,
+                static fn(ScheduledReport $r): array => [$r->getName(), $r->getReportType()],
+            ),
             'statistics' => $statistics,
             'due_reports' => array_filter($dueReports, fn($r) => $r->getTenantId() === $tenantId),
         ]);

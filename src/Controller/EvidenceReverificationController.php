@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Repository\EvidenceReverificationTaskRepository;
 use App\Service\AuditLogger;
 use App\Service\Evidence\EvidenceCascadeInvalidationService;
+use App\Util\ListPage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,7 +70,15 @@ class EvidenceReverificationController extends AbstractController
         $openCount = $this->taskRepository->countOpenByTenant($tenant);
 
         return $this->render('evidence_reverification/index.html.twig', [
-            'tasks' => $tasks,
+            'page' => ListPage::fromRequest(
+                $tasks,
+                $request,
+                static fn (EvidenceReverificationTask $t): array => [
+                    $t->getDocumentVersion()?->getFileName(),
+                    $t->getControl()?->getControlId(),
+                    $t->getAssignedTo()?->getFullName(),
+                ],
+            ),
             'filter' => $filter,
             'open_count' => $openCount,
         ]);

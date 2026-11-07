@@ -21,8 +21,6 @@
         ] : []
     }) }}
 
-    <main>
-
     {# Auto-Collect Card (Alva-Tipp pattern) #}
     {% if is_granted('ROLE_ADMIN') %}
         <div class="card fa-section border-info mb-4">
@@ -51,94 +49,36 @@
     {# ISO 27001 Clause Information #}
     {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'management_review.iso_requirement'|trans({}, 'management_review'), body: '<span class="small">' ~ 'management_review.iso_clause_info'|trans({}, 'management_review') ~ '</span>' }) }}
 
-    {# Statistics Cards #}
-    <turbo-frame id="review-stats">
-        <div class="row mb-4">
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--nav-collection text-primary icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted small mb-1">{{ 'management_review.statistics.total'|trans({}, 'management_review') }}</div>
-                                <div class="fs-2 fw-bold">{{ statistics.total }}</div>
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--ui-hourglass text-warning icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted small mb-1">{{ 'management_review.statistics.planned'|trans({}, 'management_review') }}</div>
-                                <div class="fs-2 fw-bold">{{ statistics.planned }}</div>
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--status-ok icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted small mb-1">{{ 'management_review.statistics.completed'|trans({}, 'management_review') }}</div>
-                                <div class="fs-2 fw-bold">{{ statistics.completed }}</div>
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-
-            <div class="col-md-3 mb-3">
-                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
-                    {% block card_body %}
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fa-icon fa-icon--ui-calendar-event text-info icon-2rem" aria-hidden="true"></i>
-                            </div>
-                            <div class="ms-3">
-                                <div class="text-muted small mb-1">{{ 'management_review.statistics.this_year'|trans({}, 'management_review') }}</div>
-                                <div class="fs-2 fw-bold">{{ statistics.this_year }}</div>
-                            </div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-        </div>
-    </turbo-frame>
-
-    {# Management Reviews List #}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/management-review"{% endblock %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'management_review') }}</h2>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_management_review_index'),
+        filter_keys: ['status'],
+        list_title: 'management_review.all_reviews'|trans({}, 'management_review'),
+        empty: {
+            mood: 'sleeping',
+            title: 'management_review.no_reviews'|trans({}, 'management_review'),
+            actions: is_granted('ROLE_ADMIN') ? [
+                { label: 'management_review.create_first'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new'), attrs: { 'data-turbo-action': 'advance' } }
+            ] : [],
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/' ~ app.request.locale ~ '/management-review"',
+    } %}
+        {% block list_filters %}
+            <div class="col-md-4">
+                <label for="status-filter" class="form-label">{{ 'management_review.field.status'|trans({}, 'management_review') }}</label>
+                <select class="form-select fa-cyber-input__field" id="status-filter" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value=""></option>
+                    {% for key in ['planned', 'in_progress', 'completed', 'follow_up_required', 'cancelled'] %}
+                        <option value="{{ key }}" {{ status == key ? 'selected' : '' }}>{{ ('management_review.status.' ~ key)|trans({}, 'management_review') }}</option>
+                    {% endfor %}
+                </select>
             </div>
         {% endblock %}
-        {% block card_body %}
-            {% if reviews|length == 0 %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {{ _fa_empty_state.render({
-                mood: 'sleeping',
-                title: 'management_review.no_reviews'|trans({}, 'management_review'),
-                actions: is_granted('ROLE_ADMIN') ? [
-                    { label: 'management_review.create_first'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new'), attrs: { 'data-turbo-action': 'advance' } }
-                ] : []
-            }) }}
-            {% else %}
+        {% block list_summary %}
+            {% if planned_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'management_review.summary.planned'|trans({'%count%': planned_count}, 'management_review') }}</span>{% endif %}
+            {% if year_count > 0 %}<span class="fa-status-pill fa-status-pill--primary">{{ 'management_review.summary.this_year'|trans({'%count%': year_count}, 'management_review') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover table-striped',
                 'noMargin': true
@@ -161,7 +101,8 @@
                 {% endblock %}
                 {% block table_body_attrs %}id="management-review-rows"{% endblock %}
                 {% block table_body %}
-                    {% for review in reviews %}
+                    {% set workflowStates = workflow_states(page) %}
+                    {% for review in page %}
                         {% include 'management_review/_row.html.twig' with { review: review } %}
                     {% endfor %}
                 {% endblock %}
@@ -173,14 +114,12 @@
                 actions: ['delete']
             } %}
             {% endif %}
-            {% endif %}
         {% endblock %}
     {% endembed %}
-    </main>
 </div>
 
 {# Delete Modals #}
-{% for review in reviews %}
+{% for review in page %}
 <div class="fa-modal fa-modal--confirm fa-modal--danger" id="deleteModal{{ review.id }}"
      data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
      role="alertdialog" aria-modal="true" aria-labelledby="deleteModal{{ review.id }}Label" aria-hidden="true">

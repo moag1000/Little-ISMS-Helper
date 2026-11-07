@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 
-{% block title %}Compliance Mappings{% endblock %}
+{% block title %}{{ 'compliance.mapping.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid mt-4" data-controller="mapping-filter">
+<div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
@@ -27,88 +27,62 @@
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
 
-    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/compliance/mapping"{% endblock %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="mb-0">Cross-Framework Mappings
-                    (<span data-mapping-filter-target="count">{{ mappings|length }}</span>{% if mappings|length %} / {{ mappings|length }}{% endif %})</h2>
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_compliance_mapping_index'),
+        filter_keys: ['source_fw', 'target_fw', 'type', 'confidence', 'status'],
+        search_placeholder: 'compliance.mapping.filter.search_ph'|trans({}, 'compliance'),
+        list_title: 'compliance.mapping.title'|trans({}, 'compliance'),
+        empty: {
+            mood: 'sleeping',
+            title: 'compliance.mapping.empty.title'|trans({}, 'compliance'),
+            text: 'compliance.mapping.empty.description'|trans({}, 'compliance'),
+            actions: [
+                { label: 'compliance.mapping.empty.action_wizard'|trans({}, 'compliance'), variant: 'primary', icon: 'nav-magic', href: path('app_compliance_mapping_wizard') },
+                { label: 'compliance.mapping.empty.action_seeds'|trans({}, 'compliance'), variant: 'ghost', icon: 'threat', href: path('app_compliance_mapping_seeds_index') }
+            ]
+        },
+        card_attrs: 'data-controller="bulk-actions" data-bulk-actions-endpoint-value="/compliance/mapping"',
+    } %}
+        {% block list_filters %}
+            {% if selected_requirement %}<input type="hidden" name="requirement" value="{{ selected_requirement }}">{% endif %}
+            <div class="col-6 col-md-3">
+                <label class="form-label" for="mapping-filter-source-fw">{{ 'compliance.mapping.filter.source_fw'|trans({}, 'compliance') }}</label>
+                <select id="mapping-filter-source-fw" name="source_fw" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
+                    {% for v in facet_options.source_fw %}<option value="{{ v }}" {{ app.request.query.get('source_fw') == v ? 'selected' }}>{{ v }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-md-3">
+                <label class="form-label" for="mapping-filter-target-fw">{{ 'compliance.mapping.filter.target_fw'|trans({}, 'compliance') }}</label>
+                <select id="mapping-filter-target-fw" name="target_fw" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
+                    {% for v in facet_options.target_fw %}<option value="{{ v }}" {{ app.request.query.get('target_fw') == v ? 'selected' }}>{{ v }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-md-3">
+                <label class="form-label" for="mapping-filter-type">{{ 'compliance.mapping.filter.type'|trans({}, 'compliance') }}</label>
+                <select id="mapping-filter-type" name="type" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
+                    {% for v in facet_options.type %}<option value="{{ v }}" {{ app.request.query.get('type') == v ? 'selected' }}>{{ v }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-md-3">
+                <label class="form-label" for="mapping-filter-confidence">{{ 'compliance.mapping.filter.confidence'|trans({}, 'compliance') }}</label>
+                <select id="mapping-filter-confidence" name="confidence" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
+                    {% for v in facet_options.confidence %}<option value="{{ v }}" {{ app.request.query.get('confidence') == v ? 'selected' }}>{{ v }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-md-3">
+                <label class="form-label" for="mapping-filter-status">{{ 'compliance.mapping.filter.status'|trans({}, 'compliance') }}</label>
+                <select id="mapping-filter-status" name="status" class="form-select fa-cyber-input__field">
+                    <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
+                    {% for v in facet_options.status %}<option value="{{ v }}" {{ app.request.query.get('status') == v ? 'selected' }}>{{ v }}</option>{% endfor %}
+                </select>
             </div>
         {% endblock %}
-        {% block card_body %}
-            {% if mappings is empty %}
-                <div class="p-4">
-                    {% include '_components/_empty_state.html.twig' with {
-                        icon: 'nav-workflow',
-                        title: 'compliance.mapping.empty.title'|trans({}, 'compliance'),
-                        description: 'compliance.mapping.empty.description'|trans({}, 'compliance'),
-                        action: {
-                            label: 'compliance.mapping.empty.action_wizard'|trans({}, 'compliance'),
-                            url: path('app_compliance_mapping_wizard'),
-                            icon: 'nav-magic'
-                        }
-                    } %}
-                    <div class="text-center mt-3">
-                        <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
-                            {{ 'compliance.mapping.empty.action_seeds'|trans({}, 'compliance') }}
-                        </a>
-                    </div>
-                </div>
-            {% else %}
-            <div class="p-3 border-bottom">
-                <div class="row g-2 align-items-end">
-                    <div class="col-12 col-lg">
-                        <label class="form-label small mb-1" for="mapping-filter-search">{{ 'compliance.mapping.filter.search'|trans({}, 'compliance') }}</label>
-                        <input type="search" id="mapping-filter-search" class="form-control form-control-sm"
-                               placeholder="{{ 'compliance.mapping.filter.search_ph'|trans({}, 'compliance') }}"
-                               data-mapping-filter-target="search"
-                               data-action="input->mapping-filter#apply">
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-auto">
-                        <label class="form-label small mb-1" for="mapping-filter-source-fw">{{ 'compliance.mapping.filter.source_fw'|trans({}, 'compliance') }}</label>
-                        <select id="mapping-filter-source-fw" class="form-select form-select-sm"
-                                data-mapping-filter-target="sourceFw" data-action="change->mapping-filter#apply">
-                            <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-auto">
-                        <label class="form-label small mb-1" for="mapping-filter-target-fw">{{ 'compliance.mapping.filter.target_fw'|trans({}, 'compliance') }}</label>
-                        <select id="mapping-filter-target-fw" class="form-select form-select-sm"
-                                data-mapping-filter-target="targetFw" data-action="change->mapping-filter#apply">
-                            <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-auto">
-                        <label class="form-label small mb-1" for="mapping-filter-type">{{ 'compliance.mapping.filter.type'|trans({}, 'compliance') }}</label>
-                        <select id="mapping-filter-type" class="form-select form-select-sm"
-                                data-mapping-filter-target="type" data-action="change->mapping-filter#apply">
-                            <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-auto">
-                        <label class="form-label small mb-1" for="mapping-filter-confidence">{{ 'compliance.mapping.filter.confidence'|trans({}, 'compliance') }}</label>
-                        <select id="mapping-filter-confidence" class="form-select form-select-sm"
-                                data-mapping-filter-target="confidence" data-action="change->mapping-filter#apply">
-                            <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-auto">
-                        <label class="form-label small mb-1" for="mapping-filter-status">{{ 'compliance.mapping.filter.status'|trans({}, 'compliance') }}</label>
-                        <select id="mapping-filter-status" class="form-select form-select-sm"
-                                data-mapping-filter-target="status" data-action="change->mapping-filter#apply">
-                            <option value="">{{ 'compliance.mapping.filter.all'|trans({}, 'compliance') }}</option>
-                        </select>
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                data-action="mapping-filter#reset">
-                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-                            {{ 'compliance.mapping.filter.reset'|trans({}, 'compliance') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
+        {% block list_table %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover mapping-list-table',
                 'theadClass': 'table-light',
@@ -139,18 +113,11 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-    {% trans_default_domain 'compliance' %}
-                    {% for mapping in mappings %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                    {% trans_default_domain 'compliance' %}
+                    {% for mapping in page %}
                         {# Main data row #}
-                        <tr class="mapping-row"
-                            data-mapping-filter-target="row"
-                            data-source-fw="{{ mapping.sourceRequirement.framework.code }}"
-                            data-target-fw="{{ mapping.targetRequirement.framework.code }}"
-                            data-type="{{ mapping.mappingType }}"
-                            data-confidence="{{ mapping.confidence }}"
-                            data-status="{{ mapping.reviewStatus }}"
-                            data-search="{{ (mapping.sourceRequirement.framework.code ~ ' ' ~ mapping.sourceRequirement.requirementId ~ ' ' ~ mapping.targetRequirement.framework.code ~ ' ' ~ mapping.targetRequirement.requirementId)|lower }}">
+                        <tr class="mapping-row">
                             {# Checkbox cell #}
                             <td class="bulk-select-column">
                                 <input type="checkbox"
@@ -202,7 +169,7 @@
                                 {% if mapping.relationship %}
                                     {% set relKey = 'compliance.mapping.rel_type.' ~ mapping.relationship ~ '.label' %}
                                     {% set relDef = 'compliance.mapping.rel_type.' ~ mapping.relationship ~ '.def' %}
-                                    <span class="badge bg-info text-dark"
+                                    <span class="fa-status-pill fa-status-pill--primary"
                                           title="{{ relDef|trans({}, 'compliance') }}"
                                           data-bs-toggle="tooltip"
                                           data-bs-placement="top">
@@ -271,13 +238,6 @@
                         <tr id="mapping-detail-{{ mapping.id }}"
                             hidden
                             class="mapping-detail-row table-light"
-                            data-mapping-filter-target="row"
-                            data-source-fw="{{ mapping.sourceRequirement.framework.code }}"
-                            data-target-fw="{{ mapping.targetRequirement.framework.code }}"
-                            data-type="{{ mapping.mappingType }}"
-                            data-confidence="{{ mapping.confidence }}"
-                            data-status="{{ mapping.reviewStatus }}"
-                            data-search="{{ (mapping.sourceRequirement.framework.code ~ ' ' ~ mapping.sourceRequirement.requirementId ~ ' ' ~ mapping.targetRequirement.framework.code ~ ' ' ~ mapping.targetRequirement.requirementId)|lower }}"
                             data-detail-row="true">
                             <td colspan="12" class="ps-5 py-2">
                                 <div class="row g-3">
@@ -298,7 +258,7 @@
                                         </p>
                                         <div class="d-flex flex-wrap gap-2">
                                             {% for dim, score in mapping.mqsBreakdown %}
-                                                <span class="badge bg-secondary">{{ dim }}: {{ score }}</span>
+                                                <span class="fa-status-pill fa-status-pill--neutral">{{ dim }}: {{ score }}</span>
                                             {% endfor %}
                                         </div>
                                     </div>
@@ -308,11 +268,6 @@
                         </tr>
                         {% endif %}
                     {% endfor %}
-                    <tr data-mapping-filter-target="noResults" style="display: none;">
-                        <td colspan="12" class="text-center text-muted py-4">
-                            {{ 'compliance.mapping.filter.no_results'|trans({}, 'compliance') }}
-                        </td>
-                    </tr>
                 {% endblock %}
             {% endembed %}
 
@@ -326,7 +281,6 @@
             {% endif %}
             {# Override status_change dropdown labels with mapping lifecycle states #}
             <template id="mapping-bulk-status-labels" data-draft="{{ 'compliance.mapping.bulk.status_change.target.draft'|trans({}, 'compliance') }}" data-review="{{ 'compliance.mapping.bulk.status_change.target.review'|trans({}, 'compliance') }}" data-approved="{{ 'compliance.mapping.bulk.status_change.target.approved'|trans({}, 'compliance') }}" data-published="{{ 'compliance.mapping.bulk.status_change.target.published'|trans({}, 'compliance') }}" data-deprecated="{{ 'compliance.mapping.bulk.status_change.target.deprecated'|trans({}, 'compliance') }}"></template>
-            {% endif %}
         {% endblock %}
     {% endembed %}
 </div>

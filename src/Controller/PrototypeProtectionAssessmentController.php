@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\PrototypeProtectionAssessment;
+use App\Util\ListPage;
 use App\Form\PrototypeProtectionAssessmentType;
 use App\Repository\PrototypeProtectionAssessmentRepository;
 use App\Security\TenantOwnership;
@@ -47,7 +48,7 @@ class PrototypeProtectionAssessmentController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('tisax')) return $redirect;
 
@@ -60,7 +61,13 @@ class PrototypeProtectionAssessmentController extends AbstractController
             : [];
 
         return $this->render('prototype_protection/index.html.twig', [
-            'assessments' => $assessments,
+            'page' => ListPage::fromRequest(
+                $assessments,
+                $request,
+                static fn(PrototypeProtectionAssessment $a): array => [$a->getTitle(), $a->getTisaxLevel()],
+            ),
+            'not_met_count' => count(array_filter($assessments, static fn(PrototypeProtectionAssessment $a): bool => $a->getOverallResult() === 'not_met')),
+            'in_review_count' => count(array_filter($assessments, static fn(PrototypeProtectionAssessment $a): bool => $a->getStatus() === 'in_review')),
             'expiring' => $expiring,
         ]);
     }

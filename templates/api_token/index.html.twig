@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'api_token' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'api_token.title'|trans({}, 'api_token') }}{% endblock %}
 
@@ -17,10 +16,9 @@
     }) }}
 
     {% if new_token %}
-        <div class="alert alert-success">
-            <strong>{{ 'api_token.created_once'|trans({}, 'api_token') }}</strong>
-            <pre class="mb-0 mt-2 user-select-all">{{ new_token }}</pre>
-        </div>
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+        {% set _token_html %}<pre class="mb-0 mt-2 user-select-all">{{ new_token }}</pre>{% endset %}
+        {{ _fa_alert.render({ variant: 'success', title: 'api_token.created_once'|trans({}, 'api_token'), body: _token_html, class: 'mb-3' }) }}
     {% endif %}
 
     {# Create #}
@@ -43,50 +41,48 @@
         </div>
     </div>
 
-    {# List #}
-    {% if tokens is not empty %}
-    <div class="fa-table-wrap mb-3">
-    <table class="fa-table fa-table--hover">
-        <thead class="fa-table__head">
-            <tr>
-                <th class="fa-table__th" scope="col">{{ 'api_token.field.label'|trans({}, 'api_token') }}</th>
-                <th class="fa-table__th" scope="col">{{ 'api_token.field.created'|trans({}, 'api_token') }}</th>
-                <th class="fa-table__th" scope="col">{{ 'api_token.field.expires'|trans({}, 'api_token') }}</th>
-                <th class="fa-table__th" scope="col">{{ 'api_token.field.status'|trans({}, 'api_token') }}</th>
-                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
-            </tr>
-        </thead>
-        <tbody class="fa-table__body">
-            {% for token in tokens %}
-                <tr class="fa-table__row">
-                    <td class="fa-table__cell">{{ token.label }}</td>
-                    <td class="fa-table__cell">{{ token.createdAt|date('Y-m-d') }}</td>
-                    <td class="fa-table__cell">{{ token.expiresAt ? token.expiresAt|date('Y-m-d') : '—' }}</td>
-                    <td class="fa-table__cell">
-                        {% if token.revoked %}
-                            <span class="badge bg-secondary">{{ 'api_token.status.revoked'|trans({}, 'api_token') }}</span>
-                        {% else %}
-                            <span class="badge bg-success">{{ 'api_token.status.active'|trans({}, 'api_token') }}</span>
-                        {% endif %}
-                    </td>
-                    <td class="fa-table__cell fa-table__cell--actions">
-                        {% if not token.revoked %}
-                        <form method="post" action="{{ path('app_api_tokens_revoke', {id: token.id}) }}" class="d-inline">
-                            <input type="hidden" name="_token" value="{{ csrf_token('api_token_revoke') }}">
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">{{ 'api_token.action.revoke'|trans({}, 'api_token') }}</button>
-                        </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    </div>
-    {% else %}
-        {{ _fa_empty_state.render({
-            mood: 'sleeping',
-            title: 'api_token.empty'|trans({}, 'api_token')
-        }) }}
-    {% endif %}
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        list_title: 'api_token.title'|trans({}, 'api_token'),
+        empty: { mood: 'sleeping', title: 'api_token.empty'|trans({}, 'api_token') },
+    } %}
+        {% block list_table %}
+            <table class="fa-table fa-table--hover">
+                <thead class="fa-table__head">
+                    <tr>
+                        <th class="fa-table__th" scope="col">{{ 'api_token.field.label'|trans({}, 'api_token') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'api_token.field.created'|trans({}, 'api_token') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'api_token.field.expires'|trans({}, 'api_token') }}</th>
+                        <th class="fa-table__th" scope="col">{{ 'api_token.field.status'|trans({}, 'api_token') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                </thead>
+                <tbody class="fa-table__body">
+                    {% for token in page %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">{{ token.label }}</td>
+                            <td class="fa-table__cell">{{ token.createdAt|fa_date }}</td>
+                            <td class="fa-table__cell">{{ token.expiresAt ? token.expiresAt|fa_date : '—' }}</td>
+                            <td class="fa-table__cell">
+                                {% if token.revoked %}
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'api_token.status.revoked'|trans({}, 'api_token') }}</span>
+                                {% else %}
+                                    <span class="fa-status-pill fa-status-pill--success">{{ 'api_token.status.active'|trans({}, 'api_token') }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--actions">
+                                {% if not token.revoked %}
+                                <form method="post" action="{{ path('app_api_tokens_revoke', {id: token.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('api_token_revoke') }}">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">{{ 'api_token.action.revoke'|trans({}, 'api_token') }}</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}
