@@ -106,7 +106,7 @@ class McpServer
             'serverInfo' => [
                 'name' => self::SERVER_NAME,
                 'title' => 'Little ISMS Helper',
-                'version' => (string) (\Composer\InstalledVersions::getRootPackage()['pretty_version'] ?? 'dev'),
+                'version' => \Composer\InstalledVersions::getRootPackage()['pretty_version'],
             ],
             'instructions' => $this->prompts->instructions($session),
         ];

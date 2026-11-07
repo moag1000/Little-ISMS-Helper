@@ -6,7 +6,6 @@ namespace App\Mcp;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface;
 use App\Attribute\RequiresModule;
@@ -211,7 +210,7 @@ class ApiResourceGateway
         foreach ($this->resourceNames->create() as $class) {
             foreach ($this->resourceMetadata->create($class) as $apiResource) {
                 foreach ($apiResource->getOperations() ?? [] as $name => $operation) {
-                    if (!$operation instanceof HttpOperation || !($operation instanceof GetCollection || $operation instanceof Get)) {
+                    if (!$operation instanceof GetCollection && !$operation instanceof Get) {
                         continue;
                     }
                     $short = (string) ($operation->getShortName() ?? $apiResource->getShortName() ?? (new \ReflectionClass($class))->getShortName());

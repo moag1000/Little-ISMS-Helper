@@ -153,7 +153,7 @@ final class ComplianceFulfillmentTool extends AbstractMcpTool
             $documents[] = [
                 'id' => $entry['document']->getId(),
                 'title' => $entry['document']->getOriginalFilename(),
-                'via' => array_values(array_map(static fn (array $s): string => trim($s['type'] . ' ' . ($s['ref'] ?? '')), $entry['sources'])),
+                'via' => array_map(static fn (array $s): string => trim($s['type'] . ' ' . ($s['ref'] ?? '')), $entry['sources']),
             ];
         }
 
