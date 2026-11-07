@@ -24,17 +24,17 @@
         {% set _class = tenant.nis2Classification|default('unknown') %}
         {% set _cbadge = _class == 'essential' ? 'confidential' : (_class == 'important' ? 'draft' : 'final') %}
         {% set _reg_cell = tenant.nis2RegisteredAt
-            ? '<span style="color:var(--success);font-weight:700;">' ~ tenant.nis2RegisteredAt|date('Y-m-d') ~ '</span>'
+            ? '<span style="color:var(--success);font-weight:700;">' ~ tenant.nis2RegisteredAt|fa_date ~ '</span>'
             : (tenant.isNis2Regulated
                 ? '<span style="color:var(--danger);font-weight:700;">' ~ ('group_report.nis2.registration.missing'|trans({}, 'group_report')) ~ '</span>'
                 : '<span style="color:var(--fg-3);">—</span>') %}
         {% set _nis2_rows = _nis2_rows|merge([[
-            '<strong>' ~ tenant.name ~ '</strong><br><code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code ~ '</code>',
-            tenant.legalName ? (tenant.legalName ~ (tenant.legalForm ? ' (' ~ tenant.legalForm ~ ')' : '')) : '<span style="color:var(--fg-3);">—</span>',
+            '<strong>' ~ tenant.name|e ~ '</strong><br><code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code|e ~ '</code>',
+            tenant.legalName ? (tenant.legalName|e ~ (tenant.legalForm ? ' (' ~ tenant.legalForm|e ~ ')' : '')) : '<span style="color:var(--fg-3);">—</span>',
             '<span class="report-doc__chip report-doc__chip--status-' ~ _cbadge ~ '">' ~ ('group_report.nis2.class.' ~ _class)|trans({}, 'group_report') ~ '</span>',
-            tenant.nis2Sector|default('—'),
-            tenant.naceCode ? '<code>' ~ tenant.naceCode ~ '</code>' : '—',
-            tenant.nis2ContactPoint|default('—'),
+            tenant.nis2Sector ? tenant.nis2Sector|e : '—',
+            tenant.naceCode ? '<code>' ~ tenant.naceCode|e ~ '</code>' : '—',
+            tenant.nis2ContactPoint ? tenant.nis2ContactPoint|e : '—',
             _reg_cell,
         ]]) %}
     {% endfor %}
@@ -46,7 +46,7 @@
             kicker:       'NIS2 Directive · Art. 3 Registration',
             status:       'final',
             audience:     'aufsicht',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: root.name,
         key_findings: [

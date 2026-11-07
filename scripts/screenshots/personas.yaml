@@ -93,7 +93,7 @@ personas:
       # Konzern-/Holding-Reports (aggregiert über alle Töchter)
       - { name: group-report-tree,     path: /de/group-report/tree }
       - { name: group-report-risks,    path: /de/group-report/risks }
-      - { name: group-report-kpi-matrix, path: /de/group-report/kpi-matrix }
+      - { name: group-report-comparison, path: /de/group-report/comparison }
       - { name: group-report-soa-matrix, path: /de/group-report/soa-matrix }
       - { name: group-report-incidents, path: /de/group-report/incidents }
       - { name: group-report-audit-prog, path: /de/group-report/audit-program }
