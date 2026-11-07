@@ -201,6 +201,10 @@ services:
         # collects them for the auto-conversion pipeline (Maßnahmen intake).
         App\Service\Planning\Source\SourceAdapter:
             tags: ['app.source_adapter']
+        # Deadline sources ("Fristenquelle"): My Day, digest and urgent mail read
+        # every obligation from these (SourceAdapter extends DeadlineSource).
+        App\Service\Deadline\DeadlineSource:
+            tags: ['app.deadline_source']
         # Policy-Wizard — per-standard section catalogues auto-register so
         # SectionExtensionRegistry's !tagged_iterator collects all implementations.
         App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface:
@@ -221,6 +225,11 @@ services:
     App\Service\Planning\Source\SourceAdapterRegistry:
         arguments:
             $adapters: !tagged_iterator app.source_adapter
+
+    # Deadline-source registry: every source of obligations with a deadline.
+    App\Service\Deadline\DeadlineSourceRegistry:
+        arguments:
+            $sources: !tagged_iterator app.deadline_source
 
     # Async-job dispatch facade. Selects between InRequestJobRunner (shared
     # hosting default) and MessengerJobRunner (opt-in for worker daemons)

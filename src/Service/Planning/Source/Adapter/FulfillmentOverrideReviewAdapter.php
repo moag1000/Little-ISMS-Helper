@@ -7,7 +7,10 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
 use App\Service\Planning\Source\SourceAdapter;
+use App\Service\Responsibility\Responsibility;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -89,5 +92,43 @@ final class FulfillmentOverrideReviewAdapter implements SourceAdapter
     {
         assert($item instanceof ComplianceRequirementFulfillment);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<ComplianceRequirementFulfillment> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof ComplianceRequirementFulfillment && $item->isOverridden();
+    }
+
+    /** The requirement's responsible person, else whoever set the override, else the compliance roles. */
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof ComplianceRequirementFulfillment);
+
+        return Responsibility::holders($item->getResponsiblePersonUser(), $item->getResponsiblePerson(), $item->getOverriddenBy())
+            ->withDeputies(...$item->getResponsibleDeputyPersons()->toArray())
+            ->orRoles('ROLE_COMPLIANCE_MANAGER', 'ROLE_ISB');
+    }
+
+    public function linkOf(object $item): RecordLink
+    {
+        assert($item instanceof ComplianceRequirementFulfillment);
+
+        return new RecordLink('app_compliance_requirement_show', ['id' => (int) $item->getRequirement()?->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(
+            bucket: 'fulfillment_override_review',
+            leadDays: self::LEAD_DAYS,
+            normReference: 'ISO 27001 9.1 / 10.2',
+            decision: true,
+        );
     }
 }

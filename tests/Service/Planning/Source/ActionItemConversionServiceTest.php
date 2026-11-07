@@ -11,7 +11,10 @@ use App\Repository\ActionItemReferenceRepository;
 use App\Repository\SourceConversionConfigRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\Planning\Source\ActionItemConversionService;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
 use App\Service\Planning\Source\SourceAdapter;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapterRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -37,6 +40,11 @@ final class ActionItemConversionServiceTest extends TestCase
             public function isCompleted(object $item): bool { return $this->completed; }
             public function ownsRecurrence(): bool { return false; }
             public function refId(object $item): int { return 99; }
+            public function findOpen(Tenant $tenant): iterable { return [$this->item]; }
+            public function supports(object $item): bool { return $item === $this->item; }
+            public function responsibleOf(object $item): Responsibility { return Responsibility::nobody(); }
+            public function linkOf(object $item): ?RecordLink { return null; }
+            public function profile(): DeadlineProfile { return new DeadlineProfile('test'); }
         };
     }
 

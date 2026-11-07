@@ -247,6 +247,12 @@ systemctl enable isms-worker && systemctl start isms-worker
   hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without
   rule. `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
   Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
+- `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
+  (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
+  inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
+- `Deadline\DeadlineSource` - one implementation per kind of duty with a deadline (`responsibleOf()`,
+  `profile()` = My Day bucket, lead days, norm reference). `Planning\Source\SourceAdapter` extends it.
+  My Day and reminder mails read only from these; a new norm = new sources. Doc: `docs/DEADLINES_AND_RESPONSIBILITY.md`
 - `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
   euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
   `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`
