@@ -12,6 +12,9 @@
 {% set _cmds = _cmds|merge([
     { id: 'goto-my-day', label: 'ui.command_palette.command.goto_my_day'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-dashboard', url: path('app_my_day'), keywords: ['my day', 'mein tag', 'inbox', 'posteingang', 'freigaben', 'approvals']  }
 ]) %}
+{% set _cmds = _cmds|merge([
+    { id: 'goto-suggestions', label: 'ui.command_palette.command.goto_suggestions'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-magic', url: path('app_suggestion_index'), keywords: ['vorschläge', 'suggestions', 'ki', 'ai', 'vererbung', 'inheritance', 'queue']  }
+]) %}
 {% if is_module_active('assets') %}{% set _cmds = _cmds|merge([
     { id: 'goto-assets', label: 'ui.command_palette.command.goto_assets'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'nav-assets', url: path('app_asset_index'), keywords: ['asset', 'inventory', 'bestände']  }
 ]) %}{% endif %}

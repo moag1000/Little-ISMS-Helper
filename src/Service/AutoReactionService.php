@@ -10,7 +10,8 @@ use App\Repository\SystemSettingsRepository;
  * Central toggle gate for the 5 Auto-Reactions:
  *   - Auto-DPIA-Vorschlag (ProcessingActivity)
  *   - Auto-Training-Assignment (User onPostPersist)
- *   - Auto-Risk-Skeleton (Vulnerability with CVSS >= 7.0)
+ *   - Risk suggestion for a vulnerability with CVSS >= 7.0 (suggestion queue,
+ *     RiskFromVulnerabilityKind — no longer created unasked)
  *   - Auto-CorrectiveAction (AuditFinding major/critical)
  *   - Auto-Acknowledgement-Campaign (Document approved + requiresAck)
  *

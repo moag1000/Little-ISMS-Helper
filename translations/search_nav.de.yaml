@@ -96,6 +96,12 @@ search_nav:
     app_my_day:
         label: 'Mein Tag'
         description: 'Fällige Aufgaben, Freigaben und Reviews auf einen Blick'
+    app_suggestion_index:
+        label: 'Vorschläge'
+        description: 'Abgeleitete, vererbte, importierte und KI-Vorschläge annehmen oder ablehnen'
+    admin_settings_ai:
+        label: 'KI-Einstellungen'
+        description: 'Lokales Modell oder Mistral-API für KI-Vorschläge, Datenschutz'
     app_dashboard_risk_manager:
         label: 'Risikomanager-Dashboard'
         description: 'Risikolage, Behandlungspläne und fällige Risikoakzeptanzen'
