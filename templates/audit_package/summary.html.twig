@@ -63,7 +63,7 @@
         </thead>
         <tbody>
             {% for req in requirements %}
-                {% set pct = req.calculateFulfillmentFromControls() %}
+                {% set pct = fulfillment_percentages[req.id] ?? 0 %}
                 {% set evCount = req.evidenceDocuments|length %}
                 <tr>
                     <td><code>{{ req.requirementId }}</code></td>

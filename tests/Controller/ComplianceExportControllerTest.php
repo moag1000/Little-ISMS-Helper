@@ -76,6 +76,7 @@ class ComplianceExportControllerTest extends TestCase
             $this->pdfExportService,
             $this->complianceRequirementFulfillmentService,
             $this->tenantContext,
+            $this->createMock(\App\Repository\ComplianceRequirementFulfillmentRepository::class),
             $this->translator
         );
 

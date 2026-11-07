@@ -7,8 +7,8 @@ namespace App\Service;
 use DateTimeImmutable;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
-use App\Enum\ComplianceRequirementFulfillmentStatus;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -25,56 +25,37 @@ class ComplianceAssessmentService
         private readonly ComplianceMappingService $complianceMappingService,
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly FulfillmentDerivationService $fulfillmentDerivationService,
     ) {}
 
     /**
-     * Assess entire framework and update all requirement fulfillment percentages
+     * Recompute a framework for the current organisation ("Neu berechnen").
      *
-     * Architecture: Tenant-specific assessment
-     * - Updates the current tenant's ComplianceRequirementFulfillment records
-     * - Does NOT modify the global ComplianceRequirement entity
+     * Every requirement with a rule takes the value its rule computes from the
+     * organisation's controls, mappings or maturity; a hand override with
+     * reason stays in force and requirements without rule keep their hand
+     * value. Nothing is overwritten silently.
      */
     public function assessFramework(ComplianceFramework $complianceFramework): array
     {
-        // Top-level requirements only — sub-requirements roll up via their parent
-        // and must not be counted separately in the assessment totals.
-        $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($complianceFramework);
-        $assessmentResults = [];
         $tenant = $this->tenantContext->getCurrentTenant();
-
-        foreach ($requirements as $requirement) {
-            $result = $this->assessRequirement($requirement);
-            $assessmentResults[] = $result;
-
-            // Update tenant-specific fulfillment (not global requirement!)
-            $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $requirement);
-
-            // Only update if tenant can edit (not inherited from parent)
-            if ($this->complianceRequirementFulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
-                $fulfillment->setFulfillmentPercentage($result['calculated_fulfillment']);
-                $fulfillment->setLastReviewDate(new DateTimeImmutable());
-                $fulfillment->setUpdatedAt(new DateTimeImmutable());
-
-                // Auto-update status based on percentage
-                if ($result['calculated_fulfillment'] >= 100) {
-                    $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::Implemented);
-                } elseif ($result['calculated_fulfillment'] > 0) {
-                    $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::InProgress);
-                } else {
-                    $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::NotStarted);
-                }
-
-                if (!$fulfillment->getId()) {
-                    $this->entityManager->persist($fulfillment);
-                }
-            }
+        if ($tenant === null) {
+            return [
+                'framework' => $complianceFramework->getName(),
+                'assessment_date' => new DateTimeImmutable(),
+                'total_requirements' => 0,
+                'requirements_assessed' => 0,
+                'overall_compliance' => 0,
+                'derived' => 0,
+                'overridden' => 0,
+                'manual' => 0,
+            ];
         }
 
+        $refresh = $this->fulfillmentDerivationService->refreshFramework($tenant, $complianceFramework);
         $this->entityManager->flush();
 
-        // Calculate overall compliance from tenant-specific statistics
-        $tenant = $this->tenantContext->getCurrentTenant();
         $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($complianceFramework, $tenant);
         $overallCompliance = $stats['applicable'] > 0
             ? round(($stats['fulfilled'] / $stats['applicable']) * 100, 2)
@@ -83,10 +64,12 @@ class ComplianceAssessmentService
         return [
             'framework' => $complianceFramework->getName(),
             'assessment_date' => new DateTimeImmutable(),
-            'total_requirements' => count($requirements),
-            'requirements_assessed' => count($assessmentResults),
+            'total_requirements' => $stats['total'],
+            'requirements_assessed' => $refresh['derived'] + $refresh['overridden'],
             'overall_compliance' => $overallCompliance,
-            'details' => $assessmentResults,
+            'derived' => $refresh['derived'],
+            'overridden' => $refresh['overridden'],
+            'manual' => $refresh['manual'],
         ];
     }
 

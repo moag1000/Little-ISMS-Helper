@@ -245,6 +245,11 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `Register\RegisterCatalog` - the norm registers (ISO 27001 4.1–7.4): one entity `IsmsRegisterEntry`, types in
   `App\Enum\RegisterType` (a new register = a new case, not a new table), proposals from existing records in
   `RegisterProposalProvider`; guide `docs/user-guide/REGISTER.md`
+- `Compliance\Fulfillment\FulfillmentDerivationService` - the ONLY writer of a requirement fulfilment's
+  percentage/status: `FulfillmentRuleEngine` derives it from the tenant's controls, mappings and maturity rows;
+  hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without
+  rule. `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
+  Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.

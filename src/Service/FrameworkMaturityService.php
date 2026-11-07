@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\KpiSnapshotRepository;
@@ -64,6 +65,7 @@ class FrameworkMaturityService
         private readonly ComplianceMappingRepository $mappingRepository,
         private readonly ?InternalAuditRepository $auditRepository = null,
         private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
+        private readonly ?ComplianceRequirementFulfillmentRepository $fulfillmentRepository = null,
     ) {
     }
 
@@ -88,7 +90,7 @@ class FrameworkMaturityService
             return $this->emptyResult();
         }
 
-        $coverage = $this->averageCoverage($requirements);
+        $coverage = $this->averageCoverage($requirements, $tenant);
         $crossMappings = count($this->mappingRepository->findBy(['sourceRequirement' => $requirements]))
             + count($this->mappingRepository->findBy(['targetRequirement' => $requirements]));
 
@@ -177,15 +179,13 @@ class FrameworkMaturityService
     }
 
     /** @param list<\App\Entity\ComplianceRequirement> $requirements */
-    private function averageCoverage(array $requirements): int
+    private function averageCoverage(array $requirements, ?Tenant $tenant): int
     {
-        if ($requirements === []) {
+        // Tenant fulfilment only; without tenant there is no per-organisation number.
+        if ($requirements === [] || $tenant === null || $this->fulfillmentRepository === null) {
             return 0;
         }
-        $sum = 0;
-        foreach ($requirements as $r) {
-            $sum += $r->calculateFulfillmentFromControls();
-        }
+        $sum = array_sum($this->fulfillmentRepository->percentagesFor($tenant, $requirements));
         return (int) round($sum / count($requirements));
     }
 

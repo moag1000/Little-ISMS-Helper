@@ -314,58 +314,6 @@ class ComplianceRequirement
         return $this;
     }
 
-    /**
-     * Calculate fulfillment based on mapped controls
-     */
-    public function calculateFulfillmentFromControls(): int
-    {
-        if ($this->mappedControls->isEmpty()) {
-            return 0;
-        }
-
-        $totalImplementation = 0;
-        $implementedControls = 0;
-
-        foreach ($this->mappedControls as $mappedControl) {
-            if ($mappedControl->getImplementationStatus() === 'implemented') {
-                $totalImplementation += $mappedControl->getImplementationPercentage() ?? 100;
-                $implementedControls++;
-            } elseif ($mappedControl->getImplementationStatus() === 'in_progress') {
-                $totalImplementation += ($mappedControl->getImplementationPercentage() ?? 50);
-            }
-        }
-
-        if ($this->mappedControls->count() === 0) {
-            return 0;
-        }
-
-        return (int) round($totalImplementation / $this->mappedControls->count());
-    }
-
-    /**
-     * Get fulfillment percentage (alias for calculateFulfillmentFromControls)
-     * Used by ComplianceMapping for transitive fulfillment calculations
-     */
-    public function getFulfillmentPercentage(): float
-    {
-        return (float) $this->calculateFulfillmentFromControls();
-    }
-
-    /**
-     * Implementation status derived from the fulfilment percentage, using the
-     * vocabulary the gap-analysis export expects.
-     */
-    public function getStatus(): string
-    {
-        $pct = $this->getFulfillmentPercentage();
-
-        return match (true) {
-            $pct >= 100.0 => 'implemented',
-            $pct > 0.0 => 'partially_implemented',
-            default => 'not_implemented',
-        };
-    }
-
     public function getRequirementType(): string
     {
         return $this->requirementType;

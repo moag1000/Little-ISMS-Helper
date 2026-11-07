@@ -114,7 +114,7 @@
                                     {% include '_components/_badge.html.twig' with { variant: 'info', content: framework.requirements|length } %}
                                 </td>
                                 <td>
-                                    {% set percentage = framework.compliancePercentage %}
+                                    {% set percentage = compliancePercentages[framework.id] ?? 0 %}
                                     {{ _fa_progress.render({ value: percentage, tone: percentage >= 80 ? 'success' : (percentage >= 50 ? 'warning' : 'danger'), showText: true }) }}
                                 </td>
                                 <td>

@@ -101,6 +101,9 @@ class CertificateBulkFulfillmentServiceTest extends KernelTestCase
             self::assertInstanceOf(ComplianceRequirementFulfillment::class, $f);
             self::assertSame(100, $f->getFulfillmentPercentage());
             self::assertSame(ComplianceRequirementFulfillmentStatus::Verified, $f->getStatusEnum());
+            self::assertSame(ComplianceRequirementFulfillment::OVERRIDE_CERTIFICATE, $f->getOverrideSource());
+            self::assertSame('Zertifikat CERT-12345', $f->getOverrideReason());
+            self::assertSame($validUntil->format('Y-m-d'), $f->getOverrideReviewDue()?->format('Y-m-d'));
             self::assertNotNull($f->getVerifiedAt());
             self::assertSame($user->getId(), $f->getVerifiedBy()?->getId());
             self::assertFalse($f->isEvidenceOutdated());

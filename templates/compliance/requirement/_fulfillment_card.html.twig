@@ -1,0 +1,198 @@
+{#
+ # Fulfilment of one requirement (Paket 3: fulfilment = rule over data).
+ # Shows the effective value, where it comes from ("why": controls, mappings,
+ # maturity), an override with reason and review date, and the edit form:
+ # override for a requirement a rule computes, hand value for one without.
+ #
+ # Vars: requirement, fulfillment, is_inherited, can_edit, identity_control,
+ #       available_users, available_persons
+ #}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
+{% set fp = fulfillment.fulfillmentPercentage %}
+{% set ruled = fulfillment.derived and fulfillment.derivedPercentage is not null %}
+
+{% if is_inherited %}
+    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: 'compliance.fulfillment_rule.inherited_from_parent'|trans({}, 'compliance') }) }}
+{% endif %}
+
+<div class="text-center mb-3">
+    {{ _fa_progress.render({
+        value: fp,
+        tone: fp >= 100 ? 'success' : (fp >= 75 ? 'primary' : (fp >= 50 ? 'warning' : 'danger')),
+        showText: true,
+        size: 'lg',
+        class: 'progress-h-30',
+    }) }}
+    <div class="d-flex flex-wrap justify-content-center gap-1 mt-2">
+        {% if fulfillment.overridden %}
+            {{ pill.render(('compliance.fulfillment_rule.source.override_' ~ fulfillment.overrideSource)|trans({}, 'compliance'), 'warning', {size: 'sm'}) }}
+        {% elseif fulfillment.derived %}
+            {{ pill.render(('compliance.fulfillment_rule.source.' ~ fulfillment.derivationKind)|trans({}, 'compliance'), 'primary', {size: 'sm'}) }}
+        {% else %}
+            {{ pill.render('compliance.fulfillment_rule.source.manual'|trans({}, 'compliance'), 'neutral', {size: 'sm'}) }}
+        {% endif %}
+        {{ pill.render(('compliance.fulfillment_rule.status.' ~ fulfillment.status)|trans({}, 'compliance'), fp >= 100 ? 'success' : 'neutral', {size: 'sm', noDot: true}) }}
+    </div>
+</div>
+
+{% if fulfillment.overridden %}
+    <div class="border rounded p-2 mb-3">
+        <p class="small mb-1">
+            {% if ruled %}{{ 'compliance.fulfillment_rule.override.rule_says'|trans({'%value%': fulfillment.derivedPercentage}, 'compliance') }}{% endif %}
+            {% if fulfillment.overrideReviewDue %}
+                · {{ 'compliance.fulfillment_rule.override.review_due'|trans({'%date%': fulfillment.overrideReviewDue|fa_date}, 'compliance') }}
+                {% if fulfillment.isOverrideReviewDue() %}{{ pill.render('compliance.fulfillment_rule.override.due'|trans({}, 'compliance'), 'danger', {size: 'sm'}) }}{% endif %}
+            {% endif %}
+        </p>
+        <p class="small text-body-secondary mb-2">
+            {{ fulfillment.overrideReason ?: ('compliance.fulfillment_rule.override.reason_' ~ fulfillment.overrideSource)|trans({}, 'compliance') }}
+            {% if fulfillment.overriddenBy %} — {{ fulfillment.overriddenBy.fullName|default(fulfillment.overriddenBy.email) }}{% endif %}
+        </p>
+        {% if can_edit and ruled and is_granted('ROLE_MANAGER') %}
+            <form method="post" action="{{ path('app_compliance_fulfillment_follow_rule', {id: requirement.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('fulfillment_follow_rule_' ~ requirement.id) }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
+                    {{ 'compliance.fulfillment_rule.action.follow_rule'|trans({'%value%': fulfillment.derivedPercentage}, 'compliance') }}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+{% endif %}
+
+{# Why: the data the value comes from #}
+{% if fulfillment.derivationBasis is not empty %}
+    <details class="mb-3" {% if not fulfillment.overridden %}open{% endif %}>
+        <summary class="fw-bold small">{{ ('compliance.fulfillment_rule.why.' ~ fulfillment.derivationKind)|trans({'%count%': fulfillment.derivationBasis|length}, 'compliance') }}</summary>
+        <ul class="list-unstyled small mt-2 mb-0">
+            {% for row in fulfillment.derivationBasis %}
+                <li class="d-flex justify-content-between gap-2 py-1 border-bottom">
+                    {% if row.type == 'control' %}
+                        <a href="{{ path('app_soa_show', {id: row.id}) }}"><code>{{ row.ref }}</code> {{ row.label }}</a>
+                        <span class="text-nowrap">{{ row.applicable ? (row.value ~ ' %') : 'compliance.fulfillment_rule.why.excluded'|trans({}, 'compliance') }}</span>
+                    {% elseif row.type == 'mapping' %}
+                        <a href="{{ path('app_compliance_requirement_show', {id: row.id}) }}"><code>{{ row.framework }} {{ row.ref }}</code> {{ row.label }}</a>
+                        <span class="text-nowrap" title="{{ 'compliance.fulfillment_rule.why.mapping_formula'|trans({'%source%': row.source_value, '%mapping%': row.mapping_percentage}, 'compliance') }}">{{ row.value }} %</span>
+                    {% elseif row.type == 'maturity' %}
+                        <span>{{ 'compliance.fulfillment_rule.why.maturity_level'|trans({'%level%': row.level}, 'compliance') }}</span>
+                        <span class="text-nowrap">{{ row.value }} %</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </details>
+{% elseif not fulfillment.derived %}
+    <p class="small text-body-secondary">{{ 'compliance.fulfillment_rule.no_rule'|trans({}, 'compliance') }}</p>
+{% endif %}
+
+{% if fulfillment.fulfillmentNotes %}
+    <p class="fw-bold mt-3 mb-1 small">{{ 'compliance.fulfillment_rule.notes'|trans({}, 'compliance') }}</p>
+    <p class="text-muted small">{{ fulfillment.fulfillmentNotes }}</p>
+{% endif %}
+
+{% if can_edit and is_granted('ROLE_MANAGER') %}
+    {% if ruled %}
+        {# A rule computes this requirement: a different value is an override with reason #}
+        <details class="mt-3" {% if fulfillment.isOverrideReviewDue() %}open{% endif %}>
+            <summary class="fw-bold small">{{ (fulfillment.overridden ? 'compliance.fulfillment_rule.action.change_override' : 'compliance.fulfillment_rule.action.override')|trans({}, 'compliance') }}</summary>
+            <form method="post" action="{{ path('app_compliance_fulfillment_override', {id: requirement.id}) }}" class="mt-2">
+                <input type="hidden" name="_token" value="{{ csrf_token('fulfillment_override_' ~ requirement.id) }}">
+                <div class="mb-2">
+                    <label class="form-label small" for="override-percentage">{{ 'compliance.fulfillment_rule.field.percentage'|trans({}, 'compliance') }}</label>
+                    <input type="number" class="form-control fa-cyber-input__field" id="override-percentage" name="percentage" min="0" max="100" step="1" value="{{ fp }}" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small" for="override-reason">{{ 'compliance.fulfillment_rule.field.reason'|trans({}, 'compliance') }}</label>
+                    <textarea class="form-control fa-cyber-input__field" id="override-reason" name="reason" rows="3" minlength="10" required>{{ fulfillment.overrideSource == 'manual' ? fulfillment.overrideReason : '' }}</textarea>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small" for="override-review-due">{{ 'compliance.fulfillment_rule.field.review_due'|trans({}, 'compliance') }}</label>
+                    <input type="date" class="form-control fa-cyber-input__field" id="override-review-due" name="review_due" min="{{ 'today'|date('Y-m-d') }}" value="{{ '+6 months'|date('Y-m-d') }}" required>
+                </div>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">{{ 'compliance.fulfillment_rule.action.save_override'|trans({}, 'compliance') }}</button>
+            </form>
+        </details>
+    {% endif %}
+
+    <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" data-controller="fulfillment">
+        <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
+
+        {% if not fulfillment.derived %}
+            {# No rule: assessed by hand #}
+            <div class="mb-3">
+                <label for="fulfillmentSlider" class="form-label d-flex justify-content-between">
+                    <strong>{{ 'compliance.fulfillment_rule.field.manual_percentage'|trans({}, 'compliance') }}</strong>
+                    <span data-fulfillment-target="display" class="fa-status-pill fa-status-pill--primary">{{ fp }}%</span>
+                </label>
+                <input type="range" class="form-range" id="fulfillmentSlider" name="fulfillmentPercentage"
+                       data-fulfillment-target="slider" data-action="input->fulfillment#update"
+                       min="0" max="100" step="5" value="{{ fp }}">
+                <div class="d-flex gap-1 mt-2">
+                    {% for v in [0, 25, 50, 75, 100] %}
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
+                                data-action="click->fulfillment#set" data-fulfillment-value-param="{{ v }}">{{ v }}%</button>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if identity_control %}
+            <p class="small mb-3">
+                {{ 'compliance.fulfillment_rule.applicability_from_soa'|trans({}, 'compliance') }}
+                <a href="{{ path('app_soa_show', {id: identity_control.id}) }}">{{ identity_control.controlId }}</a>
+            </p>
+        {% else %}
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1" {% if fulfillment.applicable %}checked{% endif %}>
+                <label class="form-check-label" for="applicable">
+                    <strong>{{ 'compliance.requirement.applicable'|trans({}, 'compliance') }}</strong>
+                    <small class="d-block text-muted">{{ 'compliance.requirement.applicable_description'|trans({}, 'compliance') }}</small>
+                </label>
+            </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="responsiblePersonUserId" class="form-label">{{ 'fulfillment.field.responsible_person_user'|trans({}, 'compliance') }}</label>
+            <select class="form-select" id="responsiblePersonUserId" name="responsiblePersonUserId">
+                <option value="">{{ 'fulfillment.placeholder.responsible_person_user'|trans({}, 'compliance') }}</option>
+                {% for user in available_users %}
+                    <option value="{{ user.id }}"{% if fulfillment.responsiblePersonUser and fulfillment.responsiblePersonUser.id == user.id %} selected{% endif %}>{{ user.fullName|default(user.email) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="responsiblePersonId" class="form-label">{{ 'fulfillment.field.responsible_person'|trans({}, 'compliance') }}</label>
+            <select class="form-select" id="responsiblePersonId" name="responsiblePersonId">
+                <option value="">{{ 'fulfillment.placeholder.responsible_person'|trans({}, 'compliance') }}</option>
+                {% for person in available_persons %}
+                    <option value="{{ person.id }}"{% if fulfillment.responsiblePerson and fulfillment.responsiblePerson.id == person.id %} selected{% endif %}>{{ person.fullName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="responsibleDeputyPersonIds" class="form-label">{{ 'fulfillment.field.responsible_deputy_persons'|trans({}, 'compliance') }}</label>
+            <select class="form-select" id="responsibleDeputyPersonIds" name="responsibleDeputyPersonIds[]" multiple>
+                {% for person in available_persons %}
+                    <option value="{{ person.id }}"{% if fulfillment.responsibleDeputyPersons.contains(person) %} selected{% endif %}>{{ person.fullName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="attestationOwnerPersonId" class="form-label">{{ 'fulfillment.field.attestation_owner_person'|trans({}, 'compliance') }}</label>
+            <select class="form-select" id="attestationOwnerPersonId" name="attestationOwnerPersonId">
+                <option value="">{{ 'fulfillment.placeholder.attestation_owner_person'|trans({}, 'compliance') }}</option>
+                {% for person in available_persons %}
+                    <option value="{{ person.id }}"{% if fulfillment.attestationOwnerPerson and fulfillment.attestationOwnerPerson.id == person.id %} selected{% endif %}>{{ person.fullName }}</option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">{{ 'fulfillment.help.attestation_owner_person'|trans({}, 'compliance') }}</small>
+        </div>
+
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100">
+            {{ 'compliance.requirement.save_quick_update'|trans({}, 'compliance') }}
+        </button>
+    </form>
+{% elseif not can_edit %}
+    {{ _fa_alert.render({ variant: 'warning', icon: 'ui-lock', class: 'mt-3', body: 'compliance.fulfillment_rule.inherited_readonly'|trans({}, 'compliance') }) }}
+{% endif %}

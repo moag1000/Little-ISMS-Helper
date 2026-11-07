@@ -43,6 +43,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_requirement', columns: ['requirement_id'])]
 #[ORM\Index(name: 'idx_fulfillment_percentage', columns: ['fulfillment_percentage'])]
+#[ORM\Index(name: 'idx_crf_override', columns: ['tenant_id', 'override_source'])]
 class ComplianceRequirementFulfillment
 {
     #[ORM\Id]
@@ -597,6 +598,150 @@ class ComplianceRequirementFulfillment
     public function setVerifiedBy(?User $verifiedBy): static
     {
         $this->verifiedBy = $verifiedBy;
+        return $this;
+    }
+
+    // ── Paket 3: fulfilment = rule over data ─────────────────────────────
+    // fulfillmentPercentage stays the effective value every reader uses. The
+    // rule result lives next to it; a hand value differing from the rule is an
+    // explicit override with reason and review date, never a silent overwrite.
+
+    public const OVERRIDE_MANUAL = 'manual';
+    public const OVERRIDE_LEGACY = 'legacy';
+    public const OVERRIDE_CERTIFICATE = 'certificate';
+    public const OVERRIDE_INHERITANCE = 'inheritance';
+
+    /** Rule result (0-100), null while no rule applies to the requirement. */
+    #[ORM\Column(nullable: true)]
+    private ?int $derivedPercentage = null;
+
+    /** Rule kind that produced derivedPercentage: controls, mapping, maturity, checks. */
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $derivationKind = null;
+
+    /** @var list<array<string, mixed>>|null contributors shown as "why" */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $derivationBasis = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $derivedAt = null;
+
+    /** manual | legacy | certificate | inheritance; null = the rule value is in effect. */
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $overrideSource = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $overrideReason = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $overrideReviewDue = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $overriddenAt = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'overridden_by_id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $overriddenBy = null;
+
+    public function getDerivedPercentage(): ?int
+    {
+        return $this->derivedPercentage;
+    }
+
+    public function getDerivationKind(): ?string
+    {
+        return $this->derivationKind;
+    }
+
+    /** @return list<array<string, mixed>> */
+    public function getDerivationBasis(): array
+    {
+        return $this->derivationBasis ?? [];
+    }
+
+    public function getDerivedAt(): ?DateTimeImmutable
+    {
+        return $this->derivedAt;
+    }
+
+    /** True when a rule over the organisation's data computes this requirement. */
+    public function isDerived(): bool
+    {
+        return $this->derivationKind !== null;
+    }
+
+    /**
+     * @param list<array<string, mixed>> $basis
+     */
+    public function setDerivation(?int $percentage, ?string $kind, array $basis, DateTimeImmutable $at): static
+    {
+        $this->derivedPercentage = $percentage === null ? null : max(0, min(100, $percentage));
+        $this->derivationKind = $kind;
+        $this->derivationBasis = $basis === [] ? null : $basis;
+        $this->derivedAt = $at;
+        return $this;
+    }
+
+    public function isOverridden(): bool
+    {
+        return $this->overrideSource !== null;
+    }
+
+    public function getOverrideSource(): ?string
+    {
+        return $this->overrideSource;
+    }
+
+    public function getOverrideReason(): ?string
+    {
+        return $this->overrideReason;
+    }
+
+    public function getOverrideReviewDue(): ?DateTimeImmutable
+    {
+        return $this->overrideReviewDue;
+    }
+
+    public function getOverriddenAt(): ?DateTimeImmutable
+    {
+        return $this->overriddenAt;
+    }
+
+    public function getOverriddenBy(): ?User
+    {
+        return $this->overriddenBy;
+    }
+
+    public function isOverrideReviewDue(?DateTimeImmutable $today = null): bool
+    {
+        $today ??= new DateTimeImmutable('today');
+        return $this->overrideSource !== null
+            && $this->overrideReviewDue instanceof DateTimeImmutable
+            && $this->overrideReviewDue <= $today;
+    }
+
+    public function markOverride(
+        string $source,
+        ?string $reason,
+        ?DateTimeImmutable $reviewDue,
+        ?User $by,
+        DateTimeImmutable $at,
+    ): static {
+        $this->overrideSource = $source;
+        $this->overrideReason = $reason;
+        $this->overrideReviewDue = $reviewDue;
+        $this->overriddenBy = $by;
+        $this->overriddenAt = $at;
+        return $this;
+    }
+
+    public function clearOverride(): static
+    {
+        $this->overrideSource = null;
+        $this->overrideReason = null;
+        $this->overrideReviewDue = null;
+        $this->overriddenBy = null;
+        $this->overriddenAt = null;
         return $this;
     }
 }
