@@ -125,6 +125,8 @@ final class LegacyOwnerControllerTest extends WebTestCase
 
         $this->client->request('POST', sprintf('%s/asset/%d/person', self::URL, $this->foreign->getId()), ['_token' => $token]);
         self::assertResponseRedirects();
+        $crawler = $this->client->request('GET', self::URL);
+        $token = (string) $crawler->filter('input[name="_token"]')->first()->attr('value');
         $this->client->request('POST', self::URL . '/apply-all', ['_token' => $token]);
         self::assertResponseRedirects();
 

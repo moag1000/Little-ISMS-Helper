@@ -122,7 +122,8 @@ final class BcExerciseAutoSeederTest extends TestCase
             self::assertNotEmpty($ex->getScope());
             self::assertNotEmpty($ex->getObjectives());
             self::assertNotEmpty($ex->getParticipants());
-            self::assertNotEmpty($ex->getFacilitator());
+            // No placeholder facilitator text: the owner is picked in the form (legacy-owner report).
+            self::assertNull($ex->getFacilitator());
             self::assertNotNull($ex->getExerciseDate());
         }
     }
