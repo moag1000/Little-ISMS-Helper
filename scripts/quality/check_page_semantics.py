@@ -8,8 +8,12 @@ UI wave G. Four rules:
   announce two main regions).
 - extra-h1: the page header macro renders the page's `<h1>`; a template that
   uses it and adds another `<h1>` has two.
-- status-map: a local `{% set statusColors = {...} %}` (or status_tone map)
-  instead of _components/_status_vocabulary.html.twig / _fa_status_chip.
+- status-map: a local colour map (`{% set <name>Colors|Tones|Variants = {...} %}`,
+  any name ending in colors/tones/variants) whose values are tone names
+  (danger/warning/success/info/primary/secondary/neutral/accent) instead of
+  `pill_tone_severity()` (severity/criticality/priority scales),
+  _components/_status_vocabulary.html.twig (non-lifecycle statuses) or
+  _fa_status_chip (lifecycle entities).
 - tooltip-unreachable: a `data-bs-toggle="tooltip"` on an element that is not
   focusable (no tabindex, not a/button/input) can only be read by mouse.
 
@@ -34,7 +38,10 @@ MAIN_LAYOUTS = re.compile(r"\{%\s*extends\s+'(base|admin/layout)\.html\.twig'")
 PAGE_HEADER = re.compile(r"_fa_page_header\.(render|header)\(")
 MAIN_OPEN = re.compile(r"<main[\s>]")
 H1 = re.compile(r"<h1[\s>]")
-STATUS_MAP = re.compile(r"\{%\s*set\s+_?(status_?[cC]olors|status_?[tT]ones?)\s*=\s*\{")
+STATUS_MAP = re.compile(
+    r"\{%-?\s*set\s+_?(?!\w*(?:btn|button))\w*(?:[cC]olors?|[tT]ones?|[vV]ariants?)\s*=\s*\{([^{}]*)\}"
+)
+TONE_VALUE = re.compile(r":\s*'(?:danger|warning|success|info|primary|secondary|neutral|accent)'")
 TOOLTIP = re.compile(r"<(\w+)\b[^>]*data-bs-toggle=\"tooltip\"[^>]*>", re.S)
 FOCUSABLE = {"a", "button", "input", "select", "textarea"}
 # Print-only copies and JS print windows are not part of the page outline.
@@ -46,7 +53,7 @@ def findings() -> list[str]:
     for p in sorted(TEMPLATES.rglob("*.html.twig")):
         rel = str(p.relative_to(ROOT))
         text = p.read_text(encoding="utf-8")
-        if STATUS_MAP.search(text):
+        if any(TONE_VALUE.search(m.group(1)) for m in STATUS_MAP.finditer(text)):
             out.append(f"{rel}::status-map")
         for m in TOOLTIP.finditer(text):
             if m.group(1).lower() not in FOCUSABLE and "tabindex" not in m.group(0):

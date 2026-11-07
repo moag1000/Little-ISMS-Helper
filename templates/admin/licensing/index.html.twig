@@ -2,7 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}Lizenzinformationen{% endblock %}
+{% block title %}{{ 'admin.licensing.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
@@ -10,14 +10,14 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'admin.dashboard.title'|trans({}, 'admin'), url: path('admin_hub_index') },
-            { label: 'Lizenzen' }
+            { label: 'admin.licensing.title_short'|trans({}, 'admin') }
         ]
     } %}
 
     {# Page Header #}
     {{ _fa_page_header.render({
-        title: 'Lizenzinformationen',
-        subtitle: 'Third-Party Software Attributions & Compliance',
+        title: 'admin.licensing.title'|trans({}, 'admin'),
+        subtitle: 'admin.licensing.subtitle'|trans({}, 'admin'),
     }) }}
 
     <div class="row">
@@ -26,7 +26,7 @@
             <section class="fa-section">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
+                        <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_title'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body">
@@ -35,16 +35,16 @@
                             <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE
                         </a>
                         <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action">
-                            <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>Detaillierter Bericht
+                            <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_report'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('admin_licensing_summary') }}" class="list-group-item list-group-item-action">
-                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
+                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_summary'|trans({}, 'admin') }}
                         </a>
                     </div>
                     <div class="mt-3">
-                        <p class="fw-semibold text-muted small text-uppercase mb-2">Projekt</p>
+                        <p class="fw-semibold text-muted small text-uppercase mb-2">{{ 'admin.licensing.project'|trans({}, 'admin') }}</p>
                         <p class="small mb-2"><strong>{{ project_name }}</strong></p>
-                        <p class="small text-muted mb-0">Lizenz: {{ project_license }}</p>
+                        <p class="small text-muted mb-0">{{ 'admin.licensing.license_label'|trans({'%license%': project_license}, 'admin') }}</p>
                     </div>
                 </div>
             </section>
@@ -53,13 +53,13 @@
             <section class="fa-section mt-3">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--nav-tools me-2" aria-hidden="true"></i>Aktionen
+                        <i class="fa-icon fa-icon--nav-tools me-2" aria-hidden="true"></i>{{ 'admin.licensing.actions'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body">
                     <div class="d-grid gap-2">
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>Drucken
+                            <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>{{ 'admin.licensing.print'|trans({}, 'admin') }}
                         </button>
                         <a href="{{ asset('NOTICE.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>NOTICE.md
@@ -71,7 +71,7 @@
 
         <div class="col-lg-9">
             {# Compliance Status Alert #}
-            {{ _fa_alert.render({ variant: 'success', class: 'mb-4', title: 'Lizenzkonform für kommerzielle Nutzung', body: 'Alle verwendeten Third-Party-Komponenten sind für kommerzielle Nutzung freigegeben. Bitte beachten Sie die Attributions- und Lizenzvorgaben.' }) }}
+            {{ _fa_alert.render({ variant: 'success', class: 'mb-4', title: 'admin.licensing.compliant_title'|trans({}, 'admin'), body: 'admin.licensing.compliant_body'|trans({}, 'admin') }) }}
 
             {# NOTICE Content #}
             <section class="fa-section">

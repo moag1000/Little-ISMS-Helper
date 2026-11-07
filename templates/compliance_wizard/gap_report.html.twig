@@ -55,7 +55,7 @@
             kicker:       'compliance_wizard'|trans({}, 'compliance_wizard')|default('Compliance Wizard'),
             status:       'draft',
             audience:     'internal',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: config.name,
         key_findings: [

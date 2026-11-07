@@ -62,12 +62,8 @@
                                 {% else %}text-danger{% endif %}">
                                 {{ category.score }}%
                             </div>
-                            {% set status_variant = {
-                                'compliant': 'success',
-                                'partial': 'warning',
-                                'in_progress': 'info'
-                            }[category.status]|default('danger') %}
-                            {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ category.status)|trans({}, 'wizard') } %}
+                            {% import '_components/_status_vocabulary.html.twig' as _status %}
+                            {{ _status.pill('compliance_result', category.status, ('wizard.status.' ~ category.status)|trans({}, 'wizard')) }}
                         </div>
                     </div>
                 {% endblock %}
@@ -217,10 +213,7 @@
                     <div class="border rounded p-3 h-100 {% if gap.priority == 'critical' %}border-danger{% elseif gap.priority == 'high' %}border-warning{% else %}border-secondary{% endif %}">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <strong>{{ gap.title|trans({}, gap.translation_domain|default('wizard')) }}</strong>
-                            {% set priority_variant = {
-                                'critical': 'danger',
-                                'high': 'warning'
-                            }[gap.priority]|default('secondary') %}
+                            {% set priority_variant = pill_tone_severity(gap.priority|default('')) %}
                             {% include '_components/_badge.html.twig' with { variant: priority_variant, content: gap.priority|default('medium') } %}
                         </div>
                         {% if gap.description is defined %}

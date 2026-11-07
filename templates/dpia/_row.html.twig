@@ -4,7 +4,6 @@
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% set status_class = {'draft':'secondary','in_review':'info','approved':'success','rejected':'danger','requires_revision':'warning'}[dpia.status] %}
-{% set risk_map = {'low':'success','medium':'info','high':'warning','critical':'danger'} %}
 <tr id="dpia-row-{{ dpia.id }}">
     <td class="bulk-select-column">
         <input type="checkbox" class="form-check-input" data-bulk-actions-target="item"
@@ -15,12 +14,12 @@
     <td>{{ dpia.title }}</td>
     <td>{% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}</td>
     <td>
-        {% if dpia.riskLevel %}{% include '_components/_badge.html.twig' with { variant: risk_map[dpia.riskLevel], content: dpia.riskLevel|upper } %}
-        {% else %}<span class="text-muted">-</span>{% endif %}
+        {% if dpia.riskLevel %}{% include '_components/_badge.html.twig' with { variant: pill_tone_severity(dpia.riskLevel|default('')), content: dpia.riskLevel|upper } %}
+        {% else %}<span class="text-muted">—</span>{% endif %}
     </td>
     <td>
-        {% if dpia.residualRiskLevel %}{% include '_components/_badge.html.twig' with { variant: risk_map[dpia.residualRiskLevel], content: dpia.residualRiskLevel|upper } %}
-        {% else %}<span class="text-muted">-</span>{% endif %}
+        {% if dpia.residualRiskLevel %}{% include '_components/_badge.html.twig' with { variant: pill_tone_severity(dpia.residualRiskLevel|default('')), content: dpia.residualRiskLevel|upper } %}
+        {% else %}<span class="text-muted">—</span>{% endif %}
     </td>
     <td>
         {% set percentage = dpia.completenessPercentage %}

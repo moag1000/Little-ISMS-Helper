@@ -2,20 +2,7 @@
    fa-form-modal Turbo Frame. Uses drawer chrome for a clean condensed layout.
    "Vollansicht" link bypasses Turbo for the full show page. #}
 {% trans_default_domain 'prototype_protection' %}
-{% set status_variant = {
-    'draft':     'secondary',
-    'in_review': 'info',
-    'approved':  'success',
-    'rejected':  'danger',
-    'expired':   'warning',
-} %}
-{% set result_variant = {
-    'not_applicable': 'secondary',
-    'not_met':        'danger',
-    'partial':        'warning',
-    'met':            'success',
-    'exceeded':       'success',
-} %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
@@ -30,12 +17,12 @@
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
             {% include '_components/_badge.html.twig' with {
-                variant: status_variant[assessment.status] ?? 'secondary',
+                variant: _status.tone('prototype_assessment', assessment.status)|trim,
                 content: ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection')
             } %}
             {% if assessment.overallResult %}
                 {% include '_components/_badge.html.twig' with {
-                    variant: result_variant[assessment.overallResult] ?? 'secondary',
+                    variant: _status.tone('requirement_result', assessment.overallResult)|trim,
                     content: ('prototype_protection.result.' ~ assessment.overallResult)|trans({}, 'prototype_protection')
                 } %}
             {% endif %}
@@ -93,7 +80,7 @@
             <div class="fa-drawer__kv">
                 <span class="label">{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</span>
                 <span>{% include '_components/_badge.html.twig' with {
-                    variant: result_variant[assessment.overallResult] ?? 'secondary',
+                    variant: _status.tone('requirement_result', assessment.overallResult)|trim,
                     content: ('prototype_protection.result.' ~ assessment.overallResult)|trans({}, 'prototype_protection')
                 } %}</span>
             </div>

@@ -176,19 +176,12 @@
                     {% endblock %}
                     {% block table_body %}
                         {% import '_components/_status_pill.html.twig' as pill %}
+                        {% import '_components/_status_vocabulary.html.twig' as _vocab %}
                         {% for event in events %}
-                            {% set variant = {
-                                'import': 'success',
-                                'update': 'primary',
-                                'merge': 'info',
-                                'skip': 'warning',
-                                'error': 'danger'
-                            }[event.decision]|default('secondary') %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">{{ event.lineNumber }}</td>
                                 <td class="fa-table__cell">
-                                    {% set _dvtone = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
-                                    {{ pill.render(('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import'), _dvtone, {size: 'sm'}) }}
+                                    {{ _vocab.pill('import_decision', event.decision, ('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import'), {size: 'sm'}) }}
                                     {% if event.errorMessage %}
                                         <div class="small text-muted mt-1">{{ event.errorMessage }}</div>
                                     {% endif %}

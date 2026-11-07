@@ -294,7 +294,7 @@
         version:             cover.version|default(document.version|default('1')),
         valid_from:          cover.valid_from|default(null),
         valid_until:         cover.valid_until|default(null),
-        next_review:         cover.next_review|default(document.nextReviewDate ? document.nextReviewDate|date('Y-m-d') : null),
+        next_review:         cover.next_review|default(document.nextReviewDate ? document.nextReviewDate|fa_date : null),
         owner:               cover.owner|default(document.effectiveOwnerName|default(document.uploadedBy ? document.uploadedBy.fullName : null)),
         approver:            cover.approver|default(cover.approver_chain is defined and cover.approver_chain|length > 0 ? cover.approver_chain|first : null),
         approver_chain:      cover.approver_chain|default([]),

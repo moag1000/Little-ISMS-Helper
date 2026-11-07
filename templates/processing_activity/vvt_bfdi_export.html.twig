@@ -92,7 +92,7 @@
         <tr><td>Verantwortlicher:</td><td>{{ tenant.name ?? '—' }}</td></tr>
         <tr><td>Datenschutzbeauftragter:</td><td>{{ tenant.dpoContactName ?? '—' }}{{ tenant.dpoContactName and tenant.dpoExternal ? ' (extern)' : '' }} {{ tenant.dpoContactEmail ? '(' ~ tenant.dpoContactEmail ~ ')' : '' }}</td></tr>
         <tr><td>Stellvertretung DSB:</td><td>{{ tenant.dpoDeputyName ?? '—' }}</td></tr>
-        <tr><td>DSB bestellt / Aufsichtsbehörde informiert:</td><td>{{ tenant.dpoAppointmentDate ? tenant.dpoAppointmentDate|fa_date : '—' }} / {{ tenant.dpoAuthorityNotifiedAt ? tenant.dpoAuthorityNotifiedAt|fa_date : '—' }}</td></tr>
+        <tr><td>DSB bestellt / Aufsichtsbehörde informiert:</td><td>{{ tenant.dpoAppointmentDate|fa_date }} / {{ tenant.dpoAuthorityNotifiedAt|fa_date }}</td></tr>
         <tr><td>Vertreter in der EU (Art. 27 DSGVO):</td><td>{{ tenant.representativeName ?? '—' }}{{ tenant.representativeContact ? ' / ' ~ tenant.representativeContact : '' }}</td></tr>
         <tr><td>Exportiert am:</td><td>{{ exportedAt|fa_datetime }}</td></tr>
         <tr><td>Anzahl Verarbeitungstätigkeiten:</td><td>{{ activities|length }}</td></tr>

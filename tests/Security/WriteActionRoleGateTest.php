@@ -7,7 +7,8 @@ namespace App\Tests\Security;
 use App\Controller\DataBreachController;
 use App\Controller\DataSubjectRequestController;
 use App\Controller\DPIAController;
-use App\Controller\LicenseController;
+use App\Controller\AdminLicensingController;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Controller\SecurityReportController;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -35,7 +36,7 @@ final class WriteActionRoleGateTest extends TestCase
         }
         yield 'dsr personal data export' => [DataSubjectRequestController::class, 'exportPersonalData', 'ROLE_MANAGER'];
         yield 'security report generator' => [SecurityReportController::class, 'generate', 'ROLE_ADMIN'];
-        yield 'license report generator' => [LicenseController::class, 'generate', 'ROLE_ADMIN'];
+        yield 'license report generator' => [AdminLicensingController::class, 'generate', TenantScopedAdminVoter::ADMIN_GLOBAL_OP];
     }
 
     /**

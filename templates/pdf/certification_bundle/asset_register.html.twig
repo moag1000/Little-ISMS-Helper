@@ -47,14 +47,14 @@
         <tr>
             <td>{{ asset.id }}</td>
             <td>{{ asset.name }}</td>
-            <td>{{ asset.assetType ?? '-' }}</td>
-            <td class="text-center">{{ asset.confidentialityValue ?? '-' }}</td>
-            <td class="text-center">{{ asset.integrityValue ?? '-' }}</td>
-            <td class="text-center">{{ asset.availabilityValue ?? '-' }}</td>
-            <td>{{ asset.dataClassification ?? '-' }}</td>
-            <td>{{ asset.effectiveOwner ?? '-' }}</td>
-            <td>{{ asset.location ?? '-' }}</td>
-            <td>{{ asset.status ?? '-' }}</td>
+            <td>{{ asset.assetType ?? '—' }}</td>
+            <td class="text-center">{{ asset.confidentialityValue ?? '—' }}</td>
+            <td class="text-center">{{ asset.integrityValue ?? '—' }}</td>
+            <td class="text-center">{{ asset.availabilityValue ?? '—' }}</td>
+            <td>{{ asset.dataClassification ?? '—' }}</td>
+            <td>{{ asset.effectiveOwner ?? '—' }}</td>
+            <td>{{ asset.location ?? '—' }}</td>
+            <td>{{ asset.status ?? '—' }}</td>
         </tr>
         {% endfor %}
     </tbody>

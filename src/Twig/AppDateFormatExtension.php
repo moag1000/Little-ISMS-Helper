@@ -20,11 +20,13 @@ use Twig\TwigFilter;
  *   {{ entity.createdAt|fa_date }}      → "31.12.2024" (default 'd.m.Y')
  *   {{ entity.createdAt|fa_datetime }}  → "31.12.2024 23:59" (default 'd.m.Y H:i')
  *
- * null (or an empty/unparsable value) renders as "-" (same convention as {@see LocaleDateExtension}).
+ * null (or an empty/unparsable value) renders as "—" (the one empty-value placeholder).
  * The settings are read once per request/process cycle.
  */
 final class AppDateFormatExtension extends AbstractExtension implements ResetInterface
 {
+    /** One placeholder for "no value" across the UI. */
+    public const string EMPTY = '—';
     public const string DEFAULT_DATE_FORMAT = 'd.m.Y';
     public const string DEFAULT_DATETIME_FORMAT = 'd.m.Y H:i';
 
@@ -52,7 +54,7 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
     {
         $date = $this->toDate($date);
         if ($date === null) {
-            return '-';
+            return self::EMPTY;
         }
 
         return $date->format($this->format('date_format', self::DEFAULT_DATE_FORMAT));
@@ -62,7 +64,7 @@ final class AppDateFormatExtension extends AbstractExtension implements ResetInt
     {
         $date = $this->toDate($date);
         if ($date === null) {
-            return '-';
+            return self::EMPTY;
         }
 
         $timezone = $this->timezone();

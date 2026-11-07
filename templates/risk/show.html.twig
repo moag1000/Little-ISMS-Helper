@@ -124,8 +124,8 @@
             {% include '_components/_detail_group.html.twig' with {
                 items: [
                     { label: 'risk.field.status'|trans({}, 'risk'), value: (risk.status ? risk.status.value : '')|upper|replace({'_': ' '}) },
-                    { label: 'risk.field.created'|trans({}, 'risk'), value: risk.createdAt|date('d.m.Y') },
-                    { label: 'risk.field.last_review'|trans({}, 'risk'), value: risk.reviewDate ? risk.reviewDate|date('d.m.Y') : ('risk.not_reviewed'|trans({}, 'risk')) }
+                    { label: 'risk.field.created'|trans({}, 'risk'), value: risk.createdAt|fa_date },
+                    { label: 'risk.field.last_review'|trans({}, 'risk'), value: risk.reviewDate ? risk.reviewDate|fa_date : ('risk.not_reviewed'|trans({}, 'risk')) }
                 ]
             } only %}
 
@@ -412,10 +412,6 @@
                         {{ pill.render(treatmentPlans|length, 'primary', {size: 'sm', class: 'ms-2', noDot: true}) }}
                     </h3>
                     <p class="text-muted small mb-3">{{ 'risk.section.treatment_plans_help'|trans({}, 'risk') }}</p>
-                    {% set _status_variants = {
-                        'planned': 'secondary', 'in_progress': 'info',
-                        'completed': 'success', 'cancelled': 'danger', 'on_hold': 'warning'
-                    } %}
                     <div class="d-flex flex-column gap-2">
                         {% for plan in treatmentPlans %}
                             <div class="card fa-section">
@@ -425,8 +421,8 @@
                                             <strong>{{ plan.title }}</strong>
                                         </a>
                                         <div class="d-flex gap-2 align-items-center">
-                                            {% set _v = _status_variants[plan.status]|default('secondary') %}
-                                            {{ pill.render(('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan'), _v == 'info' ? 'primary' : (_v == 'secondary' ? 'neutral' : _v)) }}
+                                            {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+                                            {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\RiskTreatmentPlan', status_key: plan.status, label: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') }) }}
                                             {% if plan.priority is defined and plan.priority %}
                                                 {{ pill.render(plan.priority|upper, 'warning', {size: 'sm'}) }}
                                             {% endif %}

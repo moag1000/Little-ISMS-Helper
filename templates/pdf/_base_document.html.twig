@@ -21,7 +21,7 @@
 <html lang="de">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>{% block pdf_title %}{{ document_title|default('Dokument') }}{% endblock %}</title>
+    <title>{% block pdf_title %}{{ document_title|default('pdf.doc_base.default_document'|trans({}, 'messages')) }}{% endblock %}</title>
     <style>
         /* Page Configuration */
         @page {
@@ -59,7 +59,7 @@
                 color: #64748b;
             }
             @bottom-right {
-                content: "Seite " counter(page) " von " counter(pages);
+                content: "{{ 'pdf.doc_base.page'|trans({}, 'messages') }} " counter(page) " {{ 'pdf.doc_base.of'|trans({}, 'messages') }} " counter(pages);
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
                 color: #64748b;
@@ -375,19 +375,19 @@
 
         <div class="doc-meta-grid">
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Dokumenten-ID:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.document_id'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">{% block document_id %}{{ document_id|default('DOC-XXX-XXX') }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Titel:</div>
-                <div class="doc-meta-value">{% block document_title %}{{ document_title|default('Dokumententitel') }}{% endblock %}</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.title'|trans({}, 'messages') }}</div>
+                <div class="doc-meta-value">{% block document_title %}{{ document_title|default('pdf.doc_base.default_title'|trans({}, 'messages')) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Version:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.version'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">{% block document_version %}{{ version }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Status:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.status'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">
                     <span class="status-badge status-{% block document_status_class %}{{ status|default('draft') }}{% endblock %}">
                         {% block document_status %}{{ status|default('Draft')|upper }}{% endblock %}
@@ -395,7 +395,7 @@
                 </div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Klassifizierung:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.classification'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">
                     <span class="classification classification-{% block classification_class %}{{ classification|default('internal')|lower }}{% endblock %}">
                         {% block document_classification %}{{ classification|default('Internal')|upper }}{% endblock %}
@@ -403,27 +403,27 @@
                 </div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Organisation:</div>
-                <div class="doc-meta-value">{% block organization_name %}{{ tenant_name|default('Organisation') }}{% endblock %}</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.organisation'|trans({}, 'messages') }}</div>
+                <div class="doc-meta-value">{% block organization_name %}{{ tenant_name|default('pdf.doc_base.default_organisation'|trans({}, 'messages')) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Erstellt am:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.created_at'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">{% block created_date %}{{ created_at|default('now'|fa_date) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Erstellt von:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.created_by'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">{% block created_by %}{{ creator_name|default(app.user.fullName) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Letzte Änderung:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.modified_at'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">{% block modified_date %}{{ modified_at|default('now'|fa_datetime) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Gültig bis:</div>
-                <div class="doc-meta-value">{% block valid_until %}{{ valid_until_date|default('Unbegrenzt') }}{% endblock %}</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.valid_until'|trans({}, 'messages') }}</div>
+                <div class="doc-meta-value">{% block valid_until %}{{ valid_until_date|default('pdf.doc_base.unlimited'|trans({}, 'messages')) }}{% endblock %}</div>
             </div>
             <div class="doc-meta-row">
-                <div class="doc-meta-label">Nächste Prüfung:</div>
+                <div class="doc-meta-label">{{ 'pdf.doc_base.next_review'|trans({}, 'messages') }}</div>
                 <div class="doc-meta-value">{% block next_review %}{{ next_review_date|default('TBD') }}{% endblock %}</div>
             </div>
         </div>
@@ -433,22 +433,22 @@
     {% block approval_section %}
     {% if show_approval|default(false) %}
     <div class="approval-block mb-large">
-        <div class="approval-header">Genehmigung & Freigabe</div>
+        <div class="approval-header">{{ 'pdf.doc_base.approval_title'|trans({}, 'messages') }}</div>
         <table class="approval-table">
             <tr>
-                <td class="label">Geprüft durch:</td>
+                <td class="label">{{ 'pdf.doc_base.reviewed_by'|trans({}, 'messages') }}</td>
                 <td>{% block reviewer_name %}{{ reviewer|default('—') }}{% endblock %}</td>
-                <td class="label">Datum:</td>
+                <td class="label">{{ 'pdf.doc_base.date'|trans({}, 'messages') }}</td>
                 <td>{% block review_date %}{{ review_date|default('—') }}{% endblock %}</td>
             </tr>
             <tr>
-                <td class="label">Genehmigt durch:</td>
+                <td class="label">{{ 'pdf.doc_base.approved_by'|trans({}, 'messages') }}</td>
                 <td>{% block approver_name %}{{ approver|default('—') }}{% endblock %}</td>
-                <td class="label">Datum:</td>
+                <td class="label">{{ 'pdf.doc_base.date'|trans({}, 'messages') }}</td>
                 <td>{% block approval_date %}{{ approval_date|default('—') }}{% endblock %}</td>
             </tr>
             <tr>
-                <td class="label">Unterschrift:</td>
+                <td class="label">{{ 'pdf.doc_base.signature'|trans({}, 'messages') }}</td>
                 <td colspan="3">
                     {% block signature_block %}
                     <div style="height: 30pt; border-bottom: 1px solid #cbd5e1; margin-top: 10pt;"></div>
@@ -464,19 +464,19 @@
     {% block distribution_section %}
     {% if show_distribution|default(false) %}
     <div class="no-break mb-large">
-        <h3>Verteiler</h3>
+        <h3>{{ 'pdf.doc_base.distribution'|trans({}, 'messages') }}</h3>
         <table>
             <thead>
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Rolle/Abteilung</th>
-                    <th scope="col">Verteilungsart</th>
+                    <th scope="col">{{ 'pdf.doc_base.col_name'|trans({}, 'messages') }}</th>
+                    <th scope="col">{{ 'pdf.doc_base.col_role'|trans({}, 'messages') }}</th>
+                    <th scope="col">{{ 'pdf.doc_base.col_type'|trans({}, 'messages') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% block distribution_list %}
                 <tr>
-                    <td colspan="3" class="text-center text-muted">Keine Verteilerliste definiert</td>
+                    <td colspan="3" class="text-center text-muted">{{ 'pdf.doc_base.distribution_empty'|trans({}, 'messages') }}</td>
                 </tr>
                 {% endblock %}
             </tbody>
@@ -489,14 +489,14 @@
     {% block version_history_section %}
     {% if show_version_history|default(false) %}
     <div class="no-break mb-large">
-        <h3>Versionshistorie</h3>
+        <h3>{{ 'pdf.doc_base.version_history'|trans({}, 'messages') }}</h3>
         <table>
             <thead>
                 <tr>
-                    <th scope="col" style="width: 12%;">Version</th>
-                    <th scope="col" style="width: 15%;">Datum</th>
-                    <th scope="col" style="width: 20%;">Autor</th>
-                    <th scope="col">Änderungen</th>
+                    <th scope="col" style="width: 12%;">{{ 'pdf.doc_base.col_version'|trans({}, 'messages') }}</th>
+                    <th scope="col" style="width: 15%;">{{ 'pdf.doc_base.col_date'|trans({}, 'messages') }}</th>
+                    <th scope="col" style="width: 20%;">{{ 'pdf.doc_base.col_author'|trans({}, 'messages') }}</th>
+                    <th scope="col">{{ 'pdf.doc_base.col_changes'|trans({}, 'messages') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -505,7 +505,7 @@
                     <td>1.0</td>
                     <td>{{ created_at|default('now')|fa_date }}</td>
                     <td>{{ creator_name|default(app.user.fullName) }}</td>
-                    <td>Initiale Version</td>
+                    <td>{{ 'pdf.doc_base.initial_version'|trans({}, 'messages') }}</td>
                 </tr>
                 {% endblock %}
             </tbody>
@@ -517,7 +517,7 @@
     {# Main Document Content #}
     <div class="page-break"></div>
     {% block document_content %}
-    <h1>Dokumenteninhalt</h1>
+    <h1>{{ 'pdf.doc_base.content_heading'|trans({}, 'messages') }}</h1>
     <p class="text-muted">{{ 'pdf.base.define_content_block'|trans({}, 'messages')}}</p>
     {% endblock %}
 
@@ -525,9 +525,9 @@
     {% block references_section %}
     {% if show_references|default(false) %}
     <div class="page-break"></div>
-    <h2>Referenzen & Verwandte Dokumente</h2>
+    <h2>{{ 'pdf.doc_base.references_heading'|trans({}, 'messages') }}</h2>
     {% block references_content %}
-    <p class="text-muted">Keine Referenzen definiert.</p>
+    <p class="text-muted">{{ 'pdf.doc_base.references_empty'|trans({}, 'messages') }}</p>
     {% endblock %}
     {% endif %}
     {% endblock %}
@@ -536,8 +536,8 @@
     {% block footer_information %}
     <div style="margin-top: 40pt; padding-top: 15pt; border-top: 1px solid #cbd5e1; font-size: 7pt; color: #64748b;">
         <p class="text-center">
-            Dieses Dokument ist vertraulich und ausschließlich für den internen Gebrauch bestimmt.<br>
-            Unbefugte Weitergabe, Vervielfältigung oder Verwendung ist untersagt.
+            {{ 'pdf.doc_base.confidential_1'|trans({}, 'messages') }}<br>
+            {{ 'pdf.doc_base.confidential_2'|trans({}, 'messages') }}
         </p>
     </div>
     {% endblock %}

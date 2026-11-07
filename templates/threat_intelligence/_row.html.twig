@@ -1,20 +1,8 @@
 {# Single ThreatIntelligence table row — shared by the index and the Turbo Stream
    that replaces/appends a row after an in-modal save. #}
 {% trans_default_domain 'threat' %}
-{% set severityVariant = {
-    'critical': 'danger',
-    'high': 'warning',
-    'medium': 'info',
-    'low': 'secondary',
-    'informational': 'light'
-}[threat.severity] ?? 'secondary' %}
-{% set statusVariant = {
-    'new': 'primary',
-    'analyzing': 'warning',
-    'mitigated': 'success',
-    'monitoring': 'info',
-    'closed': 'secondary'
-}[threat.status] ?? 'secondary' %}
+{% set severityVariant = pill_tone_severity(threat.severity|default('')) %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 <tr id="threat-intelligence-row-{{ threat.id }}">
     <td class="bulk-select-column">
         <input type="checkbox"
@@ -32,8 +20,8 @@
     </td>
     <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('type.' ~ threat.threatType)|trans({}, 'threat') } %}</td>
     <td class="text-center">{% include '_components/_badge.html.twig' with { variant: severityVariant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}</td>
-    <td class="text-center">{% include '_components/_badge.html.twig' with { variant: statusVariant, content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}</td>
-    <td>{{ threat.effectiveAssignedTo ?? '-' }}</td>
+    <td class="text-center">{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ThreatIntelligence', status_key: threat.status, label: ('status_type.' ~ threat.status)|trans({}, 'threat') }) }}</td>
+    <td>{{ threat.effectiveAssignedTo ?? '—' }}</td>
     <td>{{ threat.detectionDate|fa_date }}</td>
     <td class="text-center">
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

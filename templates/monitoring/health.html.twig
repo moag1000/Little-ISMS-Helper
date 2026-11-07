@@ -392,7 +392,7 @@
                     <dt class="col-sm-5">uploads/ {{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.permissions.uploads_writable is null %}
-                            <span class="text-muted">N/A</span>
+                            <span class="text-muted">—</span>
                         {% elseif health_checks.permissions.uploads_writable %}
                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}

@@ -33,6 +33,10 @@ ui:
             goto_audits: 'Audits anzeigen'
             goto_compliance: 'Compliance Frameworks'
             goto_bcm: 'Business Continuity'
+            goto_my_day: 'Mein Tag'
+            goto_location_map: 'Standortkarte'
+            goto_group_comparison: 'Organisationsvergleich'
+            goto_mapping_hub: 'Mapping-Hub'
             create_asset: 'Neues Asset erstellen'
             create_risk: 'Neues Risiko erfassen'
             create_incident: 'Vorfall melden'
@@ -380,6 +384,11 @@ ui:
         saved: 'Gespeichert.'
         saving: 'Wird gespeichert …'
         search:
+            risk_band:
+                critical: 'Kritisch'
+                high: 'Hoch'
+                medium: 'Mittel'
+                low: 'Niedrig'
             category:
                 assets: 'Assets'
                 audit_findings: 'Audit-Findings'

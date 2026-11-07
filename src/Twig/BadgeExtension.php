@@ -191,8 +191,11 @@ final class BadgeExtension
      * Aurora tone for a severity value.
      */
     #[AsTwigFunction('pill_tone_severity')]
-    public function getSeverityTone(string|int|\BackedEnum $severity): string
+    public function getSeverityTone(string|int|\BackedEnum|null $severity): string
     {
+        if ($severity === null || $severity === '') {
+            return 'neutral';
+        }
         if ($severity instanceof \BackedEnum) {
             $severity = $severity->value;
         }

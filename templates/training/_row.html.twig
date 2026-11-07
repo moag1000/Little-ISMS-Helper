@@ -27,7 +27,7 @@
         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
     </td>
     <td>{{ training.scheduledDate|fa_date }}</td>
-    <td>{{ training.durationMinutes ?? '-' }} {{ 'training.minutes'|trans({}, 'training') }}</td>
+    <td>{{ training.durationMinutes ?? '—' }} {{ 'training.minutes'|trans({}, 'training') }}</td>
     <td>
         <span class="{{ badge_status(training.status) }}">
             {{ ('training.status.' ~ training.status)|trans({}, 'training') }}

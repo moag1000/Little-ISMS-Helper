@@ -50,10 +50,10 @@ final class AppDateFormatExtensionTest extends TestCase
     {
         $ext = $this->extension([]);
 
-        self::assertSame('-', $ext->formatDate(null));
-        self::assertSame('-', $ext->formatDateTime(null));
-        self::assertSame('-', $ext->formatDate(''));
-        self::assertSame('-', $ext->formatDate('kein Datum'));
+        self::assertSame('—', $ext->formatDate(null));
+        self::assertSame('—', $ext->formatDateTime(null));
+        self::assertSame('—', $ext->formatDate(''));
+        self::assertSame('—', $ext->formatDate('kein Datum'));
     }
 
     #[Test]

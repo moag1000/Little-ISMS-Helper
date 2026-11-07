@@ -171,9 +171,18 @@ class SearchServiceTest extends TestCase
             $this->complianceFrameworkRepo,
             $this->complianceRequirementRepo,
             $this->urlGenerator,
-            new NavigationSearch($this->urlGenerator, $authChecker, $moduleConfig),
+            new NavigationSearch($this->urlGenerator, $authChecker, $moduleConfig, self::germanTranslator()),
             $moduleConfig,
         );
+    }
+
+    private static function germanTranslator(): \Symfony\Component\Translation\Translator
+    {
+        $translator = new \Symfony\Component\Translation\Translator('de');
+        $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
+        $translator->addResource('yaml', __DIR__ . '/../../../translations/search_nav.de.yaml', 'de', 'search_nav');
+
+        return $translator;
     }
 
     private function buildService(): SearchService
@@ -209,7 +218,7 @@ class SearchServiceTest extends TestCase
             $this->complianceFrameworkRepo,
             $this->complianceRequirementRepo,
             $this->urlGenerator,
-            new NavigationSearch($this->urlGenerator, $this->authChecker, $this->moduleConfig),
+            new NavigationSearch($this->urlGenerator, $this->authChecker, $this->moduleConfig, self::germanTranslator()),
             $this->moduleConfig,
         );
     }
@@ -492,7 +501,7 @@ class SearchServiceTest extends TestCase
         $results = $service->searchNavigation('Backup');
         $titles = array_column($results, 'title');
 
-        $this->assertContains('Backup', $titles, '"Backup" query must return the Backup nav entry');
+        $this->assertContains('Backup & Wiederherstellung', $titles, '"Backup" query must return the Backup nav entry');
     }
 
     #[Test]

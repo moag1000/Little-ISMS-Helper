@@ -2,7 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
-{% block title %}Lizenz-Zusammenfassung{% endblock %}
+{% block title %}{{ 'admin.licensing.summary.page_title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
@@ -10,15 +10,15 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'Lizenzen', url: path('admin_licensing_index') },
-            { label: 'Zusammenfassung' }
+            { label: 'admin.licensing.title_short'|trans({}, 'admin'), url: path('admin_licensing_index') },
+            { label: 'admin.licensing.nav_summary'|trans({}, 'admin') }
         ]
     } %}
 
     {# Page Header #}
     {{ _fa_page_header.render({
-        title: 'Lizenz-Compliance Zusammenfassung',
-        subtitle: 'Schnellübersicht über die Lizenz-Compliance',
+        title: 'admin.licensing.summary.title'|trans({}, 'admin'),
+        subtitle: 'admin.licensing.summary.subtitle'|trans({}, 'admin'),
     }) }}
 
     <div class="row">
@@ -27,7 +27,7 @@
             <section class="fa-section">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
+                        <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_title'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body p-0">
@@ -36,10 +36,10 @@
                             <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE
                         </a>
                         <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action">
-                            <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>Detaillierter Bericht
+                            <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_report'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('admin_licensing_summary') }}" class="list-group-item list-group-item-action active">
-                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
+                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_summary'|trans({}, 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -60,10 +60,9 @@
                                         <i class="fa-icon fa-icon--status-ok fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Hervorragend Lizenzkonform</div>
+                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.licensing.summary.excellent_title'|trans({}, 'admin') }}</div>
                                         <p class="mb-0">
-                                            {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
-                                            Das Projekt ist für kommerzielle Nutzung freigegeben.
+                                            {{ 'admin.licensing.summary.excellent_body'|trans({'%percent%': compliance_percentage}, 'admin') }}
                                         </p>
                                     </div>
                                 </div>
@@ -77,10 +76,9 @@
                                         <i class="fa-icon fa-icon--ui-info fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <div class="fa-alert__title">✓ Überwiegend Lizenzkonform</div>
+                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.licensing.summary.good_title'|trans({}, 'admin') }}</div>
                                         <p class="mb-0">
-                                            {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
-                                            Einzelne Pakete erfordern besondere Aufmerksamkeit.
+                                            {{ 'admin.licensing.summary.good_body'|trans({'%percent%': compliance_percentage}, 'admin') }}
                                         </p>
                                     </div>
                                 </div>
@@ -94,10 +92,9 @@
                                         <i class="fa-icon fa-icon--status-warning fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Prüfung erforderlich</div>
+                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.licensing.summary.kpi_review'|trans({}, 'admin') }}</div>
                                         <p class="mb-0">
-                                            {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
-                                            Bitte prüfen Sie problematische Lizenzen im Detail.
+                                            {{ 'admin.licensing.summary.check_body'|trans({'%percent%': compliance_percentage}, 'admin') }}
                                         </p>
                                     </div>
                                 </div>
@@ -112,15 +109,15 @@
                     <div class="col-md-4 mb-3">
                         {{ _fa_kpi_card.render({
                             value: stats.total,
-                            label: 'Pakete Gesamt',
-                            sublabel: stats.generated_at ? 'Stand: ' ~ stats.generated_at : null,
+                            label: 'admin.licensing.summary.kpi_total'|trans({}, 'admin'),
+                            sublabel: stats.generated_at ? 'admin.licensing.summary.as_of'|trans({'%date%': stats.generated_at}, 'admin') : null,
                         }) }}
                     </div>
 
                     <div class="col-md-4 mb-3">
                         {{ _fa_kpi_card.render({
                             value: stats.allowed,
-                            label: 'Erlaubt',
+                            label: 'admin.licensing.legend.allowed'|trans({}, 'admin'),
                             sublabel: (stats.allowed / stats.total * 100)|round(1) ~ '%',
                         }) }}
                     </div>
@@ -128,7 +125,7 @@
                     <div class="col-md-4 mb-3">
                         {{ _fa_kpi_card.render({
                             value: stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown,
-                            label: 'Prüfung erforderlich',
+                            label: 'admin.licensing.summary.kpi_review'|trans({}, 'admin'),
                             sublabel: ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) ~ '%',
                             valueDanger: stats.unknown > 0 or stats.not_allowed > 0,
                         }) }}
@@ -139,25 +136,25 @@
                 <section class="fa-section mb-4">
                     <div class="fa-section__header">
                         <h2 class="fa-section__title">
-                            <i class="fa-icon fa-icon--nav-pie-chart me-2" aria-hidden="true"></i>Lizenzverteilung
+                            <i class="fa-icon fa-icon--nav-pie-chart me-2" aria-hidden="true"></i>{{ 'admin.licensing.summary.distribution'|trans({}, 'admin') }}
                         </h2>
                     </div>
                     <div class="fa-section__body">
                         {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                             {% block table_head %}
                                 <tr>
-                                    <th scope="col" class="fa-table__th">Status</th>
-                                    <th scope="col" class="fa-table__th">Beschreibung</th>
-                                    <th scope="col" class="fa-table__th fa-table__th--num">Anzahl</th>
-                                    <th scope="col" class="fa-table__th fa-table__th--num">Anteil</th>
-                                    <th scope="col" class="fa-table__th" style="width: 200px;">Verteilung</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.licensing.summary.col_status'|trans({}, 'admin') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'admin.licensing.summary.col_description'|trans({}, 'admin') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.licensing.summary.col_count'|trans({}, 'admin') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.licensing.summary.col_share'|trans({}, 'admin') }}</th>
+                                    <th scope="col" class="fa-table__th" style="width: 200px;">{{ 'admin.licensing.summary.col_distribution'|trans({}, 'admin') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                                 <tr class="fa-table__row">
-                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Erlaubt</span></td>
-                                    <td class="fa-table__cell"><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>
+                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.licensing.legend.allowed'|trans({}, 'admin') }}</span></td>
+                                    <td class="fa-table__cell"><small>{{ 'admin.licensing.summary.dist_allowed_desc'|trans({}, 'admin') }}</small></td>
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.allowed }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
@@ -165,8 +162,8 @@
                                     </td>
                                 </tr>
                                 <tr class="fa-table__row">
-                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Eingeschränkt</span></td>
-                                    <td class="fa-table__cell"><small>Weak copyleft (MPL, EPL, CC-BY)</small></td>
+                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.licensing.legend.restricted'|trans({}, 'admin') }}</span></td>
+                                    <td class="fa-table__cell"><small>{{ 'admin.licensing.summary.dist_restricted_desc'|trans({}, 'admin') }}</small></td>
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.restricted }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
@@ -175,7 +172,7 @@
                                 </tr>
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary"><i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> Copyleft</span></td>
-                                    <td class="fa-table__cell"><small>Strong copyleft (GPL, LGPL, AGPL)</small></td>
+                                    <td class="fa-table__cell"><small>{{ 'admin.licensing.summary.dist_copyleft_desc'|trans({}, 'admin') }}</small></td>
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.copyleft }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
@@ -183,8 +180,8 @@
                                     </td>
                                 </tr>
                                 <tr class="fa-table__row">
-                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> Nicht erlaubt</span></td>
-                                    <td class="fa-table__cell"><small>Non-commercial Lizenzen</small></td>
+                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.licensing.legend.not_allowed'|trans({}, 'admin') }}</span></td>
+                                    <td class="fa-table__cell"><small>{{ 'admin.licensing.legend.not_allowed_desc'|trans({}, 'admin') }}</small></td>
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.not_allowed }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
@@ -192,8 +189,8 @@
                                     </td>
                                 </tr>
                                 <tr class="fa-table__row">
-                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">❓ Unbekannt</span></td>
-                                    <td class="fa-table__cell"><small>Manuelle Prüfung erforderlich</small></td>
+                                    <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'admin.licensing.legend.unknown'|trans({}, 'admin') }}</span></td>
+                                    <td class="fa-table__cell"><small>{{ 'admin.licensing.legend.unknown_desc'|trans({}, 'admin') }}</small></td>
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.unknown }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.unknown / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
@@ -210,24 +207,24 @@
                     <section class="fa-section mb-4">
                         <div class="fa-section__header">
                             <h2 class="fa-section__title text-warning">
-                                <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>Handlungsbedarf
+                                <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>{{ 'admin.licensing.summary.action_required'|trans({}, 'admin') }}
                             </h2>
                         </div>
                         <div class="fa-section__body">
                             <ul class="mb-0">
                                 {% if stats.unknown > 0 %}
-                                    <li><strong>{{ stats.unknown }}</strong> Pakete mit unbekannter Lizenz müssen manuell geprüft werden</li>
+                                    <li><strong>{{ stats.unknown }}</strong> {{ 'admin.licensing.summary.todo_unknown'|trans({}, 'admin') }}</li>
                                 {% endif %}
                                 {% if stats.not_allowed > 0 %}
-                                    <li><strong>{{ stats.not_allowed }}</strong> Pakete mit nicht-kommerziellen Lizenzen müssen ersetzt werden</li>
+                                    <li><strong>{{ stats.not_allowed }}</strong> {{ 'admin.licensing.summary.todo_not_allowed'|trans({}, 'admin') }}</li>
                                 {% endif %}
                                 {% if stats.copyleft > 0 %}
-                                    <li><strong>{{ stats.copyleft }}</strong> Copyleft-Pakete erfordern Quelloffenlegung</li>
+                                    <li><strong>{{ stats.copyleft }}</strong> {{ 'admin.licensing.summary.todo_copyleft'|trans({}, 'admin') }}</li>
                                 {% endif %}
                             </ul>
                             <div class="mt-3">
                                 <a href="{{ path('admin_licensing_report') }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                                    <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i>Detailbericht anzeigen
+                                    <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i>{{ 'admin.licensing.summary.open_report'|trans({}, 'admin') }}
                                 </a>
                             </div>
                         </div>
@@ -238,16 +235,16 @@
                 <section class="fa-section">
                     <div class="fa-section__header">
                         <h2 class="fa-section__title">
-                            <i class="fa-icon fa-icon--nav-list-check me-2" aria-hidden="true"></i>Nächste Schritte
+                            <i class="fa-icon fa-icon--nav-list-check me-2" aria-hidden="true"></i>{{ 'admin.licensing.summary.next_steps'|trans({}, 'admin') }}
                         </h2>
                     </div>
                     <div class="fa-section__body">
                         <ol class="mb-0">
-                            <li>Vollständigen Bericht prüfen: <a href="{{ path('admin_licensing_report') }}">Detailbericht öffnen</a></li>
-                            <li>Problematische Lizenzen identifizieren und dokumentieren</li>
-                            <li>NOTICE-Datei prüfen: <a href="{{ path('admin_licensing_index') }}">NOTICE anzeigen</a></li>
+                            <li>{{ 'admin.licensing.summary.step_report'|trans({}, 'admin') }} <a href="{{ path('admin_licensing_report') }}">{{ 'admin.licensing.summary.step_report_link'|trans({}, 'admin') }}</a></li>
+                            <li>{{ 'admin.licensing.summary.step_identify'|trans({}, 'admin') }}</li>
+                            <li>{{ 'admin.licensing.summary.step_notice'|trans({}, 'admin') }} <a href="{{ path('admin_licensing_index') }}">{{ 'admin.licensing.summary.step_notice_link'|trans({}, 'admin') }}</a></li>
                             <li>{{ 'admin.licensing.attributions_provided'|trans({}, 'admin') }}</li>
-                            <li>Regelmäßig aktualisieren: <code>./license-report.sh</code> ausführen</li>
+                            <li>{{ 'admin.licensing.summary.step_refresh'|trans({}, 'admin') }} <code>./license-report.sh</code></li>
                         </ol>
                     </div>
                 </section>

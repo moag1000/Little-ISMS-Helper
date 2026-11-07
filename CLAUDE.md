@@ -294,11 +294,15 @@ detail pages come from `EntityLinks::DERIVE`. Legacy free-text person fields go 
 **Display conventions (UI wave G).** Dates in text output go through `|fa_date` / `|fa_datetime`
 (admin format + timezone, null → "-"; Gate 77) — `|date('Y-m-d')` only in attributes/URLs.
 Statuses without a lifecycle (workflow instances, consents, import rows, compliance results) take
-their tone from `_components/_status_vocabulary.html.twig`, lifecycle entities from `_fa_status_chip`;
+their tone from `_components/_status_vocabulary.html.twig`, lifecycle entities from `_fa_status_chip`,
+severity/criticality/priority scales from `pill_tone_severity()`; the one empty-value placeholder
+is `—` (`|fa_date` renders it for null);
 no local `statusColors` maps, no own `<main>`, one `<h1>` (the page header's), Bootstrap tooltips
 only on focusable elements (Gate 78). Search and commands are one overlay
 (`_command_palette.html.twig`, ⌘K/⌘P/`/`, triggers carry `data-command-palette-open`); its
-commands use `path()` and are gated by module and role.
+commands use `path()` and are gated by module and role. Page hits come from
+`App\Service\Search\NavigationSearch` (texts in the `search_nav` domain, DE + EN; `roles` = the attribute the
+controller checks, so search never offers a page that answers 403).
 
 **Decisions (UI wave H).** Every approve/reject dialog (workflow step, four-eyes request,
 risk acceptance) is `decision_modal()` from `templates/_macros/workflow.html.twig` (record,

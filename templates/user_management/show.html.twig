@@ -100,15 +100,15 @@
                             </tr>
                             <tr>
                                 <th scope="row">{{ 'user.label.department'|trans({}, 'user') }}</th>
-                                <td>{{ user.department ?? '-' }}</td>
+                                <td>{{ user.department ?? '—' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ 'user.label.position'|trans({}, 'user') }}</th>
-                                <td>{{ user.jobTitle ?? '-' }}</td>
+                                <td>{{ user.jobTitle ?? '—' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ 'user.label.phone'|trans({}, 'user') }}</th>
-                                <td>{{ user.phoneNumber ?? '-' }}</td>
+                                <td>{{ user.phoneNumber ?? '—' }}</td>
                             </tr>
                         {% endblock %}
                     {% endembed %}

@@ -223,17 +223,17 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header"><h2 class="card-title mb-0">
-                            <i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>Über diese Reports
+                            <i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>{{ 'security_reports.about.title'|trans({}, 'security_reports') }}
                         </h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <p class="mb-2">
-                        Die Security Audit Reports basieren auf den <strong>OWASP Top 10</strong> Security Risks und analysieren die Anwendung automatisch auf potenzielle Sicherheitslücken.
+                        {{ 'security_reports.about.intro'|trans({}, 'security_reports') }}
                     </p>
                     <ul class="mb-0">
-                        <li><strong>OWASP 2025 RC1:</strong> Neueste Version mit aktualisierten Kategorien (z.B. "Mishandling of Exceptional Conditions")</li>
-                        <li><strong>OWASP 2021:</strong> Stabile Version für Compliance-Nachweise</li>
+                        <li><strong>OWASP 2025 RC1:</strong> {{ 'security_reports.about.owasp_2025'|trans({}, 'security_reports') }}</li>
+                        <li><strong>OWASP 2021:</strong> {{ 'security_reports.about.owasp_2021'|trans({}, 'security_reports') }}</li>
                     </ul>
                 {% endblock %}
             {% endembed %}

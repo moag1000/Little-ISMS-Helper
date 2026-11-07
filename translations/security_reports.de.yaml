@@ -37,5 +37,10 @@ security_reports:
         high: 'Hoch (P1)'
         medium: 'Mittel (P2)'
         low: 'Niedrig (P3)'
+    about:
+        title: 'Über diese Reports'
+        intro: 'Die Security Audit Reports basieren auf den OWASP Top 10 Security Risks und analysieren die Anwendung automatisch auf potenzielle Sicherheitslücken.'
+        owasp_2025: 'Neueste Version mit aktualisierten Kategorien (z.B. "Mishandling of Exceptional Conditions")'
+        owasp_2021: 'Stabile Version für Compliance-Nachweise'
 app:
     title: 'Sicherheitsberichte'

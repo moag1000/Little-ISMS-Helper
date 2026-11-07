@@ -132,11 +132,11 @@
                                             <code>#{{ log.entityId }}</code>
                                         {% endif %}
                                     {% else %}
-                                        <span class="text-muted">-</span>
+                                        <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <code class="small">{{ log.ipAddress ?? '-' }}</code>
+                                    <code class="small">{{ log.ipAddress ?? '—' }}</code>
                                 </td>
                                 <td class="text-end">
                                     {% if log.description or log.newValues %}
@@ -146,7 +146,7 @@
                                             <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
                                         </button>
                                     {% else %}
-                                        <span class="text-muted">-</span>
+                                        <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
                             </tr>

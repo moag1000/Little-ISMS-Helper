@@ -206,8 +206,8 @@
                         <td class="fa-table__cell">
                             {% include '_components/_badge.html.twig' with { variant: risk.riskScore >= 20 ? 'danger' : 'warning', content: risk.riskScore >= 20 ? 'management_reports.risk_level.critical'|trans({}, 'management_reports') : 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
                         </td>
-                        <td class="fa-table__cell">{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '-' }}</td>
-                        <td class="fa-table__cell">{{ risk.effectiveRiskOwner ?? '-' }}</td>
+                        <td class="fa-table__cell">{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '—' }}</td>
+                        <td class="fa-table__cell">{{ risk.effectiveRiskOwner ?? '—' }}</td>
                     </tr>
                     {% endfor %}
                 {% endblock %}

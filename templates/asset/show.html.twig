@@ -263,8 +263,8 @@
                 <h3>{{ 'asset.section.valuation'|trans({}, 'asset') }}</h3>
                 {# Standardised via _detail_group component #}
                 {% set valuationItems = [
-                    { label: 'asset.label.acquisition_value'|trans({}, 'asset'), value: asset.acquisitionValue ? asset.acquisitionValue ~ ' EUR' : 'N/A' },
-                    { label: 'asset.label.current_value'|trans({}, 'asset'), value: asset.currentValue ? asset.currentValue ~ ' EUR' : 'N/A' }
+                    { label: 'asset.label.acquisition_value'|trans({}, 'asset'), value: asset.acquisitionValue ? asset.acquisitionValue ~ ' EUR' : '—' },
+                    { label: 'asset.label.current_value'|trans({}, 'asset'), value: asset.currentValue ? asset.currentValue ~ ' EUR' : '—' }
                 ] %}
                 {# MonetaryValue column dropped. acquisitionValue + currentValue are canonical. #}
                 {% set valuationItems = valuationItems|merge([
@@ -458,7 +458,7 @@
                 <div class="detail-section">
                     <h3>{{ 'asset.section.protection_analysis'|trans({}, 'asset') }}</h3>
                     <div class="protection-analysis">
-                        {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
+                        {% import '_components/_status_vocabulary.html.twig' as _vocab %}
 
                         <div class="row mb-3">
                             {# Confidentiality #}
@@ -469,7 +469,7 @@
                                         {{ 'asset.label.confidentiality'|trans({}, 'asset') }}
                                     </div>
                                     <div class="protection-level">
-                                        {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.confidentiality.level]|default('secondary'), content: ('bcm.level.' ~ analysis.confidentiality.level)|trans({}, 'bcm') } %}
+                                        {{ _vocab.pill('protection_level', analysis.confidentiality.level, ('bcm.level.' ~ analysis.confidentiality.level)|trans({}, 'bcm'), { noDot: true }) }}
                                         <span class="value-display">{{ analysis.confidentiality.value }}/5</span>
                                     </div>
                                     {% if analysis.confidentiality.recommendation %}
@@ -495,7 +495,7 @@
                                         {{ 'asset.label.integrity'|trans({}, 'asset') }}
                                     </div>
                                     <div class="protection-level">
-                                        {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.integrity.level]|default('secondary'), content: ('bcm.level.' ~ analysis.integrity.level)|trans({}, 'bcm') } %}
+                                        {{ _vocab.pill('protection_level', analysis.integrity.level, ('bcm.level.' ~ analysis.integrity.level)|trans({}, 'bcm'), { noDot: true }) }}
                                         <span class="value-display">{{ analysis.integrity.value }}/5</span>
                                     </div>
                                     {% if analysis.integrity.recommendation %}
@@ -521,7 +521,7 @@
                                         {{ 'asset.label.availability'|trans({}, 'asset') }}
                                     </div>
                                     <div class="protection-level">
-                                        {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.availability.level]|default('secondary'), content: ('bcm.level.' ~ analysis.availability.level)|trans({}, 'bcm') } %}
+                                        {{ _vocab.pill('protection_level', analysis.availability.level, ('bcm.level.' ~ analysis.availability.level)|trans({}, 'bcm'), { noDot: true }) }}
                                         <span class="value-display">{{ analysis.availability.value }}/5</span>
                                     </div>
                                     {% if analysis.availability.recommendation %}
@@ -544,7 +544,7 @@
                         {% if analysis.overallLevel is defined %}
                             <div class="overall-protection">
                                 <strong>{{ 'asset.protection.overall_level'|trans({}, 'asset') }}:</strong>
-                                {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.overallLevel]|default('secondary'), class: 'ms-2', content: ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') } %}
+                                {{ _vocab.pill('protection_level', analysis.overallLevel, ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm'), { noDot: true, class: 'ms-2' }) }}
                             </div>
                         {% endif %}
 

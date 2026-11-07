@@ -105,7 +105,7 @@
                         <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
                         {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', content: 'Score: ' ~ plan.risk.riskScore } %}
                     {% else %}
-                        <span class="text-muted">-</span>
+                        <span class="text-muted">—</span>
                     {% endif %}
                 </div>
 

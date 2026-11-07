@@ -230,7 +230,7 @@
             {% for entry in _chain %}
                 {% set _history = _history|merge([{
                     version: entry.version|default('—'),
-                    date: entry.uploadedAt ? entry.uploadedAt|date('d.m.Y') : '—',
+                    date: entry.uploadedAt|fa_date,
                     change: entry.description|default('—')|striptags|slice(0, 240),
                     author: entry.uploadedBy ? entry.uploadedBy.fullName : '—',
                     approver: entry.policyBodyEditedBy ? entry.policyBodyEditedBy.fullName : '—',

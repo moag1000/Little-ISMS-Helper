@@ -17,10 +17,10 @@
         {% if requirement.framework %}
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: requirement.framework.code } %}
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
-    <td>{{ requirement.category|default('-') }}</td>
+    <td>{{ requirement.category|default('—') }}</td>
     <td>
         <span class="{{ badge_priority(requirement.priority) }}">{{ requirement.priority }}</span>
     </td>
@@ -40,14 +40,14 @@
                 <small class="text-muted">{{ fulfillment.status }}</small>
             </div>
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td>
         {% if fulfillment and fulfillment.applicable %}
-            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.yes'|trans({}, 'messages') } %}
         {% else %}
-            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
         {% endif %}
     </td>
     <td>

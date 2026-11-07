@@ -139,7 +139,7 @@
                                             <strong>{{ risk.title }}</strong>
                                             <div class="small text-muted">{{ risk.description|default('')|u.truncate(120, '…') }}</div>
                                         </td>
-                                        <td class="fa-table__cell"><code>{{ risk.category|default('–') }}</code></td>
+                                        <td class="fa-table__cell"><code>{{ risk.category|default('—') }}</code></td>
                                         <td class="fa-table__cell">
                                             {% set _v = inherent >= 15 ? 'danger' : (inherent >= 8 ? 'warning' : 'success') %}
                                             <span class="fa-status-pill fa-status-pill--{{ _v }}">
@@ -185,7 +185,7 @@
                                             <strong>{{ asset.name }}</strong>
                                             <div class="small text-muted">{{ asset.description|default('') }}</div>
                                         </td>
-                                        <td class="fa-table__cell"><code>{{ asset.asset_type|default('–') }}</code></td>
+                                        <td class="fa-table__cell"><code>{{ asset.asset_type|default('—') }}</code></td>
                                         <td class="fa-table__cell fa-table__cell--num">{{ asset.confidentiality|default(3) }}</td>
                                         <td class="fa-table__cell fa-table__cell--num">{{ asset.integrity|default(3) }}</td>
                                         <td class="fa-table__cell fa-table__cell--num">{{ asset.availability|default(3) }}</td>

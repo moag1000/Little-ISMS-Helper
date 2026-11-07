@@ -12,12 +12,7 @@
     'subjects_notified': 'success',
     'closed': 'dark'
 }[breach.status]|default('secondary') %}
-{% set risk_class = {
-    'low': 'success',
-    'medium': 'info',
-    'high': 'warning',
-    'critical': 'danger'
-}[breach.riskLevel]|default('secondary') %}
+{% set risk_class = pill_tone_severity(breach.riskLevel|default('')) %}
 <tr id="data-breach-row-{{ breach.id }}"
     class="{{ breach.isAuthorityNotificationOverdue ? 'table-danger' : '' }}">
     <td class="bulk-select-column">
@@ -46,7 +41,7 @@
         {% if breach.riskLevel %}
             {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td>
@@ -78,7 +73,7 @@
         {% elseif breach.requiresAuthorityNotification %}
             <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td>
@@ -87,7 +82,7 @@
         {% elseif breach.requiresSubjectNotification %}
             <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td>

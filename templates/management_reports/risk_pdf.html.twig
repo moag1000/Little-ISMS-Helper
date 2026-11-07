@@ -105,8 +105,8 @@
         risk.category,
         '<strong>' ~ risk.riskScore ~ '</strong>',
         '<span class="badge ' ~ _badge ~ '">' ~ _level ~ '</span>',
-        (risk.treatmentStrategy ? risk.treatmentStrategy.value : '-')|slice(0, 18),
-        (risk.effectiveRiskOwner ?? '-')|slice(0, 18),
+        (risk.treatmentStrategy ? risk.treatmentStrategy.value : '—')|slice(0, 18),
+        (risk.effectiveRiskOwner ?? '—')|slice(0, 18),
     ]]) %}
 {% endfor %}
 
@@ -166,7 +166,7 @@
             trend.month_name ?? trend.month,
             trend.total,
             trend.high_critical,
-            trend.new_risks ?? '-',
+            trend.new_risks ?? '—',
         ]]) %}
     {% endfor %}
     {% set _sections = _sections|merge([{
@@ -189,7 +189,7 @@
         kicker:       'ISO 27005 · Risk Register',
         status:       'auditor-only',
         audience:     'auditor',
-        generated_at: generated_at|date('d.m.Y H:i'),
+        generated_at: generated_at|fa_datetime,
         prepared_by:  version,
     },
     brand_name: 'Little ISMS Helper',

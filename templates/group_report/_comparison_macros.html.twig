@@ -6,7 +6,7 @@
 {% macro cell(item) %}
     {%- set _chip = item is null ? null : ({good: 'final', warning: 'draft', danger: 'confidential'}[item.status ?? ''] ?? null) -%}
     {%- if item is null -%}
-        <span class="text-body-secondary">–</span>
+        <span class="text-body-secondary">—</span>
     {%- elseif _chip -%}
         <span class="report-doc__chip report-doc__chip--status-{{ _chip }}">{{ item|kpi_value }}</span>
     {%- else -%}
@@ -16,7 +16,7 @@
 
 {% macro group_cell(item) %}
     {%- if item is null -%}
-        <span class="text-body-secondary">–</span>
+        <span class="text-body-secondary">—</span>
     {%- else -%}
         <strong>{{ item.mode == 'avg' ? 'Ø ' : 'Σ ' }}{{ item|kpi_value }}</strong>
     {%- endif -%}

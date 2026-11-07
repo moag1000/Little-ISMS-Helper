@@ -83,13 +83,7 @@
                 {% block card_body %}
                     <div class="h6 mb-2 text-muted">{{ 'business_process.show.criticality'|trans({}, 'business_process') }}</div>
                     <p class="h3">
-                        {% set criticality_badge = {
-                            'critical': 'danger',
-                            'high': 'warning',
-                            'medium': 'info',
-                            'low': 'success'
-                        } %}
-                        {% include '_components/_badge.html.twig' with { variant: criticality_badge[business_process.criticality] ?? 'secondary', content: ('business_process.criticality.' ~ business_process.criticality)|trans({}, 'business_process') } %}
+                        {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(business_process.criticality|default('')), content: ('business_process.criticality.' ~ business_process.criticality)|trans({}, 'business_process') } %}
                     </p>
                 {% endblock %}
             {% endembed %}
@@ -108,14 +102,7 @@
                 {% block card_body %}
                     <div class="h6 mb-2 text-muted">{{ 'business_process.show.process_risk_level'|trans({}, 'business_process') }}</div>
                     <p class="h3">
-                        {% set risk_badge = {
-                            'critical': 'danger',
-                            'high': 'warning',
-                            'medium': 'info',
-                            'low': 'success',
-                            'unknown': 'secondary'
-                        } %}
-                        {% include '_components/_badge.html.twig' with { variant: risk_badge[metrics.process_risk_level] ?? 'secondary', content: ('business_process.criticality.' ~ metrics.process_risk_level)|trans({}, 'business_process') } %}
+                        {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(metrics.process_risk_level|default('')), content: ('business_process.criticality.' ~ metrics.process_risk_level)|trans({}, 'business_process') } %}
                     </p>
                     <small class="text-muted">{{ 'business_process.show.active_risks'|trans({'%count%': metrics.active_risks}, 'business_process') }}</small>
                 {% endblock %}
@@ -178,7 +165,7 @@
                         </tr>
                         <tr>
                             <th scope="row">{{ 'business_process.field.description'|trans({}, 'business_process') }}</th>
-                            <td>{{ business_process.description ?? '-' }}</td>
+                            <td>{{ business_process.description ?? '—' }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{ 'business_process.field.upstream_processes'|trans({}, 'business_process') }}</th>
@@ -206,15 +193,15 @@
                         </tr>
                         <tr>
                             <th scope="row">{{ 'business_process.field.dependencies_upstream'|trans({}, 'business_process') }}</th>
-                            <td>{{ business_process.dependenciesUpstream ?? '-' }}</td>
+                            <td>{{ business_process.dependenciesUpstream ?? '—' }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{ 'business_process.field.dependencies_downstream'|trans({}, 'business_process') }}</th>
-                            <td>{{ business_process.dependenciesDownstream ?? '-' }}</td>
+                            <td>{{ business_process.dependenciesDownstream ?? '—' }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{ 'business_process.field.recovery_strategy'|trans({}, 'business_process') }}</th>
-                            <td>{{ business_process.recoveryStrategy ?? '-' }}</td>
+                            <td>{{ business_process.recoveryStrategy ?? '—' }}</td>
                         </tr>
                     {% endblock %}
                 {% endembed %}
@@ -273,11 +260,11 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">{{ 'business_process.field.financial_impact_per_hour'|trans({}, 'business_process') }}</th>
-                                    <td>{{ business_process.financialImpactPerHour ? (business_process.financialImpactPerHour|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
+                                    <td>{{ business_process.financialImpactPerHour ? (business_process.financialImpactPerHour|number_format(2, ',', '.') ~ ' €') : '—' }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{{ 'business_process.field.financial_impact_per_day'|trans({}, 'business_process') }}</th>
-                                    <td>{{ business_process.financialImpactPerDay ? (business_process.financialImpactPerDay|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
+                                    <td>{{ business_process.financialImpactPerDay ? (business_process.financialImpactPerDay|number_format(2, ',', '.') ~ ' €') : '—' }}</td>
                                 </tr>
                             {% endblock %}
                         {% endembed %}

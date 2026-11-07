@@ -113,6 +113,10 @@ role_management:
             review: 'Prüfen'
             manage: 'Verwalten'
             veto: 'Veto einlegen'
+    template_modal:
+        includes: 'Diese Vorlage enthält:'
+        and_more: 'und %count% weitere...'
+        create_role: 'Rolle erstellen'
 role:
     user: Benutzer
     manager: Manager

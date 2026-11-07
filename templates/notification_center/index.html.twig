@@ -86,7 +86,7 @@
                                         <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
-                                <td class="text-muted small">{{ delivery.attemptedAt ? delivery.attemptedAt|fa_datetime : '—' }}</td>
+                                <td class="text-muted small">{{ delivery.attemptedAt|fa_datetime }}</td>
                             </tr>
                         {% endfor %}
                     {% endblock %}

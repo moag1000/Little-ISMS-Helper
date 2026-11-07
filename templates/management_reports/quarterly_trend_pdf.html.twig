@@ -104,7 +104,7 @@
             : '<span class="badge badge-secondary">' ~ ('management_reports.quarterly_trend.stable'|trans({}, 'management_reports')) ~ '</span>') %}
     {% set _trend_rows = _trend_rows|merge([[
         '<strong>' ~ (metric.label|trans({}, 'management_reports')) ~ '</strong>',
-        metric.previous is not null ? metric.previous ~ metric.unit : '-',
+        metric.previous is not null ? metric.previous ~ metric.unit : '—',
         '<strong>' ~ metric.current ~ metric.unit ~ '</strong>',
         _delta_cell,
         _trend_badge,
@@ -118,7 +118,7 @@
         kicker:       'ISMS · Quarterly Trend Analysis',
         status:       'confidential',
         audience:     'internal',
-        generated_at: generated_at|date('d.m.Y H:i'),
+        generated_at: generated_at|fa_datetime,
     },
     brand_name: 'Little ISMS Helper',
     key_findings: [

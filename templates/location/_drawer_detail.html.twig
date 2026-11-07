@@ -5,13 +5,10 @@
     title: location.name
 } %}
     {% block body %}
-        {% set securityColors = {
-            'public': 'secondary', 'restricted': 'info', 'controlled': 'warning',
-            'secure': 'warning', 'high_security': 'danger'
-        } %}
+        {% import '_components/_status_vocabulary.html.twig' as _status %}
         <div class="fa-drawer__section">
             <span class="fa-drawer__pill">
-                {% include '_components/_badge.html.twig' with { variant: securityColors[location.securityLevel] ?? 'secondary', content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
+                {% include '_components/_badge.html.twig' with { variant: _status.tone('security_zone', location.securityLevel)|trim, content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
             </span>
         </div>
 
@@ -20,7 +17,7 @@
         {% if location.code %}<div class="fa-drawer__kv"><span class="label">{{ 'location.field.code'|trans({}, 'locations') }}</span><span><code>{{ location.code }}</code></span></div>{% endif %}
         {% if location.parentLocation %}<div class="fa-drawer__kv"><span class="label">{{ 'location.field.parent_location'|trans({}, 'locations') }}</span><span>{{ location.parentLocation.name }}</span></div>{% endif %}
         <div class="fa-drawer__kv"><span class="label">{{ 'location.field.city'|trans({}, 'locations') }}</span>
-            <span>{{ location.city ?? '–' }}{% if location.country %} · {{ location.country }}{% endif %}</span></div>
+            <span>{{ location.city ?? '—' }}{% if location.country %} · {{ location.country }}{% endif %}</span></div>
         <div class="fa-drawer__kv"><span class="label">{{ 'location.field.badge_access'|trans({}, 'locations') }}</span>
             <span>{{ location.requiresBadgeAccess ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</span></div>
         {% if location.description %}

@@ -144,12 +144,12 @@
                                 {% include '_components/_badge.html.twig' with { variant: 'info', content: doc.entityType } %}
                                 <small>#{{ doc.entityId }}</small>
                             {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted">—</span>
                             {% endif %}
                         </td>
                         <td>{{ doc.fileSizeFormatted }}</td>
-                        <td>{{ doc.uploadedBy ? doc.uploadedBy.fullName : '-' }}</td>
-                        <td>{{ doc.uploadedAt|date('d.m.Y H:i') }}</td>
+                        <td>{{ doc.uploadedBy ? doc.uploadedBy.fullName : '—' }}</td>
+                        <td>{{ doc.uploadedAt|fa_datetime }}</td>
                     </tr>
                     {% endfor %}
                 {% endblock %}

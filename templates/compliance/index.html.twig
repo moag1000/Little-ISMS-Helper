@@ -32,18 +32,10 @@
     {% endfor %}
 {% endif %}
 
-    <main>
+    <div>
 
     {# Maturity Heatmap — CMMI Levels per Framework (C2) #}
     {% if maturity_portfolio is defined and maturity_portfolio|length > 0 %}
-        {% set level_variant = {
-            0: 'secondary',
-            1: 'danger',
-            2: 'warning',
-            3: 'info',
-            4: 'primary',
-            5: 'success',
-        } %}
         {% embed '_components/_card.html.twig' with {'class': 'mb-4'} %}
             {% block card_header %}
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -69,14 +61,14 @@
                         {% import '_components/_status_pill.html.twig' as pill %}
                         {% for code, row in maturity_portfolio %}
                             {% set m = row.maturity %}
-                            {% set variant = level_variant[m.level] ?? 'secondary' %}
+                            {% import '_components/_status_vocabulary.html.twig' as _vocab %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
                                     <span class="border fa-status-pill fa-status-pill--neutral">{{ code }}</span>
                                     <span class="ms-1">{{ row.framework.name }}</span>
                                 </td>
                                 <td class="fa-table__cell">
-                                    {% set _pill_tone = variant == 'secondary' ? 'neutral' : (variant == 'info' ? 'primary' : variant) %}
+                                    {% set _pill_tone = _vocab.tone('maturity_level', m.level)|trim %}
                                     {{ pill.render('L' ~ m.level ~ ' — ' ~ ('compliance.maturity.label.' ~ m.label)|trans({}, 'compliance'), _pill_tone) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--num">{{ m.coverage_pct }}%</td>
@@ -303,7 +295,7 @@
             </div>
         {% endblock %}
     {% endembed %}
-    </main>
+    </div>
 </div>
 
 <style>

@@ -23,7 +23,7 @@
         actions:  []
     }) }}
 
-    <main>
+    <div>
 
         {# ── Current year status ────────────────────────────────────────────────── #}
         <div class="row mb-4">
@@ -35,7 +35,7 @@
                             <strong>{{ 'eu_authorities.dora_roi.status.submitted'|trans }}</strong>
                             — {{ 'eu_authorities.dora_roi.status.submitted_body'|trans({
                                 '%date%': currentYear.submittedAt|fa_date,
-                                '%number%': currentYear.confirmationNumber ?? 'N/A'
+                                '%number%': currentYear.confirmationNumber ?? '—'
                             }) }}
                         {% endblock %}
                     {% endembed %}
@@ -117,7 +117,7 @@
                 {% trans_default_domain 'eu_authorities' %}
                 {% for record in submissions %}
                     <tr class="fa-table__row">
-                        <td class="fa-table__cell">{{ record.reportingDate ? record.reportingDate|date('d.m.Y') : '—' }}</td>
+                        <td class="fa-table__cell">{{ record.reportingDate|fa_date }}</td>
                         <td class="fa-table__cell">
                             <span class="fa-status-pill fa-status-pill--neutral">
                                 {{ ('eu_authorities.dora_roi.scope.' ~ record.reportingScope)|trans }}
@@ -132,7 +132,7 @@
                             {% if record.isSubmitted %}
                                 <span class="text-success">
                                     <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
-                                    {{ record.submittedAt|date('d.m.Y') }}
+                                    {{ record.submittedAt|fa_date }}
                                 </span>
                             {% else %}
                                 <span class="text-warning">{{ 'eu_authorities.dora_roi.status.pending'|trans }}</span>
@@ -204,6 +204,6 @@
             }) }}
         {% endif %}
 
-    </main>
+    </div>
 </div>
 {% endblock %}

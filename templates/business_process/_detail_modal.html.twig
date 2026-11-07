@@ -2,12 +2,6 @@
    Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
    flex column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'business_process' %}
-{% set criticality_class = {
-    'critical': 'danger',
-    'high': 'warning',
-    'medium': 'info',
-    'low': 'secondary'
-} %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
@@ -22,7 +16,7 @@
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
             {% include '_components/_badge.html.twig' with {
-                variant: criticality_class[business_process.criticality] ?? 'secondary',
+                variant: pill_tone_severity(business_process.criticality|default('')),
                 content: business_process.criticality|capitalize
             } %}
         </div>

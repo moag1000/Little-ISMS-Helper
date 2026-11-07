@@ -33,12 +33,6 @@
                 <ul class="list-unstyled ms-3 mt-1">
                     {% for entry in entries %}
                         {% set crit = entry.criticality|default('') %}
-                        {% set crit_variant = {
-                            'critical': 'danger',
-                            'high':     'warning',
-                            'medium':   'info',
-                            'low':      'secondary',
-                        }[crit] | default('light') %}
                         <li class="py-1 border-start border-2 ps-2 mb-1">
                             <div>
                                 <strong>{{ entry.name|default('—') }}</strong>
@@ -46,8 +40,7 @@
                                     <span class="border fa-status-pill fa-status-pill--neutral ms-1">{{ entry.country }}</span>
                                 {% endif %}
                                 {% if crit %}
-                                    {% set _crit_tone = crit_variant in ['info'] ? 'primary' : (crit_variant in ['secondary','light','dark'] ? 'neutral' : crit_variant) %}
-                                    {{ pill.render(('supplier.criticality.' ~ crit)|trans({}, 'suppliers'), _crit_tone, {size: 'sm', class: 'ms-1'}) }}
+                                    {{ pill.render(('supplier.criticality.' ~ crit)|trans({}, 'suppliers'), pill_tone_severity(crit), {size: 'sm', class: 'ms-1'}) }}
                                 {% endif %}
                             </div>
                             <div class="small text-muted">

@@ -178,7 +178,7 @@
         <table>
             <tr>
                 <td class="label">{{ 'wizard.export.pdf.tenant'|trans({}, 'wizard') }}:</td>
-                <td>{{ tenant ? tenant.name : 'N/A' }}</td>
+                <td>{{ tenant ? tenant.name : '—' }}</td>
                 <td class="label">{{ 'wizard.export.pdf.cutoff_date'|trans({}, 'wizard') }}:</td>
                 <td>{{ generated_at|fa_datetime }}</td>
             </tr>
@@ -259,7 +259,7 @@
                                 {% set b = s >= 80 ? 'success' : (s >= 60 ? 'warning' : 'danger') %}
                                 <span class="badge {{ b }}">{{ s }}%</span>
                             {% else %}
-                                <span class="badge muted">-</span>
+                                <span class="badge muted">—</span>
                             {% endif %}
                         </td>
                     {% endfor %}

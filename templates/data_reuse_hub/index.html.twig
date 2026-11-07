@@ -21,7 +21,7 @@
         ]
     }) }}
 
-    <main class="fa-aurora-surface fa-aurora-surface--dots">
+    <div class="fa-aurora-surface fa-aurora-surface--dots">
 
     {# Hero KPI — FTE-saved, identisch zur Home-Landing-Karte — 8H.4 migrated #}
     {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4 border-success' } %}
@@ -178,6 +178,6 @@
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'small mt-4 mb-0' } } %}
         {% block alert_body %}{{ 'reuse.page.footer_hint'|trans({}, 'messages') }}{% endblock %}
     {% endembed %}
-    </main>
+    </div>
 </div>
 {% endblock %}

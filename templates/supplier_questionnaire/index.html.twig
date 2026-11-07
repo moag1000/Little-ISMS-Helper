@@ -62,7 +62,7 @@
                             <td class="fa-table__cell">{{ q.supplier ? q.supplier.name : '—' }}</td>
                             <td class="fa-table__cell">{{ q.title }}</td>
                             <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ ('supplier.questionnaire.status.' ~ q.status)|trans({}, 'suppliers') }}</span></td>
-                            <td class="fa-table__cell">{{ q.sentAt ? q.sentAt|fa_date : '—' }}</td>
+                            <td class="fa-table__cell">{{ q.sentAt|fa_date }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

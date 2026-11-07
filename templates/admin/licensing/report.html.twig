@@ -1,18 +1,18 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block admin_title %}Lizenzbericht - Detailliert{% endblock %}
+{% block admin_title %}{{ 'admin.licensing.report.page_title'|trans({}, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{{ path('app_reports_overview') }}">Reports</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('admin_licensing_index') }}">Lizenzen</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Detaillierter Bericht</li>
+    <li class="breadcrumb-item"><a href="{{ path('admin_licensing_index') }}">{{ 'admin.licensing.title_short'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.licensing.nav_report'|trans({}, 'admin') }}</li>
 {% endblock %}
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        title: 'Detaillierter Lizenzbericht',
-        subtitle: 'Vollständige Compliance-Analyse aller Dependencies',
+        title: 'admin.licensing.report.title'|trans({}, 'admin'),
+        subtitle: 'admin.licensing.report.subtitle'|trans({}, 'admin'),
     }) }}
 
     <div class="row">
@@ -20,7 +20,7 @@
             <section class="fa-section">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> Navigation
+                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'admin.licensing.nav_title'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body p-0">
@@ -29,10 +29,10 @@
                             <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE
                         </a>
                         <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action active">
-                            <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>Detaillierter Bericht
+                            <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_report'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('admin_licensing_summary') }}" class="list-group-item list-group-item-action">
-                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
+                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>{{ 'admin.licensing.nav_summary'|trans({}, 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -41,22 +41,22 @@
             <section class="fa-section mt-3">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> Aktionen
+                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'admin.licensing.actions'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body">
                     <div class="d-grid gap-2">
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>Drucken
+                            <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>{{ 'admin.licensing.print'|trans({}, 'admin') }}
                         </button>
                         <a href="{{ asset('docs/reports/license-report.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>Report.md
                         </a>
-                        {% if is_granted('ROLE_ADMIN') %}
+                        {% if is_granted('ADMIN_GLOBAL_OP') %}
                         <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
-                                data-report-regenerate-url-value="{{ path('app_licenses_generate') }}"
+                                data-report-regenerate-url-value="{{ path('admin_licensing_generate') }}"
                                 data-report-regenerate-csrf-token-value="{{ csrf_token('report_regenerate') }}"
                                 data-report-regenerate-loading-text-value="{{ 'common.generating_reports'|trans({}, 'messages') }}"
                                 data-report-regenerate-success-text-value="{{ 'common.report_regenerated'|trans({}, 'messages') }}">
@@ -67,7 +67,7 @@
                     <div class="mt-3">
                         <small class="text-muted">
                             <i class="fa-icon fa-icon--ui-info me-1" aria-hidden="true"></i>
-                            Bericht lokal mit <code>./license-report.sh</code> aktualisieren
+                            {{ 'admin.licensing.report.update_locally'|trans({}, 'admin') }} <code>./license-report.sh</code>
                         </small>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
             <section class="fa-section">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i> Vollständiger Compliance-Report
+                        <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i> {{ 'admin.licensing.report.full_title'|trans({}, 'admin') }}
                     </h2>
                     <div class="fa-section__tools">
                         <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
@@ -101,30 +101,30 @@
             <section class="fa-section mt-3">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="fa-icon fa-icon--nav-help" aria-hidden="true"></i> Legende
+                        <i class="fa-icon fa-icon--nav-help" aria-hidden="true"></i> {{ 'admin.licensing.legend.title'|trans({}, 'admin') }}
                     </h2>
                 </div>
                 <div class="fa-section__body">
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            <span class="fa-status-pill fa-status-pill--success me-2"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Erlaubt</span>
-                            <small>Permissive Lizenzen (MIT, BSD, Apache-2.0)</small>
+                            <span class="fa-status-pill fa-status-pill--success me-2"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.licensing.legend.allowed'|trans({}, 'admin') }}</span>
+                            <small>{{ 'admin.licensing.legend.allowed_desc'|trans({}, 'admin') }}</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <span class="fa-status-pill fa-status-pill--warning me-2"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Eingeschränkt</span>
-                            <small>Weak copyleft (MPL-2.0, EPL, CC-BY)</small>
+                            <span class="fa-status-pill fa-status-pill--warning me-2"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.licensing.legend.restricted'|trans({}, 'admin') }}</span>
+                            <small>{{ 'admin.licensing.legend.restricted_desc'|trans({}, 'admin') }}</small>
                         </div>
                         <div class="col-md-6 mb-2">
                             <span class="fa-status-pill fa-status-pill--primary me-2"><i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> Copyleft</span>
-                            <small>Strong copyleft (GPL/LGPL/AGPL)</small>
+                            <small>{{ 'admin.licensing.legend.copyleft_desc'|trans({}, 'admin') }}</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <span class="fa-status-pill fa-status-pill--danger me-2"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> Nicht erlaubt</span>
-                            <small>Non-commercial licenses</small>
+                            <span class="fa-status-pill fa-status-pill--danger me-2"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.licensing.legend.not_allowed'|trans({}, 'admin') }}</span>
+                            <small>{{ 'admin.licensing.legend.not_allowed_desc'|trans({}, 'admin') }}</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <span class="fa-status-pill fa-status-pill--neutral me-2">❓ Unbekannt</span>
-                            <small>Manuelle Prüfung erforderlich</small>
+                            <span class="fa-status-pill fa-status-pill--neutral me-2"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'admin.licensing.legend.unknown'|trans({}, 'admin') }}</span>
+                            <small>{{ 'admin.licensing.legend.unknown_desc'|trans({}, 'admin') }}</small>
                         </div>
                     </div>
                 </div>

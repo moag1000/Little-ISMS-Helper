@@ -14,7 +14,7 @@
  * to use this macro or _fa_entity_badge).
  *
  * @param string variant - Badge color variant (primary|secondary|success|danger|warning|info|light|dark|severity)
- * @param string|null severity - When variant='severity', maps critical|high|medium|low → danger|warning|info|success
+ * @param string|null severity - When variant='severity', tone from pill_tone_severity() (critical|high|medium|low → danger|warning|primary|success)
  * @param string|null size - Badge size (sm|lg|null for default)
  * @param string|null icon - Aurora icon name (e.g. 'shield-check', 'ui-edit', 'status-warning').
  *                           Legacy `bi-*` prefixed names are auto-stripped + remapped where possible.
@@ -31,15 +31,9 @@
 {% set title = title|default(null) %}
 {% set pill = pill|default(false) %}
 
-{# Severity-Mapping:
-   critical → danger, high → warning, medium → info, low → success #}
+{# Severity-Mapping: the one severity vocabulary (BadgeExtension, pill_tone_severity) #}
 {% if variant == 'severity' and severity is defined and severity %}
-    {% set variant = {
-        'critical': 'danger',
-        'high':     'warning',
-        'medium':   'info',
-        'low':      'success'
-    }[severity]|default('secondary') %}
+    {% set variant = pill_tone_severity(severity) %}
 {% endif %}
 
 {# Aurora-Primary: BEM-class set for the chosen variant.

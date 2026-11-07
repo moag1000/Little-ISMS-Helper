@@ -169,7 +169,7 @@
                                 {% if mapping.relationship %}
                                     {% set relKey = 'compliance.mapping.rel_type.' ~ mapping.relationship ~ '.label' %}
                                     {% set relDef = 'compliance.mapping.rel_type.' ~ mapping.relationship ~ '.def' %}
-                                    <span class="fa-status-pill fa-status-pill--primary"
+                                    <span tabindex="0" class="fa-status-pill fa-status-pill--primary"
                                           title="{{ relDef|trans({}, 'compliance') }}"
                                           data-bs-toggle="tooltip"
                                           data-bs-placement="top">
@@ -183,7 +183,7 @@
                             <td>
                                 {% if mapping.qualityScore is not null %}
                                     {% set mqsTone = mapping.qualityScore >= 75 ? 'success' : (mapping.qualityScore >= 50 ? 'warning' : 'danger') %}
-                                    <span class="fa-status-pill fa-status-pill--{{ mqsTone }}"
+                                    <span tabindex="0" class="fa-status-pill fa-status-pill--{{ mqsTone }}"
                                           title="{{ 'compliance.mapping.gloss.mqs'|trans({}, 'compliance') }}"
                                           data-bs-toggle="tooltip"
                                           data-bs-placement="top">

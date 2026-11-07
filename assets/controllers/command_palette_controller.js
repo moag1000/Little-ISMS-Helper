@@ -174,13 +174,24 @@ export default class extends Controller {
         this.render();
     }
 
+    /** Risk band label (band key comes from RiskMatrixThresholds on the server). */
+    riskBandLabel(band) {
+        const labels = {
+            critical: faT('search.risk_band.critical'),
+            high: faT('search.risk_band.high'),
+            medium: faT('search.risk_band.medium'),
+            low: faT('search.risk_band.low'),
+        };
+        return labels[band] || '';
+    }
+
     /** Pages (navigation results) first, then one group per record type. */
     recordGroups(data) {
         const groups = [];
         const toItem = (item, icon) => ({
             label: item.title,
             description: item.description || '',
-            badge: item.badge || '',
+            badge: item.badge || this.riskBandLabel(item.band),
             url: item.url,
             icon: item.icon ? String(item.icon).replace(/^fa-icon--/, '') : icon,
         });

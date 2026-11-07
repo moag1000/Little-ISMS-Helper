@@ -4,7 +4,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
-{% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
+{% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
     <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'admin.data_repair.title'|trans({}, 'admin') }}
@@ -95,7 +95,7 @@
                     <p class="small text-muted mb-0">
                         <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                         {{ 'admin.data_repair.integrity_check.last_run'|trans({
-                            '%when%': fullCache.completed_at|date('Y-m-d H:i'),
+                            '%when%': fullCache.completed_at|fa_datetime,
                             '%duration%': (fullCache.duration_ms / 1000)|round(1),
                         }, 'admin') }}
                         {% set _c = fullCache.counts %}
@@ -258,7 +258,7 @@
                 value: orphCache is null ? '—' : orphTotal,
                 hint: orphCache is null
                     ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
-                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': orphCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': orphCache.completed_at|fa_datetime}, 'admin'),
                 href: path('admin_data_repair_orphans'),
             }) }}
         </div>
@@ -275,7 +275,7 @@
                 value: dupCache is null ? '—' : dupTotal,
                 hint: dupCache is null
                     ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
-                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': dupCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': dupCache.completed_at|fa_datetime}, 'admin'),
                 href: path('admin_data_repair_duplicates_index'),
             }) }}
         </div>
@@ -294,7 +294,7 @@
                 value: brCache is null ? '—' : brTotal,
                 hint: brCache is null
                     ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
-                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': brCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': brCache.completed_at|fa_datetime}, 'admin'),
                 href: path('admin_data_repair_broken_refs_index'),
             }) }}
         </div>
@@ -311,7 +311,7 @@
                 value: healthCache is null ? '—' : healthTotal,
                 hint: healthCache is null
                     ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
-                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': healthCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': healthCache.completed_at|fa_datetime}, 'admin'),
                 href: path('admin_data_repair_health_index'),
             }) }}
         </div>
@@ -347,7 +347,7 @@
                     {% if orphCache is not null %}
                         <span>
                             <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': orphCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': orphCache.completed_at|fa_datetime}, 'admin') }}
                         </span>
                     {% endif %}
                     <form method="post" action="{{ path('admin_data_repair_orphans_refresh') }}" class="d-inline-block m-0">
@@ -452,7 +452,7 @@
                     {% if dupCache is not null %}
                         <span>
                             <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': dupCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': dupCache.completed_at|fa_datetime}, 'admin') }}
                         </span>
                     {% endif %}
                     <form method="post" action="{{ path('admin_data_repair_duplicates_refresh') }}" class="d-inline-block m-0">
@@ -546,7 +546,7 @@
                     {% if brCache is not null %}
                         <span>
                             <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': brCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': brCache.completed_at|fa_datetime}, 'admin') }}
                         </span>
                     {% endif %}
                     <form method="post" action="{{ path('admin_data_repair_broken_refs_refresh') }}" class="d-inline-block m-0">
@@ -645,7 +645,7 @@
                     {% if healthCache is not null %}
                         <span>
                             <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': healthCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': healthCache.completed_at|fa_datetime}, 'admin') }}
                         </span>
                     {% endif %}
                     <form method="post" action="{{ path('admin_data_repair_health_refresh') }}" class="d-inline-block m-0">

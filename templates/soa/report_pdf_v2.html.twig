@@ -39,20 +39,20 @@
 <tr>
     <td>1.0</td>
     <td>{{ generatedAt|date_modify('-6 months')|fa_date }}</td>
-    <td>ISMS Team</td>
-    <td>Initiale Version nach ISO 27001:2022</td>
+    <td>{{ 'soa.pdf_v2.isms_team'|trans({}, 'soa') }}</td>
+    <td>{{ 'soa.pdf_v2.version_initial'|trans({}, 'soa') }}</td>
 </tr>
 <tr>
     <td>1.5</td>
     <td>{{ generatedAt|date_modify('-3 months')|fa_date }}</td>
     <td>{{ app.user.fullName }}</td>
-    <td>Aktualisierung Controls A.8 und A.11</td>
+    <td>{{ 'soa.pdf_v2.version_update'|trans({}, 'soa') }}</td>
 </tr>
 <tr>
     <td>2.0</td>
     <td>{{ generatedAt|fa_date }}</td>
     <td>{{ app.user.fullName }}</td>
-    <td>Vollständige Überprüfung aller Controls, Status-Update</td>
+    <td>{{ 'soa.pdf_v2.version_review'|trans({}, 'soa') }}</td>
 </tr>
 {% endblock %}
 
@@ -289,22 +289,22 @@
     <tbody>
         <tr>
             <td>ISO/IEC 27001:2022</td>
-            <td>Standard</td>
+            <td>{{ 'soa.pdf_v2.type_standard'|trans({}, 'soa') }}</td>
             <td>{{ 'soa.iso27001_full_title'|trans({}, 'soa')}}</td>
         </tr>
         <tr>
             <td>ISO/IEC 27002:2022</td>
-            <td>Standard</td>
-            <td>Information security controls</td>
+            <td>{{ 'soa.pdf_v2.type_standard'|trans({}, 'soa') }}</td>
+            <td>{{ 'soa.pdf_v2.iso27002_title'|trans({}, 'soa') }}</td>
         </tr>
         <tr>
             <td>ISMS-POL-001</td>
-            <td>Policy</td>
+            <td>{{ 'soa.pdf_v2.type_policy'|trans({}, 'soa') }}</td>
             <td>{{ 'report.pdf.ref_isms_policy'|trans({}, 'soa') }}</td>
         </tr>
         <tr>
             <td>ISMS-RISK-001</td>
-            <td>Risk Assessment</td>
+            <td>{{ 'soa.pdf_v2.type_risk_assessment'|trans({}, 'soa') }}</td>
             <td>{{ 'report.pdf.ref_risk_assessment'|trans({}, 'soa') }}</td>
         </tr>
     </tbody>

@@ -161,7 +161,7 @@
                                 {%- set status  = cell.status|default('none') -%}
                                 {%- set sev     = _self._ragSeverity(status)|trim -%}
                                 {%- set rate    = cell.rate is defined ? cell.rate : null -%}
-                                {%- set ratePct = rate is not null ? (rate * 100)|number_format(0) ~ '%' : 'N/A' -%}
+                                {%- set ratePct = rate is not null ? (rate * 100)|number_format(0) ~ '%' : '—' -%}
                                 {%- set href    = cell.href|default(null) -%}
                                 {%- set count   = 0 -%}
                                 {%- set cellLabel = cell.label|default(rowLabel ~ ' × ' ~ colLabel) -%}

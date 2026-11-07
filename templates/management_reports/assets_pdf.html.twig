@@ -115,7 +115,7 @@
         asset.name|length > 30 ? asset.name[:30] ~ '…' : asset.name,
         asset.assetType,
         '<span class="badge ' ~ _badge ~ '">' ~ _label ~ '</span>',
-        (asset.effectiveOwner ?? '-')|slice(0, 20),
+        (asset.effectiveOwner ?? '—')|slice(0, 20),
         asset.status|default('Active'),
     ]]) %}
 {% endfor %}
@@ -166,7 +166,7 @@
         kicker:       'ISMS · Asset Register',
         status:       'final',
         audience:     'internal',
-        generated_at: generated_at|date('d.m.Y H:i'),
+        generated_at: generated_at|fa_datetime,
         prepared_by:  version,
     },
     brand_name:   'Little ISMS Helper',

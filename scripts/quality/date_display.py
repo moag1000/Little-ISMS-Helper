@@ -1,6 +1,6 @@
 """Shared detector for Gate 76: dates shown to users with a hard-coded |date format.
 
-A display date sits in `{{ ... }}` in text content (not inside an HTML tag, so
+A display date sits in `{{ ... }}` or `{% ... %}` (set/include hashes) in text content (not inside an HTML tag, so
 not in value=/min=/data-* attributes) and uses one of the four formats the UI
 review found side by side. Those go through |fa_date / |fa_datetime, which
 apply the admin-configured format and timezone.
@@ -19,7 +19,7 @@ DISPLAY_FORMATS = {
 }
 
 _DATE_CALL = re.compile(r"""\|\s*date\(\s*(['"])(d\.m\.Y H:i|Y-m-d H:i|d\.m\.Y|Y-m-d)\1\s*\)""")
-_OUTPUT = re.compile(r"\{\{.*?\}\}", re.S)
+_OUTPUT = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.S)
 
 
 def _in_tag(text: str, pos: int) -> bool:
@@ -43,8 +43,14 @@ def display_dates(text: str):
         if _in_tag(text, out.start()) or any(a <= out.start() < b for a, b in skipped):
             continue
         body = out.group(0)
-        # Strings built for machines stay as they are.
-        if re.search(r"\b(path|url|asset)\(", body) or "~" in body:
+        # Strings built for machines stay as they are: URL builders, and
+        # expressions marked with a `{# machine-date #}` comment on the line
+        # before (route params, grouping keys).
+        if re.search(r"\b(path|url|asset)\(", body):
+            continue
+        line_start = text.rfind("\n", 0, out.start())
+        prev_start = text.rfind("\n", 0, max(line_start, 0))
+        if "machine-date" in text[max(prev_start, 0) : out.start()]:
             continue
         for m in _DATE_CALL.finditer(body):
             yield out.start() + m.start(), out.start() + m.end(), m.group(2)

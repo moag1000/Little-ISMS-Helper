@@ -65,7 +65,7 @@
                         <dt class="col-sm-4">{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             <i class="fa-icon fa-icon--{{ mfa_token.tokenType == 'totp' ? 'phone' : 'ui-key' }}" aria-hidden="true"></i>
-                            {{ mfa_token.deviceName ?? 'N/A' }}
+                            {{ mfa_token.deviceName ?? '—' }}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa_token.field.status'|trans({}, 'mfa') }}</dt>

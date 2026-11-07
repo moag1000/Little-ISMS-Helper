@@ -53,7 +53,7 @@
                             {# Dynamic token-type icon — Aurora mask-icons (phone = TOTP-app, ui-key = WebAuthn). #}
                             {% set tokenTypeIcon = mfa_token.tokenType == 'totp' ? 'phone' : 'ui-key' %}
                             {{ _fa_icon.render(tokenTypeIcon) }}
-                            {{ mfa_token.deviceName ?? 'N/A' }}
+                            {{ mfa_token.deviceName ?? '—' }}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa.field.status'|trans({}, 'mfa') }}</dt>

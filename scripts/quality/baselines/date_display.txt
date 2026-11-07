@@ -1,17 +1,1 @@
 # Templates with hard-coded display dates (Gate 77): path<TAB>count. May only shrink.
-templates/admin/data_repair/index.html.twig	5
-templates/authority/dora_roi/index.html.twig	2
-templates/authority/hub/index.html.twig	2
-templates/authority/nis2_registration/index.html.twig	1
-templates/authority/notification/index.html.twig	1
-templates/context/index.html.twig	3
-templates/evidence/index.html.twig	1
-templates/mfa_token/index.html.twig	2
-templates/my_day/index.html.twig	1
-templates/policy_wizard/index.html.twig	1
-templates/policy_wizard/konzern_rollup/index.html.twig	1
-templates/portfolio_report/index.html.twig	2
-templates/profile/index.html.twig	2
-templates/profile/mfa/index.html.twig	2
-templates/report_builder/index.html.twig	2
-templates/workflow/index.html.twig	1

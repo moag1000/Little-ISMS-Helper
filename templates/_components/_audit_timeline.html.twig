@@ -14,6 +14,7 @@
         {# Group by date #}
         {% set groupedLogs = {} %}
         {% for log in auditLogs %}
+            {# machine-date: route params / grouping key #}
             {% set dateKey = log.createdAt|date('Y-m-d') %}
             {% set groupedLogs = groupedLogs|merge({(dateKey): (groupedLogs[dateKey]|default([]))|merge([log])}) %}
         {% endfor %}

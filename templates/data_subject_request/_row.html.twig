@@ -46,12 +46,12 @@
             <br>{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
         {% endif %}
     </td>
-    <td class="fa-table__cell" data-sort-value="{{ dsr.receivedAt ? dsr.receivedAt|date('Y-m-d') : '' }}">{{ dsr.receivedAt|locale_date }}</td>
+    <td class="fa-table__cell" data-sort-value="{{ dsr.receivedAt ? dsr.receivedAt|date('Y-m-d') : '' }}">{{ dsr.receivedAt|fa_date }}</td>
     <td class="fa-table__cell" data-sort-value="{{ dsr.effectiveDeadline ? dsr.effectiveDeadline|date('Y-m-d') : '' }}">
         {% set deadline = dsr.effectiveDeadline %}
         {% if deadline %}
             <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
-                {{ deadline|locale_date }}
+                {{ deadline|fa_date }}
             </span>
             {% if dsr.status not in ['completed', 'rejected'] %}
                 <br><small class="{% if dsr.overdue %}text-danger{% else %}text-muted{% endif %}">

@@ -62,7 +62,7 @@
                         <tr class="fa-table__row">
                             <td class="fa-table__cell">{{ token.label }}</td>
                             <td class="fa-table__cell">{{ token.createdAt|fa_date }}</td>
-                            <td class="fa-table__cell">{{ token.expiresAt ? token.expiresAt|fa_date : '—' }}</td>
+                            <td class="fa-table__cell">{{ token.expiresAt|fa_date }}</td>
                             <td class="fa-table__cell">
                                 {% if token.revoked %}
                                     <span class="fa-status-pill fa-status-pill--neutral">{{ 'api_token.status.revoked'|trans({}, 'api_token') }}</span>

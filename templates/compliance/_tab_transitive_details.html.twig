@@ -6,14 +6,13 @@
     {% embed '_components/_card.html.twig' with { 'class': 'gradient-pink' } %}
         {% block card_body %}
             <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></div>
-            <h2 class="fs-15-white-mb">Keine detaillierten Mappings verfügbar</h2>
+            <h2 class="fs-15-white-mb">{{ 'compliance.transitive_view.no_details_title'|trans({}, 'compliance') }}</h2>
             <p class="fs-11-lh-mb-sm">
-                Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.
+                {{ 'compliance.transitive_view.no_details_text'|trans({}, 'compliance') }}
             </p>
             <div class="info-box-white-no-mb">
                 <p class="fs-095-opacity-09">
-                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
-                    Compliance-Frameworks gegenseitig abdecken.
+                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'compliance.transitive_view.no_details_hint'|trans({}, 'compliance') }}
                 </p>
             </div>
         {% endblock %}
@@ -25,7 +24,7 @@
                 <span class="mr-xs">▶</span>
                 {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
                 <span class="float-right-fs-1-secondary">
-                    {{ mapping_group.coverage.covered_requirements }} mappings ({{ mapping_group.coverage.coverage_percentage|round }}%)
+                    {{ 'compliance.transitive_view.mappings_count'|trans({'%count%': mapping_group.coverage.covered_requirements, '%percent%': mapping_group.coverage.coverage_percentage|round}, 'compliance') }}
                 </span>
             </summary>
 
@@ -59,7 +58,7 @@
 
                 {% if mapping_group.mappings|length > 5 %}
                     <p class="text-center-italic-margin">
-                        Zeige erste 5 von {{ mapping_group.mappings|length }} Mappings
+                        {{ 'compliance.transitive_view.show_first'|trans({'%total%': mapping_group.mappings|length}, 'compliance') }}
                     </p>
                 {% endif %}
 

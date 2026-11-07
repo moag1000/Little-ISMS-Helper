@@ -36,7 +36,7 @@
     {% embed '_components/_fa_list_page.html.twig' with {
         page: page,
         search_action: path('app_business_process_index'),
-        filter_keys: ['view'],
+        filter_keys: ['view', 'criticality'],
         list_title: 'business_process.index.table.title'|trans({}, 'business_process'),
         empty: {
             mood: 'thinking',
@@ -64,6 +64,15 @@
                 </select>
             </div>
             {% endif %}
+            <div class="col-md-4">
+                <label for="filter-criticality" class="form-label">{{ 'bcm.table.criticality'|trans({}, 'bcm') }}</label>
+                <select class="form-select fa-cyber-input__field" id="filter-criticality" name="criticality" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value="">{{ 'bcm.filter.all_criticality'|trans({}, 'bcm') }}</option>
+                    {% for _c in ['critical', 'high', 'medium', 'low'] %}
+                        <option value="{{ _c }}" {{ current_criticality == _c ? 'selected' : '' }}>{{ ('bcm.criticality.' ~ _c)|trans({}, 'bcm') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         {% endblock %}
         {% block list_summary %}
             {% if critical_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'business_process.summary.critical'|trans({'%count%': critical_count}, 'business_process') }}</span>{% endif %}

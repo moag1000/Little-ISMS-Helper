@@ -253,9 +253,8 @@
                                                 <tr class="fa-table__row">
                                                     <th scope="row" class="fa-table__cell">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</th>
                                                     <td class="fa-table__cell">
-                                                        {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
-                                                        {% set _gvtone = governance_variant in ['info'] ? 'primary' : (governance_variant in ['secondary','light','dark'] ? 'neutral' : governance_variant) %}
-                                                        {{ pill.render(defaultGovernance.governanceModel.label, _gvtone, {size: 'sm'}) }}
+                                                        {% import '_components/_status_vocabulary.html.twig' as _vocab %}
+                                                        {{ _vocab.pill('governance_model', defaultGovernance.governanceModel.value, defaultGovernance.governanceModel.label, {size: 'sm'}) }}
                                                         <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
                                                     </td>
                                                 </tr>

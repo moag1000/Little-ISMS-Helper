@@ -154,7 +154,7 @@
                                     </div>
                                     {% include '_components/_badge.html.twig' with {
                                         variant: milestone.status == 'on_track' ? 'success' : (milestone.status == 'at_risk' ? 'warning' : 'danger'),
-                                        content: milestone.date|date('d.m.Y')
+                                        content: milestone.date|fa_date
                                     } %}
                                 </div>
                             </div>

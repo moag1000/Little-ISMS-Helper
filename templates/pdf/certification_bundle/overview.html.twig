@@ -124,7 +124,7 @@
             </td>
             <td>{{ plan.status|replace({'_': ' '})|capitalize }}</td>
             <td>{{ plan.completionPercentage }}%</td>
-            <td>{{ plan.targetCompletionDate ? plan.targetCompletionDate|fa_date : '-' }}</td>
+            <td>{{ plan.targetCompletionDate|fa_date }}</td>
         </tr>
         {% endfor %}
     </tbody>

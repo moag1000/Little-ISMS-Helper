@@ -43,7 +43,7 @@
     <tr><td class="label">Aktenzeichen (intern)</td><td>{{ reference_number }}</td></tr>
     <tr><td class="label">Betreff</td><td>{{ title }}</td></tr>
     <tr><td class="label">Schweregrad</td><td>{{ severity }}</td></tr>
-    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at ? detected_at|fa_datetime : '—' }}</td></tr>
+    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at|fa_datetime }}</td></tr>
     <tr><td class="label">Meldestatus</td><td>{{ status }}</td></tr>
 </table>
 

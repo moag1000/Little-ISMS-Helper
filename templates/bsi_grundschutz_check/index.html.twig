@@ -2,13 +2,13 @@
 
 {% block title %}{{ 'bsi_check.title'|trans({}, 'messages') }}{% endblock %}
 
-{% macro aggregate_bar(aggregate, status_variant) %}
+{% macro aggregate_bar(aggregate) %}
     {% set pct = aggregate.weighted_pct is not null ? aggregate.weighted_pct : 0 %}
-    {% set variant = status_variant[aggregate.status] ?? 'secondary' %}
+    {% import '_components/_status_vocabulary.html.twig' as _status %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
     {{ _fa_progress.render({
         value: pct,
-        tone: variant == 'secondary' ? 'neutral' : variant,
+        tone: _status.tone('coverage', aggregate.status)|trim,
         label: 'bsi_check.weighted_pct'|trans({}, 'messages'),
         showText: aggregate.weighted_pct is not null,
         class: 'progress-h-18',
@@ -33,18 +33,13 @@
  # {% import %} außerhalb von Blocks von Twig verworfen. #}
 {% import _self as helpers %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% set status_variant = {
-    'good':    'success',
-    'warning': 'warning',
-    'danger':  'danger',
-    'na':      'secondary',
-} %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
 {% set stufe_options = ['basis', 'standard', 'kern'] %}
 {{ _fa_page_header.render({
     title: 'bsi_check.title'|trans({}, 'messages'),
     subtitle: 'bsi_check.description'|trans({}, 'messages')
 }) }}
-<main>
+<div>
 <div class="container-fluid">
 
     {# Absicherungsstufe filter #}
@@ -80,7 +75,8 @@
     </div>
 
     {# Overall summary #}
-    {% set overall_variant = status_variant[report.overall.status] ?? 'secondary' %}
+    {% set overall_tone = _status.tone('coverage', report.overall.status)|trim %}
+    {% set overall_variant = overall_tone == 'neutral' ? 'secondary' : overall_tone %}
     <div class="row mb-4">
         <div class="col-12">
             {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ overall_variant } %}
@@ -95,7 +91,7 @@
                             <small class="text-muted">{{ 'bsi_check.overall.weighted_hint'|trans({}, 'messages') }}</small>
                         </div>
                         <div class="col-md-8">
-                            {{ helpers.aggregate_bar(report.overall, status_variant) }}
+                            {{ helpers.aggregate_bar(report.overall) }}
                             <table class="fa-table fa-table--compact mt-3 mb-0">
                                 <thead>
                                     <tr>
@@ -149,7 +145,7 @@
                                         <td class="fa-table__cell fa-table__cell--num">
                                             {% if layer.aggregate.weighted_pct is null %}<span class="text-muted">—</span>{% else %}{{ layer.aggregate.weighted_pct }}%{% endif %}
                                         </td>
-                                        <td class="fa-table__cell">{{ helpers.aggregate_bar(layer.aggregate, status_variant) }}</td>
+                                        <td class="fa-table__cell">{{ helpers.aggregate_bar(layer.aggregate) }}</td>
                                     </tr>
                                 {% endfor %}
                             {% endblock %}
@@ -175,7 +171,8 @@
     {% else %}
         <div class="row g-3 mb-4">
             {% for code, baustein in report.bausteine %}
-                {% set variant = status_variant[baustein.aggregate.status] ?? 'secondary' %}
+                {% set _tone = _status.tone('coverage', baustein.aggregate.status)|trim %}
+                {% set variant = _tone == 'neutral' ? 'secondary' : _tone %}
                 <div class="col-md-6 col-lg-4">
                     {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-' ~ variant } %}
                         {% block card_header %}
@@ -195,7 +192,7 @@
                         {% endblock %}
                         {% block card_body %}
                             {% import 'bsi_grundschutz_check/index.html.twig' as helpers %}
-                            {{ helpers.aggregate_bar(baustein.aggregate, status_variant) }}
+                            {{ helpers.aggregate_bar(baustein.aggregate) }}
                             <table class="fa-table fa-table--compact mt-3 mb-2">
                                 <tbody>
                                     {{ helpers.breakdown_row('bsi_check.type.muss'|trans({}, 'messages'), baustein.aggregate.breakdown.muss) }}
@@ -234,5 +231,5 @@
         </div>
     {% endif %}
 </div>
-</main>
+</div>
 {% endblock %}

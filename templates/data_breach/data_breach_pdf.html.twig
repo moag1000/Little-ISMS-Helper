@@ -211,7 +211,7 @@
             </tr>
             <tr>
                 <td>Affected Data Subjects:</td>
-                <td>{{ breach.affectedDataSubjects|default('Unknown')|number_format }}</td>
+                <td>{{ breach.affectedDataSubjects is not null ? breach.affectedDataSubjects|number_format : '—' }}</td>
             </tr>
             <tr>
                 <td>Detection Date/Time:</td>
@@ -310,7 +310,7 @@
         {% endif %}
 
         <h3>{{ 'data_breach.pdf.approx_number_subjects'|trans({}, 'privacy')}}</h3>
-        <p>{{ breach.affectedDataSubjects|default('Unknown') }}</p>
+        <p>{{ breach.affectedDataSubjects|default('—') }}</p>
 
         {% if breach.specialCategoriesAffected %}
             <div class="alert alert-warning">

@@ -73,10 +73,10 @@
                     {% set _peer = peers[site.id] ?? null %}
                     <tr>
                         <td>{{ site.name }}<br><span class="muted">{{ [site.city, site.country]|filter(v => v)|join(', ') }}</span></td>
-                        <td class="num">{{ site.protection ?: '–' }}</td>
-                        <td class="num">{{ site.riskBand == 'none' ? '–' : site.score }}</td>
+                        <td class="num">{{ site.protection ?: '—' }}</td>
+                        <td class="num">{{ site.riskBand == 'none' ? '—' : site.score }}</td>
                         <td>{% for _c in site.gaps %}{{ ('location.map.check.' ~ _c)|trans({}, 'locations') }} ({{ check_norms[_c] }}){{ not loop.last ? ', ' }}{% else %}–{% endfor %}</td>
-                        {% if peerMode != 'off' %}<td>{{ _peer and _peer.rank ? ('location.map.peer.rank.' ~ _peer.rank)|trans({}, 'locations') : '–' }}</td>{% endif %}
+                        {% if peerMode != 'off' %}<td>{{ _peer and _peer.rank ? ('location.map.peer.rank.' ~ _peer.rank)|trans({}, 'locations') : '—' }}</td>{% endif %}
                         {% if money %}<td class="num">{{ (site.ale ?? 0)|number_format(0, ',', '.') }} €</td>{% endif %}
                     </tr>
                 {% endfor %}

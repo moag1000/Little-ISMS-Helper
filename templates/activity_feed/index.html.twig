@@ -6,7 +6,7 @@
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 
 {% block body %}
-<main>
+<div>
     {{ _fa_page_header.render({
         title:    'activity_feed.title'|trans({}, 'activity_feed'),
         subtitle: 'activity_feed.subtitle'|trans({}, 'activity_feed'),
@@ -24,5 +24,5 @@
     </div>
 
     {% include '_components/_activity_feed_widget.html.twig' with { items: items, max: 50 } %}
-</main>
+</div>
 {% endblock %}

@@ -136,11 +136,11 @@
     {% set _ch_rows = _ch_rows|merge([[
         risk.id,
         risk.title,
-        risk.asset ? risk.asset.name : '-',
+        risk.asset ? risk.asset.name : '—',
         risk.riskScore,
         '<span class="report-doc__chip report-doc__chip--status-' ~ _level_chip ~ '">' ~ _level_label ~ '</span>',
         risk.treatmentStrategy ? risk.treatmentStrategy.value|capitalize : '<span style="color:var(--fg-3);">Not defined</span>',
-        risk.riskOwnerName ?? '-',
+        risk.riskOwnerName ?? '—',
     ]]) %}
 {% endfor %}
 
@@ -152,14 +152,14 @@
     {% set _all_rows = _all_rows|merge([[
         risk.id,
         risk.title,
-        risk.asset ? risk.asset.name : '-',
-        risk.probability ?? '-',
-        risk.impact ?? '-',
+        risk.asset ? risk.asset.name : '—',
+        risk.probability ?? '—',
+        risk.impact ?? '—',
         risk.riskScore,
         '<span class="report-doc__chip report-doc__chip--status-' ~ _level_chip ~ '">' ~ _level_label ~ '</span>',
-        risk.treatmentStrategy ? risk.treatmentStrategy.value|capitalize : '-',
-        risk.status ? risk.status.value|capitalize : '-',
-        risk.riskOwnerName ?? '-',
+        risk.treatmentStrategy ? risk.treatmentStrategy.value|capitalize : '—',
+        risk.status ? risk.status.value|capitalize : '—',
+        risk.riskOwnerName ?? '—',
     ]]) %}
 {% endfor %}
 
@@ -203,7 +203,7 @@
         kicker:       'ISMS · Risk Register',
         status:       'final',
         audience:     'auditor',
-        generated_at: pdf_generation_date|date('d.m.Y H:i'),
+        generated_at: pdf_generation_date|fa_datetime,
         standard:     risk_methodology|default('ISO 27005'),
     },
     brand_name:   'Little ISMS Helper',

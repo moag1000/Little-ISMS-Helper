@@ -146,6 +146,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
     }
@@ -157,6 +160,9 @@ class BCMControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         // Page should render successfully with statistics
     }
@@ -168,6 +174,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -188,6 +197,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm/critical');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -214,6 +226,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm/critical');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
         // Clean up
@@ -277,6 +292,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
         // Clean up
@@ -291,6 +309,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -317,6 +338,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
         // Clean up
@@ -331,6 +355,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         // The test process has 'high' criticality
     }
@@ -349,6 +376,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 
@@ -364,6 +394,9 @@ class BCMControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/bcm/critical');
 
+        // /bcm and /bcm/critical forward to the one business-process list.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
 

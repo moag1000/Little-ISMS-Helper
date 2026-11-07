@@ -79,6 +79,12 @@ class BusinessProcessController extends AbstractController
             ];
         }
 
+        // Criticality filter (was a separate /bcm list before; one list now).
+        $criticality = (string) $request->query->get('criticality', '');
+        if ($criticality !== '') {
+            $processes = array_values(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getCriticality() === $criticality));
+        }
+
         // Summary chips count the list as shown (view applied).
         $criticalCount = count(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getCriticality() === 'critical'));
         $withRisksCount = count(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getActiveRiskCount() > 0));
@@ -93,6 +99,7 @@ class BusinessProcessController extends AbstractController
             'with_risks_count' => $withRisksCount,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
+            'current_criticality' => $criticality,
         ]);
     }
     #[Route('/bcm/business-process/new', name: 'app_business_process_new', methods: ['GET', 'POST'])]

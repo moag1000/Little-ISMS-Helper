@@ -145,12 +145,7 @@
                                     <small class="text-muted">Owner: {{ process.process_owner }}</small>
                                 </td>
                                 <td>
-                                    {% set crit_class = {
-                                        'critical': 'danger',
-                                        'high': 'warning',
-                                        'medium': 'info',
-                                        'low': 'secondary'
-                                    }[process.criticality] %}
+                                    {% set crit_class = pill_tone_severity(process.criticality|default('')) %}
                                     {% include '_components/_badge.html.twig' with { variant: crit_class, content: process.criticality|upper } %}
                                 </td>
                                 <td>
@@ -161,12 +156,7 @@
                                 </td>
                                 <td>€{{ process.financial_impact|number_format(2) }}</td>
                                 <td>
-                                    {% set sev_class = {
-                                        'critical': 'danger',
-                                        'high': 'warning',
-                                        'medium': 'info',
-                                        'low': 'secondary'
-                                    }[process.impact_severity] %}
+                                    {% set sev_class = pill_tone_severity(process.impact_severity|default('')) %}
                                     {% include '_components/_badge.html.twig' with { variant: sev_class, content: process.impact_severity|upper } %}
                                 </td>
                                 <td>
