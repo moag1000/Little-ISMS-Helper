@@ -20,6 +20,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentControlLinkRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\DocumentVersionRepository;
+use App\Service\Document\DocumentFileReplacer;
 use App\Service\Evidence\EvidenceCascadeInvalidationService;
 use App\Service\Evidence\DocumentReuseAnalyticsService;
 use App\Repository\EntityTagRepository;
@@ -29,6 +30,7 @@ use App\Service\InverseCoverageService;
 use App\Service\TenantContext;
 use App\Repository\UserRepository;
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Service\AuditLogger;
 use App\Service\BulkDeleteService;
 use App\Service\Clone\DocumentCloner;
@@ -485,8 +487,9 @@ class DocumentController extends AbstractController
 
             // Legacy uploaded file.
             $path = (string) $doc->getFilePath();
-            if (!str_starts_with($path, '/')) {
-                $path = $this->projectDir . '/public' . (str_starts_with($path, '/') ? '' : '/') . ltrim($path, '/');
+            $publicPath = $this->projectDir . '/public/' . ltrim($path, '/');
+            if (is_file($publicPath)) {
+                $path = $publicPath;
             }
             if (is_file($path) && is_readable($path)) {
                 $zip->addFile($path, $safeName);
@@ -829,7 +832,7 @@ class DocumentController extends AbstractController
     }
 
     #[Route('/document/{id}/edit', name: 'app_document_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Document $document): Response
+    public function edit(Request $request, Document $document, ?DocumentFileReplacer $fileReplacer = null): Response
     {
         // Security: Check if user has permission to edit this document (OWASP #1 - Broken Access Control)
         $this->denyAccessUnlessGranted('edit', $document);
@@ -881,6 +884,14 @@ class DocumentController extends AbstractController
             }
 
             $this->entityManager->flush();
+
+            // Replacement file from the edit form → new document version (previous one stays downloadable).
+            $replacement = $form->has('file') ? $form->get('file')->getData() : null;
+            $replaceError = $replacement instanceof UploadedFile && $fileReplacer !== null
+                ? $fileReplacer->replaceOrError($document, $replacement, $user instanceof User ? $user : null) : null;
+            if ($replaceError !== null) {
+                $this->addFlash('error', $this->translator->trans('document.error.upload_failed', [], 'messages') . ': ' . $replaceError);
+            }
 
             // S14 Cluster A C1-04 — sync DocumentControlLink rows from the
             // unmapped `linkedControls` multi-select. Adds new links + removes
@@ -1084,11 +1095,7 @@ class DocumentController extends AbstractController
 
     // ── Evidence-Versioning endpoints ──────────────────────────────────────
 
-    /**
-     * Version history drawer for a document.
-     *
-     * GET /document/{id}/versions
-     */
+    /** Version history drawer for a document. */
     #[Route('/document/{id}/versions', name: 'app_document_versions', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function versions(Document $document): Response
@@ -1097,11 +1104,8 @@ class DocumentController extends AbstractController
 
         $versions = $this->documentVersionRepository?->findByDocument($document) ?? [];
 
-        $reuseData = $this->documentReuseAnalyticsService?->getReuseFactorForDocument($document) ?? [
-            'control_count' => 0,
-            'framework_count' => 0,
-            'label' => '',
-        ];
+        $reuseData = $this->documentReuseAnalyticsService?->getReuseFactorForDocument($document)
+            ?? ['control_count' => 0, 'framework_count' => 0, 'label' => ''];
 
         return $this->render('document/_version_list.html.twig', [
             'document' => $document,
@@ -1110,11 +1114,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    /**
-     * Download a specific version file.
-     *
-     * GET /document/{id}/version/{vid}/download
-     */
+    /** Download a specific version file. */
     #[Route('/document/{id}/version/{vid}/download', name: 'app_document_version_download', requirements: ['id' => '\d+', 'vid' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function versionDownload(Document $document, int $vid): Response

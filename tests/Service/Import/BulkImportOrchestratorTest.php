@@ -241,6 +241,7 @@ final class BulkImportOrchestratorTest extends TestCase
         $batch->setSourceFileName('test.csv');
         $batch->setSourceFileSize('42');
         $batch->setTenant($this->tenant);
+        $batch->setStatus(BulkImportBatch::STATUS_PREVIEW);
 
         // Simulate a persisted batch with an ID via reflection
         $reflection = new \ReflectionProperty(BulkImportBatch::class, 'id');

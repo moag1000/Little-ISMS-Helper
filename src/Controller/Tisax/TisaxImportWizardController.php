@@ -36,9 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * 6-step wizard (Step 0–5) allowing tenants to upload their own
  * ENX-licensed VDA-ISA workbook and assess Reifegrad 0-5.
  *
- * All steps are gated behind ROLE_MANAGER.
- *
- * Step flow:
+ * All steps are gated behind ROLE_MANAGER. Step flow:
  *   0 — Legal disclaimer (TisaxLegalConfirmationType)
  *   1 — Upload workbook (VdaIsaUploadType + FileUploadSecurityService)
  *   2 — Validate   (VdaIsaWorkbookValidator — header + row sanity)
@@ -57,16 +55,13 @@ final class TisaxImportWizardController extends AbstractController
     /** Session key for parsed controls (serialised JSON) */
     private const SESSION_PARSED_CONTROLS = 'tisax_import.parsed_controls';
 
-    /** Session key for validation result */
     private const SESSION_VALIDATION = 'tisax_import.validation';
-
-    /** Session key for the organisation name read from the workbook cover sheet */
+    /** Organisation name read from the workbook cover sheet */
     private const SESSION_WORKBOOK_COMPANY = 'tisax_import.workbook_company';
 
     /** Catalogue version detected from the uploaded workbook ('6' | '2027'). */
     private const SESSION_CATALOGUE_VERSION = 'tisax_import.catalogue_version';
 
-    /** Temp upload subdirectory */
     private const UPLOAD_SUBDIR = 'tisax_workbooks';
 
     public function __construct(
@@ -174,9 +169,8 @@ final class TisaxImportWizardController extends AbstractController
             $file = $form->get('workbook')->getData();
 
             // Security: MIME + magic-byte validation
-            try {
-                $this->uploadSecurity->validateUpload($file);
-            } catch (\Exception $e) {
+            $uploadCheck = $this->uploadSecurity->validateUpload($file);
+            if (!$uploadCheck['valid']) {
                 $this->addFlash('danger', $this->transTisax('tisax.import.upload.security_rejected'));
                 $status = ($form->isSubmitted() && !$form->isValid())
                     ? Response::HTTP_UNPROCESSABLE_ENTITY
@@ -229,8 +223,8 @@ final class TisaxImportWizardController extends AbstractController
 
         try {
             $parsed = $this->parser->parse($workbookPath);
-        } catch (\ErrorException $e) {
-            $this->addFlash('danger', $e->getMessage());
+        } catch (\Throwable $e) {
+            $this->addFlash('danger', $this->transTisax('tisax.import.validate.parse_failed'));
             return $this->redirectToRoute('app_tisax_import_upload', ['_locale' => $request->getLocale()]);
         }
 
@@ -451,6 +445,11 @@ final class TisaxImportWizardController extends AbstractController
 
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
+
+        if ($request->isMethod('POST') && $tenant === null) {
+            $this->addFlash('warning', $this->transTisax('tisax.import.validate.no_tenant'));
+            return $this->redirectToRoute('app_tisax_import_assess', ['_locale' => $request->getLocale(), 'frameworkId' => $frameworkId]);
+        }
 
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('tisax_assess', $request->request->get('_token'))) {

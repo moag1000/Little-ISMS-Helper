@@ -85,7 +85,7 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['discoveryUrl' => 'https://fail.example.com/.well-known/openid-configuration'])
+            json_encode(['discoveryUrl' => 'https://93.184.215.14/.well-known/openid-configuration'])
         );
         $data = json_decode((string) $client->getResponse()->getContent(), true);
         self::assertFalse($data['ok']);

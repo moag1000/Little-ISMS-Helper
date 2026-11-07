@@ -45,11 +45,6 @@ final class IctProviderLibraryService
         return $supplier;
     }
 
-    public function appliedFlash(IctProviderLibrary $entry): string
-    {
-        return sprintf('Supplier "%s" created from the ICT-provider library — please review and complete the details.', $entry->getName());
-    }
-
     public function buildSupplier(IctProviderLibrary $entry, Tenant $tenant): Supplier
     {
         $supplier = new Supplier();

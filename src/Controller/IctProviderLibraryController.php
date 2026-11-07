@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Attribute\RequiresModule;
 use App\Repository\IctProviderLibraryRepository;
+use App\Repository\SupplierRepository;
 use App\Service\IctProviderLibraryService;
 use App\Entity\IctProviderLibrary;
 use App\Service\TenantContext;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * F-NEU — browse the curated ICT-provider library and apply an entry to create
@@ -29,6 +31,8 @@ final class IctProviderLibraryController extends AbstractController
         private readonly IctProviderLibraryRepository $repository,
         private readonly IctProviderLibraryService $service,
         private readonly TenantContext $tenantContext,
+        private readonly SupplierRepository $supplierRepository,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -68,8 +72,27 @@ final class IctProviderLibraryController extends AbstractController
             throw $this->createNotFoundException('Library entry not found.');
         }
 
+        // Double submit / repeated apply: never create a second supplier of the same name.
+        $existing = $this->supplierRepository->findOneBy(['tenant' => $tenant, 'name' => $entry->getName()]);
+        if ($existing !== null) {
+            $this->addFlash('info', $this->translator->trans(
+                'supplier.ict_library.already_exists',
+                ['%name%' => $entry->getName()],
+                'suppliers',
+            ));
+
+            return $this->redirectToRoute('app_supplier_show', [
+                'id'      => $existing->getId(),
+                '_locale' => $request->getLocale(),
+            ]);
+        }
+
         $supplier = $this->service->applyToTenant($entry, $tenant);
-        $this->addFlash('success', $this->service->appliedFlash($entry));
+        $this->addFlash('success', $this->translator->trans(
+            'supplier.ict_library.applied',
+            ['%name%' => $entry->getName()],
+            'suppliers',
+        ));
 
         return $this->redirectToRoute('app_supplier_show', [
             'id'      => $supplier->getId(),

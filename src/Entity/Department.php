@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -29,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Self-referential parent FK supports organizational hierarchies (department
  * → division → business unit). Tenant-scoped uniqueness on `name`.
  */
+#[UniqueEntity(fields: ['tenant', 'name'], message: 'validators.department.name_unique')]
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
 #[ORM\Table(name: 'department')]
 #[ORM\Index(name: 'idx_department_tenant', columns: ['tenant_id'])]

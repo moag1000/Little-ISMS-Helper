@@ -212,6 +212,7 @@ class PatchController extends AbstractController
     }
 
     #[Route('/patch/{id}/delete', name: 'app_patch_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, Patch $patch): Response
     {
         if ($redirect = $this->checkModuleActive('patches')) {

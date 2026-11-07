@@ -84,6 +84,13 @@ final class SourceConversionController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $effort = trim((string) $request->request->get('default_effort_pt'));
+        if ($effort !== '' && (!is_numeric($effort) || (float) $effort < 0 || (float) $effort > 999.9)) {
+            $this->addFlash('danger', $this->translator->trans('planning.sources.success.invalid_effort', [], 'planning'));
+
+            return $this->redirectToRoute('app_planning_sources_index');
+        }
+
         $config = $this->configRepository->findForTenantAndSlug($tenant, $slug);
         if ($config === null) {
             $config = new SourceConversionConfig();
@@ -93,8 +100,7 @@ final class SourceConversionController extends AbstractController
 
         $config->setEnabled($request->request->getBoolean('enabled'));
         $config->setDueOffsetDays($request->request->getInt('due_offset_days'));
-        $effort = trim((string) $request->request->get('default_effort_pt'));
-        $config->setDefaultEffortPt($effort === '' ? null : $effort);
+        $config->setDefaultEffortPt($effort === '' ? null : number_format((float) $effort, 1, '.', ''));
 
         $this->entityManager->flush();
         $this->addFlash('success', $this->translator->trans('planning.sources.success.saved', [], 'planning'));

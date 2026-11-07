@@ -72,7 +72,7 @@ final class CompliancePolicyController extends AbstractController
         if ($request->isMethod('POST')) {
             $token = (string) $request->request->get('_token');
             if (!$this->csrf->isTokenValid(new CsrfToken('compliance_policy_update', $token))) {
-                $this->addFlash('danger', 'Ungültiges CSRF-Token.');
+                $this->addFlash('danger', 'common.csrf_invalid');
                 return $this->redirectToRoute('admin_compliance_policy_index');
             }
 
@@ -104,7 +104,7 @@ final class CompliancePolicyController extends AbstractController
                 }
             }
 
-            $this->addFlash('success', sprintf('%d Einstellung(en) gespeichert.', $changed));
+            $this->addFlash('success', $this->translator->trans('admin.compliance_policy.saved', ['%count%' => $changed], 'admin'));
             return $this->redirectToRoute('admin_compliance_policy_index');
         }
 
@@ -123,14 +123,14 @@ final class CompliancePolicyController extends AbstractController
     ): Response {
         $token = (string) $request->request->get('_token');
         if (!$this->csrf->isTokenValid(new CsrfToken('compliance_policy_reset_' . $key, $token))) {
-            $this->addFlash('danger', 'Ungültiges CSRF-Token.');
+            $this->addFlash('danger', 'common.csrf_invalid');
             return $this->redirectToRoute('admin_compliance_policy_index');
         }
 
         $default = $this->policy->defaults()[$key] ?? null;
         $this->policy->set($key, $default, $user->getEmail() ?? 'admin');
 
-        $this->addFlash('success', sprintf('Einstellung "%s" auf Default zurückgesetzt.', $key));
+        $this->addFlash('success', $this->translator->trans('admin.compliance_policy.reset', ['%key%' => $key], 'admin'));
         return $this->redirectToRoute('admin_compliance_policy_index');
     }
 }

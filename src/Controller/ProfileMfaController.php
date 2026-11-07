@@ -65,7 +65,7 @@ class ProfileMfaController extends AbstractController
     public function setupTotp(Request $request): Response
     {
         $user = $this->getUser();
-        $deviceName = $request->query->get('device_name', $this->translator->trans('mfa.default_device_name', [], 'mfa'));
+        $deviceName = mb_substr((string) $request->query->get('device_name', $this->translator->trans('mfa.default_device_name', [], 'mfa')), 0, 255);
 
         // Generate TOTP secret
         $mfaToken = $this->mfaService->generateTotpSecret($user, $deviceName);

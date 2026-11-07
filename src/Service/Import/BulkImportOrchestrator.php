@@ -190,9 +190,17 @@ class BulkImportOrchestrator
             }
         }
 
-        $batch->setColumnMapping($columnMapping);
-        $batch->setStatus(BulkImportBatch::STATUS_PREVIEW);
-        $this->em->flush();
+        // Never rewrite a batch that already left the preparation phase
+        // (committing/completed/failed/cancelled) — that would re-enable commit.
+        if (in_array($batch->getStatus(), [
+            BulkImportBatch::STATUS_UPLOADED,
+            BulkImportBatch::STATUS_MAPPED,
+            BulkImportBatch::STATUS_PREVIEW,
+        ], true)) {
+            $batch->setColumnMapping($columnMapping);
+            $batch->setStatus(BulkImportBatch::STATUS_PREVIEW);
+            $this->em->flush();
+        }
 
         $config = new DeltaConfig(
             entityType: $batch->getEntityType(),
@@ -213,6 +221,10 @@ class BulkImportOrchestrator
      */
     public function dispatchCommit(BulkImportBatch $batch): void
     {
+        if ($batch->getStatus() !== BulkImportBatch::STATUS_PREVIEW) {
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Only a batch in preview status can be committed.', 'preview_required');
+        }
+
         $batch->setStatus(BulkImportBatch::STATUS_COMMITTING);
         $this->em->flush();
 

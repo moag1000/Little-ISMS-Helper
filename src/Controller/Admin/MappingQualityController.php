@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\User;
+use App\Exception\AppException;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
@@ -105,7 +106,7 @@ class MappingQualityController extends AbstractController
         #[CurrentUser] User $actor,
     ): Response {
         if (!$this->isCsrfTokenValid('mapping_lifecycle_' . $id, $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->addFlash('error', 'common.csrf_invalid');
             return $this->redirectToRoute('admin_mapping_quality_show', ['id' => $id]);
         }
         $mapping = $this->mappingRepository->find($id);
@@ -123,8 +124,12 @@ class MappingQualityController extends AbstractController
                 ['%state%' => $newState],
                 'admin',
             ));
-        } catch (\DomainException $e) {
-            $this->addFlash('error', $e->getMessage());
+        } catch (AppException $e) {
+            $this->addFlash('error', $this->translator->trans(
+                'admin.mapping_quality.transition_failed',
+                ['%message%' => $e->getMessage()],
+                'admin',
+            ));
         }
 
         return $this->redirectToRoute('admin_mapping_quality_show', ['id' => $id]);
@@ -143,7 +148,7 @@ class MappingQualityController extends AbstractController
             $count++;
         }
         $this->entityManager->flush();
-        $this->addFlash('success', sprintf('%d Mapping-MQS-Scores neu berechnet.', $count));
+        $this->addFlash('success', $this->translator->trans('admin.mapping_quality.recomputed', ['%count%' => $count], 'admin'));
         return $this->redirectToRoute('admin_mapping_quality_index');
     }
 

@@ -57,6 +57,8 @@ quick_fix:
         token_hint: 'If you have an installer token, enter it here:'
         token_placeholder: 'Token from var/setup-token'
         token_submit: 'Unlock with token'
+        privileged_body: 'This action changes data or removes schema parts. It runs only for a super admin login or with the installer token.'
+        privileged_hint: 'Repairs and destructive schema changes need a super admin login or the installer token. Pending migrations can be applied without logging in.'
     repair:
         section:
             title: 'Data Integrity'
@@ -128,7 +130,19 @@ quick_fix:
             label: 'IP allowlist'
             help: 'Comma-separated list of permitted client IPs or CIDR ranges (e.g. 10.0.0.5, 192.168.1.0/24, ::1). Empty = disabled.'
         ip_allowlist_invalid: 'IP allowlist not saved: invalid entries. Only exact IPs (IPv4/IPv6) or CIDR ranges are allowed, e.g. 10.0.0.5, 192.168.1.0/24.'
+        csrf_invalid: 'Invalid CSRF token.'
+        saved: 'Saved.'
         save: 'Save'
     super_admin_missing:
         title: 'No active instance operator (ROLE_SUPER_ADMIN)'
         body: 'No active account holds ROLE_SUPER_ADMIN. Without one nobody can manage users without an organisation, instance-wide backups or system roles. This happens when migrations were marked as executed (phantom repair) and the 3.15.3 operator-bootstrap migration never ran, or when the operator account was deactivated. Grant the role on the server shell:'
+    flash:
+        status_failed: 'Status check failed: %error%'
+        destructive_confirm_required: 'Destructive statements detected. Tick the risk confirmation to apply them.'
+        confirm_already_exists_required: 'Please confirm that the table or column already exists in the schema.'
+        version_missing: 'No migration version given.'
+        marked_executed: 'Migration "%version%" marked as executed (without DDL).'
+        mark_failed: 'Marking failed: %error%'
+        confirm_all_already_exist_required: 'Please confirm that all tables and columns of the pending migrations already exist in the schema.'
+        unknown_entity_type: 'Unknown record type: %type%'
+        confirm_force_update_required: 'Tick the confirmation to force the schema update.'

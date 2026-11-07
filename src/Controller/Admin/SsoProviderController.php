@@ -427,6 +427,20 @@ final class SsoProviderController extends AbstractController
         }
 
         $this->assertCanReview($approval);
+        if (!$approval->isPending()) {
+            $this->addFlash('warning', 'admin.sso_provider.error.approval_not_pending');
+
+            return $this->redirectToRoute('admin_sso_approvals');
+        }
+        if ($this->em->getRepository(User::class)->findOneBy(['email' => $approval->getEmail()]) !== null) {
+            $this->addFlash('error', $this->translator->trans(
+                'admin.sso_provider.error.approval_user_exists',
+                ['%email%' => $approval->getEmail()],
+                'admin'
+            ));
+
+            return $this->redirectToRoute('admin_sso_approvals');
+        }
         $user = $this->flow->provisionFromApproval($approval);
         $approval->setStatus(SsoUserApproval::STATUS_APPROVED);
         $approval->setReviewedBy($reviewer);
@@ -457,6 +471,11 @@ final class SsoProviderController extends AbstractController
         }
 
         $this->assertCanReview($approval);
+        if (!$approval->isPending()) {
+            $this->addFlash('warning', 'admin.sso_provider.error.approval_not_pending');
+
+            return $this->redirectToRoute('admin_sso_approvals');
+        }
         $reason = trim((string) $request->request->get('reason', ''));
         $approval->setStatus(SsoUserApproval::STATUS_REJECTED);
         $approval->setRejectReason($reason !== '' ? $reason : null);

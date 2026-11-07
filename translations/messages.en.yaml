@@ -1292,6 +1292,12 @@ corporate:
     flash:
         text: Define relationships between parent companies and subsidiaries. The governance model determines how ISMS responsibilities are divided between parent and subsidiary companies.
         error: 'Error processing corporate structure'
+        parent_not_found: 'Parent organisation not found.'
+        invalid_governance: 'Invalid governance model.'
+        parent_set: 'Parent organisation set.'
+        parent_removed: 'Parent organisation removed.'
+        governance_updated: 'Governance model updated.'
+        no_governance_found: 'No governance rule exists for this scope.'
     level: 'Level %level%'
     placeholder:
         parent: 'No parent (standalone)'

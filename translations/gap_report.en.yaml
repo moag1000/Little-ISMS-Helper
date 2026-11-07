@@ -2,6 +2,11 @@ gap_report:
     title: 'Gap Report & Effort Estimation'
     back_to_assessment: 'Back to Assessment'
     sort_label: 'Sorting'
+    flash:
+        invalid_csrf: 'Invalid CSRF token.'
+        invalid_days: 'Invalid number of person-days (0 to 999).'
+        reason_too_short: 'Reason too short (at least 20 characters).'
+        override_saved: 'Effort adjustment saved.'
     unit:
         person_days: 'Person-days'
     error:

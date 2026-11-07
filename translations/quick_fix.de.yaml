@@ -57,6 +57,8 @@ quick_fix:
         token_hint: 'Wenn dir ein Installer-Token vorliegt, kannst du es hier eingeben:'
         token_placeholder: 'Token aus var/setup-token'
         token_submit: 'Mit Token freischalten'
+        privileged_body: 'Diese Aktion ändert Daten oder entfernt Schema-Teile. Sie läuft nur mit Anmeldung als Super-Admin oder mit dem Installer-Token.'
+        privileged_hint: 'Reparaturen und destruktive Schema-Änderungen brauchen eine Anmeldung als Super-Admin oder das Installer-Token. Ausstehende Migrationen lassen sich ohne Anmeldung anwenden.'
     repair:
         section:
             title: 'Daten-Integrität'
@@ -128,7 +130,19 @@ quick_fix:
             label: 'IP-Allowlist'
             help: 'Komma-getrennte Liste erlaubter Client-IPs oder CIDR-Bereiche (z.B. 10.0.0.5, 192.168.1.0/24, ::1). Leer = deaktiviert.'
         ip_allowlist_invalid: 'IP-Allowlist nicht gespeichert: ungültige Einträge. Nur exakte IPs (IPv4/IPv6) oder CIDR-Bereiche erlaubt, z.B. 10.0.0.5, 192.168.1.0/24.'
+        csrf_invalid: 'Ungültiges CSRF-Token.'
+        saved: 'Gespeichert.'
         save: 'Speichern'
     super_admin_missing:
         title: 'Kein aktiver Instanz-Betreiber (ROLE_SUPER_ADMIN)'
         body: 'Kein aktives Konto hat ROLE_SUPER_ADMIN. Ohne Betreiber-Konto kann niemand Benutzer ohne Organisation, instanzweite Backups oder Systemrollen verwalten. Das passiert, wenn Migrationen als ausgeführt markiert wurden (Phantom-Reparatur) und die Operator-Bootstrap-Migration aus 3.15.3 nie lief, oder wenn das Betreiber-Konto deaktiviert wurde. Rolle auf der Server-Shell vergeben:'
+    flash:
+        status_failed: 'Status-Abfrage fehlgeschlagen: %error%'
+        destructive_confirm_required: 'Destruktive Anweisungen erkannt. Zum Anwenden die Risiko-Bestätigung ankreuzen.'
+        confirm_already_exists_required: 'Bitte bestätigen, dass Tabelle bzw. Spalte im Schema bereits vorhanden ist.'
+        version_missing: 'Keine Migrations-Version angegeben.'
+        marked_executed: 'Migration „%version%“ als ausgeführt markiert (ohne DDL).'
+        mark_failed: 'Markieren fehlgeschlagen: %error%'
+        confirm_all_already_exist_required: 'Bitte bestätigen, dass alle Tabellen und Spalten der ausstehenden Migrationen im Schema bereits vorhanden sind.'
+        unknown_entity_type: 'Unbekannter Datensatztyp: %type%'
+        confirm_force_update_required: 'Zum Erzwingen des Schema-Updates die Bestätigung ankreuzen.'

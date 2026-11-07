@@ -301,6 +301,7 @@ evidence_reverification:
         skipped: 'Reverifikations-Zyklus übersprungen — der nächste Zyklus wird automatisch geplant.'
     error:
         invalid_token: 'Reverifikations-Token ist ungültig oder abgelaufen.'
+        not_open: 'Aufgabe ist nicht mehr offen.'
     show:
         title: 'Reverifikations-Details'
         details: 'Details'

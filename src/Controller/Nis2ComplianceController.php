@@ -62,22 +62,14 @@ class Nis2ComplianceController extends AbstractController
 
         if (!$nis2Framework) {
             // NIS2 framework not installed - redirect to compliance overview
-            $this->addFlash('info', $this->translator->trans(
-                'nis2.not_installed',
-                [],
-                'messages'
-            ) ?: 'NIS2 framework is not installed. If your organization is subject to NIS2, please load the framework from the compliance frameworks page.');
+            $this->addFlash('info', $this->translator->trans('nis2.not_installed', [], 'nis2'));
 
             return $this->redirectToRoute('app_compliance_index');
         }
 
         if (!$nis2Framework->isActive()) {
             // NIS2 framework exists but is deactivated - assume not relevant for this organization
-            $this->addFlash('warning', $this->translator->trans(
-                'nis2.not_active',
-                [],
-                'messages'
-            ) ?: 'NIS2 framework is deactivated. This indicates that NIS2 is not relevant for your organization. Activate it in the compliance frameworks if needed.');
+            $this->addFlash('warning', $this->translator->trans('nis2.not_active', [], 'nis2'));
 
             return $this->redirectToRoute('app_compliance_index');
         }

@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -197,5 +198,48 @@ class QuickFixGuardTest extends TestCase
         // All guards default off → access allowed.
         $this->assertTrue($this->guard->mayAccess(Request::create('/quick-fix')));
         $this->assertTrue($this->guard->fallbackUiEnabled());
+    }
+
+    #[Test]
+    public function privilegedActionsAreClosedForAnonymousVisitorsByDefault(): void
+    {
+        $this->settings->method('getSetting')->willReturnCallback(
+            fn(string $cat, string $key, mixed $default) => $default
+        );
+        $security = $this->createMock(Security::class);
+        $security->method('isGranted')->willReturn(false);
+        $guard = new QuickFixGuard($this->settings, $this->kernel, $security);
+
+        // The status page + migrations stay open, data repair / DROP do not.
+        $this->assertTrue($guard->mayAccess(Request::create('/quick-fix')));
+        $this->assertFalse($guard->mayRunPrivileged(Request::create('/quick-fix/repair/all', 'POST')));
+    }
+
+    #[Test]
+    public function privilegedActionsOpenForSuperAdmin(): void
+    {
+        $this->settings->method('getSetting')->willReturnCallback(
+            fn(string $cat, string $key, mixed $default) => $default
+        );
+        $security = $this->createMock(Security::class);
+        $security->method('isGranted')->willReturnCallback(fn(string $role) => $role === 'ROLE_SUPER_ADMIN');
+        $guard = new QuickFixGuard($this->settings, $this->kernel, $security);
+
+        $this->assertTrue($guard->mayRunPrivileged(Request::create('/quick-fix/repair/all', 'POST')));
+    }
+
+    #[Test]
+    public function privilegedActionsOpenWithInstallerTokenCookie(): void
+    {
+        file_put_contents($this->tempDir . '/var/setup-token', 'secret123');
+        $this->settings->method('getSetting')->willReturnCallback(
+            fn(string $cat, string $key, mixed $default) => $default
+        );
+        $request = Request::create('/quick-fix/reconcile', 'POST', [], ['quick_fix_token' => 'secret123']);
+
+        $this->assertTrue($this->guard->mayRunPrivileged($request));
+        $this->assertFalse($this->guard->mayRunPrivileged(
+            Request::create('/quick-fix/reconcile', 'POST', [], ['quick_fix_token' => 'wrong'])
+        ));
     }
 }

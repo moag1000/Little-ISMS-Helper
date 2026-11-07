@@ -9,6 +9,7 @@ report_builder:
     deleted: 'Report gelöscht'
     template_created: 'Vorlage erstellt'
     template_not_found: 'Vorlage nicht gefunden'
+    no_tenant: 'Keine Organisation ausgewählt.'
     created_from_template: 'Report aus Vorlage erstellt'
 
     # Seitentitel

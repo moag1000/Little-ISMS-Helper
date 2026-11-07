@@ -235,6 +235,21 @@ class AuditLogRepository extends ServiceEntityRepository
     }
 
     /**
+     * Count audit entries of the last N hours for one tenant (SQL COUNT, no hydration).
+     */
+    public function countRecentActivityForTenant(Tenant $tenant, int $hours = 24): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.createdAt >= :since')
+            ->andWhere('a.tenant = :tenant')
+            ->setParameter('since', new DateTime("-{$hours} hours"))
+            ->setParameter('tenant', $tenant)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * Search audit logs
      */
     public function search(array $criteria): array

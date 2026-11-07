@@ -56,6 +56,11 @@ industry_baseline:
         summary: 'Summary'
     flash:
         invalid_csrf: 'Invalid CSRF token.'
+        tenant_required: 'Organisation context required.'
+        apply_failed: 'Baseline not applied: %message%'
+        summary_preview: 'Preview "%baseline%": %applied% targets set, %skipped% skipped, %missing% unknown requirement IDs.'
+        summary_applied: 'Applied "%baseline%": %applied% targets set, %skipped% skipped, %missing% unknown requirement IDs.'
+        unknown_ids: 'Unknown: %ids%'
         no_tenant: 'No active organization — baseline application not possible.'
         no_subsidiaries: 'The current organization has no subsidiaries — recursive application is not possible.'
         already_applied: 'Baseline has already been applied to this organization. No re-application needed.'

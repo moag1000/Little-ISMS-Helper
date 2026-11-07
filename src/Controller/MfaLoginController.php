@@ -88,7 +88,6 @@ class MfaLoginController extends AbstractController
         ]);
     }
 
-    // @csrf-exempt: gated by a TOTP code only the device holder knows
     #[Route('/mfa-verify', name: 'app_mfa_verify', methods: ['POST'])]
     public function verify(Request $request): Response|RedirectResponse
     {
@@ -103,6 +102,11 @@ class MfaLoginController extends AbstractController
 
         if (!$user) {
             throw new AccessDeniedException('Invalid MFA session');
+        }
+
+        if (!$this->isCsrfTokenValid('mfa_verify', (string) $request->request->get('_token'))) {
+            $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.invalid_token', [], 'mfa'));
+            return $this->redirectToRoute('app_mfa_challenge', ['_locale' => $request->getLocale()]);
         }
 
         // Get the submitted code and token ID

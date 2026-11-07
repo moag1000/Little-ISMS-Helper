@@ -46,9 +46,7 @@ class QuickFixController extends AbstractController
         JobStatusService $jobStatusService,
     ): Response {
         if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+            return $this->lockedResponse($guard, $request);
         }
 
         // If a token was supplied via ?token= and matches, persist it as a
@@ -206,6 +204,7 @@ class QuickFixController extends AbstractController
         }
 
         $response = $this->render('quick_fix/index.html.twig', [
+            'privileged' => $guard->mayRunPrivileged($request),
             'pending_count' => $pendingCount,
             'pending_names' => $pendingNames,
             'pending_fs_count' => $pendingFsCount,
@@ -250,9 +249,7 @@ class QuickFixController extends AbstractController
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+            return $this->lockedResponse($guard, $request);
         }
 
         // Clearing the session keys early: if the previous failure was rooted
@@ -285,9 +282,7 @@ class QuickFixController extends AbstractController
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+            return $this->lockedResponse($guard, $request);
         }
 
         // Destructive drift (DROP/TRUNCATE) requires explicit confirm-checkbox.
@@ -298,13 +293,18 @@ class QuickFixController extends AbstractController
             $status = $maintenance->getMaintenanceStatus();
             $destructive = $status['schema_drift']['destructive'] ?? [];
         } catch (\Throwable $e) {
-            $this->addFlash('error', sprintf('Status-Abfrage fehlgeschlagen: %s', $e->getMessage()));
+            $this->addFlash('error', $translator->trans('quick_fix.flash.status_failed', ['%error%' => $e->getMessage()], 'quick_fix'));
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        // Destructive drift (DROP/TRUNCATE) is privileged; additive drift stays open for recovery.
+        if ($destructive !== [] && !$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         $confirmDestructive = (bool) $request->request->get('confirm_destructive', false);
         if ($destructive !== [] && !$confirmDestructive) {
-            $this->addFlash('error', 'Destruktive Statements erkannt — Risiko-Akzeptanz-Checkbox aktivieren um anzuwenden.');
+            $this->addFlash('error', 'quick_fix.flash.destructive_confirm_required');
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
@@ -343,22 +343,21 @@ class QuickFixController extends AbstractController
         QuickFixGuard $guard,
         SchemaMaintenanceService $maintenance,
         AuditLogger $auditLogger,
+        TranslatorInterface $translator,
     ): Response {
-        if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+        if (!$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         $confirmAlreadyExists = (bool) $request->request->get('confirm_already_exists', false);
         if (!$confirmAlreadyExists) {
-            $this->addFlash('error', 'Sicherheitscheck: Bitte bestätigen dass das Schema die Tabelle/Spalte WIRKLICH bereits enthält.');
+            $this->addFlash('error', 'quick_fix.flash.confirm_already_exists_required');
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
         $version = trim((string) $request->request->get('version', ''));
         if ($version === '') {
-            $this->addFlash('error', 'Keine Migrations-Version angegeben.');
+            $this->addFlash('error', 'quick_fix.flash.version_missing');
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
@@ -375,9 +374,9 @@ class QuickFixController extends AbstractController
                 ['version' => $version],
                 sprintf('QuickFix: operator force-marked migration as executed (no DDL): %s', $version),
             );
-            $this->addFlash('success', sprintf('Migration "%s" als ausgeführt markiert (ohne DDL).', $version));
+            $this->addFlash('success', $translator->trans('quick_fix.flash.marked_executed', ['%version%' => $version], 'quick_fix'));
         } else {
-            $this->addFlash('error', sprintf('Fehler beim Markieren: %s', $result['error'] ?? 'unbekannter Fehler'));
+            $this->addFlash('error', $translator->trans('quick_fix.flash.mark_failed', ['%error%' => $result['error'] ?? '—'], 'quick_fix'));
         }
 
         return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
@@ -406,15 +405,13 @@ class QuickFixController extends AbstractController
         SchemaMaintenanceService $maintenance,
         AuditLogger $auditLogger,
     ): Response {
-        if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+        if (!$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         $confirmAllAlreadyExist = (bool) $request->request->get('confirm_all_already_exist', false);
         if (!$confirmAllAlreadyExist) {
-            $this->addFlash('error', 'Sicherheitscheck: Bitte bestätigen dass ALLE Tabellen/Spalten der ausstehenden Migrationen im Schema bereits vorhanden sind.');
+            $this->addFlash('error', 'quick_fix.flash.confirm_all_already_exist_required');
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
@@ -497,10 +494,8 @@ class QuickFixController extends AbstractController
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
-        if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+        if (!$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         return $this->dispatchJobProgress(
@@ -529,10 +524,8 @@ class QuickFixController extends AbstractController
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
-        if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+        if (!$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         return $this->dispatchJobProgress(
@@ -563,15 +556,13 @@ class QuickFixController extends AbstractController
         TranslatorInterface $translator,
         string $entityType,
     ): Response {
-        if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+        if (!$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         $allowed = ['audits', 'assets', 'risks', 'incidents', 'documents'];
         if (!in_array($entityType, $allowed, true)) {
-            $this->addFlash('error', sprintf('Unbekannter Entity-Typ: %s', $entityType));
+            $this->addFlash('error', $translator->trans('quick_fix.flash.unknown_entity_type', ['%type%' => $entityType], 'quick_fix'));
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
@@ -602,10 +593,8 @@ class QuickFixController extends AbstractController
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
-        if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+        if (!$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         return $this->dispatchJobProgress(
@@ -645,15 +634,13 @@ class QuickFixController extends AbstractController
         JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
-        if (!$guard->mayAccess($request)) {
-            return $this->render('quick_fix/locked.html.twig', [
-                'token_required' => $guard->isTokenRequired(),
-            ], new Response('', Response::HTTP_FORBIDDEN));
+        if (!$guard->mayRunPrivileged($request)) {
+            return $this->lockedResponse($guard, $request);
         }
 
         $confirmForce = (bool) $request->request->get('confirm_force_schema', false);
         if (!$confirmForce) {
-            $this->addFlash('error', 'Sicherheitscheck: Bitte Bestätigungs-Checkbox aktivieren um Schema-Update zu erzwingen.');
+            $this->addFlash('error', 'quick_fix.flash.confirm_force_update_required');
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
@@ -693,6 +680,16 @@ class QuickFixController extends AbstractController
      * @param string       $subtitleKey quick_fix.* translation key for the subtitle
      * @param array<string, mixed> $args Args forwarded to the job context
      */
+    /** 403 page; for a privileged action it explains the super-admin / installer-token requirement. */
+    private function lockedResponse(QuickFixGuard $guard, Request $request): Response
+    {
+        $privilegedOnly = $guard->mayAccess($request);
+        return $this->render('quick_fix/locked.html.twig', [
+            'token_required' => $guard->isTokenRequired() || $privilegedOnly,
+            'privileged_only' => $privilegedOnly,
+        ], new Response('', Response::HTTP_FORBIDDEN));
+    }
+
     private function dispatchJobProgress(
         Request $request,
         JobStatusService $jobStatusService,
