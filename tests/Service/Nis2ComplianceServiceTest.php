@@ -16,6 +16,12 @@ use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceRequirement;
+use App\Entity\ComplianceRequirementFulfillment;
+use App\Entity\Tenant;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Service\Compliance\Fulfillment\FrameworkFulfillmentReader;
 use App\Service\Nis2ComplianceService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -235,5 +241,52 @@ class Nis2ComplianceServiceTest extends TestCase
         $this->assertContains('m.user', $joined, 'MFA metric not scoped through the user');
         $this->assertContains('mu.tenant = :tenant', $conditions);
         $this->assertContains('mu.isActive = true', $conditions, 'inactive users would push the MFA rate above 100 %');
+    }
+
+    #[Test]
+    public function aLetterShowsTheFulfilmentOfItsRequirement(): void
+    {
+        $tenant = new Tenant();
+        $framework = (new ComplianceFramework())->setCode('NIS2')->setName('NIS2');
+        $requirement = (new ComplianceRequirement())->setFramework($framework)->setRequirementId('NIS2-21.2.b');
+        $fulfilment = (new ComplianceRequirementFulfillment())
+            ->setTenant($tenant)
+            ->setRequirement($requirement)
+            ->setFulfillmentPercentage(70);
+
+        $frameworks = $this->createStub(ComplianceFrameworkRepository::class);
+        $frameworks->method('findOneBy')->willReturn($framework);
+        $fulfilments = $this->createStub(ComplianceRequirementFulfillmentRepository::class);
+        $fulfilments->method('findByFrameworkAndTenant')->willReturn([$fulfilment]);
+
+        $qb = $this->createStub(\Doctrine\ORM\QueryBuilder::class);
+        $query = $this->createStub(\Doctrine\ORM\Query::class);
+        $query->method('getSingleScalarResult')->willReturn(0);
+        $qb->method('select')->willReturnSelf();
+        $qb->method('where')->willReturnSelf();
+        $qb->method('getQuery')->willReturn($query);
+        $mfaRepo = $this->createStub(MfaTokenRepository::class);
+        $mfaRepo->method('createQueryBuilder')->willReturn($qb);
+        $incidents = $this->createStub(IncidentRepository::class);
+        $incidents->method('count')->willReturn(0);
+        $incidents->method('findBy')->willReturn([]);
+
+        $service = new Nis2ComplianceService(
+            incidentRepository: $incidents,
+            mfaTokenRepository: $mfaRepo,
+            userRepository: $this->createStub(UserRepository::class),
+            vulnerabilityRepository: $this->createStub(VulnerabilityRepository::class),
+            patchRepository: $this->createStub(PatchRepository::class),
+            fulfillmentReader: new FrameworkFulfillmentReader($frameworks, $fulfilments),
+        );
+        $letters = $service->getDashboardPayload($tenant)['letters'];
+
+        self::assertSame(70, $letters['21.2.b']['value']);
+        self::assertSame('%', $letters['21.2.b']['unit']);
+        self::assertSame('warning', $letters['21.2.b']['status']);
+        self::assertSame('—', $letters['21.2.b']['details']['indicator'], 'the former auxiliary figure stays as indicator');
+        self::assertSame(0, $letters['21.2.b']['details']['total_incidents']);
+        self::assertSame('fulfillment', $letters['21.2.b']['source']);
+        self::assertArrayNotHasKey('source', $letters['21.2.c'], 'a letter nobody assessed keeps its indicator');
     }
 }

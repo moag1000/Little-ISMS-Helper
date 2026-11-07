@@ -10,10 +10,12 @@ use App\Entity\Document;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\RiskTreatmentPlanRepository;
+use App\Service\Compliance\Fulfillment\RequirementEvidence;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -36,6 +38,8 @@ final class EvidenceCollectionService
         private readonly FileUploadSecurityService $fileUploadSecurityService,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly ?ComplianceRequirementFulfillmentRepository $fulfillmentRepository = null,
+        private readonly ?RequirementEvidence $requirementEvidence = null,
     ) {}
 
     /**
@@ -148,7 +152,6 @@ final class EvidenceCollectionService
     public function getEvidenceCoverage(Tenant $tenant): array
     {
         $controls = $this->controlRepository->findByTenant($tenant);
-        $requirements = $this->requirementRepository->findAll();
 
         $totalControls = count($controls);
         $controlsWithEvidence = 0;
@@ -166,11 +169,19 @@ final class EvidenceCollectionService
             }
         }
 
-        $totalRequirements = count($requirements);
+        // Requirements the organisation works on, with evidence only from
+        // RequirementEvidence (its own documents: requirement, fulfilment,
+        // controls behind it) — a global requirement's evidence list holds
+        // every organisation's documents.
+        $totalRequirements = 0;
         $requirementsWithEvidence = 0;
-
-        foreach ($requirements as $requirement) {
-            if ($requirement->getEvidenceDocuments()->count() > 0) {
+        foreach ($this->fulfillmentRepository?->findByTenant($tenant) ?? [] as $fulfillment) {
+            $requirement = $fulfillment->getRequirement();
+            if ($requirement === null || !$fulfillment->isApplicable()) {
+                continue;
+            }
+            $totalRequirements++;
+            if ($this->requirementEvidence?->for($requirement, $tenant, $fulfillment) !== []) {
                 $requirementsWithEvidence++;
             }
         }

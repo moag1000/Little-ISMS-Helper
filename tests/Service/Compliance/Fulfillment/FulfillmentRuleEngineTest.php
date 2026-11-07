@@ -34,6 +34,8 @@ final class FulfillmentRuleEngineTest extends TestCase
     private array $stored = [];
     private int $nextId = 1;
     private ?FulfillmentDerivation $records = null;
+    /** Records next to controls (checks that only restate controls left out). */
+    private ?FulfillmentDerivation $recordsBesideControls = null;
 
     protected function setUp(): void
     {
@@ -173,6 +175,20 @@ final class FulfillmentRuleEngineTest extends TestCase
     }
 
     #[Test]
+    public function controlsAndRecordsBehindOneRequirementCountTogether(): void
+    {
+        $this->recordsBesideControls = new FulfillmentDerivation(50, FulfillmentRuleEngine::KIND_RECORDS, [['type' => 'record', 'value' => 50]]);
+        $this->control('6.3', 'implemented');
+
+        $derivation = $this->engine()->derive($this->requirement('ISO27001', 'A.6.3'), $this->tenant);
+
+        self::assertSame(75, $derivation?->percentage, 'mean of control (100) and training participation (50)');
+        self::assertSame(FulfillmentRuleEngine::KIND_CONTROLS_RECORDS, $derivation->kind);
+        self::assertCount(2, $derivation->basis);
+        self::assertTrue($derivation->applicable, 'applicability still comes from the SoA');
+    }
+
+    #[Test]
     public function controlValueScale(): void
     {
         self::assertSame(100, FulfillmentRuleEngine::controlValue((new Control())->setImplementationStatus('verified')));
@@ -206,7 +222,9 @@ final class FulfillmentRuleEngineTest extends TestCase
         );
 
         $records = $this->createStub(RecordCheckRule::class);
-        $records->method('derive')->willReturnCallback(fn (): ?FulfillmentDerivation => $this->records);
+        $records->method('derive')->willReturnCallback(
+            fn (ComplianceRequirement $r, Tenant $t, bool $besideControls = false): ?FulfillmentDerivation => $besideControls ? $this->recordsBesideControls : $this->records,
+        );
 
         return new FulfillmentRuleEngine($controls, $mappings, $fulfillments, $records);
     }
