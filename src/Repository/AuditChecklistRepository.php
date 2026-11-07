@@ -223,41 +223,6 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Audit-checklist items that are due within
-     * the given window (default 7d) and not yet verified. Surface to ISB /
-     * Auditor for ISO 27001 Clause 9.2 Internal-Audit programme tracking.
-     *
-     * `verifiedAt IS NULL` AND parent-audit `plannedDate < today + window`
-     * AND parent-audit `actualDate IS NULL` (audit not yet executed).
-     *
-     * Tenant-scoped via `ac.tenant`.
-     *
-     * @return AuditChecklist[]
-     */
-    public function findDueForUser(\App\Entity\User $user, \App\Entity\Tenant $tenant, int $windowDays = 7): array
-    {
-        $deadline = new \DateTimeImmutable("+{$windowDays} days");
-        $needle = strtolower($user->getUserIdentifier());
-        $needleEmail = strtolower((string) $user->getEmail());
-
-        return $this->createQueryBuilder('ac')
-            ->join('ac.audit', 'a')
-            ->where('ac.tenant = :tenant')
-            ->andWhere('ac.verifiedAt IS NULL')
-            ->andWhere('a.plannedDate IS NOT NULL')
-            ->andWhere('a.plannedDate <= :deadline')
-            ->andWhere('a.actualDate IS NULL')
-            ->andWhere('ac.auditor IS NOT NULL AND (LOWER(ac.auditor) LIKE :needle OR LOWER(ac.auditor) LIKE :email)')
-            ->setParameter('tenant', $tenant)
-            ->setParameter('deadline', $deadline)
-            ->setParameter('needle', '%' . $needle . '%')
-            ->setParameter('email', '%' . $needleEmail . '%')
-            ->orderBy('a.plannedDate', \SortDirection::Ascending)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Find checklist items for detailed requirements only (excluding high-level categories).
      *
      * @param InternalAudit $internalAudit Internal audit entity
@@ -272,6 +237,27 @@ class AuditChecklistRepository extends ServiceEntityRepository
             ->setParameter('audit', $internalAudit)
             ->setParameter('types', ['detailed', 'sub_requirement'])
             ->orderBy('r.requirementId', \SortDirection::Ascending)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * The organisation's audit verdicts since a date, newest first (fulfilment
+     * rule for audit results). Unverified items and "not applicable" are left out.
+     *
+     * @return list<AuditChecklist>
+     */
+    public function findVerdictsSince(\App\Entity\Tenant $tenant, \DateTimeInterface $since): array
+    {
+        return $this->createQueryBuilder('ac')
+            ->where('ac.tenant = :tenant')
+            ->andWhere('ac.verifiedAt >= :since')
+            ->andWhere('ac.verificationStatus IN (:verdicts)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('since', $since)
+            ->setParameter('verdicts', ['compliant', 'partial', 'non_compliant'])
+            ->orderBy('ac.verifiedAt', \SortDirection::Descending)
+            ->addOrderBy('ac.id', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

@@ -323,4 +323,30 @@ class IncidentRepository extends ServiceEntityRepository
 
         return array_values(array_filter($candidates, static fn (Incident $i): bool => $i->requiresNis2Reporting()));
     }
+
+    /**
+     * When each control of the organisation was named as failed in an incident
+     * (ISO 27001 9.1, A.5.27 — effectiveness evidence).
+     *
+     * @return array<int, list<\DateTimeInterface>> control id → detection dates
+     */
+    public function failedControlDetections(Tenant $tenant): array
+    {
+        $rows = $this->createQueryBuilder('i')
+            ->select('c.id AS control', 'i.detectedAt AS detected')
+            ->join('i.failedControls', 'c')
+            ->where('i.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->getQuery()
+            ->getArrayResult();
+
+        $result = [];
+        foreach ($rows as $row) {
+            if ($row['detected'] instanceof \DateTimeInterface) {
+                $result[(int) $row['control']][] = $row['detected'];
+            }
+        }
+
+        return $result;
+    }
 }

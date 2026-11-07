@@ -582,12 +582,10 @@
                             <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                             {{ 'audit_finding.action.new_quick'|trans({}, 'audits') }}
                         </button>
-                        {% if audit.isComplianceAudit() %}
                         <a href="{{ path('app_audit_checklist', {id: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--ui-checklist" aria-hidden="true"></i>
                             {{ 'checklist.title'|trans({}, 'audit') }}
                         </a>
-                        {% endif %}
                         {% endif %}
 
                         <div>

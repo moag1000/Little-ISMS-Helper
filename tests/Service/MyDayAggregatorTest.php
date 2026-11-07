@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\AuditChecklist;
-use App\Entity\ComplianceRequirement;
 use App\Entity\Document;
-use App\Entity\InternalAudit;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Repository\AuditChecklistRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\UserRepository;
@@ -48,7 +45,6 @@ final class MyDayAggregatorTest extends TestCase
     private MockObject $workflowInstances;
     private MockObject $policyAckRepo;
     private MockObject $documentRepo;
-    private MockObject $auditChecklistRepo;
     private MockObject $wizardSessionRepo;
     private MockObject $complianceAnalytics;
     private MockObject $urls;
@@ -63,7 +59,6 @@ final class MyDayAggregatorTest extends TestCase
         $this->workflowInstances = $this->createMock(WorkflowInstanceRepository::class);
         $this->policyAckRepo = $this->createMock(PolicyAcknowledgementRepository::class);
         $this->documentRepo = $this->createMock(DocumentRepository::class);
-        $this->auditChecklistRepo = $this->createMock(AuditChecklistRepository::class);
         $this->wizardSessionRepo = $this->createMock(WizardSessionRepository::class);
         $this->complianceAnalytics = $this->createMock(ComplianceAnalyticsService::class);
         $this->urls = $this->createMock(UrlGeneratorInterface::class);
@@ -80,7 +75,6 @@ final class MyDayAggregatorTest extends TestCase
             $this->workflowInstances,
             $this->policyAckRepo,
             $this->documentRepo,
-            $this->auditChecklistRepo,
             $this->wizardSessionRepo,
             $this->complianceAnalytics,
             $this->urls,
@@ -96,7 +90,6 @@ final class MyDayAggregatorTest extends TestCase
         $user = $this->createUser(11, null, ['ROLE_MANAGER', 'ROLE_USER']);
 
         $this->workflowInstances->expects($this->never())->method('findOverdueForTenant');
-        $this->auditChecklistRepo->expects($this->never())->method('findDueForUser');
         $this->documentRepo->expects($this->never())->method('findPendingApprovalForTenant');
 
         $result = $this->aggregator()->aggregate($user);
@@ -163,36 +156,6 @@ final class MyDayAggregatorTest extends TestCase
         $result = $this->aggregator()->aggregate($user);
 
         self::assertArrayNotHasKey('documents_pending_approval_for_me', $result['summary']);
-    }
-
-    #[Test]
-    public function testAuditChecklistDuePassesUserAndTenant(): void
-    {
-        $tenant = $this->createTenant(1);
-        $auditor = $this->createUser(11, $tenant, ['ROLE_AUDITOR', 'ROLE_USER']);
-        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
-        $this->stubEmpty('findDueForUser');
-
-        $audit = $this->createMock(InternalAudit::class);
-        $audit->method('getId')->willReturn(7);
-        $audit->method('getTitle')->willReturn('Internal-Audit Q2');
-        $audit->method('getPlannedDate')->willReturn(new DateTimeImmutable('+3 days'));
-        $req = $this->createMock(ComplianceRequirement::class);
-        $req->method('getRequirementId')->willReturn('A.5.1');
-        $req->method('getTitle')->willReturn('Information security policies');
-        $checklistItem = $this->createMock(AuditChecklist::class);
-        $checklistItem->method('getAudit')->willReturn($audit);
-        $checklistItem->method('getRequirement')->willReturn($req);
-        $checklistItem->method('getVerificationStatus')->willReturn('not_checked');
-
-        $this->auditChecklistRepo->expects($this->once())
-            ->method('findDueForUser')
-            ->with($auditor, $tenant, 7)
-            ->willReturn([$checklistItem]);
-        $this->urls->method('generate')->willReturn('/audit/7/checklist');
-
-        $result = $this->aggregator()->aggregate($auditor);
-        self::assertSame(1, $result['summary']['audit_checklist_due']);
     }
 
     #[Test]
@@ -272,7 +235,6 @@ final class MyDayAggregatorTest extends TestCase
     {
         $empty = [
             'findOverdueForTenant' => $this->workflowInstances,
-            'findDueForUser' => $this->auditChecklistRepo,
             'findPendingApprovalForTenant' => $this->documentRepo,
             'findOverdueByTenant' => $this->wizardSessionRepo,
             'findFrameworkGapsCritical' => $this->complianceAnalytics,
