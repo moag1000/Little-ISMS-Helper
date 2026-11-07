@@ -233,7 +233,7 @@ class LocationLayers
             ->setParameter('tenant', $tenant)
             ->setParameter('locations', $locations)
             ->setParameter('archived', 'archived')
-            ->orderBy('bc.name', 'ASC')
+            ->orderBy('bc.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

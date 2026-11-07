@@ -59,7 +59,7 @@ class LocationSupplierChains
             ->setParameter('tenant', $tenant)
             ->setParameter('gone', ['terminated', 'inactive'])
             ->setParameter('none', 'none')
-            ->orderBy('s.name', 'ASC')
+            ->orderBy('s.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 

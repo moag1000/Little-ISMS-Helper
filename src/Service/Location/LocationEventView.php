@@ -89,7 +89,7 @@ class LocationEventView
             ->andWhere('a.physicalLocation IN (:locations)')
             ->setParameter('tenant', $tenant)
             ->setParameter('locations', $locationIds)
-            ->orderBy('p.name', 'ASC')
+            ->orderBy('p.name', \SortDirection::Ascending)
             ->getQuery()
             ->getArrayResult();
         $processIds = array_map(static fn (array $p): int => (int) $p['id'], $processes);
@@ -104,7 +104,7 @@ class LocationEventView
             ->setParameter('tenant', $tenant)
             ->setParameter('ids', $processIds)
             ->setParameter('archived', 'archived')
-            ->orderBy('bc.name', 'ASC')
+            ->orderBy('bc.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
 
