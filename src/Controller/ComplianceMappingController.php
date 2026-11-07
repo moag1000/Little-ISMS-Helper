@@ -303,7 +303,7 @@ class ComplianceMappingController extends AbstractController
             $fwId = $fw?->getId();
             $rId = $req->getId();
             if ($fwId === null || !isset($requirementsByFramework[$fwId]) || $rId === null
-                || !$this->accessGuard->isRequirementUsable($req)) {
+                || !$this->accessGuard->isOwnOrGlobal($req)) {
                 continue;
             }
             $requirementsByFramework[$fwId][] = [

@@ -66,9 +66,15 @@ final class MappingAccessGuard
      */
     public function isRequirementUsable(?ComplianceRequirement $requirement): bool
     {
-        $owner = $requirement?->getUploadTenant();
+        return $requirement !== null && $this->isOwnOrGlobal($requirement);
+    }
+
+    /** Non-null variant of isRequirementUsable() for loops over loaded rows. */
+    public function isOwnOrGlobal(ComplianceRequirement $requirement): bool
+    {
+        $owner = $requirement->getUploadTenant();
         if ($owner === null || $this->security->isGranted('ROLE_SUPER_ADMIN')) {
-            return $requirement !== null;
+            return true;
         }
 
         return $owner->getId() === $this->tenantContext->getCurrentTenant()?->getId();
