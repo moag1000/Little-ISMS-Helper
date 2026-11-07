@@ -94,7 +94,10 @@ final class AutoReactionTrainingAssignListener
                 $participation->setStatus(TrainingParticipation::STATUS_PENDING);
                 $participation->setAssignmentSource('auto:user_create');
 
-                $this->postFlushWriter->persist($participation);
+                $key = 'training_participation:' . $training->getId() . ':' . $user->getId();
+                if (!$this->postFlushWriter->persistOnce($key, $participation)) {
+                    continue; // the other direction's listener queued it in this flush
+                }
                 $assigned++;
                 $assignedTrainings[] = $training;
             }

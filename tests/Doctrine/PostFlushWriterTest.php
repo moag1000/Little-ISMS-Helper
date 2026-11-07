@@ -58,6 +58,24 @@ final class PostFlushWriterTest extends TestCase
     }
 
     #[Test]
+    public function aBusinessKeyIsQueuedOnlyOnce(): void
+    {
+        // A new user and a new mandatory training in one flush: both listeners derive the same participation.
+        $writer = new PostFlushWriter(new NullLogger());
+        $first = new \stdClass();
+        self::assertTrue($writer->persistOnce('training_participation:1:2', $first));
+        self::assertFalse($writer->persistOnce('training_participation:1:2', new \stdClass()));
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('isOpen')->willReturn(true);
+        $em->expects(self::once())->method('persist')->with($first);
+        $em->expects(self::once())->method('flush');
+
+        $writer->postFlush(new PostFlushEventArgs($em));
+        self::assertTrue($writer->persistOnce('training_participation:1:2', new \stdClass()), 'keys clear with the drain');
+    }
+
+    #[Test]
     public function aFailingDrainDoesNotEscape(): void
     {
         $writer = new PostFlushWriter(new NullLogger());

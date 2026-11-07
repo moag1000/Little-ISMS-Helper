@@ -28,7 +28,7 @@ final class PostFlushWriter implements ResetInterface
 {
     private const int MAX_PASSES = 3;
 
-    /** @var array<int, object> */
+    /** @var array<string, object> */
     private array $queue = [];
 
     private bool $draining = false;
@@ -41,8 +41,25 @@ final class PostFlushWriter implements ResetInterface
     public function persist(object ...$entities): void
     {
         foreach ($entities as $entity) {
-            $this->queue[spl_object_id($entity)] = $entity;
+            $this->queue['#' . spl_object_id($entity)] = $entity;
         }
+    }
+
+    /**
+     * Queues the entity unless a row with the same business key is already queued.
+     * Two listeners of one flush (a new user, a new mandatory training) can derive the
+     * same row; their repository lookups cannot see queued rows yet.
+     *
+     * @return bool false when the key was already queued
+     */
+    public function persistOnce(string $key, object $entity): bool
+    {
+        if (isset($this->queue[$key])) {
+            return false;
+        }
+        $this->queue[$key] = $entity;
+
+        return true;
     }
 
     public function postFlush(PostFlushEventArgs $args): void
@@ -73,7 +90,7 @@ final class PostFlushWriter implements ResetInterface
         }
     }
 
-    /** @return array<int, object> */
+    /** @return array<string, object> */
     private function takeQueue(): array
     {
         $batch = $this->queue;
