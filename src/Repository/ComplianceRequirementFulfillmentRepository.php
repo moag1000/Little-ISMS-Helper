@@ -178,6 +178,56 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Gap-export status vocabulary derived from a fulfilment percentage.
+     */
+    public static function exportStatusFor(int $percentage): string
+    {
+        return match (true) {
+            $percentage >= 100 => 'implemented',
+            $percentage > 0 => 'partially_implemented',
+            default => 'not_implemented',
+        };
+    }
+
+    /**
+     * Batch variant of percentageFor(): one query for many requirements.
+     * Requirements without a fulfillment row for the tenant map to 0.
+     *
+     * @param iterable<ComplianceRequirement> $requirements
+     * @return array<int, int> requirement id => percentage (0-100)
+     */
+    public function percentagesFor(Tenant $tenant, iterable $requirements): array
+    {
+        $ids = [];
+        foreach ($requirements as $requirement) {
+            $id = $requirement->getId();
+            if ($id !== null) {
+                $ids[$id] = $id;
+            }
+        }
+        $result = array_fill_keys(array_keys($ids), 0);
+        if ($ids === []) {
+            return $result;
+        }
+
+        /** @var list<array{rid: int|string, pct: int|string|null}> $rows */
+        $rows = $this->createQueryBuilder('f')
+            ->select('IDENTITY(f.requirement) AS rid', 'f.fulfillmentPercentage AS pct')
+            ->where('f.tenant = :tenant')
+            ->andWhere('f.requirement IN (:ids)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('ids', array_values($ids))
+            ->getQuery()
+            ->getArrayResult();
+
+        foreach ($rows as $row) {
+            $result[(int) $row['rid']] = (int) ($row['pct'] ?? 0);
+        }
+
+        return $result;
+    }
+
+    /**
      * Return the titles of evidence documents linked to the ComplianceRequirement
      * that belong to the given tenant.
      *
@@ -284,5 +334,51 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
             'not_started' => (int) $result['not_started'],
             'avg_fulfillment' => round((float) $result['avg_fulfillment'], 2),
         ];
+    }
+
+    /**
+     * Fulfilments of one organisation whose value a person set next to a rule
+     * (override), optionally by source and only those due for review.
+     *
+     * @return list<ComplianceRequirementFulfillment>
+     */
+    public function findOverrides(Tenant $tenant, ?string $source = null, bool $dueOnly = false): array
+    {
+        $qb = $this->createQueryBuilder('f')
+            ->addSelect('r', 'fw')
+            ->join('f.requirement', 'r')
+            ->join('r.framework', 'fw')
+            ->where('f.tenant = :tenant')
+            ->andWhere('f.overrideSource IS NOT NULL')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('f.overrideReviewDue', \SortDirection::Ascending)
+            ->addOrderBy('fw.code', \SortDirection::Ascending)
+            ->addOrderBy('r.requirementId', \SortDirection::Ascending);
+        if ($source !== null) {
+            $qb->andWhere('f.overrideSource = :source')->setParameter('source', $source);
+        }
+        if ($dueOnly) {
+            $qb->andWhere('f.overrideReviewDue <= :today')->setParameter('today', new \DateTimeImmutable('today'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Overrides whose review date has come, across organisations (planner source).
+     *
+     * @return list<ComplianceRequirementFulfillment>
+     */
+    public function findOverridesDueForReview(Tenant $tenant, \DateTimeImmutable $until): array
+    {
+        return $this->createQueryBuilder('f')
+            ->where('f.tenant = :tenant')
+            ->andWhere('f.overrideSource IS NOT NULL')
+            ->andWhere('f.overrideReviewDue IS NOT NULL')
+            ->andWhere('f.overrideReviewDue <= :until')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('until', $until)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -242,6 +242,11 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `WorkflowService` - Workflow instance management (facade — stable public API)
 - `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
 - `ModuleConfigurationService` - Module activation check (per tenant)
+- `Compliance\Fulfillment\FulfillmentDerivationService` - the ONLY writer of a requirement fulfilment's
+  percentage/status: `FulfillmentRuleEngine` derives it from the tenant's controls, mappings and maturity rows;
+  hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without
+  rule. `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
+  Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
 - `Kpi\KpiCatalog` - the one source of management KPIs (stable keys, tenant KPI thresholds applied,
   euro KPIs from the risk quant fields). Dashboards pick tiles by key: Twig `kpi('<key>')`,
   `_components/_kpi_tile.html.twig`; never call `DashboardStatisticsService::getManagementKPIs()`

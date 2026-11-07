@@ -103,6 +103,7 @@ class ComplianceControllerTest extends TestCase
             $this->translator,
             $this->mappingOnboarding,
             $this->mappingStatistics,
+            $this->createMock(\App\Repository\ComplianceRequirementFulfillmentRepository::class),
         );
 
         // Setup container for rendering

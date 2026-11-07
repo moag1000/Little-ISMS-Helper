@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
@@ -27,6 +28,7 @@ class ComplianceAssessmentServiceTest extends TestCase
     private MockObject $entityManager;
     private MockObject $fulfillmentService;
     private MockObject $tenantContext;
+    private MockObject $derivationService;
     private ComplianceAssessmentService $service;
 
     protected function setUp(): void
@@ -36,6 +38,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->fulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->derivationService = $this->createMock(FulfillmentDerivationService::class);
 
         // Mock getCurrentTenant to return a Tenant entity
         $mockTenant = $this->createMock(\App\Entity\Tenant::class);
@@ -54,7 +57,8 @@ class ComplianceAssessmentServiceTest extends TestCase
             $this->mappingService,
             $this->entityManager,
             $this->fulfillmentService,
-            $this->tenantContext
+            $this->tenantContext,
+            $this->derivationService,
         );
     }
 
@@ -63,53 +67,37 @@ class ComplianceAssessmentServiceTest extends TestCase
     {
         $framework = $this->createFramework('Test Framework', 100.0);
 
-        $this->requirementRepository->method('findByFramework')
-            ->willReturn([]);
-
+        $this->derivationService->method('refreshFramework')
+            ->willReturn(['derived' => 0, 'overridden' => 0, 'manual' => 0, 'changed' => 0]);
         $this->requirementRepository->method('getFrameworkStatisticsForTenant')
-            ->willReturn(['applicable' => 0, 'fulfilled' => 0]);
+            ->willReturn(['applicable' => 0, 'fulfilled' => 0, 'total' => 0]);
 
         $result = $this->service->assessFramework($framework);
 
         $this->assertSame('Test Framework', $result['framework']);
         $this->assertSame(0, $result['total_requirements']);
         $this->assertSame(0, $result['requirements_assessed']);
-        $this->assertEmpty($result['details']);
     }
 
     #[Test]
-    public function testAssessFrameworkWithRequirements(): void
+    public function testAssessFrameworkRecomputesThroughTheRuleAndKeepsOverrides(): void
     {
         $framework = $this->createFramework('NIS2', 75.0);
 
-        $req1 = $this->createRequirement('NIS2-1', 'Req 1', true);
-        $req2 = $this->createRequirement('NIS2-2', 'Req 2', true);
-
-        // assessFramework() counts only top-level requirements (core/detailed),
-        // excluding sub_requirements — the coverage-dilution correctness fix.
-        $this->requirementRepository->method('findTopLevelByFramework')
-            ->willReturn([$req1, $req2]);
-
+        $this->derivationService->expects($this->once())
+            ->method('refreshFramework')
+            ->willReturn(['derived' => 2, 'overridden' => 1, 'manual' => 4, 'changed' => 2]);
         $this->requirementRepository->method('getFrameworkStatisticsForTenant')
-            ->willReturn(['applicable' => 2, 'fulfilled' => 2, 'total' => 2]);
-
-        $this->mappingService->method('getDataReuseAnalysis')
-            ->willReturn([
-                'sources' => ['controls' => ['contribution' => 80]],
-                'confidence' => 'high',
-            ]);
-
-        // Note: setFulfillmentPercentage() doesn't exist on ComplianceRequirement
-        // Fulfillment is managed by ComplianceRequirementFulfillmentService
-
-        $this->entityManager->expects($this->once())
-            ->method('flush');
+            ->willReturn(['applicable' => 7, 'fulfilled' => 2, 'total' => 7]);
+        $this->entityManager->expects($this->once())->method('flush');
 
         $result = $this->service->assessFramework($framework);
 
-        $this->assertSame(2, $result['total_requirements']);
-        $this->assertSame(2, $result['requirements_assessed']);
-        $this->assertCount(2, $result['details']);
+        $this->assertSame(7, $result['total_requirements']);
+        $this->assertSame(3, $result['requirements_assessed']);
+        $this->assertSame(1, $result['overridden']);
+        $this->assertSame(4, $result['manual']);
+        $this->assertSame(28.57, $result['overall_compliance']);
     }
 
     #[Test]

@@ -220,8 +220,6 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $gap->method('getTitle')->willReturn('Gap');
         $gap->method('getCategory')->willReturn('Test');
         $gap->method('getPriority')->willReturn('high');
-        // Control-mapping-derived value that MUST be ignored by the gap list.
-        $gap->method('getFulfillmentPercentage')->willReturn(80.0);
         $gap->method('getMappedControls')->willReturn(new ArrayCollection());
 
         $crf = $this->createMock(ComplianceRequirementFulfillment::class);
@@ -480,7 +478,6 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $requirement->method('getTitle')->willReturn($title);
         $requirement->method('getCategory')->willReturn('Test');
         $requirement->method('getPriority')->willReturn($priority);
-        $requirement->method('getFulfillmentPercentage')->willReturn($fulfillment);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
         return $requirement;
     }

@@ -434,22 +434,6 @@ class ComplianceMapping
     }
 
     /**
-     * Calculate transitive fulfillment
-     * If source is fulfilled, how much does it contribute to target?
-     */
-    public function calculateTransitiveFulfillment(): float
-    {
-        if (!$this->sourceRequirement instanceof ComplianceRequirement) {
-            return 0.0;
-        }
-
-        $sourceFulfillment = $this->sourceRequirement->getFulfillmentPercentage();
-        $mappingStrength = $this->mappingPercentage / 100;
-
-        return round($sourceFulfillment * $mappingStrength, 2);
-    }
-
-    /**
      * @return Collection<int, MappingGapItem>
      */
     public function getGapItems(): Collection

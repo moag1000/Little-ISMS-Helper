@@ -975,8 +975,8 @@ class DashboardStatisticsService
             try {
                 // Pass current tenant so fulfillment uses the canonical tenant-scoped
                 // ComplianceRequirementFulfillment records (WS-1). When $tenant is null
-                // (SUPER_ADMIN no-tenant / console), getCheckReport() falls back to
-                // calculateFulfillmentFromControls() — the deliberate fallback path.
+                // (SUPER_ADMIN no-tenant / console), getCheckReport() reports 0 %
+                // fulfilment (no cross-tenant mappedControls fallback).
                 $report = $this->bsiGrundschutzCheckService->getCheckReport($stufe, $tenant);
             } catch (\Throwable) {
                 continue;

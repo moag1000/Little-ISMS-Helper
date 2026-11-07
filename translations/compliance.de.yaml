@@ -588,7 +588,7 @@ compliance:
             dashboard: 'Zum Dashboard'
             new: 'Neues Framework'
             gap_analysis: Gap-Analyse
-            assess: Bewerten
+            assess: 'Neu berechnen'
         title: Compliance-Frameworks
         heading: 'Compliance-Frameworks verwalten'
         description: 'Frameworks wie ISO 27001, NIS2 und DORA laden, aktivieren und prüfen'
@@ -787,7 +787,6 @@ compliance:
         open_dashboard: 'Dashboard öffnen'
         explore_mappings: 'Mappings erkunden'
         back: Zurück
-        reassess: 'Neu bewerten'
     quick_access: Schnellzugriff
     quick_access_hint: 'Klicken Sie auf ein Framework, um Details anzuzeigen und Anforderungen zu verwalten'
     data_reuse:
@@ -1172,6 +1171,93 @@ compliance:
         no_details_hint: 'Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener Compliance-Frameworks gegenseitig abdecken.'
         mappings_count: '%count% Mappings (%percent%%)'
         show_first: 'Zeige erste 5 von %total% Mappings'
+    # Paket 3: Erfüllung = Regel über die Daten der Organisation
+    fulfillment_rule:
+        card_title: 'Erfüllung'
+        no_rule: 'Keine Regel: Diese Anforderung wird von Hand bewertet.'
+        notes: 'Notizen'
+        applicability_from_soa: 'Anwendbarkeit kommt aus der SoA:'
+        inherited_from_parent: 'Von der Muttergesellschaft übernommen, hier nur lesbar.'
+        inherited_readonly: 'Nur die Muttergesellschaft kann diese Erfüllung ändern.'
+        status:
+            not_started: 'Nicht begonnen'
+            in_progress: 'In Umsetzung'
+            implemented: 'Umgesetzt'
+            verified: 'Verifiziert'
+        source:
+            controls: 'Aus Controls'
+            mapping: 'Über Mapping'
+            maturity: 'Aus Reifegrad'
+            manual: 'Von Hand bewertet'
+            override_manual: 'Übersteuert'
+            override_legacy: 'Altbestand'
+            override_certificate: 'Zertifikat'
+            override_inheritance: 'Vererbung übersteuert'
+        why:
+            controls: '{1} Aus 1 Control|]1,Inf[ Aus %count% Controls'
+            mapping: '{1} Über 1 Mapping|]1,Inf[ Über %count% Mappings, das beste zählt'
+            maturity: 'Aus dem Reifegrad'
+            excluded: 'ausgeschlossen'
+            mapping_formula: '%source% % × Mapping %mapping% %'
+            maturity_level: 'Reifegrad: %level%'
+        override:
+            rule_says: 'Regel ergibt %value% %'
+            review_due: 'prüfen bis %date%'
+            due: 'Prüfung fällig'
+            reason_legacy: 'Wert von vor der Regel. Bestätigen oder Regel übernehmen.'
+            reason_manual: 'Ohne Begründung'
+            reason_certificate: 'Externes Zertifikat'
+            reason_inheritance: 'Vererbung übersteuert'
+        field:
+            percentage: 'Erfüllung in %'
+            manual_percentage: 'Erfüllung'
+            reason: 'Begründung'
+            review_due: 'Prüfen bis'
+        action:
+            override: 'Abweichenden Wert setzen'
+            change_override: 'Übersteuerung ändern oder bestätigen'
+            save_override: 'Übersteuerung speichern'
+            follow_rule: 'Regel übernehmen (%value% %)'
+        flash:
+            recomputed: '%derived% Anforderungen aus Daten berechnet, %overridden% übersteuert.'
+            overridden: 'Übersteuerung gespeichert.'
+            override_invalid: 'Wert, Begründung (mindestens %min% Zeichen) und ein Prüfdatum ab heute angeben.'
+            follows_rule: 'Regel übernommen.'
+            follows_rule_all: '%count% Altbestände folgen wieder der Regel.'
+        meta:
+            title: 'Metadaten'
+            responsible: 'Verantwortlich'
+            last_review: 'Letzte Prüfung'
+            next_review: 'Nächste Prüfung'
+            overdue: 'Überfällig'
+            computed_at: 'Zuletzt berechnet'
+            last_updated_by: 'Zuletzt geändert von'
+        overrides:
+            title: 'Übersteuerungen prüfen'
+            subtitle: 'Wo ein Wert von Hand von der Regel abweicht: bestätigen oder die Regel übernehmen.'
+            list: 'Übersteuerungen'
+            empty: 'Keine Übersteuerungen vorhanden.'
+            review: 'Prüfen'
+            follow_rule_all: 'Regel für %count% Altbestände übernehmen'
+            follow_rule_all_confirm: '%count% Altbestände übernehmen den Regelwert. Die Hand-Werte bleiben im Audit-Log.'
+            filter:
+                label: 'Zeigen'
+                all: 'Alle'
+                legacy: 'Altbestand'
+                due: 'Prüfung fällig'
+                manual: 'Übersteuert'
+                certificate: 'Zertifikat'
+                inheritance: 'Vererbung'
+            summary:
+                legacy: '%count% Altbestand'
+                due: '%count% fällig'
+            col:
+                requirement: 'Anforderung'
+                value: 'Wert'
+                rule: 'Regel'
+                reason: 'Grund'
+                review_due: 'Prüfen bis'
+                actions: 'Aktionen'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'

@@ -117,6 +117,9 @@ search_nav:
     app_compliance_mapping_hub:
         label: 'Mapping hub'
         description: 'Framework mappings, quality, proposals and import in one place'
+    app_compliance_fulfillment_overrides:
+        label: 'Review overrides'
+        description: 'Fulfilment values set by hand that differ from the rule'
     setup_wizard_index:
         label: 'Setup wizard'
         description: 'Onboarding tour, initial setup'

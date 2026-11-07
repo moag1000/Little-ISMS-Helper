@@ -327,286 +327,41 @@
 
         <div class="col-md-4">
             <div id="fulfillment" class="fa-show-section">
-            {# Fulfillment Status #}
+            {# Fulfilment: rule over the organisation's data (Paket 3) #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0">{{ 'show.anchor.fulfillment'|trans({}, 'messages') }}</h2>
+                        <h2 class="mb-0">{{ 'compliance.fulfillment_rule.card_title'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-                    {% if is_inherited %}
-                        {{ _fa_alert.render({ variant: 'info', title: 'compliance.requirement.inherited_notice.title'|trans({}, 'compliance'), body: 'compliance.requirement.inherited_notice.body'|trans({}, 'compliance')|e }) }}
-                    {% endif %}
-
-                    <div class="text-center mb-3">
-                        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-                        {% set fp = fulfillment.fulfillmentPercentage %}
-                        {{ _fa_progress.render({
-                            value: fp,
-                            tone: fp >= 100 ? 'success' : (fp >= 75 ? 'info' : (fp >= 50 ? 'warning' : 'danger')),
-                            showText: true,
-                            size: 'lg',
-                            class: 'progress-h-30',
-                        }) }}
-                    </div>
-
-                    {% if calculated_fulfillment != fulfillment.fulfillmentPercentage %}
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'nav-clipboard-data' } } %}
-                            {% block alert_body %}<small><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>{% endblock %}
-                        {% endembed %}
-                    {% endif %}
-
-                    {% if transitive_coverage is defined %}
-                        <div class="mt-3">
-                            <div class="fw-bold small mb-1">
-                                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
-                                {{ 'coverage.direct_heading'|trans({}, 'control') }} &amp; {{ 'coverage.transitive_heading'|trans({}, 'control') }}
-                            </div>
-                            {% include '_components/_transitive_coverage_badge.html.twig' with { coverage: transitive_coverage } %}
-                        </div>
-                    {% endif %}
-
-                    {% if fulfillment.fulfillmentNotes %}
-                        <p class="fw-bold mt-3">Notes {% if is_inherited %}<small class="text-muted">(from parent)</small>{% endif %}</p>
-                        <p class="text-muted small">{{ fulfillment.fulfillmentNotes }}</p>
-                    {% endif %}
-
-                    {# Quick Update Form - Enhanced with Visual Slider #}
-                    {% if can_edit and is_granted('ROLE_MANAGER') %}
-                        <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" id="quickUpdateForm"
-                              data-controller="fulfillment">
-                            <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
-
-                            <div class="mb-3">
-                                <label for="fulfillmentPercentage" class="form-label d-flex justify-content-between">
-                                    <span>Fulfillment</span>
-                                    <span data-fulfillment-target="display" class="fa-status-pill fa-status-pill--primary">{{ fulfillment.fulfillmentPercentage }}%</span>
-                                </label>
-
-                                {# Visual Slider #}
-                                <input type="range" class="form-range" id="fulfillmentSlider"
-                                       data-fulfillment-target="slider"
-                                       data-action="input->fulfillment#update"
-                                       min="0" max="100" step="5" value="{{ fulfillment.fulfillmentPercentage }}"
-                                       style="cursor: pointer;"
-                                       data-bs-toggle="tooltip" data-bs-placement="top"
-                                       title="{{ 'common.tooltip.fulfillment_slider'|trans({}, 'messages') }}">
-
-                                {# Hidden input for form submission #}
-                                <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ fulfillment.fulfillmentPercentage }}">
-
-                                {# Visual Progress Bar #}
-                                {{ _fa_progress.render({
-                                    value: fulfillment.fulfillmentPercentage,
-                                    tone: fulfillment.fulfillmentPercentage >= 75 ? 'success' : (fulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger'),
-                                    class: 'progress-h-8 mt-2',
-                                    barAttrs: {'data-fulfillment-target': 'progressBar'}
-                                }) }}
-
-                            {# Quick Preset Buttons #}
-                            <div class="d-flex gap-1 mt-2">
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
-                                        data-action="click->fulfillment#set" data-fulfillment-value-param="0"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="{{ 'compliance.tooltip.not_started'|trans({}, 'compliance') }}">0%</button>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
-                                        data-action="click->fulfillment#set" data-fulfillment-value-param="25"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="{{ 'compliance.tooltip.planning_phase'|trans({}, 'compliance') }}">25%</button>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
-                                        data-action="click->fulfillment#set" data-fulfillment-value-param="50"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="{{ 'common.tooltip.status_in_progress'|trans({}, 'messages') }}">50%</button>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
-                                        data-action="click->fulfillment#set" data-fulfillment-value-param="75"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="{{ 'compliance.tooltip.nearly_complete'|trans({}, 'compliance') }}">75%</button>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm flex-fill"
-                                        data-action="click->fulfillment#set" data-fulfillment-value-param="100"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="{{ 'common.tooltip.status_fully_implemented'|trans({}, 'messages') }}">100%</button>
-                            </div>
-                        </div>
-
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1"
-                                       {% if fulfillment.applicable %}checked{% endif %}
-                                       data-bs-toggle="tooltip" data-bs-placement="right"
-                                       title="{{ 'compliance.requirement.tooltip.applicable'|trans({}, 'compliance') }}">
-                                <label class="form-check-label" for="applicable">
-                                    <strong>{{ 'compliance.requirement.applicable'|trans({}, 'compliance') }}</strong>
-                                    <small class="d-block text-muted">{{ 'compliance.requirement.applicable_description'|trans({}, 'compliance') }}</small>
-                                </label>
-                            </div>
-
-                            {# Person fields — Tri-State responsible owner #}
-                            <div class="mb-3">
-                                <label for="responsiblePersonUserId" class="form-label small fw-semibold">
-                                    {{ 'fulfillment.field.responsible_person_user'|trans({}, 'compliance') }}
-                                </label>
-                                <select id="responsiblePersonUserId" name="responsiblePersonUserId" class="form-select form-select-sm fa-cyber-input__field">
-                                    <option value="">{{ 'fulfillment.placeholder.responsible_person_user'|trans({}, 'compliance') }}</option>
-                                    {% for user in available_users %}
-                                        <option value="{{ user.id }}"{% if fulfillment.responsiblePersonUser and fulfillment.responsiblePersonUser.id == user.id %} selected{% endif %}>
-                                            {{ user.fullName }} ({{ user.email }})
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <small class="text-muted">{{ 'fulfillment.help.responsible_person_user'|trans({}, 'compliance') }}</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="responsiblePersonId" class="form-label small fw-semibold">
-                                    {{ 'fulfillment.field.responsible_person'|trans({}, 'compliance') }}
-                                </label>
-                                <select id="responsiblePersonId" name="responsiblePersonId" class="form-select form-select-sm fa-cyber-input__field">
-                                    <option value="">{{ 'fulfillment.placeholder.responsible_person'|trans({}, 'compliance') }}</option>
-                                    {% for person in available_persons %}
-                                        <option value="{{ person.id }}"{% if fulfillment.responsiblePerson and fulfillment.responsiblePerson.id == person.id %} selected{% endif %}>
-                                            {{ person.fullName }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <small class="text-muted">{{ 'fulfillment.help.responsible_person'|trans({}, 'compliance') }}</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="responsibleDeputyPersonIds" class="form-label small fw-semibold">
-                                    {{ 'fulfillment.field.responsible_deputy_persons'|trans({}, 'compliance') }}
-                                </label>
-                                <select id="responsibleDeputyPersonIds" name="responsibleDeputyPersonIds[]" class="form-select form-select-sm fa-cyber-input__field"
-                                        multiple data-controller="tom-select">
-                                    {% for person in available_persons %}
-                                        <option value="{{ person.id }}"{% if fulfillment.responsibleDeputyPersons.contains(person) %} selected{% endif %}>
-                                            {{ person.fullName }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <small class="text-muted">{{ 'fulfillment.help.responsible_deputy_persons'|trans({}, 'compliance') }}</small>
-                            </div>
-
-                            {# Person-Rollout — yearly attestation owner (governance role-holder, distinct from day-to-day responsible owner) #}
-                            <div class="mb-3">
-                                <label for="attestationOwnerPersonId" class="form-label small fw-semibold">
-                                    {{ 'fulfillment.field.attestation_owner_person'|trans({}, 'compliance') }}
-                                </label>
-                                <select id="attestationOwnerPersonId" name="attestationOwnerPersonId" class="form-select form-select-sm fa-cyber-input__field"
-                                        data-controller="tom-select">
-                                    <option value="">{{ 'fulfillment.placeholder.attestation_owner_person'|trans({}, 'compliance') }}</option>
-                                    {% for person in available_persons %}
-                                        <option value="{{ person.id }}"{% if fulfillment.attestationOwnerPerson and fulfillment.attestationOwnerPerson.id == person.id %} selected{% endif %}>
-                                            {{ person.fullName }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <small class="text-muted">{{ 'fulfillment.help.attestation_owner_person'|trans({}, 'compliance') }}</small>
-                            </div>
-
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100"
-                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                    title="{{ 'compliance.requirement.tooltip.save'|trans({}, 'compliance') }}">
-                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.requirement.save_quick_update'|trans({}, 'compliance') }}
-                            </button>
-                        </form>
-                    {% else %}
-                        {{ _fa_alert.render({ variant: 'warning', icon: 'ui-lock', class: 'mt-3', body: 'You cannot edit inherited fulfillment data. Only the parent tenant can modify this.' }) }}
-                    {% endif %}
-
-                    <script nonce="{{ csp_nonce() }}">
-                    // Update slider value and progress bar in real-time
-                    const slider = document.getElementById('fulfillmentSlider');
-                    const hiddenInput = document.getElementById('fulfillmentPercentage');
-                    const sliderValue = document.getElementById('sliderValue');
-                    const progressBar = document.getElementById('progressBar');
-
-                    function updateSlider(value) {
-                        slider.value = value;
-                        hiddenInput.value = value;
-                        sliderValue.textContent = value + '%';
-                        sliderValue.className = 'fa-status-pill fa-status-pill--' + (value >= 75 ? 'success' : (value >= 50 ? 'warning' : 'danger'));
-                        progressBar.style.width = value + '%';
-                        progressBar.style.backgroundColor = value >= 75 ? 'var(--success)' : (value >= 50 ? 'var(--warning)' : 'var(--danger)');
-                        progressBar.setAttribute('aria-valuenow', value);
-                    }
-
-                    slider.addEventListener('input', function() {
-                        updateSlider(this.value);
-                    });
-
-                    // Show success message after update
-                    const form = document.getElementById('quickUpdateForm');
-                    form.addEventListener('submit', function(e) {
-                        // Let form submit naturally, but show loading state
-                        const btn = form.querySelector('button[type="submit"]');
-                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'common.saving'|trans({}, 'messages') }}';
-                        btn.disabled = true;
-                    });
-
-                    // Initialize Bootstrap tooltips
-                    function initRequirementTooltips() {
-                        if (!window.bootstrap || !window.bootstrap.Tooltip) { return; }
-                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-                            bootstrap.Tooltip.getInstance(tooltipTriggerEl)?.dispose();
-                            new bootstrap.Tooltip(tooltipTriggerEl, {
-                                trigger: 'hover',
-                                html: false
-                            });
-                        });
-                    }
-                    document.addEventListener('DOMContentLoaded', initRequirementTooltips);
-                    document.addEventListener('turbo:load', initRequirementTooltips);
-                    </script>
+                    {% include 'compliance/requirement/_fulfillment_card.html.twig' %}
                 {% endblock %}
             {% endembed %}
-            </div>
 
             {# Metadata #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0">Metadata</h2>
+                        <h2 class="mb-0">{{ 'compliance.fulfillment_rule.meta.title'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <p><small><strong>Responsible:</strong>
-                        {% if fulfillment.effectiveResponsiblePerson %}
-                            {{ fulfillment.effectiveResponsiblePerson }}
-                            {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </small></p>
-                    <p><small><strong>Last Review:</strong>
-                        {% if fulfillment.lastReviewDate %}
-                            {{ fulfillment.lastReviewDate|fa_date }}
-                            {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </small></p>
-                    <p><small><strong>Next Review:</strong>
-                        {% if fulfillment.nextReviewDate %}
-                            {{ fulfillment.nextReviewDate|fa_date }}
-                            {% if fulfillment.isOverdueForReview() %}{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Overdue' } %}{% endif %}
-                            {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </small></p>
-                    <p><small><strong>Last Updated By:</strong>
-                        {% if fulfillment.lastUpdatedBy %}
-                            {{ fulfillment.lastUpdatedBy.fullName|default(fulfillment.lastUpdatedBy.email) }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </small></p>
-                    <p><small><strong>Created:</strong> {{ requirement.createdAt|fa_datetime }}</small></p>
-                    {% if requirement.updatedAt %}
-                        <p><small><strong>Updated:</strong> {{ requirement.updatedAt|fa_datetime }}</small></p>
-                    {% endif %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
+                    <dl class="small mb-0">
+                        <dt>{{ 'compliance.fulfillment_rule.meta.responsible'|trans({}, 'compliance') }}</dt>
+                        <dd>{{ fulfillment.effectiveResponsiblePerson ?: '—' }}</dd>
+                        <dt>{{ 'compliance.fulfillment_rule.meta.last_review'|trans({}, 'compliance') }}</dt>
+                        <dd>{{ fulfillment.lastReviewDate|fa_date }}</dd>
+                        <dt>{{ 'compliance.fulfillment_rule.meta.next_review'|trans({}, 'compliance') }}</dt>
+                        <dd>{{ fulfillment.nextReviewDate|fa_date }}
+                            {% if fulfillment.isOverdueForReview() %}{{ pill.render('compliance.fulfillment_rule.meta.overdue'|trans({}, 'compliance'), 'danger', {size: 'sm'}) }}{% endif %}
+                        </dd>
+                        <dt>{{ 'compliance.fulfillment_rule.meta.computed_at'|trans({}, 'compliance') }}</dt>
+                        <dd>{{ fulfillment.derivedAt|fa_datetime }}</dd>
+                        <dt>{{ 'compliance.fulfillment_rule.meta.last_updated_by'|trans({}, 'compliance') }}</dt>
+                        <dd>{{ fulfillment.lastUpdatedBy ? fulfillment.lastUpdatedBy.fullName|default(fulfillment.lastUpdatedBy.email) : '—' }}</dd>
+                    </dl>
                 {% endblock %}
             {% endembed %}
 

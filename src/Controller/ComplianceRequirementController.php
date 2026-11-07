@@ -12,7 +12,6 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use DateTimeImmutable;
 use App\Entity\ComplianceRequirement;
-use App\Enum\ComplianceRequirementFulfillmentStatus;
 use App\Form\ComplianceRequirementType;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceFrameworkRepository;
@@ -22,7 +21,8 @@ use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\MrisMaturityService;
 use App\Service\TenantContext;
 use App\Service\CrossFrameworkLookupService;
-use App\Service\TransitiveCoverageService;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
+use App\Service\Compliance\Fulfillment\FulfillmentRuleEngine;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +46,8 @@ class ComplianceRequirementController extends AbstractController
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
         private readonly CrossFrameworkLookupService $crossFrameworkLookupService,
-        private readonly TransitiveCoverageService $transitiveCoverageService,
+        private readonly FulfillmentRuleEngine $fulfillmentRuleEngine,
+        private readonly FulfillmentDerivationService $fulfillmentDerivationService,
         private readonly MrisMaturityService $mrisMaturityService,
         private readonly UserRepository $userRepository,
         private readonly PersonRepository $personRepository,
@@ -229,8 +230,13 @@ class ComplianceRequirementController extends AbstractController
             ]);
         }
 
-        // Calculate fulfillment from controls (legacy method for comparison)
-        $calculatedFulfillment = $complianceRequirement->calculateFulfillmentFromControls();
+        // Rule over the organisation's data: evaluated on first view of a row
+        // that has never been computed (rows are kept fresh by control changes
+        // and the nightly task afterwards).
+        if ($tenant instanceof Tenant && $fulfillment->getDerivedAt() === null
+            && !$this->complianceRequirementFulfillmentService->isInheritedFulfillment($fulfillment, $tenant)) {
+            $this->fulfillmentDerivationService->apply($fulfillment);
+        }
 
         // Check if this is inherited from parent
         $isInherited = $this->complianceRequirementFulfillmentService->isInheritedFulfillment($fulfillment, $tenant);
@@ -260,12 +266,11 @@ class ComplianceRequirementController extends AbstractController
         return $this->render('compliance/requirement/show.html.twig', [
             'requirement' => $complianceRequirement,
             'fulfillment' => $fulfillment,
-            'calculated_fulfillment' => $calculatedFulfillment,
             'is_inherited' => $isInherited,
             'can_edit' => $canEdit,
             'sub_requirement_fulfillments' => $subRequirementFulfillments,
             'cross_framework_equivalents' => $this->crossFrameworkLookupService->findEquivalentsGroupedByFramework($complianceRequirement),
-            'transitive_coverage' => $this->transitiveCoverageService->computeForRequirement($complianceRequirement),
+            'identity_control' => $tenant instanceof Tenant ? $this->fulfillmentRuleEngine->identityControl($complianceRequirement, $tenant) : null,
             'is_mris' => $isMris,
             'mris' => $mrisData,
             // Users of the current organisation only — never all users of
@@ -425,21 +430,18 @@ class ComplianceRequirementController extends AbstractController
         $fulfillmentPercentage = $request->request->get('fulfillmentPercentage');
         $applicable = $request->request->get('applicable') === '1';
 
+        // A requirement a rule computes is changed through an override with
+        // reason (FulfillmentOverrideController); only requirements without
+        // rule take a hand value here.
         if ($fulfillmentPercentage !== null) {
-            $fulfillmentPercentage = max(0, min(100, (int) $fulfillmentPercentage));
-            $fulfillment->setFulfillmentPercentage($fulfillmentPercentage);
-
-            // Auto-update status based on percentage
-            if ($fulfillmentPercentage >= 100) {
-                $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::Implemented);
-            } elseif ($fulfillmentPercentage > 0) {
-                $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::InProgress);
-            } else {
-                $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::NotStarted);
-            }
+            $this->fulfillmentDerivationService->setManual($fulfillment, (int) $fulfillmentPercentage);
         }
 
-        $fulfillment->setApplicable($applicable);
+        // An Annex-A requirement takes its applicability from the SoA control.
+        if (!FulfillmentRuleEngine::isAnnexARequirement($complianceRequirement)
+            || $this->fulfillmentRuleEngine->identityControl($complianceRequirement, $tenant) === null) {
+            $fulfillment->setApplicable($applicable);
+        }
 
         // Person fields (Tri-State responsible owner)
         $responsiblePersonUserId = $request->request->get('responsiblePersonUserId');
