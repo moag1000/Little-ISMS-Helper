@@ -1923,6 +1923,7 @@ bulk_actions:
     assign_owner: 'Assign owner'
     tag: 'Tag'
     approve: 'Approve'
+    reject: 'Reject'
     review: 'Confirm review'
     delete: 'Delete'
     deselect: 'Clear selection'
