@@ -341,7 +341,8 @@ class LegacyOwnerReport
     private function assign(LegacyOwnerRow $row, User|Person $target): void
     {
         $field = self::FIELDS[$row->type];
-        $this->accessor->setValue($row->record, $target instanceof User ? $field['user'] : $field['person'], $target);
+        $record = $row->record; // setValue() takes the object by reference
+        $this->accessor->setValue($record, $target instanceof User ? $field['user'] : $field['person'], $target);
     }
 
     /**
