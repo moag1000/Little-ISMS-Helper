@@ -422,9 +422,9 @@ assets/
 │   ├── modal_controller.js
 │   └── ...
 └── styles/
-    ├── app.css         # Main stylesheet
-    ├── dark-mode.css   # Dark theme
-    └── premium.css     # Premium features
+    ├── fairy-aurora.css             # Design tokens (light + dark)
+    ├── fairy-aurora-components.css  # Aurora components
+    └── app.css                      # App layer
 ```
 
 **importmap.php Structure:**
@@ -903,7 +903,7 @@ This skill can be extended with:
 - `assets/bootstrap.js` - Stimulus application setup
 - `assets/controllers/` - Stimulus controllers (53 total)
 - `assets/styles/app.css` - Main stylesheet
-- `assets/styles/dark-mode.css` - Dark theme styles
+- `assets/styles/fairy-aurora.css` - Design tokens incl. dark theme
 
 ### Security & Vulnerability
 - `composer.lock` - PHP dependency lock file

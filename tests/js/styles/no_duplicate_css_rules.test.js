@@ -10,13 +10,18 @@ import postcss from 'postcss';
  * code at best and a silent override at worst. Disjoint split rules are only
  * allowed where merging would change the cascade (see ALLOWED_SPLITS).
  */
-const FILE = path.resolve(__dirname, '../../../assets/styles/fairy-aurora-components.css');
+const STYLES = path.resolve(__dirname, '../../../assets/styles');
+const FILE = path.join(STYLES, 'fairy-aurora-components.css');
+// app.css absorbed five legacy sheets (2026-11); the overridden duplicates were
+// removed then. Split rules stay allowed there (merging would reorder the cascade),
+// but a property declared again for the same selector is dead code.
+const NO_REDECLARE = [FILE, path.join(STYLES, 'app.css')];
 // .lead: size/line-height stay before .h1–.h6/.card-text, colour after the
 // Aurora-contrast utilities — merging would change `.card-text.lead`.
 const ALLOWED_SPLITS = new Set([' || .lead']);
 
-function groups() {
-    const root = postcss.parse(fs.readFileSync(FILE, 'utf8'));
+function groups(file = FILE) {
+    const root = postcss.parse(fs.readFileSync(file, 'utf8'));
     const context = (node) => {
         const parts = [];
         for (let p = node.parent; p && p.type !== 'root'; p = p.parent) {
@@ -34,10 +39,10 @@ function groups() {
     return [...map].filter(([, rules]) => rules.length > 1);
 }
 
-describe('fairy-aurora-components.css', () => {
+describe.each(NO_REDECLARE.map((f) => [path.basename(f), f]))('%s', (name, file) => {
     it('declares no property twice for the same selector and context', () => {
         const overlaps = [];
-        for (const [key, rules] of groups()) {
+        for (const [key, rules] of groups(file)) {
             const seen = new Map();
             for (const rule of rules) {
                 rule.walkDecls((d) => {
@@ -49,7 +54,9 @@ describe('fairy-aurora-components.css', () => {
         }
         expect(overlaps).toEqual([]);
     });
+});
 
+describe('fairy-aurora-components.css', () => {
     it('splits a selector over several rules only where the cascade needs it', () => {
         const splits = groups().map(([key]) => key).filter((key) => !ALLOWED_SPLITS.has(key));
         expect(splits).toEqual([]);
