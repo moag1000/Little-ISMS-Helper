@@ -23,6 +23,21 @@ Die erste Quelle mit Daten gilt:
 - Stehen hinter einer Anforderung Controls **und** Datensätze, zählen beide: der Mittelwert aus beiden, Quelle „Aus Controls und Datensätzen“. Beispiele: NIS-2 Art. 20 (1) aus den Controls 5.1/5.3 und der Billigung durch die Leitung, A.6.3 aus dem Control und den abgeschlossenen Schulungsteilnahmen, NIS-2 Art. 21 (2)(b) aus den Controls und den Vorfällen. Prüfungen, die nur Controls zählen, fallen dann weg, damit nichts doppelt zählt.
 - Ohne Daten bleibt es bei der Bewertung von Hand wie bisher (Schieberegler auf der Anforderung).
 
+### Das Audit-Urteil deckelt
+
+Über allen Quellen steht das Urteil aus der Audit-Checkliste (ISO 27001 9.2): Das neueste
+Urteil der letzten zwölf Monate begrenzt den Wert. „Nicht konform“ setzt die Anforderung auf
+0 %, „teilweise“ auf den Konformitätsgrad der Zeile (ohne Angabe 50 %), „konform“ lässt den
+Wert, wie er ist. Ist die Anforderung zu 100 % erfüllt und das Audit sagt „konform“, steht sie
+auf **Verifiziert**. Ohne andere Quelle gilt das Urteil allein (Quelle „Aus Audit“). „Nicht
+anwendbar“ und „nicht geprüft“ zählen nicht. Unter „Warum dieser Wert?“ steht das Audit mit
+Datum; der Link führt zur Checkliste.
+
+Die Checkliste selbst entsteht beim ersten Öffnen aus dem Scope des Audits: eine Zeile je
+Anforderung jedes Frameworks im Scope (ein Audit ohne Framework prüft ISO 27001), mit den
+Nachweisen der Organisation zur Anforderung schon eingetragen. Nach einer Scope-Änderung
+ergänzt **„Aus dem Scope ergänzen“** neue Anforderungen; vorhandene Urteile bleiben.
+
 ### Welche Datensätze welche Klausel speisen
 
 | Datensatz | Prüfung | Klauseln |
@@ -73,13 +88,14 @@ Altbestand, für den eine Regel rechnet, wieder der Regel.
 
 - Sofort, wenn ein Control gespeichert wird (Status, Prozent, Anwendbarkeit, Begründung) oder wenn sich die verknüpften Controls einer Anforderung ändern. Gemappte Normen ziehen in derselben Anfrage nach.
 - Sofort, wenn ein Registereintrag, eine Leitungsentscheidung, eine Schulung, eine Schulungsteilnahme, ein Vorfall oder eine Datenpanne gespeichert wird: Die Klauseln, die diese Datensätze lesen, rechnen neu (`RecordChangeCollector`).
+- Sofort, wenn in der Audit-Checkliste ein Urteil gespeichert wird: die geprüfte Anforderung und alles, was von ihr erbt.
 - Beim Klick auf **„Neu berechnen“** im Framework-Dashboard.
 - Fällige Übersteuerungen erscheinen 14 Tage vor dem Prüfdatum in „Mein Tag“ (Abschnitt „Erfüllung — Übersteuerung prüfen“) und in der täglichen Sammelmail bei der verantwortlichen Person der Anforderung, ersatzweise bei Compliance-Manager und ISB.
 - Jede Nacht um 00:45 für alle Organisationen (Scheduler-Task `app:compliance:refresh-fulfillments`). So kommen auch neue oder freigegebene globale Mappings an, und die Werte aus Datensätzen (Schulungen, Audits, Lieferanten …) werden aktuell.
 
 ## Hinweis für Betreiber
 
-Nach dem Update läuft die Migration, und es bleibt nichts weiter zu tun. (Das Update mit Registern und Leitungsentscheidungen als Quelle bringt keine Migration mit; die neuen Werte erscheinen nach der nächsten Nacht oder nach „Neu berechnen“.) Die erste Nacht rechnet alle
+Nach dem Update läuft die Migration, und es bleibt nichts weiter zu tun. (Die Updates mit Registern, Leitungsentscheidungen und Audit-Urteilen als Quelle bringen keine Migration mit; die neuen Werte erscheinen nach der nächsten Nacht oder nach „Neu berechnen“.) Die erste Nacht rechnet alle
 Organisationen durch und legt den Altbestand an. Wer nicht warten will, klickt im
 Framework-Dashboard auf „Neu berechnen“. Danach lohnt ein Blick in die Liste
 „Übersteuerungen“ (Filter Altbestand).

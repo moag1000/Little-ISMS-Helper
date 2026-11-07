@@ -92,7 +92,6 @@ final class LiveCountAggregatorTest extends TestCase
         $workflowRepo       = $this->createMock(\App\Repository\WorkflowInstanceRepository::class);
         $policyAckRepo      = $this->createMock(\App\Repository\PolicyAcknowledgementRepository::class);
         $docRepo            = $this->createMock(\App\Repository\DocumentRepository::class);
-        $auditChecklistRepo = $this->createMock(\App\Repository\AuditChecklistRepository::class);
         $wizardRepo         = $this->createMock(\App\Repository\WizardSessionRepository::class);
         $complianceAnalytics = $this->createMock(\App\Service\ComplianceAnalyticsService::class);
         $tenantContext      = $this->createMock(\App\Service\TenantContext::class);
@@ -115,7 +114,6 @@ final class LiveCountAggregatorTest extends TestCase
         $qb->method('setParameter')->willReturnSelf();
         $qb->method('getQuery')->willReturn($query);
         $docRepo->method('createQueryBuilder')->willReturn($qb);
-        $auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $wizardRepo->method('findOverdueByTenant')->willReturn([]);
         $complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $tenantContext->method('getCurrentTenant')->willReturn($this->createMock(\App\Entity\Tenant::class));
@@ -128,7 +126,6 @@ final class LiveCountAggregatorTest extends TestCase
             $workflowRepo,
             $policyAckRepo,
             $docRepo,
-            $auditChecklistRepo,
             $wizardRepo,
             $complianceAnalytics,
             $urls,

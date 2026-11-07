@@ -279,6 +279,14 @@ checklist:
     flash:
         saved: '%count% items saved'
         locked: 'Audit is reported or closed; the checklist is locked.'
+        generated: '{0} No new requirements in scope.|{1} 1 requirement added.|]1,Inf[ %count% requirements added.'
+    action:
+        generate: 'Add from scope'
+    scope: 'From the scope: %frameworks%'
+    feeds_fulfillment: 'Every verdict feeds the requirement''s fulfilment (valid 12 months). Non compliant lowers it, compliant on a fully met requirement verifies it.'
+    empty:
+        title: 'No requirements in scope.'
+        text: 'Choose a framework in the audit or load the catalogue; the checklist is then built from it.'
 
 pdf:
     title: 'Audit Report'

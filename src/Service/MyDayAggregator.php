@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\AuditChecklist;
 use App\Entity\Document;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\ManagementDecision;
@@ -13,7 +12,6 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WizardSession;
 use App\Entity\WorkflowInstance;
-use App\Repository\AuditChecklistRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\WizardSessionRepository;
@@ -46,9 +44,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class MyDayAggregator
 {
-    /** Audit-checklist `plannedDate` look-ahead window. */
-    private const AUDIT_CHECKLIST_WARN_DAYS = 7;
-
     /** Wizard stall window in days before surfaced as "overdue" to CM. */
     private const WIZARD_OVERDUE_DAYS = 90;
 
@@ -66,7 +61,6 @@ final class MyDayAggregator
         private readonly WorkflowInstanceRepository $workflowInstances,
         private readonly PolicyAcknowledgementRepository $policyAckRepo,
         private readonly DocumentRepository $documentRepo,
-        private readonly AuditChecklistRepository $auditChecklistRepo,
         private readonly WizardSessionRepository $wizardSessionRepo,
         private readonly ComplianceAnalyticsService $complianceAnalytics,
         private readonly UrlGeneratorInterface $urls,
@@ -103,7 +97,6 @@ final class MyDayAggregator
 
         $buckets['workflows_overdue'] = $this->buildWorkflowsOverdue($user, $tenant);
         $buckets['acknowledgements'] = $this->buildAcknowledgements($user, $tenant);
-        $buckets['audit_checklist_due'] = $this->buildAuditChecklistDue($user, $tenant);
         if ($this->isComplianceManager($user)) {
             $buckets['documents_pending_approval_for_me'] = $this->buildDocumentsPendingApproval($tenant);
             $buckets['wizard_overdue'] = $this->buildWizardOverdue($tenant);
@@ -265,42 +258,6 @@ final class MyDayAggregator
     private function documentTitle(Document $document): string
     {
         return (string) ($document->getOriginalFilename() ?? $document->getFilename() ?? 'Document');
-    }
-
-    /**
-     * Audit-checklist items due within 7 days,
-     * not yet verified, for the assigned auditor. ISO 27001 Clause 9.2 —
-     * Internal-Audit programme execution. Visible to assigned auditor +
-     * audit-coordinator roles (Admin / Manager / Auditor).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function buildAuditChecklistDue(User $user, Tenant $tenant): array
-    {
-        $items = [];
-        foreach ($this->auditChecklistRepo->findDueForUser($user, $tenant, self::AUDIT_CHECKLIST_WARN_DAYS) as $item) {
-            /** @var AuditChecklist $item */
-            $audit = $item->getAudit();
-            $requirement = $item->getRequirement();
-            if ($audit === null || $requirement === null) {
-                continue;
-            }
-            $items[] = [
-                'priority'    => 'medium',
-                'due_date'    => $audit->getPlannedDate(),
-                'link'        => $this->urls->generate('app_audit_checklist', ['id' => $audit->getId()]),
-                'entity_type' => 'audit_checklist',
-                'tone'        => 'info',
-                'title'       => sprintf(
-                    '%s — %s',
-                    (string) ($audit->getTitle() ?? '#' . (string) $audit->getId()),
-                    (string) ($requirement->getRequirementId() ?? '—'),
-                ),
-                'subtitle'    => (string) ($requirement->getTitle() ?? '—'),
-                'badge'       => $item->getVerificationStatus(),
-            ];
-        }
-        return $items;
     }
 
     /**
