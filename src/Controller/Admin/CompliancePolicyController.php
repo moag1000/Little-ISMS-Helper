@@ -70,6 +70,7 @@ final class CompliancePolicyController extends AbstractController
         $defaults = $this->policy->defaults();
 
         if ($request->isMethod('POST')) {
+            $this->denyAccessUnlessGranted(\App\Security\Voter\TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
             $token = (string) $request->request->get('_token');
             if (!$this->csrf->isTokenValid(new CsrfToken('compliance_policy_update', $token))) {
                 $this->addFlash('danger', 'common.csrf_invalid');
@@ -116,6 +117,7 @@ final class CompliancePolicyController extends AbstractController
     }
 
     #[Route('/reset/{key}', name: 'reset', methods: ['POST'], requirements: ['key' => '[a-z0-9_.]+'])]
+    #[IsGranted(\App\Security\Voter\TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function reset(
         string $key,
         Request $request,

@@ -48,6 +48,7 @@ class QuickFixSettingsController extends AbstractController
         ];
 
         if ($request->isMethod('POST')) {
+            $this->denyAccessUnlessGranted(\App\Security\Voter\TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
             if (!$this->isCsrfTokenValid('quick_fix_settings', (string) $request->request->get('_token', ''))) {
                 $this->addFlash('danger', 'quick_fix.settings.csrf_invalid');
                 return $this->redirectToRoute('app_admin_quick_fix_settings');

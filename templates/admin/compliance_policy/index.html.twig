@@ -107,13 +107,14 @@
             <a href="{{ path('admin_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'compliance_policy.action.cancel'|trans({}, 'compliance_policy') }}
             </a>
-            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+            {% if is_granted('ADMIN_GLOBAL_OP') %}<button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                 {{ 'compliance_policy.action.save'|trans({}, 'compliance_policy') }}
-            </button>
+            </button>{% else %}<p class="small text-muted mb-0">{{ 'admin.global_op.readonly_hint'|trans({}, 'admin') }}</p>{% endif %}
         </div>
     </form>
 
+{% if is_granted('ADMIN_GLOBAL_OP') %}
     <section class="fa-section mt-4">
         <div class="fa-section__header">
             <h2 class="fa-section__title">{{ 'compliance_policy.reset.heading'|trans({}, 'compliance_policy') }}</h2>
@@ -143,4 +144,5 @@
             </div>
         </div>
     </section>
+{% endif %}
 {% endblock %}

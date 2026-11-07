@@ -794,6 +794,8 @@ common:
     no: 'Nein'
 
 data_breach:
+    flash:
+        created: 'Datenpanne %ref% angelegt.'
     dashboard:
         title: 'Datenpannen-Dashboard'
         subtitle: 'DSGVO Art. 33/34 Compliance-Überblick'

@@ -488,6 +488,7 @@ error:
         message: 'Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.'
         alva_line: 'Dafür fehlt dir die Berechtigung.'
         alva_sub: 'Wenn das falsch ist, sprich mit deinem Admin.'
+        read_only_role: 'Ihre Prüfer-Rolle hat nur Lesezugriff. Änderungen brauchen mindestens die Rolle Manager.'
     404:
         title: 'Seite nicht gefunden'
         heading: 'Seite nicht gefunden'
@@ -1778,6 +1779,7 @@ user:
         cannot_deactivate_initial_admin: 'Der initiale Administrator kann nicht deaktiviert werden'
         cannot_remove_admin_role_from_initial_admin: 'Die Administrator-Rolle kann dem initialen Administrator nicht entzogen werden'
         cannot_delete_initial_admin: 'Der initiale Administrator kann nicht gelöscht werden'
+        delete_referenced: 'Der Benutzer wird noch von anderen Datensätzen referenziert und kann nicht gelöscht werden. Bitte deaktivieren Sie ihn stattdessen'
     info:
         bulk_skipped_initial_admin: 'Initialer Administrator wurde übersprungen'
         bulk_skipped_current_user: 'Aktueller Benutzer wurde übersprungen'

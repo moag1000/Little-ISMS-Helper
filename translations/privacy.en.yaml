@@ -786,6 +786,8 @@ processing_activity:
             responsibilities: 'Split of duties (Art. 26(1))'
             arrangement_reference: 'Arrangement (reference)'
 data_breach:
+    flash:
+        created: 'Data breach %ref% created.'
     dashboard:
         title: 'Data Breach Dashboard'
         subtitle: 'GDPR Art. 33/34 Compliance Overview'

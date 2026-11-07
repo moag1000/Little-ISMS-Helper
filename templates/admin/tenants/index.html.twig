@@ -36,9 +36,11 @@
                     <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         {{ 'tenant.orphan_users.cta_user_management'|trans({}, 'tenant') }}
                     </a>
+                    {% if is_granted('ADMIN_GLOBAL_OP') %}
                     <a href="{{ path('admin_data_repair_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm ms-1">
                         {{ 'tenant.orphan_users.cta_data_repair'|trans({}, 'tenant') }}
                     </a>
+                    {% endif %}
                 </div>
             {% endblock %}
         {% endembed %}

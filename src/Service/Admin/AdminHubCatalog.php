@@ -532,7 +532,7 @@ final class AdminHubCatalog
                         'label' => 'admin.hub.module.data_repair.label',
                         'description' => 'admin.hub.module.data_repair.desc',
                         'route' => 'admin_data_repair_index',
-                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                        'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
                     // scope: own tenant tree — legacy free-text owners without User/Person
                     [

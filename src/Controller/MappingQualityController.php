@@ -14,6 +14,8 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\MappingGapItemRepository;
 use App\Service\MappingQualityAnalysisService;
 use App\Service\AutomatedGapAnalysisService;
+use App\Service\Compliance\MappingAccessGuard;
+use App\Service\Compliance\MappingStatistics;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,6 +41,8 @@ class MappingQualityController extends AbstractController
         private readonly MappingQualityAnalysisService $mappingQualityAnalysisService,
         private readonly AutomatedGapAnalysisService $automatedGapAnalysisService,
         private readonly TranslatorInterface $translator,
+        private readonly MappingAccessGuard $accessGuard,
+        private readonly MappingStatistics $statistics,
     ) {}
 
     protected function getFlashDomain(): string
@@ -51,9 +55,7 @@ class MappingQualityController extends AbstractController
         return $this->translator;
     }
 
-    /**
-     * Dashboard showing mapping quality overview
-     */
+    /** Dashboard showing mapping quality overview */
     #[Route('/compliance/mapping-quality', name: 'app_mapping_quality_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
@@ -65,11 +67,11 @@ class MappingQualityController extends AbstractController
                 return $this->redirectToRoute('app_compliance_index');
             }
 
-            $qualityStats = $this->complianceMappingRepository->getQualityStatistics();
-            $qualityDistribution = $this->complianceMappingRepository->getQualityDistribution();
-            $similarityDistribution = $this->complianceMappingRepository->getSimilarityDistribution();
-            $gapStats = $this->mappingGapItemRepository->getGapStatisticsByPriority();
-            $frameworkComparison = $this->complianceMappingRepository->getFrameworkQualityComparison();
+            $qualityStats = $this->statistics->getQualityStatistics();
+            $qualityDistribution = $this->statistics->getQualityDistribution();
+            $similarityDistribution = $this->statistics->getSimilarityDistribution();
+            $gapStats = $this->statistics->getGapStatisticsByPriority();
+            $frameworkComparison = $this->statistics->getFrameworkQualityComparison();
 
             // Check if anything has been scored yet (heuristic OR MQS).
             if (($qualityStats['scored_mappings'] ?? $qualityStats['analyzed_mappings']) === 0) {
@@ -89,16 +91,14 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * List mappings requiring review
-     */
+    /** List mappings requiring review */
     #[Route('/compliance/mapping-quality/review-queue', name: 'app_mapping_quality_review_queue', methods: ['GET'])]
     public function reviewQueue(): Response
     {
         try {
-            $mappingsRequiringReview = $this->complianceMappingRepository->findMappingsRequiringReview();
-            $lowConfidenceMappings = $this->complianceMappingRepository->findLowConfidenceMappings(70);
-            $discrepancies = $this->complianceMappingRepository->findMappingsWithDiscrepancies(20);
+            $mappingsRequiringReview = $this->accessGuard->filterVisible($this->complianceMappingRepository->findMappingsRequiringReview());
+            $lowConfidenceMappings = $this->accessGuard->filterVisible($this->complianceMappingRepository->findLowConfidenceMappings(70));
+            $discrepancies = $this->accessGuard->filterVisible($this->complianceMappingRepository->findMappingsWithDiscrepancies(20));
 
             return $this->render('compliance/mapping_quality/review_queue.html.twig', [
                 'mappings_requiring_review' => $mappingsRequiringReview,
@@ -111,15 +111,13 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * Review a specific mapping
-     */
+    /** Review a specific mapping */
     #[Route('/compliance/mapping-quality/review/{id}', name: 'app_mapping_quality_review', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function review(int $id): Response
     {
         $mapping = $this->complianceMappingRepository->find($id);
 
-        if (!$mapping) {
+        if (!$mapping || !$this->accessGuard->isVisible($mapping)) {
             throw $this->createNotFoundException('Mapping not found');
         }
 
@@ -135,9 +133,7 @@ class MappingQualityController extends AbstractController
         ]);
     }
 
-    /**
-     * Update mapping review status and percentage
-     */
+    /** Update mapping review status and percentage */
     #[Route('/compliance/mapping-quality/review/{id}/update', name: 'app_mapping_quality_review_update', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
@@ -146,7 +142,7 @@ class MappingQualityController extends AbstractController
         try {
             $mapping = $this->complianceMappingRepository->find($id);
 
-            if (!$mapping) {
+            if (!$mapping || !$this->accessGuard->isVisible($mapping)) {
                 return $this->json(['success' => false, 'error' => 'Mapping not found'], 404);
             }
 
@@ -222,9 +218,7 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * Re-analyze a specific mapping
-     */
+    /** Re-analyze a specific mapping */
     #[Route('/compliance/mapping-quality/analyze/{id}', name: 'app_mapping_quality_analyze', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
@@ -232,7 +226,7 @@ class MappingQualityController extends AbstractController
     {
         $mapping = $this->complianceMappingRepository->find($id);
 
-        if (!$mapping) {
+        if (!$mapping || !$this->accessGuard->isVisible($mapping)) {
             return $this->json(['error' => 'Mapping not found'], 404);
         }
 
@@ -263,18 +257,16 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * List all gaps
-     */
+    /** List all gaps */
     #[Route('/compliance/mapping-quality/gaps', name: 'app_mapping_quality_gaps', methods: ['GET'])]
     public function gaps(): Response
     {
         try {
-            $highPriorityGaps = $this->mappingGapItemRepository->findHighPriorityGaps();
-            $lowConfidenceGaps = $this->mappingGapItemRepository->findLowConfidenceGaps(60);
+            $highPriorityGaps = $this->accessGuard->filterVisibleGaps($this->mappingGapItemRepository->findHighPriorityGaps());
+            $lowConfidenceGaps = $this->accessGuard->filterVisibleGaps($this->mappingGapItemRepository->findLowConfidenceGaps(60));
             $gapStatsByType = $this->mappingGapItemRepository->getGapStatisticsByType();
-            $gapStatsByPriority = $this->mappingGapItemRepository->getGapStatisticsByPriority();
-            $remediationEffort = $this->mappingGapItemRepository->calculateTotalRemediationEffort();
+            $gapStatsByPriority = $this->statistics->getGapStatisticsByPriority();
+            $remediationEffort = $this->statistics->calculateTotalRemediationEffort();
 
             return $this->render('compliance/mapping_quality/gaps.html.twig', [
                 'high_priority_gaps' => $highPriorityGaps,
@@ -289,9 +281,7 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * Update gap item status
-     */
+    /** Update gap item status */
     #[Route('/compliance/mapping-quality/gap/{id}/update', name: 'app_mapping_quality_gap_update', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
@@ -300,7 +290,8 @@ class MappingQualityController extends AbstractController
         try {
             $gap = $this->mappingGapItemRepository->find($id);
 
-            if (!$gap) {
+            $gapMapping = $gap?->getMapping();
+            if (!$gap || ($gapMapping !== null && !$this->accessGuard->isVisible($gapMapping))) {
                 return $this->json(['success' => false, 'error' => 'Gap item not found'], 404);
             }
 
@@ -370,9 +361,7 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * Batch analyze mappings (for UI-based analysis in chunks)
-     */
+    /** Batch analyze mappings (for UI-based analysis in chunks) */
     #[Route('/compliance/mapping-quality/batch-analyze', name: 'app_mapping_quality_batch_analyze', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     #[IsCsrfTokenValid(self::CSRF_ID, tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
@@ -406,6 +395,7 @@ class MappingQualityController extends AbstractController
             $qb = $this->entityManager->createQueryBuilder();
             $qb->select('cm.id')
                 ->from(ComplianceMapping::class, 'cm');
+            $this->accessGuard->scopeQuery($qb);
 
             // Filter by analysis status. The text-similarity heuristic only
             // targets genuinely metadata-poor rows (no MQS qualityScore AND no
@@ -481,9 +471,9 @@ class MappingQualityController extends AbstractController
                 $remainingQb = $this->entityManager->createQueryBuilder();
                 $remainingQb->select('COUNT(cm.id)')
                     ->from(ComplianceMapping::class, 'cm');
-                $remaining = (int) $remainingQb->getQuery()->getSingleScalarResult();
+                $remaining = (int) $this->accessGuard->scopeQuery($remainingQb)->getQuery()->getSingleScalarResult();
             } else {
-                $remaining = $this->complianceMappingRepository->countMetadataPoorUnscored();
+                $remaining = $this->statistics->countMetadataPoorUnscored();
             }
 
             return $this->json([
@@ -504,9 +494,7 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * Get analysis statistics (for UI polling)
-     */
+    /** Get analysis statistics (for UI polling) */
     #[Route('/compliance/mapping-quality/stats', name: 'app_mapping_quality_stats', methods: ['GET'])]
     public function stats(): JsonResponse
     {
@@ -515,7 +503,7 @@ class MappingQualityController extends AbstractController
             $qb->select('COUNT(cm.id)')
                 ->from(ComplianceMapping::class, 'cm');
 
-            $total = (int) $qb->getQuery()->getSingleScalarResult();
+            $total = (int) $this->accessGuard->scopeQuery($qb)->getQuery()->getSingleScalarResult();
 
             // "Scored" = has EITHER a heuristic percentage OR an MQS quality
             // score. "Remaining" is only the genuinely metadata-poor backlog
@@ -525,8 +513,8 @@ class MappingQualityController extends AbstractController
                 ->from(ComplianceMapping::class, 'cm')
                 ->where('cm.calculatedPercentage IS NOT NULL OR cm.qualityScore IS NOT NULL');
 
-            $analyzed = (int) $qb2->getQuery()->getSingleScalarResult();
-            $remaining = $this->complianceMappingRepository->countMetadataPoorUnscored();
+            $analyzed = (int) $this->accessGuard->scopeQuery($qb2)->getQuery()->getSingleScalarResult();
+            $remaining = $this->statistics->countMetadataPoorUnscored();
 
             return $this->json([
                 'success' => true,
@@ -544,15 +532,13 @@ class MappingQualityController extends AbstractController
         }
     }
 
-    /**
-     * Export quality report
-     */
+    /** Export quality report */
     #[Route('/compliance/mapping-quality/export', name: 'app_mapping_quality_export', methods: ['GET'])]
     public function export(): Response
     {
-        $qualityStats = $this->complianceMappingRepository->getQualityStatistics();
-        $mappingsRequiringReview = $this->complianceMappingRepository->findMappingsRequiringReview();
-        $highPriorityGaps = $this->mappingGapItemRepository->findHighPriorityGaps();
+        $qualityStats = $this->statistics->getQualityStatistics();
+        $mappingsRequiringReview = $this->accessGuard->filterVisible($this->complianceMappingRepository->findMappingsRequiringReview());
+        $highPriorityGaps = $this->accessGuard->filterVisibleGaps($this->mappingGapItemRepository->findHighPriorityGaps());
 
         // For now, return JSON (can be extended to PDF/Excel later)
         return $this->json([

@@ -30,13 +30,14 @@
                         label: 'soa.no_tenant.cta_user_management'|trans({}, 'soa'),
                         href: path('user_management_index'),
                         variant: 'primary'
-                    },
+                    }
+                ]|merge(is_granted('ADMIN_GLOBAL_OP') ? [
                     {
                         label: 'soa.no_tenant.cta_data_repair'|trans({}, 'soa'),
                         href: path('admin_data_repair_index'),
                         variant: 'secondary'
                     }
-                ]
+                ] : [])
                 : [
                     {
                         label: 'soa.no_tenant.cta_logout'|trans({}, 'soa'),

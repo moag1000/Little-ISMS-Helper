@@ -177,6 +177,7 @@ class AdminHubCatalogTest extends TestCase
             'monitoring_errors',
             'system_health',
             'loader_fixer',
+            'data_repair',
         ];
         $byKey = [];
         foreach ($this->catalog->getGroups() as $group) {
@@ -206,7 +207,6 @@ class AdminHubCatalogTest extends TestCase
             'mappings',
             'industry_preset',
             'data_backup',
-            'data_repair',
             'legacy_owners',
             'kpi_threshold',
             'modules',

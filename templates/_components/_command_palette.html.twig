@@ -114,7 +114,7 @@
 {% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
     { id: 'admin-import', label: 'admin.nav.import'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'import', url: path('data_import_index'), keywords: ['import', 'upload']  }
 ]) %}{% endif %}
-{% if is_granted('ROLE_ADMIN') %}{% set _cmds = _cmds|merge([
+{% if is_granted('ADMIN_GLOBAL_OP') %}{% set _cmds = _cmds|merge([
     { id: 'admin-data-repair', label: 'admin.nav.data_repair'|trans({}, 'admin'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'nav-tools', url: path('admin_data_repair_index'), keywords: ['repair', 'reparatur', 'integrity']  }
 ]) %}{% endif %}
 {% if is_granted('ADMIN_OWN_TENANT') %}{% set _cmds = _cmds|merge([

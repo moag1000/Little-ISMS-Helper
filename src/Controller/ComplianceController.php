@@ -58,6 +58,7 @@ class ComplianceController extends AbstractController
         private readonly FrameworkMaturityService $frameworkMaturityService,
         private readonly TranslatorInterface $translator,
         private readonly MappingOnboardingService $mappingOnboarding,
+        private readonly \App\Service\Compliance\MappingStatistics $mappingStatistics,
     ) {}
 
     protected function getFlashDomain(): string
@@ -75,7 +76,7 @@ class ComplianceController extends AbstractController
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $overview = $this->complianceFrameworkRepository->getComplianceOverview();
-        $mappingStats = $this->complianceMappingRepository->getMappingStatistics();
+        $mappingStats = $this->mappingStatistics->getMappingStatistics();
 
         // Calculate total data reuse value
         $totalTimeSavings = 0;
@@ -448,41 +449,43 @@ class ComplianceController extends AbstractController
                 $comparisonDetails = [];
                 $mappedCount = 0;
 
+                // Two bulk queries instead of two per requirement (N+1).
+                $mapQb = fn(string $near, string $far) => $this->complianceMappingRepository->createQueryBuilder('cm')
+                    ->select('cm', 'nr', 'fr')
+                    ->join(sprintf('cm.%sRequirement', $near), 'nr')
+                    ->join(sprintf('cm.%sRequirement', $far), 'fr')
+                    ->join('fr.framework', 'ff')
+                    ->where('nr.framework = :f1')->andWhere('ff.id = :f2')
+                    ->setParameter('f1', $selectedFramework1)->setParameter('f2', $selectedFramework2->id)
+                    ->orderBy('cm.id', \SortDirection::Ascending)
+                    ->getQuery()->getResult();
+                $bySource = [];
+                foreach ($mapQb('source', 'target') as $m) {
+                    $bySource[$m->getSourceRequirement()->getId()] ??= $m;
+                }
+                $byTarget = [];
+                foreach ($mapQb('target', 'source') as $m) {
+                    $byTarget[$m->getTargetRequirement()->getId()] ??= $m;
+                }
+
                 foreach ($selectedFramework1->requirements as $requirement) {
                     $mappedRequirement = null;
                     $matchQuality = null;
                     $isMapped = false;
 
-                    // Find mappings where req1 is the source
-                    $sourceMappings = $this->complianceMappingRepository->findBy([
-                        'sourceRequirement' => $requirement
-                    ]);
-
-                    foreach ($sourceMappings as $sourceMapping) {
-                        if ($sourceMapping->getTargetRequirement()->getFramework()->id === $selectedFramework2->id) {
-                            $mappedRequirement = $sourceMapping->getTargetRequirement();
-                            $matchQuality = $sourceMapping->getMappingPercentage();
-                            $isMapped = true;
-                            $mappedCount++;
-                            break;
-                        }
+                    if (isset($bySource[$requirement->getId()])) {
+                        $m = $bySource[$requirement->getId()];
+                        $mappedRequirement = $m->getTargetRequirement();
+                        $matchQuality = $m->getMappingPercentage();
+                        $isMapped = true;
+                    } elseif (isset($byTarget[$requirement->getId()])) {
+                        $m = $byTarget[$requirement->getId()];
+                        $mappedRequirement = $m->getSourceRequirement();
+                        $matchQuality = $m->getMappingPercentage();
+                        $isMapped = true;
                     }
-
-                    // Also check reverse mappings where req1 is the target
-                    if (!$isMapped) {
-                        $targetMappings = $this->complianceMappingRepository->findBy([
-                            'targetRequirement' => $requirement
-                        ]);
-
-                        foreach ($targetMappings as $targetMapping) {
-                            if ($targetMapping->getSourceRequirement()->getFramework()->id === $selectedFramework2->id) {
-                                $mappedRequirement = $targetMapping->getSourceRequirement();
-                                $matchQuality = $targetMapping->getMappingPercentage();
-                                $isMapped = true;
-                                $mappedCount++;
-                                break;
-                            }
-                        }
+                    if ($isMapped) {
+                        $mappedCount++;
                     }
 
                     $comparisonDetails[] = [

@@ -70,6 +70,7 @@ class ComplianceControllerTest extends TestCase
     private MockObject $frameworkMaturityService;
     private MockObject $translator;
     private MockObject $mappingOnboarding;
+    private MockObject $mappingStatistics;
     private ComplianceController $controller;
 
     protected function setUp(): void
@@ -87,6 +88,7 @@ class ComplianceControllerTest extends TestCase
         $this->frameworkMaturityService = $this->createMock(FrameworkMaturityService::class);
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->mappingOnboarding = $this->createMock(MappingOnboardingService::class);
+        $this->mappingStatistics = $this->createMock(\App\Service\Compliance\MappingStatistics::class);
 
         $this->controller = new ComplianceController(
             $this->complianceFrameworkRepository,
@@ -100,6 +102,7 @@ class ComplianceControllerTest extends TestCase
             $this->frameworkMaturityService,
             $this->translator,
             $this->mappingOnboarding,
+            $this->mappingStatistics,
         );
 
         // Setup container for rendering
@@ -156,7 +159,7 @@ class ComplianceControllerTest extends TestCase
         $this->complianceFrameworkRepository->method('getComplianceOverview')
             ->willReturn($overview);
 
-        $this->complianceMappingRepository->method('getMappingStatistics')
+        $this->mappingStatistics->method('getMappingStatistics')
             ->willReturn($mappingStats);
 
         $this->complianceRequirementRepository->method('findApplicableByFramework')

@@ -107,10 +107,12 @@
                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                     {{ 'compliance.framework.migrate.action.preview'|trans({}, 'compliance') }}
                 </button>
+{% if is_granted('ADMIN_GLOBAL_OP') %}
                 <button type="submit" name="commit" value="1" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'compliance.framework.migrate.action.commit'|trans({}, 'compliance') }}
                 </button>
+{% endif %}
             </div>
         </div>
     </form>

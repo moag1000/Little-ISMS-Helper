@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\ImportRowEvent;
 use App\Entity\ImportSession;
+use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,13 +27,21 @@ class ImportRowEventRepository extends ServiceEntityRepository
 
     /**
      * Answer the ISB audit question: "show me how $entityType #$entityId got
-     * created / changed during imports". Returns newest rows first.
+     * created / changed during imports". Returns newest rows first. With $tenant only
+     * rows of that tenant's import sessions are considered.
      *
      * @return ImportRowEvent[]
      */
-    public function findByTarget(string $entityType, int $entityId, int $limit = 50): array
+    public function findByTarget(string $entityType, int $entityId, int $limit = 50, ?Tenant $tenant = null): array
     {
-        return $this->createQueryBuilder('e')
+        $qb = $this->createQueryBuilder('e');
+        if ($tenant !== null) {
+            $qb->innerJoin('e.session', 's')
+                ->andWhere('s.tenant = :tenant')
+                ->setParameter('tenant', $tenant);
+        }
+
+        return $qb
             ->andWhere('e.targetEntityType = :type')
             ->andWhere('e.targetEntityId = :id')
             ->setParameter('type', $entityType)

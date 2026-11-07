@@ -192,6 +192,20 @@ final class TagController extends AbstractController
             );
         }
 
+        $myTenantId = $this->tenantContext->getCurrentTenant()?->getId();
+        $isSuper = $this->isGranted('ROLE_SUPER_ADMIN');
+        foreach ($entities as $target) {
+            $targetTenant = method_exists($target, 'getTenant') ? $target->getTenant() : null;
+            if (!$isSuper && ($targetTenant === null || $targetTenant->getId() !== $myTenantId)) {
+                return new JsonResponse(['ok' => false, 'error' => 'entities_not_found'], Response::HTTP_NOT_FOUND);
+            }
+        }
+        foreach ($this->tagRepository->findBy(['id' => $tagIds]) as $tag) {
+            if (!$this->isGranted(TagVoter::TAG_APPLY, $tag)) {
+                return new JsonResponse(['ok' => false, 'error' => 'tag_not_allowed'], Response::HTTP_FORBIDDEN);
+            }
+        }
+
         /** @var User $actor */
         $actor = $this->getUser();
         try {

@@ -1,13 +1,13 @@
 # check_translation_nesting.py baseline
 # Format: <relative-path>:<line>:<key>
-translations/admin.de.yaml:1769:data_management
-translations/admin.de.yaml:1877:setup
-translations/admin.de.yaml:1948:kpi_threshold
-translations/admin.de.yaml:1992:industry_preset
-translations/admin.en.yaml:1753:data_management
-translations/admin.en.yaml:1862:setup
-translations/admin.en.yaml:1933:kpi_threshold
-translations/admin.en.yaml:1977:industry_preset
+translations/admin.de.yaml:1771:data_management
+translations/admin.de.yaml:1879:setup
+translations/admin.de.yaml:1950:kpi_threshold
+translations/admin.de.yaml:1994:industry_preset
+translations/admin.en.yaml:1755:data_management
+translations/admin.en.yaml:1864:setup
+translations/admin.en.yaml:1935:kpi_threshold
+translations/admin.en.yaml:1979:industry_preset
 translations/alva.de.yaml:60:vulnerability
 translations/alva.de.yaml:66:data_subject_request
 translations/alva.de.yaml:72:asset
@@ -296,8 +296,8 @@ translations/policy_wizard.de.yaml:1999:annex
 translations/policy_wizard.en.yaml:1567:policy_ack
 translations/policy_wizard.en.yaml:1589:compliance_check
 translations/policy_wizard.en.yaml:1996:annex
-translations/privacy.de.yaml:1105:dpia
-translations/privacy.en.yaml:1097:dpia
+translations/privacy.de.yaml:1107:dpia
+translations/privacy.en.yaml:1099:dpia
 translations/report_builder.de.yaml:292:settings
 translations/report_builder.en.yaml:292:settings
 translations/reports.de.yaml:106:security_reports

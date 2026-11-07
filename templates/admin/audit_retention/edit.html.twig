@@ -49,10 +49,10 @@
                         {{ _fa_alert.render({ variant: 'warning', class: 'small mb-3', body: 'audit_log.retention.warning'|trans({}, 'audit_log') }) }}
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            {% if is_granted('ADMIN_GLOBAL_OP') %}<button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
                                 {{ 'common.save'|trans({}, 'messages') }}
-                            </button>
+                            </button>{% else %}<p class="small text-muted mb-0">{{ 'admin.global_op.readonly_hint'|trans({}, 'admin') }}</p>{% endif %}
                         </div>
                     </form>
                 </div>
