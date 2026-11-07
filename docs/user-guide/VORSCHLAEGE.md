@@ -19,6 +19,7 @@ annimmt. Jede Entscheidung steht mit Person, Zeit und Begründung im Audit-Log
 | Risiko nach Vorfall | Regel: Vorfall als eingetretenes Risiko geschlossen (90 Tage) | Wahrscheinlichkeit +1 (ISO 27001 6.1.2) | Risikomanager, Manager |
 | Risiko aus Schwachstelle | Regel: offene Schwachstelle ab CVSS 7 ohne Risiko | Risiko wird angelegt und verknüpft | Risikomanager, Manager |
 | Verantwortliche zuordnen | Import: Freitext-Verantwortliche passen zu einer Person | Person wird als Verantwortliche eingetragen | Admin |
+| Register: Thema, rechtliche Anforderung, Schnittstelle, Rolle, Kompetenz, Chance | Import: Kontext-Freitexte, Frameworks, interessierte Parteien, kritische Lieferanten, Persona-Rollen, letzte Managementbewertung | Registereintrag wird angelegt (siehe [Register](REGISTER.md)) | ISB; rechtliche Anforderungen Compliance-Manager, Chancen Risikomanager; Manager |
 | Erfüllung übernehmen | Vererbung über Framework-Mappings | Erfüllungsgrad wird übernommen, Kommentar anpassbar | Compliance-Manager, ISB |
 | Anforderung zuordnen | Textähnlichkeit auf der SoA-Seite | Maßnahme wird der Anforderung zugeordnet | Compliance-Manager, ISB |
 | Risiko aus Vorfall (KI) | Sprachmodell, Vorfälle ohne Risiko | Risiko wird angelegt und mit dem Vorfall verknüpft | Risikomanager, Manager |
