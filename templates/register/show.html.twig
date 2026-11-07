@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
+{% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
+{% import '_components/_status_pill.html.twig' as _pill %}
+
+{% set _t = 'register.type.' ~ type.value %}
+{% block title %}{{ entry.title }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'register.overview.title'|trans({}, 'register'), url: path('app_register_index') },
+            { label: (_t ~ '.title')|trans({}, 'register'), url: path('app_register_list', {type: type.value}) },
+            { label: entry.title }
+        ]
+    } %}
+
+    {% set _actions = [] %}
+    {% if is_granted('ROLE_MANAGER') %}
+        {% set _actions = [{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_register_entry_edit', {id: entry.id}) }] %}
+    {% endif %}
+    {{ _fa_page_header.render({
+        title: entry.title,
+        actions: _actions
+    }) }}
+
+    {% set _status %}{{ entry.archived
+        ? _pill.render('register.state.archived'|trans({}, 'register'), 'neutral')
+        : (entry.reviewOverdue
+            ? _pill.render('register.state.review_overdue'|trans({}, 'register'), 'danger')
+            : _pill.render('register.state.active'|trans({}, 'register'), 'success')) }}{% endset %}
+    {% set _bandActions %}
+        {% if is_granted('ROLE_MANAGER') %}
+            <div class="d-flex gap-2 flex-wrap">
+                {% if not entry.archived %}
+                    <form method="post" action="{{ path('app_register_entry_reviewed', {id: entry.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('register_reviewed_' ~ entry.id) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm">{{ 'register.action.reviewed'|trans({}, 'register') }}</button>
+                    </form>
+                {% endif %}
+                <form method="post" action="{{ path('app_register_entry_archive', {id: entry.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('register_archive_' ~ entry.id) }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ (entry.archived ? 'register.action.restore' : 'register.action.archive')|trans({}, 'register') }}</button>
+                </form>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <form method="post" action="{{ path('app_register_entry_delete', {id: entry.id}) }}"
+                          data-controller="ui-actions" data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'register.confirm.delete'|trans({}, 'register') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('register_delete_' ~ entry.id) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endset %}
+    {{ _fa_status_band.render({
+        status: _status,
+        facts: [
+            { label: 'register.field.norm'|trans({}, 'register'), value: type.normReference },
+            { label: (_t ~ '.field.owner')|trans({}, 'register'), value: entry.effectiveOwner },
+            { label: (type.value == 'communication' ? 'register.field.next_date' : 'register.field.next_review_date')|trans({}, 'register'), value: entry.nextReviewDate ? entry.nextReviewDate|fa_date : null },
+            { label: 'register.field.last_reviewed'|trans({}, 'register'), value: entry.lastReviewedAt ? entry.lastReviewedAt|fa_date : null },
+        ],
+        actions: _bandActions,
+    }) }}
+
+    {{ _fa_anchor_bar.render([
+        { id: 'register-links', label: 'show.anchor.links'|trans({}, 'messages') },
+        { id: 'details', label: 'show.anchor.details'|trans({}, 'messages') },
+        { id: 'competences', label: 'register.gaps.section'|trans({}, 'register'), show: type.value == 'role' },
+        { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
+    ]) }}
+
+    {% include '_components/_fa_entity_links.html.twig' with { entity: entry } only %}
+
+    <section id="register-links" class="fa-show-section" aria-labelledby="register-links-title">
+        <h2 id="register-links-title" class="h5 mb-3">{{ 'register.section.links'|trans({}, 'register') }}</h2>
+        <dl class="row mb-0">
+            {% for group in links %}
+                <dt class="col-sm-4">{{ ('register.link.' ~ group.field)|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">
+                    {% for item in group.items %}
+                        <a href="{{ path(group.route, {id: item.id}) }}">{{ item.label }}</a>{% if not loop.last %}, {% endif %}
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endfor %}
+                </dd>
+            {% endfor %}
+            {% if referencedBy is not empty %}
+                <dt class="col-sm-4">{{ (_t ~ '.referenced_by')|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">
+                    {% for ref in referencedBy %}
+                        <a href="{{ path('app_register_entry_show', {id: ref.id}) }}">{{ ref.title }}</a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </dd>
+            {% endif %}
+        </dl>
+    </section>
+
+    <section id="details" class="fa-show-section" aria-labelledby="register-details-title">
+        <h2 id="register-details-title" class="h5 mb-3">{{ 'show.anchor.details'|trans({}, 'messages') }}</h2>
+        {% if entry.description %}<p class="mb-3">{{ entry.description|nl2br }}</p>{% endif %}
+        <dl class="row mb-0">
+            {% if type.uses('category') %}
+                <dt class="col-sm-4">{{ type.labelKey('category')|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">{{ entry.category ? (_t ~ '.category.' ~ entry.category)|trans({}, 'register') : '—' }}</dd>
+            {% endif %}
+            {% if type.uses('rating') %}
+                <dt class="col-sm-4">{{ type.labelKey('rating')|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">{{ entry.rating ? ('register.rating.' ~ entry.rating)|trans({}, 'register') : '—' }}</dd>
+            {% endif %}
+            {% if type.uses('reference') %}
+                <dt class="col-sm-4">{{ type.labelKey('reference')|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">{{ entry.reference ?? '—' }}</dd>
+            {% endif %}
+            {% if type.uses('frequency') %}
+                <dt class="col-sm-4">{{ 'register.field.frequency'|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">{{ entry.frequency ? ('register.frequency.' ~ entry.frequency)|trans({}, 'register') : '—' }}</dd>
+            {% endif %}
+            {% if type.uses('effectiveFrom') %}
+                <dt class="col-sm-4">{{ type.labelKey('effectiveFrom')|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">{{ entry.effectiveFrom|fa_date }}</dd>
+            {% endif %}
+            {% if entry.deputyPersons is not empty %}
+                <dt class="col-sm-4">{{ 'register.field.deputies'|trans({}, 'register') }}</dt>
+                <dd class="col-sm-8">{% for p in entry.deputyPersons %}{{ p.fullName }}{% if not loop.last %}, {% endif %}{% endfor %}</dd>
+            {% endif %}
+        </dl>
+    </section>
+
+    {% if type.value == 'role' %}
+        <section id="competences" class="fa-show-section" aria-labelledby="register-competences-title">
+            <h2 id="register-competences-title" class="h5 mb-1">{{ 'register.gaps.section'|trans({}, 'register') }}</h2>
+            <p class="small text-muted mb-2">{{ 'register.gaps.hint'|trans({}, 'register') }}</p>
+            {% if competences is empty %}
+                <p class="text-muted mb-0">{{ 'register.gaps.no_requirements'|trans({}, 'register') }}</p>
+            {% else %}
+                <ul class="list-unstyled mb-0">
+                    {% for row in competences %}
+                        <li class="mb-1">
+                            {{ _pill.render((row.covered ? 'register.gaps.covered' : 'register.gaps.missing')|trans({}, 'register'), row.covered ? 'success' : 'warning', { size: 'sm' }) }}
+                            <a href="{{ path('app_register_entry_show', {id: row.competence.id}) }}">{{ row.competence.title }}</a>
+                            {% if row.evidence %}<span class="small text-muted"> — {{ row.evidence }}</span>{% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    {% include '_components/_fa_show_history.html.twig' with { entity: entry } only %}
+</div>
+{% endblock %}

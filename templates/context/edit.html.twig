@@ -27,13 +27,10 @@
         {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: '<strong>' ~ 'tenant.isms_context.linked_to'|trans({}, 'tenant') ~ ':</strong> ' ~ tenant.name ~ ' (' ~ tenant.code ~ ')' }) }}
     {% endif %}
 
+    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: 'register.context.edit_hint'|trans({}, 'register') ~ ' <a href="' ~ path('app_register_index') ~ '" class="fa-alert__link">' ~ 'register.overview.title'|trans({}, 'register') ~ '</a>' }) }}
+
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-    {% include '_components/_auto_form.html.twig' with {
-        'form': form,
-        'layout': 'outline-rail',
-        'eyebrow': 'ISO 27001 Cl. 4 · Organizational Context',
-        'title': context.organizationName,
-        'sections': {
+    {% set _sections = {
             'overview': {
                 'label': 'form.section.overview'|trans({}, 'messages'),
                 'fields': ['organizationName']
@@ -56,13 +53,21 @@
             },
             'details': {
                 'label': 'form.section.details'|trans({}, 'messages'),
-                'fields': ['legalRequirements', 'regulatoryRequirements', 'contractualObligations', 'ismsPolicy', 'rolesAndResponsibilities']
+                'fields': ['legalRequirements', 'regulatoryRequirements', 'contractualObligations', 'ismsPolicyDocument', 'ismsPolicy', 'rolesAndResponsibilities']
             },
             'audit_metadata': {
                 'label': 'form.section.audit_metadata'|trans({}, 'messages'),
                 'fields': ['lastReviewDate', 'nextReviewDate']
             }
-        },
+        } %}
+    {# Empty legacy free-text fields are off the form (Paket 9); drop sections left without a field. #}
+    {% set _sections = _sections|filter(sec => sec.fields|filter(f => form[f] is defined)|length > 0) %}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 Cl. 4 · Organizational Context',
+        'title': context.organizationName,
+        'sections': _sections,
         'col_widths': {
             'organizationName': 12,
             'ismsScope': 12,
@@ -73,6 +78,7 @@
             'legalRequirements': 12,
             'regulatoryRequirements': 12,
             'contractualObligations': 12,
+            'ismsPolicyDocument': 12,
             'ismsPolicy': 12,
             'rolesAndResponsibilities': 12,
             'lastReviewDate': 6,

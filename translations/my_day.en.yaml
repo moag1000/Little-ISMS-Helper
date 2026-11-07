@@ -9,6 +9,7 @@ my_day:
         standard_dashboard: 'Standard Dashboard'
 
     kpi:
+        register_review: 'Register reviews'
         suggestions: 'Suggestions'
         workflows_pending: 'Approvals for me'
         management_decisions_pending: 'Management decisions open'
@@ -62,6 +63,7 @@ my_day:
         dpias_open: 'Open DPIAs'
 
     section:
+        register_review: 'Registers — review due (ISO 27001 4.1–7.4)'
         suggestions: 'Suggestions to decide'
         workflows_pending: 'Approvals — waiting for my decision'
         management_decisions_pending: 'Management decisions — waiting for top management (ISO 27001 5.1, 9.3.3)'

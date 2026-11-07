@@ -10,6 +10,7 @@ use App\Repository\InterestedPartyRepository;
 use App\Repository\ISMSObjectiveRepository;
 use App\Service\ISMSContextService;
 use App\Service\ISMSObjectiveService;
+use App\Service\Register\IsmsScopeSummary;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,7 @@ class ContextController extends AbstractController
         private readonly AuditLogRepository $auditLogRepository,
         private readonly TranslatorInterface $translator,
         private readonly InterestedPartyRepository $interestedPartyRepository,
+        private readonly IsmsScopeSummary $ismsScopeSummary,
     ) {}
     #[Route('/context', name: 'app_context_index', methods: ['GET'])]
     public function index(): Response
@@ -72,6 +74,8 @@ class ContextController extends AbstractController
             'canEdit' => $this->ismsContextService->canEditContext($context), // NEW: Edit permission
             'tenant' => $tenant, // NEW: Current tenant for navigation links
             'interestedPartiesList' => $interestedPartiesList,
+            // ISO 27001 4.3: what the inventories mark as in scope (Paket 9).
+            'scope_summary' => $tenant !== null ? $this->ismsScopeSummary->summarize($tenant) : [],
         ]);
     }
     #[Route('/context/edit', name: 'app_context_edit', methods: ['GET', 'POST'])]

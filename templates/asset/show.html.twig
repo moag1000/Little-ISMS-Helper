@@ -85,6 +85,7 @@
         actions: _actions,
         facts: [
             { label: 'show.status.owner'|trans({}, 'messages'), value: asset.effectiveOwner },
+            { label: 'show.status.in_isms_scope'|trans({}, 'messages'), value: (asset.inIsmsScope ? 'common.yes' : 'common.no')|trans({}, 'messages') },
             { label: 'show.status.classification'|trans({}, 'messages'), value: asset.dataClassification ? ('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset') : null },
             { label: 'show.status.protection'|trans({}, 'messages'), value: 'CIA ' ~ _max_cia ~ '/5' },
         ],

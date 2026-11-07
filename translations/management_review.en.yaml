@@ -218,6 +218,11 @@ management_review:
             changed: 'Context of the organisation last changed on %date%.'
             external: 'External issues:'
             internal: 'Internal issues:'
+            registers_since: 'Register entries changed since %date% (issues, legal requirements, interfaces):'
+            registers: 'Register entries on issues, legal requirements and interfaces:'
+            entry_new: 'new'
+            entry_changed: 'changed'
+            entry_archived: 'archived'
         c:
             unchanged: 'No interested parties changed since %date%.'
             none: 'No interested parties recorded.'

@@ -10,6 +10,7 @@ location:
         rooms: '%count% Räume'
         secure: '%count% zutrittsgesichert'
     field:
+        in_isms_scope: 'Im ISMS-Geltungsbereich'
         name: Name
         type: Typ
         code: Code
@@ -64,6 +65,7 @@ location:
         responsible_person_user: '-- Benutzerkonto wählen --'
         responsible_person_ref: '-- Person wählen --'
     help:
+        in_isms_scope: 'ISO 27001 Kap. 4.3: Geltungsbereich des ISMS.'
         coordinates: 'Leer lassen: wird aus Postleitzahl, Ort und Land ermittelt. Eingetragene Werte bleiben beim Ändern der Adresse erhalten.'
         type: 'Wählen Sie den passenden Standorttyp (Gebäude, Raum, Rechenzentrum, …)'
         code: 'Interner Standort‑Code für eindeutige Referenz (optional)'

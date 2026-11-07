@@ -1,0 +1,10 @@
+{# List filter for the ISO 27001 4.3 scope flag: GET param scope=in|out #}
+{% set scopeFilter = app.request.query.get('scope') %}
+<div class="col-md-3">
+    <label for="scope-filter" class="form-label">{{ 'common.isms_scope.label'|trans({}, 'messages') }}</label>
+    <select class="form-select fa-cyber-input__field" id="scope-filter" name="scope" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+        <option value="" {{ scopeFilter not in ['in', 'out'] ? 'selected' : '' }}>{{ 'common.isms_scope.all'|trans({}, 'messages') }}</option>
+        <option value="in" {{ scopeFilter == 'in' ? 'selected' : '' }}>{{ 'common.isms_scope.in'|trans({}, 'messages') }}</option>
+        <option value="out" {{ scopeFilter == 'out' ? 'selected' : '' }}>{{ 'common.isms_scope.out'|trans({}, 'messages') }}</option>
+    </select>
+</div>

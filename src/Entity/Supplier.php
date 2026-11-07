@@ -29,6 +29,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Trait\IsmsScopeTrait;
 use App\Entity\Trait\SupplierContactPersonTrait;
 
 /**
@@ -81,6 +82,7 @@ use App\Entity\Trait\SupplierContactPersonTrait;
 class Supplier
 {
     use SupplierContactPersonTrait;
+    use IsmsScopeTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -380,8 +382,7 @@ class Supplier
 
     public function setStatus(SupplierStatus|string $status): static
     {
-        // Accept both enum and string so new code can pass the typed enum while
-        // existing string-passing callers keep working unchanged.
+        // Accept both enum and string; string-passing callers keep working unchanged.
         $this->status = is_string($status) ? $status : $status->value;
         return $this;
     }
@@ -846,9 +847,8 @@ class Supplier
     private ?string $countryOfHeadOffice = null;  // ISO-3166 alpha-2
 
     // ── GDPR Art. 44–49 — third-country transfer at the processor level (M-7) ──
-    // Mirrors the safeguard fields on ProcessingActivity, but on the supplier
-    // itself — the transfer originates where the (sub-)processor sits, so the
-    // SCC/adequacy status belongs here too, not only on each linked activity.
+    // Mirrors ProcessingActivity's safeguard fields: the transfer originates where the (sub-)processor sits,
+    // so the SCC/adequacy status belongs on the supplier too.
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $thirdCountryTransfer = false;
 

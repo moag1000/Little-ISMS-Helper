@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% set _t = 'register.type.' ~ type.value %}
+{% set _title = entry.id ? entry.title : (_t ~ '.new')|trans({}, 'register') %}
+{% block title %}{{ _title }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'register.overview.title'|trans({}, 'register'), url: path('app_register_index') },
+            { label: (_t ~ '.title')|trans({}, 'register'), url: path('app_register_list', {type: type.value}) },
+            { label: _title }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: _title,
+        actions: [
+            { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left',
+              href: entry.id ? path('app_register_entry_show', {id: entry.id}) : path('app_register_list', {type: type.value}) }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': type.normReference,
+        'title': _title,
+        'sections': sections,
+        'translation_domain': 'register',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': (entry.id ? 'common.save' : 'common.create')|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

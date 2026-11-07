@@ -889,3 +889,4 @@ workflow_instance.validation.entity_id_positive: 'The entity ID must be a positi
 'validators.tag.name_unique': 'A tag with this name already exists.'
 'validators.asset_sub_type.name_unique': 'This sub-type already exists for the asset top type.'
 'validators.supplier_criticality.code_unique': 'This code already exists.'
+'register.validation.title_required': 'Title is required.'

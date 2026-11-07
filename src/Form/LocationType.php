@@ -26,7 +26,7 @@ final class LocationType extends AbstractType implements SectionMapInterface
     public static function getSectionMap(): array
     {
         return [
-            'overview'      => ['name', 'locationType', 'code', 'description', 'parentLocation'],
+            'overview'      => ['name', 'inIsmsScope', 'locationType', 'code', 'description', 'parentLocation'],
             'address'       => ['address', 'city', 'postalCode', 'country', 'latitude', 'longitude'],
             'security_zone' => ['securityLevel'],
             'access_control'=> ['requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem'],
@@ -45,6 +45,11 @@ final class LocationType extends AbstractType implements SectionMapInterface
                     'maxlength' => 255,
                     'placeholder' => 'location.placeholder.name',
                 ],
+            ])
+            ->add('inIsmsScope', CheckboxType::class, [
+                'label' => 'location.field.in_isms_scope',
+                'help' => 'location.help.in_isms_scope',
+                'required' => false,
             ])
             ->add('locationType', ChoiceType::class, [
                 'label' => 'location.field.location_type',

@@ -40,6 +40,7 @@
         actions: _actions,
         facts: [
             { label: 'show.status.criticality'|trans({}, 'messages'), value: supplier.criticality ? supplier.criticality|upper : null },
+            { label: 'show.status.in_isms_scope'|trans({}, 'messages'), value: (supplier.inIsmsScope ? 'common.yes' : 'common.no')|trans({}, 'messages') },
             { label: 'supplier.field.contact_person'|trans({}, 'suppliers'), value: supplier.effectiveContactPerson },
             { label: 'supplier.field.next_assessment'|trans({}, 'suppliers'), value: supplier.nextAssessmentDate ? supplier.nextAssessmentDate|fa_date : null },
             { label: 'show.status.valid_until'|trans({}, 'messages'), value: supplier.contractEndDate ? supplier.contractEndDate|fa_date : null },
@@ -690,6 +691,8 @@
         {% endembed %}
         </div>
     {% endif %}
+
+    {% include 'register/_referenced_in.html.twig' with { record: supplier } only %}
 
     {% include '_components/_fa_show_history.html.twig' with { entity: supplier, lifecycle: 'supplier' } only %}
 </div>

@@ -12,6 +12,7 @@ use App\Form\BusinessProcessType;
 use App\Repository\BusinessProcessRepository;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Service\ModuleConfigurationService;
+use App\Util\IsmsScopeFilter;
 use App\Util\ListPage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -84,6 +85,8 @@ class BusinessProcessController extends AbstractController
         if ($criticality !== '') {
             $processes = array_values(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getCriticality() === $criticality));
         }
+
+        $processes = IsmsScopeFilter::apply($processes, $request);
 
         // Summary chips count the list as shown (view applied).
         $criticalCount = count(array_filter($processes, static fn(BusinessProcess $p): bool => $p->getCriticality() === 'critical'));

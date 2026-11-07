@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Trait\IsmsScopeTrait;
 use App\Entity\Trait\BusinessProcessOwnerTrait;
 use App\Repository\BusinessProcessRepository;
 use App\Risk\RiskMatrixThresholds;
@@ -20,6 +21,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class BusinessProcess
 {
     use BusinessProcessOwnerTrait;
+    use IsmsScopeTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

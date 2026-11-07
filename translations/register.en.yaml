@@ -1,0 +1,331 @@
+register:
+    overview:
+        title: Registers
+        subtitle: Which registers ISO 27001 and NIS-2 require, who maintains them and where something is open.
+        table_title: All registers
+        empty: Empty
+        overdue: '%count% open'
+        proposals: '%count% proposals'
+        col:
+            register: Register
+            norm: Standard
+            maintainer: Maintained by
+            count: Entries
+            open: Open
+    action:
+        export: Export registers (CSV)
+        reviewed: Reviewed, still current
+        archive: Archive
+        restore: Reactivate
+    module:
+        interested_parties: Interested parties
+        risks: Risk register
+        soa: Statement of Applicability
+        objectives: Information security objectives
+        trainings: Trainings and records
+        documents: Documented information
+        assets: Inventory of assets
+        locations: Locations
+        business_processes: Business processes and BIA
+        suppliers: Suppliers and service providers
+        processing_activities: Record of processing activities
+    persona:
+        isb: ISO
+        risk_manager: Risk management
+        compliance_manager: Compliance management
+        ciso: CISO
+        bcm_officer: BCM officer
+        dpo: Data protection
+    scope:
+        title: Scope (ISO 27001 4.3)
+        hint: Counted from the inventories. Mark out-of-scope items on the record.
+        in: '%count% in scope'
+        out: '%count% out of scope'
+        asset: Assets
+        location: Locations
+        business_process: Business processes
+        supplier: Suppliers
+    gaps:
+        title: Competence gaps (ISO 27001 7.2)
+        none: No gaps.
+        column: Competences
+        count: '%count% missing'
+        section: Required competences
+        hint: Evidence from the person's profile or a completed linked training.
+        no_requirements: No competences linked.
+        covered: Evidenced
+        missing: Missing
+    type:
+        issue_external:
+            title: External issues
+            purpose: 'External issues that affect the ISMS: market, law, technology, threat landscape.'
+            new: Add external issue
+            empty: No external issues.
+            referenced_by: Related opportunities
+            field:
+                title: Issue
+                description: Description and effect
+                owner: Responsible
+                category: Area
+                rating: Influence on the ISMS
+            category:
+                political: Political
+                economic: Economic
+                social: Social
+                technological: Technological
+                legal: Legal
+                environmental: Environmental
+                market: Market and competition
+        issue_internal:
+            title: Internal issues
+            purpose: 'Internal issues that affect the ISMS: organisation, culture, resources, technology.'
+            new: Add internal issue
+            empty: No internal issues.
+            referenced_by: Related opportunities
+            field:
+                title: Issue
+                description: Description and effect
+                owner: Responsible
+                category: Area
+                rating: Influence on the ISMS
+            category:
+                organisation: Organisation
+                culture: Culture
+                resources: Resources
+                processes: Processes
+                technology: Technology
+                information: Information
+        opportunity:
+            title: Opportunities
+            purpose: Opportunities for the ISMS that are planned and followed up (ISO 27001 6.1.1).
+            new: Add opportunity
+            empty: No opportunities.
+            field:
+                title: Opportunity
+                description: Description and planned action
+                owner: Responsible
+                rating: Benefit
+        legal_requirement:
+            title: Legal and contractual requirements
+            purpose: Laws, regulations and contracts relevant to information security (A.5.31).
+            new: Add requirement
+            empty: No requirements.
+            field:
+                title: Requirement
+                description: Content and how it is met
+                owner: Responsible
+                category: Kind
+                reference: Reference
+                effectiveFrom: In force since
+            help:
+                reference: For example "§ 30 BSIG" or "Contract no. 2024-17, annex 3".
+            category:
+                law: Law
+                regulation: Regulation or supervisory
+                contract: Contract
+                standard: Standard or industry code
+                internal: Group requirement
+        scope_interface:
+            title: Scope interfaces
+            purpose: Interfaces and dependencies on activities of other organisations (ISO 27001 4.3 c).
+            new: Add interface
+            empty: No interfaces.
+            field:
+                title: Interface
+                description: What is handed over and who is responsible for what
+                owner: Responsible
+                category: Kind
+            category:
+                supplier: Supplier or service provider
+                customer: Customer
+                group: Group company
+                authority: Authority
+                it_service: IT service
+                other: Other
+        role:
+            title: ISMS roles
+            purpose: Who holds which ISMS role, with duties, authority and appointment (ISO 27001 5.3).
+            new: Add role
+            empty: No roles.
+            field:
+                title: Role
+                description: Duties and authority
+                owner: Holder
+                effectiveFrom: Appointed on
+        competence:
+            title: Required competences
+            purpose: Which competence a role requires and which training provides it (ISO 27001 7.2).
+            new: Add competence
+            empty: No competences.
+            referenced_by: Required by
+            field:
+                title: Competence
+                description: What the person must be able to do
+                owner: Responsible
+                category: Level
+                reference: Evidence
+            help:
+                reference: For example a certificate or the standard that requires the training.
+            category:
+                basic: Basic
+                intermediate: Intermediate
+                expert: Expert
+        communication:
+            title: Communication plan
+            purpose: What is communicated, when, with whom, by whom and how (ISO 27001 7.4).
+            new: Plan communication
+            empty: No communication planned.
+            field:
+                title: Topic
+                description: Content
+                owner: Communicated by
+                category: Channel
+                reference: Audience
+            help:
+                reference: For example "all staff" or "management"; link external parties below.
+            category:
+                email: Email
+                meeting: Meeting
+                intranet: Intranet
+                training: Training
+                report: Report
+                other: Other
+    field:
+        frequency: Frequency
+        next_date: Next date
+        next_review_date: Next review
+        last_reviewed: Last reviewed
+        deputies: Deputies
+        owner_person: Person without login
+        norm: Standard
+    help:
+        owner: User with login; receives the review reminder.
+        owner_person: Only if the person has no login.
+        deputies: Deputy during absence.
+        next_review_date: 'Default: in 12 months, for the communication plan in 3 months.'
+    placeholder:
+        choose: Please choose
+        owner_user: Choose user
+        owner_person: Choose person
+    rating:
+        '1': 1 – very low
+        '2': 2 – low
+        '3': 3 – medium
+        '4': 4 – high
+        '5': 5 – very high
+    frequency:
+        weekly: Weekly
+        monthly: Monthly
+        quarterly: Quarterly
+        semi_annually: Semi-annually
+        annually: Annually
+        on_event: On occasion
+    link:
+        risk: Risks
+        interested_party: Interested parties
+        objective: Objectives
+        compliance_framework: Frameworks in the tool
+        supplier: Suppliers
+        document: Documents
+        training: Trainings
+        asset: Assets
+        business_process: Business processes
+        location: Locations
+        issue_entry: Internal and external issues
+        competence_entry: Required competences
+    section:
+        overview: Entry
+        team: Responsibility
+        audit_metadata: Review
+        links: Links
+    filter:
+        state: State
+        active: Active
+        archived: Archived
+    badge:
+        overdue: Overdue
+    state:
+        archived: Archived
+        review_overdue: Review overdue
+        active: Current
+    confirm:
+        delete: Delete this entry permanently? Archiving keeps it as evidence.
+    flash:
+        nothing_selected: Nothing selected.
+        adopted: '%count% entries adopted.'
+        created: Created.
+        saved: Saved.
+        reviewed: Marked as reviewed.
+        restored: Active again.
+        archived: Archived.
+        deleted: Deleted.
+    proposals:
+        title: '%count% proposals from existing data'
+        adopt: Adopt selected
+        hint: Adopted proposals do not come back. Free texts stay unchanged.
+    source:
+        context:
+            externalIssues: 'Context free text: external issues'
+            internalIssues: 'Context free text: internal issues'
+            rolesAndResponsibilities: 'Context free text: roles'
+            legalRequirements: 'Context free text: legal requirements'
+            regulatoryRequirements: 'Context free text: regulatory requirements'
+            contractualObligations: 'Context free text: contractual obligations'
+        persona: Role on the user account
+        tenant_dpo: DPO in the organisation settings
+        role_register: ISMS roles
+        framework: Mandatory framework in the tool
+        interested_party: Interested party
+        supplier: Critical supplier
+        management_review: Last management review
+    persona_role:
+        top_management: Top management
+        ciso: Chief Information Security Officer (CISO)
+        isb: Information security officer (ISO)
+        risk_manager: Risk management
+        compliance_manager: Compliance management
+        dpo: Data protection officer (DPO)
+        bcm_officer: Business continuity officer
+    persona_duty:
+        top_management: Holds overall responsibility for the ISMS, approves the risk management measures and oversees their implementation (ISO 27001 5.1, NIS-2 Art. 20).
+        ciso: Owns the information security strategy and reports ISMS performance to top management (ISO 27001 5.3 b).
+        isb: Runs the ISMS, ensures conformity with the standard and reports to top management (ISO 27001 5.3 a, b).
+        risk_manager: Performs risk assessment and treatment and prepares risk acceptance (ISO 27001 6.1.2, 8.2).
+        compliance_manager: Identifies legal, regulatory and contractual requirements and monitors compliance (A.5.31).
+        dpo: Advises and monitors on data protection, contact point for the supervisory authority (GDPR Art. 39).
+        bcm_officer: Plans, exercises and improves continuity preparedness and plans (A.5.29, A.5.30, ISO 22301).
+    persona_competence:
+        top_management: Management training on cybersecurity risk management
+        ciso: Information security management according to ISO 27001
+        isb: Information security management according to ISO 27001
+        risk_manager: Risk assessment methods
+        compliance_manager: Identifying and assessing legal requirements
+        dpo: Data protection law (GDPR, BDSG)
+        bcm_officer: Business continuity management according to ISO 22301
+    proposal:
+        interface_title: Interface with %name%
+    communication:
+        parties_title: Dates with interested parties
+        parties_hint: External part of the plan, maintained on each party.
+        col:
+            party: Party
+            method: Method
+            contact: Contact
+    csv:
+        register: Register
+        norm: Standard
+        title: Title
+        description: Description
+        category: Category
+        reference: Reference
+        owner: Responsible
+        next_review: Next review
+        last_reviewed: Last reviewed
+    references:
+        title: In registers
+    context:
+        count: '%count% entries'
+        legacy_hint: The free text below is legacy. The register offers proposals from it to adopt.
+        policy_version: Version %version%
+        policy_missing: No document chosen as the policy yet. Choose one under "Edit".
+        edit_hint: Issues, roles, legal requirements and communication are maintained as entries in the registers.

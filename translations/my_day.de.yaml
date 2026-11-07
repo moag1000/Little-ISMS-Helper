@@ -9,6 +9,7 @@ my_day:
         standard_dashboard: 'Standard-Dashboard'
 
     kpi:
+        register_review: 'Register-Prüfungen'
         suggestions: 'Vorschläge'
         workflows_pending: 'Freigaben für mich'
         management_decisions_pending: 'Leitungsentscheidungen offen'
@@ -62,6 +63,7 @@ my_day:
         dpias_open: 'DSFA offen'
 
     section:
+        register_review: 'Register — Prüfung fällig (ISO 27001 4.1–7.4)'
         suggestions: 'Vorschläge zum Entscheiden'
         workflows_pending: 'Freigaben — warten auf meine Entscheidung'
         management_decisions_pending: 'Leitungsentscheidungen — warten auf die Leitung (ISO 27001 5.1, 9.3.3)'

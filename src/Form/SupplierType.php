@@ -60,6 +60,11 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'supplier.placeholder.name',
                 ],
             ])
+            ->add('inIsmsScope', CheckboxType::class, [
+                'label' => 'supplier.field.in_isms_scope',
+                'help' => 'supplier.help.in_isms_scope',
+                'required' => false,
+            ])
             ->add('description', TextareaType::class, [
                 'label' => 'supplier.field.description',
                 'help' => 'supplier.help.description',
@@ -648,6 +653,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
         return [
             'overview' => [
                 'name',
+                'inIsmsScope',
                 'description',
                 'criticality',
                 'status',

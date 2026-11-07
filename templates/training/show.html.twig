@@ -365,6 +365,8 @@
         </div>
     </div>
 
+    {% include 'register/_referenced_in.html.twig' with { record: training } only %}
+
     {% include '_components/_fa_show_history.html.twig' with { entity: training, lifecycle: 'training' } only %}
     {% endif %} {# /M-4 training module gate #}
 </div>
