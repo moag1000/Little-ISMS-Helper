@@ -137,11 +137,15 @@ final class MyDayAggregatorTest extends TestCase
             $this->wizardSessionRepo,
             $this->complianceAnalytics,
             $this->evidenceReverificationRepo,
-            $this->controlRepo,
-            $this->supplierRepo,
-            $this->dpiaRepo,
-            $this->bcPlanRepo,
+            new \App\Service\MyDay\PeriodicReviewBuckets(
+                $this->controlRepo,
+                $this->supplierRepo,
+                $this->dpiaRepo,
+                $this->bcPlanRepo,
+                $this->urls,
+            ),
             $this->urls,
+            \App\Tests\Stub\PersonaResolverFactory::create(),
         );
     }
 
@@ -519,11 +523,23 @@ final class MyDayAggregatorTest extends TestCase
             'Regular user must NOT see DataBreach details (DSGVO Art. 5 (1) (c)).');
     }
 
+    /** @return iterable<string, array{list<string>}> */
+    public static function breachRoles(): iterable
+    {
+        yield 'DPO' => [['ROLE_DPO', 'ROLE_USER']];
+        // Persona roles reach ROLE_MANAGER through the role hierarchy — a
+        // stored ROLE_ISB alone used to see nothing here.
+        yield 'ISB (role hierarchy)' => [['ROLE_ISB']];
+        yield 'CISO (role hierarchy)' => [['ROLE_CISO']];
+    }
+
+    /** @param list<string> $roles */
     #[Test]
-    public function testDataBreaches72hSurfacesToDpoRole(): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('breachRoles')]
+    public function testDataBreaches72hSurfacesToDpoRole(array $roles): void
     {
         $tenant = $this->createTenant(1);
-        $dpo = $this->createUser(12, $tenant, ['ROLE_DPO', 'ROLE_USER']);
+        $dpo = $this->createUser(12, $tenant, $roles);
         $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
         $this->stubAllExceptBreach();
 

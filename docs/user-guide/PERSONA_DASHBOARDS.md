@@ -1,4 +1,4 @@
-# Persona-Dashboards — Benutzerhandbuch (v3.5)
+# Persona-Dashboards — Benutzerhandbuch
 
 Little ISMS Helper stellt rollenspezifische Dashboards bereit, die nur die
 fuer die jeweilige Rolle relevanten KPIs, Aktionen und Navigations-Shortcuts
@@ -7,20 +7,48 @@ angemeldeten Nutzers.
 
 ---
 
-## 5 verkabelte Persona-Rollen
+## Wer landet wo (eine Zuordnung fuer alles)
 
-| Persona-Rolle | Symfony-Rolle | Standard-Einstiegs-Dashboard |
-|---|---|---|
-| CISO / Executive | `ROLE_CISO` | CISO-Dashboard + Board-Dashboard |
-| Risk-Manager | `ROLE_RISK_MANAGER` | Risk-Manager-Dashboard |
-| DPO / Datenschutzbeauftragter | `ROLE_DPO` | DPO-Workflow + DPIA-Pipeline |
-| Compliance-Manager | `ROLE_COMPLIANCE_MANAGER` | CM-Dashboard |
-| Auditor (intern/extern) | `ROLE_AUDITOR` | Auditor-Dashboard |
+Welche Persona ein Nutzer ist, entscheidet an genau einer Stelle
+`App\Security\Persona\PersonaResolver` (Tabelle in `App\Security\Persona\Persona`).
+Daraus folgen Landeseite nach dem Login, die Tour, welche Persona-Dashboards
+im Menue "Mein Cockpit" erscheinen und welche Berichte jemand selbst laden darf.
 
-Nutzer ohne Persona-Rolle sehen das Standard-ISMS-Dashboard.
+| Persona | Rolle (Benutzerverwaltung) | Landet auf | Tour | Berichte selbst laden |
+|---|---|---|---|---|
+| CISO | `ROLE_CISO` | CISO-Dashboard | CISO | alle |
+| ISB | `ROLE_ISB` | ISB-Dashboard | ISB | alle |
+| Risk-Manager | `ROLE_RISK_MANAGER` | Risk-Manager-Dashboard | ISB | alle |
+| Compliance-Manager | `ROLE_COMPLIANCE_MANAGER` | CM-Dashboard | CM | alle |
+| DSB | `ROLE_DPO` | DSB-Dashboard (ohne Modul Datenschutz: Standard-Dashboard) | CM | alle |
+| BCM-Beauftragter | `ROLE_BCM_OFFICER`, `ROLE_GROUP_BCM_OFFICER` | BCM-Dashboard (ohne Modul BCM: Standard-Dashboard) | ISB | alle |
+| Leitung | `ROLE_TOP_MGMT` | Leitungs-Dashboard | Leitung | One-Pager, Managementbewertung, Quartalstrend, Zertifizierungsreife |
+| Administrator ohne Persona-Rolle | `ROLE_ADMIN` | Standard-Dashboard | CISO | alle |
+| Konzern-ISB | `ROLE_GROUP_CISO` | Standard-Dashboard | Leitung | Audit- und Leitungsberichte |
+| Konzern-Auditor | `ROLE_KONZERN_AUDITOR` | Auditor-Dashboard | Auditor | Audit-Paket, Zertifizierungsbuendel, Zertifizierungsreife, Nachweispaket, Managementbewertung |
+| Manager | `ROLE_MANAGER` | Standard-Dashboard | ISB | alle |
+| Auditor | `ROLE_AUDITOR` | My Day | Auditor | wie Konzern-Auditor |
+| Fachbereichsleitung / Risk-Owner | `ROLE_FUNCTION_OWNER` | My Day | Risk-Owner | keine |
+| Nutzer | `ROLE_USER` | My Day | Einstieg | keine |
 
-Nutzer mit mehreren Rollen koennen per Dropdown zwischen den zugeordneten
-Dashboards wechseln. Die Auswahl wird im Session-Profil gespeichert.
+Regeln:
+
+- **Zugewiesene Rolle vor Rollenhierarchie.** Wer `ROLE_ADMIN` und `ROLE_DPO`
+  hat, landet als DSB. Ein Administrator ohne Persona-Rolle landet nicht auf dem
+  CISO-Dashboard, darf es aber oeffnen (die Hierarchie gibt Admins jede Persona).
+- **Rechte folgen der Rollenhierarchie.** Jede Persona-Rolle erbt `ROLE_MANAGER`;
+  ein ISB sieht in My Day deshalb Pannen, Vorfaelle und Freigaben wie ein Manager.
+- **Leitung liest, aendert nichts operativ** (`ROLE_TOP_MGMT` erbt `ROLE_AUDITOR`).
+  Freigaben, die der Leitung zustehen, pruefen `ROLE_TOP_MGMT` ausdruecklich.
+- **Leitungs-Dashboard** sehen Leitung, CISO, Compliance-Manager und Konzern-ISB.
+- **Auditoren laden Audit-Paket und Zertifizierungsbuendel selbst**, nur lesend
+  (`ReportAccessVoter`). Das Audit-Paket je Framework steht auf der Seite
+  Zertifizierungsbuendel (Menue Berichte, Suche "Audit-Paket").
+- Die Persona-Vorschau des Compliance-Managers ("Persona-Vorschau" im Menue)
+  oeffnet das jeweilige Dashboard fuer die Dauer der Sitzung.
+
+Rollen vergibt der Administrator unter Administration → Benutzer → Bearbeiten →
+Systemrollen.
 
 ---
 
@@ -44,11 +72,13 @@ Enthaltene Widgets:
 
 ---
 
-## Board-Dashboard
+## Leitungs-Dashboard (Board)
 
-**Route:** `/{locale}/dashboard/board`
+**Route:** `/{locale}/dashboards/board`
 
-Separate, druckoptimierte Ansicht fuer Geschaeftsfuehrung und Aufsichtsgremien.
+Separate, druckoptimierte Ansicht fuer Geschaeftsfuehrung und Aufsichtsgremien
+(Rolle `ROLE_TOP_MGMT`, dazu CISO, Compliance-Manager, Konzern-ISB). Der Knopf
+"One-Pager (PDF)" oben rechts laedt den Board-One-Pager direkt.
 Enthalt keine technischen Details, nur aggregierte KPIs:
 
 - ISMS Health Score mit Vorperioden-Vergleich

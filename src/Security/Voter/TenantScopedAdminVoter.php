@@ -7,9 +7,10 @@ namespace App\Security\Voter;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
+use App\Security\Persona\Persona;
+use App\Security\Persona\PersonaResolver;
 use App\Service\TenantContext;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -20,7 +21,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Foundation of the Role-Scope Architecture (spec
  * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  *
- * Provides 8 attributes covering admin-scope and persona-visibility checks:
+ * Provides 11 attributes covering admin-scope and persona-visibility checks:
  *
  *  Admin-scope (write-capable):
  *  - ADMIN_OWN_TENANT    Admin acting inside their own tenant tree
@@ -38,6 +39,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *  - PERSONA_COMPLIANCE  Holder of ROLE_COMPLIANCE_MANAGER
  *  - PERSONA_ISB         Holder of ROLE_ISB
  *  - PERSONA_BCM         Holder of ROLE_BCM_OFFICER
+ *  - PERSONA_BOARD       Board view: top management (ROLE_TOP_MGMT),
+ *                        CISO, compliance manager, group CISO
+ *
+ *  Persona attributes are answered by {@see PersonaResolver} (role
+ *  hierarchy + the compliance manager's persona preview), the one place
+ *  that maps users to personas.
  *
  * Subjects that resolve to a tenant:
  *  - Tenant instance     used as-is
@@ -67,6 +74,7 @@ final class TenantScopedAdminVoter extends Voter
     // ISB + BCM-Officer personas
     public const string PERSONA_ISB        = 'PERSONA_ISB';
     public const string PERSONA_BCM        = 'PERSONA_BCM';
+    public const string PERSONA_BOARD      = 'PERSONA_BOARD';
 
     private const array SUPPORTED_ATTRIBUTES = [
         self::ADMIN_OWN_TENANT,
@@ -79,13 +87,14 @@ final class TenantScopedAdminVoter extends Voter
         self::PERSONA_COMPLIANCE,
         self::PERSONA_ISB,
         self::PERSONA_BCM,
+        self::PERSONA_BOARD,
     ];
 
     public function __construct(
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
         private readonly TenantRepository $tenantRepository,
-        private readonly RequestStack $requestStack,
+        private readonly PersonaResolver $personaResolver,
     ) {
     }
 
@@ -96,8 +105,14 @@ final class TenantScopedAdminVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        if (!$token->getUser() instanceof User) {
+        $user = $token->getUser();
+        if (!$user instanceof User) {
             return false;
+        }
+
+        $persona = Persona::fromVoterAttribute($attribute);
+        if ($persona instanceof Persona) {
+            return $this->personaResolver->canSeeDashboardOf($user, $persona);
         }
 
         return match ($attribute) {
@@ -105,12 +120,6 @@ final class TenantScopedAdminVoter extends Voter
             self::ADMIN_GLOBAL_OP    => $this->security->isGranted('ROLE_SUPER_ADMIN'),
             self::ADMIN_OWN_TENANT   => $this->canAdministerInScope($subject),
             self::ADMIN_HOLDING_READ => $this->canReadHoldingTree($subject),
-            self::PERSONA_CISO       => $this->security->isGranted('ROLE_CISO') || $this->isActingAs(self::PERSONA_CISO),
-            self::PERSONA_RISK       => $this->security->isGranted('ROLE_RISK_MANAGER') || $this->isActingAs(self::PERSONA_RISK),
-            self::PERSONA_DPO        => $this->security->isGranted('ROLE_DPO') || $this->isActingAs(self::PERSONA_DPO),
-            self::PERSONA_COMPLIANCE => $this->security->isGranted('ROLE_COMPLIANCE_MANAGER'),
-            self::PERSONA_ISB        => $this->security->isGranted('ROLE_ISB') || $this->isActingAs(self::PERSONA_ISB),
-            self::PERSONA_BCM        => $this->security->isGranted('ROLE_BCM_OFFICER') || $this->isActingAs(self::PERSONA_BCM),
             default                  => false,
         };
     }
@@ -167,23 +176,6 @@ final class TenantScopedAdminVoter extends Voter
         }
 
         return $this->tenantContext->canAccessTenant($tenant);
-    }
-
-    /**
-     * Check if the user is currently "acting as" a particular persona
-     * via the quick persona switcher (session key: compliance.acting_as_persona).
-     *
-     * This enables a ROLE_COMPLIANCE_MANAGER user to temporarily access
-     * the CISO/DPO/ISB/BCM/Risk dashboards without holding the corresponding role.
-     */
-    private function isActingAs(string $persona): bool
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
-            return false;
-        }
-        $session = $request->getSession();
-        return $session->get('compliance.acting_as_persona') === $persona;
     }
 
     /**

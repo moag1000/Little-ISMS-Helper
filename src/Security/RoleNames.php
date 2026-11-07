@@ -30,6 +30,7 @@ final class RoleNames
         'ROLE_COMPLIANCE_MANAGER',
         'ROLE_ISB',
         'ROLE_BCM_OFFICER',
+        'ROLE_TOP_MGMT',
         'ROLE_ADMIN',
         'ROLE_SUPER_ADMIN',
         'ROLE_ALLOWED_TO_SWITCH',

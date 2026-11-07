@@ -413,7 +413,7 @@ class ManagementReportController extends AbstractController
     // ===================== BOARD ONE-PAGER =====================
 
     #[Route('/board-one-pager/pdf', name: 'app_reports_board_one_pager_pdf', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(\App\Security\Voter\ReportAccessVoter::BOARD_ONE_PAGER)]
     public function boardOnePagerPdf(Request $request): Response
     {
         // Gather data from existing services
@@ -478,7 +478,7 @@ class ManagementReportController extends AbstractController
     // ===================== CERTIFICATION READINESS =====================
 
     #[Route('/certification-readiness', name: 'app_management_reports_cert_readiness', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(\App\Security\Voter\ReportAccessVoter::CERTIFICATION_READINESS)]
     public function certificationReadiness(): Response
     {
         $data = $this->getCertificationReadinessData();
@@ -487,7 +487,7 @@ class ManagementReportController extends AbstractController
     }
 
     #[Route('/certification-readiness/pdf', name: 'app_management_reports_cert_readiness_pdf', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(\App\Security\Voter\ReportAccessVoter::CERTIFICATION_READINESS)]
     public function certificationReadinessPdf(Request $request): Response
     {
         $data = $this->getCertificationReadinessData();
@@ -834,7 +834,7 @@ class ManagementReportController extends AbstractController
      * - Decisions: improvement opportunities, ISMS changes, resource needs
      */
     #[Route('/review-output/pdf', name: 'app_management_reports_review_output_pdf', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(\App\Security\Voter\ReportAccessVoter::REVIEW_OUTPUT)]
     public function reviewOutputPdf(Request $request): Response
     {
         $locale = $this->resolvePdfLocale($request);
@@ -869,7 +869,7 @@ class ManagementReportController extends AbstractController
      * Compares current quarter against previous quarter with delta indicators.
      */
     #[Route('/quarterly-trend', name: 'app_management_reports_quarterly_trend', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(\App\Security\Voter\ReportAccessVoter::QUARTERLY_TREND)]
     public function quarterlyTrend(): Response
     {
         $metrics = $this->buildQuarterlyTrendMetrics();
@@ -884,7 +884,7 @@ class ManagementReportController extends AbstractController
      * Generate quarterly trend comparison PDF report
      */
     #[Route('/quarterly-trend/pdf', name: 'app_management_reports_quarterly_trend_pdf', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(\App\Security\Voter\ReportAccessVoter::QUARTERLY_TREND)]
     public function quarterlyTrendPdf(Request $request): Response
     {
         $metrics = $this->buildQuarterlyTrendMetrics();
@@ -909,7 +909,7 @@ class ManagementReportController extends AbstractController
     // ===================== EVIDENCE PACKAGE (ZIP) =====================
 
     #[Route('/evidence-package', name: 'app_management_reports_evidence_package', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(\App\Security\Voter\ReportAccessVoter::EVIDENCE_PACKAGE)]
     public function evidencePackage(Request $request): Response
     {
         $request->getSession()->save();

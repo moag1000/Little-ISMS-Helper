@@ -109,8 +109,11 @@ search_nav:
         label: 'Auditor-Dashboard'
         description: 'Geplante Audits, offene Feststellungen und Nachweise'
     app_dashboard_board:
-        label: 'Vorstands-Dashboard'
-        description: 'Kennzahlen für Geschäftsführung und Vorstand'
+        label: 'Leitungs-Dashboard'
+        description: 'Lage, Risiken und Compliance für die Geschäftsleitung'
+    app_certification_bundle_index:
+        label: 'Audit-Paket und Zertifizierungsbündel'
+        description: 'Nachweise je Framework als ZIP mit Prüfsumme laden'
     app_compliance_mapping_hub:
         label: 'Mapping-Hub'
         description: 'Framework-Mappings, Qualität, Vorschläge und Import an einem Ort'

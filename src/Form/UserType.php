@@ -158,6 +158,7 @@ final class UserType extends AbstractType implements SectionMapInterface
                 'ROLE_COMPLIANCE_MANAGER' => $this->translator->trans('user.role_description.compliance_manager', [], 'user'),
                 'ROLE_ISB' => $this->translator->trans('user.role_description.isb', [], 'user'),
                 'ROLE_BCM_OFFICER' => $this->translator->trans('user.role_description.bcm_officer', [], 'user'),
+                'ROLE_TOP_MGMT' => $this->translator->trans('user.role_description.top_mgmt', [], 'user'),
             ];
 
             $rolesOptions = [
@@ -175,6 +176,7 @@ final class UserType extends AbstractType implements SectionMapInterface
                     'user.role.compliance_manager' => 'ROLE_COMPLIANCE_MANAGER',
                     'user.role.isb' => 'ROLE_ISB',
                     'user.role.bcm_officer' => 'ROLE_BCM_OFFICER',
+                    'user.role.top_mgmt' => 'ROLE_TOP_MGMT',
                 ],
                 'multiple' => true,
                 'expanded' => true,

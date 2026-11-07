@@ -206,6 +206,24 @@
         {% endblock %}
     {% endembed %}
 
+    {# Audit package per framework (ZIP with SHA-256), read-only — auditors
+       download it themselves (persona mapping, ReportAccessVoter). #}
+    {% if frameworks is defined and frameworks|length > 0 and is_granted('REPORT_AUDIT_PACKAGE') %}
+        {% embed '_components/_card.html.twig' with {
+            'header': 'certification_bundle.audit_package.title'|trans({}, 'certification_bundle'),
+            'class': 'mb-4'
+        } %}
+            {% block card_body %}
+                <p class="mb-3">{{ 'certification_bundle.audit_package.intro'|trans({}, 'certification_bundle') }}</p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for fw in frameworks %}
+                        <a href="{{ path('app_audit_package_export', {framework: fw.code}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-turbo="false">{{ fw.name }}</a>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
     {# Konzern Bundle (Holding) — only visible when current
        tenant has subsidiaries. ROLE_GROUP_CISO / ROLE_KONZERN_AUDITOR
        can dispatch a holding-wide export that aggregates per-subsidiary

@@ -237,7 +237,7 @@ src/Controller/EvidenceReverificationController.php:167
 src/Controller/FourEyesController.php:89
 src/Controller/GuidedTourController.php:90
 src/Controller/GuidedTourController.php:119
-src/Controller/HomeController.php:351
+src/Controller/HomeController.php:338
 src/Controller/ISMSObjectiveController.php:75
 src/Controller/ISMSObjectiveController.php:76
 src/Controller/ISMSObjectiveController.php:135
@@ -290,11 +290,11 @@ src/Controller/PlanningAdminController.php:168
 src/Controller/PlanningSettingsController.php:115
 src/Controller/PlanningSettingsController.php:117
 src/Controller/ProcessingActivityController.php:640
-src/Controller/ProfileController.php:106
-src/Controller/ProfileController.php:174
-src/Controller/ProfileController.php:197
-src/Controller/ProfileController.php:303
-src/Controller/ProfileController.php:330
+src/Controller/ProfileController.php:108
+src/Controller/ProfileController.php:176
+src/Controller/ProfileController.php:199
+src/Controller/ProfileController.php:305
+src/Controller/ProfileController.php:332
 src/Controller/ProfileMfaController.php:246
 src/Controller/ProfileMfaController.php:247
 src/Controller/PrototypeProtectionAssessmentController.php:88

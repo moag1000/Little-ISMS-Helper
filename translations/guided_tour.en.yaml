@@ -20,6 +20,8 @@ guided_tour:
             label: 'MRIS module tour'
         mapping:
             label: 'Mapping tour'
+        board:
+            label: 'Top management tour'
 
     banner:
         aria_label: 'Suggested onboarding tour'
@@ -188,13 +190,35 @@ guided_tour:
         step:
             welcome:
                 title: Quick tour for auditors
-                body: 'Your account is read-only. Two minutes, three stops — the three bookmarks for your audit run.'
+                body: 'Your account is read-only. Two minutes, four stops — the bookmarks for your audit run.'
             documents:
                 title: 'Documents + policies'
                 body: '/document lists all policies, process documents, evidence. Filter by framework (ISO 27001, NIS2, DORA etc.) narrows to your audit scope. Export as PDF or audit-package ZIP at the bottom right.'
             audit_log:
                 title: 'Audit log with integrity check'
                 body: '/admin/audit-log — tamper-evident HMAC-SHA256 chain. Click "Verify" to validate each entry. This is your chain of custody for ISO 27001 Clause 9.2 and NIS2 Art. 21.2.'
+            audit_package:
+                title: 'Download the audit package yourself'
+                body: 'Under Reports → Audit package you download the certification bundle and the audit package per framework yourself, as a ZIP with checksum. Read-only, no data changes.'
+
+    # Top management (4 steps) — ISO 27001 5.1, 9.3; NIS-2 Art. 20
+    board:
+        meta:
+            label: 'Top management orientation'
+            description: 'Status, report, management review and your approvals — four stops.'
+        step:
+            welcome:
+                title: 'The status at a glance'
+                body: 'The top management dashboard shows the traffic lights for security, risks and compliance with their trend. Red means a decision of yours is needed.'
+            one_pager:
+                title: 'Board one-pager'
+                body: 'Under Management reports you download the one-pager as PDF for the next meeting yourself, without going through the ISO.'
+            management_review:
+                title: 'Management review'
+                body: 'ISO 27001 9.3 requires the review by top management. Here you see dates, inputs and decisions of the reviews.'
+            my_day:
+                title: 'Your approvals'
+                body: 'What waits for your decision is in My Day: approvals, risk acceptances and four-eyes requests.'
 
     # Mapping topic tour (10 steps) — for junior ISOs with an IT / ISO 9001 background
     mapping:

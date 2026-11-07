@@ -7,6 +7,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\MenuDensity;
 use App\Form\UserType;
+use App\Security\Persona\Persona;
+use App\Security\Persona\PersonaResolver;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use DateTimeImmutable;
@@ -348,33 +350,27 @@ class ProfileController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
         $persona = $request->request->getString('persona', '');
-        // Each persona maps to the dashboard the switcher should land on, so the
-        // UI navigates straight into that role's cockpit instead of only
-        // unlocking access on the current page.
-        $dashboardRoutes = [
-            'PERSONA_CISO' => 'app_dashboard_ciso',
-            'PERSONA_RISK' => 'app_dashboard_risk_manager',
-            'PERSONA_DPO'  => 'app_dashboard_dpo',
-            'PERSONA_ISB'  => 'app_dashboard_isb',
-            'PERSONA_BCM'  => 'app_dashboard_bcm',
-        ];
+        // The switcher lands straight on the previewed persona's dashboard
+        // (Persona::dashboardRoute()), not only unlocking the current page.
+        $previewable = [Persona::CISO, Persona::RISK_MANAGER, Persona::DPO, Persona::ISB, Persona::BCM_OFFICER];
         $locale = $request->getLocale();
         if ($persona === 'revert') {
-            $request->getSession()->remove('compliance.acting_as_persona');
+            $request->getSession()->remove(PersonaResolver::ACTING_AS_SESSION_KEY);
             $this->auditLogger->logCustom('persona_switch_revert', 'User', $user->getId(), ['acting_as' => null], ['acting_as' => null], sprintf('User "%s %s" reverted persona switch', $user->getFirstName(), $user->getLastName()));
             return new JsonResponse([
                 'acting_as' => null,
                 'redirect' => $this->generateUrl('app_dashboard_compliance_manager', ['_locale' => $locale]),
             ]);
         }
-        if (!array_key_exists($persona, $dashboardRoutes)) {
+        $target = Persona::fromVoterAttribute($persona);
+        if (!in_array($target, $previewable, true)) {
             return new JsonResponse(['error' => 'Invalid persona'], Response::HTTP_BAD_REQUEST);
         }
-        $request->getSession()->set('compliance.acting_as_persona', $persona);
+        $request->getSession()->set(PersonaResolver::ACTING_AS_SESSION_KEY, $persona);
         $this->auditLogger->logCustom('persona_switch', 'User', $user->getId(), ['acting_as' => null], ['acting_as' => $persona], sprintf('User "%s %s" switched to persona %s', $user->getFirstName(), $user->getLastName(), $persona));
         return new JsonResponse([
             'acting_as' => $persona,
-            'redirect' => $this->generateUrl($dashboardRoutes[$persona], ['_locale' => $locale]),
+            'redirect' => $this->generateUrl($target->dashboardRoute(), ['_locale' => $locale]),
         ]);
     }
 

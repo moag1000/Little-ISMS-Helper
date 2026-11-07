@@ -240,34 +240,21 @@ class HomeController extends AbstractController
             }
         }
 
-        // Guided-Tour-Banner-Vorschlag. Zeigt pro Nutzer die
-        // noch nicht abgeschlossene, rollen-passende Tour. Null = kein Banner.
-        $suggestedTour = null;
-        $autoRole = null;
+        // The persona's tour banner is rendered by base.html.twig on the
+        // landing page; MRIS is a topic tour offered here in addition.
         $suggestedMrisTour = null;
-        if ($this->guidedTourService !== null && $user instanceof User) {
-            $autoRole = $this->guidedTourService->autoDetectTour($user);
-            if (!$user->hasCompletedTour($autoRole)) {
-                $suggestedTour = $this->guidedTourService->metaFor($autoRole);
-            }
-
-            // MRIS-Topic-Tour: themenbezogen, zusätzlich zur Rollen-Tour.
-            // Nur für ROLE_USER (nicht ROLE_AUDITOR), nur wenn nicht bereits
-            // abgeschlossen. Wird unterhalb der Rollen-Tour angeboten.
-            if ($this->guidedTourService->isEligibleForMrisSuggestion()
-                && !$user->hasCompletedTour(GuidedTourService::TOUR_MRIS)
-            ) {
-                $suggestedMrisTour = $this->guidedTourService->metaFor(GuidedTourService::TOUR_MRIS);
-            }
+        if ($this->guidedTourService !== null && $user instanceof User
+            && $this->guidedTourService->isEligibleForMrisSuggestion($user)
+            && !$user->hasCompletedTour(GuidedTourService::TOUR_MRIS)
+        ) {
+            $suggestedMrisTour = $this->guidedTourService->metaFor(GuidedTourService::TOUR_MRIS);
         }
 
         return $this->render('home/dashboard.html.twig', [
             'stats' => $stats,
             'management_kpis' => $managementKpis,
             'reuse_fte_saved' => $reuseFteSaved,
-            'suggested_tour' => $suggestedTour,
             'suggested_mris_tour' => $suggestedMrisTour,
-            'tour_role' => $autoRole,
             'activities' => $activities,
             'iso_compliance' => $isoCompliance,
             'overdue_reviews' => $overdueReviews,
