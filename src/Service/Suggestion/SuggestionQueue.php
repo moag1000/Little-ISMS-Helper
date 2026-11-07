@@ -193,11 +193,6 @@ class SuggestionQueue
         ));
     }
 
-    public function countPendingFor(Tenant $tenant): int
-    {
-        return count($this->pendingFor($tenant));
-    }
-
     /** @return list<Suggestion> pending entries about one record that the current user may decide */
     public function pendingForSubject(object $record): array
     {

@@ -30,8 +30,6 @@ suggestions:
         note: Note (optional)
         reason: Reason (optional)
         reject_intro: A rejected suggestion does not come back for the same state.
-    my_day:
-        link: '{1}1 suggestion open|]1,Inf[%count% suggestions open'
     hint:
         record: '{1}One open suggestion: %title%|]1,Inf[%count% open suggestions, first: %title%'
         open: View suggestions
