@@ -130,6 +130,8 @@ dashboard:
       title: Locations
     efficiency:
       title: Efficiency
+    bsi_gspp:
+      title: 'Moving to Grundschutz++'
     bsi_stufen:
       title: 'BSI Absicherungsstufen'
       icon: bi-shield-shaded
@@ -196,6 +198,8 @@ dashboard:
     critical_ict_providers: Critical ICT Providers
     risk_exposure_eur: Expected annual loss
     risk_top5_eur: Top 5 risks by euro
+    bsi_gspp_transfer: Kompendium state that carries over to Grundschutz++
+    bsi_gspp_mapping_coverage: Kompendium requirements with a Grundschutz++ target
     location_checks_rate: Site checks passed
     location_open_gaps: Open site checks
     location_critical_sites: Sites with critical risk
