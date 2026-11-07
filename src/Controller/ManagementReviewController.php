@@ -11,8 +11,10 @@ use DateTimeImmutable;
 use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ManagementReview;
 use App\Enum\ManagementReviewStatus;
+use App\Form\ManagementReviewTaskType;
 use App\Form\ManagementReviewType;
 use App\Repository\ManagementReviewRepository;
+use App\Service\ManagementReview\ReviewOutcomeService;
 use App\Service\ManagementReviewAutoCollector;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -42,6 +44,7 @@ class ManagementReviewController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly ManagementReviewAutoCollector $managementReviewAutoCollector,
         private readonly Security $security,
+        private readonly ReviewOutcomeService $reviewOutcome,
     ) {}
     #[Route('/management-review', name: 'app_management_review_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -76,7 +79,7 @@ class ManagementReviewController extends AbstractController
         ]);
     }
     #[Route('/management-review/new', name: 'app_management_review_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
         $managementReview = new ManagementReview();
@@ -125,10 +128,17 @@ class ManagementReviewController extends AbstractController
 
         return $this->render('management_review/show.html.twig', [
             'review' => $managementReview,
+            'tasks' => $this->reviewOutcome->tasks($managementReview),
+            'decisions' => $this->reviewOutcome->decisions($managementReview),
+            'task_form' => $this->isGranted('ROLE_MANAGER')
+                ? $this->createForm(ManagementReviewTaskType::class, $this->reviewOutcome->newTask($managementReview), [
+                    'action' => $this->generateUrl('app_management_review_task_add', ['id' => $managementReview->getId()]),
+                ])->createView()
+                : null,
         ]);
     }
     #[Route('/management-review/{id}/edit', name: 'app_management_review_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, ManagementReview $managementReview): Response
     {
         $form = $this->createForm(ManagementReviewType::class, $managementReview);
@@ -171,8 +181,9 @@ class ManagementReviewController extends AbstractController
             'is_new' => $isNew,
         ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
+    /** Readers of the review (auditors, top management) take the PDF as evidence (9.3.3). */
     #[Route('/management-review/{id}/pdf', name: 'app_management_review_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_AUDITOR')]
     public function pdf(ManagementReview $managementReview): Response
     {
         $generatedAt = new DateTimeImmutable();
@@ -181,6 +192,8 @@ class ManagementReviewController extends AbstractController
             'management_review/pdf/report.html.twig',
             [
                 'review' => $managementReview,
+                'tasks' => $this->reviewOutcome->tasks($managementReview),
+                'decisions' => $this->reviewOutcome->decisions($managementReview),
                 'generated_at' => $generatedAt,
             ],
             [
@@ -203,7 +216,7 @@ class ManagementReviewController extends AbstractController
      * Pre-fills Risk-/Audit-/NC-/KPI-Narratives, anschliessend redirect auf edit.
      */
     #[Route('/management-review/auto-collect', name: 'app_management_review_auto_collect', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function autoCollect(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('auto_collect_review', (string) $request->request->get('_token'))) {

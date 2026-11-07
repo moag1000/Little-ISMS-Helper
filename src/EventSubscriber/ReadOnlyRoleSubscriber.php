@@ -35,7 +35,8 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
     private const array SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS'];
 
     /** An action that names one of these in #[IsGranted] is built for reviewers. */
-    private const array REVIEWER_ATTRIBUTES = ['ROLE_AUDITOR', 'ROLE_GROUP_CISO', 'ROLE_KONZERN_AUDITOR', 'ADMIN_HOLDING_READ'];
+    /** ROLE_TOP_MGMT reads like a reviewer but takes the decisions that belong to top management. */
+    private const array REVIEWER_ATTRIBUTES = ['ROLE_AUDITOR', 'ROLE_GROUP_CISO', 'ROLE_KONZERN_AUDITOR', 'ADMIN_HOLDING_READ', 'ROLE_TOP_MGMT'];
 
     private const array ALLOWED_PREFIXES = [
         'app_audit_',            // audits + findings: checklist, report, findings
@@ -61,6 +62,8 @@ final class ReadOnlyRoleSubscriber implements EventSubscriberInterface
         'app_four_eyes_approve',
         'app_four_eyes_reject',
         'app_access_review_item_decide',
+        'app_risk_approve_acceptance',   // tier check in RiskAcceptanceVoter (top management above the manager threshold)
+        'app_risk_reject_acceptance',
         'app_quick_fix_',        // own guard (QuickFixGuard)
         'session_terminate_single',
         'app_login',

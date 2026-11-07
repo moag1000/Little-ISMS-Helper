@@ -8,7 +8,8 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\ComplianceFramework;
 use App\Entity\User;
-use App\Repository\ComplianceRequirementRepository;
+use App\Entity\Tenant;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use WeakMap;
 
 /**
@@ -25,17 +26,22 @@ final class LowRequirementCoverageRule extends AbstractAlvaHintRule
     /** @var WeakMap<ComplianceFramework, float> */
     private WeakMap $coverageCache;
 
-    public function __construct(private readonly ComplianceRequirementRepository $requirementRepository)
+    public function __construct(private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository)
     {
         $this->coverageCache = new WeakMap();
     }
 
-    /** Percentage computed once per framework, with bounded queries (preloaded). */
-    private function coverage(ComplianceFramework $framework): float
+    /**
+     * The viewer's organisation's fulfilled share, computed once per framework
+     * (two grouped queries). Without organisation there is nothing to nudge.
+     */
+    private function coverage(ComplianceFramework $framework, User $user): float
     {
         if (!isset($this->coverageCache[$framework])) {
-            $this->requirementRepository->preloadMappedControls($framework);
-            $this->coverageCache[$framework] = $framework->getCompliancePercentage();
+            $tenant = $user->getTenant();
+            $this->coverageCache[$framework] = $tenant instanceof Tenant
+                ? ($this->fulfillmentRepository->fulfilledShareByFramework($tenant, [(int) $framework->getId()])[(int) $framework->getId()] ?? 0.0)
+                : 100.0;
         }
 
         return $this->coverageCache[$framework];
@@ -70,7 +76,7 @@ final class LowRequirementCoverageRule extends AbstractAlvaHintRule
             return false;
         }
 
-        return $this->coverage($entity) < self::COVERAGE_THRESHOLD;
+        return $this->coverage($entity, $user) < self::COVERAGE_THRESHOLD;
     }
 
     public function build(object $entity, User $user): AlvaHint
@@ -82,7 +88,7 @@ final class LowRequirementCoverageRule extends AbstractAlvaHintRule
             titleTranslationKey: 'compliance_framework.low_coverage.title',
             bodyTranslationKey: 'compliance_framework.low_coverage.body',
             bodyTranslationParams: [
-                '%coverage%' => number_format($this->coverage($entity), 1),
+                '%coverage%' => number_format($this->coverage($entity, $user), 1),
                 '%threshold%' => (int) self::COVERAGE_THRESHOLD,
                 '%name%' => (string) $entity->getName(),
             ],

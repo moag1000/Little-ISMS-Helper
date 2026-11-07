@@ -118,6 +118,11 @@ final class EntityTypeRegistry
             'class' => \App\Entity\ManagementReview::class,
             'workflow' => 'management_review_lifecycle',
         ],
+        // Top-management decisions (ISO 27001 5.1 / 9.3.3, NIS-2 Art. 20).
+        'management-decision' => [
+            'class' => \App\Entity\ManagementDecision::class,
+            'workflow' => 'management_decision_lifecycle',
+        ],
         'change-request' => [
             'class' => \App\Entity\ChangeRequest::class,
             'workflow' => 'change_request_lifecycle',

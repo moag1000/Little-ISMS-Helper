@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'management_decision.action.new'|trans({}, 'management_decision') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'management_decision.title'|trans({}, 'management_decision'), url: path('app_management_decision_index') },
+            { label: 'management_decision.action.new'|trans({}, 'management_decision') },
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: type ? type.label|trans({}, 'management_decision') : 'management_decision.action.new'|trans({}, 'management_decision'),
+        subtitle: type ? 'management_decision.new.prefilled'|trans({}, 'management_decision') : 'management_decision.new.pick'|trans({}, 'management_decision'),
+        badge: type ? { label: type.normReference } : null,
+    }) }}
+
+    {% if form is null %}
+        <div class="row g-3">
+            {% for t in types %}
+                {% set _current = current[t.value] ?? null %}
+                <div class="col-md-6 col-xl-4">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_body %}
+                            <h2 class="h6 mb-1">{{ t.label|trans({}, 'management_decision') }}</h2>
+                            <p class="small text-muted mb-2">{{ t.normReference }}</p>
+                            <p class="small mb-3">
+                                {% if _current %}
+                                    {{ 'management_decision.new.in_force'|trans({'%date%': _current.decidedAt|fa_date, '%until%': _current.validUntil ? _current.validUntil|fa_date : '—'}, 'management_decision') }}
+                                {% elseif t.validityMonths %}
+                                    {{ 'management_decision.new.none_in_force'|trans({}, 'management_decision') }}
+                                {% endif %}
+                            </p>
+                            <a href="{{ path('app_management_decision_new', {type: t.value}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'management_decision.new.prepare'|trans({}, 'management_decision') }}</a>
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                {{ form_start(form) }}
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.proposal) }}
+                    <div class="row">
+                        <div class="col-md-4">{{ form_row(form.dueDate) }}</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'management_decision.action.submit'|trans({}, 'management_decision') }}</button>
+                        <a href="{{ path('app_management_decision_new') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+                    </div>
+                {{ form_end(form) }}
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+</div>
+{% endblock %}

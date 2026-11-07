@@ -25,7 +25,7 @@ use ReflectionProperty;
  *
  * Covers:
  *  - Tenant-scoped fulfillment: getCheckReport() with an explicit Tenant uses
- *    ComplianceRequirementFulfillmentRepository, NOT calculateFulfillmentFromControls().
+ *    ComplianceRequirementFulfillmentRepository, NOT the cross-tenant mappedControls average.
  *  - No-tenant fallback: when no tenant is provided, falls back to mappedControls.
  *  - tiersForLevel filter: 'standard' level includes basis+standard requirements.
  *  - 'kern' level filter: includes basis+standard+hoch requirements.
@@ -184,11 +184,10 @@ final class BsiGrundschutzCheckServiceTest extends TestCase
     }
 
     #[Test]
-    public function noTenantFallsBackToMappedControls(): void
+    public function noTenantReportsZeroFulfillment(): void
     {
         $fw  = $this->makeFramework();
         $req = $this->makeRequirement(1, 'ISMS.1.A1', 'basis');
-        // calculateFulfillmentFromControls() returns 0 when no controls are mapped (default)
 
         $this->frameworkRepo->method('findOneBy')->willReturn($fw);
         $this->requirementRepo->method('findByFramework')->willReturn([$req]);
@@ -202,7 +201,7 @@ final class BsiGrundschutzCheckServiceTest extends TestCase
         $report = $this->service->getCheckReport(null, null);
 
         self::assertSame(1, $report['overall']['total']);
-        // calculateFulfillmentFromControls() returns 0 (no controls mapped)
+        // no tenant = no fulfilment rows = 0 %
         self::assertSame(0, $report['overall']['fulfilled']);
     }
 

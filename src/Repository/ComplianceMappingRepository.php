@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -44,6 +45,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ComplianceMappingRepository extends ServiceEntityRepository
 {
+    use GapRootCauseRecommendationsTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ComplianceMapping::class);
@@ -494,6 +497,24 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Tenant fulfilment per requirement id in one query (0 without tenant/row).
+     *
+     * @param iterable<ComplianceRequirement> $requirements
+     * @return array<int, int>
+     */
+    private function tenantPercentages(?Tenant $tenant, iterable $requirements): array
+    {
+        if (!$tenant instanceof Tenant) {
+            return [];
+        }
+
+        /** @var ComplianceRequirementFulfillmentRepository $repository */
+        $repository = $this->getEntityManager()->getRepository(ComplianceRequirementFulfillment::class);
+
+        return $repository->percentagesFor($tenant, $requirements);
+    }
+
+    /**
      * Calculate transitive compliance: how fulfilling source framework requirements helps target framework compliance.
      *
      * This calculates the "compliance transfer" effect where implementing controls for one framework
@@ -504,24 +525,31 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      *
      * @param ComplianceFramework $sourceFramework Source framework with existing fulfillment
      * @param ComplianceFramework $targetFramework Target framework receiving transitive benefit
+     * @param Tenant|null $tenant Tenant whose fulfilment is read (null = no data, 0 %)
      * @return array{source_framework: string, target_framework: string, requirements_helped: int, average_transitive_benefit: float, total_benefit: float, contributions: array} Transitive compliance analysis
      */
     public function getTransitiveCompliance(
         ComplianceFramework $sourceFramework,
-        ComplianceFramework $targetFramework
+        ComplianceFramework $targetFramework,
+        ?Tenant $tenant
     ): array {
         $mappings = $this->findCrossFrameworkMappings($sourceFramework, $targetFramework);
         $transitiveContributions = [];
+        $sourcePercentages = $this->tenantPercentages(
+            $tenant,
+            array_filter(array_map(static fn(ComplianceMapping $m): ?ComplianceRequirement => $m->getSourceRequirement(), $mappings)),
+        );
 
         foreach ($mappings as $mapping) {
-            $transitiveFulfillment = $mapping->calculateTransitiveFulfillment();
+            $sourcePercentage = $sourcePercentages[$mapping->getSourceRequirement()?->getId()] ?? 0;
+            $transitiveFulfillment = round($sourcePercentage * $mapping->getMappingPercentage() / 100, 2);
 
             if ($transitiveFulfillment > 0) {
                 $transitiveContributions[] = [
                     'source_req' => $mapping->getSourceRequirement()->getRequirementId(),
                     'target_req' => $mapping->getTargetRequirement()->getRequirementId(),
                     'mapping_strength' => $mapping->getMappingPercentage(),
-                    'source_fulfillment' => $mapping->getSourceRequirement()->getFulfillmentPercentage(),
+                    'source_fulfillment' => $sourcePercentage,
                     'transitive_contribution' => $transitiveFulfillment,
                 ];
             }
@@ -714,12 +742,15 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      *
      * @param ComplianceFramework $complianceFramework Framework to analyze
      * @param array $gaps Array of gap requirements (unfulfilled requirements)
+     * @param Tenant|null $tenant Tenant whose fulfilment is read (null = 0 %)
      * @return array{weighted_gap_score: float, total_weight: float, risk_score: int, uncovered_critical: array, uncovered_high: array, priority_distribution: array, recommendations: array} Priority-weighted gap analysis
      */
     public function calculatePriorityWeightedGaps(
         ComplianceFramework $complianceFramework,
-        array $gaps
+        array $gaps,
+        ?Tenant $tenant
     ): array {
+        $gapPercentages = $this->tenantPercentages($tenant, $gaps);
         $priorityWeights = [
             'critical' => 4.0,
             'high' => 2.0,
@@ -753,14 +784,14 @@ class ComplianceMappingRepository extends ServiceEntityRepository
                     'title' => $gap->getTitle(),
                     'category' => $gap->getCategory(),
                     'description' => $gap->getDescription(),
-                    'fulfillment' => $gap->getFulfillmentPercentage() ?? 0,
+                    'fulfillment' => $gapPercentages[$gap->getId()] ?? 0,
                 ];
             } elseif ($priority === 'high') {
                 $uncoveredHigh[] = [
                     'id' => $gap->getRequirementId(),
                     'title' => $gap->getTitle(),
                     'category' => $gap->getCategory(),
-                    'fulfillment' => $gap->getFulfillmentPercentage() ?? 0,
+                    'fulfillment' => $gapPercentages[$gap->getId()] ?? 0,
                 ];
             }
         }
@@ -1038,10 +1069,12 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      * This enables targeted remediation strategies.
      *
      * @param array $gaps Array of gap requirements (unfulfilled requirements)
+     * @param Tenant|null $tenant Tenant whose fulfilment is read (null = 0 %)
      * @return array{root_causes: array, category_patterns: array, recommendations: array, summary: array<string, int>} Root cause analysis
      */
-    public function analyzeGapRootCauses(array $gaps): array
+    public function analyzeGapRootCauses(array $gaps, ?Tenant $tenant): array
     {
+        $gapPercentages = $this->tenantPercentages($tenant, $gaps);
         $rootCauses = [
             'missing_control' => [],        // Control not implemented at all
             'missing_evidence' => [],       // Control exists but lacks documentation
@@ -1053,9 +1086,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         $categoryPatterns = [];
 
         foreach ($gaps as $gap) {
-            // getFulfillmentPercentage() returns a float — the strict `=== 0`
-            // below used to miss 0.0, so untouched gaps landed in no bucket.
-            $fulfillment = (float) $gap->getFulfillmentPercentage();
+            // Tenant fulfilment (global requirement rows carry no per-tenant number).
+            $fulfillment = (float) ($gapPercentages[$gap->getId()] ?? 0);
             $priority = $gap->getPriority() ?? 'medium';
             $category = $gap->getCategory() ?? 'Uncategorized';
 
@@ -1137,134 +1169,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
                 'total_categories_affected' => count($categoryPatterns),
             ],
         ];
-    }
-
-    /**
-     * Generate targeted recommendations based on root cause analysis.
-     *
-     * @param array $rootCauses Classified root causes
-     * @param array $categoryPatterns Category-level patterns
-     * @return array Actionable recommendations
-     */
-    private function generateRootCauseRecommendations(array $rootCauses, array $categoryPatterns): array
-    {
-        $recommendations = [];
-
-        // Recommendation for not-started gaps
-        if (count($rootCauses['not_started']) > 0) {
-            $recommendations[] = [
-                'root_cause' => 'not_started',
-                'priority' => 'CRITICAL',
-                'count' => count($rootCauses['not_started']),
-                'title' => 'Kickstart-Initiative für nicht begonnene Anforderungen',
-                'action' => sprintf(
-                    '%d Anforderungen (0%% Erfüllung) wurden noch nicht begonnen. Sofortige Ressourcen-Allokation erforderlich.',
-                    count($rootCauses['not_started'])
-                ),
-                'solution' => 'Projekt-Kickoff, Verantwortliche zuweisen, Initiale Assessments durchführen',
-                'timeline' => '0-30 Tage',
-                'effort' => 'Hoch',
-            ];
-        }
-
-        // Recommendation for missing controls
-        if (count($rootCauses['missing_control']) > 0) {
-            $recommendations[] = [
-                'root_cause' => 'missing_control',
-                'priority' => 'HIGH',
-                'count' => count($rootCauses['missing_control']),
-                'title' => 'Kontroll-Implementierung priorisieren',
-                'action' => sprintf(
-                    '%d Anforderungen haben sehr niedrige Erfüllung (<30%%). Kontrollen fehlen oder sind unzureichend.',
-                    count($rootCauses['missing_control'])
-                ),
-                'solution' => 'Control Design Workshop, Policy/Prozedur-Entwicklung, Technische Implementierung',
-                'timeline' => '30-90 Tage',
-                'effort' => 'Hoch',
-            ];
-        }
-
-        // Recommendation for incomplete implementation
-        if (count($rootCauses['incomplete_implementation']) > 0) {
-            $recommendations[] = [
-                'root_cause' => 'incomplete_implementation',
-                'priority' => 'MEDIUM',
-                'count' => count($rootCauses['incomplete_implementation']),
-                'title' => 'Unvollständige Implementierungen abschließen',
-                'action' => sprintf(
-                    '%d Anforderungen sind teilweise umgesetzt (30-80%%). Lücken schließen und finalisieren.',
-                    count($rootCauses['incomplete_implementation'])
-                ),
-                'solution' => 'Gap-Assessment pro Requirement, fehlende Komponenten identifizieren, Completion Roadmap',
-                'timeline' => '60-120 Tage',
-                'effort' => 'Mittel',
-            ];
-        }
-
-        // Recommendation for missing evidence
-        if (count($rootCauses['missing_evidence']) > 0) {
-            $recommendations[] = [
-                'root_cause' => 'missing_evidence',
-                'priority' => 'MEDIUM',
-                'count' => count($rootCauses['missing_evidence']),
-                'title' => 'Evidenz-Sammlung & Dokumentation',
-                'action' => sprintf(
-                    '%d Anforderungen haben hohe Erfüllung (80-99%%) aber fehlende Dokumentation/Nachweise.',
-                    count($rootCauses['missing_evidence'])
-                ),
-                'solution' => 'Dokumentations-Sprint, Evidenz-Sammlung, Audit-Trail vervollständigen',
-                'timeline' => '30-60 Tage',
-                'effort' => 'Niedrig',
-            ];
-        }
-
-        // Category-specific recommendations (top 3 problematic categories)
-        $topCategories = array_slice($categoryPatterns, 0, 3, true);
-        foreach ($topCategories as $category => $pattern) {
-            if ($pattern['count'] >= 3) { // Only if significant (3+ gaps)
-                $recommendations[] = [
-                    'root_cause' => 'category_cluster',
-                    'priority' => 'HIGH',
-                    'count' => $pattern['count'],
-                    'title' => sprintf('Kategorie-spezifische Initiative: %s', $category),
-                    'action' => sprintf(
-                        'Kategorie "%s" hat %d Gaps (Ø %s%% Erfüllung). Systematisches Problem erkannt.',
-                        $category,
-                        $pattern['count'],
-                        $pattern['avg_fulfillment']
-                    ),
-                    'solution' => sprintf(
-                        'Dedicated Task Force für "%s", Root Cause: %s',
-                        $category,
-                        $this->translateRootCause($pattern['dominant_root_cause'])
-                    ),
-                    'timeline' => '30-90 Tage',
-                    'effort' => 'Mittel-Hoch',
-                ];
-            }
-        }
-
-        return $recommendations;
-    }
-
-    /**
-     * Translate root cause key to German description.
-     *
-     * @param string $rootCause Root cause key
-     * @return string German description
-     */
-    private function translateRootCause(string $rootCause): string
-    {
-        $translations = [
-            'not_started' => 'Noch nicht begonnen',
-            'missing_control' => 'Fehlende Kontrolle',
-            'incomplete_implementation' => 'Unvollständige Umsetzung',
-            'missing_evidence' => 'Fehlende Evidenz',
-            'low_priority' => 'Niedrige Priorität',
-            'category_cluster' => 'Kategorie-Cluster',
-        ];
-
-        return $translations[$rootCause] ?? $rootCause;
     }
 
     /**

@@ -37,10 +37,6 @@ final class JsonBuilderFieldsRoundTripTest extends KernelTestCase
      */
     public static function mappedFields(): iterable
     {
-        yield 'management review action items' => [ManagementReviewType::class, new ManagementReview(), 'actionItemsWithDeadlines', [
-            ['action' => 'Update risk assessment', 'owner' => 'CISO', 'deadline' => '2026-06-30', 'status' => 'open'],
-            ['action' => 'Legacy item', 'priority' => 'high'],
-        ]];
         yield 'management review framework status' => [ManagementReviewType::class, new ManagementReview(), 'frameworkComplianceStatus', [
             ['framework' => 'ISO 27001:2022', 'status' => 'compliant', 'last_review' => '2025-01-15'],
             ['framework' => 'NIS2', 'status' => 'in_progress', 'open_items' => 3],
@@ -99,9 +95,10 @@ final class JsonBuilderFieldsRoundTripTest extends KernelTestCase
     {
         $entity = new ManagementReview();
         $form = $this->createForm(ManagementReviewType::class, $entity);
-        $form->submit(['actionItemsWithDeadlines' => json_encode([['owner' => 'CISO', 'status' => 'whatever']])], false);
+        // `framework` is required on every row.
+        $form->submit(['frameworkComplianceStatus' => json_encode([['status' => 'in_progress']])], false);
 
-        self::assertGreaterThan(0, count($form->get('actionItemsWithDeadlines')->getErrors()));
+        self::assertGreaterThan(0, count($form->get('frameworkComplianceStatus')->getErrors()));
     }
 
     #[Test]

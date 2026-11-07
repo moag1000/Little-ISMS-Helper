@@ -98,8 +98,8 @@ class SubRequirementCoverageIntegrationTest extends KernelTestCase
         $this->createRequirement($framework, 'PCT-CORE-2', 'core');
         $this->em->flush();
 
-        // Baseline: 2 top-level requirements only.
-        $baseline = $framework->getCompliancePercentage();
+        // Baseline: 2 top-level requirements only. (The organisation-scoped
+        // percentage over this denominator is covered by FulfilledShareByFrameworkTest.)
         $baselineCount = $this->requirementRepository->countTopLevelByFramework($framework);
         self::assertSame(2, $baselineCount);
 
@@ -108,8 +108,7 @@ class SubRequirementCoverageIntegrationTest extends KernelTestCase
             $this->createRequirement($framework, sprintf('PCT-SUB-%d', $i), 'sub_requirement', $core1);
         }
         $this->em->flush();
-        // Refresh the in-memory requirements collection so getCompliancePercentage()
-        // iterates the newly-added rows too.
+        // Refresh the in-memory requirements collection so the count below sees the new rows.
         $this->em->refresh($framework);
 
         // Denominator must NOT have grown: still 2 top-level requirements.
@@ -117,11 +116,6 @@ class SubRequirementCoverageIntegrationTest extends KernelTestCase
             $baselineCount,
             $this->requirementRepository->countTopLevelByFramework($framework),
             'Top-level count must be invariant to sub_requirement imports',
-        );
-        self::assertSame(
-            $baseline,
-            $framework->getCompliancePercentage(),
-            'Compliance % must be invariant to sub_requirement imports (no dilution)',
         );
 
         // Sanity: the raw collection really did grow (proves the fix is the filter,

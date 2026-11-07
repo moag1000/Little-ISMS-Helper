@@ -10,10 +10,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * ComplianceRequirement::getFulfillmentPercentage() returns a float, but the
- * root-cause analysis compared it with `=== 0`: requirements without any
- * implemented control fell into no bucket at all, and their categories were
- * labelled missing_control instead of not_started.
+ * Requirements without any tenant fulfilment must land in the not_started
+ * bucket, and their categories must not be labelled missing_control.
  */
 final class ComplianceMappingRootCauseAnalysisTest extends TestCase
 {
@@ -29,7 +27,7 @@ final class ComplianceMappingRootCauseAnalysisTest extends TestCase
             ->setCategory('Organizational')
             ->setPriority('high');
 
-        $analysis = $repository->analyzeGapRootCauses([$gap]);
+        $analysis = $repository->analyzeGapRootCauses([$gap], null);
 
         self::assertCount(1, $analysis['root_causes']['not_started']);
         self::assertSame(1, $analysis['summary']['not_started_count']);

@@ -16,6 +16,7 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\FulfillmentInheritanceLogRepository;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
@@ -40,7 +41,60 @@ class ComplianceInheritanceService
         private readonly FourEyesApprovalService $fourEyesService,
         private readonly AuditLogger $auditLogger,
         private readonly CompliancePolicyService $policy,
+        private readonly ?FulfillmentDerivationService $derivation = null,
     ) {
+    }
+
+    /**
+     * A confirmed or overridden suggestion lands in the fulfilment through the
+     * one writer: a requirement a rule computes keeps its live value on
+     * confirm (the suggestion only says "mapping accepted") and records an
+     * explicit override on a different value; a requirement without rule takes
+     * the value as its hand assessment.
+     */
+    private function writeSuggested(
+        ComplianceRequirementFulfillment $fulfillment,
+        int $percentage,
+        ?User $reviewer = null,
+        ?string $overrideReason = null,
+    ): void {
+        $percentage = min(100, max(0, $percentage));
+        if ($this->derivation === null) {
+            $fulfillment->setFulfillmentPercentage($percentage);
+            return;
+        }
+        if (!$fulfillment->isDerived()) {
+            $this->derivation->setManual($fulfillment, $percentage);
+            return;
+        }
+        if ($overrideReason !== null) {
+            $this->derivation->override(
+                $fulfillment,
+                $percentage,
+                $overrideReason,
+                new DateTimeImmutable('+1 year'),
+                $reviewer,
+                ComplianceRequirementFulfillment::OVERRIDE_INHERITANCE,
+            );
+            return;
+        }
+        $this->derivation->apply($fulfillment);
+    }
+
+    private function materialiseDerived(Tenant $tenant, ComplianceRequirement $requirement, bool $dryRun): bool
+    {
+        $fulfillment = $this->fulfillmentRepository->findOrCreateForTenantAndRequirement($tenant, $requirement);
+        if (!$dryRun || $fulfillment->getId() === null) {
+            $this->derivation?->apply($fulfillment); // a dry run never changes a stored row
+        }
+        if (!$fulfillment->isDerived()) {
+            return false;
+        }
+        if (!$dryRun && $fulfillment->getId() === null) {
+            $this->entityManager->persist($fulfillment);
+        }
+
+        return true;
     }
 
     private function minCommentLength(): int
@@ -72,6 +126,14 @@ class ComplianceInheritanceService
         $now = new DateTimeImmutable();
 
         foreach ($targetRequirements as $targetRequirement) {
+            // A requirement a rule computes inherits live through the approved
+            // mappings — it gets its fulfilment row with the rule value instead of
+            // a suggestion somebody has to confirm.
+            if ($this->derivation !== null && $this->materialiseDerived($tenant, $targetRequirement, $dryRun)) {
+                $skipped++;
+                continue;
+            }
+
             $candidates = $this->findActiveSourceMappings($targetRequirement, $tenant, $now);
             if ($candidates === []) {
                 continue;
@@ -158,7 +220,7 @@ class ComplianceInheritanceService
 
         $fulfillment = $log->getFulfillment();
         if ($fulfillment !== null) {
-            $fulfillment->setFulfillmentPercentage($log->getSuggestedPercentage());
+            $this->writeSuggested($fulfillment, (int) $log->getSuggestedPercentage(), $reviewer);
         }
 
         if ($requestImplementedTransition) {
@@ -242,7 +304,7 @@ class ComplianceInheritanceService
 
         $fulfillment = $log->getFulfillment();
         if ($fulfillment !== null) {
-            $fulfillment->setFulfillmentPercentage(min(100, $newValue));
+            $this->writeSuggested($fulfillment, $newValue, $reviewer, $reason);
         }
 
         $this->fourEyesService->requestApproval(
@@ -329,7 +391,7 @@ class ComplianceInheritanceService
 
             $fulfillment = $log->getFulfillment();
             if ($fulfillment !== null) {
-                $fulfillment->setFulfillmentPercentage($log->getSuggestedPercentage());
+                $this->writeSuggested($fulfillment, (int) $log->getSuggestedPercentage(), $reviewer);
             }
             $confirmed++;
         }

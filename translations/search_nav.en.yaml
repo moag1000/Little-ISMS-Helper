@@ -36,6 +36,9 @@ search_nav:
     app_audit_freeze_index:
         label: 'Audit freeze'
         description: 'Freeze the ISMS state for external audits (read-only)'
+    app_management_decision_index:
+        label: 'Management decisions'
+        description: 'Top-management decisions: policy, acceptance criteria, SoA, risk acceptance, management review'
     app_soa_index:
         label: 'SoA – Statement of Applicability'
         description: 'ISO 27001 Annex A controls, statement of applicability'
@@ -129,6 +132,9 @@ search_nav:
     app_compliance_mapping_hub:
         label: 'Mapping hub'
         description: 'Framework mappings, quality, proposals and import in one place'
+    app_compliance_fulfillment_overrides:
+        label: 'Review overrides'
+        description: 'Fulfilment values set by hand that differ from the rule'
     setup_wizard_index:
         label: 'Setup wizard'
         description: 'Onboarding tour, initial setup'

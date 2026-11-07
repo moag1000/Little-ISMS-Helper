@@ -9,7 +9,7 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 
 /**
  * Bridges the TISAX maturity assessment onto the canonical
@@ -42,13 +42,15 @@ final class TisaxFulfillmentSync
     private const NON_CATALOGUE = ['section', 'legacy_unmapped'];
 
     public function __construct(
-        private readonly EntityManagerInterface $em,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly FulfillmentDerivationService $derivation,
     ) {}
 
     /**
      * Sync fulfilment for every assessed leaf requirement of $framework for $tenant.
+     * The value itself comes from the one fulfilment rule (maturity rule of
+     * FulfillmentRuleEngine), so a hand override with reason stays in force.
      *
      * @return array{synced:int, covered:int}
      */
@@ -59,33 +61,46 @@ final class TisaxFulfillmentSync
         $covered = 0;
 
         foreach ($requirements as $requirement) {
-            $category = $requirement->getCategory();
-            if ($category !== null && in_array($category, self::NON_CATALOGUE, true)) {
-                continue; // sections / parked legacy ids are not assessable controls
+            if (self::derive($requirement) === null) {
+                continue; // unrated / section — leave any existing fulfilment untouched
             }
-            $level = $this->levelOf($requirement);
-            if ($level === null) {
-                continue; // unrated — leave any existing fulfilment untouched
-            }
-
-            [$percentage, $status] = $this->mapLevel($level);
             $fulfillment = $this->fulfillmentRepository->findOrCreateForTenantAndRequirement($tenant, $requirement);
-            $fulfillment->setApplicable(true);
-            $fulfillment->setFulfillmentPercentage($percentage);
-            $fulfillment->setStatus($status);
-            $this->em->persist($fulfillment);
+            $this->derivation->apply($fulfillment);
 
             $synced++;
-            if ($status === 'implemented' || $status === 'verified') {
+            if (in_array($fulfillment->getStatus(), ['implemented', 'verified'], true)) {
                 $covered++;
             }
         }
 
-        if ($synced > 0) {
-            $this->em->flush();
-        }
+        $this->derivation->flush();
 
         return ['synced' => $synced, 'covered' => $covered];
+    }
+
+    /**
+     * Fulfilment of one imported requirement from its Reifegrad, or null when it
+     * is unrated or no assessable catalogue control.
+     *
+     * @return array{percentage: int, status: string, level: string}|null
+     */
+    public static function derive(ComplianceRequirement $requirement): ?array
+    {
+        $category = $requirement->getCategory();
+        if ($category !== null && in_array($category, self::NON_CATALOGUE, true)) {
+            return null;
+        }
+        $level = self::levelOf($requirement);
+        if ($level === null) {
+            return null;
+        }
+        [$percentage, $status] = self::mapLevel($level);
+
+        return [
+            'percentage' => $percentage,
+            'status' => $status,
+            'level' => (string) (array_search($level, self::LEVEL_ORDINAL, true) ?: $level),
+        ];
     }
 
     /**
@@ -97,7 +112,7 @@ final class TisaxFulfillmentSync
      * Security maturity/coverage semantics (spec §9.2 ISB-G3): compliant → met
      * (3), non-compliant → not met (0), not-applicable → null (skipped).
      */
-    private function levelOf(ComplianceRequirement $requirement): ?int
+    private static function levelOf(ComplianceRequirement $requirement): ?int
     {
         if ($requirement->getCategory() === 'data_protection') {
             return match ($requirement->getAssessmentStateDp()) {
@@ -122,7 +137,7 @@ final class TisaxFulfillmentSync
      * ("established"+, = the VDA-ISA target) → 'implemented' (self-declared);
      * RG 1-2 → 'in_progress'; RG 0/unrated → 'not_started'.
      */
-    private function mapLevel(int $level): array
+    private static function mapLevel(int $level): array
     {
         return match (true) {
             $level >= 3  => [100, 'implemented'],

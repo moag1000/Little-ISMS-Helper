@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 /**
  * Approving a requested risk acceptance follows the organisation's approval
  * thresholds (same tiers that pick the approver): residual score up to the
- * manager threshold → ROLE_MANAGER, above → ROLE_ADMIN; role hierarchy applies.
+ * manager threshold → ROLE_MANAGER, above → ROLE_TOP_MGMT (top management, ISO 27001 6.1.3 f); role hierarchy applies.
  */
 #[AllowMockObjectsWithoutExpectations]
 final class RiskAcceptanceVoterTest extends TestCase
@@ -67,6 +67,8 @@ final class RiskAcceptanceVoterTest extends TestCase
         yield 'manager tier, user' => [6, ['ROLE_USER'], VoterInterface::ACCESS_DENIED];
         yield 'manager tier, manager' => [7, ['ROLE_MANAGER'], VoterInterface::ACCESS_GRANTED];
         yield 'executive tier, manager' => [8, ['ROLE_MANAGER'], VoterInterface::ACCESS_DENIED];
+        yield 'executive tier, top management' => [12, ['ROLE_TOP_MGMT'], VoterInterface::ACCESS_GRANTED];
+        yield 'manager tier, top management only' => [5, ['ROLE_TOP_MGMT'], VoterInterface::ACCESS_DENIED];
         yield 'executive tier, admin' => [16, ['ROLE_ADMIN'], VoterInterface::ACCESS_GRANTED];
         yield 'executive tier, super admin via hierarchy' => [25, ['ROLE_SUPER_ADMIN'], VoterInterface::ACCESS_GRANTED];
         yield 'manager tier, admin via hierarchy' => [5, ['ROLE_ADMIN'], VoterInterface::ACCESS_GRANTED];

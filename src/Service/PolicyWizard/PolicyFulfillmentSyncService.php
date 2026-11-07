@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\WizardRun;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
+use App\Service\Compliance\Fulfillment\FulfillmentDerivationService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -59,6 +60,7 @@ final class PolicyFulfillmentSyncService
         private readonly EntityManagerInterface $entityManager,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly LoggerInterface $logger = new NullLogger(),
+        private readonly ?FulfillmentDerivationService $derivation = null,
     ) {
     }
 
@@ -115,6 +117,16 @@ final class PolicyFulfillmentSyncService
 
             foreach ($requirements as $requirement) {
                 $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+
+                // A requirement a rule computes takes its value from the controls
+                // (which the policy wizard's SoA update already moved); the
+                // policy is attached as evidence only.
+                $this->derivation?->apply($fulfillment);
+                if ($fulfillment->isDerived()) {
+                    $fulfillment->addEvidenceDocument($document);
+                    $this->entityManager->persist($fulfillment);
+                    continue;
+                }
 
                 $currentStatus = $fulfillment->getStatus();
                 $currentRank   = self::STATUS_RANK[$currentStatus] ?? 0;

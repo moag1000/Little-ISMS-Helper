@@ -16,6 +16,7 @@ use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +50,7 @@ class ComplianceExportController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
+        private readonly ComplianceRequirementFulfillmentRepository $complianceRequirementFulfillmentRepository,
         private readonly ?TranslatorInterface $translator = null,
     ) {}
 
@@ -359,6 +361,7 @@ class ComplianceExportController extends AbstractController
         $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
         $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
+        $gapPercentages = $tenant ? $this->complianceRequirementFulfillmentRepository->percentagesFor($tenant, $gaps) : [];
 
         // Analyze each gap
         $gapAnalysis = [];
@@ -452,8 +455,8 @@ class ComplianceExportController extends AbstractController
                 $requirement->getCategory() ?? '-',
                 $requirement->getDescription() ?? '-',
                 $priorityMap[$requirement->getPriority() ?? 'low'] ?? $tg->trans('export.label.low', [], 'compliance'),
-                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? $tg->trans('export.status.not_assessed', [], 'compliance'),
-                $requirement->getFulfillmentPercentage() ?? 0,
+                $statusMap[ComplianceRequirementFulfillmentRepository::exportStatusFor($gapPercentages[$requirement->getId()] ?? 0)] ?? $tg->trans('export.status.not_assessed', [], 'compliance'),
+                $gapPercentages[$requirement->getId()] ?? 0,
                 $analysis['gap_reason'] ?? $tg->trans('export.label.not_met', [], 'compliance'),
             ];
         }
@@ -499,6 +502,7 @@ class ComplianceExportController extends AbstractController
         $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
         $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
+        $gapPercentages = $tenant ? $this->complianceRequirementFulfillmentRepository->percentagesFor($tenant, $gaps) : [];
 
         // Analyze gaps
         $gapAnalysis = [];
@@ -580,8 +584,8 @@ class ComplianceExportController extends AbstractController
                 $requirement->getTitle(),
                 $requirement->getCategory() ?? '-',
                 $priorityMapExcel[$requirement->getPriority() ?? 'low'] ?? $tge->trans('export.label.low', [], 'compliance'),
-                $statusMapExcel[$requirement->getStatus() ?? 'not_assessed'] ?? '-',
-                $requirement->getFulfillmentPercentage() ?? 0,
+                $statusMapExcel[ComplianceRequirementFulfillmentRepository::exportStatusFor($gapPercentages[$requirement->getId()] ?? 0)] ?? '-',
+                $gapPercentages[$requirement->getId()] ?? 0,
                 substr($analysis['gap_reason'] ?? $tge->trans('export.label.not_met', [], 'compliance'), 0, 100),
             ];
         }
@@ -625,7 +629,6 @@ class ComplianceExportController extends AbstractController
             throw $this->createNotFoundException('Framework not found');
         }
 
-        // Get current tenant for fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
         $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
         $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($framework);
@@ -662,10 +665,10 @@ class ComplianceExportController extends AbstractController
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
 
         // Calculate priority-weighted gap analysis
-        $priorityWeightedAnalysis = $this->complianceMappingRepository->calculatePriorityWeightedGaps($framework, $gaps);
+        $priorityWeightedAnalysis = $this->complianceMappingRepository->calculatePriorityWeightedGaps($framework, $gaps, $tenant);
 
         // Perform root cause analysis for gaps
-        $rootCauseAnalysis = $this->complianceMappingRepository->analyzeGapRootCauses($gaps);
+        $rootCauseAnalysis = $this->complianceMappingRepository->analyzeGapRootCauses($gaps, $tenant);
 
         // Calculate weighted compliance score (how well critical/high requirements are met)
         $totalRequirements = count($requirements);
@@ -763,10 +766,7 @@ class ComplianceExportController extends AbstractController
                 );
 
                 // Get transitive analysis
-                $transitive = $this->complianceMappingRepository->getTransitiveCompliance(
-                    $framework,
-                    $targetFramework
-                );
+                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework, $this->tenantContext->getCurrentTenant());
 
                 if (($transitive['requirements_helped'] ?? 0) > 0) {
                     $transitiveAnalysis[] = $transitive;
@@ -875,7 +875,7 @@ class ComplianceExportController extends AbstractController
                 }
 
                 $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage($framework, $targetFramework);
-                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework);
+                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework, $this->tenantContext->getCurrentTenant());
 
                 if (($transitive['requirements_helped'] ?? 0) > 0) {
                     $transitiveAnalysis[] = $transitive;
@@ -990,7 +990,7 @@ class ComplianceExportController extends AbstractController
                 }
 
                 $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage($framework, $targetFramework);
-                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework);
+                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework, $this->tenantContext->getCurrentTenant());
 
                 if ($transitive['requirements_helped'] > 0) {
                     $transitiveAnalysis[] = $transitive;

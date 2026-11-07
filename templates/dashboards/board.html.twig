@@ -29,6 +29,9 @@
         {% endfor %}
     {% endif %}
 
+    {# What top management decides (ISO 27001 5.1, 9.3.3; NIS-2 Art. 20) — first, it is the board's job. #}
+    {% include 'management_decision/_board_panel.html.twig' %}
+
     {# Executive RAG Status Overview — Aurora .fa-rag-card via macro #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">{{ _fa_rag_card.render({ status: dashboard.rag_status.security,    title: 'board.rag.security'|trans({}, 'dashboards'),    detail: dashboard.rag_details.security }) }}</div>

@@ -7,7 +7,8 @@ namespace App\Tests\AlvaHint\Rule\ComplianceFramework;
 use App\AlvaHint\Rule\ComplianceFramework\LowRequirementCoverageRule;
 use App\Entity\ComplianceFramework;
 use App\Entity\User;
-use App\Repository\ComplianceRequirementRepository;
+use App\Entity\Tenant;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,13 +19,13 @@ class LowRequirementCoverageRuleTest extends TestCase
 {
     private LowRequirementCoverageRule $rule;
     private User $user;
-    private ComplianceRequirementRepository&\PHPUnit\Framework\MockObject\MockObject $repo;
+    private ComplianceRequirementFulfillmentRepository&\PHPUnit\Framework\MockObject\MockObject $repo;
 
     protected function setUp(): void
     {
-        $this->repo = $this->createMock(ComplianceRequirementRepository::class);
+        $this->repo = $this->createMock(ComplianceRequirementFulfillmentRepository::class);
         $this->rule = new LowRequirementCoverageRule($this->repo);
-        $this->user = new User();
+        $this->user = (new User())->setTenant(new Tenant());
     }
 
     #[Test]
@@ -33,7 +34,8 @@ class LowRequirementCoverageRuleTest extends TestCase
         $framework = $this->createMock(ComplianceFramework::class);
         $framework->method('isActive')->willReturn(true);
         $framework->method('getRequirements')->willReturn(new ArrayCollection([new \stdClass()]));
-        $framework->method('getCompliancePercentage')->willReturn(30.0);
+        $framework->method('getId')->willReturn(7);
+        $this->repo->method('fulfilledShareByFramework')->willReturn([7 => 30.0]);
 
         $this->assertTrue($this->rule->appliesTo($framework, $this->user));
     }
@@ -44,7 +46,8 @@ class LowRequirementCoverageRuleTest extends TestCase
         $framework = $this->createMock(ComplianceFramework::class);
         $framework->method('isActive')->willReturn(true);
         $framework->method('getRequirements')->willReturn(new ArrayCollection([new \stdClass()]));
-        $framework->method('getCompliancePercentage')->willReturn(75.0);
+        $framework->method('getId')->willReturn(7);
+        $this->repo->method('fulfilledShareByFramework')->willReturn([7 => 75.0]);
 
         $this->assertFalse($this->rule->appliesTo($framework, $this->user));
     }
@@ -80,12 +83,23 @@ class LowRequirementCoverageRuleTest extends TestCase
         $framework = $this->createMock(ComplianceFramework::class);
         $framework->method('getId')->willReturn(2);
         $framework->method('getName')->willReturn('ISO 27001');
-        $framework->method('getCompliancePercentage')->willReturn(25.0);
+        $this->repo->method('fulfilledShareByFramework')->willReturn([2 => 25.0]);
 
         $hint = $this->rule->build($framework, $this->user);
         $this->assertSame('compliance_framework.low_coverage', $hint->key);
         $this->assertSame(2, $hint->priorityTier);
         $this->assertSame('warning', $hint->variant);
+    }
+
+    #[Test]
+    public function noHintWithoutOrganisation(): void
+    {
+        $framework = $this->createMock(ComplianceFramework::class);
+        $framework->method('isActive')->willReturn(true);
+        $framework->method('getRequirements')->willReturn(new ArrayCollection([new \stdClass()]));
+        $this->repo->expects($this->never())->method('fulfilledShareByFramework');
+
+        $this->assertFalse($this->rule->appliesTo($framework, new User()));
     }
 
     #[Test]
@@ -95,14 +109,14 @@ class LowRequirementCoverageRuleTest extends TestCase
     }
 
     #[Test]
-    public function percentageIsComputedOnceAndPreloadedOnceAcrossAppliesToAndBuild(): void
+    public function percentageIsComputedOnceAcrossAppliesToAndBuild(): void
     {
         $framework = $this->createMock(ComplianceFramework::class);
         $framework->method('isActive')->willReturn(true);
         $framework->method('getRequirements')->willReturn(new ArrayCollection([new \stdClass()]));
         $framework->method('getName')->willReturn('X');
-        $framework->expects($this->once())->method('getCompliancePercentage')->willReturn(30.0);
-        $this->repo->expects($this->once())->method('preloadMappedControls')->with($framework);
+        $framework->method('getId')->willReturn(7);
+        $this->repo->expects($this->once())->method('fulfilledShareByFramework')->willReturn([7 => 30.0]);
 
         $this->assertTrue($this->rule->appliesTo($framework, $this->user));
         $this->rule->build($framework, $this->user);

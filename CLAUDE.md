@@ -242,6 +242,11 @@ systemctl enable isms-worker && systemctl start isms-worker
 - `WorkflowService` - Workflow instance management (facade — stable public API)
 - `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
 - `ModuleConfigurationService` - Module activation check (per tenant)
+- `Compliance\Fulfillment\FulfillmentDerivationService` - the ONLY writer of a requirement fulfilment's
+  percentage/status: `FulfillmentRuleEngine` derives it from the tenant's controls, mappings and maturity rows;
+  hand values beside a rule are overrides (`override()` with reason + review date), `setManual()` only without
+  rule. `ControlChangeCollector` recomputes on control saves; nightly `app:compliance:refresh-fulfillments`.
+  Never `setFulfillmentPercentage()` directly. Guide: `docs/user-guide/ERFUELLUNG_AUS_DATEN.md`.
 - `Responsibility\ResponsibilityResolver` - the one answer to "who has to act": holders on the record
   (owner/assignee, Person via `linkedUser`) → deputies → fallback roles (hierarchy, not mere admin
   inheritance) → admins. Never route reminders or approvals via `findByRoleInTenant()`/`getRoles()`.
@@ -454,7 +459,7 @@ Every entity with a `status` field that goes through staged transitions uses **S
 - `isms_objective_lifecycle` (5 custom stages: in_progress / achieved / delayed / cancelled)
 - `policy_template_lifecycle` (5 stages, isActive-sync on publish/archive)
 - `asset_lifecycle` (7 stages: active / in_use / returned / retired / disposed + 4-eyes on disposal)
-- `audit_program_lifecycle`, `document_section_lifecycle` (policy section sign-off, roles empty — service-only), `transfer_impact_assessment_lifecycle` (`privacy`), `threat_led_penetration_test_lifecycle` (`nis2_dora`), `supplier_questionnaire_lifecycle`, `access_review_campaign_lifecycle` (as of 2026-10; full list: `config/packages/workflow.yaml` imports + `EntityTypeRegistry`)
+- `audit_program_lifecycle`, `document_section_lifecycle` (policy section sign-off, roles empty — service-only), `transfer_impact_assessment_lifecycle` (`privacy`), `threat_led_penetration_test_lifecycle` (`nis2_dora`), `supplier_questionnaire_lifecycle`, `access_review_campaign_lifecycle`, `management_decision_lifecycle` (top-management decisions: approve/reject `ROLE_TOP_MGMT`; decisions taken elsewhere are written via `ManagementDecisionService::record()`) (as of 2026-11; full list: `config/packages/workflow.yaml` imports + `EntityTypeRegistry`)
 - `compliance_mapping_lifecycle` — global catalogue data, deliberately NOT in `EntityTypeRegistry` (no tenant overrides); `ComplianceMappingController` enforces the static YAML roles
 
 `tests/PHPStan/Rule/NoDirectSetStatusRule.php` derives its entity list from `EntityTypeRegistry::managedEntityClasses()` — registering an entity automatically bans direct `setStatus()` on it.

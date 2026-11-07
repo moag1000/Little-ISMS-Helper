@@ -36,6 +36,9 @@ search_nav:
     app_audit_freeze_index:
         label: 'Audit-Freeze'
         description: 'ISMS-Status einfrieren für externe Audits (Read-Only-Modus)'
+    app_management_decision_index:
+        label: 'Leitungsentscheidungen'
+        description: 'Beschlüsse der Leitung: Leitlinie, Akzeptanzkriterien, SoA, Risikoakzeptanz, Managementbewertung'
     app_soa_index:
         label: 'SoA – Statement of Applicability'
         description: 'ISO 27001 Annex-A Controls, Anwendbarkeitserklärung'
@@ -129,6 +132,9 @@ search_nav:
     app_compliance_mapping_hub:
         label: 'Mapping-Hub'
         description: 'Framework-Mappings, Qualität, Vorschläge und Import an einem Ort'
+    app_compliance_fulfillment_overrides:
+        label: 'Übersteuerungen prüfen'
+        description: 'Erfüllungswerte, die von Hand von der Regel abweichen'
     setup_wizard_index:
         label: 'Setup-Wizard'
         description: 'Onboarding-Tour, Ersteinrichtung'

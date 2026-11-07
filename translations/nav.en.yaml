@@ -39,6 +39,7 @@ nav:
     policy_wizard_konzern_defaults: 'Group defaults'
     industry_baselines: 'Industry Baselines'
     certificates: 'Certificates'
+    fulfillment_overrides: 'Overrides'
     group_report: 'Group Reports'
     management_reports: 'Management Reports'
     certification_bundle: 'Certification Bundle'
@@ -47,6 +48,7 @@ nav:
     tenants: Tenants
     data_repair: 'Data Repair'
     management_reviews: 'Management Reviews'
+    management_decisions: Management decisions
     bc_plans: 'BC Plans'
     bc_exercises: 'BC Exercises'
     incidents: Incidents
@@ -236,6 +238,7 @@ nav:
             audits: 'Internal and external audits'
             training: 'Security awareness training'
             management_reviews: 'Management review meetings'
+            management_decisions: 'Decisions and approvals of top management with evidence'
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
             mapping_hub: 'Entry point: wizard, seeds, quality, transitive coverage'
@@ -260,6 +263,7 @@ nav:
             policy_wizard_konzern_defaults: 'Set group-wide policy defaults for subsidiaries'
             industry_baselines: 'Per-industry starter packs — do not bootstrap from zero'
             certificates: 'Record certificates and automatically evidence requirements as fulfilled'
+            fulfillment_overrides: 'Review hand values next to the rule'
             group_report: 'Corporate tree + NIS2 registration matrix (Group-CISO)'
             management_reports: 'Board One-Pager, Executive Summary, Risk/BCM/Compliance reports (PDF + Excel)'
             certification_bundle: 'All ISMS documents in one ZIP archive for certification audits'

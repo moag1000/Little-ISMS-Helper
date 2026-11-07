@@ -39,6 +39,7 @@ nav:
     policy_wizard_konzern_defaults: 'Konzern-Defaults'
     industry_baselines: 'Branchen-Baselines'
     certificates: 'Zertifikate'
+    fulfillment_overrides: 'Übersteuerungen'
     group_report: 'Konzern-Reports'
     management_reports: 'Management-Reports'
     certification_bundle: 'Zertifizierungspaket'
@@ -47,6 +48,7 @@ nav:
     tenants: Organisationen
     data_repair: Datenreparatur
     management_reviews: Managementbewertungen
+    management_decisions: Leitungsentscheidungen
     bc_plans: BC-Pläne
     bc_exercises: BC-Übungen
     incidents: Vorfälle
@@ -234,6 +236,7 @@ nav:
             audits: 'Interne und externe Audits'
             training: 'Sicherheitsbewusstseins-Schulungen'
             management_reviews: 'Managementbewertungs-Meetings'
+            management_decisions: 'Beschlüsse und Billigungen der Leitung mit Nachweis'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
@@ -258,6 +261,7 @@ nav:
             policy_wizard_konzern_defaults: 'Konzernweite Policy-Vorgaben für Tochtergesellschaften setzen'
             industry_baselines: 'Starter-Pakete pro Branche — ISMS nicht von null aufbauen'
             certificates: 'Zertifikate erfassen und Anforderungen automatisch als erfüllt nachweisen'
+            fulfillment_overrides: 'Hand-Werte neben der Regel prüfen'
             group_report: 'Konzernstruktur + NIS2-Registrierungsmatrix (Konzern-ISB/Group-CISO)'
             management_reports: 'Board One-Pager, Executive Summary, Risk/BCM/Compliance-Berichte (PDF + Excel)'
             certification_bundle: 'Alle ISMS-Dokumente in einem ZIP-Archiv für die Zertifizierung'

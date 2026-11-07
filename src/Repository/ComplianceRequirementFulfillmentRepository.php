@@ -178,6 +178,113 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Gap-export status vocabulary derived from a fulfilment percentage.
+     */
+    public static function exportStatusFor(int $percentage): string
+    {
+        return match (true) {
+            $percentage >= 100 => 'implemented',
+            $percentage > 0 => 'partially_implemented',
+            default => 'not_implemented',
+        };
+    }
+
+    /**
+     * Share of a framework's top-level requirements (core/detailed, no parent)
+     * the organisation has fulfilled to 100 %, per framework — the one
+     * tenant-aware "Erfüllung" figure of framework lists and hints.
+     *
+     * @param list<int> $frameworkIds
+     * @return array<int, float> framework id → percentage (one decimal)
+     */
+    public function fulfilledShareByFramework(Tenant $tenant, array $frameworkIds): array
+    {
+        $result = array_fill_keys($frameworkIds, 0.0);
+        if ($frameworkIds === []) {
+            return $result;
+        }
+        $em = $this->getEntityManager();
+
+        /** @var list<array{fw: int|string, n: int|string}> $totals */
+        $totals = $em->createQueryBuilder()
+            ->select('IDENTITY(r.framework) AS fw', 'COUNT(r.id) AS n')
+            ->from(ComplianceRequirement::class, 'r')
+            ->where('r.framework IN (:fw)')
+            ->andWhere('r.parentRequirement IS NULL')
+            ->andWhere("r.requirementType IN ('core', 'detailed')")
+            ->setParameter('fw', $frameworkIds)
+            ->groupBy('r.framework')
+            ->getQuery()
+            ->getArrayResult();
+
+        /** @var list<array{fw: int|string, n: int|string}> $fulfilled */
+        $fulfilled = $this->createQueryBuilder('f')
+            ->select('IDENTITY(r.framework) AS fw', 'COUNT(f.id) AS n')
+            ->join('f.requirement', 'r')
+            ->where('f.tenant = :tenant')
+            ->andWhere('r.framework IN (:fw)')
+            ->andWhere('r.parentRequirement IS NULL')
+            ->andWhere("r.requirementType IN ('core', 'detailed')")
+            ->andWhere('f.applicable = true')
+            ->andWhere('f.fulfillmentPercentage >= 100')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('fw', $frameworkIds)
+            ->groupBy('r.framework')
+            ->getQuery()
+            ->getArrayResult();
+
+        $done = [];
+        foreach ($fulfilled as $row) {
+            $done[(int) $row['fw']] = (int) $row['n'];
+        }
+        foreach ($totals as $row) {
+            $total = (int) $row['n'];
+            $id = (int) $row['fw'];
+            $result[$id] = $total > 0 ? round(($done[$id] ?? 0) / $total * 100, 1) : 0.0;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Batch variant of percentageFor(): one query for many requirements.
+     * Requirements without a fulfillment row for the tenant map to 0.
+     *
+     * @param iterable<ComplianceRequirement> $requirements
+     * @return array<int, int> requirement id => percentage (0-100)
+     */
+    public function percentagesFor(Tenant $tenant, iterable $requirements): array
+    {
+        $ids = [];
+        foreach ($requirements as $requirement) {
+            $id = $requirement->getId();
+            if ($id !== null) {
+                $ids[$id] = $id;
+            }
+        }
+        $result = array_fill_keys(array_keys($ids), 0);
+        if ($ids === []) {
+            return $result;
+        }
+
+        /** @var list<array{rid: int|string, pct: int|string|null}> $rows */
+        $rows = $this->createQueryBuilder('f')
+            ->select('IDENTITY(f.requirement) AS rid', 'f.fulfillmentPercentage AS pct')
+            ->where('f.tenant = :tenant')
+            ->andWhere('f.requirement IN (:ids)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('ids', array_values($ids))
+            ->getQuery()
+            ->getArrayResult();
+
+        foreach ($rows as $row) {
+            $result[(int) $row['rid']] = (int) ($row['pct'] ?? 0);
+        }
+
+        return $result;
+    }
+
+    /**
      * Return the titles of evidence documents linked to the ComplianceRequirement
      * that belong to the given tenant.
      *
@@ -284,5 +391,51 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
             'not_started' => (int) $result['not_started'],
             'avg_fulfillment' => round((float) $result['avg_fulfillment'], 2),
         ];
+    }
+
+    /**
+     * Fulfilments of one organisation whose value a person set next to a rule
+     * (override), optionally by source and only those due for review.
+     *
+     * @return list<ComplianceRequirementFulfillment>
+     */
+    public function findOverrides(Tenant $tenant, ?string $source = null, bool $dueOnly = false): array
+    {
+        $qb = $this->createQueryBuilder('f')
+            ->addSelect('r', 'fw')
+            ->join('f.requirement', 'r')
+            ->join('r.framework', 'fw')
+            ->where('f.tenant = :tenant')
+            ->andWhere('f.overrideSource IS NOT NULL')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('f.overrideReviewDue', \SortDirection::Ascending)
+            ->addOrderBy('fw.code', \SortDirection::Ascending)
+            ->addOrderBy('r.requirementId', \SortDirection::Ascending);
+        if ($source !== null) {
+            $qb->andWhere('f.overrideSource = :source')->setParameter('source', $source);
+        }
+        if ($dueOnly) {
+            $qb->andWhere('f.overrideReviewDue <= :today')->setParameter('today', new \DateTimeImmutable('today'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Overrides whose review date has come, across organisations (planner source).
+     *
+     * @return list<ComplianceRequirementFulfillment>
+     */
+    public function findOverridesDueForReview(Tenant $tenant, \DateTimeImmutable $until): array
+    {
+        return $this->createQueryBuilder('f')
+            ->where('f.tenant = :tenant')
+            ->andWhere('f.overrideSource IS NOT NULL')
+            ->andWhere('f.overrideReviewDue IS NOT NULL')
+            ->andWhere('f.overrideReviewDue <= :until')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('until', $until)
+            ->getQuery()
+            ->getResult();
     }
 }
