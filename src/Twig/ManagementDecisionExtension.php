@@ -8,6 +8,7 @@ use App\Entity\ManagementDecision;
 use App\Entity\Tenant;
 use App\Enum\ManagementDecisionType;
 use App\Repository\ManagementDecisionRepository;
+use App\Service\ManagementDecision\ManagementDecisionService;
 use App\Service\ManagementDecision\StandingApprovalSource;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -38,6 +39,7 @@ final class ManagementDecisionExtension
         private readonly TenantContext $tenantContext,
         private readonly ManagementDecisionRepository $repository,
         private readonly StandingApprovalSource $standing,
+        private readonly ManagementDecisionService $decisions,
     ) {
     }
 
