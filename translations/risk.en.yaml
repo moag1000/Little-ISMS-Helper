@@ -37,8 +37,6 @@ risk:
     note_from_incident: '(Derived from incident ID=%id%.)'
     title_from_asset: 'Risk to %name%'
     note_from_asset: '(This record was derived from asset ID=%id%.)'
-  preview:
-    title: Risk Information
   filter:
     owner_placeholder: Search for owner...
     level_label: Risk Level

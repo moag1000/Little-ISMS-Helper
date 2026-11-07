@@ -22,10 +22,6 @@ incident:
       title: 'DSGVO Art. 33 — Datenpanne melden (72h-Frist)'
       body: 'Diese Maßnahme erstellt eine vorbefüllte Datenpanne basierend auf dem Vorfall. Frist: 72h ab Detection.'
       cta: 'Datenpanne jetzt anlegen'
-  preview:
-    title: Vorfalls-Informationen
-    affected_assets: Betroffene Assets (%count%)
-    more_assets: + %count% weitere
   breadcrumb: Vorfallsmanagement
   header:
     title: Vorfallsmanagement
@@ -50,6 +46,7 @@ incident:
     back_to_list: Zurück zur Liste
     delete: Löschen
     download_nis2_report: NIS2-Report herunterladen
+    download_dora_report: DORA-IKT-Meldung herunterladen
     mus_export: 'BSI-MUS-Export'
     mus_export_group: 'BSI-MUS-Exportoptionen'
     mus_early_warning: 'Frühwarnung (24h)'

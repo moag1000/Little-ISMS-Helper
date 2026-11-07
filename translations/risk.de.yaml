@@ -37,8 +37,6 @@ risk:
     note_from_incident: '(Diese Erfassung wurde aus Vorfall ID=%id% abgeleitet.)'
     title_from_asset: 'Risiko für %name%'
     note_from_asset: '(Diese Erfassung wurde aus Asset ID=%id% abgeleitet.)'
-  preview:
-    title: Risiko-Informationen
   filter:
     owner_placeholder: Suche nach Verantwortlichem...
     level_label: Risikolevel

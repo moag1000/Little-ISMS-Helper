@@ -7,8 +7,6 @@ asset:
     cloned: 'Asset has been duplicated. File binary may need re-upload.'
   clone:
     success: 'Asset has been duplicated. File binary may need re-upload.'
-  preview:
-    title: Asset Information
   action:
     bcm_insights: BCM insights
     create: Create asset

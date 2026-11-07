@@ -598,20 +598,6 @@ class DPIAController extends AbstractController
         ]);
     }
 
-    #[Route('/dpia/{id}/validate', name: 'app_dpia_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): JsonResponse
-    {
-        $errors = $this->dataProtectionImpactAssessmentService->validate($dataProtectionImpactAssessment);
-        $isCompliant = $errors === [];
-
-        return $this->json([
-            'is_compliant' => $isCompliant,
-            'errors' => $errors,
-            'completeness_percentage' => $dataProtectionImpactAssessment->getCompletenessPercentage(),
-            'is_complete' => $dataProtectionImpactAssessment->isComplete(),
-        ]);
-    }
-
     /**
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
      * DPIAs have no blocking FK relations — returns empty dependencies.

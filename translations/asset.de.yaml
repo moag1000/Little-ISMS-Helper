@@ -7,8 +7,6 @@ asset:
     cloned: 'Asset wurde dupliziert. Datei-Binary muss ggf. neu hochgeladen werden.'
   clone:
     success: 'Asset wurde dupliziert. Datei-Binary muss ggf. neu hochgeladen werden.'
-  preview:
-    title: Asset-Informationen
   action:
     bcm_insights: BCM-Erkenntnisse
     create: Asset anlegen

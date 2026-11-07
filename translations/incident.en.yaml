@@ -21,10 +21,6 @@ incident:
       title: 'GDPR Art. 33 — report data breach (72h deadline)'
       body: 'This action creates a prefilled data breach based on the incident. Deadline: 72h from detection.'
       cta: 'Create data breach now'
-  preview:
-    title: Incident Information
-    affected_assets: Affected Assets (%count%)
-    more_assets: + %count% more
   breadcrumb: Incident Management
   header:
     title: Incident Management
@@ -47,6 +43,7 @@ incident:
     back_to_list: Back to List
     delete: Delete
     download_nis2_report: Download NIS2 Report
+    download_dora_report: Download DORA ICT incident report
     mus_export: 'BSI MUS export'
     mus_export_group: 'BSI MUS export options'
     mus_early_warning: 'Early warning (24h)'

@@ -21,7 +21,6 @@ use App\Service\TenantContext;
 use App\Service\WizardSessionDiffService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -227,22 +226,6 @@ class ComplianceWizardController extends AbstractController
         }
 
         return $redirect;
-    }
-
-    #[Route('/{wizard}/api/assess', name: 'app_compliance_wizard_api_assess', methods: ['GET'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|bsi_gspp|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
-    public function apiAssess(string $wizard): JsonResponse
-    {
-        if (!$this->wizardService->isWizardAvailable($wizard)) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'Wizard not available',
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $tenant = $this->tenantContext->getCurrentTenant();
-        $result = $this->wizardService->runAssessment($wizard, $tenant);
-
-        return new JsonResponse($result);
     }
 
     /**
