@@ -8,6 +8,9 @@ use App\Entity\Incident;
 use App\Entity\Tenant;
 use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -79,5 +82,36 @@ final class IncidentAdapter implements SourceAdapter
     {
         assert($item instanceof Incident);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<Incident> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof Incident;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof Incident);
+
+        return Responsibility::holders($item->getResponsiblePerson())
+            ->orRoles('ROLE_ISB', 'ROLE_CISO');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof Incident);
+
+        return new RecordLink('app_incident_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'incidents_open_assigned', leadDays: null, normReference: 'ISO 27001 A.5.24–5.26');
     }
 }

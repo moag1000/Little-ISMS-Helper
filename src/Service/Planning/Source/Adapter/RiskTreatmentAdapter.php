@@ -8,6 +8,9 @@ use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Enum\RiskStatus;
 use App\Repository\RiskRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -78,5 +81,37 @@ final class RiskTreatmentAdapter implements SourceAdapter
     {
         assert($item instanceof Risk);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<Risk> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof Risk;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof Risk);
+
+        return Responsibility::holders($item->getRiskOwner(), $item->getRiskOwnerPerson())
+            ->withDeputies(...$item->getRiskOwnerDeputyPersons())
+            ->orRoles('ROLE_RISK_MANAGER');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof Risk);
+
+        return new RecordLink('app_risk_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'risk_acceptance_expiring', leadDays: 30, normReference: 'ISO 27001 6.1.3 f');
     }
 }

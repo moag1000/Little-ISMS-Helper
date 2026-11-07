@@ -8,6 +8,9 @@ use App\Entity\ManagementReview;
 use App\Entity\Tenant;
 use App\Enum\ManagementReviewStatus;
 use App\Repository\ManagementReviewRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -73,5 +76,36 @@ final class ManagementReviewAdapter implements SourceAdapter
     {
         assert($item instanceof ManagementReview);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<ManagementReview> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof ManagementReview;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof ManagementReview);
+
+        return Responsibility::holders($item->getReviewedBy(), $item->getReviewedByPerson())
+            ->orRoles('ROLE_ISB', 'ROLE_CISO');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof ManagementReview);
+
+        return new RecordLink('app_management_review_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'management_review_upcoming', leadDays: 90, normReference: 'ISO 27001 9.3');
     }
 }

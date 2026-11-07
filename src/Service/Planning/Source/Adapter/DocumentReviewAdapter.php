@@ -7,6 +7,9 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Repository\DocumentRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -86,5 +89,36 @@ final class DocumentReviewAdapter implements SourceAdapter
     {
         assert($item instanceof Document);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<Document> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof Document;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof Document);
+
+        return Responsibility::holders($item->getOwnerPerson())
+            ->orRoles('ROLE_ISB', 'ROLE_CISO');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof Document);
+
+        return new RecordLink('app_document_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'documents_review_overdue', leadDays: 14, normReference: 'ISO 27001 7.5.3 / A.5.1');
     }
 }

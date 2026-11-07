@@ -8,6 +8,9 @@ use App\Entity\DataBreach;
 use App\Entity\Tenant;
 use App\Enum\DataBreachStatus;
 use App\Repository\DataBreachRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 use DateTime;
@@ -83,5 +86,42 @@ final class DataBreachAdapter implements SourceAdapter
     {
         assert($item instanceof DataBreach);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<DataBreach> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof DataBreach;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof DataBreach);
+
+        return Responsibility::holders(
+            $item->getAssessor(),
+            $item->getAssessorPerson(),
+            $item->getDataProtectionOfficer(),
+            $item->getDataProtectionOfficerPerson(),
+        )
+            ->withDeputies(...$item->getAssessorDeputyPersons(), ...$item->getDataProtectionOfficerDeputyPersons())
+            ->orRoles('ROLE_DPO');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof DataBreach);
+
+        return new RecordLink('app_data_breach_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'data_breaches_72h_ticking', leadDays: null, normReference: 'DSGVO Art. 33', urgentHours: 72);
     }
 }

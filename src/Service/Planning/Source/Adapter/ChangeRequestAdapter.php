@@ -8,6 +8,9 @@ use App\Entity\ChangeRequest;
 use App\Entity\Tenant;
 use App\Enum\ChangeRequestStatus;
 use App\Repository\ChangeRequestRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -79,5 +82,35 @@ final class ChangeRequestAdapter implements SourceAdapter
     {
         assert($item instanceof ChangeRequest);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<ChangeRequest> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof ChangeRequest;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof ChangeRequest);
+
+        return Responsibility::roles('ROLE_CISO', 'ROLE_ISB');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof ChangeRequest);
+
+        return new RecordLink('app_change_request_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'change_requests_due', leadDays: 14, normReference: 'ISO 27001 6.3 / A.8.32');
     }
 }

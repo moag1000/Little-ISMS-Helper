@@ -7,6 +7,9 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\AuditFinding;
 use App\Entity\Tenant;
 use App\Repository\AuditFindingRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -73,5 +76,36 @@ final class AuditFindingAdapter implements SourceAdapter
     {
         assert($item instanceof AuditFinding);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<AuditFinding> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof AuditFinding;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof AuditFinding);
+
+        return Responsibility::holders($item->getAssignedTo(), $item->getAssignedPerson())
+            ->orRoles('ROLE_ISB', 'ROLE_CISO');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof AuditFinding);
+
+        return new RecordLink('app_audit_finding_show', ['id' => (int) $item->getId()]);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'findings', leadDays: 14, normReference: 'ISO 27001 10.2');
     }
 }

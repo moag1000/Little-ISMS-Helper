@@ -7,6 +7,9 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\Tenant;
 use App\Repository\FourEyesApprovalRequestRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -79,5 +82,37 @@ final class FourEyesAdapter implements SourceAdapter
     {
         assert($item instanceof FourEyesApprovalRequest);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<FourEyesApprovalRequest> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof FourEyesApprovalRequest;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof FourEyesApprovalRequest);
+
+        return Responsibility::holders($item->getRequestedApprover(), $item->getRequestedApproverPerson())
+            ->withDeputies(...$item->getRequestedApproverDeputyPersons())
+            ->orRoles('ROLE_MANAGER');
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof FourEyesApprovalRequest);
+
+        return new RecordLink('app_four_eyes_inbox', []);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'four_eyes', leadDays: null, decision: true);
     }
 }

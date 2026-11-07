@@ -7,6 +7,9 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\PolicyAcknowledgement;
 use App\Entity\Tenant;
 use App\Repository\PolicyAcknowledgementRepository;
+use App\Service\Deadline\DeadlineProfile;
+use App\Service\Deadline\RecordLink;
+use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
 
@@ -78,5 +81,35 @@ final class PolicyAckAdapter implements SourceAdapter
     {
         assert($item instanceof PolicyAcknowledgement);
         return (int) $item->getId();
+    }
+
+    /** @return iterable<PolicyAcknowledgement> */
+    public function findOpen(Tenant $tenant): iterable
+    {
+        return $this->findConvertible($tenant);
+    }
+
+    public function supports(object $item): bool
+    {
+        return $item instanceof PolicyAcknowledgement;
+    }
+
+    public function responsibleOf(object $item): Responsibility
+    {
+        assert($item instanceof PolicyAcknowledgement);
+
+        return Responsibility::holders($item->getUser());
+    }
+
+    public function linkOf(object $item): ?RecordLink
+    {
+        assert($item instanceof PolicyAcknowledgement);
+
+        return new RecordLink('app_policy_ack_inbox', []);
+    }
+
+    public function profile(): DeadlineProfile
+    {
+        return new DeadlineProfile(bucket: 'acknowledgements', leadDays: null, normReference: 'ISO 27001 A.5.1', decision: true);
     }
 }
