@@ -43,7 +43,7 @@ final class DoraExitPlanTestSource extends EntityDeadlineSource
         return $this->entityManager->getRepository(DoraExitPlan::class)->findBy(['tenant' => $tenant]);
     }
 
-    public function dueDateOf(object $item): ?DateTimeInterface
+    public function dueDateOf(object $item): DateTimeInterface
     {
         assert($item instanceof DoraExitPlan);
         if ($item->getTestedAt() !== null) {

@@ -53,7 +53,7 @@ final class RetentionDeletionSource implements DeadlineSource
         $now = new DateTimeImmutable();
         $items = [];
         foreach ($tenant->getDataRetentionPolicies() ?? [] as $type => $policy) {
-            $days = (int) ($policy['retention_days'] ?? 0);
+            $days = (int) $policy['retention_days'];
             if (empty($policy['auto_delete']) || $days <= 0 || !isset(RetentionEnforcementService::REGISTRY[$type])) {
                 continue;
             }

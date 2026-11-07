@@ -108,7 +108,7 @@ final class StandingApprovalSource implements DeadlineSource
     }
 
     /** Missing approvals are due now; running-out ones at their end date. */
-    public function dueDateOf(object $item): ?DateTimeInterface
+    public function dueDateOf(object $item): DateTimeInterface
     {
         assert($item instanceof StandingApproval);
 

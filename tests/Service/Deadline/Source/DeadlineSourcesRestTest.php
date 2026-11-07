@@ -100,7 +100,7 @@ final class DeadlineSourcesRestTest extends TestCase
         $plan = new DoraExitPlan();
         $plan->setTestedAt(new DateTimeImmutable('2026-02-10'));
 
-        self::assertSame('2027-02-10', $source->dueDateOf($plan)?->format('Y-m-d'));
+        self::assertSame('2027-02-10', $source->dueDateOf($plan)->format('Y-m-d'));
     }
 
     #[Test]
