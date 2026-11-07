@@ -420,6 +420,19 @@
                 </div>
             {% endif %}
 
+            {% if incident.failedControls|length > 0 %}
+                <div class="detail-section">
+                    <h3 class="h5">{{ 'incident.field.failed_controls'|trans({}, 'incident') }}</h3>
+                    <ul class="list-unstyled mb-0">
+                        {% for control in incident.failedControls %}
+                            <li class="mb-1">
+                                <a href="{{ path('app_soa_show', { id: control.id }) }}"><code>{{ control.controlId }}</code> {{ control.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
             {# Structured CAPA card (preferred display). #}
             {% if linkedCorrectiveActions is defined and linkedCorrectiveActions|length > 0 %}
                 <div class="detail-section">

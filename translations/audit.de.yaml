@@ -279,6 +279,14 @@ checklist:
     flash:
         saved: '%count% Items gespeichert'
         locked: 'Audit ist abgeschlossen oder eingereicht; die Checkliste ist gesperrt.'
+        generated: '{0} Keine neuen Anforderungen im Scope.|{1} 1 Anforderung ergänzt.|]1,Inf[ %count% Anforderungen ergänzt.'
+    action:
+        generate: 'Aus dem Scope ergänzen'
+    scope: 'Aus dem Scope: %frameworks%'
+    feeds_fulfillment: 'Jedes Urteil fließt in die Erfüllung der Anforderung (12 Monate gültig). Nicht konform senkt sie, konform auf vollständig erfüllter Anforderung verifiziert sie.'
+    empty:
+        title: 'Keine Anforderungen im Scope.'
+        text: 'Im Audit ein Framework wählen oder den Katalog laden; danach wird die Checkliste daraus erzeugt.'
 
 pdf:
     title: 'Auditbericht'

@@ -31,7 +31,6 @@ my_day:
         data_breaches_open: 'Open data breaches'
         reporting_duties: 'Reporting duties'
         recurring_duties: 'Recurring duties'
-        audit_checklist_due: 'Audit checklist due'
         change_requests_pending_approval: 'CRs pending approval'
         management_review_tasks: 'Management review tasks'
         management_review_upcoming: 'Mgmt review upcoming'
@@ -99,7 +98,6 @@ my_day:
         data_breaches_open: 'Data breaches — in progress (GDPR Art. 33/34)'
         reporting_duties: 'Reporting duties — reports to authorities (NIS-2, DORA, GDPR)'
         recurring_duties: 'Duty calendar — recurring duties of the standards'
-        audit_checklist_due: 'Audit checklist — due within 7 days'
         change_requests_pending_approval: 'Change requests — pending approval'
         management_review_tasks: 'Management review — decided tasks (ISO 27001 9.3.3)'
         management_review_upcoming: 'Management review — upcoming (90-day window)'
@@ -168,9 +166,6 @@ my_day:
         recurring_duties:
             title: 'Duty calendar — due'
             empty: 'No recurring duties due in the next 30 days.'
-        audit_checklist_due:
-            title: 'Audit checklist — due'
-            empty: 'No audit checklist items due in the next 7 days.'
         change_requests_pending_approval:
             title: 'Change requests — pending approval'
             empty: 'No change requests waiting for approval.'
