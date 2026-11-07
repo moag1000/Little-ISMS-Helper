@@ -45,16 +45,16 @@
         'nis2_reporting': {
             'label': 'incident.section.nis2_reporting'|trans({}, 'incident'),
             'fields': [
-                'nis2Category', 'nis2SuspectedMalicious', 'crossBorderImpact',
+                'nis2Category', 'nis2SuspectedMalicious', 'notificationRequired', 'crossBorderImpact',
                 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt',
                 'affectedUsersCount', 'estimatedFinancialImpact',
                 'nationalAuthorityNotified', 'authorityReferenceNumber',
                 'ictIncidentClassification', 'reputationalImpact',
                 'dataLossOccurred', 'dataLeakageOccurred', 'recurringIncident',
-                'economicImpact', 'criticalServicesAffected',
+                'criticalServicesAffected',
                 'clientsAffected', 'clientsAffectedFinancialVolume',
                 'replicationOfImpact',
-                'initialReportSubmittedAt', 'intermediateReportSubmittedAt',
+                'initialReportSubmittedAt', 'intermediateReportSubmittedAt', 'doraFinalReportSubmittedAt',
                 'dataRecoveryStrategy'
             ]
         }
@@ -141,6 +141,7 @@
         'containmentActions': 12,
         'nis2Category': 6,
         'nis2SuspectedMalicious': 6,
+        'notificationRequired': 6,
         'crossBorderImpact': 6,
         'earlyWarningReportedAt': 4,
         'detailedNotificationReportedAt': 4,
@@ -154,13 +155,13 @@
         'dataLossOccurred': 4,
         'dataLeakageOccurred': 4,
         'recurringIncident': 4,
-        'economicImpact': 6,
         'criticalServicesAffected': 6,
         'clientsAffected': 6,
         'clientsAffectedFinancialVolume': 6,
         'replicationOfImpact': 12,
         'initialReportSubmittedAt': 6,
         'intermediateReportSubmittedAt': 6,
+        'doraFinalReportSubmittedAt': 6,
         'dataRecoveryStrategy': 12
     },
     'translation_domain': 'incident',

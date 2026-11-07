@@ -849,35 +849,17 @@ final class SourceAdaptersTest extends TestCase
     }
 
     #[Test]
-    public function testDataBreachAdapterDueDateDerived72h(): void
+    public function testDataBreachAdapterLeavesThe72hNotificationToTheReportingDuty(): void
     {
         $adapter = new DataBreachAdapter(
             $this->createStub(DataBreachRepository::class),
         );
 
-        $detectedAt = new DateTimeImmutable('2026-10-01 10:00:00');
-        $item = (new DataBreach())
-            ->setTitle('Email leak')
-            ->setReferenceNumber('BREACH-2026-001')
-            ->setDetectedAt($detectedAt);
+        $item = (new DataBreach())->setDetectedAt(new DateTimeImmutable('2026-10-01 10:00:00'));
 
-        $due = $adapter->dueDateOf($item);
-        self::assertNotNull($due);
-        // Derived: +72 hours = 2026-10-04 10:00:00
-        self::assertSame('2026-10-04 10:00:00', $due->format('Y-m-d H:i:s'));
-    }
-
-    #[Test]
-    public function testDataBreachAdapterDueDateIsSetOnFreshEntity(): void
-    {
-        $adapter = new DataBreachAdapter(
-            $this->createStub(DataBreachRepository::class),
-        );
-
-        // DataBreach constructor pre-fills detectedAt = now, so dueDateOf is never null
-        $item = new DataBreach();
-        // The due date is +72h from detectedAt (which is auto-set in constructor)
-        self::assertNotNull($adapter->dueDateOf($item));
+        // GDPR Art. 33 is one duty, listed once: ReportingDutySource.
+        self::assertNull($adapter->dueDateOf($item));
+        self::assertNull($adapter->profile()->urgentHours);
     }
 
     #[Test]

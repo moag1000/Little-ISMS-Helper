@@ -649,7 +649,6 @@ gstool_import:
 'incident.validation.reported_by_max_length': 'Reporter name cannot exceed {{ limit }} characters.'
 'incident.validation.assigned_to_max_length': 'Assignee name cannot exceed {{ limit }} characters.'
 'incident.validation.data_breach_flag_required': 'Data breach flag is required.'
-'incident.validation.notification_required_flag_required': 'Notification-required flag is required.'
 'incident.validation.nis2_category_invalid': 'NIS2 category must be one of: {{ choices }}.'
 
 # InterestedParty

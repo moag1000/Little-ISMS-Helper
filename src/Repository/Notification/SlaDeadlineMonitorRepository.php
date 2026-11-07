@@ -87,22 +87,49 @@ class SlaDeadlineMonitorRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find the current active or recent SLA monitor for a specific entity.
-     * Returns the most-recently triggered monitor, or null if none exists.
+     * All SLA monitors of one record (one per deadline type).
+     *
+     * @return list<SlaDeadlineMonitor>
      */
-    public function findForEntity(string $entityType, int $entityId, Tenant $tenant): ?SlaDeadlineMonitor
+    public function findAllForEntity(string $entityType, int $entityId, Tenant $tenant): array
     {
-        return $this->createQueryBuilder('s')
+        /** @var list<SlaDeadlineMonitor> $rows */
+        $rows = $this->createQueryBuilder('s')
             ->where('s.entityType = :entityType')
             ->andWhere('s.entityId = :entityId')
             ->andWhere('s.tenant = :tenant')
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
             ->setParameter('tenant', $tenant)
-            ->orderBy('s.triggeredAt', \SortDirection::Descending)
-            ->setMaxResults(1)
+            ->orderBy('s.deadlineAt', \SortDirection::Ascending)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
+
+        return $rows;
+    }
+
+    /**
+     * Statutory reports of incidents and data breaches not yet made (running
+     * or already missed) — the reporting duties in My Day and the reminders.
+     *
+     * @return list<SlaDeadlineMonitor>
+     */
+    public function findOpenReporting(Tenant $tenant): array
+    {
+        /** @var list<SlaDeadlineMonitor> $rows */
+        $rows = $this->createQueryBuilder('s')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.entityType IN (:types)')
+            ->andWhere('s.status IN (:open)')
+            ->andWhere('s.satisfiedAt IS NULL')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('types', ['Incident', 'DataBreach'])
+            ->setParameter('open', [SlaDeadlineStatus::Active->value, SlaDeadlineStatus::Missed->value])
+            ->orderBy('s.deadlineAt', \SortDirection::Ascending)
+            ->getQuery()
+            ->getResult();
+
+        return $rows;
     }
 
     /**

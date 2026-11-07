@@ -79,10 +79,7 @@ class Nis2ComplianceController extends AbstractController
         $mfaAdoptionRate = $totalUsers > 0 ? round(($usersWithMfa / $totalUsers) * 100, 1) : 0;
 
         // 2. Incident Reporting Compliance (Art. 23)
-        $nis2Incidents = $this->incidentRepository->createQueryBuilder('i')
-            ->where('i.crossBorderImpact = true OR i.nis2Category IS NOT NULL')
-            ->getQuery()
-            ->getResult();
+        $nis2Incidents = $this->incidentRepository->findNis2Reportable();
 
         $totalNis2Incidents = count($nis2Incidents);
         $earlyWarningCompliant = 0;

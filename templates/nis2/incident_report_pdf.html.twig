@@ -362,7 +362,7 @@
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section3.notification_required'|trans({}, 'nis2') }}</div>
             <div class="field-value">
-                {% if incident.notificationRequired %}
+                {% if incident.requiresNis2Reporting %}
                     <span class="badge badge-warning">{{ 'nis2.incident_report.yes'|trans({}, 'nis2') }}</span>
                 {% else %}
                     {{ 'nis2.incident_report.no'|trans({}, 'nis2') }}

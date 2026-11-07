@@ -13,7 +13,6 @@ use App\Service\Deadline\RecordLink;
 use App\Service\Responsibility\Responsibility;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
-use DateTime;
 
 /**
  * SourceAdapter for Data Breaches (GDPR Art. 33/34, NIS2 Art. 23).
@@ -53,12 +52,9 @@ final class DataBreachAdapter implements SourceAdapter
     public function dueDateOf(object $item): ?DateTimeInterface
     {
         assert($item instanceof DataBreach);
-        $detectedAt = $item->getDetectedAt();
-        if ($detectedAt === null) {
-            return null;
-        }
-        // GDPR Art. 33: supervisory authority must be notified within 72 hours
-        return DateTime::createFromInterface($detectedAt)->modify('+72 hours');
+        // Working the breach has no deadline of its own; the GDPR Art. 33
+        // 72 h notification is a reporting duty (ReportingDutySource).
+        return null;
     }
 
     public function titleOf(object $item): string
@@ -122,6 +118,6 @@ final class DataBreachAdapter implements SourceAdapter
 
     public function profile(): DeadlineProfile
     {
-        return new DeadlineProfile(bucket: 'data_breaches_72h_ticking', leadDays: null, normReference: 'DSGVO Art. 33', urgentHours: 72);
+        return new DeadlineProfile(bucket: 'data_breaches_open', leadDays: null, normReference: 'DSGVO Art. 33/34');
     }
 }

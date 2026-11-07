@@ -32,7 +32,8 @@ final class SlaDeadlineMonitorRepositoryTest extends TestCase
 
         self::assertContains('findApproachingDeadlines', $methods);
         self::assertContains('findMissedDeadlines', $methods);
-        self::assertContains('findForEntity', $methods);
+        self::assertContains('findAllForEntity', $methods);
+        self::assertContains('findOpenReporting', $methods);
         self::assertContains('countMissedForTenant', $methods);
     }
 
@@ -79,9 +80,10 @@ final class SlaDeadlineMonitorRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function doraInitialNotification4hHasDuration4h(): void
+    public function doraInitialNotificationLatestAt24h(): void
     {
-        self::assertSame(4, SlaDeadlineType::DoraInitialNotification4h->durationHours());
+        // 4h after classification as major, 24h after awareness at the latest (RTS Art. 5).
+        self::assertSame(24, SlaDeadlineType::DoraInitialNotification4h->durationHours());
     }
 
     #[Test]
@@ -107,9 +109,9 @@ final class SlaDeadlineMonitorRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function findForEntitySignatureAcceptsStringIntTenant(): void
+    public function findAllForEntitySignatureAcceptsStringIntTenant(): void
     {
-        $r = new \ReflectionMethod(SlaDeadlineMonitorRepository::class, 'findForEntity');
+        $r = new \ReflectionMethod(SlaDeadlineMonitorRepository::class, 'findAllForEntity');
 
         $params = $r->getParameters();
 

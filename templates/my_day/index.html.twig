@@ -30,7 +30,8 @@
     'documents_review_overdue':           { icon: 'nav-file-earmark-text',  tone: 'danger'  },
     'trainings_pending':                  { icon: 'nav-mortarboard',        tone: 'primary' },
     'incidents_open_assigned':            { icon: 'status-critical',        tone: 'danger'  },
-    'data_breaches_72h_ticking':          { icon: 'nav-shield-alert',       tone: 'danger'  },
+    'data_breaches_open':                 { icon: 'nav-shield-alert',       tone: 'warning' },
+    'reporting_duties':                   { icon: 'status-critical',        tone: 'danger'  },
     'vulnerabilities_due':                { icon: 'bug',                    tone: 'warning' },
     'audit_checklist_due':                { icon: 'nav-clipboard-check',    tone: 'primary' },
     'change_requests_pending_approval':   { icon: 'util-refresh',           tone: 'primary' },
@@ -51,13 +52,13 @@
 {# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
    default to [] when the aggregator did not provide them. Approvals and
    four-eyes requests come first: they are decided right here. #}
-{% set order = ['management_decisions_pending','workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','location_gaps','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_due','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+{% set order = ['management_decisions_pending','workflows_pending','risk_acceptance_pending','workflows_overdue','four_eyes','reporting_duties','alva_hints','acknowledgements','findings','dsrs','corrective_actions_overdue','location_gaps','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_open','vulnerabilities_due','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
 {# Build the active list and the zero counter in one pass — avoids relying on a
    lazy |filter iterator being consumed twice. #}
 {# Jargon categories that get a hover-tooltip (junior aid) — the ones a 9001-
    background user would not recognise. The plain ones (trainings, incidents …)
    need none. #}
-{% set hinted = ['four_eyes','dsrs','risk_acceptance_expiring','risk_acceptance_no_expiry','wizard_overdue','framework_gaps_critical','data_breaches_72h_ticking','evidence_reverification_due','control_effectiveness_overdue'] %}
+{% set hinted = ['four_eyes','dsrs','risk_acceptance_expiring','risk_acceptance_no_expiry','wizard_overdue','framework_gaps_critical','reporting_duties','data_breaches_open','evidence_reverification_due','control_effectiveness_overdue'] %}
 {# Buckets of deadline sources the list above does not know yet are appended,
    so a new source shows up without a template change. #}
 {% set order = order|merge((inbox.deadline_buckets ?? [])|filter(k => k not in order)) %}

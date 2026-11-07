@@ -355,6 +355,19 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'help' => 'incident.help.nis2_suspected_malicious',
                     'choice_translation_domain' => 'incident',
                 ])
+                // NIS-2 Art. 23 (3): the organisation assesses whether the
+                // incident is significant; until then the pre-check applies.
+                ->add('notificationRequired', ChoiceType::class, [
+                    'label' => 'incident.field.nis2_notification_required',
+                    'choices' => [
+                        'incident.nis2_assessment.reportable' => true,
+                        'incident.nis2_assessment.not_reportable' => false,
+                    ],
+                    'required' => false,
+                    'placeholder' => 'incident.nis2_assessment.not_assessed',
+                    'help' => 'incident.help.nis2_notification_required',
+                    'choice_translation_domain' => 'incident',
+                ])
                 ->add('earlyWarningReportedAt', DateTimeType::class, [
                     'label' => 'incident.field.early_warning_reported_at',
                     'widget' => 'single_text',
@@ -438,13 +451,6 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'label' => 'incident.field.data_leakage_occurred',
                     'required' => false,
                 ])
-                ->add('economicImpact', NumberType::class, [
-                    'label' => 'incident.field.economic_impact',
-                    'required' => false,
-                    'scale' => 2,
-                    'attr' => ['placeholder' => 'incident.placeholder.economic_impact', 'min' => 0, 'step' => '0.01'],
-                    'help' => 'incident.help.economic_impact',
-                ])
                 ->add('reputationalImpact', ChoiceType::class, [
                     'label' => 'incident.field.reputational_impact',
                     'choices' => [
@@ -503,6 +509,13 @@ final class IncidentType extends AbstractType implements SectionMapInterface
                     'label' => 'incident.field.intermediate_report_submitted_at',
                     'required' => false,
                 ])
+                ->add('doraFinalReportSubmittedAt', DateTimeType::class, [
+                    'widget' => 'single_text',
+                    'input' => 'datetime_immutable',
+                    'label' => 'incident.field.dora_final_report_submitted_at',
+                    'required' => false,
+                    'help' => 'incident.help.dora_final_report_submitted_at',
+                ])
                 ->add('dataRecoveryStrategy', TextareaType::class, [
                     'label' => 'incident.field.data_recovery_strategy',
                     'required' => false,
@@ -544,10 +557,10 @@ final class IncidentType extends AbstractType implements SectionMapInterface
             'overview'          => ['title', 'description', 'category', 'severity', 'status', 'detectedAt', 'occurredAt', 'closedAt'],
             'responsibility'    => ['responsiblePerson', 'reportedByUser', 'reportedByPerson', 'reportedByDeputyPersons', 'reportedBy', 'visibleToHolding'],
             'affected_assets'   => ['affectedSystems', 'affectedAssets', 'criticalServicesAffected'],
-            'classification'    => ['incidentClassification', 'nis2Category', 'nis2SuspectedMalicious', 'ictIncidentClassification'],
-            'impact_assessment' => ['crossBorderImpact', 'affectedUsersCount', 'estimatedFinancialImpact', 'economicImpact', 'reputationalImpact', 'clientsAffected', 'clientsAffectedFinancialVolume', 'replicationOfImpact', 'recurringIncident'],
+            'classification'    => ['incidentClassification', 'nis2Category', 'nis2SuspectedMalicious', 'notificationRequired', 'ictIncidentClassification'],
+            'impact_assessment' => ['crossBorderImpact', 'affectedUsersCount', 'estimatedFinancialImpact', 'reputationalImpact', 'clientsAffected', 'clientsAffectedFinancialVolume', 'replicationOfImpact', 'recurringIncident'],
             'privacy'           => ['dataBreachOccurred', 'dataLossOccurred', 'dataLeakageOccurred'],
-            'notification'      => ['nationalAuthorityNotified', 'authorityReferenceNumber', 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt', 'initialReportSubmittedAt', 'intermediateReportSubmittedAt'],
+            'notification'      => ['nationalAuthorityNotified', 'authorityReferenceNumber', 'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt', 'initialReportSubmittedAt', 'intermediateReportSubmittedAt', 'doraFinalReportSubmittedAt'],
             'corrective_action' => ['containmentActions', 'correctiveActions', 'dataRecoveryStrategy'],
             'root_cause'        => ['rootCause', 'evidencePreserved'],
             'lessons_learned'   => ['lessonsLearned'],

@@ -11,10 +11,12 @@ namespace App\Enum;
  *  - active:    deadline is running; checkpoints may still fire
  *  - missed:    deadlineAt passed while status was still 'active'
  *  - satisfied: entity action (e.g. authority notification sent) closed the deadline before it was missed
+ *  - dismissed: the duty no longer applies (the organisation assessed the incident as not reportable)
  */
 enum SlaDeadlineStatus: string
 {
     case Active    = 'active';
     case Missed    = 'missed';
     case Satisfied = 'satisfied';
+    case Dismissed = 'dismissed';
 }

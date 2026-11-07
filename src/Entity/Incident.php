@@ -243,10 +243,14 @@ class Incident
     #[Assert\NotNull(message: 'incident.validation.data_breach_flag_required')]
     private ?bool $dataBreachOccurred = false;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
+    /**
+     * NIS-2 Art. 23: the organisation's own assessment whether the incident is
+     * significant (reportable). Null = not assessed yet; the tool's pre-check
+     * ({@see getNis2SignificanceReasons()}) applies until the ISB decides.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'incident.validation.notification_required_flag_required')]
-    private ?bool $notificationRequired = false;
+    private ?bool $notificationRequired = null;
 
     /**
      * NIS2 Article 23 - Early Warning Notification (24h deadline)
@@ -992,25 +996,6 @@ class Incident
     }
 
     /**
-     * Check if this incident requires NIS2 reporting
-     * Based on severity and category
-     *
-     * Note: No Groups annotation - API Platform only allows Groups on get/is/has/set methods
-     */
-    public function requiresNis2Reporting(): bool
-    {
-        // NIS2 reporting requires a detected date
-        if (!$this->detectedAt instanceof DateTimeInterface) {
-            return false;
-        }
-
-        // High and critical incidents, or incidents with cross-border impact
-        return in_array($this->severity, [IncidentSeverity::High, IncidentSeverity::Critical]) ||
-               $this->crossBorderImpact ||
-               $this->nis2Category !== null;
-    }
-
-    /**
      * Get NIS2 compliance status
      */
     #[Groups(['incident:read'])]
@@ -1233,13 +1218,6 @@ class Incident
     private bool $dataLeakageOccurred = false;
 
     /**
-     * DORA Art. 19(1)(b) — Economic impact in EUR (DECIMAL stored as string per Doctrine convention).
-     */
-    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
-    private ?string $economicImpact = null;
-
-    /**
      * DORA Art. 19(1)(c) — Reputational impact on scale 1-5.
      */
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
@@ -1300,6 +1278,13 @@ class Incident
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
     private ?\DateTimeImmutable $intermediateReportSubmittedAt = null;
+
+    /**
+     * DORA Art. 19(4)(c) — Final report submitted (one month after the intermediate report).
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?\DateTimeImmutable $doraFinalReportSubmittedAt = null;
 
     /**
      * DORA Art. 11(2) — Data recovery strategy / cross-ref to BCM continuity plan.
@@ -1396,17 +1381,6 @@ class Incident
     public function setDataLeakageOccurred(bool $dataLeakageOccurred): static
     {
         $this->dataLeakageOccurred = $dataLeakageOccurred;
-        return $this;
-    }
-
-    public function getEconomicImpact(): ?string
-    {
-        return $this->economicImpact;
-    }
-
-    public function setEconomicImpact(?string $economicImpact): static
-    {
-        $this->economicImpact = $economicImpact;
         return $this;
     }
 
@@ -1509,6 +1483,17 @@ class Incident
         return $this;
     }
 
+    public function getDoraFinalReportSubmittedAt(): ?\DateTimeImmutable
+    {
+        return $this->doraFinalReportSubmittedAt;
+    }
+
+    public function setDoraFinalReportSubmittedAt(?\DateTimeImmutable $doraFinalReportSubmittedAt): static
+    {
+        $this->doraFinalReportSubmittedAt = $doraFinalReportSubmittedAt;
+        return $this;
+    }
+
     public function getDataRecoveryStrategy(): ?string
     {
         return $this->dataRecoveryStrategy;
@@ -1517,115 +1502,6 @@ class Incident
     public function setDataRecoveryStrategy(?string $dataRecoveryStrategy): static
     {
         $this->dataRecoveryStrategy = $dataRecoveryStrategy;
-        return $this;
-    }
-
-    /*
-     * DORA Art. 18 / RTS on classification of ICT-related incidents.
-     * Axes defined by the Joint Committee of the ESAs: clients impacted,
-     * reputation impact, downtime, geographic spread, data loss, economic
-     * impact. The derived classification ("major" / "non_major") is stored
-     * alongside the raw inputs.
-     */
-
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $doraClientsImpacted = null;
-
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $doraReputationImpact = null;
-
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $doraServiceDowntimeMinutes = null;
-
-    /** @var array<int,string>|null */
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $doraGeographicalSpread = null;
-
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-    private ?bool $doraDataLossOccurred = null;
-
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $doraEconomicImpactEur = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $doraClassification = null;
-
-    public function getDoraClientsImpacted(): ?int
-    {
-        return $this->doraClientsImpacted;
-    }
-
-    public function setDoraClientsImpacted(?int $value): static
-    {
-        $this->doraClientsImpacted = $value;
-        return $this;
-    }
-
-    public function getDoraReputationImpact(): ?string
-    {
-        return $this->doraReputationImpact;
-    }
-
-    public function setDoraReputationImpact(?string $value): static
-    {
-        $this->doraReputationImpact = $value;
-        return $this;
-    }
-
-    public function getDoraServiceDowntimeMinutes(): ?int
-    {
-        return $this->doraServiceDowntimeMinutes;
-    }
-
-    public function setDoraServiceDowntimeMinutes(?int $value): static
-    {
-        $this->doraServiceDowntimeMinutes = $value;
-        return $this;
-    }
-
-    /** @return array<int,string>|null */
-    public function getDoraGeographicalSpread(): ?array
-    {
-        return $this->doraGeographicalSpread;
-    }
-
-    /** @param array<int,string>|null $value */
-    public function setDoraGeographicalSpread(?array $value): static
-    {
-        $this->doraGeographicalSpread = $value;
-        return $this;
-    }
-
-    public function getDoraDataLossOccurred(): ?bool
-    {
-        return $this->doraDataLossOccurred;
-    }
-
-    public function setDoraDataLossOccurred(?bool $value): static
-    {
-        $this->doraDataLossOccurred = $value;
-        return $this;
-    }
-
-    public function getDoraEconomicImpactEur(): ?int
-    {
-        return $this->doraEconomicImpactEur;
-    }
-
-    public function setDoraEconomicImpactEur(?int $value): static
-    {
-        $this->doraEconomicImpactEur = $value;
-        return $this;
-    }
-
-    public function getDoraClassification(): ?string
-    {
-        return $this->doraClassification;
-    }
-
-    public function setDoraClassification(?string $value): static
-    {
-        $this->doraClassification = $value;
         return $this;
     }
 }

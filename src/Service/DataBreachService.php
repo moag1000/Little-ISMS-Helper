@@ -67,10 +67,11 @@ final class DataBreachService
      */
     public function createFromIncident(
         Incident $incident,
-        User $user,
+        ?User $user,
         ?ProcessingActivity $processingActivity = null
     ): DataBreach {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        // The incident's organisation first: the draft listener runs without a request.
+        $tenant = $incident->getTenant() ?? $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
             throw new TenantOrphanException(null, 'No tenant context available');
         }
@@ -91,8 +92,6 @@ final class DataBreachService
             $dataBreach->setProcessingActivity($processingActivity);
         }
 
-        // Set defaults per Art. 33(1) - notification required unless unlikely to result in risk
-        $dataBreach->setRequiresAuthorityNotification(true);
         $dataBreach->setRequiresSubjectNotification(false);
         $dataBreach->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'draft' is the data_breach_lifecycle initial_marking)
 
@@ -107,7 +106,7 @@ final class DataBreachService
             [
                 'reference_number' => $referenceNumber,
                 'incident_id' => $incident->getId(),
-                'created_by' => $user->getEmail(),
+                'created_by' => $user?->getEmail(),
             ]
         );
 
@@ -124,8 +123,9 @@ final class DataBreachService
      * Takes over what the incident already records, so the DPO does not type
      * it again (GDPR Art. 33 (3)): what happened, when it was detected, how
      * many people are affected, root cause, measures taken, lessons learned.
-     * Only empty breach fields are filled; the one used by both "create from
-     * incident" paths (service and the prefilled /new form).
+     * Only empty breach fields are filled (detection time and the notification
+     * default only on a new breach); the one path behind "create from
+     * incident": the service, the prefilled /new form and the automatic draft.
      */
     public function prefillFromIncident(DataBreach $breach, Incident $incident): void
     {
@@ -136,8 +136,15 @@ final class DataBreachService
         if ($breach->getSeverity() === null) {
             $breach->setSeverity($incident->getSeverity()?->value);
         }
-        if ($breach->getDetectedAt() === null && $incident->getDetectedAt() !== null) {
-            $breach->setDetectedAt($incident->getDetectedAt());
+        if ($breach->getId() === null) {
+            // A new breach starts the GDPR Art. 33 clock when the controller
+            // became aware: the incident's detection, not the moment the
+            // breach record is typed in (the constructor's "now").
+            if ($incident->getDetectedAt() !== null) {
+                $breach->setDetectedAt($incident->getDetectedAt());
+            }
+            // Art. 33 (1): notify unless the breach is unlikely to result in a risk.
+            $breach->setRequiresAuthorityNotification(true);
         }
         if ($breach->getAffectedDataSubjects() === null) {
             $breach->setAffectedDataSubjects($incident->getAffectedUsersCount());

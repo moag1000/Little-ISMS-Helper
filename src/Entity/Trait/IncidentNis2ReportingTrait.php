@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity\Trait;
 
+use App\Entity\Tenant;
+use App\Enum\IncidentSeverity;
 use App\Util\LegalPeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -19,6 +21,73 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 trait IncidentNis2ReportingTrait
 {
+    /**
+     * Pre-check thresholds for "significant incident" (NIS-2 Art. 23 (3)).
+     * Orientation values from Implementing Regulation (EU) 2024/2690 Art. 3;
+     * the organisation decides ({@see $notificationRequired}).
+     */
+    public const int NIS2_FINANCIAL_LOSS_THRESHOLD_EUR = 500000;
+    public const int NIS2_AFFECTED_PERSONS_THRESHOLD = 100;
+
+    /**
+     * The one definition of "NIS-2 reportable": the organisation's own
+     * assessment once made, otherwise the pre-check. Never for organisations
+     * classified as not NIS-2 regulated, never without a detection time.
+     */
+    public function requiresNis2Reporting(): bool
+    {
+        if (!$this->detectedAt instanceof DateTimeInterface) {
+            return false;
+        }
+        if ($this->tenant?->getNis2Classification() === Tenant::NIS2_NOT_REGULATED) {
+            return false;
+        }
+        if ($this->notificationRequired !== null) {
+            return $this->notificationRequired;
+        }
+
+        return $this->getNis2SignificanceReasons() !== [];
+    }
+
+    /** True once the organisation has decided whether the incident is reportable. */
+    public function isNis2AssessmentConfirmed(): bool
+    {
+        return $this->notificationRequired !== null;
+    }
+
+    /**
+     * Why the pre-check considers the incident significant — translation keys
+     * `incident.nis2_reason.<key>` (domain incident). Empty = no criterion met.
+     *
+     * @return list<string>
+     */
+    public function getNis2SignificanceReasons(): array
+    {
+        $reasons = [];
+        if (in_array($this->severity, [IncidentSeverity::High, IncidentSeverity::Critical], true)) {
+            $reasons[] = 'severity';
+        }
+        if ($this->affectedBusinessProcesses->exists(
+            static fn ($k, $process): bool => $process->getCriticality() === 'critical'
+        )) {
+            $reasons[] = 'critical_process';
+        }
+        if ($this->crossBorderImpact) {
+            $reasons[] = 'cross_border';
+        }
+        if ((int) $this->affectedUsersCount >= self::NIS2_AFFECTED_PERSONS_THRESHOLD) {
+            $reasons[] = 'affected_persons';
+        }
+        if ((float) $this->estimatedFinancialImpact >= self::NIS2_FINANCIAL_LOSS_THRESHOLD_EUR) {
+            $reasons[] = 'financial_loss';
+        }
+        if ($this->nis2SuspectedMalicious === true) {
+            $reasons[] = 'malicious';
+        }
+
+        return $reasons;
+    }
+
     /**
      * NIS-2 Art. 23 (4) (a): the early warning states whether the incident is
      * suspected of being caused by unlawful or malicious acts. Null = not yet

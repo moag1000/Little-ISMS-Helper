@@ -10,10 +10,14 @@ use App\Entity\Incident;
 use App\Entity\Notification\SlaDeadlineMonitor;
 use App\Entity\Tenant;
 use App\Enum\IncidentSeverity;
+use App\Enum\SlaDeadlineStatus;
 use App\Enum\SlaDeadlineType;
 use App\EventListener\SlaDeadlineMonitorSpawner;
 use App\Repository\Notification\SlaDeadlineMonitorRepository;
+use App\Service\Incident\ReportingPlanner;
+use App\Service\ModuleConfigurationService;
 use App\Service\Notification\SlaDeadlineFactory;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -23,8 +27,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
 /**
- * SLA monitors (GDPR 72h, NIS2 24h/72h, ISO 10.1 30d) must be started by a
- * live path.
+ * SLA monitors (GDPR 72h, NIS-2 24h/72h/final, DORA, ISO 10.1 30d) are
+ * started and kept in line by a live path: one monitor per statutory report.
  */
 final class SlaDeadlineMonitorSpawnerTest extends TestCase
 {
@@ -62,34 +66,70 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
     }
 
     #[Test]
-    public function reportableHighIncidentStartsNis2EarlyWarning(): void
+    public function reportableIncidentStartsOneClockPerNis2Report(): void
     {
-        $incident = $this->entity(new Incident(), 9);
+        $incident = $this->incident(9);
         $incident->setSeverity(IncidentSeverity::High);
-        $incident->setNotificationRequired(true);
 
         $spawner = $this->spawner();
         $spawner->postPersist(new PostPersistEventArgs($incident, $this->em));
         $spawner->postFlush(new PostFlushEventArgs($this->em));
 
-        self::assertSame(SlaDeadlineType::Nis2EarlyWarning24h, $this->persisted[0]->getDeadlineType());
+        self::assertSame(
+            [SlaDeadlineType::Nis2EarlyWarning24h, SlaDeadlineType::Nis2Notification72h, SlaDeadlineType::Nis2FinalReport1mo],
+            array_map(static fn (SlaDeadlineMonitor $m): SlaDeadlineType => $m->getDeadlineType(), $this->persisted),
+        );
     }
 
     #[Test]
     public function incidentFlaggedLaterStartsClockOnUpdate(): void
     {
-        $incident = $this->entity(new Incident(), 10);
+        $incident = $this->incident(10);
         $spawner = $this->spawner();
 
         $spawner->postPersist(new PostPersistEventArgs($incident, $this->em));
         $spawner->postFlush(new PostFlushEventArgs($this->em));
         self::assertSame([], $this->persisted, 'non-reportable incident has no regulatory clock');
 
-        $incident->setNis2Category('security');
+        $incident->setNotificationRequired(true);
         $spawner->postUpdate(new PostUpdateEventArgs($incident, $this->em));
         $spawner->postFlush(new PostFlushEventArgs($this->em));
 
-        self::assertSame(SlaDeadlineType::Nis2Notification72h, $this->persisted[0]->getDeadlineType());
+        self::assertCount(3, $this->persisted);
+    }
+
+    #[Test]
+    public function recordedReportSatisfiesItsClock(): void
+    {
+        $incident = $this->incident(11);
+        $incident->setNotificationRequired(true);
+        $incident->setEarlyWarningReportedAt(new DateTimeImmutable('2026-11-01 12:00'));
+        $running = (new SlaDeadlineMonitor())->setDeadlineType(SlaDeadlineType::Nis2EarlyWarning24h);
+
+        $spawner = $this->spawner([$running]);
+        $spawner->postUpdate(new PostUpdateEventArgs($incident, $this->em));
+        $spawner->postFlush(new PostFlushEventArgs($this->em));
+
+        self::assertSame(SlaDeadlineStatus::Satisfied, $running->getStatus());
+        self::assertEquals(new DateTimeImmutable('2026-11-01 12:00'), $running->getSatisfiedAt());
+        self::assertCount(2, $this->persisted, 'notification and final report get their clocks');
+    }
+
+    #[Test]
+    public function assessedNotReportableDismissesRunningClocks(): void
+    {
+        $incident = $this->incident(12);
+        $incident->setSeverity(IncidentSeverity::Critical);
+        $incident->setNotificationRequired(false);
+        $running = (new SlaDeadlineMonitor())->setDeadlineType(SlaDeadlineType::Nis2EarlyWarning24h);
+
+        $spawner = $this->spawner([$running]);
+        $spawner->postUpdate(new PostUpdateEventArgs($incident, $this->em));
+        $spawner->postFlush(new PostFlushEventArgs($this->em));
+
+        self::assertSame(SlaDeadlineStatus::Dismissed, $running->getStatus());
+        self::assertSame([], $this->persisted);
+        self::assertSame(1, $this->flushes);
     }
 
     #[Test]
@@ -113,8 +153,16 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
     #[Test]
     public function existingMonitorIsNotDuplicated(): void
     {
-        $spawner = $this->spawner(existing: new SlaDeadlineMonitor());
-        $spawner->postPersist(new PostPersistEventArgs($this->entity(new DataBreach(), 5), $this->em));
+        $breach = $this->entity(new DataBreach(), 5);
+        $breach->setDetectedAt(new DateTimeImmutable('2020-01-01 08:00'));
+        $existing = (new SlaDeadlineMonitor())->setDeadlineType(SlaDeadlineType::GdprNotification72h);
+        $spawner = $this->spawner([$existing]);
+        $spawner->postPersist(new PostPersistEventArgs($breach, $this->em));
+        $spawner->postFlush(new PostFlushEventArgs($this->em));
+        $this->flushes = 0;
+
+        // A second save without changes writes nothing.
+        $spawner->postUpdate(new PostUpdateEventArgs($breach, $this->em));
         $spawner->postFlush(new PostFlushEventArgs($this->em));
 
         self::assertSame([], $this->persisted);
@@ -141,7 +189,7 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
             }
         };
         $repository = $this->createStub(SlaDeadlineMonitorRepository::class);
-        $spawner = new SlaDeadlineMonitorSpawner(new SlaDeadlineFactory($em), $repository, $logger);
+        $spawner = new SlaDeadlineMonitorSpawner($this->factory(), $repository, $logger);
 
         $spawner->postPersist(new PostPersistEventArgs($this->entity(new DataBreach(), 5), $em));
         $spawner->postFlush(new PostFlushEventArgs($em));
@@ -170,7 +218,7 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
                 $this->levels[] = (string) $level;
             }
         };
-        $spawner = new SlaDeadlineMonitorSpawner(new SlaDeadlineFactory($em), $this->createStub(SlaDeadlineMonitorRepository::class), $logger);
+        $spawner = new SlaDeadlineMonitorSpawner($this->factory(), $this->createStub(SlaDeadlineMonitorRepository::class), $logger);
 
         $spawner->postPersist(new PostPersistEventArgs($this->entity(new DataBreach(), 5), $em));
         $spawner->postFlush(new PostFlushEventArgs($em));
@@ -178,12 +226,29 @@ final class SlaDeadlineMonitorSpawnerTest extends TestCase
         self::assertSame(['info'], $logger->levels);
     }
 
-    private function spawner(?SlaDeadlineMonitor $existing = null): SlaDeadlineMonitorSpawner
+    /** @param list<SlaDeadlineMonitor> $existing */
+    private function spawner(array $existing = []): SlaDeadlineMonitorSpawner
     {
         $repository = $this->createStub(SlaDeadlineMonitorRepository::class);
-        $repository->method('findForEntity')->willReturn($existing);
+        $repository->method('findAllForEntity')->willReturn($existing);
 
-        return new SlaDeadlineMonitorSpawner(new SlaDeadlineFactory($this->em), $repository, new NullLogger());
+        return new SlaDeadlineMonitorSpawner($this->factory(), $repository, new NullLogger());
+    }
+
+    private function factory(): SlaDeadlineFactory
+    {
+        $modules = $this->createStub(ModuleConfigurationService::class);
+        $modules->method('isModuleActiveForTenant')->willReturn(true);
+
+        return new SlaDeadlineFactory(new ReportingPlanner(static fn (): ModuleConfigurationService => $modules));
+    }
+
+    private function incident(int $id): Incident
+    {
+        $incident = $this->entity(new Incident(), $id);
+        $incident->setDetectedAt(new DateTimeImmutable('2026-11-01 08:00'));
+
+        return $incident;
     }
 
     /**
