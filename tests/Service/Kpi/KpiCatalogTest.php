@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\Kpi;
 
 use App\Entity\Tenant;
+use App\Service\Bsi\KompendiumGsppCoverage;
 use App\Service\DashboardStatisticsService;
 use App\Service\Kpi\KpiCatalog;
 use App\Service\Kpi\RiskExposure;
@@ -28,7 +29,7 @@ final class KpiCatalogTest extends TestCase
         $this->tenant->method('getId')->willReturn(7);
     }
 
-    private function catalog(KpiThresholdView $thresholds, bool $quantActive = true, bool $mayseeMoney = true): KpiCatalog
+    private function catalog(KpiThresholdView $thresholds, bool $quantActive = true, bool $mayseeMoney = true, ?KompendiumGsppCoverage $gspp = null): KpiCatalog
     {
         $statistics = $this->createMock(DashboardStatisticsService::class);
         $statistics->method('getManagementKPIs')->willReturn([
@@ -62,7 +63,7 @@ final class KpiCatalogTest extends TestCase
         $security = $this->createMock(Security::class);
         $security->method('isGranted')->willReturn($mayseeMoney);
 
-        return new KpiCatalog($statistics, $resolver, $exposure, $modules, $security);
+        return new KpiCatalog($statistics, $resolver, $exposure, $modules, $security, gsppCoverage: $gspp);
     }
 
     #[Test]
@@ -106,5 +107,33 @@ final class KpiCatalogTest extends TestCase
     {
         self::assertSame([], $this->catalog(new KpiThresholdView(80, 60))->managementKpis());
         self::assertNull($this->catalog(new KpiThresholdView(80, 60))->get('control_compliance'));
+    }
+
+    #[Test]
+    public function grundschutzPlusPlusTransferComesFromTheMappingCoverage(): void
+    {
+        $gspp = $this->createMock(KompendiumGsppCoverage::class);
+        $gspp->method('summary')->willReturn([
+            'total' => 1834, 'official' => 510, 'derived' => 609, 'no_counterpart' => 469,
+            'open' => 246, 'with_target' => 1119, 'percent' => 61, 'reviewed_percent' => 87,
+        ]);
+        $gspp->method('forTenant')->willReturn(['fulfilled' => 200, 'transferable' => 150, 'percent' => 75]);
+
+        $kpis = $this->catalog(new KpiThresholdView(80, 60), gspp: $gspp)->managementKpis($this->tenant);
+
+        self::assertSame(75, $kpis[KpiCatalog::SECTION_BSI_GSPP]['bsi_gspp_transfer']['value']);
+        self::assertFalse($kpis[KpiCatalog::SECTION_BSI_GSPP]['bsi_gspp_transfer']['na']);
+        self::assertSame(61, $kpis[KpiCatalog::SECTION_BSI_GSPP]['bsi_gspp_mapping_coverage']['value']);
+    }
+
+    #[Test]
+    public function grundschutzPlusPlusNeedsModuleAndBothCatalogues(): void
+    {
+        $gspp = $this->createMock(KompendiumGsppCoverage::class);
+        $gspp->method('summary')->willReturn(null);
+        $gspp->method('forTenant')->willReturn(null);
+
+        self::assertArrayNotHasKey(KpiCatalog::SECTION_BSI_GSPP, $this->catalog(new KpiThresholdView(80, 60), gspp: $gspp)->managementKpis($this->tenant));
+        self::assertArrayNotHasKey(KpiCatalog::SECTION_BSI_GSPP, $this->catalog(new KpiThresholdView(80, 60), quantActive: false, gspp: $gspp)->managementKpis($this->tenant));
     }
 }

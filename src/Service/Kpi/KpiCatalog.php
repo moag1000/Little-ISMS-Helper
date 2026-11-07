@@ -8,6 +8,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\KpiThresholdConfigType;
 use App\Security\FieldVisibilityResolver;
+use App\Service\Bsi\KompendiumGsppCoverage;
 use App\Service\DashboardStatisticsService;
 use App\Service\KpiThresholdConfigResolver;
 use App\Service\ModuleConfigurationService;
@@ -27,7 +28,9 @@ use Symfony\Bundle\SecurityBundle\Security;
  *  - adds the euro KPIs from the quantitative risk fields (module
  *    `risk_quant`), only for roles allowed to see monetary risk fields;
  *  - adds the location KPIs (module `locations`) and the person-days saved
- *    from the FTE tracking ({@see LocationKpis}).
+ *    from the FTE tracking ({@see LocationKpis});
+ *  - adds the share of the organisation's IT-Grundschutz state that carries
+ *    over to Grundschutz++ (module `bsi_grundschutz`, {@see KompendiumGsppCoverage}).
  *
  * Twig: `kpi('risk_exposure_eur')`, `management_kpis()` ({@see \App\Twig\KpiExtension}).
  */
@@ -57,6 +60,7 @@ class KpiCatalog
     ];
 
     public const string SECTION_RISK_FINANCE = 'risk_finance';
+    public const string SECTION_BSI_GSPP = 'bsi_gspp';
 
     /** @var array<int, array<string, mixed>> per tenant id, for the request */
     private array $memo = [];
@@ -69,6 +73,7 @@ class KpiCatalog
         private readonly Security $security,
         private readonly TenantRecords $tenantRecords = new TenantRecords(),
         private readonly ?LocationKpis $locationKpis = null,
+        private readonly ?KompendiumGsppCoverage $gsppCoverage = null,
     ) {
     }
 
@@ -139,6 +144,11 @@ class KpiCatalog
             $kpis[self::SECTION_RISK_FINANCE] = $finance;
         }
 
+        $gspp = $this->bsiGspp($tenant);
+        if ($gspp !== []) {
+            $kpis[self::SECTION_BSI_GSPP] = $gspp;
+        }
+
         return $kpis;
     }
 
@@ -177,6 +187,43 @@ class KpiCatalog
                 'status' => 'info',
                 'na' => $exposure['quantified'] === 0,
                 'details' => $details + ['top' => $exposure['top']],
+            ],
+        ];
+    }
+
+    /**
+     * Kompendium → Grundschutz++: the organisation's fulfilled Kompendium
+     * requirements with a Grundschutz++ counterpart, and the catalogue coverage
+     * of the mapping (BSI mapping + reviewed supplement).
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private function bsiGspp(Tenant $tenant): array
+    {
+        if ($this->gsppCoverage === null || !$this->modules->isModuleActive('bsi_grundschutz')) {
+            return [];
+        }
+        $catalogue = $this->gsppCoverage->summary();
+        $own = $this->gsppCoverage->forTenant($tenant);
+        if ($catalogue === null || $own === null) {
+            return [];
+        }
+
+        return [
+            'bsi_gspp_transfer' => [
+                'label' => 'kpi.bsi_gspp_transfer',
+                'value' => $own['percent'],
+                'unit' => '%',
+                'status' => 'info',
+                'na' => $own['fulfilled'] === 0,
+                'details' => $own,
+            ],
+            'bsi_gspp_mapping_coverage' => [
+                'label' => 'kpi.bsi_gspp_mapping_coverage',
+                'value' => $catalogue['percent'],
+                'unit' => '%',
+                'status' => 'info',
+                'details' => $catalogue,
             ],
         ];
     }

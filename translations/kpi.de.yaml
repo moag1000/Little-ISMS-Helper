@@ -90,6 +90,10 @@ kpi:
         hours: "Stunden"
         days: "Tage"
 
+    # IT-Grundschutz-Kompendium → Grundschutz++ (KpiCatalog)
+    bsi_gspp_transfer: "Kompendium-Stand übertragbar nach Grundschutz++"
+    bsi_gspp_mapping_coverage: "Kompendium-Anforderungen mit Grundschutz++-Ziel"
+
     # Location map and efficiency tracking (KpiCatalog)
     location_checks_rate: "Erfüllte Standort-Prüfungen"
     location_open_gaps: "Offene Standort-Prüfungen"
