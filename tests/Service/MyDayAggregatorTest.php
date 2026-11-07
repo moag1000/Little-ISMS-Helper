@@ -301,6 +301,7 @@ final class MyDayAggregatorTest extends TestCase
         $dsr->method('getId')->willReturn(7);
         $dsr->method('getAssignedTo')->willReturn($user);
         $dsr->method('getStatus')->willReturn('open');
+        $dsr->method('getStatusEnum')->willReturn(DataSubjectRequestStatus::InProgress);
         $dsr->method('getRequestType')->willReturn('access');
         $dsr->method('getDataSubjectName')->willReturn('Bob');
         $this->dsrRepo->method('findByTenant')->willReturn([$dsr]);
