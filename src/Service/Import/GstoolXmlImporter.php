@@ -703,12 +703,10 @@ final class GstoolXmlImporter
         if ($row['description'] !== null) {
             $asset->setDescription($row['description']);
         }
-        // Asset.owner is NOT NULL in schema; fall back to a marker so the
-        // import does not break on Zielobjekte without <verantwortlich>.
-        // Reviewers should assign the real owner after the import.
-        if ($asset->getOwner() === null || $asset->getOwner() === '') {
-            $asset->setOwner($row['owner'] ?? 'Imported from GSTOOL');
-        } elseif ($row['owner'] !== null) {
+        // <verantwortlich> is a name, not an account: it lands in the legacy
+        // owner text, and Admin > Daten-Reparatur > Freitext-Verantwortliche
+        // assigns the matching user or person. No marker text without it.
+        if ($row['owner'] !== null && trim((string) $row['owner']) !== '') {
             $asset->setOwner($row['owner']);
         }
         if ($row['locationLabel'] !== null) {

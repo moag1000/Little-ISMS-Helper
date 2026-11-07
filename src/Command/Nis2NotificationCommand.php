@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Service\OwnerResolver;
 use Symfony\Component\Console\Attribute\Option;
 use DateTimeImmutable;
 use Exception;
@@ -276,8 +277,9 @@ class Nis2NotificationCommand
             // Send to incident owner and CISO/admins
             $recipients = [];
 
-            if ($incident->getReportedBy()) {
-                $recipients[] = $incident->getReportedBy();
+            $reporter = OwnerResolver::recipient($incident->getReportedByUser(), $incident->getReportedByPerson(), $incident->getReportedBy());
+            if ($reporter !== null) {
+                $recipients[] = $reporter;
             }
 
             // CISO and admin users of the incident's own organisation

@@ -64,4 +64,22 @@ final class OwnerResolverTest extends TestCase
     {
         $this->assertSame([], OwnerResolver::resolveAll(null, null, null, []));
     }
+
+    #[Test]
+    public function recipientPrefersTheUserThenThePersonsAccountOrAddress(): void
+    {
+        $user = (new User())->setEmail('u@x.test');
+        $linked = (new User())->setEmail('linked@x.test');
+        $this->assertSame($user, OwnerResolver::recipient($user, (new Person())->setEmail('p@x.test'), 'l@x.test'));
+        $this->assertSame($linked, OwnerResolver::recipient(null, (new Person())->setLinkedUser($linked), null));
+        $this->assertSame('p@x.test', OwnerResolver::recipient(null, (new Person())->setEmail(' p@x.test '), 'l@x.test'));
+    }
+
+    #[Test]
+    public function recipientUsesTheLegacyTextOnlyWhenItIsAnAddress(): void
+    {
+        $this->assertSame('l@x.test', OwnerResolver::recipient(null, (new Person())->setFullName('No Mail'), 'l@x.test'));
+        $this->assertNull(OwnerResolver::recipient(null, null, 'Max Muster'));
+        $this->assertNull(OwnerResolver::recipient(null, null, null));
+    }
 }

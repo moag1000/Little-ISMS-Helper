@@ -42,7 +42,7 @@
         status: _status,
         actions: _actions,
         facts: [
-            { label: 'audit.lead_auditor'|trans({}, 'audit'), value: audit.leadAuditor },
+            { label: 'audit.lead_auditor'|trans({}, 'audit'), value: audit.effectiveLeadAuditorName },
             { label: 'audit.planned_date'|trans({}, 'audit'), value: audit.plannedDate ? audit.plannedDate|fa_date : null },
             { label: 'audit.field.reported_at'|trans({}, 'audit'), value: audit.reportedAt ? audit.reportedAt|fa_datetime : null },
             { label: 'audit.field.approved_at'|trans({}, 'audit'), value: audit.approvedAt ? audit.approvedAt|fa_datetime : null },

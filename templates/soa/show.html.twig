@@ -104,7 +104,7 @@
 {{ _fa_status_band.render({
     status: _status,
     facts: [
-        { label: 'show.status.owner'|trans({}, 'messages'), value: control.responsiblePerson },
+        { label: 'show.status.owner'|trans({}, 'messages'), value: control.effectiveResponsiblePerson },
         { label: 'show.status.target_date'|trans({}, 'messages'), value: control.targetDate ? control.targetDate|fa_date : null },
         { label: 'show.status.next_review'|trans({}, 'messages'), value: control.nextReviewDate ? control.nextReviewDate|fa_date : null },
     ],

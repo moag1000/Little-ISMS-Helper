@@ -456,6 +456,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $process = $this->createMock(BusinessProcess::class);
         $process->method('getName')->willReturn($name);
         $process->method('getProcessOwner')->willReturn('Process Owner');
+        $process->method('getEffectiveProcessOwner')->willReturn('Process Owner');
         $process->method('getCriticality')->willReturn($criticality);
         // getFinancialImpactPerHour returns ?string, so we pass string representation
         $process->method('getFinancialImpactPerHour')->willReturn((string) $impactPerHour);

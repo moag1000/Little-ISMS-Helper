@@ -223,7 +223,7 @@ final class AssetCriticalityService
                 'asset_type' => $asset->getAssetType(),
                 'criticality' => $criticality,
                 'criticality_level' => $this->getCriticalityLevel($criticality),
-                'owner' => $asset->getOwner(),
+                'owner' => $asset->getEffectiveOwner(),
             ];
         }
 
@@ -281,7 +281,7 @@ final class AssetCriticalityService
                 'asset_id' => $asset->getId(),
                 'asset_name' => $asset->getName(),
                 'asset_type' => $asset->getAssetType(),
-                'owner' => $asset->getOwner(),
+                'owner' => $asset->getEffectiveOwner(),
                 'confidentiality' => $asset->getConfidentialityValue() ?? 1,
                 'integrity' => $asset->getIntegrityValue() ?? 1,
                 'availability' => $asset->getAvailabilityValue() ?? 1,

@@ -42,7 +42,7 @@
         facts: [
             { label: 'show.status.type'|trans({}, 'messages'), value: ('bc_exercises.exercise_type.' ~ bc_exercise.exerciseType)|trans({}, 'bc_exercises') },
             { label: 'show.status.date'|trans({}, 'messages'), value: bc_exercise.exerciseDate ? bc_exercise.exerciseDate|fa_date : null },
-            { label: 'show.status.owner'|trans({}, 'messages'), value: bc_exercise.effectiveExerciseLeaderName ?? bc_exercise.facilitator },
+            { label: 'show.status.owner'|trans({}, 'messages'), value: bc_exercise.effectiveExerciseLeaderName ?? bc_exercise.effectiveFacilitatorName },
         ],
         workflow: workflow_state(bc_exercise),
     }) }}
@@ -115,7 +115,7 @@
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'bc_exercises.field.facilitator'|trans({}, 'bc_exercises') }}:</span>
-                    <span class="value">{{ bc_exercise.effectiveExerciseLeaderName ?? bc_exercise.facilitator }}</span>
+                    <span class="value">{{ bc_exercise.effectiveExerciseLeaderName ?? bc_exercise.effectiveFacilitatorName }}</span>
                 </div>
                 {% if bc_exercise.successRating %}
                 <div class="detail-item">

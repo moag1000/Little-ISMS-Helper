@@ -180,7 +180,7 @@ final class EntityListExporter
             'id' => $e->getId(),
             'name' => $e->getName(),
             'criticality' => $e->getCriticality(),
-            'processOwner' => $e->getProcessOwner(),
+            'processOwner' => $e->getEffectiveProcessOwner(),
             'rtoHours' => $e->getRto(),
             'rpoHours' => $e->getRpo(),
         ], $this->applyFilters($entities, $filters));

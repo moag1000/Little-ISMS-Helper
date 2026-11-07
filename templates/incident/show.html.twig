@@ -510,7 +510,7 @@
                                     'low': 'secondary'
                                 }[process.criticality] %}
                                 {% include '_components/_badge.html.twig' with { variant: crit_class, content: process.criticality|upper } %}
-                                <small>RTO: {{ process.rto }}h | {{ 'incident.bcm.owner'|trans({}, 'incident') }}: {{ process.processOwner }}</small>
+                                <small>RTO: {{ process.rto }}h | {{ 'incident.bcm.owner'|trans({}, 'incident') }}: {{ process.effectiveProcessOwner ?? '—' }}</small>
                             </div>
                         {% endfor %}
                     </div>

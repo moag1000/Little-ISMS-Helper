@@ -264,7 +264,7 @@
             <p><strong>{{ control.controlId }} - {{ control.name }}</strong></p>
             <p class="text-muted" style="margin-left: 15pt;">
                 <em>{{ 'field.target_date'|trans({}, 'soa') }}:</em> {{ control.targetDate|fa_date }}<br>
-                <em>{{ 'label.responsible'|trans({}, 'soa') }}</em> {{ control.responsiblePerson|default('field.unassigned'|trans({}, 'soa')) }}
+                <em>{{ 'label.responsible'|trans({}, 'soa') }}</em> {{ control.effectiveResponsiblePerson|default('field.unassigned'|trans({}, 'soa')) }}
             </p>
         </div>
     {% endif %}

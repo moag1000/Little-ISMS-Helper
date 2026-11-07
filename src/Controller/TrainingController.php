@@ -92,7 +92,7 @@ class TrainingController extends AbstractController
             'page' => ListPage::fromRequest(
                 $trainings,
                 $request,
-                static fn(Training $t): array => [$t->getTitle(), $t->getTrainer(), $t->getTrainingType()],
+                static fn(Training $t): array => [$t->getTitle(), $t->getEffectiveTrainer(), $t->getTrainingType()],
             ),
             'upcoming' => $upcoming,
             'statistics' => $statistics,
@@ -518,7 +518,7 @@ class TrainingController extends AbstractController
                     (string) $t->getId(),
                     (string) $t->getTitle(),
                     (string) $t->getStatus(),
-                    (string) $t->getTrainer(),
+                    (string) $t->getEffectiveTrainer(),
                 ];
             },
             'trainings-export',
