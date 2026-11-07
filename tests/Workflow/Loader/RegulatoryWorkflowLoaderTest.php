@@ -436,8 +436,8 @@ final class RegulatoryWorkflowLoaderTest extends TestCase
                         'sla_hours' => null,
                         'steps' => [
                             ['name' => 'Input Preparation', 'order' => 1, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 14, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'ManagementReview', 'fields' => ['auditResults', 'changesRelevantToISMS']]],
-                            ['name' => 'Review Execution', 'order' => 2, 'approver_role' => 'ROLE_ADMIN', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'ManagementReview', 'fields' => ['decisions', 'reviewDate']]],
-                            ['name' => 'Action Planning', 'order' => 3, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'ManagementReview', 'fields' => ['actionItems']]],
+                            ['name' => 'Review Execution', 'order' => 2, 'approver_role' => 'ROLE_TOP_MGMT', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true, 'auto_progress_conditions' => ['type' => 'field_completion', 'entity' => 'ManagementReview', 'fields' => ['decisions', 'reviewDate']]],
+                            ['name' => 'Action Planning', 'order' => 3, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 7, 'is_required' => true],
                             ['name' => 'Follow-up Verification', 'order' => 4, 'approver_role' => 'ROLE_CISO', 'step_type' => 'approval', 'days_to_complete' => 30, 'is_required' => true],
                         ],
                     ],

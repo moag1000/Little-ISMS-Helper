@@ -12,6 +12,7 @@ use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonBuilderType;
 use App\Form\Type\OwnerUserType;
+use App\Form\Util\LegacyFreeTextField;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityRepository;
@@ -41,11 +42,25 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
     public static function getSectionMap(): array
     {
         return [
-            'overview' => ['title', 'reviewDate', 'status', 'reviewedBy', 'reviewedByPerson', 'reviewedByDeputyPersons', 'participants', 'personParticipants'],
-            'inputs' => ['changesRelevantToISMS', 'feedbackFromInterestedParties', 'auditResults', 'performanceEvaluation', 'nonconformitiesReview', 'incidentsReview', 'risksReview', 'objectivesReview', 'contextChanges', 'previousReviewActions'],
-            'followup' => ['nonConformitiesStatus', 'correctiveActionsStatus', 'improvementOpportunities'],
-            'outputs' => ['opportunitiesForImprovement', 'decisions', 'actionItems', 'resourceNeeds', 'summary', 'actionItemsWithDeadlines'],
-            'audit_metadata' => ['topManagementAttended', 'nextReviewDate', 'meetingMinutesDocument', 'riskTreatmentEffectiveness', 'policyReviewOutcome'],
+            'overview' => ['title', 'reviewDate', 'status', 'reviewedBy', 'reviewedByPerson', 'reviewedByDeputyPersons', 'participants', 'personParticipants', 'topManagementAttended'],
+            // ISO 27001:2022 9.3.2 a–g in the order of the norm (show page and PDF read them the same way).
+            'inputs' => [
+                'previousReviewActions',        // a
+                'changesRelevantToISMS',        // b
+                'interestedPartyNeedsChanges',  // c
+                'nonConformitiesStatus',        // d 1
+                'correctiveActionsStatus',      // d 1
+                'performanceEvaluation',        // d 2
+                'incidentsReview',              // d 2
+                'auditResults',                 // d 3
+                'objectivesReview',             // d 4
+                'feedbackFromInterestedParties', // e
+                'risksReview',                  // f
+                'riskTreatmentEffectiveness',   // f
+                'opportunitiesForImprovement',  // g
+            ],
+            'outputs' => ['decisions', 'resourceNeeds', 'policyReviewOutcome', 'summary', 'actionItems'],
+            'audit_metadata' => ['nextReviewDate', 'meetingMinutesDocument'],
             'compliance' => ['frameworkComplianceStatus'],
         ];
     }
@@ -173,14 +188,6 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                 ],
                 'help' => 'management_review.help.audit_results',
             ])
-            ->add('nonconformitiesReview', TextareaType::class, [
-                'label' => 'management_review.field.nonconformities_review',
-                'required' => false,
-                'attr' => [
-                    'rows' => 3,
-                ],
-                'help' => 'management_review.help.nonconformities_review',
-            ])
             ->add('incidentsReview', TextareaType::class, [
                 'label' => 'management_review.field.incidents_review',
                 'required' => false,
@@ -203,14 +210,6 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.objectives_review',
-            ])
-            ->add('contextChanges', TextareaType::class, [
-                'label' => 'management_review.field.context_changes',
-                'required' => false,
-                'attr' => [
-                    'rows' => 3,
-                ],
-                'help' => 'management_review.help.context_changes',
             ])
             ->add('previousReviewActions', TextareaType::class, [
                 'label' => 'management_review.field.previous_review_actions',
@@ -235,14 +234,6 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.corrective_actions_status',
-            ])
-            ->add('improvementOpportunities', TextareaType::class, [
-                'label' => 'management_review.field.improvement_opportunities',
-                'required' => false,
-                'attr' => [
-                    'rows' => 4,
-                ],
-                'help' => 'management_review.help.improvement_opportunities',
             ])
             ->add('opportunitiesForImprovement', TextareaType::class, [
                 'label' => 'management_review.field.opportunities_for_improvement',
@@ -333,26 +324,18 @@ final class ManagementReviewType extends AbstractType implements SectionMapInter
                     'placeholder' => 'management_review.placeholder.policy_review_outcome',
                 ],
                 'help' => 'management_review.help.policy_review_outcome',
-            ])
-            // ISO 27001 Cl. 9.3.3 — decisions/actions with owner + deadline.
-            // Structured builder, shape: [{action, owner, deadline, status}].
-            ->add('actionItemsWithDeadlines', JsonBuilderType::class, [
-                'label' => 'management_review.field.action_items_with_deadlines',
-                'required' => false,
-                'help' => 'management_review.help.action_items_with_deadlines',
-                'shape' => 'list',
-                'add_label' => 'management_review.json_builder.action_items.add',
-                'fields' => [
-                    ['key' => 'action', 'type' => 'text', 'label' => 'management_review.json_builder.action_items.action', 'required' => true, 'wide' => true],
-                    ['key' => 'owner', 'type' => 'text', 'label' => 'management_review.json_builder.action_items.owner'],
-                    ['key' => 'deadline', 'type' => 'date', 'label' => 'management_review.json_builder.action_items.deadline'],
-                    ['key' => 'status', 'type' => 'select', 'label' => 'management_review.json_builder.action_items.status', 'choices' => [
-                        'management_review.json_builder.action_items.status_open' => 'open',
-                        'management_review.json_builder.action_items.status_in_progress' => 'in_progress',
-                        'management_review.json_builder.action_items.status_done' => 'done',
-                    ]],
-                ],
             ]);
+
+        // 9.3.2 c — changes in needs and expectations of interested parties.
+        $builder->add('interestedPartyNeedsChanges', TextareaType::class, [
+            'label' => 'management_review.field.interested_party_needs_changes',
+            'required' => false,
+            'attr' => ['rows' => 3],
+            'help' => 'management_review.help.interested_party_needs_changes',
+        ]);
+        // Free-text action list from before review actions became tasks —
+        // shown only while it still holds text.
+        LegacyFreeTextField::hideWhenEmpty($builder, 'actionItems');
 
         if ($this->isModuleActive('compliance')) {
             // Snapshot per framework, shape: [{framework, status, last_review, open_items}].

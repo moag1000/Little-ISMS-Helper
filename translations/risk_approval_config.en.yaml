@@ -14,6 +14,10 @@ risk_approval_config:
         manager: 'Risks above the automatic threshold up to this score require manager approval. Default: 7.'
         executive: 'Risks above the manager threshold up to this score require executive approval. Default: 25. Maximum for a 5×5 matrix: 25.'
         note: 'Briefly document why the thresholds are set this way (e.g. board resolution, industry baseline).'
+    approval:
+        in_force: 'Top management approved these thresholds on %date% (%name%). Risks up to the first level are accepted automatically.'
+        missing: 'Top management has not approved these thresholds. Until then risk management decides on low risks too (ISO 27001 6.1.2 a).'
+        submit: 'Put forward for approval'
     hint:
         order: 'Values must be ascending: automatic < manager < executive.'
     saved: 'Thresholds saved.'

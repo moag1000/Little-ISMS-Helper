@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Entity\ManagementDecision;
 use App\Entity\Risk;
 use App\Entity\RiskAppetite;
 use App\Entity\Tenant;
@@ -14,9 +15,11 @@ use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\EmailNotificationService;
+use App\Service\ManagementDecision\ManagementDecisionService;
 use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\RiskAppetitePrioritizationService;
 use App\Service\WorkflowService;
+use App\Tests\Stub\PersonaResolverFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Exception\BusinessRule\BusinessRuleException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,6 +39,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     private MockObject $auditLogger;
     private MockObject $logger;
     private MockObject $lifecycleService;
+    private MockObject $managementDecisions;
     private RiskAcceptanceWorkflowService $service;
 
     protected function setUp(): void
@@ -66,12 +70,20 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
             $this->logger,
             $approvalResolver,
             $this->lifecycleService,
+            $this->managementDecisions = $this->createMock(ManagementDecisionService::class),
+            PersonaResolverFactory::create(),
         );
+    }
+
+    private function approveCriteria(): void
+    {
+        $this->managementDecisions->method('criteriaApproval')->willReturn(new ManagementDecision());
     }
 
     #[Test]
     public function testDetermineApprovalLevelAutomaticForLowScore(): void
     {
+        $this->approveCriteria();
         $risk = $this->createRiskWithResidualLevel(3);
 
         $result = $this->service->determineApprovalLevel($risk);
@@ -82,11 +94,23 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     #[Test]
     public function testDetermineApprovalLevelAutomaticForMinimumScore(): void
     {
+        $this->approveCriteria();
         $risk = $this->createRiskWithResidualLevel(1);
 
         $result = $this->service->determineApprovalLevel($risk);
 
         $this->assertSame('automatic', $result);
+    }
+
+    #[Test]
+    public function testLowScoreNeedsManagerWithoutApprovedCriteria(): void
+    {
+        // ISO 27001 6.1.2 a: without top management approving the acceptance
+        // criteria, nothing is accepted automatically.
+        $this->managementDecisions->method('criteriaApproval')->willReturn(null);
+        $risk = $this->createRiskWithResidualLevel(2);
+
+        $this->assertSame('manager', $this->service->determineApprovalLevel($risk));
     }
 
     #[Test]
@@ -427,6 +451,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     {
         $risk = $this->createMock(Risk::class);
         $risk->method('getResidualRiskLevel')->willReturn($level);
+        $risk->method('getTenant')->willReturn($this->createMock(Tenant::class));
 
         return $risk;
     }

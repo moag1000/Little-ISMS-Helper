@@ -41,12 +41,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * e.g. NotificationChannel's `delivery_mode`, which its own field edits.
  *
  * Wire-up:
- *   $builder->add('actionItemsWithDeadlines', JsonBuilderType::class, [
- *       'label'  => 'management_review.field.action_items_with_deadlines',
+ *   $builder->add('frameworkComplianceStatus', JsonBuilderType::class, [
+ *       'label'  => 'management_review.field.framework_compliance_status',
  *       'shape'  => 'list',
  *       'fields' => [
- *           ['key' => 'action', 'type' => 'text', 'label' => '…', 'required' => true],
- *           ['key' => 'deadline', 'type' => 'date', 'label' => '…'],
+ *           ['key' => 'framework', 'type' => 'text', 'label' => '…', 'required' => true],
+ *           ['key' => 'last_review', 'type' => 'date', 'label' => '…'],
  *       ],
  *   ]);
  *

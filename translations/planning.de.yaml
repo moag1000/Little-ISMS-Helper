@@ -51,6 +51,7 @@ planning:
             dismissed: Verworfen
         origin:
             internal: 'Intern (KVP)'
+            management_review_action: 'Managementbewertung'
         field:
             title: Ereignis
             roadmap_task: Kategorie

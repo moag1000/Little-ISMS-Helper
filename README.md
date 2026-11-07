@@ -286,7 +286,8 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 ### Persona-Dashboards und Workflow-Inbox
 
 - **8 Persona-Dashboards** -- CISO, ISB, Risk-Manager, DPO, Compliance-Manager, BCM, Auditor und Leitung, je per Persona-Rolle gegated unter `/dashboards/<persona>`; Login-Landeseite, Tour und Berichts-Downloads (Auditor laedt Audit-Paket selbst, Leitung den One-Pager) aus einer Zuordnung
-- **Board-Dashboard** -- Druckoptimierte Management-Ansicht (PDF-Export) fuer Geschaeftsfuehrung und Aufsichtsgremien
+- **Board-Dashboard** -- Druckoptimierte Management-Ansicht (PDF-Export) fuer Geschaeftsfuehrung und Aufsichtsgremien; oben „Zu entscheiden“ und „Letzte Entscheidungen“
+- **Leitungsentscheidungen** -- ein Register fuer Leitlinie, Akzeptanzkriterien, SoA, Ziele, Ressourcen, NIS-2-Massnahmen, Risikoakzeptanzen und Managementbewertungen; Vorlagen aus den Daten vorbefuellt, die Leitung billigt im Entscheidungsdialog; automatische Risikoakzeptanz nur unter gebilligten Kriterien ([Leitfaden](docs/user-guide/LEITUNGSENTSCHEIDUNGEN.md))
 - **AlvaHint-Engine** -- Kontextuelle Hilfetexte mit Rules-Engine (Tier-System, Modul-/Rollen-Gating, Render-/Dismiss-Telemetrie)
 - **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
@@ -589,6 +590,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Mapping-Hub mit Tabs |
 | [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | Rollen-Dashboards (CISO, ISB, Risk-Manager, DPO, CM, BCM, Auditor, Leitung), wer wo landet, Kennzahlen, Detailseiten- und Formular-Aufbau |
 | [Standortkarte](docs/user-guide/STANDORTKARTE.md) | Lagebild, Prüfungen, Ebenen, Sichten, Konzern, Lieferkette, Länderzonen, Ereignis, Stichprobe, Vergleich, Hebel, Sammelaktionen, Export, Geokodierung |
+| [Leitungsentscheidungen](docs/user-guide/LEITUNGSENTSCHEIDUNGEN.md) | Vorlagen, Billigung durch die Leitung, automatische Risikoakzeptanz, Managementbewertung 9.3.2 a–g, Massnahmen, Korrekturmassnahmen 10.2 |
 | [Mein Tag](docs/user-guide/MEIN_TAG.md) | Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
 | [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
 | [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |

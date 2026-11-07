@@ -14,6 +14,19 @@
         subtitle: 'risk_approval_config.subtitle'|trans({}, 'risk_approval_config'),
     }) }}
 
+    {% if criteria_approval %}
+        {{ _fa_alert.render({ variant: 'success', body: 'risk_approval_config.approval.in_force'|trans({'%date%': criteria_approval.decidedAt|fa_date, '%name%': criteria_approval.decidedBy ? criteria_approval.decidedBy.fullName : '—'}, 'risk_approval_config') }) }}
+    {% else %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+            {% block alert_body %}
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <span>{{ 'risk_approval_config.approval.missing'|trans({}, 'risk_approval_config') }}</span>
+                    <a href="{{ path('app_management_decision_new', {type: 'risk_criteria'}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'risk_approval_config.approval.submit'|trans({}, 'risk_approval_config') }}</a>
+                </div>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
     <div class="row">
         <div class="col-lg-8">
             <section class="fa-section mb-4">

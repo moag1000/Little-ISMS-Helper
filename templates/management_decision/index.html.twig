@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'management_decision.title'|trans({}, 'management_decision') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'management_decision.title'|trans({}, 'management_decision') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: 'management_decision.title'|trans({}, 'management_decision'),
+        subtitle: 'management_decision.subtitle'|trans({}, 'management_decision'),
+        actions: is_granted('ROLE_MANAGER') ? [
+            { label: 'management_decision.action.new'|trans({}, 'management_decision'), variant: 'primary', icon: 'plus', href: path('app_management_decision_new') }
+        ] : []
+    }) }}
+
+    {% embed '_components/_fa_list_page.html.twig' with {
+        page: page,
+        search_action: path('app_management_decision_index'),
+        filter_keys: ['status', 'type'],
+        list_title: 'management_decision.all'|trans({}, 'management_decision'),
+        empty: {
+            mood: 'sleeping',
+            title: 'management_decision.empty'|trans({}, 'management_decision'),
+            actions: is_granted('ROLE_MANAGER') ? [
+                { label: 'management_decision.action.new'|trans({}, 'management_decision'), variant: 'primary', icon: 'plus', href: path('app_management_decision_new') }
+            ] : [],
+        },
+    } %}
+        {% block list_filters %}
+            <div class="col-md-4">
+                <label for="md-status" class="form-label">{{ 'management_decision.field.status'|trans({}, 'management_decision') }}</label>
+                <select class="form-select fa-cyber-input__field" id="md-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value=""></option>
+                    {% for s in statuses %}
+                        <option value="{{ s.value }}" {{ status == s.value ? 'selected' : '' }}>{{ s.label|trans({}, 'management_decision') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="md-type" class="form-label">{{ 'management_decision.field.type'|trans({}, 'management_decision') }}</label>
+                <select class="form-select fa-cyber-input__field" id="md-type" name="type" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <option value=""></option>
+                    {% for t in types %}
+                        <option value="{{ t.value }}" {{ type == t.value ? 'selected' : '' }}>{{ t.label|trans({}, 'management_decision') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endblock %}
+        {% block list_summary %}
+            {% if pending_count > 0 %}<span class="fa-status-pill fa-status-pill--warning">{{ 'management_decision.summary.pending'|trans({'%count%': pending_count}, 'management_decision') }}</span>{% endif %}
+            {% if overdue_count > 0 %}<span class="fa-status-pill fa-status-pill--danger">{{ 'management_decision.summary.overdue'|trans({'%count%': overdue_count}, 'management_decision') }}</span>{% endif %}
+        {% endblock %}
+        {% block list_table %}
+            {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+            <div class="table-responsive">
+                <table class="fa-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'management_decision.field.title'|trans({}, 'management_decision') }}</th>
+                            <th scope="col">{{ 'management_decision.field.type'|trans({}, 'management_decision') }}</th>
+                            <th scope="col">{{ 'management_decision.field.status'|trans({}, 'management_decision') }}</th>
+                            <th scope="col">{{ 'management_decision.field.date'|trans({}, 'management_decision') }}</th>
+                            <th scope="col">{{ 'management_decision.field.decided_by'|trans({}, 'management_decision') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in page %}
+                            <tr>
+                                <td><a href="{{ path('app_management_decision_show', {id: d.id}) }}">{{ d.title }}</a></td>
+                                <td>{{ d.type.label|trans({}, 'management_decision') }}</td>
+                                <td>{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ManagementDecision', status_key: d.status, label: d.statusEnum.label|trans({}, 'management_decision'), size: 'sm' }) }}</td>
+                                <td>
+                                    {% if d.pending %}
+                                        <span class="{{ d.overdue ? 'text-danger' : '' }}">{{ 'management_decision.due'|trans({'%date%': d.dueDate|fa_date}, 'management_decision') }}</span>
+                                    {% else %}
+                                        {{ d.decidedAt|fa_date }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ d.decidedBy ? d.decidedBy.fullName : '—' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

@@ -10,6 +10,7 @@ my_day:
 
     kpi:
         workflows_pending: 'Freigaben für mich'
+        management_decisions_pending: 'Leitungsentscheidungen offen'
         risk_acceptance_pending: 'Risikoakzeptanzen zu entscheiden'
         location_gaps: 'Standorte mit offenen Prüfungen'
         workflows_overdue: 'Freigaben überfällig'
@@ -41,6 +42,7 @@ my_day:
 
     section:
         workflows_pending: 'Freigaben — warten auf meine Entscheidung'
+        management_decisions_pending: 'Leitungsentscheidungen — warten auf die Leitung (ISO 27001 5.1, 9.3.3)'
         risk_acceptance_pending: 'Risikoakzeptanzen — warten auf meine Entscheidung (ISO 27005 8.4.4)'
         location_gaps: 'Meine Standorte — offene Prüfungen (ISO 27001 A.7)'
         workflows_overdue: 'Freigaben — überfällig (von mir gestartet)'

@@ -14,6 +14,10 @@ risk_approval_config:
         manager: 'Risiken über Automatik-Schwelle bis zu diesem Score brauchen Manager-Approval. Default: 7.'
         executive: 'Risiken über Manager-Schwelle bis zu diesem Score brauchen Executive-Approval. Default: 25. Maximum bei 5×5-Matrix: 25.'
         note: 'Kurz dokumentieren, warum die Schwellwerte so gesetzt sind (z. B. Vorstandsbeschluss, Branchenvorgabe).'
+    approval:
+        in_force: 'Die Leitung hat diese Schwellwerte am %date% gebilligt (%name%). Risiken bis zur ersten Stufe werden automatisch akzeptiert.'
+        missing: 'Die Leitung hat diese Schwellwerte nicht gebilligt. Bis dahin entscheidet das Risikomanagement auch über niedrige Risiken (ISO 27001 6.1.2 a).'
+        submit: 'Zur Billigung vorlegen'
     hint:
         order: 'Die Werte müssen aufsteigend sein: Automatik < Manager < Executive.'
     saved: 'Schwellwerte gespeichert.'

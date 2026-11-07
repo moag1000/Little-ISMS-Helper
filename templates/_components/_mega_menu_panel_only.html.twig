@@ -867,6 +867,15 @@
                 </span>
             </a>
             {% endif %}
+            {% if is_granted('ROLE_AUDITOR') %}
+            <a href="{{ path('app_management_decision_index') }}" class="fly-item {% if current_route starts with 'app_management_decision_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+                <span class="fly-item__icon"><i class="fa-icon fa-icon--regulator" aria-hidden="true"></i></span>
+                <span class="fly-item__body">
+                    <span class="fly-item__title">{{ 'nav.management_decisions'|trans({}, 'nav') }}</span>
+                    <span class="fly-item__sub">{{ 'nav.mega.desc.management_decisions'|trans({}, 'nav') }}</span>
+                </span>
+            </a>
+            {% endif %}
             {% if is_module_active('reviews') %}
             <a href="{{ path('app_management_review_index') }}" class="fly-item {% if current_route starts with 'app_management_review_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--sop" aria-hidden="true"></i></span>

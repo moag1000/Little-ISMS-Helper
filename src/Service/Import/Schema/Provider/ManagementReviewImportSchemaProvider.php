@@ -34,9 +34,10 @@ use App\Service\Import\Schema\ImportSchemaProviderInterface;
  *     personParticipants (Person), reviewedByDeputyPersons (Person)
  *   - `reviewedBy` (User relation — no human lookup field is imported, mirroring
  *     ProcessingActivity which imports only Person relations)
- *   - JSON-structured fields: actionItemsWithDeadlines, frameworkComplianceStatus
+ *   - JSON-structured field frameworkComplianceStatus; review actions are
+ *     tasks (ActionItem) of their own
  *   - computed/derived accessors (daysSinceReview, effectiveParticipant*,
- *     effectiveReviewedBy, allReviewedByOwners, resourcesNeeded has no form field)
+ *     effectiveReviewedBy, allReviewedByOwners)
  *
  * relationLookup targets are real #[ORM\Column]s: Person::$fullName and
  * Document::$originalFilename.
@@ -99,11 +100,6 @@ final class ManagementReviewImportSchemaProvider implements ImportSchemaProvider
                     type: ImportFieldSpec::TYPE_TEXT,
                 ),
                 new ImportFieldSpec(
-                    name: 'nonconformitiesReview',
-                    setter: 'setNonconformitiesReview',
-                    type: ImportFieldSpec::TYPE_TEXT,
-                ),
-                new ImportFieldSpec(
                     name: 'incidentsReview',
                     setter: 'setIncidentsReview',
                     type: ImportFieldSpec::TYPE_TEXT,
@@ -119,8 +115,8 @@ final class ManagementReviewImportSchemaProvider implements ImportSchemaProvider
                     type: ImportFieldSpec::TYPE_TEXT,
                 ),
                 new ImportFieldSpec(
-                    name: 'contextChanges',
-                    setter: 'setContextChanges',
+                    name: 'interestedPartyNeedsChanges',
+                    setter: 'setInterestedPartyNeedsChanges',
                     type: ImportFieldSpec::TYPE_TEXT,
                 ),
                 new ImportFieldSpec(
@@ -138,11 +134,6 @@ final class ManagementReviewImportSchemaProvider implements ImportSchemaProvider
                 new ImportFieldSpec(
                     name: 'correctiveActionsStatus',
                     setter: 'setCorrectiveActionsStatus',
-                    type: ImportFieldSpec::TYPE_TEXT,
-                ),
-                new ImportFieldSpec(
-                    name: 'improvementOpportunities',
-                    setter: 'setImprovementOpportunities',
                     type: ImportFieldSpec::TYPE_TEXT,
                 ),
 

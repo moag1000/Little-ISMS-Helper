@@ -120,6 +120,7 @@ class RestoreEntityWriter
             'CorrectiveAction' => 53,
             'AuditFreeze' => 54,
             'ManagementReview' => 55,
+            'ManagementDecision' => 57,
             'ThreatLedPenetrationTest' => 56,
             'ISMSContext' => 58,
             'ISMSObjective' => 59,

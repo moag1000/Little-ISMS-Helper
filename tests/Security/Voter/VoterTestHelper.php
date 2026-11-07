@@ -30,6 +30,9 @@ final class VoterTestHelper
             'ROLE_RISK_MANAGER'       => ['ROLE_MANAGER'],
             'ROLE_DPO'                => ['ROLE_MANAGER'],
             'ROLE_COMPLIANCE_MANAGER' => ['ROLE_MANAGER'],
+            'ROLE_ISB'                => ['ROLE_MANAGER'],
+            'ROLE_BCM_OFFICER'        => ['ROLE_MANAGER'],
+            'ROLE_TOP_MGMT'           => ['ROLE_AUDITOR'],
             'ROLE_ADMIN'              => [
                 'ROLE_USER',
                 'ROLE_AUDITOR',
@@ -38,6 +41,9 @@ final class VoterTestHelper
                 'ROLE_RISK_MANAGER',
                 'ROLE_DPO',
                 'ROLE_COMPLIANCE_MANAGER',
+                'ROLE_ISB',
+                'ROLE_BCM_OFFICER',
+                'ROLE_TOP_MGMT',
             ],
             'ROLE_SUPER_ADMIN' => [
                 'ROLE_ADMIN',

@@ -29,6 +29,7 @@ final class ReadOnlyRoleSubscriberTest extends TestCase
         yield 'comment' => ['app_comment_post', 'POST', false];
         yield 'profile' => ['app_profile_edit', 'POST', false];
         yield 'workflow decision' => ['app_workflow_instance_approve', 'POST', false];
+        yield 'risk acceptance decision' => ['app_risk_approve_acceptance', 'POST', false];
         yield 'workflow cancel' => ['app_workflow_instance_cancel', 'POST', true];
         yield 'bulk export' => ['app_risk_bulk_export', 'POST', false];
         yield 'export job' => ['app_risk_export_dispatch', 'POST', false];

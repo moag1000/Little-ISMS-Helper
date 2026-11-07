@@ -1,0 +1,46 @@
+# Top-management decision lifecycle (ISO 27001 5.1, 6.1.2 a, 6.1.3, 9.3.3;
+# NIS-2 Art. 20 (1)).
+#
+# A proposal waits for top management (pending). ROLE_TOP_MGMT approves or
+# rejects it (reason required on reject); whoever put it forward may
+# withdraw it. A newer approval of the same type and subject supersedes the
+# older one (service-only, no roles). Decided-by, decided-at and comment are
+# written by ManagementDecisionDecidedListener from the transition context.
+framework:
+    workflows:
+        management_decision_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\ManagementDecision
+            initial_marking: pending
+            places:
+                - pending
+                - approved
+                - rejected
+                - withdrawn
+                - superseded
+            transitions:
+                approve:
+                    from: pending
+                    to: approved
+                    metadata:
+                        roles: [ROLE_TOP_MGMT]
+                reject:
+                    from: pending
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_TOP_MGMT]
+                        reason_required: true
+                withdraw:
+                    from: pending
+                    to: withdrawn
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                supersede:
+                    from: approved
+                    to: superseded
+                    metadata:
+                        roles: []

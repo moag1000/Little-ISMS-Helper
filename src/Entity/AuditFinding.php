@@ -64,8 +64,13 @@ class AuditFinding
     #[ORM\JoinColumn(nullable: false)]
     private ?Tenant $tenant = null;
 
+    /**
+     * The audit that found it — empty for nonconformities found elsewhere
+     * (management review, incident, self-assessment, customer complaint;
+     * ISO 27001 10.2 does not tie a nonconformity to an audit).
+     */
     #[ORM\ManyToOne(targetEntity: InternalAudit::class, inversedBy: 'structuredFindings')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?InternalAudit $audit = null;
 
     #[ORM\Column(length: 50)]

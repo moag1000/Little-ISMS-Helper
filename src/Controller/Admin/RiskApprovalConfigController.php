@@ -11,6 +11,7 @@ use App\Form\Admin\RiskApprovalConfigType;
 use App\Repository\RiskApprovalConfigRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
+use App\Service\ManagementDecision\ManagementDecisionService;
 use App\Service\RiskApprovalConfigResolver;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -40,6 +41,7 @@ class RiskApprovalConfigController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly RiskApprovalConfigResolver $resolver,
+        private readonly ManagementDecisionService $managementDecisions,
     ) {
     }
 
@@ -110,6 +112,8 @@ class RiskApprovalConfigController extends AbstractController
         return $this->render('admin/risk_approval_config/edit.html.twig', [
             'form' => $form,
             'config' => $config,
+            // ISO 27001 6.1.2 a: automatic acceptance needs top management's approval of these thresholds.
+            'criteria_approval' => $this->managementDecisions->criteriaApproval($tenant),
         ], new Response(status: $status));
     }
 }

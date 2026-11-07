@@ -30,6 +30,9 @@ search_nav:
     app_audit_freeze_index:
         label: 'Audit freeze'
         description: 'Freeze the ISMS state for external audits (read-only)'
+    app_management_decision_index:
+        label: 'Management decisions'
+        description: 'Top-management decisions: policy, acceptance criteria, SoA, risk acceptance, management review'
     app_soa_index:
         label: 'SoA – Statement of Applicability'
         description: 'ISO 27001 Annex A controls, statement of applicability'

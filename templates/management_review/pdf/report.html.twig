@@ -148,17 +148,19 @@
     <p class="small">{{ 'management_review.pdf.section.inputs_hint'|trans({}, 'management_review') }}</p>
 
     {% set inputs = [
-        { key: 'previous_actions',    value: review.previousReviewActions,        ref: '9.3.2 a' },
-        { key: 'context_changes',     value: review.contextChanges|default(review.changesRelevantToISMS), ref: '9.3.2 b' },
-        { key: 'interested_parties',  value: review.feedbackFromInterestedParties, ref: '9.3.2 e' },
-        { key: 'performance',         value: review.performanceEvaluation,         ref: '9.3.2 d 2' },
-        { key: 'nonconformities',     value: review.nonconformitiesReview|default(review.nonConformitiesStatus), ref: '9.3.2 d 1' },
-        { key: 'corrective_actions',  value: review.correctiveActionsStatus,       ref: '9.3.2 d 1' },
-        { key: 'incidents',           value: review.incidentsReview|default(''),   ref: '9.3.2 d' },
+        { key: 'previous_actions',    value: review.previousReviewActions,          ref: '9.3.2 a' },
+        { key: 'context_changes',     value: review.changesRelevantToISMS,          ref: '9.3.2 b' },
+        { key: 'interested_party_needs', value: review.interestedPartyNeedsChanges, ref: '9.3.2 c' },
+        { key: 'nonconformities',     value: review.nonConformitiesStatus,          ref: '9.3.2 d 1' },
+        { key: 'corrective_actions',  value: review.correctiveActionsStatus,        ref: '9.3.2 d 1' },
+        { key: 'performance',         value: review.performanceEvaluation,          ref: '9.3.2 d 2' },
+        { key: 'incidents',           value: review.incidentsReview,                ref: '9.3.2 d 2' },
         { key: 'audit_results',       value: review.auditResults,                   ref: '9.3.2 d 3' },
-        { key: 'objectives',          value: review.objectivesReview|default(''),  ref: '9.3.2 d 4' },
-        { key: 'risks',               value: review.risksReview|default(''),       ref: '9.3.2 f' },
-        { key: 'opportunities',       value: review.improvementOpportunities|default(review.opportunitiesForImprovement), ref: '9.3.2 g' },
+        { key: 'objectives',          value: review.objectivesReview,               ref: '9.3.2 d 4' },
+        { key: 'interested_parties',  value: review.feedbackFromInterestedParties,  ref: '9.3.2 e' },
+        { key: 'risks',               value: review.risksReview,                    ref: '9.3.2 f' },
+        { key: 'risk_treatment',      value: review.riskTreatmentEffectiveness,     ref: '9.3.2 f' },
+        { key: 'opportunities',       value: review.opportunitiesForImprovement,    ref: '9.3.2 g' },
     ] %}
 
     {% for input in inputs %}
@@ -175,13 +177,11 @@
     <p class="small">{{ 'management_review.pdf.section.outputs_hint'|trans({}, 'management_review') }}</p>
 
     {% set outputs = [
-        { key: 'improvements',    value: review.improvementOpportunities|default(review.opportunitiesForImprovement) },
-        { key: 'changes_isms',    value: review.contextChanges|default(review.changesRelevantToISMS) },
-        { key: 'resources',       value: review.resourcesNeeded|default(review.resourceNeeds) },
         { key: 'decisions',       value: review.decisions },
-        { key: 'action_items',    value: review.actionItems },
-        { key: 'summary',         value: review.summary|default('') },
-    ] %}
+        { key: 'resources',       value: review.resourceNeeds },
+        { key: 'policy',          value: review.policyReviewOutcome },
+        { key: 'summary',         value: review.summary },
+    ]|merge(review.actionItems ? [{ key: 'action_items', value: review.actionItems }] : []) %}
 
     {% for out in outputs %}
         <div class="section">
@@ -189,6 +189,43 @@
             <div class="section-text">{{ out.value|default('—')|trim ?: '—' }}</div>
         </div>
     {% endfor %}
+
+    <div class="section">
+        <h3>{{ 'management_review.task.title'|trans({}, 'management_review') }}</h3>
+        {% if tasks|default([]) is empty %}
+            <div class="section-text">{{ 'management_review.task.empty'|trans({}, 'management_review') }}</div>
+        {% else %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>{{ 'management_review.task.field.title'|trans({}, 'management_review') }}</th>
+                        <th>{{ 'management_review.task.field.responsible'|trans({}, 'management_review') }}</th>
+                        <th>{{ 'management_review.task.field.due'|trans({}, 'management_review') }}</th>
+                        <th>{{ 'management_review.task.field.status'|trans({}, 'management_review') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.responsibleUser ? task.responsibleUser.fullName : (task.responsiblePerson ? task.responsiblePerson.fullName : '—') }}</td>
+                            <td>{{ task.dueDate|fa_date }}</td>
+                            <td>{{ ('planning.action_item.status.' ~ task.status)|trans({}, 'planning') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    {% if decisions|default([]) is not empty %}
+        <div class="section">
+            <h3>{{ 'management_review.decision.title'|trans({}, 'management_review') }}</h3>
+            {% for decision in decisions %}
+                <div class="section-text">{{ decision.title }} — {{ decision.decidedBy ? decision.decidedBy.fullName : '—' }}, {{ decision.decidedAt|fa_datetime }}{% if decision.decisionComment %}: {{ decision.decisionComment }}{% endif %}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <h2>{{ 'management_review.pdf.section.signatures'|trans({}, 'management_review') }}</h2>
     <p class="small">{{ 'management_review.pdf.section.signatures_hint'|trans({}, 'management_review') }}</p>

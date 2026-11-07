@@ -51,6 +51,7 @@ planning:
             dismissed: Dismissed
         origin:
             internal: 'Internal (CIP)'
+            management_review_action: 'Management review'
         field:
             title: Item
             roadmap_task: Category

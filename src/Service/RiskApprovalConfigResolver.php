@@ -42,10 +42,13 @@ final readonly class RiskApprovalConfigView
         };
     }
 
-    /** Minimum role that may approve an acceptance at this level (executive: ROLE_ADMIN). */
+    /**
+     * Minimum role that may approve an acceptance at this level. Executive
+     * level is top management (ISO 27001 6.1.3 f; ROLE_ADMIN inherits it).
+     */
     public static function approverRole(string $level): string
     {
-        return $level === 'executive' ? 'ROLE_ADMIN' : 'ROLE_MANAGER';
+        return $level === 'executive' ? 'ROLE_TOP_MGMT' : 'ROLE_MANAGER';
     }
 
     public static function fromEntity(RiskApprovalConfig $entity): self

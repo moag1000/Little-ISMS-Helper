@@ -12,10 +12,13 @@ use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Tenant;
 use App\Exception\BusinessRule\BusinessRuleException;
+use App\Enum\ManagementDecisionType;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
+use App\Security\Persona\PersonaResolver;
+use App\Service\ManagementDecision\ManagementDecisionService;
 use App\Service\RiskApprovalConfigResolver;
 use App\Service\RiskApprovalConfigView;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,6 +61,8 @@ class RiskAcceptanceWorkflowService
         private readonly LoggerInterface $logger,
         private readonly RiskApprovalConfigResolver $approvalConfigResolver,
         private readonly LifecycleTransitionInterface $lifecycleService,
+        private readonly ManagementDecisionService $managementDecisions,
+        private readonly PersonaResolver $personaResolver,
     ) {}
 
     /**
@@ -195,7 +200,17 @@ class RiskAcceptanceWorkflowService
             ? $this->approvalConfigResolver->resolveFor($tenant)
             : RiskApprovalConfigView::defaults();
 
-        return $config->levelFor($risk->getResidualRiskLevel());
+        $level = $config->levelFor($risk->getResidualRiskLevel());
+
+        // ISO 27001 6.1.2 a / 6.1.3 f: risks are accepted automatically only
+        // under acceptance criteria top management approved — without that
+        // approval (or after a threshold changed) the risk manager decides.
+        if ($level === 'automatic'
+            && (!$tenant instanceof Tenant || $this->managementDecisions->criteriaApproval($tenant) === null)) {
+            return 'manager';
+        }
+
+        return $level;
     }
 
     /**
@@ -207,12 +222,31 @@ class RiskAcceptanceWorkflowService
     {
         $now = new DateTime();
 
+        $tenant = $risk->getTenant();
+        $basis = $tenant instanceof Tenant ? $this->managementDecisions->criteriaApproval($tenant) : null;
+
         $risk->setFormallyAccepted(true);
         $risk->setAcceptanceApprovedBy($user->getFullName() . ' (automatic)');
         $risk->setAcceptanceApprovedAt($now);
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
+
+        // Every automatic acceptance points to the approval it rests on.
+        if ($tenant instanceof Tenant && $basis !== null) {
+            $this->managementDecisions->record(
+                tenant: $tenant,
+                type: ManagementDecisionType::AutoPolicy,
+                title: (string) $risk->getTitle(),
+                text: $risk->getAcceptanceJustification(),
+                decidedBy: null,
+                comment: null,
+                subjectType: 'Risk',
+                subjectId: $risk->getId(),
+                snapshot: ['residual_score' => $risk->getResidualRiskLevel()],
+                basis: $basis,
+            );
+        }
 
         // X.6: accept transition (assessed → accepted) via risk_lifecycle.
         // Risk must be in 'assessed' state; validateRiskForAcceptance() guards this path.
@@ -228,7 +262,7 @@ class RiskAcceptanceWorkflowService
         $this->auditLogger->logRiskAcceptance(
             $risk,
             $user,
-            'Automatically accepted (score <= 3)'
+            sprintf('Automatically accepted (score %d within approved criteria)', $risk->getResidualRiskLevel())
         );
 
         $this->logger->info('Risk automatically accepted', [
@@ -333,11 +367,16 @@ class RiskAcceptanceWorkflowService
     {
         $role = RiskApprovalConfigView::approverRole($approvalLevel);
 
-        // Find user with required role in tenant
+        // Someone holding the role itself first (the board member, not an
+        // admin who inherits it), then anyone reaching it through the hierarchy.
         $users = $this->userRepository->findBy(['tenant' => $tenant]);
-
         foreach ($users as $user) {
             if (in_array($role, $user->getRoles(), true)) {
+                return $user;
+            }
+        }
+        foreach ($users as $user) {
+            if ($this->personaResolver->reaches($user, $role)) {
                 return $user;
             }
         }
@@ -396,6 +435,22 @@ class RiskAcceptanceWorkflowService
             $user,
             'Risk acceptance approved: ' . ($comments !== '' ? $comments : 'no comments'),
         );
+
+        // A board-level acceptance is a decision of top management (6.1.3 f).
+        $tenant = $risk->getTenant();
+        if ($tenant instanceof Tenant && $this->determineApprovalLevel($risk) === 'executive') {
+            $this->managementDecisions->record(
+                tenant: $tenant,
+                type: ManagementDecisionType::RiskAcceptance,
+                title: (string) $risk->getTitle(),
+                text: $risk->getAcceptanceJustification(),
+                decidedBy: $user,
+                comment: $comments !== '' ? $comments : null,
+                subjectType: 'Risk',
+                subjectId: $risk->getId(),
+                snapshot: ['residual_score' => $risk->getResidualRiskLevel()],
+            );
+        }
 
         // Log approval
         $this->auditLogger->logRiskAcceptanceApproved(

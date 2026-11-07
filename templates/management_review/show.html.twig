@@ -4,6 +4,8 @@
 {% import '_components/_fa_status_band.html.twig' as _fa_status_band %}
 {% import '_components/_fa_anchor_bar.html.twig' as _fa_anchor_bar %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_macros/workflow.html.twig' as _workflow %}
 {% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }}{% endblock %}
@@ -33,197 +35,214 @@
         title: review.title
     }) }}
 
-    {% set statusClass = {
-        'planned': 'warning',
-        'in_progress': 'info',
-        'completed': 'success',
-        'cancelled': 'danger'
-    } %}
-    {% set _status %}{% include '_components/_badge.html.twig' with { variant: statusClass[review.status] ?? 'secondary', class: 'fa-status-pill--lg', content: ('management_review.status.' ~ review.status)|trans({}, 'management_review') } %}{% endset %}
+    {% set _openTasks = tasks|filter(t => t.status not in ['done', 'dismissed'])|length %}
+    {% set _status %}{{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ManagementReview', status_key: review.status, label: ('management_review.status.' ~ review.status)|trans({}, 'management_review'), size: 'lg' }) }}{% endset %}
     {% set _actions %}{{ _lifecycle_actions.dropdown(review, 'management-review', 'management_review_lifecycle') }}{% endset %}
     {{ _fa_status_band.render({
         status: _status,
         actions: _actions,
         facts: [
-            { label: 'show.status.date'|trans({}, 'messages'), value: review.reviewDate ? review.reviewDate|fa_date : null },
-            { label: 'management_review.field.participants'|trans({}, 'management_review'), value: review.effectiveParticipantCount > 0 ? review.effectiveParticipantCount : null },
+            { label: 'management_review.field.review_date'|trans({}, 'management_review'), value: review.reviewDate ? review.reviewDate|fa_date : null },
+            { label: 'management_review.task.open_count'|trans({}, 'management_review'), value: tasks is empty ? null : _openTasks ~ ' / ' ~ tasks|length },
+            { label: 'management_review.field.next_review_date'|trans({}, 'management_review'), value: review.nextReviewDate ? review.nextReviewDate|fa_date : null },
         ],
         workflow: workflow_state(review),
     }) }}
+
+    {% if review.status == 'planned' and is_granted('ROLE_TOP_MGMT') %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'regulator' } } %}
+            {% block alert_body %}
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <span>{{ 'management_review.complete.hint'|trans({}, 'management_review') }}</span>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--success"
+                            data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="completeReview">
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'management_review.complete.action'|trans({}, 'management_review') }}
+                    </button>
+                </div>
+            {% endblock %}
+        {% endembed %}
+        {{ _workflow.decision_modal({
+            id: 'completeReview',
+            tone: 'success',
+            title: 'management_review.complete.action'|trans({}, 'management_review'),
+            action: path('app_management_review_complete', {id: review.id}),
+            token: csrf_token('mr_complete_' ~ review.id),
+            question: 'management_review.complete.question'|trans({}, 'management_review'),
+            subject: review.title,
+            summary: tasks is empty ? null : 'management_review.complete.summary'|trans({'%count%': tasks|length}, 'management_review'),
+            field: { name: 'comment', label: 'management_review.complete.comment'|trans({}, 'management_review') },
+        }) }}
+    {% endif %}
 
     {% set _links = entity_links(review) %}
     {{ _fa_anchor_bar.render([
         { id: 'links', label: 'show.anchor.links'|trans({}, 'messages'), show: _links is not empty },
         { id: 'details', label: 'management_review.field.basic_info'|trans({}, 'management_review') },
         { id: 'inputs', label: 'management_review.section.inputs'|trans({}, 'management_review') },
-        { id: 'followup', label: 'management_review.section.followup'|trans({}, 'management_review') },
         { id: 'outputs', label: 'management_review.section.outputs'|trans({}, 'management_review') },
+        { id: 'tasks', label: 'management_review.task.title'|trans({}, 'management_review') },
         { id: 'history', label: 'show.anchor.history'|trans({}, 'messages') },
     ]) }}
 
     {% include '_components/_fa_entity_links.html.twig' with { entity: review } only %}
 
+    {# ISO 27001:2022 9.3.2 a–g, in the order of the norm. #}
+    {% set _inputs = [
+        { ref: 'a', label: 'previous_review_actions', value: review.previousReviewActions },
+        { ref: 'b', label: 'changes_relevant_to_isms', value: review.changesRelevantToISMS },
+        { ref: 'c', label: 'interested_party_needs_changes', value: review.interestedPartyNeedsChanges },
+        { ref: 'd 1', label: 'non_conformities_status', value: review.nonConformitiesStatus },
+        { ref: 'd 1', label: 'corrective_actions_status', value: review.correctiveActionsStatus },
+        { ref: 'd 2', label: 'performance_evaluation', value: review.performanceEvaluation },
+        { ref: 'd 2', label: 'incidents_review', value: review.incidentsReview },
+        { ref: 'd 3', label: 'audit_results', value: review.auditResults },
+        { ref: 'd 4', label: 'objectives_review', value: review.objectivesReview },
+        { ref: 'e', label: 'feedback_from_interested_parties', value: review.feedbackFromInterestedParties },
+        { ref: 'f', label: 'risks_review', value: review.risksReview },
+        { ref: 'f', label: 'risk_treatment_effectiveness', value: review.riskTreatmentEffectiveness },
+        { ref: 'g', label: 'opportunities_for_improvement', value: review.opportunitiesForImprovement },
+    ] %}
+    {% set _outputs = [
+        { label: 'decisions', value: review.decisions },
+        { label: 'resource_needs', value: review.resourceNeeds },
+        { label: 'policy_review_outcome', value: review.policyReviewOutcome },
+        { label: 'summary', value: review.summary },
+    ]|merge(review.actionItems ? [{ label: 'action_items', value: review.actionItems }] : []) %}
+
     <div class="row">
         <div class="col-lg-8">
-            {# Main Review Information #}
             <div id="details" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0">
-                            <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'management_review.field.basic_info'|trans({}, 'management_review') }}
-                        </h2>
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'management_review.field.basic_info'|trans({}, 'management_review') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="text-muted small mb-2">
-                                <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ 'management_review.field.review_date'|trans({}, 'management_review') }}
-                            </div>
-                            <p class="fs-5">{{ review.reviewDate|fa_date }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="text-muted small mb-2">
-                                <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'management_review.field.participants'|trans({}, 'management_review') }}
-                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.effectiveParticipantCount } %}
-                            </div>
-                            {% if review.effectiveParticipantCount > 0 %}
-                            <ul class="list-unstyled mb-0">
-                                {% for participant in review.participants %}
-                                <li><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ participant.firstName }} {{ participant.lastName }}</li>
-                                {% endfor %}
-                                {% for personParticipant in review.personParticipants %}
-                                <li><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ personParticipant.fullName }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% else %}
-                            <p class="text-muted">—</p>
-                            {% endif %}
-                        </div>
-                    </div>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted">{{ 'management_review.field.participants'|trans({}, 'management_review') }}</dt>
+                        <dd class="col-sm-8">
+                            {% set _names = review.participants|map(p => p.fullName)|merge(review.personParticipants|map(p => p.fullName)) %}
+                            {{ _names is empty ? '—' : _names|join(', ') }}
+                        </dd>
+                        <dt class="col-sm-4 text-muted">{{ 'management_review.field.top_management_attended'|trans({}, 'management_review') }}</dt>
+                        <dd class="col-sm-8">{{ (review.topManagementAttended ? 'common.yes' : 'common.no')|trans({}, 'messages') }}</dd>
+                        <dt class="col-sm-4 text-muted">{{ 'management_review.field.meeting_minutes_document'|trans({}, 'management_review') }}</dt>
+                        <dd class="col-sm-8 mb-0">
+                            {% if review.meetingMinutesDocument %}
+                                <a href="{{ path('app_document_show', {id: review.meetingMinutesDocument.id}) }}">{{ review.meetingMinutesDocument.originalFilename }}</a>
+                            {% else %}—{% endif %}
+                        </dd>
+                    </dl>
                 {% endblock %}
             {% endembed %}
             </div>
 
-            {# Inputs to the Review #}
             <div id="inputs" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-body-secondary">
-                        <h2 class="h5 mb-0">
-                            <i class="fa-icon fa-icon--ui-inbox" aria-hidden="true"></i> {{ 'management_review.section.inputs'|trans({}, 'management_review') }}
-                        </h2>
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'management_review.section.inputs'|trans({}, 'management_review') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% if review.changesRelevantToISMS %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.changes_relevant_to_isms'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.changesRelevantToISMS|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if review.feedbackFromInterestedParties %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.feedback_from_interested_parties'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.feedbackFromInterestedParties|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if review.auditResults %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.audit_results'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.auditResults|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if review.performanceEvaluation %}
-                    <div class="mb-0">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.performance_evaluation'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.performanceEvaluation|nl2br }}</p>
-                    </div>
-                    {% endif %}
+                    {% for input in _inputs %}
+                        <div class="{{ loop.last ? 'mb-0' : 'mb-3' }}">
+                            <div class="text-muted small fw-semibold">
+                                <span class="me-1">9.3.2 {{ input.ref }}</span>
+                                {{ ('management_review.field.' ~ input.label)|trans({}, 'management_review') }}
+                            </div>
+                            <p class="mb-0">{{ input.value ? input.value|nl2br : '—' }}</p>
+                        </div>
+                    {% endfor %}
                 {% endblock %}
             {% endembed %}
             </div>
 
-            {# Status of Previous Actions #}
-            <div id="followup" class="fa-show-section">
+            <div id="outputs" class="fa-show-section">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-body-secondary">
-                        <h2 class="h5 mb-0">
-                            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans({}, 'management_review') }}
-                        </h2>
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'management_review.section.outputs'|trans({}, 'management_review') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% if review.previousReviewActions %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.previous_review_actions'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.previousReviewActions|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if review.nonConformitiesStatus %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.nonconformities_status'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.nonConformitiesStatus|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if review.correctiveActionsStatus %}
-                    <div class="mb-0">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.corrective_actions_status'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.correctiveActionsStatus|nl2br }}</p>
-                    </div>
+                    {% for output in _outputs %}
+                        <div class="mb-3">
+                            <div class="text-muted small fw-semibold">{{ ('management_review.field.' ~ output.label)|trans({}, 'management_review') }}</div>
+                            <p class="mb-0">{{ output.value ? output.value|nl2br : '—' }}</p>
+                        </div>
+                    {% endfor %}
+                    <div class="text-muted small fw-semibold">{{ 'management_review.decision.title'|trans({}, 'management_review') }}</div>
+                    {% if decisions is empty %}
+                        <p class="mb-0">{{ 'management_review.decision.none'|trans({}, 'management_review') }}</p>
+                    {% else %}
+                        <ul class="mb-0">
+                            {% for decision in decisions %}
+                                <li>
+                                    <a href="{{ path('app_management_decision_show', {id: decision.id}) }}">{{ decision.title }}</a>
+                                    <span class="text-muted small">— {{ decision.decidedBy ? decision.decidedBy.fullName : '—' }}, {{ decision.decidedAt|fa_date }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
             </div>
 
-            {# Outputs from the Review #}
-            <div id="outputs" class="fa-show-section">
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-success' } %}
+            <div id="tasks" class="fa-show-section">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="h5 mb-0">
-                            <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i> {{ 'management_review.section.outputs'|trans({}, 'management_review') }}
-                        </h2>
+                        <h2 class="h5 mb-0">{{ 'management_review.task.title'|trans({}, 'management_review') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% if review.opportunitiesForImprovement %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.opportunities_for_improvement'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.opportunitiesForImprovement|nl2br }}</p>
-                    </div>
+                    {% if tasks is empty %}
+                        <p class="text-muted">{{ 'management_review.task.empty'|trans({}, 'management_review') }}</p>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="fa-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'management_review.task.field.title'|trans({}, 'management_review') }}</th>
+                                        <th scope="col">{{ 'management_review.task.field.responsible'|trans({}, 'management_review') }}</th>
+                                        <th scope="col">{{ 'management_review.task.field.due'|trans({}, 'management_review') }}</th>
+                                        <th scope="col">{{ 'management_review.task.field.status'|trans({}, 'management_review') }}</th>
+                                        <th scope="col"><span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for task in tasks %}
+                                        {% set _closed = task.status in ['done', 'dismissed'] %}
+                                        <tr>
+                                            <td>{{ task.title }}</td>
+                                            <td>{{ task.responsibleUser ? task.responsibleUser.fullName : (task.responsiblePerson ? task.responsiblePerson.fullName : '—') }}</td>
+                                            <td>{{ task.dueDate|fa_date }}</td>
+                                            <td>{{ ('planning.action_item.status.' ~ task.status)|trans({}, 'planning') }}</td>
+                                            <td class="text-end">
+                                                {% if not _closed and is_granted('ROLE_MANAGER') %}
+                                                    <form method="post" action="{{ path('app_management_review_task_done', {id: review.id, task: task.id}) }}" class="d-inline">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('mr_task_done_' ~ task.id) }}">
+                                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'management_review.task.done'|trans({}, 'management_review') }}</button>
+                                                    </form>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     {% endif %}
-
-                    {% if review.resourceNeeds %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.resource_needs'|trans({}, 'management_review') }}</div>
-                        <p>{{ review.resourceNeeds|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if review.decisions %}
-                    <div class="mb-3">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.decisions'|trans({}, 'management_review') }}</div>
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'regulator' } } %}
-                            {% block alert_body %}<strong><i class="fa-icon fa-icon--review" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>{% endblock %}
-                        {% endembed %}
-                    </div>
-                    {% endif %}
-
-                    {% if review.actionItems %}
-                    <div class="mb-0">
-                        <div class="text-muted small fw-semibold">{{ 'management_review.action_items'|trans({}, 'management_review') }}</div>
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'nav-list-check' } } %}
-                            {% block alert_body %}<strong><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>{% endblock %}
-                        {% endembed %}
-                    </div>
+                    {% if task_form %}
+                        {{ form_start(task_form, { attr: { class: 'row g-2 align-items-end mt-2' } }) }}
+                            <div class="col-md-5">{{ form_row(task_form.title) }}</div>
+                            <div class="col-md-4">{{ form_row(task_form.responsibleUser) }}</div>
+                            <div class="col-md-3">{{ form_row(task_form.dueDate) }}</div>
+                            <div class="col-12">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'management_review.task.add'|trans({}, 'management_review') }}</button>
+                            </div>
+                        {{ form_end(task_form) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -231,16 +250,15 @@
         </div>
 
         <div class="col-lg-4">
-            {# Action Buttons #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-body-secondary">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
-                        {% if is_granted('ROLE_ADMIN') %}
+                        {% if is_granted('ROLE_MANAGER') %}
                         <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--primary"
                            data-turbo-action="advance">
@@ -248,12 +266,11 @@
                         </a>
                         {% endif %}
 
-                        {% if is_granted('ROLE_MANAGER') %}
+                        {% if is_granted('ROLE_AUDITOR') %}
                         <div>
                             <a href="{{ path('app_management_review_pdf', {id: review.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo="false">
-                                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                                 {{ 'management_review.action.pdf'|trans({}, 'management_review') }}
                             </a>
                             {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_management_review_pdf', route_params: {id: review.id}} only %}
@@ -263,7 +280,7 @@
                         <a href="{{ path('app_management_review_index') }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+                            {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -277,41 +294,10 @@
                 {% endblock %}
             {% endembed %}
 
-            {# ISO 27001 Clause Reference #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-info' } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ISO 27001:2022</h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <h3 class="h6 fw-bold">{{ 'management_review.clause_93'|trans({}, 'management_review') }}</h3>
-                    <p class="small mb-2">{{ 'management_review.clause_93_description'|trans({}, 'management_review') }}</p>
-
-                    <hr>
-
-                    <div class="fw-bold small">{{ 'management_review.inputs_label'|trans({}, 'management_review') }}</div>
-                    <ul class="small mb-2">
-                        <li>{{ 'management_review.input_1'|trans({}, 'management_review') }}</li>
-                        <li>{{ 'management_review.input_2'|trans({}, 'management_review') }}</li>
-                        <li>{{ 'management_review.input_3'|trans({}, 'management_review') }}</li>
-                        <li>{{ 'management_review.input_4'|trans({}, 'management_review') }}</li>
-                    </ul>
-
-                    <div class="fw-bold small">{{ 'management_review.outputs_label'|trans({}, 'management_review') }}</div>
-                    <ul class="small mb-0">
-                        <li>{{ 'management_review.output_1'|trans({}, 'management_review') }}</li>
-                        <li>{{ 'management_review.output_2'|trans({}, 'management_review') }}</li>
-                        <li>{{ 'management_review.output_3'|trans({}, 'management_review') }}</li>
-                    </ul>
-                {% endblock %}
-            {% endembed %}
-
-            {# Metadata #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-body-secondary">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -321,9 +307,6 @@
 
                         <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ review.updatedAt|fa_datetime }}</dd>
-
-                        <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
-                        <dd class="col-sm-7"><code>{{ review.id }}</code></dd>
                     </dl>
                 {% endblock %}
             {% endembed %}
