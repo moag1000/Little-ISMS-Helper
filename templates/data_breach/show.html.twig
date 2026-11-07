@@ -86,7 +86,7 @@
                 {% block alert_body %}
                     <div class="fa-alert__title">{{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</div>
                     <p class="fa-alert__message">
-                        {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} {{ 'privacy.data_breach.field.within'|default('within') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>.
+                        {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} {{ 'privacy.data_breach.field.within'|trans({}, 'privacy') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>.
                     </p>
                     <p class="mb-0">
                         <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|fa_datetime }} ·
@@ -119,7 +119,7 @@
                     {% endif %}
                     {% if breach.riskLevel %}
                         <p><strong>{{ 'privacy.data_breach.field.risk_level'|trans({}, 'privacy') }}:</strong>
-                            {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
+                            {% set risk_class = pill_tone_severity(breach.riskLevel|default('')) %}
                             {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
                         </p>
                     {% endif %}
@@ -200,7 +200,7 @@
         {% block card_body %}
             <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|fa_datetime }}</p>
             <p><strong>{{ 'privacy.data_breach.field.severity'|trans({}, 'privacy') }}:</strong>
-                {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.severity] %}
+                {% set sev_class = pill_tone_severity(breach.severity|default('')) %}
                 {% include '_components/_badge.html.twig' with { variant: sev_class, content: ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') } %}
             </p>
 

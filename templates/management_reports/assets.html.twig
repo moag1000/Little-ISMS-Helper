@@ -148,7 +148,7 @@
                             {% set variant = (code in ['confidential','restricted']) ? 'danger' : (code == 'internal' ? 'warning' : (code == 'public' ? 'success' : 'secondary')) %}
                             {% include '_components/_badge.html.twig' with { variant: variant, content: label } %}
                         </td>
-                        <td class="fa-table__cell">{{ asset.effectiveOwner ?? '-' }}</td>
+                        <td class="fa-table__cell">{{ asset.effectiveOwner ?? '—' }}</td>
                         <td class="fa-table__cell">{{ asset.status|default('Active') }}</td>
                     </tr>
                     {% endfor %}

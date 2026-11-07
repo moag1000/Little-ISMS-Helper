@@ -1,5 +1,2 @@
 # check_aurora_utility_misuse.py baseline
 templates/admin/gstool_import/index.html.twig:170:fa-alert:small
-templates/admin/industry_baseline/index.html.twig:21:fa-alert:small
-templates/admin/industry_baseline/index.html.twig:58:fa-alert:small
-templates/admin/industry_baseline/show.html.twig:23:fa-alert:small

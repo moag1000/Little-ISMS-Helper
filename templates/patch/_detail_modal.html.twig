@@ -2,7 +2,7 @@
    Uses drawer chrome (header/body/footer/kv) condensed with a "Vollansicht"
    link to the full page. ISO 27001 A.8.8 / NIS2 Art. 21.2(e). #}
 {% trans_default_domain 'patches' %}
-{% set _priority_variant = {'critical':'danger','high':'warning','medium':'info','low':'secondary'}[patch.priority]|default('secondary') %}
+{% set _priority_variant = pill_tone_severity(patch.priority|default('')) %}
 {% set _status_variant = patch.status == 'deployed' ? 'success' : (patch.status in ['failed','rolled_back'] ? 'danger' : 'info') %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">

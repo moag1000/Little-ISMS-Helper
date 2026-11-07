@@ -51,7 +51,7 @@
                             <td class="fa-table__cell"><a href="{{ path('app_compliance_certificate_show', {_locale: app.request.locale, id: cert.id}) }}">{{ cert.certNumber ?? cert.frameworkCode }}</a></td>
                             <td class="fa-table__cell">{{ cert.frameworkCode }}</td>
                             <td class="fa-table__cell">{{ cert.certBody }}</td>
-                            <td class="fa-table__cell">{{ cert.validUntil ? cert.validUntil|fa_date : '—' }}</td>
+                            <td class="fa-table__cell">{{ cert.validUntil|fa_date }}</td>
                             <td class="fa-table__cell">{{ cert.status }}</td>
                         </tr>
                     {% endfor %}

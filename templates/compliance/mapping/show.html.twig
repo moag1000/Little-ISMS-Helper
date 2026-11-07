@@ -131,9 +131,9 @@
                         <div class="col-md-4">
                             <strong>Bidirectional:</strong>
                             {% if mapping.bidirectional %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.yes'|trans({}, 'messages') } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
                             {% endif %}
                         </div>
                     </div>
@@ -176,7 +176,7 @@
                                     definition: 'compliance.mapping.gloss.mqs'|trans({}, 'compliance'),
                                     glossaryHref: path('app_help_glossary')
                                 }) }}:</strong><br>
-                                <span class="h4">{{ mapping.qualityScore|default('-') }}</span>
+                                <span class="h4">{{ mapping.qualityScore|default('—') }}</span>
                             </div>
                         </div>
                     {% endblock %}
@@ -265,7 +265,7 @@
                     <div class="card-header"><h5 class="mb-0">Metadata</h5></div>
                 {% endblock %}
                 {% block card_body %}
-                    <p><small><strong>Verified By:</strong> {{ mapping.verifiedBy|default('-') }}</small></p>
+                    <p><small><strong>Verified By:</strong> {{ mapping.verifiedBy|default('—') }}</small></p>
                     <p><small><strong>Verification Date:</strong>
                         {% if mapping.verificationDate %}
                             {{ mapping.verificationDate|fa_date }}
@@ -273,7 +273,7 @@
                             -
                         {% endif %}
                     </small></p>
-                    <p><small><strong>Algorithm:</strong> {{ mapping.analysisAlgorithmVersion|default('-') }}</small></p>
+                    <p><small><strong>Algorithm:</strong> {{ mapping.analysisAlgorithmVersion|default('—') }}</small></p>
                     <p><small><strong>Created:</strong> {{ mapping.createdAt|fa_datetime }}</small></p>
                     {% if mapping.updatedAt %}
                         <p><small><strong>Updated:</strong> {{ mapping.updatedAt|fa_datetime }}</small></p>

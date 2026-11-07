@@ -8,12 +8,15 @@ use App\Service\ModuleConfigurationService;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Global-search provider for navigation targets (settings, admin pages,
- * dashboards): a static catalogue of routes with labels, descriptions and
- * DE/EN aliases, filtered by the current user's roles and the tenant's active
- * modules.
+ * dashboards): a static catalogue of routes with translated labels and
+ * descriptions (domain `search_nav`) plus DE/EN aliases, filtered by the
+ * current user's roles (the same attributes the controllers check) and the
+ * tenant's active modules. A query matches the label in the UI language and
+ * in German, so a German term finds the page in an English UI too.
  *
  * Extracted from {@see SearchService} (god-class ratchet, Gate 25).
  */
@@ -23,6 +26,7 @@ class NavigationSearch
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly AuthorizationCheckerInterface $authChecker,
         private readonly ModuleConfigurationService $moduleConfig,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     /**
@@ -36,8 +40,8 @@ class NavigationSearch
             // ── Core / Admin ──────────────────────────────────────────────────
             [
                 'route' => 'admin_dashboard',
-                'label' => 'Admin Dashboard',
-                'description' => 'Tenant- und Benutzerverwaltung, System-Status',
+                'label' => 'search_nav.admin_dashboard.label',
+                'description' => 'search_nav.admin_dashboard.description',
                 'aliases' => ['Admin', 'Verwaltung', 'System'],
                 'icon' => 'fa-icon--nav-sliders',
                 'roles' => ['ROLE_ADMIN'],
@@ -45,8 +49,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_hub_index',
-                'label' => 'Admin-Hub',
-                'description' => 'Zentraler Einstieg für alle Admin-Funktionen',
+                'label' => 'search_nav.admin_hub_index.label',
+                'description' => 'search_nav.admin_hub_index.description',
                 'aliases' => ['Admin', 'Verwaltung', 'Settings', 'Einstellungen'],
                 'icon' => 'fa-icon--nav-sliders',
                 'roles' => ['ROLE_ADMIN'],
@@ -55,17 +59,17 @@ class NavigationSearch
             // ── Organisation / Tenant ─────────────────────────────────────────
             [
                 'route' => 'tenant_management_index',
-                'label' => 'Organisations-Einstellungen',
-                'description' => 'Organisationen verwalten: Name, Kontakt, ISMS-Scope',
+                'label' => 'search_nav.tenant_management_index.label',
+                'description' => 'search_nav.tenant_management_index.description',
                 'aliases' => ['Organisation', 'Organization', 'Tenant', 'Mandant', 'Firma', 'Company', 'Einstellungen', 'Settings', 'Konfiguration', 'Config'],
                 'icon' => 'fa-icon--nav-sliders',
-                'roles' => ['ROLE_ADMIN'],
+                'roles' => ['TENANT_VIEW'],
                 'requiresModule' => null,
             ],
             [
                 'route' => 'app_admin_tenant_email_branding',
-                'label' => 'Branding & Logo',
-                'description' => 'Logo, Farben, CI, E-Mail-Design anpassen',
+                'label' => 'search_nav.app_admin_tenant_email_branding.label',
+                'description' => 'search_nav.app_admin_tenant_email_branding.description',
                 'aliases' => ['Logo', 'Branding', 'Theme', 'Farben', 'Design', 'CI', 'Corporate Identity', 'E-Mail-Design', 'Email', 'Erscheinungsbild'],
                 'icon' => 'fa-icon--nav-sliders',
                 'roles' => ['ROLE_ADMIN'],
@@ -74,8 +78,8 @@ class NavigationSearch
             // ── User & Role management ─────────────────────────────────────────
             [
                 'route' => 'user_management_index',
-                'label' => 'Benutzerverwaltung',
-                'description' => 'Benutzer anlegen, Rollen vergeben, Passwörter zurücksetzen',
+                'label' => 'search_nav.user_management_index.label',
+                'description' => 'search_nav.user_management_index.description',
                 'aliases' => ['Benutzer', 'User', 'Konto', 'Account', 'Mitarbeiter', 'Nutzer', 'Passwort', 'Password'],
                 'icon' => 'fa-icon--nav-users',
                 'roles' => ['ROLE_ADMIN'],
@@ -83,8 +87,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'role_management_index',
-                'label' => 'Rollenverwaltung',
-                'description' => 'Rollen und Berechtigungen konfigurieren',
+                'label' => 'search_nav.role_management_index.label',
+                'description' => 'search_nav.role_management_index.description',
                 'aliases' => ['Rollen', 'Berechtigung', 'Berechtigungen', 'Permission', 'Permissions', 'RBAC', 'Zugriff', 'Access', 'Rechte', 'Zugriffssteuerung'],
                 'icon' => 'fa-icon--nav-shield',
                 'roles' => ['ROLE_ADMIN'],
@@ -93,8 +97,8 @@ class NavigationSearch
             // ── MFA / Session ─────────────────────────────────────────────────
             [
                 'route' => 'app_profile_mfa_index',
-                'label' => 'MFA / Zwei-Faktor-Authentifizierung',
-                'description' => 'TOTP-Authenticator einrichten oder deaktivieren',
+                'label' => 'search_nav.app_profile_mfa_index.label',
+                'description' => 'search_nav.app_profile_mfa_index.description',
                 'aliases' => ['MFA', '2FA', 'Zwei-Faktor', 'Two-Factor', 'TOTP', 'Authenticator', 'Multi-Faktor', 'Sicherheitsschlüssel'],
                 'icon' => 'fa-icon--nav-shield',
                 'roles' => ['ROLE_USER'],
@@ -102,18 +106,18 @@ class NavigationSearch
             ],
             [
                 'route' => 'session_index',
-                'label' => 'Sitzungsverwaltung',
-                'description' => 'Aktive Logins anzeigen und beenden',
+                'label' => 'search_nav.session_index.label',
+                'description' => 'search_nav.session_index.description',
                 'aliases' => ['Sitzung', 'Session', 'Aktive Logins', 'Login', 'Anmeldung', 'Geräte'],
                 'icon' => 'fa-icon--nav-shield',
-                'roles' => ['ROLE_USER'],
+                'roles' => ['SESSION_VIEW'],
                 'requiresModule' => null,
             ],
             // ── Audit / Compliance ────────────────────────────────────────────
             [
                 'route' => 'app_audit_log_index',
-                'label' => 'Audit-Log',
-                'description' => 'Compliance-Audittrail, alle Änderungen lückenlos',
+                'label' => 'search_nav.app_audit_log_index.label',
+                'description' => 'search_nav.app_audit_log_index.description',
                 'aliases' => ['Audit-Log', 'Aktivität', 'Activity', 'Historie', 'History', 'Trail', 'Änderungsprotokoll', 'Log', 'Protokoll'],
                 'icon' => 'fa-icon--nav-clipboard-check',
                 'roles' => ['ROLE_ADMIN'],
@@ -121,18 +125,18 @@ class NavigationSearch
             ],
             [
                 'route' => 'app_audit_freeze_index',
-                'label' => 'Audit-Freeze',
-                'description' => 'ISMS-Status einfrieren für externe Audits (Read-Only-Modus)',
+                'label' => 'search_nav.app_audit_freeze_index.label',
+                'description' => 'search_nav.app_audit_freeze_index.description',
                 'aliases' => ['Audit-Freeze', 'Freeze', 'Einfrieren', 'Read-Only', 'Auditierung sperren', 'Zertifizierung', 'Snapshot'],
                 'icon' => 'fa-icon--nav-clipboard-check',
-                'roles' => ['ROLE_ADMIN'],
+                'roles' => ['ROLE_MANAGER'],
                 'requiresModule' => null,
             ],
             // ── SoA / Controls ────────────────────────────────────────────────
             [
                 'route' => 'app_soa_index',
-                'label' => 'SoA – Statement of Applicability',
-                'description' => 'ISO 27001 Annex-A Controls, Anwendbarkeitserklärung',
+                'label' => 'search_nav.app_soa_index.label',
+                'description' => 'search_nav.app_soa_index.description',
                 'aliases' => ['SoA', 'Anwendbarkeitserklärung', 'Annex A', 'Kontrollen', 'controls statement', 'Statement of Applicability'],
                 'icon' => 'fa-icon--control',
                 'roles' => ['ROLE_USER'],
@@ -141,18 +145,18 @@ class NavigationSearch
             // ── Risk ──────────────────────────────────────────────────────────
             [
                 'route' => 'app_risk_appetite_index',
-                'label' => 'Risikoappetit',
-                'description' => 'Risikotoleranz und Schwellenwerte konfigurieren',
+                'label' => 'search_nav.app_risk_appetite_index.label',
+                'description' => 'search_nav.app_risk_appetite_index.description',
                 'aliases' => ['Risikoappetit', 'Risikotoleranz', 'Risk Appetite', 'Schwellenwert', 'Threshold'],
                 'icon' => 'fa-icon--nav-shield-alert',
-                'roles' => ['ROLE_MANAGER'],
+                'roles' => ['ROLE_USER'],
                 'requiresModule' => 'risk_appetite',
             ],
             // ── Analytics / KPI ───────────────────────────────────────────────
             [
                 'route' => 'app_analytics_dashboard',
-                'label' => 'Analytics',
-                'description' => 'KPI-Übersicht, Diagramme, Trend-Auswertungen',
+                'label' => 'search_nav.app_analytics_dashboard.label',
+                'description' => 'search_nav.app_analytics_dashboard.description',
                 'aliases' => ['KPI', 'Kennzahl', 'Kennzahlen', 'Metrik', 'Metric', 'Diagramm', 'Chart', 'Trend', 'Statistik', 'Statistics'],
                 'icon' => 'fa-icon--nav-bar-chart',
                 'roles' => ['ROLE_MANAGER'],
@@ -160,8 +164,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_kpi_threshold_index',
-                'label' => 'KPI-Schwellenwerte',
-                'description' => 'KPI-Grenzwerte und Zielwerte konfigurieren',
+                'label' => 'search_nav.admin_kpi_threshold_index.label',
+                'description' => 'search_nav.admin_kpi_threshold_index.description',
                 'aliases' => ['KPI', 'Kennzahl', 'Schwellenwert', 'Threshold', 'Zielwert', 'Grenzwert', 'Metrik'],
                 'icon' => 'fa-icon--nav-bar-chart',
                 'roles' => ['ROLE_ADMIN'],
@@ -170,26 +174,26 @@ class NavigationSearch
             // ── Reports ───────────────────────────────────────────────────────
             [
                 'route' => 'app_reports_index',
-                'label' => 'Berichte',
-                'description' => 'Management-Reports, Gap-Report, Compliance-Exporte',
+                'label' => 'search_nav.app_reports_index.label',
+                'description' => 'search_nav.app_reports_index.description',
                 'aliases' => ['Reports', 'Bericht', 'Berichte', 'Auswertung', 'Auswertungen', 'Statistik', 'Export', 'PDF', 'Excel'],
                 'icon' => 'fa-icon--nav-reports',
-                'roles' => ['ROLE_AUDITOR'],
-                'requiresModule' => 'report_builder',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'report_builder_index',
-                'label' => 'Report-Builder',
-                'description' => 'Eigene Berichte gestalten, Widgets kombinieren',
+                'label' => 'search_nav.report_builder_index.label',
+                'description' => 'search_nav.report_builder_index.description',
                 'aliases' => ['Report-Builder', 'Berichts-Designer', 'Custom Report', 'Bericht erstellen', 'Report Designer', 'Berichtsersteller'],
                 'icon' => 'fa-icon--nav-reports',
-                'roles' => ['ROLE_MANAGER'],
+                'roles' => ['ROLE_USER'],
                 'requiresModule' => 'report_builder',
             ],
             [
                 'route' => 'app_group_report_tree',
-                'label' => 'Konzern-Reports',
-                'description' => 'Konzernstruktur, Top-Risiken, SoA, Lieferanten und Vorfälle über alle Töchter',
+                'label' => 'search_nav.app_group_report_tree.label',
+                'description' => 'search_nav.app_group_report_tree.description',
                 'aliases' => ['Konzern', 'Portfolio', 'Holding', 'Gruppe', 'Group Report', 'Portfolio-Report', 'Konzernbericht', 'Multi-Tenant'],
                 'icon' => 'fa-icon--nav-reports',
                 'roles' => ['ROLE_GROUP_CISO', 'ROLE_KONZERN_AUDITOR'],
@@ -197,8 +201,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'app_group_report_comparison',
-                'label' => 'Organisationsvergleich',
-                'description' => 'Kennzahlen aller Organisationen des Konzerns nebeneinander, Export Excel und PDF',
+                'label' => 'search_nav.app_group_report_comparison.label',
+                'description' => 'search_nav.app_group_report_comparison.description',
                 'aliases' => ['Vergleich', 'Mandanten-Vergleich', 'Mandantenvergleich', 'Benchmark', 'Töchter', 'Tochtergesellschaften', 'Comparison', 'KPI-Matrix'],
                 'icon' => 'fa-icon--nav-reports',
                 'roles' => ['ROLE_GROUP_CISO', 'ROLE_KONZERN_AUDITOR'],
@@ -206,37 +210,28 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_compliance_index',
-                'label' => 'Compliance & Gap-Analyse',
-                'description' => 'Compliance-Frameworks, Lücken-Analyse, offene Anforderungen',
+                'label' => 'search_nav.admin_compliance_index.label',
+                'description' => 'search_nav.admin_compliance_index.description',
                 'aliases' => ['Gap', 'Lücke', 'Lücken', 'Lücken-Analyse', 'Gap Analysis', 'Gap-Report', 'Compliance Gap', 'offene Anforderungen', 'Compliance Hub'],
                 'icon' => 'fa-icon--compliance-shield',
-                'roles' => ['ROLE_AUDITOR'],
+                'roles' => ['ROLE_ADMIN'],
                 'requiresModule' => 'compliance',
             ],
             [
                 'route' => 'app_scheduled_report_index',
-                'label' => 'Geplante Berichte',
-                'description' => 'Berichte automatisch per Zeitplan versenden',
+                'label' => 'search_nav.app_scheduled_report_index.label',
+                'description' => 'search_nav.app_scheduled_report_index.description',
                 'aliases' => ['Schedule', 'Scheduled', 'Geplante Berichte', 'Cron', 'Automatisch', 'Zeitplan', 'Recurring', 'Wiederkehrend'],
                 'icon' => 'fa-icon--nav-reports',
-                'roles' => ['ROLE_MANAGER'],
-                'requiresModule' => 'report_builder',
+                'roles' => ['Schedule', 'Scheduled', 'Geplante Berichte', 'Cron', 'Automatisch', 'Zeitplan', 'Recurring', 'Wiederkehrend'],
+                'requiresModule' => 'scheduled_reports',
             ],
             // ── Backup / Restore ──────────────────────────────────────────────
             [
                 'route' => 'data_backup_index',
-                'label' => 'Backup',
-                'description' => 'Datensicherung erstellen, herunterladen und verwalten',
-                'aliases' => ['Backup', 'Sicherung', 'Datensicherung', 'Sichern', 'Export', 'Snapshot', 'Archiv'],
-                'icon' => 'fa-icon--nav-wrench',
-                'roles' => ['ROLE_ADMIN'],
-                'requiresModule' => null,
-            ],
-            [
-                'route' => 'data_backup_index',
-                'label' => 'Restore / Wiederherstellung',
-                'description' => 'Backup einspielen und Daten wiederherstellen',
-                'aliases' => ['Restore', 'Wiederherstellung', 'Recovery', 'Wiederherstellen', 'Einspielen', 'Import'],
+                'label' => 'search_nav.data_backup_index.label',
+                'description' => 'search_nav.data_backup_index.description',
+                'aliases' => ['Backup', 'Sicherung', 'Datensicherung', 'Sichern', 'Export', 'Snapshot', 'Archiv', 'Restore', 'Wiederherstellung', 'Recovery', 'Wiederherstellen', 'Einspielen', 'Import'],
                 'icon' => 'fa-icon--nav-wrench',
                 'roles' => ['ROLE_ADMIN'],
                 'requiresModule' => null,
@@ -244,8 +239,8 @@ class NavigationSearch
             // ── Modules / Lifecycle / Workflow ────────────────────────────────
             [
                 'route' => 'admin_modules_index',
-                'label' => 'Module-Aktivierung',
-                'description' => 'Compliance-Module ein- und ausschalten',
+                'label' => 'search_nav.admin_modules_index.label',
+                'description' => 'search_nav.admin_modules_index.description',
                 'aliases' => ['Module', 'Modul', 'Funktionen', 'Features', 'Aktivieren', 'Deaktivieren', 'Modul-Konfiguration', 'Lizenz'],
                 'icon' => 'fa-icon--nav-grid',
                 'roles' => ['ROLE_ADMIN'],
@@ -253,8 +248,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_lifecycle_overrides_index',
-                'label' => 'Lifecycle Overrides',
-                'description' => 'Workflow-Konfiguration pro Tenant (Rollen, 4-Augen, Pflichtbegründung)',
+                'label' => 'search_nav.admin_lifecycle_overrides_index.label',
+                'description' => 'search_nav.admin_lifecycle_overrides_index.description',
                 'aliases' => ['Lifecycle', 'Workflow', 'Status-Übergang', 'Approval', 'Genehmigung', '4-Augen', 'Vier-Augen', 'Status'],
                 'icon' => 'fa-icon--nav-workflow',
                 'roles' => ['ROLE_ADMIN'],
@@ -262,8 +257,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_workflow_overlay_index',
-                'label' => 'Workflow-Konfiguration',
-                'description' => 'Regulatorische Workflows verwalten',
+                'label' => 'search_nav.admin_workflow_overlay_index.label',
+                'description' => 'search_nav.admin_workflow_overlay_index.description',
                 'aliases' => ['Workflow', 'Regulatorisch', 'Prozess', 'Process', 'Genehmigung', 'Approval'],
                 'icon' => 'fa-icon--nav-workflow',
                 'roles' => ['ROLE_ADMIN'],
@@ -272,8 +267,8 @@ class NavigationSearch
             // ── Notifications ─────────────────────────────────────────────────
             [
                 'route' => 'admin_notification_channel_index',
-                'label' => 'Benachrichtigungs-Kanäle',
-                'description' => 'E-Mail-, Slack-, Webhook-Kanäle konfigurieren',
+                'label' => 'search_nav.admin_notification_channel_index.label',
+                'description' => 'search_nav.admin_notification_channel_index.description',
                 'aliases' => ['Benachrichtigung', 'Notification', 'Slack', 'Email', 'E-Mail', 'Teams', 'Webhook', 'Channel', 'Kanal'],
                 'icon' => 'fa-icon--nav-bell',
                 'roles' => ['ROLE_ADMIN'],
@@ -281,8 +276,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_notification_rule_index',
-                'label' => 'Benachrichtigungs-Regeln',
-                'description' => 'Regelbasierte Trigger für automatische Alerts',
+                'label' => 'search_nav.admin_notification_rule_index.label',
+                'description' => 'search_nav.admin_notification_rule_index.description',
                 'aliases' => ['Regel', 'Rule', 'Trigger', 'Bedingung', 'Alert', 'Alarm', 'Automatisch', 'Benachrichtigung'],
                 'icon' => 'fa-icon--nav-bell',
                 'roles' => ['ROLE_ADMIN'],
@@ -291,8 +286,8 @@ class NavigationSearch
             // ── Tags ──────────────────────────────────────────────────────────
             [
                 'route' => 'admin_tag_index',
-                'label' => 'Tags verwalten',
-                'description' => 'Tags und Labels für Entitäten erstellen und pflegen',
+                'label' => 'search_nav.admin_tag_index.label',
+                'description' => 'search_nav.admin_tag_index.description',
                 'aliases' => ['Tags', 'Labels', 'Schlagwort', 'Schlagwörter', 'Markierung', 'Label', 'Tag'],
                 'icon' => 'fa-icon--nav-grid',
                 'roles' => ['ROLE_ADMIN'],
@@ -301,8 +296,8 @@ class NavigationSearch
             // ── Dashboards / Personas ─────────────────────────────────────────
             [
                 'route' => 'app_dashboard',
-                'label' => 'Dashboard',
-                'description' => 'Persönliches ISMS-Dashboard mit KPIs',
+                'label' => 'search_nav.app_dashboard.label',
+                'description' => 'search_nav.app_dashboard.description',
                 'aliases' => ['Dashboard', 'Startseite', 'Übersicht', 'Home', 'Cockpit'],
                 'icon' => 'fa-icon--nav-home',
                 'roles' => ['ROLE_USER'],
@@ -310,36 +305,99 @@ class NavigationSearch
             ],
             [
                 'route' => 'app_dashboard_ciso',
-                'label' => 'CISO-Dashboard',
-                'description' => 'Sicherheitslage, Top-Risiken, Compliance-Status',
+                'label' => 'search_nav.app_dashboard_ciso.label',
+                'description' => 'search_nav.app_dashboard_ciso.description',
                 'aliases' => ['CISO', 'Dashboard', 'Sicherheitslage', 'Security', 'Cockpit'],
                 'icon' => 'fa-icon--nav-home',
-                'roles' => ['ROLE_CISO'],
+                'roles' => ['PERSONA_CISO'],
                 'requiresModule' => null,
             ],
             [
                 'route' => 'app_dashboard_dpo',
-                'label' => 'DPO-Dashboard',
-                'description' => 'Datenschutz-Übersicht, VVT, DSR-Status',
+                'label' => 'search_nav.app_dashboard_dpo.label',
+                'description' => 'search_nav.app_dashboard_dpo.description',
                 'aliases' => ['DPO', 'Datenschutz', 'Privacy', 'DSGVO', 'GDPR', 'Dashboard', 'Cockpit'],
                 'icon' => 'fa-icon--nav-home',
-                'roles' => ['ROLE_DPO'],
-                'requiresModule' => null,
+                'roles' => ['PERSONA_DPO'],
+                'requiresModule' => 'privacy',
             ],
             [
                 'route' => 'app_dashboard_compliance_manager',
-                'label' => 'Compliance-Manager-Dashboard',
-                'description' => 'Framework-Status, offene Maßnahmen',
+                'label' => 'search_nav.app_dashboard_compliance_manager.label',
+                'description' => 'search_nav.app_dashboard_compliance_manager.description',
                 'aliases' => ['Compliance Manager', 'CM', 'GRC', 'Framework', 'Dashboard', 'Cockpit', 'RM'],
                 'icon' => 'fa-icon--nav-home',
-                'roles' => ['ROLE_COMPLIANCE_MANAGER'],
+                'roles' => ['PERSONA_COMPLIANCE'],
                 'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_my_day',
+                'label' => 'search_nav.app_my_day.label',
+                'description' => 'search_nav.app_my_day.description',
+                'aliases' => ['My Day', 'Posteingang', 'Inbox', 'Aufgaben', 'Tasks', 'Freigaben', 'Approvals', 'To-do'],
+                'icon' => 'fa-icon--nav-dashboard',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_dashboard_risk_manager',
+                'label' => 'search_nav.app_dashboard_risk_manager.label',
+                'description' => 'search_nav.app_dashboard_risk_manager.description',
+                'aliases' => ['Risk Manager', 'Risiko-Dashboard', 'Risk Dashboard', 'Risikomanagement'],
+                'icon' => 'fa-icon--nav-dashboard',
+                'roles' => ['PERSONA_RISK'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_dashboard_isb',
+                'label' => 'search_nav.app_dashboard_isb.label',
+                'description' => 'search_nav.app_dashboard_isb.description',
+                'aliases' => ['ISB', 'ISO', 'Informationssicherheitsbeauftragter', 'Security Officer'],
+                'icon' => 'fa-icon--nav-dashboard',
+                'roles' => ['PERSONA_ISB'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_dashboard_bcm',
+                'label' => 'search_nav.app_dashboard_bcm.label',
+                'description' => 'search_nav.app_dashboard_bcm.description',
+                'aliases' => ['BCM', 'Business Continuity', 'Notfallmanagement', 'BCM Officer'],
+                'icon' => 'fa-icon--nav-dashboard',
+                'roles' => ['PERSONA_BCM'],
+                'requiresModule' => 'bcm',
+            ],
+            [
+                'route' => 'app_dashboard_auditor',
+                'label' => 'search_nav.app_dashboard_auditor.label',
+                'description' => 'search_nav.app_dashboard_auditor.description',
+                'aliases' => ['Auditor', 'Audit-Dashboard', 'Prüfer'],
+                'icon' => 'fa-icon--nav-dashboard',
+                'roles' => ['ROLE_AUDITOR'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_dashboard_board',
+                'label' => 'search_nav.app_dashboard_board.label',
+                'description' => 'search_nav.app_dashboard_board.description',
+                'aliases' => ['Board', 'Vorstand', 'Geschäftsführung', 'Management', 'Executive'],
+                'icon' => 'fa-icon--nav-dashboard',
+                'roles' => ['PERSONA_CISO'],
+                'requiresModule' => null,
+            ],
+            [
+                'route' => 'app_compliance_mapping_hub',
+                'label' => 'search_nav.app_compliance_mapping_hub.label',
+                'description' => 'search_nav.app_compliance_mapping_hub.description',
+                'aliases' => ['Mapping', 'Mappings', 'Cross-Framework', 'Zuordnung', 'Grundschutz++', 'Vorschläge'],
+                'icon' => 'fa-icon--compliance-shield',
+                'roles' => ['ROLE_USER'],
+                'requiresModule' => 'compliance',
             ],
             // ── Onboarding / Setup ────────────────────────────────────────────
             [
                 'route' => 'setup_wizard_index',
-                'label' => 'Setup-Wizard',
-                'description' => 'Onboarding-Tour, Ersteinrichtung',
+                'label' => 'search_nav.setup_wizard_index.label',
+                'description' => 'search_nav.setup_wizard_index.description',
                 'aliases' => ['Setup', 'Onboarding', 'Wizard', 'Erste Schritte', 'Getting Started', 'Einrichten', 'Einrichtung'],
                 'icon' => 'fa-icon--nav-stars',
                 'roles' => ['ROLE_ADMIN'],
@@ -348,8 +406,8 @@ class NavigationSearch
             // ── Glossary ──────────────────────────────────────────────────────
             [
                 'route' => 'app_help_glossary',
-                'label' => 'Glossar',
-                'description' => 'ISMS-Akronyme und Fachbegriffe',
+                'label' => 'search_nav.app_help_glossary.label',
+                'description' => 'search_nav.app_help_glossary.description',
                 'aliases' => ['Glossary', 'Begriff', 'Begriffe', 'Definition', 'Akronym', 'Akronyme', 'Lexikon'],
                 'icon' => 'fa-icon--nav-book',
                 'roles' => ['ROLE_USER'],
@@ -358,8 +416,8 @@ class NavigationSearch
             // ── Maintenance / DevOps ──────────────────────────────────────────
             [
                 'route' => 'app_quick_fix_index',
-                'label' => 'Quick-Fix',
-                'description' => 'Migrations, Schema-Drift, Datenreparatur per Web-UI',
+                'label' => 'search_nav.app_quick_fix_index.label',
+                'description' => 'search_nav.app_quick_fix_index.description',
                 'aliases' => ['Quick-Fix', 'Reparatur', 'Repair', 'Schema', 'Drift', 'Migration', 'Migrations'],
                 'icon' => 'fa-icon--nav-wrench',
                 'roles' => ['ROLE_ADMIN'],
@@ -367,8 +425,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_data_repair_index',
-                'label' => 'Daten-Reparatur',
-                'description' => 'Orphans zuweisen, Tenant-Mismatches fixen, Duplikate bereinigen',
+                'label' => 'search_nav.admin_data_repair_index.label',
+                'description' => 'search_nav.admin_data_repair_index.description',
                 'aliases' => ['Daten-Reparatur', 'Data-Repair', 'Orphan', 'Verwaiste Daten', 'Duplikate', 'Bereinigung', 'Repair'],
                 'icon' => 'fa-icon--nav-wrench',
                 'roles' => ['ROLE_ADMIN'],
@@ -376,8 +434,8 @@ class NavigationSearch
             ],
             [
                 'route' => 'admin_queue_status',
-                'label' => 'Queue-Status',
-                'description' => 'Worker-Health und ausstehende Messenger-Jobs',
+                'label' => 'search_nav.admin_queue_status.label',
+                'description' => 'search_nav.admin_queue_status.description',
                 'aliases' => ['Queue', 'Worker', 'Messenger', 'Async-Job', 'Hintergrund', 'Background', 'Job', 'Jobs'],
                 'icon' => 'fa-icon--nav-clock',
                 'roles' => ['ROLE_ADMIN'],
@@ -386,8 +444,8 @@ class NavigationSearch
             // ── Industry Baseline ─────────────────────────────────────────────
             [
                 'route' => 'app_industry_baseline_index',
-                'label' => 'Branchen-Baseline',
-                'description' => 'Branchenspezifische Sicherheitsanforderungen und BSI-Bausteine',
+                'label' => 'search_nav.app_industry_baseline_index.label',
+                'description' => 'search_nav.app_industry_baseline_index.description',
                 'aliases' => ['Industry', 'Branche', 'Sektor', 'Baseline', 'BSI-Bausteine', 'Branchen-Baseline', 'Industriestandard', 'Sector'],
                 'icon' => 'fa-icon--nav-grid',
                 'roles' => ['ROLE_MANAGER'],
@@ -396,17 +454,17 @@ class NavigationSearch
             // ── Locations ─────────────────────────────────────────────────────
             [
                 'route' => 'app_location_index',
-                'label' => 'Standorte',
-                'description' => 'Standorte und Niederlassungen verwalten',
+                'label' => 'search_nav.app_location_index.label',
+                'description' => 'search_nav.app_location_index.description',
                 'aliases' => ['Standort', 'Standorte', 'Location', 'Site', 'Niederlassung', 'Büro', 'Office', 'Filiale'],
                 'icon' => 'fa-icon--nav-location',
-                'roles' => ['ROLE_MANAGER'],
+                'roles' => ['ROLE_USER'],
                 'requiresModule' => null,
             ],
             [
                 'route' => 'app_location_map',
-                'label' => 'Standortkarte',
-                'description' => 'Standort-Lagebild: Restrisiko, offene Prüfungen und Vergleich je Standort',
+                'label' => 'search_nav.app_location_map.label',
+                'description' => 'search_nav.app_location_map.description',
                 'aliases' => ['Karte', 'Weltkarte', 'Standortkarte', 'Lagebild', 'Map', 'Location map', 'Site map'],
                 'icon' => 'fa-icon--nav-location',
                 'roles' => ['ROLE_USER'],
@@ -415,8 +473,8 @@ class NavigationSearch
             // ── API Documentation ─────────────────────────────────────────────
             [
                 'route' => 'api_doc',
-                'label' => 'API-Dokumentation',
-                'description' => 'REST-API, OpenAPI / Swagger Spezifikation',
+                'label' => 'search_nav.api_doc.label',
+                'description' => 'search_nav.api_doc.description',
                 'aliases' => ['API', 'REST', 'JSON', 'Doku', 'Documentation', 'OpenAPI', 'Swagger', 'Schnittstelle', 'Integration'],
                 'icon' => 'fa-icon--nav-book',
                 'roles' => ['ROLE_ADMIN'],
@@ -426,8 +484,8 @@ class NavigationSearch
             // ── Compliance Hub ────────────────────────────────────────────────
             [
                 'route' => 'admin_tenant_compliance_settings_current',
-                'label' => 'Compliance-Einstellungen',
-                'description' => 'Compliance-Frameworks aktivieren: ISO 27001, TISAX, DORA, NIS2, BSI',
+                'label' => 'search_nav.admin_tenant_compliance_settings_current.label',
+                'description' => 'search_nav.admin_tenant_compliance_settings_current.description',
                 'aliases' => ['Compliance', 'Frameworks', 'ISO', 'ISO 27001', 'TISAX', 'DORA', 'NIS2', 'BSI', 'Framework', 'Normen', 'Standards'],
                 'icon' => 'fa-icon--compliance-shield',
                 'roles' => ['ROLE_ADMIN'],
@@ -453,6 +511,12 @@ class NavigationSearch
             if (!$hasRole) {
                 continue;
             }
+
+            [$labelKey, $descriptionKey] = [$item['label'], $item['description']];
+            $item['label'] = $this->translator->trans($labelKey, [], 'search_nav');
+            $item['description'] = $this->translator->trans($descriptionKey, [], 'search_nav');
+            $item['aliases'][] = $this->translator->trans($labelKey, [], 'search_nav', 'de');
+            $item['aliases'][] = $this->translator->trans($descriptionKey, [], 'search_nav', 'de');
 
             if ($this->navigationEntryMatches($item, $query)) {
                 try {

@@ -172,7 +172,7 @@ final class StaticRegressionGuardTest extends KernelTestCase
 
     /**
      * #710 — Templates must not reference routes that don't exist. Spot-check
-     * the two paths the bug sweep fixed: `app_licenses_generate` exists, and
+     * the two paths the bug sweep fixed: `admin_licensing_generate` exists, and
      * `app_system_settings_index` (which doesn't) is no longer referenced.
      */
     #[Test]
@@ -181,7 +181,7 @@ final class StaticRegressionGuardTest extends KernelTestCase
         $router = self::getContainer()->get('router');
 
         // These MUST exist
-        foreach (['app_licenses_generate', 'admin_settings_data_retention', 'tenant_management_index'] as $routeName) {
+        foreach (['admin_licensing_generate', 'admin_settings_data_retention', 'tenant_management_index'] as $routeName) {
             self::assertNotNull(
                 $router->getRouteCollection()->get($routeName),
                 "Route $routeName must exist — referenced by production templates (#692/#710)"
@@ -190,12 +190,12 @@ final class StaticRegressionGuardTest extends KernelTestCase
 
         // These must NOT be referenced anymore (deleted in #710)
         $projectDir = self::getContainer()->getParameter('kernel.project_dir');
-        $licenseTpl = file_get_contents($projectDir . '/templates/license/report.html.twig');
+        $licenseTpl = file_get_contents($projectDir . '/templates/admin/licensing/report.html.twig');
         self::assertNotFalse($licenseTpl);
         self::assertStringNotContainsString(
             "path('app_license_report_generate')",
             $licenseTpl,
-            'license/report.html.twig must not reference non-existent app_license_report_generate (#710)'
+            'admin/licensing/report.html.twig must not reference non-existent app_license_report_generate (#710)'
         );
 
         $tenantSettingsTpl = file_get_contents($projectDir . '/templates/admin/tenant_compliance_settings/edit.html.twig');

@@ -93,10 +93,10 @@
                             {{ _fa_entity_card.render({
                                 type:    'incident',
                                 icon:    'incident',
-                                title:   '#' ~ (incident.incidentNumber ?? '?') ~ ' — ' ~ (incident.title ?? 'N/A'),
+                                title:   '#' ~ (incident.incidentNumber ?? '?') ~ ' — ' ~ (incident.title ?? '—'),
                                 meta:    [
                                     ('risk.link_incident.link_type.' ~ link.linkType)|trans,
-                                    link.linkedAt|date('d.m.Y'),
+                                    link.linkedAt|fa_date,
                                     link.linkedBy ? link.linkedBy.fullName ?? link.linkedBy.email : null
                                 ]|filter(v => v is not null),
                                 href:    path('app_incident_show', {id: incident.id}),

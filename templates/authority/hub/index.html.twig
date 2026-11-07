@@ -24,7 +24,7 @@
     }) }}
     {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: obligations|default([])|length } %}
 
-    <main class="fa-aurora-surface">
+    <div class="fa-aurora-surface">
 
         {# ── Aggregate status banner ───────────────────────────────────────────── #}
         <div class="row mb-4">
@@ -98,14 +98,14 @@
                             <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.next_due'|trans }}</dt>
                             <dd class="col-7">
                                 <span class="{% if obligation.status == 'overdue' %}text-danger fw-bold{% elseif obligation.status == 'due_soon' %}text-warning fw-semibold{% endif %}">
-                                    {{ obligation.nextDueAt|date('d.m.Y') }}
+                                    {{ obligation.nextDueAt|fa_date }}
                                 </span>
                             </dd>
                             {% endif %}
 
                             {% if obligation.lastSubmittedAt %}
                             <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.last_submitted'|trans }}</dt>
-                            <dd class="col-7">{{ obligation.lastSubmittedAt|date('d.m.Y') }}</dd>
+                            <dd class="col-7">{{ obligation.lastSubmittedAt|fa_date }}</dd>
                             {% endif %}
 
                             <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.country'|trans }}</dt>
@@ -133,7 +133,7 @@
             {% endfor %}
         </div>
 
-    </main>
+    </div>
 </div>
 {% endblock %}
 

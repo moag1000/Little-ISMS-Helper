@@ -27,7 +27,7 @@
         ]
     }) }}
 
-    <main>
+    <div>
 
         {# ── Status Banner ─────────────────────────────────────────────────────── #}
         <div class="row mb-4">
@@ -209,7 +209,7 @@
                     <div class="col-md-6">
                         <p class="mb-1"><strong>{{ 'eu_authorities.nis2_registration.field.last_reported'|trans }}:</strong>
                             {% if profile.lastReportedAt %}
-                                {{ profile.lastReportedAt|date('d.m.Y H:i') }}
+                                {{ profile.lastReportedAt|fa_datetime }}
                                 {% if profile.portalConfirmationNumber %}
                                     <span class="fa-status-pill fa-status-pill--success ms-2">{{ profile.portalConfirmationNumber }}</span>
                                 {% endif %}
@@ -271,6 +271,6 @@
             </div>
         </div>
 
-    </main>
+    </div>
 </div>
 {% endblock %}

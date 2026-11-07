@@ -51,11 +51,11 @@
     {{ _fa_report_doc.render({
         report: {
             title:        'portfolio_report.drill.title'|trans({'%framework%': framework.code, '%category%': _category_label}, 'portfolio_report'),
-            subtitle:     tenant.name ~ ' · ' ~ ('portfolio_report.header.stichtag'|trans({}, 'portfolio_report')) ~ ': ' ~ stichtag|date('Y-m-d'),
+            subtitle:     tenant.name ~ ' · ' ~ ('portfolio_report.header.stichtag'|trans({}, 'portfolio_report')) ~ ': ' ~ stichtag|fa_date,
             kicker:       framework.code ~ ' / ' ~ _category_label,
             status:       'final',
             audience:     'auditor',
-            generated_at: 'now'|date('d.m.Y H:i'),
+            generated_at: 'now'|fa_datetime,
         },
         brand_name: tenant.name,
         key_findings: [

@@ -141,7 +141,7 @@
                     </div>
                     <div class="workflow-info-item">
                         <span class="label">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}:</span>
-                        <span class="value">{{ workflowStatus.current_step ?? 'N/A' }}</span>
+                        <span class="value">{{ workflowStatus.current_step ?? '—' }}</span>
                     </div>
                     {% if workflowStatus.due_date %}
                         <div class="workflow-info-item">
@@ -195,12 +195,12 @@
             {# Standardised via _detail_group component #}
             {% set incidentItems = [
                 { label: 'incident.field.category'|trans({}, 'incident'), value: incident.category|upper|replace({'_': ' '}) },
-                { label: 'incident.field.detected'|trans({}, 'incident'), value: incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' },
-                { label: 'incident.field.reported_by'|trans({}, 'incident'), value: incident.effectiveReportedBy ?? incident.reportedBy ?? 'N/A' },
-                { label: 'incident.field.responsible_person'|trans({}, 'incident'), value: incident.effectiveResponsiblePersonName ?? 'N/A' }
+                { label: 'incident.field.detected'|trans({}, 'incident'), value: incident.detectedAt|fa_datetime },
+                { label: 'incident.field.reported_by'|trans({}, 'incident'), value: incident.effectiveReportedBy ?? incident.reportedBy ?? '—' },
+                { label: 'incident.field.responsible_person'|trans({}, 'incident'), value: incident.effectiveResponsiblePersonName ?? '—' }
             ] %}
             {% if incident.occurredAt %}
-                {% set incidentItems = incidentItems|merge([{ label: 'incident.field.occurred'|trans({}, 'incident'), value: incident.occurredAt|date('d.m.Y H:i') }]) %}
+                {% set incidentItems = incidentItems|merge([{ label: 'incident.field.occurred'|trans({}, 'incident'), value: incident.occurredAt|fa_datetime }]) %}
             {% endif %}
             {% include '_components/_detail_group.html.twig' with { items: incidentItems } only %}
 
@@ -503,12 +503,7 @@
                         {% for process in incident.affectedBusinessProcesses %}
                             <div class="data-reuse-item">
                                 <strong>{{ process.name }}</strong>
-                                {% set crit_class = {
-                                    'critical': 'danger',
-                                    'high': 'warning',
-                                    'medium': 'info',
-                                    'low': 'secondary'
-                                }[process.criticality] %}
+                                {% set crit_class = pill_tone_severity(process.criticality|default('')) %}
                                 {% include '_components/_badge.html.twig' with { variant: crit_class, content: process.criticality|upper } %}
                                 <small>RTO: {{ process.rto }}h | {{ 'incident.bcm.owner'|trans({}, 'incident') }}: {{ process.processOwner }}</small>
                             </div>

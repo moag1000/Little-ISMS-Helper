@@ -165,12 +165,7 @@
                         <ul class="list-unstyled">
                             {% for level, count in statistics.risk_distribution %}
                                 {% if count > 0 %}
-                                    {% set risk_color = {
-                                        'low': 'success',
-                                        'medium': 'info',
-                                        'high': 'warning',
-                                        'critical': 'danger'
-                                    }[level] %}
+                                    {% set risk_color = pill_tone_severity(level|default('')) %}
                                     <li class="mb-2">
                                         {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
                                         {{ ('dpia.risk_level.' ~ level)|trans({}, 'privacy') }}
@@ -185,12 +180,7 @@
                         <ul class="list-unstyled">
                             {% for level, count in statistics.residual_risk_distribution %}
                                 {% if count > 0 %}
-                                    {% set risk_color = {
-                                        'low': 'success',
-                                        'medium': 'info',
-                                        'high': 'warning',
-                                        'critical': 'danger'
-                                    }[level] %}
+                                    {% set risk_color = pill_tone_severity(level|default('')) %}
                                     <li class="mb-2">
                                         {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
                                         {{ ('dpia.risk_level.' ~ level)|trans({}, 'privacy') }}
@@ -227,12 +217,7 @@
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
                                         {{ dpia.referenceNumber }} - {{ dpia.title }}
                                     </a>
-                                    {% set risk_variant = {
-                                        'low': 'success',
-                                        'medium': 'info',
-                                        'high': 'warning',
-                                        'critical': 'danger'
-                                    }[dpia.riskLevel]|default('secondary') %}
+                                    {% set risk_variant = pill_tone_severity(dpia.riskLevel|default('')) %}
                                     {% include '_components/_badge.html.twig' with { variant: risk_variant, content: ('dpia.risk_level.' ~ dpia.riskLevel)|trans({}, 'privacy') } %}
                                 </li>
                             {% endfor %}

@@ -128,7 +128,7 @@
                                         {% set isActive = moduleKey in active_modules %}
 
                                         {% if module %}
-                                            <div class="module-badge {% if isActive %}active{% else %}inactive{% endif %}"
+                                            <div tabindex="0" class="module-badge {% if isActive %}active{% else %}inactive{% endif %}"
                                                  data-bs-toggle="tooltip" data-bs-placement="top"
                                                  title="{{ module.description }}">
                                                 <span class="module-icon">{% if isActive %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>{% endif %}</span>

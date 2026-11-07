@@ -37,7 +37,7 @@
                 {% else %}
                     {% set status = derived.status %}
                     {% set _chip = status == 'completed' ? 'final' : (status == 'in_progress' ? 'draft' : (status == 'planned' ? 'auditor-only' : 'confidential')) %}
-                    {% set _sym = status == 'completed' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '–')) %}
+                    {% set _sym = status == 'completed' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '—')) %}
                     {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status|e ~ ' — ' ~ derived.auditNumber|e ~ '">' ~ _sym ~ '</span>' ]) %}
                 {% endif %}
             {% endfor %}

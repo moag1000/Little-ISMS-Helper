@@ -42,7 +42,7 @@
         {% if asset.dataClassification %}
             {{ pill.render(('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset')|upper, pill_tone_classification(asset.dataClassification)) }}
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td class="text-center">
@@ -60,7 +60,7 @@
         {% elseif recommendations[asset.id] is defined %}
             <span class="text-muted">0</span>
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td class="text-center">

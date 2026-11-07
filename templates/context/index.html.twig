@@ -26,7 +26,7 @@
             { label: 'context.link.create'|trans({}, 'context'), href: path('app_context_edit'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
-    <main>
+    <div>
 
     {% if context %}
     {# ISO 27001 Clause Information #}
@@ -66,7 +66,7 @@
         {{ _fa_feature_card.render({
             icon: 'nav-calendar-check',
             label: daysSinceReview ? 'context.kpi.days_since_review'|trans({}, 'context') : 'context.kpi.last_review'|trans({}, 'context'),
-            value: daysSinceReview ?? '-',
+            value: daysSinceReview ?? '—',
             unit: daysSinceReview ? (daysSinceReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
             variant: daysSinceReview ? (daysSinceReview > 365 ? 'danger' : (daysSinceReview > 180 ? 'warning' : 'success')) : 'primary'
         }) }}
@@ -74,7 +74,7 @@
         {{ _fa_feature_card.render({
             icon: 'ui-calendar-event',
             label: daysUntilReview ? 'context.kpi.days_until_review'|trans({}, 'context') : 'context.kpi.next_review'|trans({}, 'context'),
-            value: daysUntilReview ?? '-',
+            value: daysUntilReview ?? '—',
             unit: daysUntilReview ? (daysUntilReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
             variant: daysUntilReview ? (daysUntilReview < 30 ? 'warning' : (daysUntilReview < 0 ? 'danger' : 'primary')) : 'primary'
         }) }}
@@ -82,7 +82,7 @@
 
     {# Overdue Review Warning #}
     {% if daysUntilReview and daysUntilReview < 0 %}
-    {%- set overdueDate = context.nextReviewDate|date('d.m.Y') -%}
+    {%- set overdueDate = context.nextReviewDate|fa_date -%}
     {%- set overdueDays = (daysUntilReview * -1) -%}
     <div class="fa-alert fa-alert--danger mb-4" role="alert">
         <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
@@ -96,7 +96,7 @@
         </div>
     </div>
     {% elseif daysUntilReview and daysUntilReview < 30 %}
-    {%- set upcomingDate = context.nextReviewDate|date('d.m.Y') -%}
+    {%- set upcomingDate = context.nextReviewDate|fa_date -%}
     <div class="fa-alert fa-alert--warning mb-4" role="alert">
         <i class="fa-icon fa-icon--ui-clock fa-alert__icon" aria-hidden="true"></i>
         <div class="fa-alert__body"><div class="d-flex align-items-center">
@@ -153,13 +153,13 @@
                         {% if context.lastReviewDate %}
                         <div class="small text-muted mb-1">
                             <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
-                            {{ 'context.kpi.last_review'|trans({}, 'context') }}: <strong>{{ context.lastReviewDate|date('d.m.Y') }}</strong>
+                            {{ 'context.kpi.last_review'|trans({}, 'context') }}: <strong>{{ context.lastReviewDate|fa_date }}</strong>
                         </div>
                         {% endif %}
                         {% if context.nextReviewDate %}
                         <div class="small text-muted">
                             <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
-                            {{ 'context.kpi.next_review'|trans({}, 'context') }}: <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
+                            {{ 'context.kpi.next_review'|trans({}, 'context') }}: <strong>{{ context.nextReviewDate|fa_date }}</strong>
                         </div>
                         {% endif %}
                     </div>
@@ -444,7 +444,7 @@
                         <td>{{ objective.effectiveResponsiblePerson }}</td>
                         <td>
                             <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                            {{ objective.targetDate|date('d.m.Y') }}
+                            {{ objective.targetDate|fa_date }}
                         </td>
                         <td>
                             {% set statusClasses = {
@@ -559,7 +559,7 @@
         {% endblock %}
     {% endembed %}
     {% endif %}
-    </main>
+    </div>
 </div>
 
 <style>

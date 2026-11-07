@@ -161,11 +161,11 @@
         </tr>
         <tr>
             <th>{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
-            <td>{{ assessment.assessmentDate ? assessment.assessmentDate|fa_date : '—' }}</td>
+            <td>{{ assessment.assessmentDate|fa_date }}</td>
         </tr>
         <tr>
             <th>{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
-            <td>{{ assessment.nextAssessmentDue ? assessment.nextAssessmentDue|fa_date : '—' }}</td>
+            <td>{{ assessment.nextAssessmentDue|fa_date }}</td>
         </tr>
         <tr>
             <th>{{ 'prototype_protection.pdf.generated_at'|trans({}, 'prototype_protection') }}</th>

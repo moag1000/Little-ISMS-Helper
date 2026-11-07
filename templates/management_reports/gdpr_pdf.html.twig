@@ -109,15 +109,15 @@
     {% set _sev = breach.severity|default('medium') %}
     {% set _sev_badge = _sev == 'critical' ? 'badge-danger' : (_sev == 'high' ? 'badge-warning' : (_sev == 'medium' ? 'badge-info' : 'badge-success')) %}
     {% set _notif_cell = breach.notificationDate
-        ? breach.notificationDate|date('Y-m-d')
+        ? breach.notificationDate|fa_date
         : (breach.notificationRequired
             ? '<span class="badge badge-warning">' ~ ('management_reports.gdpr.pending'|trans({}, 'management_reports')) ~ '</span>'
-            : '-') %}
+            : '—') %}
     {% set _breach_rows = _breach_rows|merge([[
         breach.id,
         breach.title|length > 28 ? breach.title[:28] ~ '…' : breach.title,
         '<span class="badge ' ~ _sev_badge ~ '">' ~ _sev ~ '</span>',
-        breach.discoveredAt ? breach.discoveredAt|date('Y-m-d') : '-',
+        breach.discoveredAt|fa_date,
         breach.notificationRequired ? 'management_reports.gdpr.yes'|trans({}, 'management_reports') : 'management_reports.gdpr.no'|trans({}, 'management_reports'),
         _notif_cell,
     ]]) %}
@@ -176,7 +176,7 @@
         status:         'confidential',
         audience:       'aufsicht',
         classification: 'CONFIDENTIAL',
-        generated_at:   generated_at|date('d.m.Y H:i'),
+        generated_at:   generated_at|fa_datetime,
         prepared_by:    version,
     },
     brand_name: 'Little ISMS Helper',

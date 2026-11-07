@@ -103,14 +103,14 @@
 
                                 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                                     {% block alert_body %}
-                                    <strong>Diese Vorlage enthält:</strong>
+                                    <strong>{{ 'role_management.template_modal.includes'|trans({}, 'role_management') }}</strong>
                                     <ul class="mb-0 mt-2">
                                         {% for permission in template.permissions|slice(0, 5) %}
                                             <li><code>{{ permission }}</code></li>
                                         {% endfor %}
                                         {% if template.permissions|length > 5 %}
                                             <li class="text-muted">
-                                                und {{ template.permissions|length - 5 }} weitere...
+                                                {{ 'role_management.template_modal.and_more'|trans({'%count%': template.permissions|length - 5}, 'role_management') }}
                                             </li>
                                         {% endif %}
                                     </ul>
@@ -120,7 +120,7 @@
                             <footer class="fa-modal__footer">
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> Rolle erstellen
+                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'role_management.template_modal.create_role'|trans({}, 'role_management') }}
                                 </button>
                             </footer>
                         </form></div>

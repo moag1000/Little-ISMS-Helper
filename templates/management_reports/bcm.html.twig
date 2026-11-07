@@ -241,8 +241,8 @@
                             {% set statusVariant = (plan.status == 'active' or plan.status == 'approved') ? 'success' : (plan.status == 'draft' ? 'warning' : (plan.status == 'review' ? 'info' : 'secondary')) %}
                             {% include '_components/_badge.html.twig' with { variant: statusVariant, content: plan.status } %}
                         </td>
-                        <td class="fa-table__cell">{{ plan.lastReviewDate ? plan.lastReviewDate|fa_date : '-' }}</td>
-                        <td class="fa-table__cell">{{ plan.nextReviewDate ? plan.nextReviewDate|fa_date : '-' }}</td>
+                        <td class="fa-table__cell">{{ plan.lastReviewDate|fa_date }}</td>
+                        <td class="fa-table__cell">{{ plan.nextReviewDate|fa_date }}</td>
                     </tr>
                     {% endfor %}
                 {% endblock %}

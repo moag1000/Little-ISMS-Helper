@@ -44,13 +44,7 @@
 
     {# Art. 21.2 letter grid — all 11 risk-management measures #}
     {% if letters|length > 0 %}
-        {% set status_variant = {
-            'good': 'success',
-            'warning': 'warning',
-            'danger': 'danger',
-            'info': 'info',
-            'na': 'secondary',
-        } %}
+        {% import '_components/_status_vocabulary.html.twig' as _status %}
         {% set status_text_class = {
             'good': 'text-success',
             'warning': 'text-warning',
@@ -71,7 +65,7 @@
             {% for code, letter in letters %}
                 {% set key = code|replace({'21.2.': ''}) %}
                 {% set color = status_text_class[letter.status] ?? 'text-muted' %}
-                {% set badge_variant = status_variant[letter.status] ?? 'secondary' %}
+                {% set badge_variant = _status.tone('coverage', letter.status)|trim %}
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                         {% block card_body %}
@@ -112,10 +106,10 @@
 
         {# Art. 23 reporting timeline #}
         {% if article23 is not null %}
-            {% set art23_variant = status_variant[article23.status] ?? 'secondary' %}
+            {% set art23_variant = _status.tone('coverage', article23.status)|trim %}
             <div class="row mb-4">
                 <div class="col-12">
-                    {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ art23_variant } %}
+                    {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (art23_variant == 'neutral' ? 'secondary' : art23_variant) } %}
                         {% block card_header %}
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h2 class="h5 mb-0">

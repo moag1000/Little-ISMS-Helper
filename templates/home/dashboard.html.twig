@@ -459,7 +459,7 @@
                                     <div class="small text-muted">
                                         {% if risk.reviewDate %}
                                             <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
-                                            {{ 'dashboard.overdue_reviews.last_review'|trans({}, 'dashboard') }}: {{ risk.reviewDate|locale_date }}
+                                            {{ 'dashboard.overdue_reviews.last_review'|trans({}, 'dashboard') }}: {{ risk.reviewDate|fa_date }}
                                         {% else %}
                                             <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                             {{ 'dashboard.overdue_reviews.never_reviewed'|trans({}, 'dashboard') }}
@@ -513,7 +513,7 @@
                                     </a>
                                     <div class="small text-muted">
                                         <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
-                                        {{ risk.reviewDate|locale_date }}
+                                        {{ risk.reviewDate|fa_date }}
                                     </div>
                                 </div>
                             </div>
@@ -550,7 +550,7 @@
                                     </a>
                                     <div class="small text-muted">
                                         <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                                        {{ 'dashboard.overdue_treatment_plans.due_date'|trans({}, 'dashboard') }}: {{ plan.targetCompletionDate|locale_date }}
+                                        {{ 'dashboard.overdue_treatment_plans.due_date'|trans({}, 'dashboard') }}: {{ plan.targetCompletionDate|fa_date }}
                                         {% set daysOverdue = plan.daysOverdue ?? 0 %}
                                         <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans({}, 'dashboard') }})</span>
                                     </div>
@@ -603,7 +603,7 @@
                                     </a>
                                     <div class="small text-muted">
                                         <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
-                                        {{ plan.targetCompletionDate|locale_date }}
+                                        {{ plan.targetCompletionDate|fa_date }}
                                         {% set daysRemaining = plan.daysUntilTarget ?? 0 %}
                                         <span>({{ daysRemaining }} {{ 'dashboard.approaching_treatment_plans.days_remaining'|trans({}, 'dashboard') }})</span>
                                     </div>

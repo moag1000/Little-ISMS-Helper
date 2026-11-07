@@ -117,7 +117,7 @@
                     <dd class="col-sm-9">{{ action.verifiedBy ? action.verifiedBy.fullName : '—' }}</dd>
 
                     <dt class="col-sm-3">{{ 'corrective_action.field.verified_at'|trans({}, 'audits') }}</dt>
-                    <dd class="col-sm-9">{{ action.verifiedAt ? action.verifiedAt|fa_datetime : '—' }}</dd>
+                    <dd class="col-sm-9">{{ action.verifiedAt|fa_datetime }}</dd>
 
                     <dt class="col-sm-3">{{ 'corrective_action.field.effectiveness_evidence'|trans({}, 'audits') }}</dt>
                     <dd class="col-sm-9">{{ action.effectivenessEvidence ? action.effectivenessEvidence|nl2br : '—' }}</dd>

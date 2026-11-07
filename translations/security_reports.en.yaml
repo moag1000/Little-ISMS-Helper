@@ -37,5 +37,10 @@ security_reports:
         high: 'High (P1)'
         medium: 'Medium (P2)'
         low: 'Low (P3)'
+    about:
+        title: 'About these reports'
+        intro: 'The security audit reports are based on the OWASP Top 10 security risks and automatically analyse the application for potential vulnerabilities.'
+        owasp_2025: 'Latest version with updated categories (e.g. "Mishandling of Exceptional Conditions")'
+        owasp_2021: 'Stable version for compliance evidence'
 app:
     title: 'Security Reports'

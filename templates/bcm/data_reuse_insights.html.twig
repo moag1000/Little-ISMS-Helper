@@ -98,18 +98,12 @@
                         <td>
                             <strong>{{ insight.process.name }}</strong>
                             <br>
-                            {% set criticality_colors = {
-                                'critical': 'danger',
-                                'high': 'warning',
-                                'medium': 'info',
-                                'low': 'success'
-                            } %}
-                            {% include '_components/_badge.html.twig' with { variant: criticality_colors[insight.process.criticality] ?? 'secondary', content: ('bcm.criticality.' ~ insight.process.criticality)|trans({}, 'bcm') } %}
+                            {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(insight.process.criticality|default('')), content: ('bcm.criticality.' ~ insight.process.criticality)|trans({}, 'bcm') } %}
                         </td>
                         <td>
                             <strong>{{ insight.asset.name }}</strong>
                             <br>
-                            <small class="text-muted">{{ insight.asset.assetType|default('N/A') }}</small>
+                            <small class="text-muted">{{ insight.asset.assetType|default('—') }}</small>
                         </td>
                         <td>
                             <div class="metric-stack">
@@ -125,17 +119,10 @@
                                 4: 'High',
                                 5: 'Very High'
                             } %}
-                            {% set availability_colors = {
-                                1: 'success',
-                                2: 'info',
-                                3: 'warning',
-                                4: 'warning',
-                                5: 'danger'
-                            } %}
-                            {% include '_components/_badge.html.twig' with { variant: availability_colors[insight.current_availability] ?? 'secondary', content: insight.current_availability ~ ' - ' ~ (availability_labels[insight.current_availability] ?? 'N/A') } %}
+                            {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(insight.current_availability|default('')), content: insight.current_availability ~ ' - ' ~ (availability_labels[insight.current_availability] ?? '—') } %}
                         </td>
                         <td class="text-center">
-                            {% include '_components/_badge.html.twig' with { variant: availability_colors[availability.value] ?? 'secondary', content: availability.value ~ ' - ' ~ (availability_labels[availability.value] ?? 'N/A') } %}
+                            {% include '_components/_badge.html.twig' with { variant: pill_tone_severity(availability.value|default('')), content: availability.value ~ ' - ' ~ (availability_labels[availability.value] ?? '—') } %}
                         </td>
                         <td>
                             {% if matchStatus == 'match' %}
@@ -151,12 +138,8 @@
                             <small class="text-muted">{{ availability.reasoning }}</small>
                         </td>
                         <td class="text-center">
-                            {% set confidence_colors = {
-                                'high': 'success',
-                                'medium': 'warning',
-                                'low': 'secondary'
-                            } %}
-                            {% include '_components/_badge.html.twig' with { variant: confidence_colors[availability.confidence] ?? 'secondary', content: availability.confidence|upper } %}
+                            {% import '_components/_status_vocabulary.html.twig' as _vocab %}
+                            {{ _vocab.pill('confidence', availability.confidence, availability.confidence|upper, { noDot: true }) }}
                         </td>
                     </tr>
                 {% else %}

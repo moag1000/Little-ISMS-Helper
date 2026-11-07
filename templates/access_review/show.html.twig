@@ -20,7 +20,7 @@
 
 {{ _fa_page_header.render({
     title:   campaign.name,
-    subtitle: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') ~ ' · ' ~ 'access_review.field.due_date'|trans({}, 'access_review') ~ ': ' ~ (campaign.dueDate ? campaign.dueDate|fa_date : '–'),
+    subtitle: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') ~ ' · ' ~ 'access_review.field.due_date'|trans({}, 'access_review') ~ ': ' ~ (campaign.dueDate|fa_date),
     actions: [
         is_granted('ROLE_AUDITOR') ? {
             label: 'access_review.export.button'|trans({}, 'access_review'),
@@ -185,7 +185,7 @@
                                                 {{ item.subjectUser.fullName ?? item.subjectUser.email }}
                                             </span>
                                         {% else %}
-                                            <span class="text-muted">–</span>
+                                            <span class="text-muted">—</span>
                                         {% endif %}
                                     </td>
                                     <td class="fa-table__cell">
@@ -220,7 +220,7 @@
                                             {{ item.decidedBy.fullName ?? item.decidedBy.email }}
                                             <br><small class="text-muted">{{ item.decidedAt|fa_datetime }}</small>
                                         {% else %}
-                                            <span class="text-muted">–</span>
+                                            <span class="text-muted">—</span>
                                         {% endif %}
                                     </td>
                                     {% if campaign.isOpen %}
@@ -339,7 +339,7 @@
                         <li class="mb-1">
                             <code>{{ eItem.reviewedRole }}</code>
                             &mdash;
-                            {{ eItem.subjectUser ? (eItem.subjectUser.fullName ?? eItem.subjectUser.email) : '–' }}
+                            {{ eItem.subjectUser ? (eItem.subjectUser.fullName ?? eItem.subjectUser.email) : '—' }}
                             {% if eItem.decidedBy %}
                             <small class="text-muted ms-1">
                                 ({{ 'access_review.field.decided_by'|trans({}, 'access_review') }}: {{ eItem.decidedBy.email }})

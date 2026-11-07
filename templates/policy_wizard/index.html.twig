@@ -46,7 +46,7 @@
                                     {{ pill.render(('policy_wizard.status.' ~ run.status)|trans, 'neutral', {size: 'sm', class: 'ms-2'}) }}
                                 </div>
                                 <small class="text-muted">
-                                    {{ run.startedAt ? run.startedAt|date('Y-m-d H:i') : '' }} —
+                                    {{ run.startedAt ? run.startedAt|fa_datetime : '' }} —
                                     {{ ('policy_wizard.step.' ~ run.step ~ '.title')|trans }}
                                 </small>
                             </div>

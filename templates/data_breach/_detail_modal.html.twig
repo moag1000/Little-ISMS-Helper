@@ -11,12 +11,7 @@
     'subjects_notified': 'success',
     'closed': 'dark'
 }[breach.status]|default('secondary') %}
-{% set risk_class = {
-    'low': 'success',
-    'medium': 'info',
-    'high': 'warning',
-    'critical': 'danger'
-}[breach.riskLevel]|default('secondary') %}
+{% set risk_class = pill_tone_severity(breach.riskLevel|default('')) %}
 <turbo-frame id="fa-form-modal">
     <div class="fa-drawer__header">
         <div class="fa-drawer__header-text">
@@ -41,7 +36,7 @@
 
         <div class="fa-drawer__kv">
             <span class="label">{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}</span>
-            <span>{{ breach.detectedAt ? breach.detectedAt|fa_datetime : '—' }}</span>
+            <span>{{ breach.detectedAt|fa_datetime }}</span>
         </div>
 
         {% if breach.supervisoryAuthorityNotifiedAt %}

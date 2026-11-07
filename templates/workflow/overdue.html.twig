@@ -90,9 +90,9 @@
                 {% endif %}
             </td>
             <td>
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '-' } %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '—' } %}
             </td>
-            <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
+            <td>{{ instance.currentStep ? instance.currentStep.name : '—' }}</td>
             <td>
                 {% import '_components/_status_vocabulary.html.twig' as _status %}
                 {{ _status.pill('workflow', instance.status, ('workflow.status.' ~ instance.status)|trans({}, 'workflows')) }}
@@ -111,7 +111,7 @@
                 {% if instance.dueDate %}
                     {{ instance.dueDate|fa_datetime }}
                 {% else %}
-                    <span class="text-muted">-</span>
+                    <span class="text-muted">—</span>
                 {% endif %}
             </td>
             <td class="text-center">

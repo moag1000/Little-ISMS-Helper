@@ -1,6 +1,7 @@
 {#
  # One status → tone map per vocabulary (UI wave G). Statuses without a
  # lifecycle workflow (workflow instances, consents, import rows, compliance
+ # results, coverage levels, protection levels, security zones, requirement
  # results) get their pill tone here instead of a local colour map in each
  # template. Lifecycle entities use _fa_status_chip (tone from the registry).
  #
@@ -9,15 +10,35 @@
  #   {{ _status.pill('workflow', instance.status, ('workflow.status.' ~ instance.status)|trans({}, 'workflows')) }}
  #   {{ _status.pill('consent', consent.status, label, { size: 'sm' }) }}
  #
+ #   {% set tone = _status.tone('coverage', row.status)|trim %}   (tone name only, e.g. for a card border)
+ #
  # Unknown vocabulary or status → neutral. Props are those of _status_pill.
  #}
-{% macro pill(vocabulary, status, label, props = {}) %}
+{% macro tone(vocabulary, status) %}
     {% set _tones = {
         workflow: { pending: 'warning', in_progress: 'primary', approved: 'success', rejected: 'danger', cancelled: 'neutral' },
         consent: { pending_verification: 'warning', active: 'success', revoked: 'danger' },
         import_row: { new: 'success', update: 'primary', conflict: 'warning', error: 'danger' },
         compliance_result: { compliant: 'success', partial: 'warning', in_progress: 'primary', needs_work: 'danger', not_started: 'danger', non_compliant: 'danger' },
+        coverage: { good: 'success', warning: 'warning', danger: 'danger', info: 'primary', na: 'neutral' },
+        protection_level: { very_high: 'danger', high: 'warning', normal: 'primary', low: 'neutral' },
+        security_zone: { public: 'neutral', restricted: 'primary', controlled: 'warning', secure: 'warning', high_security: 'danger' },
+        prototype_assessment: { draft: 'neutral', in_review: 'primary', approved: 'success', rejected: 'danger', expired: 'warning' },
+        import_session: { committed: 'success', preview: 'warning', cancelled: 'neutral' },
+        import_decision: { import: 'success', update: 'primary', merge: 'primary', skip: 'warning', error: 'danger' },
+        governance_model: { hierarchical: 'primary', shared: 'warning' },
+        finding_severity: { major_nc: 'danger', minor_nc: 'warning', observation: 'primary', opportunity: 'success' },
+        confidence: { high: 'success', medium: 'warning', low: 'neutral' },
+        maturity_level: { 0: 'neutral', 1: 'danger', 2: 'warning', 3: 'primary', 4: 'accent', 5: 'success' },
+        person_type: { employee: 'success', contractor: 'primary', visitor: 'warning', vendor: 'primary', auditor: 'danger', consultant: 'primary' },
+        action_item: { open: 'neutral', planned: 'primary', in_progress: 'primary', done: 'success', dismissed: 'neutral' },
+        requirement_result: { not_applicable: 'neutral', not_met: 'danger', partial: 'warning', met: 'success', exceeded: 'success' },
     } %}
+    {{- (_tones[vocabulary] ?? {})[status] ?? 'neutral' -}}
+{% endmacro %}
+
+{% macro pill(vocabulary, status, label, props = {}) %}
+    {% import _self as _vocab %}
     {% import '_components/_status_pill.html.twig' as _pill %}
-    {{ _pill.render(label, (_tones[vocabulary] ?? {})[status] ?? 'neutral', props) }}
+    {{ _pill.render(label, _vocab.tone(vocabulary, status)|trim, props) }}
 {% endmacro %}

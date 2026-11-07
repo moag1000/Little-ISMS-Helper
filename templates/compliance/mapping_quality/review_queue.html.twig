@@ -82,21 +82,21 @@
                             {% if mapping.calculatedPercentage is not null %}
                                 {% include '_components/_badge.html.twig' with { variant: mapping.calculatedPercentage >= 70 ? 'success' : (mapping.calculatedPercentage >= 50 ? 'warning' : 'danger'), content: mapping.calculatedPercentage ~ '%' } %}
                             {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted">—</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
                             {% if mapping.analysisConfidence is not null %}
                                 {% include '_components/_badge.html.twig' with { variant: mapping.analysisConfidence >= 80 ? 'success' : (mapping.analysisConfidence >= 60 ? 'warning' : 'danger'), content: mapping.analysisConfidence } %}
                             {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted">—</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
                             {% if mapping.qualityScore is not null %}
                                 {% include '_components/_badge.html.twig' with { variant: mapping.qualityScore >= 75 ? 'success' : (mapping.qualityScore >= 50 ? 'warning' : 'danger'), content: mapping.qualityScore } %}
                             {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted">—</span>
                             {% endif %}
                         </td>
                         <td class="text-center">

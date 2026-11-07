@@ -325,26 +325,26 @@
                     <td class="fa-table__cell fa-table__cell--center">
                         {% set mrisLocale = app.request.locale|default('de') %}
                         {% if control.mythosResilience == 'standfest' %}
-                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
+                            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
                                 {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
                             </span>
                         {% elseif control.mythosResilience == 'degradiert' %}
-                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
+                            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
                                 {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
                             </span>
                         {% elseif control.mythosResilience == 'reibung' %}
-                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
+                            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
                                 {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
                             </span>
                         {% elseif control.mythosResilience == 'nicht_betroffen' %}
-                            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
+                            <span tabindex="0" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
                                 {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
                             </span>
                         {% else %}
                             <span class="text-muted small">—</span>
                         {% endif %}
                         {% if control.mythosFlankingMhcs is not empty %}
-                            <div class="small text-muted mt-1" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.flanking_mhcs', 'tooltip', mrisLocale) }}">{{ control.mythosFlankingMhcs|join(', ') }}</div>
+                            <div tabindex="0" class="small text-muted mt-1" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.flanking_mhcs', 'tooltip', mrisLocale) }}">{{ control.mythosFlankingMhcs|join(', ') }}</div>
                         {% endif %}
                     </td>
                     {% endif %}
@@ -378,7 +378,7 @@
                         {% if control.applicable %}
                             {{ _fa_progress.render({ value: control.implementationPercentage, showText: true, size: 'sm' }) }}
                         {% else %}
-                            <span class="text-center-block-light">-</span>
+                            <span class="text-center-block-light">—</span>
                         {% endif %}
                     </td>
                     <td class="fa-table__cell fa-table__cell--actions">

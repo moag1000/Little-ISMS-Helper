@@ -17,8 +17,8 @@
     </div>
     <div class="fa-drawer__body">
         <div class="fa-drawer__section">
-            {% set _status_variant = {'active': 'success', 'draft': 'secondary', 'under_review': 'warning', 'archived': 'info'}[bc_plan.status]|default('secondary') %}
-            {% include '_components/_badge.html.twig' with { variant: _status_variant, content: ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') } %}
+            {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+            {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\BusinessContinuityPlan', status_key: bc_plan.status, label: ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') }) }}
         </div>
 
         {% if bc_plan.effectivePlanOwner %}
@@ -37,17 +37,17 @@
 
         <div class="fa-drawer__kv">
             <span class="label">{{ 'bc_plans.field.rto'|trans({}, 'bc_plans') }}</span>
-            <span>{{ bc_plan.rto is not null ? bc_plan.rto ~ ' h' : '-' }}</span>
+            <span>{{ bc_plan.rto is not null ? bc_plan.rto ~ ' h' : '—' }}</span>
         </div>
 
         <div class="fa-drawer__kv">
             <span class="label">{{ 'bc_plans.field.rpo'|trans({}, 'bc_plans') }}</span>
-            <span>{{ bc_plan.rpo is not null ? bc_plan.rpo ~ ' h' : '-' }}</span>
+            <span>{{ bc_plan.rpo is not null ? bc_plan.rpo ~ ' h' : '—' }}</span>
         </div>
 
         <div class="fa-drawer__kv">
             <span class="label">{{ 'bc_plans.field.last_tested'|trans({}, 'bc_plans') }}</span>
-            <span>{{ bc_plan.lastTested ? bc_plan.lastTested|locale_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</span>
+            <span>{{ bc_plan.lastTested ? bc_plan.lastTested|fa_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</span>
         </div>
 
         {% set readiness = bc_plan.getReadinessScore() %}

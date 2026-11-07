@@ -30,7 +30,7 @@
         { label: 'audit_freeze.action.verify'|trans({}, 'audit_freeze'), variant: 'ghost', icon: 'shield-check', href: path('app_audit_freeze_verify', {id: freeze.id}) }
     ]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'ui-circle', label: freeze.stichtag|date('Y-m-d') },
+        badge: { icon: 'ui-circle', label: freeze.stichtag|fa_date },
         title: freeze.freezeName,
         subtitle: ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze'),
         actions: _show_actions

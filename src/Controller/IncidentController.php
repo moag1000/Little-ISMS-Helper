@@ -629,16 +629,12 @@ class IncidentController extends AbstractController
             date('Ymd-His')
         );
 
-        // Generate version from last update date (Format: Year.Month.Day)
-        $lastUpdate = $incident->getUpdatedAt() ?? $incident->getCreatedAt() ?? new DateTime();
-        $version = $lastUpdate->format('Y.m.d');
-
-        // Generate PDF
+        // One NIS2 Art. 23 report (early warning / notification / final report), translated.
         $pdf = $this->pdfExportService->generatePdf(
-            'incident/nis2_report_pdf.html.twig',
+            'nis2/incident_report_pdf.html.twig',
             [
                 'incident' => $incident,
-                'version' => $version,
+                'generated_at' => new DateTime(),
             ],
             ['orientation' => 'portrait', 'paper' => 'A4']
         );

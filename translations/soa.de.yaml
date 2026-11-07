@@ -275,6 +275,22 @@ soa:
         cta_logout: 'Abmelden und neu anmelden'
 
 # Flat keys for report_pdf_v2.html.twig (|trans({}, 'soa') without soa. prefix)
+    export:
+        standard: 'Standard:'
+        category_overview: 'Kategorieübersicht'
+        col_total: 'Gesamt'
+        controls_overview: 'Controls Übersicht'
+        detail_heading: 'Detaillierte Control-Informationen'
+        applicability_justification: 'Begründung für Anwendbarkeit:'
+    pdf_v2:
+        isms_team: 'ISMS-Team'
+        version_initial: 'Initiale Version nach ISO 27001:2022'
+        version_update: 'Aktualisierung Controls A.8 und A.11'
+        version_review: 'Vollständige Überprüfung aller Controls, Status-Update'
+        type_standard: 'Norm'
+        type_policy: 'Richtlinie'
+        type_risk_assessment: 'Risikoanalyse'
+        iso27002_title: 'Informationssicherheitsmaßnahmen'
 'report.pdf.subtitle': 'ISO 27001:2022 Annex A – Anwendbarkeitserklärung der Controls'
 'report.pdf.section_summary': 'Zusammenfassung'
 'report.pdf.intro_line1': 'Dieses Dokument beschreibt die Anwendbarkeit und den Implementierungsstatus der ISO 27001:2022 Annex A Controls für das Informationssicherheits-Managementsystem (ISMS) der Organisation %tenant%.'

@@ -70,7 +70,7 @@
             {% set tableRows = tableRows|merge([[
                 { content: '<a href="' ~ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) ~ '">' ~ c.name|e ~ '</a>', raw: true },
                 { content: ('access_review.scope.' ~ c.scope)|trans({}, 'access_review') },
-                { content: c.dueDate ? c.dueDate|fa_date : '–' },
+                { content: c.dueDate|fa_date },
                 { content: '<span class="fa-status-pill fa-status-pill--' ~ (c.status == 'open' ? 'success' : 'neutral') ~ '">' ~ ('access_review.status.' ~ c.status)|trans({}, 'access_review') ~ '</span>', raw: true },
                 { content: c.totalCount ~ ' (' ~ c.pendingCount ~ ' ' ~ 'access_review.field.pending'|trans({}, 'access_review') ~ ')' },
                 { content: progressCell, raw: true },

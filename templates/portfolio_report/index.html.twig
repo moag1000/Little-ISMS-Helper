@@ -23,14 +23,15 @@
                 <span class="mx-2">&middot;</span>
                 <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
                 {{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:
-                <strong>{{ stichtag|date('Y-m-d') }}</strong>
+                <strong>{{ stichtag|fa_date }}</strong>
                 {% if vorperiode %}
                     <span class="mx-2">&middot;</span>
                     <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                     {{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:
-                    <strong>{{ vorperiode|date('Y-m-d') }}</strong>
+                    <strong>{{ vorperiode|fa_date }}</strong>
                 {% endif %}
     {% endset %}
+    {# machine-date: route params / grouping key #}
     {% set _portfolio_params = {
         _locale: app.request.locale,
         stichtag: stichtag|date('Y-m-d'),

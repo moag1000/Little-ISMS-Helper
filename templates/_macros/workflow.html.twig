@@ -99,7 +99,7 @@
             <div class="sla-timeline-compact {{ colorClass }}"
                  role="status"
                  aria-label="{{ label ?? 'sla.progress_label'|trans({}, 'workflows') }}: {{ percentElapsed }}% {{ 'sla.elapsed'|trans({}, 'workflows') }}, {{ timeDisplay }} {{ 'sla.remaining'|trans({}, 'workflows') }}"
-                 title="{{ deadline|date('d.m.Y H:i') }}">
+                 title="{{ deadline|fa_datetime }}">
                 <div class="sla-progress-mini">
                     <div class="sla-progress-bar-mini {{ colorClass }}" style="width: {{ percentElapsed }}%"></div>
                 </div>

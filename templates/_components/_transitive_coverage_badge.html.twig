@@ -12,13 +12,8 @@
  #     `<details>` control for inline table use.
  #}
 {% set compact = compact|default(false) %}
-{% set status_variant = {
-    'good': 'success',
-    'warning': 'warning',
-    'danger': 'danger',
-    'na': 'neutral',
-} %}
-{% set variant = status_variant[coverage.status] ?? 'neutral' %}
+{% import '_components/_status_vocabulary.html.twig' as _status %}
+{% set variant = _status.tone('coverage', coverage.status)|trim %}
 
 <details class="transitive-coverage{% if compact %} transitive-coverage-compact{% endif %}">
     <summary class="d-inline-flex align-items-center gap-1" style="cursor: pointer;">

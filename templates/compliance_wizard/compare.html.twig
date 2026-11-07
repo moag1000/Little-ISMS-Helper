@@ -77,12 +77,8 @@
                             {% else %}text-danger{% endif %}">
                             {{ result.overall_score }}%
                         </div>
-                        {% set status_variant = {
-                            'compliant': 'success',
-                            'partial': 'warning',
-                            'in_progress': 'info'
-                        }[result.status]|default('danger') %}
-                        {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ result.status)|trans({}, 'wizard') } %}
+                        {% import '_components/_status_vocabulary.html.twig' as _status %}
+                        {{ _status.pill('compliance_result', result.status, ('wizard.status.' ~ result.status)|trans({}, 'wizard')) }}
                         <div class="mt-3">
                             <small class="text-muted">
                                 <i class="fa-icon fa-icon--ui-flag text-danger me-1" aria-hidden="true"></i>
@@ -144,7 +140,7 @@
                                     <span class="{% if score >= 80 %}text-success{% elseif score >= 60 %}text-warning{% else %}text-danger{% endif %} fw-semibold">{{ score }}%</span>
                                 </div>
                             {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted">—</span>
                             {% endif %}
                         </td>
                         {% endfor %}

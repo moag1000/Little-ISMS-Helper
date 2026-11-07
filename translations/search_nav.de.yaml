@@ -1,0 +1,146 @@
+# Global search: page entries (App\Service\Search\NavigationSearch).
+search_nav:
+    admin_dashboard:
+        label: 'Admin Dashboard'
+        description: 'Tenant- und Benutzerverwaltung, System-Status'
+    admin_hub_index:
+        label: 'Admin-Hub'
+        description: 'Zentraler Einstieg für alle Admin-Funktionen'
+    tenant_management_index:
+        label: 'Organisations-Einstellungen'
+        description: 'Organisationen verwalten: Name, Kontakt, ISMS-Scope'
+    app_admin_tenant_email_branding:
+        label: 'Branding & Logo'
+        description: 'Logo, Farben, CI, E-Mail-Design anpassen'
+    user_management_index:
+        label: 'Benutzerverwaltung'
+        description: 'Benutzer anlegen, Rollen vergeben, Passwörter zurücksetzen'
+    role_management_index:
+        label: 'Rollenverwaltung'
+        description: 'Rollen und Berechtigungen konfigurieren'
+    app_profile_mfa_index:
+        label: 'MFA / Zwei-Faktor-Authentifizierung'
+        description: 'TOTP-Authenticator einrichten oder deaktivieren'
+    session_index:
+        label: 'Sitzungsverwaltung'
+        description: 'Aktive Logins anzeigen und beenden'
+    app_audit_log_index:
+        label: 'Audit-Log'
+        description: 'Compliance-Audittrail, alle Änderungen lückenlos'
+    app_audit_freeze_index:
+        label: 'Audit-Freeze'
+        description: 'ISMS-Status einfrieren für externe Audits (Read-Only-Modus)'
+    app_soa_index:
+        label: 'SoA – Statement of Applicability'
+        description: 'ISO 27001 Annex-A Controls, Anwendbarkeitserklärung'
+    app_risk_appetite_index:
+        label: 'Risikoappetit'
+        description: 'Risikotoleranz und Schwellenwerte konfigurieren'
+    app_analytics_dashboard:
+        label: 'Analytics'
+        description: 'KPI-Übersicht, Diagramme, Trend-Auswertungen'
+    admin_kpi_threshold_index:
+        label: 'KPI-Schwellenwerte'
+        description: 'KPI-Grenzwerte und Zielwerte konfigurieren'
+    app_reports_index:
+        label: 'Berichte'
+        description: 'Management-Reports, Gap-Report, Compliance-Exporte'
+    report_builder_index:
+        label: 'Report-Builder'
+        description: 'Eigene Berichte gestalten, Widgets kombinieren'
+    app_group_report_tree:
+        label: 'Konzern-Reports'
+        description: 'Konzernstruktur, Top-Risiken, SoA, Lieferanten und Vorfälle über alle Töchter'
+    app_group_report_comparison:
+        label: 'Organisationsvergleich'
+        description: 'Kennzahlen aller Organisationen des Konzerns nebeneinander, Export Excel und PDF'
+    admin_compliance_index:
+        label: 'Compliance & Gap-Analyse'
+        description: 'Compliance-Frameworks, Lücken-Analyse, offene Anforderungen'
+    app_scheduled_report_index:
+        label: 'Geplante Berichte'
+        description: 'Berichte automatisch per Zeitplan versenden'
+    data_backup_index:
+        label: 'Backup & Wiederherstellung'
+        description: 'Datensicherung erstellen, herunterladen und einspielen'
+    admin_modules_index:
+        label: 'Module-Aktivierung'
+        description: 'Compliance-Module ein- und ausschalten'
+    admin_lifecycle_overrides_index:
+        label: 'Lifecycle Overrides'
+        description: 'Workflow-Konfiguration pro Tenant (Rollen, 4-Augen, Pflichtbegründung)'
+    admin_workflow_overlay_index:
+        label: 'Workflow-Konfiguration'
+        description: 'Regulatorische Workflows verwalten'
+    admin_notification_channel_index:
+        label: 'Benachrichtigungs-Kanäle'
+        description: 'E-Mail-, Slack-, Webhook-Kanäle konfigurieren'
+    admin_notification_rule_index:
+        label: 'Benachrichtigungs-Regeln'
+        description: 'Regelbasierte Trigger für automatische Alerts'
+    admin_tag_index:
+        label: 'Tags verwalten'
+        description: 'Tags und Labels für Entitäten erstellen und pflegen'
+    app_dashboard:
+        label: 'Dashboard'
+        description: 'Persönliches ISMS-Dashboard mit KPIs'
+    app_dashboard_ciso:
+        label: 'CISO-Dashboard'
+        description: 'Sicherheitslage, Top-Risiken, Compliance-Status'
+    app_dashboard_dpo:
+        label: 'DPO-Dashboard'
+        description: 'Datenschutz-Übersicht, VVT, DSR-Status'
+    app_dashboard_compliance_manager:
+        label: 'Compliance-Manager-Dashboard'
+        description: 'Framework-Status, offene Maßnahmen'
+    app_my_day:
+        label: 'Mein Tag'
+        description: 'Fällige Aufgaben, Freigaben und Reviews auf einen Blick'
+    app_dashboard_risk_manager:
+        label: 'Risikomanager-Dashboard'
+        description: 'Risikolage, Behandlungspläne und fällige Risikoakzeptanzen'
+    app_dashboard_isb:
+        label: 'ISB-Dashboard'
+        description: 'Arbeitsstand des Informationssicherheitsbeauftragten'
+    app_dashboard_bcm:
+        label: 'BCM-Dashboard'
+        description: 'Business Continuity: Prozesse, Pläne, Übungen'
+    app_dashboard_auditor:
+        label: 'Auditor-Dashboard'
+        description: 'Geplante Audits, offene Feststellungen und Nachweise'
+    app_dashboard_board:
+        label: 'Vorstands-Dashboard'
+        description: 'Kennzahlen für Geschäftsführung und Vorstand'
+    app_compliance_mapping_hub:
+        label: 'Mapping-Hub'
+        description: 'Framework-Mappings, Qualität, Vorschläge und Import an einem Ort'
+    setup_wizard_index:
+        label: 'Setup-Wizard'
+        description: 'Onboarding-Tour, Ersteinrichtung'
+    app_help_glossary:
+        label: 'Glossar'
+        description: 'ISMS-Akronyme und Fachbegriffe'
+    app_quick_fix_index:
+        label: 'Quick-Fix'
+        description: 'Migrations, Schema-Drift, Datenreparatur per Web-UI'
+    admin_data_repair_index:
+        label: 'Daten-Reparatur'
+        description: 'Orphans zuweisen, Tenant-Mismatches fixen, Duplikate bereinigen'
+    admin_queue_status:
+        label: 'Queue-Status'
+        description: 'Worker-Health und ausstehende Messenger-Jobs'
+    app_industry_baseline_index:
+        label: 'Branchen-Baseline'
+        description: 'Branchenspezifische Sicherheitsanforderungen und BSI-Bausteine'
+    app_location_index:
+        label: 'Standorte'
+        description: 'Standorte und Niederlassungen verwalten'
+    app_location_map:
+        label: 'Standortkarte'
+        description: 'Standort-Lagebild: Restrisiko, offene Prüfungen und Vergleich je Standort'
+    api_doc:
+        label: 'API-Dokumentation'
+        description: 'REST-API, OpenAPI / Swagger Spezifikation'
+    admin_tenant_compliance_settings_current:
+        label: 'Compliance-Einstellungen'
+        description: 'Compliance-Frameworks aktivieren: ISO 27001, TISAX, DORA, NIS2, BSI'

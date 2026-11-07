@@ -51,6 +51,9 @@ final class PolicyPdfExporterTemplateTest extends TestCase
             $parts = explode('.', $message);
             return ucfirst((string) end($parts));
         }));
+        // fa_date comes from AppDateFormatExtension in the app; a fixed format is enough here.
+        $this->twig->addFilter(new \Twig\TwigFilter('fa_date', static fn (mixed $date): string =>
+            $date instanceof \DateTimeInterface ? $date->format('d.m.Y') : '—'));
         $this->twig->addGlobal('app', new class () {
             public function getRequest(): object
             {

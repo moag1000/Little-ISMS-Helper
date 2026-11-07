@@ -1,0 +1,146 @@
+# Global search: page entries (App\Service\Search\NavigationSearch).
+search_nav:
+    admin_dashboard:
+        label: 'Admin dashboard'
+        description: 'Organisation and user management, system status'
+    admin_hub_index:
+        label: 'Admin hub'
+        description: 'One entry point for all admin functions'
+    tenant_management_index:
+        label: 'Organisation settings'
+        description: 'Manage organisations: name, contact, ISMS scope'
+    app_admin_tenant_email_branding:
+        label: 'Branding & logo'
+        description: 'Logo, colours, corporate identity, email design'
+    user_management_index:
+        label: 'User management'
+        description: 'Create users, assign roles, reset passwords'
+    role_management_index:
+        label: 'Role management'
+        description: 'Configure roles and permissions'
+    app_profile_mfa_index:
+        label: 'MFA / two-factor authentication'
+        description: 'Set up or disable a TOTP authenticator'
+    session_index:
+        label: 'Session management'
+        description: 'Show and end active logins'
+    app_audit_log_index:
+        label: 'Audit log'
+        description: 'Compliance audit trail of every change'
+    app_audit_freeze_index:
+        label: 'Audit freeze'
+        description: 'Freeze the ISMS state for external audits (read-only)'
+    app_soa_index:
+        label: 'SoA – Statement of Applicability'
+        description: 'ISO 27001 Annex A controls, statement of applicability'
+    app_risk_appetite_index:
+        label: 'Risk appetite'
+        description: 'Configure risk tolerance and thresholds'
+    app_analytics_dashboard:
+        label: 'Analytics'
+        description: 'KPI overview, charts, trend analysis'
+    admin_kpi_threshold_index:
+        label: 'KPI thresholds'
+        description: 'Configure KPI limits and targets'
+    app_reports_index:
+        label: 'Reports'
+        description: 'Management reports, gap report, compliance exports'
+    report_builder_index:
+        label: 'Report builder'
+        description: 'Design your own reports from widgets'
+    app_group_report_tree:
+        label: 'Group reports'
+        description: 'Group structure, top risks, SoA, suppliers and incidents across all subsidiaries'
+    app_group_report_comparison:
+        label: 'Organisation comparison'
+        description: 'KPIs of every organisation in the group side by side, Excel and PDF export'
+    admin_compliance_index:
+        label: 'Compliance & gap analysis'
+        description: 'Compliance frameworks, gap analysis, open requirements'
+    app_scheduled_report_index:
+        label: 'Scheduled reports'
+        description: 'Send reports automatically on a schedule'
+    data_backup_index:
+        label: 'Backup & restore'
+        description: 'Create, download and restore backups'
+    admin_modules_index:
+        label: 'Module activation'
+        description: 'Switch compliance modules on and off'
+    admin_lifecycle_overrides_index:
+        label: 'Lifecycle overrides'
+        description: 'Workflow settings per organisation (roles, four-eyes, mandatory reason)'
+    admin_workflow_overlay_index:
+        label: 'Workflow configuration'
+        description: 'Manage regulatory workflows'
+    admin_notification_channel_index:
+        label: 'Notification channels'
+        description: 'Configure email, Slack and webhook channels'
+    admin_notification_rule_index:
+        label: 'Notification rules'
+        description: 'Rule-based triggers for automatic alerts'
+    admin_tag_index:
+        label: 'Manage tags'
+        description: 'Create and maintain tags and labels'
+    app_dashboard:
+        label: 'Dashboard'
+        description: 'Personal ISMS dashboard with KPIs'
+    app_dashboard_ciso:
+        label: 'CISO dashboard'
+        description: 'Security posture, top risks, compliance status'
+    app_dashboard_dpo:
+        label: 'DPO dashboard'
+        description: 'Privacy overview, records of processing, data subject requests'
+    app_dashboard_compliance_manager:
+        label: 'Compliance manager dashboard'
+        description: 'Framework status, open measures'
+    app_my_day:
+        label: 'My Day'
+        description: 'Due tasks, approvals and reviews at a glance'
+    app_dashboard_risk_manager:
+        label: 'Risk manager dashboard'
+        description: 'Risk posture, treatment plans and due risk acceptances'
+    app_dashboard_isb:
+        label: 'ISO dashboard'
+        description: 'Work status of the information security officer'
+    app_dashboard_bcm:
+        label: 'BCM dashboard'
+        description: 'Business continuity: processes, plans, exercises'
+    app_dashboard_auditor:
+        label: 'Auditor dashboard'
+        description: 'Planned audits, open findings and evidence'
+    app_dashboard_board:
+        label: 'Board dashboard'
+        description: 'KPIs for management and the board'
+    app_compliance_mapping_hub:
+        label: 'Mapping hub'
+        description: 'Framework mappings, quality, proposals and import in one place'
+    setup_wizard_index:
+        label: 'Setup wizard'
+        description: 'Onboarding tour, initial setup'
+    app_help_glossary:
+        label: 'Glossary'
+        description: 'ISMS acronyms and terms'
+    app_quick_fix_index:
+        label: 'Quick fix'
+        description: 'Migrations, schema drift, data repair in the web UI'
+    admin_data_repair_index:
+        label: 'Data repair'
+        description: 'Assign orphans, fix organisation mismatches, clean up duplicates'
+    admin_queue_status:
+        label: 'Queue status'
+        description: 'Worker health and pending Messenger jobs'
+    app_industry_baseline_index:
+        label: 'Industry baseline'
+        description: 'Sector-specific security requirements and BSI modules'
+    app_location_index:
+        label: 'Locations'
+        description: 'Manage sites and branches'
+    app_location_map:
+        label: 'Location map'
+        description: 'Site overview: residual risk, open checks and comparison per site'
+    api_doc:
+        label: 'API documentation'
+        description: 'REST API, OpenAPI / Swagger specification'
+    admin_tenant_compliance_settings_current:
+        label: 'Compliance settings'
+        description: 'Activate compliance frameworks: ISO 27001, TISAX, DORA, NIS2, BSI'

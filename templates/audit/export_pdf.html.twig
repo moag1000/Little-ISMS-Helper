@@ -261,7 +261,7 @@
                 <tr>
                     <td>{{ asset.name }}</td>
                     <td>{{ asset.assetType|default('-')|replace({'_': ' '})|title }}</td>
-                    <td>{{ asset.status|default('-') }}</td>
+                    <td>{{ asset.status|default('—') }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

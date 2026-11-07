@@ -212,14 +212,14 @@
                     <strong>{{ comparison.framework2Requirement.requirementId }}</strong>
                     <br><small class="text-muted">{{ comparison.framework2Requirement.title }}</small>
                 {% else %}
-                    <span class="text-muted">-</span>
+                    <span class="text-muted">—</span>
                 {% endif %}
             </td>
             <td>
                 {% if comparison.framework2Requirement %}
                     {% include '_components/_badge.html.twig' with { variant: 'info', content: comparison.framework2Requirement.category } %}
                 {% else %}
-                    <span class="text-muted">-</span>
+                    <span class="text-muted">—</span>
                 {% endif %}
             </td>
             <td class="text-center">
@@ -227,7 +227,7 @@
                     {% set qualityColor = comparison.matchQuality >= 80 ? 'success' : (comparison.matchQuality >= 60 ? 'warning' : 'danger') %}
                     {% include '_components/_badge.html.twig' with { variant: qualityColor, content: comparison.matchQuality ~ '%' } %}
                 {% else %}
-                    <span class="text-muted">-</span>
+                    <span class="text-muted">—</span>
                 {% endif %}
             </td>
         </tr>

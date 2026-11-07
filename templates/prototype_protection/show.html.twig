@@ -7,22 +7,6 @@
 
 {% block title %}{{ assessment.title }}{% endblock %}
 
-{% set status_variant = {
-    'draft':     'secondary',
-    'in_review': 'info',
-    'approved':  'success',
-    'rejected':  'danger',
-    'expired':   'warning',
-} %}
-
-{% set result_variant = {
-    'not_applicable': 'secondary',
-    'not_met':        'danger',
-    'partial':        'warning',
-    'met':            'success',
-    'exceeded':       'success',
-} %}
-
 {% block body %}
 <div class="container-fluid">
     {# M-4 — module-gating: TISAX Prototype Protection (VDA-ISA Tier-1/2 Automotive) #}
@@ -91,6 +75,7 @@
                         { key: 'trial_operation', ref: '8.4', result: assessment.trialOperationResult, notes: assessment.trialOperationNotes },
                         { key: 'events',          ref: '8.5', result: assessment.eventsResult,         notes: assessment.eventsNotes },
                     ] %}
+                    {% import '_components/_status_vocabulary.html.twig' as _vocab %}
                     {% for s in sections %}
                         <div class="mb-3 pb-3 border-bottom">
                             <div class="d-flex justify-content-between align-items-center">
@@ -100,7 +85,7 @@
                                 </h3>
                                 {% if s.result %}
                                     {% include '_components/_badge.html.twig' with {
-                                        variant: result_variant[s.result] ?? 'secondary',
+                                        variant: _vocab.tone('requirement_result', s.result)|trim,
                                         content: ('prototype_protection.result.' ~ s.result)|trans({}, 'prototype_protection')
                                     } %}
                                 {% else %}
@@ -133,10 +118,10 @@
                         <dd class="col-7">{{ assessment.assessor ? assessment.assessor.fullName|default(assessment.assessor.email) : '—' }}</dd>
 
                         <dt class="col-5">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</dt>
-                        <dd class="col-7">{{ assessment.assessmentDate ? assessment.assessmentDate|fa_date : '—' }}</dd>
+                        <dd class="col-7">{{ assessment.assessmentDate|fa_date }}</dd>
 
                         <dt class="col-5">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</dt>
-                        <dd class="col-7">{{ assessment.nextAssessmentDue ? assessment.nextAssessmentDue|fa_date : '—' }}</dd>
+                        <dd class="col-7">{{ assessment.nextAssessmentDue|fa_date }}</dd>
 
                         <dt class="col-5">{{ 'prototype_protection.field.required_labels'|trans({}, 'prototype_protection') }}</dt>
                         <dd class="col-7">

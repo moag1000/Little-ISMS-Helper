@@ -58,12 +58,12 @@
         <tr>
             <td>{{ risk.id }}</td>
             <td>{{ risk.title }}</td>
-            <td>{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '-' }}</td>
+            <td>{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '—' }}</td>
             <td class="risk-{{ level }}">{{ score }}</td>
             <td class="risk-{{ residualLevel }}">{{ residual }}</td>
-            <td>{{ risk.status ? risk.status.value : '-' }}</td>
-            <td>{{ risk.riskOwnerName ?? '-' }}</td>
-            <td>{{ risk.reviewDate ? risk.reviewDate|fa_date : '-' }}</td>
+            <td>{{ risk.status ? risk.status.value : '—' }}</td>
+            <td>{{ risk.riskOwnerName ?? '—' }}</td>
+            <td>{{ risk.reviewDate|fa_date }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -90,7 +90,7 @@
         {% for plan in treatment_plans %}
         <tr>
             <td>{{ plan.title }}</td>
-            <td>{{ plan.risk ? plan.risk.title : '-' }}</td>
+            <td>{{ plan.risk ? plan.risk.title : '—' }}</td>
             <td>
                 <span class="{% if plan.priority == 'critical' %}risk-critical{% elseif plan.priority == 'high' %}risk-high{% else %}risk-medium{% endif %}">
                     {{ plan.priority|upper }}
@@ -98,9 +98,9 @@
             </td>
             <td>{{ plan.status|replace({'_': ' '})|capitalize }}</td>
             <td>{{ plan.completionPercentage }}%</td>
-            <td>{{ plan.responsiblePersonName ?? '-' }}</td>
-            <td>{{ plan.targetCompletionDate ? plan.targetCompletionDate|fa_date : '-' }}</td>
-            <td>{{ plan.budget ?? '-' }}</td>
+            <td>{{ plan.responsiblePersonName ?? '—' }}</td>
+            <td>{{ plan.targetCompletionDate|fa_date }}</td>
+            <td>{{ plan.budget ?? '—' }}</td>
         </tr>
         {% endfor %}
     </tbody>

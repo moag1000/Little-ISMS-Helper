@@ -103,7 +103,7 @@
                 {% if totalRisks > 0 %}
                     {{ ((risksWithinAppetite|length / totalRisks) * 100)|number_format(0) }}%
                 {% else %}
-                    N/A
+                    —
                 {% endif %}
             </div>
         </div>
@@ -206,7 +206,7 @@
                         {% if risk.treatmentStrategy %}
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.treatmentStrategy ? risk.treatmentStrategy.value : '' } %}
                         {% else %}
-                            <span class="text-muted">-</span>
+                            <span class="text-muted">—</span>
                         {% endif %}
                     </td>
                     <td class="text-center">

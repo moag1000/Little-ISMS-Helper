@@ -156,12 +156,7 @@
                     {% if statistics.by_risk_level %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.by_risk_level %}
-                                {% set risk_color = {
-                                    'low': 'success',
-                                    'medium': 'info',
-                                    'high': 'warning',
-                                    'critical': 'danger'
-                                }[level] %}
+                                {% set risk_color = pill_tone_severity(level|default('')) %}
                                 <li class="mb-2">
                                     {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
                                     {{ ('privacy.risk_level.' ~ level)|trans({}, 'privacy') }}

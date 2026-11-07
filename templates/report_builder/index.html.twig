@@ -21,7 +21,7 @@
         ]
     }) }}
 
-    <main>
+    <div>
 
     {# Quick Actions #}
     <div class="row mb-4">
@@ -111,7 +111,7 @@
                                 </td>
                                 <td class="fa-table__cell">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: categories[report.category]|default(report.category) } %}</td>
                                 <td class="fa-table__cell">{{ report.layout }}</td>
-                                <td class="fa-table__cell">{{ report.updatedAt ? report.updatedAt|date('d.m.Y H:i') : report.createdAt|date('d.m.Y H:i') }}</td>
+                                <td class="fa-table__cell">{{ report.updatedAt ? report.updatedAt|fa_datetime : report.createdAt|fa_datetime }}</td>
                                 <td class="fa-table__cell fa-table__cell--actions">
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'report_builder.action.edit'|trans({},'report_builder') }}">
@@ -200,7 +200,7 @@
             {% endif %}
         </div>
     </div>
-    </main>
+    </div>
 </div>
 
 <style>

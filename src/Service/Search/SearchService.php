@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Search;
 
+use App\Risk\RiskMatrixThresholds;
 use App\Entity\Asset;
 use App\Entity\AuditFinding;
 use App\Entity\BCExercise;
@@ -242,8 +243,6 @@ class SearchService
         }
 
         return array_map(function (Risk $e): array {
-            $level = $e->getInherentRiskLevel();
-            $badge = $level >= 15 ? 'Hoch' : ($level >= 9 ? 'Mittel' : 'Niedrig');
 
             return [
                 'id' => $e->getId(),
@@ -252,7 +251,8 @@ class SearchService
                 'url' => $this->urlGenerator->generate('app_risk_show', ['id' => $e->getId()]),
                 'icon' => 'fa-icon--nav-shield-alert',
                 'type' => 'risk',
-                'badge' => $badge,
+                // Band key from the one threshold source; the palette shows its label.
+                'band' => RiskMatrixThresholds::classify($e->getInherentRiskLevel()),
             ];
         }, $qb->getQuery()->getResult());
     }

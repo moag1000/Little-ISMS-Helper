@@ -4,12 +4,6 @@
    read-only detail in the fa-form-modal frame; the eye/edit actions do the
    same. PDF/export links bypass Turbo with data-turbo="false". #}
 {% trans_default_domain 'incident' %}
-{% set severityColors = {
-    'critical': 'danger',
-    'high': 'warning',
-    'medium': 'info',
-    'low': 'success'
-} %}
 {% set statusIcons = {
     'reported': 'status-critical text-danger',
     'in_investigation': 'ui-search text-warning',
@@ -45,12 +39,12 @@
         {% if incident.category %}
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('incident.category.' ~ incident.category)|trans({}, 'incident') } %}
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td class="text-center">
         {% include '_components/_badge.html.twig' with {
-            variant: severityColors[incident.severity ? incident.severity.value : ''] ?? 'secondary',
+            variant: pill_tone_severity(incident.severity ? incident.severity.value : ''),
             content: ('incident.severity.' ~ (incident.severity ? incident.severity.value : ''))|trans({}, 'incident')
         } %}
     </td>
@@ -59,7 +53,7 @@
         {{ ('incident.status.' ~ incident.status.value)|trans({}, 'incident') }}
     </td>
     <td>
-        {{ incident.detectedAt|locale_datetime }}
+        {{ incident.detectedAt|fa_datetime }}
     </td>
     <td class="text-center">
         {% if incident.affectedAssets|length > 0 %}

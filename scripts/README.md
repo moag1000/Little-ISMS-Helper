@@ -234,13 +234,15 @@ String nennt.
 **Zweck:** Angezeigte Datumswerte laufen über `|fa_date` / `|fa_datetime`
 (Format und Zeitzone aus `/admin/settings/application`). Ein fest verdrahtetes
 `|date('d.m.Y')`, `|date('Y-m-d')`, `|date('d.m.Y H:i')` oder `|date('Y-m-d H:i')` in der
-Textausgabe ist ein Fund; in HTML-Attributen, `<script>`, `path()`/`url()` und
-String-Verkettung bleibt `|date` (Maschinenformat). Erkennung in
-`scripts/quality/date_display.py`; `--fix <template>` ersetzt die Funde.
+Textausgabe ist ein Fund, auch in `{% set %}`-/Include-Hashes (`value:`, `subtitle:`,
+`generated_at:` …) und in String-Verkettung. In HTML-Attributen, `<script>` und
+`path()`/`url()` bleibt `|date` (Maschinenformat); Routen-Parameter oder Gruppierungs-
+schlüssel in einem `{% set %}` bekommen in der Zeile davor `{# machine-date: … #}`.
+Erkennung in `scripts/quality/date_display.py`; `--fix <template>` ersetzt die Funde.
+Ein leeres Datum rendert `—`, also kein `x ? x|fa_date : '—'` mehr.
 
 **CI-Integration:** Gate 77 im `code-quality`-Job, Baseline mit Anzahl je Datei
-(`baselines/date_display.txt`, darf nur sinken; enthält vor allem Listen- und
-Detailseiten, die mit dem Listen-/Detail-Skelett migriert werden).
+(`baselines/date_display.txt`, darf nur sinken; seit dem Konsistenz-Sweep 2026-11 leer).
 
 ---
 
@@ -248,9 +250,11 @@ Detailseiten, die mit dem Listen-/Detail-Skelett migriert werden).
 
 **Zweck:** Seitensemantik und ein Status-Vokabular. Regeln: kein eigenes `<main>`
 in Templates, die `base.html.twig` erweitern (`nested-main`); höchstens ein `<h1>`
-und keines neben dem Page-Header (`extra-h1`); keine lokale Status-Farbtabelle
-(`{% set statusColors = {...} %}`), stattdessen `_components/_status_vocabulary.html.twig`
-oder `_fa_status_chip` (`status-map`); Bootstrap-Tooltips nur auf fokussierbaren
+und keines neben dem Page-Header (`extra-h1`); keine lokale Farbtabelle
+(`{% set <name>Colors|Tones|Variants = {...} %}` mit Ton-Namen als Werten), stattdessen
+`pill_tone_severity()` für Schweregrad/Kritikalität/Priorität,
+`_components/_status_vocabulary.html.twig` (`pill()` / `tone()`) oder `_fa_status_chip`
+(`status-map`; Button-Varianten-Maps mit `btn`/`button` im Namen sind ausgenommen); Bootstrap-Tooltips nur auf fokussierbaren
 Elementen (`tooltip-unreachable`).
 
 **CI-Integration:** Gate 78 im `code-quality`-Job, Baseline `baselines/page_semantics.txt`

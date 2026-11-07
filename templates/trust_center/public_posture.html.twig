@@ -25,7 +25,7 @@
         {{ _fa_alert.render({
             variant: 'info',
             body: 'trust_center.snapshot_freshness'|trans({
-                '%date%': snapshot.snapshotAt|date('Y-m-d H:i') ~ ' UTC'
+                '%date%': snapshot.snapshotAt|fa_datetime
             }, 'trust_center')|e
         }) }}
     </div>

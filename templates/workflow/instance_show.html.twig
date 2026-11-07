@@ -28,7 +28,7 @@
                 {% include '_components/_badge.html.twig' with {
                     variant: deadline_variant,
                     class: 'ms-1',
-                    content: ('approval.deadline.label'|trans({}, 'workflows')) ~ ': ' ~ deadline_dt|date('d.m.Y H:i')
+                    content: ('approval.deadline.label'|trans({}, 'workflows')) ~ ': ' ~ deadline_dt|fa_datetime
                         ~ (is_overdue ? ' — ' ~ ('approval.deadline.overdue'|trans({}, 'workflows')) : '')
                         ~ (is_critical ? ' — ' ~ ('approval.deadline.critical_warning'|trans({}, 'workflows')) : '')
                 } %}
@@ -83,12 +83,12 @@
         <div class="row">
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.workflow'|trans({}, 'workflows') }}</strong>
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '-' } %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '—' } %}
             </div>
 
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}</strong>
-                {{ instance.currentStep ? instance.currentStep.name|workflow_step_label : '-' }}
+                {{ instance.currentStep ? instance.currentStep.name|workflow_step_label : '—' }}
             </div>
 
             <div class="col-md-3 mb-3">

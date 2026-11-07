@@ -95,7 +95,7 @@
         training.id,
         training.title|length > 35 ? training.title|slice(0, 35) ~ '...' : training.title,
         training.trainingType,
-        training.scheduledDate|date('Y-m-d'),
+        training.scheduledDate|fa_date,
         (training.durationMinutes ?? 0) ~ ' min',
         training.participants|length,
         _mandatory_html,
@@ -110,7 +110,7 @@
         kicker:       'ISMS · Training Report',
         status:       'final',
         audience:     'auditor',
-        generated_at: generated_at|date('d.m.Y H:i'),
+        generated_at: generated_at|fa_datetime,
     },
     brand_name: 'Little ISMS Helper',
     sections: [

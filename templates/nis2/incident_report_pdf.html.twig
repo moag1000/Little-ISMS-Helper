@@ -241,7 +241,7 @@
             <div class="field-value">
                 <ul style="margin: 0; padding-left: 15px;">
                     {% for asset in incident.affectedAssets %}
-                        <li>{{ asset.name }} ({{ asset.assetType ?? 'N/A' }})</li>
+                        <li>{{ asset.name }} ({{ asset.assetType ?? '—' }})</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -254,7 +254,7 @@
             <div class="field-value">
                 <ul style="margin: 0; padding-left: 15px;">
                     {% for process in incident.affectedBusinessProcesses %}
-                        <li>{{ process.name }} ({{ process.criticality ?? 'N/A' }})</li>
+                        <li>{{ process.name }} ({{ process.criticality ?? '—' }})</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -411,7 +411,7 @@
             </tr>
             <tr>
                 <td>{{ 'nis2.incident_report.timeline.early_warning'|trans({}, 'nis2') }} (24h)</td>
-                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|fa_datetime : '-' }}</td>
+                <td>{{ incident.earlyWarningDeadline|fa_datetime }}</td>
                 <td>
                     {% if incident.earlyWarningReportedAt %}
                         <span class="compliant">{{ incident.earlyWarningReportedAt|fa_datetime }}</span>
@@ -424,7 +424,7 @@
             </tr>
             <tr>
                 <td>{{ 'nis2.incident_report.timeline.notification'|trans({}, 'nis2') }} (72h)</td>
-                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|fa_datetime : '-' }}</td>
+                <td>{{ incident.detailedNotificationDeadline|fa_datetime }}</td>
                 <td>
                     {% if incident.detailedNotificationReportedAt %}
                         <span class="compliant">{{ incident.detailedNotificationReportedAt|fa_datetime }}</span>
@@ -437,7 +437,7 @@
             </tr>
             <tr>
                 <td>{{ 'nis2.incident_report.timeline.final_report'|trans({}, 'nis2') }} (1 month)</td>
-                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|fa_datetime : '-' }}</td>
+                <td>{{ incident.finalReportDeadline|fa_datetime }}</td>
                 <td>
                     {% if incident.finalReportSubmittedAt %}
                         <span class="compliant">{{ incident.finalReportSubmittedAt|fa_datetime }}</span>

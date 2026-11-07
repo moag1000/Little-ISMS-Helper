@@ -3,7 +3,7 @@
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'dpia.edit.title'|default('Edit DPIA') }} - {{ dpia.referenceNumber }}{% endblock %}
+{% block title %}{{ 'dpia.edit.title'|trans({}, 'privacy') }} - {{ dpia.referenceNumber }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">

@@ -133,8 +133,7 @@
                                 </td>
                                 <td class="fa-table__cell">
                                     {% set prio = req.priority|default('medium') %}
-                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'primary', 'low': 'neutral'} %}
-                                    {{ pill.render(prio, prioTone[prio]|default('neutral'), {size: 'sm'}) }}
+                                    {{ pill.render(prio, pill_tone_severity(prio|default('')), {size: 'sm'}) }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -188,8 +187,7 @@
                                 </td>
                                 <td class="fa-table__cell">
                                     {% set prio = req.priority|default('medium') %}
-                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'primary', 'low': 'neutral'} %}
-                                    {{ pill.render(prio, prioTone[prio]|default('neutral'), {size: 'sm'}) }}
+                                    {{ pill.render(prio, pill_tone_severity(prio|default('')), {size: 'sm'}) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--actions">
                                     {# Link to the compliance wizard for this framework #}
@@ -230,7 +228,6 @@
                 <div class="list-group">
                     {% for finding in open_findings %}
                         {% set sev = finding.severity|default('medium') %}
-                        {% set sevTone = {'critical': 'danger', 'high': 'warning', 'medium': 'primary', 'low': 'neutral'} %}
                         <div class="list-group-item d-flex justify-content-between align-items-start gap-2">
                             <div class="flex-grow-1">
                                 <div class="fw-semibold">{{ finding.title|default('#' ~ finding.id) }}</div>
@@ -239,7 +236,7 @@
                                 {% endif %}
                             </div>
                             <div class="d-flex gap-1 align-items-center flex-shrink-0">
-                                {{ pill.render(sev, sevTone[sev]|default('neutral'), {size: 'sm'}) }}
+                                {{ pill.render(sev, pill_tone_severity(sev|default('')), {size: 'sm'}) }}
                                 {{ pill.render(finding.status, 'neutral', {size: 'sm'}) }}
                                 {% if finding.audit is defined and finding.audit %}
                                     <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">

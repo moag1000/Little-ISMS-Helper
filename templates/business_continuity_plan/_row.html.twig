@@ -20,14 +20,14 @@
         <br><small class="text-muted">{{ bc_plan.description|length > 60 ? bc_plan.description|slice(0, 60) ~ '...' : bc_plan.description }}</small>
         {% endif %}
     </td>
-    <td>{{ bc_plan.businessProcess ? bc_plan.businessProcess.name : '-' }}</td>
+    <td>{{ bc_plan.businessProcess ? bc_plan.businessProcess.name : '—' }}</td>
     <td>{{ bc_plan.effectivePlanOwner }}</td>
     <td><span class="{{ badge_status(bc_plan.status) }}">{{ ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans')|upper }}</span></td>
     <td>
         {% set readiness = bc_plan.getReadinessScore() %}
         {% include '_components/_badge.html.twig' with { variant: readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger'), content: readiness ~ '%' } %}
     </td>
-    <td>{{ bc_plan.lastTested ? bc_plan.lastTested|locale_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
+    <td>{{ bc_plan.lastTested ? bc_plan.lastTested|fa_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
     <td>
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
             <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}"

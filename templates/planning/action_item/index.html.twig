@@ -62,13 +62,7 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
-                {% set statusVariants = {
-                    'open':        'secondary',
-                    'planned':     'info',
-                    'in_progress': 'primary',
-                    'done':        'success',
-                    'dismissed':   'secondary'
-                } %}
+                {% import '_components/_status_vocabulary.html.twig' as _vocab %}
                 {% for item in page %}
                 <tr class="fa-table__row">
                     <td class="fa-table__cell">
@@ -84,26 +78,26 @@
                         {% if item.roadmapTask %}
                             {{ item.roadmapTask.name }}
                         {% else %}
-                            <span class="text-muted-color">-</span>
+                            <span class="text-muted-color">—</span>
                         {% endif %}
                     </td>
                     <td class="fa-table__cell">
                         {% if item.dueDate %}
                             <time datetime="{{ item.dueDate|date('Y-m-d') }}">{{ item.dueDate|fa_date }}</time>
                         {% else %}
-                            <span class="text-muted-color">-</span>
+                            <span class="text-muted-color">—</span>
                         {% endif %}
                     </td>
                     <td class="fa-table__cell fa-table__cell--num">
                         {% if item.plannedEffortPt is not null %}
                             {{ item.plannedEffortPt|number_format(1) }}
                         {% else %}
-                            <span class="text-muted-color">-</span>
+                            <span class="text-muted-color">—</span>
                         {% endif %}
                     </td>
                     <td class="fa-table__cell">
                         {% include '_components/_badge.html.twig' with {
-                            variant: statusVariants[item.status]|default('secondary'),
+                            variant: _vocab.tone('action_item', item.status)|trim,
                             content: ('planning.action_item.status.' ~ item.status)|trans({}, 'planning')
                         } %}
                     </td>

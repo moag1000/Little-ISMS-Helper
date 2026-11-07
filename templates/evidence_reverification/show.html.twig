@@ -76,7 +76,7 @@
 
                         <dt class="col-sm-4">{{ 'evidence_reverification.show.due_date'|trans({}, 'document') }}</dt>
                         <dd class="col-sm-8">
-                            {{ task.dueDate ? task.dueDate|fa_date : '—' }}
+                            {{ task.dueDate|fa_date }}
                             {% if task.isOverdue %}
                                 <span class="fa-status-pill fa-status-pill--danger ms-1">{{ 'evidence_reverification.overdue'|trans({}, 'document') }}</span>
                             {% endif %}

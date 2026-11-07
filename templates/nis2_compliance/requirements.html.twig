@@ -73,20 +73,6 @@
             text: 'nis2.art21.empty.text'|trans({}, 'nis2')
         }) }}
     {% else %}
-        {% set status_variant = {
-            'good':    'success',
-            'warning': 'warning',
-            'danger':  'danger',
-            'info':    'info',
-            'na':      'secondary',
-        } %}
-        {% set priority_variant = {
-            'critical': 'danger',
-            'high':     'warning',
-            'medium':   'info',
-            'low':      'secondary',
-        } %}
-
         {% embed '_components/_fa_table.html.twig' %}
             {% block table_head %}
                 <tr>
@@ -100,6 +86,7 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
+                {% import '_components/_status_vocabulary.html.twig' as _status %}
                 {% for row in coverage_rollup %}
                     {% set req = row.requirement %}
                     {% set metric = row.metric %}
@@ -119,7 +106,7 @@
                         </td>
                         <td class="fa-table__cell">
                             {% include '_components/_badge.html.twig' with {
-                                variant: priority_variant[row.priority] ?? 'secondary',
+                                variant: pill_tone_severity(row.priority|default('')),
                                 content: row.priority
                             } %}
                         </td>
@@ -138,8 +125,8 @@
                         <td class="fa-table__cell">
                             {% if metric is not null %}
                                 {% include '_components/_badge.html.twig' with {
-                                    variant: status_variant[metric.status] ?? 'secondary',
-                                    content: metric.value is not null ? metric.value~metric.unit : 'N/A'
+                                    variant: _status.tone('coverage', metric.status)|trim,
+                                    content: metric.value is not null ? metric.value~metric.unit : '—'
                                 } %}
                             {% else %}
                                 <span class="text-muted">—</span>

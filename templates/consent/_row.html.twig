@@ -4,11 +4,6 @@
    the same. The edit action is gated on ROLE_USER + editable statuses,
    matching the full-page index behaviour. #}
 {% trans_default_domain 'consent' %}
-{% set statusColors = {
-    'pending_verification': 'warning',
-    'active': 'success',
-    'revoked': 'danger'
-} %}
 <tr id="consent-row-{{ consent.id }}"
     data-consent-id="{{ consent.id }}">
     <td class="bulk-select-column">
@@ -30,11 +25,11 @@
         {% if consent.processingActivity %}
             {{ consent.processingActivity.name|default(consent.processingActivity) }}
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td>
-        {% include '_components/_badge.html.twig' with { variant: statusColors[consent.status] ?? 'secondary', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
+        {% import '_components/_status_vocabulary.html.twig' as _status %}{{ _status.pill('consent', consent.status, ('consent.status.' ~ consent.status)|trans({}, 'consent')) }}
     </td>
     <td>
         {{ consent.grantedAt|fa_datetime }}

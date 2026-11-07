@@ -73,7 +73,7 @@
         {% if is_module_active('nis2_dora') and supplier.isDoraRelevant %}
         <div class="fa-drawer__kv">
             <span class="label">{{ 'supplier.field.ict_criticality'|trans({}, 'suppliers') }}</span>
-            <span>{{ supplier.ictCriticality ? ('supplier.ict_criticality.' ~ supplier.ictCriticality)|trans({}, 'suppliers') : '–' }}</span>
+            <span>{{ supplier.ictCriticality ? ('supplier.ict_criticality.' ~ supplier.ictCriticality)|trans({}, 'suppliers') : '—' }}</span>
         </div>
         {% endif %}
         <div class="fa-drawer__section">

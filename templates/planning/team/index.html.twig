@@ -53,7 +53,7 @@
                         {% if team.type %}
                             {% include '_components/_badge.html.twig' with { variant: 'info', content: team.type } %}
                         {% else %}
-                            <span class="text-muted-color">-</span>
+                            <span class="text-muted-color">—</span>
                         {% endif %}
                     </td>
                     <td class="text-center">{{ team.memberCount }}</td>
@@ -63,7 +63,7 @@
                         {% elseif team.teamLeadPerson %}
                             {{ team.teamLeadPerson.fullName }}
                         {% else %}
-                            <span class="text-muted-color">-</span>
+                            <span class="text-muted-color">—</span>
                         {% endif %}
                     </td>
                     <td class="text-center">

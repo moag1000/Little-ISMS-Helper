@@ -80,7 +80,7 @@
                                 </a>
                             </p>
                             <p><strong>Requirement ID:</strong> <code>{{ requirement.requirementId }}</code></p>
-                            <p><strong>Category:</strong> {{ requirement.category|default('-') }}</p>
+                            <p><strong>Category:</strong> {{ requirement.category|default('—') }}</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>Priority:</strong>
@@ -89,10 +89,10 @@
                             <p><strong>Type:</strong> {% include '_components/_badge.html.twig' with { variant: 'info', content: requirement.requirementType } %}</p>
                             <p><strong>Applicable:</strong>
                                 {% if fulfillment.applicable %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.yes'|trans({}, 'messages') } %}
                                     {% if is_inherited %}<small class="text-muted">(inherited)</small>{% endif %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
                                     {% if is_inherited %}<small class="text-muted">(inherited)</small>{% endif %}
                                 {% endif %}
                             </p>

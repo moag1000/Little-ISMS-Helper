@@ -17,7 +17,7 @@
         subtitle: 'industry_baseline.subtitle'|trans({}, 'industry_baseline')
     }) }}
 
-    <main>
+    <div>
 
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'd-flex gap-2' } } %}
         {% block alert_body %}<div class="small">{{ 'industry_baseline.intro'|trans({}, 'industry_baseline')|raw }}</div>{% endblock %}
@@ -108,6 +108,6 @@
             {% endfor %}
         </div>
     {% endif %}
-    </main>
+    </div>
 </div>
 {% endblock %}

@@ -13,7 +13,7 @@
         {% if plan.risk %}
             <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
         {% else %}
-            <span class="text-muted">-</span>
+            <span class="text-muted">—</span>
         {% endif %}
     </td>
     <td class="text-center">
@@ -23,7 +23,7 @@
         {% include '_components/_badge.html.twig' with { variant: plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')), content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
     </td>
     <td>
-        {{ plan.effectiveResponsiblePerson ?? '<span class="text-muted">-</span>'|raw }}
+        {{ plan.effectiveResponsiblePerson ?? '<span class="text-muted">—</span>'|raw }}
     </td>
     <td class="text-center">
         {{ _fa_progress.render({ value: plan.completionPercentage, tone: plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')), showText: true }) }}
