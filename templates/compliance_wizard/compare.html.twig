@@ -20,7 +20,7 @@
         subtitle: 'wizard.compare_subtitle'|trans({}, 'wizard'),
         actions: [
             { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_index'), variant: 'ghost', icon: 'util-arrow-left' }
-        ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'wizard.export_pdf'|trans({}, 'wizard'), href: path('app_compliance_wizard_compare_export_pdf', {wizards: selected_wizards}), variant: 'primary', icon: 'nav-file-pdf' }] : [])
+        ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'wizard.export_pdf'|trans({}, 'wizard'), href: path('app_compliance_wizard_compare_export_pdf', {wizards: selected_wizards}), variant: 'ghost', attrs: { 'data-turbo': 'false' } }] : [])
     }) }}
     {% include 'compliance/mapping/_hub_tabs.html.twig' %}
 

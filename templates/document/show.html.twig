@@ -33,7 +33,7 @@
         { label: 'document.export.markdown'|trans({}, 'document'), variant: 'ghost', icon: 'ui-copy', href: path('app_document_export_markdown', {id: document.id}), attrs: {'data-turbo': 'false'} }
     ] %}
     {% if document.category == 'dpa' and is_module_active('privacy') %}
-        {% set _show_actions = _show_actions|merge([{ label: 'document.export.pdf'|trans({}, 'document'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_dpa_pdf', {id: document.id}), attrs: {'data-turbo': 'false'} }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'document.export.pdf'|trans({}, 'document'), variant: 'ghost', href: path('app_dpa_pdf', {id: document.id}), attrs: {'data-turbo': 'false'} }]) %}
     {% endif %}
     {% if canEdit is defined and canEdit %}
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'ui-edit', href: path('app_document_edit', {id: document.id}) }]) %}
