@@ -54,22 +54,32 @@ final class PostFlushWriter implements ResetInterface
         $em = $args->getObjectManager();
         $this->draining = true;
         try {
-            for ($pass = 0; $pass < self::MAX_PASSES && $this->queue !== [] && $em->isOpen(); $pass++) {
-                $batch = $this->queue;
-                $this->queue = [];
+            for ($pass = 0; $pass < self::MAX_PASSES; $pass++) {
+                $batch = $this->takeQueue(); // listeners of the drain flush may queue again
+                if ($batch === [] || !$em->isOpen()) {
+                    break;
+                }
                 foreach ($batch as $entity) {
                     $em->persist($entity);
                 }
                 $em->flush();
             }
         } catch (\Throwable $e) {
-            fwrite(STDERR, 'DBG '.$e->getMessage()."\n");
             // The user's own flush has already committed; a derived row must not undo it.
             $this->logger->warning('Derived rows after flush could not be written', ['error' => $e->getMessage()]);
             $this->queue = [];
         } finally {
             $this->draining = false;
         }
+    }
+
+    /** @return array<int, object> */
+    private function takeQueue(): array
+    {
+        $batch = $this->queue;
+        $this->queue = [];
+
+        return $batch;
     }
 
     public function reset(): void
